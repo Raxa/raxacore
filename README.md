@@ -8,3 +8,4 @@ This module should only depend on the OpenMRS core and webservices.rest module
 
 The raxacore module provides the following services
 - PatientListService
+- RaxaAlert Service

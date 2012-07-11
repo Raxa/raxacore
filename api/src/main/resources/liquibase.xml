@@ -5,7 +5,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
   	
-    <changeSet id="2012-05-10_create_raxacore_patient_list" author="tarang">
+    <changeSet id="2012-05-10_create_raxacore_patient_list" author="tarangmahajan">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="raxacore_patient_list"/>
@@ -21,7 +21,6 @@
             <column name="name" type="varchar(255)"/>
             <column name="description" type="varchar(2000)"/>
             <column name="search_query" type="varchar(1000)"/>
-            
             <column name="creator" type="int">
                 <constraints nullable="false"/>
             </column>
@@ -41,6 +40,7 @@
             </column>
         </createTable>
     </changeSet>
+ 
     <changeSet id="2012-05-10_add_constraints_to_raxacore_patient_list" author="johnstoecker">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="raxacore_patient_list"/>
@@ -66,4 +66,80 @@
                                  referencedColumnNames="user_id"/>
     </changeSet>    
  
+    <changeSet id="2012-07-09_create_raxacore_raxaalert_list" author="tarangmahajan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="raxacore_raxaalert_list"/>
+            </not>
+        </preConditions>
+        <comment>
+            Schema for raxacore_raxa_alert_list table
+        </comment>
+        <createTable tableName="raxacore_raxaalert_list">
+            <column name="raxa_alert_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="description" type="varchar(2000)"/>
+            <column name="time" type="DATETIME">
+            <column defaultValueBoolean="false" name="read" type="BOOLEAN">
+            <column name="patient" type="varchar(255)"/>
+            <column name="provider_sent" type="varchar(255)"/>
+            <column name="provider_recipient" type="varchar(255)"/>
+            <column name="alert_type" type="varchar(255)"/>
+            <column name="default_task" type="varchar(255)"/>
+            <column name="uuid" type="char(38)">
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="voided" type="BOOLEAN">
+            <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+            <column name="date_voided" type="DATETIME"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="DATETIME"/>
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+ 
+    <changeSet id="2012-07-09_add_constraints_to_raxacore_raxaalert_list" author="tarangmahajan">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="raxacore_raxaalert_list"/>
+        </preConditions>
+        <comment>
+            Adding constraints for auditing RaxaalertList--making sure
+            anyone who creates/voids a RaxaalertList table is a user
+        </comment>
+        <addForeignKeyConstraint baseTableName="raxacore_raxaalert_list" 
+                                 baseColumnNames="creator" 
+                                 constraintName="FK_raxacore_raxaalert_list_creator_users_user_id" 
+                                 referencedTableName="users" 
+                                 referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint baseTableName="raxacore_raxaalert_list" 
+                                 baseColumnNames="voided_by" 
+                                 constraintName="FK_raxacore_raxaalert_list_voided_by_users_user_id" 
+                                 referencedTableName="users" 
+                                 referencedColumnNames="user_id"/>
+        <addForeignKeyConstraint baseTableName="raxacore_raxaalert_list" 
+                                 baseColumnNames="patient" 
+                                 constraintName="FK_raxacore_raxaalert_list_patient_person_person_id" 
+                                 referencedTableName="person" 
+                                 referencedColumnNames="person_id"/>
+        <addForeignKeyConstraint baseTableName="raxacore_raxaalert_list" 
+                                 baseColumnNames="provider_sent" 
+                                 constraintName="FK_raxacore_raxaalert_list_provider_sent_person_person_id" 
+                                 referencedTableName="person" 
+                                 referencedColumnNames="person_id"/>
+        <addForeignKeyConstraint baseTableName="raxacore_raxaalert_list" 
+                                 baseColumnNames="provider_recipient" 
+                                 constraintName="FK_raxacore_raxaalert_list_provider_recipient_person_person_id" 
+                                 referencedTableName="person" 
+                                 referencedColumnNames="person_id"/>
+    </changeSet>    
 </databaseChangeLog>
