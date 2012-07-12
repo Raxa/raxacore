@@ -29,6 +29,8 @@ public class RaxaAlertList extends BaseOpenmrsMetadata implements Serializable {
     
     private Boolean seen;
     
+    private String alertType;
+    
     private DateTime time;
     
     private Set<Obs> obs;
@@ -148,10 +150,24 @@ public class RaxaAlertList extends BaseOpenmrsMetadata implements Serializable {
 	}
 	
 	/**
-	 * @param patientId the patientId to set
+	 * @param seen the seen to set
 	 */
 	public void setSeen(Boolean seen) {
 		this.seen = seen;
+	}
+    
+    /**
+	 * @return the alertType
+	 */
+	public String getAlertType() {
+		return alertType;
+	}
+	
+	/**
+	 * @param alertType the alertType to set
+	 */
+	public void setPatient(String alertType) {
+		this.alertType = alertType;
 	}
     
      /**
@@ -244,6 +260,20 @@ public class RaxaAlertList extends BaseOpenmrsMetadata implements Serializable {
     public void setObs(Set<Obs> obs) {
         this.obs = obs;
     }
+    
+    /**
+	 * @return the defaultTask
+	 */
+	public String getAlertType() {
+		return defaultTask;
+	}
+	
+	/**
+	 * @param defaultTask the defaultTask to set
+	 */
+	public void setDefaultTask(String defaultTask) {
+		this.defaultTask = defaultTask;
+	}
     
     /**
 	 * @return the providerSent
