@@ -12,7 +12,7 @@
         <property name="name"                  type="java.lang.String"     column="name" length="255"/>
         <property name="description"           type="java.lang.String"     column="description" length="2000"/>
         <property name="time"                  type="java.util.Date"       column="time"/>
-        <property name="read"                  type="java.lang.Boolean"    column="read" length="1" not-null="true"/>
+        <property name="seen"                  type="java.lang.Boolean"    column="seen" length="1" not-null="true"/>
         <many-to-one name="patient"            class="org.openmrs.Person"  column="patient"/>
         <many-to-one name="providerSent"       class="org.openmrs.Person"  column="provider_sent"/>
         <many-to-one name="providerRecipient"  class="org.openmrs.Person"  column="provider_recipient"/>

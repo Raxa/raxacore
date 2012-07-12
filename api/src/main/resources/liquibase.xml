@@ -82,7 +82,7 @@
             <column name="name" type="varchar(255)"/>
             <column name="description" type="varchar(2000)"/>
             <column name="time" type="DATETIME">
-            <column defaultValueBoolean="false" name="read" type="BOOLEAN">
+            <column defaultValueBoolean="false" name="seen" type="BOOLEAN">
             <column name="patient" type="varchar(255)"/>
             <column name="provider_sent" type="varchar(255)"/>
             <column name="provider_recipient" type="varchar(255)"/>
@@ -93,8 +93,6 @@
                 <constraints nullable="false"/>
             </column>
             <column name="date_created" type="DATETIME">
-                <constraints nullable="false"/>
-            </column>
             <column defaultValueBoolean="false" name="voided" type="BOOLEAN">
             <constraints nullable="false"/>
             </column>

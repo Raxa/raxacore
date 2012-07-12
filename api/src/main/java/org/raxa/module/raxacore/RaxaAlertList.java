@@ -17,25 +17,31 @@ package org.raxa.module.raxacore;
  */
  
 import java.io.Serializable;
-import org.openmrs.BaseOpenmrsMetadata;
+import org.openmrs.BaseOpenmrsData;
 
 public class RaxaAlertList extends BaseOpenmrsMetadata implements Serializable {
 
 	private Integer raxaAlertId;
 
-    private String patient;
+    private Patient patient;
+    
+    private Integer patientId;
     
     private DateTime time;
     
     private Set<Obs> obs;
     
-    private Set<Order> orders;
+    private String defaultTask;
     
-    private String providerSent;
+    private Provider providerSent;
     
-    private String providerRecipient;
+    private Integer providerSentId;
+    
+    private Provider providerRecipient;
 
-	public RaxaAlertList() {
+	private Integer providerRecipientId;
+    
+    public RaxaAlertList() {
 	}
 	
 	/** Sets id
@@ -91,31 +97,45 @@ public class RaxaAlertList extends BaseOpenmrsMetadata implements Serializable {
 	}
 	
 	/**
-	 * @return the raxaAlertID
+	 * @return the raxaAlertId
 	 */
 	public Integer getRaxaAlertListId() {
-		return raxaAlertID;
+		return raxaAlertId;
 	}
 	
 	/**
 	 * @param raxaAlertID the raxaAlertID to set
 	 */
-	public void setRaxaAlertListId(Integer raxaAlertID) {
-		this.raxaAlertID = raxaAlertID;
+	public void setRaxaAlertListId(Integer raxaAlertId) {
+		this.raxaAlertId = raxaAlertId;
 	}
     
     /**
 	 * @return the patient
 	 */
-	public String getPatient() {
+	public Patient getPatient() {
 		return patient;
 	}
 	
 	/**
 	 * @param patient the patient to set
 	 */
-	public void setPatient(String patient) {
+	public void setPatient(Patient patient) {
 		this.patient = patient;
+	}
+    
+    /**
+	 * @return the patientId
+	 */
+	public Integer getPatientId() {
+		return patientId;
+	}
+	
+	/**
+	 * @param patientId the patientId to set
+	 */
+	public void setPatientId(Integer patientId) {
+		this.patientId = patientId;
 	}
     
      /**
@@ -210,26 +230,9 @@ public class RaxaAlertList extends BaseOpenmrsMetadata implements Serializable {
     }
     
     /**
-    * @return Returns the orders
-    */
-    public Set<Order> getOrders() {
-        if (orders == null) {
-            return new HashSet<Order>();
-        }
-        return orders;
-    }
-
-    /**
-    * @param orders The orders to set.
-    */
-    public void setOrders(Set<Order> orders) {
-        this.orders = orders;
-    }
-    
-    /**
 	 * @return the providerSent
 	 */
-	public String getProviderSent() {
+	public Provider getProviderSent() {
 		return providerSent;
 	}
 	
@@ -241,16 +244,46 @@ public class RaxaAlertList extends BaseOpenmrsMetadata implements Serializable {
 	}
 
     /**
+	 * @return the providerSentId
+	 */
+	public Integer getProviderSentId() {
+		return providerSentId;
+	}
+	
+	/**
+	 * @param providerSentId the providerSentId to set
+	 */
+	public void setProviderSentId(Integer providerSentId) {
+		this.providerSentId = providerSentId;
+	}    
+    
+    /**
 	 * @return the providerRecipient
 	 */
-	public String getProviderRecipient() {
+	public Provider getProviderRecipient() {
 		return providerSent;
 	}
 	
 	/**
 	 * @param providerRecipient the providerRecipient to set
 	 */
-	public void setProviderRecipient(String providerRecipient) {
+	public void setProviderRecipient(Provider providerRecipient) {
 		this.providerRecipient = providerRecipient;
 	}
+    
+    
+    /**
+	 * @return the providerRecipientId
+	 */
+	public Integer getProviderRecipientId() {
+		return providerRecipientId;
+	}
+	
+	/**
+	 * @param providerRecipientId the providerRecipientId to set
+	 */
+	public void setProviderRecipientId(Integer providerRecipientId) {
+		this.providerRecipientId = providerRecipientId;
+	}    
+    
 }
