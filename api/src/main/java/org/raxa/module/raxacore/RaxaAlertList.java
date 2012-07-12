@@ -27,6 +27,8 @@ public class RaxaAlertList extends BaseOpenmrsMetadata implements Serializable {
     
     private Integer patientId;
     
+    private Boolean seen;
+    
     private DateTime time;
     
     private Set<Obs> obs;
@@ -136,6 +138,20 @@ public class RaxaAlertList extends BaseOpenmrsMetadata implements Serializable {
 	 */
 	public void setPatientId(Integer patientId) {
 		this.patientId = patientId;
+	}
+    
+    /**
+	 * @return the seen
+	 */
+	public Boolean seen() {
+		return seen;
+	}
+	
+	/**
+	 * @param patientId the patientId to set
+	 */
+	public void setSeen(Boolean seen) {
+		this.seen = seen;
 	}
     
      /**
