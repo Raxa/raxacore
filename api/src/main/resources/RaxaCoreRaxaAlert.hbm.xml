@@ -5,7 +5,7 @@
     
 <hibernate-mapping package="org.raxa.module.raxacore">
     
-    <class name="RaxaAlertList" table="raxacore_raxaalert_list">
+    <class name="RaxaAlert" table="raxacore_raxaalert">
         <id name="raxaAlertId" column="raxa_alert_id">
             <generator class="native"/>
         </id>

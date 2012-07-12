@@ -19,7 +19,7 @@ package org.raxa.module.raxacore;
 import java.io.Serializable;
 import org.openmrs.BaseOpenmrsData;
 
-public class RaxaAlertList extends BaseOpenmrsMetadata implements Serializable {
+public class RaxaAlert extends BaseOpenmrsMetadata implements Serializable {
 
 	private Integer raxaAlertId;
 
@@ -45,7 +45,7 @@ public class RaxaAlertList extends BaseOpenmrsMetadata implements Serializable {
 
 	private Integer providerRecipientId;
     
-    public RaxaAlertList() {
+    public RaxaAlert() {
 	}
 	
 	/** Sets id
@@ -54,35 +54,35 @@ public class RaxaAlertList extends BaseOpenmrsMetadata implements Serializable {
 	 */
 	@Override
 	public void setId(Integer id) {
-		setRaxaAlertListId(id);
+		setRaxaAlertId(id);
 	}
 	
 	/** Gets id
 	 * 
-	 * @return the RaxaAlertListId
+	 * @return the RaxaAlertId
 	 */
 	@Override
 	public Integer getId() {
-		return getRaxaAlertListId();
+		return getRaxaAlertId();
 	}
 	
-	/** Compares two RaxaAlertList objects for similarity
+	/** Compares two RaxaAlert objects for similarity
 	 * 
-	 * @param obj RaxaAlertList object to compare to
+	 * @param obj RaxaAlert object to compare to
 	 * @return boolean true/false whether or not they are the same objects
 	 * @see java.lang.Object#equals(java.lang.Object)
-	 * @should equal RaxaAlertList with same raxaAlertID
-	 * @should not equal RaxaAlertList with different raxaAlertID
+	 * @should equal RaxaAlert with same raxaAlertID
+	 * @should not equal RaxaAlert with different raxaAlertID
 	 * @should not equal on null
 	 * @should have equal patientList objects with no raxaAlertIDs
-	 * @should not have equal RaxaAlertList objects when one has null raxaAlertID
+	 * @should not have equal RaxaAlert objects when one has null raxaAlertID
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof RaxaAlertList) {
-			RaxaAlertList pList = (RaxaAlertList) obj;
-			if (this.getRaxaAlertListId() != null && pList.getRaxaAlertListId() != null)
-				return (this.getRaxaAlertListId().equals(pList.getRaxaAlertListId()));
+		if (obj instanceof RaxaAlert) {
+			RaxaAlert pList = (RaxaAlert) obj;
+			if (this.getRaxaAlertId() != null && pList.getRaxaAlertId() != null)
+				return (this.getRaxaAlertId().equals(pList.getRaxaAlertId()));
 		}
 		return this == obj;
 	}
@@ -95,22 +95,22 @@ public class RaxaAlertList extends BaseOpenmrsMetadata implements Serializable {
 	 */
 	@Override
 	public int hashCode() {
-		if (this.getRaxaAlertListId() == null)
+		if (this.getRaxaAlertId() == null)
 			return super.hashCode();
-		return this.getRaxaAlertListId().hashCode();
+		return this.getRaxaAlertId().hashCode();
 	}
 	
 	/**
 	 * @return the raxaAlertId
 	 */
-	public Integer getRaxaAlertListId() {
+	public Integer getRaxaAlertId() {
 		return raxaAlertId;
 	}
 	
 	/**
 	 * @param raxaAlertID the raxaAlertID to set
 	 */
-	public void setRaxaAlertListId(Integer raxaAlertId) {
+	public void setRaxaAlertId(Integer raxaAlertId) {
 		this.raxaAlertId = raxaAlertId;
 	}
     

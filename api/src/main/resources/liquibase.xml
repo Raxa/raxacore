@@ -75,7 +75,7 @@
         <comment>
             Schema for raxacore_raxa_alert_list table
         </comment>
-        <createTable tableName="raxacore_raxaalert_list">
+        <createTable tableName="raxacore_raxaalert">
             <column name="raxa_alert_id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
