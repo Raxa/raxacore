@@ -24,83 +24,83 @@ import org.raxa.module.raxacore.RaxaAlert;
  * Interface for accessing raxacore_raxa_alert_list
  */
 public interface RaxaAlertDAO {
-	
-	/**
-	 * Saves a RaxaAlert
-	 * 
-	 * @param RaxaAlert to be saved
-	 * @throws DAOException
-	 * @should save a raxa alert list
-	 */
-	public RaxaAlert saveRaxaAlert(RaxaAlert raxaAlert) throws DAOException;
-	
-	/**
-	 * Purge a RaxaAlert from database.
-	 * 
-	 * @param RaxaAlert object to be purged
-	 */
-	public void deleteRaxaAlert(RaxaAlert raxaAlert) throws DAOException;
-	
-	/**
-	 * Get raxaAlert by internal identifier
-	 * 
-	 * @param raxaAlertID raxaAlert id
-	 * @return raxaAlert with given internal identifier
-	 * @throws DAOException
-	 * @should get a raxa alert list
-	 */
-	public RaxaAlert getRaxaAlert(Integer raxaAlertID) throws DAOException;
-	
-	/**
-	 * Find {@link RaxaAlert} matching a patient
-	 * 
-	 * @param patient
-	 * @return {@link RaxaAlert}
-	 * @should get a raxa alert list by patient
-	 */
-	public List<RaxaAlert> getRaxaAlertByPatientId(Integer patientId);
-    
+
     /**
-	 * Find {@link RaxaAlert} matching a uuid
-	 * 
-	 * @param uuid
-	 * @return {@link RaxaAlert}
-	 * @should get a raxa alert list by uuid
-	 */
-	public RaxaAlert getRaxaAlertByUuid(String uuid);
-    
+     * Saves a RaxaAlert
+     * 
+     * @param RaxaAlert to be saved
+     * @throws DAOException
+     * @should save a raxa alert list
+     */
+    public RaxaAlert saveRaxaAlert(RaxaAlert raxaAlert) throws DAOException;
+
     /**
-	 * Find {@link RaxaAlert} matching a alertType
-	 * 
-	 * @param alertType
-	 * @return {@link RaxaAlert}
-	 * @should get a raxa alert list by alertType
-	 */
-	public RaxaAlert getRaxaAlertByAlertType(String alertType);
-	
-	/**
-	 * Find {@link RaxaAlert} matching providerSent
-	 * 
-	 * @param providerSent
-	 * @return List of RaxaAlerts
-	 * @should get a raxa alert list by providerSent
-	 */
-	public List<RaxaAlert> getRaxaAlertByProviderSentId(Integer providerSentId);
-    
+     * Purge a RaxaAlert from database.
+     * 
+     * @param RaxaAlert object to be purged
+     */
+    public void deleteRaxaAlert(RaxaAlert raxaAlert) throws DAOException;
+
     /**
-	 * Find {@link RaxaAlert} matching providerRecipient
-	 * 
-	 * @param providerRecipient
-	 * @return List of RaxaAlerts
-	 * @should get a raxa alert list by providerRecipient
-	 */
-	public List<RaxaAlert> getRaxaAlertByProviderRecipientId(String providerRecipientId);
-	
-	/**
-	 * Update RaxaAlert
-	 * @return {@link RaxaAlert}
-	 * @should update a RaxaAlert
-	 */
-	RaxaAlert updateRaxaAlert(RaxaAlert raxaAlert) throws DAOException;
-	
+     * Get raxaAlert by internal identifier
+     * 
+     * @param raxaAlertID raxaAlert id
+     * @return raxaAlert with given internal identifier
+     * @throws DAOException
+     * @should get a raxa alert list
+     */
+    public RaxaAlert getRaxaAlert(Integer raxaAlertID) throws DAOException;
+
+    /**
+     * Find {@link RaxaAlert} matching a patient
+     * 
+     * @param patient
+     * @return {@link RaxaAlert}
+     * @should get a raxa alert list by patient
+     */
+    public List < RaxaAlert > getRaxaAlertByPatientId(Integer patientId);
+
+    /**
+     * Find {@link RaxaAlert} matching a uuid
+     * 
+     * @param uuid
+     * @return {@link RaxaAlert}
+     * @should get a raxa alert list by uuid
+     */
+    public RaxaAlert getRaxaAlertByUuid(String uuid);
+
+    /**
+     * Find {@link RaxaAlert} matching a alertType
+     * 
+     * @param alertType
+     * @return {@link RaxaAlert}
+     * @should get a raxa alert list by alertType
+     */
+    public RaxaAlert getRaxaAlertByAlertType(String alertType);
+
+    /**
+     * Find {@link RaxaAlert} matching providerSent
+     * 
+     * @param providerSent
+     * @return List of RaxaAlerts
+     * @should get a raxa alert list by providerSent
+     */
+    public List < RaxaAlert > getRaxaAlertByProviderSentId(Integer providerSentId);
+
+    /**
+     * Find {@link RaxaAlert} matching providerRecipient
+     * 
+     * @param providerRecipient
+     * @return List of RaxaAlerts
+     * @should get a raxa alert list by providerRecipient
+     */
+    public List < RaxaAlert > getRaxaAlertByProviderRecipientId(String providerRecipientId);
+
+    /**
+     * Update RaxaAlert
+     * @return {@link RaxaAlert}
+     * @should update a RaxaAlert
+     */
+    RaxaAlert updateRaxaAlert(RaxaAlert raxaAlert) throws DAOException;
+
 }
