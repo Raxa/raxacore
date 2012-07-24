@@ -30,7 +30,6 @@
     </scm>
 
     <modules>
-        <module>api</module>
         <module>omod</module>
     </modules>
 

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="org.raxa.module.raxacore">
+    
+    <class name="RaxaAlert" table="raxacore_raxaalert">
+        <id name="raxaAlertId" column="raxa_alert_id">
+            <generator class="native"/>
+        </id>
+        <property name="name"                     type="java.lang.String"        column="name" length="255"/>
+        <set name="patientId">
+            <key>
+                <column name="patient_id"/>
+            </key>
+            <one-to-many class="org.openmrs.patient"/>
+        </set>
+        <one-to-one name="providerSentId"         class="org.openmrs.Provider"   property-ref="provider_sent_id"/>
+        <set name="providerRecipientId">
+            <key>
+                <column name="provider_recipient_id"/>
+            </key>
+            <one-to-many class="org.openmrs.provider"/>
+        </set>
+        <property name="description"              type="java.lang.String"        column="description" length="2000"/>
+        <property name="time"                     type="java.util.Date"          column="time"/>
+        <property name="seen"                     type="java.lang.Boolean"       column="seen" length="1" not-null="true"/>
+        <property name="alertType"                type="java.lang.String"        column="alert_type" length="255"/>
+        <property name="defaultTask"              type="java.lang.String"        column="default_task" length="255"/>
+        <property name="uuid"                     type="java.lang.String"        column="uuid" length="38" not-null="true" unique="true"/>
+        <many-to-one name="creator"               class="org.openmrs.User"       column="creator" not-null="true"/>
+        <property name="dateCreated"              type="java.util.Date"          column="date_created" not-null="true" length="19"/>
+        <property name="voided"                   type="java.lang.Boolean"       column="retired" length="1" not-null="true"/>
+        <many-to-one name="voidedBy"              class="org.openmrs.User"       column="voided_by"/>
+        <property name="dateVoided"               type="java.util.Date"          column="date_voided"/>
+        <property name="voidReason"               type="java.lang.String"        column="void_reason" length="255"/>
+        <many-to-one name="changedBy"             class="org.openmrs.User"       column="changed_by"/>
+        <property name="dateChanged"              type="java.util.Date"          column="date_changed" length="19"/>
+    </class>
+</hibernate-mapping>
