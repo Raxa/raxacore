@@ -77,33 +77,6 @@ public interface RaxaAlertService extends OpenmrsService {
 	public List<RaxaAlert> getRaxaAlertByProviderRecipientId(Integer providerRecipientId);
 	
 	/**
-	 * Gets a RaxaAlert by PatientUuid
-	 *
-	 * @param patientUuid
-	 * @return RaxaAlerts
-	 */
-	@Authorized( { "View Raxa Alerts" })
-	public List<RaxaAlert> getRaxaAlertsByPatientUuid(String patientUuid);
-	
-	/**
-	 * Gets a RaxaAlert by ProviderSentUuid
-	 *
-	 * @param providerSentUuid
-	 * @return RaxaAlerts
-	 */
-	@Authorized( { "View Raxa Alerts" })
-	public List<RaxaAlert> getRaxaAlertsByProviderSentUuid(String providerSentUuid);
-	
-	/**
-	 * Gets a RaxaAlert by ProviderRecipientUuid
-	 *
-	 * @param providerRecipientUuid
-	 * @return RaxaAlerts
-	 */
-	@Authorized( { "View Raxa Alerts" })
-	public List<RaxaAlert> getRaxaAlertsByProviderRecipientUuid(String providerRecipientUuid);
-	
-	/**
 	 * Gets a RaxaAlert by Name
 	 *
 	 * @param name
@@ -128,7 +101,7 @@ public interface RaxaAlertService extends OpenmrsService {
 	 * @return RaxaAlert
 	 */
 	@Authorized( { "View Raxa Alerts" })
-	public List<RaxaAlert> getRaxaAlertsByAlertType(String alertType);
+	public List<RaxaAlert> getRaxaAlertByAlertType(String alertType);
 	
 	/**
 	 * Gets all RaxaAlerts

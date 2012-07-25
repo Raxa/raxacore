@@ -62,7 +62,7 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 		dao.saveRaxaAlert(rAlert);
 		RaxaAlert result = dao.getRaxaAlertByName("TestList3");
 		String name = result.getName();
-		assertEquals(name, "TestList4");
+		assertEquals(name, "TestList3");
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 	public void testGetRaxaAlertByUuid() {
 		String uuid = "68547121-1b70-465e-99ee-c9dfd95e7d30";
 		String result = dao.getRaxaAlertByUuid(uuid).getName();
-		assertEquals("TestList2", result);
+		assertEquals("TestList1", result);
 	}
 	
 	/**
@@ -121,14 +121,9 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void testGetRaxaAlertByAlertType() {
-		System.out.println("getRaxaAlertByAlertType");
-		String alertType = "";
-		HibernateRaxaAlertDAO instance = new HibernateRaxaAlertDAO();
-		List expResult = null;
-		List result = instance.getRaxaAlertByAlertType(alertType);
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
+		String alertType = "test1";
+		String result = dao.getRaxaAlertByAlertType(alertType).get(0).getAlertType();
+		assertEquals(alertType, result);
 	}
 	
 	/**
@@ -136,29 +131,9 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void testGetRaxaAlertByPatientId() {
-		System.out.println("getRaxaAlertByPatientId");
-		Integer patientId = null;
-		HibernateRaxaAlertDAO instance = new HibernateRaxaAlertDAO();
-		List expResult = null;
-		List result = instance.getRaxaAlertByPatientId(patientId);
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
-	
-	/**
-	 * Test of getRaxaAlertByPatientUuid method, of class HibernateRaxaAlertDAO.
-	 */
-	@Test
-	public void testGetRaxaAlertByPatientUuid() {
-		System.out.println("getRaxaAlertByPatientUuid");
-		String patientUuid = "";
-		HibernateRaxaAlertDAO instance = new HibernateRaxaAlertDAO();
-		List expResult = null;
-		List result = instance.getRaxaAlertByPatientUuid(patientUuid);
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
+		Integer patientId = 1;
+		String result = dao.getRaxaAlertByPatientId(patientId).get(0).getName();
+		assertEquals("TestList1", result);
 	}
 	
 	/**
@@ -166,29 +141,9 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void testGetRaxaAlertByProviderSentId() {
-		System.out.println("getRaxaAlertByProviderSentId");
-		Integer providerSentId = null;
-		HibernateRaxaAlertDAO instance = new HibernateRaxaAlertDAO();
-		List expResult = null;
-		List result = instance.getRaxaAlertByProviderSentId(providerSentId);
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
-	
-	/**
-	 * Test of getRaxaAlertByProviderSentUuid method, of class HibernateRaxaAlertDAO.
-	 */
-	@Test
-	public void testGetRaxaAlertByProviderSentUuid() {
-		System.out.println("getRaxaAlertByProviderSentUuid");
-		String providerSentUuid = "";
-		HibernateRaxaAlertDAO instance = new HibernateRaxaAlertDAO();
-		List expResult = null;
-		List result = instance.getRaxaAlertByProviderSentUuid(providerSentUuid);
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
+		Integer providerSentId = 1;
+		String result = dao.getRaxaAlertByProviderSentId(providerSentId).get(0).getName();
+		assertEquals("TestList1", result);
 	}
 	
 	/**
@@ -196,47 +151,27 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void testGetRaxaAlertByProviderRecipientId() {
-		System.out.println("getRaxaAlertByProviderRecipientId");
-		Integer providerRecipientId = null;
-		HibernateRaxaAlertDAO instance = new HibernateRaxaAlertDAO();
-		List expResult = null;
-		List result = instance.getRaxaAlertByProviderRecipientId(providerRecipientId);
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
-	
-	/**
-	 * Test of getRaxaAlertByProviderRecipientUuid method, of class HibernateRaxaAlertDAO.
-	 */
-	@Test
-	public void testGetRaxaAlertByProviderRecipientUuid() {
-		System.out.println("getRaxaAlertByProviderRecipientUuid");
-		String providerRecipientUuid = "";
-		HibernateRaxaAlertDAO instance = new HibernateRaxaAlertDAO();
-		List expResult = null;
-		List result = instance.getRaxaAlertByProviderRecipientUuid(providerRecipientUuid);
-		assertEquals(expResult, result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
+		Integer providerRecipientId = 1;
+		String result = dao.getRaxaAlertByProviderRecipientId(providerRecipientId).get(0).getName();
+		assertEquals("TestList1", result);
 	}
 	
 	/**
 	 * Test of getAllRaxaAlerts method, of class HibernateRaxaAlertDAO.
 	 */
 	@Test
-	public void testGetAllPatientList_shouldReturnAllRaxaAlertsIncludingVoided() {
+	public void testGetAllRaxaAlert_shouldReturnAllRaxaAlertsIncludingVoided() {
 		List<RaxaAlert> allRaxaAlert = dao.getAllRaxaAlerts(true);
-		assertEquals(allRaxaAlert.size(), 3);
+		assertEquals(allRaxaAlert.size(), 1);
 	}
 	
 	/**
 	 * Test of getAllRaxaAlerts method, of class HibernateRaxaAlertDAO.
 	 */
 	@Test
-	public void testGetAllPatientList_shouldReturnAllUnvoidedRaxaAlerts() {
+	public void testGetAllRaxaAlert_shouldReturnAllUnvoidedRaxaAlerts() {
 		List<RaxaAlert> allRaxaAlert = dao.getAllRaxaAlerts(false);
-		assertEquals(allRaxaAlert.size(), 3);
+		assertEquals(allRaxaAlert.size(), 0);
 	}
 	
 	/**
@@ -258,7 +193,7 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 	public void testMarkRaxaAlertAsSeen() {
 		RaxaAlert raxaAlert = dao.getRaxaAlert(1);
 		dao.markRaxaAlertAsSeen(raxaAlert);
-		Boolean seen = dao.getRaxaAlert(1).seen();
-		assertEquals(seen, "TRUE");
+		Boolean seen = dao.getRaxaAlert(1).getSeen();
+		assertEquals(seen, true);
 	}
 }

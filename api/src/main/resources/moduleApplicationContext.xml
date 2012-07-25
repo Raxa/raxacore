@@ -69,7 +69,7 @@
                     </property>
                     <property name="target">
                         <bean class="org.raxa.module.raxacore.impl.RaxaAlertServiceImpl"> 
-                            <property name="raxaAlert"> 
+                            <property name="raxaAlertDAO"> 
                                 <bean class="org.raxa.module.raxacore.db.hibernate.HibernateRaxaAlertDAO">
                                     <property name="sessionFactory">
                                         <ref bean="sessionFactory"/>

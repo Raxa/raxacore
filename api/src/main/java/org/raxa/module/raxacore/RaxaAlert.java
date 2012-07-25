@@ -82,7 +82,7 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	 * @should equal RaxaAlert with same raxaAlertID
 	 * @should not equal RaxaAlert with different raxaAlertID
 	 * @should not equal on null
-	 * @should have equal patientList objects with no raxaAlertIDs
+	 * @should have equal raxaList objects with no raxaAlertIDs
 	 * @should not have equal RaxaAlert objects when one has null raxaAlertID
 	 */
 	@Override
@@ -139,7 +139,7 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	/**
 	 * @return the seen
 	 */
-	public Boolean seen() {
+	public Boolean getSeen() {
 		return seen;
 	}
 	
@@ -350,6 +350,48 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	 */
 	public void setProviderRecipientId(Integer providerRecipientId) {
 		this.providerRecipientId = providerRecipientId;
+	}
+	
+	/**
+	 * @return the patient
+	 */
+	public Patient getPatient() {
+		return patient;
+	}
+	
+	/**
+	 * @param patient the patient to set
+	 */
+	public void setPatient(Patient patient) {
+		this.patient = patient;
+	}
+	
+	/**
+	 * @return the providerSent
+	 */
+	public Provider getProviderSent() {
+		return providerSent;
+	}
+	
+	/**
+	 * @param providerSent the providerSent to set
+	 */
+	public void setProviderSent(Provider providerSent) {
+		this.providerSent = providerSent;
+	}
+	
+	/**
+	 * @return the providerRecipient
+	 */
+	public Provider getProviderRecipient() {
+		return providerRecipient;
+	}
+	
+	/**
+	 * @param providerRecipient the providerRecipient to set
+	 */
+	public void setProviderRecipient(Provider providerRecipient) {
+		this.providerRecipient = providerRecipient;
 	}
 	
 }

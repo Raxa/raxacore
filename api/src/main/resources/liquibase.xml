@@ -76,7 +76,7 @@
             Schema for raxacore_raxaalert table
         </comment>
         <createTable tableName="raxacore_raxaalert">
-            <column name="raxalaert_id" type="int" autoIncrement="true">
+            <column name="raxa_alert_id" type="int" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="varchar(255)"/>
@@ -87,6 +87,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="provider_sent_id" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="provider_recipient_id" type="int">
                 <constraints nullable="false"/>
             </column>
             <column name="alert_type" type="varchar(255)"/>

@@ -22,11 +22,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.api.db.DAOException;
 import org.raxa.module.raxacore.RaxaAlert;
-import org.raxa.module.raxacore.RaxaAlertProviderRecipient;
 import org.raxa.module.raxacore.db.RaxaAlertDAO;
 
 /**
- * Accesses raxacore_patient_list from RaxaAlert
+ * Accesses raxacore_raxaalert from RaxaAlert
  */
 public class HibernateRaxaAlertDAO implements RaxaAlertDAO {
 	
@@ -116,18 +115,6 @@ public class HibernateRaxaAlertDAO implements RaxaAlertDAO {
 	}
 	
 	/**
-	 * @see org.raxa.module.db.RaxaAlertDAO#getRaxaAlertByPatientUuid(String)
-	 */
-	@Override
-	public List<RaxaAlert> getRaxaAlertByPatientUuid(String patientUuid) throws DAOException {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(RaxaAlert.class);
-		criteria.add(Restrictions.eq("patientUuid", patientUuid));
-		List<RaxaAlert> alerts = new ArrayList<RaxaAlert>();
-		alerts.addAll(criteria.list());
-		return alerts;
-	}
-	
-	/**
 	 * @see org.raxa.module.db.RaxaAlertDAO#getRaxaAlertByProviderSentId(Integer)
 	 */
 	@Override
@@ -140,36 +127,12 @@ public class HibernateRaxaAlertDAO implements RaxaAlertDAO {
 	}
 	
 	/**
-	 * @see org.raxa.module.db.RaxaAlertDAO#getRaxaAlertByProviderSentUuid(String)
-	 */
-	@Override
-	public List<RaxaAlert> getRaxaAlertByProviderSentUuid(String providerSentUuid) throws DAOException {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(RaxaAlert.class);
-		criteria.add(Restrictions.eq("providerSentUuid", providerSentUuid));
-		List<RaxaAlert> alerts = new ArrayList<RaxaAlert>();
-		alerts.addAll(criteria.list());
-		return alerts;
-	}
-	
-	/**
 	 * @see org.raxa.module.db.RaxaAlertDAO#getRaxaAlertByProviderRecipientId(Integer)
 	 */
 	@Override
 	public List<RaxaAlert> getRaxaAlertByProviderRecipientId(Integer providerRecipientId) throws DAOException {
-		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(RaxaAlertProviderRecipient.class);
-		criteria.add(Restrictions.eq("providerRecipientId", providerRecipientId));
-		List<RaxaAlert> alerts = new ArrayList<RaxaAlert>();
-		alerts.addAll(criteria.list());
-		return alerts;
-	}
-	
-	/**
-	 * @see org.raxa.module.db.RaxaAlertDAO#getRaxaAlertByProviderRecipientUuid(String)
-	 */
-	@Override
-	public List<RaxaAlert> getRaxaAlertByProviderRecipientUuid(String providerRecipientUuid) throws DAOException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(RaxaAlert.class);
-		criteria.add(Restrictions.eq("providerRecipientUuid", providerRecipientUuid));
+		criteria.add(Restrictions.eq("providerRecipientId", providerRecipientId));
 		List<RaxaAlert> alerts = new ArrayList<RaxaAlert>();
 		alerts.addAll(criteria.list());
 		return alerts;

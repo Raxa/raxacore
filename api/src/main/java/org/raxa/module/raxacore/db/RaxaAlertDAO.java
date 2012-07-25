@@ -60,15 +60,6 @@ public interface RaxaAlertDAO {
 	public List<RaxaAlert> getRaxaAlertByPatientId(Integer patientId);
 	
 	/**
-	 * Find {@link RaxaAlert} matching a patientUuid
-	 * 
-	 * @param patient
-	 * @return {@link RaxaAlert}
-	 * @should get a raxa alert list by patientUuid
-	 */
-	public List<RaxaAlert> getRaxaAlertByPatientUuid(String patientUuid);
-	
-	/**
 	 * Find {@link RaxaAlert} matching a uuid
 	 * 
 	 * @param uuid
@@ -105,15 +96,6 @@ public interface RaxaAlertDAO {
 	public List<RaxaAlert> getRaxaAlertByProviderSentId(Integer providerSentId);
 	
 	/**
-	 * Find {@link RaxaAlert} matching a providerSentUuid
-	 * 
-	 * @param providerSent
-	 * @return {@link RaxaAlert}
-	 * @should get a raxa alert list by providerSentUuid
-	 */
-	public List<RaxaAlert> getRaxaAlertByProviderSentUuid(String providerSentUuid);
-	
-	/**
 	 * Find {@link RaxaAlert} matching providerRecipientId
 	 * 
 	 * @param providerRecipient
@@ -121,15 +103,6 @@ public interface RaxaAlertDAO {
 	 * @should get a raxa alert list by providerRecipientId
 	 */
 	public List<RaxaAlert> getRaxaAlertByProviderRecipientId(Integer providerRecipientId);
-	
-	/**
-	 * Find {@link RaxaAlert} matching a providerRecipientUuid
-	 * 
-	 * @param providerRecipient
-	 * @return {@link RaxaAlert}
-	 * @should get a raxa alert list by providerRecipientUuid
-	 */
-	public List<RaxaAlert> getRaxaAlertByProviderRecipientUuid(String providerRecipientUuid);
 	
 	/**
 	 * Update RaxaAlert

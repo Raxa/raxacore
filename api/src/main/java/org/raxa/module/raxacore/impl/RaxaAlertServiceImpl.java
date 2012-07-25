@@ -68,7 +68,7 @@ public class RaxaAlertServiceImpl implements RaxaAlertService {
 	 * @see org.raxa.module.raxacore.RaxaAlertService#getRaxaAlertByAlertType(String)
 	 */
 	@Override
-	public List<RaxaAlert> getRaxaAlertsByAlertType(String alertType) {
+	public List<RaxaAlert> getRaxaAlertByAlertType(String alertType) {
 		return (List<RaxaAlert>) dao.getRaxaAlertByAlertType(alertType);
 	}
 	
@@ -89,14 +89,6 @@ public class RaxaAlertServiceImpl implements RaxaAlertService {
 	}
 	
 	/**
-	 * @see org.raxa.module.raxacore.RaxaAlertService#getRaxaAlertByPatientUuid(String)
-	 */
-	@Override
-	public List<RaxaAlert> getRaxaAlertsByPatientUuid(String patientUuid) {
-		return dao.getRaxaAlertByPatientUuid(patientUuid);
-	}
-	
-	/**
 	 * @see org.raxa.module.raxacore.RaxaAlertService#getRaxaAlertByProviderRecipientId(Integer)
 	 */
 	@Override
@@ -105,27 +97,11 @@ public class RaxaAlertServiceImpl implements RaxaAlertService {
 	}
 	
 	/**
-	 * @see org.raxa.module.raxacore.RaxaAlertService#getRaxaAlertByProviderRecipientUuid(String)
-	 */
-	@Override
-	public List<RaxaAlert> getRaxaAlertsByProviderRecipientUuid(String providerRecipientUuid) {
-		return dao.getRaxaAlertByProviderRecipientUuid(providerRecipientUuid);
-	}
-	
-	/**
 	 * @see org.raxa.module.raxacore.RaxaAlertService#getRaxaAlertByProviderSentId(Integer)
 	 */
 	@Override
 	public List<RaxaAlert> getRaxaAlertByProviderSentId(Integer providerSentId) {
 		return dao.getRaxaAlertByProviderSentId(providerSentId);
-	}
-	
-	/**
-	 * @see org.raxa.module.raxacore.RaxaAlertService#getRaxaAlertByProviderSentUuid(String)
-	 */
-	@Override
-	public List<RaxaAlert> getRaxaAlertsByProviderSentUuid(String providerSentUuid) {
-		return dao.getRaxaAlertByProviderSentUuid(providerSentUuid);
 	}
 	
 	/**
