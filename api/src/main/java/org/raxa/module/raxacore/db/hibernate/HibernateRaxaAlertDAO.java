@@ -39,7 +39,7 @@ public class HibernateRaxaAlertDAO implements RaxaAlertDAO {
 	/**
 	 * Set session factory
 	 *
-	 * @param sessionFactory1
+	 * @param sessionFactory
 	 */
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;

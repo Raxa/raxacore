@@ -37,6 +37,9 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 	
 	private RaxaAlertDAO dao = null;
 	
+	/**
+	 * Getting test data and bean
+	 */
 	@Before
 	public void setUp() throws Exception {
 		executeDataSet(MODULE_TEST_DATA_XML);

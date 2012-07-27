@@ -29,14 +29,14 @@ public interface RaxaAlertDAO {
 	 * 
 	 * @param RaxaAlert to be saved
 	 * @throws DAOException
-	 * @should save a raxa alert list
+	 * @should save a raxa alert
 	 */
 	public RaxaAlert saveRaxaAlert(RaxaAlert raxaAlert) throws DAOException;
 	
 	/**
-	 * Purge a RaxaAlert from database.
-	 * 
+	 * Purge a RaxaAlert from database
 	 * @param RaxaAlert object to be purged
+	 * @should delete a raxa alert
 	 */
 	public void deleteRaxaAlert(RaxaAlert raxaAlert) throws DAOException;
 	
@@ -46,7 +46,7 @@ public interface RaxaAlertDAO {
 	 * @param raxaAlertID raxaAlert id
 	 * @return raxaAlert with given internal identifier
 	 * @throws DAOException
-	 * @should get a raxa alert list
+	 * @should get a raxa alert
 	 */
 	public RaxaAlert getRaxaAlert(Integer raxaAlertID) throws DAOException;
 	
@@ -64,7 +64,7 @@ public interface RaxaAlertDAO {
 	 * 
 	 * @param uuid
 	 * @return {@link RaxaAlert}
-	 * @should get a raxa alert list by uuid
+	 * @should get a raxa alert by uuid
 	 */
 	public RaxaAlert getRaxaAlertByUuid(String uuid);
 	
@@ -73,7 +73,7 @@ public interface RaxaAlertDAO {
 	 * 
 	 * @param name
 	 * @return {@link RaxaAlert}
-	 * @should get a raxa alert list by name
+	 * @should get a raxa alert by name
 	 */
 	public RaxaAlert getRaxaAlertByName(String name);
 	
@@ -121,6 +121,7 @@ public interface RaxaAlertDAO {
 	/**
 	 *Mark RaxaLert as seen
 	 *@param Seen
+	 @should mark a RaxaAlert as seen
 	 */
 	RaxaAlert markRaxaAlertAsSeen(RaxaAlert raxaAlert);
 	

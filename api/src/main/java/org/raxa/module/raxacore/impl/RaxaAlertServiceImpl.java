@@ -136,11 +136,17 @@ public class RaxaAlertServiceImpl implements RaxaAlertService {
 		dao.deleteRaxaAlert(raxaAlert);
 	}
 	
+	/**
+	 * This executes on startup
+	 */
 	@Override
 	public void onStartup() {
 		log.info("Starting raxa alert service");
 	}
 	
+	/**
+	 * This executes on shutdown
+	 */
 	@Override
 	public void onShutdown() {
 		log.info("Stopping raxa alert service");
