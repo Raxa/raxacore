@@ -24,6 +24,9 @@
     <bean id="org.raxa.module.raxacore.db.hibernate.HibernatePatientListDAO" class="org.raxa.module.raxacore.db.hibernate.HibernatePatientListDAO">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
+    <bean id="org.raxa.module.raxacore.db.hibernate.HibernateDrugGroupDAO" class="org.raxa.module.raxacore.db.hibernate.HibernateDrugGroupDAO">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
 
     <bean parent="serviceContext">
         <property name="moduleService">
@@ -37,6 +40,35 @@
                         <bean class="org.raxa.module.raxacore.impl.PatientListServiceImpl"> 
                             <property name="patientListDAO"> 
                                 <bean class="org.raxa.module.raxacore.db.hibernate.HibernatePatientListDAO">
+                                    <property name="sessionFactory">
+                                        <ref bean="sessionFactory"/>
+                                    </property>
+                                </bean>
+                            </property>
+                        </bean>
+                    </property>
+                    <property name="preInterceptors">
+                        <ref bean="serviceInterceptors" />
+                    </property>
+                    <property name="transactionAttributeSource">
+                        <bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list>
+                <value>org.raxa.module.raxacore.DrugGroupService</value>
+                <bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+                    <property name="transactionManager">
+                        <ref bean="transactionManager"/>
+                    </property>
+                    <property name="target">
+                        <bean class="org.raxa.module.raxacore.impl.DrugGroupServiceImpl"> 
+                            <property name="drugGroupDAO"> 
+                                <bean class="org.raxa.module.raxacore.db.hibernate.HibernateDrugGroupDAO">
                                     <property name="sessionFactory">
                                         <ref bean="sessionFactory"/>
                                     </property>
