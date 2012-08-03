@@ -12,5 +12,14 @@
         <property name="drugGroupName"           type="java.lang.String"     column="drug_group_name" length="255"/>
         <property name="dateCreated"    type="java.util.Date"     column="date_created" not-null="true" length="19"/>
         <property name="uuid"           type="java.lang.String"     column="uuid" length="38" not-null="true" unique="true"/>
+        <set name="drugs" table="drug_drug_group" 
+        	inverse="false" lazy="true" fetch="select" cascade="all" >
+            <key>
+                <column name="drug_id" not-null="true" />
+            </key>
+            <many-to-many entity-name="org.openmrs.Drug">
+                <column name="drugId" not-null="true" />
+            </many-to-many>
+        </set>
     </class>
 </hibernate-mapping>

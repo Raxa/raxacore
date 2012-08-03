@@ -6,8 +6,11 @@ package org.raxa.module.raxacore;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.BaseOpenmrsMetadata;
+import org.openmrs.Drug;
 
 /**
  *
@@ -24,6 +27,8 @@ public class DrugGroup extends BaseOpenmrsMetadata implements Serializable {
 	private Date dateCreated;
 	
 	private String uuid;
+        
+        private Set<Drug> drugs = new HashSet<Drug>(0);
 	
 	public DrugGroup() {
 	}
@@ -107,5 +112,19 @@ public class DrugGroup extends BaseOpenmrsMetadata implements Serializable {
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
+
+    /**
+     * @return the drugs
+     */
+    public Set<Drug> getDrugs() {
+        return drugs;
+    }
+
+    /**
+     * @param drugs the drugs to set
+     */
+    public void setDrugs(Set<Drug> drugs) {
+        this.drugs = drugs;
+    }
 	
 }
