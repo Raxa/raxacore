@@ -17,6 +17,8 @@ public class DrugGroup extends BaseOpenmrsMetadata implements Serializable {
 	
 	private String uuid;
 	
+	private String searchQuery;
+	
 	public DrugGroup() {
 	}
 	
@@ -34,6 +36,20 @@ public class DrugGroup extends BaseOpenmrsMetadata implements Serializable {
 	@Override
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	/**
+	 * @return the searchQuery
+	 */
+	public String getSearchQuery() {
+		return searchQuery;
+	}
+	
+	/**
+	 * @param searchQuery the searchQuery to set
+	 */
+	public void setSearchQuery(String searchQuery) {
+		this.searchQuery = searchQuery;
 	}
 	
 	@Override

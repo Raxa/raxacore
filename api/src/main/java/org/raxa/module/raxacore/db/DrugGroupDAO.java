@@ -1,15 +1,22 @@
 package org.raxa.module.raxacore.db;
 
 import java.util.List;
+import org.openmrs.api.db.DAOException;
 import org.raxa.module.raxacore.DrugGroup;
 
 public interface DrugGroupDAO {
 	
-	DrugGroup getDrugGroup(Integer id);
+	public DrugGroup getDrugGroup(Integer id);
 	
-	DrugGroup getDrugGroupByUuid(String uuid);
+	public DrugGroup getDrugGroupByUuid(String uuid);
 	
-	List<DrugGroup> getDrugGroupList();
+	public List<DrugGroup> getDrugGroupByName(String name) throws DAOException;
 	
-	DrugGroup saveDrugGroup(DrugGroup drugGroup);
+	public List<DrugGroup> getDrugGroupList();
+	
+	public DrugGroup saveDrugGroup(DrugGroup drugGroup);
+	
+	public void deleteDrugGroup(DrugGroup drugGroup) throws DAOException;
+	
+	DrugGroup updateDrugGroup(DrugGroup drugGroup) throws DAOException;
 }

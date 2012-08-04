@@ -1,6 +1,7 @@
 package org.raxa.module.raxacore.db.hibernate;
 
 import java.util.List;
+import java.util.ArrayList;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -30,6 +31,17 @@ public class HibernateDrugGroupDAO implements DrugGroupDAO {
 	}
 	
 	@Override
+	public List<DrugGroup> getDrugGroupByName(String name) throws DAOException {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DrugGroup.class);
+		criteria.add(Restrictions.like("name", name));
+		criteria.add(Restrictions.like("retired", false));
+		List<DrugGroup> drugGroups = new ArrayList<DrugGroup>();
+		drugGroups.addAll(criteria.list());
+		return drugGroups;
+		
+	}
+	
+	@Override
 	public List<DrugGroup> getDrugGroupList() throws DAOException {
 		Criteria crit = sessionFactory.getCurrentSession().createCriteria(DrugGroup.class);
 		return crit.list();
@@ -38,6 +50,17 @@ public class HibernateDrugGroupDAO implements DrugGroupDAO {
 	@Override
 	public DrugGroup saveDrugGroup(DrugGroup drugGroup) {
 		sessionFactory.getCurrentSession().saveOrUpdate(drugGroup);
+		return drugGroup;
+	}
+	
+	@Override
+	public void deleteDrugGroup(DrugGroup drugGroup) throws DAOException {
+		sessionFactory.getCurrentSession().delete(drugGroup);
+	}
+	
+	@Override
+	public DrugGroup updateDrugGroup(DrugGroup drugGroup) throws DAOException {
+		sessionFactory.getCurrentSession().update(drugGroup);
 		return drugGroup;
 	}
 }

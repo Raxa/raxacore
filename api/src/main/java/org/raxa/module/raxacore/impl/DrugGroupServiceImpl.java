@@ -35,4 +35,19 @@ public class DrugGroupServiceImpl extends BaseOpenmrsService implements DrugGrou
 	public DrugGroup saveDrugGroup(DrugGroup drugGroup) {
 		return dao.saveDrugGroup(drugGroup);
 	}
+	
+	@Override
+	public List<DrugGroup> getDrugGroupByName(String name) {
+		return dao.getDrugGroupByName(name);
+	}
+	
+	@Override
+	public DrugGroup updateDrugGroup(DrugGroup drugGroup) {
+		return dao.updateDrugGroup(drugGroup);
+	}
+	
+	@Override
+	public void deleteDrugGroup(DrugGroup drugGroup) {
+		dao.deleteDrugGroup(drugGroup);
+	}
 }
