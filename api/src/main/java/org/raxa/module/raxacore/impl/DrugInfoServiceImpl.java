@@ -39,65 +39,66 @@ import org.raxa.module.raxacore.db.DrugInfoDAO;
  * "?encounterType=<uuid>&startDate=2012-05-07&endDate=2012-05-08&inlist=<uuidForList>&notinlist=<uuidForList>"
  */
 public class DrugInfoServiceImpl implements DrugInfoService {
-
-    private DrugInfoDAO dao;
-    private Log log = LogFactory.getLog(this.getClass());
-
-    /**
-     * @see org.raxa.module.raxacore.PatientListService#setPatientListDAO
-     */
-    @Override
-    public void setDrugInfoDAO(DrugInfoDAO dao) {
-        this.dao = dao;
-    }
-
-    /**
-     * @see org.raxa.module.raxacore.DrugInfoService#saveDrugInfo
-     */
-    @Override
-    public DrugInfo saveDrugInfo(DrugInfo drugInfo) {
-        return dao.saveDrugInfo(drugInfo);
-    }
-
-    /**
-     * @see org.raxa.module.raxacore.DrugInfoService#getDrugInfo(Integer)
-     */
-    @Override
-    public DrugInfo getDrugInfo(Integer id) {
-        return dao.getDrugInfo(id);
-    }
-
-    /**
-     * @see org.raxa.module.raxacore.DrugInfoService#getDrugInfoByUuid(String)
-     */
-    @Override
-    public DrugInfo getDrugInfoByUuid(String uuid) {
-        return dao.getDrugInfoByUuid(uuid);
-    }
-
-    /**
-     * @see org.raxa.module.raxacore.DrugInfoService#updateDrugInfo
-     */
-    @Override
-    public DrugInfo updateDrugInfo(DrugInfo drugInfo) {
-        return dao.updateDrugInfo(drugInfo);
-    }
-
-    /**
-     * @see org.raxa.module.raxacore.DrugInfoService#deleteDrugInfo
-     */
-    @Override
-    public void deleteDrugInfo(DrugInfo drugInf) {
-        dao.deleteDrugInfo(drugInf);
-    }
-
-    @Override
-    public void onStartup() {
-        log.info("Starting DrugInfoService");
-    }
-
-    @Override
-    public void onShutdown() {
-        log.info("Stopping DrugInfoService");
-    }
+	
+	private DrugInfoDAO dao;
+	
+	private Log log = LogFactory.getLog(this.getClass());
+	
+	/**
+	 * @see org.raxa.module.raxacore.PatientListService#setPatientListDAO
+	 */
+	@Override
+	public void setDrugInfoDAO(DrugInfoDAO dao) {
+		this.dao = dao;
+	}
+	
+	/**
+	 * @see org.raxa.module.raxacore.DrugInfoService#saveDrugInfo
+	 */
+	@Override
+	public DrugInfo saveDrugInfo(DrugInfo drugInfo) {
+		return dao.saveDrugInfo(drugInfo);
+	}
+	
+	/**
+	 * @see org.raxa.module.raxacore.DrugInfoService#getDrugInfo(Integer)
+	 */
+	@Override
+	public DrugInfo getDrugInfo(Integer id) {
+		return dao.getDrugInfo(id);
+	}
+	
+	/**
+	 * @see org.raxa.module.raxacore.DrugInfoService#getDrugInfoByUuid(String)
+	 */
+	@Override
+	public DrugInfo getDrugInfoByUuid(String uuid) {
+		return dao.getDrugInfoByUuid(uuid);
+	}
+	
+	/**
+	 * @see org.raxa.module.raxacore.DrugInfoService#updateDrugInfo
+	 */
+	@Override
+	public DrugInfo updateDrugInfo(DrugInfo drugInfo) {
+		return dao.updateDrugInfo(drugInfo);
+	}
+	
+	/**
+	 * @see org.raxa.module.raxacore.DrugInfoService#deleteDrugInfo
+	 */
+	@Override
+	public void deleteDrugInfo(DrugInfo drugInf) {
+		dao.deleteDrugInfo(drugInf);
+	}
+	
+	@Override
+	public void onStartup() {
+		log.info("Starting DrugInfoService");
+	}
+	
+	@Override
+	public void onShutdown() {
+		log.info("Stopping DrugInfoService");
+	}
 }

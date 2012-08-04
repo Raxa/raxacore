@@ -24,92 +24,113 @@ import org.openmrs.Drug;
  * screener, etc.
  */
 public class DrugInfo extends BaseOpenmrsMetadata implements Serializable {
-
-    private Integer drugInfoId;
-    private Integer drugId;
-    private String searchQuery;
-    private Drug drug;
-
-    /**
-     * Sets id
-     *
-     * @param id: id to set
-     */
-    @Override
-    public void setId(Integer id) {
-        setDrugInfoId(id);
-    }
-
-    /**
-     * Gets id
-     *
-     * @return the patientListId
-     */
-    @Override
-    public Integer getId() {
-        return getDrugInfoId();
-    }
-
-    /**
-     * Compares two DrugInfo objects for similarity
-     *
-     * @param obj DrugInfo object to compare to
-     * @return boolean true/false whether or not they are the same objects
-     * @see java.lang.Object#equals(java.lang.Object) @should equal PatientList
-     * with same patientListId @should not equal PatientList with different
-     * patientListId @should not equal on null @should have equal patientList
-     * objects with no patientListIds @should not have equal PatientList objects
-     * when one has null patientListId
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof DrugInfo) {
-            DrugInfo pList = (DrugInfo) obj;
-            if (this.getDrugInfoId() != null && pList.getDrugInfoId() != null) {
-                return (this.getDrugInfoId().equals(pList.getDrugInfoId()));
-            }
-        }
-        return this == obj;
-    }
-
-    /**
-     * @see java.lang.Object#hashCode() @should have same hashcode when equal
-     * @should have different hash code when not equal @should get hash code
-     * with null attributes
-     */
-    @Override
-    public int hashCode() {
-        if (this.getDrugInfoId() == null) {
-            return super.hashCode();
-        }
-        return this.getDrugInfoId().hashCode();
-    }
-
-    /**
-     * @return the searchQuery
-     */
-    public String getSearchQuery() {
-        return searchQuery;
-    }
-
-    /**
-     * @param searchQuery the searchQuery to set
-     */
-    public void setSearchQuery(String searchQuery) {
-        this.searchQuery = searchQuery;
-    }
-
-    /**
-     * @return the patientListId
-     */
-    public Integer getDrugInfoId() {
-        return drugInfoId;
-    }
-
-    /**
-     * @param drugInfoId
-     */
-    public void setDrugInfoId(Integer drugInfoId) {
-        this.drugInfoId = drugInfoId;
-    }
+	
+	private Integer drugInfoId;
+	
+	private Integer drugId;
+	
+	private double price;
+	
+	private String searchQuery;
+	
+	private Drug drug;
+	
+	/**
+	 * Sets id
+	 *
+	 * @param id: id to set
+	 */
+	@Override
+	public void setId(Integer id) {
+		setDrugInfoId(id);
+	}
+	
+	/**
+	 * Gets id
+	 *
+	 * @return the patientListId
+	 */
+	@Override
+	public Integer getId() {
+		return getDrugInfoId();
+	}
+	
+	/**
+	 *
+	 * @param price
+	 */
+	public void setPrice(double price) {
+		this.price = price;
+	}
+	
+	/**
+	 *
+	 * @return
+	 */
+	public double getPrice() {
+		return this.price;
+	}
+	
+	/**
+	 * Compares two DrugInfo objects for similarity
+	 *
+	 * @param obj DrugInfo object to compare to
+	 * @return boolean true/false whether or not they are the same objects
+	 * @see java.lang.Object#equals(java.lang.Object) @should equal PatientList
+	 * with same patientListId @should not equal PatientList with different
+	 * patientListId @should not equal on null @should have equal patientList
+	 * objects with no patientListIds @should not have equal PatientList objects
+	 * when one has null patientListId
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof DrugInfo) {
+			DrugInfo pList = (DrugInfo) obj;
+			if (this.getDrugInfoId() != null && pList.getDrugInfoId() != null) {
+				return (this.getDrugInfoId().equals(pList.getDrugInfoId()));
+			}
+		}
+		return this == obj;
+	}
+	
+	/**
+	 * @see java.lang.Object#hashCode() @should have same hashcode when equal
+	 * @should have different hash code when not equal @should get hash code
+	 * with null attributes
+	 */
+	@Override
+	public int hashCode() {
+		if (this.getDrugInfoId() == null) {
+			return super.hashCode();
+		}
+		return this.getDrugInfoId().hashCode();
+	}
+	
+	/**
+	 * @return the searchQuery
+	 */
+	public String getSearchQuery() {
+		return searchQuery;
+	}
+	
+	/**
+	 * @param searchQuery the searchQuery to set
+	 */
+	public void setSearchQuery(String searchQuery) {
+		this.searchQuery = searchQuery;
+	}
+	
+	/**
+	 * @return the patientListId
+	 */
+	public Integer getDrugInfoId() {
+		return drugInfoId;
+	}
+	
+	/**
+	 * @param drugInfoId
+	 */
+	public void setDrugInfoId(Integer drugInfoId) {
+		this.drugInfoId = drugInfoId;
+	}
 }

@@ -30,44 +30,44 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface DrugInfoService extends OpenmrsService {
-
-    public void setDrugInfoDAO(DrugInfoDAO dao);
-
-    // @Authorized({"Add Patient Lists"}) // TODO: Permissions
-    public DrugInfo saveDrugInfo(DrugInfo drugInfo);
-
-    /**
-     * Gets a DrugInfo by Id
-     *
-     * @param id
-     * @return PatientLists
-     */
-    // @Authorized({"View Patient Lists"}) // TODO: Permissions
-    public DrugInfo getDrugInfo(Integer id);
-
-    /**
-     * Gets DrugInfo by uuid
-     *
-     * @param uuid
-     * @return PatientList
-     */
-    // @Authorized({"View Patient Lists"}) // TODO: Permissions
-    public DrugInfo getDrugInfoByUuid(String uuid);
-
-    /**
-     * Updates DrugInfo
-     *
-     * @param patientList
-     * @return DrugInfo
-     */
-    // @Authorized({"Edit Patient Lists"}) // TODO: Permissions
-    DrugInfo updateDrugInfo(DrugInfo drugInfo);
-
-    /**
-     * Deletes DrugInfo
-     *
-     * @param DrugInfo
-     */
-    // @Authorized({"Delete Patient Lists"}) // TODO: Permissions
-    public void deleteDrugInfo(DrugInfo drugInfo);
+	
+	public void setDrugInfoDAO(DrugInfoDAO dao);
+	
+	// @Authorized({"Add Patient Lists"}) // TODO: Permissions
+	public DrugInfo saveDrugInfo(DrugInfo drugInfo);
+	
+	/**
+	 * Gets a DrugInfo by Id
+	 *
+	 * @param id
+	 * @return PatientLists
+	 */
+	// @Authorized({"View Patient Lists"}) // TODO: Permissions
+	public DrugInfo getDrugInfo(Integer id);
+	
+	/**
+	 * Gets DrugInfo by uuid
+	 *
+	 * @param uuid
+	 * @return PatientList
+	 */
+	// @Authorized({"View Patient Lists"}) // TODO: Permissions
+	public DrugInfo getDrugInfoByUuid(String uuid);
+	
+	/**
+	 * Updates DrugInfo
+	 *
+	 * @param patientList
+	 * @return DrugInfo
+	 */
+	// @Authorized({"Edit Patient Lists"}) // TODO: Permissions
+	DrugInfo updateDrugInfo(DrugInfo drugInfo);
+	
+	/**
+	 * Deletes DrugInfo
+	 *
+	 * @param DrugInfo
+	 */
+	// @Authorized({"Delete Patient Lists"}) // TODO: Permissions
+	public void deleteDrugInfo(DrugInfo drugInfo);
 }

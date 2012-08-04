@@ -24,43 +24,43 @@ import org.raxa.module.raxacore.DrugInfo;
  * Interface for accessing raxacore_drug_info
  */
 public interface DrugInfoDAO {
-
-    /**
-     * Saves a DrugInfo
-     *
-     * @param DrugInfo to be saved
-     * @throws DAOException @should save a patient list
-     */
-    public DrugInfo saveDrugInfo(DrugInfo drugInfo) throws DAOException;
-
-    /**
-     * Purge a DrugInfo from database.
-     *
-     * @param DrugInfo object to be purged
-     */
-    public void deleteDrugInfo(DrugInfo drugInfo) throws DAOException;
-
-    /**
-     * Get DrugInfo by internal identifier
-     *
-     * @param drugInfoId patientList id
-     * @return DrugInfo with given internal identifier
-     * @throws DAOException @should get a patient list
-     */
-    public DrugInfo getDrugInfo(Integer drugInfoId) throws DAOException;
-
-    /**
-     * Find {@link DrugInfo} matching a uuid
-     *
-     * @param uuid
-     * @return {@link DrugInfo} @should get a patient list by uuid
-     */
-    public DrugInfo getDrugInfoByUuid(String uuid);
-
-    /**
-     * Update DrugInfo
-     *
-     * @return {@link DrugInfo} @should update a DrugInfo
-     */
-    DrugInfo updateDrugInfo(DrugInfo drugInfo) throws DAOException;
+	
+	/**
+	 * Saves a DrugInfo
+	 *
+	 * @param DrugInfo to be saved
+	 * @throws DAOException @should save a patient list
+	 */
+	public DrugInfo saveDrugInfo(DrugInfo drugInfo) throws DAOException;
+	
+	/**
+	 * Purge a DrugInfo from database.
+	 *
+	 * @param DrugInfo object to be purged
+	 */
+	public void deleteDrugInfo(DrugInfo drugInfo) throws DAOException;
+	
+	/**
+	 * Get DrugInfo by internal identifier
+	 *
+	 * @param drugInfoId patientList id
+	 * @return DrugInfo with given internal identifier
+	 * @throws DAOException @should get a patient list
+	 */
+	public DrugInfo getDrugInfo(Integer drugInfoId) throws DAOException;
+	
+	/**
+	 * Find {@link DrugInfo} matching a uuid
+	 *
+	 * @param uuid
+	 * @return {@link DrugInfo} @should get a patient list by uuid
+	 */
+	public DrugInfo getDrugInfoByUuid(String uuid);
+	
+	/**
+	 * Update DrugInfo
+	 *
+	 * @return {@link DrugInfo} @should update a DrugInfo
+	 */
+	DrugInfo updateDrugInfo(DrugInfo drugInfo) throws DAOException;
 }

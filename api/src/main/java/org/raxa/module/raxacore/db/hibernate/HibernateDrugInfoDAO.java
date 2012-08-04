@@ -31,65 +31,66 @@ import org.raxa.module.raxacore.db.DrugInfoDAO;
  * Accesses raxacore_drug_info from DrugInfo
  */
 public class HibernateDrugInfoDAO implements DrugInfoDAO {
-
-    protected final Log log = LogFactory.getLog(getClass());
-    /**
-     * Hibernate session factory
-     */
-    private SessionFactory sessionFactory;
-
-    /**
-     * Set session factory
-     *
-     * @param sessionFactory
-     */
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    /**
-     * @see
-     * org.raxa.module.db.DrugInfoDAO#saveDrugInfo(org.raxa.module.raxacore.DrugInfo)
-     */
-    @Override
-    public DrugInfo saveDrugInfo(DrugInfo drugInfo) throws DAOException {
-        sessionFactory.getCurrentSession().saveOrUpdate(drugInfo);
-        return drugInfo;
-    }
-
-    /**
-     * @see
-     * org.raxa.module.db.DrugInfoDAO#deleteDrugInfo(org.raxa.module.raxacore.DrugInfo)
-     */
-    @Override
-    public void deleteDrugInfo(DrugInfo drugInfo) throws DAOException {
-        sessionFactory.getCurrentSession().delete(drugInfo);
-    }
-
-    /**
-     * @see org.raxa.module.db.DrugInfoDAO#getDrugInfo(Integer)
-     */
-    @Override
-    public DrugInfo getDrugInfo(Integer drugInfoId) throws DAOException {
-        return (DrugInfo) sessionFactory.getCurrentSession().get(DrugInfo.class, drugInfoId);
-    }
-
-    /**
-     * @see org.raxa.module.db.DrugInfoDAO#getDrugInfoByUuid(String)
-     */
-    @Override
-    public DrugInfo getDrugInfoByUuid(String uuid) throws DAOException {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DrugInfo.class);
-        criteria.add(Restrictions.eq("uuid", uuid));
-        return (DrugInfo) criteria.uniqueResult();
-    }
-
-    /**
-     * @see org.raxa.module.db.DrugInfoDAO#updateDrugInfo(Integer)
-     */
-    @Override
-    public DrugInfo updateDrugInfo(DrugInfo drugInfo) throws DAOException {
-        sessionFactory.getCurrentSession().update(drugInfo);
-        return drugInfo;
-    }
+	
+	protected final Log log = LogFactory.getLog(getClass());
+	
+	/**
+	 * Hibernate session factory
+	 */
+	private SessionFactory sessionFactory;
+	
+	/**
+	 * Set session factory
+	 *
+	 * @param sessionFactory
+	 */
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
+	
+	/**
+	 * @see
+	 * org.raxa.module.db.DrugInfoDAO#saveDrugInfo(org.raxa.module.raxacore.DrugInfo)
+	 */
+	@Override
+	public DrugInfo saveDrugInfo(DrugInfo drugInfo) throws DAOException {
+		sessionFactory.getCurrentSession().saveOrUpdate(drugInfo);
+		return drugInfo;
+	}
+	
+	/**
+	 * @see
+	 * org.raxa.module.db.DrugInfoDAO#deleteDrugInfo(org.raxa.module.raxacore.DrugInfo)
+	 */
+	@Override
+	public void deleteDrugInfo(DrugInfo drugInfo) throws DAOException {
+		sessionFactory.getCurrentSession().delete(drugInfo);
+	}
+	
+	/**
+	 * @see org.raxa.module.db.DrugInfoDAO#getDrugInfo(Integer)
+	 */
+	@Override
+	public DrugInfo getDrugInfo(Integer drugInfoId) throws DAOException {
+		return (DrugInfo) sessionFactory.getCurrentSession().get(DrugInfo.class, drugInfoId);
+	}
+	
+	/**
+	 * @see org.raxa.module.db.DrugInfoDAO#getDrugInfoByUuid(String)
+	 */
+	@Override
+	public DrugInfo getDrugInfoByUuid(String uuid) throws DAOException {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DrugInfo.class);
+		criteria.add(Restrictions.eq("uuid", uuid));
+		return (DrugInfo) criteria.uniqueResult();
+	}
+	
+	/**
+	 * @see org.raxa.module.db.DrugInfoDAO#updateDrugInfo(Integer)
+	 */
+	@Override
+	public DrugInfo updateDrugInfo(DrugInfo drugInfo) throws DAOException {
+		sessionFactory.getCurrentSession().update(drugInfo);
+		return drugInfo;
+	}
 }
