@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="org.raxa.module.raxacore">
+    <class name="DrugGroup" table="raxacore_drug_group">
+        <id name="id" column="drug_group_id">
+            <generator class="native"/>
+        </id>
+        <property name="drugGroupName"  type="java.lang.String"     column="drug_group_name" length="255"/>
+        <property name="dateCreated"    type="java.util.Date"       column="date_created" not-null="true" length="19"/>
+        <property name="uuid"           type="java.lang.String"     column="uuid" length="38" not-null="true" unique="true"/>
+    </class>
+</hibernate-mapping>
