@@ -74,17 +74,17 @@ public class DrugGroupController extends BaseRestController {
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="POST - Without Params">
 	/**
-	 * Create new drug group by POSTing at least name and description property
+	 * Create new patient list by POST'ing atleast name and description property
 	 * in the request body.
 	 *
 	 * @param post the body of the POST request
 	 * @param request
 	 * @param response
-	 * @return 201 response status and PatientList object
+	 * @return 201 response status and DrugGroup object
 	 * @throws ResponseException
 	 */
 	@RequestMapping(method = RequestMethod.POST)
-	@WSDoc("Save New PatientList")
+	@WSDoc("Save New DrugGroup")
 	@ResponseBody
 	public Object createNewDrugGroup(@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
@@ -92,9 +92,6 @@ public class DrugGroupController extends BaseRestController {
 		DrugGroup drugGroup = new DrugGroup();
 		drugGroup.setName(post.get("name").toString());
 		drugGroup.setDescription(post.get("description").toString());
-		if (post.get("searchQuery") != null) {
-			drugGroup.setSearchQuery(post.get("searchQuery").toString());
-		}
 		DrugGroup created = service.saveDrugGroup(drugGroup);
 		SimpleObject obj = new SimpleObject();
 		obj.add("uuid", created.getUuid());
@@ -122,15 +119,8 @@ public class DrugGroupController extends BaseRestController {
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		initDrugGroupController();
 		DrugGroup drugGroup = service.getDrugGroupByUuid(uuid);
-		if (post.get("name") != null) {
-			drugGroup.setName(post.get("name").toString());
-		}
-		if (post.get("description") != null) {
-			drugGroup.setDescription(post.get("description").toString());
-		}
-		if (post.get("searchQuery") != null) {
-			drugGroup.setSearchQuery(post.get("searchQuery").toString());
-		}
+		drugGroup.setName(post.get("name").toString());
+		drugGroup.setDescription(post.get("description").toString());
 		DrugGroup created = service.updateDrugGroup(drugGroup);
 		SimpleObject obj = new SimpleObject();
 		obj.add("uuid", created.getUuid());
@@ -150,17 +140,17 @@ public class DrugGroupController extends BaseRestController {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	@WSDoc("Get All Unretired Patient Lists in the system")
+	@WSDoc("Get All Unretired Drug Groups in the system")
 	@ResponseBody()
 	public String getAllDrugGroups(HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		initDrugGroupController();
-		List<DrugGroup> allPatientList = service.getAllDrugGroup(false);
+		List<DrugGroup> allDrugGroup = service.getAllDrugGroup(false);
 		ArrayList results = new ArrayList();
-		for (DrugGroup patientList : allPatientList) {
+		for (DrugGroup drugGroup : allDrugGroup) {
 			SimpleObject obj = new SimpleObject();
-			obj.add("uuid", patientList.getUuid());
-			obj.add("name", patientList.getName());
-			obj.add("description", patientList.getDescription());
+			obj.add("uuid", drugGroup.getUuid());
+			obj.add("name", drugGroup.getName());
+			obj.add("description", drugGroup.getDescription());
 			results.add(obj);
 		}
 		return gson.toJson(new SimpleObject().add("results", results));
@@ -169,7 +159,7 @@ public class DrugGroupController extends BaseRestController {
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="GET - Search by name">
 	/**
-	 * Search PatientList by Name and get the resource as REF representation
+	 * Search DrugGroup by Name and get the resource as REF representation
 	 *
 	 * @param query the string to search name of patientlist
 	 * @param request
@@ -177,18 +167,17 @@ public class DrugGroupController extends BaseRestController {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(method = RequestMethod.GET, params = "q")
-	@WSDoc("Gets Patient Lists by name")
+	@WSDoc("Gets Drug Groups by name")
 	@ResponseBody()
-	public String getPatientListsByName(@RequestParam("q") String query, HttpServletRequest request)
-	        throws ResponseException {
+	public String getDrugGroupsByName(@RequestParam("q") String query, HttpServletRequest request) throws ResponseException {
 		initDrugGroupController();
-		List<DrugGroup> allPatientList = service.getDrugGroupByName(query);
+		List<DrugGroup> allDrugGroup = service.getDrugGroupByName(query);
 		ArrayList results = new ArrayList();
-		for (DrugGroup patientList : allPatientList) {
+		for (DrugGroup drugGroup : allDrugGroup) {
 			SimpleObject obj = new SimpleObject();
-			obj.add("uuid", patientList.getUuid());
-			obj.add("name", patientList.getName());
-			obj.add("description", patientList.getDescription());
+			obj.add("uuid", drugGroup.getUuid());
+			obj.add("name", drugGroup.getName());
+			obj.add("description", drugGroup.getDescription());
 			results.add(obj);
 		}
 		return gson.toJson(new SimpleObject().add("results", results));
@@ -197,8 +186,8 @@ public class DrugGroupController extends BaseRestController {
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="GET by uuid - DEFAULT REP">
 	/**
-	 * Get the Patientlist along with patients, encounters and obs (DEFAULT
-	 * rep). Contains all encounters of the searched encounterType between the
+	 * Get the DrugGroup along with patients, encounters and obs (DEFAULT rep).
+	 * Contains all encounters of the searched encounterType between the
 	 * startDate and endDate
 	 *
 	 * @param uuid
@@ -207,7 +196,7 @@ public class DrugGroupController extends BaseRestController {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
-	@WSDoc("Gets Patient Lists for the uuid path")
+	@WSDoc("Gets Drug Groups for the uuid path")
 	@ResponseBody()
 	public String getAllDrugGroupByUuid(@PathVariable("uuid") String uuid, HttpServletRequest request)
 	        throws ResponseException {
@@ -217,6 +206,14 @@ public class DrugGroupController extends BaseRestController {
 		obj.add("uuid", drugGroup.getUuid());
 		obj.add("name", drugGroup.getName());
 		obj.add("description", drugGroup.getDescription());
+		// ArrayList drugs = new ArrayList();
+		// List<Drug> drugsInDrugGroup = service.getDrugsInDrugGroup(drugGr);
+		// for (Patient p : patientsInDrugGroup) {
+		//      SimpleObject drug = new SimpleObject();
+		//      drug.add("uuid", p.getUuid());
+		//      drugs.add(patient);
+		// }
+		// obj.add("drugs", drugs);
 		return gson.toJson(obj);
 	}
 	
@@ -225,7 +222,7 @@ public class DrugGroupController extends BaseRestController {
 	/**
 	 * Get the patient list as FULL representation that shows patients,
 	 * encounters and obs. Contains all encounters of the searched encounterType
-	 * between the startDate and endDate. Contains patientList.searchQuery,
+	 * between the startDate and endDate. Contains drugGroup.searchQuery,
 	 * encounter.provider and obs.comment and obs.order compared to DEFAULT rep
 	 *
 	 * @param uuid
@@ -235,29 +232,28 @@ public class DrugGroupController extends BaseRestController {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET, params = "v")
-	@WSDoc("Gets Full representation of Patient Lists for the uuid path")
+	@WSDoc("Gets Full representation of Drug Groups for the uuid path")
 	@ResponseBody()
 	public String getAllDrugGroupByUuidFull(@PathVariable("uuid") String uuid, @RequestParam("v") String rep,
 	        HttpServletRequest request) throws ResponseException {
 		initDrugGroupController();
-		DrugGroup patientList = service.getDrugGroupByUuid(uuid);
+		DrugGroup drugGroup = service.getDrugGroupByUuid(uuid);
 		SimpleObject obj = new SimpleObject();
-		obj.add("uuid", patientList.getUuid());
-		obj.add("name", patientList.getName());
-		obj.add("description", patientList.getDescription());
-		obj.add("searchQuery", patientList.getSearchQuery());
+		obj.add("uuid", drugGroup.getUuid());
+		obj.add("name", drugGroup.getName());
+		obj.add("description", drugGroup.getDescription());
 		if (rep.equals("full")) {
-			obj.add("retired", patientList.getRetired());
-			if (patientList.getRetired()) {
-				obj.add("retiredBy", patientList.getRetiredBy().getUuid());
-				obj.add("retireReason", patientList.getRetireReason());
+			obj.add("retired", drugGroup.getRetired());
+			if (drugGroup.getRetired()) {
+				obj.add("retiredBy", drugGroup.getRetiredBy().getUuid());
+				obj.add("retireReason", drugGroup.getRetireReason());
 			}
 			SimpleObject auditInfo = new SimpleObject();
-			auditInfo.add("creator", patientList.getCreator().getUuid());
-			auditInfo.add("dateCreated", df.format(patientList.getDateCreated()));
-			if (patientList.getChangedBy() != null) {
-				auditInfo.add("changedBy", patientList.getChangedBy().getUuid());
-				auditInfo.add("dateChanged", df.format(patientList.getDateChanged()));
+			auditInfo.add("creator", drugGroup.getCreator().getUuid());
+			auditInfo.add("dateCreated", df.format(drugGroup.getDateCreated()));
+			if (drugGroup.getChangedBy() != null) {
+				auditInfo.add("changedBy", drugGroup.getChangedBy().getUuid());
+				auditInfo.add("dateChanged", df.format(drugGroup.getDateChanged()));
 			}
 			obj.add("auditInfo", auditInfo);
 		}
@@ -266,7 +262,7 @@ public class DrugGroupController extends BaseRestController {
 	}
 	
 	//</editor-fold>
-	//<editor-fold defaultstate="collapsed" desc="DELETE - Retire PatientList">
+	//<editor-fold defaultstate="collapsed" desc="DELETE - Retire DrugGroup">
 	/**
 	 * Retires the patient list resource by making a DELETE call with the
 	 * '!purge' param
@@ -279,9 +275,9 @@ public class DrugGroupController extends BaseRestController {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "!purge")
-	@WSDoc("Retires the Patient List")
+	@WSDoc("Retires the Drug Group")
 	@ResponseBody
-	public Object retirePatientList(@PathVariable("uuid") String uuid,
+	public Object retireDrugGroup(@PathVariable("uuid") String uuid,
 	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		initDrugGroupController();
@@ -296,7 +292,7 @@ public class DrugGroupController extends BaseRestController {
 	}
 	
 	//</editor-fold>
-	//<editor-fold defaultstate="collapsed" desc="DELETE - Purge PatientList">
+	//<editor-fold defaultstate="collapsed" desc="DELETE - Purge DrugGroup">
 	/**
 	 * Purges (Complete Delete) the patient list resource by making a DELETE
 	 * call and passing the 'purge' param

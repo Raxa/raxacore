@@ -35,11 +35,25 @@ import org.raxa.module.raxacore.DrugGroup;
 import org.raxa.module.raxacore.DrugGroupService;
 
 /**
- * {@link Resource} for DrugGroup, supporting standard CRUD operations
+ * {@link Resource} for DrugGroup, supporting standard CRUD operations This
+ * resource is currently not used because of serialization issue in OpenMRS core
+ * (TRUNK-2205)
  */
 @Resource("druggroup")
 @Handler(supports = DrugGroup.class, order = 0)
 public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup> {
+	
+	/**
+	 * Getter for the drugs property on patient list resource
+	 *
+	 * @param drugGroup
+	 * @return
+	 */
+	@PropertyGetter("drugs")
+	public List<Patient> getDrugs(DrugGroup drugGroup) {
+		// return getDrugGroupService().getDrugsInDrugGroup(drugGroup);
+		return null;
+	}
 	
 	private DrugGroupService getDrugGroupService() {
 		return Context.getService(DrugGroupService.class);
@@ -57,8 +71,8 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("name");
 			description.addProperty("description");
-			description.addProperty("searchQuery");
-			description.addProperty("patients", Representation.REF);
+			// description.addProperty("searchQuery");
+			// description.addProperty("drugs", Representation.REF);
 			description.addProperty("retired");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -69,15 +83,14 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("name");
 			description.addProperty("description");
-			description.addProperty("searchQuery");
-			description.addProperty("patients", Representation.DEFAULT);
+			// description.addProperty("searchQuery");
+			// description.addProperty("drugs", Representation.DEFAULT);
 			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
-		} else {
-			return null;
 		}
+		return null;
 	}
 	
 	/**
@@ -89,7 +102,7 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("description");
-		description.addProperty("searchQuery");
+		// description.addProperty("searchQuery");
 		return description;
 	}
 	
@@ -102,7 +115,7 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("description");
-		description.addProperty("searchQuery");
+		// description.addProperty("searchQuery");
 		return description;
 	}
 	

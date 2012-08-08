@@ -29,10 +29,6 @@ public class DrugGroup extends BaseOpenmrsMetadata implements Serializable {
 	
 	private Integer drugGroupId;
 	
-	private String searchQuery;
-	
-	private Set<Drug> drugs = new HashSet<Drug>();
-	
 	public DrugGroup() {
 	}
 	
@@ -89,20 +85,6 @@ public class DrugGroup extends BaseOpenmrsMetadata implements Serializable {
 			return super.hashCode();
 		}
 		return this.getDrugGroupId().hashCode();
-	}
-	
-	/**
-	 * @return the searchQuery
-	 */
-	public String getSearchQuery() {
-		return searchQuery;
-	}
-	
-	/**
-	 * @param searchQuery the searchQuery to set
-	 */
-	public void setSearchQuery(String searchQuery) {
-		this.searchQuery = searchQuery;
 	}
 	
 	/**
