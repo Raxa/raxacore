@@ -56,7 +56,6 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
 		drugGroup.setRetired(Boolean.FALSE);
-		drugGroup.setSearchQuery("test Query");
 		try {
 			s.saveDrugGroup(drugGroup);
 			//if we don't throw exception fail - no privileges required!
@@ -80,7 +79,6 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
 		drugGroup.setRetired(Boolean.FALSE);
-		drugGroup.setSearchQuery("test Query");
 		s.saveDrugGroup(drugGroup);
 		List<DrugGroup> result = s.getDrugGroupByName("TestList3");
 		String name = result.get(0).getName();
@@ -197,7 +195,6 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465e-99ee-c9dfd95e7d30");
 		drugGroup.setRetired(Boolean.FALSE);
-		drugGroup.setSearchQuery("");
 		try {
 			s.deleteDrugGroup(drugGroup);
 			//if we don't throw exception fail - no privileges required!
@@ -220,7 +217,6 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465e-99ee-c9dfd95e7d30");
 		drugGroup.setRetired(Boolean.FALSE);
-		drugGroup.setSearchQuery("");
 		s.deleteDrugGroup(drugGroup);
 		DrugGroup result = s.getDrugGroup(2);
 		assertEquals(null, result);

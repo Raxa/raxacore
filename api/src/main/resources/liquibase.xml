@@ -65,54 +65,5 @@
                                  referencedTableName="users" 
                                  referencedColumnNames="user_id"/>
     </changeSet>    
-    <changeSet id="2012-07-15_create_raxacore_drug_group" author="yan">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="raxacore_drug_group"/>                
-            </not>
-        </preConditions>    
-        <comment>
-            Schema for raxacore_drug_group table
-        </comment>
-        <createTable tableName="raxacore_drug_group">
-            <column name="drug_group_id" type="int" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="drug_group_name" type="varchar(255)"/>
-            <column name="date_created" type="DATETIME">
-                <constraints nullable="false"/>
-            </column>
-            <column name="uuid" type="char(38)">
-                <constraints unique="true" nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>	
-    <changeSet id="2012-07-29_create_raxacore_drug_drug_group" author="yan">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="raxacore_drug_durg_group"/>                
-            </not>
-        </preConditions>    
-        <comment>
-            Schema for raxacore_drug_drug_group table and adding foreign key constraints
-        </comment>
-        <createTable tableName="raxacore_drug_drug_group">
-            <column name="drug_group_id" type="int" >
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="drug_id" type="int" >
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-        </createTable>
-        <addForeignKeyConstraint baseTableName="raxacore_drug_drug_group" 
-                                 baseColumnNames="drug_id" 
-                                 constraintName="FK_raxacore_drug_id" 
-                                 referencedTableName="drug" 
-                                 referencedColumnNames="drug_id"/> 
-        <addForeignKeyConstraint baseTableName="raxacore_drug_drug_group" 
-                                 baseColumnNames="drug_group_id" 
-                                 constraintName="FK_raxacore_drug_group_id" 
-                                 referencedTableName="drug_group" 
-                                 referencedColumnNames="drug_group_id"/> 
-    </changeSet>
+ 
 </databaseChangeLog>

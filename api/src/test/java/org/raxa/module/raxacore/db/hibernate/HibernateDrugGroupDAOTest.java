@@ -49,7 +49,6 @@ public class HibernateDrugGroupDAOTest extends BaseModuleContextSensitiveTest {
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
 		drugGroup.setRetired(Boolean.FALSE);
-		drugGroup.setSearchQuery("test Query");
 		dao.saveDrugGroup(drugGroup);
 		List<DrugGroup> result = dao.getDrugGroupByName("TestList3");
 		String name = result.get(0).getName();
@@ -66,7 +65,6 @@ public class HibernateDrugGroupDAOTest extends BaseModuleContextSensitiveTest {
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465e-99ee-c9dfd95e7d30");
 		drugGroup.setRetired(Boolean.FALSE);
-		drugGroup.setSearchQuery("");
 		dao.deleteDrugGroup(drugGroup);
 		DrugGroup result = dao.getDrugGroup(2);
 		assertEquals(null, result);

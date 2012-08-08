@@ -31,8 +31,6 @@ public class DrugInfo extends BaseOpenmrsMetadata implements Serializable {
 	
 	private double price;
 	
-	private String searchQuery;
-	
 	private Drug drug;
 	
 	/**
@@ -104,20 +102,6 @@ public class DrugInfo extends BaseOpenmrsMetadata implements Serializable {
 			return super.hashCode();
 		}
 		return this.getDrugInfoId().hashCode();
-	}
-	
-	/**
-	 * @return the searchQuery
-	 */
-	public String getSearchQuery() {
-		return searchQuery;
-	}
-	
-	/**
-	 * @param searchQuery the searchQuery to set
-	 */
-	public void setSearchQuery(String searchQuery) {
-		this.searchQuery = searchQuery;
 	}
 	
 	/**
