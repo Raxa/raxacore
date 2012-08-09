@@ -19,7 +19,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.raxa.module.raxacore.DrugGroup;
@@ -43,24 +42,24 @@ public class HibernateDrugGroupDAOTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void testSaveDrugGroup() {
 		DrugGroup drugGroup = new DrugGroup();
-		drugGroup.setName("TestList3");
-		drugGroup.setDescription("Third Test List");
+		drugGroup.setName("TestDrugGroup3");
+		drugGroup.setDescription("Third Test Drug Group");
 		drugGroup.setCreator(Context.getUserContext().getAuthenticatedUser());
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
 		drugGroup.setRetired(Boolean.FALSE);
 		dao.saveDrugGroup(drugGroup);
-		List<DrugGroup> result = dao.getDrugGroupByName("TestList3");
+		List<DrugGroup> result = dao.getDrugGroupByName("TestDrugGroup3");
 		String name = result.get(0).getName();
-		assertEquals(name, "TestList3");
+		assertEquals(name, "TestDrugGroup3");
 	}
 	
 	@Test
 	public void testDeleteDrugGroup() {
 		DrugGroup drugGroup = new DrugGroup();
 		drugGroup.setId(2);
-		drugGroup.setName("TestList2");
-		drugGroup.setDescription("Second Test List");
+		drugGroup.setName("TestDrugGroup2");
+		drugGroup.setDescription("Second Test Drug Group");
 		drugGroup.setCreator(Context.getUserContext().getAuthenticatedUser());
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465e-99ee-c9dfd95e7d30");
@@ -75,19 +74,19 @@ public class HibernateDrugGroupDAOTest extends BaseModuleContextSensitiveTest {
 		Integer drugGroupId = 1;
 		DrugGroup result = dao.getDrugGroup(drugGroupId);
 		String name = result.getName();
-		assertEquals("TestList1", name);
+		assertEquals("TestDrugGroup1", name);
 	}
 	
 	@Test
 	public void testGetDrugGroupByUuid() {
 		String uuid = "68547121-1b70-465e-99ee-c9dfd95e7d30";
 		String result = dao.getDrugGroupByUuid(uuid).getName();
-		assertEquals("TestList2", result);
+		assertEquals("TestDrugGroup2", result);
 	}
 	
 	@Test
 	public void testGetDrugGroupByName() {
-		String name = "TestList1";
+		String name = "TestDrugGroup1";
 		String result = dao.getDrugGroupByName(name).get(0).getName();
 		assertEquals(name, result);
 	}

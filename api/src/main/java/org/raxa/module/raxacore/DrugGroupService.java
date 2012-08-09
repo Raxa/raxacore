@@ -19,6 +19,7 @@ import java.util.List;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
+import org.openmrs.Drug;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.OpenmrsService;
 import org.openmrs.util.PrivilegeConstants;
@@ -26,76 +27,76 @@ import org.raxa.module.raxacore.db.DrugGroupDAO;
 import org.springframework.transaction.annotation.Transactional;
 
 /*
- * Interface for interacting with the PatientList
+ * Interface for interacting with the DrugGroup
  */
 @Transactional
 public interface DrugGroupService extends OpenmrsService {
 	
 	/**
-	 * Sets Patient List DAO
+	 * Sets Drug Group DAO
 	 *
 	 * @param dao
 	 */
 	public void setDrugGroupDAO(DrugGroupDAO dao);
 	
 	/**
-	 * Saves PatientList
+	 * Saves DrugGroup
 	 *
 	 * @param drugGroup
-	 * @return PatientList
+	 * @return DrugGroup
 	 */
-	@Authorized( { "Add Patient Lists" })
+	@Authorized( { "Add Drug Groups" })
 	public DrugGroup saveDrugGroup(DrugGroup drugGroup);
 	
 	/**
-	 * Gets a PatientList by Id
+	 * Gets a DrugGroup by Id
 	 *
 	 * @param id
-	 * @return PatientLists
+	 * @return DrugGroups
 	 */
-	@Authorized( { "View Patient Lists" })
+	@Authorized( { "View Drug Groups" })
 	public DrugGroup getDrugGroup(Integer id);
 	
 	/**
-	 * Gets a PatientList by Name
+	 * Gets a DrugGroup by Name
 	 *
 	 * @param name
-	 * @return list of PatientLists
+	 * @return list of DrugGroups
 	 */
-	@Authorized( { "View Patient Lists" })
+	@Authorized( { "View Drug Groups" })
 	public List<DrugGroup> getDrugGroupByName(String name);
 	
 	/**
-	 * Gets PatientList by uuid
+	 * Gets DrugGroup by uuid
 	 *
 	 * @param uuid
-	 * @return PatientList
+	 * @return DrugGroup
 	 */
-	@Authorized( { "View Patient Lists" })
+	@Authorized( { "View Drug Groups" })
 	public DrugGroup getDrugGroupByUuid(String uuid);
 	
 	/**
-	 * Gets all PatientLists
+	 * Gets all DrugGroups
 	 *
-	 * @return list of PatientLists
+	 * @return list of DrugGroups
 	 */
-	@Authorized( { "View Patient Lists" })
+	@Authorized( { "View Drug Groups" })
 	public List<DrugGroup> getAllDrugGroup(boolean includeRetired);
 	
 	/**
-	 * Updates PatientList
+	 * Updates DrugGroup
 	 *
-	 * @param patientList
-	 * @return PatientList
+	 * @param DrugGroup
+	 * @return DrugGroup
 	 */
-	@Authorized( { "Edit Patient Lists" })
+	@Authorized( { "Edit Drug Groups" })
 	DrugGroup updateDrugGroup(DrugGroup drugGroup);
 	
 	/**
-	 * Deletes PatientList
+	 * Deletes DrugGroup
 	 *
-	 * @param patientList
+	 * @param DrugGroup
 	 */
-	@Authorized( { "Delete Patient Lists" })
+	@Authorized( { "Delete Drug Groups" })
 	public void deleteDrugGroup(DrugGroup drugGroup);
 }

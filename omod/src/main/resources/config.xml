@@ -43,6 +43,23 @@
         <description>Ability to view patient lists</description>
     </privilege>
     
+    <privilege>
+        <name>Add Drug Groups</name>
+        <description>Ability to create Drug Groups</description>
+    </privilege>
+    <privilege>
+        <name>Delete Drug Groups</name>
+        <description>Ability to delete Drug Groups</description>
+    </privilege>
+    <privilege>
+        <name>Edit Drug Groups</name>
+        <description>Ability to edit Drug Groups</description>
+    </privilege>
+    <privilege>
+        <name>View Drug Groups</name>
+        <description>Ability to view Drug Groups</description>
+    </privilege>   
+    
     <!-- Required Global Properties -->
     <!-- DWR -->
     <!-- Servlets -->

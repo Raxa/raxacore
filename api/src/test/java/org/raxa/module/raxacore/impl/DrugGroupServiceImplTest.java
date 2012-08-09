@@ -18,8 +18,7 @@ package org.raxa.module.raxacore.impl;
 import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.Test; // import org.openmrs.Encounter;
-import org.openmrs.EncounterType; // import org.openmrs.Patient;
+import org.junit.Test;
 import org.openmrs.User;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
@@ -28,7 +27,7 @@ import org.raxa.module.raxacore.DrugGroup;
 import org.raxa.module.raxacore.DrugGroupService;
 
 /*
- * Testing the methods in PatientListServiceImpl
+ * Testing the methods in DrugGroupServiceImpl
  */
 public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 	
@@ -49,21 +48,20 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 	public void testSaveDrugGroupShouldUsePrivileges() throws Exception {
 		Context.getUserContext().getAuthenticatedUser().removeRole(Context.getUserService().getRole("System Developer"));
 		DrugGroup drugGroup = new DrugGroup();
-		//NOTE: never set Id, will be generated automatically (when saving)
-		drugGroup.setName("TestList3");
-		drugGroup.setDescription("Third Test List");
+		drugGroup.setName("TestDrugGroup3");
+		drugGroup.setDescription("Third Test Drug Group");
 		drugGroup.setCreator(Context.getUserContext().getAuthenticatedUser());
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
 		drugGroup.setRetired(Boolean.FALSE);
 		try {
 			s.saveDrugGroup(drugGroup);
-			//if we don't throw exception fail - no privileges required!
-			fail("No privileges required for savePatientList");
+			// if we don't throw exception fail - no privileges required!
+			fail("No privileges required for saveDrugGroup");
 		}
 		catch (APIAuthenticationException e) {
-			Context.getUserContext().addProxyPrivilege("Add Patient Lists");
-			Context.getUserContext().addProxyPrivilege("View Patient Lists");
+			Context.getUserContext().addProxyPrivilege("Add Drug Groups");
+			Context.getUserContext().addProxyPrivilege("View Drug Groups");
 			Context.getUserContext().addProxyPrivilege("View Users");
 			s.saveDrugGroup(drugGroup);
 		}
@@ -73,63 +71,63 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 	public void testSaveDrugGroupShouldSaveDrugGroup() throws Exception {
 		DrugGroup drugGroup = new DrugGroup();
 		//NOTE: never set Id, will be generated automatically (when saving)
-		drugGroup.setName("TestList3");
-		drugGroup.setDescription("Third Test List");
+		drugGroup.setName("TestDrugGroup3");
+		drugGroup.setDescription("Third Test Drug Group");
 		drugGroup.setCreator(Context.getUserContext().getAuthenticatedUser());
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
 		drugGroup.setRetired(Boolean.FALSE);
 		s.saveDrugGroup(drugGroup);
-		List<DrugGroup> result = s.getDrugGroupByName("TestList3");
+		List<DrugGroup> result = s.getDrugGroupByName("TestDrugGroup3");
 		String name = result.get(0).getName();
-		assertEquals(name, "TestList3");
+		assertEquals(name, "TestDrugGroup3");
 	}
 	
 	@Test
 	public void testGetDrugGroupShouldUsePrivileges() {
 		Context.getUserContext().getAuthenticatedUser().removeRole(Context.getUserService().getRole("System Developer"));
-		Context.getUserContext().removeProxyPrivilege("View Patient Lists");
+		Context.getUserContext().removeProxyPrivilege("View Drug Groups");
 		Integer drugGroupId = 1;
 		DrugGroup result = null;
 		try {
 			result = s.getDrugGroup(drugGroupId);
 			// if we don't throw exception fail - no privileges required!
-			fail("No privileges required for getPatientList");
+			fail("No privileges required for getDrugGroup");
 		}
 		catch (APIAuthenticationException e) {
-			Context.getUserContext().addProxyPrivilege("View Patient Lists");
+			Context.getUserContext().addProxyPrivilege("View Drug Groups");
 			result = s.getDrugGroup(drugGroupId);
 		}
 	}
 	
 	@Test
 	public void testGetDrugGroupShouldReturnDrugGroup() {
-		Integer patientListId = 1;
-		DrugGroup result = s.getDrugGroup(patientListId);
+		Integer DrugGroupId = 1;
+		DrugGroup result = s.getDrugGroup(DrugGroupId);
 		String name = result.getName();
-		assertEquals("TestList1", name);
+		assertEquals("TestDrugGroup1", name);
 	}
 	
 	@Test
 	public void testGetDrugGroupByNameShouldUsePrivileges() {
 		Context.getUserContext().getAuthenticatedUser().removeRole(Context.getUserService().getRole("System Developer"));
-		Context.getUserContext().removeProxyPrivilege("View Patient Lists");
-		String name = "TestList1";
+		Context.getUserContext().removeProxyPrivilege("View Drug Groups");
+		String name = "TestDrugGroup1";
 		String result = null;
 		try {
 			result = s.getDrugGroupByName(name).get(0).getName();
 			//if we don't throw exception fail - no privileges required!
-			fail("No privileges required for getPatientListByName");
+			fail("No privileges required for getDrugGroupByName");
 		}
 		catch (APIAuthenticationException e) {
-			Context.getUserContext().addProxyPrivilege("View Patient Lists");
+			Context.getUserContext().addProxyPrivilege("View Drug Groups");
 			result = s.getDrugGroupByName(name).get(0).getName();
 		}
 	}
 	
 	@Test
 	public void testGetDrugGroupByNameShouldReturnDrugGroup() {
-		String name = "TestList1";
+		String name = "TestDrugGroup1";
 		String result = s.getDrugGroupByName(name).get(0).getName();
 		assertEquals(name, result);
 	}
@@ -137,40 +135,40 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void testGetDrugGroupByUuidShouldUsePrivileges() {
 		Context.getUserContext().getAuthenticatedUser().removeRole(Context.getUserService().getRole("System Developer"));
-		Context.getUserContext().removeProxyPrivilege("View Patient Lists");
+		Context.getUserContext().removeProxyPrivilege("View Drug Groups");
 		String uuid = "68547121-1b70-465e-99ee-c9dfd95e7d30";
 		String result = null;
 		try {
 			result = s.getDrugGroupByUuid(uuid).getName();
-			//if we don't throw exception fail - no privileges required!
-			fail("No privileges required for getPatientListByUuid");
+			// if we don't throw exception fail - no privileges required!
+			fail("No privileges required for getDrugGroupByUuid");
 		}
 		catch (APIAuthenticationException e) {
-			Context.getUserContext().addProxyPrivilege("View Patient Lists");
+			Context.getUserContext().addProxyPrivilege("View Drug Groups");
 			result = s.getDrugGroupByUuid(uuid).getName();
 		}
 	}
 	
 	@Test
-	public void testGetPatientListByUuidShouldReturnPatientList() {
+	public void testGetDrugGroupByUuidShouldReturnDrugGroup() {
 		String uuid = "68547121-1b70-465e-99ee-c9dfd95e7d30";
 		String result = s.getDrugGroupByUuid(uuid).getName();
-		assertEquals("TestList2", result);
+		assertEquals("TestDrugGroup2", result);
 	}
 	
 	@Test
 	public void testUpdateDrugGroupShouldUsePrivileges() {
 		Context.getUserContext().getAuthenticatedUser().removeRole(Context.getUserService().getRole("System Developer"));
-		Context.getUserContext().addProxyPrivilege("View Patient Lists");
+		Context.getUserContext().addProxyPrivilege("View Drug Groups");
 		DrugGroup drugGroup = s.getDrugGroup(1);
-		drugGroup.setName("NewNameList");
+		drugGroup.setName("NewNameDrugGroup");
 		try {
 			s.updateDrugGroup(drugGroup);
-			//if we don't throw exception fail - no privileges required!
-			fail("No privileges required for updatePatientList");
+			// if we don't throw exception fail - no privileges required!
+			fail("No privileges required for updateDrugGroup");
 		}
 		catch (APIAuthenticationException e) {
-			Context.getUserContext().addProxyPrivilege("Edit Patient Lists");
+			Context.getUserContext().addProxyPrivilege("Edit Drug Groups");
 			s.updateDrugGroup(drugGroup);
 		}
 	}
@@ -178,10 +176,10 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void testUpdateDrugGroupShouldChangeDrugGroup() {
 		DrugGroup drugGroup = s.getDrugGroup(1);
-		drugGroup.setName("NewNameList");
+		drugGroup.setName("NewNameDrugGroup");
 		s.updateDrugGroup(drugGroup);
 		String name = s.getDrugGroup(1).getName();
-		assertEquals(name, "NewNameList");
+		assertEquals(name, "NewNameDrugGroup");
 	}
 	
 	@Test
@@ -189,8 +187,8 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 		Context.getUserContext().getAuthenticatedUser().removeRole(Context.getUserService().getRole("System Developer"));
 		DrugGroup drugGroup = new DrugGroup();
 		drugGroup.setId(2);
-		drugGroup.setName("TestList2");
-		drugGroup.setDescription("Second Test List");
+		drugGroup.setName("TestDrugGroup2");
+		drugGroup.setDescription("Second Test Drug Group");
 		drugGroup.setCreator(Context.getUserContext().getAuthenticatedUser());
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465e-99ee-c9dfd95e7d30");
@@ -198,11 +196,11 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 		try {
 			s.deleteDrugGroup(drugGroup);
 			//if we don't throw exception fail - no privileges required!
-			fail("No privileges required for deletePatientList");
+			fail("No privileges required for deleteDrugGroup");
 		}
 		catch (APIAuthenticationException e) {
-			Context.getUserContext().addProxyPrivilege("Delete Patient Lists");
-			Context.getUserContext().addProxyPrivilege("View Patient Lists");
+			Context.getUserContext().addProxyPrivilege("Delete Drug Groups");
+			Context.getUserContext().addProxyPrivilege("View Drug Groups");
 			s.deleteDrugGroup(drugGroup);
 		}
 	}
@@ -211,8 +209,8 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 	public void testDeleteDrugGroupShouldDeleteDrugGroup() {
 		DrugGroup drugGroup = new DrugGroup();
 		drugGroup.setId(2);
-		drugGroup.setName("TestList2");
-		drugGroup.setDescription("Second Test List");
+		drugGroup.setName("TestDrugGroup2");
+		drugGroup.setDescription("Second Test Drug Group");
 		drugGroup.setCreator(Context.getUserContext().getAuthenticatedUser());
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465e-99ee-c9dfd95e7d30");
