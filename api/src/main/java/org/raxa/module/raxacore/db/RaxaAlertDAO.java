@@ -57,7 +57,7 @@ public interface RaxaAlertDAO {
 	 * @return {@link RaxaAlert}
 	 * @should get a raxa alert list by patientId
 	 */
-	public List<RaxaAlert> getRaxaAlertByPatientId(Integer patientId);
+	public List<RaxaAlert> getRaxaAlertByPatientId(Integer patientId, boolean includeSeen);
 	
 	/**
 	 * Find {@link RaxaAlert} matching a uuid
@@ -75,7 +75,7 @@ public interface RaxaAlertDAO {
 	 * @return {@link RaxaAlert}
 	 * @should get a raxa alert by name
 	 */
-	public RaxaAlert getRaxaAlertByName(String name);
+	public List<RaxaAlert> getRaxaAlertByName(String name, boolean includeSeen);
 	
 	/**
 	 * Find {@link RaxaAlert} matching a alertType
@@ -84,7 +84,7 @@ public interface RaxaAlertDAO {
 	 * @return {@link RaxaAlert}
 	 * @should get a raxa alert list by alertType
 	 */
-	public List<RaxaAlert> getRaxaAlertByAlertType(String alertType);
+	public List<RaxaAlert> getRaxaAlertByAlertType(String alertType, boolean includeSeen);
 	
 	/**
 	 * Find {@link RaxaAlert} matching providerSentId
@@ -93,7 +93,7 @@ public interface RaxaAlertDAO {
 	 * @return List of RaxaAlerts
 	 * @should get a raxa alert list by providerSentId
 	 */
-	public List<RaxaAlert> getRaxaAlertByProviderSentId(Integer providerSentId);
+	public List<RaxaAlert> getRaxaAlertByProviderSentId(Integer providerSentId, boolean includeSeen);
 	
 	/**
 	 * Find {@link RaxaAlert} matching providerRecipientId
@@ -102,7 +102,7 @@ public interface RaxaAlertDAO {
 	 * @return List of RaxaAlerts
 	 * @should get a raxa alert list by providerRecipientId
 	 */
-	public List<RaxaAlert> getRaxaAlertByProviderRecipientId(Integer providerRecipientId);
+	public List<RaxaAlert> getRaxaAlertByProviderRecipientId(Integer providerRecipientId, boolean includeSeen);
 	
 	/**
 	 * Update RaxaAlert
@@ -125,4 +125,11 @@ public interface RaxaAlertDAO {
 	 */
 	RaxaAlert markRaxaAlertAsSeen(RaxaAlert raxaAlert);
 	
+	/**
+	 * Void a RaxaAlert in the database
+	 * @param RaxaAlert object to be purged
+	 * @param String reason for voiding RaxaAlert
+	 * @should void a raxa alert
+	 */
+	public RaxaAlert voidRaxaAlert(RaxaAlert raxaAlert, String reason);
 }

@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.api.context.Context;
 import org.raxa.module.raxacore.RaxaAlert;
 import org.raxa.module.raxacore.RaxaAlertService;
 import org.raxa.module.raxacore.db.RaxaAlertDAO;
@@ -60,16 +61,16 @@ public class RaxaAlertServiceImpl implements RaxaAlertService {
 	 * @see org.raxa.module.raxacore.RaxaAlertService#getRaxaAlertByName(String)
 	 */
 	@Override
-	public RaxaAlert getRaxaAlertsByName(String name) {
-		return dao.getRaxaAlertByName(name);
+	public List<RaxaAlert> getRaxaAlertsByName(String name, boolean includeSeen) {
+		return dao.getRaxaAlertByName(name, includeSeen);
 	}
 	
 	/**
 	 * @see org.raxa.module.raxacore.RaxaAlertService#getRaxaAlertByAlertType(String)
 	 */
 	@Override
-	public List<RaxaAlert> getRaxaAlertByAlertType(String alertType) {
-		return (List<RaxaAlert>) dao.getRaxaAlertByAlertType(alertType);
+	public List<RaxaAlert> getRaxaAlertByAlertType(String alertType, boolean includeSeen) {
+		return (List<RaxaAlert>) dao.getRaxaAlertByAlertType(alertType, includeSeen);
 	}
 	
 	/**
@@ -84,24 +85,24 @@ public class RaxaAlertServiceImpl implements RaxaAlertService {
 	 * @see org.raxa.module.raxacore.RaxaAlertService#getRaxaAlertByPatientId(Integer)
 	 */
 	@Override
-	public List<RaxaAlert> getRaxaAlertByPatientId(Integer patientId) {
-		return dao.getRaxaAlertByPatientId(patientId);
+	public List<RaxaAlert> getRaxaAlertByPatientId(Integer patientId, boolean includeSeen) {
+		return dao.getRaxaAlertByPatientId(patientId, includeSeen);
 	}
 	
 	/**
 	 * @see org.raxa.module.raxacore.RaxaAlertService#getRaxaAlertByProviderRecipientId(Integer)
 	 */
 	@Override
-	public List<RaxaAlert> getRaxaAlertByProviderRecipientId(Integer providerRecipientId) {
-		return dao.getRaxaAlertByProviderRecipientId(providerRecipientId);
+	public List<RaxaAlert> getRaxaAlertByProviderRecipientId(Integer providerRecipientId, boolean includeSeen) {
+		return dao.getRaxaAlertByProviderRecipientId(providerRecipientId, includeSeen);
 	}
 	
 	/**
 	 * @see org.raxa.module.raxacore.RaxaAlertService#getRaxaAlertByProviderSentId(Integer)
 	 */
 	@Override
-	public List<RaxaAlert> getRaxaAlertByProviderSentId(Integer providerSentId) {
-		return dao.getRaxaAlertByProviderSentId(providerSentId);
+	public List<RaxaAlert> getRaxaAlertByProviderSentId(Integer providerSentId, boolean includeSeen) {
+		return dao.getRaxaAlertByProviderSentId(providerSentId, includeSeen);
 	}
 	
 	/**
@@ -150,6 +151,28 @@ public class RaxaAlertServiceImpl implements RaxaAlertService {
 	@Override
 	public void onShutdown() {
 		log.info("Stopping raxa alert service");
+	}
+	
+	@Override
+	public void voidRaxaAlert(RaxaAlert raxaAlert, String reason) {
+		dao.voidRaxaAlert(raxaAlert, reason);
+	}
+	
+	@Override
+	public void purgeRaxaAlert(RaxaAlert raxaAlert) {
+		dao.deleteRaxaAlert(raxaAlert);
+	}
+	
+	@Override
+	public List<RaxaAlert> getRaxaAlertByProviderSentUuid(String providerSentUuid, boolean includeSeen) {
+		return dao.getRaxaAlertByProviderSentId(Context.getProviderService().getProviderByUuid(providerSentUuid).getId(),
+		    includeSeen);
+	}
+	
+	@Override
+	public List<RaxaAlert> getRaxaAlertByProviderRecipientUuid(String providerRecipientUuid, boolean includeSeen) {
+		return dao.getRaxaAlertByProviderRecipientId(Context.getProviderService().getProviderByUuid(providerRecipientUuid)
+		        .getId(), includeSeen);
 	}
 	
 }
