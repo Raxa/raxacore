@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
-import org.openmrs.Patient;
+import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestUtil;
@@ -74,7 +74,7 @@ public class DrugGroupController extends BaseRestController {
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="POST - Without Params">
 	/**
-	 * Create new patient list by POST'ing atleast name and description property
+	 * Create new drug group by POST'ing atleast name and description property
 	 * in the request body.
 	 *
 	 * @param post the body of the POST request
@@ -101,11 +101,11 @@ public class DrugGroupController extends BaseRestController {
 	}
 	
 	//</editor-fold>
-	//<editor-fold defaultstate="collapsed" desc="POST - Update List">
+	//<editor-fold defaultstate="collapsed" desc="POST - Update DrugGroup">
 	/**
 	 * Updates the Drug Group by making a POST call with uuid in URL and
 	 *
-	 * @param uuid the uuid for the patient list resource
+	 * @param uuid the uuid for the drug group resource
 	 * @param post
 	 * @param request
 	 * @param response
@@ -113,7 +113,7 @@ public class DrugGroupController extends BaseRestController {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.POST)
-	@WSDoc("Updates an existing patient list")
+	@WSDoc("Updates an existing drug group")
 	@ResponseBody
 	public Object updateDrugGroup(@PathVariable("uuid") String uuid, @RequestBody SimpleObject post,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
@@ -132,7 +132,7 @@ public class DrugGroupController extends BaseRestController {
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="GET all">
 	/**
-	 * Get all the unretired patient lists (as REF representation) in the system
+	 * Get all the unretired drug groups (as REF representation) in the system
 	 *
 	 * @param request
 	 * @param response
@@ -161,7 +161,7 @@ public class DrugGroupController extends BaseRestController {
 	/**
 	 * Search DrugGroup by Name and get the resource as REF representation
 	 *
-	 * @param query the string to search name of patientlist
+	 * @param query the string to search name of drugGroup
 	 * @param request
 	 * @return
 	 * @throws ResponseException
@@ -186,7 +186,7 @@ public class DrugGroupController extends BaseRestController {
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="GET by uuid - DEFAULT REP">
 	/**
-	 * Get the DrugGroup along with patients, encounters and obs (DEFAULT rep).
+	 * Get the DrugGroup along with drugs, encounters and obs (DEFAULT rep).
 	 * Contains all encounters of the searched encounterType between the
 	 * startDate and endDate
 	 *
@@ -206,12 +206,13 @@ public class DrugGroupController extends BaseRestController {
 		obj.add("uuid", drugGroup.getUuid());
 		obj.add("name", drugGroup.getName());
 		obj.add("description", drugGroup.getDescription());
+		// TODO: finish this once drug_drug_group is ready
 		// ArrayList drugs = new ArrayList();
 		// List<Drug> drugsInDrugGroup = service.getDrugsInDrugGroup(drugGr);
-		// for (Patient p : patientsInDrugGroup) {
+		// for (drug p : drugsInDrugGroup) {
 		//      SimpleObject drug = new SimpleObject();
 		//      drug.add("uuid", p.getUuid());
-		//      drugs.add(patient);
+		//      drugs.add(drug);
 		// }
 		// obj.add("drugs", drugs);
 		return gson.toJson(obj);
@@ -220,7 +221,7 @@ public class DrugGroupController extends BaseRestController {
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="GET by uuid - FULL REP">
 	/**
-	 * Get the patient list as FULL representation that shows patients,
+	 * Get the drug group as FULL representation that shows drugs,
 	 * encounters and obs. Contains all encounters of the searched encounterType
 	 * between the startDate and endDate. Contains drugGroup.searchQuery,
 	 * encounter.provider and obs.comment and obs.order compared to DEFAULT rep
@@ -264,7 +265,7 @@ public class DrugGroupController extends BaseRestController {
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="DELETE - Retire DrugGroup">
 	/**
-	 * Retires the patient list resource by making a DELETE call with the
+	 * Retires the drug group resource by making a DELETE call with the
 	 * '!purge' param
 	 *
 	 * @param uuid
@@ -294,7 +295,7 @@ public class DrugGroupController extends BaseRestController {
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="DELETE - Purge DrugGroup">
 	/**
-	 * Purges (Complete Delete) the patient list resource by making a DELETE
+	 * Purges (Complete Delete) the drug group resource by making a DELETE
 	 * call and passing the 'purge' param
 	 *
 	 * @param uuid

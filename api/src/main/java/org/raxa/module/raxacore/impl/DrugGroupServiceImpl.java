@@ -33,11 +33,6 @@ import org.raxa.module.raxacore.DrugGroup;
 import org.raxa.module.raxacore.DrugGroupService;
 import org.raxa.module.raxacore.db.DrugGroupDAO;
 
-/*
- * Implements PatientListService.java Note the PatientList query must be in the
- * form of:
- * "?encounterType=<uuid>&startDate=2012-05-07&endDate=2012-05-08&inlist=<uuidForList>&notinlist=<uuidForList>"
- */
 public class DrugGroupServiceImpl implements DrugGroupService {
 	
 	private DrugGroupDAO dao;
