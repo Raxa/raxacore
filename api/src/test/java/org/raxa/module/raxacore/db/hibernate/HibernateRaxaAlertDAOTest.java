@@ -63,7 +63,7 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 		rAlert.setProviderSentId(1);
 		rAlert.setProviderRecipientId(2);
 		dao.saveRaxaAlert(rAlert);
-		RaxaAlert result = dao.getRaxaAlertByName("TestList3");
+		RaxaAlert result = dao.getRaxaAlertByName("TestList3", true).get(0);
 		String name = result.getName();
 		assertEquals(name, "TestList3");
 	}
@@ -115,7 +115,7 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void testGetRaxaAlertByName() {
 		String name = "TestList1";
-		String result = dao.getRaxaAlertByName(name).getName();
+		String result = dao.getRaxaAlertByName(name, true).get(0).getName();
 		assertEquals(name, result);
 	}
 	
@@ -125,7 +125,7 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void testGetRaxaAlertByAlertType() {
 		String alertType = "test1";
-		String result = dao.getRaxaAlertByAlertType(alertType).get(0).getAlertType();
+		String result = dao.getRaxaAlertByAlertType(alertType, true).get(0).getAlertType();
 		assertEquals(alertType, result);
 	}
 	
@@ -135,7 +135,7 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void testGetRaxaAlertByPatientId() {
 		Integer patientId = 1;
-		String result = dao.getRaxaAlertByPatientId(patientId).get(0).getName();
+		String result = dao.getRaxaAlertByPatientId(patientId, true).get(0).getName();
 		assertEquals("TestList1", result);
 	}
 	
@@ -145,7 +145,7 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void testGetRaxaAlertByProviderSentId() {
 		Integer providerSentId = 1;
-		String result = dao.getRaxaAlertByProviderSentId(providerSentId).get(0).getName();
+		String result = dao.getRaxaAlertByProviderSentId(providerSentId, true).get(0).getName();
 		assertEquals("TestList1", result);
 	}
 	
@@ -155,7 +155,7 @@ public class HibernateRaxaAlertDAOTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void testGetRaxaAlertByProviderRecipientId() {
 		Integer providerRecipientId = 1;
-		String result = dao.getRaxaAlertByProviderRecipientId(providerRecipientId).get(0).getName();
+		String result = dao.getRaxaAlertByProviderRecipientId(providerRecipientId, true).get(0).getName();
 		assertEquals("TestList1", result);
 	}
 	

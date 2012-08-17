@@ -56,7 +56,7 @@ public interface RaxaAlertService extends OpenmrsService {
 	 * @return RaxaAlerts
 	 */
 	@Authorized( { "View Raxa Alerts" })
-	public List<RaxaAlert> getRaxaAlertByPatientId(Integer patientId);
+	public List<RaxaAlert> getRaxaAlertByPatientId(Integer patientId, boolean includeSeen);
 	
 	/**
 	 * Gets a RaxaAlert by ProviderSentId
@@ -65,7 +65,7 @@ public interface RaxaAlertService extends OpenmrsService {
 	 * @return RaxaAlerts
 	 */
 	@Authorized( { "View Raxa Alerts" })
-	public List<RaxaAlert> getRaxaAlertByProviderSentId(Integer providerSentId);
+	public List<RaxaAlert> getRaxaAlertByProviderSentId(Integer providerSentId, boolean includeSeen);
 	
 	/**
 	 * Gets a RaxaAlert by ProviderRecipientId
@@ -74,7 +74,25 @@ public interface RaxaAlertService extends OpenmrsService {
 	 * @return RaxaAlerts
 	 */
 	@Authorized( { "View Raxa Alerts" })
-	public List<RaxaAlert> getRaxaAlertByProviderRecipientId(Integer providerRecipientId);
+	public List<RaxaAlert> getRaxaAlertByProviderRecipientId(Integer providerRecipientId, boolean includeSeen);
+	
+	/**
+	 * Gets a RaxaAlert by ProviderSentUuid
+	 *
+	 * @param providerSentUuid
+	 * @return RaxaAlerts
+	 */
+	@Authorized( { "View Raxa Alerts" })
+	public List<RaxaAlert> getRaxaAlertByProviderSentUuid(String providerSentUuid, boolean includeSeen);
+	
+	/**
+	 * Gets a RaxaAlert by ProviderRecipientUuid
+	 *
+	 * @param providerSentUuid
+	 * @return RaxaAlerts
+	 */
+	@Authorized( { "View Raxa Alerts" })
+	public List<RaxaAlert> getRaxaAlertByProviderRecipientUuid(String providerRecipientUuid, boolean includeSeen);
 	
 	/**
 	 * Gets a RaxaAlert by Name
@@ -83,7 +101,7 @@ public interface RaxaAlertService extends OpenmrsService {
 	 * @return list of RaxaAlerts
 	 */
 	@Authorized( { "View Raxa Alerts" })
-	public RaxaAlert getRaxaAlertsByName(String name);
+	public List<RaxaAlert> getRaxaAlertsByName(String name, boolean includeSeen);
 	
 	/**
 	 * Gets RaxaAlert by uuid
@@ -101,7 +119,7 @@ public interface RaxaAlertService extends OpenmrsService {
 	 * @return RaxaAlert
 	 */
 	@Authorized( { "View Raxa Alerts" })
-	public List<RaxaAlert> getRaxaAlertByAlertType(String alertType);
+	public List<RaxaAlert> getRaxaAlertByAlertType(String alertType, boolean includeSeen);
 	
 	/**
 	 * Gets all RaxaAlerts
@@ -135,4 +153,11 @@ public interface RaxaAlertService extends OpenmrsService {
 	 */
 	@Authorized( { "Delete Raxa Alerts" })
 	public void deleteRaxaAlert(RaxaAlert raxaAlert);
+	
+	@Authorized( { "Delete Raxa Alerts" })
+	public void voidRaxaAlert(RaxaAlert raxaAlert, String reason);
+	
+	@Authorized( { "Delete Raxa Alerts" })
+	public void purgeRaxaAlert(RaxaAlert raxaAlert);
+	
 }

@@ -76,7 +76,7 @@
                 <artifactId>openmrs-tools</artifactId>
                 <version>${openMRSVersion}</version>
             </dependency>
-            
+
             <!--webservices.rest main module-->
             <dependency>
                 <groupId>org.openmrs.module</groupId>
@@ -98,6 +98,17 @@
                 <version>1.0</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>
+            </dependency>
+            <!--webservices.rest 1.9 ext module-->            
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>webservices.rest19ext-api</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>webservices.rest19ext-omod</artifactId>
+                <version>1.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
