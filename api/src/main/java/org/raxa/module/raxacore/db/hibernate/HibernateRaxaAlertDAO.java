@@ -191,7 +191,7 @@ public class HibernateRaxaAlertDAO implements RaxaAlertDAO {
 		if (reason == null) {
 			throw new IllegalArgumentException("The argument 'reason' is required and so cannot be null");
 		}
-				
+		
 		raxaAlert.setVoided(true);
 		raxaAlert.setVoidedBy(Context.getAuthenticatedUser());
 		raxaAlert.setDateVoided(new Date());

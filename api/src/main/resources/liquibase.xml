@@ -172,5 +172,5 @@
             <column name="date_changed" type="DATETIME"/>
         </createTable>
     </changeSet>
- 
+
 </databaseChangeLog>

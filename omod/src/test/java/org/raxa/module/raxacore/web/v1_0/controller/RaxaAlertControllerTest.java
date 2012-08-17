@@ -12,8 +12,8 @@ package org.raxa.module.raxacore.web.v1_0.controller;
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -55,14 +55,15 @@ public class RaxaAlertControllerTest extends BaseModuleContextSensitiveTest {
 	 * @verifies a new patient list is created
 	 */
 	@Test
-	public void updateRaxaAlert_shouldSaveANewRaxaAlert() throws Exception {
+	public void updateRaxaAlert_shouldUpdateARaxaAlert() throws Exception {
 		int before = service.getAllRaxaAlerts(true).size();
 		String json = "{ \"name\":\"Test RaxaAlert\",\"description\":\"Test Alert\"}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		controller.updateRaxaAlert(getUuid(), post, request, response);
 		Assert.assertEquals(before, service.getAllRaxaAlerts(true).size());
-		String result = controller.getAllRaxaAlerts(request, response);
-		SimpleObject updatedRaxaAlert = SimpleObject.parseJson(result);
+		String results = controller.getAllRaxaAlerts(request, response);
+		//SimpleObject updatedRaxaAlert = SimpleObject.parseJson(results.substring(12, result.length() - 2));
+		LinkedHashMap updatedRaxaAlert = (LinkedHashMap) ((ArrayList) SimpleObject.parseJson(results).get("results")).get(0);
 		Assert.assertEquals(getUuid(), updatedRaxaAlert.get("uuid"));
 		Assert.assertEquals("Test RaxaAlert", updatedRaxaAlert.get("name"));
 	}
@@ -101,6 +102,18 @@ public class RaxaAlertControllerTest extends BaseModuleContextSensitiveTest {
 	public void shouldGetAll() throws Exception {
 		String allRaxaAlerts = controller.getAllRaxaAlerts(request, response);
 		Assert.assertEquals(1, ((ArrayList) SimpleObject.parseJson(allRaxaAlerts).get("results")).size());
+	}
+	
+	/**
+	 * @see RaxaAlertController#searchByProviderRecipient(String, HttpServeletRequest, HttpServletResponse)
+	 * @throws Exception
+	 */
+	@Test
+	public void searchByProviderRecipient_shouldGetAlertsByProvider() throws Exception {
+		String results = controller.searchByProviderRecipient("68547121-1b70-465e-99ee-c9df45jf9j32", request);
+		LinkedHashMap raxaAlert = (LinkedHashMap) ((ArrayList) SimpleObject.parseJson(results).get("results")).get(0);
+		System.out.println(Context.getProviderService().getProvider(1).getUuid());
+		Assert.assertEquals("TestAlert1", raxaAlert.get("name"));
 	}
 	
 	/**

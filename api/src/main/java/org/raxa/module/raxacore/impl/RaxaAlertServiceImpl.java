@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.raxa.module.raxacore.RaxaAlert;
 import org.raxa.module.raxacore.RaxaAlertService;
@@ -165,8 +166,11 @@ public class RaxaAlertServiceImpl implements RaxaAlertService {
 	
 	@Override
 	public List<RaxaAlert> getRaxaAlertByProviderSentUuid(String providerSentUuid, boolean includeSeen) {
-		return dao.getRaxaAlertByProviderSentId(Context.getProviderService().getProviderByUuid(providerSentUuid).getId(),
-		    includeSeen);
+		Provider p = Context.getProviderService().getProviderByUuid(providerSentUuid);
+		if (p == null) {
+			return new ArrayList<RaxaAlert>();
+		}
+		return dao.getRaxaAlertByProviderSentId(p.getId(), includeSeen);
 	}
 	
 	@Override

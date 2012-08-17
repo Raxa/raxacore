@@ -32,6 +32,7 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudController;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.raxa.module.raxacore.RaxaAlert;
 import org.raxa.module.raxacore.RaxaAlertService;
@@ -198,8 +199,8 @@ public class RaxaAlertController {
 	@RequestMapping(method = RequestMethod.GET, params = "providerRecipient")
 	@WSDoc("Fetch all non-retired alerts according to providerRecipient")
 	@ResponseBody()
-	public String searchByPatient(@RequestParam("providerRecipient") String providerRecipient, HttpServletRequest request)
-	        throws ResponseException {
+	public String searchByProviderRecipient(@RequestParam("providerRecipient") String providerRecipient,
+	        HttpServletRequest request) throws ResponseException {
 		initRaxaAlertController();
 		return alertListToJson(service.getRaxaAlertByProviderRecipientUuid(providerRecipient, false));
 	}
@@ -258,3 +259,28 @@ public class RaxaAlertController {
 	}
 	
 }
+//Currently a bug exists in serializer that won't allow us to use resources automatically
+////http://tickets.openmrs.org/browse/TRUNK-2205
+//@Controller
+//@RequestMapping(value = "/rest/v1/raxacore/raxaalert")
+//public class RaxaAlertController extends BaseCrudController<RaxaAlertResource> {
+//	
+//	/**
+//	 * Fetch encounters for a given patient
+//	 * @param patientUniqueId
+//	 * @param request
+//	 * @param response
+//	 * @return encounters for the given patient
+//	 * @throws ResponseException
+//	 */
+//	@RequestMapping(method = RequestMethod.GET, params = "provider")
+//	@WSDoc("Fetch all non-retired alerts for a provider with the given uuid")
+//	@ResponseBody
+//	public SimpleObject searchByPatient(@RequestParam("provider") String providerUniqueId, HttpServletRequest request,
+//	        HttpServletResponse response) throws ResponseException {
+//		RaxaAlertResource raxaAlertResource = getResource();
+//		RequestContext context = RestUtil.getRequestContext(request);
+//		return raxaAlertResource.getRaxaAlertsByProvider(providerUniqueId, context);
+//	}
+//};
+//
