@@ -72,6 +72,9 @@ public class DrugInventoryController extends BaseRestController {
 		//drugInventory.setDescription(post.get("description").toString());
 		drugInventory.setUuid(post.get("uuid").toString());
 		drugInventory.setDrugId(Integer.parseInt(post.get("drugId").toString()));
+		
+		drugInventory.setDrug(Context.getConceptService().getDrug(Integer.parseInt(post.get("drugId").toString())));
+		
 		drugInventory.setQuantity(Integer.parseInt(post.get("quantity").toString()));
 		drugInventory.setDateCreated(new Date());
 		drugInventory.setCreator(new User());
