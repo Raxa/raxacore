@@ -53,7 +53,6 @@ public class HibernateDrugInventoryDAOTest extends BaseModuleContextSensitiveTes
 		DrugInventory dInventory = new DrugInventory();
 		//NOTE: never set Id, will be generated automatically (when saving)
 		
-		
 		dInventory.setName("TestList6");
 		dInventory.setDescription("Third Test List");
 		dInventory.setCreator(Context.getUserContext().getAuthenticatedUser());
@@ -81,7 +80,7 @@ public class HibernateDrugInventoryDAOTest extends BaseModuleContextSensitiveTes
 	
 	@Test
 	public void testDeleteDrugInventory() {
-		DrugInventory dInventory=new DrugInventory();
+		DrugInventory dInventory = new DrugInventory();
 		dInventory.setName("TestList6");
 		dInventory.setDescription("Third Test List");
 		dInventory.setCreator(Context.getUserContext().getAuthenticatedUser());
@@ -99,17 +98,17 @@ public class HibernateDrugInventoryDAOTest extends BaseModuleContextSensitiveTes
 		dInventory.setLocationId(1);
 		dInventory.setDrugPurchaseOrderId(14);
 		dInventory.setOriginalQuantity(20);
-
+		
 		dao.deleteDrugInventory(dInventory);
 		
-		DrugInventory result=dao.getDrugInventoryByUuid("68547121-1b70-465c-99ee-c9dfd95e7d34");
-		assertEquals(result,null);
+		DrugInventory result = dao.getDrugInventoryByUuid("68547121-1b70-465c-99ee-c9dfd95e7d34");
+		assertEquals(result, null);
 		
 	}
 	
 	@Test
 	public void testGetDrugInventoryByUuid() {
-		DrugInventory result=dao.getDrugInventoryByUuid("68547121-1b70-465c-99ee-c9dfd95e7d36");
+		DrugInventory result = dao.getDrugInventoryByUuid("68547121-1b70-465c-99ee-c9dfd95e7d36");
 		String name = result.getName();
 		assertEquals(name, "TestList6");
 		
@@ -131,12 +130,11 @@ public class HibernateDrugInventoryDAOTest extends BaseModuleContextSensitiveTes
 	
 	@Test
 	public void testUpdateDrugInventory() {
-		DrugInventory dInventory=dao.getDrugInventoryByUuid("68547121-1b70-465c-99ee-c9dfd95e7d36");
+		DrugInventory dInventory = dao.getDrugInventoryByUuid("68547121-1b70-465c-99ee-c9dfd95e7d36");
 		dInventory.setName("new test list");
 		dao.updateDrugInventory(dInventory);
-		String name=dao.getDrugInventoryByUuid("68547121-1b70-465c-99ee-c9dfd95e7d36").getName();
+		String name = dao.getDrugInventoryByUuid("68547121-1b70-465c-99ee-c9dfd95e7d36").getName();
 		assertEquals(name, "new test list");
-
 		
 	}
 	

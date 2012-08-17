@@ -52,7 +52,7 @@ public class HibernateDrugInventoryDAO implements DrugInventoryDAO {
 		
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DrugInventory.class);
 		criteria.add(Restrictions.eq("uuid", uuid));
-		System.out.println("///////"+criteria.uniqueResult());
+		System.out.println("///////" + criteria.uniqueResult());
 		return (DrugInventory) criteria.uniqueResult();
 	}
 	

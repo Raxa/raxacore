@@ -39,7 +39,8 @@ public class HibernateDrugPurchaseOrderDAO implements DrugPurchaseOrderDAO {
 	
 	public DrugPurchaseOrder saveDrugPurchaseOrder(DrugPurchaseOrder drugPurchaseOrder) {
 		
-		sessionFactory.getCurrentSession().saveOrUpdate(drugPurchaseOrder);
+		//sessionFactory.getCurrentSession().saveOrUpdate(drugPurchaseOrder);  //did not work 
+		sessionFactory.getCurrentSession().merge(drugPurchaseOrder);
 		return drugPurchaseOrder;
 	}
 	

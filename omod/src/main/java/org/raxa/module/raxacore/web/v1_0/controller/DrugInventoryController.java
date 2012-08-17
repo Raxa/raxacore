@@ -21,6 +21,8 @@ import com.google.gson.GsonBuilder;
 import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestUtil;
@@ -69,9 +71,11 @@ public class DrugInventoryController extends BaseRestController {
 		//drugInventory.setName(post.get("name").toString());
 		//drugInventory.setDescription(post.get("description").toString());
 		drugInventory.setUuid(post.get("uuid").toString());
-		drugInventory.setDrugId(Integer.parseInt(post.get("DrugId").toString()));
+		drugInventory.setDrugId(Integer.parseInt(post.get("drugId").toString()));
 		drugInventory.setQuantity(Integer.parseInt(post.get("quantity").toString()));
 		drugInventory.setDateCreated(new Date());
+		drugInventory.setCreator(new User());
+		drugInventory.setRetired(false);
 		if (post.get("originalQuantity") != null) {
 			drugInventory.setOriginalQuantity(Integer.parseInt(post.get("originalQuantity").toString()));
 		}
@@ -93,14 +97,25 @@ public class DrugInventoryController extends BaseRestController {
 		if (post.get("locationId") != null) {
 			drugInventory.setLocationId(Integer.parseInt(post.get("locationId").toString()));
 		}
-		if (post.get("drugPurchaseOrderId") != null) {}
-		
-		DrugInventory created = service.saveDrugInventory(drugInventory);
-		SimpleObject obj = new SimpleObject();
-		obj.add("uuid", created.getUuid());
-		obj.add("drugId", created.getDrugId());
-		obj.add("quantity", created.getQuantity());
+		if (post.get("drugPurchaseOrderId") != null) {
+			drugInventory.setDrugPurchaseOrderId(Integer.parseInt(post.get("drugPurchaseOrderId").toString()));
+		}
+		DrugInventory created;
+		SimpleObject obj = obj = new SimpleObject();
+		;
+		try {
+			created = service.saveDrugInventory(drugInventory);
+			
+			obj.add("uuid", created.getUuid());
+			obj.add("drugId", created.getDrugId());
+			obj.add("quantity", created.getQuantity());
+		}
+		catch (Exception e) {
+			System.out.println("helllloooooo errroorr ocuuured");
+			e.printStackTrace();
+		}
 		return RestUtil.created(response, obj);
+		
 	}
 	
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)

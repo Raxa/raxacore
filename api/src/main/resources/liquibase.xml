@@ -134,7 +134,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-07-27_create_drug_purchase_order_v3"
+        id="2012-07-27_create_drug_purchase_order_ver5"
         author="Abhishek,Jatin,Praneet" >
 
         <preConditions onFail="MARK_RAN" >
@@ -252,7 +252,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-07-27_add_constraints_to_drug_purchase_order_v2"
+        id="2012-07-27_add_constraints_to_drug_purchase_order_ver5"
         author="Abhishek,Jatin,Praneet" >
 
         <preConditions onFail="MARK_RAN" >
@@ -301,7 +301,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-07-27_create_drug_inventory_resource_v3"
+        id="2012-07-27_create_drug_inventory_resource_ver5"
         author="Abhishek,Jatin,Praneet" >
 
         <preConditions onFail="MARK_RAN" >
@@ -454,7 +454,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-07-27_add_constraints_to_drug_inventory_resource_v2"
+        id="2012-07-27_add_constraints_to_drug_inventory_resource_ver5"
         author="Abhishek,Jatin,Praneet" >
 
         <preConditions onFail="MARK_RAN" >
