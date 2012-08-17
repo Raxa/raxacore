@@ -12,14 +12,17 @@ package org.raxa.module.raxacore.db.hibernate;
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Obs;
+import org.openmrs.api.ObsService;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.raxa.module.raxacore.RaxaAlert;
 import org.raxa.module.raxacore.db.RaxaAlertDAO;
@@ -84,19 +87,25 @@ public class HibernateRaxaAlertDAO implements RaxaAlertDAO {
 	 * @see org.raxa.module.db.RaxaAlertDAO#getRaxaAlertByName(String)
 	 */
 	@Override
-	public RaxaAlert getRaxaAlertByName(String name) throws DAOException {
+	public List<RaxaAlert> getRaxaAlertByName(String name, boolean includeSeen) throws DAOException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(RaxaAlert.class);
 		criteria.add(Restrictions.eq("name", name));
-		return (RaxaAlert) criteria.uniqueResult();
+		if (includeSeen == false)
+			criteria.add(Restrictions.eq("seen", false));
+		List<RaxaAlert> alerts = new ArrayList<RaxaAlert>();
+		alerts.addAll(criteria.list());
+		return alerts;
 	}
 	
 	/**
 	 * @see org.raxa.module.db.RaxaAlertDAO#getRaxaAlertByAlertType(String)
 	 */
 	@Override
-	public List<RaxaAlert> getRaxaAlertByAlertType(String alertType) throws DAOException {
+	public List<RaxaAlert> getRaxaAlertByAlertType(String alertType, boolean includeSeen) throws DAOException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(RaxaAlert.class);
 		criteria.add(Restrictions.like("alertType", alertType));
+		if (includeSeen == false)
+			criteria.add(Restrictions.eq("seen", false));
 		List<RaxaAlert> alerts = new ArrayList<RaxaAlert>();
 		alerts.addAll(criteria.list());
 		return alerts;
@@ -106,9 +115,11 @@ public class HibernateRaxaAlertDAO implements RaxaAlertDAO {
 	 * @see org.raxa.module.db.RaxaAlertDAO#getRaxaAlertByPatientId(Integer)
 	 */
 	@Override
-	public List<RaxaAlert> getRaxaAlertByPatientId(Integer patientId) throws DAOException {
+	public List<RaxaAlert> getRaxaAlertByPatientId(Integer patientId, boolean includeSeen) throws DAOException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(RaxaAlert.class);
 		criteria.add(Restrictions.eq("patientId", patientId));
+		if (includeSeen == false)
+			criteria.add(Restrictions.eq("seen", false));
 		List<RaxaAlert> alerts = new ArrayList<RaxaAlert>();
 		alerts.addAll(criteria.list());
 		return alerts;
@@ -118,9 +129,11 @@ public class HibernateRaxaAlertDAO implements RaxaAlertDAO {
 	 * @see org.raxa.module.db.RaxaAlertDAO#getRaxaAlertByProviderSentId(Integer)
 	 */
 	@Override
-	public List<RaxaAlert> getRaxaAlertByProviderSentId(Integer providerSentId) throws DAOException {
+	public List<RaxaAlert> getRaxaAlertByProviderSentId(Integer providerSentId, boolean includeSeen) throws DAOException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(RaxaAlert.class);
 		criteria.add(Restrictions.eq("providerSentId", providerSentId));
+		if (includeSeen == false)
+			criteria.add(Restrictions.eq("seen", false));
 		List<RaxaAlert> alerts = new ArrayList<RaxaAlert>();
 		alerts.addAll(criteria.list());
 		return alerts;
@@ -130,9 +143,12 @@ public class HibernateRaxaAlertDAO implements RaxaAlertDAO {
 	 * @see org.raxa.module.db.RaxaAlertDAO#getRaxaAlertByProviderRecipientId(Integer)
 	 */
 	@Override
-	public List<RaxaAlert> getRaxaAlertByProviderRecipientId(Integer providerRecipientId) throws DAOException {
+	public List<RaxaAlert> getRaxaAlertByProviderRecipientId(Integer providerRecipientId, boolean includeSeen)
+	        throws DAOException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(RaxaAlert.class);
 		criteria.add(Restrictions.eq("providerRecipientId", providerRecipientId));
+		if (includeSeen == false)
+			criteria.add(Restrictions.eq("seen", false));
 		List<RaxaAlert> alerts = new ArrayList<RaxaAlert>();
 		alerts.addAll(criteria.list());
 		return alerts;
@@ -144,9 +160,8 @@ public class HibernateRaxaAlertDAO implements RaxaAlertDAO {
 	@Override
 	public List<RaxaAlert> getAllRaxaAlerts(boolean includeSeen) throws DAOException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(RaxaAlert.class);
-		if (includeSeen == false) {
+		if (includeSeen == false)
 			criteria.add(Restrictions.eq("seen", false));
-		}
 		return criteria.list();
 	}
 	
@@ -168,4 +183,20 @@ public class HibernateRaxaAlertDAO implements RaxaAlertDAO {
 		return raxaAlert;
 	}
 	
+	/**
+	 * @see org.raxa.module.db.RaxaAlertDAO#voidRaxaAlert(RaxaAlert)
+	 */
+	@Override
+	public RaxaAlert voidRaxaAlert(RaxaAlert raxaAlert, String reason) {
+		if (reason == null) {
+			throw new IllegalArgumentException("The argument 'reason' is required and so cannot be null");
+		}
+		
+		raxaAlert.setVoided(true);
+		raxaAlert.setVoidedBy(Context.getAuthenticatedUser());
+		raxaAlert.setDateVoided(new Date());
+		raxaAlert.setVoidReason(reason);
+		saveRaxaAlert(raxaAlert);
+		return raxaAlert;
+	}
 }

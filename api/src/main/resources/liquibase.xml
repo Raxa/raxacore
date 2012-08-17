@@ -83,9 +83,7 @@
             <column name="description" type="varchar(2000)"/>
             <column name="time" type="DATETIME"/>
             <column defaultValueBoolean="false" name="seen" type="BOOLEAN"/>
-            <column name="patient_id" type="int">
-                <constraints nullable="false"/>
-            </column>
+            <column name="patient_id" type="int"/>
             <column name="provider_sent_id" type="int">
                 <constraints nullable="false"/>
             </column>
@@ -106,9 +104,7 @@
             <column name="date_voided" type="DATETIME"/>
             <column name="void_reason" type="varchar(255)"/>
             <column name="changed_by" type="int"/>
-            <column name="date_changed" type="DATETIME">
-                <constraints unique="true" nullable="false"/>
-            </column>
+            <column name="date_changed" type="DATETIME"/>
         </createTable>
     </changeSet>
  
@@ -173,10 +169,8 @@
             <column name="date_voided" type="DATETIME"/>
             <column name="void_reason" type="varchar(255)"/>
             <column name="changed_by" type="int"/>
-            <column name="date_changed" type="DATETIME">
-                <constraints unique="true" nullable="false"/>
-            </column>
+            <column name="date_changed" type="DATETIME"/>
         </createTable>
     </changeSet>
- 
+
 </databaseChangeLog>

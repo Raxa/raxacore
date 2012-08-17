@@ -3,21 +3,18 @@ package org.raxa.module.raxacore;
 /**
  * Copyright 2012, Raxa
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
-
 import java.io.Serializable;
 import java.util.*;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openmrs.BaseOpenmrsData;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
@@ -41,8 +38,6 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	
 	private Date time;
 	
-	private Set<Obs> obs;
-	
 	private String defaultTask;
 	
 	private Provider providerSent;
@@ -56,8 +51,9 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	public RaxaAlert() {
 	}
 	
-	/** Sets id
-	 * 
+	/**
+	 * Sets id
+	 *
 	 * @param id: id to set
 	 */
 	@Override
@@ -65,8 +61,9 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 		setRaxaAlertId(id);
 	}
 	
-	/** Gets id
-	 * 
+	/**
+	 * Gets id
+	 *
 	 * @return the RaxaAlertId
 	 */
 	@Override
@@ -74,8 +71,9 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 		return getRaxaAlertId();
 	}
 	
-	/** Compares two RaxaAlert objects for similarity
-	 * 
+	/**
+	 * Compares two RaxaAlert objects for similarity
+	 *
 	 * @param obj RaxaAlert object to compare to
 	 * @return boolean true/false whether or not they are the same objects
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -89,8 +87,9 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	public boolean equals(Object obj) {
 		if (obj instanceof RaxaAlert) {
 			RaxaAlert pList = (RaxaAlert) obj;
-			if (this.getRaxaAlertId() != null && pList.getRaxaAlertId() != null)
+			if (this.getRaxaAlertId() != null && pList.getRaxaAlertId() != null) {
 				return (this.getRaxaAlertId().equals(pList.getRaxaAlertId()));
+			}
 		}
 		return this == obj;
 	}
@@ -103,8 +102,9 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	 */
 	@Override
 	public int hashCode() {
-		if (this.getRaxaAlertId() == null)
+		if (this.getRaxaAlertId() == null) {
 			return super.hashCode();
+		}
 		return this.getRaxaAlertId().hashCode();
 	}
 	
@@ -207,110 +207,6 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	}
 	
 	/**
-	 * @return Returns a Set<Obs> of all non-voided, non-obsGroup children Obs of this Alert
-	 * @should not return null with null obs set
-	 * @should get obs
-	 * @should not get voided obs
-	 * @should only get child obs
-	 * @should not get child obs if child also on Alert
-	 * @should get both child and parent obs after removing child from parent grouping
-	 * @should get obs with two levels of hierarchy
-	 * @should get obs with three levels of hierarchy
-	 * @should not get voided obs with three layers of hierarchy
-	 */
-	public Set<Obs> getObs() {
-		Set<Obs> ret = new HashSet<Obs>();
-		if (this.obs != null) {
-			for (Obs o : this.obs)
-				ret.addAll(getObsLeaves(o));
-			// this should be all thats needed unless the alert has been built by hand
-			//if (o.isVoided() == false && o.isObsGrouping() == false)
-			//      ret.add(o);
-		}
-		return ret;
-	}
-	
-	/**
-	 * Convenience method to recursively get all leaf obs of this Alert. This method goes down
-	 * into each obs and adds all non-grouping obs to the return list
-	 * 
-	 * @param obsParent current obs to loop over
-	 * @return list of leaf obs
-	 */
-	private List<Obs> getObsLeaves(Obs obsParent) {
-		List<Obs> leaves = new ArrayList<Obs>();
-		if (obsParent.hasGroupMembers()) {
-			for (Obs child : obsParent.getGroupMembers()) {
-				if (child.isVoided() == false) {
-					if (child.isObsGrouping() == false)
-						leaves.add(child);
-					else
-						// recurse if this is a grouping obs
-						leaves.addAll(getObsLeaves(child));
-				}
-			}
-		} else if (obsParent.isVoided() == false) {
-			leaves.add(obsParent);
-		}
-		return leaves;
-	}
-	
-	/**
-	 * Returns all Obs where Obs.encounterId = Encounter.encounterId In practice, this method should
-	 * not be used very often...
-	 *
-	 * @param includeVoided specifies whether or not to include voided Obs
-	 * @return Returns the all Obs.
-	 * @should not return null with null obs set
-	 * @should get obs
-	 * @should get both parent and child obs
-	 * @should get both parent and child with child directly
-	 * @should get both child and parent obs after removing child from parent grouping
-	 */
-	public Set<Obs> getAllObs(boolean includeVoided) {
-		if (includeVoided && obs != null)
-			return obs;
-		Set<Obs> ret = new HashSet<Obs>();
-		if (this.obs != null) {
-			for (Obs o : this.obs) {
-				if (includeVoided)
-					ret.add(o);
-				else if (!o.isVoided())
-					ret.add(o);
-			}
-		}
-		return ret;
-	}
-	
-	/**
-	 * Returns a Set<Obs> of all root-level Obs of an Alert, including obsGroups
-	 * 
-	 * @param includeVoided specifies whether or not to include voided Obs
-	 * @return Returns all obs at top level -- will not be null
-	 * @should not return null with null obs set
-	 * @should get obs
-	 * @should not get voided obs
-	 * @should only get parents obs
-	 * @should only return the grouped top level obs
-	 * @should get both child and parent obs after removing child from parent grouping
-	 */
-	public Set<Obs> getObsAtTopLevel(boolean includeVoided) {
-		Set<Obs> ret = new HashSet<Obs>();
-		for (Obs o : getAllObs(includeVoided)) {
-			if (o.getObsGroup() == null)
-				ret.add(o);
-		}
-		return ret;
-	}
-	
-	/**
-	 * @param obs The obs to set.
-	 */
-	public void setObs(Set<Obs> obs) {
-		this.obs = obs;
-	}
-	
-	/**
 	 * @return the defaultTask
 	 */
 	public String getDefaultTask() {
@@ -392,6 +288,18 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	 */
 	public void setProviderRecipient(Provider providerRecipient) {
 		this.providerRecipient = providerRecipient;
+	}
+	
+	/**
+	 * This function overrides a function in BaseOpenmrsData just to add JsonIgnore---
+	 * The serializer doesn't know what to do with both isVoided() and getVoided()
+	 * So we add it here so it ignores getVoided() and uses isVoided()
+	 * @return whether this Raxa Alert is voided
+	 */
+	@Override
+	@JsonIgnore
+	public Boolean getVoided() {
+		return isVoided();
 	}
 	
 }
