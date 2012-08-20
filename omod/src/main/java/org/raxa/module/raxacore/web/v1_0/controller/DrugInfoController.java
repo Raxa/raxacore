@@ -1,0 +1,291 @@
+package org.raxa.module.raxacore.web.v1_0.controller;
+
+/**
+ * Copyright 2012, Raxa
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+import com.google.common.base.Joiner;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.Drug;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
+import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
+import org.raxa.module.raxacore.DrugInfo;
+import org.raxa.module.raxacore.DrugInfoService;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+/**
+ * Controller for REST web service access to the DrugInfo resource.
+ */
+@Controller
+@RequestMapping(value = "/rest/v1/raxacore/druginfo")
+public class DrugInfoController extends BaseRestController {
+	
+	DrugInfoService service;
+	
+	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+	
+	Gson gson = new GsonBuilder().serializeNulls().create();
+	
+	private static final String[] REF = { "uuid", "name", "description", "price", "cost" };
+	
+	public void initDrugInfoController() {
+		service = Context.getService(DrugInfoService.class);
+	}
+	
+	//<editor-fold defaultstate="collapsed" desc="getResourceVersion">
+	/**
+	 * Returns the Resource Version
+	 */
+	private String getResourceVersion() {
+		return "1.0";
+	}
+	
+	//</editor-fold>
+	//<editor-fold defaultstate="collapsed" desc="POST - Without Params (i.e., create)">
+	/**
+	 * Create new drug info by POST'ing atleast name and description property in
+	 * the request body.
+	 *
+	 * @param post the body of the POST request
+	 * @param request
+	 * @param response
+	 * @return 201 response status and DrugInfo object
+	 * @throws ResponseException
+	 */
+	@RequestMapping(method = RequestMethod.POST)
+	@WSDoc("Save New DrugInfo")
+	@ResponseBody
+	public Object createNewDrugInfo(@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
+	        throws ResponseException {
+		initDrugInfoController();
+		DrugInfo drugInfo = new DrugInfo();
+		
+		// TODO: how to retrieve the real Drug from OpenMRS so we check
+		// if it actually exists?
+		Drug drug = new Drug();
+		drug.setId(Integer.parseInt(post.get("drug_id").toString()));
+		drugInfo.setDrug(drug);
+		drugInfo.setDrugId(drug.getId());
+		
+		// add data that was sent in the POST payload
+		updateDrugInfoFieldsFromPostData(drugInfo, post);
+		
+		// save new object and prepare response
+		DrugInfo drugInfoJustCreated = service.saveDrugInfo(drugInfo);
+		return RestUtil.created(response, getDrugInfoAsSimpleObject(drugInfoJustCreated));
+	}
+	
+	//</editor-fold>
+	//<editor-fold defaultstate="collapsed" desc="POST - Update List">
+	/**
+	 * Updates the Drug Info by making a POST call with uuid in URL and
+	 *
+	 * @param uuid the uuid for the drug info resource
+	 * @param post
+	 * @param request
+	 * @param response
+	 * @return 200 response status
+	 * @throws ResponseException
+	 */
+	@RequestMapping(value = "/{uuid}", method = RequestMethod.POST)
+	@WSDoc("Updates an existing drug info")
+	@ResponseBody
+	public Object updateDrugInfo(@PathVariable("uuid") String uuid, @RequestBody SimpleObject post,
+	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+		initDrugInfoController();
+		updateDrugInfoFieldsFromPostData(service.getDrugInfoByUuid(uuid), post);
+		return RestUtil.noContent(response);
+	}
+	
+	private void updateDrugInfoFieldsFromPostData(DrugInfo drugInfo, SimpleObject post) {
+		if (post.get("name") != null) {
+			drugInfo.setName(post.get("name").toString());
+		}
+		if (post.get("description") != null) {
+			drugInfo.setDescription(post.get("description").toString());
+		}
+		if (post.get("price") != null) {
+			drugInfo.setPrice(Double.parseDouble(post.get("price").toString()));
+		}
+		if (post.get("cost") != null) {
+			drugInfo.setCost(Double.parseDouble(post.get("cost").toString()));
+		}
+	}
+	
+	private SimpleObject getDrugInfoAsSimpleObject(DrugInfo drugInfo) {
+		SimpleObject obj = new SimpleObject();
+		obj.add("uuid", drugInfo.getUuid());
+		obj.add("name", drugInfo.getName());
+		obj.add("description", drugInfo.getDescription());
+		obj.add("price", drugInfo.getPrice());
+		obj.add("cost", drugInfo.getCost());
+		return obj;
+	}
+	
+	//</editor-fold>
+	//<editor-fold defaultstate="collapsed" desc="GET all">
+	/**
+	 * Get all the unretired drug info (as REF representation) in the system
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ResponseException
+	 */
+	@RequestMapping(method = RequestMethod.GET)
+	@WSDoc("Get All Unretired Drug Info in the system")
+	@ResponseBody()
+	public String getAllDrugInfo(HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+		initDrugInfoController();
+		List<DrugInfo> allDrugInfo = service.getAllDrugInfo(false);
+		ArrayList results = new ArrayList();
+		for (DrugInfo drugInfo : allDrugInfo) {
+			results.add(getDrugInfoAsSimpleObject(drugInfo));
+		}
+		return gson.toJson(new SimpleObject().add("results", results));
+	}
+	
+	//</editor-fold>
+	//<editor-fold defaultstate="collapsed" desc="GET by uuid - DEFAULT REP">
+	/**
+	 * Get the DrugInfo
+	 *
+	 * @param uuid
+	 * @param request
+	 * @return
+	 * @throws ResponseException
+	 */
+	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
+	@WSDoc("Gets Drug Info for the uuid path")
+	@ResponseBody()
+	public String getAllDrugInfoByUuid(@PathVariable("uuid") String uuid, HttpServletRequest request)
+	        throws ResponseException {
+		initDrugInfoController();
+		DrugInfo drugInfo = service.getDrugInfoByUuid(uuid);
+		return gson.toJson(getDrugInfoAsSimpleObject(drugInfo));
+	}
+	
+	//</editor-fold>
+	//<editor-fold defaultstate="collapsed" desc="GET by uuid - FULL REP">
+	/**
+	 * Get the drug info as FULL representation
+	 *
+	 * @param uuid
+	 * @param rep
+	 * @param request
+	 * @return
+	 * @throws ResponseException
+	 */
+	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET, params = "v")
+	@WSDoc("Gets Full representation of Drug Info for the uuid path")
+	@ResponseBody()
+	public String getAllDrugInfoByUuidFull(@PathVariable("uuid") String uuid, @RequestParam("v") String rep,
+	        HttpServletRequest request) throws ResponseException {
+		initDrugInfoController();
+		DrugInfo drugInfo = service.getDrugInfoByUuid(uuid);
+		SimpleObject obj = getDrugInfoAsSimpleObject(drugInfo);
+		if (rep.equals("full")) {
+			obj.add("retired", drugInfo.getRetired());
+			if (drugInfo.getRetired()) {
+				obj.add("retiredBy", drugInfo.getRetiredBy().getUuid());
+				obj.add("retireReason", drugInfo.getRetireReason());
+			}
+			SimpleObject auditInfo = new SimpleObject();
+			auditInfo.add("creator", drugInfo.getCreator().getUuid());
+			auditInfo.add("dateCreated", df.format(drugInfo.getDateCreated()));
+			if (drugInfo.getChangedBy() != null) {
+				auditInfo.add("changedBy", drugInfo.getChangedBy().getUuid());
+				auditInfo.add("dateChanged", df.format(drugInfo.getDateChanged()));
+			}
+			obj.add("auditInfo", auditInfo);
+		}
+		obj.add("resourceVersion", getResourceVersion());
+		return gson.toJson(obj);
+	}
+	
+	//</editor-fold>
+	//<editor-fold defaultstate="collapsed" desc="DELETE - Retire DrugInfo">
+	/**
+	 * Retires the drug info resource by making a DELETE call with the '!purge'
+	 * param
+	 *
+	 * @param uuid
+	 * @param reason
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws ResponseException
+	 */
+	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "!purge")
+	@WSDoc("Retires the Drug Info")
+	@ResponseBody
+	public Object retireDrugInfo(@PathVariable("uuid") String uuid,
+	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
+	        HttpServletResponse response) throws ResponseException {
+		initDrugInfoController();
+		DrugInfo drugInfo = service.getDrugInfoByUuid(uuid);
+		if (drugInfo != null) {
+			drugInfo.setRetired(true);
+			drugInfo.setRetireReason(reason);
+			drugInfo.setRetiredBy(Context.getAuthenticatedUser());
+			service.updateDrugInfo(drugInfo);
+		}
+		return RestUtil.noContent(response);
+	}
+	
+	//</editor-fold>
+	//<editor-fold defaultstate="collapsed" desc="DELETE - Purge DrugInfo">
+	/**
+	 * Purges (Complete Delete) the drug info resource by making a DELETE call
+	 * and passing the 'purge' param
+	 *
+	 * @param uuid
+	 * @param request
+	 * @param response
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "purge")
+	@ResponseBody
+	public Object purgeDrugInfo(@PathVariable("uuid") String uuid, HttpServletRequest request, HttpServletResponse response)
+	        throws ResponseException {
+		initDrugInfoController();
+		DrugInfo drugInfo = service.getDrugInfoByUuid(uuid);
+		if (drugInfo != null) {
+			service.deleteDrugInfo(drugInfo);
+		}
+		return RestUtil.noContent(response);
+	}
+	//</editor-fold>
+}

@@ -89,22 +89,22 @@
         </property>
     </bean>
     
-    <bean id="org.raxa.module.raxacore.db.hibernate.HibernateDrugGroupDAO" class="org.raxa.module.raxacore.db.hibernate.HibernateDrugGroupDAO">
+    <bean id="org.raxa.module.raxacore.db.hibernate.HibernateDrugInfoDAO" class="org.raxa.module.raxacore.db.hibernate.HibernateDrugInfoDAO">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>
-                <value>org.raxa.module.raxacore.DrugGroupService</value>
+                <value>org.raxa.module.raxacore.DrugInfoService</value>
                 <bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
                     <property name="transactionManager">
                         <ref bean="transactionManager"/>
                     </property>
                     <property name="target">
-                        <bean class="org.raxa.module.raxacore.impl.DrugGroupServiceImpl"> 
-                            <property name="DrugGroupDAO"> 
-                                <bean class="org.raxa.module.raxacore.db.hibernate.HibernateDrugGroupDAO">
+                        <bean class="org.raxa.module.raxacore.impl.DrugInfoServiceImpl"> 
+                            <property name="DrugInfoDAO"> 
+                                <bean class="org.raxa.module.raxacore.db.hibernate.HibernateDrugInfoDAO">
                                     <property name="sessionFactory">
                                         <ref bean="sessionFactory"/>
                                     </property>
