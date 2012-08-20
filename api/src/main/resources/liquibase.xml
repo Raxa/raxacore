@@ -256,7 +256,21 @@
             <column name="retire_reason" type="varchar(255)"/>
             <column name="uuid" type="char(38)">
                 <constraints unique="true" nullable="false"/>
-            </column>            
+            </column>   
         </createTable>
     </changeSet>    
+    
+    <changeSet id="2012-08-20_add_constraints_to_raxacore_drug_info" author="diegodayan">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="raxacore_drug_info"/>
+        </preConditions>
+        <comment>
+            Adding constraints for auditing drug_info
+        </comment>
+        <addForeignKeyConstraint baseTableName="raxacore_drug_info" 
+                                 baseColumnNames="drug_id" 
+                                 constraintName="FK_raxacore_drug_info_drug_id_drug_drug_id" 
+                                 referencedTableName="drug" 
+                                 referencedColumnNames="drug_id"/>
+    </changeSet>  
 </databaseChangeLog>
