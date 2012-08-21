@@ -8,6 +8,7 @@
             <generator class="native"/>
         </id>
         <property name="drugId"       type="java.lang.Integer" column="drug_id" insert="false" update="false"/>
+        <!-- relationship below should be one-to-one but we won't change OpenMRS Drug class so we use many-to-one -->
         <many-to-one name="drug"      class="org.openmrs.Drug" column="drug_id" not-null="true" unique="true" />
         <property name="price"        type="double"            column="price" />
         <property name="cost"         type="double"            column="cost" />
