@@ -123,6 +123,7 @@ public class DrugInfo extends BaseOpenmrsMetadata implements Serializable {
 	 */
 	public void setDrug(Drug drug) {
 		this.drug = drug;
+		this.drugId = drug.getId();
 	}
 	
 	/**

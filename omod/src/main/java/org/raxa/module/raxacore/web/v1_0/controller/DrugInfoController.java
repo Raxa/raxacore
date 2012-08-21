@@ -33,10 +33,12 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
+import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.raxa.module.raxacore.DrugInfo;
 import org.raxa.module.raxacore.DrugInfoService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -90,20 +92,25 @@ public class DrugInfoController extends BaseRestController {
 	public Object createNewDrugInfo(@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		initDrugInfoController();
-		DrugInfo drugInfo = new DrugInfo();
 		
-		// TODO: how to retrieve the real Drug from OpenMRS so we check
-		// if it actually exists?
-		Drug drug = new Drug();
-		drug.setId(Integer.parseInt(post.get("drug_id").toString()));
+		Integer drugId = Integer.parseInt(post.get("drug_id").toString());
+		Drug drug = Context.getConceptService().getDrug(drugId);
+		
+		if (drug == null) {
+			// drug doesn't exist, so we won't create the drug info
+			throw new ObjectNotFoundException();
+		}
+		
+		// create drug info POJO and add required relationship with a Drug
+		DrugInfo drugInfo = new DrugInfo();
 		drugInfo.setDrug(drug);
-		drugInfo.setDrugId(drug.getId());
 		
 		// add data that was sent in the POST payload
 		updateDrugInfoFieldsFromPostData(drugInfo, post);
 		
 		// save new object and prepare response
 		DrugInfo drugInfoJustCreated = service.saveDrugInfo(drugInfo);
+		
 		return RestUtil.created(response, getDrugInfoAsSimpleObject(drugInfoJustCreated));
 	}
 	
@@ -129,21 +136,31 @@ public class DrugInfoController extends BaseRestController {
 		return RestUtil.noContent(response);
 	}
 	
-	private void updateDrugInfoFieldsFromPostData(DrugInfo drugInfo, SimpleObject post) {
-		if (post.get("name") != null) {
-			drugInfo.setName(post.get("name").toString());
+	/**
+	 * Updates attributes of a DrugInfo copying them from a SimpleObject
+	 * @param drugInfo
+	 * @param obj 
+	 */
+	private void updateDrugInfoFieldsFromPostData(DrugInfo drugInfo, SimpleObject obj) {
+		if (obj.get("name") != null) {
+			drugInfo.setName(obj.get("name").toString());
 		}
-		if (post.get("description") != null) {
-			drugInfo.setDescription(post.get("description").toString());
+		if (obj.get("description") != null) {
+			drugInfo.setDescription(obj.get("description").toString());
 		}
-		if (post.get("price") != null) {
-			drugInfo.setPrice(Double.parseDouble(post.get("price").toString()));
+		if (obj.get("price") != null) {
+			drugInfo.setPrice(Double.parseDouble(obj.get("price").toString()));
 		}
-		if (post.get("cost") != null) {
-			drugInfo.setCost(Double.parseDouble(post.get("cost").toString()));
+		if (obj.get("cost") != null) {
+			drugInfo.setCost(Double.parseDouble(obj.get("cost").toString()));
 		}
 	}
 	
+	/**
+	 * Returns a SimpleObject containing some fields of DrugInfo
+	 * @param drugInfo
+	 * @return 
+	 */
 	private SimpleObject getDrugInfoAsSimpleObject(DrugInfo drugInfo) {
 		SimpleObject obj = new SimpleObject();
 		obj.add("uuid", drugInfo.getUuid());
