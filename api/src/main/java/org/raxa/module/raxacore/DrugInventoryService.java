@@ -23,13 +23,14 @@ import org.openmrs.util.PrivilegeConstants;
 import org.raxa.module.raxacore.db.DrugInventoryDAO;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public interface DrugInventoryService extends OpenmrsService {
 	
 	DrugInventory saveDrugInventory(DrugInventory drugInventory);
 	
 	DrugInventory getDrugInventoryByUuid(String uuid);
 	
-	List<DrugInventory> getAllDrugDrugInventories();
+	List<DrugInventory> getAllDrugInventories();
 	
 	List<DrugInventory> getAllDrugInventoriesByStatus(String status);
 	
@@ -38,5 +39,7 @@ public interface DrugInventoryService extends OpenmrsService {
 	void deleteDrugInventory(DrugInventory drugInventory);
 	
 	List<DrugInventory> getDrugInventoryByProvider(Integer providerId);
+	
+	public List<DrugInventory> getDrugInventoriesByLocation(Integer location);
 	
 }

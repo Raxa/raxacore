@@ -49,7 +49,7 @@ public class DrugInventoryResource extends MetadataDelegatingCrudResource<DrugIn
 	
 	@PropertyGetter("druginventory")
 	public List<DrugInventory> getAllDrugInventoryList() {
-		return getDrugInventoryService().getAllDrugDrugInventories();
+		return getDrugInventoryService().getAllDrugInventories();
 	}
 	
 	@Override
@@ -99,7 +99,7 @@ public class DrugInventoryResource extends MetadataDelegatingCrudResource<DrugIn
 	}
 	
 	protected NeedsPaging<DrugInventory> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<DrugInventory>(getDrugInventoryService().getAllDrugDrugInventories(), context);
+		return new NeedsPaging<DrugInventory>(getDrugInventoryService().getAllDrugInventories(), context);
 	}
 	
 	@Override

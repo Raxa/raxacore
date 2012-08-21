@@ -12,7 +12,6 @@ package org.raxa.module.raxacore.db.hibernate;
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
-
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.logging.Log;
@@ -38,7 +37,6 @@ public class HibernateDrugInventoryDAO implements DrugInventoryDAO {
 	}
 	
 	public DrugInventory saveDrugInventory(DrugInventory drugInventory) throws DAOException {
-		
 		sessionFactory.getCurrentSession().saveOrUpdate(drugInventory);
 		return drugInventory;
 	}
@@ -52,7 +50,7 @@ public class HibernateDrugInventoryDAO implements DrugInventoryDAO {
 		
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DrugInventory.class);
 		criteria.add(Restrictions.eq("uuid", uuid));
-		System.out.println("///////"+criteria.uniqueResult());
+		System.out.println("///////" + criteria.uniqueResult());
 		return (DrugInventory) criteria.uniqueResult();
 	}
 	
@@ -88,4 +86,12 @@ public class HibernateDrugInventoryDAO implements DrugInventoryDAO {
 		return drugInventories;
 	}
 	
+	@Override
+	public List<DrugInventory> getDrugInventoriesByLocation(Integer location) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DrugInventory.class);
+		criteria.add(Restrictions.eq("locationId", location));
+		List<DrugInventory> drugInventories = new ArrayList<DrugInventory>();
+		drugInventories.addAll(criteria.list());
+		return drugInventories;
+	}
 }

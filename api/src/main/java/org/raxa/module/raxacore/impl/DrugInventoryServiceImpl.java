@@ -57,7 +57,6 @@ public class DrugInventoryServiceImpl implements DrugInventoryService {
 	
 	@Override
 	public DrugInventory saveDrugInventory(DrugInventory drugInventory) {
-		
 		return dao.saveDrugInventory(drugInventory);
 	}
 	
@@ -68,7 +67,7 @@ public class DrugInventoryServiceImpl implements DrugInventoryService {
 	}
 	
 	@Override
-	public List<DrugInventory> getAllDrugDrugInventories() {
+	public List<DrugInventory> getAllDrugInventories() {
 		
 		return dao.getAllDrugInventories();
 	}
@@ -95,6 +94,11 @@ public class DrugInventoryServiceImpl implements DrugInventoryService {
 	public List<DrugInventory> getDrugInventoryByProvider(Integer providerId) {
 		
 		return dao.getDrugInventoryByProvider(providerId);
+	}
+	
+	@Override
+	public List<DrugInventory> getDrugInventoriesByLocation(Integer location) {
+		return dao.getDrugInventoriesByLocation(location);
 	}
 	
 }

@@ -68,8 +68,7 @@ public class HibernateDrugPurchaseOrderDAOTest extends BaseModuleContextSensitiv
 		
 		DrugPurchaseOrder result = dao.getDrugPurchaseOrderByUuid("68547121-1b70-465c-99ee-c9dfd95e7d31");
 		String name = result.getName();
-		assertEquals(name, "TestList4");
-		
+		assertEquals(name, "Test drug PO");
 	}
 	
 	@Test
@@ -125,5 +124,4 @@ public class HibernateDrugPurchaseOrderDAOTest extends BaseModuleContextSensitiv
 		List<DrugPurchaseOrder> result = dao.getDrugPurchaseOrderByProvider(1);
 		assertEquals(result.size(), 2);
 	}
-	
 }

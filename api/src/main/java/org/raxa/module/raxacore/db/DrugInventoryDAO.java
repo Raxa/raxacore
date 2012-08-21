@@ -36,4 +36,6 @@ public interface DrugInventoryDAO {
 	
 	public List<DrugInventory> getDrugInventoryByProvider(Integer providerId);
 	
+	public List<DrugInventory> getDrugInventoriesByLocation(Integer location);
+	
 }
