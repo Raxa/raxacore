@@ -8,9 +8,11 @@
     <changeSet id="2012-05-10_create_raxacore_patient_list" author="tarangmahajan">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="raxacore_patient_list"/>
+
+                <tableExists tableName="raxacore_patient_list" />
             </not>
         </preConditions>
+
         <comment>
             Schema for raxacore_patient_list table
         </comment>
@@ -45,6 +47,7 @@
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="raxacore_patient_list"/>
         </preConditions>
+
         <comment>
             Adding constraints for auditing PatientList--making sure
             anyone who creates/voids a PatientList table is a user

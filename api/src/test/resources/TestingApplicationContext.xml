@@ -25,6 +25,16 @@
     <bean id="org.raxa.module.raxacore.db.hibernate.HibernatePatientListDAO" class="org.raxa.module.raxacore.db.hibernate.HibernatePatientListDAO">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
+     <bean id="org.raxa.module.raxacore.db.hibernate.HibernateDrugInventoryDAO" class="org.raxa.module.raxacore.db.hibernate.HibernateDrugInventoryDAO">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+
+    
+     <bean id="org.raxa.module.raxacore.db.hibernate.HibernateDrugPurchaseOrderDAO" class="org.raxa.module.raxacore.db.hibernate.HibernateDrugPurchaseOrderDAO">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    
+     
 
     <bean parent="serviceContext">
         <property name="moduleService">
