@@ -273,4 +273,42 @@
                                  referencedTableName="drug" 
                                  referencedColumnNames="drug_id"/>
     </changeSet>  
+    
+    <changeSet id="2012-08-20_create_raxacore_drug_drug_group" author="yan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="raxacore_drug_drug_group"/>
+            </not>
+        </preConditions>
+        <comment>
+            Schema for raxacore_drug_drug_group table
+        </comment>
+        <createTable tableName="raxacore_drug_drug_group">
+            <column name="drug_group_id" type="int">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="drug_id" type="int">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    
+    <changeSet id="2012-08-20_add_constraints_to_raxacore_drug_drug_group" author="yan">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="raxacore_drug_drug_group"/>
+        </preConditions>
+        <comment>
+            Adding constraints for auditing raxacore_drug_drug_group
+        </comment>
+        <addForeignKeyConstraint baseTableName="raxacore_drug_drug_group" 
+                                 baseColumnNames="drug_id" 
+                                 constraintName="FK_raxacore_drug_drug_group_drug_id" 
+                                 referencedTableName="drug" 
+                                 referencedColumnNames="drug_id"/>
+        <addForeignKeyConstraint baseTableName="raxacore_drug_drug_group" 
+                                 baseColumnNames="drug_group_id" 
+                                 constraintName="FK_raxacore_drug_drug_group_drug_group_id" 
+                                 referencedTableName="raxacore_drug_group" 
+                                 referencedColumnNames="drug_group_id"/>
+    </changeSet> 
 </databaseChangeLog>
