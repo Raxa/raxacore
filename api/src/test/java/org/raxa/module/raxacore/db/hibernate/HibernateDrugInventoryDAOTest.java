@@ -140,7 +140,7 @@ public class HibernateDrugInventoryDAOTest extends BaseModuleContextSensitiveTes
 	
 	@Test
 	public void testGetDrugInventoryByProvider() {
-		List<DrugInventory> result = dao.getDrugInventoryByProvider(13);
+		List<DrugInventory> result = dao.getDrugInventoryByProvider(1);
 		assertEquals(result.size(), 1);
 		
 	}

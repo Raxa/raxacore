@@ -117,7 +117,6 @@ public class DrugInventoryControllerTest extends BaseModuleContextSensitiveTest 
 	public void searchByLocation_shouldGetInventoriesByLocation() throws Exception {
 		String results = controller.searchByLocation("dc5c1fcc-0459-4201-bf70-0b90535ba362", request);
 		LinkedHashMap di = (LinkedHashMap) ((ArrayList) SimpleObject.parseJson(results).get("results")).get(0);
-		Assert.assertEquals("Test Drug Inventory", di.get("name"));
+		Assert.assertEquals("Test drug inventory", di.get("name"));
 	}
-	
 }

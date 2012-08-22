@@ -93,7 +93,7 @@ public class DrugInventoryController extends BaseRestController {
 			drugInventory.setDescription(post.get("description").toString());
 		}
 		if (post.get("drug") != null) {
-			Drug d = Context.getConceptService().getDrug(post.get("drug").toString());
+			Drug d = Context.getConceptService().getDrugByUuid(post.get("drug").toString());
 			drugInventory.setDrugId(d.getDrugId());
 			drugInventory.setDrug(d);
 		}
@@ -169,7 +169,7 @@ public class DrugInventoryController extends BaseRestController {
 		SimpleObject pObj = new SimpleObject();
 		Provider p = di.getProvider();
 		if (p != null) {
-			System.out.println(p);
+			//System.out.println(p);
 			pObj.add("uuid", p.getUuid());
 			pObj.add("display", p.getName());
 		}
@@ -236,7 +236,7 @@ public class DrugInventoryController extends BaseRestController {
 		obj.add("uuid", created.getUuid());
 		obj.add("name", created.getName());
 		obj.add("description", created.getDescription());
-		return RestUtil.noContent(response);
+		return gson.toJson(obj);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
