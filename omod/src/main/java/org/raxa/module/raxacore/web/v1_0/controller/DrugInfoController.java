@@ -66,7 +66,6 @@ public class DrugInfoController extends BaseRestController {
 		service = Context.getService(DrugInfoService.class);
 	}
 	
-	//<editor-fold defaultstate="collapsed" desc="getResourceVersion">
 	/**
 	 * Returns the Resource Version
 	 */
@@ -74,8 +73,6 @@ public class DrugInfoController extends BaseRestController {
 		return "1.0";
 	}
 	
-	//</editor-fold>
-	//<editor-fold defaultstate="collapsed" desc="POST - Without Params (i.e., create)">
 	/**
 	 * Create new drug info by POST'ing atleast name and description property in
 	 * the request body.
@@ -93,7 +90,7 @@ public class DrugInfoController extends BaseRestController {
 	        throws ResponseException {
 		initDrugInfoController();
 		
-		Integer drugId = Integer.parseInt(post.get("drug_id").toString());
+		Integer drugId = Integer.parseInt(post.get("drugId").toString());
 		Drug drug = Context.getConceptService().getDrug(drugId);
 		
 		if (drug == null) {
@@ -114,8 +111,6 @@ public class DrugInfoController extends BaseRestController {
 		return RestUtil.created(response, getDrugInfoAsSimpleObject(drugInfoJustCreated));
 	}
 	
-	//</editor-fold>
-	//<editor-fold defaultstate="collapsed" desc="POST - Update List">
 	/**
 	 * Updates the Drug Info by making a POST call with uuid in URL and
 	 *
@@ -132,14 +127,17 @@ public class DrugInfoController extends BaseRestController {
 	public Object updateDrugInfo(@PathVariable("uuid") String uuid, @RequestBody SimpleObject post,
 	        HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		initDrugInfoController();
-		updateDrugInfoFieldsFromPostData(service.getDrugInfoByUuid(uuid), post);
-		return RestUtil.noContent(response);
+		DrugInfo drugInfo = service.getDrugInfoByUuid(uuid);
+		updateDrugInfoFieldsFromPostData(drugInfo, post);
+		service.saveDrugInfo(drugInfo);
+		return RestUtil.created(response, getDrugInfoAsSimpleObject(drugInfo));
 	}
 	
 	/**
 	 * Updates attributes of a DrugInfo copying them from a SimpleObject
+	 *
 	 * @param drugInfo
-	 * @param obj 
+	 * @param obj
 	 */
 	private void updateDrugInfoFieldsFromPostData(DrugInfo drugInfo, SimpleObject obj) {
 		if (obj.get("name") != null) {
@@ -158,8 +156,9 @@ public class DrugInfoController extends BaseRestController {
 	
 	/**
 	 * Returns a SimpleObject containing some fields of DrugInfo
+	 *
 	 * @param drugInfo
-	 * @return 
+	 * @return
 	 */
 	private SimpleObject getDrugInfoAsSimpleObject(DrugInfo drugInfo) {
 		SimpleObject obj = new SimpleObject();
@@ -171,8 +170,6 @@ public class DrugInfoController extends BaseRestController {
 		return obj;
 	}
 	
-	//</editor-fold>
-	//<editor-fold defaultstate="collapsed" desc="GET all">
 	/**
 	 * Get all the unretired drug info (as REF representation) in the system
 	 *
@@ -194,8 +191,6 @@ public class DrugInfoController extends BaseRestController {
 		return gson.toJson(new SimpleObject().add("results", results));
 	}
 	
-	//</editor-fold>
-	//<editor-fold defaultstate="collapsed" desc="GET by uuid - DEFAULT REP">
 	/**
 	 * Get the DrugInfo
 	 *
@@ -214,8 +209,6 @@ public class DrugInfoController extends BaseRestController {
 		return gson.toJson(getDrugInfoAsSimpleObject(drugInfo));
 	}
 	
-	//</editor-fold>
-	//<editor-fold defaultstate="collapsed" desc="GET by uuid - FULL REP">
 	/**
 	 * Get the drug info as FULL representation
 	 *
@@ -252,8 +245,6 @@ public class DrugInfoController extends BaseRestController {
 		return gson.toJson(obj);
 	}
 	
-	//</editor-fold>
-	//<editor-fold defaultstate="collapsed" desc="DELETE - Retire DrugInfo">
 	/**
 	 * Retires the drug info resource by making a DELETE call with the '!purge'
 	 * param
@@ -282,8 +273,6 @@ public class DrugInfoController extends BaseRestController {
 		return RestUtil.noContent(response);
 	}
 	
-	//</editor-fold>
-	//<editor-fold defaultstate="collapsed" desc="DELETE - Purge DrugInfo">
 	/**
 	 * Purges (Complete Delete) the drug info resource by making a DELETE call
 	 * and passing the 'purge' param
@@ -304,5 +293,4 @@ public class DrugInfoController extends BaseRestController {
 		}
 		return RestUtil.noContent(response);
 	}
-	//</editor-fold>
 }
