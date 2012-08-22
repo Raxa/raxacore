@@ -29,6 +29,8 @@ public class DrugGroup extends BaseOpenmrsMetadata implements Serializable {
 	
 	private Integer drugGroupId;
 	
+	private Set<Drug> drugs = new HashSet<Drug>(0);
+	
 	public DrugGroup() {
 	}
 	
@@ -50,6 +52,20 @@ public class DrugGroup extends BaseOpenmrsMetadata implements Serializable {
 	@Override
 	public Integer getId() {
 		return getDrugGroupId();
+	}
+	
+	/**
+	 * @return the drugs
+	 */
+	public Set<Drug> getDrugs() {
+		return drugs;
+	}
+	
+	/**
+	 * @param drugs the drugs to set
+	 */
+	public void setDrugs(Set<Drug> drugs) {
+		this.drugs = drugs;
 	}
 	
 	/**
