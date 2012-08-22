@@ -94,5 +94,7 @@
         RaxacorePatientList.hbm.xml
         RaxacoreRaxaAlert.hbm.xml
         RaxacoreDrugGroup.hbm.xml
+        RaxacoreDrugPurchaseOrder.hbm.xml
+        RaxacoreDrugInventory.hbm.xml
     </mappingFiles>
 </module>
