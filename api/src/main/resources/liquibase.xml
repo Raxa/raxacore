@@ -173,7 +173,7 @@
         </createTable>
     </changeSet>
     
-    <changeSet id="2012-08-08_create_raxacore_drug_group" author="diegodayam">
+    <changeSet id="2012-08-08_create_raxacore_drug_group" author="diegodayan">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="raxacore_drug_group"/>
@@ -213,4 +213,64 @@
             </column>            
         </createTable>
     </changeSet>    
+
+    <changeSet id="2012-08-18_create_raxacore_drug_info" author="diegodayan">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="raxacore_drug_info"/>
+            </not>
+        </preConditions>
+        <comment>
+            Schema for raxacore_drug_info table
+        </comment>
+        <createTable tableName="raxacore_drug_info">
+            <column name="drug_info_id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="drug_id" type="int">
+                <constraints unique="true" nullable="false"/>
+            </column>                        
+            <column name="name" type="varchar(255)"/>
+            <column name="price" type="decimal(10,4)" defaultValueNumeric="0.0" />
+            <column name="cost" type="decimal(10,4)" defaultValueNumeric="0.0" />
+            <column name="description" type="varchar(2000)"/>
+            <column name="creator" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_created" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="voided" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="voided_by" type="int"/>
+            <column name="date_voided" type="DATETIME"/>
+            <column name="void_reason" type="varchar(255)"/>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="DATETIME"/>
+            <column defaultValueBoolean="false" name="retired" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="retired_by" type="int"/>
+            <column name="date_retired" type="DATETIME"/>
+            <column name="retire_reason" type="varchar(255)"/>
+            <column name="uuid" type="char(38)">
+                <constraints unique="true" nullable="false"/>
+            </column>   
+        </createTable>
+    </changeSet>    
+    
+    <changeSet id="2012-08-20_add_constraints_to_raxacore_drug_info" author="diegodayan">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="raxacore_drug_info"/>
+        </preConditions>
+        <comment>
+            Adding constraints for auditing drug_info
+        </comment>
+        <addForeignKeyConstraint baseTableName="raxacore_drug_info" 
+                                 baseColumnNames="drug_id" 
+                                 constraintName="FK_raxacore_drug_info_drug_id_drug_drug_id" 
+                                 referencedTableName="drug" 
+                                 referencedColumnNames="drug_id"/>
+    </changeSet>  
 </databaseChangeLog>
