@@ -50,23 +50,10 @@ public class HibernateDrugGroupDAOTest extends BaseModuleContextSensitiveTest {
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
 		drugGroup.setRetired(Boolean.FALSE);
-		Set<Drug> drugs = new HashSet<Drug>();
-		Drug drug1 = new Drug();
-		Drug drug2 = new Drug();
-		drug1.setId(1);
-		drug1.setConcept(new Concept(792));
-		drug2.setId(2);
-		drug2.setConcept(new Concept(792));
-		drugs.add(drug1);
-		drugs.add(drug2);
-		drugGroup.setDrugs(drugs);
 		dao.saveDrugGroup(drugGroup);
 		List<DrugGroup> result = dao.getDrugGroupByName("TestDrugGroup3");
 		String name = result.get(0).getName();
-		Set<Drug> resDrugs = result.get(0).getDrugs();
 		assertEquals(name, "TestDrugGroup3");
-		assertEquals(resDrugs.contains(drug1), true);
-		assertEquals(resDrugs.contains(drug2), true);
 	}
 	
 	@Test
@@ -132,8 +119,21 @@ public class HibernateDrugGroupDAOTest extends BaseModuleContextSensitiveTest {
 		String nameRetrieved;
 		DrugGroup drugGroup = dao.getDrugGroup(1);
 		drugGroup.setName(nameSet);
+		Set<Drug> drugs = new HashSet<Drug>();
+		Drug drug1 = new Drug();
+		Drug drug2 = new Drug();
+		drug1.setId(1);
+		drug1.setConcept(new Concept(792));
+		drug2.setId(2);
+		drug2.setConcept(new Concept(792));
+		drugs.add(drug1);
+		drugs.add(drug2);
+		drugGroup.setDrugs(drugs);
 		dao.updateDrugGroup(drugGroup);
 		nameRetrieved = dao.getDrugGroup(1).getName();
+		Set<Drug> resDrugs = dao.getDrugGroup(1).getDrugs();
 		assertEquals(nameSet, nameRetrieved);
+		assertEquals(resDrugs.contains(drug1), true);
+		assertEquals(resDrugs.contains(drug2), true);
 	}
 }

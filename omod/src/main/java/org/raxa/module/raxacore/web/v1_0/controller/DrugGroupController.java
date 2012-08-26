@@ -19,10 +19,7 @@ import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.openmrs.Encounter;
@@ -72,6 +69,7 @@ public class DrugGroupController extends BaseRestController {
 	}
 	
 	//</editor-fold>
+	
 	//<editor-fold defaultstate="collapsed" desc="POST - Without Params">
 	/**
 	 * Create new drug group by POST'ing atleast name and description property
@@ -206,15 +204,14 @@ public class DrugGroupController extends BaseRestController {
 		obj.add("uuid", drugGroup.getUuid());
 		obj.add("name", drugGroup.getName());
 		obj.add("description", drugGroup.getDescription());
-		// TODO: finish this once drug_drug_group is ready
-		// ArrayList drugs = new ArrayList();
-		// List<Drug> drugsInDrugGroup = service.getDrugsInDrugGroup(drugGr);
-		// for (drug p : drugsInDrugGroup) {
-		//      SimpleObject drug = new SimpleObject();
-		//      drug.add("uuid", p.getUuid());
-		//      drugs.add(drug);
-		// }
-		// obj.add("drugs", drugs);
+		ArrayList drugs = new ArrayList();
+		List<Drug> drugsInDrugGroup = new ArrayList<Drug>(drugGroup.getDrugs());
+		for (Drug p : drugsInDrugGroup) {
+			SimpleObject drug = new SimpleObject();
+			drug.add("uuid", p.getUuid());
+			drugs.add(drug);
+		}
+		obj.add("drugs", drugs);
 		return gson.toJson(obj);
 	}
 	
@@ -243,6 +240,14 @@ public class DrugGroupController extends BaseRestController {
 		obj.add("uuid", drugGroup.getUuid());
 		obj.add("name", drugGroup.getName());
 		obj.add("description", drugGroup.getDescription());
+		ArrayList drugs = new ArrayList();
+		List<Drug> drugsInDrugGroup = new ArrayList<Drug>(drugGroup.getDrugs());
+		for (Drug p : drugsInDrugGroup) {
+			SimpleObject drug = new SimpleObject();
+			drug.add("uuid", p.getUuid());
+			drugs.add(drug);
+		}
+		obj.add("drugs", drugs);
 		if (rep.equals("full")) {
 			obj.add("retired", drugGroup.getRetired());
 			if (drugGroup.getRetired()) {

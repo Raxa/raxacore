@@ -285,10 +285,10 @@
         </comment>
         <createTable tableName="raxacore_drug_drug_group">
             <column name="drug_group_id" type="int">
-                <constraints unique="true" nullable="false"/>
+                <constraints unique="false" nullable="false"/>
             </column>
             <column name="drug_id" type="int">
-                <constraints unique="true" nullable="false"/>
+                <constraints unique="false" nullable="false"/>
             </column>
         </createTable>
     </changeSet>
@@ -310,5 +310,5 @@
                                  constraintName="FK_raxacore_drug_drug_group_drug_group_id" 
                                  referencedTableName="raxacore_drug_group" 
                                  referencedColumnNames="drug_group_id"/>
-    </changeSet> 
+    </changeSet>
 </databaseChangeLog>

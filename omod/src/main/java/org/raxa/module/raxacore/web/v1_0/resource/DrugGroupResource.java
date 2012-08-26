@@ -15,8 +15,10 @@ package org.raxa.module.raxacore.web.v1_0.resource;
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+import java.util.ArrayList;
 import java.util.List;
-import org.openmrs.Patient;
+import java.util.Set;
+import org.openmrs.Drug;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -44,17 +46,18 @@ import org.raxa.module.raxacore.DrugGroupService;
 public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup> {
 	
 	/**
-	 * Getter for the drugs property on patient list resource
+	 * Getter for the drugs property on drug group resource
 	 *
 	 * @param drugGroup
 	 * @return
-	 */
-	@PropertyGetter("drugs")
-	public List<Patient> getDrugs(DrugGroup drugGroup) {
-		// return getDrugGroupService().getDrugsInDrugGroup(drugGroup);
-		return null;
-	}
 	
+	@PropertyGetter("drugs")
+	public List<Drug> getDrugs(DrugGroup drugGroup) {
+		Set<Drug> drugs = drugGroup.getDrugs();
+	            List<Drug> drugList = new ArrayList<Drug>(drugs);
+		return drugList;
+	}
+	 */
 	private DrugGroupService getDrugGroupService() {
 		return Context.getService(DrugGroupService.class);
 	}
@@ -71,8 +74,7 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("name");
 			description.addProperty("description");
-			// description.addProperty("searchQuery");
-			// description.addProperty("drugs", Representation.REF);
+			description.addProperty("drugs", Representation.REF);
 			description.addProperty("retired");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -83,8 +85,7 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("name");
 			description.addProperty("description");
-			// description.addProperty("searchQuery");
-			// description.addProperty("drugs", Representation.DEFAULT);
+			description.addProperty("drugs", Representation.DEFAULT);
 			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -100,9 +101,9 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("drug_group_id");
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("description");
-		// description.addProperty("searchQuery");
 		return description;
 	}
 	
@@ -115,7 +116,6 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("description");
-		// description.addProperty("searchQuery");
 		return description;
 	}
 	
@@ -165,18 +165,6 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 	@Override
 	protected NeedsPaging<DrugGroup> doGetAll(RequestContext context) throws ResponseException {
 		return new NeedsPaging<DrugGroup>(getDrugGroupService().getAllDrugGroup(false), context);
-	}
-	
-	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#doSearch()
-	 * @param query
-	 * @param context
-	 * @return
-	 */
-	@Override
-	protected NeedsPaging<DrugGroup> doSearch(String query, RequestContext context) {
-		return new NeedsPaging<DrugGroup>(getDrugGroupService().getDrugGroupByName(query), context);
 	}
 	
 	/**
