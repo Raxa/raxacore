@@ -258,7 +258,7 @@
                 defaultValueBoolean="false"
                 type="boolean" >
 
-              <!--    <constraints nullable="false" />-->
+                <!--    <constraints nullable="false" />-->
             </column>
 
             <column
@@ -272,28 +272,28 @@
                 name="Location_id"
                 type="int" >
 
-             <!--     <constraints nullable="false" />-->
+                <!--     <constraints nullable="false" />-->
             </column>
 
             <column
                 name="PO_date"
                 type="DATETIME" >
 
-                 <!--     <constraints nullable="false" />-->
+                <!--     <constraints nullable="false" />-->
             </column>
 
             <column
                 name="creator"
                 type="int" >
 
-                      <constraints nullable="false" />
+                <constraints nullable="false" />
             </column>
 
             <column
                 name="date_created"
                 type="DATETIME" >
 
-                     <constraints nullable="false" />
+                <constraints nullable="false" />
             </column>
 
             <column
@@ -309,7 +309,7 @@
                 defaultValueBoolean="false"
                 type="BOOLEAN" >
 
-                    <constraints nullable="false" />
+                <constraints nullable="false" />
             </column>
 
             <column
@@ -445,7 +445,7 @@
                 name="Expiry_date"
                 type="DATETIME" >
 
-                 <!--     <constraints nullable="false" />-->
+                <!--     <constraints nullable="false" />-->
             </column>
 
             <column
@@ -467,7 +467,7 @@
                 name="Provider_id"
                 type="int" >
 
-               <!--     <constraints nullable="false" />-->
+                <!--     <constraints nullable="false" />-->
             </column>
 
             <column
@@ -481,21 +481,21 @@
                 name="Location_id"
                 type="int" >
 
-                 <!--     <constraints nullable="false" />-->
+                <!--     <constraints nullable="false" />-->
             </column>
 
             <column
                 name="creator"
                 type="int" >
 
-                   <constraints nullable="false" />
+                <constraints nullable="false" />
             </column>
 
             <column
                 name="date_created"
                 type="DATETIME" >
 
-                      <constraints nullable="false" />
+                <constraints nullable="false" />
             </column>
 
             <column
@@ -599,6 +599,51 @@
             referencedColumnNames="user_id"
             referencedTableName="users" />
     </changeSet>
+
+    <changeSet id="2012-08-24_add_drug_purchase_order_to_drug_inventory" author="johnstoecker">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="drug_inventory_resource"/>
+            <tableExists tableName="drug_purchase_order"/>
+        </preConditions>
+        <comment>
+            Adding drug_purchase_order_id column to drug_inventory_resource
+        </comment>
+        <addColumn tableName="drug_inventory_resource">
+            <column name="drug_PO_id" type="int"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="drug_inventory_resource" 
+                                 baseColumnNames="drug_PO_id" 
+                                 constraintName="FK_drug_inventory_resource_drug_PO_id_drug_purchase_order_PO_id" 
+                                 referencedTableName="drug_purchase_order" 
+                                 referencedColumnNames="PO_id"/>
+    </changeSet>    
+
+    <changeSet id="2012-08-31_add_locations_to_DPO" author="johnstoecker">
+        <preConditions onFail="MARK_RAN" onError="MARK_RAN">
+            <tableExists tableName="drug_purchase_order"/>
+        </preConditions>
+        <comment>
+            Adding dispense_location stock_location, removing Location_id
+        </comment>
+        <addColumn tableName="drug_purchase_order">
+            <column name="dispense_location_id" type="int"/>
+            <column name="stock_location_id" type="int"/>
+        </addColumn>
+        <dropForeignKeyConstraint
+            constraintName="FK_drug_purchase_order_Location_id_Location_location_id"
+            baseTableName="drug_purchase_order"/>        
+        <dropColumn tableName="drug_purchase_order" columnName="Location_id"/>
+        <addForeignKeyConstraint baseTableName="drug_purchase_order" 
+                                 baseColumnNames="dispense_location_id" 
+                                 constraintName="FK_drug_purchase_order_dispense_loc_id_location_location_id" 
+                                 referencedTableName="location" 
+                                 referencedColumnNames="location_id"/>
+        <addForeignKeyConstraint baseTableName="drug_purchase_order" 
+                                 baseColumnNames="stock_location_id" 
+                                 constraintName="FK_drug_purchase_order_stock_loc_id_location_location_id" 
+                                 referencedTableName="location" 
+                                 referencedColumnNames="location_id"/>
+    </changeSet>    
 
 
 </databaseChangeLog>

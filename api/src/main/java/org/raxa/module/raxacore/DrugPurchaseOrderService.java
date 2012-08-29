@@ -39,4 +39,7 @@ public interface DrugPurchaseOrderService extends OpenmrsService {
 	
 	List<DrugPurchaseOrder> getDrugPurchaseOrderByProvider(Integer providerId);
 	
+	List<DrugPurchaseOrder> getDrugPurchaseOrderByDispenseLocation(Integer dispenseLocation);
+	
+	List<DrugPurchaseOrder> getDrugPurchaseOrderByStockLocation(Integer stockLocation);
 }

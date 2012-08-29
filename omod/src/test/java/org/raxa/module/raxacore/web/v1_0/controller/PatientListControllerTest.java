@@ -80,7 +80,6 @@ public class PatientListControllerTest extends BaseModuleContextSensitiveTest {
 		hashMap.put("endDate", "2012-01-02T00:00:00.0");
 		String result = controller.getPatientsInPatientList(hashMap, request);
 		SimpleObject patientList = SimpleObject.parseJson(result);
-		Util.log("PatientList fetched (default)", patientList);
 		Assert.assertNotNull(result);
 		Assert.assertEquals(2, ((ArrayList) patientList.get("patients")).size());
 	}
@@ -98,7 +97,6 @@ public class PatientListControllerTest extends BaseModuleContextSensitiveTest {
 		Assert.assertEquals(before, service.getAllPatientList(false).size());
 		String result = controller.getAllPatientListByUuid(getUuid(), request);
 		SimpleObject updatedPatientList = SimpleObject.parseJson(result);
-		Util.log("Updated Patient List", updatedPatientList);
 		Assert.assertEquals(getUuid(), updatedPatientList.get("uuid"));
 		Assert.assertEquals("Test PatientList", updatedPatientList.get("name"));
 	}
@@ -113,7 +111,6 @@ public class PatientListControllerTest extends BaseModuleContextSensitiveTest {
 		String json = "{ \"name\":\"Test PatientList\",\"description\":\"Test List of Patients\"}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object patientList = controller.createNewPatientList(post, request, response);
-		Util.log("Created Patient List", patientList);
 		Assert.assertEquals(before + 1, service.getAllPatientList(false).size());
 	}
 	
@@ -135,7 +132,6 @@ public class PatientListControllerTest extends BaseModuleContextSensitiveTest {
 	public void getPatientListsByName_shouldFindMatchingPatientList() throws Exception {
 		String results = controller.getPatientListsByName("TestList2", request);
 		LinkedHashMap patientList = (LinkedHashMap) ((ArrayList) SimpleObject.parseJson(results).get("results")).get(0);
-		Util.log("Found PatientList(s)", patientList);
 		Assert.assertEquals("68547121-1b70-465e-99ee-c9dfd95e7d30", patientList.get("uuid"));
 		Assert.assertEquals("TestList2", patientList.get("name"));
 		Assert.assertNull(patientList.get("searchQuery"));
@@ -151,7 +147,6 @@ public class PatientListControllerTest extends BaseModuleContextSensitiveTest {
 		String result = controller.getAllPatientListByUuidFull(getUuid(), "full", request);
 		SimpleObject patientList = SimpleObject.parseJson(result);
 		Assert.assertNotNull(result);
-		Util.log("PatientList fetched (full)", result);
 		Assert.assertEquals("68547121-1b70-465d-99ee-c9dfd95e7d30", patientList.get("uuid"));
 		Assert.assertEquals("TestList1", patientList.get("name"));
 		Assert.assertNotNull(patientList.get("searchQuery"));
@@ -167,7 +162,6 @@ public class PatientListControllerTest extends BaseModuleContextSensitiveTest {
 		String result = controller.getAllPatientListByUuid(getUuid(), request);
 		SimpleObject patientList = SimpleObject.parseJson(result);
 		Assert.assertNotNull(result);
-		Util.log("PatientList fetched (default)", result);
 		Assert.assertEquals("68547121-1b70-465d-99ee-c9dfd95e7d30", patientList.get("uuid"));
 		Assert.assertEquals("TestList1", patientList.get("name"));
 		Assert.assertNull(patientList.get("searchQuery"));
@@ -181,7 +175,6 @@ public class PatientListControllerTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void shouldGetAll() throws Exception {
 		String allPatientLists = controller.getAllPatientLists(request, response);
-		Util.log("All Patient lists", allPatientLists);
 		Assert.assertEquals(2, ((ArrayList) SimpleObject.parseJson(allPatientLists).get("results")).size());
 	}
 	

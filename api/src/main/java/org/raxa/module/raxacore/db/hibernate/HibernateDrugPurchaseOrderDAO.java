@@ -86,4 +86,22 @@ public class HibernateDrugPurchaseOrderDAO implements DrugPurchaseOrderDAO {
 		return drugPurchaseOrders;
 	}
 	
+	@Override
+	public List<DrugPurchaseOrder> getDrugPurchaseOrderByDispenseLocation(Integer dispenseLocation) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DrugPurchaseOrder.class);
+		criteria.add(Restrictions.eq("dispenseLocationId", dispenseLocation));
+		List<DrugPurchaseOrder> drugPurchaseOrders = new ArrayList<DrugPurchaseOrder>();
+		drugPurchaseOrders.addAll(criteria.list());
+		return drugPurchaseOrders;
+	}
+	
+	@Override
+	public List<DrugPurchaseOrder> getDrugPurchaseOrderByStockLocation(Integer stockLocation) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DrugPurchaseOrder.class);
+		criteria.add(Restrictions.eq("stockLocationId", stockLocation));
+		List<DrugPurchaseOrder> drugPurchaseOrders = new ArrayList<DrugPurchaseOrder>();
+		drugPurchaseOrders.addAll(criteria.list());
+		return drugPurchaseOrders;
+	}
+	
 }

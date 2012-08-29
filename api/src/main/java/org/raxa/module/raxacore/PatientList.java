@@ -23,7 +23,7 @@ import org.openmrs.BaseOpenmrsMetadata;
  */
 public class PatientList extends BaseOpenmrsMetadata implements Serializable {
 	
-	private Integer patientListId;
+	private Integer id;
 	
 	private String searchQuery;
 	
@@ -37,7 +37,7 @@ public class PatientList extends BaseOpenmrsMetadata implements Serializable {
 	 */
 	@Override
 	public void setId(Integer id) {
-		setPatientListId(id);
+		this.id = id;
 	}
 	
 	/** Gets id
@@ -46,7 +46,7 @@ public class PatientList extends BaseOpenmrsMetadata implements Serializable {
 	 */
 	@Override
 	public Integer getId() {
-		return getPatientListId();
+		return this.id;
 	}
 	
 	/** Compares two PatientList objects for similarity
@@ -64,8 +64,8 @@ public class PatientList extends BaseOpenmrsMetadata implements Serializable {
 	public boolean equals(Object obj) {
 		if (obj instanceof PatientList) {
 			PatientList pList = (PatientList) obj;
-			if (this.getPatientListId() != null && pList.getPatientListId() != null)
-				return (this.getPatientListId().equals(pList.getPatientListId()));
+			if (this.getId() != null && pList.getId() != null)
+				return (this.getId().equals(pList.getId()));
 		}
 		return this == obj;
 	}
@@ -78,9 +78,9 @@ public class PatientList extends BaseOpenmrsMetadata implements Serializable {
 	 */
 	@Override
 	public int hashCode() {
-		if (this.getPatientListId() == null)
+		if (this.getId() == null)
 			return super.hashCode();
-		return this.getPatientListId().hashCode();
+		return this.getId().hashCode();
 	}
 	
 	/**
@@ -95,20 +95,6 @@ public class PatientList extends BaseOpenmrsMetadata implements Serializable {
 	 */
 	public void setSearchQuery(String searchQuery) {
 		this.searchQuery = searchQuery;
-	}
-	
-	/**
-	 * @return the patientListId
-	 */
-	public Integer getPatientListId() {
-		return patientListId;
-	}
-	
-	/**
-	 * @param patientListId the patientListId to set
-	 */
-	public void setPatientListId(Integer patientListId) {
-		this.patientListId = patientListId;
 	}
 	
 }

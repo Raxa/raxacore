@@ -169,7 +169,6 @@ public class DrugInventoryController extends BaseRestController {
 		SimpleObject pObj = new SimpleObject();
 		Provider p = di.getProvider();
 		if (p != null) {
-			//System.out.println(p);
 			pObj.add("uuid", p.getUuid());
 			pObj.add("display", p.getName());
 		}

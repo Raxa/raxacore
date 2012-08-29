@@ -25,40 +25,34 @@ import org.openmrs.Provider;
 
 public class DrugPurchaseOrder extends BaseOpenmrsMetadata implements Serializable {
 	
-	private Integer drugPurchaseOrderId;
+	private Integer id;
 	
 	private boolean received;
 	
 	private Integer providerId;
 	
-	private Integer locationId;
+	private Integer dispenseLocationId;
+	
+	private Integer stockLocationId;
 	
 	private Date drugPurchaseOrderDate;
 	
 	private Provider provider;
 	
-	private Location location;
+	private Location dispenseLocation;
+	
+	private Location stockLocation;
 	
 	public DrugPurchaseOrder() {
 		
 	}
 	
 	public Integer getId() {
-		// TODO Auto-generated method stub
-		return getDrugPurchaseOrderId();
+		return id;
 	}
 	
 	public void setId(Integer arg0) {
-		setDrugPurchaseOrderId(arg0);
-		
-	}
-	
-	public Integer getDrugPurchaseOrderId() {
-		return drugPurchaseOrderId;
-	}
-	
-	public void setDrugPurchaseOrderId(Integer drugPurchaseOrderId) {
-		this.drugPurchaseOrderId = drugPurchaseOrderId;
+		this.id = arg0;
 	}
 	
 	public boolean isReceived() {
@@ -77,14 +71,6 @@ public class DrugPurchaseOrder extends BaseOpenmrsMetadata implements Serializab
 		this.providerId = providerId;
 	}
 	
-	public Integer getLocationId() {
-		return locationId;
-	}
-	
-	public void setLocationId(Integer locationId) {
-		this.locationId = locationId;
-	}
-	
 	public Date getDrugPurchaseOrderDate() {
 		return drugPurchaseOrderDate;
 	}
@@ -101,12 +87,60 @@ public class DrugPurchaseOrder extends BaseOpenmrsMetadata implements Serializab
 		this.provider = provider;
 	}
 	
-	public Location getLocation() {
-		return location;
+	/**
+	 * @return the dispenseLocationId
+	 */
+	public Integer getDispenseLocationId() {
+		return dispenseLocationId;
 	}
 	
-	public void setLocation(Location location) {
-		this.location = location;
+	/**
+	 * @param dispenseLocationId the dispenseLocationId to set
+	 */
+	public void setDispenseLocationId(Integer dispenseLocationId) {
+		this.dispenseLocationId = dispenseLocationId;
+	}
+	
+	/**
+	 * @return the stockLocationId
+	 */
+	public Integer getStockLocationId() {
+		return stockLocationId;
+	}
+	
+	/**
+	 * @param stockLocationId the stockLocationId to set
+	 */
+	public void setStockLocationId(Integer stockLocationId) {
+		this.stockLocationId = stockLocationId;
+	}
+	
+	/**
+	 * @return the dispenseLocation
+	 */
+	public Location getDispenseLocation() {
+		return dispenseLocation;
+	}
+	
+	/**
+	 * @param dispenseLocation the dispenseLocation to set
+	 */
+	public void setDispenseLocation(Location dispenseLocation) {
+		this.dispenseLocation = dispenseLocation;
+	}
+	
+	/**
+	 * @return the stockLocation
+	 */
+	public Location getStockLocation() {
+		return stockLocation;
+	}
+	
+	/**
+	 * @param stockLocation the stockLocation to set
+	 */
+	public void setStockLocation(Location stockLocation) {
+		this.stockLocation = stockLocation;
 	}
 	
 }

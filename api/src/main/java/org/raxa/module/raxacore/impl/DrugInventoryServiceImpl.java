@@ -57,6 +57,8 @@ public class DrugInventoryServiceImpl implements DrugInventoryService {
 	
 	@Override
 	public DrugInventory saveDrugInventory(DrugInventory drugInventory) {
+		if (drugInventory.getOriginalQuantity() == null)
+			drugInventory.setOriginalQuantity(drugInventory.getQuantity());
 		return dao.saveDrugInventory(drugInventory);
 	}
 	

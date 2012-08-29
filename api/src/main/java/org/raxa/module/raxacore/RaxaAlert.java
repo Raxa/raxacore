@@ -22,7 +22,7 @@ import org.openmrs.Provider;
 
 public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	
-	private Integer raxaAlertId;
+	private Integer id;
 	
 	private String name;
 	
@@ -58,7 +58,7 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	 */
 	@Override
 	public void setId(Integer id) {
-		setRaxaAlertId(id);
+		this.id = id;
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	 */
 	@Override
 	public Integer getId() {
-		return getRaxaAlertId();
+		return this.id;
 	}
 	
 	/**
@@ -87,8 +87,8 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	public boolean equals(Object obj) {
 		if (obj instanceof RaxaAlert) {
 			RaxaAlert pList = (RaxaAlert) obj;
-			if (this.getRaxaAlertId() != null && pList.getRaxaAlertId() != null) {
-				return (this.getRaxaAlertId().equals(pList.getRaxaAlertId()));
+			if (this.getId() != null && pList.getId() != null) {
+				return (this.getId().equals(pList.getId()));
 			}
 		}
 		return this == obj;
@@ -102,24 +102,10 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	 */
 	@Override
 	public int hashCode() {
-		if (this.getRaxaAlertId() == null) {
+		if (this.getId() == null) {
 			return super.hashCode();
 		}
-		return this.getRaxaAlertId().hashCode();
-	}
-	
-	/**
-	 * @return the raxaAlertId
-	 */
-	public Integer getRaxaAlertId() {
-		return raxaAlertId;
-	}
-	
-	/**
-	 * @param raxaAlertID the raxaAlertID to set
-	 */
-	public void setRaxaAlertId(Integer raxaAlertId) {
-		this.raxaAlertId = raxaAlertId;
+		return this.getId().hashCode();
 	}
 	
 	/**
