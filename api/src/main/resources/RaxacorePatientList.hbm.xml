@@ -6,7 +6,7 @@
 <hibernate-mapping package="org.raxa.module.raxacore">
     
     <class name="PatientList" table="raxacore_patient_list">
-        <id name="patientListId" column="patient_list_id">
+        <id name="id" column="patient_list_id">
             <generator class="native"/>
         </id>
         <property name="name"           type="java.lang.String"     column="name" length="255"/>

@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -112,11 +113,7 @@ public class DrugPurchaseOrderController extends BaseRestController {
 	        throws ResponseException {
 		initDrugPurchaseOrderController();
 		DrugPurchaseOrder drugOrder = service.getDrugPurchaseOrderByUuid(uuid);
-		SimpleObject obj = new SimpleObject();
-		obj.add("uuid", drugOrder.getUuid());
-		obj.add("name", drugOrder.getName());
-		obj.add("providerId", drugOrder.getProviderId());
-		
+		SimpleObject obj = this.getFieldsFromDrugPurchaseOrder(drugOrder);
 		return gson.toJson(obj);
 	}
 	
@@ -246,5 +243,83 @@ public class DrugPurchaseOrderController extends BaseRestController {
 			drugInventory.setDrugPurchaseOrder(dPO);
 		}
 		return drugInventory;
+	}
+	
+	@RequestMapping(method = RequestMethod.GET)
+	@WSDoc("Get All Unretired Drug Purchase Orders in the system")
+	@ResponseBody()
+	public String getAllDrugPurchaseOrders(HttpServletRequest request, HttpServletResponse response)
+	        throws ResponseException {
+		initDrugPurchaseOrderController();
+		List<DrugPurchaseOrder> allDPOs = service.getAllDrugPurchaseOrders();
+		return purchaseOrderListToJson(allDPOs);
+	}
+	
+	/**
+	 * Fetch Drug Purchase Orders according to stocklocation
+	 *
+	 * @param stocklocation
+	 * @param request
+	 * @param response
+	 * @return drug purchase orders for the given stocklocation
+	 * @throws ResponseException
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "stocklocation")
+	@WSDoc("Fetch all non-retired drug purchase orders according to stocklocation")
+	@ResponseBody()
+	public String searchByStockLocation(@RequestParam("stocklocation") String stockLocation, HttpServletRequest request)
+	        throws ResponseException {
+		initDrugPurchaseOrderController();
+		List<DrugPurchaseOrder> dPOs = service.getDrugPurchaseOrderByStockLocation(Context.getLocationService()
+		        .getLocationByUuid(stockLocation).getId());
+		return purchaseOrderListToJson(dPOs);
+	}
+	
+	/**
+	 * Helper function that parses a list of Inventories, returns a JSon
+	 */
+	private String purchaseOrderListToJson(List<DrugPurchaseOrder> drugPurchaseOrders) {
+		ArrayList results = new ArrayList();
+		for (DrugPurchaseOrder dpo : drugPurchaseOrders) {
+			results.add(getFieldsFromDrugPurchaseOrder(dpo));
+		}
+		return gson.toJson(new SimpleObject().add("results", results));
+	}
+	
+	/**
+	 * Helper function to return Drug Purchase Order to front end
+	 *
+	 * @param dpo
+	 * @return SimpleObject the representation of Drug Inventory
+	 */
+	private SimpleObject getFieldsFromDrugPurchaseOrder(DrugPurchaseOrder dpo) {
+		SimpleObject obj = new SimpleObject();
+		obj.add("uuid", dpo.getUuid());
+		obj.add("name", dpo.getName());
+		obj.add("description", dpo.getDescription());
+		obj.add("received", dpo.isReceived());
+		SimpleObject pObj = new SimpleObject();
+		Provider p = dpo.getProvider();
+		if (p != null) {
+			pObj.add("uuid", p.getUuid());
+			pObj.add("dposplay", p.getName());
+		}
+		obj.add("provider", pObj);
+		obj.add("date", dpo.getDrugPurchaseOrderDate());
+		SimpleObject dispenseObj = new SimpleObject();
+		Location dispenseLoc = dpo.getDispenseLocation();
+		if (dispenseLoc != null) {
+			dispenseObj.add("uuid", dispenseLoc.getUuid());
+			dispenseObj.add("display", dispenseLoc.getName());
+		}
+		obj.add("dispenselocation", dispenseObj);
+		SimpleObject stockObj = new SimpleObject();
+		Location stockLoc = dpo.getStockLocation();
+		if (stockLoc != null) {
+			stockObj.add("uuid", stockLoc.getUuid());
+			stockObj.add("display", stockLoc.getName());
+		}
+		obj.add("stocklocation", stockObj);
+		return obj;
 	}
 }

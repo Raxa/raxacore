@@ -176,15 +176,15 @@ public class DrugInventoryController extends BaseRestController {
 		SimpleObject lObj = new SimpleObject();
 		Location l = di.getLocation();
 		if (l != null) {
-			lObj.add("uuid", p.getUuid());
-			lObj.add("display", p.getName());
+			lObj.add("uuid", l.getUuid());
+			lObj.add("display", l.getName());
 		}
 		obj.add("location", lObj);
 		SimpleObject dPOObj = new SimpleObject();
 		DrugPurchaseOrder dPO = di.getDrugPurchaseOrder();
 		if (dPO != null) {
-			dPOObj.add("uuid", p.getUuid());
-			dPOObj.add("display", p.getName());
+			dPOObj.add("uuid", dPO.getUuid());
+			dPOObj.add("display", dPO.getName());
 		}
 		obj.add("drug purchase order", dPOObj);
 		return obj;

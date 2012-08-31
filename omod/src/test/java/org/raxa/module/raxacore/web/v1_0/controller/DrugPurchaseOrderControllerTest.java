@@ -12,6 +12,8 @@ package org.raxa.module.raxacore.web.v1_0.controller;
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  */
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -81,4 +83,26 @@ public class DrugPurchaseOrderControllerTest extends BaseModuleContextSensitiveT
 		Assert.assertNotNull(result);
 		assertEquals(uuid, dI.get("uuid"));
 	}
+	
+	/**
+	 * @see DrugPurchaseOrderController#getAllDrugPurchaseOrders(HttpServletRequest, HttpServletResponse)
+	 * @verifies get all the Drug Invs in the system
+	 */
+	@Test
+	public void shouldGetAll() throws Exception {
+		String allDIs = controller.getAllDrugPurchaseOrders(request, response);
+		Assert.assertEquals(2, ((ArrayList) SimpleObject.parseJson(allDIs).get("results")).size());
+	}
+	
+	/**
+	 * @see DrugPurchaseOrderController#searchByStockLocation(String, HttpServeletRequest, HttpServletResponse)
+	 * @throws Exception
+	 */
+	@Test
+	public void searchByStockLocation_shouldGetPurchaseOrdersByStockLocation() throws Exception {
+		String results = controller.searchByStockLocation("9356400c-a5a2-4532-8f2b-2361b3446eb8", request);
+		LinkedHashMap di = (LinkedHashMap) ((ArrayList) SimpleObject.parseJson(results).get("results")).get(0);
+		Assert.assertEquals("Test drug PO", di.get("name"));
+	}
+	
 }
