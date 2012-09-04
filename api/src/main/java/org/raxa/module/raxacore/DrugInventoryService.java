@@ -40,6 +40,7 @@ public interface DrugInventoryService extends OpenmrsService {
 	
 	List<DrugInventory> getDrugInventoryByProvider(Integer providerId);
 	
-	public List<DrugInventory> getDrugInventoriesByLocation(Integer location);
+	List<DrugInventory> getDrugInventoriesByLocation(Integer location);
 	
+	List<DrugInventory> getDrugInventoriesByDrugPurchaseOrder(Integer drugPurchaseOrderId);
 }

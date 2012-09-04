@@ -101,7 +101,7 @@ public class RaxaAlertControllerTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void shouldGetAll() throws Exception {
 		String allRaxaAlerts = controller.getAllRaxaAlerts(request, response);
-		Assert.assertEquals(1, ((ArrayList) SimpleObject.parseJson(allRaxaAlerts).get("results")).size());
+		Assert.assertEquals(2, ((ArrayList) SimpleObject.parseJson(allRaxaAlerts).get("results")).size());
 	}
 	
 	/**
@@ -114,6 +114,13 @@ public class RaxaAlertControllerTest extends BaseModuleContextSensitiveTest {
 		LinkedHashMap raxaAlert = (LinkedHashMap) ((ArrayList) SimpleObject.parseJson(results).get("results")).get(0);
 		System.out.println(Context.getProviderService().getProvider(1).getUuid());
 		Assert.assertEquals("TestAlert1", raxaAlert.get("name"));
+	}
+	
+	@Test
+	public void searchByToLocation_shouldGetAlertsByLocation() throws Exception {
+		String results = controller.searchByToLocation("9356400c-a5a2-4532-8f2b-2361b3446eb8", request);
+		LinkedHashMap raxaAlert = (LinkedHashMap) ((ArrayList) SimpleObject.parseJson(results).get("results")).get(0);
+		Assert.assertEquals("TestAlert2", raxaAlert.get("name"));
 	}
 	
 	/**

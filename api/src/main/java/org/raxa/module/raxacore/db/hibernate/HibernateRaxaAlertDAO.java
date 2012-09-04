@@ -199,4 +199,15 @@ public class HibernateRaxaAlertDAO implements RaxaAlertDAO {
 		saveRaxaAlert(raxaAlert);
 		return raxaAlert;
 	}
+	
+	@Override
+	public List<RaxaAlert> getRaxaAlertByToLocationId(Integer id, boolean includeSeen) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(RaxaAlert.class);
+		criteria.add(Restrictions.eq("toLocationId", id));
+		if (includeSeen == false)
+			criteria.add(Restrictions.eq("seen", false));
+		List<RaxaAlert> alerts = new ArrayList<RaxaAlert>();
+		alerts.addAll(criteria.list());
+		return alerts;
+	}
 }

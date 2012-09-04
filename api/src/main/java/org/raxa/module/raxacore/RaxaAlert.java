@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.util.*;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openmrs.BaseOpenmrsData;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
@@ -45,6 +46,14 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	private Integer providerSentId;
 	
 	private Provider providerRecipient;
+	
+	private Integer toLocationId;
+	
+	private Location toLocation;
+	
+	private Integer fromLocationId;
+	
+	private Location fromLocation;
 	
 	private Integer providerRecipientId;
 	
@@ -286,6 +295,62 @@ public class RaxaAlert extends BaseOpenmrsData implements Serializable {
 	@JsonIgnore
 	public Boolean getVoided() {
 		return isVoided();
+	}
+	
+	/**
+	 * @return the toLocationId
+	 */
+	public Integer getToLocationId() {
+		return toLocationId;
+	}
+	
+	/**
+	 * @param toLocationId the toLocationId to set
+	 */
+	public void setToLocationId(Integer toLocationId) {
+		this.toLocationId = toLocationId;
+	}
+	
+	/**
+	 * @return the toLocation
+	 */
+	public Location getToLocation() {
+		return toLocation;
+	}
+	
+	/**
+	 * @param toLocation the toLocation to set
+	 */
+	public void setToLocation(Location toLocation) {
+		this.toLocation = toLocation;
+	}
+	
+	/**
+	 * @return the fromLocationId
+	 */
+	public Integer getFromLocationId() {
+		return fromLocationId;
+	}
+	
+	/**
+	 * @param fromLocationId the fromLocationId to set
+	 */
+	public void setFromLocationId(Integer fromLocationId) {
+		this.fromLocationId = fromLocationId;
+	}
+	
+	/**
+	 * @return the fromLocation
+	 */
+	public Location getFromLocation() {
+		return fromLocation;
+	}
+	
+	/**
+	 * @param fromLocation the fromLocation to set
+	 */
+	public void setFromLocation(Location fromLocation) {
+		this.fromLocation = fromLocation;
 	}
 	
 }

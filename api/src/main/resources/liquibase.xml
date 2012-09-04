@@ -645,5 +645,32 @@
                                  referencedColumnNames="location_id"/>
     </changeSet>    
 
+    <changeSet id="2012-09-04_add_roomlocation_to_DI" author="johnstoecker">
+        <preConditions onFail="MARK_RAN" onError="MARK_RAN">
+            <tableExists tableName="drug_inventory_resource"/>
+        </preConditions>
+        <comment>
+            Adding dispense_location stock_location, removing Location_id
+        </comment>
+        <addColumn tableName="drug_inventory_resource">
+            <column name="room_location" type="varchar(1000)"/>
+        </addColumn>
+    </changeSet>    
+
+    <changeSet id="2012-09-05_add_locs_in_alert" author="johnstoecker">
+        <preConditions onFail="MARK_RAN" onError="MARK_RAN">
+            <tableExists tableName="raxacore_raxaalert"/>
+        </preConditions>
+        <comment>
+            Adding to, from locations, removing constraints in raxa alert
+        </comment>
+        <dropNotNullConstraint tableName="raxacore_raxaalert" columnName="provider_recipient_id" columnDataType="int"/>
+        <addColumn tableName="raxacore_raxaalert">
+            <column name="to_location_id" type="int"/>
+        </addColumn>
+        <addColumn tableName="raxacore_raxaalert">
+            <column name="from_location_id" type="int"/>
+        </addColumn>
+    </changeSet>    
 
 </databaseChangeLog>

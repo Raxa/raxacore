@@ -103,4 +103,9 @@ public class DrugInventoryServiceImpl implements DrugInventoryService {
 		return dao.getDrugInventoriesByLocation(location);
 	}
 	
+	@Override
+	public List<DrugInventory> getDrugInventoriesByDrugPurchaseOrder(Integer drugPurchaseOrderId) {
+		return dao.getDrugInventoriesByDrugPurchaseOrder(drugPurchaseOrderId);
+	}
+	
 }

@@ -179,6 +179,8 @@ public class DrugPurchaseOrderController extends BaseRestController {
 							di = setDrugInventoryField(di, currentPair[0].trim(), currentPair[1].trim());
 						}
 					}
+					di.setDrugPurchaseOrder(purchaseOrder);
+					di.setDrugPurchaseOrderId(purchaseOrder.getId());
 					Context.getService(DrugInventoryService.class).saveDrugInventory(di);
 				}
 			}
@@ -208,8 +210,9 @@ public class DrugPurchaseOrderController extends BaseRestController {
 			drugInventory.setOriginalQuantity(Integer.parseInt(value));
 		}
 		if (key.equals("expiryDate")) {
-			String[] supportedFormats = { "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss.SSS",
-			        "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
+			String[] supportedFormats = { "EEE MMM dd yyyy HH:mm:ss", "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+			        "yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss",
+			        "yyyy-MM-dd" };
 			for (int i = 0; i < supportedFormats.length; i++) {
 				try {
 					Date date = new SimpleDateFormat(supportedFormats[i]).parse(value);
@@ -220,6 +223,9 @@ public class DrugPurchaseOrderController extends BaseRestController {
 		}
 		if (key.equals("batch")) {
 			drugInventory.setBatch(value);
+		}
+		if (key.equals("roomLocation")) {
+			drugInventory.setRoomLocation(value);
 		}
 		if (key.equals("value")) {
 			drugInventory.setValue(Integer.parseInt(value));
@@ -302,7 +308,7 @@ public class DrugPurchaseOrderController extends BaseRestController {
 		Provider p = dpo.getProvider();
 		if (p != null) {
 			pObj.add("uuid", p.getUuid());
-			pObj.add("dposplay", p.getName());
+			pObj.add("display", p.getName());
 		}
 		obj.add("provider", pObj);
 		obj.add("date", dpo.getDrugPurchaseOrderDate());
@@ -320,6 +326,49 @@ public class DrugPurchaseOrderController extends BaseRestController {
 			stockObj.add("display", stockLoc.getName());
 		}
 		obj.add("stocklocation", stockObj);
+		//getting all associated drug inventories:
+		List<DrugInventory> inventories = Context.getService(DrugInventoryService.class)
+		        .getDrugInventoriesByDrugPurchaseOrder(dpo.getId());
+		if (!inventories.isEmpty()) {
+			ArrayList invObjs = new ArrayList();
+			//List<SimpleObject> invObjs = new ArrayList();
+			for (int i = 0; i < inventories.size(); i++) {
+				SimpleObject newInvObj = new SimpleObject();
+				newInvObj.add("name", inventories.get(i).getName());
+				newInvObj.add("description", inventories.get(i).getDescription());
+				newInvObj.add("uuid", inventories.get(i).getUuid());
+				SimpleObject drugObj = new SimpleObject();
+				Drug d = inventories.get(i).getDrug();
+				if (d != null) {
+					drugObj.add("uuid", d.getUuid());
+					drugObj.add("display", d.getName());
+				}
+				newInvObj.add("drug", drugObj);
+				newInvObj.add("quantity", inventories.get(i).getQuantity());
+				newInvObj.add("originalQuantity", inventories.get(i).getOriginalQuantity());
+				newInvObj.add("expiryDate", inventories.get(i).getExpiryDate());
+				newInvObj.add("batch", inventories.get(i).getBatch());
+				newInvObj.add("roomLocation", inventories.get(i).getRoomLocation());
+				newInvObj.add("value", inventories.get(i).getValue());
+				newInvObj.add("status", inventories.get(i).getStatus());
+				SimpleObject providerObj = new SimpleObject();
+				Provider provider = inventories.get(i).getProvider();
+				if (provider != null) {
+					providerObj.add("uuid", provider.getUuid());
+					providerObj.add("display", provider.getName());
+				}
+				newInvObj.add("provider", providerObj);
+				SimpleObject locObj = new SimpleObject();
+				Location l = inventories.get(i).getLocation();
+				if (l != null) {
+					locObj.add("uuid", l.getUuid());
+					locObj.add("display", l.getName());
+				}
+				newInvObj.add("location", locObj);
+				invObjs.add(newInvObj);
+			}
+			obj.add("inventories", invObjs);
+		}
 		return obj;
 	}
 }

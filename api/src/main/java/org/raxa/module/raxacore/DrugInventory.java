@@ -38,6 +38,8 @@ public class DrugInventory extends BaseOpenmrsMetadata implements Serializable {
 	
 	private String batch;
 	
+	private String roomLocation;
+	
 	private Integer value;
 	
 	private String status;
@@ -181,6 +183,20 @@ public class DrugInventory extends BaseOpenmrsMetadata implements Serializable {
 	
 	public void setDrugPurchaseOrder(DrugPurchaseOrder drugPurchaseOrder) {
 		this.drugPurchaseOrder = drugPurchaseOrder;
+	}
+	
+	/**
+	 * @return the roomLocation
+	 */
+	public String getRoomLocation() {
+		return roomLocation;
+	}
+	
+	/**
+	 * @param roomLocation the roomLocation to set
+	 */
+	public void setRoomLocation(String roomLocation) {
+		this.roomLocation = roomLocation;
 	}
 	
 }

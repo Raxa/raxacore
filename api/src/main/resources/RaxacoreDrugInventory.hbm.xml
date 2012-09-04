@@ -14,13 +14,14 @@
         <many-to-one name="drug"                  class="org.openmrs.Drug"       column="Drug_ID"/>
         <property name="providerId"               type="java.lang.Integer"       column="Provider_id" insert="false" update="false"/>
         <many-to-one name="provider"              class="org.openmrs.Provider"   column="Provider_id"/>
-        <property name="drugPurchaseOrderId"      type="java.lang.Integer"       column="Drug_PO" insert="false" update="false"/>
-        <many-to-one name="drugPurchaseOrder"     class="org.raxa.module.raxacore.DrugPurchaseOrder"   column="Drug_PO"/>
+        <property name="drugPurchaseOrderId"      type="java.lang.Integer"       column="drug_PO_id" insert="false" update="false"/>
+        <many-to-one name="drugPurchaseOrder"     class="org.raxa.module.raxacore.DrugPurchaseOrder"   column="drug_PO_id"/>
         <property name="locationId"               type="java.lang.Integer"       column="Location_id" insert="false" update="false"/>
         <many-to-one name="location"              class="org.openmrs.Location"   column="Location_id"/>
         <property name="expiryDate"               type="java.util.Date"          column="Expiry_date"/>
         <property name="batch"                    type="java.lang.String"        column="Batch" length="255"/>
         <property name="status"                   type="java.lang.String"        column="Status" length="255"/>
+        <property name="roomLocation"             type="java.lang.String"        column="room_location" length="1000"/>
         <property name="quantity"                 type="java.lang.Integer"       column="Quantity"/>
         <property name="originalQuantity"         type="java.lang.Integer"       column="Original_quantity"/>
         <property name="value"                    type="java.lang.Integer"       column="Value"/>

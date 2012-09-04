@@ -60,7 +60,7 @@ public class DrugPurchaseOrderControllerTest extends BaseModuleContextSensitiveT
 	@Test
 	public void testCreateNewDrugPurchaseOrder() throws Exception {
 		int before = service.getAllDrugPurchaseOrders().size();
-		String json = "{ \"name\":\"Test purchase order\",\"description\":\"Test purchase order\", \"provider\": \"68547121-1b70-465e-99ee-c9df45jf9j32\", \"inventories\": [{\"name\":\"Test inner Drug Inventory\",\"description\":\"Test drug inventory\", \"drug\": \"05ec820a-d297-44e3-be6e-698531d9dd3f\", \"quantity\": 500, \"location\": \"9356400c-a5a2-4532-8f2b-2361b3446eb8\"}]}";
+		String json = "{ \"name\":\"Test purchase order\",\"description\":\"Test purchase order\", \"provider\": \"68547121-1b70-465e-99ee-c9df45jf9j32\", \"inventories\": [{\"name\":\"Test inner Drug Inventory\",\"description\":\"Test drug inventory\", \"drug\": \"05ec820a-d297-44e3-be6e-698531d9dd3f\", \"quantity\": 500, \"location\": \"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"expiryDate\":\"Fri Sep 07 2012 00:00:00 GMT+0530 (India Standard Time)\"}]}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		controller.createNewDrugPurchaseOrder(post, request, response);
 		int after = service.getAllDrugPurchaseOrders().size();
@@ -68,7 +68,7 @@ public class DrugPurchaseOrderControllerTest extends BaseModuleContextSensitiveT
 		Assert.assertNotNull(dis);
 		Assert.assertEquals(1, dis.size());
 		Assert.assertEquals("Test inner Drug Inventory", dis.get(0).getName());
-		//Assert.assertEquals("Test inner Drug Inventory", dis.get(0).getName());
+		Assert.assertNotNull(dis.get(0).getExpiryDate());
 		Assert.assertEquals(before + 1, after);
 	}
 	
