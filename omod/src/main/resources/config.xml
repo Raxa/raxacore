@@ -57,8 +57,12 @@
 
     <!-- Hibernate files -->
     <mappingFiles>
-        RaxacorePatientList.hbm.xml
-          RaxacoreDrugPurchaseOrder.hbm.xml
+              RaxacoreDrugPurchaseOrder.hbm.xml
+              RaxacorePatientList.hbm.xml
               RaxacoreDrugInventory.hbm.xml
+              RaxacoreBilling.hbm.xml
+             RaxacoreBillingItem.hbm.xml
+                  
+          RaxacoreBillingItemAdjustment.hbm.xml 
     </mappingFiles>
 </module>

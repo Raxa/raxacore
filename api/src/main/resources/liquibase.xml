@@ -515,5 +515,502 @@
             referencedColumnNames="user_id"
             referencedTableName="users" />
     </changeSet>
+    <changeSet
+        id="2012-11-04_create_raxacore_billing_v1"
+        author="jatin" >
 
+        <preConditions onFail="MARK_RAN" >
+
+            <not>
+
+                <tableExists tableName="raxacore_billing" />
+            </not>
+        </preConditions>
+
+        <comment>
+            Schema for raxacore_billing table
+        </comment>
+
+        <createTable tableName="raxacore_billing" >
+
+            <column
+                name="bill_id"
+                autoIncrement="true"
+                type="int" >
+
+                <constraints
+                    nullable="false"
+                    primaryKey="true" />
+            </column>
+
+            <column
+                name="name"
+                type="varchar(255)" />
+            
+
+            <column
+                name="description"
+                type="varchar(2000)" />
+                
+
+            <column
+                name="bill_status"
+                type="varchar(255)" >
+                 <constraints nullable="false" />
+             </column>
+             <column
+                name="patient_id"
+                type="int" >
+             </column>
+             <column
+                name="provider_id"
+                type="int" >
+             </column>
+
+            <column
+                name="creator"
+                type="int" >
+
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                name="date_created"
+                type="DATETIME" >
+
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                name="changed_by"
+                type="int" />
+
+            <column
+                name="date_changed"
+                type="DATETIME" />
+
+            <column
+                name="retired"
+                defaultValueBoolean="false"
+                type="BOOLEAN" >
+
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                name="retired_by"
+                type="int" />
+
+            <column
+                name="date_retired"
+                type="DATETIME" />
+
+            <column
+                name="retire_reason"
+                type="varchar(255)" />
+
+            <column
+                name="uuid"
+                type="char(38)" >
+
+                <constraints
+                    nullable="false"
+                    unique="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet
+        id="2012-11-04_add_constraints_to_raxacore_billing_v1"
+        author="jatin" >
+
+        <preConditions onFail="MARK_RAN" >
+
+            <tableExists tableName="raxacore_billing" />
+        </preConditions>
+
+        <comment>
+            Adding constraints for raxacore_billing
+        </comment>
+
+        <addForeignKeyConstraint
+            baseColumnNames="creator"
+            baseTableName="raxacore_billing"
+            constraintName="FK_raxacore_billing_creator_users_user_id"
+            referencedColumnNames="user_id"
+            referencedTableName="users" />
+
+        <addForeignKeyConstraint
+            baseColumnNames="retired_by"
+            baseTableName="raxacore_billing"
+            constraintName="FK_raxacore_billing_retired_by_users_user_id"
+            referencedColumnNames="user_id"
+            referencedTableName="users" />
+
+        <addForeignKeyConstraint
+            baseColumnNames="changed_by"
+            baseTableName="raxacore_billing"
+            constraintName="FK_raxacore_billing_changed_by_users_user_id"
+            referencedColumnNames="user_id"
+            referencedTableName="users" />
+        <addForeignKeyConstraint
+            baseColumnNames="provider_id"
+            baseTableName="raxacore_billing"
+            constraintName="FK_raxacore_billing_provider_id_Provider_provider_id"
+            referencedColumnNames="provider_id"
+            referencedTableName="Provider" />
+         <addForeignKeyConstraint
+            baseColumnNames="patient_id"
+            baseTableName="raxacore_billing"
+            constraintName="FK_raxacore_billing_patient_id_Patient_patient_id"
+            referencedColumnNames="patient_id"
+            referencedTableName="Patient" />
+    </changeSet>
+
+   <changeSet
+        id="2012-09-12_create_raxacore_billing_item_v2"
+        author="abhishek" >
+
+        <preConditions onFail="MARK_RAN" >
+
+            <not>
+
+                <tableExists tableName="raxacore_billing_item" />
+            </not>
+        </preConditions>
+
+        <comment>
+            Schema for raxacore_billing_item table
+        </comment>
+
+        <createTable tableName="raxacore_billing_item" >
+
+            <column
+                name="bill_item_id"
+                autoIncrement="true"
+                type="int" >
+
+                <constraints
+                    nullable="false"
+                    primaryKey="true" />
+            </column>
+
+            <column
+                name="name"
+                type="varchar(255)" />
+            
+
+            <column
+                name="description"
+                type="varchar(2000)" />
+                
+
+           <column
+                name="bill_id"
+                type="int" >
+                 <constraints nullable="false" />
+             </column>
+             
+             <column
+                name="provider_id"
+                type="int" >
+                 <constraints nullable="false" />
+             </column>
+
+             
+               <column
+                name="concept_id"
+                type="int" >
+             </column>
+             
+              <column
+                name="encounter_id"
+                type="int" >
+             </column>
+             
+               <column
+                name="order_id"
+                type="int" >
+             </column>
+             
+               
+               
+             <column
+                name="quantity"
+                type="int" >
+            </column>
+             
+             <column
+                name="value"
+                type="int" >
+            </column>
+             
+            <column
+                name="creator"
+                type="int" >
+
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                name="date_created"
+                type="DATETIME" >
+
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                name="changed_by"
+                type="int" />
+
+            <column
+                name="date_changed"
+                type="DATETIME" />
+
+            <column
+                name="retired"
+                defaultValueBoolean="false"
+                type="BOOLEAN" >
+
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                name="retired_by"
+                type="int" />
+
+            <column
+                name="date_retired"
+                type="DATETIME" />
+
+            <column
+                name="retire_reason"
+                type="varchar(255)" />
+
+            <column
+                name="uuid"
+                type="char(38)" >
+
+                <constraints
+                    nullable="false"
+                    unique="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet
+        id="2012-09-12_add_constraints_to_raxacore_billing_item_v2"
+        author="abhishek" >
+
+        <preConditions onFail="MARK_RAN" >
+
+            <tableExists tableName="raxacore_billing_item" />
+        </preConditions>
+
+        <comment>
+            Adding constraints for raxacore_billing_item
+        </comment>
+
+        <addForeignKeyConstraint
+            baseColumnNames="creator"
+            baseTableName="raxacore_billing_item"
+            constraintName="FK_raxacore_billing_item_creator_users_user_id"
+            referencedColumnNames="user_id"
+            referencedTableName="users" />
+
+        <addForeignKeyConstraint
+            baseColumnNames="retired_by"
+            baseTableName="raxacore_billing_item"
+            constraintName="FK_raxacore_billing_item_retired_by_users_user_id"
+            referencedColumnNames="user_id"
+            referencedTableName="users" />
+
+        <addForeignKeyConstraint
+            baseColumnNames="changed_by"
+            baseTableName="raxacore_billing_item"
+            constraintName="FK_raxacore_billing_item_changed_by_users_user_id"
+            referencedColumnNames="user_id"
+            referencedTableName="users" />
+        <addForeignKeyConstraint
+            baseColumnNames="provider_id"
+            baseTableName="raxacore_billing_item"
+            constraintName="FK_raxacore_billing_item_provider_id_Provider_provider_id"
+            referencedColumnNames="provider_id"
+            referencedTableName="Provider" />
+         <addForeignKeyConstraint
+            baseColumnNames="bill_id"
+            baseTableName="raxacore_billing_item"
+            constraintName="FK_raxacore_billing_item_bill_id_Patient_patient_id"
+            referencedColumnNames="bill_id"
+            referencedTableName="raxacore_billing" />
+         
+            <addForeignKeyConstraint
+            baseColumnNames="concept_id"
+            baseTableName="raxacore_billing_item"
+            constraintName="FK_raxacore_billing_item_concept_id_concept_concept_id"
+            referencedColumnNames="concept_id"
+            referencedTableName="concept" />
+                  
+            <addForeignKeyConstraint
+            baseColumnNames="encounter_id"
+            baseTableName="raxacore_billing_item"
+            constraintName="FK_raxacore_billing_item_encounter_id_encounter_encounter_id"
+            referencedColumnNames="encounter_id"
+            referencedTableName="encounter" />
+                   
+            <addForeignKeyConstraint
+            baseColumnNames="order_id"
+            baseTableName="raxacore_billing_item"
+            constraintName="FK_raxacore_billing_item_order_id_orders_order_id"
+            referencedColumnNames="order_id"
+            referencedTableName="orders" />
+         
+         
+      </changeSet>
+          <changeSet
+        id="2012-09-18_create_raxacore_billing_item_adjustment_v22"
+        author="abhishek" >
+
+        <preConditions onFail="MARK_RAN" >
+
+            <not>
+
+                <tableExists tableName="raxacore_billing_item_adjustment" />
+            </not>
+        </preConditions>
+
+        <comment>
+            Schema for raxacore_billing_item_adjustment
+        </comment>
+
+       <createTable tableName="raxacore_billing_item_adjustment" >
+
+            <column
+                name="adjustment_id"
+                autoIncrement="true"
+                type="int" >
+
+                <constraints
+                    nullable="false"
+                    primaryKey="true" />
+            </column>
+
+            <column
+                name="name"
+                type="varchar(255)" />
+            
+
+            <column
+                name="description"
+                type="varchar(2000)" />
+            <column
+                name="reason"
+                type="varchar(2000)" >
+             </column>
+             
+             <column
+                name="value"
+                type="int" >                
+            </column>
+             <column
+                name="bill_item_id"
+                type="int" >
+              </column>
+             
+            <column
+                name="creator"
+                type="int" >
+
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                name="date_created"
+                type="DATETIME" >
+
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                name="changed_by"
+                type="int" />
+
+            <column
+                name="date_changed"
+                type="DATETIME" />
+
+            <column
+                name="retired"
+                defaultValueBoolean="false"
+                type="BOOLEAN" >
+
+                <constraints nullable="false" />
+            </column>
+
+            <column
+                name="retired_by"
+                type="int" />
+
+            <column
+                name="date_retired"
+                type="DATETIME" />
+
+            <column
+                name="retire_reason"
+                type="varchar(255)" />
+
+            <column
+                name="uuid"
+                type="char(38)" >
+
+                <constraints
+                    nullable="false"
+                    unique="true" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet
+        id="2012-09-18_add_constraint_to_raxacore_billing_item_adjstmnt"
+        author="abhishek" >
+
+        <preConditions onFail="MARK_RAN" >
+
+            <tableExists tableName="raxacore_billing_item_adjustment" />
+        </preConditions>
+
+        <comment>
+            Adding constraints for raxacore_billing_item_adjustment
+        </comment>
+
+        <addForeignKeyConstraint
+            baseColumnNames="creator"
+            baseTableName="raxacore_billing_item_adjustment"
+            constraintName="FK_raxacore_billing_item_adjustment_creator_users_user_id"
+            referencedColumnNames="user_id"
+            referencedTableName="users" />
+
+        <addForeignKeyConstraint
+            baseColumnNames="retired_by"
+            baseTableName="raxacore_billing_item_adjustment"
+            constraintName="FK_raxacore_billing_item_adjustment_retired_by_users_user_id"
+            referencedColumnNames="user_id"
+            referencedTableName="users" />
+
+        <addForeignKeyConstraint
+            baseColumnNames="changed_by"
+            baseTableName="raxacore_billing_item_adjustment"
+            constraintName="FK_raxacore_billing_item_adjustment_changed_by_users_user_id"
+            referencedColumnNames="user_id"
+            referencedTableName="users" />
+         
+         <addForeignKeyConstraint
+            baseColumnNames="bill_item_id"
+            baseTableName="raxacore_billing_item_adjustment"
+            constraintName="FK_item_adjustment_bill_item_id_billing_item_bill_item_id"
+            referencedColumnNames="bill_item_id"
+            referencedTableName="raxacore_billing_item" />
+         
+    </changeSet>
+    
 </databaseChangeLog>

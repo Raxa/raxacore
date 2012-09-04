@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+    
+<hibernate-mapping package="org.raxa.module.raxacore">
+    
+    <class name="BillingItemAdjustment" table="raxacore_billing_item_adjustment">
+        <id name="billItemAdjustmentId" column="adjustment_id">
+            <generator class="native"/>
+        </id>
+        <property name="name"           type="java.lang.String"     column="name" length="255"/>
+        <property name="description"    type="java.lang.String"     column="description" length="2000"/>
+        <property name="uuid"           type="java.lang.String"     column="uuid" length="38" not-null="true" unique="true"/>
+        <many-to-one name="creator"     class="org.openmrs.User"    column="creator" not-null="true"/>
+        <property name="dateCreated"    type="java.util.Date"       column="date_created" not-null="true" length="19"/>
+        <property name="retired"        type="java.lang.Boolean"    column="retired" length="1" not-null="true"/>
+        <many-to-one name="retiredBy"   class="org.openmrs.User"    column="retired_by"/>
+        <property name="dateRetired"    type="java.util.Date"       column="date_retired"/>
+        <property name="retireReason"   type="java.lang.String"     column="retire_reason" length="255"/>
+        <many-to-one name="changedBy"   class="org.openmrs.User"    column="changed_by"/>
+        <property name="dateChanged"    type="java.util.Date"       column="date_changed" length="19"/>
+
+              <property name="reason"     type="java.lang.String"    column="reason" length="255"  />
+                      <property name="value"     type="java.lang.Integer"    column="value"  />
+              
+   
+     <property name="billItemId"     type="java.lang.Integer"    column="bill_item_id" insert="false" not-null="true" update="false" />
+        <many-to-one name="billItem"   class="org.raxa.module.raxacore.BillingItem" column="bill_item_id"  not-null="true" />
+    </class>
+</hibernate-mapping>
