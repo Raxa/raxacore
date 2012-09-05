@@ -94,4 +94,13 @@ public class HibernateDrugInventoryDAO implements DrugInventoryDAO {
 		drugInventories.addAll(criteria.list());
 		return drugInventories;
 	}
+	
+	@Override
+	public List<DrugInventory> getDrugInventoriesByDrugPurchaseOrder(Integer drugPurchaseOrderId) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DrugInventory.class);
+		criteria.add(Restrictions.eq("drugPurchaseOrderId", drugPurchaseOrderId));
+		List<DrugInventory> drugInventories = new ArrayList<DrugInventory>();
+		drugInventories.addAll(criteria.list());
+		return drugInventories;
+	}
 }

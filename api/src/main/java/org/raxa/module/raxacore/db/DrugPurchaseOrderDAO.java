@@ -36,4 +36,8 @@ public interface DrugPurchaseOrderDAO {
 	
 	public List<DrugPurchaseOrder> getDrugPurchaseOrderByProvider(Integer providerId);
 	
+	public List<DrugPurchaseOrder> getDrugPurchaseOrderByDispenseLocation(Integer dispenseLocation);
+	
+	public List<DrugPurchaseOrder> getDrugPurchaseOrderByStockLocation(Integer stockLocation);
+	
 }

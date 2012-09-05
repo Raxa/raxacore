@@ -38,4 +38,6 @@ public interface DrugInventoryDAO {
 	
 	public List<DrugInventory> getDrugInventoriesByLocation(Integer location);
 	
+	public List<DrugInventory> getDrugInventoriesByDrugPurchaseOrder(Integer drugPurchaseOrderId);
+	
 }

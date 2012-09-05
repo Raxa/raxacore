@@ -26,7 +26,7 @@ import org.openmrs.Provider;
 
 public class DrugInventory extends BaseOpenmrsMetadata implements Serializable {
 	
-	private Integer drugInventoryId;
+	private Integer id;
 	
 	private Integer drugId;
 	
@@ -37,6 +37,8 @@ public class DrugInventory extends BaseOpenmrsMetadata implements Serializable {
 	private Date expiryDate;
 	
 	private String batch;
+	
+	private String roomLocation;
 	
 	private Integer value;
 	
@@ -62,21 +64,12 @@ public class DrugInventory extends BaseOpenmrsMetadata implements Serializable {
 	}
 	
 	public Integer getId() {
-		
-		return getDrugInventoryId();
+		return this.id;
 	}
 	
 	public void setId(Integer arg0) {
 		// TODO Auto-generated method stub
-		setDrugInventoryId(arg0);
-	}
-	
-	public Integer getDrugInventoryId() {
-		return drugInventoryId;
-	}
-	
-	public void setDrugInventoryId(Integer drugInventoryId) {
-		this.drugInventoryId = drugInventoryId;
+		this.id = arg0;
 	}
 	
 	public Integer getDrugId() {
@@ -190,6 +183,20 @@ public class DrugInventory extends BaseOpenmrsMetadata implements Serializable {
 	
 	public void setDrugPurchaseOrder(DrugPurchaseOrder drugPurchaseOrder) {
 		this.drugPurchaseOrder = drugPurchaseOrder;
+	}
+	
+	/**
+	 * @return the roomLocation
+	 */
+	public String getRoomLocation() {
+		return roomLocation;
+	}
+	
+	/**
+	 * @param roomLocation the roomLocation to set
+	 */
+	public void setRoomLocation(String roomLocation) {
+		this.roomLocation = roomLocation;
 	}
 	
 }

@@ -50,9 +50,11 @@ public class HibernateDrugPurchaseOrderDAOTest extends BaseModuleContextSensitiv
 		dpOrder.setUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
 		dpOrder.setRetired(Boolean.FALSE);
 		dpOrder.setProviderId(new Integer(3));
-		dpOrder.setLocationId(new Integer(1));
+		dpOrder.setDispenseLocationId(1);
+		dpOrder.setStockLocationId(2);
 		dpOrder.setProvider(provider);
-		dpOrder.setLocation(location);
+		dpOrder.setDispenseLocation(Context.getLocationService().getLocation(1));
+		dpOrder.setStockLocation(Context.getLocationService().getLocation(2));
 		
 		dao.saveDrugPurchaseOrder(dpOrder);
 		DrugPurchaseOrder result = dao.getDrugPurchaseOrderByUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
@@ -110,9 +112,11 @@ public class HibernateDrugPurchaseOrderDAOTest extends BaseModuleContextSensitiv
 		dpOrder.setUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
 		dpOrder.setRetired(Boolean.FALSE);
 		dpOrder.setProviderId(new Integer(3));
-		dpOrder.setLocationId(new Integer(1));
+		dpOrder.setDispenseLocationId(new Integer(1));
+		dpOrder.setStockLocationId(new Integer(2));
 		dpOrder.setProvider(provider);
-		dpOrder.setLocation(location);
+		dpOrder.setDispenseLocation(Context.getLocationService().getLocation(1));
+		dpOrder.setStockLocation(Context.getLocationService().getLocation(2));
 		
 		dao.deleteDrugPurchaseOrder(dpOrder);
 		DrugPurchaseOrder result = dao.getDrugPurchaseOrderByUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
@@ -123,5 +127,17 @@ public class HibernateDrugPurchaseOrderDAOTest extends BaseModuleContextSensitiv
 	public void testGetDrugPurchaseOrderByProvider() {
 		List<DrugPurchaseOrder> result = dao.getDrugPurchaseOrderByProvider(1);
 		assertEquals(result.size(), 2);
+	}
+	
+	@Test
+	public void testGetDrugPurchaseOrderByDispenseLocation() {
+		List<DrugPurchaseOrder> result = dao.getDrugPurchaseOrderByDispenseLocation(1);
+		assertEquals(1, result.size());
+	}
+	
+	@Test
+	public void testGetDrugPurchaseOrderByStockLocation() {
+		List<DrugPurchaseOrder> result = dao.getDrugPurchaseOrderByStockLocation(1);
+		assertEquals(1, result.size());
 	}
 }

@@ -88,4 +88,14 @@ public class DrugPurchaseOrderServiceImpl implements DrugPurchaseOrderService {
 		return dao.getDrugPurchaseOrderByProvider(providerId);
 	}
 	
+	@Override
+	public List<DrugPurchaseOrder> getDrugPurchaseOrderByDispenseLocation(Integer dispenseLocation) {
+		return dao.getDrugPurchaseOrderByDispenseLocation(dispenseLocation);
+	}
+	
+	@Override
+	public List<DrugPurchaseOrder> getDrugPurchaseOrderByStockLocation(Integer stockLocation) {
+		return dao.getDrugPurchaseOrderByStockLocation(stockLocation);
+	}
+	
 }

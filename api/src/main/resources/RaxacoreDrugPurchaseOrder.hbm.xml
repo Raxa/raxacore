@@ -9,7 +9,7 @@
         table="drug_purchase_order" >
 
         <id
-            name="drugPurchaseOrderId"
+            name="id"
             column="PO_id" >
 
             <generator class="native" />
@@ -40,9 +40,15 @@
             not-null="true" />
 
         <many-to-one
-            name="location"
+            name="dispenseLocation"
             class="org.openmrs.Location"
-            column="Location_id" />
+            column="dispense_location_id" />
+            <!--  not-null="true"--> 
+
+        <many-to-one
+            name="stockLocation"
+            class="org.openmrs.Location"
+            column="stock_location_id" />
             <!--  not-null="true"--> 
 
         <property
@@ -116,10 +122,16 @@
             update="false" />
 
         <property
-            name="locationId"
-            column="Location_id"
+            name="dispenseLocationId"
+            column="dispense_location_id"
             insert="false"
-            
+            type="java.lang.Integer"
+            update="false" />
+
+        <property
+            name="stockLocationId"
+            column="stock_location_id"
+            insert="false"
             type="java.lang.Integer"
             update="false" />
     </class>
