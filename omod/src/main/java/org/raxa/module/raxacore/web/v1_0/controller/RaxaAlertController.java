@@ -195,6 +195,7 @@ public class RaxaAlertController {
 		obj.add("fromLocation", fromLocationObj);
 		obj.add("alertType", rAlert.getAlertType());
 		obj.add("defaultTask", rAlert.getDefaultTask());
+		obj.add("seen", rAlert.getSeen());
 		obj.add("time", rAlert.getTime());
 		return obj;
 	}
