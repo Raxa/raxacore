@@ -104,8 +104,9 @@ public class DrugInventoryController extends BaseRestController {
 			drugInventory.setOriginalQuantity(Integer.parseInt(post.get("originalQuantity").toString()));
 		}
 		if (post.get("expiryDate") != null) {
-			String[] supportedFormats = { "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss.SSS",
-			        "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
+			String[] supportedFormats = { "EEE MMM dd yyyy HH:mm:ss", "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+			        "yyyy-MM-dd'T'HH:mm:ss.SSS", "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss",
+			        "yyyy-MM-dd" };
 			for (int i = 0; i < supportedFormats.length; i++) {
 				try {
 					Date date = new SimpleDateFormat(supportedFormats[i]).parse(post.get("expiryDate").toString());
@@ -122,6 +123,9 @@ public class DrugInventoryController extends BaseRestController {
 		}
 		if (post.get("status") != null) {
 			drugInventory.setStatus(post.get("status").toString());
+		}
+		if (post.get("roomLocation") != null) {
+			drugInventory.setRoomLocation(post.get("roomLocation").toString());
 		}
 		if (post.get("provider") != null) {
 			Provider p = Context.getProviderService().getProviderByUuid(post.get("provider").toString());
@@ -161,15 +165,15 @@ public class DrugInventoryController extends BaseRestController {
 		}
 		obj.add("drug", drugObj);
 		obj.add("quantity", di.getQuantity());
-		obj.add("original quantity", di.getOriginalQuantity());
-		obj.add("expiry date", di.getExpiryDate());
+		obj.add("originalquantity", di.getOriginalQuantity());
+		obj.add("expiryDate", di.getExpiryDate());
 		obj.add("batch", di.getBatch());
 		obj.add("value", di.getValue());
 		obj.add("status", di.getStatus());
+		obj.add("roomLocation", di.getRoomLocation());
 		SimpleObject pObj = new SimpleObject();
 		Provider p = di.getProvider();
 		if (p != null) {
-			//System.out.println(p);
 			pObj.add("uuid", p.getUuid());
 			pObj.add("display", p.getName());
 		}
@@ -177,17 +181,17 @@ public class DrugInventoryController extends BaseRestController {
 		SimpleObject lObj = new SimpleObject();
 		Location l = di.getLocation();
 		if (l != null) {
-			lObj.add("uuid", p.getUuid());
-			lObj.add("display", p.getName());
+			lObj.add("uuid", l.getUuid());
+			lObj.add("display", l.getName());
 		}
 		obj.add("location", lObj);
 		SimpleObject dPOObj = new SimpleObject();
 		DrugPurchaseOrder dPO = di.getDrugPurchaseOrder();
 		if (dPO != null) {
-			dPOObj.add("uuid", p.getUuid());
-			dPOObj.add("display", p.getName());
+			dPOObj.add("uuid", dPO.getUuid());
+			dPOObj.add("display", dPO.getName());
 		}
-		obj.add("drug purchase order", dPOObj);
+		obj.add("drugpurchaseorder", dPOObj);
 		return obj;
 	}
 	

@@ -5,7 +5,7 @@
 <hibernate-mapping package="org.raxa.module.raxacore" >
 
     <class name="DrugInventory" table="drug_inventory_resource">
-        <id name="drugInventoryId" column="DI_id">
+        <id name="id" column="DI_id">
             <generator class="native"/>
         </id>
         <property name="name"                     type="java.lang.String"        column="DI_name" length="255"/>
@@ -14,13 +14,14 @@
         <many-to-one name="drug"                  class="org.openmrs.Drug"       column="Drug_ID"/>
         <property name="providerId"               type="java.lang.Integer"       column="Provider_id" insert="false" update="false"/>
         <many-to-one name="provider"              class="org.openmrs.Provider"   column="Provider_id"/>
-        <property name="drugPurchaseOrderId"      type="java.lang.Integer"       column="Drug_PO" insert="false" update="false"/>
-        <many-to-one name="drugPurchaseOrder"     class="org.raxa.module.raxacore.DrugPurchaseOrder"   column="Drug_PO"/>
+        <property name="drugPurchaseOrderId"      type="java.lang.Integer"       column="drug_PO_id" insert="false" update="false"/>
+        <many-to-one name="drugPurchaseOrder"     class="org.raxa.module.raxacore.DrugPurchaseOrder"   column="drug_PO_id"/>
         <property name="locationId"               type="java.lang.Integer"       column="Location_id" insert="false" update="false"/>
         <many-to-one name="location"              class="org.openmrs.Location"   column="Location_id"/>
         <property name="expiryDate"               type="java.util.Date"          column="Expiry_date"/>
         <property name="batch"                    type="java.lang.String"        column="Batch" length="255"/>
         <property name="status"                   type="java.lang.String"        column="Status" length="255"/>
+        <property name="roomLocation"             type="java.lang.String"        column="room_location" length="1000"/>
         <property name="quantity"                 type="java.lang.Integer"       column="Quantity"/>
         <property name="originalQuantity"         type="java.lang.Integer"       column="Original_quantity"/>
         <property name="value"                    type="java.lang.Integer"       column="Value"/>
@@ -36,173 +37,4 @@
     </class>
     
     
-    
-<!--    <class
-        name="DrugInventory"
-        table="drug_inventory_resource" >
-
-        <id
-            name="drugInventoryId"
-            column="DI_id" >
-
-            <generator class="native" />
-        </id>
-
-        <property
-            name="name"
-            column="DI_name"
-            length="255"
-            type="java.lang.String" />
-
-        <property
-            name="description"
-            column="DI_description"
-            length="2000"
-            type="java.lang.String" />
-
-        <many-to-one
-            name="drug"
-            class="org.openmrs.Drug"
-            column="Drug_ID"
-            />
-
-        <property
-            name="quantity"
-            column="Quantity"
-            not-null="true"
-            type="java.lang.Integer" />
-
-        <property
-            name="originalQuantity"
-            column="Original_quantity"
-           
-            type="java.lang.Integer" />
-
-        <property
-            name="expiryDate"
-            column="Expiry_date"
-           
-            type="java.util.Date" />
-
-        <property
-            name="batch"
-            column="Batch"
-            length="255"
-            type="java.lang.String" />
-
-        <property
-            name="value"
-            column="Value"
-            type="java.lang.Integer" />
-
-        <property
-            name="status"
-            column="Status"
-            length="255"
-            type="java.lang.String" />
-
-        <many-to-one
-            name="provider"
-            class="org.openmrs.Provider"
-            column="Provider_id"
-           />
-
-        <many-to-one
-            name="location"
-            class="org.openmrs.Location"
-            column="Location_id"
-             />
-
-        <many-to-one
-            name="drugPurchaseOrder"
-            class="org.raxa.module.raxacore.DrugPurchaseOrder"
-            column="Drug_PO"
-             />
-
-        <property
-            name="uuid"
-            column="uuid"
-            length="38"
-            not-null="true"
-            type="java.lang.String"
-            unique="true" />
-
-        <many-to-one
-            name="creator"
-            class="org.openmrs.User"
-            column="creator"
-            not-null="true" />
-
-        <property
-            name="dateCreated"
-            column="date_created"
-            length="19"
-            not-null="true"
-            type="java.util.Date" />
-
-        <property
-            name="retired"
-            column="retired"
-            length="1"
-            not-null="true"
-            type="java.lang.Boolean" />
-
-        <many-to-one
-            name="retiredBy"
-            class="org.openmrs.User"
-            column="retired_by" />
-
-        <property
-            name="dateRetired"
-            column="date_retired"
-            type="java.util.Date" />
-
-        <property
-            name="retireReason"
-            column="retire_reason"
-            length="255"
-            type="java.lang.String" />
-
-        <many-to-one
-            name="changedBy"
-            class="org.openmrs.User"
-            column="changed_by" />
-
-        <property
-            name="dateChanged"
-            column="date_changed"
-            length="19"
-            type="java.util.Date" />
-
-        <property
-            name="providerId"
-            column="Provider_id"
-            insert="false"
-            type="java.lang.Integer"
-            update="false" />
-
-        <property
-            name="locationId"
-            column="Location_id"
-            insert="false"
-            type="java.lang.Integer"
-            update="false" />
-
-        <property
-            name="drugPurchaseOrderId"
-            column="Drug_PO"
-            insert="false"
-            
-            type="java.lang.Integer"
-            update="false" />
-
-        <property
-            name="drugId"
-            column="Drug_ID"
-            insert="false"
-            not-null="true"
-            type="java.lang.Integer"
-            update="false" />
-    </class>
--->
 </hibernate-mapping>

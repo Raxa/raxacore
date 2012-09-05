@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
@@ -110,6 +111,16 @@ public class RaxaAlertController {
 			raxaAlert.setProviderSentId(pSender.getId());
 			raxaAlert.setProviderSent(pSender);
 		}
+		if (post.get("toLocation") != null) {
+			Location toLocation = Context.getLocationService().getLocationByUuid(post.get("toLocation").toString());
+			raxaAlert.setToLocationId(toLocation.getId());
+			raxaAlert.setToLocation(toLocation);
+		}
+		if (post.get("fromLocation") != null) {
+			Location fromLocation = Context.getLocationService().getLocationByUuid(post.get("fromLocation").toString());
+			raxaAlert.setFromLocationId(fromLocation.getId());
+			raxaAlert.setFromLocation(fromLocation);
+		}
 		if (post.get("patient") != null) {
 			Patient patient = Context.getPatientService().getPatientByUuid(post.get("patient").toString());
 			raxaAlert.setPatientId(patient.getId());
@@ -168,8 +179,23 @@ public class RaxaAlertController {
 			pSentObj.add("display", pSent.getName());
 		}
 		obj.add("providerSent", pSentObj);
+		SimpleObject toLocationObj = new SimpleObject();
+		Location toLocation = rAlert.getToLocation();
+		if (toLocation != null) {
+			toLocationObj.add("uuid", toLocation.getUuid());
+			toLocationObj.add("display", toLocation.getName());
+		}
+		obj.add("toLocation", toLocationObj);
+		SimpleObject fromLocationObj = new SimpleObject();
+		Location fromLocation = rAlert.getFromLocation();
+		if (fromLocation != null) {
+			fromLocationObj.add("uuid", fromLocation.getUuid());
+			fromLocationObj.add("display", fromLocation.getName());
+		}
+		obj.add("fromLocation", fromLocationObj);
 		obj.add("alertType", rAlert.getAlertType());
 		obj.add("defaultTask", rAlert.getDefaultTask());
+		obj.add("seen", rAlert.getSeen());
 		obj.add("time", rAlert.getTime());
 		return obj;
 	}
@@ -203,6 +229,24 @@ public class RaxaAlertController {
 	        HttpServletRequest request) throws ResponseException {
 		initRaxaAlertController();
 		return alertListToJson(service.getRaxaAlertByProviderRecipientUuid(providerRecipient, false));
+	}
+	
+	/**
+	 * Fetch raxa alerts according to provider
+	 *
+	 * @param providerRecipient
+	 * @param request
+	 * @param response
+	 * @return encounters for the given patient
+	 * @throws ResponseException
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "toLocation")
+	@WSDoc("Fetch all non-retired alerts according to toLocation")
+	@ResponseBody()
+	public String searchByToLocation(@RequestParam("toLocation") String toLocation, HttpServletRequest request)
+	        throws ResponseException {
+		initRaxaAlertController();
+		return alertListToJson(service.getRaxaAlertByToLocationUuid(toLocation, false));
 	}
 	
 	/**

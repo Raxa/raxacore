@@ -57,6 +57,8 @@ public class DrugInventoryServiceImpl implements DrugInventoryService {
 	
 	@Override
 	public DrugInventory saveDrugInventory(DrugInventory drugInventory) {
+		if (drugInventory.getOriginalQuantity() == null)
+			drugInventory.setOriginalQuantity(drugInventory.getQuantity());
 		return dao.saveDrugInventory(drugInventory);
 	}
 	
@@ -99,6 +101,11 @@ public class DrugInventoryServiceImpl implements DrugInventoryService {
 	@Override
 	public List<DrugInventory> getDrugInventoriesByLocation(Integer location) {
 		return dao.getDrugInventoriesByLocation(location);
+	}
+	
+	@Override
+	public List<DrugInventory> getDrugInventoriesByDrugPurchaseOrder(Integer drugPurchaseOrderId) {
+		return dao.getDrugInventoriesByDrugPurchaseOrder(drugPurchaseOrderId);
 	}
 	
 }

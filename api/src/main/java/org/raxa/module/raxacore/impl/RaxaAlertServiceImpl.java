@@ -179,4 +179,10 @@ public class RaxaAlertServiceImpl implements RaxaAlertService {
 		        .getId(), includeSeen);
 	}
 	
+	@Override
+	public List<RaxaAlert> getRaxaAlertByToLocationUuid(String toLocation, boolean includeSeen) {
+		return dao.getRaxaAlertByToLocationId(Context.getLocationService().getLocationByUuid(toLocation).getId(),
+		    includeSeen);
+	}
+	
 }

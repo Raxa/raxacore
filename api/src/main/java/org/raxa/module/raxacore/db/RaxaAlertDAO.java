@@ -132,4 +132,6 @@ public interface RaxaAlertDAO {
 	 * @should void a raxa alert
 	 */
 	public RaxaAlert voidRaxaAlert(RaxaAlert raxaAlert, String reason);
+	
+	public List<RaxaAlert> getRaxaAlertByToLocationId(Integer id, boolean includeSeen);
 }

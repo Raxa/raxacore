@@ -160,4 +160,5 @@ public interface RaxaAlertService extends OpenmrsService {
 	@Authorized( { "Delete Raxa Alerts" })
 	public void purgeRaxaAlert(RaxaAlert raxaAlert);
 	
+	public List<RaxaAlert> getRaxaAlertByToLocationUuid(String toLocation, boolean includeSeen);
 }
