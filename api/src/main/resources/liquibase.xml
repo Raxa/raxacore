@@ -353,14 +353,14 @@
             baseTableName="drug_purchase_order"
             constraintName="FK_drug_purchase_order_Provider_id_Provider_provider_id"
             referencedColumnNames="provider_id"
-            referencedTableName="Provider" />
+            referencedTableName="provider" />
 
         <addForeignKeyConstraint
             baseColumnNames="Location_id"
             baseTableName="drug_purchase_order"
             constraintName="FK_drug_purchase_order_Location_id_Location_location_id"
             referencedColumnNames="location_id"
-            referencedTableName="Location" />
+            referencedTableName="location" />
 
         <addForeignKeyConstraint
             baseColumnNames="creator"
@@ -555,14 +555,14 @@
             baseTableName="drug_inventory_resource"
             constraintName="FK_drug_inventory_resource_Provider_id_Provider_provider_id"
             referencedColumnNames="provider_id"
-            referencedTableName="Provider" />
+            referencedTableName="provider" />
 
         <addForeignKeyConstraint
             baseColumnNames="Location_id"
             baseTableName="drug_inventory_resource"
             constraintName="FK_drug_inventory_resource_Location_id_Location_location_id"
             referencedColumnNames="location_id"
-            referencedTableName="Location" />
+            referencedTableName="location" />
 
         <addForeignKeyConstraint
             baseColumnNames="Drug_PO"
