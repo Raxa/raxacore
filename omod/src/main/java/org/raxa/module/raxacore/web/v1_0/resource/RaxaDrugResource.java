@@ -31,38 +31,22 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.raxa.module.raxacore.DrugGroup;
-import org.raxa.module.raxacore.DrugGroupService;
+import org.openmrs.api.ConceptService;
+import org.openmrs.Drug;
 
 /**
- * {@link Resource} for DrugGroup, supporting standard CRUD operations This
- * resource is currently not used because of serialization issue in OpenMRS core
+ * {@link Resource} for Drug , supporting standard CRUD operations This resource
+ * is currently not used because of serialization issue in OpenMRS core
  * (TRUNK-2205)
  */
-@Resource("druggroup")
-@Handler(supports = DrugGroup.class, order = 0)
-public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup> {
+@Resource("drug")
+@Handler(supports = Drug.class, order = 0)
+public class RaxaDrugResource extends MetadataDelegatingCrudResource<Drug> {
 	
-	/**
-	 * Getter for the drugs property on patient list resource
-	 *
-	 * @param drugGroup
-	 * @return
-	 */
-	@PropertyGetter("drugs")
-	public List<Patient> getDrugs(DrugGroup drugGroup) {
-		// return getDrugGroupService().getDrugsInDrugGroup(drugGroup);
-		return null;
+	private ConceptService getDrugService() {
+		return Context.getConceptService();
 	}
 	
-	private DrugGroupService getDrugGroupService() {
-		return Context.getService(DrugGroupService.class);
-	}
-	
-	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource#getRepresentationDescription(org.openmrs.module.webservices.rest.web.representation.Representation)
-	 */
 	@Override
 	public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 		if (rep instanceof DefaultRepresentation) {
@@ -70,9 +54,9 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 			description.addProperty("uuid");
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("name");
+			description.addProperty("price");
+			description.addProperty("cost");
 			description.addProperty("description");
-			// description.addProperty("searchQuery");
-			// description.addProperty("drugs", Representation.REF);
 			description.addProperty("retired");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -83,8 +67,8 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("name");
 			description.addProperty("description");
-			// description.addProperty("searchQuery");
-			// description.addProperty("drugs", Representation.DEFAULT);
+			description.addProperty("price");
+			description.addProperty("cost");
 			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -93,103 +77,52 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 		return null;
 	}
 	
-	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getCreatableProperties()
-	 */
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("drug_id");
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("description");
-		// description.addProperty("searchQuery");
 		return description;
 	}
 	
-	/**
-	 * @throws ResourceDoesNotSupportOperationException
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getUpdatableProperties()
-	 */
 	@Override
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("description");
-		// description.addProperty("searchQuery");
 		return description;
 	}
 	
-	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId()
-	 */
 	@Override
-	public DrugGroup getByUniqueId(String uuid) {
-		return getDrugGroupService().getDrugGroupByUuid(uuid);
+	public Drug getByUniqueId(String uuid) {
+		return getDrugService().getDrugByUuid(uuid);
 	}
 	
-	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge()
-	 */
 	@Override
-	public void purge(DrugGroup t, RequestContext rc) throws ResponseException {
-		getDrugGroupService().deleteDrugGroup(t);
+	public Drug newDelegate() {
+		return new Drug();
 	}
 	
-	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
-	 */
 	@Override
-	public DrugGroup newDelegate() {
-		return new DrugGroup();
+	public Drug save(Drug drugInfo) {
+		return getDrugService().saveDrug(drugInfo);
 	}
 	
-	/*
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save()
-	 */
 	@Override
-	public DrugGroup save(DrugGroup drugGroup) {
-		return getDrugGroupService().saveDrugGroup(drugGroup);
+	protected NeedsPaging<Drug> doGetAll(RequestContext context) throws ResponseException {
+		return new NeedsPaging<Drug>(getDrugService().getAllDrugs(false), context);
 	}
 	
-	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#doGetAll()
-	 * @param context
-	 * @return
-	 * @throws ResponseException
-	 */
 	@Override
-	protected NeedsPaging<DrugGroup> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<DrugGroup>(getDrugGroupService().getAllDrugGroup(false), context);
-	}
-	
-	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#doSearch()
-	 * @param query
-	 * @param context
-	 * @return
-	 */
-	@Override
-	protected NeedsPaging<DrugGroup> doSearch(String query, RequestContext context) {
-		return new NeedsPaging<DrugGroup>(getDrugGroupService().getDrugGroupByName(query), context);
-	}
-	
-	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getDisplayString()
-	 * @param delegate
-	 * @return
-	 */
-	@Override
-	public String getDisplayString(DrugGroup delegate) {
+	public String getDisplayString(Drug delegate) {
 		if (delegate.getName() == null) {
 			return "";
 		}
 		return delegate.getName() + " - " + delegate.getDescription();
+	}
+	
+	@Override
+	public void purge(Drug t, RequestContext rc) throws ResponseException {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 }
