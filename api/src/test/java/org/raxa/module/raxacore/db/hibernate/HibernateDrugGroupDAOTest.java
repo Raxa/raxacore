@@ -15,10 +15,12 @@ package org.raxa.module.raxacore.db.hibernate;
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-import java.util.List;
+import java.util.*;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Concept;
+import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.raxa.module.raxacore.DrugGroup;
@@ -64,6 +66,20 @@ public class HibernateDrugGroupDAOTest extends BaseModuleContextSensitiveTest {
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465e-99ee-c9dfd95e7d30");
 		drugGroup.setRetired(Boolean.FALSE);
+		Set<Drug> drugs = new HashSet<Drug>();
+		Drug drug1 = new Drug();
+		Drug drug2 = new Drug();
+		drug1.setId(1);
+		drug1.setConcept(new Concept(792));
+		drug1.setDateCreated(new Date());
+		drug1.setCreator(Context.getUserContext().getAuthenticatedUser());
+		drug2.setId(2);
+		drug2.setConcept(new Concept(792));
+		drug2.setDateCreated(new Date());
+		drug2.setCreator(Context.getUserContext().getAuthenticatedUser());
+		drugs.add(drug1);
+		drugs.add(drug2);
+		drugGroup.setDrugs(drugs);
 		dao.deleteDrugGroup(drugGroup);
 		DrugGroup result = dao.getDrugGroup(2);
 		assertEquals(null, result);
@@ -75,6 +91,12 @@ public class HibernateDrugGroupDAOTest extends BaseModuleContextSensitiveTest {
 		DrugGroup result = dao.getDrugGroup(drugGroupId);
 		String name = result.getName();
 		assertEquals("TestDrugGroup1", name);
+		
+		Set<Drug> resDrugs = result.getDrugs();
+		Iterator<Drug> itr = resDrugs.iterator();
+		Drug drug3 = itr.next();
+		Integer drugId = 3;
+		assertEquals(drug3.getId(), drugId);
 	}
 	
 	@Test
@@ -97,8 +119,21 @@ public class HibernateDrugGroupDAOTest extends BaseModuleContextSensitiveTest {
 		String nameRetrieved;
 		DrugGroup drugGroup = dao.getDrugGroup(1);
 		drugGroup.setName(nameSet);
+		Set<Drug> drugs = new HashSet<Drug>();
+		Drug drug1 = new Drug();
+		Drug drug2 = new Drug();
+		drug1.setId(1);
+		drug1.setConcept(new Concept(792));
+		drug2.setId(2);
+		drug2.setConcept(new Concept(792));
+		drugs.add(drug1);
+		drugs.add(drug2);
+		drugGroup.setDrugs(drugs);
 		dao.updateDrugGroup(drugGroup);
 		nameRetrieved = dao.getDrugGroup(1).getName();
+		Set<Drug> resDrugs = dao.getDrugGroup(1).getDrugs();
 		assertEquals(nameSet, nameRetrieved);
+		assertEquals(resDrugs.contains(drug1), true);
+		assertEquals(resDrugs.contains(drug2), true);
 	}
 }

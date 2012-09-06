@@ -15,10 +15,15 @@ package org.raxa.module.raxacore.impl;
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Concept;
+import org.openmrs.Drug;
 import org.openmrs.User;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.context.Context;
@@ -70,6 +75,15 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void testSaveDrugGroupShouldSaveDrugGroup() throws Exception {
 		DrugGroup drugGroup = new DrugGroup();
+		Set<Drug> drugs = new HashSet<Drug>();
+		Drug drug1 = new Drug();
+		Drug drug2 = new Drug();
+		drug1.setId(1);
+		drug1.setConcept(new Concept(792));
+		drug2.setId(2);
+		drug2.setConcept(new Concept(792));
+		drugs.add(drug1);
+		drugs.add(drug2);
 		//NOTE: never set Id, will be generated automatically (when saving)
 		drugGroup.setName("TestDrugGroup3");
 		drugGroup.setDescription("Third Test Drug Group");
@@ -77,10 +91,14 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
 		drugGroup.setRetired(Boolean.FALSE);
+		drugGroup.setDrugs(drugs);
 		s.saveDrugGroup(drugGroup);
 		List<DrugGroup> result = s.getDrugGroupByName("TestDrugGroup3");
 		String name = result.get(0).getName();
+		Set<Drug> resDrugs = result.get(0).getDrugs();
 		assertEquals(name, "TestDrugGroup3");
+		assertEquals(resDrugs.contains(drug1), true);
+		assertEquals(resDrugs.contains(drug2), true);
 	}
 	
 	@Test
@@ -208,6 +226,19 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void testDeleteDrugGroupShouldDeleteDrugGroup() {
 		DrugGroup drugGroup = new DrugGroup();
+		Set<Drug> drugs = new HashSet<Drug>();
+		Drug drug1 = new Drug();
+		Drug drug2 = new Drug();
+		drug1.setId(1);
+		drug1.setConcept(new Concept(792));
+		drug1.setDateCreated(new Date());
+		drug1.setCreator(Context.getUserContext().getAuthenticatedUser());
+		drug2.setId(2);
+		drug2.setConcept(new Concept(792));
+		drug2.setDateCreated(new Date());
+		drug2.setCreator(Context.getUserContext().getAuthenticatedUser());
+		drugs.add(drug1);
+		drugs.add(drug2);
 		drugGroup.setId(2);
 		drugGroup.setName("TestDrugGroup2");
 		drugGroup.setDescription("Second Test Drug Group");
@@ -215,6 +246,7 @@ public class DrugGroupServiceImplTest extends BaseModuleContextSensitiveTest {
 		drugGroup.setDateCreated(new java.util.Date());
 		drugGroup.setUuid("68547121-1b70-465e-99ee-c9dfd95e7d30");
 		drugGroup.setRetired(Boolean.FALSE);
+		drugGroup.setDrugs(drugs);
 		s.deleteDrugGroup(drugGroup);
 		DrugGroup result = s.getDrugGroup(2);
 		assertEquals(null, result);

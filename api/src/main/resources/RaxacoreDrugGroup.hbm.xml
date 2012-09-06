@@ -18,5 +18,9 @@
         <property name="retireReason"   type="java.lang.String"     column="retire_reason" length="255"/>
         <many-to-one name="changedBy"   class="org.openmrs.User"    column="changed_by"/>
         <property name="dateChanged"    type="java.util.Date"       column="date_changed" length="19"/>
+        <set name="drugs" table="raxacore_drug_drug_group" cascade="all">
+            <key column="drug_group_id" />
+            <many-to-many column="drug_id"  class="org.openmrs.Drug" />
+        </set>
     </class>
 </hibernate-mapping>
