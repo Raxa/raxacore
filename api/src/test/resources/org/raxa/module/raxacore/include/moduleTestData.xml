@@ -25,4 +25,9 @@
     <drug drug_id="1" concept_id="792" combination="1" name="Triomune-20" uuid="ddae96c0-e8f0-11e1-af3d-896769d7fb65" creator="1" retired="false" date_created="2012-01-01 00:00:00.0" />
     <drug drug_id="2" concept_id="792" combination="1" name="Triomune-30" uuid="ddae96c0-e8f0-11e1-af3d-896769d7fb66" creator="1" retired="false" date_created="2012-01-01 00:00:00.0" />
     <drug drug_id="3" concept_id="792" combination="1" name="Triomune-40" uuid="ddae9918-e8f0-11e1-af3d-896769d7fb67" creator="1" retired="false" date_created="2012-01-01 00:00:00.0" />
+    <raxacore_drug_drug_group drug_id="1" drug_group_id="2" />
+    <raxacore_drug_drug_group drug_id="2" drug_group_id="2" />
+    <raxacore_drug_drug_group drug_id="1" drug_group_id="3" />
+    <raxacore_drug_drug_group drug_id="2" drug_group_id="3" />
+    <raxacore_drug_drug_group drug_id="3" drug_group_id="1" />
 </dataset>
