@@ -10,5 +10,6 @@
         <mapping resource="RaxacoreDrugGroup.hbm.xml" />
         <mapping resource="RaxacoreDrugPurchaseOrder.hbm.xml" />
         <mapping resource="RaxacoreDrugInventory.hbm.xml" />  
+        <mapping resource="RaxacoreDrugInfo.hbm.xml" />
     </session-factory>
 </hibernate-configuration>
