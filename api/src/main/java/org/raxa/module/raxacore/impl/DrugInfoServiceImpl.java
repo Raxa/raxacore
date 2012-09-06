@@ -28,65 +28,57 @@ import org.openmrs.User;
 import org.openmrs.Provider;
 import org.openmrs.Person;
 import org.openmrs.Patient;
+import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
-import org.raxa.module.raxacore.DrugGroup;
-import org.raxa.module.raxacore.DrugGroupService;
-import org.raxa.module.raxacore.db.DrugGroupDAO;
+import org.raxa.module.raxacore.DrugInfo;
+import org.raxa.module.raxacore.DrugInfoService;
+import org.raxa.module.raxacore.db.DrugInfoDAO;
 
-public class DrugGroupServiceImpl implements DrugGroupService {
+public class DrugInfoServiceImpl implements DrugInfoService {
 	
-	private DrugGroupDAO dao;
+	private DrugInfoDAO dao;
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
 	/**
-	 * @see org.raxa.module.raxacore.PatientListService#setPatientListDAO
+	 * @see org.raxa.module.raxacore.DrugInfoService#setDrugInfoDAO
 	 */
 	@Override
-	public void setDrugGroupDAO(DrugGroupDAO dao) {
+	public void setDrugInfoDAO(DrugInfoDAO dao) {
 		this.dao = dao;
 	}
 	
 	/**
-	 * @see org.raxa.module.raxacore.PatientListService#savePatientList
+	 * @see org.raxa.module.raxacore.DrugInfoService#saveDrugInfo
 	 */
 	@Override
-	public DrugGroup saveDrugGroup(DrugGroup drugGroup) {
-		return dao.saveDrugGroup(drugGroup);
+	public DrugInfo saveDrugInfo(DrugInfo drugInfo) {
+		return dao.saveDrugInfo(drugInfo);
 	}
 	
 	/**
-	 * @see org.raxa.module.raxacore.PatientListService#getPatientList(Integer)
+	 * @see org.raxa.module.raxacore.DrugInfoService#getDrugInfo(Integer)
 	 */
 	@Override
-	public DrugGroup getDrugGroup(Integer id) {
-		return dao.getDrugGroup(id);
-	}
-	
-	/**
-	 * @see
-	 * org.raxa.module.raxacore.PatientListService#getPatientListByName(String)
-	 */
-	@Override
-	public List<DrugGroup> getDrugGroupByName(String name) {
-		return dao.getDrugGroupByName(name);
+	public DrugInfo getDrugInfo(Integer id) {
+		return dao.getDrugInfo(id);
 	}
 	
 	/**
 	 * @see
-	 * org.raxa.module.raxacore.PatientListService#getPatientListByUuid(String)
+	 * org.raxa.module.raxacore.DrugInfoService#getDrugInfoByUuid(String)
 	 */
 	@Override
-	public DrugGroup getDrugGroupByUuid(String uuid) {
-		return dao.getDrugGroupByUuid(uuid);
+	public DrugInfo getDrugInfoByUuid(String uuid) {
+		return dao.getDrugInfoByUuid(uuid);
 	}
 	
 	/**
-	 * @see org.raxa.module.raxacore.PatientListService#getAllPatientList
+	 * @see org.raxa.module.raxacore.DrugInfoService#getAllDrugInfo
 	 */
 	@Override
-	public List<DrugGroup> getAllDrugGroup(boolean includeRetired) {
-		return dao.getAllDrugGroup(includeRetired);
+	public List<DrugInfo> getAllDrugInfo(boolean includeRetired) {
+		return dao.getAllDrugInfo(includeRetired);
 	}
 	
 	/**
@@ -113,28 +105,28 @@ public class DrugGroupServiceImpl implements DrugGroupService {
 	}
 	
 	/**
-	 * @see org.raxa.module.raxacore.PatientListService#updatePatientList
+	 * @see org.raxa.module.raxacore.DrugInfoService#updateDrugInfo
 	 */
 	@Override
-	public DrugGroup updateDrugGroup(DrugGroup drugGroup) {
-		return dao.updateDrugGroup(drugGroup);
+	public DrugInfo updateDrugInfo(DrugInfo drugInfo) {
+		return dao.updateDrugInfo(drugInfo);
 	}
 	
 	/**
-	 * @see org.raxa.module.raxacore.PatientListService#deletePatientList
+	 * @see org.raxa.module.raxacore.DrugInfoService#deleteDrugInfo
 	 */
 	@Override
-	public void deleteDrugGroup(DrugGroup drugGroup) {
-		dao.deleteDrugGroup(drugGroup);
+	public void deleteDrugInfo(DrugInfo drugInfo) {
+		dao.deleteDrugInfo(drugInfo);
 	}
 	
 	@Override
 	public void onStartup() {
-		log.info("Starting patient list service");
+		log.info("Starting drug info service");
 	}
 	
 	@Override
 	public void onShutdown() {
-		log.info("Stopping patient list service");
+		log.info("Stopping drug info service");
 	}
 }

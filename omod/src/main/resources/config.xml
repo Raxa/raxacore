@@ -77,6 +77,23 @@
         <description>Ability to view Drug Groups</description>
     </privilege>   
     
+    <privilege>
+        <name>Add Drug Info</name>
+        <description>Ability to create Drug Info</description>
+    </privilege>
+    <privilege>
+        <name>Delete Drug Info</name>
+        <description>Ability to delete Drug Info</description>
+    </privilege>
+    <privilege>
+        <name>Edit Drug Info</name>
+        <description>Ability to edit Drug Info</description>
+    </privilege>
+    <privilege>
+        <name>View Drug Info</name>
+        <description>Ability to view Drug Info</description>
+    </privilege>   
+    
     <!-- Required Global Properties -->
     <!-- DWR -->
     <!-- Servlets -->
@@ -96,5 +113,6 @@
         RaxacoreDrugGroup.hbm.xml
         RaxacoreDrugPurchaseOrder.hbm.xml
         RaxacoreDrugInventory.hbm.xml
+        RaxacoreDrugInfo.hbm.xml
     </mappingFiles>
 </module>

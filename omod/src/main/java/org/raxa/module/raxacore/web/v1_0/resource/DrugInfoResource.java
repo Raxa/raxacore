@@ -3,18 +3,16 @@ package org.raxa.module.raxacore.web.v1_0.resource;
 /**
  * Copyright 2012, Raxa
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
+
 import java.util.List;
 import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
@@ -31,32 +29,19 @@ import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingC
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.raxa.module.raxacore.DrugGroup;
-import org.raxa.module.raxacore.DrugGroupService;
+import org.raxa.module.raxacore.DrugInfo;
+import org.raxa.module.raxacore.DrugInfoService;
 
 /**
- * {@link Resource} for DrugGroup, supporting standard CRUD operations This
- * resource is currently not used because of serialization issue in OpenMRS core
- * (TRUNK-2205)
+ * {@link Resource} for DrugInfo, supporting standard CRUD operations
+ * This resource is currently not used because of serialization issue in OpenMRS core (TRUNK-2205)
  */
-@Resource("druggroup")
-@Handler(supports = DrugGroup.class, order = 0)
-public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup> {
+@Resource("druginfo")
+@Handler(supports = DrugInfo.class, order = 0)
+public class DrugInfoResource extends MetadataDelegatingCrudResource<DrugInfo> {
 	
-	/**
-	 * Getter for the drugs property on patient list resource
-	 *
-	 * @param drugGroup
-	 * @return
-	 */
-	@PropertyGetter("drugs")
-	public List<Patient> getDrugs(DrugGroup drugGroup) {
-		// return getDrugGroupService().getDrugsInDrugGroup(drugGroup);
-		return null;
-	}
-	
-	private DrugGroupService getDrugGroupService() {
-		return Context.getService(DrugGroupService.class);
+	private DrugInfoService getDrugInfoService() {
+		return Context.getService(DrugInfoService.class);
 	}
 	
 	/**
@@ -70,9 +55,9 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 			description.addProperty("uuid");
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("name");
+			description.addProperty("price");
+			description.addProperty("cost");
 			description.addProperty("description");
-			// description.addProperty("searchQuery");
-			// description.addProperty("drugs", Representation.REF);
 			description.addProperty("retired");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
@@ -83,8 +68,8 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 			description.addProperty("display", findMethod("getDisplayString"));
 			description.addProperty("name");
 			description.addProperty("description");
-			// description.addProperty("searchQuery");
-			// description.addProperty("drugs", Representation.DEFAULT);
+			description.addProperty("price");
+			description.addProperty("cost");
 			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
@@ -100,9 +85,9 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 	@Override
 	public DelegatingResourceDescription getCreatableProperties() {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
+		description.addRequiredProperty("drug_id");
 		description.addRequiredProperty("name");
 		description.addRequiredProperty("description");
-		// description.addProperty("searchQuery");
 		return description;
 	}
 	
@@ -115,78 +100,59 @@ public class DrugGroupResource extends MetadataDelegatingCrudResource<DrugGroup>
 	public DelegatingResourceDescription getUpdatableProperties() throws ResourceDoesNotSupportOperationException {
 		DelegatingResourceDescription description = new DelegatingResourceDescription();
 		description.addProperty("description");
-		// description.addProperty("searchQuery");
 		return description;
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId()
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getByUniqueId()
 	 */
 	@Override
-	public DrugGroup getByUniqueId(String uuid) {
-		return getDrugGroupService().getDrugGroupByUuid(uuid);
+	public DrugInfo getByUniqueId(String uuid) {
+		return getDrugInfoService().getDrugInfoByUuid(uuid);
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge()
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#purge()
 	 */
 	@Override
-	public void purge(DrugGroup t, RequestContext rc) throws ResponseException {
-		getDrugGroupService().deleteDrugGroup(t);
+	public void purge(DrugInfo t, RequestContext rc) throws ResponseException {
+		getDrugInfoService().deleteDrugInfo(t);
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate()
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#newDelegate() 
 	 */
 	@Override
-	public DrugGroup newDelegate() {
-		return new DrugGroup();
+	public DrugInfo newDelegate() {
+		return new DrugInfo();
 	}
 	
 	/*
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save()
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#save()
 	 */
 	@Override
-	public DrugGroup save(DrugGroup drugGroup) {
-		return getDrugGroupService().saveDrugGroup(drugGroup);
+	public DrugInfo save(DrugInfo drugInfo) {
+		return getDrugInfoService().saveDrugInfo(drugInfo);
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#doGetAll()
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#doGetAll()
 	 * @param context
 	 * @return
-	 * @throws ResponseException
+	 * @throws ResponseException 
 	 */
 	@Override
-	protected NeedsPaging<DrugGroup> doGetAll(RequestContext context) throws ResponseException {
-		return new NeedsPaging<DrugGroup>(getDrugGroupService().getAllDrugGroup(false), context);
+	protected NeedsPaging<DrugInfo> doGetAll(RequestContext context) throws ResponseException {
+		return new NeedsPaging<DrugInfo>(getDrugInfoService().getAllDrugInfo(false), context);
 	}
 	
 	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#doSearch()
-	 * @param query
-	 * @param context
-	 * @return
-	 */
-	@Override
-	protected NeedsPaging<DrugGroup> doSearch(String query, RequestContext context) {
-		return new NeedsPaging<DrugGroup>(getDrugGroupService().getDrugGroupByName(query), context);
-	}
-	
-	/**
-	 * @see
-	 * org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getDisplayString()
+	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getDisplayString()
 	 * @param delegate
-	 * @return
+	 * @return 
 	 */
 	@Override
-	public String getDisplayString(DrugGroup delegate) {
+	public String getDisplayString(DrugInfo delegate) {
 		if (delegate.getName() == null) {
 			return "";
 		}
