@@ -27,7 +27,9 @@ import org.openmrs.Drug;
  */
 public class DrugGroup extends BaseOpenmrsMetadata implements Serializable {
 	
-	private Integer drugGroupId;
+	private Integer id;
+	
+	private Set<Drug> drugs = new HashSet<Drug>(0);
 	
 	public DrugGroup() {
 	}
@@ -39,7 +41,7 @@ public class DrugGroup extends BaseOpenmrsMetadata implements Serializable {
 	 */
 	@Override
 	public void setId(Integer id) {
-		setDrugGroupId(id);
+		this.id = id;
 	}
 	
 	/**
@@ -49,7 +51,21 @@ public class DrugGroup extends BaseOpenmrsMetadata implements Serializable {
 	 */
 	@Override
 	public Integer getId() {
-		return getDrugGroupId();
+		return id;
+	}
+	
+	/**
+	 * @return the drugs
+	 */
+	public Set<Drug> getDrugs() {
+		return drugs;
+	}
+	
+	/**
+	 * @param drugs the drugs to set
+	 */
+	public void setDrugs(Set<Drug> drugs) {
+		this.drugs = drugs;
 	}
 	
 	/**
@@ -67,8 +83,8 @@ public class DrugGroup extends BaseOpenmrsMetadata implements Serializable {
 	public boolean equals(Object obj) {
 		if (obj instanceof DrugGroup) {
 			DrugGroup pList = (DrugGroup) obj;
-			if (this.getDrugGroupId() != null && pList.getDrugGroupId() != null) {
-				return (this.getDrugGroupId().equals(pList.getDrugGroupId()));
+			if (this.getId() != null && pList.getId() != null) {
+				return (this.getId().equals(pList.getId()));
 			}
 		}
 		return this == obj;
@@ -81,23 +97,10 @@ public class DrugGroup extends BaseOpenmrsMetadata implements Serializable {
 	 */
 	@Override
 	public int hashCode() {
-		if (this.getDrugGroupId() == null) {
+		if (this.getId() == null) {
 			return super.hashCode();
 		}
-		return this.getDrugGroupId().hashCode();
+		return this.getId().hashCode();
 	}
 	
-	/**
-	 * @return the patientListId
-	 */
-	public Integer getDrugGroupId() {
-		return drugGroupId;
-	}
-	
-	/**
-	 * @param patientListId the patientListId to set
-	 */
-	public void setDrugGroupId(Integer patientListId) {
-		this.drugGroupId = patientListId;
-	}
 }
