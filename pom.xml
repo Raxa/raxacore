@@ -5,7 +5,7 @@
 
     <groupId>org.raxa.module</groupId>
     <artifactId>raxacore</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <packaging>pom</packaging>
     <name>RaxaEMR Core</name>
     <description>Parent project for the RaxaEMR Core Module</description>
