@@ -16,7 +16,6 @@ package org.raxa.module.raxacore;
  * the License.
  */
 import java.io.Serializable;
-import org.openmrs.BaseOpenmrsData;
 import org.openmrs.BaseOpenmrsMetadata;
 import org.openmrs.Drug;
 
@@ -24,15 +23,11 @@ import org.openmrs.Drug;
  * DrugInfo stores the data needed to lists patients for registration, screener,
  * etc.
  */
-public class DrugInfo extends BaseOpenmrsData implements Serializable {
+public class DrugInfo extends BaseOpenmrsMetadata implements Serializable {
 	
 	private Integer id;
 	
 	private Integer drugId;
-	
-	private String name;
-	
-	private String description;
 	
 	private Drug drug;
 	
@@ -114,7 +109,6 @@ public class DrugInfo extends BaseOpenmrsData implements Serializable {
 	 */
 	public void setDrug(Drug drug) {
 		this.drug = drug;
-		this.drugId = drug.getId();
 	}
 	
 	/**
@@ -171,33 +165,5 @@ public class DrugInfo extends BaseOpenmrsData implements Serializable {
 	 */
 	public void setDrugId(Integer drugId) {
 		this.drugId = drugId;
-	}
-	
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-	
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-	
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
 	}
 }

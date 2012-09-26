@@ -39,7 +39,7 @@ import org.raxa.module.raxacore.DrugInfoService;
  */
 @Resource("druginfo")
 @Handler(supports = DrugInfo.class, order = 0)
-public class DrugInfoResource extends DataDelegatingCrudResource<DrugInfo> {
+public class DrugInfoResource extends MetadataDelegatingCrudResource<DrugInfo> {
 	
 	private DrugInfoService getDrugInfoService() {
 		return Context.getService(DrugInfoService.class);
@@ -59,7 +59,7 @@ public class DrugInfoResource extends DataDelegatingCrudResource<DrugInfo> {
 			description.addProperty("price");
 			description.addProperty("cost");
 			description.addProperty("description");
-			description.addProperty("voided");
+			description.addProperty("retired");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -71,7 +71,7 @@ public class DrugInfoResource extends DataDelegatingCrudResource<DrugInfo> {
 			description.addProperty("description");
 			description.addProperty("price");
 			description.addProperty("cost");
-			description.addProperty("voided");
+			description.addProperty("retired");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
@@ -147,8 +147,4 @@ public class DrugInfoResource extends DataDelegatingCrudResource<DrugInfo> {
 		return new NeedsPaging<DrugInfo>(getDrugInfoService().getAllDrugInfo(false), context);
 	}
 	
-	@Override
-	protected void delete(DrugInfo t, String string, RequestContext rc) throws ResponseException {
-		throw new UnsupportedOperationException("Not supported yet.");
-	}
 }

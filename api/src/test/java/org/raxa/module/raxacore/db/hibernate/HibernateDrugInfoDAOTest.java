@@ -55,7 +55,7 @@ public class HibernateDrugInfoDAOTest extends BaseModuleContextSensitiveTest {
 		drugInfo.setCreator(Context.getUserContext().getAuthenticatedUser());
 		drugInfo.setDateCreated(new java.util.Date());
 		drugInfo.setUuid("68547121-1b70-465c-99ef-c9dfd95e7d30");
-		drugInfo.setVoided(Boolean.FALSE);
+		drugInfo.setRetired(Boolean.FALSE);
 		dao.saveDrugInfo(drugInfo);
 		DrugInfo result = dao.getDrugInfoByUuid("68547121-1b70-465c-99ef-c9dfd95e7d30");
 		String name = result.getName();
@@ -79,7 +79,7 @@ public class HibernateDrugInfoDAOTest extends BaseModuleContextSensitiveTest {
 		drugInfo.setCreator(Context.getUserContext().getAuthenticatedUser());
 		drugInfo.setDateCreated(new java.util.Date());
 		drugInfo.setUuid("68547121-1b70-465e-99ee-c9dfd95e7d30");
-		drugInfo.setVoided(Boolean.FALSE);
+		drugInfo.setRetired(Boolean.FALSE);
 		dao.deleteDrugInfo(drugInfo);
 		DrugInfo result = dao.getDrugInfo(2);
 		assertEquals(null, result);

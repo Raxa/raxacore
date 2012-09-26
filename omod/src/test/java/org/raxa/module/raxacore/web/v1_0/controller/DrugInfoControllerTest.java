@@ -54,10 +54,10 @@ public class DrugInfoControllerTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void createNewDrugInfo_shouldSaveANewDrugInfo() throws Exception {
-		int before = service.getAllDrugInfo(false).size();
+		int before = service.getAllDrugInfo(true).size();
 		String json = "{ \"name\":\"Test DrugInfo\",\"description\":\"Test Drug Group\", \"drug\":\"3cfcf118-931c-46f7-8ff6-7b876f0d4202\"}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
-		Object drugGroup = controller.createNewDrugInfo(post, request, response);
+		Object drugInfo = controller.createNewDrugInfo(post, request, response);
 		Assert.assertEquals(before + 1, service.getAllDrugInfo(false).size());
 	}
 	
@@ -116,13 +116,13 @@ public class DrugInfoControllerTest extends BaseModuleContextSensitiveTest {
 	 * Test of voidDrugInfo method, of class DrugInfoController.
 	 */
 	@Test
-	public void testVoidDrugInfo() throws Exception {
+	public void testRetireDrugInfo() throws Exception {
 		DrugInfo di1 = service.getDrugInfoByUuid(getUuid());
-		Assert.assertFalse(di1.isVoided());
-		controller.voidDrugInfo(getUuid(), "testing", request, response);
+		Assert.assertFalse(di1.isRetired());
+		controller.retireDrugInfo(getUuid(), "testing", request, response);
 		DrugInfo di2 = service.getDrugInfoByUuid(getUuid());
-		Assert.assertTrue(di2.isVoided());
-		Assert.assertEquals("testing", di2.getVoidReason());
+		Assert.assertTrue(di2.isRetired());
+		Assert.assertEquals("testing", di2.getRetireReason());
 	}
 	
 	/**
@@ -131,13 +131,13 @@ public class DrugInfoControllerTest extends BaseModuleContextSensitiveTest {
 	@Test
 	public void testPurgeDrugInfo() throws Exception {
 		DrugInfo di1 = service.getDrugInfoByUuid(getUuid());
-		Assert.assertFalse(di1.isVoided());
+		Assert.assertFalse(di1.getRetired());
 		controller.purgeDrugInfo(getUuid(), request, response);
 		DrugInfo di2 = service.getDrugInfoByUuid(getUuid());
 		Assert.assertNull(di2);
 	}
 	
 	public String getUuid() {
-		return getUuid();
+		return "68547121-1b70-465d-99ee-dddfd95e7d21";
 	}
 }
