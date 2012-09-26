@@ -90,8 +90,8 @@ public class DrugInfoController extends BaseRestController {
 	        throws ResponseException {
 		initDrugInfoController();
 		
-		Integer drugId = Integer.parseInt(post.get("drugId").toString());
-		Drug drug = Context.getConceptService().getDrug(drugId);
+		String drugUuid = post.get("drug").toString();
+		Drug drug = Context.getConceptService().getDrugByUuid(drugUuid);
 		
 		if (drug == null) {
 			// drug doesn't exist, so we won't create the drug info
@@ -171,7 +171,7 @@ public class DrugInfoController extends BaseRestController {
 	}
 	
 	/**
-	 * Get all the unretired drug info (as REF representation) in the system
+	 * Get all the unvoided drug info (as REF representation) in the system
 	 *
 	 * @param request
 	 * @param response
@@ -179,7 +179,7 @@ public class DrugInfoController extends BaseRestController {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	@WSDoc("Get All Unretired Drug Info in the system")
+	@WSDoc("Get All Unvoided Drug Info in the system")
 	@ResponseBody()
 	public String getAllDrugInfo(HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		initDrugInfoController();
@@ -227,10 +227,10 @@ public class DrugInfoController extends BaseRestController {
 		DrugInfo drugInfo = service.getDrugInfoByUuid(uuid);
 		SimpleObject obj = getDrugInfoAsSimpleObject(drugInfo);
 		if (rep.equals("full")) {
-			obj.add("retired", drugInfo.getRetired());
-			if (drugInfo.getRetired()) {
-				obj.add("retiredBy", drugInfo.getRetiredBy().getUuid());
-				obj.add("retireReason", drugInfo.getRetireReason());
+			obj.add("voided", drugInfo.getVoided());
+			if (drugInfo.getVoided()) {
+				obj.add("voidedBy", drugInfo.getVoidedBy().getUuid());
+				obj.add("voidReason", drugInfo.getVoidReason());
 			}
 			SimpleObject auditInfo = new SimpleObject();
 			auditInfo.add("creator", drugInfo.getCreator().getUuid());
@@ -246,7 +246,7 @@ public class DrugInfoController extends BaseRestController {
 	}
 	
 	/**
-	 * Retires the drug info resource by making a DELETE call with the '!purge'
+	 * Voids the drug info resource by making a DELETE call with the '!purge'
 	 * param
 	 *
 	 * @param uuid
@@ -257,17 +257,17 @@ public class DrugInfoController extends BaseRestController {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.DELETE, params = "!purge")
-	@WSDoc("Retires the Drug Info")
+	@WSDoc("Voids the Drug Info")
 	@ResponseBody
-	public Object retireDrugInfo(@PathVariable("uuid") String uuid,
+	public Object voidDrugInfo(@PathVariable("uuid") String uuid,
 	        @RequestParam(value = "reason", defaultValue = "web service call") String reason, HttpServletRequest request,
 	        HttpServletResponse response) throws ResponseException {
 		initDrugInfoController();
 		DrugInfo drugInfo = service.getDrugInfoByUuid(uuid);
 		if (drugInfo != null) {
-			drugInfo.setRetired(true);
-			drugInfo.setRetireReason(reason);
-			drugInfo.setRetiredBy(Context.getAuthenticatedUser());
+			drugInfo.setVoided(true);
+			drugInfo.setVoidReason(reason);
+			drugInfo.setVoidedBy(Context.getAuthenticatedUser());
 			service.updateDrugInfo(drugInfo);
 		}
 		return RestUtil.noContent(response);

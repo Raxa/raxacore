@@ -61,7 +61,7 @@ public class DrugInfoServiceImplTest extends BaseModuleContextSensitiveTest {
 		drugInfo.setCreator(Context.getUserContext().getAuthenticatedUser());
 		drugInfo.setDateCreated(new java.util.Date());
 		drugInfo.setUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
-		drugInfo.setRetired(Boolean.FALSE);
+		drugInfo.setVoided(Boolean.FALSE);
 		try {
 			s.saveDrugInfo(drugInfo);
 			//if we don't throw exception fail - no privileges required!
@@ -89,7 +89,7 @@ public class DrugInfoServiceImplTest extends BaseModuleContextSensitiveTest {
 		drugInfo.setCreator(Context.getUserContext().getAuthenticatedUser());
 		drugInfo.setDateCreated(new java.util.Date());
 		drugInfo.setUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
-		drugInfo.setRetired(Boolean.FALSE);
+		drugInfo.setVoided(Boolean.FALSE);
 		s.saveDrugInfo(drugInfo);
 		DrugInfo result = s.getDrugInfoByUuid("68547121-1b70-465c-99ee-c9dfd95e7d30");
 		String name = result.getName();
@@ -205,7 +205,7 @@ public class DrugInfoServiceImplTest extends BaseModuleContextSensitiveTest {
 		drugInfo.setCreator(Context.getUserContext().getAuthenticatedUser());
 		drugInfo.setDateCreated(new java.util.Date());
 		drugInfo.setUuid("68547121-1b70-465e-99ee-c9dfd95e7d30");
-		drugInfo.setRetired(Boolean.FALSE);
+		drugInfo.setVoided(Boolean.FALSE);
 		try {
 			s.deleteDrugInfo(drugInfo);
 			//if we don't throw exception fail - no privileges required!
@@ -233,7 +233,7 @@ public class DrugInfoServiceImplTest extends BaseModuleContextSensitiveTest {
 		drugInfo.setCreator(Context.getUserContext().getAuthenticatedUser());
 		drugInfo.setDateCreated(new java.util.Date());
 		drugInfo.setUuid("68547121-1b70-465e-99ee-c9dfd95e7d30");
-		drugInfo.setRetired(Boolean.FALSE);
+		drugInfo.setVoided(Boolean.FALSE);
 		s.deleteDrugInfo(drugInfo);
 		DrugInfo result = s.getDrugInfo(2);
 		assertEquals(null, result);

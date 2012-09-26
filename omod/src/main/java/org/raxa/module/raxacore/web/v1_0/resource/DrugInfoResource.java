@@ -24,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
@@ -38,7 +39,7 @@ import org.raxa.module.raxacore.DrugInfoService;
  */
 @Resource("druginfo")
 @Handler(supports = DrugInfo.class, order = 0)
-public class DrugInfoResource extends MetadataDelegatingCrudResource<DrugInfo> {
+public class DrugInfoResource extends DataDelegatingCrudResource<DrugInfo> {
 	
 	private DrugInfoService getDrugInfoService() {
 		return Context.getService(DrugInfoService.class);
@@ -58,7 +59,7 @@ public class DrugInfoResource extends MetadataDelegatingCrudResource<DrugInfo> {
 			description.addProperty("price");
 			description.addProperty("cost");
 			description.addProperty("description");
-			description.addProperty("retired");
+			description.addProperty("voided");
 			description.addSelfLink();
 			description.addLink("full", ".?v=" + RestConstants.REPRESENTATION_FULL);
 			return description;
@@ -70,7 +71,7 @@ public class DrugInfoResource extends MetadataDelegatingCrudResource<DrugInfo> {
 			description.addProperty("description");
 			description.addProperty("price");
 			description.addProperty("cost");
-			description.addProperty("retired");
+			description.addProperty("voided");
 			description.addProperty("auditInfo", findMethod("getAuditInfo"));
 			description.addSelfLink();
 			return description;
@@ -146,16 +147,8 @@ public class DrugInfoResource extends MetadataDelegatingCrudResource<DrugInfo> {
 		return new NeedsPaging<DrugInfo>(getDrugInfoService().getAllDrugInfo(false), context);
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getDisplayString()
-	 * @param delegate
-	 * @return 
-	 */
 	@Override
-	public String getDisplayString(DrugInfo delegate) {
-		if (delegate.getName() == null) {
-			return "";
-		}
-		return delegate.getName() + " - " + delegate.getDescription();
+	protected void delete(DrugInfo t, String string, RequestContext rc) throws ResponseException {
+		throw new UnsupportedOperationException("Not supported yet.");
 	}
 }

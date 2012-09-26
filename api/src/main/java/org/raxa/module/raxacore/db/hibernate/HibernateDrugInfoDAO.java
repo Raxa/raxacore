@@ -88,7 +88,7 @@ public class HibernateDrugInfoDAO implements DrugInfoDAO {
 	public List<DrugInfo> getDrugInfoByName(String name) throws DAOException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DrugInfo.class);
 		criteria.add(Restrictions.like("name", name));
-		criteria.add(Restrictions.like("retired", false));
+		criteria.add(Restrictions.like("voided", false));
 		List<DrugInfo> patients = new ArrayList<DrugInfo>();
 		patients.addAll(criteria.list());
 		return patients;
@@ -99,10 +99,10 @@ public class HibernateDrugInfoDAO implements DrugInfoDAO {
 	 * @see org.raxa.module.db.DrugInfoDAO#getAllDrugInfo()
 	 */
 	@Override
-	public List<DrugInfo> getAllDrugInfo(boolean includeRetired) throws DAOException {
+	public List<DrugInfo> getAllDrugInfo(boolean includeVoided) throws DAOException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DrugInfo.class);
-		if (includeRetired == false) {
-			criteria.add(Restrictions.eq("retired", false));
+		if (includeVoided == false) {
+			criteria.add(Restrictions.eq("voided", false));
 		}
 		return criteria.list();
 	}
