@@ -770,24 +770,6 @@
                                  referencedTableName="raxacore_drug_group" 
                                  referencedColumnNames="drug_group_id"/>
     </changeSet>
-    <changeSet id="2012-08-20_add_constraints_to_raxacore_drug_drug_group" author="yan">
-        <preConditions onFail="MARK_RAN">
-            <tableExists tableName="raxacore_drug_drug_group"/>
-        </preConditions>
-        <comment>
-            Adding constraints for auditing raxacore_drug_drug_group
-        </comment>
-        <addForeignKeyConstraint baseTableName="raxacore_drug_drug_group" 
-                                 baseColumnNames="drug_id" 
-                                 constraintName="FK_raxacore_drug_drug_group_drug_id" 
-                                 referencedTableName="drug" 
-                                 referencedColumnNames="drug_id"/>
-        <addForeignKeyConstraint baseTableName="raxacore_drug_drug_group" 
-                                 baseColumnNames="drug_group_id" 
-                                 constraintName="FK_raxacore_drug_drug_group_drug_group_id" 
-                                 referencedTableName="raxacore_drug_group" 
-                                 referencedColumnNames="drug_group_id"/>
-    </changeSet>
 
     <changeSet id="2012-09-27_remove_voided_drug_info" author="johnstoecker">
         <preConditions onFail="MARK_RAN">

@@ -164,6 +164,8 @@ public class DrugInfoController extends BaseRestController {
 		SimpleObject obj = new SimpleObject();
 		obj.add("uuid", drugInfo.getUuid());
 		obj.add("name", drugInfo.getName());
+		obj.add("drugUuid", drugInfo.getDrug().getUuid());
+		obj.add("drugName", drugInfo.getDrug().getName());
 		obj.add("description", drugInfo.getDescription());
 		obj.add("price", drugInfo.getPrice());
 		obj.add("cost", drugInfo.getCost());
