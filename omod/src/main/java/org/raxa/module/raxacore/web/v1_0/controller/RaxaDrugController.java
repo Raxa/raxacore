@@ -171,6 +171,7 @@ public class RaxaDrugController extends BaseRestController {
 		obj.add("maximumDailyDose", drug.getMaximumDailyDose());
 		obj.add("units", drug.getUnits());
 		obj.add("combination", drug.getCombination());
+		obj.add("concept", drug.getConcept().getUuid());
 		obj.add("fullName", drug.getFullName(Context.getLocale()));
 		return obj;
 	}
