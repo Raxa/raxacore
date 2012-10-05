@@ -77,8 +77,8 @@ public class DrugInfoServiceImpl implements DrugInfoService {
 	 * @see org.raxa.module.raxacore.DrugInfoService#getAllDrugInfo
 	 */
 	@Override
-	public List<DrugInfo> getAllDrugInfo(boolean includeRetired) {
-		return dao.getAllDrugInfo(includeRetired);
+	public List<DrugInfo> getAllDrugInfo(boolean includeVoided) {
+		return dao.getAllDrugInfo(includeVoided);
 	}
 	
 	/**

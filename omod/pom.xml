@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.raxa.module</groupId>
         <artifactId>raxacore</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
     <artifactId>raxacore-omod</artifactId>
     <packaging>jar</packaging>

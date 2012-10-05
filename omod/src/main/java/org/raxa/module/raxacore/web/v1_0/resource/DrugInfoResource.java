@@ -24,6 +24,7 @@ import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.MetadataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
@@ -146,16 +147,4 @@ public class DrugInfoResource extends MetadataDelegatingCrudResource<DrugInfo> {
 		return new NeedsPaging<DrugInfo>(getDrugInfoService().getAllDrugInfo(false), context);
 	}
 	
-	/**
-	 * @see org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResource#getDisplayString()
-	 * @param delegate
-	 * @return 
-	 */
-	@Override
-	public String getDisplayString(DrugInfo delegate) {
-		if (delegate.getName() == null) {
-			return "";
-		}
-		return delegate.getName() + " - " + delegate.getDescription();
-	}
 }

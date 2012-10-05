@@ -135,7 +135,7 @@ public class DrugGroupControllerTest extends BaseModuleContextSensitiveTest {
 		Assert.assertNotNull(result);
 		Util.log("DrugGroup fetched (full)", result);
 		Assert.assertEquals("68547121-1b70-465d-99ee-c9dfd95e7d30", drugGroup.get("uuid"));
-		Assert.assertEquals("TestList1", drugGroup.get("name"));
+		Assert.assertEquals("TestDrugGroup1", drugGroup.get("name"));
 		Assert.assertNotNull(drugGroup.get("auditInfo"));
 	}
 	
@@ -162,7 +162,7 @@ public class DrugGroupControllerTest extends BaseModuleContextSensitiveTest {
 	public void shouldGetAll() throws Exception {
 		String allDrugGroups = controller.getAllDrugGroups(request, response);
 		Util.log("All Drug Groups", allDrugGroups);
-		Assert.assertEquals(3, ((ArrayList) SimpleObject.parseJson(allDrugGroups).get("results")).size());
+		Assert.assertEquals(2, ((ArrayList) SimpleObject.parseJson(allDrugGroups).get("results")).size());
 	}
 	
 	/**

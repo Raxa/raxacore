@@ -770,4 +770,18 @@
                                  referencedTableName="raxacore_drug_group" 
                                  referencedColumnNames="drug_group_id"/>
     </changeSet>
+
+    <changeSet id="2012-09-27_remove_voided_drug_info" author="johnstoecker">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="raxacore_drug_info"/>
+        </preConditions>
+        <comment>
+            Removing voided columns in raxacore_drug_info
+        </comment>
+        <dropColumn tableName="raxacore_drug_info" columnName="voided"/>
+        <dropColumn tableName="raxacore_drug_info" columnName="voided_by"/>
+        <dropColumn tableName="raxacore_drug_info" columnName="date_voided"/>
+        <dropColumn tableName="raxacore_drug_info" columnName="void_reason"/>
+    </changeSet>
+
 </databaseChangeLog>

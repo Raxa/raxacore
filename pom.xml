@@ -5,7 +5,7 @@
 
     <groupId>org.raxa.module</groupId>
     <artifactId>raxacore</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>RaxaEMR Core</name>
     <description>Parent project for the RaxaEMR Core Module</description>
@@ -81,21 +81,21 @@
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>webservices.rest-api</artifactId>
-                <version>1.0</version>
+                <version>1.1</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>webservices.rest-omod</artifactId>
-                <version>1.0</version>
+                <version>1.1</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>webservices.rest-omod</artifactId>
-                <version>1.0</version>
+                <version>1.1</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>
             </dependency>

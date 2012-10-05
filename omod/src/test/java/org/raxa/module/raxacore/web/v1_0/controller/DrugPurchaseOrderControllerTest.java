@@ -21,6 +21,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.openmrs.Provider;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -60,15 +61,19 @@ public class DrugPurchaseOrderControllerTest extends BaseModuleContextSensitiveT
 	@Test
 	public void testCreateNewDrugPurchaseOrder() throws Exception {
 		int before = service.getAllDrugPurchaseOrders().size();
-		String json = "{ \"name\":\"Test purchase order\",\"description\":\"Test purchase order\", \"provider\": \"68547121-1b70-465e-99ee-c9df45jf9j32\", \"inventories\": [{\"name\":\"Test inner Drug Inventory\",\"description\":\"Test drug inventory\", \"drug\": \"05ec820a-d297-44e3-be6e-698531d9dd3f\", \"quantity\": 500, \"location\": \"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"expiryDate\":\"Fri Sep 07 2012 00:00:00 GMT+0530 (India Standard Time)\"}]}";
+		String json = "{ \"name\":\"Test purchase order\",\"description\":\"Test purchase order\", \"provider\": \"68547121-1b70-465e-99ee-c9df45jf9j32\", \"received\": \"true\", \"inventories\": [{\"name\":\"Test inner Drug Inventory\",\"description\":\"Test drug inventory\", \"drug\": \"05ec820a-d297-44e3-be6e-698531d9dd3f\", \"quantity\": 500, \"location\": \"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"expiryDate\":\"Wed Sep 19 2012 00:00:00 GMT+0530 (India Standard Time)\"}, {\"name\":\"Test inner Drug Inventory 2\",\"description\":\"Test drug inventory2\", \"drug\": \"05ec820a-d297-44e3-be6e-698531d9dd3f\", \"quantity\": 500, \"location\": \"9356400c-a5a2-4532-8f2b-2361b3446eb8\", \"expiryDate\":\"Sep 26, 2012 12:00:00 AM\"}]}";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		controller.createNewDrugPurchaseOrder(post, request, response);
 		int after = service.getAllDrugPurchaseOrders().size();
+		Provider p = Context.getProviderService().getProviderByUuid("68547121-1b70-465e-99ee-c9df45jf9j32");
+		List<DrugPurchaseOrder> dPOs = Context.getService(DrugPurchaseOrderService.class).getDrugPurchaseOrderByProvider(
+		    p.getId());
 		List<DrugInventory> dis = Context.getService(DrugInventoryService.class).getDrugInventoriesByLocation(2);
 		Assert.assertNotNull(dis);
-		Assert.assertEquals(1, dis.size());
+		Assert.assertEquals(2, dis.size());
 		Assert.assertEquals("Test inner Drug Inventory", dis.get(0).getName());
 		Assert.assertNotNull(dis.get(0).getExpiryDate());
+		Assert.assertEquals(true, dPOs.get(0).isReceived());
 		Assert.assertEquals(before + 1, after);
 	}
 	
@@ -103,6 +108,23 @@ public class DrugPurchaseOrderControllerTest extends BaseModuleContextSensitiveT
 		String results = controller.searchByStockLocation("9356400c-a5a2-4532-8f2b-2361b3446eb8", request);
 		LinkedHashMap di = (LinkedHashMap) ((ArrayList) SimpleObject.parseJson(results).get("results")).get(0);
 		Assert.assertEquals("Test drug PO", di.get("name"));
+	}
+	
+	/**
+	 * @see DrugPurchaseOrderController#updateDrugPurchaseOrder(String, SimpleObject, HttpServletRequest, HttpServletResponse)
+	 * @verifies a new patient list is created
+	 */
+	@Test
+	public void updateDrugPurchaseOrder_shouldUpdateADrugPurchaseOrder() throws Exception {
+		int before = service.getAllDrugPurchaseOrders().size();
+		String json = "{ \"name\":\"Test DrugPurchaseOrder Change\",\"description\":\"Test Alert\"}";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		controller.updateDrugPurchaseOrder("68547121-1b70-465c-99ee-c9dfd95e7d41", post, request, response);
+		Assert.assertEquals(before, service.getAllDrugPurchaseOrders().size());
+		String results = controller.getAllDrugPurchaseOrders(request, response);
+		LinkedHashMap updatedDrugPurchaseOrder = (LinkedHashMap) ((ArrayList) SimpleObject.parseJson(results).get("results"))
+		        .get(0);
+		Assert.assertEquals("Test DrugPurchaseOrder Change", updatedDrugPurchaseOrder.get("name"));
 	}
 	
 }

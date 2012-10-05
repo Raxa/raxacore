@@ -90,8 +90,8 @@ public class DrugInfoController extends BaseRestController {
 	        throws ResponseException {
 		initDrugInfoController();
 		
-		Integer drugId = Integer.parseInt(post.get("drugId").toString());
-		Drug drug = Context.getConceptService().getDrug(drugId);
+		String drugUuid = post.get("drug").toString();
+		Drug drug = Context.getConceptService().getDrugByUuid(drugUuid);
 		
 		if (drug == null) {
 			// drug doesn't exist, so we won't create the drug info
@@ -164,6 +164,8 @@ public class DrugInfoController extends BaseRestController {
 		SimpleObject obj = new SimpleObject();
 		obj.add("uuid", drugInfo.getUuid());
 		obj.add("name", drugInfo.getName());
+		obj.add("drugUuid", drugInfo.getDrug().getUuid());
+		obj.add("drugName", drugInfo.getDrug().getName());
 		obj.add("description", drugInfo.getDescription());
 		obj.add("price", drugInfo.getPrice());
 		obj.add("cost", drugInfo.getCost());
@@ -171,7 +173,7 @@ public class DrugInfoController extends BaseRestController {
 	}
 	
 	/**
-	 * Get all the unretired drug info (as REF representation) in the system
+	 * Get all the unvoided drug info (as REF representation) in the system
 	 *
 	 * @param request
 	 * @param response
@@ -179,7 +181,7 @@ public class DrugInfoController extends BaseRestController {
 	 * @throws ResponseException
 	 */
 	@RequestMapping(method = RequestMethod.GET)
-	@WSDoc("Get All Unretired Drug Info in the system")
+	@WSDoc("Get All Unvoided Drug Info in the system")
 	@ResponseBody()
 	public String getAllDrugInfo(HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		initDrugInfoController();
@@ -246,7 +248,7 @@ public class DrugInfoController extends BaseRestController {
 	}
 	
 	/**
-	 * Retires the drug info resource by making a DELETE call with the '!purge'
+	 * Voids the drug info resource by making a DELETE call with the '!purge'
 	 * param
 	 *
 	 * @param uuid

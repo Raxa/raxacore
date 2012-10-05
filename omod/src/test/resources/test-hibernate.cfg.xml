@@ -8,6 +8,7 @@
         <mapping resource="RaxacorePatientList.hbm.xml" />
         <mapping resource="RaxacoreRaxaAlert.hbm.xml" />
         <mapping resource="RaxacoreDrugGroup.hbm.xml" />
+        <mapping resource="RaxacoreDrugInfo.hbm.xml" />
         <mapping resource="RaxacoreDrugPurchaseOrder.hbm.xml" />
         <mapping resource="RaxacoreDrugInventory.hbm.xml" /> 
     </session-factory>

@@ -265,6 +265,7 @@ public class DrugGroupController extends BaseRestController {
 		obj.add("resourceVersion", getResourceVersion());
 		return gson.toJson(obj);
 	}
+	
 	//</editor-fold>
 	//<editor-fold defaultstate="collapsed" desc="DELETE - Retire DrugGroup">
 	/**
