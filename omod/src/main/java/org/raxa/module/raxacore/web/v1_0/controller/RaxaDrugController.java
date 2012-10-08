@@ -90,9 +90,8 @@ public class RaxaDrugController extends BaseRestController {
 	public Object createNewDrug(@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		initDrugController();
-		
-		Integer conceptId = Integer.parseInt(post.get("conceptId").toString());
-		Concept concept = service.getConcept(conceptId);
+		String conceptUuid = post.get("concept").toString();
+		Concept concept = service.getConceptByUuid(conceptUuid);
 		
 		if (concept == null) {
 			throw new ObjectNotFoundException();
@@ -149,6 +148,9 @@ public class RaxaDrugController extends BaseRestController {
 		if (obj.get("minimumDailyDose") != null) {
 			drug.setMinimumDailyDose(Double.parseDouble(obj.get("minimumDailyDose").toString()));
 		}
+		if (obj.get("dosageForm") != null) {
+			drug.setDosageForm(Context.getConceptService().getConceptByUuid(obj.get("dosageForm").toString()));
+		}
 		if (obj.get("units") != null) {
 			drug.setUnits(obj.get("units").toString());
 		}
@@ -169,6 +171,7 @@ public class RaxaDrugController extends BaseRestController {
 		obj.add("maximumDailyDose", drug.getMaximumDailyDose());
 		obj.add("units", drug.getUnits());
 		obj.add("combination", drug.getCombination());
+		obj.add("concept", drug.getConcept().getUuid());
 		obj.add("fullName", drug.getFullName(Context.getLocale()));
 		return obj;
 	}

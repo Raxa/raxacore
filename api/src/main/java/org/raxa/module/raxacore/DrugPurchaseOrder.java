@@ -25,6 +25,14 @@ import org.openmrs.Provider;
 
 public class DrugPurchaseOrder extends BaseOpenmrsMetadata implements Serializable {
 	
+	public static final String ISSUENAME = "Pharmacy Issue";
+	
+	public static final String RECEIPTNAME = "Pharmacy Receipt";
+	
+	public static final String REQUISITIONNAME = "Pharmacy Requisition";
+	
+	public static final String PRESCRIPTIONNAME = "Prescription";
+	
 	private Integer id;
 	
 	private boolean received;

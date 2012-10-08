@@ -165,7 +165,7 @@ public class DrugInventoryController extends BaseRestController {
 		}
 		obj.add("drug", drugObj);
 		obj.add("quantity", di.getQuantity());
-		obj.add("originalquantity", di.getOriginalQuantity());
+		obj.add("originalQuantity", di.getOriginalQuantity());
 		obj.add("expiryDate", di.getExpiryDate());
 		obj.add("batch", di.getBatch());
 		obj.add("value", di.getValue());
@@ -191,7 +191,7 @@ public class DrugInventoryController extends BaseRestController {
 			dPOObj.add("uuid", dPO.getUuid());
 			dPOObj.add("display", dPO.getName());
 		}
-		obj.add("drugpurchaseorder", dPOObj);
+		obj.add("drugPurchaseOrder", dPOObj);
 		return obj;
 	}
 	

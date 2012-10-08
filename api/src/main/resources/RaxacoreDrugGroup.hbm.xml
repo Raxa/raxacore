@@ -4,7 +4,7 @@
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.raxa.module.raxacore">    
     <class name="DrugGroup" table="raxacore_drug_group">
-        <id name="drugGroupId" column="drug_group_id">
+        <id name="id" column="drug_group_id">
             <generator class="native"/>
         </id>
         <property name="name"           type="java.lang.String"     column="name" length="255"/>
