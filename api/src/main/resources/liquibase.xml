@@ -784,4 +784,16 @@
         <dropColumn tableName="raxacore_drug_info" columnName="void_reason"/>
     </changeSet>
 
+    <changeSet id="2012-10-11_adding_supplier" author="johnstoecker" >
+        <preConditions onFail="MARK_RAN" >
+            <tableExists tableName="drug_inventory_resource" />
+        </preConditions>
+        <comment>
+            Adding supplier field to drug inventory
+        </comment>
+        <addColumn tableName="drug_inventory_resource">
+            <column name="supplier" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

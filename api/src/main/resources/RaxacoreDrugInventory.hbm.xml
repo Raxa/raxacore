@@ -20,6 +20,7 @@
         <many-to-one name="location"              class="org.openmrs.Location"   column="Location_id"/>
         <property name="expiryDate"               type="java.util.Date"          column="Expiry_date"/>
         <property name="batch"                    type="java.lang.String"        column="Batch" length="255"/>
+        <property name="supplier"                 type="java.lang.String"        column="supplier" length="255"/>
         <property name="status"                   type="java.lang.String"        column="Status" length="255"/>
         <property name="roomLocation"             type="java.lang.String"        column="room_location" length="1000"/>
         <property name="quantity"                 type="java.lang.Integer"       column="Quantity"/>

@@ -129,7 +129,7 @@ public class DrugInfoController extends BaseRestController {
 		initDrugInfoController();
 		DrugInfo drugInfo = service.getDrugInfoByUuid(uuid);
 		updateDrugInfoFieldsFromPostData(drugInfo, post);
-		service.saveDrugInfo(drugInfo);
+		service.updateDrugInfo(drugInfo);
 		return RestUtil.created(response, getDrugInfoAsSimpleObject(drugInfo));
 	}
 	
