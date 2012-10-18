@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -39,6 +40,8 @@ import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
+import org.raxa.module.raxacore.DrugInfo;
+import org.raxa.module.raxacore.DrugInfoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -101,6 +104,9 @@ public class RaxaDrugController extends BaseRestController {
 		drug.setConcept(concept);
 		updateDrugFieldsFromPostData(drug, post);
 		Drug drugJustCreated = service.saveDrug(drug);
+		if (post.get("drugInfo") != null) {
+			this.createNewDrugInfo(drugJustCreated, (LinkedHashMap) post.get("drugInfo"));
+		}
 		return RestUtil.created(response, getDrugAsSimpleObject(drugJustCreated));
 	}
 	
@@ -154,6 +160,33 @@ public class RaxaDrugController extends BaseRestController {
 		if (obj.get("units") != null) {
 			drug.setUnits(obj.get("units").toString());
 		}
+	}
+	
+	/**
+	 * Creates a drug info for the given drug
+	 */
+	private void createNewDrugInfo(Drug drug, LinkedHashMap drugInfoMap) {
+		String drugUuid = drug.getUuid();
+		
+		// create drug info POJO and add required relationship with a Drug
+		DrugInfo drugInfo = new DrugInfo();
+		drugInfo.setDrug(drug);
+		System.out.println(drugInfoMap.get("name"));
+		if (drugInfoMap.get("name") != null) {
+			drugInfo.setName(drugInfoMap.get("name").toString());
+		}
+		if (drugInfoMap.get("description") != null) {
+			drugInfo.setDescription(drugInfoMap.get("description").toString());
+		}
+		if (drugInfoMap.get("price") != null) {
+			drugInfo.setPrice(Double.parseDouble(drugInfoMap.get("price").toString()));
+		}
+		if (drugInfoMap.get("cost") != null) {
+			drugInfo.setCost(Double.parseDouble(drugInfoMap.get("cost").toString()));
+		}
+		System.out.println(drugInfo.getRetired());
+		// save new object and prepare response
+		DrugInfo drugInfoJustCreated = Context.getService(DrugInfoService.class).saveDrugInfo(drugInfo);
 	}
 	
 	/**

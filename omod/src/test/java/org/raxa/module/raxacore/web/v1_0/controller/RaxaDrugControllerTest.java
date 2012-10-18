@@ -6,6 +6,7 @@ package org.raxa.module.raxacore.web.v1_0.controller;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -18,6 +19,8 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.raxa.module.raxacore.DrugInfo;
+import org.raxa.module.raxacore.DrugInfoService;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -58,6 +61,25 @@ public class RaxaDrugControllerTest extends BaseModuleContextSensitiveTest {
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object drug = controller.createNewDrug(post, request, response);
 		Assert.assertEquals(before + 1, service.getAllDrugs(true).size());
+	}
+	
+	/**
+	 * Test of createNewDrug method, of class RaxaDrugController.
+	 */
+	@Test
+	public void createNewDrug_shouldCreateNewDrugInfo() throws Exception {
+		String json = "{\"concept\":\"0cbe2ed3-cd5f-4f46-9459-26127c9265ab\",\"name\":\"New Drug name\",\"dosageForm\":\"0cbe2ed3-cd5f-4f46-9459-26127c9265ab\",\"minimumDailyDose\":\"10\",\"maximumDailyDose\":\"100\",\"units\":\"mg\", \"drugInfo\":{ \"name\":\"Inner DrugInfo\",\"description\":\"Test Drug Group\", \"drug\":\"3cfcf118-931c-46f7-8ff6-7b876f0d4202\"} }";
+		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
+		Object drug = controller.createNewDrug(post, request, response);
+		List<DrugInfo> drugInfos = Context.getService(DrugInfoService.class).getAllDrugInfo(true);
+		Boolean foundNewDrugInfo = false;
+		for (int i = 0; i < drugInfos.size(); i++) {
+			DrugInfo di = drugInfos.get(i);
+			if (di.getName().equals("Inner DrugInfo")) {
+				foundNewDrugInfo = true;
+			}
+		}
+		Assert.assertEquals(true, foundNewDrugInfo);
 	}
 	
 	/**
