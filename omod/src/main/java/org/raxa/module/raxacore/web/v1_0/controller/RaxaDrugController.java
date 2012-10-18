@@ -171,7 +171,6 @@ public class RaxaDrugController extends BaseRestController {
 		// create drug info POJO and add required relationship with a Drug
 		DrugInfo drugInfo = new DrugInfo();
 		drugInfo.setDrug(drug);
-		System.out.println(drugInfoMap.get("name"));
 		if (drugInfoMap.get("name") != null) {
 			drugInfo.setName(drugInfoMap.get("name").toString());
 		}
@@ -184,7 +183,6 @@ public class RaxaDrugController extends BaseRestController {
 		if (drugInfoMap.get("cost") != null) {
 			drugInfo.setCost(Double.parseDouble(drugInfoMap.get("cost").toString()));
 		}
-		System.out.println(drugInfo.getRetired());
 		// save new object and prepare response
 		DrugInfo drugInfoJustCreated = Context.getService(DrugInfoService.class).saveDrugInfo(drugInfo);
 	}
