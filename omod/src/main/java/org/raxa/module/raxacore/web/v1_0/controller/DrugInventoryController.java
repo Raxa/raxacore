@@ -165,6 +165,7 @@ public class DrugInventoryController extends BaseRestController {
 		if (d != null) {
 			drugObj.add("uuid", d.getUuid());
 			drugObj.add("display", d.getName());
+			drugObj.add("dosageForm", d.getDosageForm().getName());
 		}
 		obj.add("drug", drugObj);
 		obj.add("quantity", di.getQuantity());
