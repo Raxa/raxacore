@@ -169,6 +169,9 @@ public class RaxaDrugController extends BaseRestController {
 		obj.add("description", drug.getDescription());
 		obj.add("minimumDailyDose", drug.getMinimumDailyDose());
 		obj.add("maximumDailyDose", drug.getMaximumDailyDose());
+		if (drug.getDosageForm() != null) {
+			obj.add("dosageForm", drug.getDosageForm().getName().getName());
+		}
 		obj.add("units", drug.getUnits());
 		obj.add("combination", drug.getCombination());
 		obj.add("concept", drug.getConcept().getUuid());
@@ -187,7 +190,7 @@ public class RaxaDrugController extends BaseRestController {
 	@RequestMapping(method = RequestMethod.GET)
 	@WSDoc("Get All Unretired Drug in the system")
 	@ResponseBody()
-	public String getAllDrug(HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+	public String getAllDrugs(HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		initDrugController();
 		List<Drug> allDrug = service.getAllDrugs(false);
 		ArrayList results = new ArrayList();
@@ -208,7 +211,7 @@ public class RaxaDrugController extends BaseRestController {
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
 	@WSDoc("Gets Drug for the uuid path")
 	@ResponseBody()
-	public String getAllDrugByUuid(@PathVariable("uuid") String uuid, HttpServletRequest request) throws ResponseException {
+	public String getDrugByUuid(@PathVariable("uuid") String uuid, HttpServletRequest request) throws ResponseException {
 		initDrugController();
 		Drug drug = service.getDrugByUuid(uuid);
 		return gson.toJson(getDrugAsSimpleObject(drug));
@@ -226,7 +229,7 @@ public class RaxaDrugController extends BaseRestController {
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET, params = "v")
 	@WSDoc("Gets Full representation of Drug for the uuid path")
 	@ResponseBody()
-	public String getAllDrugByUuidFull(@PathVariable("uuid") String uuid, @RequestParam("v") String rep,
+	public String getDrugByUuidFull(@PathVariable("uuid") String uuid, @RequestParam("v") String rep,
 	        HttpServletRequest request) throws ResponseException {
 		initDrugController();
 		Drug drug = service.getDrugByUuid(uuid);
