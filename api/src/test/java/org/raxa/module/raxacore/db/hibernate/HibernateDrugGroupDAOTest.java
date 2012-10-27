@@ -95,7 +95,7 @@ public class HibernateDrugGroupDAOTest extends BaseModuleContextSensitiveTest {
 		Set<Drug> resDrugs = result.getDrugs();
 		Iterator<Drug> itr = resDrugs.iterator();
 		Drug drug3 = itr.next();
-		Integer drugId = 3;
+		Integer drugId = 11;
 		assertEquals(drug3.getId(), drugId);
 	}
 	

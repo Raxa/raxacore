@@ -129,7 +129,7 @@ public class DrugInfoController extends BaseRestController {
 		initDrugInfoController();
 		DrugInfo drugInfo = service.getDrugInfoByUuid(uuid);
 		updateDrugInfoFieldsFromPostData(drugInfo, post);
-		service.saveDrugInfo(drugInfo);
+		service.updateDrugInfo(drugInfo);
 		return RestUtil.created(response, getDrugInfoAsSimpleObject(drugInfo));
 	}
 	
@@ -152,6 +152,12 @@ public class DrugInfoController extends BaseRestController {
 		if (obj.get("cost") != null) {
 			drugInfo.setCost(Double.parseDouble(obj.get("cost").toString()));
 		}
+		if (obj.get("shortName") != null) {
+			drugInfo.setShortName(obj.get("shortName").toString());
+		}
+		if (obj.get("brandName") != null) {
+			drugInfo.setBrandName(obj.get("brandName").toString());
+		}
 	}
 	
 	/**
@@ -167,6 +173,8 @@ public class DrugInfoController extends BaseRestController {
 		obj.add("drugUuid", drugInfo.getDrug().getUuid());
 		obj.add("drugName", drugInfo.getDrug().getName());
 		obj.add("description", drugInfo.getDescription());
+		obj.add("shortName", drugInfo.getShortName());
+		obj.add("brandName", drugInfo.getBrandName());
 		obj.add("price", drugInfo.getPrice());
 		obj.add("cost", drugInfo.getCost());
 		return obj;
@@ -245,6 +253,30 @@ public class DrugInfoController extends BaseRestController {
 		}
 		obj.add("resourceVersion", getResourceVersion());
 		return gson.toJson(obj);
+	}
+	
+	/**
+	 * Search Druginfo by drug name
+	 * 
+	 * @param query the name to search for specific drug
+	 * @param request
+	 * @return
+	 * @throws ResponseException 
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "drugname")
+	@WSDoc("Gets drug info by drug name")
+	@ResponseBody()
+	public String getDrugInfosByName(@RequestParam("drugname") String query, HttpServletRequest request)
+	        throws ResponseException {
+		initDrugInfoController();
+		List<DrugInfo> allDrugInfos = service.getDrugInfosByDrugName(query);
+		ArrayList results = new ArrayList();
+		for (DrugInfo drugInfo : allDrugInfos) {
+			if (drugInfo != null) {
+				results.add(getDrugInfoAsSimpleObject(drugInfo));
+			}
+		}
+		return gson.toJson(new SimpleObject().add("results", results));
 	}
 	
 	/**

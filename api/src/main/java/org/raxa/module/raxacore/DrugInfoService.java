@@ -63,6 +63,24 @@ public interface DrugInfoService extends OpenmrsService {
 	public DrugInfo getDrugInfoByUuid(String uuid);
 	
 	/**
+	 * Gets DrugInfo by drug uuid
+	 *
+	 * @param uuid
+	 * @return DrugInfo
+	 */
+	@Authorized( { "View Drug Info" })
+	public DrugInfo getDrugInfoByDrugUuid(String uuid);
+	
+	/**
+	 * Gets DrugInfo by drug name
+	 *
+	 * @param uuid
+	 * @return DrugInfo
+	 */
+	@Authorized( { "View Drug Info" })
+	public List<DrugInfo> getDrugInfosByDrugName(String name);
+	
+	/**
 	 * Gets all DrugInfos
 	 *
 	 * @return
