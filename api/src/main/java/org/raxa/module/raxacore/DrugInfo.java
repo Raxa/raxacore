@@ -35,6 +35,10 @@ public class DrugInfo extends BaseOpenmrsMetadata implements Serializable {
 	
 	private double cost;
 	
+	private String shortName;
+	
+	private String brandName;
+	
 	private String note;
 	
 	public DrugInfo() {
@@ -165,5 +169,33 @@ public class DrugInfo extends BaseOpenmrsMetadata implements Serializable {
 	 */
 	public void setDrugId(Integer drugId) {
 		this.drugId = drugId;
+	}
+	
+	/**
+	 * @return the shortName
+	 */
+	public String getShortName() {
+		return shortName;
+	}
+	
+	/**
+	 * @param shortName the shortName to set
+	 */
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
+	
+	/**
+	 * @return the brandName
+	 */
+	public String getBrandName() {
+		return brandName;
+	}
+	
+	/**
+	 * @param brandName the brandName to set
+	 */
+	public void setBrandName(String brandName) {
+		this.brandName = brandName;
 	}
 }

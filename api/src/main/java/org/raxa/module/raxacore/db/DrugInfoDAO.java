@@ -84,4 +84,6 @@ public interface DrugInfoDAO {
 	 */
 	DrugInfo updateDrugInfo(DrugInfo drugInfo) throws DAOException;
 	
+	public DrugInfo getDrugInfoByDrug(Integer id);
+	
 }

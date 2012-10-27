@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.User;
@@ -71,6 +72,22 @@ public class DrugInfoServiceImpl implements DrugInfoService {
 	@Override
 	public DrugInfo getDrugInfoByUuid(String uuid) {
 		return dao.getDrugInfoByUuid(uuid);
+	}
+	
+	@Override
+	public DrugInfo getDrugInfoByDrugUuid(String uuid) {
+		Drug d = Context.getConceptService().getDrugByUuid(uuid);
+		return dao.getDrugInfoByDrug(d.getId());
+	}
+	
+	@Override
+	public List<DrugInfo> getDrugInfosByDrugName(String name) {
+		List<Drug> drugs = Context.getConceptService().getDrugs(name);
+		List<DrugInfo> drugInfos = new ArrayList<DrugInfo>();
+		for (int i = 0; i < drugs.size(); i++) {
+			drugInfos.add(dao.getDrugInfoByDrug(drugs.get(i).getDrugId()));
+		}
+		return drugInfos;
 	}
 	
 	/**

@@ -796,4 +796,19 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="2012-10-27_adding_names" author="johnstoecker" >
+        <preConditions onFail="MARK_RAN" >
+            <tableExists tableName="raxacore_drug_info" />
+        </preConditions>
+        <comment>
+            Adding short name and brand name fields to drug info
+        </comment>
+        <addColumn tableName="raxacore_drug_info">
+            <column name="short_name" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="raxacore_drug_info">
+            <column name="brand_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
