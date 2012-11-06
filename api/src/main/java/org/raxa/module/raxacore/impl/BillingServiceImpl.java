@@ -62,6 +62,10 @@ public class BillingServiceImpl implements BillingService {
 		return dao.getBillByPatientUuid(uuid);
 	}
 	
+	public Billing getBill(int billId) {
+		return dao.getBill(billId);
+	}
+	
 	public List<Billing> getAllBills() {
 		return dao.getAllBills();
 	}

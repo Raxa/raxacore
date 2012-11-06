@@ -38,5 +38,8 @@ public interface BillingService extends OpenmrsService {
 	
 	Billing updateBill(Billing bill);
 	
+	Billing getBill(int billId);
+	
 	List<Billing> getAllBillsByProvider(Integer providerId);
+	
 }

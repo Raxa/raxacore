@@ -132,391 +132,10 @@
             referencedColumnNames="user_id"
             referencedTableName="users" />
     </changeSet>
-
+  
+    
     <changeSet
-        id="2012-07-27_create_drug_purchase_order_ver5"
-        author="Abhishek,Jatin,Praneet" >
-
-        <preConditions onFail="MARK_RAN" >
-
-            <not>
-
-                <tableExists tableName="drug_purchase_order" />
-            </not>
-        </preConditions>
-
-        <comment>
-            Schema for drug_purchase_order table
-        </comment>
-
-        <createTable tableName="drug_purchase_order" >
-
-            <column
-                name="PO_id"
-                autoIncrement="true"
-                type="int" >
-
-                <constraints
-                    nullable="false"
-                    primaryKey="true" />
-            </column>
-
-            <column
-                name="PO_name"
-                type="varchar(255)" />
-
-            <column
-                name="PO_description"
-                type="varchar(2000)" />
-
-            <column
-                name="Received"
-                defaultValueBoolean="false"
-                type="boolean" >
-
-              <!--    <constraints nullable="false" />-->
-            </column>
-
-            <column
-                name="Provider_id"
-                type="int" >
-
-                <constraints nullable="false" />
-            </column>
-
-            <column
-                name="Location_id"
-                type="int" >
-
-             <!--     <constraints nullable="false" />-->
-            </column>
-
-            <column
-                name="PO_date"
-                type="DATETIME" >
-
-                 <!--     <constraints nullable="false" />-->
-            </column>
-
-            <column
-                name="creator"
-                type="int" >
-
-                      <constraints nullable="false" />
-            </column>
-
-            <column
-                name="date_created"
-                type="DATETIME" >
-
-                     <constraints nullable="false" />
-            </column>
-
-            <column
-                name="changed_by"
-                type="int" />
-
-            <column
-                name="date_changed"
-                type="DATETIME" />
-
-            <column
-                name="retired"
-                defaultValueBoolean="false"
-                type="BOOLEAN" >
-
-                    <constraints nullable="false" />
-            </column>
-
-            <column
-                name="retired_by"
-                type="int" />
-
-            <column
-                name="date_retired"
-                type="DATETIME" />
-
-            <column
-                name="retire_reason"
-                type="varchar(255)" />
-
-            <column
-                name="uuid"
-                type="char(38)" >
-
-                <constraints
-                    nullable="false"
-                    unique="true" />
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet
-        id="2012-07-27_add_constraints_to_drug_purchase_order_ver5"
-        author="Abhishek,Jatin,Praneet" >
-
-        <preConditions onFail="MARK_RAN" >
-
-            <tableExists tableName="drug_purchase_order" />
-        </preConditions>
-
-        <comment>
-            Adding constraints for drug_purchase_order.
-        </comment>
-
-        <addForeignKeyConstraint
-            baseColumnNames="Provider_id"
-            baseTableName="drug_purchase_order"
-            constraintName="FK_drug_purchase_order_Provider_id_Provider_provider_id"
-            referencedColumnNames="provider_id"
-            referencedTableName="Provider" />
-
-        <addForeignKeyConstraint
-            baseColumnNames="Location_id"
-            baseTableName="drug_purchase_order"
-            constraintName="FK_drug_purchase_order_Location_id_Location_location_id"
-            referencedColumnNames="location_id"
-            referencedTableName="Location" />
-
-        <addForeignKeyConstraint
-            baseColumnNames="creator"
-            baseTableName="drug_purchase_order"
-            constraintName="FK_drug_purchase_order_creator_users_user_id"
-            referencedColumnNames="user_id"
-            referencedTableName="users" />
-
-        <addForeignKeyConstraint
-            baseColumnNames="retired_by"
-            baseTableName="drug_purchase_order"
-            constraintName="FK_drug_purchase_order_retired_by_users_user_id"
-            referencedColumnNames="user_id"
-            referencedTableName="users" />
-
-        <addForeignKeyConstraint
-            baseColumnNames="changed_by"
-            baseTableName="drug_purchase_order"
-            constraintName="FK_drug_purchase_order_changed_by_users_user_id"
-            referencedColumnNames="user_id"
-            referencedTableName="users" />
-    </changeSet>
-
-    <changeSet
-        id="2012-07-27_create_drug_inventory_resource_ver5"
-        author="Abhishek,Jatin,Praneet" >
-
-        <preConditions onFail="MARK_RAN" >
-
-            <not>
-
-                <tableExists tableName="drug_inventory_resource" />
-            </not>
-        </preConditions>
-
-        <comment>
-            Schema for drug_inventory_resource table
-        </comment>
-
-        <createTable tableName="drug_inventory_resource" >
-
-            <column
-                name="DI_id"
-                autoIncrement="true"
-                type="int" >
-
-                <constraints
-                    nullable="false"
-                    primaryKey="true" />
-            </column>
-
-            <column
-                name="DI_name"
-                type="varchar(255)" />
-
-            <column
-                name="DI_description"
-                type="varchar(2000)" />
-
-            <column
-                name="Drug_ID"
-                type="int" >
-
-                <constraints nullable="false" />
-            </column>
-
-            <column
-                name="Quantity"
-                type="int" >
-
-                <constraints nullable="false" />
-            </column>
-
-            <column
-                name="Original_quantity"
-                type="int" >
-
-                <!--     <constraints nullable="false" />-->
-            </column>
-
-            <column
-                name="Expiry_date"
-                type="DATETIME" >
-
-                 <!--     <constraints nullable="false" />-->
-            </column>
-
-            <column
-                name="Batch"
-                type="varchar(255)" />
-
-            <column
-                name="Value"
-                type="int" >
-
-                <!--     <constraints nullable="false" />-->
-            </column>
-
-            <column
-                name="Status"
-                type="varchar(255)" />
-
-            <column
-                name="Provider_id"
-                type="int" >
-
-               <!--     <constraints nullable="false" />-->
-            </column>
-
-            <column
-                name="Drug_PO"
-                type="int" >
-
-                <!--     <constraints nullable="false" />-->
-            </column>
-
-            <column
-                name="Location_id"
-                type="int" >
-
-                 <!--     <constraints nullable="false" />-->
-            </column>
-
-            <column
-                name="creator"
-                type="int" >
-
-                   <constraints nullable="false" />
-            </column>
-
-            <column
-                name="date_created"
-                type="DATETIME" >
-
-                      <constraints nullable="false" />
-            </column>
-
-            <column
-                name="changed_by"
-                type="int" />
-
-            <column
-                name="date_changed"
-                type="DATETIME" />
-
-            <column
-                name="retired"
-                defaultValueBoolean="false"
-                type="BOOLEAN" >
-
-                <constraints nullable="false" />
-            </column>
-
-            <column
-                name="retired_by"
-                type="int" />
-
-            <column
-                name="date_retired"
-                type="DATETIME" />
-
-            <column
-                name="retire_reason"
-                type="varchar(255)" />
-
-            <column
-                name="uuid"
-                type="char(38)" >
-
-                <constraints
-                    nullable="false"
-                    unique="true" />
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet
-        id="2012-07-27_add_constraints_to_drug_inventory_resource_ver5"
-        author="Abhishek,Jatin,Praneet" >
-
-        <preConditions onFail="MARK_RAN" >
-
-            <tableExists tableName="drug_inventory_resource" />
-        </preConditions>
-
-        <comment>
-            Adding constraints for drug_inventory_resource.
-        </comment>
-
-        <addForeignKeyConstraint
-            baseColumnNames="Provider_id"
-            baseTableName="drug_inventory_resource"
-            constraintName="FK_drug_inventory_resource_Provider_id_Provider_provider_id"
-            referencedColumnNames="provider_id"
-            referencedTableName="Provider" />
-
-        <addForeignKeyConstraint
-            baseColumnNames="Location_id"
-            baseTableName="drug_inventory_resource"
-            constraintName="FK_drug_inventory_resource_Location_id_Location_location_id"
-            referencedColumnNames="location_id"
-            referencedTableName="Location" />
-
-        <addForeignKeyConstraint
-            baseColumnNames="Drug_PO"
-            baseTableName="drug_inventory_resource"
-            constraintName="FK_drug_inventory_resource_Drug_PO_drug_purchase_order_PO_id"
-            referencedColumnNames="PO_id"
-            referencedTableName="drug_purchase_order" />
-
-        <addForeignKeyConstraint
-            baseColumnNames="Drug_ID"
-            baseTableName="drug_inventory_resource"
-            constraintName="FK_drug_inventory_Drug_ID_Drug_Drug_id"
-            referencedColumnNames="drug_id"
-            referencedTableName="drug" />
-
-        <addForeignKeyConstraint
-            baseColumnNames="creator"
-            baseTableName="drug_inventory_resource"
-            constraintName="FK_drug_inventory_resource_creator_users_user_id"
-            referencedColumnNames="user_id"
-            referencedTableName="users" />
-
-        <addForeignKeyConstraint
-            baseColumnNames="retired_by"
-            baseTableName="drug_inventory_resource"
-            constraintName="FK_ddrug_inventory_resource_retired_by_users_user_id"
-            referencedColumnNames="user_id"
-            referencedTableName="users" />
-
-        <addForeignKeyConstraint
-            baseColumnNames="changed_by"
-            baseTableName="drug_inventory_resource"
-            constraintName="FK_drug_inventory_resource_changed_by_users_user_id"
-            referencedColumnNames="user_id"
-            referencedTableName="users" />
-    </changeSet>
-    <changeSet
-        id="2012-11-04_create_raxacore_billing_v1"
+        id="2012-11-04_create_raxacore_billing_vs32"
         author="jatin" >
 
         <preConditions onFail="MARK_RAN" >
@@ -621,7 +240,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-11-04_add_constraints_to_raxacore_billing_v1"
+        id="2012-11-04_add_constraints_to_raxacore_billing_vs32"
         author="jatin" >
 
         <preConditions onFail="MARK_RAN" >
@@ -668,7 +287,7 @@
     </changeSet>
 
    <changeSet
-        id="2012-09-12_create_raxacore_billing_item_v2"
+        id="2012-09-12_create_raxacore_billing_item_vs32"
         author="abhishek" >
 
         <preConditions onFail="MARK_RAN" >
@@ -714,7 +333,6 @@
              <column
                 name="provider_id"
                 type="int" >
-                 <constraints nullable="false" />
              </column>
 
              
@@ -799,7 +417,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-09-12_add_constraints_to_raxacore_billing_item_v2"
+        id="2012-09-12_add_constraints_to_raxacore_billing_item_vs32"
         author="abhishek" >
 
         <preConditions onFail="MARK_RAN" >
@@ -868,7 +486,7 @@
          
       </changeSet>
           <changeSet
-        id="2012-09-18_create_raxacore_billing_item_adjustment_v22"
+        id="2012-09-18_create_raxacore_billing_item_adjustment_vs32"
         author="abhishek" >
 
         <preConditions onFail="MARK_RAN" >
@@ -915,6 +533,8 @@
              <column
                 name="bill_item_id"
                 type="int" >
+                                <constraints nullable="false" />
+                 
               </column>
              
             <column
@@ -971,7 +591,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-09-18_add_constraint_to_raxacore_billing_item_adjstmnt"
+        id="2012-09-18_add_constraint_to_raxacore_blling_item_adjstmnt_vs32"
         author="abhishek" >
 
         <preConditions onFail="MARK_RAN" >

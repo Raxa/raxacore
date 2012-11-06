@@ -15,15 +15,14 @@ package org.raxa.module.raxacore.db.hibernate;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.EncounterType;
 import org.openmrs.api.db.DAOException;
 import org.raxa.module.raxacore.Billing;
-
 import org.raxa.module.raxacore.db.BillingDAO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,6 +82,16 @@ public class HibernateBillingDAO implements BillingDAO {
 		
 		sessionFactory.getCurrentSession().update(bill);
 		return bill;
+	}
+	
+	@Transactional
+	public Billing getBill(int billId) throws DAOException {
+		
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Billing.class);
+		criteria.add(Restrictions.eq("billId", billId));
+		
+		return (Billing) criteria.uniqueResult();
+		
 	}
 	
 	@Transactional

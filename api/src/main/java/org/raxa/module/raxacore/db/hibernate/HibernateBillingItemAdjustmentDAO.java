@@ -57,6 +57,14 @@ public class HibernateBillingItemAdjustmentDAO implements BillingItemAdjustmentD
 	}
 	
 	@Transactional
+	public BillingItemAdjustment getBillingItemAdjustment(int billItemAdjustmentId) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BillingItemAdjustment.class);
+		criteria.add(Restrictions.eq("billItemAdjustmentId", billItemAdjustmentId));
+		
+		return (BillingItemAdjustment) criteria.uniqueResult();
+	}
+	
+	@Transactional
 	public List<BillingItemAdjustment> getAllBillingItemAdjustments() {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BillingItemAdjustment.class);
 		return criteria.list();

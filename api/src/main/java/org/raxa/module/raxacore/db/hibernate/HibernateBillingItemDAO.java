@@ -62,6 +62,16 @@ public class HibernateBillingItemDAO implements BillingItemDAO {
 	}
 	
 	@Transactional
+	public BillingItem getBillingItem(int billItemId)
+
+	{
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BillingItem.class);
+		criteria.add(Restrictions.eq("billItemId", billItemId));
+		
+		return (BillingItem) criteria.uniqueResult();
+	}
+	
+	@Transactional
 	public List<BillingItem> getAllBillingItems() {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(BillingItem.class);
 		return criteria.list();

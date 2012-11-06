@@ -25,7 +25,7 @@
                       <property name="value"     type="java.lang.Integer"    column="value"  />
               
    
-     <property name="billItemId"     type="java.lang.Integer"    column="bill_item_id" insert="false" not-null="true" update="false" />
-        <many-to-one name="billItem"   class="org.raxa.module.raxacore.BillingItem" column="bill_item_id"  not-null="true" />
+     <property name="billItemId"     type="java.lang.Integer"    column="bill_item_id" not-null="true" />
+        <many-to-one name="billItem"   class="org.raxa.module.raxacore.BillingItem" column="bill_item_id" insert="false"  update="false"   />
     </class>
 </hibernate-mapping>

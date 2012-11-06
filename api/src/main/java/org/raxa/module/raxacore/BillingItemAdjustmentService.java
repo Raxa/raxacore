@@ -32,6 +32,8 @@ public interface BillingItemAdjustmentService extends OpenmrsService {
 	
 	BillingItemAdjustment getBillingItemAdjustmentByUuid(String uuid);
 	
+	BillingItemAdjustment getBillingItemAdjustment(int billItemAdjustmentId);
+	
 	List<BillingItemAdjustment> getAllBillingItemAdjustments() throws DAOException;
 	
 	BillingItemAdjustment updateBillingItemAdjustment(BillingItemAdjustment adjustment);

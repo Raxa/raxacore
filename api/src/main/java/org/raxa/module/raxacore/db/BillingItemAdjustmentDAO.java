@@ -18,6 +18,7 @@ package org.raxa.module.raxacore.db;
 
 import java.util.List;
 import org.openmrs.api.db.DAOException;
+import org.raxa.module.raxacore.BillingItem;
 import org.raxa.module.raxacore.BillingItemAdjustment;
 
 public interface BillingItemAdjustmentDAO {
@@ -27,6 +28,8 @@ public interface BillingItemAdjustmentDAO {
 	void deleteBillingItemAdjustment(BillingItemAdjustment adjustment) throws DAOException;
 	
 	BillingItemAdjustment getBillingItemAdjustmentByUuid(String uuid);
+	
+	BillingItemAdjustment getBillingItemAdjustment(int billItemAdjustmentId);
 	
 	List<BillingItemAdjustment> getAllBillingItemAdjustments() throws DAOException;
 	

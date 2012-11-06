@@ -8,7 +8,10 @@
         <mapping resource="RaxacorePatientList.hbm.xml" />
                 <mapping resource="RaxacoreDrugPurchaseOrder.hbm.xml" />
       <mapping resource="RaxacoreDrugInventory.hbm.xml" />  
-
+      <mapping resource="RaxacoreBilling.hbm.xml" />  
+      <mapping resource="RaxacoreBillingItem.hbm.xml" />  
+            <mapping resource="RaxacoreBillingItemAdjustment.hbm.xml" />  
+      
         
          
 

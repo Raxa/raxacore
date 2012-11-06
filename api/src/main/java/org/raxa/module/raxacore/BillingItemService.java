@@ -28,6 +28,8 @@ public interface BillingItemService extends OpenmrsService {
 	
 	BillingItem saveBillingItem(BillingItem item) throws DAOException;
 	
+	BillingItem getBillingItem(int billItemId) throws DAOException;
+	
 	void deleteBillingItem(BillingItem item) throws DAOException;
 	
 	BillingItem getBillingItemByUuid(String uuid);
