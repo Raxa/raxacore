@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -39,6 +40,8 @@ import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
+import org.raxa.module.raxacore.DrugInfo;
+import org.raxa.module.raxacore.DrugInfoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -101,6 +104,9 @@ public class RaxaDrugController extends BaseRestController {
 		drug.setConcept(concept);
 		updateDrugFieldsFromPostData(drug, post);
 		Drug drugJustCreated = service.saveDrug(drug);
+		if (post.get("drugInfo") != null) {
+			this.createNewDrugInfo(drugJustCreated, (LinkedHashMap) post.get("drugInfo"));
+		}
 		return RestUtil.created(response, getDrugAsSimpleObject(drugJustCreated));
 	}
 	
@@ -157,6 +163,31 @@ public class RaxaDrugController extends BaseRestController {
 	}
 	
 	/**
+	 * Creates a drug info for the given drug
+	 */
+	private void createNewDrugInfo(Drug drug, LinkedHashMap drugInfoMap) {
+		String drugUuid = drug.getUuid();
+		
+		// create drug info POJO and add required relationship with a Drug
+		DrugInfo drugInfo = new DrugInfo();
+		drugInfo.setDrug(drug);
+		if (drugInfoMap.get("name") != null) {
+			drugInfo.setName(drugInfoMap.get("name").toString());
+		}
+		if (drugInfoMap.get("description") != null) {
+			drugInfo.setDescription(drugInfoMap.get("description").toString());
+		}
+		if (drugInfoMap.get("price") != null) {
+			drugInfo.setPrice(Double.parseDouble(drugInfoMap.get("price").toString()));
+		}
+		if (drugInfoMap.get("cost") != null) {
+			drugInfo.setCost(Double.parseDouble(drugInfoMap.get("cost").toString()));
+		}
+		// save new object and prepare response
+		DrugInfo drugInfoJustCreated = Context.getService(DrugInfoService.class).saveDrugInfo(drugInfo);
+	}
+	
+	/**
 	 * Returns a SimpleObject containing some fields of Drug
 	 *
 	 * @param drug
@@ -169,6 +200,9 @@ public class RaxaDrugController extends BaseRestController {
 		obj.add("description", drug.getDescription());
 		obj.add("minimumDailyDose", drug.getMinimumDailyDose());
 		obj.add("maximumDailyDose", drug.getMaximumDailyDose());
+		if (drug.getDosageForm() != null) {
+			obj.add("dosageForm", drug.getDosageForm().getName().getName());
+		}
 		obj.add("units", drug.getUnits());
 		obj.add("combination", drug.getCombination());
 		obj.add("concept", drug.getConcept().getUuid());
@@ -187,7 +221,7 @@ public class RaxaDrugController extends BaseRestController {
 	@RequestMapping(method = RequestMethod.GET)
 	@WSDoc("Get All Unretired Drug in the system")
 	@ResponseBody()
-	public String getAllDrug(HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+	public String getAllDrugs(HttpServletRequest request, HttpServletResponse response) throws ResponseException {
 		initDrugController();
 		List<Drug> allDrug = service.getAllDrugs(false);
 		ArrayList results = new ArrayList();
@@ -208,7 +242,7 @@ public class RaxaDrugController extends BaseRestController {
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
 	@WSDoc("Gets Drug for the uuid path")
 	@ResponseBody()
-	public String getAllDrugByUuid(@PathVariable("uuid") String uuid, HttpServletRequest request) throws ResponseException {
+	public String getDrugByUuid(@PathVariable("uuid") String uuid, HttpServletRequest request) throws ResponseException {
 		initDrugController();
 		Drug drug = service.getDrugByUuid(uuid);
 		return gson.toJson(getDrugAsSimpleObject(drug));
@@ -226,7 +260,7 @@ public class RaxaDrugController extends BaseRestController {
 	@RequestMapping(value = "/{uuid}", method = RequestMethod.GET, params = "v")
 	@WSDoc("Gets Full representation of Drug for the uuid path")
 	@ResponseBody()
-	public String getAllDrugByUuidFull(@PathVariable("uuid") String uuid, @RequestParam("v") String rep,
+	public String getDrugByUuidFull(@PathVariable("uuid") String uuid, @RequestParam("v") String rep,
 	        HttpServletRequest request) throws ResponseException {
 		initDrugController();
 		Drug drug = service.getDrugByUuid(uuid);

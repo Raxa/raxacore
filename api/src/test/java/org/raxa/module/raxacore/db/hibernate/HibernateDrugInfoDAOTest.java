@@ -47,7 +47,7 @@ public class HibernateDrugInfoDAOTest extends BaseModuleContextSensitiveTest {
 	public void testSaveDrugInfo() {
 		DrugInfo drugInfo = new DrugInfo();
 		Drug drug = new Drug();
-		drug.setId(1);
+		drug.setId(3);
 		drugInfo.setDrug(drug);
 		drugInfo.setDrugId(drug.getId());
 		drugInfo.setName("TestDrugInfo3");

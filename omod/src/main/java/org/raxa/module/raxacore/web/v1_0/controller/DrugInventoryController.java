@@ -118,6 +118,9 @@ public class DrugInventoryController extends BaseRestController {
 		if (post.get("batch") != null) {
 			drugInventory.setBatch(post.get("batch").toString());
 		}
+		if (post.get("supplier") != null) {
+			drugInventory.setSupplier(post.get("supplier").toString());
+		}
 		if (post.get("value") != null) {
 			drugInventory.setValue(Integer.parseInt(post.get("value").toString()));
 		}
@@ -162,12 +165,16 @@ public class DrugInventoryController extends BaseRestController {
 		if (d != null) {
 			drugObj.add("uuid", d.getUuid());
 			drugObj.add("display", d.getName());
+			if (d.getDosageForm() != null) {
+				drugObj.add("dosageForm", d.getDosageForm().getName().getName());
+			}
 		}
 		obj.add("drug", drugObj);
 		obj.add("quantity", di.getQuantity());
 		obj.add("originalQuantity", di.getOriginalQuantity());
 		obj.add("expiryDate", di.getExpiryDate());
 		obj.add("batch", di.getBatch());
+		obj.add("supplier", di.getSupplier());
 		obj.add("value", di.getValue());
 		obj.add("status", di.getStatus());
 		obj.add("roomLocation", di.getRoomLocation());

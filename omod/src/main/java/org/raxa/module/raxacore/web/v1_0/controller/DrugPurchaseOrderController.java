@@ -298,6 +298,9 @@ public class DrugPurchaseOrderController extends BaseRestController {
 		if (postFields.get("batch") != null) {
 			drugInventory.setBatch(postFields.get("batch").toString());
 		}
+		if (postFields.get("supplier") != null) {
+			drugInventory.setSupplier(postFields.get("supplier").toString());
+		}
 		if (postFields.get("roomLocation") != null) {
 			drugInventory.setRoomLocation(postFields.get("roomLocation").toString());
 		}
@@ -434,6 +437,7 @@ public class DrugPurchaseOrderController extends BaseRestController {
 				newInvObj.add("originalQuantity", inventories.get(i).getOriginalQuantity());
 				newInvObj.add("expiryDate", inventories.get(i).getExpiryDate());
 				newInvObj.add("batch", inventories.get(i).getBatch());
+				newInvObj.add("supplier", inventories.get(i).getSupplier());
 				newInvObj.add("roomLocation", inventories.get(i).getRoomLocation());
 				newInvObj.add("value", inventories.get(i).getValue());
 				newInvObj.add("status", inventories.get(i).getStatus());

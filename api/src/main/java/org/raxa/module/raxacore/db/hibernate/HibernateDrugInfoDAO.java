@@ -95,6 +95,13 @@ public class HibernateDrugInfoDAO implements DrugInfoDAO {
 		
 	}
 	
+	@Override
+	public DrugInfo getDrugInfoByDrug(Integer id) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DrugInfo.class);
+		criteria.add(Restrictions.eq("drugId", id));
+		return (DrugInfo) criteria.uniqueResult();
+	}
+	
 	/**
 	 * @see org.raxa.module.db.DrugInfoDAO#getAllDrugInfo()
 	 */

@@ -128,6 +128,17 @@ public class DrugInfoServiceImplTest extends BaseModuleContextSensitiveTest {
 	}
 	
 	/**
+	 * Test of getDrugInfosByName method, of class DrugInfoServiceImpl.
+	 */
+	@Test
+	public void testGetDrugInfosByNameShouldReturnDrugInfos() {
+		String drugName = "nyquil";
+		List<DrugInfo> results = s.getDrugInfosByDrugName(drugName);
+		String name = results.get(0).getName();
+		assertEquals("TestDrugInfo1", name);
+	}
+	
+	/**
 	 * Test of getDrugInfoByUuid method, of class DrugInfoServiceImpl.
 	 */
 	@Test

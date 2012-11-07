@@ -784,4 +784,31 @@
         <dropColumn tableName="raxacore_drug_info" columnName="void_reason"/>
     </changeSet>
 
+    <changeSet id="2012-10-11_adding_supplier" author="johnstoecker" >
+        <preConditions onFail="MARK_RAN" >
+            <tableExists tableName="drug_inventory_resource" />
+        </preConditions>
+        <comment>
+            Adding supplier field to drug inventory
+        </comment>
+        <addColumn tableName="drug_inventory_resource">
+            <column name="supplier" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="2012-10-27_adding_names" author="johnstoecker" >
+        <preConditions onFail="MARK_RAN" >
+            <tableExists tableName="raxacore_drug_info" />
+        </preConditions>
+        <comment>
+            Adding short name and brand name fields to drug info
+        </comment>
+        <addColumn tableName="raxacore_drug_info">
+            <column name="short_name" type="varchar(255)"/>
+        </addColumn>
+        <addColumn tableName="raxacore_drug_info">
+            <column name="brand_name" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
