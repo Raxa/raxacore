@@ -28,6 +28,8 @@ public interface BillingItemDAO {
 	
 	BillingItem getBillingItemByUuid(String uuid);
 	
+	BillingItem getBillingItem(int billItemId);
+	
 	List<BillingItem> getAllBillingItems() throws DAOException;
 	
 	List<BillingItem> getAllBillingItemsByBill(Integer billid);

@@ -134,7 +134,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-07-27_create_drug_purchase_order_ver5"
+        id="2012-07-27_create_drug_purchase_order_vers5"
         author="Abhishek,Jatin,Praneet" >
 
         <preConditions onFail="MARK_RAN" >
@@ -252,7 +252,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-07-27_add_constraints_to_drug_purchase_order_ver5"
+        id="2012-07-27_add_constraints_to_drug_purchase_order_vs5"
         author="Abhishek,Jatin,Praneet" >
 
         <preConditions onFail="MARK_RAN" >
@@ -301,7 +301,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-07-27_create_drug_inventory_resource_ver5"
+        id="2012-07-27_create_drug_inventory_resource_vs5"
         author="Abhishek,Jatin,Praneet" >
 
         <preConditions onFail="MARK_RAN" >
@@ -454,7 +454,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-07-27_add_constraints_to_drug_inventory_resource_ver5"
+        id="2012-07-27_add_constraints_to_drug_inventory_reso_v5"
         author="Abhishek,Jatin,Praneet" >
 
         <preConditions onFail="MARK_RAN" >
@@ -515,8 +515,10 @@
             referencedColumnNames="user_id"
             referencedTableName="users" />
     </changeSet>
+    
+    
     <changeSet
-        id="2012-11-04_create_raxacore_billing_v1"
+        id="2012-11-04_create_raxacore_billing_v31"
         author="jatin" >
 
         <preConditions onFail="MARK_RAN" >
@@ -621,7 +623,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-11-04_add_constraints_to_raxacore_billing_v1"
+        id="2012-11-04_add_constraints_to_raxacore_billing_v31"
         author="jatin" >
 
         <preConditions onFail="MARK_RAN" >
@@ -668,7 +670,7 @@
     </changeSet>
 
    <changeSet
-        id="2012-09-12_create_raxacore_billing_item_v2"
+        id="2012-09-12_create_raxacore_billing_item_v22"
         author="abhishek" >
 
         <preConditions onFail="MARK_RAN" >
@@ -714,7 +716,6 @@
              <column
                 name="provider_id"
                 type="int" >
-                 <constraints nullable="false" />
              </column>
 
              
@@ -799,7 +800,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-09-12_add_constraints_to_raxacore_billing_item_v2"
+        id="2012-09-12_add_constraints_to_raxacore_billing_item_v22"
         author="abhishek" >
 
         <preConditions onFail="MARK_RAN" >
@@ -868,7 +869,7 @@
          
       </changeSet>
           <changeSet
-        id="2012-09-18_create_raxacore_billing_item_adjustment_v22"
+        id="2012-09-18_create_raxacore_billing_item_adjustment_v23"
         author="abhishek" >
 
         <preConditions onFail="MARK_RAN" >
@@ -915,6 +916,8 @@
              <column
                 name="bill_item_id"
                 type="int" >
+                                <constraints nullable="false" />
+                 
               </column>
              
             <column
@@ -971,7 +974,7 @@
     </changeSet>
 
     <changeSet
-        id="2012-09-18_add_constraint_to_raxacore_billing_item_adjstmnt"
+        id="2012-09-18_add_constraint_to_raxacore_blling_item_adjstmnt"
         author="abhishek" >
 
         <preConditions onFail="MARK_RAN" >
@@ -1012,5 +1015,29 @@
             referencedTableName="raxacore_billing_item" />
          
     </changeSet>
+    
+     <changeSet
+        id="2012-11-12_alter_raxacore_billing_v11"
+        author="abhishek" >
+         <comment>
+            Alter Schema for raxacore_billing_item
+        </comment>
+
+       <addColumn tableName="raxacore_billing">
+    <column name="total_amount" type="int"/>
+        <column name="balance" type="int"/>
+    
+</addColumn>
+    </changeSet>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 </databaseChangeLog>

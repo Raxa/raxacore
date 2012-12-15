@@ -33,6 +33,7 @@ import org.raxa.module.raxacore.DrugInventory;
 import org.raxa.module.raxacore.DrugInventoryService;
 import org.raxa.module.raxacore.PatientList;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * Controller for REST web service access to the PatientList resource.
  */
 @Controller
+@Transactional
 @RequestMapping(value = "/rest/v1/raxacore/druginventory")
 public class DrugInventoryController extends BaseRestController {
 	

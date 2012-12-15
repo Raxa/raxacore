@@ -23,7 +23,7 @@ import org.openmrs.Order;
 import org.openmrs.Provider;
 
 /**
- * BillingItem stores the data of items in the bill.
+ * BillingItemAdjustments  stores the data of billingitems in the bill like discounts , reason of discount .
  */
 
 public class BillingItemAdjustment extends BaseOpenmrsMetadata implements Serializable {

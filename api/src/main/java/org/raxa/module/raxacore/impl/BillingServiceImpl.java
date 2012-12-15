@@ -62,6 +62,10 @@ public class BillingServiceImpl implements BillingService {
 		return dao.getBillByPatientUuid(uuid);
 	}
 	
+	public Billing getBill(int billId) {
+		return dao.getBill(billId);
+	}
+	
 	public List<Billing> getAllBills() {
 		return dao.getAllBills();
 	}
@@ -76,5 +80,9 @@ public class BillingServiceImpl implements BillingService {
 	
 	public List<Billing> getAllBillsByProvider(Integer providerId) {
 		return dao.getAllBillsByProvider(providerId);
+	}
+	
+	public List<Billing> getAllBillsByPatient(Integer patientId) {
+		return dao.getAllBillsByPatient(patientId);
 	}
 }

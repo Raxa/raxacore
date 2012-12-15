@@ -26,24 +26,27 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface BillingItemService extends OpenmrsService {
 	
-	BillingItem saveBillingItem(BillingItem item) throws DAOException;
 	
-	void deleteBillingItem(BillingItem item) throws DAOException;
+	BillingItem saveBillingItem(BillingItem item) throws DAOException; //saves a billingItem
 	
-	BillingItem getBillingItemByUuid(String uuid);
+	BillingItem getBillingItem(int billItemId) throws DAOException; //get billingitem by id 
 	
-	List<BillingItem> getAllBillingItems() throws DAOException;
+	void deleteBillingItem(BillingItem item) throws DAOException;  //delete billing item
 	
-	List<BillingItem> getAllBillingItemsByBill(Integer billid);
+	BillingItem getBillingItemByUuid(String uuid);  // get billing item by uuid
 	
-	BillingItem updateBillingItem(BillingItem item);
+	List<BillingItem> getAllBillingItems() throws DAOException; // get all billing items
 	
-	List<BillingItem> getAllBillingItemsByProvider(Integer providerId);
+	List<BillingItem> getAllBillingItemsByBill(Integer billid); //get all billing items in bill by billid
 	
-	List<BillingItem> getAllBillingItemsByEncounter(Integer encounterId);
+	BillingItem updateBillingItem(BillingItem item); //update billing item
 	
-	List<BillingItem> getAllBillingItemsByConcept(Integer conceptId);
+	List<BillingItem> getAllBillingItemsByProvider(Integer providerId); //get billing item by providerId
 	
-	List<BillingItem> getAllBillingItemsByOrder(Integer orderId);
+	List<BillingItem> getAllBillingItemsByEncounter(Integer encounterId); //get billing items by encounterId
+	
+	List<BillingItem> getAllBillingItemsByConcept(Integer conceptId); // get billingItems by concept
+	
+	List<BillingItem> getAllBillingItemsByOrder(Integer orderId); //get billingItems by orderId
 	
 }

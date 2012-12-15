@@ -24,19 +24,19 @@
               <property name="quantity"     type="java.lang.Integer"    column="quantity"  />
                       <property name="value"     type="java.lang.Integer"    column="value"  />
               
-        <property name="providerId"     type="java.lang.Integer"    column="provider_id" insert="false" not-null="true" update="false" />
-        <many-to-one name="provider"   class="org.openmrs.Provider" column="provider_id"  not-null="true" />
+        <property name="providerId"     type="java.lang.Integer"    column="provider_id" />
+        <many-to-one name="provider"   class="org.openmrs.Provider" column="provider_id"  insert="false" update="false"  />
             
-         <property name="encounterId"     type="java.lang.Integer"    column="encounter_id" insert="false" not-null="true" update="false" />
-        <many-to-one name="encounter"   class="org.openmrs.Encounter" column="encounter_id"  not-null="true" />   
+         <property name="encounterId"     type="java.lang.Integer"    column="encounter_id" />
+        <many-to-one name="encounter"   class="org.openmrs.Encounter" column="encounter_id"   insert="false" update="false" />   
             
-           <property name="orderId"     type="java.lang.Integer"    column="order_id" insert="false" not-null="true" update="false" />
-        <many-to-one name="order"   class="org.openmrs.Order" column="order_id"  not-null="true" /> 
+           <property name="orderId"     type="java.lang.Integer"    column="order_id"   />
+        <many-to-one name="order"   class="org.openmrs.Order" column="order_id"   insert="false" update="false" /> 
      
-     <property name="conceptId"     type="java.lang.Integer"    column="concept_id" insert="false" not-null="true" update="false" />
-        <many-to-one name="concept"   class="org.openmrs.Concept" column="concept_id"  not-null="true" />
+     <property name="conceptId"     type="java.lang.Integer"    column="concept_id"    />
+        <many-to-one name="concept"   class="org.openmrs.Concept" column="concept_id" insert="false"  update="false"/>
      
-     <property name="billId"     type="java.lang.Integer"    column="bill_id" insert="false" not-null="true" update="false" />
-        <many-to-one name="bill"   class="org.raxa.module.raxacore.Billing" column="bill_id"  not-null="true" />
+     <property name="billId"     type="java.lang.Integer"    column="bill_id"  not-null="true"  />
+        <many-to-one name="bill"   class="org.raxa.module.raxacore.Billing" column="bill_id" insert="false" update="false"/>
     </class>
 </hibernate-mapping>

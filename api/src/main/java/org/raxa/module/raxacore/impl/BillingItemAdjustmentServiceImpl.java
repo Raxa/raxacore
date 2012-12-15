@@ -60,6 +60,10 @@ public class BillingItemAdjustmentServiceImpl implements BillingItemAdjustmentSe
 		return dao.getBillingItemAdjustmentByUuid(uuid);
 	}
 	
+	public BillingItemAdjustment getBillingItemAdjustment(int billItemAdjustmentId) {
+		return dao.getBillingItemAdjustment(billItemAdjustmentId);
+	}
+	
 	public List<BillingItemAdjustment> getAllBillingItemAdjustments() {
 		return dao.getAllBillingItemAdjustments();
 	}

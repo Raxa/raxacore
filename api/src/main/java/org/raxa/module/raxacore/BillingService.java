@@ -26,17 +26,22 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface BillingService extends OpenmrsService {
 	
-	Billing saveBill(Billing bill) throws DAOException;
+	Billing saveBill(Billing bill) throws DAOException; //save a bill
 	
-	void deleteBill(Billing bill) throws DAOException;
+	void deleteBill(Billing bill) throws DAOException; //delete a bill
 	
-	Billing getBillByPatientUuid(String uuid);
+	Billing getBillByPatientUuid(String uuid); // get all bills of a patient given its uuuid 
 	
-	List<Billing> getAllBills() throws DAOException;
+	List<Billing> getAllBills() throws DAOException; //get all bills
 	
-	List<Billing> getAllBillsByStatus(String status);
+	List<Billing> getAllBillsByStatus(String status); //get all bills by status 
 	
-	Billing updateBill(Billing bill);
+	Billing updateBill(Billing bill); // update a bill
 	
-	List<Billing> getAllBillsByProvider(Integer providerId);
+	Billing getBill(int billId);  // get a bill given its id 
+	
+	List<Billing> getAllBillsByProvider(Integer providerId);  // get all bills for Provider given providerId
+	
+	List<Billing> getAllBillsByPatient(Integer patientId); //get all bills for patient given patientId
+	
 }

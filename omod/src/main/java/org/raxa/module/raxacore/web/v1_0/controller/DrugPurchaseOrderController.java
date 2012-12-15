@@ -17,6 +17,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestControlle
 import org.raxa.module.raxacore.DrugPurchaseOrder;
 import org.raxa.module.raxacore.DrugPurchaseOrderService;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 
 @Controller
+@Transactional
 @RequestMapping(value = "/rest/v1/raxacore/drugpurchaseorder")
 public class DrugPurchaseOrderController extends BaseRestController {
 	

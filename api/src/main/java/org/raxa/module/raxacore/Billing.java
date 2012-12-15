@@ -21,7 +21,7 @@ import org.openmrs.Provider;
 import org.openmrs.Patient;
 
 /**
- * PatientList stores the data needed to lists patients for registration, screener, etc.
+ * Billing stores the attributes of a bill 
  */
 public class Billing extends BaseOpenmrsMetadata implements Serializable {
 	
@@ -32,6 +32,10 @@ public class Billing extends BaseOpenmrsMetadata implements Serializable {
 	private Integer providerId;
 	
 	private Integer patientId;
+	
+	private Integer totalAmount;
+	
+	private Integer balance;
 	
 	private Provider provider;
 	
@@ -55,6 +59,22 @@ public class Billing extends BaseOpenmrsMetadata implements Serializable {
 	
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	
+	public Integer getTotalAmount() {
+		return totalAmount;
+	}
+	
+	public void setTotalAmount(Integer totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+	
+	public Integer getBalance() {
+		return balance;
+	}
+	
+	public void setBalance(Integer balance) {
+		this.balance = balance;
 	}
 	
 	public Integer getProviderId() {

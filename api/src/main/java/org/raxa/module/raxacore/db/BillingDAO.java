@@ -34,5 +34,9 @@ public interface BillingDAO {
 	
 	public Billing updateBill(Billing bill);
 	
+	public Billing getBill(int billId);
+	
 	public List<Billing> getAllBillsByProvider(Integer providerId);
+	
+	public List<Billing> getAllBillsByPatient(Integer patientId);
 }

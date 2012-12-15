@@ -59,6 +59,12 @@ public class BillingItemServiceImpl implements BillingItemService {
 		return dao.getBillingItemByUuid(uuid);
 	}
 	
+	public BillingItem getBillingItem(int billItemId)
+
+	{
+		return dao.getBillingItem(billItemId);
+	}
+	
 	public List<BillingItem> getAllBillingItems() {
 		return dao.getAllBillingItems();
 	}

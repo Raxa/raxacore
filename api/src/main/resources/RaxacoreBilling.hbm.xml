@@ -21,12 +21,15 @@
         <property name="retireReason"   type="java.lang.String"     column="retire_reason" length="255"/>
         <many-to-one name="changedBy"   class="org.openmrs.User"    column="changed_by"/>
         <property name="dateChanged"    type="java.util.Date"       column="date_changed" length="19"/>
-        <property name="providerId"     type="java.lang.Integer"    column="provider_id" insert="false" not-null="true" update="false" />
-        <property name="patientId"     type="java.lang.Integer"     column="patient_id" insert="false" not-null="true" update="false" />
+        <property name="providerId"     type="java.lang.Integer"    column="provider_id"              insert="false"
+             update="false" />
+        <property name="patientId"     type="java.lang.Integer"     column="patient_id"              insert="false"
+             update="false" />
         <many-to-one name="provider"   class="org.openmrs.Provider" column="provider_id"  />
         <many-to-one name="patient"   class="org.openmrs.Patient" column="patient_id"   />
             
-           
+           <property name="totalAmount"     type="java.lang.Integer"    column="total_amount"  />
+                      <property name="balance"     type="java.lang.Integer"    column="balance"  />
             
            
     </class>
