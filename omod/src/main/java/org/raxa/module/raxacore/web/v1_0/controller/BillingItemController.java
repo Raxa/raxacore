@@ -147,6 +147,7 @@ public class BillingItemController extends BaseRestController {
 		
 		return gson.toJson(obj);
 	}
+	
 	/**
 	 *Gets all billingItems and its adjustments given Bill Id  
 	 * @param query

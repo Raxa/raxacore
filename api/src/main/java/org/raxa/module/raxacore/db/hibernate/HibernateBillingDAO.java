@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Encounter;
 import org.openmrs.api.db.DAOException;
 import org.raxa.module.raxacore.Billing;
 import org.raxa.module.raxacore.db.BillingDAO;
@@ -113,4 +114,14 @@ public class HibernateBillingDAO implements BillingDAO {
 		bills.addAll(criteria.list());
 		return bills;
 	}
+	
+	@Transactional
+	public List<Encounter> getEncountersByPatientId(Integer patientId) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Encounter.class);
+		criteria.add(Restrictions.eq("patientId", patientId));
+		List<Encounter> bills = new ArrayList<Encounter>();
+		bills.addAll(criteria.list());
+		return bills;
+	}
+	
 }

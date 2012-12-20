@@ -26,14 +26,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface BillingItemService extends OpenmrsService {
 	
-	
 	BillingItem saveBillingItem(BillingItem item) throws DAOException; //saves a billingItem
 	
 	BillingItem getBillingItem(int billItemId) throws DAOException; //get billingitem by id 
 	
-	void deleteBillingItem(BillingItem item) throws DAOException;  //delete billing item
+	void deleteBillingItem(BillingItem item) throws DAOException; //delete billing item
 	
-	BillingItem getBillingItemByUuid(String uuid);  // get billing item by uuid
+	BillingItem getBillingItemByUuid(String uuid); // get billing item by uuid
 	
 	List<BillingItem> getAllBillingItems() throws DAOException; // get all billing items
 	

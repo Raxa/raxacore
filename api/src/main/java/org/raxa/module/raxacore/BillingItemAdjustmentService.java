@@ -25,8 +25,9 @@ import org.raxa.module.raxacore.db.DrugInventoryDAO;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface BillingItemAdjustmentService extends OpenmrsService {
-
+	
 	BillingItemAdjustment saveBillingItemAdjustment(BillingItemAdjustment adjustment) throws DAOException;
+	
 	/**
 	 * saves a billing adjustment
 	 * @param adjustment
@@ -34,6 +35,7 @@ public interface BillingItemAdjustmentService extends OpenmrsService {
 	 * @throws DAOException
 	 */
 	void deleteBillingItemAdjustment(BillingItemAdjustment adjustment) throws DAOException;
+	
 	/**
 	 * delete a billing adjustment
 	 * @param adjustment
@@ -41,6 +43,7 @@ public interface BillingItemAdjustmentService extends OpenmrsService {
 	 * @throws DAOException
 	 */
 	BillingItemAdjustment getBillingItemAdjustmentByUuid(String uuid);
+	
 	/**
 	 * get a billing adjustment by uuid
 	 * @param adjustment
@@ -66,6 +69,7 @@ public interface BillingItemAdjustmentService extends OpenmrsService {
 	 */
 	
 	BillingItemAdjustment updateBillingItemAdjustment(BillingItemAdjustment adjustment);
+	
 	/**
 	 *update  billing adjustment given id 
 	 * @param adjustment

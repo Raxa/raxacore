@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.api.context.Context;
 import org.raxa.module.raxacore.Billing;
@@ -84,5 +85,12 @@ public class BillingServiceImpl implements BillingService {
 	
 	public List<Billing> getAllBillsByPatient(Integer patientId) {
 		return dao.getAllBillsByPatient(patientId);
+	}
+	
+	@Override
+	public List<Encounter> getEncountersByPatientId(Integer patientId) {
+		// TODO Auto-generated method stub
+		return dao.getEncountersByPatientId(patientId);
+		
 	}
 }

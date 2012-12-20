@@ -10,7 +10,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.openmrs.Encounter;
 import org.openmrs.Provider;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestUtil;
@@ -44,18 +47,23 @@ public class BillingController extends BaseRestController {
 	
 	BillingService service;
 	
+	EncounterService serve;
+	
 	Gson gson = new GsonBuilder().serializeNulls().create();
 	
 	private static final String[] REF = { "uuid", "patientId", "status", "providerId", "name", "description", "billId",
-	        "dateCreated", "balance", "totalAmount" };
+	        "dateCreated", "balance", "totalAmount", "encounterId", "category", "item_name", "quantity", "price",
+	        "doscountReason" };
 	
 	public void initBillingController() {
 		service = Context.getService(BillingService.class);
+		serve = Context.getEncounterService();
 	}
 	
 	private String getResourceVersion() {
 		return "1.0";
 	}
+	
 	/**
 	 * 
 	 * @param post
@@ -135,7 +143,6 @@ public class BillingController extends BaseRestController {
 		return gson.toJson(obj);
 	}
 	
-	
 	/**
 	 * 
 	 * @param query
@@ -166,6 +173,55 @@ public class BillingController extends BaseRestController {
 			
 			results.add(obj);
 		}
+		return gson.toJson(new SimpleObject().add("results", results));
+	}
+	
+	/**
+	 * 
+	 * @param query
+	 * @param request
+	 * @return
+	 * @throws ResponseException
+	 gets all encounters  by patientID
+	 */
+	@RequestMapping(method = RequestMethod.GET, params = "v")
+	@WSDoc("Gets All Encounters  by patientId")
+	@ResponseBody()
+	public String getEncountersByPatientId(@RequestParam("v") Integer query, HttpServletRequest request)
+	        throws ResponseException {
+		initBillingController();
+		
+		List<Encounter> all = serve.getEncountersByPatientId(query);
+		ArrayList results = new ArrayList();
+		for (Encounter patientList : all) {
+			SimpleObject obj = new SimpleObject();
+			//	obj.add("uuid", patientList.getUuid());
+			obj.add("item_name", "EncounterId:" + patientList.getEncounterId().toString());
+			//	obj.add("providerId", patientList.getProvidersByRoles());
+			obj.add("discountReason", patientList.getDateCreated());
+			
+			if (patientList.getEncounterType().getEncounterTypeId().toString().compareTo("1") == 0) {
+				obj.add("category", "ADULTINITIAL");
+			}
+			if (patientList.getEncounterType().getEncounterTypeId().toString().compareTo("2") == 0) {
+				obj.add("category", "ADULTRETURN");
+			}
+
+			else if (patientList.getEncounterType().getEncounterTypeId().toString().compareTo("5") == 0) {
+				obj.add("category", "OUTPATIENT");
+			} else if (patientList.getEncounterType().getEncounterTypeId().toString().compareTo("6") == 0) {
+				obj.add("category", "REGISTRATION");
+			} else if (patientList.getEncounterType().getEncounterTypeId().toString().compareTo("7") == 0) {
+				obj.add("category", "PRESCRIPTION");
+			}
+			
+			obj.add("quantity", "1");
+			obj.add("price", "500");
+			
+			results.add(obj);
+			
+		}
+		
 		return gson.toJson(new SimpleObject().add("results", results));
 	}
 	

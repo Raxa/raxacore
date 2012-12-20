@@ -17,6 +17,8 @@ package org.raxa.module.raxacore.db;
  */
 
 import java.util.List;
+
+import org.openmrs.Encounter;
 import org.openmrs.api.db.DAOException;
 import org.raxa.module.raxacore.Billing;
 
@@ -39,4 +41,7 @@ public interface BillingDAO {
 	public List<Billing> getAllBillsByProvider(Integer providerId);
 	
 	public List<Billing> getAllBillsByPatient(Integer patientId);
+	
+	public List<Encounter> getEncountersByPatientId(Integer patientId);
+	
 }
