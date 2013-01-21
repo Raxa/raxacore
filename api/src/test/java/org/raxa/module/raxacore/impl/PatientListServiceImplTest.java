@@ -271,28 +271,25 @@ public class PatientListServiceImplTest extends BaseModuleContextSensitiveTest {
 		mainList.setName("GetPatientsTestList");
 		notInList1.setName("TestPatientsNotInList");
 		notInList2.setName("TestPatientsNotInList2");
-		notInList1.setSearchQuery("?encounterType=61ae96f4-6afe-4351-b6f8-cd4fc383cce1"
-		        + "&startDate=2000-01-01T00:00:00&endDate=2008-08-16T00:00:00");
-		notInList2.setSearchQuery("?encounterType=61ae96f4-6afe-4351-b6f8-cd4fc383cce1"
-		        + "&startDate=2008-08-16T00:00:00&endDate=2012-01-02T00:00:00");
+		notInList1.setSearchQuery("?encounterType=61ae96f4-6afe-4351-b6f8-cd4fc383ctyy"
+		        + "&startDate=2000-01-01T00:00:00&endDate=2004-08-16T00:00:00");
+		notInList2.setSearchQuery("?encounterType=61ae96f4-6afe-4351-b6f8-cd4fc383ctyy"
+		        + "&startDate=2004-08-16T00:00:00&endDate=2009-01-02T00:00:00");
 		s.savePatientList(notInList1);
 		s.savePatientList(notInList2);
-		mainList.setSearchQuery("?encounterType=61ae96f4-6afe-4351-b6f8-cd4fc383cce1"
-		        + "&startDate=2000-01-01T00:00:00&endDate=2012-01-02T00:00:00&notInList=" + notInList1.getUuid() + ","
+		mainList.setSearchQuery("?encounterType=61ae96f4-6afe-4351-b6f8-cd4fc383ctyr"
+		        + "&startDate=2000-01-01T00:00:00&endDate=2009-01-02T00:00:00&notInList=" + notInList1.getUuid() + ","
 		        + notInList2.getUuid());
 		List<Encounter> encs = s.getEncountersInPatientList(mainList);
 		//now checking that notInList works
-		assertEquals(encs.size(), 0);
+		assertEquals(encs.size(), 1);
+		//assertEquals(s.getPatientsInPatientList(mainList).get(0).getUuid())
+		System.out.println(s.getPatientsInPatientList(mainList).get(0).getUuid());
 	}
 	
 	/**
 	 * Test notInList according to Patient of getEncountersInPatientList method, of class
 	 * PatientListServiceImpl.
-	 * All 3 lists have the same start and end dates.
-	 * notInList1 has 1 encounter (type 2) with Patient #7.
-	 * Without the notInList query, mainList would have had 2 encounters of type 1 with Patient #7.
-	 * Because of notInList, mainList has all encounters of type 1 which are not associated with Patient #7.
-	 * Since no such encounter exists in the dataset, the value should be 0.
 	 */
 	@Test
 	public void testGetEncountersInPatientListShouldNotReturnPatientsAccordingToNotInList() {
@@ -300,14 +297,14 @@ public class PatientListServiceImplTest extends BaseModuleContextSensitiveTest {
 		PatientList notInList1 = new PatientList();
 		mainList.setName("GetPatientsTestList");
 		notInList1.setName("TestPatientsNotInList");
-		notInList1.setSearchQuery("?encounterType=07000be2-26b6-4cce-8b40-866d8435b613"
+		notInList1.setSearchQuery("?encounterType=61ae96f4-6afe-4351-b6f8-cd4fc383ctyy"
 		        + "&startDate=2000-01-01T00:00:00&endDate=2012-01-02T00:00:00");
 		s.savePatientList(notInList1);
-		mainList.setSearchQuery("?encounterType=61ae96f4-6afe-4351-b6f8-cd4fc383cce1"
+		mainList.setSearchQuery("?encounterType=61ae96f4-6afe-4351-b6f8-cd4fc383ctyr"
 		        + "&startDate=2000-01-01T00:00:00&endDate=2012-01-02T00:00:00&notInList=" + notInList1.getUuid());
 		List<Encounter> encs = s.getEncountersInPatientList(mainList);
 		//now checking that notInList works
-		assertEquals(encs.size(), 0);
+		assertEquals(encs.size(), 2);
 	}
 	
 	/**
@@ -348,6 +345,21 @@ public class PatientListServiceImplTest extends BaseModuleContextSensitiveTest {
 		p.setName("GetPatientsTestList");
 		p.setSearchQuery("?encounterType=61ae96f4-6afe-4351-b6f8-cd4fc383ctyr"
 		        + "&provider=3effc802-12dd-4539-87f6-4065ca8e992c");
+		List<Encounter> encs = s.getEncountersInPatientList(p);
+		//testing encounterType
+		
+		assertEquals(encs.size(), 1);
+	}
+	
+	/**
+	 * Test of GetEncountersInPatientList method, of class PatientListServiceImpl given provider uuid.
+	 */
+	@Test
+	public void testGetEncountersInPatientListShouldFilterDrugOrders() {
+		PatientList p = new PatientList();
+		p.setCreator(new User());
+		p.setName("GetPatientsTestList");
+		p.setSearchQuery("?encounterType=61ae96f4-6afe-4351-b6f8-cd4fc383ctyr" + "&containsOrderType=drugOrder");
 		List<Encounter> encs = s.getEncountersInPatientList(p);
 		//testing encounterType
 		

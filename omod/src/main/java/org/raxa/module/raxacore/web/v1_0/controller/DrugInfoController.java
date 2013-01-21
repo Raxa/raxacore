@@ -152,6 +152,15 @@ public class DrugInfoController extends BaseRestController {
 		if (obj.get("cost") != null) {
 			drugInfo.setCost(Double.parseDouble(obj.get("cost").toString()));
 		}
+		if (obj.get("reorderLevel") != null) {
+			drugInfo.setReorderLevel(Integer.parseInt(obj.get("reorderLevel").toString()));
+		}
+		if (obj.get("supplier") != null) {
+			drugInfo.setSupplier((obj.get("supplier").toString()));
+		}
+		if (obj.get("manufacturer") != null) {
+			drugInfo.setManufacturer((obj.get("manufacturer").toString()));
+		}
 		if (obj.get("shortName") != null) {
 			drugInfo.setShortName(obj.get("shortName").toString());
 		}
@@ -175,7 +184,10 @@ public class DrugInfoController extends BaseRestController {
 		obj.add("description", drugInfo.getDescription());
 		obj.add("shortName", drugInfo.getShortName());
 		obj.add("brandName", drugInfo.getBrandName());
+		obj.add("supplier", drugInfo.getSupplier());
+		obj.add("manufacturer", drugInfo.getManufacturer());
 		obj.add("price", drugInfo.getPrice());
+		obj.add("reorderLevel", drugInfo.getReorderLevel());
 		obj.add("cost", drugInfo.getCost());
 		return obj;
 	}

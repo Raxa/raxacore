@@ -16,12 +16,14 @@ package org.raxa.module.raxacore.web.v1_0.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Encounter;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.test.Util;
@@ -76,12 +78,12 @@ public class PatientListControllerTest extends BaseModuleContextSensitiveTest {
 	public void getPatientsInPatientList_shouldGetPatientsInPatientList() throws Exception {
 		HashMap<String, String> hashMap = new HashMap<String, String>();
 		hashMap.put("encounterType", "61ae96f4-6afe-4351-b6f8-cd4fc383cce1");
-		hashMap.put("startDate", "2008-01-01T00:00:00.0");
+		hashMap.put("startDate", "2000-01-01T00:00:00.0");
 		hashMap.put("endDate", "2012-01-02T00:00:00.0");
 		String result = controller.getPatientsInPatientList(hashMap, request);
 		SimpleObject patientList = SimpleObject.parseJson(result);
 		Assert.assertNotNull(result);
-		Assert.assertEquals(2, ((ArrayList) patientList.get("patients")).size());
+		Assert.assertEquals(3, ((ArrayList) patientList.get("patients")).size());
 	}
 	
 	/**
@@ -112,6 +114,22 @@ public class PatientListControllerTest extends BaseModuleContextSensitiveTest {
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		Object patientList = controller.createNewPatientList(post, request, response);
 		Assert.assertEquals(before + 1, service.getAllPatientList(false).size());
+	}
+	
+	@Test
+	public void getPatientsInPatientListV2_shouldGetPatients() throws Exception {
+		HashMap<String, String> hashMap = new HashMap<String, String>();
+		hashMap.put("encounterType", "61ae96f4-6afe-4351-b6f8-cd4fc383cce1");
+		hashMap.put("startDate", "2000-01-01T00:00:00");
+		hashMap.put("endDate", "2007-01-02T00:00:00");
+		hashMap.put("excludeEncounterType", "07000be2-26b6-4cce-8b40-866d8435b613");
+		String result = controller.getPatientsInPatientListV2(hashMap, request);
+		List patientList = (ArrayList) SimpleObject.parseJson(result).get("patients");
+		//now checking that notInList works
+		for (int i = 0; i < patientList.size(); i++) {
+			System.out.println(patientList.get(i));
+		}
+		Assert.assertEquals(1, patientList.size());
 	}
 	
 	/**
