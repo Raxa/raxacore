@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.raxa.module.raxacore.web.v1_0.controller;
 
 import java.util.ArrayList;
@@ -24,10 +20,6 @@ import org.raxa.module.raxacore.DrugInfoService;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-/**
- *
- * @author joman
- */
 public class RaxaDrugControllerTest extends BaseModuleContextSensitiveTest {
 	
 	private static final String TEST_DATA_PATH = "org/raxa/module/raxacore/include/";

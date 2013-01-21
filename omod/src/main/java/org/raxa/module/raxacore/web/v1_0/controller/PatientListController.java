@@ -430,6 +430,141 @@ public class PatientListController extends BaseRestController {
 	
 	//</editor-fold>
 	
+	//<editor-fold defaultstate="collapsed" desc="GET - RETURN PATIENTS ONE CALL">
+	/**
+	 * This is the on-the-fly generated patient list, by passing the searchQuery
+	 * as part of the resource URL as params. encounterType is required param.
+	 * Gives the FULL rep for the Patient list resource.
+	 * Now optimized into one call
+	 * 
+	 * @param params
+	 * @param request
+	 * @return
+	 * @throws ResponseException 
+	 */
+	@RequestMapping(value = "/optimized", method = RequestMethod.GET, params = "encounterType")
+	@WSDoc("Gets Patients Without Saving the Patient list")
+	@ResponseBody()
+	public String getPatientsInPatientListV2(@RequestParam Map<String, String> params, HttpServletRequest request)
+	        throws ResponseException {
+		initPatientListController();
+		//?encounterType=<>&startDate=<>&endDate=<>&excludeEncounterType=<>....
+		//placeholder until service code is re-written
+		String inListQuery = ("?encounterType=" + params.get("encounterType") + "&startDate=" + params.get("startDate")
+		        + "&endDate=" + params.get("endDate"));
+		if (params.get("patient") != null) {
+			inListQuery += "&patient=" + params.get("patient");
+		}
+		if (params.get("provider") != null) {
+			inListQuery += "&provider=" + params.get("provider");
+		}
+		if (params.get("location") != null) {
+			inListQuery += "&location=" + params.get("location");
+		}
+		if (params.get("containsOrderType") != null) {
+			inListQuery += "&containsOrderType=" + params.get("containsOrderType");
+		}
+		String notInListQuery = ("?encounterType=" + params.get("excludeEncounterType") + "&startDate="
+		        + params.get("startDate") + "&endDate=" + params.get("endDate"));
+		if (params.get("patient") != null) {
+			notInListQuery += "&patient=" + params.get("patient");
+		}
+		if (params.get("provider") != null) {
+			notInListQuery += "&provider=" + params.get("provider");
+		}
+		if (params.get("location") != null) {
+			notInListQuery += "&location=" + params.get("location");
+		}
+		if (params.get("containsOrderType") != null) {
+			notInListQuery += "&containsOrderType=" + params.get("containsOrderType");
+		}
+		PatientList inList = new PatientList();
+		inList.setSearchQuery(inListQuery);
+		inList = service.savePatientList(inList);
+		
+		PatientList notInList = new PatientList();
+		notInList.setSearchQuery(notInListQuery);
+		notInList = service.savePatientList(notInList);
+		
+		String finalQuery = ("?encounterType=" + params.get("encounterType") + "&inList=" + inList.getUuid() + "&notInList=" + notInList
+		        .getUuid());
+		
+		PatientList patientList = new PatientList();
+		patientList.setSearchQuery(finalQuery);
+		SimpleObject obj = new SimpleObject();
+		obj.add("uuid", patientList.getUuid());
+		obj.add("name", patientList.getName());
+		obj.add("description", patientList.getDescription());
+		obj.add("searchQuery", patientList.getSearchQuery());
+		ArrayList patients = new ArrayList();
+		List<Patient> patientsInPatientList = service.getPatientsInPatientList(patientList);
+		List<Encounter> encountersInPatientList = service.getEncountersInPatientList(patientList);
+		
+		for (Patient p : patientsInPatientList) {
+			SimpleObject patient = new SimpleObject();
+			patient.add("uuid", p.getUuid());
+			SimpleObject person = new SimpleObject();
+			person.add("uuid", p.getUuid());
+			person.add("display", p.getPersonName().getFullName());
+			SimpleObject name = new SimpleObject();
+			name.add("display", p.getPersonName().getFullName());
+			person.add("preferredName", name);
+			person.add("gender", p.getGender());
+			person.add("age", p.getAge());
+			patient.add("person", person);
+			ArrayList identifiers = new ArrayList();
+			SimpleObject id = new SimpleObject();
+			id.add("identifier", p.getPatientIdentifier().getIdentifier());
+			identifiers.add(id);
+			patient.add("identifiers", identifiers);
+			//patient.add("identifiers", p.getActiveIdentifiers());
+			ArrayList encounters = new ArrayList();
+			//TODO: refactor this so we don't have to go through each time
+			for (Encounter e : encountersInPatientList) {
+				if (e.getPatient().equals(p)) {
+					SimpleObject encounter = new SimpleObject();
+					encounter.add("uuid", e.getUuid());
+					encounter.add("display", e.getEncounterType().getName() + " - " + e.getEncounterDatetime());
+					encounter.add("encounterType", e.getEncounterType().getUuid());
+					encounter.add("encounterDatetime", df.format(e.getEncounterDatetime()));
+					if (e.getProvider() != null) {
+						encounter.add("provider", e.getProvider().getUuid());
+					} else {
+						encounter.add("provider", null);
+					}
+					if (params.get("containsOrderType") != null) {
+						encounter.add("obs", null);
+					} else {
+						ArrayList obsArray = new ArrayList();
+						Set<Obs> obsAll = e.getObs();
+						for (Obs o : obsAll) {
+							SimpleObject obs = new SimpleObject();
+							obs.add("uuid", o.getUuid());
+							obs.add("display", o.getConcept().getName().getName() + " = "
+							        + o.getValueAsString(request.getLocale()));
+							obs.add("obsDatetime", df.format(o.getObsDatetime()));
+							obs.add("value", o.getValueAsString(request.getLocale()));
+							obs.add("comment", o.getComment());
+							if (o.getOrder() != null) {
+								obs.add("order", o.getOrder().getUuid());
+							} else {
+								obs.add("order", null);
+							}
+							obsArray.add(obs);
+						}
+						encounter.add("obs", obsArray);
+					}
+					encounters.add(encounter);
+				}
+			}
+			patient.add("encounters", encounters);
+			patients.add(patient);
+		}
+		obj.add("patients", patients);
+		obj.add("resourceVersion", getResourceVersion());
+		return gson.toJson(obj);
+	}
+	
 	//<editor-fold defaultstate="collapsed" desc="DELETE - Retire PatientList">
 	/**
 	 * Retires the patient list resource by making a DELETE call with the '!purge' param

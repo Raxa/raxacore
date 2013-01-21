@@ -20,10 +20,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
+import org.openmrs.Order;
 import org.openmrs.User;
 import org.openmrs.Provider;
 import org.openmrs.Person;
@@ -144,16 +147,22 @@ public class PatientListServiceImpl implements PatientListService {
 		Date startDate = null;
 		Date endDate = null;
 		Provider provid = null;
+		Patient patient = null;
 		String uuid = null;
 		//the return value can only choose encounters from this list (if not null)
 		List<Encounter> inListEncounters = null;
 		//the return value can not contain any patients from this list
 		List<Patient> notInListPatients = new ArrayList<Patient>();
+		List<Encounter> notInListEncounters = new ArrayList<Encounter>();
+		Location location = null;
+		String containsOrderType = "";
 		String[] queryFields = query.split("&");
 		//if we have an encountertype in our search query, set it
 		for (int i = 0; i < queryFields.length; i++) {
 			if (queryFields[i].indexOf("encounterType=") != -1) {
 				encType = Context.getEncounterService().getEncounterTypeByUuid(queryFields[i].substring(14));
+			} else if (queryFields[i].indexOf("location=") != -1) {
+				location = Context.getLocationService().getLocationByUuid(queryFields[i].substring(9));
 			} else if (queryFields[i].indexOf("startDate=") != -1) {
 				startDate = getDateFromString(queryFields[i].substring(10));
 			} else if (queryFields[i].indexOf("endDate=") != -1) {
@@ -169,10 +178,16 @@ public class PatientListServiceImpl implements PatientListService {
 				String[] notInListUuids = queryFields[i].substring(10).split(",");
 				for (int k = 0; k < notInListUuids.length; k++) {
 					notInListPatients.addAll(getPatientsInPatientList(getPatientListByUuid(notInListUuids[k])));
+					notInListEncounters.addAll(getEncountersInPatientList(getPatientListByUuid(notInListUuids[k])));
 				}
 			} else if (queryFields[i].indexOf("provider=") != -1) {
 				uuid = queryFields[i].substring(9);
 				provid = Context.getProviderService().getProviderByUuid(uuid);
+			} else if (queryFields[i].indexOf("patient=") != -1) {
+				uuid = queryFields[i].substring(8);
+				patient = Context.getPatientService().getPatientByUuid(uuid);
+			} else if (queryFields[i].indexOf("containsOrderType=") != -1) {
+				containsOrderType = queryFields[i].substring(18);
 			}
 		}
 		List<EncounterType> encTypes = new ArrayList<EncounterType>();
@@ -180,29 +195,79 @@ public class PatientListServiceImpl implements PatientListService {
 		List<Encounter> encs = new ArrayList<Encounter>();
 		encTypes.add(encType);
 		provids.add(provid);
-		if (uuid != null) {
-			encs = Context.getEncounterService().getEncounters(null, null, startDate, endDate, null, encTypes, provids,
-			    null, null, Boolean.FALSE);
-		} else {
-			encs = Context.getEncounterService().getEncounters(null, null, startDate, endDate, null, encTypes, null, null,
-			    null, Boolean.FALSE);
-		}
+		//if we give inList, start with that list and remove encounters
 		if (inListEncounters != null) {
+			encs = inListEncounters;
 			Iterator<Encounter> iter = encs.iterator();
-			//if encounter is not in inListEncounters, remove it
 			while (iter.hasNext()) {
 				Encounter currEnc = iter.next();
-				if (!inListEncounters.contains(currEnc)) {
+				if ((startDate != null && currEnc.getEncounterDatetime().before(startDate))
+				        || (endDate != null && currEnc.getEncounterDatetime().after(endDate))
+				        || (encType != null && !currEnc.getEncounterType().equals(encType))
+				        || (patient != null && !currEnc.getPatient().equals(patient))) {
 					iter.remove();
+				} else if (provid != null) {
+					Iterator<Set<Provider>> providerIter = currEnc.getProvidersByRoles().values().iterator();
+					boolean hasProvider = false;
+					while (providerIter.hasNext() && !hasProvider) {
+						Set<Provider> providerEncounters = providerIter.next();
+						if (providerEncounters.contains(provid)) {
+							hasProvider = true;
+						}
+					}
+					if (!hasProvider) {
+						iter.remove();
+					}
 				}
 			}
 		}
+		//otherwise, make an entirely new list
+		else {
+			if (uuid != null) {
+				encs = Context.getEncounterService().getEncounters(patient, location, startDate, endDate, null, encTypes,
+				    provids, null, null, Boolean.FALSE);
+			} else {
+				encs = Context.getEncounterService().getEncounters(patient, location, startDate, endDate, null, encTypes,
+				    null, null, null, Boolean.FALSE);
+			}
+		}
+		//refactor this to hash map so double loop is not required
 		if (notInListPatients != null) {
 			Iterator<Encounter> iter = encs.iterator();
+			Iterator<Encounter> iter2;
 			//if patient is in notInListPatients, remove the encounter
 			while (iter.hasNext()) {
 				Encounter currEnc = iter.next();
+				//if patient already has encounter, check the dates to see if he should be removed
 				if (notInListPatients.contains(currEnc.getPatient())) {
+					iter2 = notInListEncounters.iterator();
+					boolean removed = false;
+					while (iter2.hasNext() && !removed) {
+						Encounter currEnc2 = iter2.next();
+						if (currEnc2.getPatient().equals(currEnc.getPatient())
+						        && currEnc2.getEncounterDatetime().after(currEnc.getEncounterDatetime())) {
+							iter.remove();
+							removed = true;
+						}
+					}
+				}
+			}
+		}
+		if (containsOrderType.equals("drugOrder")) {
+			boolean shouldRemove;
+			Iterator<Encounter> iter = encs.iterator();
+			while (iter.hasNext()) {
+				shouldRemove = true;
+				Encounter currEnc = iter.next();
+				Iterator<Order> orderIter = currEnc.getOrders().iterator();
+				while (orderIter.hasNext()) {
+					Order o = orderIter.next();
+					if (o.isDrugOrder()) {
+						shouldRemove = false;
+						break;
+					}
+				}
+				if (shouldRemove) {
 					iter.remove();
 				}
 			}

@@ -203,6 +203,7 @@ public class RaxaDrugController extends BaseRestController {
 		if (drug.getDosageForm() != null) {
 			obj.add("dosageForm", drug.getDosageForm().getName().getName());
 		}
+		obj.add("strength", drug.getDoseStrength());
 		obj.add("units", drug.getUnits());
 		obj.add("combination", drug.getCombination());
 		obj.add("concept", drug.getConcept().getUuid());
