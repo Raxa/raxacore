@@ -39,6 +39,12 @@ public class DrugInfo extends BaseOpenmrsMetadata implements Serializable {
 	
 	private String brandName;
 	
+	private String supplier;
+	
+	private String manufacturer;
+	
+	private Integer reorderLevel;
+	
 	private String note;
 	
 	public DrugInfo() {
@@ -197,5 +203,47 @@ public class DrugInfo extends BaseOpenmrsMetadata implements Serializable {
 	 */
 	public void setBrandName(String brandName) {
 		this.brandName = brandName;
+	}
+	
+	/**
+	 * @return the supplier
+	 */
+	public String getSupplier() {
+		return supplier;
+	}
+	
+	/**
+	 * @param supplier the supplier to set
+	 */
+	public void setSupplier(String supplier) {
+		this.supplier = supplier;
+	}
+	
+	/**
+	 * @return the manufacturer
+	 */
+	public String getManufacturer() {
+		return manufacturer;
+	}
+	
+	/**
+	 * @param manufacturer the manufacturer to set
+	 */
+	public void setManufacturer(String manufacturer) {
+		this.manufacturer = manufacturer;
+	}
+	
+	/**
+	 * @return the reorderLevel
+	 */
+	public Integer getReorderLevel() {
+		return reorderLevel;
+	}
+	
+	/**
+	 * @param reorderLevel the reorderLevel to set
+	 */
+	public void setReorderLevel(Integer reorderLevel) {
+		this.reorderLevel = reorderLevel;
 	}
 }

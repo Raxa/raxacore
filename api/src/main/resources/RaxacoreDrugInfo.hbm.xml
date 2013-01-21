@@ -16,6 +16,9 @@
         <property name="description"  type="java.lang.String"  column="description" length="2000"/>
         <property name="shortName"    type="java.lang.String"  column="short_name" length="255"/>
         <property name="brandName"    type="java.lang.String"  column="brand_name" length="255"/>
+        <property name="supplier"     type="java.lang.String"  column="supplier" length="255"/>
+        <property name="manufacturer" type="java.lang.String"  column="manufacturer" length="255"/>
+        <property name="reorderLevel" type="java.lang.Integer" column="reorder_level"/>
         <property name="uuid"         type="java.lang.String"  column="uuid" length="38" not-null="true" unique="true"/>
         <many-to-one name="creator"   class="org.openmrs.User" column="creator" not-null="true"/>
         <property name="dateCreated"  type="java.util.Date"    column="date_created" not-null="true" length="19"/>
