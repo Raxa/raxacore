@@ -175,6 +175,9 @@ public class RaxaPatientController extends BaseRestController {
 			if (addressObjects.get(i).get("cityVillage") != null) {
 				pa.setCityVillage(addressObjects.get(i).get("cityVillage").toString());
 			}
+			if (addressObjects.get(i).get("countyDistrict") != null) {
+				pa.setCountyDistrict(addressObjects.get(i).get("countyDistrict").toString());
+			}
 			if (addressObjects.get(i).get("stateProvince") != null) {
 				pa.setStateProvince(addressObjects.get(i).get("stateProvince").toString());
 			}
