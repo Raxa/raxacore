@@ -20,6 +20,7 @@
     <require_version>${openMRSVersion}</require_version>
     <require_modules>
         <require_module>org.openmrs.module.webservices.rest</require_module>
+        <require_module>org.openmrs.module.idgen</require_module>
     </require_modules>
     <!-- Extensions -->
 	
@@ -105,14 +106,4 @@
         <lang>en</lang>
         <file>messages.properties</file>
     </messages>
-
-    <!-- Hibernate files -->
-    <mappingFiles>
-        RaxacorePatientList.hbm.xml
-        RaxacoreRaxaAlert.hbm.xml
-        RaxacoreDrugGroup.hbm.xml
-        RaxacoreDrugPurchaseOrder.hbm.xml
-        RaxacoreDrugInventory.hbm.xml
-        RaxacoreDrugInfo.hbm.xml
-    </mappingFiles>
 </module>
