@@ -4,12 +4,5 @@
         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
-    <session-factory>
-        <mapping resource="RaxacorePatientList.hbm.xml" />
-        <mapping resource="RaxacoreRaxaAlert.hbm.xml" />
-        <mapping resource="RaxacoreDrugGroup.hbm.xml" />
-        <mapping resource="RaxacoreDrugInfo.hbm.xml" />
-        <mapping resource="RaxacoreDrugPurchaseOrder.hbm.xml" />
-        <mapping resource="RaxacoreDrugInventory.hbm.xml" /> 
-    </session-factory>
+    <session-factory></session-factory>
 </hibernate-configuration>
