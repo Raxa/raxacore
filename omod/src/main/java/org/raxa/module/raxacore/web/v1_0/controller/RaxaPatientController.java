@@ -15,9 +15,9 @@ package org.raxa.module.raxacore.web.v1_0.controller;
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+
 import org.openmrs.*;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
@@ -28,13 +28,15 @@ import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,15 +50,83 @@ public class RaxaPatientController extends BaseRestController {
 	
 	PatientService service;
 	
-	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-	
-	Gson gson = new GsonBuilder().serializeNulls().create();
-	
 	private static final String[] REQUIREDFIELDS = { "names", "gender" };
 	
-
 	public void initPatientController() {
 		service = Context.getPatientService();
+	}
+	
+	/**
+	 * Create new patient by POST'ing at least name and gender property in the
+	 * request body.
+	 *
+	 * @param post the body of the POST request
+	 * @param request
+	 * @param response
+	 * @return 201 response status and Drug object
+	 * @throws ResponseException
+	 */
+	@RequestMapping(method = RequestMethod.POST)
+	@WSDoc("Save New Patient")
+	@ResponseBody
+	public Object createNewPatient(@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
+	        throws ResponseException {
+		initPatientController();
+		validatePost(post);
+		Person person = new Person();
+		addNames(person, post);
+		person.setGender(post.get("gender").toString());
+		if (post.get("birthdate") != null) {
+			if (post.get("time") != null) {
+				String[] supportedFormats = { "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss.SSS",
+				        "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
+				for (int i = 0; i < supportedFormats.length; i++) {
+					try {
+						Date date = new SimpleDateFormat(supportedFormats[i]).parse(post.get("time").toString());
+						person.setBirthdate(date);
+						person.setBirthdateEstimated(Boolean.FALSE);
+					}
+					catch (Exception ex) {}
+				}
+			}
+		} else if (post.get("age") != null) {
+			person.setBirthdateFromAge(Integer.parseInt(post.get("age").toString()), new Date());
+			person.setBirthdateEstimated(Boolean.TRUE);
+		}
+		
+		LocationService locationService = Context.getLocationService();
+		List<Location> allLocations = locationService.getAllLocations();
+		String center = ((LinkedHashMap) post.get("centerID")).get("name").toString();
+		
+		List<LocationAttributeType> allLocationAttributeTypes = locationService.getAllLocationAttributeTypes();
+		LocationAttributeType identifierSourceName = null;
+		for (LocationAttributeType attributeType : allLocationAttributeTypes) {
+			if (attributeType.getName().equals("IdentifierSourceName")) {
+				identifierSourceName = attributeType;
+			}
+		}
+		
+		for (Location location : allLocations) {
+			Collection<LocationAttribute> activeAttributes = location.getActiveAttributes();
+			for (LocationAttribute attribute : activeAttributes) {
+				if (attribute.getAttributeType().equals(identifierSourceName)
+				        && attribute.getValue().toString().equals(center)) {
+					PersonAttribute locationAttribute = new PersonAttribute();
+					locationAttribute.setAttributeType(Context.getPersonService().getPersonAttributeTypeByName(
+					    "Health Center"));
+					locationAttribute.setValue(location.getId().toString());
+					person.getAttributes().add(locationAttribute);
+				}
+			}
+		}
+		
+		if (post.get("attributes") != null) {
+			addAttributes(person, post);
+		}
+		if (post.get("addresses") != null) {
+			addAddresses(person, post);
+		}
+		return RestUtil.created(response, getPatientAsSimpleObject(savePatient(person, post)));
 	}
 	
 	private boolean validatePost(SimpleObject post) throws ResponseException {
@@ -73,13 +143,6 @@ public class RaxaPatientController extends BaseRestController {
 			                            "Current user needs Health Center attribute") {};
 		}
 		return true;
-	}
-	
-	/**
-	 * Returns the Resource Version
-	 */
-	private String getResourceVersion() {
-		return "1.0";
 	}
 	
 	/**
@@ -167,8 +230,8 @@ public class RaxaPatientController extends BaseRestController {
 		return p;
 	}
 	
-	private Patient savePatient(Person person, SimpleObject post, Location location) {
-
+	private Patient savePatient(Person person, SimpleObject post) {
+		
 		Patient patient = new Patient(person);
 		
 		IdentifierSourceService identifierSourceService = Context.getService(IdentifierSourceService.class);
@@ -178,7 +241,7 @@ public class RaxaPatientController extends BaseRestController {
 			if (identifierSource.getName().equals(center)) {
 				String identifier = identifierSourceService.generateIdentifier(identifierSource, "Generated by me");
 				PatientIdentifierType identifierType = identifierSource.getIdentifierType();
-				PatientIdentifier patientIdentifier = new PatientIdentifier(identifier, identifierType, location);
+				PatientIdentifier patientIdentifier = new PatientIdentifier(identifier, identifierType, null);
 				patientIdentifier.setPreferred(true);
 				patient.addIdentifier(patientIdentifier);
 				break;
@@ -188,94 +251,9 @@ public class RaxaPatientController extends BaseRestController {
 	}
 	
 	/**
-	 * Create new patient by POST'ing at least name and gender property in the
-	 * request body.
-	 *
-	 * @param post the body of the POST request
-	 * @param request
-	 * @param response
-	 * @return 201 response status and Drug object
-	 * @throws ResponseException
-	 */
-	@RequestMapping(method = RequestMethod.POST)
-	@WSDoc("Save New Patient")
-	@ResponseBody
-	public Object createNewPatient(@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
-	        throws ResponseException {
-		initPatientController();
-		validatePost(post);
-		Person person = new Person();
-		addNames(person, post);
-		person.setGender(post.get("gender").toString());
-		if (post.get("birthdate") != null) {
-			if (post.get("time") != null) {
-				String[] supportedFormats = { "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss.SSS",
-				        "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
-				for (int i = 0; i < supportedFormats.length; i++) {
-					try {
-						Date date = new SimpleDateFormat(supportedFormats[i]).parse(post.get("time").toString());
-						person.setBirthdate(date);
-						person.setBirthdateEstimated(Boolean.FALSE);
-					}
-					catch (Exception ex) {}
-				}
-			}
-		} else if (post.get("age") != null) {
-			person.setBirthdateFromAge(Integer.parseInt(post.get("age").toString()), new Date());
-			person.setBirthdateEstimated(Boolean.TRUE);
-		}
-		//Location location = Context.getLocationService().getLocationByUuid(post.get("location").toString());
-		Integer userLocation = Integer.parseInt(Context.getPersonService().getPersonByUuid(
-		    Context.getAuthenticatedUser().getPerson().getUuid()).getAttribute("Health Center").getValue());
-		Location location = Context.getLocationService().getLocation(userLocation);
-		PersonAttribute locationAttribute = new PersonAttribute();
-		locationAttribute.setAttributeType(Context.getPersonService().getPersonAttributeTypeByName("Health Center"));
-		locationAttribute.setValue(location.getId().toString());
-		person.addAttribute(locationAttribute);
-		if (post.get("attributes") != null) {
-			addAttributes(person, post);
-		}
-		if (post.get("addresses") != null) {
-			addAddresses(person, post);
-		}
-		return RestUtil.created(response, getPatientAsSimpleObject(savePatient(person, post, location)));
-	}
-	
-	/**
-	 * Safe search a patient, bypass security but only show non-sensitive fields
-	 *
-	 * @param safesearch
-	 * @param rep
-	 * @param request
-	 * @return
-	 * @throws ResponseException
-	 */
-	@RequestMapping(method = RequestMethod.GET, params = "safesearch")
-	@WSDoc("Gets Summarized representation of Patients for the given search")
-	@ResponseBody()
-	public String safeSearchPatients(@RequestParam String safesearch, HttpServletRequest request) throws ResponseException {
-		initPatientController();
-		List<Patient> patients;
-		try {
-			Method method = service.getClass().getMethod("getPatientsSafeSearch", String.class);
-			patients = (List<Patient>) method.invoke(service, safesearch);
-		}
-		catch (Exception e) {
-			//if openmrs core doesn't have "getPatientsSafeSearch" then use the normal one with security
-			patients = service.getPatients(safesearch);
-			return gson.toJson(new SimpleObject().add("nosafesearch", null));
-		}
-		ArrayList results = new ArrayList();
-		for (Patient patient : patients) {
-			results.add(getPatientAsSimpleObject(patient));
-		}
-		return gson.toJson(new SimpleObject().add("results", results));
-	}
-	
-	/**
 	 * Returns a SimpleObject containing some fields of Patient
 	 *
-	 * @param patient
+	 * @param p
 	 * @return
 	 */
 	private SimpleObject getPatientAsSimpleObject(Patient p) {
