@@ -242,7 +242,7 @@ public class RaxaPatientController extends BaseRestController {
 		PatientIdentifier patientIdentifier;
 		String existingIdentifierValue = (String) post.get("patientIdentifier");
 		
-		if (existingIdentifierValue == null) {
+		if (existingIdentifierValue == null || existingIdentifierValue.trim().isEmpty()) {
 			patientIdentifier = generateIdentifier(post);
 		} else {
 			PatientService ps = Context.getPatientService();
