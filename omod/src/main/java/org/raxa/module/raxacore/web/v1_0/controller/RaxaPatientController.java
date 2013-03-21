@@ -94,31 +94,7 @@ public class RaxaPatientController extends BaseRestController {
 			person.setBirthdateEstimated(Boolean.TRUE);
 		}
 		
-		LocationService locationService = Context.getLocationService();
-		List<Location> allLocations = locationService.getAllLocations();
-		String center = ((LinkedHashMap) post.get("centerID")).get("name").toString();
-		
-		List<LocationAttributeType> allLocationAttributeTypes = locationService.getAllLocationAttributeTypes();
-		LocationAttributeType identifierSourceName = null;
-		for (LocationAttributeType attributeType : allLocationAttributeTypes) {
-			if (attributeType.getName().equals("IdentifierSourceName")) {
-				identifierSourceName = attributeType;
-			}
-		}
-		
-		for (Location location : allLocations) {
-			Collection<LocationAttribute> activeAttributes = location.getActiveAttributes();
-			for (LocationAttribute attribute : activeAttributes) {
-				if (attribute.getAttributeType().equals(identifierSourceName)
-				        && attribute.getValue().toString().equals(center)) {
-					PersonAttribute locationAttribute = new PersonAttribute();
-					locationAttribute.setAttributeType(Context.getPersonService().getPersonAttributeTypeByName(
-					    "Health Center"));
-					locationAttribute.setValue(location.getId().toString());
-					person.getAttributes().add(locationAttribute);
-				}
-			}
-		}
+		addHealthCenter(post, person);
 		
 		if (post.get("attributes") != null) {
 			addAttributes(person, post);
@@ -129,18 +105,49 @@ public class RaxaPatientController extends BaseRestController {
 		return RestUtil.created(response, getPatientAsSimpleObject(savePatient(person, post)));
 	}
 	
+	private void addHealthCenter(SimpleObject post, Person person) {
+		LocationService locationService = Context.getLocationService();
+		List<Location> allLocations = locationService.getAllLocations();
+		String center = ((LinkedHashMap) post.get("centerID")).get("name").toString();
+		
+		List<LocationAttributeType> allLocationAttributeTypes = locationService.getAllLocationAttributeTypes();
+		LocationAttributeType identifierSourceName = findIdentifierSourceName(allLocationAttributeTypes);
+		
+		for (Location location : allLocations) {
+			Collection<LocationAttribute> activeAttributes = location.getActiveAttributes();
+			for (LocationAttribute attribute : activeAttributes) {
+				addHealthCenter(person, center, identifierSourceName, location, attribute);
+			}
+		}
+	}
+	
+	private void addHealthCenter(Person person, String center, LocationAttributeType identifierSourceName,
+	        Location location, LocationAttribute attribute) {
+		if (attribute.getAttributeType().equals(identifierSourceName) && attribute.getValue().toString().equals(center)) {
+			PersonAttribute locationAttribute = new PersonAttribute();
+			locationAttribute.setAttributeType(Context.getPersonService().getPersonAttributeTypeByName("Health Center"));
+			locationAttribute.setValue(location.getId().toString());
+			person.getAttributes().add(locationAttribute);
+		}
+	}
+	
+	private LocationAttributeType findIdentifierSourceName(List<LocationAttributeType> allLocationAttributeTypes) {
+		LocationAttributeType identifierSourceName = null;
+		for (LocationAttributeType attributeType : allLocationAttributeTypes) {
+			if (attributeType.getName().equals("IdentifierSourceName")) {
+				identifierSourceName = attributeType;
+				break;
+			}
+		}
+		return identifierSourceName;
+	}
+	
 	private boolean validatePost(SimpleObject post) throws ResponseException {
 		for (int i = 0; i < REQUIREDFIELDS.length; i++) {
 			if (post.get(REQUIREDFIELDS[i]) == null) {
 				throw new ResponseException(
 				                            "Required field " + REQUIREDFIELDS[i] + " not found") {};
 			}
-		}
-		User u = Context.getAuthenticatedUser();
-		Person p = Context.getPersonService().getPersonByUuid(u.getPerson().getUuid());
-		if (p.getAttribute("Health Center") == null) {
-			throw new ResponseException(
-			                            "Current user needs Health Center attribute") {};
 		}
 		return true;
 	}
