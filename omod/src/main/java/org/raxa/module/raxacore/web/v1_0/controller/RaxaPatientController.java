@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -77,18 +78,12 @@ public class RaxaPatientController extends BaseRestController {
 		addNames(person, post);
 		person.setGender(post.get("gender").toString());
 		if (post.get("birthdate") != null) {
-			if (post.get("time") != null) {
-				String[] supportedFormats = { "yyyy-MM-dd'T'HH:mm:ss.SSSZ", "yyyy-MM-dd'T'HH:mm:ss.SSS",
-				        "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd" };
-				for (int i = 0; i < supportedFormats.length; i++) {
-					try {
-						Date date = new SimpleDateFormat(supportedFormats[i]).parse(post.get("time").toString());
-						person.setBirthdate(date);
-						person.setBirthdateEstimated(Boolean.FALSE);
-					}
-					catch (Exception ex) {}
-				}
+			try {
+				Date date = new SimpleDateFormat("dd-MM-yyyy").parse(post.get("birthdate").toString());
+				person.setBirthdate(date);
+				person.setBirthdateEstimated(Boolean.FALSE);
 			}
+			catch (ParseException ex) {}
 		} else if (post.get("age") != null) {
 			person.setBirthdateFromAge(Integer.parseInt(post.get("age").toString()), new Date());
 			person.setBirthdateEstimated(Boolean.TRUE);
