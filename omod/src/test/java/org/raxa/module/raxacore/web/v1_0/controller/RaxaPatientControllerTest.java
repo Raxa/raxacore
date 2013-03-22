@@ -44,7 +44,7 @@ public class RaxaPatientControllerTest extends BaseModuleContextSensitiveTest {
 	 */
 	@Test
 	public void testCreateNewPatient() throws Exception {
-		String json = "{\"names\": [{\"givenName\":\"john\",\"familyName\":\"James\"}],\"gender\":\"M\", \"age\":23 }";
+		String json = "{\"names\": [{\"givenName\":\"john\",\"familyName\":\"James\"}],\"gender\":\"M\", \"age\":23, \"centerID\": {\"name\": \"GAN\"} }";
 		SimpleObject post = new ObjectMapper().readValue(json, SimpleObject.class);
 		SimpleObject patient = (SimpleObject) (controller.createNewPatient(post, request, response));
 		System.out.println(patient);
