@@ -25,7 +25,7 @@
   		    http://www.springframework.org/schema/util/spring-util-3.0.xsd
   		    http://www.springframework.org/schema/mvc
         	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
-	
+
+    <import resource="moduleApplicationContext.xml"/>
     <context:component-scan base-package="org.raxa.module.raxacore.web.v1_0.controller"/>
-	
 </beans>
