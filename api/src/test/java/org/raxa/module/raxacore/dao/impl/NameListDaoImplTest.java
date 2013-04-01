@@ -2,19 +2,21 @@ package org.raxa.module.raxacore.dao.impl;
 
 import org.junit.Test;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.raxa.module.raxacore.dao.NameListDao;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.Assert.assertEquals;
 
 public class NameListDaoImplTest extends BaseModuleContextSensitiveTest {
 
+	@Autowired
+	NameListDaoImpl nameListDao;
+
 	@Test
 	public void shouldRetrievePatientListIfLastNameExists() throws Exception {
 		executeDataSet("apiTestData.xml");
-		NameListDao dao = (NameListDao) applicationContext.getBean("patientListDao");
-		assertEquals(2, dao.getLastNames("singh").size());
-		assertEquals(2, dao.getLastNames("Singh").size());
-		assertEquals(1, dao.getLastNames("Banka").size());
-		assertEquals(3, dao.getLastNames("sin").size());
+		assertEquals(2, nameListDao.getLastNames("singh").size());
+		assertEquals(2, nameListDao.getLastNames("Singh").size());
+		assertEquals(1, nameListDao.getLastNames("Banka").size());
+		assertEquals(3, nameListDao.getLastNames("sin").size());
 	}
 }

@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.raxa.module.raxacore.dao.NameListDao;
-import org.raxa.module.raxacore.model.NameList;
+import org.raxa.module.raxacore.model.ResultList;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,15 +29,15 @@ public class LastNameSearchControllerTest {
 	public void shouldCallDaoToSearchForPatientLastNames() {
 		String query = "familyName";
 		List<String> requiredResult = Arrays.asList("familyName1", "familyName2", "familyName3");
-		when(lastNameList.getLastNames(query)).thenReturn(new NameList(requiredResult));
+		when(lastNameList.getLastNames(query)).thenReturn(new ResultList(requiredResult));
 		LastNameSearchController controller = new LastNameSearchController(lastNameList);
 		
-		NameList nameList = controller.searchFor(query);
+		ResultList resultList = controller.searchFor(query);
 		
 		verify(lastNameList).getLastNames(query);
-		assertEquals(requiredResult.size(), nameList.size());
+		assertEquals(requiredResult.size(), resultList.size());
 		for (String name : requiredResult) {
-			assertTrue(nameList.getNames().contains(name));
+			assertTrue(resultList.getResults().contains(name));
 		}
 	}
 }

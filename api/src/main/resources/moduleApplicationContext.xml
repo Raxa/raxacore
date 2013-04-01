@@ -10,7 +10,6 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <bean id="patientListDao" class="org.raxa.module.raxacore.dao.impl.NameListDaoImpl">
-        <property name="sessionFactory"><ref bean="sessionFactory"/></property>
-    </bean>
+    <context:component-scan base-package="org.raxa.module.raxacore.dao"/>
+
 </beans>

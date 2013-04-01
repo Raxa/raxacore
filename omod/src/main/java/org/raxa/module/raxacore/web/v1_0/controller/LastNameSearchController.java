@@ -3,7 +3,7 @@ package org.raxa.module.raxacore.web.v1_0.controller;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.raxa.module.raxacore.dao.NameListDao;
-import org.raxa.module.raxacore.model.NameList;
+import org.raxa.module.raxacore.model.ResultList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +25,7 @@ public class LastNameSearchController extends BaseRestController {
 	@RequestMapping(method = RequestMethod.GET, params = "q")
 	@WSDoc("Save New Patient")
 	@ResponseBody
-	public NameList searchFor(@RequestParam String q) {
+	public ResultList searchFor(@RequestParam String q) {
 		return namesDao.getLastNames(q);
 	}
 }
