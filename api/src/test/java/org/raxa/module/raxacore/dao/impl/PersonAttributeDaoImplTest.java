@@ -18,8 +18,5 @@ public class PersonAttributeDaoImplTest extends BaseModuleContextSensitiveTest {
 		
 		ResultList result = personAttributeDao.getUnique("caste", "caste");
 		assertEquals(2, result.size());
-		
-		result = personAttributeDao.getUnique("caste", "some");
-		assertEquals(1, result.size());
 	}
 }

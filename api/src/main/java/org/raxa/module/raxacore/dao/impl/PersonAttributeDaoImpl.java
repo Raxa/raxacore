@@ -16,11 +16,11 @@ public class PersonAttributeDaoImpl implements PersonAttributeDoa {
 	@Override
 	public ResultList getUnique(String personAttribute, String query) {
 		SQLQuery sqlQuery = sessionFactory.getCurrentSession().createSQLQuery(
-		    "Select value from person_attribute, person_attribute_type "
+		    "Select distinct value from person_attribute, person_attribute_type "
 		            + "where person_attribute.person_attribute_type_id = person_attribute_type.person_attribute_type_id "
-		            + "and person_attribute_type.name = :name and person_attribute.value like :value");
+		            + "and person_attribute_type.name = :name and lower(person_attribute.value) like :value");
 		sqlQuery.setParameter("name", personAttribute);
-		sqlQuery.setParameter("value", query + "%");
+		sqlQuery.setParameter("value", query.toLowerCase() + "%");
 		return new ResultList(sqlQuery.list());
 	}
 }

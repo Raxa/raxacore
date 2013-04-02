@@ -19,7 +19,7 @@
     <person_attribute_type person_attribute_type_id="1" name="caste" description="caste" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="b3b6d540-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
 
     <person_attribute person_attribute_id="1" person_id="1024" value="caste1" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:46:47.0" voided="false" uuid="0768f3da-b692-44b7-a33f-abf2c450474a"/>
-    <person_attribute person_attribute_id="2" person_id="1025" value="caste3" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:46:47.0" voided="false" uuid="56beb8bd-287c-47f2-9786-a7b98c933c0b"/>
-    <person_attribute person_attribute_id="3" person_id="1026" value="someCaste" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="898f6ecd-78f1-42a5-8768-e0c219a3fa7c"/>
+    <person_attribute person_attribute_id="2" person_id="1025" value="caste1" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:46:47.0" voided="false" uuid="56beb8bd-287c-47f2-9786-a7b98c933c0b"/>
+    <person_attribute person_attribute_id="3" person_id="1026" value="Caste2" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="898f6ecd-78f1-42a5-8768-e0c219a3fa7c"/>
 
 </dataset>
