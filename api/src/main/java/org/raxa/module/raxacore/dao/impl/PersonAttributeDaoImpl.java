@@ -15,12 +15,15 @@ public class PersonAttributeDaoImpl implements PersonAttributeDoa {
 	
 	@Override
 	public ResultList getUnique(String personAttribute, String query) {
-		SQLQuery sqlQuery = sessionFactory.getCurrentSession().createSQLQuery(
-		    "Select distinct value from person_attribute, person_attribute_type "
-		            + "where person_attribute.person_attribute_type_id = person_attribute_type.person_attribute_type_id "
-		            + "and person_attribute_type.name = :name and lower(person_attribute.value) like :value");
+		SQLQuery sqlQuery = sessionFactory
+		        .getCurrentSession()
+		        .createSQLQuery(
+		            "Select distinct value from person_attribute, person_attribute_type "
+		                    + "where person_attribute.person_attribute_type_id = person_attribute_type.person_attribute_type_id "
+		                    + "and person_attribute_type.name = :name and lower(person_attribute.value) like :value order by value asc");
 		sqlQuery.setParameter("name", personAttribute);
 		sqlQuery.setParameter("value", query.toLowerCase() + "%");
+		sqlQuery.setMaxResults(20);
 		return new ResultList(sqlQuery.list());
 	}
 }

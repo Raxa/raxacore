@@ -5,6 +5,7 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 public class PersonNameDaoImplTest extends BaseModuleContextSensitiveTest {
 	
@@ -19,5 +20,12 @@ public class PersonNameDaoImplTest extends BaseModuleContextSensitiveTest {
 		assertEquals(2, personNameDao.getUnique(key, "Singh").size());
 		assertEquals(1, personNameDao.getUnique(key, "Banka").size());
 		assertEquals(3, personNameDao.getUnique(key, "sin").size());
+	}
+	
+	@Test
+	public void shouldReturnMaxOf20Results() throws Exception {
+		executeDataSet("apiTestData.xml");
+		String key = "familyName";
+		assertTrue(personNameDao.getUnique(key, "test").size() <= 20);
 	}
 }

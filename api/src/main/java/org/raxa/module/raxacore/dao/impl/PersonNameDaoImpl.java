@@ -2,6 +2,7 @@ package org.raxa.module.raxacore.dao.impl;
 
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.PersonName;
@@ -22,6 +23,7 @@ public class PersonNameDaoImpl implements PersonNameDao {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(PersonName.class);
 		criteria.add(Restrictions.ilike(key, query + "%"));
 		criteria.setProjection(Projections.distinct(Projections.property(key)));
+		criteria.setMaxResults(20);
 		return new ResultList(criteria.list());
 	}
 }
