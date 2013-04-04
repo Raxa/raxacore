@@ -2,13 +2,13 @@ package org.raxa.module.raxacore.dao.impl;
 
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
-import org.raxa.module.raxacore.dao.PersonAttributeDoa;
+import org.raxa.module.raxacore.dao.PersonAttributeDao;
 import org.raxa.module.raxacore.model.ResultList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class PersonAttributeDaoImpl implements PersonAttributeDoa {
+public class PersonAttributeDaoImpl implements PersonAttributeDao {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -18,9 +18,9 @@ public class PersonAttributeDaoImpl implements PersonAttributeDoa {
 		SQLQuery sqlQuery = sessionFactory
 		        .getCurrentSession()
 		        .createSQLQuery(
-		            "Select distinct value from person_attribute, person_attribute_type "
-		                    + "where person_attribute.person_attribute_type_id = person_attribute_type.person_attribute_type_id "
-		                    + "and person_attribute_type.name = :name and lower(person_attribute.value) like :value order by value asc");
+                        "Select distinct value from person_attribute, person_attribute_type "
+                                + "where person_attribute.person_attribute_type_id = person_attribute_type.person_attribute_type_id "
+                                + "and person_attribute_type.name = :name and lower(person_attribute.value) like :value order by value asc");
 		sqlQuery.setParameter("name", personAttribute);
 		sqlQuery.setParameter("value", query.toLowerCase() + "%");
 		sqlQuery.setMaxResults(20);
