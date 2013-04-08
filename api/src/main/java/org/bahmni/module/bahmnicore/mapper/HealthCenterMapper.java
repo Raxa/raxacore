@@ -1,10 +1,9 @@
 package org.bahmni.module.bahmnicore.mapper;
 
+import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.openmrs.*;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
-import org.raxa.module.raxacore.mapper.PatientMapper;
-import org.raxa.module.raxacore.model.BahmniPatient;
 
 import java.util.Collection;
 import java.util.List;

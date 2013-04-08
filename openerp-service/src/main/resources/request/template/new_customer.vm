@@ -1,0 +1,33 @@
+<?xml version='1.0'?>
+<methodCall>
+    <methodName>execute</methodName>
+    <params>
+        <param>
+        <value><string>$database</string></value>
+        </param>
+        <param>
+        <value><int>$id</int></value>
+        </param>
+        <param>
+        <value><string>$password</string></value>
+        </param>
+        <param>
+        <value><string>$resource</string></value>
+        </param>
+        <param>
+        <value><string>$operation</string></value>
+        </param>
+        <param>
+        <value><struct>
+            <member>
+                <name>name</name>
+                <value><string>$name</string></value>
+            </member>
+            <member>
+                <name>ref</name>
+                <value><string>$patientId</string></value>
+            </member>
+        </struct></value>
+        </param>
+    </params>
+</methodCall>

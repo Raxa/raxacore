@@ -7,7 +7,6 @@ import org.openmrs.api.PatientService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.raxa.module.raxacore.web.v1_0.controller.RaxaPatientController;
 
 @Ignore
 public class RaxaPatientControllerTest extends BaseModuleContextSensitiveTest {
