@@ -1,8 +1,8 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.mapper.*;
-import org.openmrs.*;
-import org.openmrs.api.LocationService;
+import org.bahmni.module.bahmnicore.model.BahmniPatient;
+import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -10,7 +10,6 @@ import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
-import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +18,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 /**
  * Controller for REST web service access to the Drug resource.
@@ -34,8 +30,14 @@ public class RaxaPatientController extends BaseRestController {
 	
 	private static final String[] REQUIREDFIELDS = { "names", "gender" };
 	
-	public void initPatientController() {
-		service = Context.getPatientService();
+	public void setPatientService(PatientService patientService) {
+		this.service = patientService;
+	}
+	
+	private PatientService getPatientService() {
+		if (service == null)
+			service = Context.getPatientService();
+		return service;
 	}
 	
 	/**
@@ -53,51 +55,17 @@ public class RaxaPatientController extends BaseRestController {
 	@ResponseBody
 	public Object createNewPatient(@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
-		initPatientController();
 		validatePost(post);
 		BahmniPatient bahmniPerson = new BahmniPatient(post);
-		Patient patient = new PatientMapper(new PersonNameMapper(), new BirthDateMapper(), new PersonAttributeMapper(),
-		        new AddressMapper()).map(null, bahmniPerson);
-		addHealthCenter(post, patient);
 		
-		return RestUtil.created(response, getPatientAsSimpleObject(service.savePatient(patient)));
+		Patient patient = getPatientMapper().map(null, bahmniPerson);
+		
+		return RestUtil.created(response, getPatientAsSimpleObject(getPatientService().savePatient(patient)));
 	}
 	
-	private void addHealthCenter(SimpleObject post, Person person) {
-		LocationService locationService = Context.getLocationService();
-		List<Location> allLocations = locationService.getAllLocations();
-		String center = ((LinkedHashMap) post.get("centerID")).get("name").toString();
-		
-		List<LocationAttributeType> allLocationAttributeTypes = locationService.getAllLocationAttributeTypes();
-		LocationAttributeType identifierSourceName = findIdentifierSourceName(allLocationAttributeTypes);
-		
-		for (Location location : allLocations) {
-			Collection<LocationAttribute> activeAttributes = location.getActiveAttributes();
-			for (LocationAttribute attribute : activeAttributes) {
-				addHealthCenter(person, center, identifierSourceName, location, attribute);
-			}
-		}
-	}
-	
-	private void addHealthCenter(Person person, String center, LocationAttributeType identifierSourceName,
-	        Location location, LocationAttribute attribute) {
-		if (attribute.getAttributeType().equals(identifierSourceName) && attribute.getValue().toString().equals(center)) {
-			PersonAttribute locationAttribute = new PersonAttribute();
-			locationAttribute.setAttributeType(Context.getPersonService().getPersonAttributeTypeByName("Health Center"));
-			locationAttribute.setValue(location.getId().toString());
-			person.getAttributes().add(locationAttribute);
-		}
-	}
-	
-	private LocationAttributeType findIdentifierSourceName(List<LocationAttributeType> allLocationAttributeTypes) {
-		LocationAttributeType identifierSourceName = null;
-		for (LocationAttributeType attributeType : allLocationAttributeTypes) {
-			if (attributeType.getName().equals("IdentifierSourceName")) {
-				identifierSourceName = attributeType;
-				break;
-			}
-		}
-		return identifierSourceName;
+	private PatientMapper getPatientMapper() {
+		return new PatientMapper(new PersonNameMapper(), new BirthDateMapper(), new PersonAttributeMapper(),
+		        new AddressMapper(), new PatientIdentifierMapper(), new HealthCenterMapper());
 	}
 	
 	private boolean validatePost(SimpleObject post) throws ResponseException {

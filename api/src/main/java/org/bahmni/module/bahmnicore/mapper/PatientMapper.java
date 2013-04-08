@@ -2,16 +2,8 @@ package org.bahmni.module.bahmnicore.mapper;
 
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.openmrs.*;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.idgen.IdentifierSource;
-import org.openmrs.module.idgen.service.IdentifierSourceService;
-
-import java.util.List;
 
 public class PatientMapper {
-	
-	private PatientService patientService;
 	
 	private PersonNameMapper personNameMapper;
 	
@@ -21,12 +13,19 @@ public class PatientMapper {
 	
 	private AddressMapper addressMapper;
 	
+	private final PatientIdentifierMapper patientIdentifierMapper;
+	
+	private final HealthCenterMapper healthCenterMapper;
+	
 	public PatientMapper(PersonNameMapper personNameMapper, BirthDateMapper birthDateMapper,
-	    PersonAttributeMapper personAttributeMapper, AddressMapper addressMapper) {
+	    PersonAttributeMapper personAttributeMapper, AddressMapper addressMapper,
+	    PatientIdentifierMapper patientIdentifierMapper, HealthCenterMapper healthCenterMapper) {
 		this.personNameMapper = personNameMapper;
 		this.birthDateMapper = birthDateMapper;
 		this.personAttributeMapper = personAttributeMapper;
 		this.addressMapper = addressMapper;
+		this.patientIdentifierMapper = patientIdentifierMapper;
+		this.healthCenterMapper = healthCenterMapper;
 	}
 	
 	public Patient map(Patient patient, BahmniPatient bahmniPatient) {
@@ -38,47 +37,8 @@ public class PatientMapper {
 		patient = birthDateMapper.map(patient, bahmniPatient);
 		patient = personAttributeMapper.map(patient, bahmniPatient.getAttributes());
 		patient = addressMapper.addAddresses(patient, bahmniPatient.getAddresses());
-		createIdentifier(bahmniPatient, patient);
+		patientIdentifierMapper.createIdentifier(bahmniPatient, patient);
+		healthCenterMapper.addHealthCenter(patient, bahmniPatient, this);
 		return patient;
-	}
-	
-	private void createIdentifier(BahmniPatient bahmniPatient, Patient patient) {
-		PatientIdentifier patientIdentifier;
-		String existingIdentifierValue = bahmniPatient.getPatientIdentifier();
-		
-		if (existingIdentifierValue == null || existingIdentifierValue.trim().isEmpty()) {
-			patientIdentifier = generateIdentifier(bahmniPatient.getCenterName());
-		} else {
-			PatientService ps = getPatientService();
-			PatientIdentifierType jss = ps.getPatientIdentifierTypeByName("JSS");
-			patientIdentifier = new PatientIdentifier(existingIdentifierValue, jss, null);
-		}
-		
-		patientIdentifier.setPreferred(true);
-		patient.addIdentifier(patientIdentifier);
-	}
-	
-	public PatientService getPatientService() {
-		if (patientService == null)
-			patientService = Context.getPatientService();
-		return patientService;
-	}
-	
-	public void setPatientService(PatientService patientService) {
-		this.patientService = patientService;
-	}
-	
-	private PatientIdentifier generateIdentifier(String centerName) {
-		IdentifierSourceService identifierSourceService = Context.getService(IdentifierSourceService.class);
-		List<IdentifierSource> allIdentifierSources = identifierSourceService.getAllIdentifierSources(false);
-		String center = centerName;
-		for (IdentifierSource identifierSource : allIdentifierSources) {
-			if (identifierSource.getName().equals(center)) {
-				String identifier = identifierSourceService.generateIdentifier(identifierSource, "Bahmni Registration App");
-				PatientIdentifierType identifierType = identifierSource.getIdentifierType();
-				return new PatientIdentifier(identifier, identifierType, null);
-			}
-		}
-		return null;
 	}
 }

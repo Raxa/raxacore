@@ -16,7 +16,7 @@ public class PatientMapperTest extends BaseModuleContextSensitiveTest {
 		BahmniPatient bahmniPerson = new BahmniPatient(SimpleObjectMother.getSimpleObjectWithAllFields());
 		PersonAttributeMapper personAttributeMapper = new PersonAttributeMapper();
 		PatientMapper patientMapper = new PatientMapper(new PersonNameMapper(), new BirthDateMapper(),
-		        personAttributeMapper, new AddressMapper());
+		        personAttributeMapper, new AddressMapper(), new PatientIdentifierMapper(), new HealthCenterMapper());
 		Patient patient = patientMapper.map(new Patient(), bahmniPerson);
 		
 		BahmniName name = bahmniPerson.getNames().get(0);
