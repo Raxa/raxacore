@@ -11,7 +11,7 @@
     <artifactId>openerp-service</artifactId>
     <packaging>jar</packaging>
     <version>0.2-SNAPSHOT</version>
-    <name>openerp-service</name>
+    <name>BahmniEMR OpenERP Service</name>
     <url>http://maven.apache.org</url>
 
     <properties>
