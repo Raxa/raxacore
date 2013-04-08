@@ -2,19 +2,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.bahmni.module</groupId>
-        <artifactId>bahmnicore</artifactId>
+        <groupId>org.raxa.module</groupId>
+        <artifactId>raxacore</artifactId>
         <version>0.2-SNAPSHOT</version>
     </parent>
-    <artifactId>bahmnicore-omod</artifactId>
+    <artifactId>raxacore-omod</artifactId>
     <packaging>jar</packaging>
-    <name>BahmniEMR Core OMOD</name>
-    <description>OpenMRS module project for BahmniEMR Core Module(Forked from Raxa core module-https://github.com/Raxa/raxacore.git)</description>
+    <name>RaxaEMR Core OMOD</name>
+    <description>OpenMRS module project for RaxaEMR Core Module</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.bahmni.module</groupId>
-            <artifactId>bahmnicore-api</artifactId>
+            <groupId>org.raxa.module</groupId>
+            <artifactId>raxacore-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
 		
@@ -80,12 +80,6 @@
             <version>2.5-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.bahmni.module</groupId>
-            <artifactId>openerp-service</artifactId>
-            <version>0.2-SNAPSHOT</version>
-        </dependency>
-
     </dependencies>
 
     <build>

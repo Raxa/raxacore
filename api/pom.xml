@@ -3,13 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.bahmni.module</groupId>
-        <artifactId>bahmnicore</artifactId>
+        <groupId>org.raxa.module</groupId>
+        <artifactId>raxacore</artifactId>
         <version>0.2-SNAPSHOT</version>
     </parent>
-    <artifactId>bahmnicore-api</artifactId>
+    <artifactId>raxacore-api</artifactId>
     <packaging>jar</packaging>
-    <name>BahmniEMR Core API</name>
+    <name>RaxaEMR Core API</name>
     <description>API project for RaxaEMR Core Module</description>
 
     <dependencies>

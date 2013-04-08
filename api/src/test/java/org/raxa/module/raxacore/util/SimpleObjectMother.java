@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.web.v1_0.controller;
+package org.raxa.module.raxacore.util;
 
 import org.openmrs.module.webservices.rest.SimpleObject;
 

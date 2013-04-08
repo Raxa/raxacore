@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.mapper;
 
-import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
@@ -8,6 +7,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
+import org.raxa.module.raxacore.model.BahmniPatient;
 
 import java.util.List;
 
