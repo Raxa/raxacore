@@ -228,6 +228,11 @@
                 <updatePolicy>daily</updatePolicy>
             </snapshots>
         </repository>
+        <repository>
+            <id>openmrs-repo</id>
+            <name>OpenMRS Nexus Repository</name>
+            <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
