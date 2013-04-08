@@ -43,7 +43,7 @@ public class HealthCenterMapper {
 			PersonAttribute locationAttribute = new PersonAttribute();
 			locationAttribute.setAttributeType(Context.getPersonService().getPersonAttributeTypeByName("Health Center"));
 			locationAttribute.setValue(location.getId().toString());
-			person.getAttributes().add(locationAttribute);
+			person.addAttribute(locationAttribute);
 		}
 	}
 }

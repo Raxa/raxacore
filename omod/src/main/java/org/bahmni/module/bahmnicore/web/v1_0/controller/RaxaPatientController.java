@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Controller for REST web service access to the Drug resource.
@@ -58,7 +59,12 @@ public class RaxaPatientController extends BaseRestController {
 		validatePost(post);
 		BahmniPatient bahmniPerson = new BahmniPatient(post);
 		
-		Patient patient = getPatientMapper().map(null, bahmniPerson);
+		Patient patient = null;
+		List<Patient> patients = getPatientService().getPatients(bahmniPerson.getPatientIdentifier());
+		if (patients.size() > 0)
+			patient = patients.get(0);
+		
+		patient = getPatientMapper().map(patient, bahmniPerson);
 		
 		return RestUtil.created(response, getPatientAsSimpleObject(getPatientService().savePatient(patient)));
 	}
