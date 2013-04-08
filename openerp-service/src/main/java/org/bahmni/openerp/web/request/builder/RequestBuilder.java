@@ -5,20 +5,20 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.view.velocity.VelocityConfigurer;
 
 import java.io.StringWriter;
 
 @Service
 public class RequestBuilder {
+    @Autowired
+    private VelocityConfigurer configurer;
+
     private VelocityEngine velocityEngine;
 
-    @Autowired
-    public RequestBuilder(VelocityEngine velocityEngine){
-        this.velocityEngine = velocityEngine;
-    }
-
     public String buildNewCustomerRequest(String patientName,String patientId,Object id,String database,
-                                          String password,String resource,String operation) {
+                                          String password,String resource,String operation) throws Exception {
+        velocityEngine = configurer.getVelocityEngine();
         Template template = velocityEngine.getTemplate("/request/template/new_customer.vm");
         VelocityContext context = new VelocityContext();
         context.put("name", patientName);

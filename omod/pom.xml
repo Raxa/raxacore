@@ -156,25 +156,6 @@
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>
-                                            com.googlecode.maven-java-formatter-plugin
-                                        </groupId>
-                                        <artifactId>
-                                            maven-java-formatter-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            [0.3.1,)
-                                        </versionRange>
-                                        <goals>
-                                            <goal>format</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
                                 	<pluginExecutionFilter>
                                 		<groupId>
                                 			org.apache.maven.plugins
@@ -219,17 +200,6 @@
                         <phase>package</phase>
                         <goals>
                             <goal>package-module</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.googlecode.maven-java-formatter-plugin</groupId>
-                <artifactId>maven-java-formatter-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>format</goal>
                         </goals>
                     </execution>
                 </executions>
