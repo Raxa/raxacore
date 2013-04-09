@@ -1,7 +1,10 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bahmni.module.bahmnicore.mapper.*;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
+import org.bahmni.module.billing.BillingService;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -10,6 +13,7 @@ import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,8 +34,15 @@ public class RaxaPatientController extends BaseRestController {
 	PatientService service;
 	
 	private static final String[] REQUIREDFIELDS = { "names", "gender" };
-	
-	public void setPatientService(PatientService patientService) {
+    private BillingService billingService;
+    private final Log log = LogFactory.getLog(RaxaPatientController.class);
+
+    @Autowired
+    public RaxaPatientController(BillingService billingService) {
+        this.billingService = billingService;
+    }
+
+    public void setPatientService(PatientService patientService) {
 		this.service = patientService;
 	}
 
@@ -65,8 +76,14 @@ public class RaxaPatientController extends BaseRestController {
 			patient = patients.get(0);
 
 		patient = getPatientMapper().map(patient, bahmniPerson);
-
-		return RestUtil.created(response, getPatientAsSimpleObject(getPatientService().savePatient(patient)));
+        Patient savedPatient = getPatientService().savePatient(patient);
+        String patientId = patient.getPatientIdentifier().toString();
+        try {
+            billingService.createCustomer(patient.getPersonName().getFullName(), patientId);
+        } catch (Exception e) {
+            log.error(String.format("%s : Failed to create customer in openERP", patientId), e);
+        }
+        return RestUtil.created(response, getPatientAsSimpleObject(savedPatient));
 	}
 
 	private PatientMapper getPatientMapper() {
