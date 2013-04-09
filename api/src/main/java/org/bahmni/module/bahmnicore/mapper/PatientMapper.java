@@ -36,9 +36,9 @@ public class PatientMapper {
 		patient = personNameMapper.map(patient, bahmniPatient.getNames());
 		patient = birthDateMapper.map(patient, bahmniPatient);
 		patient = personAttributeMapper.map(patient, bahmniPatient.getAttributes());
-		patient = addressMapper.addAddresses(patient, bahmniPatient.getAddresses());
-		patientIdentifierMapper.createIdentifier(bahmniPatient, patient);
-		healthCenterMapper.addHealthCenter(patient, bahmniPatient, this);
+		patient = addressMapper.map(patient, bahmniPatient.getAddresses());
+		patient = patientIdentifierMapper.map(bahmniPatient, patient);
+		patient = healthCenterMapper.map(patient, bahmniPatient);
 		return patient;
 	}
 }

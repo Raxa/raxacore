@@ -8,7 +8,7 @@ import java.util.List;
 
 public class AddressMapper {
 	
-	public Patient addAddresses(Patient patient, List<BahmniAddress> addresses) {
+	public Patient map(Patient patient, List<BahmniAddress> addresses) {
 		for (BahmniAddress address : addresses) {
 			PersonAddress personAddress = new PersonAddress();
 			if (address.getAddress1() != null) {

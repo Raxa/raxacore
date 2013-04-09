@@ -10,7 +10,7 @@ import java.util.List;
 
 public class HealthCenterMapper {
 	
-	public void addHealthCenter(Person person, BahmniPatient bahmniPatient, PatientMapper patientMapper) {
+	public Patient map(Patient person, BahmniPatient bahmniPatient) {
 		LocationService locationService = Context.getLocationService();
 		List<Location> allLocations = locationService.getAllLocations();
 		String center = bahmniPatient.getCenterName();
@@ -24,6 +24,7 @@ public class HealthCenterMapper {
 				addHealthCenter(person, center, identifierSourceName, location, attribute);
 			}
 		}
+        return person;
 	}
 	
 	private LocationAttributeType findIdentifierSourceName(List<LocationAttributeType> allLocationAttributeTypes) {

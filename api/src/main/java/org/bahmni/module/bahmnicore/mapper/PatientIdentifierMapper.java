@@ -15,7 +15,7 @@ public class PatientIdentifierMapper {
 	
 	private PatientService patientService;
 	
-	public void createIdentifier(BahmniPatient bahmniPatient, Patient patient) {
+	public Patient map(BahmniPatient bahmniPatient, Patient patient) {
 		PatientIdentifier patientIdentifier;
 		String existingIdentifierValue = bahmniPatient.getPatientIdentifier();
 		
@@ -29,6 +29,7 @@ public class PatientIdentifierMapper {
 		
 		patientIdentifier.setPreferred(true);
 		patient.addIdentifier(patientIdentifier);
+        return patient;
 	}
 	
 	public PatientService getPatientService() {

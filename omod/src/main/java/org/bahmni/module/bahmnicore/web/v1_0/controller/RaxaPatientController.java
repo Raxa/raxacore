@@ -34,13 +34,13 @@ public class RaxaPatientController extends BaseRestController {
 	public void setPatientService(PatientService patientService) {
 		this.service = patientService;
 	}
-	
-	private PatientService getPatientService() {
-		if (service == null)
-			service = Context.getPatientService();
-		return service;
-	}
-	
+
+    private PatientService getPatientService() {
+        if (service == null)
+            service = Context.getPatientService();
+        return service;
+    }
+
 	/**
 	 * Create new patient by POST'ing at least name and gender property in the
 	 * request body.
@@ -58,17 +58,17 @@ public class RaxaPatientController extends BaseRestController {
 	        throws ResponseException {
 		validatePost(post);
 		BahmniPatient bahmniPerson = new BahmniPatient(post);
-		
+
 		Patient patient = null;
 		List<Patient> patients = getPatientService().getPatients(bahmniPerson.getPatientIdentifier());
 		if (patients.size() > 0)
 			patient = patients.get(0);
-		
+
 		patient = getPatientMapper().map(patient, bahmniPerson);
-		
+
 		return RestUtil.created(response, getPatientAsSimpleObject(getPatientService().savePatient(patient)));
 	}
-	
+
 	private PatientMapper getPatientMapper() {
 		return new PatientMapper(new PersonNameMapper(), new BirthDateMapper(), new PersonAttributeMapper(),
 		        new AddressMapper(), new PatientIdentifierMapper(), new HealthCenterMapper());
