@@ -7,21 +7,10 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <context:spring-configured/>
-    <context:annotation-config/>
-    <context:component-scan base-package="org.bahmni.openerp"/>
+    <import resource="classpath:applicationContext-openerp-service.xml"/>
+    <util:properties location="openerp.properties" id="properties"/>
 
-    <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
-        <property name="velocityProperties">
-            <value>
-                resource.loader=class
-                class.resource.loader.class=org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
-            </value>
-        </property>
+    <bean id="openERPProperties" class="org.bahmni.openerp.web.OpenERPProperties" factory-method="load" scope="singleton">
+        <constructor-arg ref="properties"></constructor-arg>
     </bean>
-
-    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
-    </bean>
-
-
 </beans>

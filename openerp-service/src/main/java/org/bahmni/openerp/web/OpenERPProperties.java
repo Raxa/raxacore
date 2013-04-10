@@ -1,7 +1,5 @@
 package org.bahmni.openerp.web;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.io.File;
@@ -17,10 +15,13 @@ public class OpenERPProperties {
     }
 
     public static OpenERPProperties load() throws IOException {
-        File file = new File(OpenmrsUtil.getApplicationDataDirectory(), "openerp.properties");
-        FileInputStream propFile =  new FileInputStream(file);
+        FileInputStream propFile =  new FileInputStream(new File(OpenmrsUtil.getApplicationDataDirectory(), "openerp.properties").getAbsolutePath());
         Properties properties = new Properties(System.getProperties());
         properties.load(propFile);
+        return load(properties);
+    }
+
+    private static OpenERPProperties load(Properties properties) {
         return new OpenERPProperties(properties);
     }
 

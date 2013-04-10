@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath*:applicationContext-openerp-service.xml")
+@ContextConfiguration("classpath*:applicationContext-Test.xml")
 public class RequestBuilderTest {
 
     @Autowired
