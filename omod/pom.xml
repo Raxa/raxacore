@@ -17,7 +17,6 @@
             <artifactId>bahmnicore-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-		
         <dependency>
             <groupId>org.openmrs.api</groupId>
             <artifactId>openmrs-api</artifactId>
@@ -45,6 +44,13 @@
             <artifactId>openmrs-test</artifactId>
             <type>pom</type>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
+            <artifactId>bahmnicore-api</artifactId>
+            <classifier>tests</classifier>
+            <type>test-jar</type>
+            <version>${project.parent.version}</version>
         </dependency>
         
         <!--Core webservices dependency-->

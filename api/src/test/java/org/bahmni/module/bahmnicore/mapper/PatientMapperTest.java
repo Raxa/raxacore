@@ -1,11 +1,11 @@
 package org.bahmni.module.bahmnicore.mapper;
 
+import org.bahmni.module.bahmnicore.model.BahmniName;
+import org.bahmni.module.bahmnicore.model.BahmniPatient;
+import org.bahmni.module.bahmnicore.util.PatientMother;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.bahmni.module.bahmnicore.model.BahmniName;
-import org.bahmni.module.bahmnicore.model.BahmniPatient;
-import org.bahmni.module.bahmnicore.util.SimpleObjectMother;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -13,7 +13,7 @@ public class PatientMapperTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void shouldMapPersonNameToPatient() {
-		BahmniPatient bahmniPerson = new BahmniPatient(SimpleObjectMother.getSimpleObjectWithAllFields());
+		BahmniPatient bahmniPerson = new BahmniPatient(new PatientMother().buildSimpleObject());
 		PersonAttributeMapper personAttributeMapper = new PersonAttributeMapper();
 		PatientMapper patientMapper = new PatientMapper(new PersonNameMapper(), new BirthDateMapper(),
 		        personAttributeMapper, new AddressMapper(), new PatientIdentifierMapper(), new HealthCenterMapper());
