@@ -52,7 +52,7 @@ public class RaxaPatientControllerTest extends BaseModuleContextSensitiveTest {
 
         controller.createNewPatient(post, null, response);
 
-        verify(billingService).createCustomer("ram boo singh", identifier);
+        verify(billingService).tryCreateCustomer("ram boo singh", identifier);
     }
 
     @Test
@@ -65,6 +65,6 @@ public class RaxaPatientControllerTest extends BaseModuleContextSensitiveTest {
 
         }
 
-        verify(billingService, never()).createCustomer(anyString(), anyString());
+        verify(billingService, never()).tryCreateCustomer(anyString(), anyString());
     }
 }

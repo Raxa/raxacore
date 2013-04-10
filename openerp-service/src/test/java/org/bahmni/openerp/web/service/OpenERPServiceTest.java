@@ -24,7 +24,7 @@ public class OpenERPServiceTest {
     }
 
     @Test
-    public void ShouldCreateNewCustomerIfNotExisting() throws Exception {
+    public void shouldCreateNewCustomerIfNotExisting() throws Exception {
         String name = "Ram Singh";
         String patientId = "12345";
 
@@ -37,13 +37,13 @@ public class OpenERPServiceTest {
         when(openERPClient.search((String)any(), (Vector)any())).thenReturn(results);
 
         OpenERPService openERPService = new OpenERPService(openERPClient);
-        openERPService.createCustomer(name,patientId);
+        openERPService.tryCreateCustomer(name, patientId);
 
        verify(openERPClient).create((String) any(),(String) any(), (String) any());
     }
 
     @Test
-    public void ShouldThrowExceptionIfCustomerAlreadyExisting() throws Exception {
+    public void createCustomerShouldThrowExceptionIfCustomerAlreadyExisting() throws Exception {
         String name = "Ram Singh";
         String patientId = "12345";
 
@@ -61,7 +61,7 @@ public class OpenERPServiceTest {
           assert(false);
         }catch(Exception e){
             assert(true);
-            assertEquals("Customer with "+patientId+" already exists",e.getMessage());
+            assertEquals("Customer with id "+patientId+" already exists",e.getMessage());
         }
     }
 }

@@ -12,16 +12,24 @@ import java.util.Vector;
 @Service
 public class OpenERPService implements BillingService {
     OpenERPClient openERPClient;
-    private static Logger logger =Logger.getLogger("OpenERPService") ;
+    private static Logger logger = Logger.getLogger(OpenERPService.class);
 
     @Autowired
     public OpenERPService(OpenERPClient client){
         this.openERPClient = client;
     }
 
+    public void tryCreateCustomer(String name, String patientId){
+        try {
+            createCustomer(name, patientId);
+        } catch (Exception ex) {
+            logger.error(String.format("[%s, %s] : Failed to create customer in openERP", patientId, name), ex);
+        }
+    }
+
     public void createCustomer(String name, String patientId) throws Exception {
-        if(noCustomersFound(findCustomerWithPatientReference(patientId))){
-            openERPClient.create("res.partner",name, patientId);
+        if (noCustomersFound(findCustomerWithPatientReference(patientId))) {
+            openERPClient.create("res.partner", name, patientId);
         } else
             raiseDuplicateException(patientId);
     }
@@ -45,8 +53,7 @@ public class OpenERPService implements BillingService {
     }
 
     private void raiseDuplicateException(String patientId) throws Exception {
-        logger.error("Customer with "+patientId+" already exists");
-        throw new Exception("Customer with "+patientId+" already exists");
+        throw new Exception(String.format("Customer with id %s already exists", patientId));
     }
 }
 

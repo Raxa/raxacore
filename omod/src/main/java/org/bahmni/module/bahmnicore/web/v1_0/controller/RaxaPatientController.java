@@ -25,7 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
- * Controller for REST web service access to the Drug resource.
+ * Controller for REST web service access to
+ * the Drug resource.
  */
 @Controller
 @RequestMapping(value = "/rest/v1/raxacore/patient")
@@ -74,15 +75,11 @@ public class RaxaPatientController extends BaseRestController {
 		List<Patient> patients = getPatientService().getPatients(bahmniPerson.getPatientIdentifier());
 		if (patients.size() > 0)
 			patient = patients.get(0);
-
 		patient = getPatientMapper().map(patient, bahmniPerson);
         Patient savedPatient = getPatientService().savePatient(patient);
         String patientId = patient.getPatientIdentifier().toString();
-        try {
-            billingService.createCustomer(patient.getPersonName().getFullName(), patientId);
-        } catch (Exception e) {
-            log.error(String.format("%s : Failed to create customer in openERP", patientId), e);
-        }
+        String name = patient.getPersonName().getFullName();
+        billingService.tryCreateCustomer(name, patientId);
         return RestUtil.created(response, getPatientAsSimpleObject(savedPatient));
 	}
 
