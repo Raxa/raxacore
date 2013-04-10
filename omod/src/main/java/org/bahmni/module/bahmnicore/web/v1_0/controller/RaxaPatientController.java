@@ -94,8 +94,7 @@ public class RaxaPatientController extends BaseRestController {
 	private boolean validatePost(SimpleObject post) throws ResponseException {
 		for (int i = 0; i < REQUIREDFIELDS.length; i++) {
 			if (post.get(REQUIREDFIELDS[i]) == null) {
-				throw new ResponseException(
-				                            "Required field " + REQUIREDFIELDS[i] + " not found") {};
+				throw new ResponseException("Required field " + REQUIREDFIELDS[i] + " not found") {};
 			}
 		}
 		return true;

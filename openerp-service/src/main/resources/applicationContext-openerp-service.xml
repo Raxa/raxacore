@@ -7,8 +7,6 @@
                            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <context:property-placeholder location="classpath:openerpWebService.properties"/>
-
     <context:annotation-config/>
     <context:component-scan base-package="org.bahmni.openerp"/>
 
@@ -28,5 +26,8 @@
     <bean id="jsonConverter"
           class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
         <property name="supportedMediaTypes" value="application/json" />
+    </bean>
+
+    <bean id="openERPProperties" class="org.bahmni.openerp.web.OpenERPProperties" factory-method="load" scope="singleton">
     </bean>
 </beans>

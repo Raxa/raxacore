@@ -5,20 +5,12 @@ import org.apache.log4j.Logger;
 import org.bahmni.module.billing.BillingService;
 import org.bahmni.openerp.web.client.OpenERPClient;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Vector;
 
 @Service
 public class OpenERPService implements BillingService {
-    public @Value("${host}") String host;
-    public @Value("${port}") int port;
-    public @Value("${database}") String database;
-    public @Value("${user}") String user;
-    public @Value("${password}") String password;
-
-
     OpenERPClient openERPClient;
     private static Logger logger =Logger.getLogger("OpenERPService") ;
 
