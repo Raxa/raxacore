@@ -85,7 +85,10 @@
             <artifactId>openerp-service</artifactId>
             <version>0.2-SNAPSHOT</version>
         </dependency>
-
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
