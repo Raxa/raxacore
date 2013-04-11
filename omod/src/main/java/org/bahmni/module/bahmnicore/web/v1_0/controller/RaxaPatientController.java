@@ -15,21 +15,17 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * Controller for REST web service access to
  * the Drug resource.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/raxacore/patient")
+@RequestMapping(value = "/rest/v1/raxacore")
 public class RaxaPatientController extends BaseRestController {
 	
 	PatientService service;
@@ -37,6 +33,7 @@ public class RaxaPatientController extends BaseRestController {
 	private static final String[] REQUIREDFIELDS = { "names", "gender" };
     private BillingService billingService;
     private final Log log = LogFactory.getLog(RaxaPatientController.class);
+    private PatientMapper patientMapper;
 
     @Autowired
     public RaxaPatientController(BillingService billingService) {
@@ -53,17 +50,7 @@ public class RaxaPatientController extends BaseRestController {
         return service;
     }
 
-	/**
-	 * Create new patient by POST'ing at least name and gender property in the
-	 * request body.
-	 *
-	 * @param post the body of the POST request
-	 * @param request
-	 * @param response
-	 * @return 201 response status and Drug object
-	 * @throws ResponseException
-	 */
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST, value = "/patient")
 	@WSDoc("Save New Patient")
 	@ResponseBody
 	public Object createNewPatient(@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
@@ -72,20 +59,47 @@ public class RaxaPatientController extends BaseRestController {
 		BahmniPatient bahmniPerson = new BahmniPatient(post);
 
 		Patient patient = null;
-		List<Patient> patients = getPatientService().getPatients(bahmniPerson.getPatientIdentifier());
-		if (patients.size() > 0)
-			patient = patients.get(0);
-		patient = getPatientMapper().map(patient, bahmniPerson);
-        Patient savedPatient = getPatientService().savePatient(patient);
-        String patientId = patient.getPatientIdentifier().toString();
-        String name = patient.getPersonName().getFullName();
-        billingService.tryCreateCustomer(name, patientId);
+
+        patient = updatePatient(bahmniPerson, patient);
+        createCustomerForBilling(patient, patient.getPatientIdentifier().toString());
+
+        return RestUtil.created(response, getPatientAsSimpleObject(patient));
+	}
+
+    @RequestMapping(method = RequestMethod.POST, value = "/patient/{patientUuid}")
+    @WSDoc("Update existing patient")
+	@ResponseBody
+	public Object updatePatient(@PathVariable("patientUuid") String patientUuid, @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
+	        throws ResponseException {
+		validatePost(post);
+		BahmniPatient bahmniPerson = new BahmniPatient(post);
+
+		Patient patient = getPatientService().getPatientByUuid(patientUuid);
+
+        Patient savedPatient = updatePatient(bahmniPerson, patient);
+
         return RestUtil.created(response, getPatientAsSimpleObject(savedPatient));
 	}
 
-	private PatientMapper getPatientMapper() {
-		return new PatientMapper(new PersonNameMapper(), new BirthDateMapper(), new PersonAttributeMapper(),
+    private Patient updatePatient(BahmniPatient bahmniPerson, Patient patient) {
+        patient = getPatientMapper().map(patient, bahmniPerson);
+        Patient savedPatient = getPatientService().savePatient(patient);
+        return savedPatient;
+    }
+
+    private void createCustomerForBilling(Patient patient, String patientId) {
+        String name = patient.getPersonName().getFullName();
+        billingService.tryCreateCustomer(name, patientId);
+    }
+
+    public void setPatientMapper(PatientMapper patientMapper) {
+        this.patientMapper = patientMapper;
+    }
+
+    private PatientMapper getPatientMapper() {
+        if(patientMapper == null) patientMapper =   new PatientMapper(new PersonNameMapper(), new BirthDateMapper(), new PersonAttributeMapper(),
 		        new AddressMapper(), new PatientIdentifierMapper(), new HealthCenterMapper());
+        return patientMapper;
 	}
 	
 	private boolean validatePost(SimpleObject post) throws ResponseException {
