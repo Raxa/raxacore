@@ -13,6 +13,7 @@
         <module>api</module>
         <module>omod</module>
         <module>openerp-service</module>
+        <module>data-migration</module>
     </modules>
 
     <properties>
