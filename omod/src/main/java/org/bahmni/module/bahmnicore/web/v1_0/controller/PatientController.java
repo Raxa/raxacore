@@ -25,18 +25,18 @@ import javax.servlet.http.HttpServletResponse;
  * the Drug resource.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/raxacore")
-public class RaxaPatientController extends BaseRestController {
-	
+@RequestMapping(value = "/rest/v1/bahmnicore")
+public class PatientController extends BaseRestController {
+
 	PatientService service;
 	
 	private static final String[] REQUIREDFIELDS = { "names", "gender" };
     private BillingService billingService;
-    private final Log log = LogFactory.getLog(RaxaPatientController.class);
     private PatientMapper patientMapper;
+    private final Log log = LogFactory.getLog(PatientController.class);
 
     @Autowired
-    public RaxaPatientController(BillingService billingService) {
+    public PatientController(BillingService billingService) {
         this.billingService = billingService;
     }
 

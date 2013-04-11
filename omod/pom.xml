@@ -9,7 +9,6 @@
     <artifactId>bahmnicore-omod</artifactId>
     <packaging>jar</packaging>
     <name>BahmniEMR Core OMOD</name>
-    <description>OpenMRS module project for BahmniEMR Core Module(Forked from Raxa core module-https://github.com/Raxa/raxacore.git)</description>
 
     <dependencies>
         <dependency>

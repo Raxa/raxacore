@@ -8,26 +8,6 @@
     <version>0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>BahmniEMR Core</name>
-    <description>Parent project for the BahmniEMR Core Module forked from Raxa core module(https://github.com/Raxa/raxacore.git)</description>
-    
-    <developers>
-        <developer>
-            <name>Raxa developers</name>
-        </developer>
-    </developers>
-
-    <organization>
-        <name>Raxa</name>
-        <url>http://raxa.org</url>
-    </organization>
-
-    <url>http://raxaemr.atlassian.net/wiki</url>
-
-    <scm>
-        <connection>scm:git:git@github.com:Raxa/raxacore.git</connection>
-        <developerConnection>scm:git:git@github.com:Raxa/raxacore.git</developerConnection>
-        <url>https://github.com/Raxa/raxacore.git</url>
-    </scm>
 
     <modules>
         <module>api</module>

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping(value = "/rest/v1/raxacore/unique/personname")
+@RequestMapping(value = "/rest/v1/bahmnicore/unique/personname")
 public class PersonNameSearchController extends BaseRestController {
 	
 	private PersonNameDao namesDao;

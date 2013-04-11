@@ -10,7 +10,6 @@
     <artifactId>bahmnicore-api</artifactId>
     <packaging>jar</packaging>
     <name>BahmniEMR Core API</name>
-    <description>API project for RaxaEMR Core Module</description>
 
     <dependencies>
         <dependency>

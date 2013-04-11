@@ -8,13 +8,13 @@
     <name>@MODULE_NAME@</name>
     <version>@MODULE_VERSION@</version>
     <package>@MODULE_PACKAGE@</package>
-    <author>Raxa</author>
+    <author>Bahmni</author>
     <description>
-        Provides core RaxaEMR services
+        Provides core BahmniEMR services
     </description>
     <activator>@MODULE_PACKAGE@.Activator</activator>
 
-    <updateURL>https://modules.raxa.org/modules/download/raxacore/update.rdf</updateURL>
+    <updateURL>https://example.com/modules/download/bahmnicore/update.rdf</updateURL>
     <!-- /Base Module Properties -->
 	
     <require_version>${openMRSVersion}</require_version>
@@ -42,23 +42,6 @@
     <privilege>
         <name>View Patient Lists</name>
         <description>Ability to view patient lists</description>
-    </privilege>
-
-    <privilege>
-        <name>Add Raxa Alerts</name>
-        <description>Ability to create raxa alerts</description>
-    </privilege>
-    <privilege>
-        <name>Delete Raxa Alerts</name>
-        <description>Ability to delete raxa alerts</description>
-    </privilege>
-    <privilege>
-        <name>Edit Raxa Alerts</name>
-        <description>Ability to edit raxa alerts</description>
-    </privilege>
-    <privilege>
-        <name>View Raxa Alerts</name>
-        <description>Ability to view raxa alerts</description>
     </privilege>
     
     <privilege>
