@@ -26,17 +26,17 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Controller
 @RequestMapping(value = "/rest/v1/bahmnicore")
-public class PatientController extends BaseRestController {
+public class BahmniPatientController extends BaseRestController {
 
 	PatientService service;
 	
 	private static final String[] REQUIREDFIELDS = { "names", "gender" };
     private BillingService billingService;
     private PatientMapper patientMapper;
-    private final Log log = LogFactory.getLog(PatientController.class);
+    private final Log log = LogFactory.getLog(BahmniPatientController.class);
 
     @Autowired
-    public PatientController(BillingService billingService) {
+    public BahmniPatientController(BillingService billingService) {
         this.billingService = billingService;
     }
 

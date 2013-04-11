@@ -20,7 +20,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class PatientControllerTest {
+public class BahmniPatientControllerTest {
     @Mock
     private PatientService patientService;
     @Mock
@@ -31,12 +31,12 @@ public class PatientControllerTest {
     @Mock
     private PatientMapper patientMapper;
 
-    private PatientController controller;
+    private BahmniPatientController controller;
 
     @Before
     public void setup() {
         initMocks(this);
-        controller = new PatientController(billingService);
+        controller = new BahmniPatientController(billingService);
         controller.setPatientService(patientService);
         controller.setPatientMapper(patientMapper);
     }
