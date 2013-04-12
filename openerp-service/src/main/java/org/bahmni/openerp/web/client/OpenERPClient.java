@@ -89,4 +89,9 @@ public class OpenERPClient {
 
         return rpcClient;
     }
+    public Object updateCustomerReceivables(String resource, Vector params) throws Exception {
+        return execute(resource, "update_customer_receivables", params);
+    }
+
+
 }

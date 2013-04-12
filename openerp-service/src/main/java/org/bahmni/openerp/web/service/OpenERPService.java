@@ -19,15 +19,16 @@ public class OpenERPService implements BillingService {
         this.openERPClient = client;
     }
 
-    public void tryCreateCustomer(String name, String patientId){
+    public void createCustomer(String name, String patientId) {
         try {
-            createCustomer(name, patientId);
+            createCustomerIfNotExisting(name, patientId);
         } catch (Exception ex) {
             logger.error(String.format("[%s, %s] : Failed to create customer in openERP", patientId, name), ex);
+            throw new RuntimeException("Failed to create customer in openERP patient:"+patientId+" name:"+ name ,ex);
         }
     }
 
-    public void createCustomer(String name, String patientId) throws Exception {
+    public void createCustomerIfNotExisting(String name, String patientId) throws Exception {
         if (noCustomersFound(findCustomerWithPatientReference(patientId))) {
             openERPClient.create("res.partner", name, patientId);
         } else

@@ -4,7 +4,6 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -15,11 +14,9 @@ public class OpenERPServiceIT extends TestCase {
     @Autowired
     OpenERPService openerpService;
 
-    public @Value("${host}") String host;
-    public @Value("${port}") int port;
-    public @Value("${database}") String database;
-    public @Value("${user}") String user;
-    public @Value("${password}") String password;
+    @Autowired
+    CustomerAccountService customerService;
+
 
 
     public void setUp() {
@@ -35,7 +32,17 @@ public class OpenERPServiceIT extends TestCase {
 
         String name= "Raman Singh";
         String patientId ="12245";
-        openerpService.tryCreateCustomer(name, patientId);
+        openerpService.createCustomer(name, patientId);
         openerpService.deleteCustomerWithPatientReference(patientId);
     }
+
+//    @Test
+//    public void shouldupdateCustomer() throws Exception {
+//        setUp();
+//
+//        String name= "Raman Singh";
+//        String patientId ="12245";
+//        customerService.updateCustomerReceivables(6,22f);
+//    }
+
 }

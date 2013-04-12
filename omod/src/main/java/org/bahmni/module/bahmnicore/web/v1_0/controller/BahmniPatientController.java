@@ -89,7 +89,11 @@ public class BahmniPatientController extends BaseRestController {
 
     private void createCustomerForBilling(Patient patient, String patientId) {
         String name = patient.getPersonName().getFullName();
-        billingService.tryCreateCustomer(name, patientId);
+        try{
+            billingService.createCustomer(name, patientId);
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
     }
 
     public void setPatientMapper(PatientMapper patientMapper) {
