@@ -111,7 +111,7 @@ public class BahmniPatientControllerTest {
 
         controller.createNewPatient(post, null, response);
 
-        verify(billingService).tryCreateCustomer("ram boo singh", identifier);
+        verify(billingService).createCustomer("ram boo singh", identifier);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class BahmniPatientControllerTest {
 
         controller.updatePatient("000111-939ddee-93diddd-99dj32d-9219dk", post, null, response);
 
-        verify(billingService, never()).tryCreateCustomer(anyString(), anyString());
+        verify(billingService, never()).createCustomer(anyString(), anyString());
     }
 
     @Test
@@ -139,6 +139,6 @@ public class BahmniPatientControllerTest {
         } catch (DAOException e) {
 
         }
-        verify(billingService, never()).tryCreateCustomer(anyString(), anyString());
+        verify(billingService, never()).createCustomer(anyString(), anyString());
     }
 }
