@@ -1,9 +1,9 @@
-package org.bahmni.module.bahmnicore.service;
+package org.bahmni.module.bahmnicore.service.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bahmni.module.bahmnicore.mapper.*;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
+import org.bahmni.module.bahmnicore.service.BahmniPatientService;
+import org.bahmni.module.bahmnicore.service.PatientImageService;
 import org.bahmni.module.billing.BillingService;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
@@ -12,41 +12,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
-import javax.xml.bind.DatatypeConverter;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-
 @Service
 @Lazy //to get rid of cyclic dependencies
 public class BahmniPatientServiceImpl implements BahmniPatientService {
     PatientService patientService;
     private BillingService billingService;
+    private PatientImageService patientImageService;
     private PatientMapper patientMapper;
-    private final Log log = LogFactory.getLog(BahmniPatientServiceImpl.class);
 
     @Autowired
-    public BahmniPatientServiceImpl(BillingService billingService) {
+    public BahmniPatientServiceImpl(BillingService billingService, PatientImageService patientImageService) {
         this.billingService = billingService;
+        this.patientImageService = patientImageService;
     }
 
     @Override
     public Patient createPatient(BahmniPatient bahmniPatient) {
         Patient patient = null;
-
         patient = savePatient(bahmniPatient, patient);
         createCustomerForBilling(patient, patient.getPatientIdentifier().toString());
-
-//        capturePhoto(bahmniPatient.getImage());
-
         return patient;
     }
 
-    private Patient savePatient(BahmniPatient bahmniPerson, Patient patient) {
-        patient = getPatientMapper().map(patient, bahmniPerson);
+    private Patient savePatient(BahmniPatient bahmniPatient, Patient patient) {
+        patient = getPatientMapper().map(patient, bahmniPatient);
         Patient savedPatient = getPatientService().savePatient(patient);
+        patientImageService.save(savedPatient.getPatientIdentifier().toString(), bahmniPatient.getImage());
         return savedPatient;
     }
 
@@ -77,19 +68,6 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
         if(patientMapper == null) patientMapper =   new PatientMapper(new PersonNameMapper(), new BirthDateMapper(), new PersonAttributeMapper(),
                 new AddressMapper(), new PatientIdentifierMapper(), new HealthCenterMapper());
         return patientMapper;
-    }
-
-    private void capturePhoto(String image) {
-        try {
-            String img64 = image.replace("data:image/png;base64,","");
-            byte[] decodedBytes = DatatypeConverter.parseBase64Binary(img64);
-            BufferedImage bfi = ImageIO.read(new ByteArrayInputStream(decodedBytes));
-            File outputfile = new File("/tmp/saved.gif");
-            ImageIO.write(bfi , "gif", outputfile);
-            bfi.flush();
-        } catch (IOException e) {
-            log.error("errorr", e);
-        }
     }
 
     @Override

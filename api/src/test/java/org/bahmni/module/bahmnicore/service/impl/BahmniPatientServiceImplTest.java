@@ -1,7 +1,8 @@
-package org.bahmni.module.bahmnicore.service;
+package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.mapper.PatientMapper;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
+import org.bahmni.module.bahmnicore.service.PatientImageService;
 import org.bahmni.module.bahmnicore.util.PatientMother;
 import org.bahmni.module.billing.BillingService;
 import org.junit.Before;
@@ -27,6 +28,8 @@ public class BahmniPatientServiceImplTest {
     @Mock
     private BillingService billingService;
     @Mock
+    private PatientImageService patientImageService;
+    @Mock
     private HttpServletResponse response;
     @Mock
     private PatientMapper patientMapper;
@@ -37,7 +40,7 @@ public class BahmniPatientServiceImplTest {
     @Before
     public void setup() {
         initMocks(this);
-        bahmniPatientService = new BahmniPatientServiceImpl(billingService);
+        bahmniPatientService = new BahmniPatientServiceImpl(billingService, patientImageService);
         bahmniPatientService.setPatientService(patientService);
         bahmniPatientService.setPatientMapper(patientMapper);
     }

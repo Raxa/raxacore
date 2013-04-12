@@ -35,6 +35,7 @@ public class BahmniPatient {
 		
 		age = extractor.extract("age");
 		patientIdentifier = extractor.extract("patientIdentifier");
+		image = extractor.extract("image");
 		gender = extractor.extract("gender");
 		SimpleObjectExtractor centerNameExtractor = new SimpleObjectExtractor(extractor.<LinkedHashMap> extract("centerID"));
 		centerName = centerNameExtractor.extract("name");
