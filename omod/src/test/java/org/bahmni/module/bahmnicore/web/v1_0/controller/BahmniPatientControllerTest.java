@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.mapper.PatientMapper;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
+import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.bahmni.module.bahmnicore.util.PatientMother;
 import org.bahmni.module.billing.BillingService;
 import org.junit.Before;
@@ -20,11 +21,14 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+
 public class BahmniPatientControllerTest {
     @Mock
     private PatientService patientService;
     @Mock
     private BillingService billingService;
+    @Mock
+    private BahmniPatientService bahmniPatientService;
     @Mock
     private HttpServletResponse response;
 

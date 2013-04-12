@@ -25,6 +25,10 @@ public class BahmniPatient {
 	private List<BahmniName> names = new ArrayList<BahmniName>();
 	
 	private String gender;
+
+    private String image;
+
+    private String uuid;
 	
 	public BahmniPatient(SimpleObject post) {
 		SimpleObjectExtractor extractor = new SimpleObjectExtractor(post);
@@ -89,5 +93,16 @@ public class BahmniPatient {
 	public String getGender() {
 		return gender;
 	}
-	
+
+    public String getImage() {
+        return image;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 }
