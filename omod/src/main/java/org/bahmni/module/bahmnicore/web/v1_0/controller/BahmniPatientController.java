@@ -26,8 +26,12 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping(value = "/rest/v1/bahmnicore")
 public class BahmniPatientController extends BaseRestController {
 
-	private static final String[] REQUIREDFIELDS = { "names", "gender" };
+	PatientService service;
     private BahmniPatientServiceImpl bahmniPatientService;
+
+	private static final String[] REQUIRED_FIELDS = { "names", "gender" };
+    private BillingService billingService;
+    private PatientMapper patientMapper;
 
     @Autowired
     public BahmniPatientController(BillingService billingService) {
@@ -70,9 +74,9 @@ public class BahmniPatientController extends BaseRestController {
     }
 
 	private boolean validatePost(SimpleObject post) throws ResponseException {
-		for (int i = 0; i < REQUIREDFIELDS.length; i++) {
-			if (post.get(REQUIREDFIELDS[i]) == null) {
-				throw new ResponseException("Required field " + REQUIREDFIELDS[i] + " not found") {};
+		for (int i = 0; i < REQUIRED_FIELDS.length; i++) {
+			if (post.get(REQUIRED_FIELDS[i]) == null) {
+				throw new ResponseException("Required field " + REQUIRED_FIELDS[i] + " not found") {};
 			}
 		}
 		return true;

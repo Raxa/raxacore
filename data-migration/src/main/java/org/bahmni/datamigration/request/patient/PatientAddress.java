@@ -1,4 +1,4 @@
-package org.bahmni.datamigration.request;
+package org.bahmni.datamigration.request.patient;
 
 public class PatientAddress {
     private  String address1;
