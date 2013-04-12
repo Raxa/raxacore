@@ -8,6 +8,9 @@ import org.bahmni.module.billing.BillingService;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
@@ -16,16 +19,18 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
+@Service
+@Lazy //to get rid of cyclic dependencies
 public class BahmniPatientServiceImpl implements BahmniPatientService {
     PatientService patientService;
     private BillingService billingService;
     private PatientMapper patientMapper;
     private final Log log = LogFactory.getLog(BahmniPatientServiceImpl.class);
 
+    @Autowired
     public BahmniPatientServiceImpl(BillingService billingService) {
         this.billingService = billingService;
     }
-
 
     @Override
     public Patient createPatient(BahmniPatient bahmniPatient) {
@@ -67,8 +72,6 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     public void setPatientMapper(PatientMapper patientMapper) {
         this.patientMapper = patientMapper;
     }
-
-
 
     private PatientMapper getPatientMapper() {
         if(patientMapper == null) patientMapper =   new PatientMapper(new PersonNameMapper(), new BirthDateMapper(), new PersonAttributeMapper(),

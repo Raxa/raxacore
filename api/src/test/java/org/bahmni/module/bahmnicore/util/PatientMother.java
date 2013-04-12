@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.util;
 
+import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -26,7 +27,6 @@ public class PatientMother {
                 .add("patientIdentifier", patientIdentifier);
     }
 
-
     public PatientMother withName(String firstName, String middleName, String lastName) {
         nameMother = nameMother.withName(firstName, middleName, lastName);
         return this;
@@ -42,6 +42,10 @@ public class PatientMother {
         patient.addIdentifier(new PatientIdentifier(patientIdentifier, null, null));
         patient.addName(nameMother.build());
         return patient;
+    }
+
+    public BahmniPatient buildBahmniPatient() {
+        return new BahmniPatient(buildSimpleObject());
     }
 }
 

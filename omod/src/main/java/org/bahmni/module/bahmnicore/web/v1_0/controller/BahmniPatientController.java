@@ -1,11 +1,8 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.mapper.PatientMapper;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
-import org.bahmni.module.bahmnicore.service.BahmniPatientServiceImpl;
-import org.bahmni.module.billing.BillingService;
+import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.openmrs.Patient;
-import org.openmrs.api.PatientService;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
@@ -26,21 +23,15 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping(value = "/rest/v1/bahmnicore")
 public class BahmniPatientController extends BaseRestController {
 
-	PatientService service;
-    private BahmniPatientServiceImpl bahmniPatientService;
+
+    private BahmniPatientService bahmniPatientService;
 
 	private static final String[] REQUIRED_FIELDS = { "names", "gender" };
-    private BillingService billingService;
-    private PatientMapper patientMapper;
 
     @Autowired
-    public BahmniPatientController(BillingService billingService) {
-        this.bahmniPatientService = new BahmniPatientServiceImpl(billingService);
+    public BahmniPatientController(BahmniPatientService bahmniPatientService) {
+        this.bahmniPatientService = bahmniPatientService;
     }
-
-    public void setPatientService(PatientService patientService) {
-		this.bahmniPatientService.setPatientService(patientService);
-	}
 
     @RequestMapping(method = RequestMethod.POST, value = "/patient")
 	@WSDoc("Save New Patient")
@@ -50,7 +41,6 @@ public class BahmniPatientController extends BaseRestController {
 		validatePost(post);
 		BahmniPatient bahmniPatient = new BahmniPatient(post);
         Patient patient = bahmniPatientService.createPatient(bahmniPatient);
-
         return RestUtil.created(response, getPatientAsSimpleObject(patient));
 	}
 
@@ -62,18 +52,12 @@ public class BahmniPatientController extends BaseRestController {
 		validatePost(post);
 		BahmniPatient bahmniPatient = new BahmniPatient(post);
         bahmniPatient.setUuid(patientUuid);
-
         Patient patient = bahmniPatientService.updatePatient(bahmniPatient);
-
         return RestUtil.created(response, getPatientAsSimpleObject(patient));
 	}
 
 
-    public void setPatientMapper(PatientMapper patientMapper) {
-        this.bahmniPatientService.setPatientMapper(patientMapper);
-    }
-
-	private boolean validatePost(SimpleObject post) throws ResponseException {
+    private boolean validatePost(SimpleObject post) throws ResponseException {
 		for (int i = 0; i < REQUIRED_FIELDS.length; i++) {
 			if (post.get(REQUIRED_FIELDS[i]) == null) {
 				throw new ResponseException("Required field " + REQUIRED_FIELDS[i] + " not found") {};
@@ -89,5 +73,4 @@ public class BahmniPatientController extends BaseRestController {
 		obj.add("identifier", p.getPatientIdentifier().getIdentifier());
 		return obj;
 	}
-	
 }
