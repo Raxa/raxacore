@@ -1,69 +1,44 @@
 package org.bahmni.openerp.web.service;
 
-import org.bahmni.openerp.web.client.OpenERPClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import java.util.Vector;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 
 public class OpenERPServiceTest {
+
+    private OpenERPService openERPService;
     @Mock
-    OpenERPClient openERPClient;
+    CustomerAccountService customerAccountService;
+    @Mock
+    private CustomerService customerService;
 
     @Before
     public void setUp()  {
         initMocks(this);
+        openERPService = new OpenERPService(customerService, customerAccountService);
     }
 
     @Test
-    public void shouldCreateNewCustomerIfNotExisting() throws Exception {
-        String name = "Ram Singh";
-        String patientId = "12345";
+    public void shouldCreateCustomer() {
+        String name = "name";
+        String patientId = "12344";
 
-        Object args[]={"ref","=","12345"};
-        Vector searchparams = new Vector();
-        searchparams.addElement(args);
-
-        Object[] results = new Object[]{};
-
-        when(openERPClient.search((String)any(), (Vector)any())).thenReturn(results);
-
-        OpenERPService openERPService = new OpenERPService(openERPClient);
         openERPService.createCustomer(name, patientId);
 
-       verify(openERPClient).create((String) any(),(String) any(), (String) any());
+        verify(customerService).create(name, patientId);
     }
 
     @Test
-    public void createCustomerShouldThrowExceptionIfCustomerAlreadyExisting() throws Exception {
-        String name = "Ram Singh";
+    public void shouldUpdatePatientBalanceForExistingPatients() {
         String patientId = "12345";
+        float balance = 56;
 
-        Object args[]={"ref","=","12345"};
-        Vector searchparams = new Vector();
-        searchparams.addElement(args);
+        openERPService.updateCustomerBalance(patientId, balance);
 
-        Object[] results = new Object[]{new Object()};
-
-        when(openERPClient.search((String)any(), (Vector)any())).thenReturn(results);
-
-        OpenERPService openERPService = new OpenERPService(openERPClient);
-        try{
-          openERPService.createCustomerIfNotExisting(name, patientId);
-          assert(false);
-        }catch(Exception e){
-            assert(true);
-            assertEquals("Customer with id "+patientId+" already exists",e.getMessage());
-        }
+        verify(customerAccountService).updateCustomerReceivables(patientId, balance);
     }
-
-
 }

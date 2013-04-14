@@ -146,4 +146,26 @@ public class BahmniPatientServiceImplTest {
 
         verify(billingService, never()).createCustomer(anyString(), anyString());
     }
+
+    @Test
+    public void shouldUpdateOpenERPWithBalanceWhenPatientHasBalance() {
+        PatientMother patientMother = new PatientMother().withBalance("123");
+        when(patientMapper.map(any(Patient.class), any(BahmniPatient.class))).thenReturn(patientMother.build());
+        when(patientService.savePatient(any(Patient.class))).thenReturn(patientMother.build());
+
+        Patient patient = bahmniPatientService.createPatient(patientMother.buildBahmniPatient());
+
+        verify(billingService).updateCustomerBalance(patient.getPatientIdentifier().toString(), 123);
+    }
+
+    @Test
+    public void shouldNotUpdateOpenERPWithBalanceWhenPatientHasNoBalance() {
+        PatientMother patientMother = new PatientMother();
+        when(patientMapper.map(any(Patient.class), any(BahmniPatient.class))).thenReturn(patientMother.build());
+        when(patientService.savePatient(any(Patient.class))).thenReturn(patientMother.build());
+
+        bahmniPatientService.createPatient(patientMother.buildBahmniPatient());
+
+        verify(billingService, never()).updateCustomerBalance(anyString(), anyDouble());
+    }
 }

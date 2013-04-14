@@ -30,8 +30,12 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     public Patient createPatient(BahmniPatient bahmniPatient) {
         Patient patient = null;
         patient = savePatient(bahmniPatient, patient);
-        createCustomerForBilling(patient, patient.getPatientIdentifier().toString());
+        createCustomerForBilling(patient, bahmniPatient);
         return patient;
+    }
+
+    private boolean customerHasBalance(BahmniPatient patient) {
+        return !Double.isNaN(patient.getBalance());
     }
 
     private Patient savePatient(BahmniPatient bahmniPatient, Patient patient) {
@@ -51,10 +55,14 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
         return patientService;
     }
 
-    private void createCustomerForBilling(Patient patient, String patientId) {
+    private void createCustomerForBilling(Patient patient, BahmniPatient bahmniPatient) {
         String name = patient.getPersonName().getFullName();
+        String patientId = patient.getPatientIdentifier().toString();
         try{
             billingService.createCustomer(name, patientId);
+            if(customerHasBalance(bahmniPatient)){
+                billingService.updateCustomerBalance(patientId, bahmniPatient.getBalance());
+            }
         }catch(Exception ex){
             ex.printStackTrace();
         }

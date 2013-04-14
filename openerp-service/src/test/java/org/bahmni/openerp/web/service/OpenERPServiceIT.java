@@ -14,18 +14,6 @@ public class OpenERPServiceIT extends TestCase {
     @Autowired
     OpenERPService openerpService;
 
-    @Autowired
-    CustomerAccountService customerService;
-
-
-
-    public void setUp() {
-    }
-
-    public void tearDown()  {
-
-    }
-
     @Test
     public void shouldCreateFindAndDeleteCustomer() throws Exception {
         setUp();
@@ -33,7 +21,8 @@ public class OpenERPServiceIT extends TestCase {
         String name= "Raman Singh";
         String patientId ="12245";
         openerpService.createCustomer(name, patientId);
-        openerpService.deleteCustomerWithPatientReference(patientId);
+
+        openerpService.deleteCustomer(patientId);
     }
 
 //    @Test

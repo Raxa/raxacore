@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.model;
 
+import org.apache.log4j.Logger;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
 import java.text.SimpleDateFormat;
@@ -9,30 +10,24 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class BahmniPatient {
-	
+
 	private Date birthdate;
-	
 	private Integer age;
-	
 	private String centerName;
-	
 	private String patientIdentifier;
-	
 	private List<BahmniPersonAttribute> attributes = new ArrayList<BahmniPersonAttribute>();
-	
 	private List<BahmniAddress> addresses = new ArrayList<BahmniAddress>();
-	
 	private List<BahmniName> names = new ArrayList<BahmniName>();
-	
 	private String gender;
-
     private String image;
-
     private String uuid;
-	
-	public BahmniPatient(SimpleObject post) {
+    private String balance;
+    private static Logger logger = Logger.getLogger(BahmniPatient.class);
+
+    public BahmniPatient(SimpleObject post) {
 		SimpleObjectExtractor extractor = new SimpleObjectExtractor(post);
-		
+
+        balance = extractor.extract("balance");
 		age = extractor.extract("age");
 		patientIdentifier = extractor.extract("patientIdentifier");
 		image = extractor.extract("image");
@@ -44,7 +39,7 @@ public class BahmniPatient {
 			birthdate = new SimpleDateFormat("dd-MM-yyyy").parse(extractor.<String> extract("birthdate"));
 		}
 		catch (Exception e) {
-			//do something
+			logger.warn(e);
 		}
 		
 		List<LinkedHashMap> nameList = extractor.extract("names");
@@ -105,5 +100,9 @@ public class BahmniPatient {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public double getBalance() {
+        return balance == null ? Double.NaN : Double.parseDouble(balance);
     }
 }

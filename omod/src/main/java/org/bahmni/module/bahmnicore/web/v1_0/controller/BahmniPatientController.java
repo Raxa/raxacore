@@ -47,7 +47,8 @@ public class BahmniPatientController extends BaseRestController {
     @RequestMapping(method = RequestMethod.POST, value = "/patient/{patientUuid}")
     @WSDoc("Update existing patient")
 	@ResponseBody
-	public Object updatePatient(@PathVariable("patientUuid") String patientUuid, @RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
+	public Object updatePatient(@PathVariable("patientUuid") String patientUuid, @RequestBody SimpleObject post,
+                                HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
 		validatePost(post);
 		BahmniPatient bahmniPatient = new BahmniPatient(post);
@@ -55,7 +56,6 @@ public class BahmniPatientController extends BaseRestController {
         Patient patient = bahmniPatientService.updatePatient(bahmniPatient);
         return RestUtil.created(response, getPatientAsSimpleObject(patient));
 	}
-
 
     private boolean validatePost(SimpleObject post) throws ResponseException {
 		for (int i = 0; i < REQUIRED_FIELDS.length; i++) {
