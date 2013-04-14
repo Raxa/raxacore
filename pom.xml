@@ -14,6 +14,7 @@
         <module>omod</module>
         <module>openerp-service</module>
         <module>data-migration</module>
+        <module>jss-old-data</module>
     </modules>
 
     <properties>

@@ -1,7 +1,31 @@
 package org.bahmni.datamigration.request.patient;
 
 public class PatientAttribute {
-    private String attributeType = "cd7b242c-9790-11e2-99c1-005056b562c5";
+    private String attributeType;
     private String name;
     private String value;
+
+    public String getAttributeType() {
+        return attributeType;
+    }
+
+    public void setAttributeType(String attributeType) {
+        this.attributeType = attributeType;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

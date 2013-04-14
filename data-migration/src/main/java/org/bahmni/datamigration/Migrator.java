@@ -2,12 +2,13 @@ package org.bahmni.datamigration;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bahmni.datamigration.request.referencedata.PersonAttribute;
-import org.bahmni.datamigration.request.referencedata.PersonAttributeRequest;
+import org.apache.log4j.Logger;
+import org.bahmni.datamigration.request.patient.PatientRequest;
 import org.bahmni.datamigration.response.AuthenticationResponse;
-import org.codehaus.jackson.JsonParseException;
+import org.bahmni.datamigration.response.PersonAttributeType;
+import org.bahmni.datamigration.response.PersonAttributeTypes;
+import org.bahmni.datamigration.session.AllPatientAttributeTypes;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,7 +21,6 @@ import sun.misc.BASE64Encoder;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 
 public class Migrator {
     private RestTemplate restTemplate = new RestTemplate();
@@ -31,48 +31,59 @@ public class Migrator {
     private String userId;
     private String password;
     private String sessionId;
+    private static Logger logger = Logger.getLogger(Migrator.class);
+    private AllPatientAttributeTypes allPatientAttributeTypes;
 
-    public static void main(String[] args) throws URISyntaxException, IOException {
-        String openMRSAPIUrl = "http://172.18.2.1:8080/openmrs/ws/rest/v1/";
-        Migrator migrator = new Migrator(openMRSAPIUrl, "admin", "P@ssw0rd");
-        migrator.authenticate();
-        migrator.loadReferences();
-    }
-
-    public Migrator(String baseURL, String userId, String password) {
+    public Migrator(String baseURL, String userId, String password) throws IOException, URISyntaxException {
         this.baseURL = baseURL;
         this.userId = userId;
         this.password = password;
+
+        authenticate();
+        loadReferences();
     }
 
     public void authenticate() throws URISyntaxException, IOException {
-        HttpHeaders requestHeaders = new HttpHeaders();
         String encodedLoginInfo = base64Encoder.encode((userId + ":" + password).getBytes());
+        HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.set("Authorization", "Basic " + encodedLoginInfo);
         HttpEntity requestEntity = new HttpEntity<MultiValueMap>(new LinkedMultiValueMap<String, String>(), requestHeaders);
-        String authURL = baseURL + "session";
+        String authURL = baseURL + "allPatientAttributeTypes";
         ResponseEntity<String> exchange = restTemplate.exchange(new URI(authURL), HttpMethod.GET, requestEntity, String.class);
+        logger.debug(exchange.getBody());
         AuthenticationResponse authenticationResponse = objectMapper.readValue(exchange.getBody(), AuthenticationResponse.class);
         sessionId = authenticationResponse.getSessionId();
     }
 
-    public void loadReferences() throws URISyntaxException, IOException {
+    private void loadReferences() throws URISyntaxException, IOException {
+        allPatientAttributeTypes = new AllPatientAttributeTypes();
+        String jsonResponse = executeHTTPMethod("personattributetype?v=full", HttpMethod.GET);
+        PersonAttributeTypes personAttributeTypes = objectMapper.readValue(jsonResponse, PersonAttributeTypes.class);
+        for (PersonAttributeType personAttributeType : personAttributeTypes.getResults())
+            allPatientAttributeTypes.addPersonAttributeType(personAttributeType.getName(), personAttributeType.getUuid());
+    }
+
+    public AllPatientAttributeTypes getAllPatientAttributeTypes() {
+        return allPatientAttributeTypes;
+    }
+
+    private String executeHTTPMethod(String urlSuffix, HttpMethod method) throws URISyntaxException {
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.set("Cookie", "JSESSIONID=" + sessionId);
-        String referencesURL = baseURL + "personattributetype?v=full";
+        String referencesURL = baseURL + urlSuffix;
         HttpEntity requestEntity = new HttpEntity<MultiValueMap>(new LinkedMultiValueMap<String, String>(), requestHeaders);
-        ResponseEntity<String> exchange = restTemplate.exchange(new URI(referencesURL), HttpMethod.GET, requestEntity, String.class);
-        System.out.println(exchange.getBody());
+        ResponseEntity<String> exchange = restTemplate.exchange(new URI(referencesURL), method, requestEntity, String.class);
+        logger.debug(exchange.getBody());
+        return exchange.getBody();
     }
 
-    public void migratePatient() {
-//        restTemplate.postForLocation(url, );
-    }
-
-    public void migratePersonAttribute(PersonAttributeRequest request) {
+    public void migratePatient(PatientReader patientReader) {
         try {
-            String jsonRequest = objectMapper.writeValueAsString(request);
-            restTemplate.postForLocation(baseURL, request);
+            PatientRequest patientRequest;
+            while ((patientRequest = patientReader.nextPatient()) != null) {
+                String jsonRequest = objectMapper.writeValueAsString(patientRequest);
+                restTemplate.postForLocation(baseURL, jsonRequest);
+            }
         } catch (IOException e) {
             log.error(e);
         }

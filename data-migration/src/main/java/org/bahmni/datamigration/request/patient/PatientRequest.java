@@ -32,12 +32,43 @@ import java.util.List;
 //        value: "sfgfdg"
 
 public class PatientRequest {
-    private List<Names> names = new ArrayList<Names>();
+    private List<Name> names = new ArrayList<Name>();
     private Integer age;
     private String birthdate;
     private String gender;
     private String patientIdentifier;
-    private String centerID;
+    private CenterId centerID;
     private List<PatientAddress> patientAddress = new ArrayList<PatientAddress>();
     private List<PatientAttribute> attributes = new ArrayList<PatientAttribute>();
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public void setBirthdate(String birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void setPatientIdentifier(String patientIdentifier) {
+        this.patientIdentifier = patientIdentifier;
+    }
+
+    public void setCenterID(CenterId centerID) {
+        this.centerID = centerID;
+    }
+
+    public void setName(String givenName, String familyName) {
+        Name name = new Name();
+        name.setGivenName(givenName);
+        name.setFamilyName(familyName);
+        names.add(name);
+    }
+
+    public void addPatientAttribute(PatientAttribute patientAttribute) {
+        attributes.add(patientAttribute);
+    }
 }
