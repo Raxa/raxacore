@@ -38,7 +38,7 @@ public class PatientRequest {
     private String gender;
     private String patientIdentifier;
     private CenterId centerID;
-    private List<PatientAddress> patientAddress = new ArrayList<PatientAddress>();
+    private List<PatientAddress> addresses = new ArrayList<PatientAddress>();
     private List<PatientAttribute> attributes = new ArrayList<PatientAttribute>();
 
     public void setAge(Integer age) {
@@ -70,5 +70,49 @@ public class PatientRequest {
 
     public void addPatientAttribute(PatientAttribute patientAttribute) {
         attributes.add(patientAttribute);
+    }
+
+    public List<Name> getNames() {
+        return names;
+    }
+
+    public void setNames(List<Name> names) {
+        this.names = names;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public String getBirthdate() {
+        return birthdate;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public String getPatientIdentifier() {
+        return patientIdentifier;
+    }
+
+    public CenterId getCenterID() {
+        return centerID;
+    }
+
+    public List<PatientAddress> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<PatientAddress> addresses) {
+        this.addresses = addresses;
+    }
+
+    public List<PatientAttribute> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<PatientAttribute> attributes) {
+        this.attributes = attributes;
     }
 }

@@ -48,9 +48,9 @@ public class Migrator {
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.set("Authorization", "Basic " + encodedLoginInfo);
         HttpEntity requestEntity = new HttpEntity<MultiValueMap>(new LinkedMultiValueMap<String, String>(), requestHeaders);
-        String authURL = baseURL + "allPatientAttributeTypes";
+        String authURL = baseURL + "session";
         ResponseEntity<String> exchange = restTemplate.exchange(new URI(authURL), HttpMethod.GET, requestEntity, String.class);
-        logger.debug(exchange.getBody());
+        logger.info(exchange.getBody());
         AuthenticationResponse authenticationResponse = objectMapper.readValue(exchange.getBody(), AuthenticationResponse.class);
         sessionId = authenticationResponse.getSessionId();
     }
@@ -73,19 +73,27 @@ public class Migrator {
         String referencesURL = baseURL + urlSuffix;
         HttpEntity requestEntity = new HttpEntity<MultiValueMap>(new LinkedMultiValueMap<String, String>(), requestHeaders);
         ResponseEntity<String> exchange = restTemplate.exchange(new URI(referencesURL), method, requestEntity, String.class);
-        logger.debug(exchange.getBody());
+        logger.info(exchange.getBody());
         return exchange.getBody();
     }
 
     public void migratePatient(PatientReader patientReader) {
-        try {
-            PatientRequest patientRequest;
-            while ((patientRequest = patientReader.nextPatient()) != null) {
+        String url = baseURL + "bahmnicore/patient";
+        int i = 0;
+        while (true) {
+            try {
+                i++;
+                if (i > 10) break;
+
+                PatientRequest patientRequest = patientReader.nextPatient();
+                if (patientRequest == null) break;
+
                 String jsonRequest = objectMapper.writeValueAsString(patientRequest);
-                restTemplate.postForLocation(baseURL, jsonRequest);
+                logger.debug(jsonRequest);
+                restTemplate.postForLocation(url, jsonRequest);
+            } catch (Exception e) {
+                log.error(e);
             }
-        } catch (IOException e) {
-            log.error(e);
         }
     }
 }

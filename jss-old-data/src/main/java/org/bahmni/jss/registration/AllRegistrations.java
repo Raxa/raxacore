@@ -11,6 +11,7 @@ import org.bahmni.datamigration.session.AllPatientAttributeTypes;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 
 public class AllRegistrations implements PatientReader {
     private CSVReader reader;
@@ -18,11 +19,21 @@ public class AllRegistrations implements PatientReader {
     private AllLookupValues allCastes;
 
     public AllRegistrations(String csvLocation, String fileName, AllPatientAttributeTypes allPatientAttributeTypes, AllLookupValues allCastes) throws IOException {
+        File file = new File(csvLocation, fileName);
+        FileReader fileReader = new FileReader(file);
+
+        init(allPatientAttributeTypes, allCastes, fileReader);
+    }
+
+    public AllRegistrations(AllPatientAttributeTypes allPatientAttributeTypes, AllLookupValues allCastes, Reader reader) throws IOException {
+        init(allPatientAttributeTypes, allCastes, reader);
+    }
+
+    private void init(AllPatientAttributeTypes allPatientAttributeTypes, AllLookupValues allCastes, Reader reader) throws IOException {
+        this.reader = new CSVReader(reader, ',');
+        this.reader.readNext(); //skip row
         this.allPatientAttributeTypes = allPatientAttributeTypes;
         this.allCastes = allCastes;
-        File file = new File(csvLocation, fileName);
-        reader = new CSVReader(new FileReader(file), ',');
-        reader.readNext(); //skip row
     }
 
     public PatientRequest nextPatient() throws IOException {
@@ -55,5 +66,9 @@ public class AllRegistrations implements PatientReader {
         patientAttribute.setName(name);
         patientAttribute.setValue(lookupValueProvider == null ? value : lookupValueProvider.getLookUpValue(value));
         patientRequest.addPatientAttribute(patientAttribute);
+    }
+
+    public void done() throws IOException {
+        reader.close();
     }
 }
