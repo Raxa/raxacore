@@ -9,14 +9,10 @@ import org.bahmni.datamigration.response.PersonAttributeType;
 import org.bahmni.datamigration.response.PersonAttributeTypes;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
 import java.net.URI;
@@ -26,29 +22,22 @@ public class Migrator {
     private RestTemplate restTemplate = new RestTemplate();
     private static ObjectMapper objectMapper = new ObjectMapper();
     private static final Log log = LogFactory.getLog(Migrator.class);
-    private static BASE64Encoder base64Encoder = new BASE64Encoder();
-    private String baseURL;
-    private String userId;
-    private String password;
     private String sessionId;
     private static Logger logger = Logger.getLogger(Migrator.class);
     private AllPatientAttributeTypes allPatientAttributeTypes;
+    private OpenMRSRESTConnection openMRSRESTConnection;
 
-    public Migrator(String baseURL, String userId, String password) throws IOException, URISyntaxException {
-        this.baseURL = baseURL;
-        this.userId = userId;
-        this.password = password;
-
+    public Migrator(OpenMRSRESTConnection openMRSRESTConnection) throws IOException, URISyntaxException {
+        this.openMRSRESTConnection = openMRSRESTConnection;
         authenticate();
         loadReferences();
     }
 
     public void authenticate() throws URISyntaxException, IOException {
-        String encodedLoginInfo = base64Encoder.encode((userId + ":" + password).getBytes());
         HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.set("Authorization", "Basic " + encodedLoginInfo);
+        requestHeaders.set("Authorization", "Basic " + openMRSRESTConnection.encodedLogin());
         HttpEntity requestEntity = new HttpEntity<MultiValueMap>(new LinkedMultiValueMap<String, String>(), requestHeaders);
-        String authURL = baseURL + "session";
+        String authURL = openMRSRESTConnection.getRestApiUrl() + "session";
         ResponseEntity<String> exchange = restTemplate.exchange(new URI(authURL), HttpMethod.GET, requestEntity, String.class);
         logger.info(exchange.getBody());
         AuthenticationResponse authenticationResponse = objectMapper.readValue(exchange.getBody(), AuthenticationResponse.class);
@@ -68,17 +57,22 @@ public class Migrator {
     }
 
     private String executeHTTPMethod(String urlSuffix, HttpMethod method) throws URISyntaxException {
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.set("Cookie", "JSESSIONID=" + sessionId);
-        String referencesURL = baseURL + urlSuffix;
+        HttpHeaders requestHeaders = getHttpHeaders();
+        String referencesURL = openMRSRESTConnection.getRestApiUrl() + urlSuffix;
         HttpEntity requestEntity = new HttpEntity<MultiValueMap>(new LinkedMultiValueMap<String, String>(), requestHeaders);
         ResponseEntity<String> exchange = restTemplate.exchange(new URI(referencesURL), method, requestEntity, String.class);
         logger.info(exchange.getBody());
         return exchange.getBody();
     }
 
+    private HttpHeaders getHttpHeaders() {
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.set("Cookie", "JSESSIONID=" + sessionId);
+        return requestHeaders;
+    }
+
     public void migratePatient(PatientReader patientReader) {
-        String url = baseURL + "bahmnicore/patient";
+        String url = openMRSRESTConnection.getRestApiUrl() + "bahmnicore/patient";
         int i = 0;
         while (true) {
             try {
@@ -90,7 +84,12 @@ public class Migrator {
 
                 String jsonRequest = objectMapper.writeValueAsString(patientRequest);
                 logger.debug(jsonRequest);
-                restTemplate.postForLocation(url, jsonRequest);
+
+                HttpHeaders httpHeaders = getHttpHeaders();
+                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+                HttpEntity entity = new HttpEntity(patientRequest, httpHeaders);
+                ResponseEntity<String> out = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+                logger.debug(out.getBody());
             } catch (Exception e) {
                 log.error(e);
             }

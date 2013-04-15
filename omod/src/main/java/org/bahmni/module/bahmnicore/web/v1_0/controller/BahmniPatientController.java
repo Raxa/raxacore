@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.openmrs.Patient;
@@ -22,8 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping(value = "/rest/v1/bahmnicore")
 public class BahmniPatientController extends BaseRestController {
-
-
+    private static Logger logger = Logger.getLogger(BahmniPatientController.class);
     private BahmniPatientService bahmniPatientService;
 
 	private static final String[] REQUIRED_FIELDS = { "names", "gender" };
@@ -38,11 +38,15 @@ public class BahmniPatientController extends BaseRestController {
 	@ResponseBody
 	public Object createNewPatient(@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
-		validatePost(post);
-		BahmniPatient bahmniPatient = new BahmniPatient(post);
-        Patient patient = bahmniPatientService.createPatient(bahmniPatient);
-        return RestUtil.created(response, getPatientAsSimpleObject(patient));
-	}
+        try {
+            validatePost(post);
+            BahmniPatient bahmniPatient = new BahmniPatient(post);
+            Patient patient = bahmniPatientService.createPatient(bahmniPatient);
+            return RestUtil.created(response, getPatientAsSimpleObject(patient));
+        } catch (Exception e) {
+            logger.error("Create patient failed", e);
+        }
+    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/patient/{patientUuid}")
     @WSDoc("Update existing patient")
@@ -50,12 +54,16 @@ public class BahmniPatientController extends BaseRestController {
 	public Object updatePatient(@PathVariable("patientUuid") String patientUuid, @RequestBody SimpleObject post,
                                 HttpServletRequest request, HttpServletResponse response)
 	        throws ResponseException {
-		validatePost(post);
-		BahmniPatient bahmniPatient = new BahmniPatient(post);
-        bahmniPatient.setUuid(patientUuid);
-        Patient patient = bahmniPatientService.updatePatient(bahmniPatient);
-        return RestUtil.created(response, getPatientAsSimpleObject(patient));
-	}
+        try {
+            validatePost(post);
+            BahmniPatient bahmniPatient = new BahmniPatient(post);
+            bahmniPatient.setUuid(patientUuid);
+            Patient patient = bahmniPatientService.updatePatient(bahmniPatient);
+            return RestUtil.created(response, getPatientAsSimpleObject(patient));
+        } catch (Exception e) {
+            logger.error("Update patient failed", e);
+        }
+    }
 
     private boolean validatePost(SimpleObject post) throws ResponseException {
 		for (int i = 0; i < REQUIRED_FIELDS.length; i++) {

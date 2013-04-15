@@ -1,6 +1,7 @@
 package org.bahmni.jss;
 
 import org.bahmni.datamigration.Migrator;
+import org.bahmni.datamigration.OpenMRSRESTConnection;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;
 import org.bahmni.jss.registration.AllLookupValues;
 import org.bahmni.jss.registration.AllRegistrations;
@@ -13,22 +14,27 @@ public class JSSMigrator {
     private final AllLookupValues allCastes;
     private String csvLocation;
 
+    private static OpenMRSRESTConnection QA = new OpenMRSRESTConnection("172.18.2.1", "admin", "P@ssw0rd");
+    private static OpenMRSRESTConnection Localhost = new OpenMRSRESTConnection("localhost", "admin", "Admin123");
+
     public static void main(String[] args) throws URISyntaxException, IOException {
-        String openMRSAPIUrl = "http://172.18.2.1:8080/openmrs/ws/rest/v1/";
+        Localhost.getRestApiUrl();
         String csvLocation = "/Users/Vsingh/Projects/bhamni";
-        JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_Education.csv", "LU_Occupation.csv", "LU_Class.csv", openMRSAPIUrl, "admin", "P@ssw0rd");
+        JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_Education.csv", "LU_Occupation.csv", "LU_Class.csv", Localhost);
 
         jssMigrator.migratePatient("RegistrationMaster.csv");
     }
 
-    public JSSMigrator(String csvLocation, String casteFileName, String educationFileName, String occupationFileName, String classFileName, String openMRSAPIUrl, String userId, String password) throws IOException, URISyntaxException {
+    public JSSMigrator(String csvLocation, String casteFileName, String educationFileName, String occupationFileName, String classFileName,
+                       OpenMRSRESTConnection openMRSRESTConnection) throws IOException,
+            URISyntaxException {
         this.csvLocation = csvLocation;
         allCastes = new AllLookupValues(csvLocation, casteFileName);
         AllLookupValues allEducations = new AllLookupValues(csvLocation, educationFileName);
         AllLookupValues allOccupations = new AllLookupValues(csvLocation, occupationFileName);
         AllLookupValues allClasses = new AllLookupValues(csvLocation, classFileName);
 
-        migrator = new Migrator(openMRSAPIUrl, userId, password);
+        migrator = new Migrator(openMRSRESTConnection);
     }
 
     public void migratePatient(String csvFileName) throws IOException {
