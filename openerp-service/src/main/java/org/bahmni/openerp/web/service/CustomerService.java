@@ -18,13 +18,12 @@ public class CustomerService {
         this.openERPClient = openERPClient;
     }
 
-    public void create(String name, String patientId){
+    public void create(String name, String patientId) throws Exception {
         try {
             createCustomerIfNotExisting(name, patientId);
-        } catch (Exception ex) {
-            String message = String.format("[%s, %s] : Failed to create customer in openERP", patientId, name);
-            logger.error(message, ex);
-            throw new RuntimeException(message,ex);
+        } catch (Exception exception) {
+            logger.error(String.format("[%s, %s] : Failed to create customer in openERP", patientId, name), exception);
+            throw exception;
         }
     }
 

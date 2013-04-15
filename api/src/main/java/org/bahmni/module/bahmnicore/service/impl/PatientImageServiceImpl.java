@@ -29,7 +29,7 @@ public class PatientImageServiceImpl implements PatientImageService {
             ImageIO.write(bfi , patientImagesFormat, outputfile);
             bfi.flush();
         } catch (IOException e) {
-            log.error("Could not save patient image for patient id " + patientIdentifier, e);
+            log.error(String.format("[%s] : Could not save patient image", patientIdentifier), e);
         }
     }
 }

@@ -56,5 +56,4 @@ public class CustomerServiceTest {
             assertEquals("Customer with id " + patientId + " already exists", e.getMessage());
         }
     }
-
 }

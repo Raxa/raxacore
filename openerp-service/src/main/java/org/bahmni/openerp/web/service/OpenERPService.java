@@ -16,11 +16,11 @@ public class OpenERPService implements BillingService {
         this.customerAccountService = customerAccountService;
     }
 
-    public void createCustomer(String name, String patientId) {
+    public void createCustomer(String name, String patientId) throws Exception {
         customerService.create(name, patientId);
     }
 
-    public void updateCustomerBalance(String patientId, double balance){
+    public void updateCustomerBalance(String patientId, double balance) throws Exception {
         customerAccountService.updateCustomerReceivables(patientId, balance);
     }
 

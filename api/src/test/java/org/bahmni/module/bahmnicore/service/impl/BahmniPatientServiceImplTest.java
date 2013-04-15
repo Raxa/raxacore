@@ -148,7 +148,7 @@ public class BahmniPatientServiceImplTest {
     }
 
     @Test
-    public void shouldUpdateOpenERPWithBalanceWhenPatientHasBalance() {
+    public void shouldUpdateOpenERPWithBalanceWhenPatientHasBalance() throws Exception {
         PatientMother patientMother = new PatientMother().withBalance("123");
         when(patientMapper.map(any(Patient.class), any(BahmniPatient.class))).thenReturn(patientMother.build());
         when(patientService.savePatient(any(Patient.class))).thenReturn(patientMother.build());
@@ -159,7 +159,7 @@ public class BahmniPatientServiceImplTest {
     }
 
     @Test
-    public void shouldNotUpdateOpenERPWithBalanceWhenPatientHasNoBalance() {
+    public void shouldNotUpdateOpenERPWithBalanceWhenPatientHasNoBalance() throws Exception {
         PatientMother patientMother = new PatientMother();
         when(patientMapper.map(any(Patient.class), any(BahmniPatient.class))).thenReturn(patientMother.build());
         when(patientService.savePatient(any(Patient.class))).thenReturn(patientMother.build());

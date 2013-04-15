@@ -17,7 +17,7 @@ public class CustomerAccountService {
         this.openERPClient = client;
     }
 
-    public void updateCustomerReceivables(String patientId,double amount) {
+    public void updateCustomerReceivables(String patientId,double amount) throws Exception {
         Object args1[]={"partner_id",patientId};
         Object args2[]={"amount",amount};
         Vector params = new Vector();
@@ -26,10 +26,9 @@ public class CustomerAccountService {
 
         try{
             openERPClient.updateCustomerReceivables("account.invoice",params);
-        }catch(Exception e){
-            String message = "Account Receivable update failed for "+ patientId +": amount "+amount;
-            logger.error(message+ " /n"+ e.getMessage() + "/n" + e.getStackTrace());
-            throw new RuntimeException(message,e);
+        }catch(Exception exception){
+            logger.error(String.format("[%s] : Account Receivable update failed for amount of %s", patientId, amount), exception);
+            throw exception;
         }
     }
 }
