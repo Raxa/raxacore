@@ -29,4 +29,7 @@
     <import resource="moduleApplicationContext.xml"/>
     <import resource="classpath:applicationContext-openerp-service.xml"/>
     <context:component-scan base-package="org.bahmni.module.bahmnicore.web"/>
+
+    <bean id="bahmniCoreProperties" class="org.bahmni.module.bahmnicore.web.properties.PropertiesReaderImpl" factory-method="load" scope="singleton">
+    </bean>
 </beans>

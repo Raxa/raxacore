@@ -8,9 +8,7 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <import resource="classpath:applicationContext-openerp-service.xml"/>
-    <util:properties location="openerp.properties" id="properties"/>
 
-    <bean id="openERPProperties" class="org.bahmni.openerp.web.OpenERPProperties" factory-method="load" scope="singleton">
-        <constructor-arg ref="properties"></constructor-arg>
+    <bean id="openERPProperties" class="org.bahmni.openerp.web.OpenERPPropertiesStub">
     </bean>
 </beans>

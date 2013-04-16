@@ -6,7 +6,7 @@ import org.bahmni.openerp.web.OpenERPProperties;
 import org.bahmni.openerp.web.http.client.HttpClient;
 import org.bahmni.openerp.web.request.builder.RequestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.Vector;
 
 @Service
+@Lazy
 public class OpenERPClient {
 
     private String host;
@@ -28,15 +29,14 @@ public class OpenERPClient {
     HttpClient httpClient;
 
     @Autowired
-    public OpenERPClient(RequestBuilder requestBuilder, HttpClient httpClient,
-                         @Qualifier("openERPProperties") OpenERPProperties openERPProperties) throws Exception {
+    public OpenERPClient(RequestBuilder requestBuilder, HttpClient httpClient, OpenERPProperties openERPProperties) throws Exception {
         this.requestBuilder = requestBuilder;
         this.httpClient = httpClient;
-        host = openERPProperties.get("host");
-        port = Integer.parseInt(openERPProperties.get("port"));
-        database = openERPProperties.get("database");
-        user = openERPProperties.get("user");
-        password = openERPProperties.get("password");
+        host = openERPProperties.getHost();
+        port = openERPProperties.getPort();
+        database = openERPProperties.getDatabase();
+        user = openERPProperties.getUser();
+        password = openERPProperties.getPassword();
     }
 
     private Object login() throws Exception {

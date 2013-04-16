@@ -27,7 +27,4 @@
           class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
         <property name="supportedMediaTypes" value="application/json" />
     </bean>
-
-    <bean id="openERPProperties" class="org.bahmni.openerp.web.OpenERPProperties" factory-method="load" scope="singleton">
-    </bean>
 </beans>
