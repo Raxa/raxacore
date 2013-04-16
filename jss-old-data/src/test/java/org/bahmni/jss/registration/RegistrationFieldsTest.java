@@ -1,5 +1,6 @@
 package org.bahmni.jss.registration;
 
+import org.bahmni.datamigration.request.patient.Name;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -15,5 +16,19 @@ public class RegistrationFieldsTest {
     public void sentenceCase() {
         assertEquals("Devari", RegistrationFields.sentenceCase("DEVARI"));
         assertEquals("Chakra Kund", RegistrationFields.sentenceCase("CHAKRA KUND"));
+    }
+
+    @Test
+    public void name() {
+        assertName("MILAPA BAI", "", "MILAPA", "BAI");
+        assertName("MILAPA", "", "MILAPA", ".");
+        assertName("MILAPA", "BAI", "MILAPA", "BAI");
+        assertName("MILAPA JI", "BAI", "MILAPA JI", "BAI");
+    }
+
+    private void assertName(String firstName, String lastName, String givenName, String familyName) {
+        Name name = RegistrationFields.name(firstName, lastName);
+        assertEquals(givenName, name.getGivenName());
+        assertEquals(familyName, name.getFamilyName());
     }
 }

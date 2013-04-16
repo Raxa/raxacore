@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import java.io.*;
+import java.util.HashMap;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -16,17 +17,25 @@ public class AllRegistrationsTest {
     @Mock
     private AllLookupValues allCastes;
     @Mock
+    private AllLookupValues empty;
+    @Mock
     private AllPatientAttributeTypes allPatientAttributeTypes;
 
     @Test
     public void nextPatient() throws IOException {
         initMocks(this);
-        when(allCastes.getLookUpValue("1")).thenReturn("Chamar");
+        when(allCastes.getLookUpValue("1", 0)).thenReturn("Chamar");
         InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("RegistrationMaster_Sample.csv");
         InputStreamReader reader = new InputStreamReader(resourceAsStream);
-        AllRegistrations allRegistrations = new AllRegistrations(allPatientAttributeTypes, allCastes, reader);
+        HashMap<String, AllLookupValues> lookupValuesMap = new HashMap<String, AllLookupValues>();
+        lookupValuesMap.put("Castes", allCastes);
+        lookupValuesMap.put("Classes", empty);
+        lookupValuesMap.put("Districts", empty);
+        lookupValuesMap.put("States", empty);
+        AllRegistrations allRegistrations = new AllRegistrations(allPatientAttributeTypes, lookupValuesMap, reader);
         PatientRequest patientRequest = allRegistrations.nextPatient();
         assertNotNull(patientRequest);
+        assertEquals(2, patientRequest.getAttributes().size());
         assertEquals("Chamar", patientRequest.getAttributes().get(1).getValue());
         allRegistrations.done();
     }

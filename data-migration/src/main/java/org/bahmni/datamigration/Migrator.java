@@ -91,7 +91,7 @@ public class Migrator {
                 ResponseEntity<String> out = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
                 logger.debug(out.getBody());
             } catch (Exception e) {
-                log.error(e);
+                log.error("Failed to process a patient", e);
             }
         }
     }

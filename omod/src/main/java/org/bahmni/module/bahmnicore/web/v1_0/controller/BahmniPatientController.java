@@ -37,7 +37,7 @@ public class BahmniPatientController extends BaseRestController {
 	@WSDoc("Save New Patient")
 	@ResponseBody
 	public Object createNewPatient(@RequestBody SimpleObject post, HttpServletRequest request, HttpServletResponse response)
-	        throws ResponseException {
+	        throws Exception {
         try {
             validatePost(post);
             BahmniPatient bahmniPatient = new BahmniPatient(post);
@@ -45,6 +45,7 @@ public class BahmniPatientController extends BaseRestController {
             return RestUtil.created(response, getPatientAsSimpleObject(patient));
         } catch (Exception e) {
             logger.error("Create patient failed", e);
+            throw e;
         }
     }
 
@@ -53,7 +54,7 @@ public class BahmniPatientController extends BaseRestController {
 	@ResponseBody
 	public Object updatePatient(@PathVariable("patientUuid") String patientUuid, @RequestBody SimpleObject post,
                                 HttpServletRequest request, HttpServletResponse response)
-	        throws ResponseException {
+	        throws Exception {
         try {
             validatePost(post);
             BahmniPatient bahmniPatient = new BahmniPatient(post);
@@ -62,6 +63,7 @@ public class BahmniPatientController extends BaseRestController {
             return RestUtil.created(response, getPatientAsSimpleObject(patient));
         } catch (Exception e) {
             logger.error("Update patient failed", e);
+            throw e;
         }
     }
 

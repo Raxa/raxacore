@@ -1,6 +1,8 @@
 package org.bahmni.jss.registration;
 
 import au.com.bytecode.opencsv.CSVReader;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -13,7 +15,7 @@ import java.util.Map;
 
 public class AllLookupValues implements LookupValueProvider {
     private static Logger logger = Logger.getLogger(AllLookupValues.class);
-    private Map<Integer, String> map = new HashMap<Integer, String>();
+    private Map<Integer, Object[]> map = new HashMap<Integer, Object[]>();
 
     protected AllLookupValues() {
     }
@@ -28,14 +30,26 @@ public class AllLookupValues implements LookupValueProvider {
             reader.readNext(); //ignore header
             List<String[]> rows = reader.readAll();
             logger.info(String.format("Found %d lookupValues", rows.size()));
-            for (String[] row : rows)
-                map.put(Integer.parseInt(row[0].trim()), row[1]);
+            for (String[] row : rows) {
+                Object[] allExceptFirstIndex = ArrayUtils.remove(row, 0);
+                map.put(Integer.parseInt(row[0].trim()), allExceptFirstIndex);
+            }
         } finally {
             if (reader != null) reader.close();
         }
     }
 
     public String getLookUpValue(String key) {
-        return map.get(Integer.parseInt(key.trim()));
+        return getLookUpValue(key, 0);
+    }
+
+    @Override
+    public String getLookUpValue(String key, int valueIndex) {
+        if (StringUtils.equals("0", key)) return null;
+
+        int keyAsNumber = Integer.parseInt(key.trim());
+        Object[] values = map.get(keyAsNumber);
+        if (values == null) return null;
+        return values[valueIndex].toString();
     }
 }
