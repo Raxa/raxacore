@@ -61,7 +61,7 @@ public class Migrator {
         String referencesURL = openMRSRESTConnection.getRestApiUrl() + urlSuffix;
         HttpEntity requestEntity = new HttpEntity<MultiValueMap>(new LinkedMultiValueMap<String, String>(), requestHeaders);
         ResponseEntity<String> exchange = restTemplate.exchange(new URI(referencesURL), method, requestEntity, String.class);
-        logger.info(exchange.getBody());
+        logger.debug("(" + urlSuffix + ") - " + exchange.getBody());
         return exchange.getBody();
     }
 
@@ -73,24 +73,23 @@ public class Migrator {
 
     public void migratePatient(PatientReader patientReader) {
         String url = openMRSRESTConnection.getRestApiUrl() + "bahmnicore/patient";
-        int i = 0;
         while (true) {
+            String jsonRequest = null;
             try {
-                i++;
-                if (i > 10) break;
-
                 PatientRequest patientRequest = patientReader.nextPatient();
                 if (patientRequest == null) break;
 
-                String jsonRequest = objectMapper.writeValueAsString(patientRequest);
-                logger.debug(jsonRequest);
+                jsonRequest = objectMapper.writeValueAsString(patientRequest);
+                if (logger.isDebugEnabled()) logger.debug(jsonRequest);
 
                 HttpHeaders httpHeaders = getHttpHeaders();
                 httpHeaders.setContentType(MediaType.APPLICATION_JSON);
                 HttpEntity entity = new HttpEntity(patientRequest, httpHeaders);
                 ResponseEntity<String> out = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-                logger.debug(out.getBody());
+                if (logger.isDebugEnabled()) logger.debug(out.getBody());
+                log.info("Successfully created " + patientRequest.getPatientIdentifier());
             } catch (Exception e) {
+                log.info("Patient request: " + jsonRequest);
                 log.error("Failed to process a patient", e);
             }
         }

@@ -3,6 +3,7 @@ package org.bahmni.module.bahmnicore.model;
 import org.apache.log4j.Logger;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,7 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class BahmniPatient {
-
 	private Date birthdate;
 	private Integer age;
 	private String centerName;
@@ -22,9 +22,10 @@ public class BahmniPatient {
     private String image;
     private String uuid;
     private String balance;
+    private Date dateOfRegistration;
     private static Logger logger = Logger.getLogger(BahmniPatient.class);
 
-    public BahmniPatient(SimpleObject post) {
+    public BahmniPatient(SimpleObject post) throws ParseException {
 		SimpleObjectExtractor extractor = new SimpleObjectExtractor(post);
 
         balance = extractor.extract("balance");
@@ -56,6 +57,10 @@ public class BahmniPatient {
 		for (LinkedHashMap attribute : attributeList) {
 			attributes.add(new BahmniPersonAttribute(attribute));
 		}
+
+        String extractedDateOfRegistration = extractor.extract("dateOfRegistration");
+        if (extractedDateOfRegistration != null)
+            dateOfRegistration = new SimpleDateFormat("dd-MM-yyyy").parse(extractedDateOfRegistration);
 	}
 	
 	public Date getBirthdate() {
@@ -104,5 +109,9 @@ public class BahmniPatient {
 
     public double getBalance() {
         return balance == null ? Double.NaN : Double.parseDouble(balance);
+    }
+
+    public Date getDateOfRegistration() {
+        return dateOfRegistration;
     }
 }

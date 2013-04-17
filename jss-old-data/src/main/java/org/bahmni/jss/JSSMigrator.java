@@ -21,12 +21,12 @@ public class JSSMigrator {
     public static void main(String[] args) throws URISyntaxException, IOException {
         Localhost.getRestApiUrl();
         String csvLocation = "/Users/Vsingh/Projects/bhamni";
-        JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_District.csv", "LU_State.csv", "LU_Class.csv", QA);
+        JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_District.csv", "LU_State.csv", "LU_Class.csv", "LU_Tahsil.csv", Localhost);
 
         jssMigrator.migratePatient("RegistrationMaster.csv");
     }
 
-    public JSSMigrator(String csvLocation, String casteFileName, String districtFileName, String stateFileName, String classFileName,
+    public JSSMigrator(String csvLocation, String casteFileName, String districtFileName, String stateFileName, String classFileName, String tahsilFileName,
                        OpenMRSRESTConnection openMRSRESTConnection) throws IOException,
             URISyntaxException {
         this.csvLocation = csvLocation;
@@ -34,11 +34,13 @@ public class JSSMigrator {
         AllLookupValues allDistricts = new AllLookupValues(csvLocation, districtFileName);
         AllLookupValues allStates = new AllLookupValues(csvLocation, stateFileName);
         AllLookupValues allClasses = new AllLookupValues(csvLocation, classFileName);
+        AllLookupValues allTahsils = new AllLookupValues(csvLocation, tahsilFileName);
         lookupValuesMap = new HashMap<String, AllLookupValues>();
         lookupValuesMap.put("Castes", allCastes);
         lookupValuesMap.put("Districts", allDistricts);
         lookupValuesMap.put("States", allStates);
         lookupValuesMap.put("Classes", allClasses);
+        lookupValuesMap.put("Tahsils", allTahsils);
 
         migrator = new Migrator(openMRSRESTConnection);
     }

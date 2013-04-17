@@ -1,5 +1,6 @@
 package org.bahmni.jss.registration;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.bahmni.datamigration.request.patient.Name;
 import org.junit.Test;
 
@@ -30,5 +31,12 @@ public class RegistrationFieldsTest {
         Name name = RegistrationFields.name(firstName, lastName);
         assertEquals(givenName, name.getGivenName());
         assertEquals(familyName, name.getFamilyName());
+    }
+
+    @Test
+    public void getAge() {
+        assertEquals(1, RegistrationFields.getAge("1"));
+        assertEquals(2, RegistrationFields.getAge("1.5"));
+        assertEquals(0, RegistrationFields.getAge("10 Day"));
     }
 }

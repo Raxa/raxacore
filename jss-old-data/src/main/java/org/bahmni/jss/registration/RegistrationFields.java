@@ -17,6 +17,7 @@ public class RegistrationFields {
 
     public static String getDate(String s) {
         StringTokenizer stringTokenizer = new StringTokenizer(s.trim(), " ");
+        if (!stringTokenizer.hasMoreTokens()) return null;
         String datePart = stringTokenizer.nextToken();
         String pattern = datePart.length() == 8 ? patternWhenYearSpecifiedAs2Digits : patternWhenYearSpecifiedAs4Digits;
         LocalDateTime localDateTime = LocalDateTime.parse(datePart, DateTimeFormat.forPattern(pattern));
@@ -47,5 +48,15 @@ public class RegistrationFields {
             name.setFamilyName(StringUtils.isEmpty(lastName) ? "." : lastName);
         }
         return name;
+    }
+
+    public static int getAge(String fieldValue) {
+        double doubleValue = 0;
+        try {
+            doubleValue = Double.parseDouble(fieldValue);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+        return (int) Math.round(doubleValue);
     }
 }

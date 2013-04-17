@@ -32,11 +32,15 @@ public class AllRegistrationsTest {
         lookupValuesMap.put("Classes", empty);
         lookupValuesMap.put("Districts", empty);
         lookupValuesMap.put("States", empty);
+        lookupValuesMap.put("Tahsils", empty);
         AllRegistrations allRegistrations = new AllRegistrations(allPatientAttributeTypes, lookupValuesMap, reader);
         PatientRequest patientRequest = allRegistrations.nextPatient();
         assertNotNull(patientRequest);
         assertEquals(2, patientRequest.getAttributes().size());
         assertEquals("Chamar", patientRequest.getAttributes().get(1).getValue());
+
+        allRegistrations.nextPatient();
+
         allRegistrations.done();
     }
 }

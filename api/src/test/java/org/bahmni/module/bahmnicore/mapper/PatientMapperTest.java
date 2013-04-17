@@ -7,12 +7,14 @@ import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
+import java.text.ParseException;
+
 import static junit.framework.Assert.assertEquals;
 
 public class PatientMapperTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
-	public void shouldMapPersonNameToPatient() {
+	public void shouldMapPersonNameToPatient() throws ParseException {
 		BahmniPatient bahmniPerson = new BahmniPatient(new PatientMother().buildSimpleObject());
 		PersonAttributeMapper personAttributeMapper = new PersonAttributeMapper();
 		PatientMapper patientMapper = new PatientMapper(new PersonNameMapper(), new BirthDateMapper(),

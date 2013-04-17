@@ -40,6 +40,8 @@ public class PatientRequest {
     private CenterId centerID;
     private List<PatientAddress> addresses = new ArrayList<PatientAddress>();
     private List<PatientAttribute> attributes = new ArrayList<PatientAttribute>();
+    private String dateOfRegistration;
+    private String balance;
 
     public void setAge(Integer age) {
         this.age = age;
@@ -114,5 +116,25 @@ public class PatientRequest {
 
     public void setAttributes(List<PatientAttribute> attributes) {
         this.attributes = attributes;
+    }
+
+    public void addPatientAddress(PatientAddress patientAddress) {
+        addresses.add(patientAddress);
+    }
+
+    public String getDateOfRegistration() {
+        return dateOfRegistration;
+    }
+
+    public void setDateOfRegistration(String dateOfRegistration) {
+        this.dateOfRegistration = dateOfRegistration;
+    }
+
+    public String getBalance() {
+        return balance;
+    }
+
+    public void setBalance(String balance) {
+        this.balance = balance;
     }
 }

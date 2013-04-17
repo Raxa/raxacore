@@ -5,6 +5,7 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
+import java.text.ParseException;
 import java.util.Arrays;
 
 public class PatientMother {
@@ -56,7 +57,7 @@ public class PatientMother {
         return patient;
     }
 
-    public BahmniPatient buildBahmniPatient() {
+    public BahmniPatient buildBahmniPatient() throws ParseException {
         return new BahmniPatient(buildSimpleObject());
     }
 }
