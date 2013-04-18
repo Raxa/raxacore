@@ -12,9 +12,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -93,12 +93,11 @@ public class Migrator {
                 HttpEntity entity = new HttpEntity(patientRequest, httpHeaders);
                 out = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
                 if (logger.isDebugEnabled()) logger.debug(out.getBody());
-                if (out.getStatusCode().value() == HttpServletResponse.SC_CREATED)
-                    log.info(String.format("%d Successfully created %s", i, patientRequest.getPatientIdentifier()));
-                else if (out.getStatusCode().value() == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
-                    log.error(out.getBody());
-                    patientEnumerator.failedPatient(patientData);
-                }
+                log.info(String.format("%d Successfully created %s", i, patientRequest.getPatientIdentifier()));
+            } catch (HttpServerErrorException serverErrorException) {
+                log.info("Patient request: " + jsonRequest);
+                log.error("Patient create response: " + serverErrorException.getResponseBodyAsString());
+                patientEnumerator.failedPatient(patientData);
             } catch (Exception e) {
                 log.info("Patient request: " + jsonRequest);
                 log.error("Failed to process a patient", e);

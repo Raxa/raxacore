@@ -91,7 +91,8 @@ public class AllRegistrations implements PatientEnumerator {
 
     @Override
     public void failedPatient(PatientData patientData) {
-        csvWriter.writeNext((String[]) patientData.getOriginalData());
+        if (patientData != null)
+            csvWriter.writeNext((String[]) patientData.getOriginalData());
     }
 
     private void addPatientAttribute(String value, PatientRequest patientRequest, String name, LookupValueProvider lookupValueProvider, int valueIndex) {

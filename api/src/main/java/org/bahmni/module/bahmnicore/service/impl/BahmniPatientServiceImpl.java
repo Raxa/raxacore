@@ -46,7 +46,7 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
             String fullName = patient == null ? bahmniPatient.getFullName() : patient.getPersonName().getFullName();
             String patientId = patient == null ? bahmniPatient.getPatientIdentifier() : patient.getPatientIdentifier().toString();
             billingService.createCustomer(fullName, patientId);
-            if (customerHasBalance(bahmniPatient)) {
+            if (bahmniPatient.hasBalance()) {
                 billingService.updateCustomerBalance(patientId, bahmniPatient.getBalance());
             }
         } catch (RuntimeException e) {
@@ -62,10 +62,6 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
         logger.debug(String.format("[%s] : Patient saved", patientIdentifier));
         patientImageService.save(patientIdentifier, bahmniPatient.getImage());
         return savedPatient;
-    }
-
-    private boolean customerHasBalance(BahmniPatient patient) {
-        return !Double.isNaN(patient.getBalance());
     }
 
     public void setPatientService(PatientService patientService) {

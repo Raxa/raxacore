@@ -134,4 +134,12 @@ public class BahmniPatient {
         BahmniName patientName = getNames().get(0);
         return patientName.getGivenName() + " " + patientName.getFamilyName();
     }
+
+    public boolean hasBalance() {
+        return !Double.isNaN(getBalance()) && getBalance() > 0;
+    }
+
+    public void setBalance(String balance) {
+        this.balance = balance;
+    }
 }
