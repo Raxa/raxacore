@@ -20,7 +20,7 @@ public class CustomerServiceTest {
     private OpenERPClient openERPClient;
 
     @Before
-    public void setup(){
+    public void setup() {
         initMocks(this);
         customerService = new CustomerService(openERPClient);
     }
@@ -30,13 +30,13 @@ public class CustomerServiceTest {
         String name = "Ram Singh";
         String patientId = "12345";
         Vector searchparams = new Vector();
-        searchparams.addElement(new Object[]{"ref","=","12345"});
+        searchparams.addElement(new Object[]{"ref", "=", "12345"});
         Object[] results = new Object[]{};
-        when(openERPClient.search((String)any(), (Vector)any())).thenReturn(results);
+        when(openERPClient.search((String) any(), (Vector) any())).thenReturn(results);
 
         customerService.create(name, patientId);
 
-        verify(openERPClient).create((String) any(),(String) any(), (String) any());
+        verify(openERPClient).create((String) any(), (String) any(), (String) any());
     }
 
     @Test
@@ -44,16 +44,15 @@ public class CustomerServiceTest {
         String name = "Ram Singh";
         String patientId = "12345";
         Vector searchparams = new Vector();
-        searchparams.addElement(new Object[]{"ref","=","12345"});
+        searchparams.addElement(new Object[]{"ref", "=", "12345"});
         Object[] results = new Object[]{new Object()};
-        when(openERPClient.search((String)any(), (Vector)any())).thenReturn(results);
+        when(openERPClient.search((String) any(), (Vector) any())).thenReturn(results);
 
         try {
-            customerService.createCustomerIfNotExisting(name, patientId);
-            assert (false);
+            customerService.create(name, patientId);
+            assert false;
         } catch (Exception e) {
-            assert (true);
-            assertEquals("Customer with id " + patientId + " already exists", e.getMessage());
+            assertEquals(true, e.getMessage().contains("Customer with id, name already exists:"));
         }
     }
 }

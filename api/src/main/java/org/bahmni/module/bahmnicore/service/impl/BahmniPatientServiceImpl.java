@@ -1,6 +1,8 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.log4j.Logger;
+import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
+import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;
 import org.bahmni.module.bahmnicore.mapper.*;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
@@ -19,22 +21,36 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     PatientService patientService;
     private BillingService billingService;
     private PatientImageService patientImageService;
+    private BahmniCoreApiProperties properties;
     private PatientMapper patientMapper;
     private static Logger logger = Logger.getLogger(BahmniPatientServiceImpl.class);
 
     @Autowired
-    public BahmniPatientServiceImpl(BillingService billingService, PatientImageService patientImageService) {
+    public BahmniPatientServiceImpl(BillingService billingService, PatientImageService patientImageService, BahmniCoreApiProperties properties) {
         this.billingService = billingService;
         this.patientImageService = patientImageService;
+        this.properties = properties;
     }
 
     @Override
     public Patient createPatient(BahmniPatient bahmniPatient) {
         Patient patient = null;
-        patient = savePatient(bahmniPatient, patient);
-        createCustomerForBilling(patient);
-        if(customerHasBalance(bahmniPatient)){
-            updateCustomerWithBalance(patient, bahmniPatient);
+        ExecutionMode executionMode = properties.getExecutionMode();
+        try {
+            patient = savePatient(bahmniPatient, patient);
+        } catch (RuntimeException e) {
+            executionMode.handleSavePatientFailure(e, bahmniPatient);
+        }
+
+        try {
+            String fullName = patient == null ? bahmniPatient.getFullName() : patient.getPersonName().getFullName();
+            String patientId = patient == null ? bahmniPatient.getPatientIdentifier() : patient.getPatientIdentifier().toString();
+            billingService.createCustomer(fullName, patientId);
+            if (customerHasBalance(bahmniPatient)) {
+                billingService.updateCustomerBalance(patientId, bahmniPatient.getBalance());
+            }
+        } catch (RuntimeException e) {
+            executionMode.handleOpenERPFailure(e, bahmniPatient);
         }
         return patient;
     }
@@ -46,25 +62,6 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
         logger.debug(String.format("[%s] : Patient saved", patientIdentifier));
         patientImageService.save(patientIdentifier, bahmniPatient.getImage());
         return savedPatient;
-    }
-
-    private void createCustomerForBilling(Patient patient) {
-        String name = patient.getPersonName().getFullName();
-        String patientId = patient.getPatientIdentifier().toString();
-        try{
-            billingService.createCustomer(name, patientId);
-        }catch(Exception exception){
-            logger.error(exception.getMessage(), exception);
-        }
-    }
-
-    private void updateCustomerWithBalance(Patient patient, BahmniPatient bahmniPatient) {
-        String patientId = patient.getPatientIdentifier().toString();
-        try {
-            billingService.updateCustomerBalance(patientId, bahmniPatient.getBalance());
-        } catch (Exception exception) {
-            logger.error(exception.getMessage(), exception);
-        }
     }
 
     private boolean customerHasBalance(BahmniPatient patient) {
@@ -86,7 +83,7 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     }
 
     private PatientMapper getPatientMapper() {
-        if(patientMapper == null) patientMapper =   new PatientMapper(new PersonNameMapper(), new BirthDateMapper(), new PersonAttributeMapper(),
+        if (patientMapper == null) patientMapper = new PatientMapper(new PersonNameMapper(), new BirthDateMapper(), new PersonAttributeMapper(),
                 new AddressMapper(), new PatientIdentifierMapper(), new HealthCenterMapper());
         return patientMapper;
     }

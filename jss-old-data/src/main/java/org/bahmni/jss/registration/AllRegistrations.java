@@ -1,23 +1,22 @@
 package org.bahmni.jss.registration;
 
 import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
-import org.bahmni.datamigration.PatientReader;
+import org.bahmni.datamigration.PatientData;
+import org.bahmni.datamigration.PatientEnumerator;
 import org.bahmni.datamigration.request.patient.*;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.util.Map;
 
 import static org.bahmni.jss.registration.RegistrationFields.sentenceCase;
 
-public class AllRegistrations implements PatientReader {
-    private CSVReader reader;
+public class AllRegistrations implements PatientEnumerator {
+    private CSVReader csvReader;
+    private CSVWriter csvWriter;
     private AllPatientAttributeTypes allPatientAttributeTypes;
     private Map<String, AllLookupValues> lookupValuesMap;
 
@@ -26,25 +25,29 @@ public class AllRegistrations implements PatientReader {
         File file = new File(csvLocation, fileName);
         FileReader fileReader = new FileReader(file);
 
-        init(allPatientAttributeTypes, lookupValuesMap, fileReader);
+        File errorFile = new File(csvLocation, fileName + ".err.csv");
+        FileWriter fileWriter = new FileWriter(errorFile);
+        init(allPatientAttributeTypes, lookupValuesMap, fileReader, fileWriter);
     }
 
     public AllRegistrations(AllPatientAttributeTypes allPatientAttributeTypes, Map<String, AllLookupValues> lookupValuesMap,
-                            Reader reader) throws IOException {
-        init(allPatientAttributeTypes, lookupValuesMap, reader);
+                            Reader reader, Writer writer) throws IOException {
+        init(allPatientAttributeTypes, lookupValuesMap, reader, writer);
     }
 
-    private void init(AllPatientAttributeTypes allPatientAttributeTypes, Map<String, AllLookupValues> lookupValuesMap, Reader reader) throws IOException {
+    private void init(AllPatientAttributeTypes allPatientAttributeTypes, Map<String, AllLookupValues> lookupValuesMap, Reader reader, Writer writer) throws IOException {
         this.lookupValuesMap = lookupValuesMap;
-        this.reader = new CSVReader(reader, ',');
-        this.reader.readNext(); //skip row
+        this.csvReader = new CSVReader(reader, ',');
+        this.csvWriter = new CSVWriter(writer, ',');
+        String[] headerRow = this.csvReader.readNext();//skip row
+        this.csvWriter.writeNext(headerRow);
         this.allPatientAttributeTypes = allPatientAttributeTypes;
     }
 
-    public PatientRequest nextPatient() {
+    public PatientData nextPatient() {
         String[] patientRow = null;
         try {
-            patientRow = reader.readNext();
+            patientRow = csvReader.readNext();
             if (patientRow == null) return null;
 
             PatientRequest patientRequest = new PatientRequest();
@@ -80,10 +83,15 @@ public class AllRegistrations implements PatientReader {
             patientAddress.setStateProvince(sentenceCase(state));
 
             addPatientAttribute(patientRow[32], patientRequest, "class", lookupValuesMap.get("Classes"), 0);
-            return patientRequest;
+            return new PatientData(patientRequest, patientRow);
         } catch (Exception e) {
             throw new RuntimeException("Cannot create request from this row: " + ArrayUtils.toString(patientRow), e);
         }
+    }
+
+    @Override
+    public void failedPatient(PatientData patientData) {
+        csvWriter.writeNext((String[]) patientData.getOriginalData());
     }
 
     private void addPatientAttribute(String value, PatientRequest patientRequest, String name, LookupValueProvider lookupValueProvider, int valueIndex) {
@@ -102,6 +110,7 @@ public class AllRegistrations implements PatientReader {
     }
 
     public void done() throws IOException {
-        reader.close();
+        csvReader.close();
+        csvWriter.close();
     }
 }

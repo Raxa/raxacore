@@ -25,6 +25,9 @@ public class BahmniPatient {
     private Date dateOfRegistration;
     private static Logger logger = Logger.getLogger(BahmniPatient.class);
 
+    public BahmniPatient() {
+    }
+
     public BahmniPatient(SimpleObject post) throws ParseException {
 		SimpleObjectExtractor extractor = new SimpleObjectExtractor(post);
 
@@ -113,5 +116,22 @@ public class BahmniPatient {
 
     public Date getDateOfRegistration() {
         return dateOfRegistration;
+    }
+
+    public void addName(BahmniName name) {
+        names.add(name);
+    }
+
+    public void setPatientIdentifier(String patientIdentifier) {
+        this.patientIdentifier = patientIdentifier;
+    }
+
+    public String getFullName() {
+        return names.get(0).getFullName();
+    }
+
+    public String getPatientName() {
+        BahmniName patientName = getNames().get(0);
+        return patientName.getGivenName() + " " + patientName.getFamilyName();
     }
 }

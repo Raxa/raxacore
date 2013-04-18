@@ -20,7 +20,7 @@ public class JSSMigrator {
 
     public static void main(String[] args) throws URISyntaxException, IOException {
         Localhost.getRestApiUrl();
-        String csvLocation = "/Users/Vsingh/Projects/bhamni";
+        String csvLocation = "/Users/Vsingh/Projects/bhamni/csv";
         JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_District.csv", "LU_State.csv", "LU_Class.csv", "LU_Tahsil.csv", Localhost);
 
         jssMigrator.migratePatient("RegistrationMaster.csv");

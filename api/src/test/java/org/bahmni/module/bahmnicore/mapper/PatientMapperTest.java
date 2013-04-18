@@ -23,7 +23,6 @@ public class PatientMapperTest extends BaseModuleContextSensitiveTest {
 		
 		BahmniName name = bahmniPerson.getNames().get(0);
 		assertEquals(name.getGivenName(), patient.getGivenName());
-		assertEquals(name.getMiddleName(), patient.getMiddleName());
 		assertEquals(name.getFamilyName(), patient.getFamilyName());
 	}
 }

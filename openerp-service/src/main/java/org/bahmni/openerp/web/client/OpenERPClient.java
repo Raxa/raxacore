@@ -1,7 +1,9 @@
 package org.bahmni.openerp.web.client;
 
+import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.bahmni.openerp.web.OpenERPException;
 import org.bahmni.openerp.web.OpenERPProperties;
 import org.bahmni.openerp.web.http.client.HttpClient;
 import org.bahmni.openerp.web.request.builder.RequestBuilder;
@@ -16,7 +18,6 @@ import java.util.Vector;
 @Service
 @Lazy
 public class OpenERPClient {
-
     private String host;
     private int port;
     private String database;
@@ -29,7 +30,7 @@ public class OpenERPClient {
     HttpClient httpClient;
 
     @Autowired
-    public OpenERPClient(RequestBuilder requestBuilder, HttpClient httpClient, OpenERPProperties openERPProperties) throws Exception {
+    public OpenERPClient(RequestBuilder requestBuilder, HttpClient httpClient, OpenERPProperties openERPProperties) {
         this.requestBuilder = requestBuilder;
         this.httpClient = httpClient;
         host = openERPProperties.getHost();
@@ -39,59 +40,75 @@ public class OpenERPClient {
         password = openERPProperties.getPassword();
     }
 
-    private Object login() throws Exception {
+    private Object login() {
         XmlRpcClient loginRpcClient = createRPCClient(host, port, "/xmlrpc/common");
         Vector params = new Vector();
         params.addElement(database);
         params.addElement(user);
         params.addElement(password);
 
-        return loginRpcClient.execute("login", params);
+        return executeRPC(loginRpcClient, params, "login");
     }
 
-    public Object search(String resource, Vector params) throws Exception {
+    private Object executeRPC(XmlRpcClient loginRpcClient, Vector params, String methodName) {
+        try {
+            return loginRpcClient.execute(methodName, params);
+        } catch (XmlRpcException e) {
+            throw new OpenERPException(e);
+        }
+    }
+
+    public Object search(String resource, Vector params) {
         return execute(resource, "search", params);
     }
 
-    public Object create(String resource, String name, String patientId) throws Exception {
+    public Object create(String resource, String name, String patientId) {
         if (id == null)
             id = login();
         String request = requestBuilder.buildNewCustomerRequest(name, patientId, id, database, password, resource, "create");
         return httpClient.post("http://" + host + ":" + port + "/xmlrpc/object", request);
     }
 
-    public Object delete(String resource, Vector params) throws Exception {
+    public Object delete(String resource, Vector params) {
         return execute(resource, "unlink", params);
     }
 
-    public Object execute(String resource, String operation, Vector params) throws Exception {
+    public Object execute(String resource, String operation, Vector params) {
         if (id == null)
             id = login();
         Object args[] = {database, (Integer) id, password, resource, operation, params};
 
-        return xmlRpcClient().execute("execute", args);
+        try {
+            return xmlRpcClient().execute("execute", args);
+        } catch (XmlRpcException e) {
+            throw new OpenERPException(e);
+        }
     }
 
-    private XmlRpcClient xmlRpcClient() throws Exception {
+    private XmlRpcClient xmlRpcClient() {
         if (this.xmlRpcClient == null)
             this.xmlRpcClient = createRPCClient(host, port, "/xmlrpc/object");
         return this.xmlRpcClient;
     }
 
-    private XmlRpcClient createRPCClient(String host, int port, String endpoint) throws MalformedURLException {
-        XmlRpcClientConfigImpl rpc = new XmlRpcClientConfigImpl();
-        rpc.setEnabledForExtensions(true);
-        rpc.setEnabledForExceptions(true);
-        rpc.setServerURL(new URL("http", host, port, endpoint));
+    private XmlRpcClient createRPCClient(String host, int port, String endpoint) {
+        try {
+            XmlRpcClientConfigImpl rpc = new XmlRpcClientConfigImpl();
+            rpc.setEnabledForExtensions(true);
+            rpc.setEnabledForExceptions(true);
+            rpc.setServerURL(new URL("http", host, port, endpoint));
 
-        XmlRpcClient rpcClient = new XmlRpcClient();
-        rpcClient.setConfig(rpc);
+            XmlRpcClient rpcClient = new XmlRpcClient();
+            rpcClient.setConfig(rpc);
 
-        return rpcClient;
+            return rpcClient;
+        } catch (MalformedURLException e) {
+            throw new OpenERPException(e);
+        }
     }
-    public Object updateCustomerReceivables(String resource, Vector params) throws Exception {
+
+    public Object updateCustomerReceivables(String resource, Vector params) {
         return execute(resource, "update_customer_receivables", params);
     }
-
 
 }

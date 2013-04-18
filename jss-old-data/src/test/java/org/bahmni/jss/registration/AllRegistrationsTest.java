@@ -1,5 +1,6 @@
 package org.bahmni.jss.registration;
 
+import org.bahmni.datamigration.PatientData;
 import org.bahmni.datamigration.request.patient.PatientRequest;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;
 import org.junit.Test;
@@ -33,14 +34,15 @@ public class AllRegistrationsTest {
         lookupValuesMap.put("Districts", empty);
         lookupValuesMap.put("States", empty);
         lookupValuesMap.put("Tahsils", empty);
-        AllRegistrations allRegistrations = new AllRegistrations(allPatientAttributeTypes, lookupValuesMap, reader);
-        PatientRequest patientRequest = allRegistrations.nextPatient();
+        AllRegistrations allRegistrations = new AllRegistrations(allPatientAttributeTypes, lookupValuesMap, reader, new StringWriter());
+        PatientData patientData = allRegistrations.nextPatient();
+        assertNotNull(patientData);
+        PatientRequest patientRequest = patientData.getPatientRequest();
         assertNotNull(patientRequest);
         assertEquals(2, patientRequest.getAttributes().size());
         assertEquals("Chamar", patientRequest.getAttributes().get(1).getValue());
 
         allRegistrations.nextPatient();
-
         allRegistrations.done();
     }
 }

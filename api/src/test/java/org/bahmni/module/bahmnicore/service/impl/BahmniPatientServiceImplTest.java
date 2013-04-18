@@ -1,5 +1,7 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
+import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;
 import org.bahmni.module.bahmnicore.mapper.PatientMapper;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
@@ -18,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.anyDouble;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -33,14 +36,15 @@ public class BahmniPatientServiceImplTest {
     private HttpServletResponse response;
     @Mock
     private PatientMapper patientMapper;
-
     private BahmniPatientServiceImpl bahmniPatientService;
-
+    @Mock
+    private BahmniCoreApiProperties properties;
 
     @Before
     public void setup() {
         initMocks(this);
-        bahmniPatientService = new BahmniPatientServiceImpl(billingService, patientImageService);
+        when(properties.getExecutionMode()).thenReturn(new ExecutionMode("false"));
+        bahmniPatientService = new BahmniPatientServiceImpl(billingService, patientImageService, properties);
         bahmniPatientService.setPatientService(patientService);
         bahmniPatientService.setPatientMapper(patientMapper);
     }

@@ -3,6 +3,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
+import org.bahmni.module.bahmnicore.BahmniCoreException;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -19,7 +20,7 @@ import java.io.IOException;
 @Lazy
 public class PatientImageServiceImpl implements PatientImageService {
     private Log log = LogFactory.getLog(PatientImageServiceImpl.class);
-    private String patientImagesFormat =  "jpeg";
+    private static final String patientImagesFormat =  "jpeg";
     private BahmniCoreApiProperties properties;
 
     @Autowired
@@ -38,8 +39,7 @@ public class PatientImageServiceImpl implements PatientImageService {
             ImageIO.write(bfi , patientImagesFormat, outputfile);
             bfi.flush();
         } catch (IOException e) {
-            log.error(String.format("[%s] : Could not save patient image", patientIdentifier), e);
-            throw new RuntimeException(e);
+            throw new BahmniCoreException("[%s] : Could not save patient image", e);
         }
     }
 }

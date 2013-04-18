@@ -18,7 +18,6 @@ public class BahmniNameTest {
 		BahmniName name = new BahmniName(nameObject);
 		
 		assertEquals(givenName, name.getGivenName());
-		assertEquals(middleName, name.getMiddleName());
 		assertEquals(familyName, name.getFamilyName());
 	}
 }

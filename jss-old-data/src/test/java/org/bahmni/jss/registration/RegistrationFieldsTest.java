@@ -1,6 +1,5 @@
 package org.bahmni.jss.registration;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.bahmni.datamigration.request.patient.Name;
 import org.junit.Test;
 
@@ -11,6 +10,7 @@ public class RegistrationFieldsTest {
     public void parseDate() {
         assertEquals("05-08-1979", RegistrationFields.getDate("05/08/79 0:00"));
         assertEquals("05-08-1979", RegistrationFields.getDate("05/08/1979 00:00:00"));
+        assertEquals("05-08-1979", RegistrationFields.getDate("05/08/1579 00:00:00"));
     }
 
     @Test

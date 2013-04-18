@@ -1,5 +1,6 @@
 package org.bahmni.openerp.web.service;
 
+import org.bahmni.openerp.web.OpenERPException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -51,7 +52,7 @@ public class OpenERPServiceTest {
     @Test
     public void shouldThrowExceptionWhencreationOfCustomerFails() throws Exception {
         String expectedMessage = "Failed to create Exception";
-        doThrow(new Exception(expectedMessage)).when(customerService).create(anyString(), anyString());
+        doThrow(new OpenERPException(expectedMessage)).when(customerService).create(anyString(), anyString());
 
         try {
             openERPService.createCustomer("name", "12345");
@@ -64,7 +65,7 @@ public class OpenERPServiceTest {
     @Test
     public void shouldThrowExceptionWhenUpdationOfCustomerWithBalanceFails() throws Exception {
         String expectedMessage = "Failed to create Exception";
-        doThrow(new Exception(expectedMessage)).when(customerAccountService).updateCustomerReceivables(anyString(),anyDouble());
+        doThrow(new OpenERPException(expectedMessage)).when(customerAccountService).updateCustomerReceivables(anyString(),anyDouble());
         try {
             openERPService.updateCustomerBalance("name", 12345);
             fail("Should have thrown an exception");

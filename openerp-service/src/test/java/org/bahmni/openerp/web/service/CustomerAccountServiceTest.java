@@ -1,5 +1,6 @@
 package org.bahmni.openerp.web.service;
 
+import org.bahmni.openerp.web.OpenERPException;
 import org.bahmni.openerp.web.client.OpenERPClient;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,27 +37,21 @@ public class CustomerAccountServiceTest {
         params.addElement(args1);
         params.addElement(args2);
 
-        Object[] results = new Object[]{};
-
         customerAccountService.updateCustomerReceivables(patientId,amount);
 
         verify(openERPClient).updateCustomerReceivables((String) any(),(Vector) any());
     }
 
     @Test
-    public void shouldThrowExceptionIfUpdationFails() throws Exception {
+    public void shouldThrowExceptionIfUpdationFails() {
         String patientId = "12345";
         double amount = 27.0;
-        String expectedMessage = "message";
-        doThrow(new Exception(expectedMessage)).when(openERPClient).updateCustomerReceivables(anyString(), any(Vector.class));
+        doThrow(new OpenERPException("message")).when(openERPClient).updateCustomerReceivables(anyString(), any(Vector.class));
 
         try {
             customerAccountService.updateCustomerReceivables(patientId, amount);
-            assert (false);
+            assert false;
         } catch (Exception e) {
-            assert (true);
-            assertEquals(expectedMessage, e.getMessage());
         }
     }
-
 }

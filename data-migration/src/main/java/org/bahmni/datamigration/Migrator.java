@@ -14,6 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -71,26 +72,37 @@ public class Migrator {
         return requestHeaders;
     }
 
-    public void migratePatient(PatientReader patientReader) {
+    public void migratePatient(PatientEnumerator patientEnumerator) {
         String url = openMRSRESTConnection.getRestApiUrl() + "bahmnicore/patient";
+        int i = 0;
         while (true) {
             String jsonRequest = null;
+            PatientData patientData = null;
+            ResponseEntity<String> out = null;
             try {
-                PatientRequest patientRequest = patientReader.nextPatient();
-                if (patientRequest == null) break;
+                i++;
+                patientData = patientEnumerator.nextPatient();
+                if (patientData == null) break;
 
+                PatientRequest patientRequest = patientData.getPatientRequest();
                 jsonRequest = objectMapper.writeValueAsString(patientRequest);
                 if (logger.isDebugEnabled()) logger.debug(jsonRequest);
 
                 HttpHeaders httpHeaders = getHttpHeaders();
                 httpHeaders.setContentType(MediaType.APPLICATION_JSON);
                 HttpEntity entity = new HttpEntity(patientRequest, httpHeaders);
-                ResponseEntity<String> out = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+                out = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
                 if (logger.isDebugEnabled()) logger.debug(out.getBody());
-                log.info("Successfully created " + patientRequest.getPatientIdentifier());
+                if (out.getStatusCode().value() == HttpServletResponse.SC_CREATED)
+                    log.info(String.format("%d Successfully created %s", i, patientRequest.getPatientIdentifier()));
+                else if (out.getStatusCode().value() == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
+                    log.error(out.getBody());
+                    patientEnumerator.failedPatient(patientData);
+                }
             } catch (Exception e) {
                 log.info("Patient request: " + jsonRequest);
                 log.error("Failed to process a patient", e);
+                patientEnumerator.failedPatient(patientData);
             }
         }
     }
