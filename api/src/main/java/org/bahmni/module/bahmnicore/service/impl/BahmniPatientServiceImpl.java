@@ -44,7 +44,7 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
 
         try {
             String fullName = patient == null ? bahmniPatient.getFullName() : patient.getPersonName().getFullName();
-            String patientId = patient == null ? bahmniPatient.getPatientIdentifier() : patient.getPatientIdentifier().toString();
+            String patientId = patient == null ? bahmniPatient.getIdentifier() : patient.getPatientIdentifier().toString();
             billingService.createCustomer(fullName, patientId);
             if (bahmniPatient.hasBalance()) {
                 billingService.updateCustomerBalance(patientId, bahmniPatient.getBalance());

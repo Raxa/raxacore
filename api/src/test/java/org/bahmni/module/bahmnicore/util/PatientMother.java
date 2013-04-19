@@ -27,7 +27,7 @@ public class PatientMother {
                 .add("addresses", Arrays.asList(addressMother.getSimpleObjectForAddress()))
                 .add("centerID", new SimpleObject().add("name", "Ganiyari"))
                 .add("names", Arrays.asList(nameMother.getSimpleObjectForName()))
-                .add("patientIdentifier", patientIdentifier);
+                .add("identifier", patientIdentifier);
         if(balance != null){
             simpleObject.add("balance", balance);
         }

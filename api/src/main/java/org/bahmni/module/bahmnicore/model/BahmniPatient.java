@@ -14,7 +14,7 @@ public class BahmniPatient {
 	private Date birthdate;
 	private Integer age;
 	private String centerName;
-	private String patientIdentifier;
+	private String identifier;
 	private List<BahmniPersonAttribute> attributes = new ArrayList<BahmniPersonAttribute>();
 	private List<BahmniAddress> addresses = new ArrayList<BahmniAddress>();
 	private List<BahmniName> names = new ArrayList<BahmniName>();
@@ -33,7 +33,7 @@ public class BahmniPatient {
 
         balance = extractor.extract("balance");
 		age = extractor.extract("age");
-		patientIdentifier = extractor.extract("patientIdentifier");
+		identifier = extractor.extract("identifier");
 		image = extractor.extract("image");
 		gender = extractor.extract("gender");
 		SimpleObjectExtractor centerNameExtractor = new SimpleObjectExtractor(extractor.<LinkedHashMap> extract("centerID"));
@@ -82,8 +82,8 @@ public class BahmniPatient {
 		return names;
 	}
 	
-	public String getPatientIdentifier() {
-		return patientIdentifier;
+	public String getIdentifier() {
+		return identifier;
 	}
 	
 	public String getCenterName() {
@@ -116,14 +116,6 @@ public class BahmniPatient {
 
     public Date getDateOfRegistration() {
         return dateOfRegistration;
-    }
-
-    public void addName(BahmniName name) {
-        names.add(name);
-    }
-
-    public void setPatientIdentifier(String patientIdentifier) {
-        this.patientIdentifier = patientIdentifier;
     }
 
     public String getFullName() {

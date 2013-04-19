@@ -24,7 +24,7 @@ public class BahmniPatientTest {
                 "addresses", Arrays.asList(new SimpleObject().add("address1", "7143 Koramangala"))).add("centerID",
                 new SimpleObject().add("name", centerName))
                 .add("names", Arrays.asList(new SimpleObject().add("givenName", "first").add("familyName", "Last")))
-                .add("patientIdentifier", "someIdentifier")
+                .add("identifier", "someIdentifier")
                 .add("balance", "123");
 
 
@@ -33,7 +33,7 @@ public class BahmniPatientTest {
         Date date = new SimpleDateFormat("dd-MM-yyyy").parse(birthdate);
         Assert.assertEquals(date, person.getBirthdate());
         Assert.assertEquals("M", person.getGender());
-        Assert.assertEquals("someIdentifier", person.getPatientIdentifier());
+        Assert.assertEquals("someIdentifier", person.getIdentifier());
         Assert.assertEquals(1, person.getAttributes().size());
         Assert.assertEquals(1, person.getAddresses().size());
         Assert.assertEquals(1, person.getNames().size());

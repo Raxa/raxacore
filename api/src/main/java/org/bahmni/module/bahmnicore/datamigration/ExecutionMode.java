@@ -24,7 +24,7 @@ public class ExecutionMode {
         }
 
         if (e.getMessage().contains(alreadyPresentMessage))
-            logger.warn(messagePrefix + bahmniPatient.getPatientIdentifier());
+            logger.warn(messagePrefix + bahmniPatient.getIdentifier());
         else
             throw e;
     }

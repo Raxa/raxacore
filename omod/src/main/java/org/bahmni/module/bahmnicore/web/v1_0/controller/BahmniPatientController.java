@@ -58,7 +58,7 @@ public class BahmniPatientController extends BaseRestController {
         SimpleObject obj = new SimpleObject();
         if (bahmniPatient != null) {
             obj.add("name", bahmniPatient.getPatientName());
-            obj.add("identifier", bahmniPatient.getPatientIdentifier());
+            obj.add("identifier", bahmniPatient.getIdentifier());
             obj.add("exception", ExceptionUtils.getFullStackTrace(e));
         }
         return obj;
@@ -68,7 +68,7 @@ public class BahmniPatientController extends BaseRestController {
         response.setStatus(HttpServletResponse.SC_CREATED);
         SimpleObject obj = new SimpleObject();
         obj.add("name", bahmniPatient.getPatientName());
-        obj.add("identifier", patient == null ? bahmniPatient.getPatientIdentifier() : patient.getPatientIdentifier().toString());
+        obj.add("identifier", patient == null ? bahmniPatient.getIdentifier() : patient.getPatientIdentifier().toString());
         return obj;
     }
 

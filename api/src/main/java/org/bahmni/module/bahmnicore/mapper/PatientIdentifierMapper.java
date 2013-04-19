@@ -17,7 +17,7 @@ public class PatientIdentifierMapper {
 	
 	public Patient map(BahmniPatient bahmniPatient, Patient patient) {
 		PatientIdentifier patientIdentifier;
-		String existingIdentifierValue = bahmniPatient.getPatientIdentifier();
+		String existingIdentifierValue = bahmniPatient.getIdentifier();
 		
 		if (existingIdentifierValue == null || existingIdentifierValue.trim().isEmpty()) {
 			patientIdentifier = generateIdentifier(bahmniPatient.getCenterName());
