@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
+import org.bahmni.module.bahmnicore.BahmniCoreException;
 import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;
 import org.bahmni.module.bahmnicore.mapper.PatientMapper;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
@@ -144,7 +145,7 @@ public class BahmniPatientServiceImplTest {
 
         try {
             bahmniPatientService.createPatient(new PatientMother().buildBahmniPatient());
-        } catch (DAOException e) {
+        } catch (BahmniCoreException e) {
 
         }
 

@@ -50,7 +50,7 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
                 billingService.updateCustomerBalance(patientId, bahmniPatient.getBalance());
             }
         } catch (RuntimeException e) {
-            executionMode.handleOpenERPFailure(e, bahmniPatient);
+            executionMode.handleOpenERPFailure(e, bahmniPatient, patient);
         }
         return patient;
     }

@@ -1,35 +1,44 @@
 package org.bahmni.module.bahmnicore.datamigration;
 
 import org.apache.log4j.Logger;
+import org.bahmni.module.bahmnicore.ApplicationError;
+import org.bahmni.module.bahmnicore.BahmniCoreException;
+import org.bahmni.module.bahmnicore.BillingSystemException;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
+import org.bahmni.module.bahmnicore.model.error.ErrorCode;
+import org.bahmni.module.bahmnicore.model.error.ErrorMessage;
+import org.openmrs.Patient;
 
 public class ExecutionMode {
     private final boolean dataMigrationMode;
     private static Logger logger = Logger.getLogger(ExecutionMode.class);
 
-    private static String existingPatientMessagePart = "already in use by another patient";
-    private static String existingCustomerMessagePart = "Customer with id, name already exists";
-
     public ExecutionMode(String dataMigrationProperty) {
         dataMigrationMode = !(dataMigrationProperty == null || !Boolean.parseBoolean(dataMigrationProperty));
     }
 
-    public void handleOpenERPFailure(RuntimeException e, BahmniPatient bahmniPatient) {
-        handleFailure(e, bahmniPatient, existingCustomerMessagePart, "Customer already present:");
+    public void handleOpenERPFailure(RuntimeException e, BahmniPatient bahmniPatient, Patient patient) {
+        int errorCode = e.getMessage().contains(ErrorMessage.ExistingCustomerMessagePart) ? ErrorCode.DuplicateCustomer : ErrorCode.OpenERPError;
+        BillingSystemException billingSystemException = new BillingSystemException("Create customer failed", e, patient);
+        billingSystemException.setErrorCode(errorCode);
+        handleFailure(bahmniPatient, billingSystemException);
     }
 
-    private void handleFailure(RuntimeException e, BahmniPatient bahmniPatient, String alreadyPresentMessage, String messagePrefix) {
+    private void handleFailure(BahmniPatient bahmniPatient, ApplicationError applicationError) {
         if (!dataMigrationMode) {
-            throw e;
+            throw applicationError;
         }
 
-        if (e.getMessage().contains(alreadyPresentMessage))
-            logger.warn(messagePrefix + bahmniPatient.getIdentifier());
+        if (ErrorCode.duplicationError(applicationError.getErrorCode()))
+            logger.warn(applicationError.getMessage() + bahmniPatient.getIdentifier());
         else
-            throw e;
+            throw applicationError;
     }
 
     public void handleSavePatientFailure(RuntimeException e, BahmniPatient bahmniPatient) {
-        handleFailure(e, bahmniPatient, existingPatientMessagePart, "Patient already present:");
+        int errorCode = e.getMessage().contains(ErrorMessage.ExistingPatientMessagePart) ? ErrorCode.DuplicatePatient : ErrorCode.OpenMRSError;
+        BahmniCoreException bahmniCoreException = new BahmniCoreException("Create patient failed", e);
+        bahmniCoreException.setErrorCode(errorCode);
+        handleFailure(bahmniPatient, bahmniCoreException);
     }
 }

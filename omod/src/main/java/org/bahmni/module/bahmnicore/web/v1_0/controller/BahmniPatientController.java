@@ -3,10 +3,11 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
-import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
+import org.bahmni.module.bahmnicore.ApplicationError;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
-import org.bahmni.module.bahmnicore.model.BahmniName;
+import org.bahmni.module.bahmnicore.BillingSystemException;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
+import org.bahmni.module.bahmnicore.model.error.ErrorCode;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.openmrs.Patient;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -48,18 +49,26 @@ public class BahmniPatientController extends BaseRestController {
             Patient patient = bahmniPatientService.createPatient(bahmniPatient);
             return respondCreated(response, bahmniPatient, patient);
         } catch (Exception e) {
-            return respondNotCreated(response, bahmniPatient, e);
+            return respondNotCreated(response, e);
         }
     }
 
-    private Object respondNotCreated(HttpServletResponse response, BahmniPatient bahmniPatient, Exception e) {
+    private Object respondNotCreated(HttpServletResponse response, Exception e) {
         logger.error("Patient create failed", e);
-        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         SimpleObject obj = new SimpleObject();
-        if (bahmniPatient != null) {
-            obj.add("name", bahmniPatient.getPatientName());
-            obj.add("identifier", bahmniPatient.getIdentifier());
-            obj.add("exception", ExceptionUtils.getFullStackTrace(e));
+        obj.add("exception", ExceptionUtils.getFullStackTrace(e));
+        if (e instanceof ApplicationError) {
+            ApplicationError applicationError = (ApplicationError) e;
+            int errorCode = applicationError.getErrorCode();
+            int statusCode = ErrorCode.duplicationError(errorCode) ? HttpServletResponse.SC_CONFLICT : HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+            response.setStatus(statusCode);
+            obj.add("error", new SimpleObject().add("code", errorCode).add("message", applicationError.getCause().getMessage()));
+        } else {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+        if(e instanceof BillingSystemException){
+            BillingSystemException billingSystemException = (BillingSystemException) e;
+            obj.add("patient", getPatientAsSimpleObject(billingSystemException.getPatient()));
         }
         return obj;
     }
