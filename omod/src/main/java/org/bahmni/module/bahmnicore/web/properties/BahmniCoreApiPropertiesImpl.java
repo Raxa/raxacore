@@ -25,4 +25,9 @@ public class BahmniCoreApiPropertiesImpl  implements BahmniCoreApiProperties {
         String property = propertiesReader.getProperty("bahmnicore.datamigration.mode");
         return new ExecutionMode(property);
     }
+
+    @Override
+    public String getPatientImagesUrl() {
+        return propertiesReader.getProperty("bahmnicore.urls.patientimages");
+    }
 }
