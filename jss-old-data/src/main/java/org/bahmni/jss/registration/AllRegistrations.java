@@ -52,7 +52,7 @@ public class AllRegistrations implements PatientEnumerator {
 
             PatientRequest patientRequest = new PatientRequest();
             RegistrationNumber registrationNumber = RegistrationFields.parseRegistrationNumber(patientRow[0]);
-            patientRequest.setPatientIdentifier(registrationNumber.getCenterCode() + registrationNumber.getId());
+            patientRequest.setIdentifier(registrationNumber.getCenterCode() + registrationNumber.getId());
             patientRequest.setCenterID(new CenterId(registrationNumber.getCenterCode()));
 
             Name name = RegistrationFields.name(patientRow[2], patientRow[3]);

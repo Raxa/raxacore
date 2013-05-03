@@ -93,7 +93,7 @@ public class Migrator {
                 HttpEntity entity = new HttpEntity(patientRequest, httpHeaders);
                 out = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
                 if (logger.isDebugEnabled()) logger.debug(out.getBody());
-                log.info(String.format("%d Successfully created %s", i, patientRequest.getPatientIdentifier()));
+                log.info(String.format("%d Successfully created %s", i, patientRequest.getIdentifier()));
             } catch (HttpServerErrorException serverErrorException) {
                 log.info("Patient request: " + jsonRequest);
                 log.error("Patient create response: " + serverErrorException.getResponseBodyAsString());

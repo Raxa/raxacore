@@ -36,7 +36,7 @@ public class PatientRequest {
     private Integer age;
     private String birthdate;
     private String gender;
-    private String patientIdentifier;
+    private String identifier;
     private CenterId centerID;
     private List<PatientAddress> addresses = new ArrayList<PatientAddress>();
     private List<PatientAttribute> attributes = new ArrayList<PatientAttribute>();
@@ -55,8 +55,8 @@ public class PatientRequest {
         this.gender = gender;
     }
 
-    public void setPatientIdentifier(String patientIdentifier) {
-        this.patientIdentifier = patientIdentifier;
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
     public void setCenterID(CenterId centerID) {
@@ -94,8 +94,8 @@ public class PatientRequest {
         return gender;
     }
 
-    public String getPatientIdentifier() {
-        return patientIdentifier;
+    public String getIdentifier() {
+        return identifier;
     }
 
     public CenterId getCenterID() {
