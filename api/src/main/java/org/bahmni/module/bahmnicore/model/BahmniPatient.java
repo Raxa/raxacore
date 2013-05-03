@@ -22,6 +22,7 @@ public class BahmniPatient {
     private String image;
     private String uuid;
     private String balance;
+    private Date personDateCreated;
     private static Logger logger = Logger.getLogger(BahmniPatient.class);
 
     public BahmniPatient() {
@@ -37,15 +38,11 @@ public class BahmniPatient {
 		gender = extractor.extract("gender");
 		SimpleObjectExtractor centerNameExtractor = new SimpleObjectExtractor(extractor.<LinkedHashMap> extract("centerID"));
 		centerName = centerNameExtractor.extract("name");
-		
-		try {
-			birthdate = new SimpleDateFormat("dd-MM-yyyy").parse(extractor.<String> extract("birthdate"));
-		}
-		catch (Exception e) {
-			logger.warn(e);
-		}
-		
-		List<LinkedHashMap> nameList = extractor.extract("names");
+
+        extractRegistrationDate(extractor);
+        extractBirthdate(extractor);
+
+        List<LinkedHashMap> nameList = extractor.extract("names");
 		for (LinkedHashMap name : nameList) {
 			names.add(new BahmniName(name));
 		}
@@ -60,8 +57,26 @@ public class BahmniPatient {
 			attributes.add(new BahmniPersonAttribute(attribute));
 		}
 	}
-	
-	public Date getBirthdate() {
+
+    private void extractBirthdate(SimpleObjectExtractor extractor) {
+        try {
+            birthdate = new SimpleDateFormat("dd-MM-yyyy").parse(extractor.<String> extract("birthdate"));
+        }
+        catch (Exception e) {
+            logger.warn(e);
+        }
+    }
+
+    private void extractRegistrationDate(SimpleObjectExtractor extractor) {
+        try {
+            personDateCreated = new SimpleDateFormat("dd-MM-yyyy").parse(extractor.<String>extract("dateOfRegistration"));
+        }
+        catch (Exception e) {
+            logger.warn(e);
+        }
+    }
+
+    public Date getBirthdate() {
 		return birthdate;
 	}
 	
@@ -124,5 +139,9 @@ public class BahmniPatient {
 
     public void setBalance(String balance) {
         this.balance = balance;
+    }
+
+    public Date getPersonDateCreated() {
+        return personDateCreated;
     }
 }

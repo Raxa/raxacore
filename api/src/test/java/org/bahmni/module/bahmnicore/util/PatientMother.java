@@ -20,7 +20,9 @@ public class PatientMother {
     }
 
     public SimpleObject buildSimpleObject() {
-        SimpleObject simpleObject = new SimpleObject().add("birthdate", "01-01-2012").add("age", 21).add("gender", "M")
+        SimpleObject simpleObject = new SimpleObject().add("birthdate", "01-01-2012")
+                .add("age", 21)
+                .add("gender", "M")
                 .add("attributes", Arrays.asList(new SimpleObject()
                         .add("attributeType", "b3b6d540-a32e-44c7-91b3-292d97667518")
                         .add("value", "someCaste")))

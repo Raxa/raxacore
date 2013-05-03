@@ -33,6 +33,7 @@ public class PatientMapper {
 			patient = new Patient();
 		}
 		patient.setGender(bahmniPatient.getGender());
+        patient.setPersonDateCreated(bahmniPatient.getPersonDateCreated());
 		patient = personNameMapper.map(patient, bahmniPatient.getNames());
 		patient = birthDateMapper.map(patient, bahmniPatient);
 		patient = personAttributeMapper.map(patient, bahmniPatient.getAttributes());

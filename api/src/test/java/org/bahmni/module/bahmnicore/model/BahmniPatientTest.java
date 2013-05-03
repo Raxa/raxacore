@@ -17,6 +17,7 @@ public class BahmniPatientTest {
     @Test
     public void shouldCreateAPersonFromASimpleObject() throws ParseException {
         String birthdate = "01-01-2012";
+        String registrationDateStr = "25-04-1988";
         String centerName = "Ganiyari";
         double expectedBalance = 123;
         SimpleObject personObject = new SimpleObject().add("birthdate", birthdate).add("age", 21).add("gender", "M").add(
@@ -25,12 +26,14 @@ public class BahmniPatientTest {
                 new SimpleObject().add("name", centerName))
                 .add("names", Arrays.asList(new SimpleObject().add("givenName", "first").add("familyName", "Last")))
                 .add("identifier", "someIdentifier")
-                .add("balance", "123");
+                .add("balance", "123")
+                .add("dateOfRegistration", registrationDateStr);
 
 
         BahmniPatient person = new BahmniPatient(personObject);
 
         Date date = new SimpleDateFormat("dd-MM-yyyy").parse(birthdate);
+        Date registrationDate = new SimpleDateFormat("dd-MM-yyyy").parse(registrationDateStr);
         Assert.assertEquals(date, person.getBirthdate());
         Assert.assertEquals("M", person.getGender());
         Assert.assertEquals("someIdentifier", person.getIdentifier());
@@ -39,6 +42,7 @@ public class BahmniPatientTest {
         Assert.assertEquals(1, person.getNames().size());
         Assert.assertEquals(centerName, person.getCenterName());
         Assert.assertEquals(expectedBalance, person.getBalance());
+        Assert.assertEquals(registrationDate, person.getPersonDateCreated());
     }
 
     @Test
