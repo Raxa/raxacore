@@ -62,7 +62,8 @@ public class BahmniPatientController extends BaseRestController {
             int errorCode = applicationError.getErrorCode();
             int statusCode = ErrorCode.duplicationError(errorCode) ? HttpServletResponse.SC_CONFLICT : HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
             response.setStatus(statusCode);
-            obj.add("error", new SimpleObject().add("code", errorCode).add("message", applicationError.getCause().getMessage()));
+            Throwable cause = applicationError.getCause() == null ? applicationError : applicationError.getCause();
+            obj.add("error", new SimpleObject().add("code", errorCode).add("message", cause.getMessage()));
         } else {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
