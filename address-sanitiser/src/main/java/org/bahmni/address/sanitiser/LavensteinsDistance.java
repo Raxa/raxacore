@@ -1,18 +1,15 @@
 package org.bahmni.address.sanitiser;
 
+import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class LavensteinsDistance {
-    private AddressHierarchy addressHierarchy;
 
-    public LavensteinsDistance(AddressHierarchy addressHierarchy) {
-        this.addressHierarchy = addressHierarchy;
-    }
-
-    public String getClosestMatch(String query) {
-        List<String> villages = addressHierarchy.getAllVillages();
+    public String getClosestMatch(String query, List<String> villages) {
         Map<String, Integer> distanceMap = new HashMap<String, Integer>();
         for(String village : villages){
             distanceMap.put(village, computeDistance(query, village));

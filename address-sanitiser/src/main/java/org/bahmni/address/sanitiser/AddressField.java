@@ -1,5 +1,5 @@
 package org.bahmni.address.sanitiser;
 
 public enum AddressField {
-    TEHSIL, DISTRICT, STATE
+    TEHSIL, DISTRICT, VILLAGE, STATE
 }

@@ -5,9 +5,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class LavensteinsDistanceTest {
@@ -22,20 +22,20 @@ public class LavensteinsDistanceTest {
 
     @Test
     public void shouldGetClosestMatch() {
-        when(addressHierarchy.getAllVillages()).thenReturn(Arrays.asList("Badwahi", "Badwar"));
-        lavensteinsDistance = new LavensteinsDistance(addressHierarchy);
+        List<String> allVillages = Arrays.asList("Badwahi", "Badwar");
+        lavensteinsDistance = new LavensteinsDistance();
 
-        assertEquals("Badwahi", lavensteinsDistance.getClosestMatch("baaaandwahi"));
-        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("baaandhwar"));
-        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("band war"));
-        assertEquals("Badwahi", lavensteinsDistance.getClosestMatch("band wahri"));
-        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("bandwarh"));
-        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("badwara"));
+        assertEquals("Badwahi", lavensteinsDistance.getClosestMatch("baaaandwahi", allVillages));
+        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("baaandhwar", allVillages));
+        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("band war", allVillages));
+        assertEquals("Badwahi", lavensteinsDistance.getClosestMatch("band wahri", allVillages));
+        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("bandwarh", allVillages));
+        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("badwara", allVillages));
     }
 
     @Test
     public void shouldGetClosestMatchingStringFromGivenMasterList() {
-        lavensteinsDistance = new LavensteinsDistance(addressHierarchy);
+        lavensteinsDistance = new LavensteinsDistance();
         PersonAddress personAddress1 = new PersonAddress("village", "sun", "district", "state");
         PersonAddress personAddress2 = new PersonAddress("village", "moon", "district", "state");
 

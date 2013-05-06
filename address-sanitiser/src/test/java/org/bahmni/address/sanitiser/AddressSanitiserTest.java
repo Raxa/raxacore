@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -30,8 +31,10 @@ public class AddressSanitiserTest {
         String tehsil = "tehsil";
         String district = "district";
         String state = "state";
+        List<String> allVilages = Arrays.asList("village1", "village2");
 
-        when(lavensteinsDistance.getClosestMatch(village)).thenReturn(expectedVillage);
+        when(addressHierarchy.getAllVillages()).thenReturn(allVilages);
+        when(lavensteinsDistance.getClosestMatch(village, allVilages)).thenReturn(expectedVillage);
         when(addressHierarchy.getAddressHierarchyFor(expectedVillage)).thenReturn(Arrays.asList(new PersonAddress(expectedVillage, tehsil, district, state)));
 
         PersonAddress sanitisedAddress = sanitiser.sanitise(new PersonAddress(village, tehsil, district, state));
@@ -54,8 +57,10 @@ public class AddressSanitiserTest {
         PersonAddress personAddress1 = new PersonAddress(expectedVillage, tehsil1, district, state);
         PersonAddress personAddress2 = new PersonAddress(expectedVillage, tehsil2, district, state);
         PersonAddress personAddressToSanitise = new PersonAddress(village, tehsil, district, state);
+        List<String> allVilages = Arrays.asList("village1", "village2");
 
-        when(lavensteinsDistance.getClosestMatch(village)).thenReturn(expectedVillage);
+        when(addressHierarchy.getAllVillages()).thenReturn(allVilages);
+        when(lavensteinsDistance.getClosestMatch(village, allVilages)).thenReturn(expectedVillage);
         when(addressHierarchy.getAddressHierarchyFor(expectedVillage))
                 .thenReturn(Arrays.asList(personAddress1, personAddress2));
         when(lavensteinsDistance.getClosestMatch(tehsil, Arrays.asList(personAddress1, personAddress2), AddressField.TEHSIL)).thenReturn(personAddress2);
