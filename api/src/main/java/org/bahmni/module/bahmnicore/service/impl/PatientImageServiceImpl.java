@@ -33,11 +33,13 @@ public class PatientImageServiceImpl implements PatientImageService {
         try {
             if (image == null || image.isEmpty()) return;
 
+            File outputFile = new File(String.format("%s/%s.%s", properties.getImageDirectory(), patientIdentifier,patientImagesFormat));
+            log.info(String.format("Creating patient image at %s", outputFile));
             byte[] decodedBytes = DatatypeConverter.parseBase64Binary(image);
-            BufferedImage bfi = ImageIO.read(new ByteArrayInputStream(decodedBytes));
-            File outputfile = new File(String.format("%s/%s.%s", properties.getImageDirectory(), patientIdentifier,patientImagesFormat));
-            ImageIO.write(bfi , patientImagesFormat, outputfile);
-            bfi.flush();
+            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decodedBytes));
+            ImageIO.write(bufferedImage, patientImagesFormat, outputFile);
+            bufferedImage.flush();
+            log.info(String.format("Successfully created patient image at %s", outputFile));
         } catch (IOException e) {
             throw new BahmniCoreException("[%s] : Could not save patient image", e);
         }
