@@ -69,13 +69,11 @@ public class AllRegistrations implements PatientEnumerator {
             patientRequest.addPatientAddress(patientAddress);
 
             patientAddress.setCityVillage(sentenceCase(patientRow[10]));
+            patientAddress.setAddress3(patientRow[35]); //Tehsil
 
             patientRequest.setBalance(patientRow[17]);
 
             addPatientAttribute(patientRow[20], patientRequest, "caste", lookupValuesMap.get("Castes"), 0);
-
-            String tahsil = lookupValuesMap.get("Tahsils").getLookUpValue(patientRow[25]);
-            patientAddress.setAddress3(sentenceCase(tahsil));
 
             String district = lookupValuesMap.get("Districts").getLookUpValue(patientRow[26], 2);
             patientAddress.setCountyDistrict(sentenceCase(district));
