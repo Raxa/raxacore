@@ -33,7 +33,7 @@ public class PatientImageServiceImpl implements PatientImageService {
         try {
             if (image == null || image.isEmpty()) return;
 
-            File outputFile = new File(String.format("%s/%s.%s", properties.getImageDirectory(), patientIdentifier,patientImagesFormat));
+            File outputFile = new File(String.format("%s/%s.%s", properties.getImageDirectory(), patientIdentifier, patientImagesFormat));
             log.info(String.format("Creating patient image at %s", outputFile));
             byte[] decodedBytes = DatatypeConverter.parseBase64Binary(image);
             BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decodedBytes));
