@@ -5,12 +5,27 @@ import java.util.List;
 import java.util.Map;
 
 public class LavensteinsDistance {
-    private List<String> villages;
     private AddressHierarchy addressHierarchy;
 
     public LavensteinsDistance(AddressHierarchy addressHierarchy) {
         this.addressHierarchy = addressHierarchy;
-        villages = addressHierarchy.getAllVillages();
+    }
+
+    public String getClosestMatch(String query) {
+        List<String> villages = addressHierarchy.getAllVillages();
+        Map<String, Integer> distanceMap = new HashMap<String, Integer>();
+        for(String village : villages){
+            distanceMap.put(village, computeDistance(query, village));
+        }
+        return getEntryWithClosestMatch(villages, distanceMap);
+    }
+
+    public PersonAddress getClosestMatch(String query, List<PersonAddress> personAddresses, AddressField field) {
+        Map<PersonAddress, Integer> distanceMap = new HashMap<PersonAddress, Integer>();
+        for(PersonAddress personAddress : personAddresses){
+            distanceMap.put(personAddress, computeDistance(query, getFieldFrom(personAddress, field)));
+        }
+        return getEntryWithClosestMatch(personAddresses, distanceMap);
     }
 
     private int computeDistance(String s1, String s2) {
@@ -39,20 +54,26 @@ public class LavensteinsDistance {
         return costs[s2.length()];
     }
 
-    public String getClosestMatch(String s1) {
-        Map<String, Integer> distanceMap = new HashMap<String, Integer>();
-        for(String village : villages){
-            distanceMap.put(village, computeDistance(s1, village));
-        }
-        String villageSuggestion = villages.get(0);
-        int initialDist = distanceMap.get(villageSuggestion);
-        for(String village : villages){
-            if(distanceMap.get(village) < initialDist){
-                villageSuggestion = village;
-                initialDist = distanceMap.get(village);
+    private <T> T getEntryWithClosestMatch(List<T> suggestions, Map<T, Integer> distanceMap) {
+        T bestSuggestion = suggestions.get(0);
+        int initialDist = distanceMap.get(bestSuggestion);
+        for(T suggestion : suggestions){
+            if(distanceMap.get(suggestion) < initialDist){
+                bestSuggestion = suggestion;
+                initialDist = distanceMap.get(suggestion);
             }
         }
-        return villageSuggestion;
+        return bestSuggestion;
+    }
+
+    private String getFieldFrom(PersonAddress personAddress, AddressField field) {
+        if(field.equals(AddressField.TEHSIL))
+            return personAddress.getTehsil();
+        if(field.equals(AddressField.DISTRICT))
+            return personAddress.getDistrict();
+        if(field.equals(AddressField.STATE))
+            return personAddress.getState();
+        return null;
     }
 
 }

@@ -24,12 +24,20 @@ public class AddressHierarchy {
         return villageList;
     }
 
-    public PersonAddress getAddressHierarchyFor(String village) {
-        AddressHierarchyEntry addressHierarchyEntry = new AddressHierarchyEntry();
-        addressHierarchyEntry.setName(village);
-        List<String> possibleFullAddresses = addressHierarchyService.getPossibleFullAddresses(addressHierarchyEntry);
-        String fullAddress = possibleFullAddresses.get(0);
-        String[] split = fullAddress.split("\\|");
-        return new PersonAddress(split[3], split[2], split[1], split[0]);
+    public List<PersonAddress> getAddressHierarchyFor(String village) {
+        List<AddressHierarchyEntry> addressHierarchyEntries =
+                addressHierarchyService.getAddressHierarchyEntriesByLevelAndName(addressHierarchyService.getBottomAddressHierarchyLevel(), village);
+
+        List<String> possibleFullAddresses = new ArrayList<String>();
+        for (AddressHierarchyEntry addressHierarchyEntry : addressHierarchyEntries) {
+            possibleFullAddresses.addAll(addressHierarchyService.getPossibleFullAddresses(addressHierarchyEntry));
+        }
+
+        List<PersonAddress> possibleAddresses = new ArrayList<PersonAddress>();
+        for (String possibleFullAddress : possibleFullAddresses) {
+            String[] split = possibleFullAddress.split("\\|");
+            possibleAddresses.add(new PersonAddress(split[3], split[2], split[1], split[0]));
+        }
+        return possibleAddresses;
     }
 }

@@ -12,6 +12,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -48,14 +49,38 @@ public class AddressHierarchyTest {
         String state = "State";
         String tehsil = "Tehsil";
         String district = "District";
+
+        when(addressHierarchyService.getBottomAddressHierarchyLevel()).thenReturn(new AddressHierarchyLevel());
+        when(addressHierarchyService.getAddressHierarchyEntriesByLevelAndName(any(AddressHierarchyLevel.class), anyString()))
+                .thenReturn(Arrays.asList(new AddressHierarchyEntry()));
         when(addressHierarchyService.getPossibleFullAddresses(any(AddressHierarchyEntry.class)))
-                .thenReturn(Arrays.asList(state + "|" + district + "|" + tehsil + "|"+ village));
+                .thenReturn(Arrays.asList(state + "|" + district + "|" + tehsil + "|" + village));
 
-        PersonAddress address = addressHierarchy.getAddressHierarchyFor(village);
+        List<PersonAddress> addresses = addressHierarchy.getAddressHierarchyFor(village);
 
-        assertEquals(village, address.getVillage());
-        assertEquals(tehsil, address.getTehsil());
-        assertEquals(district, address.getDistrict());
-        assertEquals(state, address.getState());
+        assertEquals(village, addresses.get(0).getVillage());
+        assertEquals(tehsil, addresses.get(0).getTehsil());
+        assertEquals(district, addresses.get(0).getDistrict());
+        assertEquals(state, addresses.get(0).getState());
+    }
+
+    @Test
+    public void shouldReturnAllPossibleAddressValuesForAVillage() {
+        String village = "Village";
+        String state = "State";
+        String tehsil = "Tehsil";
+        String district = "District";
+        AddressHierarchyEntry addressHierarchyEntry1 = new AddressHierarchyEntry();
+        AddressHierarchyEntry addressHierarchyEntry2 = new AddressHierarchyEntry();
+
+        when(addressHierarchyService.getBottomAddressHierarchyLevel()).thenReturn(new AddressHierarchyLevel());
+        when(addressHierarchyService.getAddressHierarchyEntriesByLevelAndName(any(AddressHierarchyLevel.class), anyString()))
+                .thenReturn(Arrays.asList(addressHierarchyEntry1, addressHierarchyEntry2));
+        when(addressHierarchyService.getPossibleFullAddresses(any(AddressHierarchyEntry.class)))
+                .thenReturn(Arrays.asList(state + "|" + district + "|" + tehsil + "|" + village));
+
+        List<PersonAddress> addresses = addressHierarchy.getAddressHierarchyFor(village);
+
+        assertEquals(2, addresses.size());
     }
 }
