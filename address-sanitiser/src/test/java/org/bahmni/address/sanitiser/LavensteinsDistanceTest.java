@@ -34,6 +34,14 @@ public class LavensteinsDistanceTest {
     }
 
     @Test
+    public void shouldGetClosestMatch1() {
+        List<String> allVillages = Arrays.asList("AMARKANTAK", "Bilaspur", "Bilaspur");
+        lavensteinsDistance = new LavensteinsDistance();
+
+        assertEquals("Bilaspur", lavensteinsDistance.getClosestMatch("Bilaspuri", allVillages));
+    }
+
+    @Test
     public void shouldGetClosestMatchingStringFromGivenMasterList() {
         lavensteinsDistance = new LavensteinsDistance();
         PersonAddress personAddress1 = new PersonAddress("village", "sun", "district", "state");

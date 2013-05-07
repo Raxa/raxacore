@@ -1,10 +1,10 @@
 package org.bahmni.address.sanitiser;
 
-import com.googlecode.ehcache.annotations.Cacheable;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.addresshierarchy.AddressHierarchyEntry;
 import org.openmrs.module.addresshierarchy.AddressHierarchyLevel;
 import org.openmrs.module.addresshierarchy.service.AddressHierarchyService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import java.util.List;
 public class AddressHierarchy {
 
     private AddressHierarchyService addressHierarchyService;
+    public static List<String> villageList;
 
     public AddressHierarchy() {
     }
@@ -26,15 +27,17 @@ public class AddressHierarchy {
         return addressHierarchyService != null ? addressHierarchyService : Context.getService(AddressHierarchyService.class);
     }
 
-    @Cacheable(cacheName = "allVillages")
     public List<String> getAllVillages() {
+        if(villageList != null)
+            return villageList;
         AddressHierarchyService service = getAddressHierarchyService();
         AddressHierarchyLevel villageHierarchyLevel = service.getBottomAddressHierarchyLevel();
         List<AddressHierarchyEntry> addressHierarchyEntriesByLevel = service.getAddressHierarchyEntriesByLevel(villageHierarchyLevel);
-        List<String> villageList = new ArrayList<String>();
+        villageList = new ArrayList<String>();
         for (AddressHierarchyEntry addressHierarchyEntry : addressHierarchyEntriesByLevel) {
             villageList.add(addressHierarchyEntry.getLocationName());
         }
+
         return villageList;
     }
 

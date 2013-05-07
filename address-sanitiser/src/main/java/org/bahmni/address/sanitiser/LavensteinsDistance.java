@@ -25,6 +25,28 @@ public class LavensteinsDistance {
         return getEntryWithClosestMatch(personAddresses, distanceMap);
     }
 
+    private <T> T getEntryWithClosestMatch(List<T> suggestions, Map<T, Integer> distanceMap) {
+        T bestSuggestion = suggestions.get(0);
+        int initialDist = distanceMap.get(bestSuggestion);
+        for(T suggestion : suggestions){
+            if(distanceMap.get(suggestion) < initialDist){
+                bestSuggestion = suggestion;
+                initialDist = distanceMap.get(suggestion);
+            }
+        }
+        return bestSuggestion;
+    }
+
+    private String getFieldFrom(PersonAddress personAddress, AddressField field) {
+        if(field.equals(AddressField.TEHSIL))
+            return personAddress.getTehsil();
+        if(field.equals(AddressField.DISTRICT))
+            return personAddress.getDistrict();
+        if(field.equals(AddressField.STATE))
+            return personAddress.getState();
+        return null;
+    }
+
     private int computeDistance(String s1, String s2) {
         s1 = s1.toLowerCase();
         s2 = s2.toLowerCase();
@@ -49,28 +71,6 @@ public class LavensteinsDistance {
                 costs[s2.length()] = lastValue;
         }
         return costs[s2.length()];
-    }
-
-    private <T> T getEntryWithClosestMatch(List<T> suggestions, Map<T, Integer> distanceMap) {
-        T bestSuggestion = suggestions.get(0);
-        int initialDist = distanceMap.get(bestSuggestion);
-        for(T suggestion : suggestions){
-            if(distanceMap.get(suggestion) < initialDist){
-                bestSuggestion = suggestion;
-                initialDist = distanceMap.get(suggestion);
-            }
-        }
-        return bestSuggestion;
-    }
-
-    private String getFieldFrom(PersonAddress personAddress, AddressField field) {
-        if(field.equals(AddressField.TEHSIL))
-            return personAddress.getTehsil();
-        if(field.equals(AddressField.DISTRICT))
-            return personAddress.getDistrict();
-        if(field.equals(AddressField.STATE))
-            return personAddress.getState();
-        return null;
     }
 
 }
