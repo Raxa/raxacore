@@ -10,6 +10,7 @@ import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.model.error.ErrorCode;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.openmrs.Patient;
+import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
@@ -48,6 +49,8 @@ public class BahmniPatientController extends BaseRestController {
             bahmniPatient = new BahmniPatient(post);
             Patient patient = bahmniPatientService.createPatient(bahmniPatient);
             return respondCreated(response, bahmniPatient, patient);
+        } catch (APIAuthenticationException e) {
+            throw e;
         } catch (Exception e) {
             return respondNotCreated(response, e);
         }

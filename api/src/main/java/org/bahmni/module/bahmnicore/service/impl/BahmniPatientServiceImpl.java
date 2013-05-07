@@ -9,6 +9,7 @@ import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
 import org.bahmni.module.billing.BillingService;
 import org.openmrs.Patient;
+import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
         ExecutionMode executionMode = properties.getExecutionMode();
         try {
             patient = savePatient(bahmniPatient, patient);
+        } catch (APIAuthenticationException e) {
+            throw e;
         } catch (RuntimeException e) {
             executionMode.handleSavePatientFailure(e, bahmniPatient);
         }

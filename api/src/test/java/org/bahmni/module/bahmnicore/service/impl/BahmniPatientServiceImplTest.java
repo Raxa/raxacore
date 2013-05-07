@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.openmrs.Patient;
+import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.db.DAOException;
 
@@ -150,6 +151,15 @@ public class BahmniPatientServiceImplTest {
         }
 
         verify(billingService, never()).createCustomer(anyString(), anyString());
+    }
+
+    @Test(expected = APIAuthenticationException.class)
+    public void shouldRethrowTheApiAutheticationException() throws Exception {
+        when(patientMapper.map(any(Patient.class), any(BahmniPatient.class))).thenReturn(new PatientMother().build());
+        when(patientService.savePatient(any(Patient.class))).thenThrow(new APIAuthenticationException());
+
+
+        bahmniPatientService.createPatient(new PatientMother().buildBahmniPatient());
     }
 
     @Test
