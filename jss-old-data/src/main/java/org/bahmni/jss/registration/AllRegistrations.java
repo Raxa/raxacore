@@ -77,8 +77,13 @@ public class AllRegistrations implements PatientEnumerator {
 
             String district = lookupValuesMap.get("Districts").getLookUpValue(patientRow[26], 2);
             patientAddress.setCountyDistrict(sentenceCase(district));
-            String state = lookupValuesMap.get("States").getLookUpValue(patientRow[26]);
-            patientAddress.setStateProvince(sentenceCase(state));
+
+            String stateId = lookupValuesMap.get("Districts").getLookUpValue(patientRow[26], 0);
+            if (stateId != null) {
+                String state = lookupValuesMap.get("States").getLookUpValue(stateId);
+                patientAddress.setStateProvince(sentenceCase(state));
+            }
+
             String gramPanchayat = patientRow[34];
             patientAddress.setAddress2(sentenceCase(gramPanchayat));
 
