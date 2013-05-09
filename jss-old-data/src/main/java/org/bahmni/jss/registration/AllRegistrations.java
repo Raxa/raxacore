@@ -106,7 +106,8 @@ public class AllRegistrations implements PatientEnumerator {
         patientAttribute.setAttributeType(allPatientAttributeTypes.getAttributeUUID(name));
         patientAttribute.setName(name);
         String valueToSet = lookupValueProvider == null ? value : lookupValueProvider.getLookUpValue(value, valueIndex);
-        patientAttribute.setValue(sentenceCase(valueToSet));
+        valueToSet = name.equals("class") ? valueToSet : sentenceCase(valueToSet);
+        patientAttribute.setValue(valueToSet);
         patientRequest.addPatientAttribute(patientAttribute);
     }
 
