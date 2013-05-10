@@ -69,7 +69,7 @@ public class AllRegistrations implements PatientEnumerator {
             patientRequest.addPatientAddress(patientAddress);
 
             patientAddress.setCityVillage(sentenceCase(patientRow[10]));
-            patientAddress.setAddress3(patientRow[35]); //Tehsil
+            patientAddress.setAddress3(sentenceCase(patientRow[35])); //Tehsil
 
             patientRequest.setBalance(patientRow[17]);
 
