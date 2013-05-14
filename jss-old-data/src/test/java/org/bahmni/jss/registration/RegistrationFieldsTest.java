@@ -14,6 +14,12 @@ public class RegistrationFieldsTest {
     }
 
     @Test
+    public void parseDateInFuture() {
+        assertEquals("01-01-1900", RegistrationFields.getDate("05/08/2079 0:00"));
+        assertEquals("01-01-1900", RegistrationFields.getDate("05/08/2028 0:00"));
+    }
+
+    @Test
     public void sentenceCase() {
         assertEquals("Devari", RegistrationFields.sentenceCase("DEVARI"));
         assertEquals("Chakra Kund", RegistrationFields.sentenceCase("CHAKRA KUND"));

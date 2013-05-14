@@ -25,6 +25,8 @@ public class RegistrationFields {
         if (localDate.getYear() <= 1900) {
             localDate = new LocalDate(1900 + localDate.getYearOfCentury(), localDate.getMonthOfYear(), localDate.getDayOfMonth());
         }
+        if(localDate.isAfter(LocalDate.now()))
+            localDate = new LocalDate(1900 , 1, 1);
         return localDate.toString("dd-MM-yyyy");
     }
 

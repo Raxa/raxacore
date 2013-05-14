@@ -7,8 +7,29 @@
         </layout>
     </appender>
 
+     <appender name="fileAppender" class="org.apache.log4j.RollingFileAppender">
+          <param name="Threshold" value="INFO" />
+          <param name="File" value="/var/log/migration.log"/>
+          <layout class="org.apache.log4j.PatternLayout">
+             <param name="ConversionPattern" value="%d
+                %-5p  [%c{1}] %m %n" />
+          </layout>
+     </appender>
+         
+
+    <!--<appender name="ROLL" class="org.apache.log4j.RollingFileAppender">-->
+        <!--<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">-->
+            <!--<param name="FileNamePattern" value="/wombat/foo.%d{yyyy-MM}.gz"/>-->
+        <!--</rollingPolicy>-->
+
+        <!--<layout class="org.apache.log4j.PatternLayout">-->
+            <!--<param name="ConversionPattern" value="%c{1} - %m%n"/>-->
+        <!--</layout>-->
+    <!--</appender>-->
+
+
     <appender name="default.file" class="org.apache.log4j.FileAppender">
-        <param name="file" value="/log/migration.log" />
+        <param name="file" value="/var/log/migration.log" />
         <param name="append" value="false" />
         <param name="threshold" value="debug" />
         <layout class="org.apache.log4j.PatternLayout">
@@ -24,7 +45,8 @@
 
     <root>
         <priority value="info"/>
-        <appender-ref ref="default.file"/>
+        <appender-ref ref="fileAppender"/>
+        <appender-ref ref="console"/>
     </root>
 
 </log4j:configuration>
