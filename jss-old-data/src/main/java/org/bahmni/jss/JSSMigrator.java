@@ -21,9 +21,9 @@ public class JSSMigrator {
     public static void main(String[] args) throws URISyntaxException, IOException {
         Localhost.getRestApiUrl();
         String csvLocation = "/Users/Vsingh/Projects/bhamni/csv";
-        JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_District.csv", "LU_State.csv", "LU_Class.csv", "LU_Tahsil.csv", Localhost);
+        JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_District.csv", "LU_State.csv", "LU_Class.csv", "LU_Tahsil.csv", QA);
 
-        jssMigrator.migratePatient("RegistrationMaster.csv");
+        jssMigrator.migratePatient("RegistrationMaster_Error.csv");
     }
 
     public JSSMigrator(String csvLocation, String casteFileName, String districtFileName, String stateFileName, String classFileName, String tahsilFileName,
