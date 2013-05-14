@@ -1,5 +1,8 @@
 package org.bahmni.datamigration.request.patient;
 
+import static org.bahmni.datamigration.DataScrub.scrubData;
+
+
 public class Name {
     private String familyName;
     private String givenName;
@@ -9,7 +12,7 @@ public class Name {
     }
 
     public void setFamilyName(String familyName) {
-        this.familyName = familyName;
+        this.familyName = scrubData(familyName);
     }
 
     public String getGivenName() {
@@ -17,6 +20,6 @@ public class Name {
     }
 
     public void setGivenName(String givenName) {
-        this.givenName = givenName;
+        this.givenName = scrubData(givenName);
     }
 }

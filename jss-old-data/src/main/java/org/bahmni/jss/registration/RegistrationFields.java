@@ -10,6 +10,8 @@ import org.joda.time.format.DateTimeFormat;
 
 import java.util.StringTokenizer;
 
+import static org.bahmni.datamigration.DataScrub.scrubData;
+
 public class RegistrationFields {
     private static final String patternWhenYearSpecifiedAs4Digits = "dd/MM/yyyy";
     private static final String patternWhenYearSpecifiedAs2Digits = "dd/MM/yy";
@@ -34,7 +36,7 @@ public class RegistrationFields {
         StringTokenizer stringTokenizer = new StringTokenizer(registrationNumber, "/");
         String id = stringTokenizer.nextToken();
         String centerCode = stringTokenizer.nextToken();
-        return new RegistrationNumber(centerCode, id);
+        return new RegistrationNumber(scrubData(centerCode), scrubData(id));
     }
 
     public static Name name(String firstName, String lastName) {
@@ -61,4 +63,6 @@ public class RegistrationFields {
         }
         return (int) Math.round(doubleValue);
     }
+
+
 }

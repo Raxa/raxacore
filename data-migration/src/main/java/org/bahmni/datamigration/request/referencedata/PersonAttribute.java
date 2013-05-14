@@ -1,5 +1,7 @@
 package org.bahmni.datamigration.request.referencedata;
 
+import static org.bahmni.datamigration.DataScrub.scrubData;
+
 public class PersonAttribute {
     private String uuid;
     private String display;
@@ -27,7 +29,7 @@ public class PersonAttribute {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = scrubData(name);
     }
 
     public String getDescription() {
@@ -35,6 +37,6 @@ public class PersonAttribute {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = scrubData(description);
     }
 }

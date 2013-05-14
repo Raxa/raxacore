@@ -17,6 +17,7 @@ import static org.bahmni.jss.registration.RegistrationFields.sentenceCase;
 public class AllRegistrations implements PatientEnumerator {
     private CSVReader csvReader;
     private CSVWriter csvWriter;
+    static int count =0;
     private AllPatientAttributeTypes allPatientAttributeTypes;
     private Map<String, AllLookupValues> lookupValuesMap;
 
@@ -37,7 +38,7 @@ public class AllRegistrations implements PatientEnumerator {
 
     private void init(AllPatientAttributeTypes allPatientAttributeTypes, Map<String, AllLookupValues> lookupValuesMap, Reader reader, Writer writer) throws IOException {
         this.lookupValuesMap = lookupValuesMap;
-        this.csvReader = new CSVReader(reader, ',');
+        this.csvReader = new CSVReader(reader, ',','"', '\0');
         this.csvWriter = new CSVWriter(writer, ',');
         String[] headerRow = this.csvReader.readNext();//skip row
         this.csvWriter.writeNext(headerRow);
@@ -47,6 +48,7 @@ public class AllRegistrations implements PatientEnumerator {
     public PatientData nextPatient() {
         String[] patientRow = null;
         try {
+
             patientRow = csvReader.readNext();
             if (patientRow == null) return null;
 

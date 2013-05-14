@@ -7,6 +7,16 @@
         </layout>
     </appender>
 
+    <appender name="default.file" class="org.apache.log4j.FileAppender">
+        <param name="file" value="/log/migration.log" />
+        <param name="append" value="false" />
+        <param name="threshold" value="debug" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p [%c{1}] - %m%n" />
+        </layout>
+    </appender>
+
+
     <logger name="org.springframework">
         <level value="warn"/>
         <appender-ref ref="console"/>
@@ -14,6 +24,7 @@
 
     <root>
         <priority value="info"/>
-        <appender-ref ref="console"/>
+        <appender-ref ref="default.file"/>
     </root>
+
 </log4j:configuration>

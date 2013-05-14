@@ -1,5 +1,7 @@
 package org.bahmni.datamigration.request.patient;
 
+import static org.bahmni.datamigration.DataScrub.scrubData;
+
 public class PatientAddress {
     private  String address1;
     private  String cityVillage;
@@ -13,7 +15,7 @@ public class PatientAddress {
     }
 
     public void setAddress1(String address1) {
-        this.address1 = address1;
+        this.address1 = scrubData(address1);
     }
 
     public String getCityVillage() {
@@ -21,7 +23,7 @@ public class PatientAddress {
     }
 
     public void setCityVillage(String cityVillage) {
-        this.cityVillage = cityVillage;
+        this.cityVillage = scrubData(cityVillage);
     }
 
     public String getAddress3() {
@@ -29,7 +31,7 @@ public class PatientAddress {
     }
 
     public void setAddress3(String address3) {
-        this.address3 = address3;
+        this.address3 = scrubData(address3);
     }
 
     public String getCountyDistrict() {
@@ -37,7 +39,7 @@ public class PatientAddress {
     }
 
     public void setCountyDistrict(String countyDistrict) {
-        this.countyDistrict = countyDistrict;
+        this.countyDistrict = scrubData(countyDistrict);
     }
 
     public String getStateProvince() {
@@ -45,7 +47,7 @@ public class PatientAddress {
     }
 
     public void setStateProvince(String stateProvince) {
-        this.stateProvince = stateProvince;
+        this.stateProvince = scrubData(stateProvince);
     }
 
     public String getAddress2() {
@@ -53,6 +55,6 @@ public class PatientAddress {
     }
 
     public void setAddress2(String address2) {
-        this.address2 = address2;
+        this.address2 = scrubData(address2);
     }
 }

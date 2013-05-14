@@ -2,6 +2,8 @@ package org.bahmni.datamigration.request.patient;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.bahmni.datamigration.DataScrub.scrubData;
 //
 //attributeType: "cd7b242c-9790-11e2-99c1-005056b562c5"
 //        name: "caste"
@@ -135,6 +137,6 @@ public class PatientRequest {
     }
 
     public void setBalance(String balance) {
-        this.balance = balance;
+        this.balance = scrubData(balance);
     }
 }

@@ -1,5 +1,7 @@
 package org.bahmni.datamigration.request.patient;
 
+import static org.bahmni.datamigration.DataScrub.scrubData;
+
 public class PatientAttribute {
     private String attributeType;
     private String name;
@@ -18,7 +20,7 @@ public class PatientAttribute {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = scrubData(name);
     }
 
     public String getValue() {
@@ -26,6 +28,6 @@ public class PatientAttribute {
     }
 
     public void setValue(String value) {
-        this.value = value;
+        this.value = scrubData(value);
     }
 }
