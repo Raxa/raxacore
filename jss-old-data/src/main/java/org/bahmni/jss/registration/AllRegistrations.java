@@ -4,6 +4,8 @@ import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.bahmni.address.sanitiser.AddressSanitiser;
+import org.bahmni.address.sanitiser.SanitizerPersonAddress;
 import org.bahmni.datamigration.PatientData;
 import org.bahmni.datamigration.PatientEnumerator;
 import org.bahmni.datamigration.request.patient.*;
@@ -20,29 +22,31 @@ public class AllRegistrations implements PatientEnumerator {
     static int count =0;
     private AllPatientAttributeTypes allPatientAttributeTypes;
     private Map<String, AllLookupValues> lookupValuesMap;
+    private AddressSanitiser addressSanitiser;
 
     public AllRegistrations(String csvLocation, String fileName, AllPatientAttributeTypes allPatientAttributeTypes, Map<String,
-            AllLookupValues> lookupValuesMap) throws IOException {
+            AllLookupValues> lookupValuesMap, AddressSanitiser addressSanitiser) throws IOException {
         File file = new File(csvLocation, fileName);
         FileReader fileReader = new FileReader(file);
 
         File errorFile = new File(csvLocation, fileName + ".err.csv");
         FileWriter fileWriter = new FileWriter(errorFile);
-        init(allPatientAttributeTypes, lookupValuesMap, fileReader, fileWriter);
+        init(allPatientAttributeTypes, lookupValuesMap, fileReader, fileWriter, addressSanitiser);
     }
 
     public AllRegistrations(AllPatientAttributeTypes allPatientAttributeTypes, Map<String, AllLookupValues> lookupValuesMap,
-                            Reader reader, Writer writer) throws IOException {
-        init(allPatientAttributeTypes, lookupValuesMap, reader, writer);
+                            Reader reader, Writer writer, AddressSanitiser addressSanitiser) throws IOException {
+        init(allPatientAttributeTypes, lookupValuesMap, reader, writer, addressSanitiser);
     }
 
-    private void init(AllPatientAttributeTypes allPatientAttributeTypes, Map<String, AllLookupValues> lookupValuesMap, Reader reader, Writer writer) throws IOException {
+    private void init(AllPatientAttributeTypes allPatientAttributeTypes, Map<String, AllLookupValues> lookupValuesMap, Reader reader, Writer writer, AddressSanitiser addressSanitiser) throws IOException {
         this.lookupValuesMap = lookupValuesMap;
         this.csvReader = new CSVReader(reader, ',','"', '\0');
         this.csvWriter = new CSVWriter(writer, ',');
         String[] headerRow = this.csvReader.readNext();//skip row
         this.csvWriter.writeNext(headerRow);
         this.allPatientAttributeTypes = allPatientAttributeTypes;
+        this.addressSanitiser = addressSanitiser;
     }
 
     public PatientData nextPatient() {
@@ -70,26 +74,37 @@ public class AllRegistrations implements PatientEnumerator {
             PatientAddress patientAddress = new PatientAddress();
             patientRequest.addPatientAddress(patientAddress);
 
-            patientAddress.setCityVillage(sentenceCase(patientRow[10]));
-            patientAddress.setAddress3(sentenceCase(patientRow[35])); //Tehsil
 
             patientRequest.setBalance(patientRow[17]);
 
             addPatientAttribute(patientRow[20], patientRequest, "caste", lookupValuesMap.get("Castes"), 0);
+            addPatientAttribute(patientRow[32], patientRequest, "class", lookupValuesMap.get("Classes"), 0);
 
-            String district = lookupValuesMap.get("Districts").getLookUpValue(patientRow[26], 2);
-            patientAddress.setCountyDistrict(sentenceCase(district));
-
-            String stateId = lookupValuesMap.get("Districts").getLookUpValue(patientRow[26], 0);
-            if (stateId != null) {
-                String state = lookupValuesMap.get("States").getLookUpValue(stateId);
-                patientAddress.setStateProvince(sentenceCase(state));
-            }
-
+            //Address information
             String gramPanchayat = patientRow[34];
             patientAddress.setAddress2(sentenceCase(gramPanchayat));
 
-            addPatientAttribute(patientRow[32], patientRequest, "class", lookupValuesMap.get("Classes"), 0);
+            SanitizerPersonAddress sanitizerPersonAddress = new SanitizerPersonAddress();
+            String stateId = lookupValuesMap.get("Districts").getLookUpValue(patientRow[26], 0);
+            if (stateId != null) {
+                String state = lookupValuesMap.get("States").getLookUpValue(stateId);
+                sanitizerPersonAddress.setState(sentenceCase(state));
+            }
+
+            String district = lookupValuesMap.get("Districts").getLookUpValue(patientRow[26], 2);
+            sanitizerPersonAddress.setDistrict(sentenceCase(district));
+
+            sanitizerPersonAddress.setVillage(sentenceCase(patientRow[10]));
+            sanitizerPersonAddress.setTehsil(sentenceCase(patientRow[35]));
+            SanitizerPersonAddress sanitisedAddress = addressSanitiser.sanitise(sanitizerPersonAddress);
+
+
+            //after sanitization
+            patientAddress.setStateProvince(sanitisedAddress.getState());
+            patientAddress.setCountyDistrict(sanitisedAddress.getDistrict());
+            patientAddress.setCityVillage(sanitisedAddress.getVillage());
+            patientAddress.setAddress3(sanitisedAddress.getTehsil()); //Tehsil
+
             return new PatientData(patientRequest, patientRow);
         } catch (Exception e) {
             throw new RuntimeException("Cannot create request from this row: " + ArrayUtils.toString(patientRow), e);

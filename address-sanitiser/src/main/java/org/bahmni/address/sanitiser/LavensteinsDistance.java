@@ -6,9 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
 public class LavensteinsDistance {
-
     public String getClosestMatch(String query, List<String> villages) {
         Map<String, Integer> distanceMap = new HashMap<String, Integer>();
         for(String village : villages){
@@ -17,12 +15,12 @@ public class LavensteinsDistance {
         return getEntryWithClosestMatch(villages, distanceMap);
     }
 
-    public PersonAddress getClosestMatch(String query, List<PersonAddress> personAddresses, AddressField field) {
-        Map<PersonAddress, Integer> distanceMap = new HashMap<PersonAddress, Integer>();
-        for(PersonAddress personAddress : personAddresses){
-            distanceMap.put(personAddress, computeDistance(query, getFieldFrom(personAddress, field)));
+    public SanitizerPersonAddress getClosestMatch(String query, List<SanitizerPersonAddress> personAddressSanitisers, AddressField field) {
+        Map<SanitizerPersonAddress, Integer> distanceMap = new HashMap<SanitizerPersonAddress, Integer>();
+        for(SanitizerPersonAddress personAddressSanitiser : personAddressSanitisers){
+            distanceMap.put(personAddressSanitiser, computeDistance(query, getFieldFrom(personAddressSanitiser, field)));
         }
-        return getEntryWithClosestMatch(personAddresses, distanceMap);
+        return getEntryWithClosestMatch(personAddressSanitisers, distanceMap);
     }
 
     private <T> T getEntryWithClosestMatch(List<T> suggestions, Map<T, Integer> distanceMap) {
@@ -37,13 +35,13 @@ public class LavensteinsDistance {
         return bestSuggestion;
     }
 
-    private String getFieldFrom(PersonAddress personAddress, AddressField field) {
+    private String getFieldFrom(SanitizerPersonAddress personAddressSanitiser, AddressField field) {
         if(field.equals(AddressField.TEHSIL))
-            return personAddress.getTehsil();
+            return personAddressSanitiser.getTehsil();
         if(field.equals(AddressField.DISTRICT))
-            return personAddress.getDistrict();
+            return personAddressSanitiser.getDistrict();
         if(field.equals(AddressField.STATE))
-            return personAddress.getState();
+            return personAddressSanitiser.getState();
         return null;
     }
 

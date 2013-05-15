@@ -11,18 +11,17 @@ public class AddressSanitiser {
     private final LavensteinsDistance lavensteinsDistance;
     private final AddressHierarchy hierarchy;
 
-    @Autowired
     public AddressSanitiser(LavensteinsDistance lavensteinsDistance, AddressHierarchy hierarchy) {
         this.lavensteinsDistance = lavensteinsDistance;
         this.hierarchy = hierarchy;
     }
 
-    public PersonAddress sanitise(PersonAddress personAddress){
+    public SanitizerPersonAddress sanitise(SanitizerPersonAddress personAddress) {
         String closestMatchVillage = lavensteinsDistance.getClosestMatch(personAddress.getVillage(), hierarchy.getAllVillages());
-        List<PersonAddress> addresses = hierarchy.getAddressHierarchyFor(closestMatchVillage);
+        List<SanitizerPersonAddress> addresses = hierarchy.getAllAddressWithVillageName(closestMatchVillage);
 
-        if(addresses.size() > 1){
-            return lavensteinsDistance.getClosestMatch(personAddress.getTehsil(),addresses,AddressField.TEHSIL);
+        if (addresses.size() > 1) {
+            return lavensteinsDistance.getClosestMatch(personAddress.getTehsil(), addresses, AddressField.TEHSIL);
         }
         return addresses.get(0);
     }

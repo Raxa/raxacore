@@ -34,7 +34,7 @@ public class AllRegistrationsTest {
         lookupValuesMap.put("Districts", empty);
         lookupValuesMap.put("States", empty);
         lookupValuesMap.put("Tahsils", empty);
-        AllRegistrations allRegistrations = new AllRegistrations(allPatientAttributeTypes, lookupValuesMap, reader, new StringWriter());
+        AllRegistrations allRegistrations = new AllRegistrations(allPatientAttributeTypes, lookupValuesMap, reader, new StringWriter(), new NonSanitizingSanitizer());
         PatientData patientData = allRegistrations.nextPatient();
         assertNotNull(patientData);
         PatientRequest patientRequest = patientData.getPatientRequest();

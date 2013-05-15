@@ -44,10 +44,10 @@ public class LavensteinsDistanceTest {
     @Test
     public void shouldGetClosestMatchingStringFromGivenMasterList() {
         lavensteinsDistance = new LavensteinsDistance();
-        PersonAddress personAddress1 = new PersonAddress("village", "sun", "district", "state");
-        PersonAddress personAddress2 = new PersonAddress("village", "moon", "district", "state");
+        SanitizerPersonAddress personAddressSanitiser1 = new SanitizerPersonAddress("village", "sun", "district", "state");
+        SanitizerPersonAddress personAddressSanitiser2 = new SanitizerPersonAddress("village", "moon", "district", "state");
 
-        PersonAddress closestMatchPersonAddress = lavensteinsDistance.getClosestMatch("son", Arrays.asList(personAddress1, personAddress2), AddressField.TEHSIL);
-        assertEquals("sun", closestMatchPersonAddress.getTehsil());
+        SanitizerPersonAddress closestMatchPersonAddressSanitiser = lavensteinsDistance.getClosestMatch("son", Arrays.asList(personAddressSanitiser1, personAddressSanitiser2), AddressField.TEHSIL);
+        assertEquals("sun", closestMatchPersonAddressSanitiser.getTehsil());
     }
 }

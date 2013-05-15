@@ -15,7 +15,9 @@ public class PersonAttributeDaoImplTest extends BaseModuleContextSensitiveTest {
 	
 	@Test
 	public void shouldRetrieveUniqueCasteList() throws Exception {
-		executeDataSet("apiTestData.xml");
+        assertEquals(0, personAttributeDao.getUnique("caste", "caste").size());
+
+        executeDataSet("apiTestData.xml");
 		
 		ResultList result = personAttributeDao.getUnique("caste", "caste");
 		assertEquals(2, result.size());

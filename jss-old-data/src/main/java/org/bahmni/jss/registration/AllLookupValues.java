@@ -44,12 +44,12 @@ public class AllLookupValues implements LookupValueProvider {
     }
 
     @Override
-    public String getLookUpValue(String key, int valueIndex) {
+    public String getLookUpValue(String key, int valueIndexExcludesFirstColumn) {
         if (StringUtils.equals("0", key)) return null;
 
         int keyAsNumber = Integer.parseInt(key.trim());
         Object[] values = map.get(keyAsNumber);
         if (values == null) return null;
-        return values[valueIndex].toString();
+        return values[valueIndexExcludesFirstColumn].toString();
     }
 }

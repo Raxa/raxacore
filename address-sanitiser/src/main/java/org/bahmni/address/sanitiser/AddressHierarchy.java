@@ -1,10 +1,7 @@
 package org.bahmni.address.sanitiser;
 
-import org.openmrs.api.context.Context;
-import org.openmrs.module.addresshierarchy.AddressHierarchyEntry;
-import org.openmrs.module.addresshierarchy.AddressHierarchyLevel;
-import org.openmrs.module.addresshierarchy.service.AddressHierarchyService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.bahmni.address.AddressHierarchyEntry;
+import org.bahmni.address.AddressQueryExecutor;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -12,51 +9,30 @@ import java.util.List;
 
 @Component
 public class AddressHierarchy {
-
-    private AddressHierarchyService addressHierarchyService;
     public static List<String> villageList;
+    private AddressQueryExecutor addressQueryExecutor;
 
-    public AddressHierarchy() {
-    }
-
-    public AddressHierarchy(AddressHierarchyService addressHierarchyService) {
-        this.addressHierarchyService = addressHierarchyService;
-    }
-
-    private AddressHierarchyService getAddressHierarchyService() {
-        return addressHierarchyService != null ? addressHierarchyService : Context.getService(AddressHierarchyService.class);
+    public AddressHierarchy(AddressQueryExecutor addressQueryExecutor) {
+        this.addressQueryExecutor = addressQueryExecutor;
     }
 
     public List<String> getAllVillages() {
         if(villageList != null)
             return villageList;
-        AddressHierarchyService service = getAddressHierarchyService();
-        AddressHierarchyLevel villageHierarchyLevel = service.getBottomAddressHierarchyLevel();
-        List<AddressHierarchyEntry> addressHierarchyEntriesByLevel = service.getAddressHierarchyEntriesByLevel(villageHierarchyLevel);
-        villageList = new ArrayList<String>();
-        for (AddressHierarchyEntry addressHierarchyEntry : addressHierarchyEntriesByLevel) {
-            villageList.add(addressHierarchyEntry.getLocationName());
-        }
-
+        villageList = addressQueryExecutor.getAllVillages();
         return villageList;
     }
 
-    public List<PersonAddress> getAddressHierarchyFor(String village) {
-        AddressHierarchyService service = getAddressHierarchyService();
-        AddressHierarchyLevel villageHierarchyLevel = service.getBottomAddressHierarchyLevel();
-        List<AddressHierarchyEntry> addressHierarchyEntries =
-                service.getAddressHierarchyEntriesByLevelAndName(villageHierarchyLevel, village);
+    public List<SanitizerPersonAddress> getAllAddressWithVillageName(String village) {
+        List<Integer> tehsilIds = addressQueryExecutor.findTehsilIdsFor(village);
+        List<SanitizerPersonAddress> sanitizerPersonAddresses = new ArrayList<SanitizerPersonAddress>();
+        for (int tehsilId : tehsilIds) {
+            AddressHierarchyEntry tehsilEntry = addressQueryExecutor.findHigherLevelsHierarchyEntry(tehsilId, 1);
+            AddressHierarchyEntry districtEntry = addressQueryExecutor.findHigherLevelsHierarchyEntry(tehsilEntry.getParentId(), 2);
+            AddressHierarchyEntry stateEntry = addressQueryExecutor.findHigherLevelsHierarchyEntry(districtEntry.getParentId(), 3);
 
-        List<String> possibleFullAddresses = new ArrayList<String>();
-        for (AddressHierarchyEntry addressHierarchyEntry : addressHierarchyEntries) {
-            possibleFullAddresses.addAll(service.getPossibleFullAddresses(addressHierarchyEntry));
+            sanitizerPersonAddresses.add(new SanitizerPersonAddress(village, tehsilEntry.getName(), districtEntry.getName(), stateEntry.getName()));
         }
-
-        List<PersonAddress> possibleAddresses = new ArrayList<PersonAddress>();
-        for (String possibleFullAddress : possibleFullAddresses) {
-            String[] split = possibleFullAddress.split("\\|");
-            possibleAddresses.add(new PersonAddress(split[3], split[2], split[1], split[0]));
-        }
-        return possibleAddresses;
+        return sanitizerPersonAddresses;
     }
 }
