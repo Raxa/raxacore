@@ -2,9 +2,11 @@ package org.bahmni.module.bahmnicore.mapper;
 
 import org.openmrs.Patient;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Component
 public class BirthDateMapper {
 	
 	public Patient map(Patient patient, BahmniPatient bahmniPatient) {

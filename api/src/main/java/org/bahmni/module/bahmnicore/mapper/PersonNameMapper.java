@@ -3,9 +3,11 @@ package org.bahmni.module.bahmnicore.mapper;
 import org.bahmni.module.bahmnicore.model.BahmniName;
 import org.openmrs.Patient;
 import org.openmrs.PersonName;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class PersonNameMapper {
 	
 	public Patient map(Patient patient, List<BahmniName> names) {

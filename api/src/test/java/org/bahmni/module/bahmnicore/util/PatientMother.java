@@ -6,7 +6,9 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 public class PatientMother {
 
@@ -14,27 +16,10 @@ public class PatientMother {
     private NameMother nameMother = new NameMother();
     private AddressMother addressMother = new AddressMother();
     private String balance;
+    private Date dateCreated;
 
     public PatientMother() {
         patientIdentifier = "GAN11223344";
-    }
-
-    public SimpleObject buildSimpleObject() {
-        SimpleObject simpleObject = new SimpleObject().add("birthdate", "01-01-2012")
-                .add("age", 21)
-                .add("gender", "M")
-                .add("attributes", Arrays.asList(new SimpleObject()
-                        .add("attributeType", "b3b6d540-a32e-44c7-91b3-292d97667518")
-                        .add("value", "someCaste")))
-                .add("addresses", Arrays.asList(addressMother.getSimpleObjectForAddress()))
-                .add("centerID", new SimpleObject().add("name", "Ganiyari"))
-                .add("names", Arrays.asList(nameMother.getSimpleObjectForName()))
-                .add("identifier", patientIdentifier);
-        if(balance != null){
-            simpleObject.add("balance", balance);
-        }
-
-        return simpleObject;
     }
 
     public PatientMother withName(String firstName, String middleName, String lastName) {
@@ -52,15 +37,41 @@ public class PatientMother {
         return this;
     }
 
+    public PatientMother withDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+        return this;
+    }
+
     public Patient build() {
         Patient patient = new Patient();
         patient.addIdentifier(new PatientIdentifier(patientIdentifier, null, null));
         patient.addName(nameMother.build());
+        patient.setPersonDateCreated(this.dateCreated);
         return patient;
     }
 
+    public SimpleObject buildSimpleObject() {
+        String dateCreatedString = dateCreated != null ? new SimpleDateFormat("dd-MM-yyyy").format(dateCreated) : "";
+        SimpleObject simpleObject = new SimpleObject().add("birthdate", "01-01-2012")
+                .add("age", 21)
+                .add("gender", "M")
+                .add("attributes", Arrays.asList(new SimpleObject()
+                        .add("attributeType", "b3b6d540-a32e-44c7-91b3-292d97667518")
+                        .add("value", "someCaste")))
+                .add("addresses", Arrays.asList(addressMother.getSimpleObjectForAddress()))
+                .add("centerID", new SimpleObject().add("name", "Ganiyari"))
+                .add("names", Arrays.asList(nameMother.getSimpleObjectForName()))
+                .add("dateOfRegistration", dateCreatedString)
+                .add("identifier", patientIdentifier);
+        if(balance != null){
+            simpleObject.add("balance", balance);
+        }
+
+        return simpleObject;
+    }
     public BahmniPatient buildBahmniPatient() throws ParseException {
-        return new BahmniPatient(buildSimpleObject());
+        SimpleObject simpleObject = buildSimpleObject();
+        return new BahmniPatient(simpleObject);
     }
 }
 

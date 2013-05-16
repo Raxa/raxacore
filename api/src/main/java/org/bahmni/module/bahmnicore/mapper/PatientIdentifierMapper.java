@@ -8,9 +8,11 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class PatientIdentifierMapper {
 	
 	private PatientService patientService;

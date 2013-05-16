@@ -3,10 +3,12 @@ package org.bahmni.module.bahmnicore.mapper;
 import org.openmrs.Patient;
 import org.openmrs.PersonAddress;
 import org.bahmni.module.bahmnicore.model.BahmniAddress;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Set;
 
+@Component
 public class AddressMapper {
 
     public Patient map(Patient patient, List<BahmniAddress> addresses) {

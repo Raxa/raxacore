@@ -2,7 +2,10 @@ package org.bahmni.module.bahmnicore.mapper;
 
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.openmrs.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PatientMapper {
 	
 	private PersonNameMapper personNameMapper;
@@ -17,7 +20,8 @@ public class PatientMapper {
 	
 	private final HealthCenterMapper healthCenterMapper;
 	
-	public PatientMapper(PersonNameMapper personNameMapper, BirthDateMapper birthDateMapper,
+	@Autowired
+    public PatientMapper(PersonNameMapper personNameMapper, BirthDateMapper birthDateMapper,
 	    PersonAttributeMapper personAttributeMapper, AddressMapper addressMapper,
 	    PatientIdentifierMapper patientIdentifierMapper, HealthCenterMapper healthCenterMapper) {
 		this.personNameMapper = personNameMapper;
@@ -31,9 +35,9 @@ public class PatientMapper {
 	public Patient map(Patient patient, BahmniPatient bahmniPatient) {
 		if (patient == null) {
 			patient = new Patient();
+            patient.setPersonDateCreated(bahmniPatient.getPersonDateCreated());
 		}
 		patient.setGender(bahmniPatient.getGender());
-        patient.setPersonDateCreated(bahmniPatient.getPersonDateCreated());
 		patient = personNameMapper.map(patient, bahmniPatient.getNames());
 		patient = birthDateMapper.map(patient, bahmniPatient);
 		patient = personAttributeMapper.map(patient, bahmniPatient.getAttributes());

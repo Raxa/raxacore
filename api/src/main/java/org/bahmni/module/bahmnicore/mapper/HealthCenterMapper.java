@@ -4,10 +4,12 @@ import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.openmrs.*;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
+import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.List;
 
+@Component
 public class HealthCenterMapper {
 	
 	public Patient map(Patient person, BahmniPatient bahmniPatient) {

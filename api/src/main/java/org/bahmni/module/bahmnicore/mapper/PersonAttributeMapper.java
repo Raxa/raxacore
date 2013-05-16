@@ -5,9 +5,11 @@ import org.openmrs.Patient;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class PersonAttributeMapper {
 	
 	private PersonService personService;
