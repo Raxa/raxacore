@@ -9,8 +9,6 @@ import org.bahmni.datamigration.OpenMRSRESTConnection;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;
 import org.bahmni.jss.registration.AllLookupValues;
 import org.bahmni.jss.registration.AllRegistrations;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -27,17 +25,20 @@ public class JSSMigrator {
 
     private static OpenMRSRESTConnection QA = new OpenMRSRESTConnection("172.18.2.1", "admin", "P@ssw0rd");
     private static OpenMRSRESTConnection Localhost = new OpenMRSRESTConnection("localhost", "admin", "Hello123");
+    private static OpenMRSRESTConnection prod = new OpenMRSRESTConnection("localhost", "admin", "Hello123");
+    private static OpenMRSRESTConnection usedConnection= prod;
+
 
     public static void main(String[] args) throws URISyntaxException, IOException, ClassNotFoundException, SQLException {
-        Localhost.getRestApiUrl();
-        String csvLocation = "/Users/arathyja/bhamni/csv";
+        String csvLocation = args[0];
 
         Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/openmrs","root", "arathy");
+        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/openmrs","root", "password");
 
         try {
             AddressSanitiser addressSanitiser = new AddressSanitiser(new LavensteinsDistance(), new AddressHierarchy(new AddressQueryExecutor(connection)));
-            JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_District.csv", "LU_State.csv", "LU_Class.csv", "LU_Tahsil.csv", Localhost, addressSanitiser);
+            JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_District.csv", "LU_State.csv",
+                    "LU_Class.csv", "LU_Tahsil.csv", usedConnection, addressSanitiser);
             jssMigrator.migratePatient("RegistrationMaster.csv");
         } finally {
             connection.close();
