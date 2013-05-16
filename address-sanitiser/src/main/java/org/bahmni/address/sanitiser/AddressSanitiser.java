@@ -1,6 +1,5 @@
 package org.bahmni.address.sanitiser;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,12 +16,19 @@ public class AddressSanitiser {
     }
 
     public SanitizerPersonAddress sanitise(SanitizerPersonAddress personAddress) {
-        String closestMatchVillage = lavensteinsDistance.getClosestMatch(personAddress.getVillage(), hierarchy.getAllVillages());
+        String closestMatchVillage = lavensteinsDistance.getClosestMatch(scrubData(personAddress.getVillage()), hierarchy.getAllVillages());
         List<SanitizerPersonAddress> addresses = hierarchy.getAllAddressWithVillageName(closestMatchVillage);
 
         if (addresses.size() > 1) {
-            return lavensteinsDistance.getClosestMatch(personAddress.getTehsil(), addresses, AddressField.TEHSIL);
+            return lavensteinsDistance.getClosestMatch(scrubData(personAddress.getTehsil()), addresses, AddressField.TEHSIL);
         }
         return addresses.get(0);
     }
+
+    public String scrubData(String value) {
+        if(value == null)
+            return null;
+        return value.replace("\\", "").trim();
+    }
+
 }
