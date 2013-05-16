@@ -24,6 +24,11 @@ public class OpenERPService implements BillingService {
         customerAccountService.updateCustomerReceivables(patientId, balance);
     }
 
+    public Object[] findCustomers(String patientId) {
+        Object[] customerIds = customerService.findCustomersWithPatientReference(patientId);
+        return customerIds;
+    }
+
     public void deleteCustomer(String patientId) throws Exception {
         customerService.deleteCustomerWithPatientReference(patientId);
     }

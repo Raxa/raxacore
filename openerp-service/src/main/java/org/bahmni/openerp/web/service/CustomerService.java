@@ -17,20 +17,20 @@ public class CustomerService {
     }
 
     public void create(String name, String patientId) {
-        if (noCustomersFound(findCustomerWithPatientReference(patientId))) {
+        if (noCustomersFound(findCustomersWithPatientReference(patientId))) {
             openERPClient.create("res.partner", name, patientId);
         } else
             throw new OpenERPException(String.format("Customer with id, name already exists: %s, %s ", patientId, name));
     }
 
     public void deleteCustomerWithPatientReference(String patientId) {
-        Object[] customerIds = findCustomerWithPatientReference(patientId);
+        Object[] customerIds = findCustomersWithPatientReference(patientId);
         Vector params = new Vector();
         params.addElement(customerIds[0]);
         openERPClient.delete("res.partner", params);
     }
 
-    private Object[] findCustomerWithPatientReference(String patientId) {
+    public Object[] findCustomersWithPatientReference(String patientId) {
         Object args[] = {"ref", "=", patientId};
         Vector params = new Vector();
         params.addElement(args);
