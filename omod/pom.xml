@@ -13,6 +13,11 @@
     <dependencies>
         <dependency>
             <groupId>org.bahmni.module</groupId>
+            <artifactId>bahmnicore-mail-appender</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
             <artifactId>bahmnicore-api</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

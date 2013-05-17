@@ -16,6 +16,7 @@
         <module>data-migration</module>
         <module>jss-old-data</module>
         <module>address-sanitiser</module>
+        <module>bahmni-mail-appender</module>
     </modules>
 
     <properties>
