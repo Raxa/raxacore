@@ -10,7 +10,6 @@ import org.bahmni.datamigration.PatientData;
 import org.bahmni.datamigration.PatientEnumerator;
 import org.bahmni.datamigration.request.patient.*;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;
-
 import java.io.*;
 import java.util.Map;
 
@@ -52,7 +51,6 @@ public class AllRegistrations implements PatientEnumerator {
     public PatientData nextPatient() {
         String[] patientRow = null;
         try {
-
             patientRow = csvReader.readNext();
             if (patientRow == null) return null;
 
@@ -94,21 +92,29 @@ public class AllRegistrations implements PatientEnumerator {
             String district = lookupValuesMap.get("Districts").getLookUpValue(patientRow[26], 2);
             sanitizerPersonAddress.setDistrict(sentenceCase(district));
 
-            sanitizerPersonAddress.setVillage(sentenceCase(patientRow[10]));
-            sanitizerPersonAddress.setTehsil(sentenceCase(patientRow[35]));
-            SanitizerPersonAddress sanitisedAddress = addressSanitiser.sanitise(sanitizerPersonAddress);
+            String village = patientRow[10];
+            sanitizerPersonAddress.setVillage(sentenceCase(village));
 
+            String tehsil = patientRow[35];
+            sanitizerPersonAddress.setTehsil(sentenceCase(tehsil));
 
-            //after sanitization
-            patientAddress.setStateProvince(sanitisedAddress.getState());
-            patientAddress.setCountyDistrict(sanitisedAddress.getDistrict());
-            patientAddress.setCityVillage(sanitisedAddress.getVillage());
-            patientAddress.setAddress3(sanitisedAddress.getTehsil()); //Tehsil
-
+            try{
+                SanitizerPersonAddress sanitisedAddress = addressSanitiser.sanitise(sanitizerPersonAddress);
+                setPatientAddressFrom(sanitisedAddress, patientAddress);
+            }catch (Exception e){
+                setPatientAddressFrom(sanitizerPersonAddress, patientAddress);
+            }
             return new PatientData(patientRequest, patientRow);
         } catch (Exception e) {
             throw new RuntimeException("Cannot create request from this row: " + ArrayUtils.toString(patientRow), e);
         }
+    }
+
+    private void setPatientAddressFrom(SanitizerPersonAddress sanitizerPersonAddress, PatientAddress patientAddress) {
+        patientAddress.setStateProvince(sanitizerPersonAddress.getState());
+        patientAddress.setCountyDistrict(sanitizerPersonAddress.getDistrict());
+        patientAddress.setCityVillage(sanitizerPersonAddress.getVillage());
+        patientAddress.setAddress3(sanitizerPersonAddress.getTehsil()); //Tehsil
     }
 
     @Override
