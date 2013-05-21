@@ -1,4 +1,4 @@
-package org.bahmni.jss.registration;
+package org.bahmni.datamigration;
 
 import au.com.bytecode.opencsv.CSVReader;
 import org.apache.commons.lang.ArrayUtils;

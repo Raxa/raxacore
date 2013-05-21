@@ -25,12 +25,12 @@ public class LavensteinsDistanceTest {
         List<String> allVillages = Arrays.asList("Badwahi", "Badwar");
         lavensteinsDistance = new LavensteinsDistance();
 
-        assertEquals("Badwahi", lavensteinsDistance.getClosestMatch("baaaandwahi", allVillages));
-        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("baaandhwar", allVillages));
-        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("band war", allVillages));
-        assertEquals("Badwahi", lavensteinsDistance.getClosestMatch("band wahri", allVillages));
-        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("bandwarh", allVillages));
-        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("badwara", allVillages));
+        assertEquals("Badwahi", lavensteinsDistance.getClosestMatch("baaaandwahi", allVillages).matchValue());
+        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("baaandhwar", allVillages).matchValue());
+        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("band war", allVillages).matchValue());
+        assertEquals("Badwahi", lavensteinsDistance.getClosestMatch("band wahri", allVillages).matchValue());
+        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("bandwarh", allVillages).matchValue());
+        assertEquals("Badwar", lavensteinsDistance.getClosestMatch("badwara", allVillages).matchValue());
     }
 
     @Test
@@ -38,7 +38,7 @@ public class LavensteinsDistanceTest {
         List<String> allVillages = Arrays.asList("AMARKANTAK", "Bilaspur", "Bilaspur");
         lavensteinsDistance = new LavensteinsDistance();
 
-        assertEquals("Bilaspur", lavensteinsDistance.getClosestMatch("Bilaspuri", allVillages));
+        assertEquals("Bilaspur", lavensteinsDistance.getClosestMatch("Bilaspuri", allVillages).matchValue());
     }
 
     @Test

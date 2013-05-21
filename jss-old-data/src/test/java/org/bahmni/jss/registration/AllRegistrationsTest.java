@@ -1,5 +1,6 @@
 package org.bahmni.jss.registration;
 
+import org.bahmni.datamigration.AllLookupValues;
 import org.bahmni.datamigration.PatientData;
 import org.bahmni.datamigration.request.patient.PatientRequest;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;

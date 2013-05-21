@@ -7,7 +7,7 @@ import org.bahmni.address.sanitiser.LavensteinsDistance;
 import org.bahmni.datamigration.Migrator;
 import org.bahmni.datamigration.OpenMRSRESTConnection;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;
-import org.bahmni.jss.registration.AllLookupValues;
+import org.bahmni.datamigration.AllLookupValues;
 import org.bahmni.jss.registration.AllRegistrations;
 
 import java.io.IOException;

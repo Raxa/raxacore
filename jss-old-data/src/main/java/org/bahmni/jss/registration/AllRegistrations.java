@@ -6,6 +6,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.address.sanitiser.AddressSanitiser;
 import org.bahmni.address.sanitiser.SanitizerPersonAddress;
+import org.bahmni.datamigration.AllLookupValues;
+import org.bahmni.datamigration.LookupValueProvider;
 import org.bahmni.datamigration.PatientData;
 import org.bahmni.datamigration.PatientEnumerator;
 import org.bahmni.datamigration.request.patient.*;
@@ -99,7 +101,7 @@ public class AllRegistrations implements PatientEnumerator {
             sanitizerPersonAddress.setTehsil(sentenceCase(tehsil));
 
             try{
-                SanitizerPersonAddress sanitisedAddress = addressSanitiser.sanitise(sanitizerPersonAddress);
+                SanitizerPersonAddress sanitisedAddress = addressSanitiser.sanitiseByVillageAndTehsil(sanitizerPersonAddress);
                 setPatientAddressFrom(sanitisedAddress, patientAddress);
             }catch (Exception e){
                 setPatientAddressFrom(sanitizerPersonAddress, patientAddress);

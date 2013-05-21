@@ -9,7 +9,7 @@ public class NonSanitizingSanitizer extends AddressSanitiser {
     }
 
     @Override
-    public SanitizerPersonAddress sanitise(SanitizerPersonAddress personAddress) {
+    public SanitizerPersonAddress sanitiseByVillageAndTehsil(SanitizerPersonAddress personAddress) {
         return personAddress;
     }
 }

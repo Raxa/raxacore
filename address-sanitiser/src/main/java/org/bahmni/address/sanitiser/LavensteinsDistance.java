@@ -1,18 +1,16 @@
 package org.bahmni.address.sanitiser;
 
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class LavensteinsDistance {
-    public String getClosestMatch(String query, List<String> villages) {
+    public LavensteinMatch<String> getClosestMatch(String query, List<String> possibleValues) {
         Map<String, Integer> distanceMap = new HashMap<String, Integer>();
-        for(String village : villages){
+        for(String village : possibleValues){
             distanceMap.put(village, computeDistance(query, village));
         }
-        return getEntryWithClosestMatch(villages, distanceMap);
+        return getEntryWithClosestMatch(possibleValues, distanceMap);
     }
 
     public SanitizerPersonAddress getClosestMatch(String query, List<SanitizerPersonAddress> personAddressSanitisers, AddressField field) {
@@ -20,19 +18,19 @@ public class LavensteinsDistance {
         for(SanitizerPersonAddress personAddressSanitiser : personAddressSanitisers){
             distanceMap.put(personAddressSanitiser, computeDistance(query, getFieldFrom(personAddressSanitiser, field)));
         }
-        return getEntryWithClosestMatch(personAddressSanitisers, distanceMap);
+        return getEntryWithClosestMatch(personAddressSanitisers, distanceMap).matchValue();
     }
 
-    private <T> T getEntryWithClosestMatch(List<T> suggestions, Map<T, Integer> distanceMap) {
+    private <T> LavensteinMatch<T> getEntryWithClosestMatch(List<T> suggestions, Map<T, Integer> distanceMap) {
         T bestSuggestion = suggestions.get(0);
-        int initialDist = distanceMap.get(bestSuggestion);
+        int distance = distanceMap.get(bestSuggestion);
         for(T suggestion : suggestions){
-            if(distanceMap.get(suggestion) < initialDist){
+            if(distanceMap.get(suggestion) < distance){
                 bestSuggestion = suggestion;
-                initialDist = distanceMap.get(suggestion);
+                distance = distanceMap.get(suggestion);
             }
         }
-        return bestSuggestion;
+        return new LavensteinMatch<T>(bestSuggestion, distance);
     }
 
     private String getFieldFrom(SanitizerPersonAddress personAddressSanitiser, AddressField field) {

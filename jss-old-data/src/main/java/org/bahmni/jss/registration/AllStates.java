@@ -1,5 +1,7 @@
 package org.bahmni.jss.registration;
 
+import org.bahmni.datamigration.AllLookupValues;
+
 import java.io.IOException;
 
 public class AllStates extends AllLookupValues {

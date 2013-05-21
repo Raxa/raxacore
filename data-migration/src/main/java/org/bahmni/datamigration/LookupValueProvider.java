@@ -1,4 +1,4 @@
-package org.bahmni.jss.registration;
+package org.bahmni.datamigration;
 
 public interface LookupValueProvider {
     String getLookUpValue(String key);
