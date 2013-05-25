@@ -18,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Iterator;
+import java.util.List;
 
 public class Migrator {
     private RestTemplate restTemplate = new RestTemplate();
@@ -74,38 +76,48 @@ public class Migrator {
 
     public void migratePatient(PatientEnumerator patientEnumerator) {
         String url = openMRSRESTConnection.getRestApiUrl() + "bahmnicore/patient";
-        int i = 0;
+//        int i = 0;
         while (true) {
             String jsonRequest = null;
             PatientData patientData = null;
             ResponseEntity<String> out;
             PatientRequest patientRequest = null;
             try {
-                i++;
-                patientData = patientEnumerator.nextPatient();
+//                i++;
+                PatientData patientData1 = patientEnumerator.nextPatient();
+                PatientData patientData2 = patientEnumerator.nextPatient();
+                PatientData patientData3 = patientEnumerator.nextPatient();
                 if (patientData == null) break;
 
-                patientRequest = patientData.getPatientRequest();
-                jsonRequest = objectMapper.writeValueAsString(patientRequest);
-                if (logger.isDebugEnabled()) logger.debug(jsonRequest);
+                ParallelMigrator parallelMigrator1 = new ParallelMigrator(patientData1,patientEnumerator,url);
+                parallelMigrator1.run();
+                ParallelMigrator parallelMigrator2 = new ParallelMigrator(patientData2,patientEnumerator,url);
+                parallelMigrator2.run();
+                ParallelMigrator parallelMigrator3 = new ParallelMigrator(patientData3,patientEnumerator,url);
+                parallelMigrator3.run();
 
-                HttpHeaders httpHeaders = getHttpHeaders();
-                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-                HttpEntity entity = new HttpEntity(patientRequest, httpHeaders);
-                out = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-                if (logger.isDebugEnabled()) logger.debug(out.getBody());
-                log.info(String.format("%d Successfully created %s", i, patientRequest.getIdentifier()));
-            } catch (HttpServerErrorException serverErrorException) {
-                log.info(String.format("%d Failed to create %s", i, patientRequest.getIdentifier()));
-                log.info("Patient request: " + jsonRequest);
-                log.error("Patient create response: " + serverErrorException.getResponseBodyAsString());
-                patientEnumerator.failedPatient(patientData);
-            } catch (Exception e) {
-                log.info(String.format("%d Failed to create", i));
-                log.info("Patient request: " + jsonRequest);
-                log.error("Failed to process a patient", e);
-                patientEnumerator.failedPatient(patientData);
+                parallelMigrator1.join();
+                logError(parallelMigrator1,patientEnumerator);
+
+                parallelMigrator2.join();
+                logError(parallelMigrator2,patientEnumerator);
+
+                parallelMigrator3.join();
+                logError(parallelMigrator3,patientEnumerator);
+
+            }catch(Exception e){
+                log.error("Failed to process patient", e);
             }
+
         }
+    }
+
+    private void logError(ParallelMigrator parallelMigrator, PatientEnumerator patientEnumerator) {
+        List<PatientData> errorList = parallelMigrator.errorData();
+        Iterator<PatientData> patientDataIterator = errorList.iterator();
+        while (patientDataIterator.hasNext())  {
+            patientEnumerator.failedPatient(patientDataIterator.next());
+        }
+
     }
 }
