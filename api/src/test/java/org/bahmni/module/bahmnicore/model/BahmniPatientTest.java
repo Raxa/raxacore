@@ -53,5 +53,11 @@ public class BahmniPatientTest {
 
         bahmniPatient.setBalance("0.1");
         assertTrue(bahmniPatient.hasBalance());
+
+        bahmniPatient.setBalance("");
+        assertFalse(bahmniPatient.hasBalance());
+
+        bahmniPatient.setBalance(null);
+        assertFalse(bahmniPatient.hasBalance());
     }
 }

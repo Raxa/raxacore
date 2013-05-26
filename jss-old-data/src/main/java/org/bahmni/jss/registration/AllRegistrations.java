@@ -20,7 +20,6 @@ import static org.bahmni.jss.registration.RegistrationFields.sentenceCase;
 public class AllRegistrations implements PatientEnumerator {
     private CSVReader csvReader;
     private CSVWriter csvWriter;
-    static int count =0;
     private AllPatientAttributeTypes allPatientAttributeTypes;
     private Map<String, AllLookupValues> lookupValuesMap;
     private AddressSanitiser addressSanitiser;
@@ -58,8 +57,9 @@ public class AllRegistrations implements PatientEnumerator {
 
             PatientRequest patientRequest = new PatientRequest();
             RegistrationNumber registrationNumber = RegistrationFields.parseRegistrationNumber(patientRow[0]);
-            patientRequest.setIdentifier(registrationNumber.getCenterCode() + registrationNumber.getId());
-            patientRequest.setCenterID(new CenterId(registrationNumber.getCenterCode()));
+            CenterId centerID = new CenterId(registrationNumber.getCenterCode());
+            patientRequest.setIdentifier(centerID.getName() + registrationNumber.getId());
+            patientRequest.setCenterID(centerID);
 
             Name name = RegistrationFields.name(patientRow[2], patientRow[3]);
             patientRequest.setName(sentenceCase(name.getGivenName()), sentenceCase(name.getFamilyName()));
@@ -68,12 +68,12 @@ public class AllRegistrations implements PatientEnumerator {
             patientRequest.setDateOfRegistration(RegistrationFields.getDate(patientRow[1]));
 
             patientRequest.setGender(patientRow[5]);
-            patientRequest.setBirthdate(RegistrationFields.getDate(patientRow[6]));
+            String birthdate = RegistrationFields.getDate(patientRow[6]);
+            patientRequest.setBirthdate(birthdate == null ? RegistrationFields.UnknownDateOfBirthAsString : birthdate);
             patientRequest.setAge(RegistrationFields.getAge(patientRow[7]));
 
             PatientAddress patientAddress = new PatientAddress();
             patientRequest.addPatientAddress(patientAddress);
-
 
             patientRequest.setBalance(patientRow[17]);
 

@@ -15,6 +15,8 @@ import static org.bahmni.datamigration.DataScrub.scrubData;
 public class RegistrationFields {
     private static final String patternWhenYearSpecifiedAs4Digits = "dd/MM/yyyy";
     private static final String patternWhenYearSpecifiedAs2Digits = "dd/MM/yy";
+    public static final LocalDate UnknownDateOfBirth = new LocalDate(1900, 1, 1);
+    public static final String UnknownDateOfBirthAsString = UnknownDateOfBirth.toString("dd-MM-yyyy");
 
     public static String getDate(String s) {
         StringTokenizer stringTokenizer = new StringTokenizer(s.trim(), " ");
@@ -22,11 +24,8 @@ public class RegistrationFields {
         String datePart = stringTokenizer.nextToken();
         String pattern = datePart.length() == 8 ? patternWhenYearSpecifiedAs2Digits : patternWhenYearSpecifiedAs4Digits;
         LocalDate localDate = LocalDateTime.parse(datePart, DateTimeFormat.forPattern(pattern)).toLocalDate();
-        if (localDate.getYear() <= 1900) {
-            localDate = new LocalDate(1900 + localDate.getYearOfCentury(), localDate.getMonthOfYear(), localDate.getDayOfMonth());
-        }
-        if(localDate.isAfter(LocalDate.now()))
-            localDate = new LocalDate(1900 , 1, 1);
+        if(localDate.getYear() <= 1900 || localDate.isAfter(LocalDate.now()))
+            localDate = UnknownDateOfBirth;
         return localDate.toString("dd-MM-yyyy");
     }
 
@@ -43,16 +42,20 @@ public class RegistrationFields {
 
     public static Name name(String firstName, String lastName) {
         String[] splitFirstNames = StringUtils.split(firstName, " ");
+        String givenName;
+        String familyName = null;
 
         Name name = new Name();
         if (StringUtils.isEmpty(lastName) && splitFirstNames.length > 1) {
             Object[] splitFirstNamesExceptLastWord = ArrayUtils.remove(splitFirstNames, splitFirstNames.length - 1);
-            name.setGivenName(StringUtils.join(splitFirstNamesExceptLastWord, " "));
-            name.setFamilyName(splitFirstNames[splitFirstNames.length - 1]);
+            givenName = StringUtils.join(splitFirstNamesExceptLastWord, " ");
+            familyName = splitFirstNames[splitFirstNames.length - 1];
         } else {
-            name.setGivenName(firstName);
-            name.setFamilyName(StringUtils.isEmpty(lastName) ? "." : lastName);
+            givenName = firstName;
+            familyName = lastName;
         }
+        name.setGivenName((givenName == null || StringUtils.isEmpty(givenName)) ? "." : givenName);
+        name.setFamilyName((familyName == null || StringUtils.isEmpty(familyName)) ? "." : familyName);
         return name;
     }
 

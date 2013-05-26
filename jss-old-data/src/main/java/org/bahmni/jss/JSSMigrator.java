@@ -1,5 +1,7 @@
 package org.bahmni.jss;
 
+import com.mysql.jdbc.Driver;
+import org.apache.log4j.Logger;
 import org.bahmni.address.AddressQueryExecutor;
 import org.bahmni.address.sanitiser.AddressHierarchy;
 import org.bahmni.address.sanitiser.AddressSanitiser;
@@ -10,6 +12,7 @@ import org.bahmni.datamigration.session.AllPatientAttributeTypes;
 import org.bahmni.datamigration.AllLookupValues;
 import org.bahmni.jss.registration.AllRegistrations;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -22,27 +25,45 @@ public class JSSMigrator {
     private final HashMap<String, AllLookupValues> lookupValuesMap;
     private String csvLocation;
     private AddressSanitiser addressSanitiser;
-
-    private static OpenMRSRESTConnection QA = new OpenMRSRESTConnection("172.18.2.1", "admin", "P@ssw0rd");
-    private static OpenMRSRESTConnection Localhost = new OpenMRSRESTConnection("localhost", "admin", "Hello123");
-    private static OpenMRSRESTConnection prod = new OpenMRSRESTConnection("localhost", "admin", "Hello123");
-    private static OpenMRSRESTConnection usedConnection= prod;
-
+    private static Logger logger = Logger.getLogger(JSSMigrator.class);
 
     public static void main(String[] args) throws URISyntaxException, IOException, ClassNotFoundException, SQLException {
-        String csvLocation = args[0];
+        if (args.length < 2) {
+            logger.error(String.format("Usage %s CSV-File-Location RegistrationCSVFileName", JSSMigrator.class.getName()));
+            logPropertyUsage("localhost", "root", "password", "admin", "test");
+            System.exit(1);
+        }
 
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/openmrs","root", "password");
+        String csvLocation = args[0];
+        String registrationCSVFileName = args[1];
+        logger.info(String.format("Using CSVFileLocation=%s; RegistrationFileName=%s", new File(csvLocation).getAbsolutePath(), registrationCSVFileName));
+
+        String openMRSHostName = System.getProperty("openmrs.host.name", "localhost");
+        String databaseUserId = System.getProperty("database.user.id", "root");
+        String databasePassword = System.getProperty("database.user.password", "password");
+        String openmrsUserId = System.getProperty("openmrs.user.id", "admin");
+        String openmrsUserPassword = System.getProperty("openmrs.user.password", "test");
+        logPropertyUsage(openMRSHostName, databaseUserId, databasePassword, openmrsUserId, openmrsUserPassword);
+
+        OpenMRSRESTConnection openMRSRESTConnection = new OpenMRSRESTConnection(openMRSHostName, openmrsUserId, openmrsUserPassword);
+
+        Class<Driver> variableToLoadDriver = Driver.class;
+        String url = String.format("jdbc:mysql://%s:3306/openmrs", openMRSHostName);
+        Connection connection = DriverManager.getConnection(url, databaseUserId, databasePassword);
 
         try {
             AddressSanitiser addressSanitiser = new AddressSanitiser(new LavensteinsDistance(), new AddressHierarchy(new AddressQueryExecutor(connection)));
             JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_District.csv", "LU_State.csv",
-                    "LU_Class.csv", "LU_Tahsil.csv", usedConnection, addressSanitiser);
-            jssMigrator.migratePatient("RegistrationMaster.csv");
+                    "LU_Class.csv", "LU_Tahsil.csv", openMRSRESTConnection, addressSanitiser);
+            jssMigrator.migratePatient(registrationCSVFileName);
         } finally {
             connection.close();
         }
+    }
+
+    private static void logPropertyUsage(String openMRSHostName, String databaseUserId, String databaseUserPassword, String openmrsUserId, String openmrsPassword) {
+        logger.info(String.format("By default uses following properties: openmrs.host.name=%s; database.user.id=%s; database.user.password=%s; openmrs.user.id=%s; " +
+                "openmrs.user.password=%s", openMRSHostName, databaseUserId, databaseUserPassword, openmrsUserId, openmrsPassword));
     }
 
     public JSSMigrator(String csvLocation, String casteFileName, String districtFileName, String stateFileName, String classFileName, String tahsilFileName,

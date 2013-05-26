@@ -78,13 +78,14 @@ public class Migrator {
         while (true) {
             String jsonRequest = null;
             PatientData patientData = null;
-            ResponseEntity<String> out = null;
+            ResponseEntity<String> out;
+            PatientRequest patientRequest = null;
             try {
                 i++;
                 patientData = patientEnumerator.nextPatient();
                 if (patientData == null) break;
 
-                PatientRequest patientRequest = patientData.getPatientRequest();
+                patientRequest = patientData.getPatientRequest();
                 jsonRequest = objectMapper.writeValueAsString(patientRequest);
                 if (logger.isDebugEnabled()) logger.debug(jsonRequest);
 
@@ -95,10 +96,12 @@ public class Migrator {
                 if (logger.isDebugEnabled()) logger.debug(out.getBody());
                 log.info(String.format("%d Successfully created %s", i, patientRequest.getIdentifier()));
             } catch (HttpServerErrorException serverErrorException) {
+                log.info(String.format("%d Failed to create %s", i, patientRequest.getIdentifier()));
                 log.info("Patient request: " + jsonRequest);
                 log.error("Patient create response: " + serverErrorException.getResponseBodyAsString());
                 patientEnumerator.failedPatient(patientData);
             } catch (Exception e) {
+                log.info(String.format("%d Failed to create", i));
                 log.info("Patient request: " + jsonRequest);
                 log.error("Failed to process a patient", e);
                 patientEnumerator.failedPatient(patientData);

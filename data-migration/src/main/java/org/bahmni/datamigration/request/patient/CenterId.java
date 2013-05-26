@@ -8,7 +8,7 @@ public class CenterId {
     }
 
     public String getName() {
-        return name;
+        return name == null ? null : name.toUpperCase();
     }
 
     public void setName(String name) {

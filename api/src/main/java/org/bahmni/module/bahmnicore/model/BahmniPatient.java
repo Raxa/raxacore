@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.model;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
@@ -121,7 +122,7 @@ public class BahmniPatient {
     }
 
     public double getBalance() {
-        return balance == null ? Double.NaN : Double.parseDouble(balance);
+        return (balance == null || StringUtils.isEmpty(balance)) ? Double.NaN : Double.parseDouble(balance);
     }
 
     public String getFullName() {

@@ -10,7 +10,9 @@ public class RegistrationFieldsTest {
     public void parseDate() {
         assertEquals("05-08-1979", RegistrationFields.getDate("05/08/79 0:00"));
         assertEquals("05-08-1979", RegistrationFields.getDate("05/08/1979 00:00:00"));
-        assertEquals("05-08-1979", RegistrationFields.getDate("05/08/1579 00:00:00"));
+        assertEquals("01-01-1900", RegistrationFields.getDate("05/08/1579 00:00:00"));
+        assertEquals(null, RegistrationFields.getDate(""));
+        assertEquals(null, RegistrationFields.getDate(" "));
     }
 
     @Test
@@ -31,6 +33,9 @@ public class RegistrationFieldsTest {
         assertName("MILAPA", "", "MILAPA", ".");
         assertName("MILAPA", "BAI", "MILAPA", "BAI");
         assertName("MILAPA JI", "BAI", "MILAPA JI", "BAI");
+        assertName("MILAPA JI", "", "MILAPA", "JI");
+        assertName("", "BAI", ".", "BAI");
+        assertName("", "", ".", ".");
     }
 
     private void assertName(String firstName, String lastName, String givenName, String familyName) {
