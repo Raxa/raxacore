@@ -3,21 +3,23 @@ package org.bahmni.datamigration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
-import org.bahmni.datamigration.request.patient.PatientRequest;
 import org.bahmni.datamigration.response.AuthenticationResponse;
 import org.bahmni.datamigration.response.PersonAttributeType;
 import org.bahmni.datamigration.response.PersonAttributeTypes;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -76,40 +78,36 @@ public class Migrator {
 
     public void migratePatient(PatientEnumerator patientEnumerator) {
         String url = openMRSRESTConnection.getRestApiUrl() + "bahmnicore/patient";
-//        int i = 0;
         while (true) {
-            String jsonRequest = null;
-            PatientData patientData = null;
-            ResponseEntity<String> out;
-            PatientRequest patientRequest = null;
             try {
-//                i++;
-                PatientData patientData1 = patientEnumerator.nextPatient();
-                PatientData patientData2 = patientEnumerator.nextPatient();
-                PatientData patientData3 = patientEnumerator.nextPatient();
-                if (patientData == null) break;
+                List<ParallelMigrator> migrators = new ArrayList<ParallelMigrator>();
+                int noOfThreads = 10;
+                for(int i =0; i < noOfThreads; i++){
+                    ParallelMigrator parallelMigrator = migrator(patientEnumerator, url);
+                    if (parallelMigrator == null) break;
+                    migrators.add(parallelMigrator);
+                    parallelMigrator.run();
+                }
 
-                ParallelMigrator parallelMigrator1 = new ParallelMigrator(patientData1,patientEnumerator,url);
-                parallelMigrator1.run();
-                ParallelMigrator parallelMigrator2 = new ParallelMigrator(patientData2,patientEnumerator,url);
-                parallelMigrator2.run();
-                ParallelMigrator parallelMigrator3 = new ParallelMigrator(patientData3,patientEnumerator,url);
-                parallelMigrator3.run();
-
-                parallelMigrator1.join();
-                logError(parallelMigrator1,patientEnumerator);
-
-                parallelMigrator2.join();
-                logError(parallelMigrator2,patientEnumerator);
-
-                parallelMigrator3.join();
-                logError(parallelMigrator3,patientEnumerator);
+                Iterator<ParallelMigrator> itr = migrators.iterator();
+                while(itr.hasNext()){
+                    ParallelMigrator parallelMigrator = itr.next();
+                    parallelMigrator.join();
+                    logError(parallelMigrator,patientEnumerator);
+                }
 
             }catch(Exception e){
                 log.error("Failed to process patient", e);
             }
 
         }
+    }
+
+    private ParallelMigrator migrator(PatientEnumerator patientEnumerator, String url) throws Exception {
+        PatientData patientData = patientEnumerator.nextPatient();
+        if (patientData == null) return null;
+        ParallelMigrator parallelMigrator = new ParallelMigrator(patientData,url,sessionId);
+        return parallelMigrator;
     }
 
     private void logError(ParallelMigrator parallelMigrator, PatientEnumerator patientEnumerator) {

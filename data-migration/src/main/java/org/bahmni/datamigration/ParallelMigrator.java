@@ -21,17 +21,15 @@ public class ParallelMigrator extends Thread{
     private static Logger logger = Logger.getLogger(Migrator.class);
     private OpenMRSRESTConnection openMRSRESTConnection;
     private static int count;
-    PatientEnumerator patientEnumerator;
     PatientData patientData = null;
     String url;
     List<PatientData> errorList = new ArrayList<PatientData>();
 
-    public ParallelMigrator(PatientData patientData,PatientEnumerator patientEnumerator,String url){
-         this.patientEnumerator = patientEnumerator;
+    public ParallelMigrator(PatientData patientData,String url,String sessionId){
          this.patientData = patientData;
          this.url = url;
+         this.sessionId = sessionId;
     }
-
     @Override
     public void run() {
         int i = incrementCounter();
@@ -55,15 +53,12 @@ public class ParallelMigrator extends Thread{
             log.error("Patient create response: " + serverErrorException.getResponseBodyAsString());
             errorList.add(patientData);
 
-            //patientEnumerator.failedPatient(patientData);
         } catch (Exception e) {
             log.info(String.format("%d Failed to create", i));
             log.info("Patient request: " + jsonRequest);
             log.error("Failed to process a patient", e);
-            //patientEnumerator.failedPatient(patientData);
             log.info("Patient request: " + jsonRequest);
             errorList.add(patientData);
-        //patientEnumerator.failedPatient(patientData);
     }
     }
 
