@@ -36,6 +36,9 @@ public class JSSMigrator {
 
         String csvLocation = args[0];
         String registrationCSVFileName = args[1];
+        int noOfThreads = 20;
+        if(args[2] != null)
+            noOfThreads = Integer.valueOf(args[2]);
         logger.info(String.format("Using CSVFileLocation=%s; RegistrationFileName=%s", new File(csvLocation).getAbsolutePath(), registrationCSVFileName));
 
         String openMRSHostName = System.getProperty("openmrs.host.name", "localhost");
@@ -54,7 +57,7 @@ public class JSSMigrator {
         try {
             AddressSanitiser addressSanitiser = new AddressSanitiser(new LavensteinsDistance(), new AddressHierarchy(new AddressQueryExecutor(connection)));
             JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_District.csv", "LU_State.csv",
-                    "LU_Class.csv", "LU_Tahsil.csv", openMRSRESTConnection, addressSanitiser);
+                    "LU_Class.csv", "LU_Tahsil.csv", openMRSRESTConnection, addressSanitiser,noOfThreads);
             jssMigrator.migratePatient(registrationCSVFileName);
         } finally {
             connection.close();
@@ -67,7 +70,7 @@ public class JSSMigrator {
     }
 
     public JSSMigrator(String csvLocation, String casteFileName, String districtFileName, String stateFileName, String classFileName, String tahsilFileName,
-                       OpenMRSRESTConnection openMRSRESTConnection, AddressSanitiser addressSanitiser) throws IOException,
+                       OpenMRSRESTConnection openMRSRESTConnection, AddressSanitiser addressSanitiser,int noOfThreads) throws IOException,
             URISyntaxException {
         this.csvLocation = csvLocation;
         this.addressSanitiser = addressSanitiser;
@@ -83,7 +86,7 @@ public class JSSMigrator {
         lookupValuesMap.put("Classes", allClasses);
         lookupValuesMap.put("Tahsils", allTahsils);
 
-        migrator = new Migrator(openMRSRESTConnection);
+        migrator = new Migrator(openMRSRESTConnection,noOfThreads);
     }
 
     public void migratePatient(String csvFileName) throws IOException {

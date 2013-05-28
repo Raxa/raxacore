@@ -31,9 +31,11 @@ public class Migrator {
     private static Logger logger = Logger.getLogger(Migrator.class);
     private AllPatientAttributeTypes allPatientAttributeTypes;
     private OpenMRSRESTConnection openMRSRESTConnection;
+    private int noOfThreads;
 
-    public Migrator(OpenMRSRESTConnection openMRSRESTConnection) throws IOException, URISyntaxException {
+    public Migrator(OpenMRSRESTConnection openMRSRESTConnection,int noOfThreads) throws IOException, URISyntaxException {
         this.openMRSRESTConnection = openMRSRESTConnection;
+        this.noOfThreads = noOfThreads;
         authenticate();
         loadReferences();
     }
