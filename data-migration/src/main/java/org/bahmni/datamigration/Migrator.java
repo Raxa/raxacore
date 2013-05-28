@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Migrator {
@@ -33,7 +32,7 @@ public class Migrator {
     private OpenMRSRESTConnection openMRSRESTConnection;
     private int noOfThreads;
 
-    public Migrator(OpenMRSRESTConnection openMRSRESTConnection,int noOfThreads) throws IOException, URISyntaxException {
+    public Migrator(OpenMRSRESTConnection openMRSRESTConnection, int noOfThreads) throws IOException, URISyntaxException {
         this.openMRSRESTConnection = openMRSRESTConnection;
         this.noOfThreads = noOfThreads;
         authenticate();
@@ -83,40 +82,33 @@ public class Migrator {
         while (true) {
             try {
                 List<ParallelMigrator> migrators = new ArrayList<ParallelMigrator>();
-                for(int i =0; i < noOfThreads; i++){
+                for (int i = 0; i < noOfThreads; i++) {
                     ParallelMigrator parallelMigrator = migrator(patientEnumerator, url);
                     if (parallelMigrator == null) break;
                     migrators.add(parallelMigrator);
                     parallelMigrator.start();
                 }
 
-                Iterator<ParallelMigrator> itr = migrators.iterator();
-                while(itr.hasNext()){
-                    ParallelMigrator parallelMigrator = itr.next();
+                for (ParallelMigrator parallelMigrator : migrators) {
                     parallelMigrator.join();
-                    logError(parallelMigrator,patientEnumerator);
+                    logError(parallelMigrator, patientEnumerator);
                 }
-
-            }catch(Exception e){
+            } catch (Exception e) {
                 log.error("Failed to process patient", e);
             }
-
         }
     }
 
     private ParallelMigrator migrator(PatientEnumerator patientEnumerator, String url) throws Exception {
         PatientData patientData = patientEnumerator.nextPatient();
         if (patientData == null) return null;
-        ParallelMigrator parallelMigrator = new ParallelMigrator(patientData,url,sessionId);
-        return parallelMigrator;
+        return new ParallelMigrator(patientData, url, sessionId);
     }
 
     private void logError(ParallelMigrator parallelMigrator, PatientEnumerator patientEnumerator) {
         List<PatientData> errorList = parallelMigrator.errorData();
-        Iterator<PatientData> patientDataIterator = errorList.iterator();
-        while (patientDataIterator.hasNext())  {
-            patientEnumerator.failedPatient(patientDataIterator.next());
+        for (PatientData anErrorList : errorList) {
+            patientEnumerator.failedPatient(anErrorList);
         }
-
     }
 }

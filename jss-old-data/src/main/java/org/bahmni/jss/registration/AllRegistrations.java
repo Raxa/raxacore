@@ -4,14 +4,11 @@ import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.bahmni.address.sanitiser.AddressSanitiser;
 import org.bahmni.address.sanitiser.SanitizerPersonAddress;
-import org.bahmni.datamigration.AllLookupValues;
-import org.bahmni.datamigration.LookupValueProvider;
-import org.bahmni.datamigration.PatientData;
-import org.bahmni.datamigration.PatientEnumerator;
+import org.bahmni.datamigration.*;
 import org.bahmni.datamigration.request.patient.*;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;
+
 import java.io.*;
 import java.util.Map;
 
@@ -22,31 +19,32 @@ public class AllRegistrations implements PatientEnumerator {
     private CSVWriter csvWriter;
     private AllPatientAttributeTypes allPatientAttributeTypes;
     private Map<String, AllLookupValues> lookupValuesMap;
-    private AddressSanitiser addressSanitiser;
+    private AddressService addressService;
 
     public AllRegistrations(String csvLocation, String fileName, AllPatientAttributeTypes allPatientAttributeTypes, Map<String,
-            AllLookupValues> lookupValuesMap, AddressSanitiser addressSanitiser) throws IOException {
+            AllLookupValues> lookupValuesMap, AddressService addressService) throws IOException {
         File file = new File(csvLocation, fileName);
         FileReader fileReader = new FileReader(file);
 
         File errorFile = new File(csvLocation, fileName + ".err.csv");
         FileWriter fileWriter = new FileWriter(errorFile);
-        init(allPatientAttributeTypes, lookupValuesMap, fileReader, fileWriter, addressSanitiser);
+        init(allPatientAttributeTypes, lookupValuesMap, fileReader, fileWriter, addressService);
     }
 
     public AllRegistrations(AllPatientAttributeTypes allPatientAttributeTypes, Map<String, AllLookupValues> lookupValuesMap,
-                            Reader reader, Writer writer, AddressSanitiser addressSanitiser) throws IOException {
-        init(allPatientAttributeTypes, lookupValuesMap, reader, writer, addressSanitiser);
+                            Reader reader, Writer writer, AddressService addressService) throws IOException {
+        init(allPatientAttributeTypes, lookupValuesMap, reader, writer, addressService);
     }
 
-    private void init(AllPatientAttributeTypes allPatientAttributeTypes, Map<String, AllLookupValues> lookupValuesMap, Reader reader, Writer writer, AddressSanitiser addressSanitiser) throws IOException {
+    private void init(AllPatientAttributeTypes allPatientAttributeTypes, Map<String, AllLookupValues> lookupValuesMap, Reader reader, Writer writer,
+                      AddressService addressService) throws IOException {
         this.lookupValuesMap = lookupValuesMap;
-        this.csvReader = new CSVReader(reader, ',','"', '\0');
+        this.addressService = addressService;
+        this.csvReader = new CSVReader(reader, ',', '"', '\0');
         this.csvWriter = new CSVWriter(writer, ',');
         String[] headerRow = this.csvReader.readNext();//skip row
         this.csvWriter.writeNext(headerRow);
         this.allPatientAttributeTypes = allPatientAttributeTypes;
-        this.addressSanitiser = addressSanitiser;
     }
 
     public PatientData nextPatient() {
@@ -84,39 +82,34 @@ public class AllRegistrations implements PatientEnumerator {
             String gramPanchayat = patientRow[34];
             patientAddress.setAddress2(sentenceCase(gramPanchayat));
 
-            SanitizerPersonAddress sanitizerPersonAddress = new SanitizerPersonAddress();
+            FullyQualifiedTehsil fullyQualifiedTehsil = new FullyQualifiedTehsil();
             String stateId = lookupValuesMap.get("Districts").getLookUpValue(patientRow[26], 0);
             if (stateId != null) {
                 String state = lookupValuesMap.get("States").getLookUpValue(stateId);
-                sanitizerPersonAddress.setState(sentenceCase(state));
+                fullyQualifiedTehsil.setState(sentenceCase(state));
             }
 
             String district = lookupValuesMap.get("Districts").getLookUpValue(patientRow[26], 2);
-            sanitizerPersonAddress.setDistrict(sentenceCase(district));
+            fullyQualifiedTehsil.setDistrict(sentenceCase(district));
 
             String village = patientRow[10];
-            sanitizerPersonAddress.setVillage(sentenceCase(village));
+            patientAddress.setCityVillage(sentenceCase(village));
 
             String tehsil = patientRow[35];
-            sanitizerPersonAddress.setTehsil(sentenceCase(tehsil));
+            fullyQualifiedTehsil.setTehsil(sentenceCase(tehsil));
 
-            try{
-                SanitizerPersonAddress sanitisedAddress = addressSanitiser.sanitiseByVillageAndTehsil(sanitizerPersonAddress);
-                setPatientAddressFrom(sanitisedAddress, patientAddress);
-            }catch (Exception e){
-                setPatientAddressFrom(sanitizerPersonAddress, patientAddress);
-            }
+            FullyQualifiedTehsil correctedFullyQualifiedTehsil = addressService.getTehsilFor(fullyQualifiedTehsil);
+            setPatientAddressFrom(correctedFullyQualifiedTehsil, patientAddress);
             return new PatientData(patientRequest, patientRow);
         } catch (Exception e) {
             throw new RuntimeException("Cannot create request from this row: " + ArrayUtils.toString(patientRow), e);
         }
     }
 
-    private void setPatientAddressFrom(SanitizerPersonAddress sanitizerPersonAddress, PatientAddress patientAddress) {
-        patientAddress.setStateProvince(sanitizerPersonAddress.getState());
-        patientAddress.setCountyDistrict(sanitizerPersonAddress.getDistrict());
-        patientAddress.setCityVillage(sanitizerPersonAddress.getVillage());
-        patientAddress.setAddress3(sanitizerPersonAddress.getTehsil()); //Tehsil
+    private void setPatientAddressFrom(FullyQualifiedTehsil fullyQualifiedTehsil, PatientAddress patientAddress) {
+        patientAddress.setStateProvince(fullyQualifiedTehsil.getState());
+        patientAddress.setCountyDistrict(fullyQualifiedTehsil.getDistrict());
+        patientAddress.setAddress3(fullyQualifiedTehsil.getTehsil());
     }
 
     @Override

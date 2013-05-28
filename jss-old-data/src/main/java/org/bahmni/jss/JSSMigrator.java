@@ -1,22 +1,13 @@
 package org.bahmni.jss;
 
-import com.mysql.jdbc.Driver;
 import org.apache.log4j.Logger;
-import org.bahmni.address.AddressQueryExecutor;
-import org.bahmni.address.sanitiser.AddressHierarchy;
-import org.bahmni.address.sanitiser.AddressSanitiser;
-import org.bahmni.address.sanitiser.LavensteinsDistance;
-import org.bahmni.datamigration.Migrator;
-import org.bahmni.datamigration.OpenMRSRESTConnection;
+import org.bahmni.datamigration.*;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;
-import org.bahmni.datamigration.AllLookupValues;
 import org.bahmni.jss.registration.AllRegistrations;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -24,7 +15,6 @@ public class JSSMigrator {
     private final Migrator migrator;
     private final HashMap<String, AllLookupValues> lookupValuesMap;
     private String csvLocation;
-    private AddressSanitiser addressSanitiser;
     private static Logger logger = Logger.getLogger(JSSMigrator.class);
 
     public static void main(String[] args) throws URISyntaxException, IOException, ClassNotFoundException, SQLException {
@@ -49,19 +39,22 @@ public class JSSMigrator {
         logPropertyUsage(openMRSHostName, databaseUserId, databasePassword, openmrsUserId, openmrsUserPassword);
 
         OpenMRSRESTConnection openMRSRESTConnection = new OpenMRSRESTConnection(openMRSHostName, openmrsUserId, openmrsUserPassword);
+        MasterTehsils masterTehsils = new MasterTehsils(csvLocation, "MasterTehsils.csv");
+        AmbiguousTehsils ambiguousTehsils = new AmbiguousTehsils(csvLocation, "AmbiguousTehsils.txt");
+        CorrectedTehsils correctedTehsils = new CorrectedTehsils(csvLocation, "CorrectedTehsils.csv");
+        AddressService addressService = new AddressService(masterTehsils, ambiguousTehsils, correctedTehsils);
 
-        Class<Driver> variableToLoadDriver = Driver.class;
-        String url = String.format("jdbc:mysql://%s:3306/openmrs", openMRSHostName);
-        Connection connection = DriverManager.getConnection(url, databaseUserId, databasePassword);
+//        Class<Driver> variableToLoadDriver = Driver.class;
+//        String url = String.format("jdbc:mysql://%s:3306/openmrs", openMRSHostName);
+//        Connection connection = DriverManager.getConnection(url, databaseUserId, databasePassword);
 
-        try {
-            AddressSanitiser addressSanitiser = new AddressSanitiser(new LavensteinsDistance(), new AddressHierarchy(new AddressQueryExecutor(connection)));
-            JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_District.csv", "LU_State.csv",
-                    "LU_Class.csv", "LU_Tahsil.csv", openMRSRESTConnection, addressSanitiser,noOfThreads);
-            jssMigrator.migratePatient(registrationCSVFileName);
-        } finally {
-            connection.close();
-        }
+//        try {
+        JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_District.csv", "LU_State.csv",
+                "LU_Class.csv", "LU_Tahsil.csv", openMRSRESTConnection, noOfThreads);
+        jssMigrator.migratePatient(registrationCSVFileName, addressService);
+//        } finally {
+//            connection.close();
+//        }
     }
 
     private static void logPropertyUsage(String openMRSHostName, String databaseUserId, String databaseUserPassword, String openmrsUserId, String openmrsPassword) {
@@ -70,10 +63,9 @@ public class JSSMigrator {
     }
 
     public JSSMigrator(String csvLocation, String casteFileName, String districtFileName, String stateFileName, String classFileName, String tahsilFileName,
-                       OpenMRSRESTConnection openMRSRESTConnection, AddressSanitiser addressSanitiser,int noOfThreads) throws IOException,
+                       OpenMRSRESTConnection openMRSRESTConnection, int noOfThreads) throws IOException,
             URISyntaxException {
         this.csvLocation = csvLocation;
-        this.addressSanitiser = addressSanitiser;
         AllLookupValues allCastes = new AllLookupValues(csvLocation, casteFileName);
         AllLookupValues allDistricts = new AllLookupValues(csvLocation, districtFileName);
         AllLookupValues allStates = new AllLookupValues(csvLocation, stateFileName);
@@ -89,9 +81,9 @@ public class JSSMigrator {
         migrator = new Migrator(openMRSRESTConnection,noOfThreads);
     }
 
-    public void migratePatient(String csvFileName) throws IOException {
+    public void migratePatient(String csvFileName, AddressService addressService) throws IOException {
         AllPatientAttributeTypes allPatientAttributeTypes = migrator.getAllPatientAttributeTypes();
-        AllRegistrations allRegistrations = new AllRegistrations(csvLocation, csvFileName, allPatientAttributeTypes, lookupValuesMap, addressSanitiser);
+        AllRegistrations allRegistrations = new AllRegistrations(csvLocation, csvFileName, allPatientAttributeTypes, lookupValuesMap, addressService);
         try {
             migrator.migratePatient(allRegistrations);
         } finally {
