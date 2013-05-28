@@ -83,7 +83,6 @@ public class Migrator {
         while (true) {
             try {
                 List<ParallelMigrator> migrators = new ArrayList<ParallelMigrator>();
-                int noOfThreads = 10;
                 for(int i =0; i < noOfThreads; i++){
                     ParallelMigrator parallelMigrator = migrator(patientEnumerator, url);
                     if (parallelMigrator == null) break;
