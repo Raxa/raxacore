@@ -88,7 +88,7 @@ public class Migrator {
                     ParallelMigrator parallelMigrator = migrator(patientEnumerator, url);
                     if (parallelMigrator == null) break;
                     migrators.add(parallelMigrator);
-                    parallelMigrator.run();
+                    parallelMigrator.start();
                 }
 
                 Iterator<ParallelMigrator> itr = migrators.iterator();
