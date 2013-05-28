@@ -29,14 +29,15 @@ public class CustomerServiceTest {
     public void shouldCreateNewCustomerIfNotExisting() throws Exception {
         String name = "Ram Singh";
         String patientId = "12345";
+        String village = "Ganiyari";
         Vector searchparams = new Vector();
         searchparams.addElement(new Object[]{"ref", "=", "12345"});
         Object[] results = new Object[]{};
         when(openERPClient.search((String) any(), (Vector) any())).thenReturn(results);
 
-        customerService.create(name, patientId);
+        customerService.create(name, patientId, village);
 
-        verify(openERPClient).create((String) any(), (String) any(), (String) any());
+        verify(openERPClient).create((String) any(), (String) any(), (String) any(), (String) any());
     }
 
     @Test
@@ -49,7 +50,7 @@ public class CustomerServiceTest {
         when(openERPClient.search((String) any(), (Vector) any())).thenReturn(results);
 
         try {
-            customerService.create(name, patientId);
+            customerService.create(name, patientId, null);
             assert false;
         } catch (Exception e) {
             assertEquals(true, e.getMessage().contains("Customer with id, name already exists:"));

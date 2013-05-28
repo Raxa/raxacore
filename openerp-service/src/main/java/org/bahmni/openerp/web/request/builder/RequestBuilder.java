@@ -19,14 +19,16 @@ public class RequestBuilder {
         this.configurer = configurer;
     }
 
-    public String buildNewCustomerRequest(String patientName,String patientId,Object id,String database,
-                                          String password,String resource,String operation) {
+    public String buildNewCustomerRequest(String patientName, String patientId, Object id, String database,
+                                          String password, String resource, String operation, String village) {
         try {
             VelocityEngine velocityEngine = configurer.getVelocityEngine();
             Template template = velocityEngine.getTemplate("/request/template/new_customer.vm");
             VelocityContext context = new VelocityContext();
             context.put("name", patientName);
             context.put("patientId", patientId);
+            if(village == null) village = "";
+            context.put("village", village);
             context.put("id", id);
             context.put("database", database);
             context.put("password", password);

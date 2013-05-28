@@ -11,7 +11,6 @@ import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 
@@ -34,9 +33,9 @@ public class OpenERPServiceTest {
         String name = "name";
         String patientId = "12344";
 
-        openERPService.createCustomer(name, patientId);
+        openERPService.createCustomer(name, patientId, null);
 
-        verify(customerService).create(name, patientId);
+        verify(customerService).create(name, patientId, null);
     }
 
     @Test
@@ -52,10 +51,10 @@ public class OpenERPServiceTest {
     @Test
     public void shouldThrowExceptionWhencreationOfCustomerFails() throws Exception {
         String expectedMessage = "Failed to create Exception";
-        doThrow(new OpenERPException(expectedMessage)).when(customerService).create(anyString(), anyString());
+        doThrow(new OpenERPException(expectedMessage)).when(customerService).create(anyString(), anyString(), anyString());
 
         try {
-            openERPService.createCustomer("name", "12345");
+            openERPService.createCustomer("name", "12345", "Ganiyari");
             fail("Should have thrown an exception");
         } catch (Exception ex) {
             assertEquals(expectedMessage, ex.getMessage());

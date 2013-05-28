@@ -27,6 +27,10 @@
                 <name>ref</name>
                 <value><string>$patientId</string></value>
             </member>
+            <member>
+                <name>village</name>
+                <value><string>$village</string></value>
+            </member>
         </struct></value>
         </param>
     </params>

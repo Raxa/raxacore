@@ -16,9 +16,9 @@ public class CustomerService {
         this.openERPClient = openERPClient;
     }
 
-    public void create(String name, String patientId) {
+    public void create(String name, String patientId, String village) {
         if (noCustomersFound(findCustomersWithPatientReference(patientId))) {
-            openERPClient.create("res.partner", name, patientId);
+            openERPClient.create("res.partner", name, patientId, village);
         } else
             throw new OpenERPException(String.format("Customer with id, name already exists: %s, %s ", patientId, name));
     }

@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
 import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;
 import org.bahmni.module.bahmnicore.mapper.*;
+import org.bahmni.module.bahmnicore.model.BahmniAddress;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
@@ -48,7 +49,9 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
         try {
             String fullName = patient == null ? bahmniPatient.getFullName() : patient.getPersonName().getFullName();
             String patientId = patient == null ? bahmniPatient.getIdentifier() : patient.getPatientIdentifier().toString();
-            billingService.createCustomer(fullName, patientId);
+            BahmniAddress bahmniAddress = bahmniPatient.getAddresses().get(0);
+            String village = bahmniAddress == null ? null : bahmniAddress.getCityVillage();
+            billingService.createCustomer(fullName, patientId, village);
             if (bahmniPatient.hasBalance()) {
                 billingService.updateCustomerBalance(patientId, bahmniPatient.getBalance());
             }

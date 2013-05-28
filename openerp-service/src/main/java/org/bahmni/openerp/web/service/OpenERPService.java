@@ -16,8 +16,8 @@ public class OpenERPService implements BillingService {
         this.customerAccountService = customerAccountService;
     }
 
-    public void createCustomer(String name, String patientId) {
-        customerService.create(name, patientId);
+    public void createCustomer(String name, String patientId, String village) {
+        customerService.create(name, patientId, village);
     }
 
     public void updateCustomerBalance(String patientId, double balance) {

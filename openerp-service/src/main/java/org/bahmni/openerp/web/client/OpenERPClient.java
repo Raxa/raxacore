@@ -62,10 +62,10 @@ public class OpenERPClient {
         return execute(resource, "search", params);
     }
 
-    public Object create(String resource, String name, String patientId) {
+    public Object create(String resource, String name, String patientId, String village) {
         if (id == null)
             id = login();
-        String request = requestBuilder.buildNewCustomerRequest(name, patientId, id, database, password, resource, "create");
+        String request = requestBuilder.buildNewCustomerRequest(name, patientId, id, database, password, resource, "create", village);
         return httpClient.post("http://" + host + ":" + port + "/xmlrpc/object", request);
     }
 

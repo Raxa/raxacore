@@ -21,12 +21,13 @@ public class RequestBuilderTest {
 
         String patientName="Ramu";
         String patientId="13466";
+        String village="Ganiyari";
         int id = 1;
         String database="openerp";
         String password="password";
         String resource="res.partner";
         String operation="create";
-        String requestXml = requestBuilder.buildNewCustomerRequest(patientName, patientId, id, database, password, resource, operation);
+        String requestXml = requestBuilder.buildNewCustomerRequest(patientName, patientId, id, database, password, resource, operation, village);
         //String requestXmlForComparison = requestXml.replace("\n", " ");
 
         assertEquals("<?xml version='1.0'?>\n" +
@@ -57,6 +58,10 @@ public class RequestBuilderTest {
                 "            <member>\n" +
                 "                <name>ref</name>\n" +
                 "                <value><string>"+patientId+"</string></value>\n" +
+                "            </member>\n" +
+                "            <member>\n" +
+                "                <name>village</name>\n" +
+                "                <value><string>"+village+"</string></value>\n" +
                 "            </member>\n" +
                 "        </struct></value>\n" +
                 "        </param>\n" +
