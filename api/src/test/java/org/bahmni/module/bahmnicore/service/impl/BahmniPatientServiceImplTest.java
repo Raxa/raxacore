@@ -120,7 +120,7 @@ public class BahmniPatientServiceImplTest {
 
         bahmniPatientService.createPatient(patientMother.buildBahmniPatient());
 
-        verify(billingService).createCustomer("ram boo singh", identifier, null);
+        verify(billingService).createCustomer("ram boo singh", identifier, "Bengaluru");
     }
 
     @Test
@@ -134,7 +134,7 @@ public class BahmniPatientServiceImplTest {
 
         bahmniPatientService.updatePatient(bahmniPatient);
 
-        verify(billingService, never()).createCustomer(anyString(), anyString(), null);
+        verify(billingService, never()).createCustomer(anyString(), anyString(), anyString());
     }
 
     @Test
@@ -150,7 +150,7 @@ public class BahmniPatientServiceImplTest {
 
         }
 
-        verify(billingService, never()).createCustomer(anyString(), anyString(), null);
+        verify(billingService, never()).createCustomer(anyString(), anyString(), anyString());
     }
 
     @Test(expected = APIAuthenticationException.class)
