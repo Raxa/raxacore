@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.mapper;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.model.BahmniName;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.util.PatientMother;
@@ -52,4 +51,14 @@ public class PatientMapperTest extends BaseModuleContextSensitiveTest {
 
 		assertEquals(dateCreatedBeforeMapping, mappedPatient.getPersonDateCreated());
 	}
+
+    @Test
+    public void shouldMapPatientToBahmniPatient() {
+        Patient patient = new PatientMother().build();
+
+        BahmniPatient bahmniPatient = patientMapper.mapFromPatient(null, patient);
+
+        assertEquals(patient.getGivenName(), bahmniPatient.getNames().get(0).getGivenName());
+        assertEquals(patient.getFamilyName(), bahmniPatient.getNames().get(0).getFamilyName());
+    }
 }

@@ -15,8 +15,17 @@ public class BahmniAddress {
 	private String countyDistrict;
 	
 	private String stateProvince;
-	
-	public BahmniAddress(LinkedHashMap post) {
+
+    public BahmniAddress(String address1, String address2, String address3, String cityVillage, String countyDistrict, String stateProvince) {
+        this.address1 = address1;
+        this.address2 = address2;
+        this.address3 = address3;
+        this.cityVillage = cityVillage;
+        this.countyDistrict = countyDistrict;
+        this.stateProvince = stateProvince;
+    }
+
+    public BahmniAddress(LinkedHashMap post) {
 		SimpleObjectExtractor extractor = new SimpleObjectExtractor(post);
 		address1 = extractor.extract("address1");
 		address2 = extractor.extract("address2");

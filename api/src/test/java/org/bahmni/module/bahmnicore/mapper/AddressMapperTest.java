@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.mapper;
 
 import org.bahmni.module.bahmnicore.model.BahmniAddress;
+import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.util.AddressMother;
 import org.junit.Test;
 import org.openmrs.Patient;
@@ -8,6 +9,7 @@ import org.openmrs.PersonAddress;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
@@ -69,6 +71,19 @@ public class AddressMapperTest {
         assertEquals("Size of address should not change", addresses.size(), 2);
         assertAllFieldsAreMapped("Existing nonVoided address should map to passed in Bahmni address", bahmniAddress, nonVoidedAddress);
         assertTrue("Details of voided address should not change", voidedAddress.equalsContent(createPersonAddress("voided", 2)));
+    }
+
+    @Test
+    public void shouldMapPatientToBahmniPatient() {
+        Patient patient = new Patient();
+        PersonAddress address = createPersonAddress("foo", 123);
+        patient.setAddresses(new HashSet<PersonAddress>(Arrays.asList(address)));
+
+        BahmniPatient bahmniPatient = new AddressMapper().mapFromPatient(null, patient);
+
+        PersonAddress personAddress = patient.getPersonAddress();
+        BahmniAddress bahmniAddress = bahmniPatient.getAddresses().get(0);
+        assertAllFieldsAreMapped("Address should be mapped from Patient", bahmniAddress,  personAddress);
     }
 
     private PersonAddress createPersonAddress(String randomPrefix, Integer id) {

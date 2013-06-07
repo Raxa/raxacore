@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.util;
 
+import org.openmrs.PersonAddress;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
 public class AddressMother {
@@ -11,5 +12,14 @@ public class AddressMother {
                 .add("cityVillage", "Bengaluru")
                 .add("countyDistrict", "Bengaluru south")
                 .add("stateProvince", "Karnataka");
+    }
+
+    public PersonAddress build() {
+        PersonAddress personAddress = new PersonAddress();
+        personAddress.setCityVillage("village");
+        personAddress.setCountyDistrict("district");
+        personAddress.setAddress3("tehsil");
+        personAddress.setStateProvince("state");
+        return personAddress;
     }
 }

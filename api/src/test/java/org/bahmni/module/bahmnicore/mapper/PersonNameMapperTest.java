@@ -1,7 +1,9 @@
 package org.bahmni.module.bahmnicore.mapper;
 
 import org.bahmni.module.bahmnicore.model.BahmniName;
+import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.util.NameMother;
+import org.bahmni.module.bahmnicore.util.PatientMother;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.PersonName;
@@ -43,6 +45,15 @@ public class PersonNameMapperTest {
         PersonName oldName = getByFirstName(bahmniName.getGivenName() + "old", nameList);
 
         assertTrue(oldName.isVoided());
+    }
+
+    @Test
+    public void shouldMapNameFromPatientToBahmniPatient() {
+        PersonNameMapper mapper = new PersonNameMapper();
+        Patient patient = new PatientMother().withName("ram", null, "singh").build();
+        BahmniPatient bahmniPatient = mapper.mapFromPatient(null, patient);
+        assertEquals(patient.getGivenName(), bahmniPatient.getNames().get(0).getGivenName());
+        assertEquals(patient.getFamilyName(), bahmniPatient.getNames().get(0).getFamilyName());
     }
 
     private PersonName getByFirstName(String s, Set<PersonName> nameList) {

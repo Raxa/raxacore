@@ -3,12 +3,14 @@ package org.bahmni.module.bahmnicore.util;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
+import org.openmrs.PersonAddress;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 public class PatientMother {
 
@@ -47,6 +49,7 @@ public class PatientMother {
         patient.addIdentifier(new PatientIdentifier(patientIdentifier, null, null));
         patient.addName(nameMother.build());
         patient.setPersonDateCreated(this.dateCreated);
+        patient.setAddresses(new HashSet<PersonAddress>( Arrays.asList(addressMother.build())));
         return patient;
     }
 

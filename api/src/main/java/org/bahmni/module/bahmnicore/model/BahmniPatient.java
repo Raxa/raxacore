@@ -145,4 +145,36 @@ public class BahmniPatient {
     public Date getPersonDateCreated() {
         return personDateCreated;
     }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void addName(BahmniName bahmniName) {
+        names.add(bahmniName);
+    }
+
+    public void addAttribute(BahmniPersonAttribute bahmniPersonAttribute) {
+        attributes.add(bahmniPersonAttribute);
+    }
+
+    public void addAddress(BahmniAddress bahmniAddress) {
+        addresses.add(bahmniAddress);
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public void setCenter(String center) {
+        this.centerName = center;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthdate = birthDate;
+    }
 }

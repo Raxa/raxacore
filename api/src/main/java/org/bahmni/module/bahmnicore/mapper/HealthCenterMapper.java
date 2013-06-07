@@ -11,7 +11,9 @@ import java.util.List;
 
 @Component
 public class HealthCenterMapper {
-	
+
+    private static String HEALTH_CENTER_ATTRIBUTE_NAME = "Health Center";
+
 	public Patient map(Patient person, BahmniPatient bahmniPatient) {
 		LocationService locationService = Context.getLocationService();
 		List<Location> allLocations = locationService.getAllLocations();
@@ -44,9 +46,18 @@ public class HealthCenterMapper {
 	        Location location, LocationAttribute attribute) {
 		if (attribute.getAttributeType().equals(identifierSourceName) && attribute.getValue().toString().equals(center)) {
 			PersonAttribute locationAttribute = new PersonAttribute();
-			locationAttribute.setAttributeType(Context.getPersonService().getPersonAttributeTypeByName("Health Center"));
+            locationAttribute.setAttributeType(Context.getPersonService().getPersonAttributeTypeByName(HEALTH_CENTER_ATTRIBUTE_NAME));
 			locationAttribute.setValue(location.getId().toString());
 			person.addAttribute(locationAttribute);
 		}
 	}
+
+    public BahmniPatient mapFromPatient(BahmniPatient bahmniPatient, Patient patient) {
+        if(bahmniPatient == null){
+            bahmniPatient = new BahmniPatient();
+        }
+        PersonAttribute patientAttribute = patient.getAttribute(HEALTH_CENTER_ATTRIBUTE_NAME);
+        bahmniPatient.setCenter(patientAttribute.getValue());
+        return bahmniPatient;
+    }
 }

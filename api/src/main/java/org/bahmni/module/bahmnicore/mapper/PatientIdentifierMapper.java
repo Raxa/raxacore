@@ -33,8 +33,16 @@ public class PatientIdentifierMapper {
 		patient.addIdentifier(patientIdentifier);
         return patient;
 	}
-	
-	public PatientService getPatientService() {
+
+    public BahmniPatient mapFromPatient(BahmniPatient bahmniPatient, Patient patient) {
+        if(bahmniPatient == null){
+            bahmniPatient = new BahmniPatient();
+        }
+        bahmniPatient.setIdentifier(patient.getPatientIdentifier().getIdentifier());
+        return bahmniPatient;
+    }
+
+    public PatientService getPatientService() {
 		if (patientService == null)
 			patientService = Context.getPatientService();
 		return patientService;

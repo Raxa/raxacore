@@ -22,5 +22,18 @@ public class BirthDateMapper {
 		}
 		return patient;
 	}
-	
+
+    public BahmniPatient mapFromPatient(BahmniPatient bahmniPatient, Patient patient) {
+        if(bahmniPatient == null){
+            bahmniPatient = new BahmniPatient();
+        }
+
+        if(patient.getBirthdateEstimated()){
+            bahmniPatient.setAge(patient.getAge());
+            return bahmniPatient;
+        }
+        bahmniPatient.setBirthDate(patient.getBirthdate());
+        bahmniPatient.setAge(patient.getAge());
+        return bahmniPatient;
+    }
 }

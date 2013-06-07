@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.mapper;
 
 import org.bahmni.module.bahmnicore.model.BahmniName;
+import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.openmrs.Patient;
 import org.openmrs.PersonName;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,15 @@ public class PersonNameMapper {
 		voidEarlierNames(patient, oldNumberOfNames, newNumberOfNames);
 		
 		return patient;
+	}
+
+    public BahmniPatient mapFromPatient(BahmniPatient bahmniPatient, Patient patient) {
+        if (bahmniPatient == null){
+            bahmniPatient = new BahmniPatient();
+        }
+        bahmniPatient.addName(new BahmniName(patient.getGivenName(), patient.getFamilyName()));
+
+		return bahmniPatient;
 	}
 	
 	private void voidEarlierNames(Patient patient, int oldNumberOfNames, int newNumberOfNames) {

@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.mapper;
 
+import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.openmrs.Patient;
 import org.openmrs.PersonAddress;
 import org.bahmni.module.bahmnicore.model.BahmniAddress;
@@ -46,5 +47,19 @@ public class AddressMapper {
             personAddress.setStateProvince(address.getStateProvince());
             personAddress.setPreferred(true);
         }
+    }
+
+    public BahmniPatient mapFromPatient(BahmniPatient bahmniPatient, Patient patient) {
+        if(bahmniPatient == null){
+            bahmniPatient = new BahmniPatient();
+        }
+        PersonAddress personAddress = patient.getPersonAddress();
+        bahmniPatient.addAddress(new BahmniAddress(personAddress.getAddress1(),
+                personAddress.getAddress2(),
+                personAddress.getAddress3(),
+                personAddress.getCityVillage(),
+                personAddress.getCountyDistrict(),
+                personAddress.getStateProvince()));
+        return bahmniPatient;
     }
 }

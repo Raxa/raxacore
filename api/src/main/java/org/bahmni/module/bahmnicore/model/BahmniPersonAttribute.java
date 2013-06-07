@@ -7,8 +7,13 @@ public class BahmniPersonAttribute {
 	private String personAttributeUuid;
 	
 	private String value;
-	
-	public BahmniPersonAttribute(LinkedHashMap post) {
+
+    public BahmniPersonAttribute(String personAttributeUuid, String value) {
+        this.personAttributeUuid = personAttributeUuid;
+        this.value = value;
+    }
+
+    public BahmniPersonAttribute(LinkedHashMap post) {
 		SimpleObjectExtractor extractor = new SimpleObjectExtractor(post);
 		personAttributeUuid = extractor.extract("attributeType");
 		value = extractor.extract("value");
