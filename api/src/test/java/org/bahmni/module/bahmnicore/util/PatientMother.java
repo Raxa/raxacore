@@ -1,9 +1,7 @@
 package org.bahmni.module.bahmnicore.util;
 
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.PersonAddress;
+import org.openmrs.*;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
 import java.text.ParseException;
@@ -50,6 +48,9 @@ public class PatientMother {
         patient.addName(nameMother.build());
         patient.setPersonDateCreated(this.dateCreated);
         patient.setAddresses(new HashSet<PersonAddress>( Arrays.asList(addressMother.build())));
+        PersonAttributeType personAttributeType = new PersonAttributeType();
+        personAttributeType.setName("Health Center");
+        patient.setAttributes(new HashSet<PersonAttribute>(Arrays.asList(new PersonAttribute(personAttributeType, "Ganiyari"))));
         return patient;
     }
 

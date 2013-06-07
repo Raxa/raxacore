@@ -4,10 +4,12 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.ApplicationError;
+import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
 import org.bahmni.module.bahmnicore.BillingSystemException;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.model.error.ErrorCode;
+import org.bahmni.module.bahmnicore.service.BahmniPatientListService;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.openmrs.Patient;
 import org.openmrs.api.APIAuthenticationException;
@@ -33,10 +35,14 @@ public class BahmniPatientController extends BaseRestController {
     private static Logger logger = Logger.getLogger(BahmniPatientController.class);
     private BahmniPatientService bahmniPatientService;
     private static final String[] REQUIRED_FIELDS = {"names", "gender"};
+    private BahmniPatientListService bahmniPatientListService;
+    private BahmniCoreApiProperties bahmniCoreApiProperties;
 
     @Autowired
-    public BahmniPatientController(BahmniPatientService bahmniPatientService) {
+    public BahmniPatientController(BahmniPatientService bahmniPatientService, BahmniPatientListService bahmniPatientListService, BahmniCoreApiProperties bahmniCoreApiProperties) {
         this.bahmniPatientService = bahmniPatientService;
+        this.bahmniPatientListService = bahmniPatientListService;
+        this.bahmniCoreApiProperties = bahmniCoreApiProperties;
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/patient")
@@ -54,6 +60,50 @@ public class BahmniPatientController extends BaseRestController {
         } catch (Exception e) {
             return respondNotCreated(response, e);
         }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/patients/active/{location}")
+    @WSDoc("Get a list of active patients")
+    @ResponseBody
+    public Object getActivePatientsList(@PathVariable("location") String location){
+        List<BahmniPatient> allActivePatients = bahmniPatientListService.getAllActivePatients(location);
+        return createListResponse(allActivePatients);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/patient/{patientUuid}")
+    @WSDoc("Update existing patient")
+    @ResponseBody
+    public Object updatePatient(@PathVariable("patientUuid") String patientUuid, @RequestBody SimpleObject post,
+                                HttpServletResponse response)
+            throws Exception {
+        try {
+            validatePost(post);
+            BahmniPatient bahmniPatient = new BahmniPatient(post);
+            bahmniPatient.setUuid(patientUuid);
+            Patient patient = bahmniPatientService.updatePatient(bahmniPatient);
+            return RestUtil.created(response, getPatientAsSimpleObject(patient));
+        } catch (Exception e) {
+            logger.error("Update patient failed", e);
+            throw e;
+        }
+    }
+
+    private SimpleObject createListResponse(List<BahmniPatient> allActivePatients) {
+        SimpleObject patientList = new SimpleObject();
+        int iter = 0;
+        for (BahmniPatient bahmniPatient : allActivePatients) {
+            SimpleObject bahmniPatientAsSimpleObject = getBahmniPatientAsSimpleObject(bahmniPatient);
+            patientList.add(String.valueOf(iter++), bahmniPatientAsSimpleObject);
+        }
+        return patientList;
+    }
+
+    private SimpleObject getBahmniPatientAsSimpleObject(BahmniPatient bahmniPatient) {
+        SimpleObject obj = new SimpleObject();
+        obj.add("uuid", bahmniPatient.getUuid());
+        obj.add("name", bahmniPatient.getFullName());
+        obj.add("identifier", bahmniPatient.getIdentifier());
+        return obj;
     }
 
     private Object respondNotCreated(HttpServletResponse response, Exception e) {
@@ -84,24 +134,6 @@ public class BahmniPatientController extends BaseRestController {
         obj.add("name", bahmniPatient.getPatientName());
         obj.add("identifier", patient == null ? bahmniPatient.getIdentifier() : patient.getPatientIdentifier().toString());
         return obj;
-    }
-
-    @RequestMapping(method = RequestMethod.POST, value = "/patient/{patientUuid}")
-    @WSDoc("Update existing patient")
-    @ResponseBody
-    public Object updatePatient(@PathVariable("patientUuid") String patientUuid, @RequestBody SimpleObject post,
-                                HttpServletResponse response)
-            throws Exception {
-        try {
-            validatePost(post);
-            BahmniPatient bahmniPatient = new BahmniPatient(post);
-            bahmniPatient.setUuid(patientUuid);
-            Patient patient = bahmniPatientService.updatePatient(bahmniPatient);
-            return RestUtil.created(response, getPatientAsSimpleObject(patient));
-        } catch (Exception e) {
-            logger.error("Update patient failed", e);
-            throw e;
-        }
     }
 
     private boolean validatePost(SimpleObject post) {
