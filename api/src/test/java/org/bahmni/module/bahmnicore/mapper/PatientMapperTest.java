@@ -61,4 +61,13 @@ public class PatientMapperTest extends BaseModuleContextSensitiveTest {
         assertEquals(patient.getGivenName(), bahmniPatient.getNames().get(0).getGivenName());
         assertEquals(patient.getFamilyName(), bahmniPatient.getNames().get(0).getFamilyName());
     }
+
+    @Test
+    public void shouldMapUUIDFromPatient() {
+        Patient patient = new PatientMother().build();
+
+        BahmniPatient bahmniPatient = patientMapper.mapFromPatient(null, patient);
+
+        assertEquals(patient.getUuid(), bahmniPatient.getUuid());
+    }
 }

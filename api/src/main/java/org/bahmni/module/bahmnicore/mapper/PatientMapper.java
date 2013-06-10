@@ -58,6 +58,7 @@ public class PatientMapper {
         bahmniPatient = patientIdentifierMapper.mapFromPatient(bahmniPatient, patient);
         bahmniPatient = healthCenterMapper.mapFromPatient(bahmniPatient, patient);
         bahmniPatient = birthDateMapper.mapFromPatient(bahmniPatient, patient);
+        bahmniPatient.setUuid(patient.getUuid());
         return bahmniPatient;
     }
 }

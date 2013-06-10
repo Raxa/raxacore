@@ -90,11 +90,7 @@ public class BahmniPatientController extends BaseRestController {
 
     private SimpleObject createListResponse(List<BahmniPatient> allActivePatients) {
         SimpleObject patientList = new SimpleObject();
-        int iter = 0;
-        for (BahmniPatient bahmniPatient : allActivePatients) {
-            SimpleObject bahmniPatientAsSimpleObject = getBahmniPatientAsSimpleObject(bahmniPatient);
-            patientList.add(String.valueOf(iter++), bahmniPatientAsSimpleObject);
-        }
+        patientList.add("activePatientsList", allActivePatients);
         return patientList;
     }
 
