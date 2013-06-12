@@ -4,7 +4,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.ApplicationError;
-import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
 import org.bahmni.module.bahmnicore.BillingSystemException;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
@@ -30,22 +29,20 @@ import java.util.List;
  * the Drug resource.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/bahmnicore")
+@RequestMapping(value = "/rest/v1/bahmnicore/patient")
 public class BahmniPatientController extends BaseRestController {
     private static Logger logger = Logger.getLogger(BahmniPatientController.class);
     private BahmniPatientService bahmniPatientService;
     private static final String[] REQUIRED_FIELDS = {"names", "gender"};
     private BahmniPatientListService bahmniPatientListService;
-    private BahmniCoreApiProperties bahmniCoreApiProperties;
 
     @Autowired
-    public BahmniPatientController(BahmniPatientService bahmniPatientService, BahmniPatientListService bahmniPatientListService, BahmniCoreApiProperties bahmniCoreApiProperties) {
+    public BahmniPatientController(BahmniPatientService bahmniPatientService, BahmniPatientListService bahmniPatientListService) {
         this.bahmniPatientService = bahmniPatientService;
         this.bahmniPatientListService = bahmniPatientListService;
-        this.bahmniCoreApiProperties = bahmniCoreApiProperties;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/patient")
+    @RequestMapping(method = RequestMethod.POST)
     @WSDoc("Save New Patient")
     @ResponseBody
     public Object createNewPatient(@RequestBody SimpleObject post, HttpServletResponse response) {
