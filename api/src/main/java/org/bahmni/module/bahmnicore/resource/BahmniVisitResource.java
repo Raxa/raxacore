@@ -130,8 +130,7 @@ public class BahmniVisitResource extends DataDelegatingCrudResource<Visit> {
 
     public SimpleObject getVisitsByPatient(String patientUniqueId, RequestContext context) throws ResponseException {
         DelegatingCrudResource<Patient> resource = (DelegatingCrudResource<Patient>) Context.getService(RestService.class).getResourceBySupportedClass(PatientResource1_8.class);
-        Patient patient = resource.getByUniqueId(
-                patientUniqueId);
+        Patient patient = resource.getByUniqueId(patientUniqueId);
         if (patient == null)
             throw new ObjectNotFoundException();
         return new NeedsPaging<Visit>(Context.getVisitService().getVisitsByPatient(patient, true, false), context)
