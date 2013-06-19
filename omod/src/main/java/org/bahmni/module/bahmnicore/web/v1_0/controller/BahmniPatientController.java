@@ -90,6 +90,21 @@ public class BahmniPatientController extends BaseRestController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/patient/{patientUuid}/image")
+    @WSDoc("Update patient image")
+    @ResponseBody
+    public Object updatePatientImage(@PathVariable("patientUuid") String patientUuid, @RequestBody SimpleObject post,
+                                HttpServletResponse response)
+            throws Exception {
+        try {
+            bahmniPatientService.updateImage(patientUuid, (String) post.get("image"));
+            return RestUtil.noContent(response);
+        } catch (Exception e) {
+            logger.error("Update patient image failed", e);
+            throw e;
+        }
+    }
+
     private List<SimpleObject> createListResponse(ResultList resultList) {
         List<SimpleObject> patientList =new ArrayList<SimpleObject>();
 

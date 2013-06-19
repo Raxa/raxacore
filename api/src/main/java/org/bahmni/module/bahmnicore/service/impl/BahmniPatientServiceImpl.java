@@ -92,8 +92,17 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
 
     @Override
     public Patient updatePatient(BahmniPatient bahmniPatient) {
-        Patient patient = getPatientService().getPatientByUuid(bahmniPatient.getUuid());
-
+        Patient patient = getPatientByUuid(bahmniPatient.getUuid());
         return savePatient(bahmniPatient, patient);
+    }
+
+    @Override
+    public void updateImage(String uuid, String image) {
+        Patient patient = getPatientByUuid(uuid);
+        patientImageService.save(patient.getPatientIdentifier().getIdentifier(), image);
+    }
+
+    private Patient getPatientByUuid(String uuid) {
+        return getPatientService().getPatientByUuid(uuid);
     }
 }

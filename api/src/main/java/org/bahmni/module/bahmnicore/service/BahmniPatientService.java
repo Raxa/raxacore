@@ -6,4 +6,5 @@ import org.openmrs.Patient;
 public interface BahmniPatientService {
     public Patient createPatient(BahmniPatient bahmniPatient);
     public Patient updatePatient(BahmniPatient bahmniPatient);
+    public void updateImage(String uuid, String imageData);
 }
