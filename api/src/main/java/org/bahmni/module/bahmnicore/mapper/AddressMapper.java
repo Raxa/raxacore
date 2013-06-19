@@ -54,12 +54,14 @@ public class AddressMapper {
             bahmniPatient = new BahmniPatient();
         }
         PersonAddress personAddress = patient.getPersonAddress();
-        bahmniPatient.addAddress(new BahmniAddress(personAddress.getAddress1(),
-                personAddress.getAddress2(),
-                personAddress.getAddress3(),
-                personAddress.getCityVillage(),
-                personAddress.getCountyDistrict(),
-                personAddress.getStateProvince()));
+        if(personAddress != null){
+            bahmniPatient.addAddress(new BahmniAddress(personAddress.getAddress1(),
+                    personAddress.getAddress2(),
+                    personAddress.getAddress3(),
+                    personAddress.getCityVillage(),
+                    personAddress.getCountyDistrict(),
+                    personAddress.getStateProvince()));
+        }
         return bahmniPatient;
     }
 }

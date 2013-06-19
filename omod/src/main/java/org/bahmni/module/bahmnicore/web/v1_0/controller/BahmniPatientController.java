@@ -6,9 +6,10 @@ import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.ApplicationError;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
 import org.bahmni.module.bahmnicore.BillingSystemException;
+import org.bahmni.module.bahmnicore.dao.ActivePatientListDao;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
+import org.bahmni.module.bahmnicore.model.ResultList;
 import org.bahmni.module.bahmnicore.model.error.ErrorCode;
-import org.bahmni.module.bahmnicore.service.BahmniPatientListService;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.openmrs.Patient;
 import org.openmrs.api.APIAuthenticationException;
@@ -24,25 +25,30 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import static junit.framework.Assert.assertFalse;
+
 /**
  * Controller for REST web service access to
  * the Drug resource.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/bahmnicore/patient")
+@RequestMapping(value = "/rest/v1/bahmnicore")
 public class BahmniPatientController extends BaseRestController {
     private static Logger logger = Logger.getLogger(BahmniPatientController.class);
     private BahmniPatientService bahmniPatientService;
     private static final String[] REQUIRED_FIELDS = {"names", "gender"};
-    private BahmniPatientListService bahmniPatientListService;
+
 
     @Autowired
-    public BahmniPatientController(BahmniPatientService bahmniPatientService, BahmniPatientListService bahmniPatientListService) {
+    private ActivePatientListDao activePatientListDao;
+
+    @Autowired
+    public BahmniPatientController(BahmniPatientService bahmniPatientService) {
         this.bahmniPatientService = bahmniPatientService;
-        this.bahmniPatientListService = bahmniPatientListService;
+
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, value = "/patient")
     @WSDoc("Save New Patient")
     @ResponseBody
     public Object createNewPatient(@RequestBody SimpleObject post, HttpServletResponse response) {
@@ -59,12 +65,11 @@ public class BahmniPatientController extends BaseRestController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/patients/active/{location}")
+    @RequestMapping(method = RequestMethod.GET, value = "/patients/active")
     @WSDoc("Get a list of active patients")
     @ResponseBody
-    public Object getActivePatientsList(@PathVariable("location") String location){
-        List<BahmniPatient> allActivePatients = bahmniPatientListService.getAllActivePatients(location);
-        return createListResponse(allActivePatients);
+    public Object getActivePatientsList(@RequestParam String location){
+        return createListResponse(activePatientListDao.getUnique(location));
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/patient/{patientUuid}")
@@ -85,18 +90,18 @@ public class BahmniPatientController extends BaseRestController {
         }
     }
 
-    private SimpleObject createListResponse(List<BahmniPatient> allActivePatients) {
-        SimpleObject patientList = new SimpleObject();
-        patientList.add("activePatientsList", allActivePatients);
-        return patientList;
-    }
+    private List<SimpleObject> createListResponse(ResultList resultList) {
+        List<SimpleObject> patientList =new ArrayList<SimpleObject>();
 
-    private SimpleObject getBahmniPatientAsSimpleObject(BahmniPatient bahmniPatient) {
-        SimpleObject obj = new SimpleObject();
-        obj.add("uuid", bahmniPatient.getUuid());
-        obj.add("name", bahmniPatient.getFullName());
-        obj.add("identifier", bahmniPatient.getIdentifier());
-        return obj;
+        for(Object patientObject : resultList.getResults()){
+            SimpleObject patient = new SimpleObject();
+            Object[] pObject = (Object[]) patientObject;
+            patient.add("name", String.format("%s %s", pObject[0], pObject[1]));
+            patient.add("identifier", (String) pObject[2]);
+            patient.add("uuid", String.valueOf(pObject[3]));
+            patientList.add(patient);
+        }
+        return patientList;
     }
 
     private Object respondNotCreated(HttpServletResponse response, Exception e) {
