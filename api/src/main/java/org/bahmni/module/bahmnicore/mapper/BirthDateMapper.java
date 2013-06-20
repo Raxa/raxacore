@@ -14,11 +14,11 @@ public class BirthDateMapper {
 		Integer age = bahmniPatient.getAge();
 		if (birthdate != null) {
 			patient.setBirthdate(birthdate);
-			patient.setBirthdateEstimated(Boolean.FALSE);
+			patient.setBirthdateEstimated(false);
 			
 		} else if (age != null) {
 			patient.setBirthdateFromAge(age, new Date());
-			patient.setBirthdateEstimated(Boolean.TRUE);
+			patient.setBirthdateEstimated(true);
 		}
 		return patient;
 	}
