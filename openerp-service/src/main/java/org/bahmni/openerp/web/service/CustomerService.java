@@ -2,6 +2,9 @@ package org.bahmni.openerp.web.service;
 
 import org.bahmni.openerp.web.OpenERPException;
 import org.bahmni.openerp.web.client.OpenERPClient;
+import org.bahmni.openerp.web.request.OpenERPRequest;
+import org.bahmni.openerp.web.request.mapper.OpenERPParameterMapper;
+import org.bahmni.openerp.web.service.domain.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,17 +13,25 @@ import java.util.Vector;
 @Service
 public class CustomerService {
     private OpenERPClient openERPClient;
+    private OpenERPParameterMapper parameterMapper;
 
     @Autowired
     public CustomerService(OpenERPClient openERPClient) {
         this.openERPClient = openERPClient;
+        this.parameterMapper = new OpenERPParameterMapper();
     }
 
-    public void create(String name, String patientId, String village) {
-        if (noCustomersFound(findCustomersWithPatientReference(patientId))) {
-            openERPClient.create("res.partner", name, patientId, village);
+    CustomerService(OpenERPClient openERPClient,OpenERPParameterMapper parameterMapper) {
+        this.openERPClient = openERPClient;
+        this.parameterMapper = parameterMapper;
+    }
+
+    public void create(Customer customer) {
+        if (noCustomersFound(findCustomersWithPatientReference(customer.getRef()))) {
+            OpenERPRequest request = parameterMapper.mapCustomerParams(customer, "create");
+            String response = openERPClient.create(request);
         } else
-            throw new OpenERPException(String.format("Customer with id, name already exists: %s, %s ", patientId, name));
+            throw new OpenERPException(String.format("Customer with id, name already exists: %s, %s ", customer.getRef(), customer.getName()));
     }
 
     public void deleteCustomerWithPatientReference(String patientId) {

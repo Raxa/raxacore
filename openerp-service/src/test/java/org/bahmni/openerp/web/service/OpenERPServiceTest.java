@@ -1,6 +1,7 @@
 package org.bahmni.openerp.web.service;
 
 import org.bahmni.openerp.web.OpenERPException;
+import org.bahmni.openerp.web.service.domain.Customer;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -35,7 +36,7 @@ public class OpenERPServiceTest {
 
         openERPService.createCustomer(name, patientId, null);
 
-        verify(customerService).create(name, patientId, null);
+        verify(customerService).create(new Customer(name,patientId,null));
     }
 
     @Test
@@ -51,7 +52,7 @@ public class OpenERPServiceTest {
     @Test
     public void shouldThrowExceptionWhencreationOfCustomerFails() throws Exception {
         String expectedMessage = "Failed to create Exception";
-        doThrow(new OpenERPException(expectedMessage)).when(customerService).create(anyString(), anyString(), anyString());
+        doThrow(new OpenERPException(expectedMessage)).when(customerService).create(new Customer("name", "12345", "Ganiyari"));
 
         try {
             openERPService.createCustomer("name", "12345", "Ganiyari");

@@ -19,18 +19,12 @@
         </param>
         <param>
         <value><struct>
-            <member>
-                <name>name</name>
-                <value><string>$name</string></value>
-            </member>
-            <member>
-                <name>ref</name>
-                <value><string>$patientId</string></value>
-            </member>
-            <member>
-                <name>village</name>
-                <value><string>$village</string></value>
-            </member>
+            #foreach( $param in $parametersList )
+                <member>
+                    <name>$param.name</name>
+                    <value><$param.type>$param.value</$param.type></value>
+                </member>
+            #end
         </struct></value>
         </param>
     </params>

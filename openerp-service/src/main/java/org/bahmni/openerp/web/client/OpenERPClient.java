@@ -6,6 +6,7 @@ import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.bahmni.openerp.web.OpenERPException;
 import org.bahmni.openerp.web.OpenERPProperties;
 import org.bahmni.openerp.web.http.client.HttpClient;
+import org.bahmni.openerp.web.request.OpenERPRequest;
 import org.bahmni.openerp.web.request.builder.RequestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -62,10 +63,10 @@ public class OpenERPClient {
         return execute(resource, "search", params);
     }
 
-    public Object create(String resource, String name, String patientId, String village) {
+    public String create(OpenERPRequest openERPRequest) {
         if (id == null)
             id = login();
-        String request = requestBuilder.buildNewCustomerRequest(name, patientId, id, database, password, resource, "create", village);
+        String request = requestBuilder.buildNewRequest(openERPRequest, id, database, password);
         return httpClient.post("http://" + host + ":" + port + "/xmlrpc/object", request);
     }
 

@@ -18,8 +18,8 @@ public class OpenERPServiceIT extends TestCase {
     public void shouldCreateFindAndDeleteCustomer() throws Exception {
         setUp();
 
-        String name= "Dhara Singh";
-        String patientId ="1226789845";
+        String name= "Mario Areias";
+        String patientId ="122678984333";
         String village ="Ganiyari";
         openerpService.createCustomer(name, patientId, village);
 
