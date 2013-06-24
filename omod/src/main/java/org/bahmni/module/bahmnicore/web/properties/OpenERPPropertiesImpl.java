@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class OpenERPPropertiesImpl implements OpenERPProperties {
 
     private PropertiesReader properties;
-    private String OPENERP_PREFIX = "bahmnicore.openerp.";
+    private String OPENERP_PREFIX = "openerp.";
 
     @Autowired
     public OpenERPPropertiesImpl(PropertiesReader properties) {
