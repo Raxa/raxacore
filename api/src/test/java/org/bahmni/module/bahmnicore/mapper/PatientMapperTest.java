@@ -6,6 +6,7 @@ import org.bahmni.module.bahmnicore.util.PatientMother;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.ParseException;
@@ -14,7 +15,7 @@ import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
 
-public class PatientMapperTest extends BaseModuleContextSensitiveTest {
+public class PatientMapperTest extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
     private PatientMapper patientMapper;

@@ -13,8 +13,10 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
+import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseCrudController;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,8 +30,8 @@ import java.util.List;
 import java.util.Set;
 
 @Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 +  "/bahmnivisit")
-public class BahmniVisitController extends BaseCrudController<BahmniVisitResource> {
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnivisit")
+public class BahmniVisitController extends BaseRestController {
 
     private VisitService visitService;
     private PatientService patientService;
@@ -47,7 +49,14 @@ public class BahmniVisitController extends BaseCrudController<BahmniVisitResourc
 
         voidExistingEncountersForMatchingEncounterType(post, visit);
         removeNonUpdateableProperties(post);
-        return update(visit.getUuid(), post, request, response);
+
+        RequestContext context = new RequestContext();
+        context.setRequest(request);
+        return getResource().update(visit.getUuid(), post, context);
+    }
+
+    private DataDelegatingCrudResource getResource() {
+        return new BahmniVisitResource();
     }
 
     private void removeNonUpdateableProperties(SimpleObject post) {
@@ -65,7 +74,7 @@ public class BahmniVisitController extends BaseCrudController<BahmniVisitResourc
     private void voidEncounterMatchingEncounterType(String encounterType, Visit visit) {
         Set<Encounter> encounters = visit.getEncounters();
         if (encounters == null) return;
-        for (Encounter encounter: encounters) {
+        for (Encounter encounter : encounters) {
             if (encounter.getEncounterType().getName().equals(encounterType)) {
                 encounter.setVoided(true);
                 voidObservations(encounter);
@@ -74,7 +83,7 @@ public class BahmniVisitController extends BaseCrudController<BahmniVisitResourc
     }
 
     private void voidObservations(Encounter encounter) {
-        for (Obs obs: encounter.getAllObs()) {
+        for (Obs obs : encounter.getAllObs()) {
             obs.setVoided(true);
         }
     }
@@ -83,7 +92,7 @@ public class BahmniVisitController extends BaseCrudController<BahmniVisitResourc
         Patient patient = getPatientService().getPatientByUuid(patientUuid);
         List<Visit> activeVisitsByPatient = getVisitService().getActiveVisitsByPatient(patient);
 
-        for (Visit visit: activeVisitsByPatient) {
+        for (Visit visit : activeVisitsByPatient) {
             if (visit.getStartDatetime().after(DateMidnight.now().toDate())) {
                 return visit;
             }

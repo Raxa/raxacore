@@ -23,29 +23,29 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.api</groupId>
-            <artifactId>openmrs-api</artifactId>
+            <artifactId>bahmni-openmrs-api</artifactId>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.openmrs.web</groupId>
-            <artifactId>openmrs-web</artifactId>
+            <artifactId>bahmni-openmrs-web</artifactId>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.openmrs.api</groupId>
-            <artifactId>openmrs-api</artifactId>
+            <artifactId>bahmni-openmrs-api</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openmrs.web</groupId>
-            <artifactId>openmrs-web</artifactId>
+            <artifactId>bahmni-openmrs-web</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openmrs.test</groupId>
-            <artifactId>openmrs-test</artifactId>
+            <artifactId>bahmni-openmrs-test</artifactId>
             <type>pom</type>
             <scope>test</scope>
         </dependency>
@@ -60,18 +60,14 @@
         <!--Core webservices dependency-->
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>webservices.rest-api</artifactId>
+            <artifactId>bahmni-webservices.rest-omod</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>webservices.rest-omod</artifactId>
+            <artifactId>bahmni-webservices.rest-omod-common</artifactId>
+            <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>webservices.rest-omod</artifactId>
-            <classifier>tests</classifier>
-        </dependency>
-                                
         <!-- external libraries -->
         <!--  Gson: Java to Json conversion -->
         <dependency>
@@ -86,8 +82,8 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>idgen-api</artifactId>
-            <version>2.5</version>
+            <artifactId>bahmni-idgen-api</artifactId>
+            <version>2.6-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

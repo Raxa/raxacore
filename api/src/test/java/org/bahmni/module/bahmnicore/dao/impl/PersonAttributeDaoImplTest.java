@@ -1,14 +1,14 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import org.junit.Test;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.bahmni.module.bahmnicore.model.ResultList;
+import org.junit.Test;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
-public class PersonAttributeDaoImplTest extends BaseModuleContextSensitiveTest {
+public class PersonAttributeDaoImplTest extends BaseModuleWebContextSensitiveTest {
 	
 	@Autowired
 	PersonAttributeDaoImpl personAttributeDao;

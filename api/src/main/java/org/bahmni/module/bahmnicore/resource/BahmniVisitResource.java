@@ -12,13 +12,15 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DataDelegatingCrudResource;
+import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ObjectNotFoundException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.module.webservices.rest.web.v1_0.resource.PatientResource;
+import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PatientResource1_8;
 
 import java.util.Set;
 
@@ -127,7 +129,8 @@ public class BahmniVisitResource extends DataDelegatingCrudResource<Visit> {
     }
 
     public SimpleObject getVisitsByPatient(String patientUniqueId, RequestContext context) throws ResponseException {
-        Patient patient = Context.getService(RestService.class).getResource(PatientResource.class).getByUniqueId(
+        DelegatingCrudResource<Patient> resource = (DelegatingCrudResource<Patient>) Context.getService(RestService.class).getResourceBySupportedClass(PatientResource1_8.class);
+        Patient patient = resource.getByUniqueId(
                 patientUniqueId);
         if (patient == null)
             throw new ObjectNotFoundException();

@@ -16,19 +16,19 @@
 
     <properties>
         <release.version>${version}</release.version>
-        <jackson.mapper.version>1.9.5</jackson.mapper.version>
+        <jackson.mapper.version>1.5.0</jackson.mapper.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.openmrs.api</groupId>
-            <artifactId>openmrs-api</artifactId>
+            <artifactId>bahmni-openmrs-api</artifactId>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.openmrs.web</groupId>
-            <artifactId>openmrs-web</artifactId>
+            <artifactId>bahmni-openmrs-web</artifactId>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
@@ -67,16 +67,6 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>1.6.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-core-asl</artifactId>
-            <version>1.9.7</version>
         </dependency>
         <dependency>
             <groupId>org.kubek2k</groupId>
