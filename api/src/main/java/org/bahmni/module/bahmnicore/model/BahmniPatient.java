@@ -13,7 +13,7 @@ import java.util.List;
 
 public class BahmniPatient {
 	private Date birthdate;
-	private Integer age;
+	private Age age;
 	private String centerName;
 	private String identifier;
 	private List<BahmniPersonAttribute> attributes = new ArrayList<BahmniPersonAttribute>();
@@ -31,9 +31,8 @@ public class BahmniPatient {
 
     public BahmniPatient(SimpleObject post) throws ParseException {
 		SimpleObjectExtractor extractor = new SimpleObjectExtractor(post);
-
         balance = extractor.extract("balance");
-		age = extractor.extract("age");
+		age = Age.fromHash(extractor.<LinkedHashMap>extract("age"));
 		identifier = extractor.extract("identifier");
 		image = extractor.extract("image");
 		gender = extractor.extract("gender");
@@ -81,7 +80,7 @@ public class BahmniPatient {
 		return birthdate;
 	}
 	
-	public Integer getAge() {
+	public Age getAge() {
 		return age;
 	}
 	
@@ -170,7 +169,7 @@ public class BahmniPatient {
         this.centerName = center;
     }
 
-    public void setAge(Integer age) {
+    public void setAge(Age age) {
         this.age = age;
     }
 

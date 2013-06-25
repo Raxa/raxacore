@@ -57,7 +57,7 @@ public class PatientMother {
     public SimpleObject buildSimpleObject() {
         String dateCreatedString = dateCreated != null ? new SimpleDateFormat("dd-MM-yyyy").format(dateCreated) : "";
         SimpleObject simpleObject = new SimpleObject().add("birthdate", "01-01-2012")
-                .add("age", 21)
+                .add("age", new SimpleObject().add("years", 21).add("months", 1).add("days", 3))
                 .add("gender", "M")
                 .add("attributes", Arrays.asList(new SimpleObject()
                         .add("attributeType", "b3b6d540-a32e-44c7-91b3-292d97667518")

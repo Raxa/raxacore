@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.mapper;
 
+import org.bahmni.module.bahmnicore.model.Age;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.junit.Test;
 import org.openmrs.Patient;
@@ -19,6 +20,6 @@ public class BirthDateMapperTest {
         BahmniPatient bahmniPatient = mapper.mapFromPatient(null, patient);
 
         assertEquals(patient.getBirthdate(),bahmniPatient.getBirthdate());
-        assertEquals(patient.getAge(), bahmniPatient.getAge());
+        assertEquals(new Age(0,0,0), bahmniPatient.getAge());
     }
 }

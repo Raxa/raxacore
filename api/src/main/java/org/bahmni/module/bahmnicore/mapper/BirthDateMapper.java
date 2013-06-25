@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.mapper;
 
+import org.bahmni.module.bahmnicore.model.Age;
 import org.openmrs.Patient;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.springframework.stereotype.Component;
@@ -10,14 +11,14 @@ import java.util.Date;
 public class BirthDateMapper {
 	
 	public Patient map(Patient patient, BahmniPatient bahmniPatient) {
-		Date birthdate = bahmniPatient.getBirthdate();
-		Integer age = bahmniPatient.getAge();
-		if (birthdate != null) {
-			patient.setBirthdate(birthdate);
+		Date birthDate = bahmniPatient.getBirthdate();
+		Age age = bahmniPatient.getAge();
+		if (birthDate != null) {
+			patient.setBirthdate(birthDate);
 			patient.setBirthdateEstimated(false);
 			
 		} else if (age != null) {
-			patient.setBirthdateFromAge(age, new Date());
+            patient.setBirthdate(age.getDateOfBirth());
 			patient.setBirthdateEstimated(true);
 		}
 		return patient;
@@ -29,11 +30,11 @@ public class BirthDateMapper {
         }
 
         if(patient.getBirthdateEstimated()){
-            bahmniPatient.setAge(patient.getAge());
+            bahmniPatient.setAge(Age.fromBirthDate(patient.getBirthdate()));
             return bahmniPatient;
         }
         bahmniPatient.setBirthDate(patient.getBirthdate());
-        bahmniPatient.setAge(patient.getAge());
+        bahmniPatient.setAge(Age.fromBirthDate(patient.getBirthdate()));
         return bahmniPatient;
     }
 }

@@ -3,8 +3,10 @@ package org.bahmni.module.bahmnicore.model;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.PeriodType;
+import org.openmrs.module.webservices.rest.SimpleObject;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 
 public class Age {
     private final int years;
@@ -18,20 +20,30 @@ public class Age {
     }
 
     public Date getDateOfBirth(Date forDate) {
-        if (forDate == null) {
-            forDate = new Date();
-        }
         Period ageAsPeriod = new Period(years, months, 0, days, 0, 0, 0, 0, PeriodType.yearMonthDay());
         LocalDate dateOfBirth = new LocalDate(forDate).minus(ageAsPeriod);
         return dateOfBirth.toDate();
     }
 
+    public Date getDateOfBirth() {
+        return getDateOfBirth(new Date());
+    }
+
     public static Age fromDateOfBirth(Date birthDate, Date today) {
-        if (today == null) {
-            today = new Date();
-        }
         Period ageAsPeriod = new Period(new LocalDate(birthDate), new LocalDate(today), PeriodType.yearMonthDay());
         return new Age(ageAsPeriod.getYears(), ageAsPeriod.getMonths(), ageAsPeriod.getDays());
+    }
+
+    public static Age fromBirthDate(Date birthDate) {
+        return fromDateOfBirth(birthDate, new Date());
+    }
+
+    public static Age fromHash(LinkedHashMap simpleObject) {
+        SimpleObjectExtractor simpleObjectExtractor = new SimpleObjectExtractor(simpleObject);
+        int years = simpleObjectExtractor.getValueOrDefault("years", int.class);
+        int months = simpleObjectExtractor.getValueOrDefault("months", int.class);
+        int days = simpleObjectExtractor.getValueOrDefault("days", int.class);
+        return new Age(years, months, days);
     }
 
     @Override
@@ -54,5 +66,14 @@ public class Age {
         result = 31 * result + months;
         result = 31 * result + days;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Age{" +
+                "years=" + years +
+                ", months=" + months +
+                ", days=" + days +
+                '}';
     }
 }

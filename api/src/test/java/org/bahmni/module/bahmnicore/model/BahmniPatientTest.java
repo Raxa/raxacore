@@ -20,7 +20,8 @@ public class BahmniPatientTest {
         String registrationDateStr = "25-04-1988";
         String centerName = "Ganiyari";
         double expectedBalance = 123;
-        SimpleObject personObject = new SimpleObject().add("birthdate", birthdate).add("age", 21).add("gender", "M").add(
+        SimpleObject age = new SimpleObject().add("years", 21).add("months", 10).add("days", 30);
+        SimpleObject personObject = new SimpleObject().add("birthdate", birthdate).add("age", age).add("gender", "M").add(
                 "attributes", Arrays.asList(new SimpleObject().add("attributeType", "caste").add("value", "someCaste"))).add(
                 "addresses", Arrays.asList(new SimpleObject().add("address1", "7143 Koramangala"))).add("centerID",
                 new SimpleObject().add("name", centerName))
