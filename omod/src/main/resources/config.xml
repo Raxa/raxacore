@@ -17,9 +17,9 @@
     <updateURL>https://example.com/modules/download/bahmnicore/update.rdf</updateURL>
     <!-- /Base Module Properties -->
 	
-    <require_version>${openMRSVersion}</require_version>
+    <require_version>${openMRSRuntimeVersion}</require_version>
     <require_modules>
-        <require_module>org.openmrs.module.webservices.rest</require_module>
+        <require_module>org.openmrs.module.bahmni-webservices.rest</require_module>
         <require_module>org.openmrs.module.idgen</require_module>
         <require_module>org.openmrs.module.addresshierarchy</require_module>
     </require_modules>
