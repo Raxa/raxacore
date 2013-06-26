@@ -33,9 +33,9 @@ public class OpenERPParameterMapperTest {
                 createParameter("ref", patientId, "string"),
                 createParameter("village", village, "string"));
 
-        OpenERPRequest expectedRequest = new OpenERPRequest("res.partner", "create", expectedParams);
+        OpenERPRequest expectedRequest = new OpenERPRequest("res.partner", "execute", expectedParams);
 
-        OpenERPRequest request = mapper.mapCustomerParams(customer, "create");
+        OpenERPRequest request = mapper.mapCustomerParams(customer, "execute");
         Assert.assertEquals(expectedRequest, request);
 
     }

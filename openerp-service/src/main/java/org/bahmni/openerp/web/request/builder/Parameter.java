@@ -47,4 +47,13 @@ public class Parameter {
         return type;
 
     }
+
+    @Override
+    public String toString() {
+        return "Parameter{" +
+                "name='" + name + '\'' +
+                ", value='" + value + '\'' +
+                ", type='" + type + '\'' +
+                '}';
+    }
 }

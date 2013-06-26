@@ -63,7 +63,7 @@ public class OpenERPClient {
         return execute(resource, "search", params);
     }
 
-    public String create(OpenERPRequest openERPRequest) {
+    public String execute(OpenERPRequest openERPRequest) {
         if (id == null)
             id = login();
         String request = requestBuilder.buildNewRequest(openERPRequest, id, database, password);

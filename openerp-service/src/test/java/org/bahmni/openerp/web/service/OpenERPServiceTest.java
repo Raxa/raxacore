@@ -51,7 +51,7 @@ public class OpenERPServiceTest {
 
     @Test
     public void shouldThrowExceptionWhencreationOfCustomerFails() throws Exception {
-        String expectedMessage = "Failed to create Exception";
+        String expectedMessage = "Failed to execute Exception";
         doThrow(new OpenERPException(expectedMessage)).when(customerService).create(new Customer("name", "12345", "Ganiyari"));
 
         try {
@@ -64,7 +64,7 @@ public class OpenERPServiceTest {
 
     @Test
     public void shouldThrowExceptionWhenUpdationOfCustomerWithBalanceFails() throws Exception {
-        String expectedMessage = "Failed to create Exception";
+        String expectedMessage = "Failed to execute Exception";
         doThrow(new OpenERPException(expectedMessage)).when(customerAccountService).updateCustomerReceivables(anyString(),anyDouble());
         try {
             openERPService.updateCustomerBalance("name", 12345);

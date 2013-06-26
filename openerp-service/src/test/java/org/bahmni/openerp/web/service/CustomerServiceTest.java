@@ -10,11 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
@@ -50,13 +48,13 @@ public class CustomerServiceTest {
         when(openERPClient.search((String) any(), (Vector) any())).thenReturn(results);
 
         List<Parameter> parameters = openERPRequestTestHelper.createCustomerRequest(name,patientId,village);
-        OpenERPRequest request = new OpenERPRequest("res_partner", "create", parameters);
+        OpenERPRequest request = new OpenERPRequest("res_partner", "execute", parameters);
 
-        when(parameterMapper.mapCustomerParams(customer,"create")).thenReturn(request);
+        when(parameterMapper.mapCustomerParams(customer,"execute")).thenReturn(request);
 
         customerService.create(customer);
 
-        verify(openERPClient).create(request);
+        verify(openERPClient).execute(request);
     }
 
     @Test

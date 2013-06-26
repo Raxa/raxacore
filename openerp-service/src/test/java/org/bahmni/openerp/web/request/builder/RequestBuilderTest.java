@@ -9,7 +9,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 
@@ -34,7 +33,7 @@ public class RequestBuilderTest {
         String database="openerp";
         String password="password";
 
-        OpenERPRequest request = new OpenERPRequest("res.partner", "create", parameters);
+        OpenERPRequest request = new OpenERPRequest("res.partner", "execute", parameters);
 
         String requestXml = requestBuilder.buildNewRequest(request, id, database, password);
         //String requestXmlForComparison = requestXml.replace("", " ");
@@ -56,7 +55,7 @@ public class RequestBuilderTest {
                 "        <value><string>" + "res.partner" + "</string></value>" +
                 "        </param>" +
                 "        <param>" +
-                "        <value><string>" + "create" + "</string></value>" +
+                "        <value><string>" + "execute" + "</string></value>" +
                 "        </param>" +
                 "        <param>" +
                 "        <value><struct>" +
