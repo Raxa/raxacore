@@ -105,6 +105,7 @@
                 <artifactId>bahmni-webservices.rest-omod-common</artifactId>
                 <version>2.1.1-SNAPSHOT</version>
                 <type>jar</type>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.openmrs.module</groupId>

@@ -21,7 +21,6 @@
     <require_modules>
         <require_module>org.openmrs.module.webservices.rest</require_module>
         <require_module>org.openmrs.module.idgen</require_module>
-        <require_module>org.openmrs.module.addresshierarchy</require_module>
     </require_modules>
     <!-- Extensions -->
 	
