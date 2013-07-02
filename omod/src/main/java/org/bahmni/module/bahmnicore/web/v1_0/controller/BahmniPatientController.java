@@ -65,11 +65,11 @@ public class BahmniPatientController extends BaseRestController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/patients/active")
+    @RequestMapping(method = RequestMethod.GET, value = "/active")
     @WSDoc("Get a list of active patients")
     @ResponseBody
-    public Object getActivePatientsList(@RequestParam String location){
-        return createListResponse(activePatientListDao.getUnique(location));
+    public Object getActivePatientsList(){
+        return createListResponse(activePatientListDao.getPatientList());
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{patientUuid}")

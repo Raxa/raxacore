@@ -4,5 +4,5 @@ import org.bahmni.module.bahmnicore.model.ResultList;
 
 public interface ActivePatientListDao {
 
-    public ResultList getUnique(String location);
+    public ResultList getPatientList();
 }
