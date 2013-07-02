@@ -90,7 +90,7 @@ public class BahmniPatientController extends BaseRestController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/patient/{patientUuid}/image")
+    @RequestMapping(method = RequestMethod.POST, value = "/{patientUuid}/image")
     @WSDoc("Update patient image")
     @ResponseBody
     public Object updatePatientImage(@PathVariable("patientUuid") String patientUuid, @RequestBody SimpleObject post,
