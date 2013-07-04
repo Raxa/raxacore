@@ -20,10 +20,10 @@ public class ActivePatientListDaoImpl implements ActivePatientListDao {
     public ResultList getPatientList() {
         SQLQuery sqlQuery = sessionFactory
                 .getCurrentSession()
-                .createSQLQuery("select distinct pn.given_name , pn.family_name, pi.identifier,concat(\"\",p.uuid) from visit v " +
-                        "join person_name pn on v.patient_id = pn.person_id " +
+                .createSQLQuery("select distinct pn.given_name, pn.family_name, pi.identifier,concat(\"\",p.uuid) from visit v " +
+                        "join person_name pn on v.patient_id = pn.person_id and pn.voided = 0 " +
                         "join patient_identifier pi on v.patient_id = pi.patient_id " +
-                        "join person p on  p.person_id = v.patient_id " +
+                        "join person p on p.person_id = v.patient_id " +
                         "where DATE(v.date_created) = DATE(NOW())");
         return new ResultList(sqlQuery.list());
     }
