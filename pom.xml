@@ -26,6 +26,14 @@
         <springVersion>3.0.5.RELEASE</springVersion>
     </properties>
 
+	<distributionManagement>
+	    <snapshotRepository>
+	        <id>bahmni-artifactory</id>
+	        <name>bahmni-artifactory-snapshots</name>
+	        <url>http://172.18.2.1:8081/artifactory/libs-snapshot-local</url>
+	    </snapshotRepository>
+	</distributionManagement>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -243,6 +251,4 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-
-
 </project>
