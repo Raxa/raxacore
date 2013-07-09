@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
+import org.bahmni.module.bahmnicore.contract.patient.response.PatientConfigResponse;
 import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;
 import org.bahmni.module.bahmnicore.mapper.PatientMapper;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
@@ -12,13 +13,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.openmrs.Patient;
+import org.openmrs.*;
 import org.openmrs.api.APIAuthenticationException;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.db.DAOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -38,17 +45,20 @@ public class BahmniPatientServiceImplTest {
     private HttpServletResponse response;
     @Mock
     private PatientMapper patientMapper;
-    private BahmniPatientServiceImpl bahmniPatientService;
     @Mock
     private BahmniCoreApiProperties properties;
+    @Mock
+    private PersonService personService;
+    @Mock
+    private ConceptService conceptService;
+
+    private BahmniPatientServiceImpl bahmniPatientService;
 
     @Before
     public void setup() {
         initMocks(this);
         when(properties.getExecutionMode()).thenReturn(new ExecutionMode("false"));
-        bahmniPatientService = new BahmniPatientServiceImpl(billingService, patientImageService, properties);
-        bahmniPatientService.setPatientService(patientService);
-        bahmniPatientService.setPatientMapper(patientMapper);
+        bahmniPatientService = new BahmniPatientServiceImpl(billingService, patientImageService, patientService, personService, conceptService, properties, patientMapper);
     }
 
     @Test
@@ -183,4 +193,31 @@ public class BahmniPatientServiceImplTest {
 
         verify(billingService, never()).updateCustomerBalance(anyString(), anyDouble());
     }
+
+    @Test
+    public void shouldGetPatientConfig() throws Exception {
+        List<PersonAttributeType> personAttributeTypes = new ArrayList<>();
+        personAttributeTypes.add(new PersonAttributeType() {{
+            this.setName("class");
+            this.setDescription("Class");
+            this.setFormat("org.openmrs.Concept");
+            this.setSortWeight(10.0);
+            this.setForeignKey(10);
+        }});
+        personAttributeTypes.add(new PersonAttributeType() {{
+            this.setName("primaryContact");
+            this.setDescription("Primary Contact");
+            this.setFormat("java.lang.String");
+            this.setSortWeight(10.0);
+        }});
+
+        when(personService.getAllPersonAttributeTypes()).thenReturn(personAttributeTypes);
+        when(conceptService.getConcept(anyInt())).thenReturn(new Concept());
+
+        PatientConfigResponse config = bahmniPatientService.getConfig();
+        assertEquals(2, config.getPersonAttributeTypes().size());
+        assertEquals("class", config.getPersonAttributeTypes().get(0).getName());
+        assertEquals("primaryContact", config.getPersonAttributeTypes().get(1).getName());
+    }
+
 }

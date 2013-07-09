@@ -1,16 +1,18 @@
-package org.bahmni.module.bahmnicore.contract.encounterdata;
+package org.bahmni.module.bahmnicore.contract.encounter.response;
+
+import org.bahmni.module.bahmnicore.contract.encounter.data.ObservationData;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EncounterObservations {
+public class EncounterObservationResponse {
     private List<ObservationData> observations = new ArrayList<ObservationData>();
 
-    public EncounterObservations(List<ObservationData> observations) {
+    public EncounterObservationResponse(List<ObservationData> observations) {
         this.observations = observations == null ? new ArrayList<ObservationData>() : observations;
     }
 
-    public EncounterObservations() {
+    public EncounterObservationResponse() {
     }
 
     public List<ObservationData> getObservations() {

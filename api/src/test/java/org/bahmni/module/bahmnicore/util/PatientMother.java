@@ -47,10 +47,10 @@ public class PatientMother {
         patient.addIdentifier(new PatientIdentifier(patientIdentifier, null, null));
         patient.addName(nameMother.build());
         patient.setPersonDateCreated(this.dateCreated);
-        patient.setAddresses(new HashSet<PersonAddress>( Arrays.asList(addressMother.build())));
+        patient.setAddresses(new HashSet<>(Arrays.asList(addressMother.build())));
         PersonAttributeType personAttributeType = new PersonAttributeType();
-        personAttributeType.setName("Health Center");
-        patient.setAttributes(new HashSet<PersonAttribute>(Arrays.asList(new PersonAttribute(personAttributeType, "Ganiyari"))));
+        personAttributeType.setName("healthCenter");
+        patient.setAttributes(new HashSet<>(Arrays.asList(new PersonAttribute(personAttributeType, "Ganiyari"))));
         return patient;
     }
 
@@ -67,12 +67,13 @@ public class PatientMother {
                 .add("names", Arrays.asList(nameMother.getSimpleObjectForName()))
                 .add("dateOfRegistration", dateCreatedString)
                 .add("identifier", patientIdentifier);
-        if(balance != null){
+        if (balance != null) {
             simpleObject.add("balance", balance);
         }
 
         return simpleObject;
     }
+
     public BahmniPatient buildBahmniPatient() throws ParseException {
         SimpleObject simpleObject = buildSimpleObject();
         return new BahmniPatient(simpleObject);

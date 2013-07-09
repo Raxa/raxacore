@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class HealthCenterMapper {
 
-    private static String HEALTH_CENTER_ATTRIBUTE_NAME = "Health Center";
+    public static String HEALTH_CENTER_ATTRIBUTE_NAME = "healthCenter";
 
 	public Patient map(Patient person, BahmniPatient bahmniPatient) {
 		LocationService locationService = Context.getLocationService();

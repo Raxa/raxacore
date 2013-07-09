@@ -1,9 +1,11 @@
-package org.bahmni.module.bahmnicore.contract.encounterdata;
+package org.bahmni.module.bahmnicore.contract.encounter.response;
+
+import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class EncounterConfig {
+public class EncounterConfigResponse {
     private Map<String, String> visitTypes = new HashMap<String, String>();
     private Map<String, String> encounterTypes = new HashMap<String, String>();
     private Map<String, ConceptData> conceptData = new HashMap<String, ConceptData>();

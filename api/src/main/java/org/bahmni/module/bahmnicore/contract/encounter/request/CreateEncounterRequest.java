@@ -1,18 +1,20 @@
-package org.bahmni.module.bahmnicore.contract.encounterdata;
+package org.bahmni.module.bahmnicore.contract.encounter.request;
+
+import org.bahmni.module.bahmnicore.contract.encounter.data.ObservationData;
 
 import java.util.List;
 
-public class EncounterData {
+public class CreateEncounterRequest {
     private String patientUUID;
     private String visitTypeUUID; //This can be removed when we implement location based login
     private String encounterTypeUUID;
 
     private List<ObservationData> observations;
 
-    public EncounterData() {
+    public CreateEncounterRequest() {
     }
 
-    public EncounterData(String patientUUID, String visitTypeUUID, String encounterTypeUUID, List<ObservationData> observations) {
+    public CreateEncounterRequest(String patientUUID, String visitTypeUUID, String encounterTypeUUID, List<ObservationData> observations) {
         this.patientUUID = patientUUID;
         this.visitTypeUUID = visitTypeUUID;
         this.encounterTypeUUID = encounterTypeUUID;

@@ -18,11 +18,11 @@ public class HealthCenterMapperTest {
         Patient patient = new Patient();
         PersonAttribute attribute = new PersonAttribute();
         PersonAttributeType personAttributeType = new PersonAttributeType();
-        personAttributeType.setName("Health Center");
+        personAttributeType.setName(HealthCenterMapper.HEALTH_CENTER_ATTRIBUTE_NAME);
         String value = "ganiyari";
         attribute.setValue(value);
         attribute.setAttributeType(personAttributeType);
-        patient.setAttributes(new HashSet<PersonAttribute>(Arrays.asList(attribute)));
+        patient.setAttributes(new HashSet<>(Arrays.asList(attribute)));
 
         BahmniPatient bahmniPatient = new HealthCenterMapper().mapFromPatient(null, patient);
 

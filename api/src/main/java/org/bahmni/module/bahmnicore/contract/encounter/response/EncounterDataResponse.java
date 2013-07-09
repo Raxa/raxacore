@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.contract.encounterdata;
+package org.bahmni.module.bahmnicore.contract.encounter.response;
 
 public class EncounterDataResponse {
     private String visitId;

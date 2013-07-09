@@ -6,6 +6,7 @@ import org.openmrs.Patient;
 import org.openmrs.PersonAttribute;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,14 +16,19 @@ import java.util.Set;
 public class PersonAttributeMapper {
 	
 	private PersonService personService;
-	
-	public Patient map(Patient patient, List<BahmniPersonAttribute> attributes) {
+
+    @Autowired
+    public PersonAttributeMapper(PersonService personService) {
+        this.personService = personService;
+    }
+
+    public Patient map(Patient patient, List<BahmniPersonAttribute> attributes) {
 		for (BahmniPersonAttribute attribute : attributes) {
 			if (attribute.getPersonAttributeUuid() == null || attribute.getValue() == null)
 				continue;
 			
 			PersonAttribute personAttribute = new PersonAttribute();
-			personAttribute.setAttributeType(getPersonService().getPersonAttributeTypeByUuid(
+			personAttribute.setAttributeType(personService.getPersonAttributeTypeByUuid(
 			    attribute.getPersonAttributeUuid().toString()));
 			personAttribute.setValue(attribute.getValue().toString());
 			patient.addAttribute(personAttribute);
@@ -41,13 +47,4 @@ public class PersonAttributeMapper {
         return bahmniPatient;
     }
 
-	public PersonService getPersonService() {
-		if (personService == null)
-			personService = Context.getPersonService();
-		return personService;
-	}
-
-	public void setPersonService(PersonService personService) {
-		this.personService = personService;
-	}
 }

@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.ApplicationError;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
 import org.bahmni.module.bahmnicore.BillingSystemException;
+import org.bahmni.module.bahmnicore.contract.patient.response.PatientConfigResponse;
 import org.bahmni.module.bahmnicore.dao.ActivePatientListDao;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.model.ResultList;
@@ -14,6 +15,7 @@ import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.openmrs.Patient;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
@@ -25,19 +27,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertFalse;
-
 /**
  * Controller for REST web service access to
  * the Drug resource.
  */
 @Controller
-@RequestMapping(value = "/rest/v1/bahmnicore/patient")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/patient")
 public class BahmniPatientController extends BaseRestController {
+
     private static Logger logger = Logger.getLogger(BahmniPatientController.class);
     private BahmniPatientService bahmniPatientService;
     private static final String[] REQUIRED_FIELDS = {"names", "gender"};
-
 
     @Autowired
     private ActivePatientListDao activePatientListDao;
@@ -45,14 +45,19 @@ public class BahmniPatientController extends BaseRestController {
     @Autowired
     public BahmniPatientController(BahmniPatientService bahmniPatientService) {
         this.bahmniPatientService = bahmniPatientService;
+    }
 
+    @RequestMapping(method = RequestMethod.GET, value = "config")
+    @ResponseBody
+    public PatientConfigResponse getConfig() {
+        return bahmniPatientService.getConfig();
     }
 
     @RequestMapping(method = RequestMethod.POST)
     @WSDoc("Save New Patient")
     @ResponseBody
     public Object createNewPatient(@RequestBody SimpleObject post, HttpServletResponse response) {
-        BahmniPatient bahmniPatient = null;
+        BahmniPatient bahmniPatient;
         try {
             validatePost(post);
             bahmniPatient = new BahmniPatient(post);
@@ -68,7 +73,7 @@ public class BahmniPatientController extends BaseRestController {
     @RequestMapping(method = RequestMethod.GET, value = "/active")
     @WSDoc("Get a list of active patients")
     @ResponseBody
-    public Object getActivePatientsList(){
+    public Object getActivePatientsList() {
         return createListResponse(activePatientListDao.getPatientList());
     }
 
@@ -94,7 +99,7 @@ public class BahmniPatientController extends BaseRestController {
     @WSDoc("Update patient image")
     @ResponseBody
     public Object updatePatientImage(@PathVariable("patientUuid") String patientUuid, @RequestBody SimpleObject post,
-                                HttpServletResponse response)
+                                     HttpServletResponse response)
             throws Exception {
         try {
             bahmniPatientService.updateImage(patientUuid, (String) post.get("image"));
@@ -106,13 +111,13 @@ public class BahmniPatientController extends BaseRestController {
     }
 
     private List<SimpleObject> createListResponse(ResultList resultList) {
-        List<SimpleObject> patientList =new ArrayList<SimpleObject>();
+        List<SimpleObject> patientList = new ArrayList<>();
 
-        for(Object patientObject : resultList.getResults()){
+        for (Object patientObject : resultList.getResults()) {
             SimpleObject patient = new SimpleObject();
             Object[] pObject = (Object[]) patientObject;
             patient.add("name", String.format("%s %s", pObject[0], pObject[1]));
-            patient.add("identifier", (String) pObject[2]);
+            patient.add("identifier", pObject[2]);
             patient.add("uuid", String.valueOf(pObject[3]));
             patientList.add(patient);
         }
@@ -133,7 +138,7 @@ public class BahmniPatientController extends BaseRestController {
         } else {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-        if(e instanceof BillingSystemException){
+        if (e instanceof BillingSystemException) {
             BillingSystemException billingSystemException = (BillingSystemException) e;
             obj.add("patient", getPatientAsSimpleObject(billingSystemException.getPatient()));
         }
@@ -150,10 +155,10 @@ public class BahmniPatientController extends BaseRestController {
     }
 
     private boolean validatePost(SimpleObject post) {
-        List<String> missingFields = new ArrayList<String>();
-        for (int i = 0; i < REQUIRED_FIELDS.length; i++) {
-            if (post.get(REQUIRED_FIELDS[i]) == null) {
-                missingFields.add(REQUIRED_FIELDS[i]);
+        List<String> missingFields = new ArrayList<>();
+        for (String REQUIRED_FIELD : REQUIRED_FIELDS) {
+            if (post.get(REQUIRED_FIELD) == null) {
+                missingFields.add(REQUIRED_FIELD);
             }
         }
         if (missingFields.size() > 0)

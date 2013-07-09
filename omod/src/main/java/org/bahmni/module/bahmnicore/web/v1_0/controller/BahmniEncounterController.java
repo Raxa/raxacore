@@ -1,9 +1,14 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.apache.commons.lang.StringUtils;
-import org.bahmni.module.bahmnicore.contract.encounterdata.*;
+import org.bahmni.module.bahmnicore.contract.encounter.data.ObservationData;
+import org.bahmni.module.bahmnicore.contract.encounter.request.CreateEncounterRequest;
+import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
+import org.bahmni.module.bahmnicore.contract.encounter.request.GetObservationsRequest;
+import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterConfigResponse;
+import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterDataResponse;
+import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterObservationResponse;
 import org.joda.time.DateMidnight;
-import org.joda.time.LocalDateTime;
 import org.openmrs.*;
 import org.openmrs.api.*;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -46,13 +51,13 @@ public class BahmniEncounterController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public EncounterObservations get(GetObservationsRequest getObservationsRequest) {
+    public EncounterObservationResponse get(GetObservationsRequest getObservationsRequest) {
         Visit visit = getActiveVisit(getObservationsRequest.getPatientUUID());
         ArrayList<ObservationData> observations = new ArrayList<ObservationData>();
-        if (visit == null) return new EncounterObservations(observations);
+        if (visit == null) return new EncounterObservationResponse(observations);
 
         Encounter encounter = getMatchingEncounter(visit, getObservationsRequest.getEncounterTypeUUID());
-        if (encounter == null) return new EncounterObservations(observations);
+        if (encounter == null) return new EncounterObservationResponse(observations);
 
         Set<Obs> allObs = encounter.getAllObs();
         for (Obs obs : allObs) {
@@ -61,66 +66,66 @@ public class BahmniEncounterController extends BaseRestController {
             Object value = datatype.isNumeric() ? obs.getValueNumeric() : obs.getValueAsString(Locale.getDefault());
             observations.add(new ObservationData(concept.getUuid(), concept.getName().getName(), value));
         }
-        return new EncounterObservations(observations);
+        return new EncounterObservationResponse(observations);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "config")
     @ResponseBody
-    public EncounterConfig getConfig(String callerContext) {
-        EncounterConfig encounterConfig = new EncounterConfig();
+    public EncounterConfigResponse getConfig(String callerContext) {
+        EncounterConfigResponse encounterConfigResponse = new EncounterConfigResponse();
         List<VisitType> visitTypes = visitService.getAllVisitTypes();
         for (VisitType visitType : visitTypes) {
-            encounterConfig.addVisitType(visitType.getName(), visitType.getUuid());
+            encounterConfigResponse.addVisitType(visitType.getName(), visitType.getUuid());
         }
         List<EncounterType> allEncounterTypes = encounterService.getAllEncounterTypes(false);
         for (EncounterType encounterType : allEncounterTypes) {
-            encounterConfig.addEncounterType(encounterType.getName(), encounterType.getUuid());
+            encounterConfigResponse.addEncounterType(encounterType.getName(), encounterType.getUuid());
         }
         Concept conceptSetConcept = conceptService.getConcept(callerContext);
         if (conceptSetConcept != null) {
             List<Concept> conceptsByConceptSet = conceptService.getConceptsByConceptSet(conceptSetConcept);
             for (Concept concept : conceptsByConceptSet) {
                 ConceptData conceptData = new ConceptData(concept.getUuid());
-                encounterConfig.addConcept(concept.getName().getName(), conceptData);
+                encounterConfigResponse.addConcept(concept.getName().getName(), conceptData);
             }
         }
-        return encounterConfig;
+        return encounterConfigResponse;
     }
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public EncounterDataResponse create(@RequestBody EncounterData encounterData)
+    public EncounterDataResponse create(@RequestBody CreateEncounterRequest createEncounterRequest)
             throws Exception {
-        Patient patient = patientService.getPatientByUuid(encounterData.getPatientUUID());
-        Visit visit = getActiveVisit(encounterData.getPatientUUID());
+        Patient patient = patientService.getPatientByUuid(createEncounterRequest.getPatientUUID());
+        Visit visit = getActiveVisit(createEncounterRequest.getPatientUUID());
         Date encounterDatetime = new Date();
         if (visit == null) {
             visit = new Visit();
             visit.setPatient(patient);
-            visit.setVisitType(visitService.getVisitTypeByUuid(encounterData.getVisitTypeUUID()));
+            visit.setVisitType(visitService.getVisitTypeByUuid(createEncounterRequest.getVisitTypeUUID()));
             visit.setStartDatetime(encounterDatetime);
             visit.setEncounters(new HashSet<Encounter>());
             visit.setUuid(UUID.randomUUID().toString());
         }
-        Encounter encounter = getMatchingEncounter(visit, encounterData.getEncounterTypeUUID());
+        Encounter encounter = getMatchingEncounter(visit, createEncounterRequest.getEncounterTypeUUID());
         if (encounter == null) {
             encounter = new Encounter();
             encounter.setPatient(patient);
-            encounter.setEncounterType(encounterService.getEncounterTypeByUuid(encounterData.getEncounterTypeUUID()));
+            encounter.setEncounterType(encounterService.getEncounterTypeByUuid(createEncounterRequest.getEncounterTypeUUID()));
             encounter.setEncounterDatetime(encounterDatetime);
             encounter.setUuid(UUID.randomUUID().toString());
             encounter.setObs(new HashSet<Obs>());
             //should use addEncounter method here, which seems to be have been added later
             visit.getEncounters().add(encounter);
         }
-        addOrOverwriteObservations(encounterData, encounter, patient, encounterDatetime);
+        addOrOverwriteObservations(createEncounterRequest, encounter, patient, encounterDatetime);
         visitService.saveVisit(visit);
         return new EncounterDataResponse(visit.getUuid(), encounter.getUuid(), "");
     }
 
-    private void addOrOverwriteObservations(EncounterData encounterData, Encounter encounter, Patient patient, Date encounterDateTime) throws ParseException {
+    private void addOrOverwriteObservations(CreateEncounterRequest createEncounterRequest, Encounter encounter, Patient patient, Date encounterDateTime) throws ParseException {
         Set<Obs> existingObservations = encounter.getAllObs();
-        for (ObservationData observationData : encounterData.getObservations()) {
+        for (ObservationData observationData : createEncounterRequest.getObservations()) {
             Obs observation = getMatchingObservation(existingObservations, observationData.getConceptUUID());
             Object value = observationData.getValue();
             boolean observationValueSpecified = value != null && StringUtils.isNotEmpty(value.toString());

@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.contract.encounterdata;
+package org.bahmni.module.bahmnicore.contract.encounter.data;
 
 public class ConceptData {
     private String uuid;

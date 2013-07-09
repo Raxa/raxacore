@@ -1,8 +1,8 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import junit.framework.Assert;
-import org.bahmni.module.bahmnicore.contract.encounterdata.EncounterData;
-import org.bahmni.module.bahmnicore.contract.encounterdata.ObservationData;
+import org.bahmni.module.bahmnicore.contract.encounter.request.CreateEncounterRequest;
+import org.bahmni.module.bahmnicore.contract.encounter.data.ObservationData;
 import org.joda.time.DateMidnight;
 import org.joda.time.LocalDateTime;
 import org.junit.Test;
@@ -63,8 +63,8 @@ public class BahmniEncounterControllerTest {
         ObservationData heightObservationData = new ObservationData(conceptHeightUUID, "HEIGHT", null);
         ObservationData weightObservationData = new ObservationData(concepWeightUUID, "WEIGHT", 50);
         ObservationData regFeeObservationData = new ObservationData(conceptRegFeeUUID, "REG FEE", 5);
-        EncounterData encounterData = new EncounterData(patientUUID, "2", encounterTypeUUID, Arrays.asList(heightObservationData, weightObservationData, regFeeObservationData));
-        bahmniEncounterController.create(encounterData);
+        CreateEncounterRequest createEncounterRequest = new CreateEncounterRequest(patientUUID, "2", encounterTypeUUID, Arrays.asList(heightObservationData, weightObservationData, regFeeObservationData));
+        bahmniEncounterController.create(createEncounterRequest);
 
         Assert.assertEquals(5.0, regFeeObs.getValueNumeric());
         Assert.assertEquals(2, encounter.getAllObs().size());

@@ -8,6 +8,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,16 +17,20 @@ import java.util.List;
 public class PatientIdentifierMapper {
 	
 	private PatientService patientService;
-	
-	public Patient map(BahmniPatient bahmniPatient, Patient patient) {
+
+    @Autowired
+    public PatientIdentifierMapper(PatientService patientService) {
+        this.patientService = patientService;
+    }
+
+    public Patient map(BahmniPatient bahmniPatient, Patient patient) {
 		PatientIdentifier patientIdentifier;
 		String existingIdentifierValue = bahmniPatient.getIdentifier();
 		
 		if (existingIdentifierValue == null || existingIdentifierValue.trim().isEmpty()) {
 			patientIdentifier = generateIdentifier(bahmniPatient.getCenterName());
 		} else {
-			PatientService ps = getPatientService();
-			PatientIdentifierType jss = ps.getPatientIdentifierTypeByName("JSS");
+			PatientIdentifierType jss = patientService.getPatientIdentifierTypeByName("JSS");
 			patientIdentifier = new PatientIdentifier(existingIdentifierValue, jss, null);
 		}
 		
@@ -41,23 +46,12 @@ public class PatientIdentifierMapper {
         bahmniPatient.setIdentifier(patient.getPatientIdentifier().getIdentifier());
         return bahmniPatient;
     }
-
-    public PatientService getPatientService() {
-		if (patientService == null)
-			patientService = Context.getPatientService();
-		return patientService;
-	}
-	
-	public void setPatientService(PatientService patientService) {
-		this.patientService = patientService;
-	}
 	
 	private PatientIdentifier generateIdentifier(String centerName) {
 		IdentifierSourceService identifierSourceService = Context.getService(IdentifierSourceService.class);
 		List<IdentifierSource> allIdentifierSources = identifierSourceService.getAllIdentifierSources(false);
-		String center = centerName;
-		for (IdentifierSource identifierSource : allIdentifierSources) {
-			if (identifierSource.getName().equals(center)) {
+        for (IdentifierSource identifierSource : allIdentifierSources) {
+			if (identifierSource.getName().equals(centerName)) {
 				String identifier = identifierSourceService.generateIdentifier(identifierSource, "Bahmni Registration App");
 				PatientIdentifierType identifierType = identifierSource.getIdentifierType();
 				return new PatientIdentifier(identifier, identifierType, null);
