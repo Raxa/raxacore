@@ -4,12 +4,12 @@ import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.bahmni.address.sanitiser.SanitizerPersonAddress;
 import org.bahmni.datamigration.*;
 import org.bahmni.datamigration.request.patient.*;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;
 
 import java.io.*;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.bahmni.jss.registration.RegistrationFields.sentenceCase;
@@ -68,7 +68,10 @@ public class AllRegistrations implements PatientEnumerator {
             patientRequest.setGender(patientRow[5]);
             String birthdate = RegistrationFields.getDate(patientRow[6]);
             patientRequest.setBirthdate(birthdate == null ? RegistrationFields.UnknownDateOfBirthAsString : birthdate);
-            patientRequest.setAge(RegistrationFields.getAge(patientRow[7]));
+
+            LinkedHashMap<Object, Object> ageMap = new LinkedHashMap<>();
+            ageMap.put("years", RegistrationFields.getAge(patientRow[7]));
+            patientRequest.setAge(ageMap);
 
             PatientAddress patientAddress = new PatientAddress();
             patientRequest.addPatientAddress(patientAddress);
