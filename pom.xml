@@ -30,7 +30,7 @@
 	    <snapshotRepository>
 	        <id>bahmni-artifactory</id>
 	        <name>bahmni-artifactory-snapshots</name>
-	        <url>http://172.18.2.1:8081/artifactory/libs-snapshot-local</url>
+	        <url>https://bahmnirepo.thoughtworks.com/artifactory/libs-snapshot-local</url>
 	    </snapshotRepository>
 	</distributionManagement>
 
@@ -228,7 +228,7 @@
 		<repository>
 	        <id>bahmni-artifactory</id>
 	        <name>bahmni-artifactory-snapshots</name>
-	        <url>http://172.18.2.1:8081/artifactory/libs-snapshot-local</url>
+	        <url>https://bahmnirepo.thoughtworks.com/artifactory/libs-snapshot-local</url>
 	    </repository>	    
     </repositories>
     <pluginRepositories>
