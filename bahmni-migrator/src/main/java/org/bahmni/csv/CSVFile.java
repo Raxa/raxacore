@@ -1,6 +1,7 @@
 package org.bahmni.csv;
 
 import au.com.bytecode.opencsv.CSVReader;
+import org.bahmni.csv.exception.MigrationException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -24,16 +25,16 @@ public class CSVFile<T extends CSVEntity> {
 
     public CSVEntity readEntity() throws IOException, InstantiationException, IllegalAccessException {
         if (csvReader == null)
-            throw new RuntimeException("Please open the CSVFile before reading it");
+            throw new MigrationException("Please open the CSVFile before reading it");
         String[] aRow = csvReader.readNext();
         return tempCSVRow.getEntity(aRow);
     }
 
     public void close() {
         try {
-            csvReader.close();
+            if (csvReader != null) csvReader.close();
         } catch (IOException e) {
-            throw new RuntimeException("Could not close file. " + e.getMessage());
+            throw new MigrationException("Could not close file. " + e.getMessage(), e);
         }
     }
 
@@ -49,5 +50,13 @@ public class CSVFile<T extends CSVEntity> {
 
     public String[] getHeaderRow() {
         return headerNames;
+    }
+
+    public File getAbsoluteFile() {
+        return fileToRead.getAbsoluteFile();
+    }
+
+    public String getFileName() {
+        return fileToRead.getName();
     }
 }

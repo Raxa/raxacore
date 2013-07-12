@@ -58,19 +58,28 @@ public class MigrateResult<T extends CSVEntity> {
     }
 
     public boolean isMigrationSuccessful() {
-        return errorRows.isEmpty();
+        return !validationFailed && errorRows.isEmpty();
     }
 
-    public void addValidationError(CSVEntity csvEntity, ValidateRowResult<T> validateRowResult) {
+    public void addValidatedRecord(CSVEntity csvEntity, ValidateRowResult<T> validateRowResult) {
         if (validateRowResult.isSuccessful()) {
             validationRows.add(csvEntity.getOriginalRow().toArray(new String[] {}));
             return;
         }
         validationFailed = true;
-        validationRows.add(csvEntity.addErrorColumn(validateRowResult.getErrorMessage()));
+        validationRows.add(validateRowResult.getRowWithErrorColumn());
     }
 
     public boolean isValidationSuccessful() {
         return !validationFailed;
+    }
+
+    int numberOfValidatedRecords() {
+        return validationRows.size();
+    }
+
+    public int numberOfFailedRecords() {
+        if (validationFailed) return validationRows.size();
+        return errorRows.size();
     }
 }

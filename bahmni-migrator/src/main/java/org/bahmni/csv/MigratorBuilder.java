@@ -31,6 +31,6 @@ public class MigratorBuilder<T extends CSVEntity> {
     }
 
     public Migrator<T> build() {
-        return new Migrator<T>(entityClass, csvFileToRead, entityPersister, logFileName);
+        return new Migrator<T>(new CSVFile(csvFileToRead, entityClass), entityPersister, logFileName);
     }
 }

@@ -1,48 +1,50 @@
 package org.bahmni.csv;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.bahmni.csv.exception.MigrationException;
+
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Arrays;
 
 // Assumption - if you use multithreading, there should be no dependency between data
 public class Migrator<T extends CSVEntity> {
 
-    private Class<T> entityClass;
-    private final File csvFileToRead; // TODO : Mujir - this should perhaps be a CSVFile???
+    private CSVFile<T> csvFile;
     private final EntityPersister entityPersister;
     private final String logFileName;
 
-    public Migrator(Class<T> entityClass, File csvFileToRead, EntityPersister entityPersister, String logFileName) {
-        this.entityClass = entityClass;
-        this.csvFileToRead = csvFileToRead;
+    private static Logger logger = Logger.getLogger(Migrator.class);
+
+    public Migrator(CSVFile<T> csvFile, EntityPersister entityPersister, String logFileName) {
+        this.csvFile = csvFile;
         this.entityPersister = entityPersister;
         this.logFileName = logFileName;
+        this.csvFile = csvFile;
     }
 
     public MigrateResult<T> migrate() {
+        logger.info("Starting migration using file-" + csvFile.getAbsoluteFile());
         try {
             MigrateResult<T> validationResult = validationStage();
             if (!validationResult.isValidationSuccessful()) {
                 return validationResult;
             }
             return migrationStage();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("File not found");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException("Can't instantiate entity. " + e);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error(getStackTrace(e));
+            throw new MigrationException(getStackTrace(e), e);
         }
-        return null;
     }
 
     private MigrateResult<T> validationStage() throws IOException, InstantiationException, IllegalAccessException {
-        MigrateResult<T> finalValidateResult = new MigrateResult<T>(csvFileToRead.getName());
-        CSVFile csvFile = null;
+        logger.info("Starting Validation Stage");
+        MigrateResult<T> finalValidateResult = new MigrateResult<>(csvFile.getFileName());
+
         try {
-            csvFile = new CSVFile(csvFileToRead, entityClass);
             csvFile.open();
             finalValidateResult.addHeaderRow(csvFile.getHeaderRow());
             CSVEntity csvEntity;
@@ -50,35 +52,53 @@ public class Migrator<T extends CSVEntity> {
 
                 // TODO : Mujir - spawn multiple threads here to persist a batch of records
                 ValidateRowResult<T> rowResult = entityPersister.validate(csvEntity);
-                finalValidateResult.addValidationError(csvEntity, rowResult);
+                if (!rowResult.isSuccessful()) {
+                    logger.error("Failed migrating record. Row Details - " +
+                            StringUtils.join(Arrays.asList(rowResult.getRowWithErrorColumn()), ","));
+                }
+
+                finalValidateResult.addValidatedRecord(csvEntity, rowResult);
             }
 
         } finally {
-            if (csvFile != null) csvFile.close();
+            logger.warn("Validated total of " + finalValidateResult.numberOfValidatedRecords() + " records.");
+            csvFile.close();
         }
         return finalValidateResult;
     }
 
     private MigrateResult<T> migrationStage() throws IOException, InstantiationException, IllegalAccessException {
-        MigrateResult<T> finalMigrateResult = new MigrateResult<T>(csvFileToRead.getName());
+        logger.info("Starting Migration Stage");
+        MigrateResult<T> finalMigrateResult = new MigrateResult<>(csvFile.getFileName());
 
-        CSVFile csvFile = null;
+        int countOfSuccessfulMigration = 0;
         try {
-            csvFile = new CSVFile(csvFileToRead, entityClass);
             csvFile.open();
             finalMigrateResult.addHeaderRow(csvFile.getHeaderRow());
             CSVEntity csvEntity;
             while ((csvEntity = csvFile.readEntity()) != null) {
                 MigrateRowResult<T> rowResult = entityPersister.persist(csvEntity);
                 if (!rowResult.isSuccessful()) {
+                    logger.error("Failed migrating record. Row Details - " +
+                            StringUtils.join(Arrays.asList(rowResult.getRowWithErrorColumn()), ","));
                     finalMigrateResult.addMigrationError(rowResult);
+                } else {
+                    countOfSuccessfulMigration++;
                 }
             }
 
         } finally {
-            if (csvFile != null) csvFile.close();
+            logger.warn("Failed migration for " + finalMigrateResult.numberOfFailedRecords() + " records. " + countOfSuccessfulMigration + " records were successfully migrated.");
+            csvFile.close();
         }
         return finalMigrateResult;
+    }
+
+    private static String getStackTrace(Throwable aThrowable) {
+        final Writer result = new StringWriter();
+        final PrintWriter printWriter = new PrintWriter(result);
+        aThrowable.printStackTrace(printWriter);
+        return result.toString();
     }
 
 }

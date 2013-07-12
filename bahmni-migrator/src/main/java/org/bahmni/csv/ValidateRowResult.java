@@ -20,4 +20,11 @@ public class ValidateRowResult<T extends CSVEntity> {
     public String getErrorMessage() {
         return errorMessage;
     }
+
+    public String[] getRowWithErrorColumn() {
+        if (csvEntity == null)
+            return new String[] {};
+
+        return csvEntity.getRowWithErrorColumn(getErrorMessage());
+    }
 }

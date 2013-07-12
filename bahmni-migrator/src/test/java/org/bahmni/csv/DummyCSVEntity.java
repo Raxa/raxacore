@@ -8,6 +8,14 @@ public class DummyCSVEntity extends CSVEntity {
 
     private Object something;
 
+    public DummyCSVEntity() {
+    }
+
+    public DummyCSVEntity(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public String getId() {
         return id;
     }

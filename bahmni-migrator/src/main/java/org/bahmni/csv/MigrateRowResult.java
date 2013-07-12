@@ -1,8 +1,8 @@
 package org.bahmni.csv;
 
-import org.bahmni.csv.CSVEntity;
-
 public class MigrateRowResult<T extends CSVEntity> {
+    public static final MigrateRowResult SUCCESS = new MigrateRowResult();
+
     private T csvEntity;
     private String errorMessage;
 
@@ -11,7 +11,7 @@ public class MigrateRowResult<T extends CSVEntity> {
         this.errorMessage = errorMessage;
     }
 
-    public MigrateRowResult() {
+    private MigrateRowResult() {
     }
 
     public boolean isSuccessful() {
@@ -19,6 +19,9 @@ public class MigrateRowResult<T extends CSVEntity> {
     }
 
     public String[] getRowWithErrorColumn() {
-        return csvEntity.addErrorColumn(errorMessage);
+        if (csvEntity == null)
+            return new String[] {};
+
+        return csvEntity.getRowWithErrorColumn(errorMessage);
     }
 }

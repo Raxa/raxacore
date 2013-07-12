@@ -48,13 +48,13 @@ public class PatientPersister implements EntityPersister<Patient> {
     }
 
     @Override
-    public MigrateRowResult persist(Patient patient) {
-        return run(patient);
+    public MigrateRowResult persist(Patient csvEntity) {
+        return run(csvEntity);
     }
 
     @Override
     public ValidateRowResult<Patient> validate(Patient patient) {
-        return new ValidateRowResult(patient, "validation failed");
+        return new ValidateRowResult(patient);
     }
 
     public MigrateRowResult run(Patient patient) {
@@ -79,17 +79,16 @@ public class PatientPersister implements EntityPersister<Patient> {
             log.info(String.format("%d Failed to create %s", i, patientRequest.getIdentifier()));
             log.info("Patient request: " + jsonRequest);
             log.error("Patient create response: " + serverErrorException.getResponseBodyAsString());
-            return new MigrateRowResult(patient, "what should the message be?");
-
+            return new MigrateRowResult(patient, serverErrorException.getResponseBodyAsString());
         } catch (Exception e) {
             log.info(String.format("%d Failed to create", i));
             log.info("Patient request: " + jsonRequest);
             log.error("Failed to process a patient", e);
             log.info("Patient request: " + jsonRequest);
-            return new MigrateRowResult(patient, "what should the message be?");
+            return new MigrateRowResult(patient, e.getMessage());
         }
 
-        return new MigrateRowResult();
+        return MigrateRowResult.SUCCESS;
     }
 
     private synchronized int incrementCounter() {

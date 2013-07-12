@@ -6,15 +6,17 @@ import java.util.List;
 
 // All fields have to be String
 public abstract class CSVEntity {
-    private List<String> originalRow = new ArrayList<String>();
+    private List<String> originalRow = new ArrayList<>();
 
-    public String[] addErrorColumn(String errorMessage) {
-        originalRow.add(errorMessage);
+    public String[] getRowWithErrorColumn(String errorMessage) {
+        if (!originalRow.contains(errorMessage))
+            originalRow.add(errorMessage);
+
         return originalRow.toArray(new String[]{});
     }
 
     public void originalRow(String[] aRow) {
-        List<String> originalRow = new ArrayList<String>(Arrays.asList(aRow));
+        List<String> originalRow = new ArrayList<>(Arrays.asList(aRow));
         this.originalRow = originalRow;
     }
 

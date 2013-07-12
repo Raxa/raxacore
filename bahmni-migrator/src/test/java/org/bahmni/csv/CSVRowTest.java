@@ -8,7 +8,8 @@ public class CSVRowTest {
     public void parse_a_row() throws InstantiationException, IllegalAccessException {
         String[] headerRows = new String[]{"id", "name"};
         String[] aRow = {"1", "bahmniUser"};
-        DummyCSVEntity aDummyEntity = new CSVRow<>(new CSVColumns(headerRows), DummyCSVEntity.class).getEntity(aRow);
+        CSVRow<DummyCSVEntity> entityCSVRow = new CSVRow<>(new CSVColumns(headerRows), DummyCSVEntity.class);
+        DummyCSVEntity aDummyEntity = entityCSVRow.getEntity(aRow);
         Assert.assertEquals("bahmniUser", aDummyEntity.getName());
         Assert.assertEquals("1", aDummyEntity.getId());
     }
