@@ -39,7 +39,7 @@ public class Migrator<T extends CSVEntity> {
     }
 
     private MigrateResult<T> validationStage() throws IOException, InstantiationException, IllegalAccessException {
-        MigrateResult<T> finalValidateResult = new MigrateResult<T>();
+        MigrateResult<T> finalValidateResult = new MigrateResult<T>(csvFileToRead.getName());
         CSVFile csvFile = null;
         try {
             csvFile = new CSVFile(csvFileToRead, entityClass);
@@ -60,7 +60,7 @@ public class Migrator<T extends CSVEntity> {
     }
 
     private MigrateResult<T> migrationStage() throws IOException, InstantiationException, IllegalAccessException {
-        MigrateResult<T> finalMigrateResult = new MigrateResult<T>();
+        MigrateResult<T> finalMigrateResult = new MigrateResult<T>(csvFileToRead.getName());
 
         CSVFile csvFile = null;
         try {

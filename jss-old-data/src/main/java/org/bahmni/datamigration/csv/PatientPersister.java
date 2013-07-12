@@ -54,7 +54,7 @@ public class PatientPersister implements EntityPersister<Patient> {
 
     @Override
     public ValidateRowResult<Patient> validate(Patient patient) {
-        return new ValidateRowResult(patient);
+        return new ValidateRowResult(patient, "validation failed");
     }
 
     public MigrateRowResult run(Patient patient) {

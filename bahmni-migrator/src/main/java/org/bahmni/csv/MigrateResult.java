@@ -14,22 +14,43 @@ public class MigrateResult<T extends CSVEntity> {
 
     private String[] headerRow;
     private boolean validationFailed;
+    private String fileName;
+
+    public MigrateResult(String fileName) {
+        this.fileName = fileName;
+    }
 
     public void addHeaderRow(String[] headerRow) {
         this.headerRow = headerRow;
     }
 
-    public void saveErrors(String fileLocation, String fileName) throws IOException {
+    public void saveErrors(String fileLocation) throws IOException {
+        if (!isValidationSuccessful()) {
+            saveErrors(fileLocation, validationRows);
+        }
+        if (!isMigrationSuccessful()) {
+            saveErrors(fileLocation, errorRows);
+        }
+    }
+
+    public void saveErrors(String fileLocation,  List<String[]> rowsToWrite) throws IOException {
         CSVWriter csvWriter = null;
         try {
-            csvWriter = new CSVWriter(new FileWriter(new File(fileLocation, fileName)));
+            csvWriter = new CSVWriter(new FileWriter(new File(fileLocation, errorFileName(fileName))));
             csvWriter.writeNext(headerRow);
-            for (String[] errorRow : errorRows) {
-                csvWriter.writeNext(errorRow);
+            for (String[] rowToWrite : rowsToWrite) {
+                csvWriter.writeNext(rowToWrite);
             }
         } finally {
             if (csvWriter != null) csvWriter.close();
         }
+    }
+
+    private String errorFileName(String fileName) {
+        String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
+        String fileNameAddition = validationFailed ? ".val.err" : ".err";
+        String fileExtension = fileName.substring(fileName.lastIndexOf("."));
+        return fileNameWithoutExtension + fileNameAddition + fileExtension;
     }
 
     public void addMigrationError(MigrateRowResult<T> rowMigrateResult) {

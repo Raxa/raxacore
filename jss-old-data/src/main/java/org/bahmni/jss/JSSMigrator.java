@@ -87,11 +87,6 @@ public class JSSMigrator {
                                                         .logAt("migrator.log")
                                                         .build();
         MigrateResult migrateResult = migrator.migrate();
-        if (!migrateResult.isValidationSuccessful()) {
-             migrateResult.saveErrors(csvLocation, "personWithValidationErrors.csv");
-        }
-        if (!migrateResult.isMigrationSuccessful()) {
-            migrateResult.saveErrors(csvLocation, "personWithErrors.csv");
-        }
+        migrateResult.saveErrors(csvLocation);
     }
 }
