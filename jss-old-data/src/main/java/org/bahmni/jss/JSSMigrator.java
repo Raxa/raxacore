@@ -1,9 +1,12 @@
 package org.bahmni.jss;
 
 import org.apache.log4j.Logger;
+import org.bahmni.csv.MigrateResult;
+import org.bahmni.csv.MigratorBuilder;
 import org.bahmni.datamigration.*;
+import org.bahmni.datamigration.csv.Patient;
+import org.bahmni.datamigration.csv.PatientPersister;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;
-import org.bahmni.jss.registration.AllRegistrations;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +38,7 @@ public class JSSMigrator {
         String databaseUserId = System.getProperty("database.user.id", "root");
         String databasePassword = System.getProperty("database.user.password", "password");
         String openmrsUserId = System.getProperty("openmrs.user.id", "admin");
-        String openmrsUserPassword = System.getProperty("openmrs.user.password", "test");
+        String openmrsUserPassword = System.getProperty("openmrs.user.password", "Admin123");
         logPropertyUsage(openMRSHostName, databaseUserId, databasePassword, openmrsUserId, openmrsUserPassword);
 
         OpenMRSRESTConnection openMRSRESTConnection = new OpenMRSRESTConnection(openMRSHostName, openmrsUserId, openmrsUserPassword);
@@ -44,17 +47,9 @@ public class JSSMigrator {
         CorrectedTehsils correctedTehsils = new CorrectedTehsils(csvLocation, "CorrectedTehsils.csv");
         AddressService addressService = new AddressService(masterTehsils, ambiguousTehsils, correctedTehsils);
 
-//        Class<Driver> variableToLoadDriver = Driver.class;
-//        String url = String.format("jdbc:mysql://%s:3306/openmrs", openMRSHostName);
-//        Connection connection = DriverManager.getConnection(url, databaseUserId, databasePassword);
-
-//        try {
         JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_District.csv", "LU_State.csv",
                 "LU_Class.csv", "LU_Tahsil.csv", openMRSRESTConnection, noOfThreads);
-        jssMigrator.migratePatient(registrationCSVFileName, addressService);
-//        } finally {
-//            connection.close();
-//        }
+        jssMigrator.migratePatient(registrationCSVFileName, addressService, openMRSRESTConnection);
     }
 
     private static void logPropertyUsage(String openMRSHostName, String databaseUserId, String databaseUserPassword, String openmrsUserId, String openmrsPassword) {
@@ -81,13 +76,22 @@ public class JSSMigrator {
         migrator = new Migrator(openMRSRESTConnection,noOfThreads);
     }
 
-    public void migratePatient(String csvFileName, AddressService addressService) throws IOException {
+    public void migratePatient(String csvFileName, AddressService addressService, OpenMRSRESTConnection openMRSRESTConnection) throws IOException {
         AllPatientAttributeTypes allPatientAttributeTypes = migrator.getAllPatientAttributeTypes();
-        AllRegistrations allRegistrations = new AllRegistrations(csvLocation, csvFileName, allPatientAttributeTypes, lookupValuesMap, addressService);
-        try {
-            migrator.migratePatient(allRegistrations);
-        } finally {
-            allRegistrations.done();
+
+        PatientPersister patientPersister = new PatientPersister(lookupValuesMap, addressService,
+                                                        allPatientAttributeTypes, openMRSRESTConnection, migrator.getSessionId());
+        org.bahmni.csv.Migrator migrator = new MigratorBuilder(Patient.class)
+                                                        .readFrom(csvLocation, csvFileName)
+                                                        .persistWith(patientPersister)
+                                                        .logAt("migrator.log")
+                                                        .build();
+        MigrateResult migrateResult = migrator.migrate();
+        if (!migrateResult.isValidationSuccessful()) {
+             migrateResult.saveErrors(csvLocation, "personWithValidationErrors.csv");
+        }
+        if (!migrateResult.isMigrationSuccessful()) {
+            migrateResult.saveErrors(csvLocation, "personWithErrors.csv");
         }
     }
 }

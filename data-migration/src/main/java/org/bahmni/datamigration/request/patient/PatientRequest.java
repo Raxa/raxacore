@@ -1,6 +1,7 @@
 package org.bahmni.datamigration.request.patient;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.bahmni.datamigration.DataScrub.scrubData;
@@ -35,7 +36,7 @@ import static org.bahmni.datamigration.DataScrub.scrubData;
 
 public class PatientRequest {
     private List<Name> names = new ArrayList<Name>();
-    private Integer age;
+    private LinkedHashMap age;
     private String birthdate;
     private String gender;
     private String identifier;
@@ -45,7 +46,7 @@ public class PatientRequest {
     private String dateOfRegistration;
     private String balance;
 
-    public void setAge(Integer age) {
+    public void setAge(LinkedHashMap<Object, Object> age) {
         this.age = age;
     }
 
@@ -84,7 +85,7 @@ public class PatientRequest {
         this.names = names;
     }
 
-    public Integer getAge() {
+    public LinkedHashMap getAge() {
         return age;
     }
 

@@ -22,6 +22,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO : Mujir - some part of this class is not needed. Only things needed are getAllPatientAttributeTypes() and getSessionId(). VERIFY this!
+// rename this class to a something more appropriate like RestService, as it authenticated and talks to the rest services
 public class Migrator {
     private RestTemplate restTemplate = new RestTemplate();
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -110,5 +112,9 @@ public class Migrator {
         for (PatientData anErrorList : errorList) {
             patientEnumerator.failedPatient(anErrorList);
         }
+    }
+
+    public String getSessionId() {
+        return sessionId;
     }
 }

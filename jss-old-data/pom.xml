@@ -18,6 +18,11 @@
         </dependency>
         <dependency>
             <groupId>org.bahmni.module</groupId>
+            <artifactId>bahmni-migrator</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
             <artifactId>address-sanitiser</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

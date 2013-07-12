@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO : Mujir - this class should go away
 public class ParallelMigrator extends Thread{
 
     private RestTemplate restTemplate = new RestTemplate();
