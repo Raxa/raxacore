@@ -15,14 +15,12 @@ public class Migrator<T extends CSVEntity> {
 
     private CSVFile<T> csvFile;
     private final EntityPersister entityPersister;
-    private final String logFileName;
 
     private static Logger logger = Logger.getLogger(Migrator.class);
 
-    public Migrator(CSVFile<T> csvFile, EntityPersister entityPersister, String logFileName) {
+    public Migrator(CSVFile<T> csvFile, EntityPersister entityPersister) {
         this.csvFile = csvFile;
         this.entityPersister = entityPersister;
-        this.logFileName = logFileName;
         this.csvFile = csvFile;
     }
 

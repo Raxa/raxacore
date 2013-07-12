@@ -2,10 +2,9 @@ package org.bahmni.csv;
 
 import java.lang.reflect.Field;
 
-public class CSVRow<T extends CSVEntity> {
-    private CSVColumns columns;
-    private Class<T> entityClass;
-    private Object id;
+class CSVRow<T extends CSVEntity> {
+    private final CSVColumns columns;
+    private final Class<T> entityClass;
 
     public CSVRow(CSVColumns columns, Class<T> entityClass) {
         this.columns = columns;

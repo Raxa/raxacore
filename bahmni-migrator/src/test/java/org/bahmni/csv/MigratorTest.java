@@ -2,7 +2,6 @@ package org.bahmni.csv;
 
 import junit.framework.Assert;
 import org.bahmni.csv.exception.MigrationException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +10,6 @@ import java.io.IOException;
 import static org.mockito.Mockito.*;
 
 public class MigratorTest {
-
     private CSVFile mockFile;
 
     @Before
@@ -19,10 +17,6 @@ public class MigratorTest {
         mockFile = mock(CSVFile.class);
         doNothing().when(mockFile).open();
         doNothing().when(mockFile).close();
-    }
-
-    @After
-    public void teardown() throws IOException {
     }
 
     @Test
@@ -33,7 +27,7 @@ public class MigratorTest {
                 .thenReturn(new DummyCSVEntity("2", "dummyEntity2"))
                 .thenReturn(null);
 
-        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<DummyCSVEntity>(mockFile, new AllPassEnitityPersister(), "logFile");
+        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<DummyCSVEntity>(mockFile, new AllPassEnitityPersister());
 
         MigrateResult<DummyCSVEntity> migrateStatus = dummyCSVEntityMigrator.migrate();
 
@@ -53,7 +47,7 @@ public class MigratorTest {
                 .thenReturn(new DummyCSVEntity("2", "dummyEntity2"))
                 .thenReturn(null);
 
-        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<DummyCSVEntity>(mockFile, new ValidationFailedEnitityPersister(), "logFile");
+        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<DummyCSVEntity>(mockFile, new ValidationFailedEnitityPersister());
 
         MigrateResult<DummyCSVEntity> migrateStatus = dummyCSVEntityMigrator.migrate();
         Assert.assertFalse("should return false as validation failed", migrateStatus.isValidationSuccessful());
@@ -76,7 +70,7 @@ public class MigratorTest {
                 .thenReturn(new DummyCSVEntity("2", "dummyEntity2"))
                 .thenReturn(null);
 
-        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<DummyCSVEntity>(mockFile, new MigrationFailedEnitityPersister(), "logFile");
+        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<DummyCSVEntity>(mockFile, new MigrationFailedEnitityPersister());
 
         MigrateResult<DummyCSVEntity> migrateStatus = dummyCSVEntityMigrator.migrate();
         Assert.assertTrue("should return true as validation passed", migrateStatus.isValidationSuccessful());
@@ -90,7 +84,7 @@ public class MigratorTest {
     public void any_exception_during_migration_throws_MigrationException() throws IOException {
         doThrow(new IOException("any exception")).when(mockFile).open();
 
-        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<DummyCSVEntity>(mockFile, new AllPassEnitityPersister(), "logFile");
+        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<DummyCSVEntity>(mockFile, new AllPassEnitityPersister());
         dummyCSVEntityMigrator.migrate();
 
         verify(mockFile, times(1)).open(); // for validation

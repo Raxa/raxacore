@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MigrateResult<T extends CSVEntity> {
-    private List<String[]> errorRows = new ArrayList<String[]>();
-    private List<String[]> validationRows = new ArrayList<String[]>();
+    private final List<String[]> errorRows = new ArrayList<String[]>();
+    private final List<String[]> validationRows = new ArrayList<String[]>();
 
     private String[] headerRow;
     private boolean validationFailed;
-    private String fileName;
+    private final String fileName;
 
     public MigrateResult(String fileName) {
         this.fileName = fileName;

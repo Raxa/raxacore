@@ -7,11 +7,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class CSVFile<T extends CSVEntity> {
+class CSVFile<T extends CSVEntity> {
     public static final char SEPARATOR = ',';
 
-    private File fileToRead;
-    private Class<T> entityClass;
+    private final File fileToRead;
+    private final Class<T> entityClass;
 
     private CSVReader csvReader;
 

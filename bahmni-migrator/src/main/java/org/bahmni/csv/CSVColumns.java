@@ -2,8 +2,8 @@ package org.bahmni.csv;
 
 import java.lang.reflect.Field;
 
-public class CSVColumns<T extends CSVEntity> {
-    private String[] headerNames;
+class CSVColumns<T extends CSVEntity> {
+    private final String[] headerNames;
 
     public CSVColumns(String[] headerNames) {
         this.headerNames = headerNames;

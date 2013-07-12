@@ -84,7 +84,6 @@ public class JSSMigrator {
         org.bahmni.csv.Migrator migrator = new MigratorBuilder(Patient.class)
                                                         .readFrom(csvLocation, csvFileName)
                                                         .persistWith(patientPersister)
-                                                        .logAt("migrator.log")
                                                         .build();
         MigrateResult migrateResult = migrator.migrate();
         migrateResult.saveErrors(csvLocation);
