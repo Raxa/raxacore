@@ -28,7 +28,6 @@ public class JSSMigrator {
             logPropertyUsage("localhost", "root", "password", "admin", "test");
             System.exit(1);
         }
-
         String csvLocation = args[0];
         String registrationCSVFileName = args[1];
         int numberOfValidationThreads = 1;
@@ -36,7 +35,8 @@ public class JSSMigrator {
         if(args[2] != null)
             numberOfValidationThreads = Integer.valueOf(args[2]);
         if(args[3] != null)
-            numberOfMigrationThreads = Integer.valueOf(args[2]);
+            numberOfMigrationThreads = Integer.valueOf(args[3]);
+
         logger.info(String.format("Using CSVFileLocation=%s; RegistrationFileName=%s", new File(csvLocation).getAbsolutePath(), registrationCSVFileName));
         String openMRSHostName = System.getProperty("openmrs.host.name", "localhost");
         String databaseUserId = System.getProperty("database.user.id", "root");
