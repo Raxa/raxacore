@@ -13,9 +13,7 @@
         <module>api</module>
         <module>omod</module>
         <module>openerp-service</module>
-        <module>data-migration</module>
         <module>jss-old-data</module>
-        <module>address-sanitiser</module>
         <module>bahmni-mail-appender</module>
         <module>bahmni-migrator</module>
     </modules>

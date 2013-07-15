@@ -15,9 +15,11 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public class JSSMigrator {
-    private final Migrator migrator;
+    private final OpenMRSRestService openMRSRestService;
     private final HashMap<String, AllLookupValues> lookupValuesMap;
     private String csvLocation;
+    private final int numberOfValidationThreads;
+    private final int numberOfMigrationThreads;
     private static Logger logger = Logger.getLogger(JSSMigrator.class);
 
     public static void main(String[] args) throws URISyntaxException, IOException, ClassNotFoundException, SQLException {
@@ -29,9 +31,12 @@ public class JSSMigrator {
 
         String csvLocation = args[0];
         String registrationCSVFileName = args[1];
-        int noOfThreads = 20;
+        int numberOfValidationThreads = 1;
+        int numberOfMigrationThreads = 20;
         if(args[2] != null)
-            noOfThreads = Integer.valueOf(args[2]);
+            numberOfValidationThreads = Integer.valueOf(args[2]);
+        if(args[3] != null)
+            numberOfMigrationThreads = Integer.valueOf(args[2]);
         logger.info(String.format("Using CSVFileLocation=%s; RegistrationFileName=%s", new File(csvLocation).getAbsolutePath(), registrationCSVFileName));
         String openMRSHostName = System.getProperty("openmrs.host.name", "localhost");
         String databaseUserId = System.getProperty("database.user.id", "root");
@@ -47,7 +52,7 @@ public class JSSMigrator {
         AddressService addressService = new AddressService(masterTehsils, ambiguousTehsils, correctedTehsils);
 
         JSSMigrator jssMigrator = new JSSMigrator(csvLocation, "LU_Caste.csv", "LU_District.csv", "LU_State.csv",
-                "LU_Class.csv", "LU_Tahsil.csv", openMRSRESTConnection, noOfThreads);
+                "LU_Class.csv", "LU_Tahsil.csv", openMRSRESTConnection, numberOfValidationThreads, numberOfMigrationThreads);
         jssMigrator.migratePatient(registrationCSVFileName, addressService, openMRSRESTConnection);
     }
 
@@ -56,10 +61,13 @@ public class JSSMigrator {
                 "openmrs.user.password=%s", openMRSHostName, databaseUserId, databaseUserPassword, openmrsUserId, openmrsPassword));
     }
 
-    public JSSMigrator(String csvLocation, String casteFileName, String districtFileName, String stateFileName, String classFileName, String tahsilFileName,
-                       OpenMRSRESTConnection openMRSRESTConnection, int noOfThreads) throws IOException,
+    public JSSMigrator(String csvLocation, String casteFileName, String districtFileName, String stateFileName,
+                       String classFileName, String tahsilFileName, OpenMRSRESTConnection openMRSRESTConnection,
+                       int numberOfValidationThreads, int numberOfMigrationThreads) throws IOException,
             URISyntaxException {
         this.csvLocation = csvLocation;
+        this.numberOfValidationThreads = numberOfValidationThreads;
+        this.numberOfMigrationThreads = numberOfMigrationThreads;
         AllLookupValues allCastes = new AllLookupValues(csvLocation, casteFileName);
         AllLookupValues allDistricts = new AllLookupValues(csvLocation, districtFileName);
         AllLookupValues allStates = new AllLookupValues(csvLocation, stateFileName);
@@ -72,19 +80,19 @@ public class JSSMigrator {
         lookupValuesMap.put("Classes", allClasses);
         lookupValuesMap.put("Tahsils", allTahsils);
 
-        migrator = new Migrator(openMRSRESTConnection,noOfThreads);
+        openMRSRestService = new OpenMRSRestService(openMRSRESTConnection);
     }
 
     public void migratePatient(String csvFileName, AddressService addressService, OpenMRSRESTConnection openMRSRESTConnection) throws IOException {
-        AllPatientAttributeTypes allPatientAttributeTypes = migrator.getAllPatientAttributeTypes();
+        AllPatientAttributeTypes allPatientAttributeTypes = openMRSRestService.getAllPatientAttributeTypes();
 
         PatientPersister patientPersister = new PatientPersister(lookupValuesMap, addressService,
-                                                        allPatientAttributeTypes, openMRSRESTConnection, migrator.getSessionId());
+                                                        allPatientAttributeTypes, openMRSRESTConnection, openMRSRestService.getSessionId());
         org.bahmni.csv.Migrator migrator = new MigratorBuilder(Patient.class)
                                                         .readFrom(csvLocation, csvFileName)
                                                         .persistWith(patientPersister)
-                                                        .withMultipleValidators(1)
-                                                        .withMultipleMigrators(20)
+                                                        .withMultipleValidators(numberOfValidationThreads)
+                                                        .withMultipleMigrators(numberOfMigrationThreads)
                                                         .build();
         MigrateResult migrateResult = migrator.migrate();
         logger.info("Validation was " + (migrateResult.isValidationSuccessful() ? "successful" : "unsuccessful"));

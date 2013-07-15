@@ -19,24 +19,18 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
-// TODO : Mujir - some part of this class is not needed. Only things needed are getAllPatientAttributeTypes() and getSessionId(). VERIFY this!
-// rename this class to a something more appropriate like RestService, as it authenticated and talks to the rest services
-public class Migrator {
+public class OpenMRSRestService {
     private RestTemplate restTemplate = new RestTemplate();
     private static ObjectMapper objectMapper = new ObjectMapper();
-    private static final Log log = LogFactory.getLog(Migrator.class);
+    private static final Log log = LogFactory.getLog(OpenMRSRestService.class);
     private String sessionId;
-    private static Logger logger = Logger.getLogger(Migrator.class);
+    private static Logger logger = Logger.getLogger(OpenMRSRestService.class);
     private AllPatientAttributeTypes allPatientAttributeTypes;
     private OpenMRSRESTConnection openMRSRESTConnection;
-    private int noOfThreads;
 
-    public Migrator(OpenMRSRESTConnection openMRSRESTConnection, int noOfThreads) throws IOException, URISyntaxException {
+    public OpenMRSRestService(OpenMRSRESTConnection openMRSRESTConnection) throws IOException, URISyntaxException {
         this.openMRSRESTConnection = openMRSRESTConnection;
-        this.noOfThreads = noOfThreads;
         authenticate();
         loadReferences();
     }
@@ -77,41 +71,6 @@ public class Migrator {
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.set("Cookie", "JSESSIONID=" + sessionId);
         return requestHeaders;
-    }
-
-    public void migratePatient(PatientEnumerator patientEnumerator) {
-        String url = openMRSRESTConnection.getRestApiUrl() + "bahmnicore/patient";
-        while (true) {
-            try {
-                List<ParallelMigrator> migrators = new ArrayList<ParallelMigrator>();
-                for (int i = 0; i < noOfThreads; i++) {
-                    ParallelMigrator parallelMigrator = migrator(patientEnumerator, url);
-                    if (parallelMigrator == null) break;
-                    migrators.add(parallelMigrator);
-                    parallelMigrator.start();
-                }
-
-                for (ParallelMigrator parallelMigrator : migrators) {
-                    parallelMigrator.join();
-                    logError(parallelMigrator, patientEnumerator);
-                }
-            } catch (Exception e) {
-                log.error("Failed to process patient", e);
-            }
-        }
-    }
-
-    private ParallelMigrator migrator(PatientEnumerator patientEnumerator, String url) throws Exception {
-        PatientData patientData = patientEnumerator.nextPatient();
-        if (patientData == null) return null;
-        return new ParallelMigrator(patientData, url, sessionId);
-    }
-
-    private void logError(ParallelMigrator parallelMigrator, PatientEnumerator patientEnumerator) {
-        List<PatientData> errorList = parallelMigrator.errorData();
-        for (PatientData anErrorList : errorList) {
-            patientEnumerator.failedPatient(anErrorList);
-        }
     }
 
     public String getSessionId() {
