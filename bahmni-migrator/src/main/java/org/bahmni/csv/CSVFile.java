@@ -1,25 +1,30 @@
 package org.bahmni.csv;
 
 import au.com.bytecode.opencsv.CSVReader;
+import au.com.bytecode.opencsv.CSVWriter;
 import org.bahmni.csv.exception.MigrationException;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 class CSVFile<T extends CSVEntity> {
     public static final char SEPARATOR = ',';
 
-    private final File fileToRead;
-    private final Class<T> entityClass;
+    private String fileName;
+    private Class<T> entityClass;
+    private String fileLocation;
 
     private CSVReader csvReader;
 
     private CSVRow tempCSVRow;
     private String[] headerNames;
 
-    public CSVFile(File fileToRead, Class<T> entityClass) {
-        this.fileToRead = fileToRead;
+    public CSVFile(String fileLocation, String fileName, Class<T> entityClass) {
+        this.fileLocation = fileLocation;
+        this.fileName = fileName;
         this.entityClass = entityClass;
     }
 
@@ -30,6 +35,16 @@ class CSVFile<T extends CSVEntity> {
         return tempCSVRow.getEntity(aRow);
     }
 
+    public void open() throws IOException {
+        File file = new File(fileLocation, fileName);
+        if (!file.exists())
+            throw new RuntimeException("file does not exist." + file.getAbsolutePath());
+
+        csvReader = new CSVReader(new FileReader(file), SEPARATOR, '"', '\0');
+        headerNames = csvReader.readNext();
+        tempCSVRow = new CSVRow<>(getHeaderColumn(), entityClass);
+    }
+
     public void close() {
         try {
             if (csvReader != null) csvReader.close();
@@ -38,13 +53,20 @@ class CSVFile<T extends CSVEntity> {
         }
     }
 
-    public void open() throws IOException {
-        csvReader = new CSVReader(new FileReader(fileToRead), SEPARATOR, '"', '\0');
-        tempCSVRow = new CSVRow<T>(getHeaderColumn(), entityClass);
+    public void writeRecords(String[] headerRow, List<String[]> recordToWrite) throws IOException {
+        CSVWriter csvWriter = null;
+        try {
+            csvWriter = new CSVWriter(new FileWriter(new File(fileLocation, fileName)));
+            csvWriter.writeNext(headerRow);
+            for (String[] rowToWrite : recordToWrite) {
+                csvWriter.writeNext(rowToWrite);
+            }
+        } finally {
+            if (csvWriter != null) csvWriter.close();
+        }
     }
 
     private CSVColumns getHeaderColumn() throws IOException {
-        headerNames = csvReader.readNext();
         return new CSVColumns(headerNames);
     }
 
@@ -52,11 +74,11 @@ class CSVFile<T extends CSVEntity> {
         return headerNames;
     }
 
-    public File getAbsoluteFile() {
-        return fileToRead.getAbsoluteFile();
+    public String getAbsoluteFileName() {
+        return fileLocation + "/" + fileName;
     }
 
     public String getFileName() {
-        return fileToRead.getName();
+        return fileName;
     }
 }

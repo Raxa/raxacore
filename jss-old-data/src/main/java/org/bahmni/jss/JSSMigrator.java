@@ -33,7 +33,6 @@ public class JSSMigrator {
         if(args[2] != null)
             noOfThreads = Integer.valueOf(args[2]);
         logger.info(String.format("Using CSVFileLocation=%s; RegistrationFileName=%s", new File(csvLocation).getAbsolutePath(), registrationCSVFileName));
-
         String openMRSHostName = System.getProperty("openmrs.host.name", "localhost");
         String databaseUserId = System.getProperty("database.user.id", "root");
         String databasePassword = System.getProperty("database.user.password", "password");
@@ -84,8 +83,11 @@ public class JSSMigrator {
         org.bahmni.csv.Migrator migrator = new MigratorBuilder(Patient.class)
                                                         .readFrom(csvLocation, csvFileName)
                                                         .persistWith(patientPersister)
+                                                        .withMultipleValidators(1)
+                                                        .withMultipleMigrators(20)
                                                         .build();
         MigrateResult migrateResult = migrator.migrate();
-        migrateResult.saveErrors(csvLocation);
+        logger.info("Validation was " + (migrateResult.isValidationSuccessful() ? "successful" : "unsuccessful"));
+        logger.info("Migration was " + (migrateResult.isMigrationSuccessful() ? "successful" : "unsuccessful"));
     }
 }

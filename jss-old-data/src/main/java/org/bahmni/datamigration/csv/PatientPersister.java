@@ -48,13 +48,13 @@ public class PatientPersister implements EntityPersister<Patient> {
     }
 
     @Override
-    public MigrateRowResult persist(Patient csvEntity) {
-        return run(csvEntity);
+    public MigrateRowResult persist(Patient patient) {
+        return run(patient);
     }
 
     @Override
     public ValidateRowResult<Patient> validate(Patient patient) {
-        return new ValidateRowResult(patient);
+        return ValidateRowResult.SUCCESS;
     }
 
     public MigrateRowResult run(Patient patient) {
@@ -104,51 +104,50 @@ public class PatientPersister implements EntityPersister<Patient> {
     private PatientRequest createPatientRequest(Patient patient) {
         try {
             PatientRequest patientRequest = new PatientRequest();
-            RegistrationNumber registrationNumber = RegistrationFields.parseRegistrationNumber(patient.getRegistrationNumber());
+            RegistrationNumber registrationNumber = RegistrationFields.parseRegistrationNumber(patient.registrationNumber);
             CenterId centerID = new CenterId(registrationNumber.getCenterCode());
             patientRequest.setIdentifier(centerID.getName() + registrationNumber.getId());
             patientRequest.setCenterID(centerID);
 
-            Name name = RegistrationFields.name(patient.getFirstName(), patient.getLastName());
+            Name name = RegistrationFields.name(patient.firstName, patient.lastName);
             patientRequest.setName(RegistrationFields.sentenceCase(name.getGivenName()), RegistrationFields.sentenceCase(name.getFamilyName()));
 
-            addPatientAttribute(patient.getFathersName(), patientRequest, "primaryRelative", null, 0);
-            patientRequest.setDateOfRegistration(RegistrationFields.getDate(patient.getRegistrationDate()));
+            addPatientAttribute(patient.fathersName, patientRequest, "primaryRelative", null, 0);
+            patientRequest.setDateOfRegistration(RegistrationFields.getDate(patient.registrationDate));
 
-            patientRequest.setGender(patient.getSex());
-            String birthdate = RegistrationFields.getDate(patient.getDob());
+            patientRequest.setGender(patient.sex);
+            String birthdate = RegistrationFields.getDate(patient.dob);
             patientRequest.setBirthdate(birthdate == null ? RegistrationFields.UnknownDateOfBirthAsString : birthdate);
 
             LinkedHashMap<Object, Object> ageMap = new LinkedHashMap<>();
-            ageMap.put("years", RegistrationFields.getAge(patient.getAge()));
+            ageMap.put("years", RegistrationFields.getAge(patient.age));
             patientRequest.setAge(ageMap);
 
             PatientAddress patientAddress = new PatientAddress();
             patientRequest.addPatientAddress(patientAddress);
 
-            patientRequest.setBalance(patient.getBalanceAmount());
+            patientRequest.setBalance(patient.balanceAmount);
 
-            addPatientAttribute(patient.getCasteId(), patientRequest, "caste", lookupValuesMap.get("Castes"), 0);
-            addPatientAttribute(patient.getClassId(), patientRequest, "class", lookupValuesMap.get("Classes"), 0);
+            addPatientAttribute(patient.casteId, patientRequest, "caste", lookupValuesMap.get("Castes"), 0);
+            addPatientAttribute(patient.classId, patientRequest, "class", lookupValuesMap.get("Classes"), 0);
 
             //Address information
-            String gramPanchayat = patient.getGramPanch();
-            patientAddress.setAddress2(sentenceCase(gramPanchayat));
+            patientAddress.setAddress2(sentenceCase(patient.gramPanch));
 
             FullyQualifiedTehsil fullyQualifiedTehsil = new FullyQualifiedTehsil();
-            String stateId = lookupValuesMap.get("Districts").getLookUpValue(patient.getDistrictId(), 0);
+            String stateId = lookupValuesMap.get("Districts").getLookUpValue(patient.districtId, 0);
             if (stateId != null) {
                 String state = lookupValuesMap.get("States").getLookUpValue(stateId);
                 fullyQualifiedTehsil.setState(sentenceCase(state));
             }
 
-            String district = lookupValuesMap.get("Districts").getLookUpValue(patient.getDistrictId(), 2);
+            String district = lookupValuesMap.get("Districts").getLookUpValue(patient.districtId, 2);
             fullyQualifiedTehsil.setDistrict(sentenceCase(district));
 
-            String village = patient.getVillage();
+            String village = patient.village;
             patientAddress.setCityVillage(sentenceCase(village));
 
-            String tehsil = patient.getTahsil();
+            String tehsil = patient.tahsil;
             fullyQualifiedTehsil.setTehsil(sentenceCase(tehsil));
 
             FullyQualifiedTehsil correctedFullyQualifiedTehsil = addressService.getTehsilFor(fullyQualifiedTehsil);

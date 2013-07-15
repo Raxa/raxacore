@@ -1,9 +1,5 @@
 package org.bahmni.csv;
 
-import au.com.bytecode.opencsv.CSVWriter;
-
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,58 +10,30 @@ public class MigrateResult<T extends CSVEntity> {
 
     private String[] headerRow;
     private boolean validationFailed;
-    private final String fileName;
-
-    public MigrateResult(String fileName) {
-        this.fileName = fileName;
-    }
+    private boolean migrationFailed;
 
     public void addHeaderRow(String[] headerRow) {
         this.headerRow = headerRow;
     }
 
-    public void saveErrors(String fileLocation) throws IOException {
-        if (!isValidationSuccessful()) {
-            saveErrors(fileLocation, validationRows);
-        }
-        if (!isMigrationSuccessful()) {
-            saveErrors(fileLocation, errorRows);
-        }
+    public void saveValidationErrors(CSVFile<T> fileLocation) throws IOException {
+        saveErrors(fileLocation, validationRows);
     }
 
-    public void saveErrors(String fileLocation,  List<String[]> rowsToWrite) throws IOException {
-        CSVWriter csvWriter = null;
-        try {
-            csvWriter = new CSVWriter(new FileWriter(new File(fileLocation, errorFileName(fileName))));
-            csvWriter.writeNext(headerRow);
-            for (String[] rowToWrite : rowsToWrite) {
-                csvWriter.writeNext(rowToWrite);
-            }
-        } finally {
-            if (csvWriter != null) csvWriter.close();
-        }
+    public void saveMigrationErrors(CSVFile<T> fileLocation) throws IOException {
+        saveErrors(fileLocation, errorRows);
     }
 
-    private String errorFileName(String fileName) {
-        String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
-        String fileNameAddition = validationFailed ? ".val.err" : ".err";
-        String fileExtension = fileName.substring(fileName.lastIndexOf("."));
-        return fileNameWithoutExtension + fileNameAddition + fileExtension;
+    public void saveErrors(CSVFile<T> fileLocation,  List<String[]> recordToWrite) throws IOException {
+        fileLocation.writeRecords(headerRow, recordToWrite);
     }
 
     public void addMigrationError(MigrateRowResult<T> rowMigrateResult) {
+        migrationFailed = true;
         errorRows.add(rowMigrateResult.getRowWithErrorColumn());
     }
 
-    public boolean isMigrationSuccessful() {
-        return !validationFailed && errorRows.isEmpty();
-    }
-
-    public void addValidatedRecord(CSVEntity csvEntity, ValidateRowResult<T> validateRowResult) {
-        if (validateRowResult.isSuccessful()) {
-            validationRows.add(csvEntity.getOriginalRow().toArray(new String[] {}));
-            return;
-        }
+    public void addValidationError(ValidateRowResult<T> validateRowResult) {
         validationFailed = true;
         validationRows.add(validateRowResult.getRowWithErrorColumn());
     }
@@ -74,12 +42,15 @@ public class MigrateResult<T extends CSVEntity> {
         return !validationFailed;
     }
 
-    int numberOfValidatedRecords() {
+    public boolean isMigrationSuccessful() {
+        return !validationFailed && !migrationFailed;
+    }
+
+    public int numberOfFailedValidationRecords() {
         return validationRows.size();
     }
 
-    public int numberOfFailedRecords() {
-        if (validationFailed) return validationRows.size();
+    public int numberOfFailedMigrationRecords() {
         return errorRows.size();
     }
 }

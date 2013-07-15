@@ -3,7 +3,7 @@ package org.bahmni.csv;
 class AllPassEnitityPersister implements EntityPersister<DummyCSVEntity> {
     @Override
     public ValidateRowResult<DummyCSVEntity> validate(DummyCSVEntity csvEntity) {
-        return new ValidateRowResult<>(csvEntity);
+        return ValidateRowResult.SUCCESS;
     }
 
     @Override
@@ -25,7 +25,7 @@ class ValidationFailedEnitityPersister implements EntityPersister<DummyCSVEntity
 class MigrationFailedEnitityPersister implements EntityPersister<DummyCSVEntity> {
     @Override
     public ValidateRowResult<DummyCSVEntity> validate(DummyCSVEntity csvEntity) {
-        return new ValidateRowResult<>(csvEntity);
+        return ValidateRowResult.SUCCESS;
     }
 
     @Override
