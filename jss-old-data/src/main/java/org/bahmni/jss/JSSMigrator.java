@@ -65,7 +65,7 @@ public class JSSMigrator {
         AllLookupValues allStates = new AllLookupValues(csvLocation, stateFileName);
         AllLookupValues allClasses = new AllLookupValues(csvLocation, classFileName);
         AllLookupValues allTahsils = new AllLookupValues(csvLocation, tahsilFileName);
-        lookupValuesMap = new HashMap<String, AllLookupValues>();
+        lookupValuesMap = new HashMap<>();
         lookupValuesMap.put("Castes", allCastes);
         lookupValuesMap.put("Districts", allDistricts);
         lookupValuesMap.put("States", allStates);

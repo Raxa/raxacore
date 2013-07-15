@@ -1,17 +1,21 @@
 package org.bahmni.csv;
 
-public class MigrateRowResult<T extends CSVEntity> {
-    public static final MigrateRowResult SUCCESS = new MigrateRowResult();
+import org.apache.commons.lang.StringUtils;
+
+import java.util.Arrays;
+
+public class RowResult<T extends CSVEntity> {
+    public static final RowResult SUCCESS = new RowResult<>();
 
     private T csvEntity;
     private String errorMessage;
 
-    public MigrateRowResult(T csvEntity, String errorMessage) {
+    public RowResult(T csvEntity, String errorMessage) {
         this.csvEntity = csvEntity;
         this.errorMessage = errorMessage;
     }
 
-    private MigrateRowResult() {
+    private RowResult() {
     }
 
     public boolean isSuccessful() {
@@ -23,5 +27,9 @@ public class MigrateRowResult<T extends CSVEntity> {
             return new String[] {};
 
         return csvEntity.getRowWithErrorColumn(errorMessage);
+    }
+
+    public String getRowWithErrorColumnAsString() {
+        return StringUtils.join(Arrays.asList(getRowWithErrorColumn()), ",");
     }
 }

@@ -6,8 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.EntityPersister;
-import org.bahmni.csv.MigrateRowResult;
-import org.bahmni.csv.ValidateRowResult;
+import org.bahmni.csv.RowResult;
 import org.bahmni.datamigration.*;
 import org.bahmni.datamigration.request.patient.*;
 import org.bahmni.datamigration.session.AllPatientAttributeTypes;
@@ -48,16 +47,16 @@ public class PatientPersister implements EntityPersister<Patient> {
     }
 
     @Override
-    public MigrateRowResult persist(Patient patient) {
+    public RowResult<Patient> persist(Patient patient) {
         return run(patient);
     }
 
     @Override
-    public ValidateRowResult<Patient> validate(Patient patient) {
-        return ValidateRowResult.SUCCESS;
+    public RowResult<Patient> validate(Patient patient) {
+        return RowResult.SUCCESS;
     }
 
-    public MigrateRowResult run(Patient patient) {
+    public RowResult run(Patient patient) {
         int i = incrementCounter();
         PatientRequest patientRequest = createPatientRequest(patient);
 
@@ -79,16 +78,16 @@ public class PatientPersister implements EntityPersister<Patient> {
             log.info(String.format("%d Failed to create %s", i, patientRequest.getIdentifier()));
             log.info("Patient request: " + jsonRequest);
             log.error("Patient create response: " + serverErrorException.getResponseBodyAsString());
-            return new MigrateRowResult(patient, serverErrorException.getResponseBodyAsString());
+            return new RowResult(patient, serverErrorException.getResponseBodyAsString());
         } catch (Exception e) {
             log.info(String.format("%d Failed to create", i));
             log.info("Patient request: " + jsonRequest);
             log.error("Failed to process a patient", e);
             log.info("Patient request: " + jsonRequest);
-            return new MigrateRowResult(patient, e.getMessage());
+            return new RowResult(patient, e.getMessage());
         }
 
-        return MigrateRowResult.SUCCESS;
+        return RowResult.SUCCESS;
     }
 
     private synchronized int incrementCounter() {

@@ -1,6 +1,5 @@
 package org.bahmni.csv;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.exception.MigrationException;
 
@@ -9,7 +8,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -35,15 +33,15 @@ public class Migrator<T extends CSVEntity> {
     }
 
     public MigrateResult<T> migrate() {
-        logger.info("Starting migration using file-" + inputCsvFile.getAbsoluteFileName());
+        logger.info("Starting migration using file -" + inputCsvFile.getAbsoluteFileName());
         try {
-            MigrateResult<T> validationResult = validationStage();
+            MigrateResult<T> validationResult = runStage(numberOfValidationThreads, Stage.VALIDATION);
             if (!validationResult.isValidationSuccessful()) {
                 validationResult.saveValidationErrors(validationErrorFile);
                 return validationResult;
             }
 
-            MigrateResult<T> migrateResult = migrationStage();
+            MigrateResult<T> migrateResult = runStage(numberOfMigrationThreads, Stage.MIGRATION);
             if (!migrateResult.isMigrationSuccessful()) {
                 migrateResult.saveMigrationErrors(migrationErrorFile);
             }
@@ -55,73 +53,30 @@ public class Migrator<T extends CSVEntity> {
         }
     }
 
-    private MigrateResult<T> validationStage() throws IOException, InstantiationException, IllegalAccessException {
-        logger.info("Starting Validation Stage");
-        MigrateResult<T> finalValidateResult = new MigrateResult<>();
+    private MigrateResult<T> runStage(int numberOfThreads, Stage stage) throws IOException, InstantiationException, IllegalAccessException {
+        logger.info("Starting " + stage + " Stage");
+        MigrateResult<T> finalResult = new MigrateResult<>();
 
-        int countOfSuccessfulValidation = 0;
+        int countOfSuccessfulRecords = 0;
         try {
             inputCsvFile.open();
-            finalValidateResult.addHeaderRow(inputCsvFile.getHeaderRow());
+            finalResult.addHeaderRow(inputCsvFile.getHeaderRow());
 
-            ExecutorService executorService = Executors.newFixedThreadPool(numberOfValidationThreads);
+            ExecutorService executorService = Executors.newFixedThreadPool(numberOfThreads);
             CSVEntity csvEntity;
-            List<Future<ValidateRowResult<T>>> results = new ArrayList<>();
+            List<Future<RowResult>> results = new ArrayList<>();
             while ((csvEntity = inputCsvFile.readEntity()) != null) {
-                Future<ValidateRowResult<T>> rowResult = executorService.submit(new ValidationCallable(entityPersister, csvEntity));
+                Future<RowResult> rowResult = executorService.submit(stage.getCallable(entityPersister, csvEntity));
                 results.add(rowResult);
             }
 
-            for (Future<ValidateRowResult<T>> result : results) {
-                ValidateRowResult<T> validateRowResult = result.get();
-                if (!validateRowResult.isSuccessful()) {
-                    logger.error("Failed validating record. Row Details - " +
-                            StringUtils.join(Arrays.asList(validateRowResult.getRowWithErrorColumn()), ","));
-                    finalValidateResult.addValidationError(validateRowResult);
+            for (Future<RowResult> result : results) {
+                RowResult<T> rowResult = result.get();
+                if (!rowResult.isSuccessful()) {
+                    logger.error("Failed " + stage + " of record. Row Details - " + rowResult.getRowWithErrorColumnAsString());
+                    finalResult.addError(rowResult, stage);
                 } else {
-                    countOfSuccessfulValidation++;
-                }
-
-            }
-            executorService.shutdown();
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            logger.error("Could not execute threads. " + getStackTrace(e));
-            throw new MigrationException("Could not execute threads", e);
-        } finally {
-            logger.warn("Failed validation for " + finalValidateResult.numberOfFailedValidationRecords() + " records. " + countOfSuccessfulValidation + " records were successfully validated.");
-            inputCsvFile.close();
-        }
-        return finalValidateResult;
-    }
-
-    private MigrateResult<T> migrationStage() throws IOException, InstantiationException, IllegalAccessException {
-        logger.info("Starting Migration Stage");
-        MigrateResult<T> finalMigrateResult = new MigrateResult<>();
-
-        int countOfSuccessfulMigration = 0;
-        try {
-            inputCsvFile.open();
-            finalMigrateResult.addHeaderRow(inputCsvFile.getHeaderRow());
-
-            ExecutorService executorService = Executors.newFixedThreadPool(numberOfMigrationThreads);
-            CSVEntity csvEntity;
-            List<Future<MigrateRowResult<T>>> results = new ArrayList<>();
-            while ((csvEntity = inputCsvFile.readEntity()) != null) {
-                Future<MigrateRowResult<T>> rowResult = executorService.submit(new MigrationCallable(entityPersister, csvEntity));
-                results.add(rowResult);
-            }
-
-            for (Future<MigrateRowResult<T>> result : results) {
-                MigrateRowResult<T> migrateRowResult = result.get();
-                if (!migrateRowResult.isSuccessful()) {
-                    logger.error("Failed migrating record. Row Details - " +
-                            StringUtils.join(Arrays.asList(migrateRowResult.getRowWithErrorColumn()), ","));
-                    finalMigrateResult.addMigrationError(migrateRowResult);
-                } else {
-                    countOfSuccessfulMigration++;
+                    countOfSuccessfulRecords++;
                 }
             }
             executorService.shutdown();
@@ -132,10 +87,14 @@ public class Migrator<T extends CSVEntity> {
             logger.error("Could not execute threads. " + getStackTrace(e));
             throw new MigrationException("Could not execute threads", e);
         } finally {
-            logger.warn("Failed migration for " + finalMigrateResult.numberOfFailedMigrationRecords() + " records. " + countOfSuccessfulMigration + " records were successfully migrated.");
+
+            logger.warn("Failed " + stage + " for " +
+                    ((stage == Stage.VALIDATION) ?
+                            finalResult.numberOfFailedValidationRecords() : finalResult.numberOfFailedMigrationRecords()) +
+                    " records. Successful records count - " + countOfSuccessfulRecords);
             inputCsvFile.close();
         }
-        return finalMigrateResult;
+        return finalResult;
     }
 
     private static String getStackTrace(Throwable aThrowable) {
@@ -143,51 +102,5 @@ public class Migrator<T extends CSVEntity> {
         final PrintWriter printWriter = new PrintWriter(result);
         aThrowable.printStackTrace(printWriter);
         return result.toString();
-    }
-
-}
-
-class ValidationCallable<T extends CSVEntity> implements Callable<ValidateRowResult<T>> {
-    private final EntityPersister entityPersister;
-    private final CSVEntity csvEntity;
-
-    private static Logger logger = Logger.getLogger(ValidationCallable.class);
-
-    public ValidationCallable(EntityPersister entityPersister, CSVEntity csvEntity) {
-        this.entityPersister = entityPersister;
-        this.csvEntity = csvEntity;
-    }
-
-    @Override
-    public ValidateRowResult<T> call() throws Exception {
-        try {
-            return entityPersister.validate(csvEntity);
-        } catch (Exception e) {
-            logger.error("failed while validating. Record - " + StringUtils.join(csvEntity.getOriginalRow().toArray()));
-            throw new MigrationException(e);
-        }
-    }
-}
-
-
-class MigrationCallable<T extends CSVEntity> implements Callable<MigrateRowResult<T>> {
-    private final EntityPersister entityPersister;
-    private final CSVEntity csvEntity;
-
-    private static Logger logger = Logger.getLogger(MigrationCallable.class);
-
-    public MigrationCallable(EntityPersister entityPersister, CSVEntity csvEntity) {
-        this.entityPersister = entityPersister;
-        this.csvEntity = csvEntity;
-    }
-
-    @Override
-    public MigrateRowResult<T> call() throws Exception {
-        try {
-            return entityPersister.persist(csvEntity);
-        } catch (Exception e) {
-            logger.error("failed while persisting. Record - " + StringUtils.join(csvEntity.getOriginalRow().toArray()));
-            throw new MigrationException(e);
-        }
     }
 }
