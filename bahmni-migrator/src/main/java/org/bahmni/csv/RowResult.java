@@ -14,16 +14,19 @@ public class RowResult<T extends CSVEntity> {
     private String errorMessage;
 
     public RowResult(T csvEntity) {
-        this(csvEntity, null);
+        this(csvEntity, (String) null);
     }
 
     public RowResult(T csvEntity, Throwable exception) {
-        this.csvEntity = csvEntity;
-        this.errorMessage = getStackTrace(exception);
+        this(csvEntity, getStackTrace(exception));
     }
 
-    private RowResult() {
+    public RowResult(T csvEntity, String errorMessage) {
+        this.csvEntity = csvEntity;
+        this.errorMessage = errorMessage;
     }
+
+    private RowResult() {}
 
     public boolean isSuccessful() {
         return errorMessage == null || errorMessage.trim().isEmpty();
@@ -47,5 +50,26 @@ public class RowResult<T extends CSVEntity> {
         final PrintWriter printWriter = new PrintWriter(result);
         exception.printStackTrace(printWriter);
         return result.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RowResult rowResult = (RowResult) o;
+
+        if (csvEntity != null ? !csvEntity.equals(rowResult.csvEntity) : rowResult.csvEntity != null) return false;
+        if (errorMessage != null ? !errorMessage.equals(rowResult.errorMessage) : rowResult.errorMessage != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = csvEntity != null ? csvEntity.hashCode() : 0;
+        result = 31 * result + (errorMessage != null ? errorMessage.hashCode() : 0);
+        return result;
     }
 }

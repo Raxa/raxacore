@@ -42,10 +42,18 @@ public class MigratorBuilder<T extends CSVEntity> {
     }
 
     public Migrator<T> build() {
-        CSVFile inputCsvFile = new CSVFile(inputCSVFileLocation, inputCSVFileName, entityClass);
         CSVFile validationErrorFile = new CSVFile(inputCSVFileLocation, errorFileName(inputCSVFileName, VALIDATION_ERROR_FILE_EXTENSION), entityClass);
         CSVFile migrationErrorFile = new CSVFile(inputCSVFileLocation, errorFileName(inputCSVFileName, MIGRATION_ERROR_FILE_EXTENSION), entityClass);
-        return new Migrator<T>(inputCsvFile, validationErrorFile, migrationErrorFile, entityPersister, numberOfValidationThreads, numberOfMigrationThreads);
+        CSVFile inputCSVFile = new CSVFile(inputCSVFileLocation, inputCSVFileName, entityClass);
+
+        Stage validationStage = new StageBuilder().validation().withInputFile(inputCSVFile).withErrorFile(validationErrorFile).withNumberOfThreads(numberOfValidationThreads).build();
+        Stage migrationStage = new StageBuilder().migration().withInputFile(inputCSVFile).withErrorFile(migrationErrorFile).withNumberOfThreads(numberOfMigrationThreads).build();
+
+        Stages allStages = new Stages();
+        allStages.addStage(validationStage);
+        allStages.addStage(migrationStage);
+
+        return new Migrator<>(entityPersister, allStages);
     }
 
     private String errorFileName(String fileName, String fileNameAddition) {

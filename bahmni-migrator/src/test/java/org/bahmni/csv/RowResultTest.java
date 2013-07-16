@@ -15,7 +15,7 @@ public class RowResultTest {
 
     @Test
     public void isSuccessful_returns_true_for_empty_errormessage() {
-        RowResult successfulRow = new RowResult(new DummyCSVEntity("1", "name"), null);
+        RowResult successfulRow = new RowResult(new DummyCSVEntity("1", "name"), "");
         Assert.assertTrue("isSuccessful() should be true, as there is no Error Message", successfulRow.isSuccessful());
     }
 
@@ -28,16 +28,17 @@ public class RowResultTest {
     }
 
     @Test
-    public void getErrorMessage_returns_message() {
+    public void getRowWithErrorColumn_returns_error_message_for_exceptions() {
         RowResult validationFailedRow = new RowResult(new DummyCSVEntity("1", "name"), new FileNotFoundException("file not found"));
         String[] rowWithErrorColumn = validationFailedRow.getRowWithErrorColumn();
-        Assert.assertTrue("validation error message has stacktrace", rowWithErrorColumn[rowWithErrorColumn.length - 1].startsWith("java.io.FileNotFoundException"));
+        Assert.assertTrue("validation error message has stacktrace",
+                rowWithErrorColumn[rowWithErrorColumn.length - 1].startsWith("java.io.FileNotFoundException"));
     }
 
     @Test
-    public void getErrorMessage_returns_null_when_no_error() {
-        RowResult successfulRow = new RowResult(new DummyCSVEntity("1", "name"), null);
-        String[] rowWithErrorColumn = successfulRow.getRowWithErrorColumn();
-        Assert.assertNull("validation error message", rowWithErrorColumn[rowWithErrorColumn.length - 1]);
+    public void getRowWithErrorColumn_returns_error_message_for_string_messages() {
+        RowResult validationFailedRow = new RowResult(new DummyCSVEntity("1", "name"), "validation error");
+        String[] rowWithErrorColumn = validationFailedRow.getRowWithErrorColumn();
+        Assert.assertEquals("validation error", rowWithErrorColumn[rowWithErrorColumn.length - 1]);
     }
 }

@@ -9,10 +9,11 @@ public abstract class CSVEntity {
     private List<String> originalRow = new ArrayList<>();
 
     public String[] getRowWithErrorColumn(String errorMessage) {
-        if (!originalRow.contains(errorMessage))
-            originalRow.add(errorMessage);
+        List<String> tempList = new ArrayList<>();
+        tempList.addAll(originalRow);
+        tempList.add(errorMessage);
 
-        return originalRow.toArray(new String[]{});
+        return tempList.toArray(new String[]{});
     }
 
     public void originalRow(String[] aRow) {
@@ -22,5 +23,23 @@ public abstract class CSVEntity {
 
     public List<String> getOriginalRow() {
         return originalRow;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CSVEntity csvEntity = (CSVEntity) o;
+
+        if (originalRow != null ? !originalRow.equals(csvEntity.originalRow) : csvEntity.originalRow != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return originalRow != null ? originalRow.hashCode() : 0;
     }
 }

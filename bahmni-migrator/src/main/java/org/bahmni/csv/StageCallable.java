@@ -6,28 +6,6 @@ import org.bahmni.csv.exception.MigrationException;
 
 import java.util.concurrent.Callable;
 
-enum Stage {
-    VALIDATION("validation"), MIGRATION("migration");
-
-    private String stageName;
-
-    private Stage(String stageName) {
-        this.stageName = stageName;
-    }
-
-    public Callable<RowResult> getCallable(EntityPersister entityPersister, CSVEntity csvEntity) {
-        if (this == Stage.VALIDATION)
-            return new ValidationCallable(entityPersister, csvEntity);
-
-        return new MigrationCallable(entityPersister, csvEntity);
-    }
-
-    @Override
-    public String toString() {
-        return stageName;
-    }
-}
-
 class ValidationCallable<T extends CSVEntity> implements Callable<RowResult<T>> {
     private final EntityPersister entityPersister;
     private final T csvEntity;

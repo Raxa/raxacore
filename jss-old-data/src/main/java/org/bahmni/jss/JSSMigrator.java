@@ -97,8 +97,9 @@ public class JSSMigrator {
                                                         .build();
         try {
             MigrateResult migrateResult = migrator.migrate();
-            logger.info("Validation was " + (migrateResult.isValidationSuccessful() ? "successful" : "unsuccessful"));
-            logger.info("Migration was " + (migrateResult.isMigrationSuccessful() ? "successful" : "unsuccessful"));
+            logger.info("Migration was " + (migrateResult.hasFailed() ? "unsuccessful" : "successful"));
+            logger.info("Stage : " + migrateResult.getStageName() + ". Success count : " + migrateResult.numberOfSuccessfulRecords() +
+                    ". Fail count : " + migrateResult.numberOfFailedRecords());
         } catch (MigrationException e) {
             logger.error("There was an error during migration. " + e.getMessage());
         }

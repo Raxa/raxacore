@@ -6,18 +6,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 
 public class MigratorTest {
     private CSVFile mockInputFile;
+    private CSVFile mockValidationErrorFile;
+    private CSVFile mockMigrationErrorFile;
 
     @Before
     public void setup() throws IOException {
         mockInputFile = mock(CSVFile.class);
-        doNothing().when(mockInputFile).open();
+        mockValidationErrorFile = mock(CSVFile.class);
+        mockMigrationErrorFile = mock(CSVFile.class);
+        doNothing().when(mockInputFile).openForRead();
         doNothing().when(mockInputFile).close();
     }
 
@@ -29,48 +31,45 @@ public class MigratorTest {
                 .thenReturn(new DummyCSVEntity("2", "dummyEntity2"))
                 .thenReturn(null);
 
-        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<DummyCSVEntity>(mockInputFile, null, null, new AllPassEnitityPersister(), 1, 1);
-
+        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<>(new AllPassEntityPersister(), getOneStage());
         MigrateResult<DummyCSVEntity> migrateStatus = dummyCSVEntityMigrator.migrate();
 
-        Assert.assertTrue("should return true as migration was successful", migrateStatus.isValidationSuccessful());
-        Assert.assertTrue("should return true as migration was successful", migrateStatus.isMigrationSuccessful());
-        Assert.assertEquals(0, migrateStatus.numberOfFailedMigrationRecords());
+        Assert.assertTrue("should return true as migration was successful", !migrateStatus.hasFailed());
+        Assert.assertEquals(0, migrateStatus.numberOfFailedRecords());
 
-        verify(mockInputFile, times(2)).open(); // for migration and validation
-        verify(mockInputFile, times(2)).close(); // for migration and validation
+        verify(mockInputFile, times(1)).openForRead();
+        verify(mockInputFile, times(1)).close();
     }
 
     @Test
     public void migrate_fails_validation_on_validation_errors() throws IllegalAccessException, IOException, InstantiationException {
-        when(mockInputFile.getHeaderRow()).thenReturn(new String[]{"id", "name"});
+        String[] headerRow = {"id", "name"};
+        when(mockInputFile.getHeaderRow()).thenReturn(headerRow);
         when(mockInputFile.getFileName()).thenReturn("/tmp/somedirectory/fileToImport.csv");
         when(mockInputFile.readEntity())
                 .thenReturn(new DummyCSVEntity("1", "dummyEntity1"))
                 .thenReturn(new DummyCSVEntity("2", "dummyEntity2"))
                 .thenReturn(null);
 
-        CSVFile mockValidationErrorFile = mock(CSVFile.class);
-        List<String[]> errorRecords = new ArrayList<>();
-        errorRecords.add(new String[]{"1", "dummyEntity1"});
-        errorRecords.add(new String[]{"2", "dummyEntity2"});
-        doNothing().when(mockValidationErrorFile).writeRecords(new String[]{"id", "name"}, errorRecords);
-
-        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<DummyCSVEntity>(mockInputFile, mockValidationErrorFile, null, new ValidationFailedEnitityPersister(), 1, 1);
-
+        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<>(new ValidationFailedEntityPersister("validation failed"), getOneStage());
         MigrateResult<DummyCSVEntity> migrateStatus = dummyCSVEntityMigrator.migrate();
-        Assert.assertFalse("should return false as validation failed", migrateStatus.isValidationSuccessful());
-        Assert.assertFalse("migration was unsuccessful as validation failed", migrateStatus.isMigrationSuccessful());
-        Assert.assertEquals(2, migrateStatus.numberOfFailedValidationRecords());
-        Assert.assertEquals(0, migrateStatus.numberOfFailedMigrationRecords());
 
-        verify(mockInputFile, times(1)).open(); // for validation
-        verify(mockInputFile, times(1)).close(); // for validation
+        Assert.assertTrue("should return false as validation failed", migrateStatus.hasFailed());
+        Assert.assertEquals(2, migrateStatus.numberOfFailedRecords());
+
+        verify(mockInputFile, times(1)).openForRead();
+
+        verify(mockValidationErrorFile).writeARecord(new RowResult(new DummyCSVEntity("1", "dummyEntity1"), "validation failed"), headerRow);
+        verify(mockValidationErrorFile).writeARecord(new RowResult(new DummyCSVEntity("2", "dummyEntity2"), "validation failed"), headerRow);
+
+        verify(mockInputFile, times(1)).close();
+        verify(mockValidationErrorFile, times(1)).close();
     }
 
     @Test
     public void migrate_fails_on_validation_pass_but_migration_errors() throws IllegalAccessException, IOException, InstantiationException {
-        when(mockInputFile.getHeaderRow()).thenReturn(new String[]{"id", "name"});
+        String[] headerRow = {"id", "name"};
+        when(mockInputFile.getHeaderRow()).thenReturn(headerRow);
         when(mockInputFile.readEntity())
                 .thenReturn(new DummyCSVEntity("1", "dummyEntity1"))
                 .thenReturn(new DummyCSVEntity("2", "dummyEntity2"))
@@ -79,31 +78,60 @@ public class MigratorTest {
                 .thenReturn(new DummyCSVEntity("2", "dummyEntity2"))
                 .thenReturn(null);
 
-        CSVFile mockMigrationErrorFile = mock(CSVFile.class);
-        List<String[]> errorRecords = new ArrayList<>();
-        errorRecords.add(new String[] {"1", "dummyEntity1"});
-        errorRecords.add(new String[] {"2", "dummyEntity2"});
-        doNothing().when(mockMigrationErrorFile).writeRecords(new String[]{"id", "name"}, errorRecords);
-
-        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<DummyCSVEntity>(mockInputFile, null, mockMigrationErrorFile, new MigrationFailedEnitityPersister(), 1, 1);
-
+        Exception exception = new Exception("migration failed");
+        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<>(new MigrationFailedEntityPersister(exception), getTwoStages());
         MigrateResult<DummyCSVEntity> migrateStatus = dummyCSVEntityMigrator.migrate();
-        Assert.assertTrue("should return true as validation passed", migrateStatus.isValidationSuccessful());
-        Assert.assertFalse("should return false as migration failed", migrateStatus.isMigrationSuccessful());
 
-        verify(mockInputFile, times(2)).open(); // for migration and validation
-        verify(mockInputFile, times(2)).close(); // for migration and validation
+        Assert.assertTrue("should return true as migration failed", migrateStatus.hasFailed());
+
+        verify(mockInputFile, times(2)).openForRead();
+
+        verify(mockMigrationErrorFile).writeARecord(new RowResult(new DummyCSVEntity("1", "dummyEntity1"), exception), headerRow);
+        verify(mockMigrationErrorFile).writeARecord(new RowResult(new DummyCSVEntity("2", "dummyEntity2"), exception), headerRow);
+
+        verify(mockInputFile, times(2)).close();
+        verify(mockValidationErrorFile, times(1)).close();
+        verify(mockMigrationErrorFile, times(1)).close();
     }
 
     @Test(expected = MigrationException.class)
     public void any_exception_during_migration_throws_MigrationException() throws IOException {
-        doThrow(new IOException("any exception")).when(mockInputFile).open();
+        doThrow(new IOException("any exception")).when(mockInputFile).openForRead();
 
-        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<DummyCSVEntity>(mockInputFile, null, null, new AllPassEnitityPersister(), 1, 1);
+        Migrator<DummyCSVEntity> dummyCSVEntityMigrator = new Migrator<>(new AllPassEntityPersister(), getOneStage());
         dummyCSVEntityMigrator.migrate();
 
-        verify(mockInputFile, times(1)).open(); // for validation
-        verify(mockInputFile, times(1)).close(); // for validation
+        verify(mockInputFile, times(1)).openForRead();
+        verify(mockInputFile, times(1)).close();
     }
 
+    private Stages<DummyCSVEntity> getOneStage() {
+        Stage<DummyCSVEntity> validationStage = Stage.VALIDATION;
+        validationStage.setInputCSVFile(mockInputFile);
+        validationStage.setNumberOfThreads(1);
+        validationStage.setErrorFile(this.mockValidationErrorFile);
+
+        Stages<DummyCSVEntity> allStages = new Stages<>();
+        allStages.addStage(validationStage);
+
+        return allStages;
+    }
+
+    private Stages<DummyCSVEntity> getTwoStages() {
+        Stage<DummyCSVEntity> validationStage = Stage.VALIDATION;
+        validationStage.setInputCSVFile(mockInputFile);
+        validationStage.setNumberOfThreads(1);
+        validationStage.setErrorFile(this.mockValidationErrorFile);
+
+        Stage<DummyCSVEntity> migrationStage = Stage.MIGRATION;
+        migrationStage.setInputCSVFile(mockInputFile);
+        migrationStage.setNumberOfThreads(1);
+        migrationStage.setErrorFile(this.mockMigrationErrorFile);
+
+        Stages<DummyCSVEntity> allStages = new Stages<>();
+        allStages.addStage(validationStage);
+        allStages.addStage(migrationStage);
+
+        return allStages;
+    }
 }

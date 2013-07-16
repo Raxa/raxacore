@@ -21,7 +21,6 @@ class CSVRow<T extends CSVEntity> {
         for (Field field : fields) {
             columns.setValue(entity, field, aRow);
         }
-
         entity.originalRow(aRow);
         return entity;
     }

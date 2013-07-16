@@ -48,15 +48,6 @@ public class PatientPersister implements EntityPersister<Patient> {
 
     @Override
     public RowResult<Patient> persist(Patient patient) {
-        return run(patient);
-    }
-
-    @Override
-    public RowResult<Patient> validate(Patient patient) {
-        return RowResult.SUCCESS;
-    }
-
-    public RowResult run(Patient patient) {
         int i = incrementCounter();
         PatientRequest patientRequest = createPatientRequest(patient);
 
@@ -87,6 +78,11 @@ public class PatientPersister implements EntityPersister<Patient> {
             return new RowResult(patient, e);
         }
 
+        return RowResult.SUCCESS;
+    }
+
+    @Override
+    public RowResult<Patient> validate(Patient patient) {
         return RowResult.SUCCESS;
     }
 

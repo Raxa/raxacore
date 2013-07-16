@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 class CSVFile<T extends CSVEntity> {
     public static final char SEPARATOR = ',';
@@ -18,6 +17,7 @@ class CSVFile<T extends CSVEntity> {
     private String fileLocation;
 
     private CSVReader csvReader;
+    private CSVWriter csvWriter;
 
     private String[] headerNames;
 
@@ -25,6 +25,15 @@ class CSVFile<T extends CSVEntity> {
         this.fileLocation = fileLocation;
         this.fileName = fileName;
         this.entityClass = entityClass;
+    }
+
+    public void openForRead() throws IOException {
+        File file = new File(fileLocation, fileName);
+        if (!file.exists())
+            throw new MigrationException("Input CSV file does not exist. File - " + file.getAbsolutePath());
+
+        csvReader = new CSVReader(new FileReader(file), SEPARATOR, '"', '\0');
+        headerNames = csvReader.readNext();
     }
 
     public CSVEntity readEntity() throws IOException, InstantiationException, IllegalAccessException {
@@ -35,33 +44,26 @@ class CSVFile<T extends CSVEntity> {
         return tempCSVRow.getEntity(aRow);
     }
 
-    public void open() throws IOException {
-        File file = new File(fileLocation, fileName);
-        if (!file.exists())
-            throw new MigrationException("Input CSV file does not exist. File - " + file.getAbsolutePath());
+    public void writeARecord(RowResult<T> aRow, String[] headerRow) throws IOException {
+        if (csvWriter == null) {
+            openForWrite();
+            csvWriter.writeNext(headerRow);
+        }
 
-        csvReader = new CSVReader(new FileReader(file), SEPARATOR, '"', '\0');
-        headerNames = csvReader.readNext();
+        csvWriter.writeNext(aRow.getRowWithErrorColumn());
+    }
+
+    private void openForWrite() throws IOException {
+        File file = new File(fileLocation, fileName);
+        csvWriter = new CSVWriter(new FileWriter(file));
     }
 
     public void close() {
         try {
             if (csvReader != null) csvReader.close();
+            if (csvWriter != null) csvWriter.close();
         } catch (IOException e) {
             throw new MigrationException("Could not close file. " + e.getMessage(), e);
-        }
-    }
-
-    public void writeRecords(String[] headerRow, List<String[]> recordToWrite) throws IOException {
-        CSVWriter csvWriter = null;
-        try {
-            csvWriter = new CSVWriter(new FileWriter(new File(fileLocation, fileName)));
-            csvWriter.writeNext(headerRow);
-            for (String[] rowToWrite : recordToWrite) {
-                csvWriter.writeNext(rowToWrite);
-            }
-        } finally {
-            if (csvWriter != null) csvWriter.close();
         }
     }
 
