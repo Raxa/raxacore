@@ -19,7 +19,6 @@ class CSVFile<T extends CSVEntity> {
 
     private CSVReader csvReader;
 
-    private CSVRow tempCSVRow;
     private String[] headerNames;
 
     public CSVFile(String fileLocation, String fileName, Class<T> entityClass) {
@@ -32,17 +31,17 @@ class CSVFile<T extends CSVEntity> {
         if (csvReader == null)
             throw new MigrationException("Please open the CSVFile before reading it");
         String[] aRow = csvReader.readNext();
+        CSVRow tempCSVRow = new CSVRow<>(getHeaderColumn(), entityClass);
         return tempCSVRow.getEntity(aRow);
     }
 
     public void open() throws IOException {
         File file = new File(fileLocation, fileName);
         if (!file.exists())
-            throw new RuntimeException("file does not exist." + file.getAbsolutePath());
+            throw new MigrationException("Input CSV file does not exist. File - " + file.getAbsolutePath());
 
         csvReader = new CSVReader(new FileReader(file), SEPARATOR, '"', '\0');
         headerNames = csvReader.readNext();
-        tempCSVRow = new CSVRow<>(getHeaderColumn(), entityClass);
     }
 
     public void close() {

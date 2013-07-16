@@ -47,6 +47,9 @@ public class Migrator<T extends CSVEntity> {
             }
 
             return migrateResult;
+        } catch(MigrationException e) {
+            logger.error(getStackTrace(e));
+            throw e;
         } catch (Exception e) {
             logger.error(getStackTrace(e));
             throw new MigrationException(getStackTrace(e), e);
@@ -82,12 +85,12 @@ public class Migrator<T extends CSVEntity> {
             executorService.shutdown();
 
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("Thread interrupted exception. " + getStackTrace(e));
+            throw new MigrationException("Could not execute threads", e);
         } catch (ExecutionException e) {
             logger.error("Could not execute threads. " + getStackTrace(e));
             throw new MigrationException("Could not execute threads", e);
         } finally {
-
             logger.warn("Failed " + stage + " for " +
                     ((stage == Stage.VALIDATION) ?
                             finalResult.numberOfFailedValidationRecords() : finalResult.numberOfFailedMigrationRecords()) +

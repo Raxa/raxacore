@@ -1,5 +1,7 @@
 package org.bahmni.csv;
 
+import org.bahmni.csv.exception.MigrationException;
+
 import java.lang.reflect.Field;
 
 class CSVColumns<T extends CSVEntity> {
@@ -22,9 +24,9 @@ class CSVColumns<T extends CSVEntity> {
     private int getPosition(String headerValueInClass) {
         for (int i = 0; i < headerNames.length; i++) {
             String headerName = headerNames[i];
-            if (headerName.equals(headerValueInClass))
+            if (headerName.equalsIgnoreCase(headerValueInClass))
                 return i;
         }
-        throw new RuntimeException("No Column found. " + headerValueInClass);
+        throw new MigrationException("No Column found in the csv file. " + headerValueInClass);
     }
 }
