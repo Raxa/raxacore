@@ -78,13 +78,13 @@ public class PatientPersister implements EntityPersister<Patient> {
             log.info(String.format("%d Failed to create %s", i, patientRequest.getIdentifier()));
             log.info("Patient request: " + jsonRequest);
             log.error("Patient create response: " + serverErrorException.getResponseBodyAsString());
-            return new RowResult(patient, serverErrorException.getResponseBodyAsString());
+            return new RowResult(patient, serverErrorException);
         } catch (Exception e) {
             log.info(String.format("%d Failed to create", i));
             log.info("Patient request: " + jsonRequest);
             log.error("Failed to process a patient", e);
             log.info("Patient request: " + jsonRequest);
-            return new RowResult(patient, e.getMessage());
+            return new RowResult(patient, e);
         }
 
         return RowResult.SUCCESS;

@@ -14,7 +14,7 @@ class AllPassEnitityPersister implements EntityPersister<DummyCSVEntity> {
 class ValidationFailedEnitityPersister implements EntityPersister<DummyCSVEntity> {
     @Override
     public RowResult<DummyCSVEntity> validate(DummyCSVEntity csvEntity) {
-        return new RowResult<>(csvEntity, "validation failed");
+        return new RowResult<>(csvEntity, new Exception("validation failed"));
     }
 
     @Override
@@ -30,6 +30,6 @@ class MigrationFailedEnitityPersister implements EntityPersister<DummyCSVEntity>
 
     @Override
     public RowResult<DummyCSVEntity> persist(DummyCSVEntity csvEntity) {
-        return new RowResult(csvEntity, "migration failed");
+        return new RowResult(csvEntity, new Exception("migration failed"));
     }
 }

@@ -2,23 +2,15 @@ package org.bahmni.csv;
 
 class DummyCSVEntity extends CSVEntity {
     @CSVHeader(name = "id")
-    private String id;
+    public String id;
     @CSVHeader(name = "name")
-    private String name;
+    public String name;
 
-    public DummyCSVEntity() {
-    }
+    public DummyCSVEntity() {}
 
     public DummyCSVEntity(String id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
+        originalRow(new String[] {id, name});
     }
 }

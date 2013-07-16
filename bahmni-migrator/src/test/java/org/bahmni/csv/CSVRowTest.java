@@ -10,8 +10,8 @@ public class CSVRowTest {
         String[] aRow = {"1", "bahmniUser"};
         CSVRow<DummyCSVEntity> entityCSVRow = new CSVRow<>(new CSVColumns(headerRows), DummyCSVEntity.class);
         DummyCSVEntity aDummyEntity = entityCSVRow.getEntity(aRow);
-        Assert.assertEquals("bahmniUser", aDummyEntity.getName());
-        Assert.assertEquals("1", aDummyEntity.getId());
+        Assert.assertEquals("bahmniUser", aDummyEntity.name);
+        Assert.assertEquals("1", aDummyEntity.id);
     }
 }
 

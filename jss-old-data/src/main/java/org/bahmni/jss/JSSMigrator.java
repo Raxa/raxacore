@@ -3,6 +3,7 @@ package org.bahmni.jss;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.MigrateResult;
 import org.bahmni.csv.MigratorBuilder;
+import org.bahmni.csv.exception.MigrationException;
 import org.bahmni.datamigration.*;
 import org.bahmni.datamigration.csv.Patient;
 import org.bahmni.datamigration.csv.PatientPersister;
@@ -94,8 +95,12 @@ public class JSSMigrator {
                                                         .withMultipleValidators(numberOfValidationThreads)
                                                         .withMultipleMigrators(numberOfMigrationThreads)
                                                         .build();
-        MigrateResult migrateResult = migrator.migrate();
-        logger.info("Validation was " + (migrateResult.isValidationSuccessful() ? "successful" : "unsuccessful"));
-        logger.info("Migration was " + (migrateResult.isMigrationSuccessful() ? "successful" : "unsuccessful"));
+        try {
+            MigrateResult migrateResult = migrator.migrate();
+            logger.info("Validation was " + (migrateResult.isValidationSuccessful() ? "successful" : "unsuccessful"));
+            logger.info("Migration was " + (migrateResult.isMigrationSuccessful() ? "successful" : "unsuccessful"));
+        } catch (MigrationException e) {
+            logger.error("There was an error during migration. " + e.getMessage());
+        }
     }
 }
