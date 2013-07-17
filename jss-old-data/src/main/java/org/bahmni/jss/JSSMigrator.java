@@ -23,7 +23,7 @@ public class JSSMigrator {
     private final int numberOfMigrationThreads;
     private static Logger logger = Logger.getLogger(JSSMigrator.class);
 
-    public static void main(String[] args) throws URISyntaxException, IOException, ClassNotFoundException, SQLException {
+    public static void main(String[] args) throws URISyntaxException, IOException, ClassNotFoundException, SQLException, InterruptedException {
         if (args.length < 2) {
             logger.error(String.format("Usage %s CSV-File-Location RegistrationCSVFileName", JSSMigrator.class.getName()));
             logPropertyUsage("localhost", "root", "password", "admin", "test");

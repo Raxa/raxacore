@@ -15,7 +15,6 @@
         <module>openerp-service</module>
         <module>jss-old-data</module>
         <module>bahmni-mail-appender</module>
-        <module>bahmni-migrator</module>
     </modules>
 
     <properties>
@@ -104,6 +103,13 @@
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>bahmni-webservices.rest-omod</artifactId>
                 <version>2.1.1-SNAPSHOT</version>
+                <type>jar</type>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>bahmni-migrator</artifactId>
+                <version>0.2-SNAPSHOT</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
