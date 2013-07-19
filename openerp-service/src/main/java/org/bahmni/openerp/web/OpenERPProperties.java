@@ -11,4 +11,6 @@ public interface OpenERPProperties {
     public String getDatabase();
     public String getUser();
     public String getPassword();
+    public int getConnectionTimeoutInMilliseconds();
+    public int getReplyTimeoutInMilliseconds();
 }

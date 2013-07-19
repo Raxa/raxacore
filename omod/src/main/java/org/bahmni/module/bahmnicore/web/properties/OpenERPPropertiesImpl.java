@@ -40,6 +40,16 @@ public class OpenERPPropertiesImpl implements OpenERPProperties {
         return properties.getProperty(nameFor("password"));
     }
 
+    @Override
+    public int getConnectionTimeoutInMilliseconds() {
+        return Integer.parseInt(properties.getProperty(nameFor("connectionTimeoutInMilliseconds")));
+    }
+
+    @Override
+    public int getReplyTimeoutInMilliseconds() {
+        return Integer.parseInt(properties.getProperty(nameFor("replyTimeoutInMilliseconds")));
+    }
+
     private String nameFor(String key) {
         return OPENERP_PREFIX + key;
     }

@@ -2,10 +2,9 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
-import org.bahmni.module.bahmnicore.contract.patient.data.PersonAttributeTypeData;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientConfigResponse;
 import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;
-import org.bahmni.module.bahmnicore.mapper.*;
+import org.bahmni.module.bahmnicore.mapper.PatientMapper;
 import org.bahmni.module.bahmnicore.model.BahmniAddress;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
@@ -18,7 +17,6 @@ import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
-import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -86,7 +84,7 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
             if (bahmniPatient.hasBalance()) {
                 billingService.updateCustomerBalance(patientId, bahmniPatient.getBalance());
             }
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             executionMode.handleOpenERPFailure(e, bahmniPatient, patient);
         }
         return patient;

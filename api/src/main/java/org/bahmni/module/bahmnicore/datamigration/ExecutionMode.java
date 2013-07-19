@@ -17,7 +17,7 @@ public class ExecutionMode {
         dataMigrationMode = !(dataMigrationProperty == null || !Boolean.parseBoolean(dataMigrationProperty));
     }
 
-    public void handleOpenERPFailure(RuntimeException e, BahmniPatient bahmniPatient, Patient patient) {
+    public void handleOpenERPFailure(Exception e, BahmniPatient bahmniPatient, Patient patient) {
         int errorCode = e.getMessage().contains(ErrorMessage.ExistingCustomerMessagePart) ? ErrorCode.DuplicateCustomer : ErrorCode.OpenERPError;
         BillingSystemException billingSystemException = new BillingSystemException("Create customer failed", e, patient);
         billingSystemException.setErrorCode(errorCode);
