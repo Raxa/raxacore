@@ -3,6 +3,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientConfigResponse;
+import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
 import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;
 import org.bahmni.module.bahmnicore.mapper.PatientMapper;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
@@ -51,6 +52,8 @@ public class BahmniPatientServiceImplTest {
     private PersonService personService;
     @Mock
     private ConceptService conceptService;
+    @Mock
+    private BahmniPatientDao bahmniPatientDao;
 
     private BahmniPatientServiceImpl bahmniPatientService;
 
@@ -58,7 +61,7 @@ public class BahmniPatientServiceImplTest {
     public void setup() {
         initMocks(this);
         when(properties.getExecutionMode()).thenReturn(new ExecutionMode("false"));
-        bahmniPatientService = new BahmniPatientServiceImpl(billingService, patientImageService, patientService, personService, conceptService, properties, patientMapper);
+        bahmniPatientService = new BahmniPatientServiceImpl(billingService, patientImageService, patientService, personService, conceptService, properties, patientMapper, bahmniPatientDao);
     }
 
     @Test

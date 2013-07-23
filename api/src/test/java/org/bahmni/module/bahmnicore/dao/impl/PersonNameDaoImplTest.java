@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;

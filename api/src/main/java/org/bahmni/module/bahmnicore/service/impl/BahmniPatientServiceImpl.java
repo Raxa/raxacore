@@ -3,6 +3,9 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientConfigResponse;
+import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
+import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
+import org.bahmni.module.bahmnicore.contract.patient.PatientSearchParameters;
 import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;
 import org.bahmni.module.bahmnicore.mapper.PatientMapper;
 import org.bahmni.module.bahmnicore.model.BahmniAddress;
@@ -34,11 +37,12 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     private static Logger logger = Logger.getLogger(BahmniPatientServiceImpl.class);
     private PersonService personService;
     private ConceptService conceptService;
+    private BahmniPatientDao bahmniPatientDao;
 
     @Autowired
     public BahmniPatientServiceImpl(BillingService billingService, PatientImageService patientImageService,
                                     PatientService patientService, PersonService personService, ConceptService conceptService,
-                                    BahmniCoreApiProperties properties, PatientMapper patientMapper) {
+                                    BahmniCoreApiProperties properties, PatientMapper patientMapper, BahmniPatientDao bahmniPatientDao) {
         this.billingService = billingService;
         this.patientImageService = patientImageService;
         this.patientService = patientService;
@@ -46,6 +50,7 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
         this.personService = personService;
         this.conceptService = conceptService;
         this.patientMapper = patientMapper;
+        this.bahmniPatientDao = bahmniPatientDao;
     }
 
     @Override
@@ -109,6 +114,11 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     public void updateImage(String uuid, String image) {
         Patient patient = getPatientByUuid(uuid);
         patientImageService.save(patient.getPatientIdentifier().getIdentifier(), image);
+    }
+
+    @Override
+    public List<PatientResponse> search(PatientSearchParameters searchParameters) {
+        return bahmniPatientDao.getPatients(searchParameters.getIdentifier(), searchParameters.getName(), searchParameters.getCityVillage());
     }
 
     private Patient getPatientByUuid(String uuid) {
