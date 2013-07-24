@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.module.bahmnicore.contract.encounter.data.ObservationData;
+import org.bahmni.module.bahmnicore.contract.encounter.data.TestOrderData;
 import org.bahmni.module.bahmnicore.contract.encounter.request.CreateEncounterRequest;
 import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
 import org.bahmni.module.bahmnicore.contract.encounter.request.GetObservationsRequest;
@@ -119,8 +120,17 @@ public class BahmniEncounterController extends BaseRestController {
             visit.getEncounters().add(encounter);
         }
         addOrOverwriteObservations(createEncounterRequest, encounter, patient, encounterDatetime);
+        addOrders(createEncounterRequest, encounter);
         visitService.saveVisit(visit);
         return new EncounterDataResponse(visit.getUuid(), encounter.getUuid(), "");
+    }
+
+    private void addOrders(CreateEncounterRequest createEncounterRequest, Encounter encounter) {
+        for (TestOrderData testOrderData : createEncounterRequest.getTestOrders()) {
+            Order order = new TestOrder();
+            order.setConcept(conceptService.getConceptByUuid(testOrderData.getConceptUUID()));
+            encounter.addOrder(order);
+        }
     }
 
     private void addOrOverwriteObservations(CreateEncounterRequest createEncounterRequest, Encounter encounter, Patient patient, Date encounterDateTime) throws ParseException {
