@@ -4,17 +4,17 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.bahmni.module</groupId>
-    <artifactId>bahmnicore</artifactId>
+    <artifactId>bahmni</artifactId>
     <version>0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>BahmniEMR Core</name>
 
     <modules>
-        <module>api</module>
-        <module>omod</module>
+        <module>bahmnicore-api</module>
+        <module>bahmnicore-omod</module>
         <module>openerp-service</module>
         <module>jss-old-data</module>
-        <module>bahmni-mail-appender</module>
+        <module>bahmnicore-mail-appender</module>
     </modules>
 
     <properties>
