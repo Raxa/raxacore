@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>bahmni</artifactId>
+        <groupId>org.bahmni.module</groupId>
+        <version>0.2-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>elisatomfeedclient</artifactId>
+    <name>Open-Elis Atom Feed Client</name>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <configuration>
+                        <includeEmptyDirs>true</includeEmptyDirs>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.openmrs.maven.plugins</groupId>
+                <artifactId>maven-openmrs-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>init</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>initialize-module</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>pack</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package-module</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.openmrs.api</groupId>
+            <artifactId>bahmni-openmrs-api</artifactId>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <MODULE_ID>${project.artifactId}</MODULE_ID>
+        <MODULE_NAME>${project.name}</MODULE_NAME>
+        <MODULE_VERSION>${project.version}</MODULE_VERSION>
+        <MODULE_PACKAGE>${project.groupId}.${project.artifactId}</MODULE_PACKAGE>
+    </properties>
+
+</project>

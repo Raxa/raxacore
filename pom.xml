@@ -15,6 +15,7 @@
         <module>openerp-service</module>
         <module>jss-old-data</module>
         <module>bahmnicore-mail-appender</module>
+        <module>openmrs-elis-atomfeed-client-omod</module>
     </modules>
 
     <properties>
