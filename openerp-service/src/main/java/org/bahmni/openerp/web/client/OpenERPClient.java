@@ -50,17 +50,6 @@ public class OpenERPClient {
         replyTimeoutInMilliseconds = openERPProperties.getReplyTimeoutInMilliseconds();
     }
 
-    private Object login() {
-        XmlRpcClient loginRpcClient = xmlRpcClient(XML_RPC_COMMON_ENDPOINT);
-
-        Vector params = new Vector();
-        params.addElement(database);
-        params.addElement(user);
-        params.addElement(password);
-
-        return executeRPC(loginRpcClient, params, "login");
-    }
-
     private Object executeRPC(XmlRpcClient loginRpcClient, Vector params, String methodName) {
         try {
             return loginRpcClient.execute(methodName, params);
@@ -74,10 +63,22 @@ public class OpenERPClient {
     }
 
     public String execute(OpenERPRequest openERPRequest) {
-        if (id == null)
-            id = login();
+        login();
         String request = requestBuilder.buildNewRequest(openERPRequest, id, database, password);
         return httpClient().post("http://" + host + ":" + port + XML_RPC_OBJECT_ENDPOINT, request);
+    }
+
+    private void login() {
+        if (id == null || id.getClass() != Integer.class) {
+            XmlRpcClient loginRpcClient = xmlRpcClient(XML_RPC_COMMON_ENDPOINT);
+
+            Vector params = new Vector();
+            params.addElement(database);
+            params.addElement(user);
+            params.addElement(password);
+
+            id = executeRPC(loginRpcClient, params, "login");
+        }
     }
 
     public Object delete(String resource, Vector params) {
@@ -85,8 +86,7 @@ public class OpenERPClient {
     }
 
     public Object execute(String resource, String operation, Vector params) {
-        if (id == null)
-            id = login();
+        login();
         Object args[] = {database, (Integer) id, password, resource, operation, params};
 
         try {
