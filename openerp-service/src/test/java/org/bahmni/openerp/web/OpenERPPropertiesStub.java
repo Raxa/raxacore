@@ -3,7 +3,7 @@ package org.bahmni.openerp.web;
 public class OpenERPPropertiesStub implements OpenERPProperties{
     @Override
     public String getHost() {
-        return "localhost";
+        return "172.18.2.12";
     }
 
     @Override

@@ -9,7 +9,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:applicationContext-Test.xml"})
-public class OpenERPServiceIT extends TestCase {
+public class OpenERPServiceIntegrationTest extends TestCase {
 
     @Autowired
     OpenERPService openerpService;
@@ -22,6 +22,8 @@ public class OpenERPServiceIT extends TestCase {
         String patientId ="122678984333";
         String village ="Ganiyari";
         openerpService.createCustomer(name, patientId, village);
+
+        assertEquals(openerpService.findCustomers(patientId).length, 1);
 
        openerpService.deleteCustomer(patientId);
     }

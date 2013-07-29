@@ -28,7 +28,7 @@ public class CustomerService {
 
     public void create(Customer customer) {
         if (noCustomersFound(findCustomersWithPatientReference(customer.getRef()))) {
-            OpenERPRequest request = parameterMapper.mapCustomerParams(customer, "execute");
+            OpenERPRequest request = parameterMapper.mapCustomerParams(customer, "create");
             String response = openERPClient.execute(request);
         } else
             throw new OpenERPException(String.format("Customer with id, name already exists: %s, %s ", customer.getRef(), customer.getName()));

@@ -50,7 +50,7 @@ public class CustomerServiceTest {
         List<Parameter> parameters = openERPRequestTestHelper.createCustomerRequest(name,patientId,village);
         OpenERPRequest request = new OpenERPRequest("res_partner", "execute", parameters);
 
-        when(parameterMapper.mapCustomerParams(customer,"execute")).thenReturn(request);
+        when(parameterMapper.mapCustomerParams(customer,"create")).thenReturn(request);
 
         customerService.create(customer);
 
