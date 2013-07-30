@@ -118,7 +118,7 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
 
     @Override
     public List<PatientResponse> search(PatientSearchParameters searchParameters) {
-        return bahmniPatientDao.getPatients(searchParameters.getIdentifier(), searchParameters.getName(), searchParameters.getCityVillage());
+        return bahmniPatientDao.getPatients(searchParameters.getIdentifier(), searchParameters.getName(), searchParameters.getCityVillage(), searchParameters.getLength());
     }
 
     private Patient getPatientByUuid(String uuid) {

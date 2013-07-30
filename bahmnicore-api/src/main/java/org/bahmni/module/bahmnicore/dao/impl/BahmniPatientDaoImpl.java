@@ -20,6 +20,7 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
 public class BahmniPatientDaoImpl implements BahmniPatientDao {
     public static final String PATIENT_IDENTIFIER_PARAM = "patientIdentifier";
     public static final String NAME_PARAM = "name";
+    public static final String LIMIT_PARAM = "limit";
     public static final String NAME_PARAM_1_PART_1 = "name_1_part_1";
     public static final String NAME_PARAM_1_PART_2 = "name_1_part_2";
     public static final String VILLAGE_PARAM = "village";
@@ -36,7 +37,7 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
     public static final String BY_NAME = "pn.given_name like :" + NAME_PARAM + " or pn.family_name like :" + NAME_PARAM;
     public static final String BY_NAME_PARTS = "pn.given_name like :" + NAME_PARAM_1_PART_1 + " and pn.family_name like :" + NAME_PARAM_1_PART_2;
     public static final String BY_VILLAGE = "pa.city_village like :" + VILLAGE_PARAM;
-    public static final String ORDER_BY = "order by p.date_created desc LIMIT 50";
+    public static final String ORDER_BY = "order by p.date_created desc LIMIT :"+ LIMIT_PARAM;
 
 
     private SessionFactory sessionFactory;
@@ -47,7 +48,7 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
     }
 
     @Override
-    public List<PatientResponse> getPatients(String identifier, String name, String village) {
+    public List<PatientResponse> getPatients(String identifier, String name, String village, Integer length) {
         Session currentSession = sessionFactory.getCurrentSession();
 
         NameSearchParameter nameSearchParameter = NameSearchParameter.create(name);
@@ -82,6 +83,7 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
         }
         if (isNotEmpty(village))
             sqlQuery.setParameter(VILLAGE_PARAM, village + "%");
+        sqlQuery.setParameter(LIMIT_PARAM, length);
 
         return sqlQuery.list();
     }
