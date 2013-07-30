@@ -49,6 +49,7 @@ public class BahmniPatientDaoImplTest extends BaseModuleWebContextSensitiveTest 
     public void shouldSearchByName() {
 
         List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Horatio", "");
+
         assertEquals(2, patients.size());
         PatientResponse patient1 = patients.get(0);
         PatientResponse patient2 = patients.get(1);
@@ -59,6 +60,17 @@ public class BahmniPatientDaoImplTest extends BaseModuleWebContextSensitiveTest 
 
         assertEquals("Horatio", patient1.getGivenName());
         assertEquals("Horatio", patient2.getGivenName());
+    }
+
+    @Test
+    public void shouldSearchAcrossFirstNameAndLastName() {
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Horati Sinha", "");
+
+        assertEquals(1, patients.size());
+        PatientResponse patient1 = patients.get(0);
+        assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient1.getUuid());
+        assertEquals("Horatio", patient1.getGivenName());
+        assertEquals("Sinha", patient1.getFamilyName());
     }
 
     @Test

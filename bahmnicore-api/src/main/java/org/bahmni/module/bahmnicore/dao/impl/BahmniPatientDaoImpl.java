@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
 import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
+import org.bahmni.module.bahmnicore.model.NameSearchParameter;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
@@ -17,23 +18,26 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 @Repository
 public class BahmniPatientDaoImpl implements BahmniPatientDao {
+    public static final String PATIENT_IDENTIFIER_PARAM = "patientIdentifier";
+    public static final String NAME_PARAM = "name";
+    public static final String NAME_PARAM_1_PART_1 = "name_1_part_1";
+    public static final String NAME_PARAM_1_PART_2 = "name_1_part_2";
+    public static final String VILLAGE_PARAM = "village";
 
     public static final String FIND = "select p.uuid as uuid, pi.identifier as identifier, pn.given_name as givenName, pn.family_name as familyName, p.gender as gender, p.birthdate as birthDate," +
             " p.death_date as deathDate, pa.city_village as cityVillage, p.date_created as dateCreated" +
             " from patient pat inner join person p on pat.patient_id=p.person_id " +
             " left join person_name pn on pn.person_id = p.person_id" +
-            " left join person_address pa on p.person_id=pa.person_id " +
+            " left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
             " inner join patient_identifier pi on pi.patient_id = p.person_id " +
-            " where p.voided = 'false' and pn.preferred='true'";
+            " where p.voided = 'false' and pn.voided = 'false' and pn.preferred='true'";
 
-    public static final String BY_ID = " and ( pi.identifier = :" + BahmniPatientDaoImpl.PATIENT_IDENTIFIER_PARAM + " )";
-    public static final String BY_NAME = " and ( pn.given_name like :" + BahmniPatientDaoImpl.NAME_PARAM + " or pn.family_name like :" + BahmniPatientDaoImpl.NAME_PARAM + " )";
-    public static final String BY_VILLAGE = " and ( pa.city_village like :" + BahmniPatientDaoImpl.VILLAGE_PARAM + " )";
-    public static final String ORDER_BY = " order by p.date_created desc LIMIT 50";
+    public static final String BY_ID = "pi.identifier = :" + PATIENT_IDENTIFIER_PARAM;
+    public static final String BY_NAME = "pn.given_name like :" + NAME_PARAM + " or pn.family_name like :" + NAME_PARAM;
+    public static final String BY_NAME_PARTS = "pn.given_name like :" + NAME_PARAM_1_PART_1 + " and pn.family_name like :" + NAME_PARAM_1_PART_2;
+    public static final String BY_VILLAGE = "pa.city_village like :" + VILLAGE_PARAM;
+    public static final String ORDER_BY = "order by p.date_created desc LIMIT 50";
 
-    public static final String PATIENT_IDENTIFIER_PARAM = "patientIdentifier";
-    public static final String NAME_PARAM = "name";
-    public static final String VILLAGE_PARAM = "village";
 
     private SessionFactory sessionFactory;
 
@@ -46,10 +50,12 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
     public List<PatientResponse> getPatients(String identifier, String name, String village) {
         Session currentSession = sessionFactory.getCurrentSession();
 
+        NameSearchParameter nameSearchParameter = NameSearchParameter.create(name);
+        String nameSearchCondition = getNameSearchCondition(nameSearchParameter);
         String query = FIND;
-        query += isEmpty(identifier) ? "" : BY_ID;
-        query += isEmpty(name) ? "" : BY_NAME;
-        query += isEmpty(village) ? "" : BY_VILLAGE;
+        query = isEmpty(identifier) ? query : combine(query, "and", enclose(BY_ID));
+        query = isEmpty(nameSearchCondition) ? query : combine(query, "and", enclose(nameSearchCondition));
+        query = isEmpty(village) ? query : combine(query, "and", enclose(BY_VILLAGE));
         query += ORDER_BY;
 
         Query sqlQuery = currentSession
@@ -69,10 +75,30 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
             sqlQuery.setParameter(PATIENT_IDENTIFIER_PARAM, identifier);
         if (isNotEmpty(name))
             sqlQuery.setParameter(NAME_PARAM, name + "%");
+        if (nameSearchParameter.hasMultipleParts())
+        {
+            sqlQuery.setParameter(NAME_PARAM_1_PART_1, nameSearchParameter.getPart1() + '%');
+            sqlQuery.setParameter(NAME_PARAM_1_PART_2, nameSearchParameter.getPart2() + '%');
+        }
         if (isNotEmpty(village))
             sqlQuery.setParameter(VILLAGE_PARAM, village + "%");
 
         return sqlQuery.list();
     }
 
+    private String getNameSearchCondition(NameSearchParameter nameSearchParameter) {
+        if(nameSearchParameter.isEmpty())
+            return "";
+        if(nameSearchParameter.hasMultipleParts())
+            return combine(enclose(BY_NAME), "or", BY_NAME_PARTS);
+        return  BY_NAME;
+    }
+
+    private static String combine(String query, String operator, String condition) {
+        return String.format("%s %s %s", query, operator, condition);
+    }
+
+    private static String enclose(String value) {
+        return String.format("(%s)", value);
+    }
 }
