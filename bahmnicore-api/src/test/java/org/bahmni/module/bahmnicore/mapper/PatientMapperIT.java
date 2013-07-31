@@ -14,7 +14,7 @@ import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
 
-public class PatientMapperTest extends BaseModuleWebContextSensitiveTest {
+public class PatientMapperIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
     private PatientMapper patientMapper;
@@ -52,22 +52,4 @@ public class PatientMapperTest extends BaseModuleWebContextSensitiveTest {
 		assertEquals(dateCreatedBeforeMapping, mappedPatient.getPersonDateCreated());
 	}
 
-    @Test
-    public void shouldMapPatientToBahmniPatient() {
-        Patient patient = new PatientMother().build();
-
-        BahmniPatient bahmniPatient = patientMapper.mapFromPatient(null, patient);
-
-        assertEquals(patient.getGivenName(), bahmniPatient.getNames().get(0).getGivenName());
-        assertEquals(patient.getFamilyName(), bahmniPatient.getNames().get(0).getFamilyName());
-    }
-
-    @Test
-    public void shouldMapUUIDFromPatient() {
-        Patient patient = new PatientMother().build();
-
-        BahmniPatient bahmniPatient = patientMapper.mapFromPatient(null, patient);
-
-        assertEquals(patient.getUuid(), bahmniPatient.getUuid());
-    }
 }

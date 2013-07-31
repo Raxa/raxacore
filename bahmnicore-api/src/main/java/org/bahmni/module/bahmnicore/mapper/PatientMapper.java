@@ -47,18 +47,4 @@ public class PatientMapper {
         return patient;
     }
 
-    public BahmniPatient mapFromPatient(BahmniPatient bahmniPatient, Patient patient) {
-        if (bahmniPatient == null) {
-            bahmniPatient = new BahmniPatient();
-        }
-        bahmniPatient.setGender(bahmniPatient.getGender());
-        bahmniPatient = personNameMapper.mapFromPatient(bahmniPatient, patient);
-        bahmniPatient = personAttributeMapper.mapFromPatient(bahmniPatient, patient);
-        bahmniPatient = addressMapper.mapFromPatient(bahmniPatient, patient);
-        bahmniPatient = patientIdentifierMapper.mapFromPatient(bahmniPatient, patient);
-        bahmniPatient = healthCenterMapper.mapFromPatient(bahmniPatient, patient);
-        bahmniPatient = birthDateMapper.mapFromPatient(bahmniPatient, patient);
-        bahmniPatient.setUuid(patient.getUuid());
-        return bahmniPatient;
-    }
 }

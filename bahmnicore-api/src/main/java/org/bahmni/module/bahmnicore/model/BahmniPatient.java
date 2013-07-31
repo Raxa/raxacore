@@ -6,10 +6,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 public class BahmniPatient {
 	private Date birthdate;
@@ -145,6 +142,10 @@ public class BahmniPatient {
         return personDateCreated;
     }
 
+    public void setPersonDateCreated(Date personDateCreated) {
+        this.personDateCreated = personDateCreated;
+    }
+
     public void setGender(String gender) {
         this.gender = gender;
     }
@@ -176,4 +177,6 @@ public class BahmniPatient {
     public void setBirthDate(Date birthDate) {
         this.birthdate = birthDate;
     }
+
+
 }

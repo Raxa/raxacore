@@ -15,7 +15,6 @@
 
     <properties>
         <release.version>${version}</release.version>
-        <jackson.mapper.version>1.5.0</jackson.mapper.version>
     </properties>
 
     <dependencies>

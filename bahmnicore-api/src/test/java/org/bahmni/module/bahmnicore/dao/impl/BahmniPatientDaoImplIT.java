@@ -19,7 +19,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:applicationContext-Test.xml"}, inheritLocations = true)
-public class BahmniPatientDaoImplTest extends BaseModuleWebContextSensitiveTest {
+public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
     private BahmniPatientDao bahmniPatientDao;

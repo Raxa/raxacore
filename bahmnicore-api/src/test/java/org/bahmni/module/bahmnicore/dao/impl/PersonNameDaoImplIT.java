@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
-public class PersonNameDaoImplTest extends BaseModuleWebContextSensitiveTest {
+public class PersonNameDaoImplIT extends BaseModuleWebContextSensitiveTest {
 	
 	@Autowired
 	PersonNameDaoImpl personNameDao;
