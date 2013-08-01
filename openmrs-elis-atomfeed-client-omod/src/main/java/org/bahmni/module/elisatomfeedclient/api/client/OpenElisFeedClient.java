@@ -26,7 +26,7 @@ public class OpenElisFeedClient {
         try {
 
             atomFeedClient = new AtomFeedClient(new AllFeeds(properties), new AllMarkersJdbcImpl(jdbcConnectionProvider),
-                    new AllFailedEventsJdbcImpl(jdbcConnectionProvider), new URI(feedUri), openMRSEventWorker);
+                    new AllFailedEventsJdbcImpl(jdbcConnectionProvider), properties, jdbcConnectionProvider, new URI(feedUri), openMRSEventWorker);
         } catch (URISyntaxException e) {
             logger.error(e);
             throw new RuntimeException("error for uri:" + feedUri);

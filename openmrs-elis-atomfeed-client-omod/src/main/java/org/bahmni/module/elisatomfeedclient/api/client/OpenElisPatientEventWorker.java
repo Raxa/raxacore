@@ -42,4 +42,8 @@ public class OpenElisPatientEventWorker implements EventWorker {
             throw new OpenElisFeedException("could not read patient data", e);
         }
     }
+
+    @Override
+    public void cleanUp(Event event) {
+    }
 }
