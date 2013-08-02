@@ -18,6 +18,10 @@
     <!-- /Base Module Properties -->
 	
     <require_version>${openMRSRuntimeVersion}</require_version>
+    <require_modules>
+        <require_module>org.bahmni.module.bahmnicore</require_module>
+    </require_modules>
+
     <!-- Extensions -->
 	
 

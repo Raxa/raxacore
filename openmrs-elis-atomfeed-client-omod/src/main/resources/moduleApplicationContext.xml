@@ -10,8 +10,7 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <util:properties id="atomfeedProperties" location="atomfeed.properties"/>
-
+    <util:properties id="properties" location="classpath:atomfeed.properties"/>
     <context:component-scan base-package="org.bahmni.module.elisatomfeedclient"/>
 
 </beans>
