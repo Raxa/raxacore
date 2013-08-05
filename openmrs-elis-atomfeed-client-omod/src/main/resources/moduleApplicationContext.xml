@@ -10,7 +10,28 @@
 		http://www.springframework.org/schema/util
 		http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <util:properties id="properties" location="classpath:atomfeed.properties"/>
+    <util:properties id="openElisAtomFeedProperties" location="classpath:atomfeed.properties"/>
+
     <context:component-scan base-package="org.bahmni.module.elisatomfeedclient"/>
+
+    <bean id="jdbcConnectionProvider" class="org.bahmni.module.elisatomfeedclient.api.client.DefaultJdbcConnectionProvider">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <bean name="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/openmrs" />
+        <property name="username" value="root" />
+        <property name="password" value="password" />
+    </bean>
+
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list>
+                <value>org.bahmni.module.elisatomfeedclient.api.client.OpenElisFeedClientInterface</value> <!-- service interface name -->
+                <ref bean="openElisFeedClient"/>
+            </list>
+        </property>
+    </bean>
 
 </beans>

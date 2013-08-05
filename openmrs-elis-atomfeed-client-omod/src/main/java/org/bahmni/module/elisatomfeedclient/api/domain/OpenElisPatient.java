@@ -4,6 +4,7 @@ import lombok.Data;
 import org.joda.time.DateTime;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class OpenElisPatient {
@@ -20,6 +21,7 @@ public class OpenElisPatient {
     private String stateProvince;
     private String dateOfBirth;
     private String healthCenter;
+    private List<String> attributes;
 
     public Date getDateOfBirthAsDate() {
         return DateTime.parse(dateOfBirth).toDate();

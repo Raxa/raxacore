@@ -1,6 +1,7 @@
 package org.bahmni.module.elisatomfeedclient;
 
 import org.apache.log4j.Logger;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.BaseModuleActivator;
 
 public class Activator extends BaseModuleActivator {

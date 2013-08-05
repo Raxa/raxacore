@@ -14,7 +14,7 @@ public class FeedProperties extends AtomFeedProperties {
     private static final String READ_TIMEOUT = "read.timeout";
     private static final String CONNECT_TIMEOUT = "connect.timeout";
 
-    @Resource(name = "properties")
+    @Resource(name = "openElisAtomFeedProperties")
     private Properties atomFeedProperties;
 
     public String getFeedUri() {

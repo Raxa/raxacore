@@ -8,12 +8,16 @@ import org.ict4h.atomfeed.client.repository.jdbc.AllMarkersJdbcImpl;
 import org.ict4h.atomfeed.client.service.AtomFeedClient;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.joda.time.DateTime;
+import org.omg.IOP.ServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class OpenElisFeedClient {
+@Component("openElisFeedClient")
+public class OpenElisFeedClient implements OpenElisFeedClientInterface {
 
     private AtomFeedClient atomFeedClient;
 
@@ -33,6 +37,7 @@ public class OpenElisFeedClient {
         }
     }
 
+    @Override
     public void processFeed() {
         try {
             logger.info("Processing Customer Feed " + DateTime.now());
