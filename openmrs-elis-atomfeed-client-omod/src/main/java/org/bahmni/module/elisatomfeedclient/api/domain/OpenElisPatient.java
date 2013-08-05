@@ -5,6 +5,7 @@ import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class OpenElisPatient {
@@ -21,10 +22,16 @@ public class OpenElisPatient {
     private String stateProvince;
     private String dateOfBirth;
     private String healthCenter;
-    private List<String> attributes;
+
+    private List<OpenElisPatientAttribute> attributes;
 
     public Date getDateOfBirthAsDate() {
         return DateTime.parse(dateOfBirth).toDate();
     }
+}
 
+@Data
+class OpenElisPatientAttribute {
+    private String name;
+    private String value;
 }

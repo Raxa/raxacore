@@ -44,10 +44,30 @@ public class OpenElisPatientEventWorkerTest {
         LocalDate birthDate = LocalDate.now();
         final String patientIdentifier = "GAN909";
         String patientUrl = "/openelis/ws/rest/patient/GAN909";
-        String patientResponse = "{\"patientIdentifier\": \"" + patientIdentifier + "\", \"firstName\":\"Ram\"," +
-                " \"lastName\":\"Singh\", \"gender\":\"M\", \"address1\":\"address1\", \"address3\": \"address3\"," +
-                " \"cityVillage\": \"cityVillage\", \"countyDistrict\": \"\", \"stateProvince\": \"\", " +
-                " \"dateOfBirth\": \"" + birthDate.toString("yyyy-MM-dd") + "\", \"address2\": \"address2\"}";
+        String patientResponse = "{\n" +
+                "    \"attributes\": [\n" +
+                "        {\n" +
+                "            \"name\": \"OCCUPATION\",\n" +
+                "            \"value\": \"Tailor\"\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"name\": \"PRIMARYRELATIVE\",\n" +
+                "            \"value\": \"Milka Singh\"\n" +
+                "        }\n" +
+                "    ],\n" +
+                "    \"gender\": \"M\",\n" +
+                "    \"healthCenter\": \"GAN\",\n" +
+                "    \"firstName\": \"Ram\",\n" +
+                "    \"lastName\": \"Singh\",\n" +
+                "    \"address1\": \"70 Bikaner avenue\",\n" +
+                "    \"dateOfBirth\": \"" + birthDate.toString("yyyy-MM-dd") + "\",\n" +
+                "    \"patientIdentifier\": \"" + patientIdentifier + "\",\n" +
+                "    \"cityVillage\": \"Chikkathogur\",\n" +
+                "    \"address2\": \"Kilogram\",\n" +
+                "    \"address3\": \"Bilaspur\",\n" +
+                "    \"countyDistrict\": \"Dilaspur\",\n" +
+                "    \"stateProvince\": \"Ch\"\n" +
+                "}";
 
         when(webClient.get(eq(new URI("http://localhost:8085" + patientUrl)), anyMap())).thenReturn(patientResponse);
         openElisPatientEventWorker.process(new Event("id", patientUrl));
@@ -62,10 +82,11 @@ public class OpenElisPatientEventWorkerTest {
         assertEquals("M", bahmniPatient.getGender());
         assertEquals(birthDate.toDate(), bahmniPatient.getBirthdate());
         BahmniAddress address = bahmniPatient.getAddresses().get(0);
-        assertEquals("address1", address.getAddress1());
-        assertEquals("address2", address.getAddress2());
-        assertEquals("address3", address.getAddress3());
-        assertEquals("cityVillage", address.getCityVillage());
+        assertEquals("70 Bikaner avenue", address.getAddress1());
+        assertEquals("Kilogram", address.getAddress2());
+        assertEquals("Bilaspur", address.getAddress3());
+        assertEquals("Chikkathogur", address.getCityVillage());
+        assertEquals("Dilaspur", address.getCountyDistrict());
     }
 
 }
