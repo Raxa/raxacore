@@ -18,6 +18,8 @@ public class CustomerController extends BaseRestController {
         this.billingService = billingService;
     }
 
+    // TODO : Mujir - remove this method in Release 2 when OpenMRS would talk to OpenERP using atom feed events.
+    // TODO : As MRS wont talk to ERP directly, we wont need this diagnostic service
     @RequestMapping(method = RequestMethod.GET, params = { "patientId"})
     @WSDoc("Returns customer ids by given patient id (Used for diagnostics)")
     @ResponseBody
