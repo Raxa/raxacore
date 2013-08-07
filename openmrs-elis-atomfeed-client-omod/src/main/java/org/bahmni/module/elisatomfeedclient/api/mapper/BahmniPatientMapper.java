@@ -3,11 +3,22 @@ package org.bahmni.module.elisatomfeedclient.api.mapper;
 import org.bahmni.module.bahmnicore.model.BahmniAddress;
 import org.bahmni.module.bahmnicore.model.BahmniName;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
+import org.bahmni.module.bahmnicore.model.BahmniPersonAttribute;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisPatient;
+import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisPatientAttribute;
 import org.joda.time.DateTime;
+import org.openmrs.PersonAttributeType;
+
+import java.util.List;
 
 
 public class BahmniPatientMapper {
+
+    private List<PersonAttributeType> allPersonAttributeTypes;
+
+    public BahmniPatientMapper(List<PersonAttributeType> allPersonAttributeTypes) {
+        this.allPersonAttributeTypes = allPersonAttributeTypes;
+    }
 
     public BahmniPatient map(OpenElisPatient openElisPatient) {
         BahmniPatient bahmniPatient = new BahmniPatient();
@@ -28,7 +39,21 @@ public class BahmniPatientMapper {
         bahmniPatient.setIdentifier(openElisPatient.getPatientIdentifier());
         bahmniPatient.setCenter(openElisPatient.getHealthCenter());
 
+        mapCutomAttributes(openElisPatient, bahmniPatient);
+
         return bahmniPatient;
+    }
+
+    private void mapCutomAttributes(OpenElisPatient openElisPatient, BahmniPatient bahmniPatient) {
+        for (OpenElisPatientAttribute openElisPatientAttribute : openElisPatient.getAttributes()) {
+            String name = openElisPatientAttribute.getName();
+            for (PersonAttributeType attributeType : allPersonAttributeTypes) {
+                if (attributeType.getName().toUpperCase().equals(name) && attributeType.getFormat().equals("java.lang.String")) {
+                    bahmniPatient.addAttribute(new BahmniPersonAttribute(attributeType.getUuid(), openElisPatientAttribute.getValue()));
+                    break;
+                }
+            }
+        }
     }
 
 }

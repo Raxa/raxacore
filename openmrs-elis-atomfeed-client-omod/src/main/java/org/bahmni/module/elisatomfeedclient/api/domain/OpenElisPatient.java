@@ -26,12 +26,7 @@ public class OpenElisPatient {
     private List<OpenElisPatientAttribute> attributes;
 
     public Date getDateOfBirthAsDate() {
-        return DateTime.parse(dateOfBirth).toDate();
+        return  dateOfBirth == null ? null : DateTime.parse(dateOfBirth).toDate();
     }
 }
 
-@Data
-class OpenElisPatientAttribute {
-    private String name;
-    private String value;
-}

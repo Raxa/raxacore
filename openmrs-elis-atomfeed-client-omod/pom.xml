@@ -1,25 +1,45 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>bahmni</artifactId>
         <groupId>org.bahmni.module</groupId>
+        <artifactId>bahmni</artifactId>
         <version>0.2-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
     <artifactId>elisatomfeedclient</artifactId>
+    <packaging>jar</packaging>
     <name>Open-Elis Atom Feed Client</name>
 
-    <properties>
-        <MODULE_ID>${project.artifactId}</MODULE_ID>
-        <MODULE_NAME>${project.name}</MODULE_NAME>
-        <MODULE_VERSION>${project.version}</MODULE_VERSION>
-        <MODULE_PACKAGE>${project.groupId}.${project.artifactId}</MODULE_PACKAGE>
-        <atomfeed.version>0.9.2-SNAPSHOT</atomfeed.version>
-    </properties>
-
     <build>
+        <finalName>${project.artifactId}-${project.version}</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/webapp</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>resources</exclude>
+                </excludes>
+                <targetPath>web/module</targetPath>
+            </resource>
+            <resource>
+                <directory>src/main/webapp</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>resources</include>
+                </includes>
+                <targetPath>web/module</targetPath>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -28,6 +48,7 @@
                         <includeEmptyDirs>true</includeEmptyDirs>
                     </configuration>
                 </plugin>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -126,7 +147,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 
@@ -168,6 +188,12 @@
             <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-client</artifactId>
             <version>${atomfeed.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+            <version>2.0b5</version>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
@@ -249,5 +275,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <properties>
+        <MODULE_ID>${project.artifactId}</MODULE_ID>
+        <MODULE_NAME>${project.name}</MODULE_NAME>
+        <MODULE_VERSION>${project.version}</MODULE_VERSION>
+        <MODULE_PACKAGE>${project.groupId}.${project.artifactId}</MODULE_PACKAGE>
+        <atomfeed.version>0.9.2-SNAPSHOT</atomfeed.version>
+    </properties>
 
 </project>

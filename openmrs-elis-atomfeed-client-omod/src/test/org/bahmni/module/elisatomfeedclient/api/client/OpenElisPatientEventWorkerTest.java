@@ -1,5 +1,6 @@
 package org.bahmni.module.elisatomfeedclient.api.client;
 
+import bsh.Interpreter;
 import org.bahmni.module.bahmnicore.model.BahmniAddress;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
@@ -8,35 +9,47 @@ import org.ict4h.atomfeed.client.domain.Event;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.openmrs.PersonAddress;
+import org.openmrs.api.PersonService;
+import org.openmrs.util.OpenmrsUtil;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.URI;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 public class OpenElisPatientEventWorkerTest {
 
     @Mock
     private BahmniPatientService bahmniPatientService;
     @Mock
+    private PersonService personService;
+    @Mock
     private WebClient webClient;
     @Mock
     private FeedProperties feedProperties;
+    @Mock
+    private Interpreter intepreter;
 
     private OpenElisPatientEventWorker openElisPatientEventWorker;
+
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        openElisPatientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, webClient, feedProperties);
+        openElisPatientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, webClient, feedProperties, intepreter);
         when(feedProperties.getOpenElisUri()).thenReturn("http://localhost:8085");
+        when(intepreter.source(anyString())).thenReturn(true);
     }
 
     @Test

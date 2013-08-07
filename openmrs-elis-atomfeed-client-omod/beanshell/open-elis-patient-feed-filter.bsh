@@ -1,0 +1,4 @@
+if("GAN".equals(healthCenter) || "SEM".equals(healthCenter) || "SIV".equals(healthCenter) || "BAM".equals(healthCenter)) {
+    return true;
+}
+return false;
