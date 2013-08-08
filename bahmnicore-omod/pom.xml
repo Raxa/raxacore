@@ -6,7 +6,7 @@
         <artifactId>bahmni</artifactId>
         <version>0.2-SNAPSHOT</version>
     </parent>
-    <artifactId>bahmnicore</artifactId>
+    <artifactId>bahmnicore-omod</artifactId>
     <packaging>jar</packaging>
     <name>BahmniEMR Core OMOD</name>
 
