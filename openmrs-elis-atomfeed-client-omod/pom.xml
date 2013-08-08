@@ -6,7 +6,7 @@
         <artifactId>bahmni</artifactId>
         <version>0.2-SNAPSHOT</version>
     </parent>
-    <artifactId>elisatomfeedclient</artifactId>
+    <artifactId>elisatomfeedclient-omod</artifactId>
     <packaging>jar</packaging>
     <name>Open-Elis Atom Feed Client</name>
 
