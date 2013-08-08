@@ -10,6 +10,13 @@
     <packaging>jar</packaging>
     <name>BahmniEMR Core OMOD</name>
 
+    <properties>
+        <MODULE_ID>bahmnicore</MODULE_ID>
+        <MODULE_NAME>${project.name}</MODULE_NAME>
+        <MODULE_VERSION>${project.version}</MODULE_VERSION>
+        <MODULE_PACKAGE>${project.groupId}.${MODULE_ID}</MODULE_PACKAGE>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.bahmni.module</groupId>
@@ -239,11 +246,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <properties>
-        <MODULE_ID>${project.artifactId}</MODULE_ID>
-        <MODULE_NAME>${project.name}</MODULE_NAME>
-        <MODULE_VERSION>${project.version}</MODULE_VERSION>
-        <MODULE_PACKAGE>${project.groupId}.${project.artifactId}</MODULE_PACKAGE>
-    </properties>
 </project>
