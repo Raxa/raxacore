@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 
 @Component("openElisFeedClient")
 public class OpenElisFeedClient implements OpenElisFeedClientInterface {
@@ -29,7 +30,7 @@ public class OpenElisFeedClient implements OpenElisFeedClientInterface {
         String feedUri = properties.getFeedUri();
         try {
 
-            atomFeedClient = new AtomFeedClient(new AllFeeds(properties), new AllMarkersJdbcImpl(jdbcConnectionProvider),
+            atomFeedClient = new AtomFeedClient(new AllFeeds(properties, new HashMap<String, String>()), new AllMarkersJdbcImpl(jdbcConnectionProvider),
                     new AllFailedEventsJdbcImpl(jdbcConnectionProvider), properties, jdbcConnectionProvider, new URI(feedUri), openMRSEventWorker);
         } catch (URISyntaxException e) {
             logger.error(e);
