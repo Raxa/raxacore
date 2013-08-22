@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface BahmniPatientDao {
 
-    List<PatientResponse> getPatients(String identifier, String name, String village, Integer length);
+    List<PatientResponse> getPatients(String identifier, String name, String village, Integer length, Integer offset);
 
 }

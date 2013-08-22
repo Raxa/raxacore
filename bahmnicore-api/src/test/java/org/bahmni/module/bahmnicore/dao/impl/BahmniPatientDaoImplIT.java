@@ -31,7 +31,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldSearchByPatientIdentifier() {
-        List<PatientResponse> patients = bahmniPatientDao.getPatients("GAN200001", "", "", 100);
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("GAN200001", "", "", 100, 0);
         assertEquals(1, patients.size());
         PatientResponse patient = patients.get(0);
         assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
@@ -48,7 +48,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldSearchByName() {
 
-        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Horatio", "", 100);
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Horatio", "", 100, 0);
 
         assertEquals(2, patients.size());
         PatientResponse patient1 = patients.get(0);
@@ -64,7 +64,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldSearchAcrossFirstNameAndLastName() {
-        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Horati Sinha", "", 100);
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Horati Sinha", "", 100, 0);
 
         assertEquals(1, patients.size());
         PatientResponse patient1 = patients.get(0);
@@ -75,7 +75,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldSearchByVillage() {
-        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "", "Ramgarh", 100);
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "", "Ramgarh", 100, 0);
         assertEquals(1, patients.size());
         PatientResponse patient = patients.get(0);
         assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
@@ -91,7 +91,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldSearchByNameAndVillage() {
-        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sin", "Ramgarh", 100);
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sin", "Ramgarh", 100, 0);
         assertEquals(1, patients.size());
         PatientResponse patient = patients.get(0);
         assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
@@ -107,12 +107,20 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldSortResultsByCreationDate() {
-        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sinha", "", 100);
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sinha", "", 100, 0);
         assertEquals(2, patients.size());
         assertEquals("Sinha", patients.get(0).getFamilyName());
         assertEquals("Sinha", patients.get(0).getFamilyName());
     }
 
+    @Test
+    public void shouldReturnResultAfterGivenOffset() throws Exception {
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sinha", "", 100, 1);
+        assertEquals(1, patients.size());
+
+        patients = bahmniPatientDao.getPatients("", "Sinha", "", 100, 2);
+        assertEquals(0, patients.size());
+    }
 }
 
 @Service
