@@ -2,6 +2,7 @@ package org.bahmni.module.elisatomfeedclient.api.client;
 
 import bsh.EvalError;
 import bsh.Interpreter;
+import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 
 import org.bahmni.module.elisatomfeedclient.api.FeedProperties;
@@ -34,6 +35,8 @@ public class OpenElisPatientEventWorker implements EventWorker {
     private WebClient webClient;
     private FeedProperties feedProperties;
 
+    private static Logger logger = Logger.getLogger(OpenElisPatientEventWorker.class);
+
     @Autowired
     public OpenElisPatientEventWorker(BahmniPatientService bahmniPatientService, PersonService personService, WebClient webClient, FeedProperties feedProperties) {
         this.patientService = bahmniPatientService;
@@ -51,6 +54,7 @@ public class OpenElisPatientEventWorker implements EventWorker {
     @Override
     public void process(Event event) {
         String patientUrl = feedProperties.getOpenElisUri() + event.getContent();
+        logger.info("elisatomfeed:Processing event : " + patientUrl);
         try {
             String response = webClient.get(URI.create(patientUrl), new HashMap<String, String>());
             OpenElisPatient openElisPatient = objectMapper.readValue(response, OpenElisPatient.class);
@@ -60,10 +64,14 @@ public class OpenElisPatientEventWorker implements EventWorker {
             interpreter.set("healthCenter", openElisPatient.getHealthCenter());
             Boolean shouldProcess = (Boolean) interpreter.source(OpenmrsUtil.getApplicationDataDirectory() + "beanshell/open-elis-patient-feed-filter.bsh");
 
-            if (shouldProcess)
+            logger.info("elisatomfeed:ignoring event : " + patientUrl);
+            if (shouldProcess) {
+                logger.info("elisatomfeed:creating patient for event : " + patientUrl);
                 patientService.createPatient(new BahmniPatientMapper(allPersonAttributeTypes).map(openElisPatient));
+            }
 
         } catch (IOException | EvalError e) {
+            logger.error("elisatomfeed:error processing event : " + patientUrl + e.getMessage(), e);
             throw new OpenElisFeedException("could not read patient data", e);
         }
     }
