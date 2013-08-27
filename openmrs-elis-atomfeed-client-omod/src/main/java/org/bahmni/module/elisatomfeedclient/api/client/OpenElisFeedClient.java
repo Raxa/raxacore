@@ -44,6 +44,7 @@ public class OpenElisFeedClient implements OpenElisFeedClientInterface {
             atomFeedClient.processEvents();
         } catch (Exception e) {
             logger.error("openelisatomfeedclient:failed feed execution " + e, e);
+            throw e;
         }
     }
 
