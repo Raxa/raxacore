@@ -1,16 +1,14 @@
 package org.bahmni.module.elisatomfeedclient.api.client;
 
 import org.apache.log4j.Logger;
-import org.bahmni.module.elisatomfeedclient.api.FeedProperties;
+import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.jdbc.AllFailedEventsJdbcImpl;
 import org.ict4h.atomfeed.client.repository.jdbc.AllMarkersJdbcImpl;
 import org.ict4h.atomfeed.client.service.AtomFeedClient;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.joda.time.DateTime;
-import org.omg.IOP.ServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -25,7 +23,7 @@ public class OpenElisFeedClient implements OpenElisFeedClientInterface {
     private static Logger logger = Logger.getLogger(OpenElisFeedClient.class);
 
     @Autowired
-    public OpenElisFeedClient(FeedProperties properties, JdbcConnectionProvider jdbcConnectionProvider,
+    public OpenElisFeedClient(ElisAtomFeedProperties properties, JdbcConnectionProvider jdbcConnectionProvider,
                               OpenElisPatientEventWorker openMRSEventWorker) {
         String feedUri = properties.getFeedUri();
         try {

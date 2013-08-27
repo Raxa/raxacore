@@ -1,6 +1,6 @@
 package org.bahmni.module.elisatomfeedclient.api.client;
 
-import org.bahmni.module.elisatomfeedclient.api.FeedProperties;
+import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.exception.OpenElisFeedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class WebClient {
     private int readTimeout = 20000;
 
     @Autowired
-    public WebClient(FeedProperties properties) {
+    public WebClient(ElisAtomFeedProperties properties) {
         this.connectTimeout = properties.getConnectTimeout();
         this.readTimeout = properties.getReadTimeout();
     }

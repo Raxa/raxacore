@@ -7,12 +7,12 @@ import javax.annotation.Resource;
 import java.util.Properties;
 
 @Component
-public class FeedProperties extends AtomFeedProperties {
+public class ElisAtomFeedProperties extends AtomFeedProperties {
 
     private static final String FEED_URI = "feed.uri";
     private static final String OPEN_ELIS_URI = "openelis.uri";
-    private static final String READ_TIMEOUT = "read.timeout";
-    private static final String CONNECT_TIMEOUT = "connect.timeout";
+    private static final String CONNECT_TIMEOUT = "feed.connectionTimeoutInMilliseconds";
+    private static final String MAX_FAILED_EVENTS = "feed.maxFailedEvents";
 
     @Resource(name = "openElisAtomFeedProperties")
     private Properties atomFeedProperties;
@@ -23,5 +23,15 @@ public class FeedProperties extends AtomFeedProperties {
 
     public String getOpenElisUri() {
         return atomFeedProperties.getProperty(OPEN_ELIS_URI);
+    }
+
+    @Override
+    public int getMaxFailedEvents() {
+        return Integer.parseInt(atomFeedProperties.getProperty(MAX_FAILED_EVENTS));
+    }
+
+    @Override
+    public int getConnectTimeout() {
+        return Integer.parseInt(atomFeedProperties.getProperty(CONNECT_TIMEOUT));
     }
 }

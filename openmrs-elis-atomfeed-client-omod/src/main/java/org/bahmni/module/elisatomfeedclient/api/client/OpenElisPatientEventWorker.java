@@ -5,7 +5,7 @@ import bsh.Interpreter;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 
-import org.bahmni.module.elisatomfeedclient.api.FeedProperties;
+import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisPatient;
 import org.bahmni.module.elisatomfeedclient.api.exception.OpenElisFeedException;
 import org.bahmni.module.elisatomfeedclient.api.mapper.BahmniPatientMapper;
@@ -17,8 +17,6 @@ import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.util.HashMap;
@@ -33,27 +31,27 @@ public class OpenElisPatientEventWorker implements EventWorker {
     private BahmniPatientService patientService;
     private PersonService personService;
     private WebClient webClient;
-    private FeedProperties feedProperties;
+    private ElisAtomFeedProperties elisAtomFeedProperties;
 
     private static Logger logger = Logger.getLogger(OpenElisPatientEventWorker.class);
 
     @Autowired
-    public OpenElisPatientEventWorker(BahmniPatientService bahmniPatientService, PersonService personService, WebClient webClient, FeedProperties feedProperties) {
+    public OpenElisPatientEventWorker(BahmniPatientService bahmniPatientService, PersonService personService, WebClient webClient, ElisAtomFeedProperties elisAtomFeedProperties) {
         this.patientService = bahmniPatientService;
         this.personService = personService;
         this.webClient = webClient;
-        this.feedProperties = feedProperties;
+        this.elisAtomFeedProperties = elisAtomFeedProperties;
         interpreter = new Interpreter();
     }
 
-    public OpenElisPatientEventWorker(BahmniPatientService bahmniPatientService, PersonService personService, WebClient webClient, FeedProperties feedProperties, Interpreter interpreter) {
-        this(bahmniPatientService, personService, webClient, feedProperties);
+    public OpenElisPatientEventWorker(BahmniPatientService bahmniPatientService, PersonService personService, WebClient webClient, ElisAtomFeedProperties elisAtomFeedProperties, Interpreter interpreter) {
+        this(bahmniPatientService, personService, webClient, elisAtomFeedProperties);
         this.interpreter = interpreter;
     }
 
     @Override
     public void process(Event event) {
-        String patientUrl = feedProperties.getOpenElisUri() + event.getContent();
+        String patientUrl = elisAtomFeedProperties.getOpenElisUri() + event.getContent();
         logger.info("openelisatomfeedclient:Processing event : " + patientUrl);
         try {
             String response = webClient.get(URI.create(patientUrl), new HashMap<String, String>());

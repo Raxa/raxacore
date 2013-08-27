@@ -4,18 +4,14 @@ import bsh.Interpreter;
 import org.bahmni.module.bahmnicore.model.BahmniAddress;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
-import org.bahmni.module.elisatomfeedclient.api.FeedProperties;
+import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.openmrs.api.PersonService;
-import org.openmrs.util.OpenmrsUtil;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.URI;
 
@@ -37,7 +33,7 @@ public class OpenElisPatientEventWorkerTest {
     @Mock
     private WebClient webClient;
     @Mock
-    private FeedProperties feedProperties;
+    private ElisAtomFeedProperties elisAtomFeedProperties;
     @Mock
     private Interpreter intepreter;
 
@@ -47,8 +43,8 @@ public class OpenElisPatientEventWorkerTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        openElisPatientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, webClient, feedProperties, intepreter);
-        when(feedProperties.getOpenElisUri()).thenReturn("http://localhost:8085");
+        openElisPatientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, webClient, elisAtomFeedProperties, intepreter);
+        when(elisAtomFeedProperties.getOpenElisUri()).thenReturn("http://localhost:8085");
         when(intepreter.source(anyString())).thenReturn(true);
     }
 
