@@ -78,12 +78,12 @@ public class PatientPersister implements EntityPersister<Patient> {
             return new RowResult(patient, e);
         }
 
-        return RowResult.SUCCESS;
+        return new RowResult(patient);
     }
 
     @Override
     public RowResult<Patient> validate(Patient patient) {
-        return RowResult.SUCCESS;
+        return new RowResult<>(patient);
     }
 
     private synchronized int incrementCounter() {
