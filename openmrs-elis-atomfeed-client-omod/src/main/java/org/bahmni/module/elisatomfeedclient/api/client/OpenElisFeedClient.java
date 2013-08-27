@@ -32,7 +32,7 @@ public class OpenElisFeedClient implements OpenElisFeedClientInterface {
             atomFeedClient = new AtomFeedClient(new AllFeeds(properties, new HashMap<String, String>()), new AllMarkersJdbcImpl(jdbcConnectionProvider),
                     new AllFailedEventsJdbcImpl(jdbcConnectionProvider), properties, jdbcConnectionProvider, new URI(feedUri), openMRSEventWorker);
         } catch (URISyntaxException e) {
-            logger.error("elisatomfeed:error instantiating client:" + e.getMessage(), e);
+            logger.error("openelisatomfeedclient:error instantiating client:" + e.getMessage(), e);
             throw new RuntimeException("error for uri:" + feedUri);
         }
     }
@@ -40,10 +40,10 @@ public class OpenElisFeedClient implements OpenElisFeedClientInterface {
     @Override
     public void processFeed() {
         try {
-            logger.info("elisatomfeed:processing feed " + DateTime.now());
+            logger.info("openelisatomfeedclient:processing feed " + DateTime.now());
             atomFeedClient.processEvents();
         } catch (Exception e) {
-            logger.error("elisatomfeed:failed feed execution " + e, e);
+            logger.error("openelisatomfeedclient:failed feed execution " + e, e);
         }
     }
 

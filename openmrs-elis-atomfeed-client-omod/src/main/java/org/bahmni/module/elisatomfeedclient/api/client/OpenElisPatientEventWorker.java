@@ -54,7 +54,7 @@ public class OpenElisPatientEventWorker implements EventWorker {
     @Override
     public void process(Event event) {
         String patientUrl = feedProperties.getOpenElisUri() + event.getContent();
-        logger.info("elisatomfeed:Processing event : " + patientUrl);
+        logger.info("openelisatomfeedclient:Processing event : " + patientUrl);
         try {
             String response = webClient.get(URI.create(patientUrl), new HashMap<String, String>());
             OpenElisPatient openElisPatient = objectMapper.readValue(response, OpenElisPatient.class);
@@ -64,14 +64,14 @@ public class OpenElisPatientEventWorker implements EventWorker {
             interpreter.set("healthCenter", openElisPatient.getHealthCenter());
             Boolean shouldProcess = (Boolean) interpreter.source(OpenmrsUtil.getApplicationDataDirectory() + "beanshell/open-elis-patient-feed-filter.bsh");
 
-            logger.info("elisatomfeed:ignoring event : " + patientUrl);
+            logger.info("openelisatomfeedclient:ignoring event : " + patientUrl);
             if (shouldProcess) {
-                logger.info("elisatomfeed:creating patient for event : " + patientUrl);
+                logger.info("openelisatomfeedclient:creating patient for event : " + patientUrl);
                 patientService.createPatient(new BahmniPatientMapper(allPersonAttributeTypes).map(openElisPatient));
             }
 
         } catch (IOException | EvalError e) {
-            logger.error("elisatomfeed:error processing event : " + patientUrl + e.getMessage(), e);
+            logger.error("openelisatomfeedclient:error processing event : " + patientUrl + e.getMessage(), e);
             throw new OpenElisFeedException("could not read patient data", e);
         }
     }
