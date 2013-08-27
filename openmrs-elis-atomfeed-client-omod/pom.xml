@@ -224,6 +224,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>rome</groupId>
+            <artifactId>rome</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.beanshell</groupId>
