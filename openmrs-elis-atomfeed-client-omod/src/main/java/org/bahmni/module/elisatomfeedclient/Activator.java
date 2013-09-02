@@ -1,20 +1,20 @@
 package org.bahmni.module.elisatomfeedclient;
 
-import org.apache.log4j.Logger;
-import org.openmrs.api.context.Context;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.BaseModuleActivator;
 
 public class Activator extends BaseModuleActivator {
 
-    private static Logger logger = Logger.getLogger(Activator.class);
+    private Log log = LogFactory.getLog(this.getClass());
 	
 	@Override
 	public void started() {
-		logger.info("Started the Open-Elis Atom Feed Client module");
+		log.info("Started the Open-Elis Atom Feed Client module");
 	}
 	
 	@Override
 	public void stopped() {
-		logger.info("Stopped the Open-Elis Atom Feed Client module");
+		log.info("Stopped the Open-Elis Atom Feed Client module");
 	}
 }
