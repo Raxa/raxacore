@@ -4,7 +4,6 @@ import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
 import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
 import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;
-import org.bahmni.module.billing.BillingService;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -120,20 +119,6 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
         patients = bahmniPatientDao.getPatients("", "Sinha", "", 100, 2);
         assertEquals(0, patients.size());
-    }
-}
-
-@Service
-class MockBillingService implements BillingService {
-    @Override
-    public void createCustomer(String name, String patientId, String village) {
-    }
-    @Override
-    public void updateCustomerBalance(String patientId, double balance) {
-    }
-    @Override
-    public Object[] findCustomers(String patientId) {
-        return new Object[0];  //To change body of implemented methods use File | Settings | File Templates.
     }
 }
 

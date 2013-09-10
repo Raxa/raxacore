@@ -12,7 +12,6 @@
     <modules>
         <module>bahmnicore-api</module>
         <module>bahmnicore-omod</module>
-        <module>openerp-service</module>
         <module>jss-old-data</module>
         <module>openmrs-elis-atomfeed-client-omod</module>
     </modules>

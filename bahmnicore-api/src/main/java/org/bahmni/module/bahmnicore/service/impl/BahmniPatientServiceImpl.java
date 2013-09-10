@@ -12,7 +12,6 @@ import org.bahmni.module.bahmnicore.model.BahmniAddress;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
-import org.bahmni.module.billing.BillingService;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.PersonAttributeType;
@@ -30,7 +29,6 @@ import java.util.List;
 @Lazy //to get rid of cyclic dependencies
 public class BahmniPatientServiceImpl implements BahmniPatientService {
     private PatientService patientService;
-    private BillingService billingService;
     private PatientImageService patientImageService;
     private BahmniCoreApiProperties properties;
     private PatientMapper patientMapper;
@@ -40,10 +38,9 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     private BahmniPatientDao bahmniPatientDao;
 
     @Autowired
-    public BahmniPatientServiceImpl(BillingService billingService, PatientImageService patientImageService,
+    public BahmniPatientServiceImpl(PatientImageService patientImageService,
                                     PatientService patientService, PersonService personService, ConceptService conceptService,
                                     BahmniCoreApiProperties properties, PatientMapper patientMapper, BahmniPatientDao bahmniPatientDao) {
-        this.billingService = billingService;
         this.patientImageService = patientImageService;
         this.patientService = patientService;
         this.properties = properties;
@@ -78,19 +75,6 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
             throw e;
         } catch (RuntimeException e) {
             executionMode.handleSavePatientFailure(e, bahmniPatient);
-        }
-
-        try {
-            String fullName = patient == null ? bahmniPatient.getFullName() : patient.getPersonName().getFullName();
-            String patientId = patient == null ? bahmniPatient.getIdentifier() : patient.getPatientIdentifier().toString();
-            BahmniAddress bahmniAddress = bahmniPatient.getAddresses().get(0);
-            String village = bahmniAddress == null ? null : bahmniAddress.getCityVillage();
-            billingService.createCustomer(fullName, patientId, village);
-            if (bahmniPatient.hasBalance()) {
-                billingService.updateCustomerBalance(patientId, bahmniPatient.getBalance());
-            }
-        } catch (Exception e) {
-            executionMode.handleOpenERPFailure(e, bahmniPatient, patient);
         }
         return patient;
     }
