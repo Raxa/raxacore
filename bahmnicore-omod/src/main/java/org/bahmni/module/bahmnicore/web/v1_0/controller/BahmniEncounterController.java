@@ -1,17 +1,29 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.apache.commons.lang.StringUtils;
+import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
 import org.bahmni.module.bahmnicore.contract.encounter.data.ObservationData;
 import org.bahmni.module.bahmnicore.contract.encounter.data.TestOrderData;
 import org.bahmni.module.bahmnicore.contract.encounter.request.CreateEncounterRequest;
-import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
 import org.bahmni.module.bahmnicore.contract.encounter.request.GetObservationsRequest;
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterConfigResponse;
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterDataResponse;
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterObservationResponse;
-import org.joda.time.DateMidnight;
-import org.openmrs.*;
-import org.openmrs.api.*;
+import org.openmrs.Concept;
+import org.openmrs.ConceptDatatype;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Obs;
+import org.openmrs.Order;
+import org.openmrs.Patient;
+import org.openmrs.TestOrder;
+import org.openmrs.Visit;
+import org.openmrs.VisitType;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.ObsService;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.VisitService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +34,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/bahmniencounter")
@@ -187,12 +205,6 @@ public class BahmniEncounterController extends BaseRestController {
     private Visit getActiveVisit(String patientUuid) {
         Patient patient = patientService.getPatientByUuid(patientUuid);
         List<Visit> activeVisitsByPatient = visitService.getActiveVisitsByPatient(patient);
-
-        for (Visit visit : activeVisitsByPatient) {
-            if (visit.getStartDatetime().after(DateMidnight.now().toDate())) {
-                return visit;
-            }
-        }
-        return null;
+        return activeVisitsByPatient.isEmpty()? null : activeVisitsByPatient.get(0);
     }
 }
