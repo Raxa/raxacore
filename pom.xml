@@ -21,6 +21,7 @@
         <openMRSVersion>1.9.4-SNAPSHOT</openMRSVersion>
         <openMRSRuntimeVersion>1.9.3</openMRSRuntimeVersion>
         <springVersion>3.0.5.RELEASE</springVersion>
+        <emrapiVersion>1.0-SNAPSHOT</emrapiVersion>
     </properties>
 
 	<distributionManagement>
@@ -100,6 +101,18 @@
                 <groupId>org.openmrs.tools</groupId>
                 <artifactId>openmrs-tools</artifactId>
                 <version>${openMRSVersion}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>emrapi-api</artifactId>
+                <version>${emrapiVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>emrapi-api</artifactId>
+                <version>${emrapiVersion}</version>
+                <type>test-jar</type>
             </dependency>
 
             <!--webservices.rest main module-->
