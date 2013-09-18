@@ -20,4 +20,9 @@ public class DefaultJdbcConnectionProvider implements JdbcConnectionProvider{
     public Connection getConnection() throws SQLException {
         return DataSourceUtils.doGetConnection(dataSource);
     }
+
+    @Override
+    public void closeConnection(Connection connection) throws SQLException {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }
