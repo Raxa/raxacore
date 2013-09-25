@@ -9,21 +9,8 @@ import org.bahmni.module.bahmnicore.contract.encounter.request.GetObservationsRe
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterConfigResponse;
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterDataResponse;
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterObservationResponse;
-import org.openmrs.Concept;
-import org.openmrs.ConceptDatatype;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
-import org.openmrs.Order;
-import org.openmrs.Patient;
-import org.openmrs.TestOrder;
-import org.openmrs.Visit;
-import org.openmrs.VisitType;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.ObsService;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.VisitService;
+import org.openmrs.*;
+import org.openmrs.api.*;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +42,8 @@ public class BahmniEncounterController extends BaseRestController {
     private EncounterService encounterService;
     @Autowired
     private ObsService obsService;
+    @Autowired
+    private OrderService orderService;
 
     public BahmniEncounterController(VisitService visitService, PatientService patientService, ConceptService conceptService, EncounterService encounterService,
                                      ObsService obsService) {
@@ -107,6 +96,10 @@ public class BahmniEncounterController extends BaseRestController {
                 ConceptData conceptData = new ConceptData(concept.getUuid());
                 encounterConfigResponse.addConcept(concept.getName().getName(), conceptData);
             }
+        }
+        List<OrderType> orderTypes = orderService.getAllOrderTypes();
+        for (OrderType orderType: orderTypes) {
+            encounterConfigResponse.addOrderType(orderType.getName(), orderType.getUuid());
         }
         return encounterConfigResponse;
     }

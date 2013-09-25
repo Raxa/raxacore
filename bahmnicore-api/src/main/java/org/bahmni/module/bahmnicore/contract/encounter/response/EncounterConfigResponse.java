@@ -8,6 +8,7 @@ import java.util.Map;
 public class EncounterConfigResponse {
     private Map<String, String> visitTypes = new HashMap<String, String>();
     private Map<String, String> encounterTypes = new HashMap<String, String>();
+    private Map<String, String> orderTypes = new HashMap<String, String>();
     private Map<String, ConceptData> conceptData = new HashMap<String, ConceptData>();
 
     public Map<String, String> getVisitTypes() {
@@ -44,5 +45,17 @@ public class EncounterConfigResponse {
 
     public void setConceptData(Map<String, ConceptData> conceptData) {
         this.conceptData = conceptData;
+    }
+
+    public void addOrderType(String name, String uuid) {
+        orderTypes.put(name, uuid);
+    }
+
+    public Map<String, String> getOrderTypes() {
+        return orderTypes;
+    }
+
+    public void setOrderTypes(Map<String, String> orderTypes) {
+        this.orderTypes = orderTypes;
     }
 }
