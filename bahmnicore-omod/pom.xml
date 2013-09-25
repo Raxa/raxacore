@@ -20,8 +20,8 @@
     <dependencies>
         <dependency>
             <groupId>org.bahmni.module</groupId>
-            <artifactId>bahmnicore-mail-appender</artifactId>
-            <version>0.2-SNAPSHOT</version>
+            <artifactId>mail-appender</artifactId>
+            <version>2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.bahmni.module</groupId>
