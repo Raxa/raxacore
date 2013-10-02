@@ -8,6 +8,7 @@ import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
 
 import java.util.Arrays;
@@ -21,6 +22,9 @@ public class PatientIdentifierMapperTest {
     @Mock
     private PatientService patientService;
 
+    @Mock
+    private AdministrationService administrationService;
+
     @Before
     public void setUp() throws Exception {
         initMocks(this);
@@ -32,7 +36,7 @@ public class PatientIdentifierMapperTest {
         Patient patient = new Patient();
         patient.setIdentifiers(new HashSet<>(Arrays.asList(identifier)));
 
-        BahmniPatient bahmniPatient = new PatientIdentifierMapper(patientService).mapFromPatient(null, patient);
+        BahmniPatient bahmniPatient = new PatientIdentifierMapper(patientService, administrationService).mapFromPatient(null, patient);
 
         assertEquals(patient.getPatientIdentifier().getIdentifier(), bahmniPatient.getIdentifier());
 

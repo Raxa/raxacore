@@ -4,23 +4,29 @@ import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.idgen.IdentifierSource;
 import org.openmrs.module.idgen.service.IdentifierSourceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 public class PatientIdentifierMapper {
-	
-	private PatientService patientService;
+
+    public static final String EMR_PRIMARY_IDENTIFIER_TYPE = "emr.primaryIdentifierType";
+    private PatientService patientService;
+    private AdministrationService administrationService;
 
     @Autowired
-    public PatientIdentifierMapper(PatientService patientService) {
+    public PatientIdentifierMapper(PatientService patientService,
+                                   @Qualifier("adminService") AdministrationService administrationService) {
         this.patientService = patientService;
+        this.administrationService = administrationService;
     }
 
     public Patient map(BahmniPatient bahmniPatient, Patient patient) {
@@ -30,8 +36,8 @@ public class PatientIdentifierMapper {
 		if (existingIdentifierValue == null || existingIdentifierValue.trim().isEmpty()) {
 			patientIdentifier = generateIdentifier(bahmniPatient.getCenterName());
 		} else {
-			PatientIdentifierType jss = patientService.getPatientIdentifierTypeByName("JSS");
-			patientIdentifier = new PatientIdentifier(existingIdentifierValue, jss, null);
+			PatientIdentifierType identifierType = getPatientIdentifierType();
+			patientIdentifier = new PatientIdentifier(existingIdentifierValue, identifierType, null);
 		}
 		
 		patientIdentifier.setPreferred(true);
@@ -53,10 +59,16 @@ public class PatientIdentifierMapper {
         for (IdentifierSource identifierSource : allIdentifierSources) {
 			if (identifierSource.getName().equals(centerName)) {
 				String identifier = identifierSourceService.generateIdentifier(identifierSource, "Bahmni Registration App");
-				PatientIdentifierType identifierType = identifierSource.getIdentifierType();
-				return new PatientIdentifier(identifier, identifierType, null);
+                PatientIdentifierType identifierType = getPatientIdentifierType();
+                return new PatientIdentifier(identifier, identifierType, null);
 			}
 		}
 		return null;
 	}
+
+    private PatientIdentifierType getPatientIdentifierType() {
+        String globalProperty = administrationService.getGlobalProperty(EMR_PRIMARY_IDENTIFIER_TYPE);
+        PatientIdentifierType patientIdentifierByUuid = patientService.getPatientIdentifierTypeByUuid(globalProperty);
+        return patientIdentifierByUuid;
+    }
 }
