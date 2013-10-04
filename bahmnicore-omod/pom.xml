@@ -30,29 +30,29 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.api</groupId>
-            <artifactId>bahmni-openmrs-api</artifactId>
+            <artifactId>openmrs-api</artifactId>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.openmrs.web</groupId>
-            <artifactId>bahmni-openmrs-web</artifactId>
+            <artifactId>openmrs-web</artifactId>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.openmrs.api</groupId>
-            <artifactId>bahmni-openmrs-api</artifactId>
+            <artifactId>openmrs-api</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openmrs.web</groupId>
-            <artifactId>bahmni-openmrs-web</artifactId>
+            <artifactId>openmrs-web</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openmrs.test</groupId>
-            <artifactId>bahmni-openmrs-test</artifactId>
+            <artifactId>openmrs-test</artifactId>
             <type>pom</type>
             <scope>test</scope>
         </dependency>
