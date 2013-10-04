@@ -19,6 +19,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <openMRSVersion>1.9.4-SNAPSHOT</openMRSVersion>
+        <openMRSWebServicesVersion>2.3-SNAPSHOT</openMRSWebServicesVersion>
         <openMRSRuntimeVersion>1.9.3</openMRSRuntimeVersion>
         <springVersion>3.0.5.RELEASE</springVersion>
     </properties>
@@ -105,7 +106,7 @@
             <!--webservices.rest main module-->
             <dependency>
                 <groupId>org.openmrs.module</groupId>
-                <artifactId>bahmni-webservices.rest-omod</artifactId>
+                <artifactId>webservices.rest-omod</artifactId>
                 <version>2.1.1-SNAPSHOT</version>
                 <type>jar</type>
                 <scope>provided</scope>
@@ -119,14 +120,14 @@
             </dependency>
             <dependency>
                 <groupId>org.openmrs.module</groupId>
-                <artifactId>bahmni-webservices.rest-omod-common</artifactId>
+                <artifactId>webservices.rest-omod-common</artifactId>
                 <version>2.1.1-SNAPSHOT</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.openmrs.module</groupId>
-                <artifactId>bahmni-webservices.rest-omod-common</artifactId>
+                <artifactId>webservices.rest-omod-common</artifactId>
                 <version>2.1.1-SNAPSHOT</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>

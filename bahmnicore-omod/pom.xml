@@ -60,12 +60,12 @@
         <!--Core webservices dependency-->
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>bahmni-webservices.rest-omod</artifactId>
+            <artifactId>webservices.rest-omod</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>bahmni-webservices.rest-omod-common</artifactId>
+            <artifactId>webservices.rest-omod-common</artifactId>
             <scope>provided</scope>
         </dependency>
         <!-- external libraries -->

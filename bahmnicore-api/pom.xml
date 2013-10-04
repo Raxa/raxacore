@@ -54,11 +54,11 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>bahmni-webservices.rest-omod</artifactId>
+            <artifactId>webservices.rest-omod</artifactId>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>bahmni-webservices.rest-omod-common</artifactId>
+            <artifactId>webservices.rest-omod-common</artifactId>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>

@@ -193,18 +193,18 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>bahmni-webservices.rest-omod</artifactId>
-            <version>2.1.1-SNAPSHOT</version>
+            <artifactId>webservices.rest-omod</artifactId>
+            <version>${openMRSWebServicesVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>bahmni-webservices.rest-omod-common</artifactId>
-            <version>2.1.1-SNAPSHOT</version>
+            <artifactId>webservices.rest-omod-common</artifactId>
+            <version>${openMRSWebServicesVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>bahmni-webservices.rest-omod-common</artifactId>
-            <version>2.1.1-SNAPSHOT</version>
+            <artifactId>webservices.rest-omod-common</artifactId>
+            <version>${openMRSWebServicesVersion}</version>
         </dependency>
 
         <dependency>
