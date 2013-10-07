@@ -16,7 +16,14 @@ public class BahmniPersonAttribute {
     public BahmniPersonAttribute(LinkedHashMap post) {
 		SimpleObjectExtractor extractor = new SimpleObjectExtractor(post);
 		personAttributeUuid = extractor.extract("attributeType");
-		value = extractor.extract("value");
+        Object extractValue = extractor.extract("value");
+
+        if (extractValue instanceof String) {
+            value = (String) extractValue;
+        } else {
+            LinkedHashMap extractValue1 = (LinkedHashMap) extractValue;
+            value = (String) extractValue1.get("display");
+        }
 	}
 	
 	public String getPersonAttributeUuid() {
