@@ -1,4 +1,4 @@
-package org.bahmni.module.elisatomfeedclient.api.client;
+package org.bahmni.module.elisatomfeedclient.api.worker;
 
 import bsh.EvalError;
 import bsh.Interpreter;
@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
+import org.bahmni.module.elisatomfeedclient.api.client.WebClient;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisPatient;
 import org.bahmni.module.elisatomfeedclient.api.exception.OpenElisFeedException;
 import org.bahmni.module.elisatomfeedclient.api.mapper.BahmniPatientMapper;

@@ -1,5 +1,5 @@
 package org.bahmni.module.elisatomfeedclient.api.client;
 
-public interface OpenElisFeedClientInterface {
+public interface FeedClient {
     void processFeed();
 }

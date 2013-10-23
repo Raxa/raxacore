@@ -14,22 +14,20 @@
 
     <context:component-scan base-package="org.bahmni.module.elisatomfeedclient"/>
 
-    <bean id="jdbcConnectionProvider" class="org.bahmni.module.elisatomfeedclient.api.client.DefaultJdbcConnectionProvider">
-        <constructor-arg ref="dataSource"/>
-    </bean>
-
-    <bean name="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="jdbc:mysql://localhost:3306/openmrs" />
-        <property name="username" value="root" />
-        <property name="password" value="password" />
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list>
+                <value>org.bahmni.module.elisatomfeedclient.api.client.OpenElisPatientFeedClient</value> <!-- service interface name -->
+                <ref bean="openElisPatientFeedClient"/>
+            </list>
+        </property>
     </bean>
 
     <bean parent="serviceContext">
         <property name="moduleService">
             <list>
-                <value>org.bahmni.module.elisatomfeedclient.api.client.OpenElisFeedClientInterface</value> <!-- service interface name -->
-                <ref bean="openElisFeedClient"/>
+                <value>org.bahmni.module.elisatomfeedclient.api.client.OpenElisLabResultFeedClient</value> <!-- service interface name -->
+                <ref bean="openElisLabResultFeedClient"/>
             </list>
         </property>
     </bean>

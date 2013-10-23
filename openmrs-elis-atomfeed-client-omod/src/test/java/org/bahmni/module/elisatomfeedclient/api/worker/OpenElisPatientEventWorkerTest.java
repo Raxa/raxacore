@@ -1,10 +1,11 @@
-package org.bahmni.module.elisatomfeedclient.api.client;
+package org.bahmni.module.elisatomfeedclient.api.worker;
 
 import bsh.Interpreter;
 import org.bahmni.module.bahmnicore.model.BahmniAddress;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
+import org.bahmni.module.elisatomfeedclient.api.client.WebClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.joda.time.LocalDate;
 import org.junit.Before;
@@ -22,7 +23,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 public class OpenElisPatientEventWorkerTest {
 

@@ -1,7 +1,9 @@
-package org.bahmni.module.elisatomfeedclient.api.client;
+package org.bahmni.module.elisatomfeedclient.api.client.impl;
 
 import org.apache.log4j.Logger;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
+import org.bahmni.module.elisatomfeedclient.api.client.OpenElisPatientFeedClient;
+import org.bahmni.module.elisatomfeedclient.api.worker.OpenElisPatientEventWorker;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.jdbc.AllFailedEventsJdbcImpl;
 import org.ict4h.atomfeed.client.repository.jdbc.AllMarkersJdbcImpl;
@@ -15,20 +17,26 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 
-@Component("openElisFeedClient")
-public class OpenElisFeedClient implements OpenElisFeedClientInterface {
+@Component("openElisPatientFeedClient")
+public class OpenElisPatientFeedClientImpl implements OpenElisPatientFeedClient {
 
     private AtomFeedClient atomFeedClient;
-
-    private static Logger logger = Logger.getLogger(OpenElisFeedClient.class);
+    private static Logger logger = Logger.getLogger(OpenElisPatientFeedClientImpl.class);
 
     @Autowired
-    public OpenElisFeedClient(ElisAtomFeedProperties properties, JdbcConnectionProvider jdbcConnectionProvider,
-                              OpenElisPatientEventWorker openMRSEventWorker) {
-        String feedUri = properties.getFeedUri();
+    public OpenElisPatientFeedClientImpl(ElisAtomFeedProperties properties,
+                                         JdbcConnectionProvider jdbcConnectionProvider,
+                                         OpenElisPatientEventWorker openMRSEventWorker) {
+        String feedUri = properties.getFeedUri("patient.feed.uri");
         try {
-            atomFeedClient = new AtomFeedClient(new AllFeeds(properties, new HashMap<String, String>()), new AllMarkersJdbcImpl(jdbcConnectionProvider),
-                    new AllFailedEventsJdbcImpl(jdbcConnectionProvider), properties, jdbcConnectionProvider, new URI(feedUri), openMRSEventWorker);
+            atomFeedClient = new AtomFeedClient(
+                    new AllFeeds(properties, new HashMap<String, String>()),
+                    new AllMarkersJdbcImpl(jdbcConnectionProvider),
+                    new AllFailedEventsJdbcImpl(jdbcConnectionProvider),
+                    properties,
+                    jdbcConnectionProvider,
+                    new URI(feedUri),
+                    openMRSEventWorker);
         } catch (URISyntaxException e) {
             logger.error("openelisatomfeedclient:error instantiating client:" + e.getMessage(), e);
             throw new RuntimeException("error for uri:" + feedUri);
@@ -45,6 +53,4 @@ public class OpenElisFeedClient implements OpenElisFeedClientInterface {
             throw e;
         }
     }
-
-
 }

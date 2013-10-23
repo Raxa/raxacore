@@ -9,7 +9,6 @@ import java.util.Properties;
 @Component
 public class ElisAtomFeedProperties extends AtomFeedProperties {
 
-    private static final String FEED_URI = "feed.uri";
     private static final String OPEN_ELIS_URI = "openelis.uri";
     private static final String CONNECT_TIMEOUT = "feed.connectionTimeoutInMilliseconds";
     private static final String MAX_FAILED_EVENTS = "feed.maxFailedEvents";
@@ -17,8 +16,8 @@ public class ElisAtomFeedProperties extends AtomFeedProperties {
     @Resource(name = "openElisAtomFeedProperties")
     private Properties atomFeedProperties;
 
-    public String getFeedUri() {
-        return atomFeedProperties.getProperty(FEED_URI);
+    public String getFeedUri(String propertyName) {
+        return atomFeedProperties.getProperty(propertyName);
     }
 
     public String getOpenElisUri() {
