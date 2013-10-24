@@ -1,0 +1,65 @@
+package org.bahmni.module.bahmnicore.service.impl;
+
+import org.bahmni.module.bahmnicore.model.BahmniLabResult;
+import org.bahmni.module.bahmnicore.service.BahmniLabResultService;
+import org.junit.Test;
+import org.openmrs.*;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.context.Context;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveTest {
+
+    @Autowired
+    private EncounterService encounterService;
+
+    @Autowired
+    private BahmniLabResultService bahmniLabResultService;
+
+    @Test
+    public void shouldCreateAnObservation() throws Exception {
+        executeDataSet("labOrderTestData.xml");
+
+        Patient patient = Context.getPatientService().getPatient(1);
+        Concept haemoglobin = Context.getConceptService().getConcept("Haemoglobin");
+        Set<Order> orders = buildOrders(Arrays.asList(haemoglobin));
+        Encounter encounter = encounterService.saveEncounter(buildEncounter(patient, orders));
+
+        BahmniLabResult bahmniLabResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), "15", "Numeric", "Some Alert", null);
+        bahmniLabResultService.add(bahmniLabResult);
+
+        Encounter encounterWithObs = encounterService.getEncounterByUuid(encounter.getUuid());
+        ArrayList<Obs> obsList = new ArrayList<>(encounterWithObs.getObs());
+        assertEquals(1, obsList.size());
+        Obs obs = obsList.get(0);
+        assertEquals((Double) 15.0, obs.getValueNumeric());
+        assertEquals("accessionNumber", obs.getAccessionNumber());
+        assertEquals("Some Alert", obs.getComment());
+    }
+
+    private Encounter buildEncounter(Patient patient, Set<Order> orders) {
+        Encounter enc = new Encounter();
+        enc.setLocation(Context.getLocationService().getLocation(2));
+        enc.setEncounterType(Context.getEncounterService().getEncounterType(2));
+        enc.setEncounterDatetime(new Date());
+        enc.setPatient(patient);
+        enc.setOrders(orders);
+        return enc;
+    }
+
+    private Set<Order> buildOrders(List<Concept> tests) {
+        Set<Order> orders = new HashSet<>();
+        for (Concept test : tests) {
+            Order order = new Order();
+            order.setConcept(test);
+            orders.add(order);
+        }
+        return orders;
+    }
+}
