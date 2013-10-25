@@ -23,7 +23,7 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
     private BahmniLabResultService bahmniLabResultService;
 
     @Test
-    public void shouldCreateAnObservation() throws Exception {
+    public void shouldCreateNewObservationForLabResult() throws Exception {
         executeDataSet("labOrderTestData.xml");
 
         Patient patient = Context.getPatientService().getPatient(1);
@@ -31,7 +31,7 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
         Set<Order> orders = buildOrders(Arrays.asList(haemoglobin));
         Encounter encounter = encounterService.saveEncounter(buildEncounter(patient, orders));
 
-        BahmniLabResult bahmniLabResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), "15", "Numeric", "Some Alert", null);
+        BahmniLabResult bahmniLabResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), "15", "Some Alert", null);
         bahmniLabResultService.add(bahmniLabResult);
 
         Encounter encounterWithObs = encounterService.getEncounterByUuid(encounter.getUuid());
@@ -41,6 +41,34 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
         assertEquals((Double) 15.0, obs.getValueNumeric());
         assertEquals("accessionNumber", obs.getAccessionNumber());
         assertEquals("Some Alert", obs.getComment());
+        assertEquals(haemoglobin, obs.getConcept());
+        assertEquals(orders.toArray()[0], obs.getOrder());
+    }
+
+    @Test
+    public void shouldUpdateObservationIfObservationAlreadyExistInEncounter() throws Exception {
+        executeDataSet("labOrderTestData.xml");
+
+        Patient patient = Context.getPatientService().getPatient(1);
+        Concept haemoglobin = Context.getConceptService().getConcept("Haemoglobin");
+        Set<Order> orders = buildOrders(Arrays.asList(haemoglobin));
+        Encounter encounter = encounterService.saveEncounter(buildEncounter(patient, orders));
+
+        BahmniLabResult bahmniLabResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), "15", "Some Alert", null);
+        bahmniLabResultService.add(bahmniLabResult);
+
+        BahmniLabResult bahmniLabResultUpdate = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), "20", "Some Other Alert", null);
+        bahmniLabResultService.add(bahmniLabResultUpdate);
+
+        Encounter encounterWithObs = encounterService.getEncounterByUuid(encounter.getUuid());
+        ArrayList<Obs> obsList = new ArrayList<>(encounterWithObs.getObs());
+        assertEquals(1, obsList.size());
+        Obs obs = obsList.get(0);
+        assertEquals((Double) 20.0, obs.getValueNumeric());
+        assertEquals("accessionNumber", obs.getAccessionNumber());
+        assertEquals("Some Other Alert", obs.getComment());
+        assertEquals(haemoglobin, obs.getConcept());
+        assertEquals(orders.toArray()[0], obs.getOrder());
     }
 
     private Encounter buildEncounter(Patient patient, Set<Order> orders) {

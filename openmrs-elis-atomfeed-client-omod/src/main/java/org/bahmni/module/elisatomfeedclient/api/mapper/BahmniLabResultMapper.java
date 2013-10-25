@@ -15,12 +15,6 @@ public class BahmniLabResultMapper {
         bahmniLabResult.setTestUuid(openElisLabResult.getTestExternalId());
         bahmniLabResult.setComments(openElisLabResult.getAlerts());
         bahmniLabResult.setNotes(openElisLabResult.getNotes());
-        switch (openElisLabResult.getResultType()) {
-            case "N": bahmniLabResult.setResultType("Numeric"); break;
-            case "R":
-            case "D":
-            default: bahmniLabResult.setResultType("String"); break;
-        }
         return bahmniLabResult;
     }
 }

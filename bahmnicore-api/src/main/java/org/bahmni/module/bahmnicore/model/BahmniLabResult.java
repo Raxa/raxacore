@@ -11,28 +11,18 @@ public class BahmniLabResult {
     private String testUuid;
     private String result;
     private String comments;
-    private String resultType;
     private List<String> notes = new ArrayList<>();
-
-    public String getResultType() {
-        return resultType;
-    }
-
-    public void setResultType(String resultType) {
-        this.resultType = resultType;
-    }
 
     public BahmniLabResult() {
     }
 
-    public BahmniLabResult(String encounterUuid, String accessionNumber, String patientUuid, String testUuid, String result, String resultType, String comments, List<String> notes) {
+    public BahmniLabResult(String encounterUuid, String accessionNumber, String patientUuid, String testUuid, String result, String comments, List<String> notes) {
         this.encounterUuid = encounterUuid;
         this.accessionNumber = accessionNumber;
         this.patientUuid = patientUuid;
         this.testUuid = testUuid;
         this.result = result;
         this.comments = comments;
-        this.resultType = resultType;
         this.notes = notes;
     }
 
