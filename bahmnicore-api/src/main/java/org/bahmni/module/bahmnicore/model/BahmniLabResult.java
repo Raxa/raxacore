@@ -1,5 +1,7 @@
 package org.bahmni.module.bahmnicore.model;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,10 @@ public class BahmniLabResult {
         this.result = result;
         this.comments = comments;
         this.notes = notes;
+    }
+
+    public boolean isValid() {
+        return !(StringUtils.isEmpty(encounterUuid) || StringUtils.isEmpty(testUuid));
     }
 
     public String getEncounterUuid() {

@@ -35,9 +35,12 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
         bahmniLabResultService.add(bahmniLabResult);
 
         Encounter encounterWithObs = encounterService.getEncounterByUuid(encounter.getUuid());
-        ArrayList<Obs> obsList = new ArrayList<>(encounterWithObs.getObs());
-        assertEquals(1, obsList.size());
-        Obs obs = obsList.get(0);
+        ArrayList<Obs> obsList = new ArrayList<>(encounterWithObs.getObsAtTopLevel(false));
+        Obs labObsGroup = obsList.get(0);
+        assertEquals(labObsGroup.getConcept(), Context.getConceptService().getConcept("Laboratory"));
+        assertEquals(1, labObsGroup.getGroupMembers().size());
+
+        Obs obs = (Obs) labObsGroup.getGroupMembers().toArray()[0];
         assertEquals((Double) 15.0, obs.getValueNumeric());
         assertEquals("accessionNumber", obs.getAccessionNumber());
         assertEquals("Some Alert", obs.getComment());
@@ -61,9 +64,12 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
         bahmniLabResultService.add(bahmniLabResultUpdate);
 
         Encounter encounterWithObs = encounterService.getEncounterByUuid(encounter.getUuid());
-        ArrayList<Obs> obsList = new ArrayList<>(encounterWithObs.getObs());
-        assertEquals(1, obsList.size());
-        Obs obs = obsList.get(0);
+        ArrayList<Obs> obsList = new ArrayList<>(encounterWithObs.getObsAtTopLevel(false));
+        Obs labObsGroup = obsList.get(0);
+        assertEquals(labObsGroup.getConcept(), Context.getConceptService().getConcept("Laboratory"));
+        assertEquals(1, labObsGroup.getGroupMembers().size());
+
+        Obs obs = (Obs) labObsGroup.getGroupMembers().toArray()[0];
         assertEquals((Double) 20.0, obs.getValueNumeric());
         assertEquals("accessionNumber", obs.getAccessionNumber());
         assertEquals("Some Other Alert", obs.getComment());
