@@ -28,24 +28,23 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
 
         Patient patient = Context.getPatientService().getPatient(1);
         Concept haemoglobin = Context.getConceptService().getConcept("Haemoglobin");
-        Set<Order> orders = buildOrders(Arrays.asList(haemoglobin));
+        Concept hbElectrophoresis = Context.getConceptService().getConcept("Hb Electrophoresis");
+        Set<Order> orders = buildOrders(Arrays.asList(haemoglobin, hbElectrophoresis));
         Encounter encounter = encounterService.saveEncounter(buildEncounter(patient, orders));
 
-        BahmniLabResult bahmniLabResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), null, "15", "Some Alert", null);
-        bahmniLabResultService.add(bahmniLabResult);
+        BahmniLabResult numericResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), null, "15", "Some Alert", null);
+        bahmniLabResultService.add(numericResult);
+        BahmniLabResult codedResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), hbElectrophoresis.getUuid(), null, "Some coded result", null, null);
+        bahmniLabResultService.add(codedResult);
 
         Encounter encounterWithObs = encounterService.getEncounterByUuid(encounter.getUuid());
         ArrayList<Obs> obsList = new ArrayList<>(encounterWithObs.getObsAtTopLevel(false));
         Obs labObsGroup = obsList.get(0);
         assertEquals(labObsGroup.getConcept(), Context.getConceptService().getConcept("Laboratory"));
-        assertEquals(1, labObsGroup.getGroupMembers().size());
+        assertEquals(2, labObsGroup.getGroupMembers().size());
 
-        Obs obs = (Obs) labObsGroup.getGroupMembers().toArray()[0];
-        assertEquals((Double) 15.0, obs.getValueNumeric());
-        assertEquals("accessionNumber", obs.getAccessionNumber());
-        assertEquals("Some Alert", obs.getComment());
-        assertEquals(haemoglobin, obs.getConcept());
-        assertEquals(orders.toArray()[0], obs.getOrder());
+        assertLabResult(labObsGroup.getGroupMembers(), haemoglobin, "15", true);
+        assertLabResult(labObsGroup.getGroupMembers(), hbElectrophoresis, "Some coded result", false);
     }
 
     @Test
@@ -104,14 +103,18 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
         assertEquals(2, bloodPanelObsGroup.getGroupMembers().size());
         assertEquals(bloodPanel, bloodPanelObsGroup.getConcept());
 
-        assertLabResult(bloodPanelObsGroup.getGroupMembers(), haemoglobin, 45.0);
-        assertLabResult(bloodPanelObsGroup.getGroupMembers(), ESR, 50.0);
+        assertLabResult(bloodPanelObsGroup.getGroupMembers(), haemoglobin, "45.0", true);
+        assertLabResult(bloodPanelObsGroup.getGroupMembers(), ESR, "50.0", true);
     }
 
-    private void assertLabResult(Set<Obs> observations, Concept concept, Double value) {
+    private void assertLabResult(Set<Obs> observations, Concept concept, String value, boolean isNumeric) {
         for (Obs observation : observations) {
             if(observation.getConcept().equals(concept)) {
-                assertEquals(value, observation.getValueNumeric());
+                if(isNumeric) {
+                    assertEquals((Object) Double.parseDouble(value), observation.getValueNumeric());
+                } else {
+                    assertEquals(value, observation.getValueText());
+                }
                 return;
             }
         }

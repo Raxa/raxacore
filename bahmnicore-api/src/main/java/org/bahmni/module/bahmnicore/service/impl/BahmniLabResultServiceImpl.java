@@ -85,6 +85,7 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
 
     private Obs updateTestObs(BahmniLabResult bahmniLabResult, Obs existingObs) {
         try {
+            setValue(existingObs, bahmniLabResult, existingObs.getConcept());
             existingObs.setValueAsString(bahmniLabResult.getResult());
             existingObs.setComment(bahmniLabResult.getComments());
             return existingObs;
@@ -100,11 +101,20 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
             obs.setOrder(order);
             obs.setComment(bahmniLabResult.getComments());
             obs.setAccessionNumber(bahmniLabResult.getAccessionNumber());
-            obs.setValueAsString(bahmniLabResult.getResult());
+            setValue(obs, bahmniLabResult, concept);
             parentObsGroup.addGroupMember(obs);
             return obs;
         } catch (ParseException e) {
             throw new ApplicationError("Error parsing Lab Result: ", e);
+        }
+    }
+
+    private void setValue(Obs obs, BahmniLabResult bahmniLabResult, Concept concept) throws ParseException {
+        if(concept.getDatatype().isCoded()){
+            obs.setValueText(bahmniLabResult.getResult());
+        }
+        else {
+            obs.setValueAsString(bahmniLabResult.getResult());
         }
     }
 
