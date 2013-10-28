@@ -27,7 +27,7 @@ public class BahmniLabResult {
         this.panelUuid = panelUuid;
         this.result = result;
         this.comments = comments;
-        this.notes = notes;
+        setNotes(notes);
     }
 
     public boolean isValid() {
@@ -87,7 +87,9 @@ public class BahmniLabResult {
     }
 
     public void setNotes(List<String> notes) {
-        this.notes = notes;
+        if(notes != null) {
+            this.notes = notes;
+        }
     }
 
     public void setPanelUuid(String panelUuid) {

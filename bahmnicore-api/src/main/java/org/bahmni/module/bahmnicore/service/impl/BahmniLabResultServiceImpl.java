@@ -20,10 +20,12 @@ import java.util.Set;
 public class BahmniLabResultServiceImpl implements BahmniLabResultService {
 
     public static final String LAB_RESULT_OBS_GROUP_CONCEPT_NAME = "Laboratory";
+    private static final String COMMENTS_CONCEPT_NAME = "COMMENTS";
     private EncounterService encounterService;
     private ConceptService conceptService;
 
     private Concept labResultObsGroupConcept;
+    private Concept commentsConcept;
 
     @Autowired
     public BahmniLabResultServiceImpl(EncounterService encounterService, ConceptService conceptService) {
@@ -88,6 +90,7 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
             setValue(existingObs, bahmniLabResult, existingObs.getConcept());
             existingObs.setValueAsString(bahmniLabResult.getResult());
             existingObs.setComment(bahmniLabResult.getComments());
+            handleNotes(existingObs, bahmniLabResult);
             return existingObs;
         } catch (ParseException e) {
             throw new ApplicationError("Error parsing Lab Result: ", e);
@@ -102,6 +105,7 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
             obs.setComment(bahmniLabResult.getComments());
             obs.setAccessionNumber(bahmniLabResult.getAccessionNumber());
             setValue(obs, bahmniLabResult, concept);
+            handleNotes(obs, bahmniLabResult);
             parentObsGroup.addGroupMember(obs);
             return obs;
         } catch (ParseException e) {
@@ -116,6 +120,25 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
         else {
             obs.setValueAsString(bahmniLabResult.getResult());
         }
+    }
+
+    private void handleNotes(Obs obs, BahmniLabResult bahmniLabResult) {
+        for (String note : getNewNotesToBeAdded(obs, bahmniLabResult)) {
+            Obs noteObs = new Obs();
+            noteObs.setConcept(getCommentsConcept());
+            noteObs.setValueText(note);
+            obs.addGroupMember(noteObs);
+        }
+    }
+
+    private HashSet<String> getNewNotesToBeAdded(Obs obs, BahmniLabResult bahmniLabResult) {
+        HashSet<String> notes = new HashSet<>(bahmniLabResult.getNotes());
+        HashSet<String> existingNotes = new HashSet<>();
+        for (Obs note : getGroupMembers(obs)) {
+            existingNotes.add(note.getValueText());
+        }
+        notes.removeAll(existingNotes);
+        return notes;
     }
 
     private void validate(BahmniLabResult bahmniLabResult) {
@@ -140,6 +163,13 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
             labResultObsGroupConcept = conceptService.getConcept(LAB_RESULT_OBS_GROUP_CONCEPT_NAME);
         }
         return labResultObsGroupConcept;
+    }
+
+    private Concept getCommentsConcept() {
+        if(commentsConcept == null) {
+            commentsConcept = conceptService.getConcept(COMMENTS_CONCEPT_NAME);
+        }
+        return commentsConcept;
     }
 
     private Obs findExistingObs(Obs obsGroup, Concept concept) {

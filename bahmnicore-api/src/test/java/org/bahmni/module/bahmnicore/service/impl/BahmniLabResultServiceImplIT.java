@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveTest {
@@ -105,6 +106,44 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
 
         assertLabResult(bloodPanelObsGroup.getGroupMembers(), haemoglobin, "45.0", true);
         assertLabResult(bloodPanelObsGroup.getGroupMembers(), ESR, "50.0", true);
+    }
+
+    @Test
+    public void shouldPersistNotesAsObservation() throws Exception {
+        executeDataSet("labOrderTestData.xml");
+
+        Patient patient = Context.getPatientService().getPatient(1);
+        Concept hb = Context.getConceptService().getConcept("Haemoglobin");
+        Concept comment = Context.getConceptService().getConcept("COMMENTS");
+
+        Set<Order> orders = buildOrders(Arrays.asList(hb));
+        Encounter encounter = encounterService.saveEncounter(buildEncounter(patient, orders));
+
+        BahmniLabResult result = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), hb.getUuid(), null, "15", "A", Arrays.asList("Note One"));
+        bahmniLabResultService.add(result);
+
+        BahmniLabResult updatedNotesResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), hb.getUuid(), null, "15", "A", Arrays.asList("Note One", "Note Two"));
+        bahmniLabResultService.add(updatedNotesResult);
+
+        Encounter encounterWithObs = encounterService.getEncounterByUuid(encounter.getUuid());
+        Obs labObsGroup = new ArrayList<>(encounterWithObs.getObsAtTopLevel(false)).get(0);
+        assertEquals(1, labObsGroup.getGroupMembers().size());
+
+        Obs resultObs = (Obs) labObsGroup.getGroupMembers().toArray()[0];
+        assertEquals(2, resultObs.getGroupMembers().size());
+
+        assertLabResultNote(resultObs.getGroupMembers(), comment, "Note One");
+        assertLabResultNote(resultObs.getGroupMembers(), comment, "Note Two");
+    }
+
+    private void assertLabResultNote(Set<Obs> observations, Concept comment, String expectedNote) {
+        ArrayList<String> notes = new ArrayList<>();
+        for (Obs note : observations) {
+            assertEquals(comment, note.getConcept());
+            notes.add(note.getValueText());
+        }
+
+        assertTrue(notes.contains(expectedNote));
     }
 
     private void assertLabResult(Set<Obs> observations, Concept concept, String value, boolean isNumeric) {

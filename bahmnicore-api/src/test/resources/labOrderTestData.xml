@@ -7,10 +7,16 @@
 
     <concept_datatype concept_datatype_id="1" name="Numeric" hl7_abbreviation="NM" description="Numeric value, including integer or float" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="8d4a4488-c2cc-11de-8d13-0010c6dffd0f"/>
     <concept_datatype concept_datatype_id="2" name="Coded" hl7_abbreviation="CWE" description="Coded values" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="8d4a48b6-c2cc-11de-8d13-0010c6dffd0f"/>
+    <concept_datatype concept_datatype_id="3" name="Text" hl7_abbreviation="ST" description="Text Value" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="8d4a4ab4-c2cc-11de-8d13-0010c6dffd0f"/>
 
-    <concept concept_id="1" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-0800271c1b75"/>
-    <concept_name concept_id="1" name="Haemoglobin" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="637de959-e1c4-41d4-b2d6-bc4335835ea9" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept concept_id="1" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e060cf44-3d3d-11e3-bf2b-0800271c1b75"/>
+    <concept_name concept_id="1" name="Laboratory" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="15c9daea-3d3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
+    <concept concept_id="2" retired="false" datatype_id="1" class_id="1" is_set="true" creator="1" date_created="2005-01-01 00:00:00.0" uuid="cfc5056c-3f8e-11e3-968c-0800271c1b75"/>
+    <concept_name concept_id="2" name="Blood Panel" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="2" voided="false" uuid="d81ce11c-3f8e-11e3-968c-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="3" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-0800271c1b75"/>
+    <concept_name concept_id="3" name="Haemoglobin" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="3" voided="false" uuid="637de959-e1c4-41d4-b2d6-bc4335835ea9" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
     <concept concept_id="4" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="a04c36be-3f90-11e3-968c-0800271c1b75"/>
     <concept_name concept_id="4" name="ESR" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="4" voided="false" uuid="d5af5872-3f90-11e3-968c-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
@@ -18,12 +24,9 @@
     <concept concept_id="5" retired="false" datatype_id="2" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="da4bf386-3fcc-11e3-968c-0800271c1b75"/>
     <concept_name concept_id="5" name="Hb Electrophoresis" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="5" voided="false" uuid="e019e8c2-3fcc-11e3-968c-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
+    <concept concept_id="6" retired="false" datatype_id="3" class_id="1" is_set="true" creator="1" date_created="2005-01-01 00:00:00.0" uuid="07e54cee-3fd6-11e3-968c-0800271c1b75"/>
+    <concept_name concept_id="6" name="COMMENTS" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="6" voided="false" uuid="0d71e35c-3fd6-11e3-968c-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
-    <concept concept_id="2" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e060cf44-3d3d-11e3-bf2b-0800271c1b75"/>
-    <concept_name concept_id="2" name="Laboratory" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="2" voided="false" uuid="15c9daea-3d3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-
-    <concept concept_id="3" retired="false" datatype_id="1" class_id="1" is_set="true" creator="1" date_created="2005-01-01 00:00:00.0" uuid="cfc5056c-3f8e-11e3-968c-0800271c1b75"/>
-    <concept_name concept_id="3" name="Blood Panel" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="3" voided="false" uuid="d81ce11c-3f8e-11e3-968c-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
     <location location_id="1" name="REG" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
     <location location_id="2" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="be69741b-29e9-49a1-adc9-2a726e6610e4"/>
