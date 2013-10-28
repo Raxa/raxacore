@@ -16,6 +16,7 @@ public class OpenElisLabResult {
     private String testName;
     private String testUnitOfMeasurement;
     private String testExternalId;
+    private String panelExternalId;
     private String resultId;
     private Double minNormal;
     private Double maxNormal;

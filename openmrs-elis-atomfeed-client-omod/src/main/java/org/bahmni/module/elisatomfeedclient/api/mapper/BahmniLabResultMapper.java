@@ -13,6 +13,7 @@ public class BahmniLabResultMapper {
         bahmniLabResult.setPatientUuid(openElisLabResult.getPatientExternalId());
         bahmniLabResult.setResult(openElisLabResult.getResult());
         bahmniLabResult.setTestUuid(openElisLabResult.getTestExternalId());
+        bahmniLabResult.setPanelUuid(openElisLabResult.getPanelExternalId());
         bahmniLabResult.setComments(openElisLabResult.getAlerts());
         bahmniLabResult.setNotes(openElisLabResult.getNotes());
         return bahmniLabResult;

@@ -14,15 +14,17 @@ public class BahmniLabResult {
     private String result;
     private String comments;
     private List<String> notes = new ArrayList<>();
+    private String panelUuid;
 
     public BahmniLabResult() {
     }
 
-    public BahmniLabResult(String encounterUuid, String accessionNumber, String patientUuid, String testUuid, String result, String comments, List<String> notes) {
+    public BahmniLabResult(String encounterUuid, String accessionNumber, String patientUuid, String testUuid, String panelUuid, String result, String comments, List<String> notes) {
         this.encounterUuid = encounterUuid;
         this.accessionNumber = accessionNumber;
         this.patientUuid = patientUuid;
         this.testUuid = testUuid;
+        this.panelUuid = panelUuid;
         this.result = result;
         this.comments = comments;
         this.notes = notes;
@@ -88,4 +90,11 @@ public class BahmniLabResult {
         this.notes = notes;
     }
 
+    public void setPanelUuid(String panelUuid) {
+        this.panelUuid = panelUuid;
+    }
+
+    public String getPanelUuid() {
+        return panelUuid;
+    }
 }

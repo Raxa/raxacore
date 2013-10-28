@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
@@ -31,7 +31,7 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
         Set<Order> orders = buildOrders(Arrays.asList(haemoglobin));
         Encounter encounter = encounterService.saveEncounter(buildEncounter(patient, orders));
 
-        BahmniLabResult bahmniLabResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), "15", "Some Alert", null);
+        BahmniLabResult bahmniLabResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), null, "15", "Some Alert", null);
         bahmniLabResultService.add(bahmniLabResult);
 
         Encounter encounterWithObs = encounterService.getEncounterByUuid(encounter.getUuid());
@@ -57,16 +57,14 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
         Set<Order> orders = buildOrders(Arrays.asList(haemoglobin));
         Encounter encounter = encounterService.saveEncounter(buildEncounter(patient, orders));
 
-        BahmniLabResult bahmniLabResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), "15", "Some Alert", null);
+        BahmniLabResult bahmniLabResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), null, "15", "Some Alert", null);
         bahmniLabResultService.add(bahmniLabResult);
 
-        BahmniLabResult bahmniLabResultUpdate = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), "20", "Some Other Alert", null);
+        BahmniLabResult bahmniLabResultUpdate = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), null, "20", "Some Other Alert", null);
         bahmniLabResultService.add(bahmniLabResultUpdate);
 
         Encounter encounterWithObs = encounterService.getEncounterByUuid(encounter.getUuid());
-        ArrayList<Obs> obsList = new ArrayList<>(encounterWithObs.getObsAtTopLevel(false));
-        Obs labObsGroup = obsList.get(0);
-        assertEquals(labObsGroup.getConcept(), Context.getConceptService().getConcept("Laboratory"));
+        Obs labObsGroup = new ArrayList<>(encounterWithObs.getObsAtTopLevel(false)).get(0);
         assertEquals(1, labObsGroup.getGroupMembers().size());
 
         Obs obs = (Obs) labObsGroup.getGroupMembers().toArray()[0];
@@ -75,6 +73,49 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
         assertEquals("Some Other Alert", obs.getComment());
         assertEquals(haemoglobin, obs.getConcept());
         assertEquals(orders.toArray()[0], obs.getOrder());
+    }
+
+    @Test
+    public void shouldSaveLabResultInsideObsGroupForPanel_WhenPanelIsOrdered() throws Exception {
+        executeDataSet("labOrderTestData.xml");
+
+        Patient patient = Context.getPatientService().getPatient(1);
+        Concept bloodPanel = Context.getConceptService().getConcept("Blood Panel");
+        Concept haemoglobin = Context.getConceptService().getConcept("Haemoglobin");
+        Concept ESR = Context.getConceptService().getConcept("ESR");
+        Set<Order> orders = buildOrders(Arrays.asList(bloodPanel));
+        Encounter encounter = encounterService.saveEncounter(buildEncounter(patient, orders));
+
+        BahmniLabResult  ESRResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), ESR.getUuid(), bloodPanel.getUuid(), "50", "Some Alert", null);
+        bahmniLabResultService.add(ESRResult);
+
+        BahmniLabResult hbResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), bloodPanel.getUuid(), "20", "Some Other Alert", null);
+        bahmniLabResultService.add(hbResult);
+
+        BahmniLabResult updatedHbResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(),
+                bloodPanel.getUuid(), "45", "Updated", null);
+        bahmniLabResultService.add(updatedHbResult);
+
+        Encounter encounterWithObs = encounterService.getEncounterByUuid(encounter.getUuid());
+        Obs labObsGroup = new ArrayList<>(encounterWithObs.getObsAtTopLevel(false)).get(0);
+        assertEquals(1, labObsGroup.getGroupMembers().size());
+
+        Obs bloodPanelObsGroup = (Obs) labObsGroup.getGroupMembers().toArray()[0];
+        assertEquals(2, bloodPanelObsGroup.getGroupMembers().size());
+        assertEquals(bloodPanel, bloodPanelObsGroup.getConcept());
+
+        assertLabResult(bloodPanelObsGroup.getGroupMembers(), haemoglobin, 45.0);
+        assertLabResult(bloodPanelObsGroup.getGroupMembers(), ESR, 50.0);
+    }
+
+    private void assertLabResult(Set<Obs> observations, Concept concept, Double value) {
+        for (Obs observation : observations) {
+            if(observation.getConcept().equals(concept)) {
+                assertEquals(value, observation.getValueNumeric());
+                return;
+            }
+        }
+        fail();
     }
 
     private Encounter buildEncounter(Patient patient, Set<Order> orders) {
