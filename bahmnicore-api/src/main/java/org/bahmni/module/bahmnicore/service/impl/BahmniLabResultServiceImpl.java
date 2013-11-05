@@ -88,7 +88,6 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
     private Obs updateTestObs(BahmniLabResult bahmniLabResult, Obs existingObs) {
         try {
             setValue(existingObs, bahmniLabResult, existingObs.getConcept());
-            existingObs.setValueAsString(bahmniLabResult.getResult());
             existingObs.setComment(bahmniLabResult.getComments());
             handleNotes(existingObs, bahmniLabResult);
             return existingObs;
