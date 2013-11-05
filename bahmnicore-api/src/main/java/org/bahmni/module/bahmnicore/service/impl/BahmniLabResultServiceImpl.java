@@ -42,11 +42,13 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
         Concept test = conceptService.getConceptByUuid(bahmniLabResult.getTestUuid());
 
         for (Order order : encounter.getOrders()) {
-            if(bahmniLabResult.getPanelUuid() != null && order.getConcept().getUuid().equals(bahmniLabResult.getPanelUuid())){
-                Concept panel = conceptService.getConceptByUuid(bahmniLabResult.getPanelUuid());
-                Obs panelObs = addPanelObs(bahmniLabResult, panel, order, obsGroupLab);
-                Obs testObs = addTestObs(bahmniLabResult, test, order, panelObs);
-                setEncounterObs(encounter, obsGroupLab);
+            if(bahmniLabResult.getPanelUuid() != null){
+                if(order.getConcept().getUuid().equals(bahmniLabResult.getPanelUuid())){
+                    Concept panel = conceptService.getConceptByUuid(bahmniLabResult.getPanelUuid());
+                    Obs panelObs = addPanelObs(bahmniLabResult, panel, order, obsGroupLab);
+                    Obs testObs = addTestObs(bahmniLabResult, test, order, panelObs);
+                    setEncounterObs(encounter, obsGroupLab);
+                }
             }
             else if (order.getConcept().getUuid().equals(bahmniLabResult.getTestUuid())) {
                 Obs testObs = addTestObs(bahmniLabResult, test, order, obsGroupLab);
