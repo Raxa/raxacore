@@ -4,7 +4,11 @@ import org.bahmni.module.bahmnicore.model.ResultList;
 
 public interface ActivePatientListDao {
 
-    public ResultList getPatientList();
+    ResultList getPatientList();
 
-    public ResultList getPatientsForAdmission();
+    ResultList getPatientsForAdmission();
+
+    ResultList getAdmittedPatients();
+
+    ResultList getPatientsForDischarge();
 }

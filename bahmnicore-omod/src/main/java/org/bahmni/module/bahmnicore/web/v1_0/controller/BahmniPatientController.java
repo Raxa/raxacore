@@ -84,6 +84,20 @@ public class BahmniPatientController extends BaseRestController {
         return createListResponse(activePatientListDao.getPatientsForAdmission());
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/admitted")
+    @WSDoc("Get a list of admitted patients")
+    @ResponseBody
+    public Object getAdmittedPatients() {
+        return createListResponse(activePatientListDao.getAdmittedPatients());
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/todischarge")
+    @WSDoc("Get a list of patients to be discharged")
+    @ResponseBody
+    public Object getPatientsForDischarge() {
+        return createListResponse(activePatientListDao.getPatientsForDischarge());
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/{patientUuid}")
     @WSDoc("Update existing patient")
     @ResponseBody
