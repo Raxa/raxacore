@@ -12,4 +12,8 @@
 
     <context:component-scan base-package="org.bahmni.module"/>
 
+    <bean id="sqlSearchService" class="org.bahmni.module.bahmnicore.service.impl.SqlSearchServiceImpl">
+        <property name="administrationService" ref="adminService"/>
+    </bean>
+
 </beans>

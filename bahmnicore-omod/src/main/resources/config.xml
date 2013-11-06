@@ -89,4 +89,37 @@
         <lang>en</lang>
         <file>messages.properties</file>
     </messages>
+
+    <globalProperty>
+        <property>emrapi.sqlSearch.activePatients</property>
+        <defaultValue>select distinct concat(pn.given_name, pn.family_name) as name, pi.identifier as identifier, concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid from visit v join person_name pn on v.patient_id = pn.person_id and pn.voided = 0 join patient_identifier pi on v.patient_id = pi.patient_id join person p on p.person_id = v.patient_id where v.date_stopped is null</defaultValue>
+        <description>
+            Sql query to get list of active patients
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>emrapi.sqlSearch.patientsToAdmit</property>
+        <defaultValue>select distinct concat(pn.given_name, pn.family_name) as name, pi.identifier as identifier, concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid from visit v join person_name pn on v.patient_id = pn.person_id and pn.voided = 0 join patient_identifier pi on v.patient_id = pi.patient_id join person p on v.patient_id = p.person_id join encounter e on v.visit_id = e.visit_id join obs o on e.encounter_id = o.encounter_id join concept c on o.value_coded = c.concept_id join concept_name cn on c.concept_id = cn.concept_id where v.date_stopped is null and cn.name = 'Admit Patient' and v.patient_id not in (select patient_id from bed_patient_assignment_map where date_stopped is null)</defaultValue>
+        <description>
+            Sql query to get list of patients to be admitted
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>emrapi.sqlSearch.admittedPatients</property>
+        <defaultValue>select distinct concat(pn.given_name, pn.family_name) as name, pi.identifier as identifier, concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid from bed_patient_assignment_map bp join visit v on bp.patient_id=v.patient_id and v.date_stopped is null join person_name pn on bp.patient_id = pn.person_id and pn.voided = 0 join patient_identifier pi on bp.patient_id = pi.patient_id join person p on p.person_id = bp.patient_id where bp.date_stopped is null</defaultValue>
+        <description>
+            Sql query to get list of admitted patients
+        </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>emrapi.sqlSearch.patientsToDischarge</property>
+        <defaultValue>select distinct concat(pn.given_name, pn.family_name) as name, pi.identifier as identifier, concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid from visit v join person_name pn on v.patient_id = pn.person_id and pn.voided = 0 join patient_identifier pi on v.patient_id = pi.patient_id join person p on v.patient_id = p.person_id join encounter e on v.visit_id = e.visit_id join obs o on e.encounter_id = o.encounter_id join concept c on o.value_coded = c.concept_id join concept_name cn on c.concept_id = cn.concept_id where v.date_stopped is null and cn.name = 'Discharge Patient'</defaultValue>
+        <description>
+            Sql query to get list of patients to discharge
+        </description>
+    </globalProperty>
+
 </module>

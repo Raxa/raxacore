@@ -7,7 +7,6 @@ import org.bahmni.module.bahmnicore.ApplicationError;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
 import org.bahmni.module.bahmnicore.BillingSystemException;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientConfigResponse;
-import org.bahmni.module.bahmnicore.dao.ActivePatientListDao;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.model.ResultList;
 import org.bahmni.module.bahmnicore.model.error.ErrorCode;
@@ -21,7 +20,11 @@ import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -38,9 +41,6 @@ public class BahmniPatientController extends BaseRestController {
     private static Logger logger = Logger.getLogger(BahmniPatientController.class);
     private BahmniPatientService bahmniPatientService;
     private static final String[] REQUIRED_FIELDS = {"names", "gender"};
-
-    @Autowired
-    private ActivePatientListDao activePatientListDao;
 
     @Autowired
     public BahmniPatientController(BahmniPatientService bahmniPatientService) {
@@ -68,34 +68,6 @@ public class BahmniPatientController extends BaseRestController {
         } catch (Exception e) {
             return respondNotCreated(response, e);
         }
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/active")
-    @WSDoc("Get a list of active patients")
-    @ResponseBody
-    public Object getActivePatientsList() {
-        return createListResponse(activePatientListDao.getPatientList());
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/toadmit")
-    @WSDoc("Get a list of active patients to be admitted")
-    @ResponseBody
-    public Object getActivePatientsForAdmission() {
-        return createListResponse(activePatientListDao.getPatientsForAdmission());
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/admitted")
-    @WSDoc("Get a list of admitted patients")
-    @ResponseBody
-    public Object getAdmittedPatients() {
-        return createListResponse(activePatientListDao.getAdmittedPatients());
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/todischarge")
-    @WSDoc("Get a list of patients to be discharged")
-    @ResponseBody
-    public Object getPatientsForDischarge() {
-        return createListResponse(activePatientListDao.getPatientsForDischarge());
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{patientUuid}")
