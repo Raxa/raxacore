@@ -14,7 +14,7 @@ public class BahmniLabResultMapper {
         bahmniLabResult.setResult(openElisLabResult.getResult());
         bahmniLabResult.setTestUuid(openElisLabResult.getTestExternalId());
         bahmniLabResult.setPanelUuid(openElisLabResult.getPanelExternalId());
-        bahmniLabResult.setComments(openElisLabResult.getAlerts());
+        bahmniLabResult.setAlert(openElisLabResult.getAlerts());
         bahmniLabResult.setNotes(openElisLabResult.getNotes());
         return bahmniLabResult;
     }

@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.bahmni.module.bahmnicore.ApplicationError;
 import org.bahmni.module.bahmnicore.model.BahmniLabResult;
 import org.bahmni.module.bahmnicore.service.BahmniLabResultService;
@@ -42,15 +43,14 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
         Concept test = conceptService.getConceptByUuid(bahmniLabResult.getTestUuid());
 
         for (Order order : encounter.getOrders()) {
-            if(bahmniLabResult.getPanelUuid() != null){
-                if(order.getConcept().getUuid().equals(bahmniLabResult.getPanelUuid())){
+            if (bahmniLabResult.getPanelUuid() != null) {
+                if (order.getConcept().getUuid().equals(bahmniLabResult.getPanelUuid())) {
                     Concept panel = conceptService.getConceptByUuid(bahmniLabResult.getPanelUuid());
                     Obs panelObs = addPanelObs(bahmniLabResult, panel, order, obsGroupLab);
                     Obs testObs = addTestObs(bahmniLabResult, test, order, panelObs);
                     setEncounterObs(encounter, obsGroupLab);
                 }
-            }
-            else if (order.getConcept().getUuid().equals(bahmniLabResult.getTestUuid())) {
+            } else if (order.getConcept().getUuid().equals(bahmniLabResult.getTestUuid())) {
                 Obs testObs = addTestObs(bahmniLabResult, test, order, obsGroupLab);
                 setEncounterObs(encounter, obsGroupLab);
             }
@@ -67,7 +67,7 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
 
     private Obs addPanelObs(BahmniLabResult bahmniLabResult, Concept concept, Order order, Obs parentObsGroup) {
         Obs existingObs = findExistingObs(parentObsGroup, concept);
-        if(existingObs == null) {
+        if (existingObs == null) {
             Obs obs = new Obs();
             obs.setConcept(concept);
             obs.setOrder(order);
@@ -80,7 +80,7 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
 
     private Obs addTestObs(BahmniLabResult bahmniLabResult, Concept concept, Order order, Obs parentObsGroup) {
         Obs existingObs = findExistingObs(parentObsGroup, concept);
-        if(existingObs == null) {
+        if (existingObs == null) {
             return createTestObs(bahmniLabResult, concept, order, parentObsGroup);
         } else {
             return updateTestObs(bahmniLabResult, existingObs);
@@ -89,8 +89,9 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
 
     private Obs updateTestObs(BahmniLabResult bahmniLabResult, Obs existingObs) {
         try {
-            setValue(existingObs, bahmniLabResult, existingObs.getConcept());
-            existingObs.setComment(bahmniLabResult.getComments());
+            if (hasResults(bahmniLabResult)) {
+                handleResult(existingObs, bahmniLabResult, existingObs.getConcept());
+            }
             handleNotes(existingObs, bahmniLabResult);
             return existingObs;
         } catch (ParseException e) {
@@ -103,9 +104,10 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
             Obs obs = new Obs();
             obs.setConcept(concept);
             obs.setOrder(order);
-            obs.setComment(bahmniLabResult.getComments());
             obs.setAccessionNumber(bahmniLabResult.getAccessionNumber());
-            setValue(obs, bahmniLabResult, concept);
+            if (hasResults(bahmniLabResult)) {
+                handleResult(obs, bahmniLabResult, concept);
+            }
             handleNotes(obs, bahmniLabResult);
             parentObsGroup.addGroupMember(obs);
             return obs;
@@ -114,11 +116,28 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
         }
     }
 
-    private void setValue(Obs obs, BahmniLabResult bahmniLabResult, Concept concept) throws ParseException {
-        if(concept.getDatatype().isCoded()){
-            obs.setValueText(bahmniLabResult.getResult());
+    private void handleResult(Obs obs, BahmniLabResult bahmniLabResult, Concept concept) throws ParseException {
+        Obs existingObs = findExistingObs(obs, concept);
+        if (existingObs == null) {
+            Obs resultObs = new Obs();
+            resultObs.setConcept(concept);
+            resultObs.setComment(bahmniLabResult.getAlert());
+            setValue(resultObs, bahmniLabResult, concept);
+            obs.addGroupMember(resultObs);
+        } else {
+            existingObs.setComment(bahmniLabResult.getAlert());
+            setValue(existingObs, bahmniLabResult, concept);
         }
-        else {
+    }
+
+    private boolean hasResults(BahmniLabResult bahmniLabResult) {
+        return !StringUtils.isBlank(bahmniLabResult.getResult());
+    }
+
+    private void setValue(Obs obs, BahmniLabResult bahmniLabResult, Concept concept) throws ParseException {
+        if (concept.getDatatype().isCoded()) {
+            obs.setValueText(bahmniLabResult.getResult());
+        } else {
             obs.setValueAsString(bahmniLabResult.getResult());
         }
     }
@@ -143,14 +162,14 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
     }
 
     private void validate(BahmniLabResult bahmniLabResult) {
-        if(!bahmniLabResult.isValid()) {
+        if (!bahmniLabResult.isValid()) {
             throw new ApplicationError("EncounterUUID and TestUUID should not be empty");
         }
     }
 
     private Obs findOrInitializeObsGroup(Encounter encounter, Concept concept) {
         for (Obs obs : encounter.getObsAtTopLevel(false)) {
-            if(obs.getConcept().equals(concept)){
+            if (obs.getConcept().equals(concept)) {
                 return obs;
             }
         }
@@ -160,14 +179,14 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
     }
 
     private Concept getLabResultObsGroupConcept() {
-        if(labResultObsGroupConcept == null) {
+        if (labResultObsGroupConcept == null) {
             labResultObsGroupConcept = conceptService.getConcept(LAB_RESULT_OBS_GROUP_CONCEPT_NAME);
         }
         return labResultObsGroupConcept;
     }
 
     private Concept getCommentsConcept() {
-        if(commentsConcept == null) {
+        if (commentsConcept == null) {
             commentsConcept = conceptService.getConcept(COMMENTS_CONCEPT_NAME);
         }
         return commentsConcept;
@@ -175,7 +194,7 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
 
     private Obs findExistingObs(Obs obsGroup, Concept concept) {
         for (Obs obs : getGroupMembers(obsGroup)) {
-            if(obs.getConcept().equals(concept)) {
+            if (obs.getConcept().equals(concept)) {
                 return obs;
             }
         }
@@ -183,7 +202,7 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
     }
 
     private Set<Obs> getGroupMembers(Obs obsGroup) {
-        if(obsGroup.getGroupMembers() == null) {
+        if (obsGroup.getGroupMembers() == null) {
             return new HashSet<>();
         }
         return obsGroup.getGroupMembers();

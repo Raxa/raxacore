@@ -86,7 +86,7 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
         Set<Order> orders = buildOrders(Arrays.asList(bloodPanel));
         Encounter encounter = encounterService.saveEncounter(buildEncounter(patient, orders));
 
-        BahmniLabResult  ESRResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), ESR.getUuid(), bloodPanel.getUuid(), "50", "Some Alert", null);
+        BahmniLabResult ESRResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), ESR.getUuid(), bloodPanel.getUuid(), "50", "Some Alert", null);
         bahmniLabResultService.add(ESRResult);
 
         BahmniLabResult hbResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), haemoglobin.getUuid(), bloodPanel.getUuid(), "20", "Some Other Alert", null);
@@ -122,7 +122,7 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
         BahmniLabResult result = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), hb.getUuid(), null, "15", "A", Arrays.asList("Note One"));
         bahmniLabResultService.add(result);
 
-        BahmniLabResult updatedNotesResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), hb.getUuid(), null, "15", "A", Arrays.asList("Note One", "Note Two"));
+        BahmniLabResult updatedNotesResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), hb.getUuid(), null, "25", "A", Arrays.asList("Note One", "Note Two"));
         bahmniLabResultService.add(updatedNotesResult);
 
         Encounter encounterWithObs = encounterService.getEncounterByUuid(encounter.getUuid());
@@ -130,17 +130,20 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
         assertEquals(1, labObsGroup.getGroupMembers().size());
 
         Obs resultObs = (Obs) labObsGroup.getGroupMembers().toArray()[0];
-        assertEquals(2, resultObs.getGroupMembers().size());
+        assertEquals(3, resultObs.getGroupMembers().size());
 
         assertLabResultNote(resultObs.getGroupMembers(), comment, "Note One");
         assertLabResultNote(resultObs.getGroupMembers(), comment, "Note Two");
+
+        assertLabResult(labObsGroup.getGroupMembers(), hb, "25", true);
     }
 
     private void assertLabResultNote(Set<Obs> observations, Concept comment, String expectedNote) {
         ArrayList<String> notes = new ArrayList<>();
-        for (Obs note : observations) {
-            assertEquals(comment, note.getConcept());
-            notes.add(note.getValueText());
+        for (Obs observation : observations) {
+            if (observation.getConcept().equals(comment)) {
+                notes.add(observation.getValueText());
+            }
         }
 
         assertTrue(notes.contains(expectedNote));
@@ -148,13 +151,15 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
 
     private void assertLabResult(Set<Obs> observations, Concept concept, String value, boolean isNumeric) {
         for (Obs observation : observations) {
-            if(observation.getConcept().equals(concept)) {
-                if(isNumeric) {
-                    assertEquals((Object) Double.parseDouble(value), observation.getValueNumeric());
-                } else {
-                    assertEquals(value, observation.getValueText());
+            for(Obs resultObs : observation.getGroupMembers()){
+                if (resultObs.getConcept().equals(concept)) {
+                    if (isNumeric) {
+                        assertEquals((Object) Double.parseDouble(value), resultObs.getValueNumeric());
+                    } else {
+                        assertEquals(value, resultObs.getValueText());
+                    }
+                    return;
                 }
-                return;
             }
         }
         fail();

@@ -12,21 +12,21 @@ public class BahmniLabResult {
     private String patientUuid;
     private String testUuid;
     private String result;
-    private String comments;
+    private String alert;
     private List<String> notes = new ArrayList<>();
     private String panelUuid;
 
     public BahmniLabResult() {
     }
 
-    public BahmniLabResult(String encounterUuid, String accessionNumber, String patientUuid, String testUuid, String panelUuid, String result, String comments, List<String> notes) {
+    public BahmniLabResult(String encounterUuid, String accessionNumber, String patientUuid, String testUuid, String panelUuid, String result, String alert, List<String> notes) {
         this.encounterUuid = encounterUuid;
         this.accessionNumber = accessionNumber;
         this.patientUuid = patientUuid;
         this.testUuid = testUuid;
         this.panelUuid = panelUuid;
         this.result = result;
-        this.comments = comments;
+        this.alert = alert;
         setNotes(notes);
     }
 
@@ -74,12 +74,12 @@ public class BahmniLabResult {
         this.result = result;
     }
 
-    public String getComments() {
-        return comments;
+    public String getAlert() {
+        return alert;
     }
 
-    public void setComments(String comments) {
-        this.comments = comments;
+    public void setAlert(String alert) {
+        this.alert = alert;
     }
 
     public List<String> getNotes() {
