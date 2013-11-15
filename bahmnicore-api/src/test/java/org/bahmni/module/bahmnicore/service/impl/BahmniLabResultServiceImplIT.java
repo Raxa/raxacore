@@ -1,8 +1,11 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.bahmni.module.bahmnicore.ApplicationError;
 import org.bahmni.module.bahmnicore.model.BahmniLabResult;
 import org.bahmni.module.bahmnicore.service.BahmniLabResultService;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.openmrs.*;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
@@ -22,6 +25,9 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
 
     @Autowired
     private BahmniLabResultService bahmniLabResultService;
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void shouldCreateNewObservationForLabResult() throws Exception {
@@ -49,6 +55,22 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
     }
 
     @Test
+    public void shouldCheckForExistenceOfConcept() throws Exception {
+        executeDataSet("labOrderTestData.xml");
+
+        Patient patient = Context.getPatientService().getPatient(1);
+        Concept haemoglobin = Context.getConceptService().getConcept("Haemoglobin");
+        Set<Order> orders = buildOrders(Arrays.asList(haemoglobin));
+        Encounter encounter = encounterService.saveEncounter(buildEncounter(patient, orders));
+
+        BahmniLabResult numericResult = new BahmniLabResult(encounter.getUuid(), "accessionNumber", patient.getUuid(), "SomeNoneExistentTestUUID", null, "15", "Some Alert", null);
+
+        expectedException.expect(ApplicationError.class);
+        expectedException.expectMessage("Concept with UUID SomeNoneExistentTestUUID does not exists.");
+        bahmniLabResultService.add(numericResult);
+    }
+
+    @Test
     public void shouldUpdateObservationIfObservationAlreadyExistInEncounter() throws Exception {
         executeDataSet("labOrderTestData.xml");
 
@@ -67,12 +89,15 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
         Obs labObsGroup = new ArrayList<>(encounterWithObs.getObsAtTopLevel(false)).get(0);
         assertEquals(1, labObsGroup.getGroupMembers().size());
 
-        Obs obs = (Obs) labObsGroup.getGroupMembers().toArray()[0];
+        Obs obsGroup = (Obs) labObsGroup.getGroupMembers().toArray()[0];
+        assertEquals("accessionNumber", obsGroup.getAccessionNumber());
+        assertEquals(orders.toArray()[0], obsGroup.getOrder());
+        assertEquals(obsGroup.getConcept(), haemoglobin);
+
+        Obs obs = findObsByConcept(labObsGroup.getGroupMembers(), haemoglobin);
         assertEquals((Double) 20.0, obs.getValueNumeric());
-        assertEquals("accessionNumber", obs.getAccessionNumber());
         assertEquals("Some Other Alert", obs.getComment());
-        assertEquals(haemoglobin, obs.getConcept());
-        assertEquals(orders.toArray()[0], obs.getOrder());
+        assertEquals(obs.getConcept(), haemoglobin);
     }
 
     @Test
@@ -165,6 +190,16 @@ public class BahmniLabResultServiceImplIT extends BaseModuleWebContextSensitiveT
         fail();
     }
 
+    private Obs findObsByConcept(Set<Obs> observations, Concept concept) {
+        for (Obs observation : observations) {
+            for(Obs resultObs : observation.getGroupMembers()){
+                if (resultObs.getConcept().equals(concept)) {
+                    return resultObs;
+                }
+            }
+        }
+        return null;
+    }
     private Encounter buildEncounter(Patient patient, Set<Order> orders) {
         Encounter enc = new Encounter();
         enc.setLocation(Context.getLocationService().getLocation(2));

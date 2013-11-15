@@ -40,12 +40,12 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
         Encounter encounter = encounterService.getEncounterByUuid(bahmniLabResult.getEncounterUuid());
         Concept laboratory = getLabResultObsGroupConcept();
         Obs obsGroupLab = findOrInitializeObsGroup(encounter, laboratory);
-        Concept test = conceptService.getConceptByUuid(bahmniLabResult.getTestUuid());
+        Concept test = getConceptByUuid(bahmniLabResult.getTestUuid());
 
         for (Order order : encounter.getOrders()) {
             if (bahmniLabResult.getPanelUuid() != null) {
                 if (order.getConcept().getUuid().equals(bahmniLabResult.getPanelUuid())) {
-                    Concept panel = conceptService.getConceptByUuid(bahmniLabResult.getPanelUuid());
+                    Concept panel = getConceptByUuid(bahmniLabResult.getPanelUuid());
                     Obs panelObs = addPanelObs(bahmniLabResult, panel, order, obsGroupLab);
                     Obs testObs = addTestObs(bahmniLabResult, test, order, panelObs);
                     setEncounterObs(encounter, obsGroupLab);
@@ -57,6 +57,14 @@ public class BahmniLabResultServiceImpl implements BahmniLabResultService {
         }
 
         encounterService.saveEncounter(encounter);
+    }
+
+    private Concept getConceptByUuid(String uuid) {
+        Concept concept = conceptService.getConceptByUuid(uuid);
+        if(concept == null) {
+            throw new ApplicationError("Concept with UUID " + uuid + " does not exists.");
+        }
+        return concept;
     }
 
     private void setEncounterObs(Encounter encounter, Obs obs) {
