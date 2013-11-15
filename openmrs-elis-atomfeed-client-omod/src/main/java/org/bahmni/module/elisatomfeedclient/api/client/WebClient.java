@@ -11,6 +11,10 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.util.Map;
 
+/**
+ * TODO: Needs to be replaced by HttpClient in bahmni-java-utils if we have to touch this class again.
+ *
+ */
 @Component
 public class WebClient {
 
