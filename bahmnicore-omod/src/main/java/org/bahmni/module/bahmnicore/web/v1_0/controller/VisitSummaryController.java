@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping(value = "/rest/v1/bahmnicore/visitsummary")
 public class VisitSummaryController {
 
+    @Autowired
     EmrVisitService emrVisitService;
 
-    @Autowired
     public VisitSummaryController(EmrVisitService emrVisitService) {
         this.emrVisitService = emrVisitService;
+    }
+
+    public VisitSummaryController() {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{visitUUID}")
