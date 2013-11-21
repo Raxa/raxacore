@@ -24,10 +24,6 @@
             <version>2.5-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>emrapi-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>bahmnicore-api</artifactId>
             <version>${project.parent.version}</version>

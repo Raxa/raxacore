@@ -141,7 +141,6 @@
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>emrapi-api</artifactId>
                 <version>1.1-SNAPSHOT</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlrpc</groupId>
