@@ -122,4 +122,22 @@
         </description>
     </globalProperty>
 
+      <globalProperty>
+        <property>emrapi.sqlSearch.patientsHasPendingOrders</property>
+        <defaultValue>select distinct concat(pn.given_name, pn.family_name) as name, pi.identifier as identifier, 
+        concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid
+        from visit v 
+        join person_name pn on v.patient_id = pn.person_id and pn.voided = 0 
+        join patient_identifier pi on v.patient_id = pi.patient_id join person p on p.person_id = v.patient_id 
+        join orders on orders.patient_id = v.patient_id 
+        join order_type on orders.order_type_id = order_type.order_type_id and order_type.name != 'Lab Order' and order_type.name != 'Drug Order'
+        where v.date_stopped is null and order_id not in(select obs.order_id from obs where person_id = pn.person_id and order_id = orders.order_id)</defaultValue>
+        <description>
+            Sql query to get list of patients who has pending orders.
+        </description>
+    </globalProperty>
+
+    
+
+
 </module>
