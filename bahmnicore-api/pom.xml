@@ -11,6 +11,10 @@
     <packaging>jar</packaging>
     <name>BahmniEMR Core API</name>
 
+    <properties>
+        <providermanagementModuleVersion>1.1.3</providermanagementModuleVersion>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.openmrs.test</groupId>
@@ -80,6 +84,15 @@
             <artifactId>lombok</artifactId>
             <version>0.12.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>providermanagement-api</artifactId>
+            <version>${providermanagementModuleVersion}</version>
+            <scope>test</scope>
+        </dependency>
+
+
     </dependencies>
     
     <build>
