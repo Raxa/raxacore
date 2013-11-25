@@ -28,8 +28,8 @@ public class OrderSearchHandler implements SearchHandler{
 
     @Override
     public SearchConfig getSearchConfig() {
-        return new SearchConfig("byTags", RestConstants.VERSION_1 + "/location", Arrays.asList("1.9.*"),
-                new SearchQuery.Builder("Allows you to find locations by tags attached to the location").withRequiredParameters("tags").build());
+        return new SearchConfig("pendingOrders", RestConstants.VERSION_1 + "/order", Arrays.asList("1.9.*"),
+                new SearchQuery.Builder("Allows you to find orders by orderType for a patient").withRequiredParameters("patientUuid", "orderTypeUuid").build());
     }
 
     @Override
