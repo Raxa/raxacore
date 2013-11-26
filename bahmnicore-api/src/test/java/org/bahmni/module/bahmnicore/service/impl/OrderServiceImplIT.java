@@ -35,9 +35,12 @@ public class OrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
         List<Order> pendingOrders = bahmniOrderService.getPendingOrders(patientUuid, radiologyOrderTypeUuid);
 
         Assert.assertEquals(1, pendingOrders.size());
-        Assert.assertEquals(patientUuid, pendingOrders.get(0).getPatient().getUuid());
-        Assert.assertEquals(radiologyOrderTypeUuid, pendingOrders.get(0).getOrderType().getUuid());
-        Assert.assertEquals("Radiology Order", pendingOrders.get(0).getOrderType().getName());
+
+        Order pendingOrder = pendingOrders.get(0);
+        Assert.assertEquals("6d0ae386-707a-4629-9850-f15206e63ab0", pendingOrder.getUuid());
+        Assert.assertEquals(patientUuid, pendingOrder.getPatient().getUuid());
+        Assert.assertEquals(radiologyOrderTypeUuid, pendingOrder.getOrderType().getUuid());
+        Assert.assertEquals("Radiology Order", pendingOrder.getOrderType().getName());
     }
 
     private void ensureCorrectDataSetup(String patientUuid, String radiologyOrderTypeUuid) {

@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.openmrs.Order;
@@ -39,6 +38,7 @@ public class OrderServiceImpl implements OrderService {
         List<Order> allOrders = orderService.getOrders(Order.class, patients, null, org.openmrs.api.OrderService.ORDER_STATUS.NOTVOIDED, null, null, orderTypes);
         List<Order> completedOrders = orderDao.getCompletedOrdersFrom(Collections.unmodifiableList(allOrders));
 
-        return (List<Order>) CollectionUtils.removeAll(allOrders, completedOrders);
+        allOrders.removeAll(completedOrders);
+        return allOrders;
     }
 }
