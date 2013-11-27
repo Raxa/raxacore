@@ -42,9 +42,16 @@ public class AddressMapper {
             personAddress.setAddress1(address.getAddress1());
             personAddress.setAddress2(address.getAddress2());
             personAddress.setAddress3(address.getAddress3());
+            personAddress.setAddress4(address.getAddress4());
+            personAddress.setAddress5(address.getAddress5());
+            personAddress.setAddress6(address.getAddress6());
             personAddress.setCityVillage(address.getCityVillage());
             personAddress.setCountyDistrict(address.getCountyDistrict());
             personAddress.setStateProvince(address.getStateProvince());
+            personAddress.setPostalCode(address.getPostalCode());
+            personAddress.setCountry(address.getCountry());
+            personAddress.setLatitude(address.getLatitude());
+            personAddress.setLongitude(address.getLongitude());
             personAddress.setPreferred(true);
         }
     }
@@ -55,12 +62,21 @@ public class AddressMapper {
         }
         PersonAddress personAddress = patient.getPersonAddress();
         if(personAddress != null){
-            bahmniPatient.addAddress(new BahmniAddress(personAddress.getAddress1(),
-                    personAddress.getAddress2(),
-                    personAddress.getAddress3(),
-                    personAddress.getCityVillage(),
-                    personAddress.getCountyDistrict(),
-                    personAddress.getStateProvince()));
+            BahmniAddress bahmniAddress = new BahmniAddress();
+            bahmniAddress.setAddress1(personAddress.getAddress1());
+            bahmniAddress.setAddress2(personAddress.getAddress2());
+            bahmniAddress.setAddress3(personAddress.getAddress3());
+            bahmniAddress.setAddress4(personAddress.getAddress4());
+            bahmniAddress.setAddress5(personAddress.getAddress5());
+            bahmniAddress.setAddress6(personAddress.getAddress6());
+            bahmniAddress.setCityVillage(personAddress.getCityVillage());
+            bahmniAddress.setCountyDistrict(personAddress.getCountyDistrict());
+            bahmniAddress.setStateProvince(personAddress.getStateProvince());
+            bahmniAddress.setPostalCode(personAddress.getPostalCode());
+            bahmniAddress.setCountry(personAddress.getCountry());
+            bahmniAddress.setLatitude(personAddress.getLatitude());
+            bahmniAddress.setLongitude(personAddress.getLongitude());
+            bahmniPatient.addAddress(bahmniAddress);
         }
         return bahmniPatient;
     }
