@@ -4,11 +4,14 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.visit.contract.VisitResponse;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class VisitSummary {
+    private Date encounterDateTime;
     private List<EncounterTransaction.Diagnosis> diagnoses = new ArrayList<>();
     private List<EncounterTransaction.Disposition> dispositions = new ArrayList<>();
+    private EncounterTransaction.Provider provider;
 
     public VisitSummary(VisitResponse visitResponse) {
         List<EncounterTransaction> encounters = visitResponse.getEncounters();
@@ -18,6 +21,9 @@ public class VisitSummary {
             }
             if (encounter.getDisposition() != null) {
                 dispositions.add(encounter.getDisposition());
+            }
+            if (encounter.getProviders() != null && encounter.getProviders().size() > 0 ) {
+                provider = encounter.getProviders().iterator().next();
             }
         }
     }
@@ -38,4 +44,7 @@ public class VisitSummary {
         this.dispositions = dispositions;
     }
 
+    public EncounterTransaction.Provider getProvider() {
+        return provider;
+    }
 }

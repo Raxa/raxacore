@@ -1,25 +1,25 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.model.VisitSummary;
+import org.bahmni.module.bahmnicore.service.VisitSummaryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.openmrs.module.emrapi.visit.EmrVisitService;
 import org.openmrs.module.emrapi.visit.contract.VisitRequest;
 import org.openmrs.module.emrapi.visit.contract.VisitResponse;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class VisitSummaryControllerTest {
 
     @Mock
-    private EmrVisitService emrVisitService;
+    private VisitSummaryService visitSummaryService;
 
     @Before
     public void before() {
@@ -34,12 +34,14 @@ public class VisitSummaryControllerTest {
         VisitRequest visitRequest = new VisitRequest(visitUuid);
 
         VisitResponseMother visitResponseMother = new VisitResponseMother();
+        String providerName = "Yogesh Jain";
         VisitResponse visitResponse = visitResponseMother
                 .withEncounterTransaction(
                         new EncounterTransactionMother()
                                 .withPrimaryDiagnosis("TUBERCULOSIS")
                                 .withSecondaryDiagnosis("FEVER")
                                 .withDisposition("ADMIT")
+                                .withProvider(providerName)
                                 .build())
                 .withEncounterTransaction(new EncounterTransactionMother().withPrimaryDiagnosis("COUGH")
                         .withSecondaryDiagnosis("COLD")
@@ -47,12 +49,15 @@ public class VisitSummaryControllerTest {
                         .build())
                 .build();
 
-        when(emrVisitService.find(any(VisitRequest.class))).thenReturn(visitResponse);
+        when(visitSummaryService.getVisitSummary(visitUuid)).thenReturn(visitResponse.getEncounters());
 
-        VisitSummary summary = new VisitSummaryController(emrVisitService).get(visitUuid);
+        List<EncounterTransaction> encounterTransactions= new VisitSummaryController(visitSummaryService).get(visitUuid);
 
-        assertEquals(summary.getDiagnoses().size(), 4);
-        assertEquals(summary.getDispositions().size(), 2);
+//        VisitSummary summary = null;
+
+        assertEquals(encounterTransactions.size(), 2);
+//        assertEquals(summary.getDispositions().size(), 2);
+//        assertEquals(providerName,summary.getProvider().getName());
     }
 
     private EncounterTransaction.Diagnosis getDiagnosis(String uuid, String name, String order) {
@@ -80,6 +85,15 @@ class EncounterTransactionMother {
 
     public EncounterTransactionMother withDisposition(String disposition) {
         encounterTransaction.setDisposition(new EncounterTransaction.Disposition(disposition));
+        return this;
+    }
+    public EncounterTransactionMother withProvider(String providerName) {
+        HashSet<EncounterTransaction.Provider> providers = new HashSet<>();
+        EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
+        provider.setName("Yogesh Jain");
+        provider.setUuid("12345");
+        providers.add(provider);
+        encounterTransaction.setProviders(providers);
         return this;
     }
 
