@@ -63,7 +63,7 @@ public class PatientMother {
                         .add("attributeType", "b3b6d540-a32e-44c7-91b3-292d97667518")
                         .add("value", "someCaste")))
                 .add("addresses", Arrays.asList(addressMother.getSimpleObjectForAddress()))
-                .add("centerID", new SimpleObject().add("name", "Ganiyari"))
+                .add("centerID", "Ganiyari")
                 .add("names", Arrays.asList(nameMother.getSimpleObjectForName()))
                 .add("dateOfRegistration", dateCreatedString)
                 .add("identifier", patientIdentifier);

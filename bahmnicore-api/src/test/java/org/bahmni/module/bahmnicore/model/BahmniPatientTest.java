@@ -23,8 +23,7 @@ public class BahmniPatientTest {
         SimpleObject age = new SimpleObject().add("years", 21).add("months", 10).add("days", 30);
         SimpleObject personObject = new SimpleObject().add("birthdate", birthdate).add("age", age).add("gender", "M").add(
                 "attributes", Arrays.asList(new SimpleObject().add("attributeType", "caste").add("value", "someCaste"))).add(
-                "addresses", Arrays.asList(new SimpleObject().add("address1", "7143 Koramangala"))).add("centerID",
-                new SimpleObject().add("name", centerName))
+                "addresses", Arrays.asList(new SimpleObject().add("address1", "7143 Koramangala"))).add("centerID",  centerName)
                 .add("names", Arrays.asList(new SimpleObject().add("givenName", "first").add("familyName", "Last")))
                 .add("identifier", "someIdentifier")
                 .add("balance", "123")
