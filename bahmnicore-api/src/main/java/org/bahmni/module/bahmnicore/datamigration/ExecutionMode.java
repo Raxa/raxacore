@@ -27,9 +27,11 @@ public class ExecutionMode {
     }
 
     public void handleSavePatientFailure(RuntimeException e, BahmniPatient bahmniPatient) {
-        int errorCode = e.getMessage().contains(ErrorMessage.ExistingPatientMessagePart) ? ErrorCode.DuplicatePatient : ErrorCode.OpenMRSError;
-        BahmniCoreException bahmniCoreException = new BahmniCoreException("Create patient failed", e);
-        bahmniCoreException.setErrorCode(errorCode);
-        handleFailure(bahmniPatient, bahmniCoreException);
+        if(e.getMessage() != null){
+            int errorCode = e.getMessage().contains(ErrorMessage.ExistingPatientMessagePart) ? ErrorCode.DuplicatePatient : ErrorCode.OpenMRSError;
+            BahmniCoreException bahmniCoreException = new BahmniCoreException("Create patient failed", e);
+            bahmniCoreException.setErrorCode(errorCode);
+            handleFailure(bahmniPatient, bahmniCoreException);
+        }
     }
 }

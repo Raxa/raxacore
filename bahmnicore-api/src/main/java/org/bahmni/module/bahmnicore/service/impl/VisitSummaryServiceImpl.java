@@ -33,7 +33,7 @@ public class VisitSummaryServiceImpl implements VisitSummaryService{
         EncounterTransactionMapper encounterTransactionMapper = encounterTransactionMapperBuilder.withProviderMapper().build();
         List<EncounterTransaction> encounterTransactions = new ArrayList<EncounterTransaction>();
         for(Encounter encounter : visit.getEncounters()){
-            encounterTransactions.add(encounterTransactionMapper.map(encounter));
+            encounterTransactions.add(encounterTransactionMapper.map(encounter, true));
         }
         return encounterTransactions;
     }

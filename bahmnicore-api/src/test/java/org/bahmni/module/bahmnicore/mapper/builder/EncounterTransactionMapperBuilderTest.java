@@ -76,7 +76,7 @@ public class EncounterTransactionMapperBuilderTest {
         when(dispositionMapper.isDispositionGroup(obs4)).thenReturn(true);
         when(dispositionMapper.getDisposition(obs4)).thenReturn(disposition);
 
-        EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter);
+        EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, true);
         Assert.assertEquals(2, encounterTransaction.getDiagnoses().size());
         Assert.assertEquals(disposition, encounterTransaction.getDisposition());
         Assert.assertEquals(1, encounterTransaction.getObservations().size());
@@ -115,7 +115,7 @@ public class EncounterTransactionMapperBuilderTest {
         when(dispositionMapper.isDispositionGroup(obs4)).thenReturn(true);
         when(dispositionMapper.getDisposition(obs4)).thenReturn(disposition);
 
-        EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter);
+        EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, true);
         Assert.assertEquals(2, encounterTransaction.getDiagnoses().size());
         Assert.assertEquals(disposition, encounterTransaction.getDisposition());
         Assert.assertEquals(1, encounterTransaction.getObservations().size());
