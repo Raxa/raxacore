@@ -1,0 +1,1 @@
+INSERT INTO encounter_type (name, description, creator, date_created, uuid) VALUES ('DISCHARGE', 'DISCHARGE encounter', 1, curdate(), uuid());

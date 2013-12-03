@@ -13,6 +13,7 @@
         <module>bahmnicore-omod</module>
         <module>jss-old-data</module>
         <module>openmrs-elis-atomfeed-client-omod</module>
+        <module>bahmni-data</module>
     </modules>
 
     <properties>

@@ -1,0 +1,1 @@
+UPDATE scheduler_task_config SET repeat_interval = 15 WHERE name = 'OpenElis Atom Feed Client';
