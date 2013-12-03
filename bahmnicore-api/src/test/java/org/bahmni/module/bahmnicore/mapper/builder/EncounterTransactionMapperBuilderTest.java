@@ -8,6 +8,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
+import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.EmrApiProperties;
 import org.openmrs.module.emrapi.diagnosis.DiagnosisMetadata;
 import org.openmrs.module.emrapi.encounter.DiagnosisMapper;
@@ -39,6 +40,8 @@ public class EncounterTransactionMapperBuilderTest {
     private DispositionMapper dispositionMapper;
     @Mock
     private EmrApiProperties emrApiProperties;
+    @Mock
+    private ConceptService conceptService;
 
     @Before
     public void setUp(){
@@ -105,7 +108,7 @@ public class EncounterTransactionMapperBuilderTest {
 
         EncounterObservationsMapper observationsMapper = new EncounterObservationsMapper(observationMapper, diagnosisMapper,
                 dispositionMapper, emrApiProperties);
-        transactionMapperBuilder = new EncounterTransactionMapperBuilder(observationsMapper,new TestOrderMapper(),new DrugOrderMapper(),new EncounterProviderMapper());
+        transactionMapperBuilder = new EncounterTransactionMapperBuilder(observationsMapper,new TestOrderMapper(),new DrugOrderMapper(conceptService),new EncounterProviderMapper());
         EncounterTransactionMapper encounterTransactionMapper = transactionMapperBuilder.withProviderMapper().withOrderMapper().build();
 
         Encounter encounter = new EncounterBuilder().build();
