@@ -18,18 +18,15 @@ public class PatientMapper {
 
     private final PatientIdentifierMapper patientIdentifierMapper;
 
-    private final HealthCenterMapper healthCenterMapper;
-
     @Autowired
     public PatientMapper(PersonNameMapper personNameMapper, BirthDateMapper birthDateMapper,
                          PersonAttributeMapper personAttributeMapper, AddressMapper addressMapper,
-                         PatientIdentifierMapper patientIdentifierMapper, HealthCenterMapper healthCenterMapper) {
+                         PatientIdentifierMapper patientIdentifierMapper) {
         this.personNameMapper = personNameMapper;
         this.birthDateMapper = birthDateMapper;
         this.personAttributeMapper = personAttributeMapper;
         this.addressMapper = addressMapper;
         this.patientIdentifierMapper = patientIdentifierMapper;
-        this.healthCenterMapper = healthCenterMapper;
     }
 
     public Patient map(Patient patient, BahmniPatient bahmniPatient) {
@@ -43,7 +40,6 @@ public class PatientMapper {
         patient = personAttributeMapper.map(patient, bahmniPatient.getAttributes());
         patient = addressMapper.map(patient, bahmniPatient.getAddresses());
         patient = patientIdentifierMapper.map(bahmniPatient, patient);
-        patient = healthCenterMapper.map(patient, bahmniPatient);
         return patient;
     }
 

@@ -32,7 +32,7 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
             " left join person_name pn on pn.person_id = p.person_id" +
             " left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
             " inner join patient_identifier pi on pi.patient_id = p.person_id " +
-            " where p.voided = 'false' and pn.voided = 'false' and pn.preferred='true'";
+            " where p.voided = 'false' and pn.voided = 'false' and pn.preferred=true";
 
     public static final String BY_ID = "pi.identifier = :" + PATIENT_IDENTIFIER_PARAM;
     public static final String BY_NAME = "pn.given_name like :" + NAME_PARAM + " or pn.family_name like :" + NAME_PARAM;
