@@ -102,4 +102,21 @@
     <visit visit_id="10" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="11" visit_type_id="1" indication_concept_id="1000" location_id="2" creator="1" changed_by="1000" voided_by="1000" uuid="00bfb3d3-247f-4404-a040-1116acdb7875" voided="0"/>
     <visit visit_id="11" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="12" visit_type_id="1" indication_concept_id="1000" location_id="2" creator="1" changed_by="1000" voided_by="1000" uuid="2eac608a-31bc-4c0e-b6b7-4ff9cd57646a" voided="0"/>
 
+    <concept_datatype concept_datatype_id="1" name="numeric" hl7_abbreviation="NM" description="foo" date_created="2013-12-04 11:36:42" retired="0"/>
+    <concept_datatype concept_datatype_id="2" name="text" hl7_abbreviation="ST" description="bar" date_created="2013-12-04 11:36:42" retired="0"/>
+
+    <concept concept_id="111" retired="0" datatype_id="1" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="3f596de5-5caa-11e3-a4c0-0800271c1b75" />
+    <concept concept_id="222" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="4f596de5-5caa-11e3-a4c0-0800271c1b75" />
+    <concept concept_id="333" retired="0" datatype_id="1" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="5f596de5-5caa-11e3-a4c0-0800271c1b75" />
+    <concept concept_id="444" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="6f596de5-5caa-11e3-a4c0-0800271c1b75" />
+    <concept concept_id="555" retired="0" datatype_id="1" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="7f596de5-5caa-11e3-a4c0-0800271c1b75" />
+    <concept concept_id="666" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="8f596de5-5caa-11e3-a4c0-0800271c1b75" />
+
+    <obs obs_id="1024" person_id="1024" concept_id="111" value_numeric="1.1" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
+    <obs obs_id="1025" person_id="1024" concept_id="222" value_text="foo" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
+    <obs obs_id="1026" person_id="1024" concept_id="333" value_numeric="2.1" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
+    <obs obs_id="1027" person_id="1024" concept_id="444" value_text="foo" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
+    <obs obs_id="1028" person_id="1024" concept_id="555" value_numeric="3.1" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
+    <obs obs_id="1029" person_id="1024" concept_id="666" value_text="foo" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
+
 </dataset>

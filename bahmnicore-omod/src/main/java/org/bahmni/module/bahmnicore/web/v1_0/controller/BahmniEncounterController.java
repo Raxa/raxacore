@@ -93,7 +93,7 @@ public class BahmniEncounterController extends BaseRestController {
         if (conceptSetConcept != null) {
             List<Concept> conceptsByConceptSet = conceptService.getConceptsByConceptSet(conceptSetConcept);
             for (Concept concept : conceptsByConceptSet) {
-                ConceptData conceptData = new ConceptData(concept.getUuid());
+                ConceptData conceptData = new ConceptData(concept.getUuid(), concept.getName().getName());
                 encounterConfigResponse.addConcept(concept.getName().getName(), conceptData);
             }
         }
