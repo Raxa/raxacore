@@ -30,4 +30,17 @@
             <param name="sqlFile">V1_73__RemoveNotNullConstraintOnAddressEntryName.sql</param>
         </customChange>
     </changeSet>
+
+    <changeSet id="bahmni-setup-20131203-05" author="shruthi,sushmitha">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM global_property where property = 'emr.primaryIdentifierType'
+            </sqlCheck>
+        </preConditions>
+        <insert tableName="global_property">
+            <column name="property" value="emr.primaryIdentifierType"/>
+            <column name="uuid" value="UUID()"/>
+            <column name="description" value="Primary identifier type for looking up patients, generating barcodes, etc"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
