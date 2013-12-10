@@ -39,8 +39,9 @@
         </preConditions>
         <insert tableName="global_property">
             <column name="property" value="emr.primaryIdentifierType"/>
-            <column name="uuid" value="UUID()"/>
+            <column name="uuid" valueNumeric="name-of-uuid-function"/>
             <column name="description" value="Primary identifier type for looking up patients, generating barcodes, etc"/>
         </insert>
+        <modifySql dbms="mysql"><replace replace="name-of-uuid-function" with="UUID()"/></modifySql>
     </changeSet>
 </databaseChangeLog>
