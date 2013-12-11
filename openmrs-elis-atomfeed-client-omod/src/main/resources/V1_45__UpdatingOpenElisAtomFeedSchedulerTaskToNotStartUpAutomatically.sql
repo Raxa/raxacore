@@ -1,0 +1,1 @@
+UPDATE scheduler_task_config SET start_on_startup = 0 WHERE name = 'OpenElis Atom Feed Client';

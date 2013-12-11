@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <!--
+        See http://www.liquibase.org/manual/home#available_database_refactorings
+        for a list of supported elements and attributes
+    -->
+    <changeSet id="bahmni-1" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_10__CreatingPatientIdentifierForBahmni.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-2" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_23__DeleteOpenMRSCorePersonAttributes.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-3" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_24__AddUniqueConstraintToPatientidentifier.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-4" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile splitStatements="false" path="V1_29__AddConceptProc.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-5" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile splitStatements="false" path="V1_30__AddConceptAnswerProc.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-6" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile splitStatements="false" path="V1_31__AddConceptWordProc.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-7" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile splitStatements="false" path="V1_37__SetValueAsConceptIdProc.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-clinical-1" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_39__CreateLaboratoryPanelConcept.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-9" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_40__AddingConceptWordForLaboratoryConcept.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-10" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_41__AddingIndexToCityVillage-JssSpecific.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-11" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_42__RemovingNotNullContraintOnOrderTypeId.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-12" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_43__AddOPDConsultationEncounterType.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-31" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_10__SetupRegistrationEncounterType.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-16" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_55__addLabAndRadiologyOrderTypes.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-17" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile splitStatements="false" path="V1_56__AddConceptDescriptionProc.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-clinical-2" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_57__addDrugDosageInstructionsAndDosageFrequecies.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-19" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile splitStatements="false" path="V1_58__AddConceptReferenceMapProc.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-20" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile splitStatements="false" path="V1_59__AddConceptSetMembersProc.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-clinical-3" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_60__AddDiagnosisConcepts.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-clinical-4" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_62__AddDispositionConcepts.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-clinical-5" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_66__addConceptConsultationNote.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-25" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_67__AddConceptSetForAdmission.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-26" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_68__EncounterTypeForAdmission.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-27" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_69__AddConceptSetForDischarge.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-28" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_70__EncounterTypeForDischarge.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-29" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile splitStatements="false" path="V1_72__AddProcToInsertNewAddressLevel.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-30" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <update tableName="patient_identifier_type">
+            <column name="name" value="Bahmni Id"/>
+            <where>name='JSS'</where>
+        </update>
+    </changeSet>
+    <changeSet id="bahmni-32" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_78__EncounterTypeForTransfer.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-33" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_71__PatientSearchSql.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-34" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_77__PatientSearchSqlAllAdmittedPatients.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-35" author="tw" context="rel3">
+        <preConditions onFail="HALT">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property where property = 'emr.primaryIdentifierType'
+            </sqlCheck>
+        </preConditions>
+        <comment>rel3</comment>
+        <sqlFile path="V1_61__CreatingGlobalPropertyForPatientIdentifierType.sql"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,69 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+    <!--
+        See http://www.liquibase.org/manual/home#available_database_refactorings
+        for a list of supported elements and attributes
+    -->
+    <property name="now" value="now()"/>
+
+    <changeSet id="bahmni-setup-1" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="migrations/dependent-modules/V1_07__AddOnStartupRolesPrivileges.sql"/>
+    </changeSet>
+
+    <changeSet id="bahmni-setup-2" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="migrations/dependent-modules/V1_08__AddressHierarchy.sql"/>
+    </changeSet>
+
+    <changeSet id="bahmni-setup-3" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="migrations/dependent-modules/V1_09__Idgen.sql"/>
+    </changeSet>
+
+    <changeSet id="bahmni-setup-4" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="migrations/dependent-modules/V1_73__RemoveNotNullConstraintOnAddressEntryName.sql"/>
+    </changeSet>
+
+    <changeSet id="bahmni-setup-5" author="tw" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM global_property where property = 'emr.primaryIdentifierType'
+            </sqlCheck>
+        </preConditions>
+        <comment>rel3</comment>
+        <insert tableName="global_property">
+            <column name="property" value="emr.primaryIdentifierType"/>
+            <column name="uuid" valueNumeric="name-of-uuid-function"/>
+            <column name="description"
+                    value="Primary identifier type for looking up patients, generating barcodes, etc"/>
+        </insert>
+        <modifySql dbms="mysql">
+            <replace replace="name-of-uuid-function" with="UUID()"/>
+        </modifySql>
+    </changeSet>
+
+    <changeSet id="bahmni-setup-6" author="tw" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept_reference_source where name = 'org.openmrs.module.emrapi';
+            </sqlCheck>
+        </preConditions>
+        <comment>rel3</comment>
+        <insert tableName="concept_reference_source">
+            <column name="name" value="org.openmrs.module.emrapi"/>
+            <column name="uuid" valueNumeric="name-of-uuid-function"/>
+            <column name="description" value="Source used to tag concepts used in the EMR API module"/>
+            <column name="date_created" valueDate="${now}"/>
+            <column name="creator" value="1"/>
+        </insert>
+        <modifySql dbms="mysql">
+            <replace replace="name-of-uuid-function" with="UUID()"/>
+        </modifySql>
+    </changeSet>
+
+</databaseChangeLog>

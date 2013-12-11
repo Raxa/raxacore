@@ -26,4 +26,25 @@
             <column name="error_hash_code" type="int"/>
         </createTable>
     </changeSet>
+    <changeSet id="elis-atomfeed-1" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_44__AddingSchedulerTaskToProcessOpenElisPatientFeed.sql"/>
+    </changeSet>
+    <changeSet id="elis-atomfeed-2" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_45__UpdatingOpenElisAtomFeedSchedulerTaskToNotStartUpAutomatically.sql"/>
+    </changeSet>
+    <changeSet id="elis-atomfeed-3" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_50__UpdatingOpenElisAtomFeedSchedulerTaskToRunEvery15Seconds.sql"/>
+    </changeSet>
+    <changeSet id="elis-atomfeed-4" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_52__StartOpenElisAtomFeedSchedulerTaskToStartAutomatically.sql"/>
+    </changeSet>
+    <changeSet id="elis-atomfeed-5" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_64__AddLabResultFeedScheduler.sql"/>
+    </changeSet>
+
 </databaseChangeLog>
