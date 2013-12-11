@@ -10,81 +10,172 @@
         for a list of supported elements and attributes
     -->
 
-    <changeSet id="bahmni-20131203-16" author="neha,sushmitha">
+    <changeSet id="20131203-01" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_07__AddOnStartupRolesPrivileges.sql</param>
+        </customChange>
+    </changeSet>
+
+    <changeSet id="20131203-02" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_08__AddressHierarchy.sql</param>
+        </customChange>
+    </changeSet>
+
+    <changeSet id="20131203-03" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_09__Idgen.sql</param>
+        </customChange>
+    </changeSet>
+
+    <changeSet id="20131203-04" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_29__AddConceptProc.sql</param>
+        </customChange>
+    </changeSet>
+
+    <changeSet id="20131203-05" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_30__AddConceptAnswerProc.sql</param>
+        </customChange>
+    </changeSet>
+
+    <changeSet id="20131203-06" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_31__AddConceptWordProc.sql</param>
+        </customChange>
+    </changeSet>
+
+    <changeSet id="20131203-07" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_37__SetValueAsConceptIdProc.sql</param>
+        </customChange>
+    </changeSet>
+
+    <changeSet id="20131203-08" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_39__CreateLaboratoryPanelConcept.sql</param>
+        </customChange>
+    </changeSet>
+    <changeSet id="20131203-09" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_40__AddingConceptWordForLaboratoryConcept.sql</param>
+        </customChange>
+    </changeSet>
+    <changeSet id="20131203-10" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_41__AddingIndexToCityVillage-JssSpecific.sql</param>
+        </customChange>
+    </changeSet>
+    <changeSet id="20131203-11" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_42__RemovingNotNullContraintOnOrderTypeId.sql</param>
+        </customChange>
+    </changeSet>
+    <changeSet id="20131203-12" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_44__AddingSchedulerTaskToProcessOpenElisPatientFeed.sql</param>
+        </customChange>
+    </changeSet>
+    <changeSet id="20131203-13" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_45__UpdatingOpenElisAtomFeedSchedulerTaskToNotStartUpAutomatically.sql</param>
+        </customChange>
+    </changeSet>
+    <changeSet id="20131203-14" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_50__UpdatingOpenElisAtomFeedSchedulerTaskToRunEvery15Seconds.sql</param>
+        </customChange>
+    </changeSet>
+    <changeSet id="20131203-15" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_52__StartOpenElisAtomFeedSchedulerTaskToStartAutomatically.sql</param>
+        </customChange>
+    </changeSet>
+    <changeSet id="20131203-16" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_55__addLabAndRadiologyOrderTypes.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="bahmni-20131203-17" author="neha,sushmitha">
+    <changeSet id="20131203-17" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_56__AddConceptDescriptionProc.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="bahmni-20131203-18" author="neha,sushmitha">
+    <changeSet id="20131203-18" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_57__addDrugDosageInstructionsAndDosageFrequecies.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="bahmni-20131203-19" author="neha,sushmitha">
+    <changeSet id="20131203-19" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_58__AddConceptReferenceMapProc.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="bahmni-20131203-20" author="neha,sushmitha">
+    <changeSet id="20131203-20" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_59__AddConceptSetMembersProc.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="bahmni-20131203-21" author="neha,sushmitha">
+    <changeSet id="20131203-21" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_60__AddDiagnosisConcepts.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="bahmni-20131203-22" author="neha,sushmitha">
+    <changeSet id="20131203-22" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_61__CreatingGlobalPropertyForPatientIdentifierType.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="bahmni-20131203-23" author="neha,sushmitha">
+    <changeSet id="20131203-23" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_62__AddDispositionConcepts.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="bahmni-20131203-24" author="neha,sushmitha">
+    <changeSet id="20131203-24" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_63__AddEmergencyVisitType.sql</param>
+        </customChange>
+    </changeSet>
+    <changeSet id="20131203-25" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_64__AddLabResultFeedScheduler.sql</param>
+        </customChange>
+    </changeSet>
+    <changeSet id="20131203-26" author="neha,sushmitha">
+        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
+            <param name="sqlFile">V1_65__ConceptSetForVitals.sql</param>
+        </customChange>
+    </changeSet>
+    <changeSet id="20131203-27" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_66__addConceptConsultationNote.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="bahmni-20131203-25" author="neha,sushmitha">
+    <changeSet id="20131203-28" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_67__AddConceptSetForAdt.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="bahmni-20131203-26" author="neha,sushmitha">
+    <changeSet id="20131203-29" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_68__EncounterTypeForAdmission.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="bahmni-20131203-27" author="neha,sushmitha">
+    <changeSet id="20131203-30" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_69__AddConceptSetForDischarge.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="bahmni-20131203-28" author="neha,sushmitha">
+    <changeSet id="20131203-31" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_70__EncounterTypeForDischarge.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="bahmni-20131203-29" author="neha,sushmitha">
+    <changeSet id="20131203-32" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_72__AddProcToInsertNewAddressLevel.sql</param>
         </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131203-30" author="shruthi,sushmitha">
-        <update tableName="patient_identifier_type">
-            <column name="name" value="Bahmni Id"/>
-            <where>name='JSS'</where>
-        </update>
     </changeSet>
 
 </databaseChangeLog>
