@@ -1,4 +1,4 @@
 -- JSS specific. Do not move to registration omod
 
-select uuid from patient_identifier_type where name = 'Bahmni Id' into @uuid;
+select uuid from patient_identifier_type where name = 'JSS' into @uuid;
 UPDATE global_property SET property_value = @uuid WHERE property='emr.primaryIdentifierType';
