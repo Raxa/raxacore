@@ -31,25 +31,24 @@
             <param name="sqlFile">V1_44__AddingSchedulerTaskToProcessOpenElisPatientFeed.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="elis-atomfeed-20131203-2" author="neha,sushmitha">
+    <changeSet id="elis-atomfeed-20131203-1" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_45__UpdatingOpenElisAtomFeedSchedulerTaskToNotStartUpAutomatically.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="elis-atomfeed-20131203-3" author="neha,sushmitha">
+    <changeSet id="elis-atomfeed-20131203-2" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_50__UpdatingOpenElisAtomFeedSchedulerTaskToRunEvery15Seconds.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="elis-atomfeed-20131203-4" author="neha,sushmitha">
+    <changeSet id="elis-atomfeed-20131203-3" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_52__StartOpenElisAtomFeedSchedulerTaskToStartAutomatically.sql</param>
         </customChange>
     </changeSet>
-    <changeSet id="elis-atomfeed-20131203-5" author="neha,sushmitha">
+    <changeSet id="elis-atomfeed-20131203-4" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_64__AddLabResultFeedScheduler.sql</param>
         </customChange>
     </changeSet>
-
 </databaseChangeLog>

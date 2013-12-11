@@ -9,66 +9,7 @@
         See http://www.liquibase.org/manual/home#available_database_refactorings
         for a list of supported elements and attributes
     -->
-    <changeSet id="bahmni-20131204-01" author="neha,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_10__CreatingPatientIdentifierForBahmni.sql</param>
-        </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131204-02" author="neha,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_23__DeleteOpenMRSCorePersonAttributes.sql</param>
-        </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131204-03" author="neha,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_24__AddUniqueConstraintToPatientidentifier.sql</param>
-        </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131203-04" author="neha,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_29__AddConceptProc.sql</param>
-        </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131203-05" author="neha,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_30__AddConceptAnswerProc.sql</param>
-        </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131203-06" author="neha,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_31__AddConceptWordProc.sql</param>
-        </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131203-07" author="neha,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_37__SetValueAsConceptIdProc.sql</param>
-        </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131203-08" author="neha,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_39__CreateLaboratoryPanelConcept.sql</param>
-        </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131203-09" author="neha,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_40__AddingConceptWordForLaboratoryConcept.sql</param>
-        </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131203-10" author="neha,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_41__AddingIndexToCityVillage-JssSpecific.sql</param>
-        </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131203-11" author="neha,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_42__RemovingNotNullContraintOnOrderTypeId.sql</param>
-        </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131203-12" author="neha,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_43__AddOPDConsultationEncounterType.sql</param>
-        </customChange>
-    </changeSet>
+
     <changeSet id="bahmni-20131203-16" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_55__addLabAndRadiologyOrderTypes.sql</param>

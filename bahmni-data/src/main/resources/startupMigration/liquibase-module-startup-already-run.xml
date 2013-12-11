@@ -7,27 +7,21 @@
         See http://www.liquibase.org/manual/home#available_database_refactorings
         for a list of supported elements and attributes
     -->
-    <changeSet id="bahmni-setup-20131203-01" author="neha,sushmitha">
+    <changeSet id="bahmni-20131203-01" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_07__AddOnStartupRolesPrivileges.sql</param>
         </customChange>
     </changeSet>
 
-    <changeSet id="bahmni-setup-20131203-02" author="neha,sushmitha">
+    <changeSet id="bahmni-20131203-02" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_08__AddressHierarchy.sql</param>
         </customChange>
     </changeSet>
 
-    <changeSet id="bahmni-setup-20131203-03" author="neha,sushmitha">
+    <changeSet id="bahmni-20131203-03" author="neha,sushmitha">
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_09__Idgen.sql</param>
-        </customChange>
-    </changeSet>
-
-    <changeSet id="bahmni-setup-20131203-04" author="neha,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_73__RemoveNotNullConstraintOnAddressEntryName.sql</param>
         </customChange>
     </changeSet>
 </databaseChangeLog>
