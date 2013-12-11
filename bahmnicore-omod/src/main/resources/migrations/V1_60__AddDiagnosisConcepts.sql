@@ -69,5 +69,3 @@ set @child2_concept_id = @concept_id;
 
 call add_concept_answer (@parent_concept_id, @child1_concept_id, 1);
 call add_concept_answer (@parent_concept_id, @child2_concept_id, 1);
-
-COMMIT;
