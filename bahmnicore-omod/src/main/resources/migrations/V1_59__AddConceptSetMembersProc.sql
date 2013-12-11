@@ -6,5 +6,5 @@ BEGIN
 	values (member_concept_id, set_concept_id,weight,1, now(),uuid());
 END;
 
-
+COMMIT;
 

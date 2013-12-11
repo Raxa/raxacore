@@ -15,5 +15,7 @@ BEGIN
 
 END;
 
+COMMIT;
+
 
 
