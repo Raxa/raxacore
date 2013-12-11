@@ -1,1 +1,0 @@
-ALTER TABLE orders MODIFY COLUMN order_type_id int NULL;
