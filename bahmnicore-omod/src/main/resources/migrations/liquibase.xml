@@ -100,11 +100,6 @@
         </customChange>
     </changeSet>
     <changeSet id="bahmni-20131203-22" author="neha,sushmitha">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                SELECT COUNT(*) FROM global_property where property = 'emr.primaryIdentifierType'
-            </sqlCheck>
-        </preConditions>
         <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
             <param name="sqlFile">V1_61__CreatingGlobalPropertyForPatientIdentifierType.sql</param>
         </customChange>
@@ -149,21 +144,6 @@
             <column name="name" value="Bahmni Id"/>
             <where>name='JSS'</where>
         </update>
-    </changeSet>
-    <changeSet id="bahmni-20131203-31" author="shruthi,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_10__SetupRegistrationEncounterType.sql</param>
-        </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131203-32" author="shruthi,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_78__EncounterTypeForTransfer.sql</param>
-        </customChange>
-    </changeSet>
-    <changeSet id="bahmni-20131203-33" author="shruthi,sushmitha">
-        <customChange class="org.openmrs.util.databasechange.SourceMySqldiffFile">
-            <param name="sqlFile">V1_79__AddressTemplateWithAllFields.sql</param>
-        </customChange>
     </changeSet>
 
 </databaseChangeLog>

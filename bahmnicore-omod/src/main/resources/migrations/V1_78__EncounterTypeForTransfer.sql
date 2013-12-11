@@ -1,1 +1,0 @@
-INSERT INTO encounter_type (name, description, creator, date_created, uuid) VALUES ('TRANSFER', 'TRANSFER encounter', 1, curdate(), uuid());
