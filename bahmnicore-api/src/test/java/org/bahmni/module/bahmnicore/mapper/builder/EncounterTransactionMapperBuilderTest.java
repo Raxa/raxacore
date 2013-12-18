@@ -22,6 +22,7 @@ import org.openmrs.module.emrapi.encounter.TestOrderMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 
 import static org.mockito.Mockito.when;
@@ -51,10 +52,10 @@ public class EncounterTransactionMapperBuilderTest {
 
     @Test
     public void shouldMapDiagnosesAndDispositionsWithoutOrders(){
-        Obs obs1 = new Obs();
-        Obs obs2 = new Obs();
-        Obs obs3 = new Obs();
-        Obs obs4 = new Obs();
+        Obs obs1 = getObs();
+        Obs obs2 = getObs();
+        Obs obs3 = getObs();
+        Obs obs4 = getObs();
         HashSet<Obs> allObs = new HashSet<Obs>(Arrays.asList(obs1, obs2, obs3, obs4));
 
         Order testOrder1 = new TestOrderBuilder().build();
@@ -90,10 +91,10 @@ public class EncounterTransactionMapperBuilderTest {
 
     @Test
     public void shouldMapDiagnosesAndDispositionsWithOrders(){
-        Obs obs1 = new Obs();
-        Obs obs2 = new Obs();
-        Obs obs3 = new Obs();
-        Obs obs4 = new Obs();
+        Obs obs1 = getObs();
+        Obs obs2 = getObs();
+        Obs obs3 = getObs();
+        Obs obs4 = getObs();
         HashSet<Obs> allObs = new HashSet<Obs>(Arrays.asList(obs1, obs2, obs3, obs4));
 
         Order testOrder1 = new TestOrderBuilder().build();
@@ -125,6 +126,12 @@ public class EncounterTransactionMapperBuilderTest {
         Assert.assertEquals(2,encounterTransaction.getDrugOrders().size());
         Assert.assertEquals(2,encounterTransaction.getTestOrders().size());
 
+    }
+
+    private Obs getObs() {
+        Obs obs = new Obs();
+        obs.setObsDatetime(new Date());
+        return obs;
     }
 
 }

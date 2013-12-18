@@ -15,6 +15,7 @@ package org.bahmni.module.bahmnicore.mapper.builder;
 
 import org.openmrs.TestOrder;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class TestOrderBuilder {
@@ -22,6 +23,7 @@ public class TestOrderBuilder {
 
     public TestOrderBuilder() {
         this.order = new TestOrder();
+        this.order.setDateCreated(new Date());
         this.order.setUuid(UUID.randomUUID().toString());
     }
 
