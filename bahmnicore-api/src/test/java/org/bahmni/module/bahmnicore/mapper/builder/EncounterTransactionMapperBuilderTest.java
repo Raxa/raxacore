@@ -52,16 +52,16 @@ public class EncounterTransactionMapperBuilderTest {
 
     @Test
     public void shouldMapDiagnosesAndDispositionsWithoutOrders(){
-        Obs obs1 = getObs();
-        Obs obs2 = getObs();
-        Obs obs3 = getObs();
-        Obs obs4 = getObs();
+        Obs obs1 = new Obs(1);
+        Obs obs2 = new Obs(2);
+        Obs obs3 = new Obs(3);
+        Obs obs4 = new Obs(4);
         HashSet<Obs> allObs = new HashSet<Obs>(Arrays.asList(obs1, obs2, obs3, obs4));
 
-        Order testOrder1 = new TestOrderBuilder().build();
-        Order testOrder2 = new TestOrderBuilder().build();
-        DrugOrder drugOrder1 = new DrugOrderBuilder().build();
-        DrugOrder drugOrder2 = new DrugOrderBuilder().build();
+        Order testOrder1 = new TestOrderBuilder().withId(1).build();
+        Order testOrder2 = new TestOrderBuilder().withId(2).build();
+        DrugOrder drugOrder1 = new DrugOrderBuilder().withId(1).build();
+        DrugOrder drugOrder2 = new DrugOrderBuilder().withId(2).build();
         HashSet<Order> orders = new HashSet<Order>(Arrays.asList(testOrder1, drugOrder1, testOrder2, drugOrder2));
 
         when(diagnosisMetadata.isDiagnosis(obs1)).thenReturn(true);
@@ -91,16 +91,17 @@ public class EncounterTransactionMapperBuilderTest {
 
     @Test
     public void shouldMapDiagnosesAndDispositionsWithOrders(){
-        Obs obs1 = getObs();
-        Obs obs2 = getObs();
-        Obs obs3 = getObs();
-        Obs obs4 = getObs();
+        Obs obs1 = new Obs(1);
+        Obs obs2 = new Obs(2);
+        Obs obs3 = new Obs(3);
+        Obs obs4 = new Obs(4);
+
         HashSet<Obs> allObs = new HashSet<Obs>(Arrays.asList(obs1, obs2, obs3, obs4));
 
-        Order testOrder1 = new TestOrderBuilder().build();
-        Order testOrder2 = new TestOrderBuilder().build();
-        DrugOrder drugOrder1 = new DrugOrderBuilder().build();
-        DrugOrder drugOrder2 = new DrugOrderBuilder().build();
+        Order testOrder1 = new TestOrderBuilder().withId(1).build();
+        Order testOrder2 = new TestOrderBuilder().withId(2).build();
+        DrugOrder drugOrder1 = new DrugOrderBuilder().withId(1).build();
+        DrugOrder drugOrder2 = new DrugOrderBuilder().withId(2).build();
         HashSet<Order> orders = new HashSet<Order>(Arrays.asList(testOrder1, drugOrder1, testOrder2, drugOrder2));
 
         when(diagnosisMetadata.isDiagnosis(obs1)).thenReturn(true);

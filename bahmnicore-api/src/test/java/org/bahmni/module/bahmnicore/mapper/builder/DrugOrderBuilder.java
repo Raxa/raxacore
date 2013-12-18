@@ -27,10 +27,16 @@ public class DrugOrderBuilder {
         this.order.setUuid(UUID.randomUUID().toString());
         this.order.setDateCreated(new Date());
         this.order.setDrug(new Drug(123));
+        this.order.setDateCreated(new Date());
     }
 
     public DrugOrderBuilder withUuid(UUID uuid) {
         order.setUuid(String.valueOf(uuid));
+        return this;
+    }
+
+    public DrugOrderBuilder withId(Integer id) {
+        order.setId(id);
         return this;
     }
 
