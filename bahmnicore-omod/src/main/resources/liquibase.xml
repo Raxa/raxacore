@@ -141,5 +141,35 @@
         <comment>rel3</comment>
         <sqlFile path="V1_61__CreatingGlobalPropertyForPatientIdentifierType.sql"/>
     </changeSet>
+    <changeSet id="bahmni-36" author="tw" context="rel3">
+        <comment>Add investigations meta data</comment>
+        <sql>
+            set @concept_id = 0;
+            set @answer_concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
 
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Lab Departments', 'Lab departments', 'N/A', 'ConvSet', true);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'LAB', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'DEPARTMENTS', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'LAB', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'DEPARTMENTS', '1');
+
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Other Investigations', 'Other Investigations', 'N/A', 'ConvSet', true);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'OTHER', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'INVESTIGATIONS', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'OTHER', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'INVESTIGATIONS', '1');
+
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Other Investigations Categories', 'Other Investigations Categories', 'N/A', 'ConvSet', true);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'OTHER', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'INVESTIGATIONS', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'CATEGORIES', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'OTHER', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'INVESTIGATIONS', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'CATEGORIES', '1');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
