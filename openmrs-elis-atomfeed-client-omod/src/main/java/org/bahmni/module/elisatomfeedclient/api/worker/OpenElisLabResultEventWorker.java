@@ -3,10 +3,10 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.BahmniLabResultService;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
-import org.bahmni.module.elisatomfeedclient.api.client.WebClient;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisLabResult;
 import org.bahmni.module.elisatomfeedclient.api.exception.OpenElisFeedException;
 import org.bahmni.module.elisatomfeedclient.api.mapper.BahmniLabResultMapper;
+import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,22 +14,19 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
 
 import static org.bahmni.module.elisatomfeedclient.api.util.ObjectMapperRepository.objectMapper;
 
-@Component
 public class OpenElisLabResultEventWorker implements EventWorker {
     private static Logger logger = Logger.getLogger(OpenElisLabResultEventWorker.class);
 
     private BahmniLabResultService bahmniLabResultService;
-    private WebClient webClient;
+    private HttpClient httpClient;
     private ElisAtomFeedProperties elisAtomFeedProperties;
 
-    @Autowired
-    public OpenElisLabResultEventWorker(BahmniLabResultService bahmniLabResultService, WebClient webClient, ElisAtomFeedProperties elisAtomFeedProperties) {
+    public OpenElisLabResultEventWorker(BahmniLabResultService bahmniLabResultService, HttpClient httpClient, ElisAtomFeedProperties elisAtomFeedProperties) {
         this.bahmniLabResultService = bahmniLabResultService;
-        this.webClient = webClient;
+        this.httpClient = httpClient;
         this.elisAtomFeedProperties = elisAtomFeedProperties;
     }
 
@@ -38,7 +35,7 @@ public class OpenElisLabResultEventWorker implements EventWorker {
         String labResultUrl = elisAtomFeedProperties.getOpenElisUri() + event.getContent();
         logger.info("openelisatomfeedclient:Processing event : " + labResultUrl);
         try {
-            String response = webClient.get(URI.create(labResultUrl), new HashMap<String, String>());
+            String response = httpClient.get(URI.create(labResultUrl));
             OpenElisLabResult openElisLabResult = objectMapper.readValue(response, OpenElisLabResult.class);
 
             logger.info("openelisatomfeedclient:creating LabResult for event : " + labResultUrl);

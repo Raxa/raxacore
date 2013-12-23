@@ -6,6 +6,7 @@ import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.client.WebClient;
+import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.joda.time.LocalDate;
 import org.junit.Before;
@@ -31,14 +32,13 @@ public class OpenElisPatientEventWorkerTest {
     @Mock
     private PersonService personService;
     @Mock
-    private WebClient webClient;
+    private HttpClient webClient;
     @Mock
     private ElisAtomFeedProperties elisAtomFeedProperties;
     @Mock
     private Interpreter intepreter;
 
     private OpenElisPatientEventWorker openElisPatientEventWorker;
-
 
     @Before
     public void setUp() throws Exception {
@@ -78,7 +78,7 @@ public class OpenElisPatientEventWorkerTest {
                 "    \"stateProvince\": \"Ch\"\n" +
                 "}";
 
-        when(webClient.get(eq(new URI("http://localhost:8085" + patientUrl)), anyMap())).thenReturn(patientResponse);
+        when(webClient.get(eq(new URI("http://localhost:8085" + patientUrl)))).thenReturn(patientResponse);
         openElisPatientEventWorker.process(new Event("id", patientUrl));
 
         ArgumentCaptor<BahmniPatient> bahmniPatientArgumentCaptor = ArgumentCaptor.forClass(BahmniPatient.class);

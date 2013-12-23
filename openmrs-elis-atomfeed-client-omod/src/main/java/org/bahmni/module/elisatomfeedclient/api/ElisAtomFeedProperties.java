@@ -12,6 +12,8 @@ public class ElisAtomFeedProperties extends AtomFeedProperties {
     private static final String OPEN_ELIS_URI = "openelis.uri";
     private static final String CONNECT_TIMEOUT = "feed.connectionTimeoutInMilliseconds";
     private static final String MAX_FAILED_EVENTS = "feed.maxFailedEvents";
+    private static final String READ_TIMEOUT = "feed.replyTimeoutInMilliseconds";
+
 
     @Resource(name = "openElisAtomFeedProperties")
     private Properties atomFeedProperties;
@@ -27,6 +29,11 @@ public class ElisAtomFeedProperties extends AtomFeedProperties {
     @Override
     public int getMaxFailedEvents() {
         return Integer.parseInt(atomFeedProperties.getProperty(MAX_FAILED_EVENTS));
+    }
+
+    @Override
+    public int getReadTimeout() {
+        return Integer.parseInt(atomFeedProperties.getProperty(READ_TIMEOUT));
     }
 
     @Override
