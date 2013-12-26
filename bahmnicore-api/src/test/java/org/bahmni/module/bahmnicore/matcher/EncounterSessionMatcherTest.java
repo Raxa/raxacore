@@ -36,7 +36,8 @@ public class EncounterSessionMatcherTest {
     @Before
     public void setUp(){
         initMocks(this);
-        encounterSessionMatcher = new EncounterSessionMatcher(administrationService);
+        encounterSessionMatcher = new EncounterSessionMatcher();
+        encounterSessionMatcher.setAdministrationService(administrationService);
         visit = new Visit();
 
         providers = new HashSet<Provider>();
@@ -75,7 +76,7 @@ public class EncounterSessionMatcherTest {
 
     @Test
     public void shouldNotReturnEncounterIfOutsideEncounterSessionInterval(){
-        EncounterSessionMatcher encounterSessionMatcher = new EncounterSessionMatcher(administrationService);
+
         when(administrationService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
 
         Visit visit = new Visit();

@@ -20,8 +20,8 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     public EncounterSessionMatcher() {
     }
 
-    public EncounterSessionMatcher(AdministrationService adminService) {
-        this.adminService = adminService;
+    public void setAdministrationService(AdministrationService administrationService) {
+        this.adminService = administrationService;
     }
 
     @Override
