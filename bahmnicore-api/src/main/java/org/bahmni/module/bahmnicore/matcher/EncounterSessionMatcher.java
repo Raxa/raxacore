@@ -17,6 +17,9 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     public static final int DEFAULT_SESSION_DURATION = 60;
     private AdministrationService adminService;
 
+    public EncounterSessionMatcher() {
+    }
+
     public EncounterSessionMatcher(AdministrationService adminService) {
         this.adminService = adminService;
     }
