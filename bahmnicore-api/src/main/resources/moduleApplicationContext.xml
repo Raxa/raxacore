@@ -16,6 +16,10 @@
         <property name="administrationService" ref="adminService"/>
     </bean>
 
+   <bean id="bahmniEncounterSessionmatcher" class="org.bahmni.module.bahmnicore.matcher.EncounterSessionMatcher">
+        <property name="administrationService" ref="adminService"/>
+    </bean>
+
     <bean id="orderDao" class="org.bahmni.module.bahmnicore.dao.impl.OrderDaoImpl" />
 
 </beans>
