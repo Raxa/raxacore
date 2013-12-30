@@ -27,7 +27,9 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     @Override
     public Encounter findEncounter(Visit visit, EncounterParameters encounterParameters) {
         EncounterType encounterType = encounterParameters.getEncounterType();
-        Provider provider = encounterParameters.getProviders().iterator().next();
+        Provider provider = null;
+        if(encounterParameters.getProviders() != null && encounterParameters.getProviders().iterator().hasNext())
+            provider = encounterParameters.getProviders().iterator().next();
 
         if (encounterType == null){
             throw new IllegalArgumentException("Encounter Type not found");
