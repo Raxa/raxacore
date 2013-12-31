@@ -38,7 +38,7 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         if(visit.getEncounters()!=null){
             for (Encounter encounter : visit.getEncounters()) {
                 if (encounterType.equals(encounter.getEncounterType())) {
-                    Interval interval = new Interval(new DateTime(encounter.getEncounterDatetime()), DateTime.now());
+                    Interval interval = new Interval(new DateTime(encounter.getDateCreated()), DateTime.now());
                     if(!isCurrentSessionTimeExpired(interval) && isSameProvider(provider, encounter))
                         return encounter;
                 }
