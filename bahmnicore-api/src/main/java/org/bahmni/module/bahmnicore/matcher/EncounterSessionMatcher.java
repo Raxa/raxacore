@@ -38,8 +38,6 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         if(visit.getEncounters()!=null){
             for (Encounter encounter : visit.getEncounters()) {
                 if (encounterType.equals(encounter.getEncounterType())) {
-                    System.out.println("EncounterDateTime " + encounter.getEncounterDatetime());
-                    System.out.println("CurrentTime " + DateTime.now());
                     Interval interval = new Interval(new DateTime(encounter.getEncounterDatetime()), DateTime.now());
                     if(!isCurrentSessionTimeExpired(interval) && isSameProvider(provider, encounter))
                         return encounter;
@@ -57,7 +55,6 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
 
     private boolean isCurrentSessionTimeExpired(Interval interval) {
         String configuredSessionDuration = adminService.getGlobalProperty("bahmni.encountersession.duration");
-        System.out.println("configuredSessionDuration " + DateTime.now());
         int sessionDuration = DEFAULT_SESSION_DURATION;
         if(configuredSessionDuration != null)
             sessionDuration = Integer.parseInt(configuredSessionDuration);
