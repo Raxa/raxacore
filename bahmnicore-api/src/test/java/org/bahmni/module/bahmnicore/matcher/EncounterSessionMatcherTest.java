@@ -98,7 +98,7 @@ public class EncounterSessionMatcherTest {
         person.setId(1234);
         when(encounter.getProvider()).thenReturn(person);
         when(encounter.getEncounterType()).thenReturn(encounterType);
-        when(encounter.getEncounterDatetime()).thenReturn(timeBefore2Hours);
+        when(encounter.getDateCreated()).thenReturn(timeBefore2Hours);
 
         Set<Encounter> encounters = new HashSet<Encounter>();
         encounters.add(encounter);
