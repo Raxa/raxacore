@@ -50,7 +50,7 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     private boolean isSameProvider(Provider provider, Encounter encounter) {
         if(provider == null)
             return true;
-        return encounter.getProvider().getId().equals(provider.getId());
+        return encounter.getProvider().getId().equals(provider.getPerson().getId());
     }
 
     private boolean isCurrentSessionTimeExpired(Interval interval) {
