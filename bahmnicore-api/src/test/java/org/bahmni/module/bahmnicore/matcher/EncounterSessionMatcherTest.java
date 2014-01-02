@@ -49,6 +49,7 @@ public class EncounterSessionMatcherTest {
         encounter = mock(Encounter.class);
         person = new Person();
         person.setId(1234);
+        provider.setPerson(person);
 
 
     }
