@@ -4,6 +4,7 @@ import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
 import org.bahmni.module.bahmnicore.contract.encounter.data.PersonObservationData;
 import org.bahmni.module.bahmnicore.service.BahmniPersonObsService;
 import org.openmrs.Concept;
+import org.openmrs.ConceptNumeric;
 import org.openmrs.Obs;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
@@ -38,7 +39,11 @@ public class BahmniObsController extends BaseRestController {
         List<PersonObservationData> observationDataList = new ArrayList<>();
         for (Obs obs : obsForPerson) {
             Concept concept = obs.getConcept();
-            observationDataList.add(new PersonObservationData(concept.getName().getName(), obs.getValueNumeric(), obs.getDateCreated()));
+            String units = null;
+            if(concept.isNumeric()){
+                units = ((ConceptNumeric)concept).getUnits();
+            }
+            observationDataList.add(new PersonObservationData(concept.getName().getName(), obs.getValueNumeric(), obs.getDateCreated(),concept.isNumeric(),units));
         }
         return observationDataList;
     }
