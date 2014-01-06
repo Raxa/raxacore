@@ -18,8 +18,8 @@ public class PersonObsDaoImpl implements PersonObsDao {
     public List<Obs> getObsByPerson(String identifier) {
         Query query = sessionFactory
                 .getCurrentSession().createQuery(
-                        "select obs from Obs as obs inner join " +
-                                "obs.concept as concept inner join " +
+                        "select obs from Obs as obs inner join fetch " +
+                                "obs.concept as concept inner join fetch " +
                                 "concept.datatype as datatype inner join " +
                                 "obs.person as person " +
                                 "where datatype.hl7Abbreviation= 'NM' and person.uuid='" + identifier + "'");
