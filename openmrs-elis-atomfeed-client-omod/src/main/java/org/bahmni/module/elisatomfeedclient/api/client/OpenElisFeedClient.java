@@ -7,7 +7,6 @@ import org.bahmni.webclients.AnonymousAuthenticator;
 import org.bahmni.webclients.ClientCookies;
 import org.bahmni.webclients.ConnectionDetails;
 import org.bahmni.webclients.HttpClient;
-import org.bahmni.webclients.openmrs.OpenMRSLoginAuthenticator;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.jdbc.AllFailedEventsJdbcImpl;
 import org.ict4h.atomfeed.client.repository.jdbc.AllMarkersJdbcImpl;
@@ -74,6 +73,26 @@ public abstract class OpenElisFeedClient implements FeedClient{
                 }
             }catch (Exception ex){
                 logger.error("openelisatomfeedclient:failed feed execution " + e, e);
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+    @Override
+    public void processFailedEvents() {
+        try {
+            if(atomFeedClient == null) {
+                initializeAtomFeedClient();
+            }
+            logger.info("openelisatomfeedclient:processing failed events " + DateTime.now());
+            atomFeedClient.processFailedEvents();
+        } catch (Exception e) {
+            try {
+                if (e != null && ExceptionUtils.getStackTrace(e).contains("HTTP response code: 401")) {
+                    initializeAtomFeedClient();
+                }
+            }catch (Exception ex){
+                logger.error("openelisatomfeedclient:failed feed execution while running failed events" + e, e);
                 throw new RuntimeException(ex);
             }
         }
