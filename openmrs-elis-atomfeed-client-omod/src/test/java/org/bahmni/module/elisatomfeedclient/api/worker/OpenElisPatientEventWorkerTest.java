@@ -5,7 +5,6 @@ import org.bahmni.module.bahmnicore.model.BahmniAddress;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
-import org.bahmni.module.elisatomfeedclient.api.client.WebClient;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.joda.time.LocalDate;
@@ -18,7 +17,6 @@ import org.openmrs.api.PersonService;
 import java.net.URI;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
