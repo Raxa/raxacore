@@ -35,7 +35,7 @@ public class DefaultJdbcConnectionProvider implements JdbcConnectionProvider {
 
     @Override
     public void closeConnection(Connection connection) throws SQLException {
-      //  The daemon will close the connection .Don't do anything
+        getSession().close();
     }
 }
 
