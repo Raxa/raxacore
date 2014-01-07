@@ -60,5 +60,11 @@
             VALUES ('OpenElis Patient  Atom Feed Failed Event Task', 'org.bahmni.module.elisatomfeedclient.api.task.OpenElisPatientFeedFailedEventsTask', now(), 'MM/dd/yyyy HH:mm:ss', 15, 0, 0, 1,  curdate(), uuid());
         </sql>
     </changeSet>
+    <changeSet id="elis-atomfeed-8" author="tw" context="rel3">
+        <comment>Don't start the patient feed on startup</comment>
+        <sql>
+            UPDATE scheduler_task_config SET start_on_startup = 0 WHERE name = 'OpenElis Patient Atom Feed Task';
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
