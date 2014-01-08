@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <person person_id="1" gender="M" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-15 15:57:09.0" voided="false" void_reason="" uuid="75e04d42-3ca8-11e3-bf2b-0800271c1b75"/>
+    <patient patient_id="1" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+    <person_name person_name_id="1" preferred="true" person_id="1" prefix="" given_name="firstName" middle_name="" family_name="lastName" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
+    <patient_identifier identifier="GAN200000" patient_identifier_id="1" patient_id ="1"  identifier_type="3" creator="1"  uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0" date_created="2005-09-22 00:00:00" />
+
+    <concept_datatype concept_datatype_id="1" name="N/A" hl7_abbreviation="ZZ" description="Misc" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="8d4a4488-c2cc-11de-8d13-0010c6dffd0f"/>
+    <concept_class concept_class_id="1" name="Drug" description="For Drugs" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="bc980fba-7798-11e3-a96a-0800271c1b75"/>
+
+    <concept concept_id="1" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e060cf44-3d3d-11e3-bf2b-0800271c1b75"/>
+    <concept_name concept_id="1" name="Calpol 250mg" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="15c9daea-3d3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <drug drug_id="1" concept_id="1" name="Calpol" dose_strength="250" units="mg" combination="false" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="3e4933ff-7799-11e3-a96a-0800271c1b75" />
+
+    <concept concept_id="2" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="60211202-7855-11e3-a96a-0800271c1b75"/>
+    <concept_name concept_id="2" name="cetirizine 100mg" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="2" voided="false" uuid="6a629643-7855-11e3-a96a-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <drug drug_id="2" concept_id="2" name="Cetirizine" dose_strength="100" units="mg" combination="false" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="f5bf0aa6-7855-11e3-bd53-328f386b70f0" />
+
+    <concept concept_id="3" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="60211202-7855-11e3-a96a-0800271c1b7a"/>
+    <concept_name concept_name_id="3" concept_id="3" name="cetzine 100mg" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="6a629643-7855-11e3-a96a-0800271c1b7a" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <drug drug_id="3" concept_id="3" name="Cetzine" dose_strength="100" units="mg" combination="false" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="f5bf0aa6-7855-11e3-bd53-328f386b70fa" />
+
+    <location location_id="1" name="REG" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
+    <location location_id="2" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="be69741b-29e9-49a1-adc9-2a726e6610e4"/>
+
+    <encounter_type encounter_type_id="1" name="REG" description="Some desc" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
+    <encounter_type encounter_type_id="2" name="OPD" description="Some desc 2" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
+
+    <person person_id="22" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-15 15:57:09.0" voided="false" void_reason="" uuid="e64e2541-7845-11e3-a96a-0800271c1b7"/>
+    <person_name person_name_id="22" preferred="true" person_id="22" prefix="" given_name="System" middle_name="" family_name="" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="2c0a6b97-7846-11e3-a96a-0800271c1b75"/>
+    <encounter_role encounter_role_id="2" name = "bot" description = "feed consumer" creator="1" date_created="2005-01-01 00:00:00.0" retired = "false" uuid="b0f064d1-7846-11e3-a96a-0800271c1b75"/>
+    <provider provider_id="22" person_id="22" name="system" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="331c6bf8-7846-11e3-a96a-0800271c1b75" />
+
+    <visit_type visit_type_id="4" name="REGULAR" description="REGULAR" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="fe898a34-1ade-11e1-9c71-00248140a5eb"/>
+</dataset>
