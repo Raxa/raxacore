@@ -6,6 +6,7 @@ import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterProvider;
 import org.openmrs.EncounterRole;
 import org.openmrs.EncounterType;
 import org.openmrs.Order;
@@ -22,6 +23,7 @@ import org.openmrs.api.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +44,9 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private EncounterType consultationEncounterType = null;
 
     @Autowired
-    public BahmniDrugOrderServiceImpl(VisitService visitService, PatientService patientService, ConceptService conceptService, OrderService orderService, ProviderService providerService, EncounterService encounterService) {
+    public BahmniDrugOrderServiceImpl(VisitService visitService, PatientService patientService,
+                                      ConceptService conceptService, OrderService orderService,
+                                      ProviderService providerService, EncounterService encounterService) {
         this.visitService = visitService;
         this.patientService = patientService;
         this.conceptService = conceptService;
@@ -55,28 +59,70 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     public void add(String patientId, Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders) {
         Patient patient = patientService.getPatients(null, patientId, null, true, null, null).get(0);
         List<Visit> activeVisits = visitService.getActiveVisitsByPatient(patient);
-        if (!activeVisits.isEmpty()){
-            Visit activeVisit = activeVisits.get(0);
-            Encounter encounter = new Encounter();
-            encounter.setOrders(createOrders(patient, orderDate, encounter, bahmniDrugOrders));
-            encounter.setProvider(getEncounterRole(), getSystemProvider());
-            encounter.setEncounterType(getConsultationEncounterType());
-            activeVisit.addEncounter(encounter);
-            visitService.saveVisit(activeVisit);
+        if (!activeVisits.isEmpty()) {
+            addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, activeVisits.get(0));
+        } else {
+            List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, orderDate, null, null, null, true, false);
+            addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visits.get(0));
         }
     }
 
+    private void addDrugOrdersToVisit(Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {
+        Set<Encounter> encounters = visit.getEncounters();
+        Encounter systemConsultationEncounter = null;
+
+        if (encounters != null && encounters.size() > 0)
+            systemConsultationEncounter = getSystemConsultationEncounter(encounters);
+
+        if (systemConsultationEncounter == null) {
+            systemConsultationEncounter = new Encounter();
+            systemConsultationEncounter.setProvider(getEncounterRole(), getSystemProvider());
+            systemConsultationEncounter.setEncounterType(getConsultationEncounterType());
+        }
+
+        Set<Order> drugOrders = createOrders(patient, orderDate, systemConsultationEncounter, bahmniDrugOrders);
+        for (Order drugOrder : drugOrders) {
+            systemConsultationEncounter.addOrder(drugOrder);
+        }
+        visit.addEncounter(systemConsultationEncounter);
+        Date visitStopDatetime = visit.getStopDatetime();
+        if (visitStopDatetime != null && visitStopDatetime.compareTo(orderDate) < 0) {
+            visit.setStopDatetime(orderDate);
+        }
+        visitService.saveVisit(visit);
+    }
+
+    private Encounter getSystemConsultationEncounter(Set<Encounter> encounters) {
+        for (Encounter encounter : encounters) {
+            if (isSystemConsultationEncounter(encounter)) {
+                return encounter;
+            }
+        }
+        return null;
+    }
+
+    private boolean isSystemConsultationEncounter(Encounter encounter) {
+        boolean isSystemEncounter = false;
+        Provider systemProvider = getSystemProvider();
+        Set<EncounterProvider> encounterProviders = encounter.getEncounterProviders();
+        for (EncounterProvider encounterProvider : encounterProviders) {
+            if (encounterProvider.getProvider().getId() == systemProvider.getId())
+                isSystemEncounter = true;
+        }
+        return encounter.getEncounterType().equals(getConsultationEncounterType()) && isSystemEncounter;
+    }
+
     private EncounterType getConsultationEncounterType() {
-        if(consultationEncounterType == null){
+        if (consultationEncounterType == null) {
             consultationEncounterType = encounterService.getEncounterType("OPD");
         }
         return consultationEncounterType;
     }
 
     private EncounterRole getEncounterRole() {
-        if(unknownEncounterRole == null) {
+        if (unknownEncounterRole == null) {
             for (EncounterRole encounterRole : encounterService.getAllEncounterRoles(false)) {
-                if(encounterRole.getName().equalsIgnoreCase("unknown")) {
+                if (encounterRole.getName().equalsIgnoreCase("unknown")) {
                     unknownEncounterRole = encounterRole;
                 }
             }
@@ -85,9 +131,9 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     private Provider getSystemProvider() {
-        if(systemProvider == null){
+        if (systemProvider == null) {
             List<Provider> providers = providerService.getProviders("system", null, null, null, false);
-            if(!providers.isEmpty()) {
+            if (!providers.isEmpty()) {
                 systemProvider = providers.get(0);
             }
         }
@@ -114,7 +160,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     private OrderType getDrugOrderType() {
-        if(drugOrderType == null){
+        if (drugOrderType == null) {
             List<OrderType> allOrderTypes = orderService.getAllOrderTypes();
             for (OrderType type : allOrderTypes) {
                 if (type.getName().toLowerCase().equals("drug order")) {
