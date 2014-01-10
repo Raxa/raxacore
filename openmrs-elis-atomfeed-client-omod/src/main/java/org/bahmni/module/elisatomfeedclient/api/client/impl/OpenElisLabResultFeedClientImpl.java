@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 @Component("openElisLabResultFeedClient")
 public class OpenElisLabResultFeedClientImpl extends OpenElisFeedClient implements OpenElisLabResultFeedClient {
 
-    private static Logger logger = Logger.getLogger(OpenElisPatientFeedClientImpl.class);
     private BahmniLabResultService bahmniLabResultService;
 
     @Autowired

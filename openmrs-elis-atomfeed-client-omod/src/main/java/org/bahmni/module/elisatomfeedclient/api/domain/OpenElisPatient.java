@@ -5,11 +5,9 @@ import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Data
 public class OpenElisPatient {
-
     private String patientIdentifier;
     private String firstName;
     private String lastName;
