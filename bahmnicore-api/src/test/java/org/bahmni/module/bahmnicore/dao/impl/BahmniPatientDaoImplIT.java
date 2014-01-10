@@ -136,6 +136,11 @@ class MockBahmniCoreApiProperties implements BahmniCoreApiProperties {
     public String getPatientImagesUrl() {
         return null;
     }
+
+    @Override
+    public String getDocumentBaseDirectory() {
+        return null;
+    }
 }
 
 

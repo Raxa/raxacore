@@ -8,7 +8,6 @@ import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
 import org.bahmni.module.bahmnicore.contract.patient.PatientSearchParameters;
 import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;
 import org.bahmni.module.bahmnicore.mapper.PatientMapper;
-import org.bahmni.module.bahmnicore.model.BahmniAddress;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
@@ -84,7 +83,7 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
         Patient savedPatient = patientService.savePatient(patient);
         String patientIdentifier = savedPatient.getPatientIdentifier().toString();
         logger.debug(String.format("[%s] : Patient saved", patientIdentifier));
-        patientImageService.save(patientIdentifier, bahmniPatient.getImage());
+        patientImageService.saveImage(patientIdentifier, bahmniPatient.getImage());
         return savedPatient;
     }
 
@@ -97,7 +96,7 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     @Override
     public void updateImage(String uuid, String image) {
         Patient patient = getPatientByUuid(uuid);
-        patientImageService.save(patient.getPatientIdentifier().getIdentifier(), image);
+        patientImageService.saveImage(patient.getPatientIdentifier().getIdentifier(), image);
     }
 
     @Override

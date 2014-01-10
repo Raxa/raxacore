@@ -6,4 +6,5 @@ public interface BahmniCoreApiProperties {
     String getImageDirectory();
     ExecutionMode getExecutionMode();
     String getPatientImagesUrl();
+    String getDocumentBaseDirectory();
 }

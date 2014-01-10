@@ -30,4 +30,9 @@ public class BahmniCoreApiPropertiesImpl  implements BahmniCoreApiProperties {
     public String getPatientImagesUrl() {
         return propertiesReader.getProperty("bahmnicore.urls.patientimages");
     }
+
+    @Override
+    public String getDocumentBaseDirectory() {
+        return propertiesReader.getProperty("bahmnicore.documents.baseDirectory");
+    }
 }
