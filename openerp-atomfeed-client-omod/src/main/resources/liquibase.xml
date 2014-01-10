@@ -3,11 +3,6 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <!--<property name="now" value="now()" dbms="mysql"/>-->
-    <!--<property name="today" value="curdate()" dbms="mysql"/>-->
-    <!--<property name="uuid" value="uuid()" dbms="mysql"/>-->
-    <!--<property name="uuid2" value="uuid()" dbms="mysql"/>-->
-
     <changeSet id="openerp-atomfeed-client-201401061530" author="sush,banka" >
         <preConditions onFail="MARK_RAN">
             <not><tableExists tableName="markers"/></not>
@@ -65,6 +60,16 @@
             <column name="created_by" value="1"/>
             <column name="date_created" valueDate=" now() "/>
             <column name="uuid" valueComputed=" uuid() "/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="openerp-atomfeed-client-201401091523" author="sush">
+        <insert tableName="provider">
+            <column name="name" value="system"/>
+            <column name="identifier" value="system"/>
+            <column name="creator" value="1"/>
+            <column name="date_created" valueComputed="now()"/>
+            <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
 
