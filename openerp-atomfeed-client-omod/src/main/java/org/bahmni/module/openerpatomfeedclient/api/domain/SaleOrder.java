@@ -1,6 +1,8 @@
 package org.bahmni.module.openerpatomfeedclient.api.domain;
 
 import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
+import org.bahmni.module.openerpatomfeedclient.api.util.CustomJsonDateDeserializer;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 
 import java.util.Date;
 import java.util.List;
@@ -9,8 +11,9 @@ public class SaleOrder {
     private String customerId;
     private String externalId;
     private int id;
-    private Date orderDate;
     private List<BahmniDrugOrder> saleOrderItems;
+    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+    private Date orderDate;
 
     public String getCustomerId() {
         return customerId;

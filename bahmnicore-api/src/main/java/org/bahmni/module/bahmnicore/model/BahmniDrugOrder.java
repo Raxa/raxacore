@@ -7,6 +7,9 @@ public class BahmniDrugOrder {
     private Double dosage;
     private String unit;
 
+    public BahmniDrugOrder() {
+    }
+
     public int getNumberOfDays() {
         if(dosage == 0.0){
             return quantity.intValue();
