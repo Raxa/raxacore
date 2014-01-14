@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 import java.util.List;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:applicationContext-Test.xml"}, inheritLocations = true)
+@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class OrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired

@@ -22,12 +22,12 @@ import java.util.UUID;
 public class PatientImageServiceImpl implements PatientImageService {
     private Log log = LogFactory.getLog(PatientImageServiceImpl.class);
     private static final String patientImagesFormat = "jpeg";
-    private BahmniCoreApiProperties properties;
+    private BahmniCoreApiProperties bahmniCoreApiProperties;
     private final Integer NO_OF_PATIENT_FILE_IN_A_DIRECTORY = 100;
 
     @Autowired
-    public PatientImageServiceImpl(BahmniCoreApiProperties properties) {
-        this.properties = properties;
+    public PatientImageServiceImpl(BahmniCoreApiProperties bahmniCoreApiProperties) {
+        this.bahmniCoreApiProperties = bahmniCoreApiProperties;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class PatientImageServiceImpl implements PatientImageService {
         try {
             if (image == null || image.isEmpty()) return;
 
-            File outputFile = new File(String.format("%s/%s.%s", properties.getImageDirectory(), patientIdentifier, patientImagesFormat));
+            File outputFile = new File(String.format("%s/%s.%s", bahmniCoreApiProperties.getImageDirectory(), patientIdentifier, patientImagesFormat));
             saveImageInFile(image, outputFile);
         } catch (IOException e) {
             throw new BahmniCoreException("[%s] : Could not save patient image", e);
@@ -47,7 +47,7 @@ public class PatientImageServiceImpl implements PatientImageService {
         try {
             if (images == null || images.isEmpty()) return null;
 
-            String basePath = properties.getDocumentBaseDirectory();
+            String basePath = bahmniCoreApiProperties.getDocumentBaseDirectory();
             String relativeFilePath = createFilePath(basePath, patientId, encounterTypeName);
 
             File outputFile = new File(String.format("%s%s", basePath, relativeFilePath));

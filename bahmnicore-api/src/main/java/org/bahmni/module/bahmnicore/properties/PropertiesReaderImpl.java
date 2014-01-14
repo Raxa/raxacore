@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.web.properties;
+package org.bahmni.module.bahmnicore.properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,7 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class PropertiesReaderImpl implements PropertiesReader{
+public class PropertiesReaderImpl implements PropertiesReader {
     private Properties properties;
     private static Log log = LogFactory.getLog(PropertiesReaderImpl.class);
 

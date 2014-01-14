@@ -22,6 +22,7 @@
         <openMRSWebServicesVersion>2.4-SNAPSHOT</openMRSWebServicesVersion>
         <openMRSRuntimeVersion>1.9.3</openMRSRuntimeVersion>
         <springVersion>3.0.5.RELEASE</springVersion>
+        <providermanagementModuleVersion>1.1.3</providermanagementModuleVersion>
     </properties>
 
 	<distributionManagement>

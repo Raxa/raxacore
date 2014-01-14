@@ -14,7 +14,7 @@ import java.util.List;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class BahmniPersonObsServiceImplTest extends BaseModuleWebContextSensitiveTest {
+public class BahmniPersonObsServiceImplTest {
 
     BahmniPersonObsService personObsService;
     @Mock

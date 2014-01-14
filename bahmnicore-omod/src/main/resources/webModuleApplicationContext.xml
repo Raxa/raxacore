@@ -8,10 +8,4 @@
   		    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
     <context:component-scan base-package="org.bahmni.module.bahmnicore.web"/>
 
-    <bean id="bahmniCoreProperties" class="org.bahmni.module.bahmnicore.web.properties.PropertiesReaderImpl" factory-method="load" scope="singleton"/>
-
-    <bean id="bahmniEncounterSessionmatcher" class="org.bahmni.module.bahmnicore.matcher.EncounterSessionMatcher">
-        <property name="administrationService" ref="adminService"/>
-    </bean>
-
 </beans>

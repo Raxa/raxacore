@@ -41,7 +41,7 @@ public class BahmniPatientServiceImplTest {
     @Mock
     private PatientMapper patientMapper;
     @Mock
-    private BahmniCoreApiProperties properties;
+    private BahmniCoreApiProperties bahmniCoreApiProperties;
     @Mock
     private PersonService personService;
     @Mock
@@ -54,8 +54,8 @@ public class BahmniPatientServiceImplTest {
     @Before
     public void setup() {
         initMocks(this);
-        when(properties.getExecutionMode()).thenReturn(new ExecutionMode("false"));
-        bahmniPatientService = new BahmniPatientServiceImpl(patientImageService, patientService, personService, conceptService, properties, patientMapper, bahmniPatientDao);
+        when(bahmniCoreApiProperties.getExecutionMode()).thenReturn(new ExecutionMode("false"));
+        bahmniPatientService = new BahmniPatientServiceImpl(patientImageService, patientService, personService, conceptService, bahmniCoreApiProperties, patientMapper, bahmniPatientDao);
     }
 
     @Test

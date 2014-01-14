@@ -17,7 +17,7 @@ import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:applicationContext-Test.xml"}, inheritLocations = true)
+@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
@@ -119,27 +119,6 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
         patients = bahmniPatientDao.getPatients("", "Sinha", "", 100, 2);
         assertEquals(0, patients.size());
-    }
-}
-
-@Component
-class MockBahmniCoreApiProperties implements BahmniCoreApiProperties {
-    @Override
-    public String getImageDirectory() {
-        return null;
-    }
-    @Override
-    public ExecutionMode getExecutionMode() {
-        return null;
-    }
-    @Override
-    public String getPatientImagesUrl() {
-        return null;
-    }
-
-    @Override
-    public String getDocumentBaseDirectory() {
-        return null;
     }
 }
 

@@ -3,7 +3,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.bahmni.module.bahmnicore.model.Document;
 import org.bahmni.module.bahmnicore.model.VisitDocumentUpload;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
-import org.bahmni.module.bahmnicore.service.UploadDocumentService;
+import org.bahmni.module.bahmnicore.service.VisitDocumentService;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -13,25 +13,23 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class UploadDocumentServiceImpl implements UploadDocumentService {
+public class VisitDocumentServiceImpl implements VisitDocumentService {
     public static final String DOCUMENT_OBS_GROUP_CONCEPT_NAME = "Document";
 
     private PatientImageService patientImageService;
 
     @Autowired
-    public UploadDocumentServiceImpl(PatientImageService patientImageService) {
+    public VisitDocumentServiceImpl(PatientImageService patientImageService) {
         this.patientImageService = patientImageService;
     }
 
     @Override
     public Visit upload(VisitDocumentUpload visitDocumentUpload) {
-
-        Patient patient = Context.getPatientService().getPatientByUuid(visitDocumentUpload.getPatientUUID());
-        Visit visit = createVisit(visitDocumentUpload.getVisitTypeUUID(), visitDocumentUpload.getVisitStartDate(), visitDocumentUpload.getVisitEndDate(), patient);
-        Encounter encounter = createEncounter(visit, visitDocumentUpload.getEncounterTypeUUID(), visitDocumentUpload.getEncounterDateTime(), patient);
+        Patient patient = Context.getPatientService().getPatientByUuid(visitDocumentUpload.getPatientUuid());
+        Visit visit = createVisit(visitDocumentUpload.getVisitTypeUuid(), visitDocumentUpload.getVisitStartDate(), visitDocumentUpload.getVisitEndDate(), patient);
+        Encounter encounter = createEncounter(visit, visitDocumentUpload.getEncounterTypeUuid(), visitDocumentUpload.getEncounterDateTime(), patient);
         Set<Obs> observations = createObservationGroup(visitDocumentUpload.getEncounterDateTime(), visitDocumentUpload.getDocuments(), patient, encounter);
         encounter.setObs(observations);
-
         return Context.getVisitService().saveVisit(visit);
     }
 
@@ -42,7 +40,7 @@ public class UploadDocumentServiceImpl implements UploadDocumentService {
         Concept imageConcept = conceptService.getConceptByName(DOCUMENT_OBS_GROUP_CONCEPT_NAME);
 
         for (Document document : documents) {
-            Concept testConcept = conceptService.getConceptByUuid(document.getTestUUID());
+            Concept testConcept = conceptService.getConceptByUuid(document.getTestUuid());
 
             Obs parentObservation = createOrFindObservation(observations, encounterDateTime, encounter, testConcept);
             List<Obs> childObservations = createObservationsWithImageUrl(patient, document, encounterDateTime, encounter, imageConcept);
@@ -69,7 +67,7 @@ public class UploadDocumentServiceImpl implements UploadDocumentService {
         String url = null;
         List<Obs> imageObservation = new ArrayList<>();
         if (document != null) {
-            url = patientImageService.saveDocument(patient.getId(), encounter.getEncounterType().getName(), document.getImages());
+            url = patientImageService.saveDocument(patient.getId(), encounter.getEncounterType().getName(), document.getImage());
         }
         imageObservation.add(createNewObservation(encounterDateTime, encounter, concept, url));
         return imageObservation;

@@ -1,38 +1,17 @@
 package org.bahmni.module.bahmnicore.model;
 
-import java.text.ParseException;
-import java.util.LinkedHashMap;
+import lombok.Data;
 
+@Data
 public class Document {
+    String image;
+    String testUuid;
 
-    String images;
-    String testUUID;
-
-    public Document(String images, String testUUID) {
-        this.images = images;
-        this.testUUID = testUUID;
+    public Document() {
     }
 
-    public Document(LinkedHashMap post) throws ParseException {
-        SimpleObjectExtractor extractor = new SimpleObjectExtractor(post);
-        testUUID = extractor.extract("testUUID");
-        images = extractor.extract("images");
-    }
-
-
-    public String getImages() {
-        return images;
-    }
-
-    public void setImages(String images) {
-        this.images = images;
-    }
-
-    public String getTestUUID() {
-        return testUUID;
-    }
-
-    public void setTestUUID(String testUUID) {
-        this.testUUID = testUUID;
+    public Document(String image, String testUUID) {
+        this.image = image;
+        this.testUuid = testUUID;
     }
 }

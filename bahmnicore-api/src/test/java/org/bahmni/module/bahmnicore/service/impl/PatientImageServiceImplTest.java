@@ -16,13 +16,13 @@ public class PatientImageServiceImplTest {
     private PatientImageServiceImpSubClass patientImageServiceImpSubClass;
 
     @Mock
-    private BahmniCoreApiProperties properties;
+    private BahmniCoreApiProperties bahmniCoreApiProperties;
 
     @Test
     public void shouldCreateRightDirectoryAccordingToPatientId() {
         initMocks(this);
-        when(properties.getDocumentBaseDirectory()).thenReturn("");
-        patientImageServiceImpSubClass = new PatientImageServiceImpSubClass(properties);
+        when(bahmniCoreApiProperties.getDocumentBaseDirectory()).thenReturn("");
+        patientImageServiceImpSubClass = new PatientImageServiceImpSubClass(bahmniCoreApiProperties);
 
         String url = patientImageServiceImpSubClass.createFilePath(".", 280, "Radiology");
 
@@ -35,8 +35,8 @@ public class PatientImageServiceImplTest {
     }
 
     private class PatientImageServiceImpSubClass extends PatientImageServiceImpl {
-        private PatientImageServiceImpSubClass(BahmniCoreApiProperties properties) {
-            super(properties);
+        private PatientImageServiceImpSubClass(BahmniCoreApiProperties bahmniCoreApiProperties) {
+            super(bahmniCoreApiProperties);
         }
     }
 }

@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.web.properties;
+package org.bahmni.module.bahmnicore.properties;
 
 import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
 import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;

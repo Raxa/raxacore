@@ -29,7 +29,7 @@ import java.util.List;
 public class BahmniPatientServiceImpl implements BahmniPatientService {
     private PatientService patientService;
     private PatientImageService patientImageService;
-    private BahmniCoreApiProperties properties;
+    private BahmniCoreApiProperties bahmniCoreApiProperties;
     private PatientMapper patientMapper;
     private static Logger logger = Logger.getLogger(BahmniPatientServiceImpl.class);
     private PersonService personService;
@@ -39,10 +39,10 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     @Autowired
     public BahmniPatientServiceImpl(PatientImageService patientImageService,
                                     PatientService patientService, PersonService personService, ConceptService conceptService,
-                                    BahmniCoreApiProperties properties, PatientMapper patientMapper, BahmniPatientDao bahmniPatientDao) {
+                                    BahmniCoreApiProperties bahmniCoreApiProperties, PatientMapper patientMapper, BahmniPatientDao bahmniPatientDao) {
         this.patientImageService = patientImageService;
         this.patientService = patientService;
-        this.properties = properties;
+        this.bahmniCoreApiProperties = bahmniCoreApiProperties;
         this.personService = personService;
         this.conceptService = conceptService;
         this.patientMapper = patientMapper;
@@ -67,7 +67,7 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     @Override
     public Patient createPatient(BahmniPatient bahmniPatient) {
         Patient patient = null;
-        ExecutionMode executionMode = properties.getExecutionMode();
+        ExecutionMode executionMode = bahmniCoreApiProperties.getExecutionMode();
         try {
             patient = savePatient(bahmniPatient, patient);
         } catch (APIAuthenticationException e) {
