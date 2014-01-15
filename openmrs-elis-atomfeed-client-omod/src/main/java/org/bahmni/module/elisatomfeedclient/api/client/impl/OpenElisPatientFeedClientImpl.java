@@ -11,6 +11,7 @@ import org.ict4h.atomfeed.client.service.EventWorker;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.openmrs.api.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component("openElisPatientFeedClient")
@@ -22,10 +23,9 @@ public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements
 
     @Autowired
     public OpenElisPatientFeedClientImpl(ElisAtomFeedProperties properties,
-                                         JdbcConnectionProvider jdbcConnectionProvider,
                                          BahmniPatientService bahmniPatientService,
                                          PersonService personService) {
-        super(jdbcConnectionProvider,properties);
+        super(properties);
         this.bahmniPatientService = bahmniPatientService;
         this.personService = personService;
     }

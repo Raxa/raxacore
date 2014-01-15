@@ -14,6 +14,7 @@ import org.ict4h.atomfeed.client.service.AtomFeedClient;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.joda.time.DateTime;
+import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -24,8 +25,8 @@ public abstract class OpenElisFeedClient implements FeedClient{
     private JdbcConnectionProvider jdbcConnectionProvider;
     private Logger logger = Logger.getLogger(OpenElisFeedClient.class);
 
-    public OpenElisFeedClient(JdbcConnectionProvider jdbcConnectionProvider, ElisAtomFeedProperties properties) {
-        this.jdbcConnectionProvider = jdbcConnectionProvider;
+    public OpenElisFeedClient(ElisAtomFeedProperties properties) {
+        this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider();
         this.properties = properties;
     }
 

@@ -27,8 +27,10 @@ public class OpenERPSaleOrderFeedClientImpl implements OpenERPSaleOrderFeedClien
     private BahmniDrugOrderService bahmniDrugOrderService;
 
     @Autowired
-    public OpenERPSaleOrderFeedClientImpl(OpenMRSJdbcConnectionProvider jdbcConnectionProvider, OpenERPAtomFeedProperties properties, BahmniDrugOrderService bahmniDrugOrderService) {
-        this.jdbcConnectionProvider = jdbcConnectionProvider;
+    public OpenERPSaleOrderFeedClientImpl(
+            OpenERPAtomFeedProperties properties,
+            BahmniDrugOrderService bahmniDrugOrderService) {
+        this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider();;
         this.properties = properties;
         this.bahmniDrugOrderService = bahmniDrugOrderService;
     }

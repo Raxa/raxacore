@@ -10,6 +10,7 @@ import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component("openElisLabResultFeedClient")
@@ -20,9 +21,8 @@ public class OpenElisLabResultFeedClientImpl extends OpenElisFeedClient implemen
 
     @Autowired
     public OpenElisLabResultFeedClientImpl(ElisAtomFeedProperties properties,
-                                           JdbcConnectionProvider jdbcConnectionProvider,
                                            BahmniLabResultService bahmniLabResultService) {
-        super(jdbcConnectionProvider, properties);
+        super(properties);
         this.bahmniLabResultService = bahmniLabResultService;
     }
 

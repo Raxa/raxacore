@@ -11,7 +11,6 @@
 		http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <util:properties id="openElisAtomFeedProperties" location="classpath:openelis-atomfeed.properties"/>
-
     <context:component-scan base-package="org.bahmni.module.elisatomfeedclient"/>
 
     <bean parent="serviceContext">
