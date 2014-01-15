@@ -1,5 +1,6 @@
 package org.bahmni.module.elisatomfeedclient.api.worker;
 
+import org.bahmni.module.elisatomfeedclient.api.exception.OpenElisFeedException;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 
@@ -20,15 +21,12 @@ public class OpenElisPatientFeedWorker implements EventWorker {
     }
 
     private EventWorker geEventWorker(Event event) {
+        if (PATIENT.equalsIgnoreCase(event.getTitle())) {
             return patientEventWorker;
-// WIP
-//        if(PATIENT.equalsIgnoreCase(event.getTitle())) {
-//            return patientEventWorker;
-//        }
-//        else if(ACCESSION.equalsIgnoreCase(event.getTitle())){
-//            return accessionEventWorker;
-//        }
-//        throw new OpenElisFeedException(String.format("Could not find a worker for event : %s", event));
+        } else if (ACCESSION.equalsIgnoreCase(event.getTitle())) {
+            return accessionEventWorker;
+        }
+        throw new OpenElisFeedException(String.format("Could not find a worker for event : %s", event));
     }
 
     @Override

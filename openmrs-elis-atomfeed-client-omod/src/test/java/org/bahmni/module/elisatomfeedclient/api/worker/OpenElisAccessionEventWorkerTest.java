@@ -3,6 +3,7 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisAccessionBuilder;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisTestDetailBuilder;
+import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
 import org.bahmni.module.elisatomfeedclient.api.mapper.AccessionMapper;
@@ -23,9 +24,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class OpenElisAccessionEventWorkerTest {
@@ -56,7 +55,7 @@ public class OpenElisAccessionEventWorkerTest {
     public void shouldSaveEncounterWhenEncounterForGivenAccessionDoesNotExists() throws Exception {
         Encounter encounter = getEncounterWithTests("test1");
         stubAccession(new OpenElisAccessionBuilder().build());
-        when(accessionMapper.map(any(OpenElisAccession.class))).thenReturn(encounter);
+        when(accessionMapper.mapToNewEncounter(any(OpenElisAccession.class))).thenReturn(encounter);
 
         accessionEventWorker.process(event);
 
@@ -64,15 +63,15 @@ public class OpenElisAccessionEventWorkerTest {
     }
 
     @Test
-    public void shouldUpdateEncounterWhenccessionHasNewOrder() throws Exception {
+    public void shouldUpdateEncounterWhenAccessionHasNewOrder() throws Exception {
         Encounter previousEncounter = getEncounterWithTests("test1");
-        Encounter encounterFromAccession = new Encounter();
+        Encounter encounterFromAccession = getEncounterWithTests("test1", "test2");
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").build();
         OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2))).build();
         stubAccession(openElisAccession);
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
-        when(accessionMapper.map(any(OpenElisAccession.class))).thenReturn(encounterFromAccession);
+        when(accessionMapper.mapToExistingEncounter(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
 
         accessionEventWorker.process(event);
 
@@ -83,14 +82,14 @@ public class OpenElisAccessionEventWorkerTest {
     @Test
     public void shouldUpdateEncounterWhenAccessionHasRemovedOrderFromPreviousEncounter() throws Exception {
         Encounter previousEncounter = getEncounterWithTests("test1", "test2", "test3");
-        Encounter encounterFromAccession = new Encounter();
+        Encounter encounterFromAccession = getEncounterWithTests("test1", "test2", "test3");
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").build();
         OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").build();
         OpenElisTestDetail test3 = new OpenElisTestDetailBuilder().withTestUuid("test3").withStatus("Cancelled").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2, test3))).build();
         stubAccession(openElisAccession);
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
-        when(accessionMapper.map(any(OpenElisAccession.class))).thenReturn(encounterFromAccession);
+        when(accessionMapper.mapToExistingEncounter(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
 
         accessionEventWorker.process(event);
 
@@ -108,7 +107,7 @@ public class OpenElisAccessionEventWorkerTest {
         previousEncounter.setUuid(openElisAccession.getAccessionUuid());
         stubAccession(openElisAccession);
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
-        when(accessionMapper.map(any(OpenElisAccession.class))).thenReturn(encounterFromAccession);
+        when(accessionMapper.mapToNewEncounter(any(OpenElisAccession.class))).thenReturn(encounterFromAccession);
 
         accessionEventWorker.process(event);
 

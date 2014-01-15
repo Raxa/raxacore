@@ -2,6 +2,7 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 
 import org.apache.log4j.Logger;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
+import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.exception.OpenElisFeedException;
 import org.bahmni.module.elisatomfeedclient.api.mapper.AccessionMapper;
@@ -9,13 +10,10 @@ import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.openmrs.Encounter;
-import org.openmrs.Order;
 import org.openmrs.api.EncounterService;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
 
 import static org.bahmni.module.elisatomfeedclient.api.util.ObjectMapperRepository.objectMapper;
 
@@ -44,16 +42,19 @@ public class OpenElisAccessionEventWorker implements EventWorker {
             String response = httpClient.get(URI.create(patientUrl));
             OpenElisAccession openElisAccession = objectMapper.readValue(response, OpenElisAccession.class);
             Encounter previousEncounter = encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid());
-            Encounter encounterFromAccession = accessionMapper.map(openElisAccession);
-            Set<Order> previousOrders = new HashSet<>();
+            AccessionDiff diff = null;
             if (previousEncounter != null) {
-                previousOrders = previousEncounter.getOrders();
+                diff = openElisAccession.getDiff(previousEncounter);
             }
-            Set<Order> ordersFromAccession = encounterFromAccession.getOrders();
-            if (previousOrders.size() != ordersFromAccession.size()){
-                logger.info("openelisatomfeedclient:creating encounter for accession : " + patientUrl);
-                encounterService.saveEncounter(encounterFromAccession);
+            Encounter encounterFromAccession = null;
+            if (diff == null) {
+                logger.info("openelisatomfeedclient:creating new encounter for accession : " + patientUrl);
+                encounterFromAccession = accessionMapper.mapToNewEncounter(openElisAccession);
+            } else if (diff.getRemovedTestDetails().size() > 0 || diff.getAddedTestDetails().size() > 0) {
+                logger.info("openelisatomfeedclient:updating encounter for accession : " + patientUrl);
+                encounterFromAccession = accessionMapper.mapToExistingEncounter(openElisAccession, diff, previousEncounter);
             }
+            encounterService.saveEncounter(encounterFromAccession);
         } catch (IOException e) {
             logger.error("openelisatomfeedclient:error processing event : " + patientUrl + e.getMessage(), e);
             throw new OpenElisFeedException("could not read accession data", e);

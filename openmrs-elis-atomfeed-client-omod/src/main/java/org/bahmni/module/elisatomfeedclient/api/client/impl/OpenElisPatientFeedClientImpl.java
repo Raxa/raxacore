@@ -12,6 +12,7 @@ import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,9 @@ public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements
 
     @Override
     protected EventWorker createWorker(HttpClient authenticatedWebClient,ElisAtomFeedProperties properties) {
-        OpenElisAccessionEventWorker accessionEventWorker = new OpenElisAccessionEventWorker(properties, authenticatedWebClient, Context.getService(EncounterService.class), new AccessionMapper());
+        PatientService patientService = Context.getService(PatientService.class);
+        EncounterService encounterService = Context.getService(EncounterService.class);
+        OpenElisAccessionEventWorker accessionEventWorker = new OpenElisAccessionEventWorker(properties, authenticatedWebClient, encounterService, new AccessionMapper(properties));
         OpenElisPatientEventWorker openElisPatientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, authenticatedWebClient, properties);
         return  new OpenElisPatientFeedWorker(openElisPatientEventWorker, accessionEventWorker);
     }

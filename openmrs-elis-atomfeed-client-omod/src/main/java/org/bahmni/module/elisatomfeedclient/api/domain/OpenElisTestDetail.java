@@ -2,6 +2,7 @@ package org.bahmni.module.elisatomfeedclient.api.domain;
 
 import lombok.Data;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.joda.time.DateTime;
 
 import java.util.Date;
 import java.util.Set;
@@ -18,12 +19,16 @@ public class OpenElisTestDetail {
     private Set<String> notes;
     private String resultType;
     private String providerUuid;
-    private Date datetime;
+    private String dateTime;
     private String status;
     private Boolean abnormal;
 
     @JsonIgnore
     public boolean isCancelled() {
         return "Cancelled".equals(status);
+    }
+
+    public Date fetchDate() {
+        return  dateTime == null ? null : DateTime.parse(dateTime).toDate();
     }
 }
