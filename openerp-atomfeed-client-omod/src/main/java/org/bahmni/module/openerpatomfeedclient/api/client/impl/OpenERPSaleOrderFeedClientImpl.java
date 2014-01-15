@@ -10,7 +10,6 @@ import org.ict4h.atomfeed.client.factory.*;
 import org.ict4h.atomfeed.client.service.*;
 import org.ict4h.atomfeed.jdbc.*;
 import org.joda.time.*;
-import org.openmrs.module.atomfeed.common.repository.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.stereotype.*;
 
@@ -26,7 +25,7 @@ public class OpenERPSaleOrderFeedClientImpl implements OpenERPSaleOrderFeedClien
     private BahmniDrugOrderService bahmniDrugOrderService;
 
     @Autowired
-    public OpenERPSaleOrderFeedClientImpl(OpenMRSJdbcConnectionProvider jdbcConnectionProvider, OpenERPAtomFeedProperties properties, BahmniDrugOrderService bahmniDrugOrderService) {
+    public OpenERPSaleOrderFeedClientImpl(JdbcConnectionProvider jdbcConnectionProvider, OpenERPAtomFeedProperties properties, BahmniDrugOrderService bahmniDrugOrderService) {
         this.jdbcConnectionProvider = jdbcConnectionProvider;
         this.properties = properties;
         this.bahmniDrugOrderService = bahmniDrugOrderService;
