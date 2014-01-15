@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.model.VisitDocumentResponse;
-import org.bahmni.module.bahmnicore.model.VisitDocumentUpload;
+import org.bahmni.module.bahmnicore.contract.visitDocument.VisitDocumentRequest;
+import org.bahmni.module.bahmnicore.contract.visitDocument.VisitDocumentResponse;
 import org.bahmni.module.bahmnicore.service.VisitDocumentService;
 import org.openmrs.Visit;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -23,7 +23,7 @@ public class VisitDocumentController extends BaseRestController {
     @RequestMapping(method = RequestMethod.POST)
     @WSDoc("Save Patient Document")
     @ResponseBody
-    public VisitDocumentResponse save(@RequestBody VisitDocumentUpload visitDocumentUpload) {
+    public VisitDocumentResponse save(@RequestBody VisitDocumentRequest visitDocumentUpload) {
         final Visit visit = visitDocumentService.upload(visitDocumentUpload);
         return new VisitDocumentResponse(visit.getUuid());
     }

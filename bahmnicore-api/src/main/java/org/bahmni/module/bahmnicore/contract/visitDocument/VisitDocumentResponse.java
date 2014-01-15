@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.model;
+package org.bahmni.module.bahmnicore.contract.visitDocument;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

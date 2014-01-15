@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.bahmni.module.bahmnicore.contract.visitDocument.VisitDocumentRequest;
 import org.bahmni.module.bahmnicore.model.Document;
-import org.bahmni.module.bahmnicore.model.VisitDocumentUpload;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
 import org.bahmni.module.bahmnicore.service.VisitDocumentService;
 import org.openmrs.*;
@@ -24,11 +24,11 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
     }
 
     @Override
-    public Visit upload(VisitDocumentUpload visitDocumentUpload) {
-        Patient patient = Context.getPatientService().getPatientByUuid(visitDocumentUpload.getPatientUuid());
-        Visit visit = createVisit(visitDocumentUpload.getVisitTypeUuid(), visitDocumentUpload.getVisitStartDate(), visitDocumentUpload.getVisitEndDate(), patient);
-        Encounter encounter = createEncounter(visit, visitDocumentUpload.getEncounterTypeUuid(), visitDocumentUpload.getEncounterDateTime(), patient);
-        Set<Obs> observations = createObservationGroup(visitDocumentUpload.getEncounterDateTime(), visitDocumentUpload.getDocuments(), patient, encounter);
+    public Visit upload(VisitDocumentRequest visitDocumentRequest) {
+        Patient patient = Context.getPatientService().getPatientByUuid(visitDocumentRequest.getPatientUuid());
+        Visit visit = createVisit(visitDocumentRequest.getVisitTypeUuid(), visitDocumentRequest.getVisitStartDate(), visitDocumentRequest.getVisitEndDate(), patient);
+        Encounter encounter = createEncounter(visit, visitDocumentRequest.getEncounterTypeUuid(), visitDocumentRequest.getEncounterDateTime(), patient);
+        Set<Obs> observations = createObservationGroup(visitDocumentRequest.getEncounterDateTime(), visitDocumentRequest.getDocuments(), patient, encounter);
         encounter.setObs(observations);
         return Context.getVisitService().saveVisit(visit);
     }
