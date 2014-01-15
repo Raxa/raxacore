@@ -13,6 +13,7 @@
     <util:properties id="openElisAtomFeedProperties" location="classpath:openelis-atomfeed.properties"/>
 
     <context:component-scan base-package="org.bahmni.module.elisatomfeedclient"/>
+    <context:component-scan base-package="org.openmrs.module.atomfeed.common.repository"/>
 
     <bean parent="serviceContext">
         <property name="moduleService">

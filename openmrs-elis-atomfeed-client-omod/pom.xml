@@ -315,6 +315,10 @@
             <version>4.2.4</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.ict4h.openmrs</groupId>
+            <artifactId>openmrs-atomfeed-common</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

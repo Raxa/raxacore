@@ -1,21 +1,19 @@
 package org.bahmni.module.openerpatomfeedclient.api.client.impl;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.log4j.Logger;
-import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
-import org.bahmni.module.openerpatomfeedclient.api.OpenERPAtomFeedProperties;
-import org.bahmni.module.openerpatomfeedclient.api.client.OpenERPSaleOrderFeedClient;
-import org.bahmni.module.openerpatomfeedclient.api.client.OpenMRSJdbcConnectionProvider;
-import org.bahmni.module.openerpatomfeedclient.api.worker.SaleOrderFeedEventWorker;
-import org.ict4h.atomfeed.client.factory.AtomFeedClientBuilder;
-import org.ict4h.atomfeed.client.service.AtomFeedClient;
-import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.apache.commons.lang3.exception.*;
+import org.apache.log4j.*;
+import org.bahmni.module.bahmnicore.service.*;
+import org.bahmni.module.openerpatomfeedclient.api.*;
+import org.bahmni.module.openerpatomfeedclient.api.client.*;
+import org.bahmni.module.openerpatomfeedclient.api.worker.*;
+import org.ict4h.atomfeed.client.factory.*;
+import org.ict4h.atomfeed.client.service.*;
+import org.ict4h.atomfeed.jdbc.*;
+import org.joda.time.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.stereotype.*;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.*;
 
 @Component("openERPSaleOrderFeedClient")
 public class OpenERPSaleOrderFeedClientImpl implements OpenERPSaleOrderFeedClient {
@@ -27,7 +25,7 @@ public class OpenERPSaleOrderFeedClientImpl implements OpenERPSaleOrderFeedClien
     private BahmniDrugOrderService bahmniDrugOrderService;
 
     @Autowired
-    public OpenERPSaleOrderFeedClientImpl(OpenMRSJdbcConnectionProvider jdbcConnectionProvider, OpenERPAtomFeedProperties properties, BahmniDrugOrderService bahmniDrugOrderService) {
+    public OpenERPSaleOrderFeedClientImpl(JdbcConnectionProvider jdbcConnectionProvider, OpenERPAtomFeedProperties properties, BahmniDrugOrderService bahmniDrugOrderService) {
         this.jdbcConnectionProvider = jdbcConnectionProvider;
         this.properties = properties;
         this.bahmniDrugOrderService = bahmniDrugOrderService;
