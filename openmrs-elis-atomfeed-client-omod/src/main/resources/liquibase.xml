@@ -66,5 +66,14 @@
             UPDATE scheduler_task_config SET start_on_startup = 0 WHERE name = 'OpenElis Patient Atom Feed Task';
         </sql>
     </changeSet>
-
+    <changeSet id="elis-atomfeed-9" author="tw" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="failed_events" columnName="title"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="failed_events">
+            <column name="title" type="varchar(255)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
