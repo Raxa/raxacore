@@ -1,24 +1,18 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import junit.framework.Assert;
-import org.bahmni.module.bahmnicore.contract.encounter.data.TestOrderData;
-import org.bahmni.module.bahmnicore.contract.encounter.request.CreateEncounterRequest;
-import org.bahmni.module.bahmnicore.contract.encounter.data.ObservationData;
-import org.joda.time.DateMidnight;
-import org.joda.time.LocalDateTime;
-import org.junit.Test;
+import org.bahmni.module.bahmnicore.contract.encounter.data.*;
+import org.bahmni.module.bahmnicore.contract.encounter.request.*;
+import org.joda.time.*;
+import org.junit.*;
 import org.mockito.Mock;
 import org.openmrs.*;
 import org.openmrs.api.*;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.*;
 
 public class BahmniEncounterControllerTest {
     @Mock
@@ -79,7 +73,7 @@ public class BahmniEncounterControllerTest {
         CreateEncounterRequest createEncounterRequest = new CreateEncounterRequest(patientUUID, "2", encounterTypeUUID, observations, orders);
         bahmniEncounterController.create(createEncounterRequest);
 
-        Assert.assertEquals(5.0, regFeeObs.getValueNumeric());
+        Assert.assertEquals(5.0, regFeeObs.getValueNumeric(), 0);
         Assert.assertEquals(2, encounter.getAllObs().size());
         Assert.assertEquals(2, encounter.getOrders().size());
         verify(obsService).purgeObs(any(Obs.class));
