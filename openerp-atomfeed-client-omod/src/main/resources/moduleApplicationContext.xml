@@ -13,7 +13,6 @@
     <util:properties id="erpAtomFeedProperties" location="classpath:openerp-atomfeed.properties"/>
 
     <context:component-scan base-package="org.bahmni.module.openerpatomfeedclient"/>
-    <context:component-scan base-package="org.openmrs.module.atomfeed.common.repository"/>
 
     <bean parent="serviceContext">
         <property name="moduleService">
