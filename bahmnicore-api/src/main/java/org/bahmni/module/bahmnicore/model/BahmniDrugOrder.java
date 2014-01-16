@@ -10,6 +10,14 @@ public class BahmniDrugOrder {
     public BahmniDrugOrder() {
     }
 
+    public BahmniDrugOrder(int numberOfDays, String productUuid, Double quantity, Double dosage, String unit) {
+        this.numberOfDays = numberOfDays;
+        this.productUuid = productUuid;
+        this.quantity = quantity;
+        this.dosage = dosage;
+        this.unit = unit;
+    }
+
     public int getNumberOfDays() {
         if(dosage == 0.0){
             return quantity.intValue();
@@ -38,6 +46,26 @@ public class BahmniDrugOrder {
         this.productUuid = productUuid;
         this.quantity = quantity;
         this.dosage = dosage;
+        this.unit = unit;
+    }
+
+    public void setNumberOfDays(int numberOfDays) {
+        this.numberOfDays = numberOfDays;
+    }
+
+    public void setProductUuid(String productUuid) {
+        this.productUuid = productUuid;
+    }
+
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
+
+    public void setDosage(Double dosage) {
+        this.dosage = dosage;
+    }
+
+    public void setUnit(String unit) {
         this.unit = unit;
     }
 }

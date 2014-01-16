@@ -12,7 +12,6 @@ public class SaleOrder {
     private String externalId;
     private int id;
     private List<BahmniDrugOrder> saleOrderItems;
-    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
     private Date orderDate;
 
     public String getCustomerId() {
@@ -43,6 +42,7 @@ public class SaleOrder {
         return orderDate;
     }
 
+    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
     public void setOrderDate(Date orderDate) {
         this.orderDate = orderDate;
     }
