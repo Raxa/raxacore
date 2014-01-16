@@ -11,6 +11,9 @@ import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.openmrs.Encounter;
 import org.openmrs.api.EncounterService;
+import org.openmrs.module.emrapi.encounter.EmrEncounterService;
+import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,16 +25,20 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     private ElisAtomFeedProperties atomFeedProperties;
     private HttpClient httpClient;
     private EncounterService encounterService;
+    private EmrEncounterService emrEncounterService;
     private AccessionMapper accessionMapper;
+    private EncounterTransactionMapper encounterTransactionMapper;
 
     private static Logger logger = Logger.getLogger(OpenElisAccessionEventWorker.class);
 
-    public OpenElisAccessionEventWorker(ElisAtomFeedProperties atomFeedProperties, HttpClient httpClient, EncounterService encounterService, AccessionMapper accessionMapper) {
+    public OpenElisAccessionEventWorker(ElisAtomFeedProperties atomFeedProperties, HttpClient httpClient, EncounterService encounterService, EmrEncounterService emrEncounterService, AccessionMapper accessionMapper, EncounterTransactionMapper encounterTransactionMapper) {
 
         this.atomFeedProperties = atomFeedProperties;
         this.httpClient = httpClient;
         this.encounterService = encounterService;
+        this.emrEncounterService = emrEncounterService;
         this.accessionMapper = accessionMapper;
+        this.encounterTransactionMapper = encounterTransactionMapper;
     }
 
     @Override
@@ -41,6 +48,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         try {
             String response = httpClient.get(URI.create(patientUrl));
             OpenElisAccession openElisAccession = objectMapper.readValue(response, OpenElisAccession.class);
+
             Encounter previousEncounter = encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid());
             AccessionDiff diff = null;
             if (previousEncounter != null) {
@@ -54,7 +62,11 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 logger.info("openelisatomfeedclient:updating encounter for accession : " + patientUrl);
                 encounterFromAccession = accessionMapper.mapToExistingEncounter(openElisAccession, diff, previousEncounter);
             }
-            encounterService.saveEncounter(encounterFromAccession);
+
+            if (encounterFromAccession != null) {
+                EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounterFromAccession, true);
+                emrEncounterService.save(encounterTransaction);
+            }
         } catch (IOException e) {
             logger.error("openelisatomfeedclient:error processing event : " + patientUrl + e.getMessage(), e);
             throw new OpenElisFeedException("could not read accession data", e);

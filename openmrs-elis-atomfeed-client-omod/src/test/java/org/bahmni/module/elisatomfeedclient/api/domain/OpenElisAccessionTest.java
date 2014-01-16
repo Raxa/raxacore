@@ -34,7 +34,7 @@ public class OpenElisAccessionTest {
         Encounter previousEncounter = getEncounterWithOrders("test1", "test2", "test3");
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").build();
         OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").build();
-        OpenElisTestDetail test3 = new OpenElisTestDetailBuilder().withTestUuid("test3").withStatus("Cancelled").build();
+        OpenElisTestDetail test3 = new OpenElisTestDetailBuilder().withTestUuid("test3").withStatus("Canceled").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2, test3))).build();
 
         AccessionDiff diff = openElisAccession.getDiff(previousEncounter);
@@ -51,7 +51,7 @@ public class OpenElisAccessionTest {
         Encounter previousEncounter = getEncounterWithOrders("test1");
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").build();
         OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").build();
-        OpenElisTestDetail test3 = new OpenElisTestDetailBuilder().withTestUuid("test3").withStatus("Cancelled").build();
+        OpenElisTestDetail test3 = new OpenElisTestDetailBuilder().withTestUuid("test3").withStatus("Canceled").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2, test3))).build();
 
         AccessionDiff diff = openElisAccession.getDiff(previousEncounter);
@@ -80,7 +80,7 @@ public class OpenElisAccessionTest {
     public void shouldNotDiffIfThereAreTestsRemovedOnBothSides() throws Exception {
         Encounter previousEncounter = getEncounterWithOrders("test1", "test2");
         getOrderByName(previousEncounter, "test1").setVoided(true);
-        OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").withStatus("Cancelled").build();
+        OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").withStatus("Canceled").build();
         OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2))).build();
         previousEncounter.setUuid(openElisAccession.getAccessionUuid());
@@ -95,7 +95,7 @@ public class OpenElisAccessionTest {
     public void shouldGetDiffIfCancelledTestIsReordered() throws Exception {
         Encounter previousEncounter = getEncounterWithOrders("test1", "test2");
         getOrderByName(previousEncounter, "test1").setVoided(true);
-        OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").withStatus("Cancelled").build();
+        OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").withStatus("Canceled").build();
         OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").build();
         OpenElisTestDetail test1ReOrdered = new OpenElisTestDetailBuilder().withTestUuid("test1").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2, test1ReOrdered))).build();
@@ -126,8 +126,8 @@ public class OpenElisAccessionTest {
     public void shouldGetDiffIfPanelAreRemoved() throws Exception {
         Encounter previousEncounter = getEncounterWithOrders("test1", "panel1");
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").build();
-        OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").withStatus("Cancelled").withPanelUuid("panel1").build();
-        OpenElisTestDetail test3 = new OpenElisTestDetailBuilder().withTestUuid("test3").withStatus("Cancelled").withPanelUuid("panel1").build();
+        OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").withStatus("Canceled").withPanelUuid("panel1").build();
+        OpenElisTestDetail test3 = new OpenElisTestDetailBuilder().withTestUuid("test3").withStatus("Canceled").withPanelUuid("panel1").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2, test3))).build();
         previousEncounter.setUuid(openElisAccession.getAccessionUuid());
 
@@ -141,7 +141,7 @@ public class OpenElisAccessionTest {
     public void shouldNotGetDiffIfThereArePanelsRemovedOnBothSides() throws Exception {
         Encounter previousEncounter = getEncounterWithOrders("panel1", "test2");
         getOrderByName(previousEncounter, "panel1").setVoided(true);
-        OpenElisTestDetail panel1 = new OpenElisTestDetailBuilder().withTestUuid("test1").withPanelUuid("panel1").withStatus("Cancelled").build();
+        OpenElisTestDetail panel1 = new OpenElisTestDetailBuilder().withTestUuid("test1").withPanelUuid("panel1").withStatus("Canceled").build();
         OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(panel1, test2))).build();
         previousEncounter.setUuid(openElisAccession.getAccessionUuid());
@@ -156,7 +156,7 @@ public class OpenElisAccessionTest {
     public void shouldGetDiffIfCancelledPanelIsReordered() throws Exception {
         Encounter previousEncounter = getEncounterWithOrders("panel1", "test2");
         getOrderByName(previousEncounter, "panel1").setVoided(true);
-        OpenElisTestDetail panel1 = new OpenElisTestDetailBuilder().withTestUuid("test1").withPanelUuid("panel1").withStatus("Cancelled").build();
+        OpenElisTestDetail panel1 = new OpenElisTestDetailBuilder().withTestUuid("test1").withPanelUuid("panel1").withStatus("Canceled").build();
         OpenElisTestDetail panel2 = new OpenElisTestDetailBuilder().withTestUuid("test2").build();
         OpenElisTestDetail panel1ReOrdered = new OpenElisTestDetailBuilder().withTestUuid("test1").withPanelUuid("panel1").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(panel1, panel2, panel1ReOrdered))).build();

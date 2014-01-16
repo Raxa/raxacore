@@ -35,6 +35,7 @@ public class AccessionMapper {
         this.properties = properties;
         this.userService = userService;
         this.providerService = providerService;
+
     }
 
     public Encounter mapToNewEncounter(OpenElisAccession openElisAccession) {

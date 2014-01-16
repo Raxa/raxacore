@@ -25,7 +25,7 @@ public class OpenElisTestDetail {
 
     @JsonIgnore
     public boolean isCancelled() {
-        return "Cancelled".equals(status);
+        return "Canceled".equals(status);
     }
 
     public Date fetchDate() {

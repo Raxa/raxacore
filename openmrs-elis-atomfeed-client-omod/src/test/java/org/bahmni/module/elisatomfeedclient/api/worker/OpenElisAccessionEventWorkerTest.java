@@ -17,6 +17,9 @@ import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.TestOrder;
 import org.openmrs.api.EncounterService;
+import org.openmrs.module.emrapi.encounter.EmrEncounterService;
+import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.io.IOException;
 import java.net.URI;
@@ -37,7 +40,10 @@ public class OpenElisAccessionEventWorkerTest {
     private AccessionMapper accessionMapper;
     @Mock
     private ElisAtomFeedProperties feedProperties;
-
+    @Mock
+    private EncounterTransactionMapper encounterTransactionMapper;
+    @Mock
+    private EmrEncounterService emrEncounterService;
     private OpenElisAccessionEventWorker accessionEventWorker;
     private String openElisUrl;
     private Event event;
@@ -45,7 +51,7 @@ public class OpenElisAccessionEventWorkerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService, accessionMapper);
+        accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService, emrEncounterService, accessionMapper, encounterTransactionMapper);
         openElisUrl = "http://localhost";
         event = new Event("id", "/openelis/accession/12-34-56-78", "title", "feedUri");
         when(feedProperties.getOpenElisUri()).thenReturn(openElisUrl);
@@ -55,64 +61,77 @@ public class OpenElisAccessionEventWorkerTest {
     public void shouldSaveEncounterWhenEncounterForGivenAccessionDoesNotExists() throws Exception {
         Encounter encounter = getEncounterWithTests("test1");
         stubAccession(new OpenElisAccessionBuilder().build());
+        EncounterTransaction encounterTransaction = new EncounterTransaction();
+
         when(accessionMapper.mapToNewEncounter(any(OpenElisAccession.class))).thenReturn(encounter);
+        when(encounterTransactionMapper.map(encounter, true)).thenReturn(encounterTransaction);
 
         accessionEventWorker.process(event);
 
-        verify(encounterService).saveEncounter(encounter);
+        verify(emrEncounterService).save(encounterTransaction);
     }
 
     @Test
     public void shouldUpdateEncounterWhenAccessionHasNewOrder() throws Exception {
         Encounter previousEncounter = getEncounterWithTests("test1");
         Encounter encounterFromAccession = getEncounterWithTests("test1", "test2");
+        EncounterTransaction encounterTransaction = new EncounterTransaction();
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").build();
         OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2))).build();
         stubAccession(openElisAccession);
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
         when(accessionMapper.mapToExistingEncounter(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
+        when(encounterTransactionMapper.map(encounterFromAccession, true)).thenReturn(encounterTransaction);
 
         accessionEventWorker.process(event);
 
         verify(encounterService).getEncounterByUuid(openElisAccession.getAccessionUuid());
-        verify(encounterService).saveEncounter(encounterFromAccession);
+        verify(emrEncounterService).save(encounterTransaction);
     }
 
     @Test
     public void shouldUpdateEncounterWhenAccessionHasRemovedOrderFromPreviousEncounter() throws Exception {
         Encounter previousEncounter = getEncounterWithTests("test1", "test2", "test3");
         Encounter encounterFromAccession = getEncounterWithTests("test1", "test2", "test3");
+        EncounterTransaction encounterTransaction = new EncounterTransaction();
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").build();
         OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").build();
-        OpenElisTestDetail test3 = new OpenElisTestDetailBuilder().withTestUuid("test3").withStatus("Cancelled").build();
+        OpenElisTestDetail test3 = new OpenElisTestDetailBuilder().withTestUuid("test3").withStatus("Canceled").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2, test3))).build();
         stubAccession(openElisAccession);
+
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
+        AccessionDiff accessionDiff = new AccessionDiff();
+        accessionDiff.addRemovedTestDetails(test3);
         when(accessionMapper.mapToExistingEncounter(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
+        when(encounterTransactionMapper.map(encounterFromAccession, true)).thenReturn(encounterTransaction);
 
         accessionEventWorker.process(event);
 
         verify(encounterService).getEncounterByUuid(openElisAccession.getAccessionUuid());
-        verify(encounterService).saveEncounter(encounterFromAccession);
+        verify(accessionMapper, never()).mapToNewEncounter(any(OpenElisAccession.class));
+        verify(accessionMapper).mapToExistingEncounter(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class));
+        verify(emrEncounterService).save(encounterTransaction);
     }
 
     @Test
     public void shouldNotUpdateEncounterWhenAccessionHasSameOrdersAsPreviousEncounter() throws Exception {
         Encounter previousEncounter = getEncounterWithTests("test1", "test2");
         Encounter encounterFromAccession = getEncounterWithTests("test1", "test2");
+        EncounterTransaction encounterTransaction = new EncounterTransaction();
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").build();
         OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2))).build();
         previousEncounter.setUuid(openElisAccession.getAccessionUuid());
         stubAccession(openElisAccession);
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
-        when(accessionMapper.mapToNewEncounter(any(OpenElisAccession.class))).thenReturn(encounterFromAccession);
+        when(encounterTransactionMapper.map(previousEncounter, true)).thenReturn(encounterTransaction);
 
         accessionEventWorker.process(event);
 
         verify(encounterService).getEncounterByUuid(openElisAccession.getAccessionUuid());
-        verify(encounterService, never()).saveEncounter(encounterFromAccession);
+        verify(emrEncounterService, never()).save(encounterTransaction);
     }
 
     private Encounter getEncounterWithTests(String... testUuids) {
