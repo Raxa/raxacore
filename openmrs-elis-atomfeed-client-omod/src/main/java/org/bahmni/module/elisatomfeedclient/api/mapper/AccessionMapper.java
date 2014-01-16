@@ -152,12 +152,12 @@ public class AccessionMapper {
         return orderConceptUuids;
     }
 
-    public Provider getLabSystemProvider() {
+    private Provider getLabSystemProvider() {
         Collection<Provider> labSystemProviders = providerService.getProvidersByPerson(labUser.getPerson());
         return labSystemProviders == null ? null : labSystemProviders.iterator().next();
     }
 
-    public Visit getNearestVisit(Patient patient, OpenElisAccession accession) {
+    private Visit getNearestVisit(Patient patient, OpenElisAccession accession) {
         List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, accession.fetchDate(), null, null, null, true, false);
         Visit nearestVisit = visits.get(0);
         for (Visit visit : visits) {
