@@ -216,4 +216,14 @@
             );
         </sql>
     </changeSet>
+    <changeSet id="bahmni-clinical-10" author="Vivek" context="rel3">
+        <comment>Add concept words for adt notes</comment>
+        <sql>
+            select concept_id INTO @concept_id from concept where short_name='Adt Notes';
+            select concept_name_id INTO @concept_name_full_id from concept_name where concept_id = (select concept_id from concept where short_name='Adt Notes');
+
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Adt', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Notes', '1');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
