@@ -21,14 +21,14 @@ public class SaleOrderFeedEventWorker implements EventWorker{
     @Override
     public void process(Event event) {
         String saleOrderContent = event.getContent();
-        logger.info("openerpatomfeedclient:Processing : " + saleOrderContent);
+        logger.info("openERPatomfeedclient:Processing : " + saleOrderContent);
         try {
             SaleOrder saleOrder = ObjectMapperRepository.objectMapper.readValue(saleOrderContent, SaleOrder.class);
             if(saleOrder.getExternalId() == null) {
                 bahmniDrugOrderService.add(saleOrder.getCustomerId(), saleOrder.getOrderDate(), saleOrder.getSaleOrderItems());
             }
         } catch (IOException e) {
-            logger.error("openelisatomfeedclient:error processing : " + saleOrderContent + e.getMessage(), e);
+            logger.error("openERPatomfeedclient:error processing : " + saleOrderContent + e.getMessage(), e);
             throw new OpenERPFeedException("could not read lab result data", e);
         }
     }
