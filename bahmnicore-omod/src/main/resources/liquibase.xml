@@ -265,4 +265,38 @@
             VALUES ('RADIOLOGY', 'RADIOLOGY encounter', 1, curdate(), uuid());
         </sql>
     </changeSet>
+
+    <changeSet id="bahmni-clinical-201401171353" author="banka-tw" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege = 'app:clinical'</sqlCheck>
+        </preConditions>
+        <insert tableName="privilege">
+            <column name="privilege" value="app:clinical"/>
+            <column name="description" value="Bahmni clinical app access privilege"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="bahmni-clinical-201401171415" author="banka-tw" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege = 'app:radiologyOrders'</sqlCheck>
+        </preConditions>
+        <insert tableName="privilege">
+            <column name="privilege" value="app:radiologyOrders"/>
+            <column name="description" value="Bahmni radiology orders access privilege"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="bahmni-clinical-201401171420" author="banka-tw" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege = 'app:documents'</sqlCheck>
+        </preConditions>
+        <insert tableName="privilege">
+            <column name="privilege" value="app:documents"/>
+            <column name="description" value="Privilege to access the documents scanning app"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
