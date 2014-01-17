@@ -20,17 +20,20 @@ public class VisitDocumentRequest {
     String encounterTypeUuid;
     Date encounterDateTime;
     List<Document> documents = new ArrayList<>();
+    private String providerUuid;
 
     public VisitDocumentRequest() {
     }
 
-    public VisitDocumentRequest(String patientUUID, String visitTypeUUID, Date visitStartDate, Date visitEndDate, String encounterTypeUUID, Date encounterDateTime, List<Document> documents) {
+    public VisitDocumentRequest(String patientUUID, String visitTypeUUID, Date visitStartDate, Date visitEndDate, String encounterTypeUUID, Date encounterDateTime, List<Document> documents, String providerUuid) {
         this.patientUuid = patientUUID;
         this.visitTypeUuid = visitTypeUUID;
         this.visitStartDate = visitStartDate;
         this.visitEndDate = visitEndDate;
         this.encounterTypeUuid = encounterTypeUUID;
         this.encounterDateTime = encounterDateTime;
+        this.providerUuid = providerUuid;
         this.documents = documents;
     }
+
 }

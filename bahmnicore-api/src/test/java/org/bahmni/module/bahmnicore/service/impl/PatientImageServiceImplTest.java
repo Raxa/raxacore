@@ -24,10 +24,10 @@ public class PatientImageServiceImplTest {
         when(bahmniCoreApiProperties.getDocumentBaseDirectory()).thenReturn("");
         patientImageServiceImpSubClass = new PatientImageServiceImpSubClass(bahmniCoreApiProperties);
 
-        String url = patientImageServiceImpSubClass.createFilePath(".", 280, "Radiology");
+        String url = patientImageServiceImpSubClass.createFilePath(".", 280, "Radiology", "jpeg");
 
         assertFalse(url.isEmpty());
-        assertTrue(url.startsWith("/300/280-Radiology-"));
+        assertTrue(url.startsWith("300/280-Radiology-"));
         assertTrue(url.endsWith(".jpeg"));
 
         File absoluteFileDirectory = new File("./300");

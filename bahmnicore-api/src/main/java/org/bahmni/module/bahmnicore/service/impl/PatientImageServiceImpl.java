@@ -36,22 +36,22 @@ public class PatientImageServiceImpl implements PatientImageService {
             if (image == null || image.isEmpty()) return;
 
             File outputFile = new File(String.format("%s/%s.%s", bahmniCoreApiProperties.getImageDirectory(), patientIdentifier, patientImagesFormat));
-            saveImageInFile(image, outputFile);
+            saveImageInFile(image, patientImagesFormat, outputFile);
         } catch (IOException e) {
             throw new BahmniCoreException("[%s] : Could not save patient image", e);
         }
     }
 
     @Override
-    public String saveDocument(Integer patientId, String encounterTypeName, String images) {
+    public String saveDocument(Integer patientId, String encounterTypeName, String images, String format) {
         try {
             if (images == null || images.isEmpty()) return null;
 
             String basePath = bahmniCoreApiProperties.getDocumentBaseDirectory();
-            String relativeFilePath = createFilePath(basePath, patientId, encounterTypeName);
+            String relativeFilePath = createFilePath(basePath, patientId, encounterTypeName, format);
 
-            File outputFile = new File(String.format("%s%s", basePath, relativeFilePath));
-            saveImageInFile(images, outputFile);
+            File outputFile = new File(String.format("%s/%s", basePath, relativeFilePath));
+            saveImageInFile(images, format, outputFile);
 
             return relativeFilePath;
 
@@ -60,20 +60,20 @@ public class PatientImageServiceImpl implements PatientImageService {
         }
     }
 
-    private String createFileName(Integer patientId, String encounterTypeName) {
+    private String createFileName(Integer patientId, String encounterTypeName, Object format) {
         String uuid = UUID.randomUUID().toString();
-        return String.format("%s-%s-%s.%s", patientId, encounterTypeName, uuid, patientImagesFormat);
+        return String.format("%s-%s-%s.%s", patientId, encounterTypeName, uuid, format);
     }
 
-    protected String createFilePath(String basePath, Integer patientId, String encounterTypeName) {
-        String fileName = createFileName(patientId, encounterTypeName);
+    protected String createFilePath(String basePath, Integer patientId, String encounterTypeName, String format) {
+        String fileName = createFileName(patientId, encounterTypeName, format);
         String documentDirectory = findDirectoryForDocumentsByPatientId(patientId);
         String absoluteFilePath = String.format("%s/%s", basePath, documentDirectory);
         File absoluteFileDirectory = new File(absoluteFilePath);
         if (!absoluteFileDirectory.exists()) {
             absoluteFileDirectory.mkdirs();
         }
-        return String.format("/%s/%s", documentDirectory,fileName);
+        return String.format("%s/%s", documentDirectory,fileName);
     }
 
     private String findDirectoryForDocumentsByPatientId(Integer patientId) {
@@ -81,11 +81,11 @@ public class PatientImageServiceImpl implements PatientImageService {
         return directory.toString();
     }
 
-    private void saveImageInFile(String image, File outputFile) throws IOException {
+    private void saveImageInFile(String image, String format, File outputFile) throws IOException {
         log.info(String.format("Creating patient image at %s", outputFile));
         byte[] decodedBytes = DatatypeConverter.parseBase64Binary(image);
         BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decodedBytes));
-        ImageIO.write(bufferedImage, patientImagesFormat, outputFile);
+        ImageIO.write(bufferedImage, format, outputFile);
         bufferedImage.flush();
         log.info(String.format("Successfully created patient image at %s", outputFile));
     }

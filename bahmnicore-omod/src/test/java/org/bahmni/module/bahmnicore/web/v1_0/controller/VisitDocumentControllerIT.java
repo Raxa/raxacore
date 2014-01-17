@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterProvider;
 import org.openmrs.Obs;
 import org.openmrs.Visit;
 import org.openmrs.api.VisitService;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -53,6 +55,7 @@ public class VisitDocumentControllerIT extends BaseEmrControllerTest {
                     "\"visitEndDate\":\"2019-12-31T18:30:00.000Z\"," +
                     "\"encounterTypeUuid\":\"" + encounterTypeUUID + "\"," +
                     "\"encounterDateTime\":\"2019-12-31T18:30:00.000Z\"," +
+                    "\"providerUuid\":\"331c6bf8-7846-11e3-a96a-0800271c1b75\"," +
                     "\"documents\": [{\"testUuid\": \"" + testUUID + "\", \"image\": \"" + image + "\"}]" +
                 "}";
 
@@ -62,9 +65,13 @@ public class VisitDocumentControllerIT extends BaseEmrControllerTest {
 
         assertNotNull(visit);
         assertEquals(1, visit.getEncounters().size());
-        Encounter encounters = new ArrayList<>(visit.getEncounters()).get(0);
-        assertEquals(1, encounters.getAllObs().size());
-        Obs parentObs = new ArrayList<>(encounters.getAllObs()).get(0);
+        Encounter encounter = new ArrayList<>(visit.getEncounters()).get(0);
+        assertEquals(1, encounter.getAllObs().size());
+        assertEquals(1, encounter.getEncounterProviders().size());
+        EncounterProvider encounterProvider = encounter.getEncounterProviders().iterator().next();
+        assertEquals("Jane Doe", encounterProvider.getProvider().getName());
+        assertEquals("Unknown", encounterProvider.getEncounterRole().getName());
+        Obs parentObs = new ArrayList<>(encounter.getAllObs()).get(0);
         assertEquals(1, parentObs.getGroupMembers().size());
         assertObservationWithImage(parentObs, testUUID, imageConceptUuid);
     }

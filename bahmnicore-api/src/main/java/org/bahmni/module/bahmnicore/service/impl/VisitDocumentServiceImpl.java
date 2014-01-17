@@ -7,6 +7,7 @@ import org.bahmni.module.bahmnicore.service.VisitDocumentService;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
     public Visit upload(VisitDocumentRequest visitDocumentRequest) {
         Patient patient = Context.getPatientService().getPatientByUuid(visitDocumentRequest.getPatientUuid());
         Visit visit = createVisit(visitDocumentRequest.getVisitTypeUuid(), visitDocumentRequest.getVisitStartDate(), visitDocumentRequest.getVisitEndDate(), patient);
-        Encounter encounter = createEncounter(visit, visitDocumentRequest.getEncounterTypeUuid(), visitDocumentRequest.getEncounterDateTime(), patient);
+        Encounter encounter = createEncounter(visit, visitDocumentRequest.getEncounterTypeUuid(), visitDocumentRequest.getEncounterDateTime(), patient, visitDocumentRequest.getProviderUuid());
         Set<Obs> observations = createObservationGroup(visitDocumentRequest.getEncounterDateTime(), visitDocumentRequest.getDocuments(), patient, encounter);
         encounter.setObs(observations);
         return Context.getVisitService().saveVisit(visit);
@@ -67,7 +68,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         String url = null;
         List<Obs> imageObservation = new ArrayList<>();
         if (document != null) {
-            url = patientImageService.saveDocument(patient.getId(), encounter.getEncounterType().getName(), document.getImage());
+            url = patientImageService.saveDocument(patient.getId(), encounter.getEncounterType().getName(), document.getImage(), document.getFormat());
         }
         imageObservation.add(createNewObservation(encounterDateTime, encounter, concept, url));
         return imageObservation;
@@ -85,12 +86,15 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         return observation;
     }
 
-    private Encounter createEncounter(Visit visit, String encounterTypeUUID, Date encounterDateTime, Patient patient) {
+    private Encounter createEncounter(Visit visit, String encounterTypeUUID, Date encounterDateTime, Patient patient, String providerUuid) {
         EncounterType encounterType = Context.getEncounterService().getEncounterTypeByUuid(encounterTypeUUID);
         Encounter encounter = new Encounter();
         encounter.setPatient(patient);
         encounter.setEncounterType(encounterType);
         encounter.setEncounterDatetime(encounterDateTime);
+        EncounterRole encounterRoleByUuid = Context.getEncounterService().getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
+        Provider providerByUuid = Context.getProviderService().getProviderByUuid(providerUuid);
+        encounter.addProvider(encounterRoleByUuid, providerByUuid);
         visit.addEncounter(encounter);
         return encounter;
     }
