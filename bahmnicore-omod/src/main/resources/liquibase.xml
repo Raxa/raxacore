@@ -298,5 +298,10 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
-
+    <changeSet id="bahmni-clinical-14" author="Praveen" context="rel3">
+        <comment>Add new encounter type for investigation</comment>
+        <sql>
+            INSERT INTO encounter_type (name, description, creator, date_created, uuid) VALUES ('INVESTIGATION', 'Investigation encounter', 1, curdate(), uuid());
+        </sql>
+    </changeSet>
 </databaseChangeLog>
