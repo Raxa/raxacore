@@ -15,6 +15,7 @@ import org.ict4h.atomfeed.client.service.EventWorker;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.joda.time.DateTime;
 import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -60,6 +61,7 @@ public abstract class OpenElisFeedClient implements FeedClient{
     protected abstract EventWorker createWorker(HttpClient authenticatedWebClient, ElisAtomFeedProperties properties);
 
     @Override
+    @Transactional
     public void processFeed() {
         try {
             if(atomFeedClient == null) {
@@ -80,6 +82,7 @@ public abstract class OpenElisFeedClient implements FeedClient{
     }
 
     @Override
+    @Transactional
     public void processFailedEvents() {
         try {
             if(atomFeedClient == null) {

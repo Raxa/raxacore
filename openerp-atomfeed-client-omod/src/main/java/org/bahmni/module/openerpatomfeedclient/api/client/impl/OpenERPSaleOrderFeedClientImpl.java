@@ -13,6 +13,7 @@ import org.joda.time.DateTime;
 import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,7 +31,7 @@ public class OpenERPSaleOrderFeedClientImpl implements OpenERPSaleOrderFeedClien
     public OpenERPSaleOrderFeedClientImpl(
             OpenERPAtomFeedProperties properties,
             BahmniDrugOrderService bahmniDrugOrderService) {
-        this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider();;
+        this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider();
         this.properties = properties;
         this.bahmniDrugOrderService = bahmniDrugOrderService;
     }
@@ -50,11 +51,13 @@ public class OpenERPSaleOrderFeedClientImpl implements OpenERPSaleOrderFeedClien
     }
 
     @Override
+    @Transactional
     public void processFeed() {
         process(new ProcessFeed());
     }
 
     @Override
+    @Transactional
     public void processFailedFeed() {
         process(new ProcessFailedFeed());
     }
