@@ -24,5 +24,6 @@ public class OpenElisLabResult {
     private String alerts;
     private List<String> notes = new ArrayList<>();
     private String resultType;
+    private Boolean abnormal;
 
 }
