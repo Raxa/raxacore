@@ -5,12 +5,12 @@ import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.openerpatomfeedclient.api.OpenERPAtomFeedProperties;
 import org.bahmni.module.openerpatomfeedclient.api.client.OpenERPSaleOrderFeedClient;
-import org.bahmni.module.openerpatomfeedclient.api.client.OpenMRSJdbcConnectionProvider;
 import org.bahmni.module.openerpatomfeedclient.api.worker.SaleOrderFeedEventWorker;
 import org.ict4h.atomfeed.client.factory.AtomFeedClientBuilder;
 import org.ict4h.atomfeed.client.service.AtomFeedClient;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.joda.time.DateTime;
+import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
