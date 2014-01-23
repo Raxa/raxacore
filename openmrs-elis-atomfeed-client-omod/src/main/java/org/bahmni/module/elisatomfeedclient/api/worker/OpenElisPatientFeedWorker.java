@@ -17,20 +17,20 @@ public class OpenElisPatientFeedWorker implements EventWorker {
 
     @Override
     public void process(Event event) {
-        geEventWorker(event).process(event);
+        getEventWorker(event).process(event);
     }
 
-    private EventWorker geEventWorker(Event event) {
+    private EventWorker getEventWorker(Event event) {
         if (PATIENT.equalsIgnoreCase(event.getTitle())) {
             return patientEventWorker;
         } else if (ACCESSION.equalsIgnoreCase(event.getTitle())) {
             return accessionEventWorker;
         }
-        throw new OpenElisFeedException(String.format("Could not find a worker for event : %s", event));
+        throw new OpenElisFeedException(String.format("Could not find a worker for event: %s, details: %s", event.getTitle(),event));
     }
 
     @Override
     public void cleanUp(Event event) {
-        geEventWorker(event).cleanUp(event);
+        getEventWorker(event).cleanUp(event);
     }
 }
