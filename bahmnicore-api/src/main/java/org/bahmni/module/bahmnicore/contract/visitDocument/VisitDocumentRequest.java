@@ -2,18 +2,15 @@ package org.bahmni.module.bahmnicore.contract.visitDocument;
 
 import lombok.Data;
 import org.bahmni.module.bahmnicore.model.Document;
-import org.openmrs.module.webservices.rest.SimpleObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 @Data
 public class VisitDocumentRequest {
     String patientUuid;
+    String visitUuid;
     String visitTypeUuid;
     Date visitStartDate;
     Date visitEndDate;
@@ -25,8 +22,9 @@ public class VisitDocumentRequest {
     public VisitDocumentRequest() {
     }
 
-    public VisitDocumentRequest(String patientUUID, String visitTypeUUID, Date visitStartDate, Date visitEndDate, String encounterTypeUUID, Date encounterDateTime, List<Document> documents, String providerUuid) {
+    public VisitDocumentRequest(String patientUUID, String visitUuid, String visitTypeUUID, Date visitStartDate, Date visitEndDate, String encounterTypeUUID, Date encounterDateTime, List<Document> documents, String providerUuid) {
         this.patientUuid = patientUUID;
+        this.visitUuid = visitUuid;
         this.visitTypeUuid = visitTypeUUID;
         this.visitStartDate = visitStartDate;
         this.visitEndDate = visitEndDate;

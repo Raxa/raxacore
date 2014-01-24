@@ -4,14 +4,26 @@ import org.bahmni.module.bahmnicore.contract.visitDocument.VisitDocumentRequest;
 import org.bahmni.module.bahmnicore.model.Document;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
 import org.bahmni.module.bahmnicore.service.VisitDocumentService;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterRole;
+import org.openmrs.EncounterType;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.Provider;
+import org.openmrs.Visit;
+import org.openmrs.VisitType;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class VisitDocumentServiceImpl implements VisitDocumentService {
@@ -19,15 +31,18 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
 
     private PatientImageService patientImageService;
 
+    private VisitService visitService;
+
     @Autowired
-    public VisitDocumentServiceImpl(PatientImageService patientImageService) {
+    public VisitDocumentServiceImpl(PatientImageService patientImageService, VisitService visitService) {
         this.patientImageService = patientImageService;
+        this.visitService = visitService;
     }
 
     @Override
     public Visit upload(VisitDocumentRequest visitDocumentRequest) {
         Patient patient = Context.getPatientService().getPatientByUuid(visitDocumentRequest.getPatientUuid());
-        Visit visit = createVisit(visitDocumentRequest.getVisitTypeUuid(), visitDocumentRequest.getVisitStartDate(), visitDocumentRequest.getVisitEndDate(), patient);
+        Visit visit = findOrCreateVisit(visitDocumentRequest, patient);
         Encounter encounter = createEncounter(visit, visitDocumentRequest.getEncounterTypeUuid(), visitDocumentRequest.getEncounterDateTime(), patient, visitDocumentRequest.getProviderUuid());
         Set<Obs> observations = createObservationGroup(visitDocumentRequest.getEncounterDateTime(), visitDocumentRequest.getDocuments(), patient, encounter);
         encounter.setObs(observations);
@@ -108,5 +123,12 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         visit.setStopDatetime(visitEndDate);
         visit.setEncounters(new HashSet<Encounter>());
         return visit;
+    }
+
+    private Visit findOrCreateVisit(VisitDocumentRequest request, Patient patient) {
+        if (request.getVisitUuid() != null) {
+            return visitService.getVisitByUuid(request.getVisitUuid());
+        }
+        return createVisit(request.getVisitTypeUuid(), request.getVisitStartDate(), request.getVisitEndDate(), patient);
     }
 }
