@@ -2,11 +2,11 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 
 import org.bahmni.module.elisatomfeedclient.api.ReferenceDataFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.domain.Department;
+import org.bahmni.module.elisatomfeedclient.api.service.ReferenceDataConceptService;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDatatype;
@@ -33,12 +33,14 @@ public class DepartmentEventWorkerIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
     private ConceptService conceptService;
+    @Autowired
+    private ReferenceDataConceptService referenceDataConceptService;
     private DepartmentEventWorker departmentEventWorker;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        departmentEventWorker = new DepartmentEventWorker(httpClient, referenceDataFeedProperties, conceptService);
+        departmentEventWorker = new DepartmentEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService);
         when(referenceDataFeedProperties.getReferenceDataUri()).thenReturn(referenceDataUri);
         executeDataSet("departmentEventWorkerTestData.xml");
     }

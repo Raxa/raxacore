@@ -1,25 +1,28 @@
 package org.bahmni.module.elisatomfeedclient.api.worker;
 
 import org.bahmni.module.elisatomfeedclient.api.ReferenceDataFeedProperties;
-import org.bahmni.module.elisatomfeedclient.api.domain.Department;
 import org.bahmni.module.elisatomfeedclient.api.domain.ReferenceDataConcept;
+import org.bahmni.module.elisatomfeedclient.api.domain.Sample;
 import org.bahmni.module.elisatomfeedclient.api.service.ReferenceDataConceptService;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDatatype;
+import org.openmrs.ConceptDescription;
+import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.Locale;
 
 @Component
-public class DepartmentEventWorker implements EventWorker {
-    public static final String CONV_SET = "ConvSet";
-    public static final String LAB_DEPARTMENTS = "Lab Departments";
+public class SampleEventWorker implements EventWorker {
+    public static final String LAB_SET = "LabSet";
+    public static final String LABORATORY = "Laboratory";
     @Resource(name = "referenceDataHttpClient")
     private HttpClient httpClient;
     private final ReferenceDataFeedProperties referenceDataFeedProperties;
@@ -27,7 +30,7 @@ public class DepartmentEventWorker implements EventWorker {
     private ReferenceDataConceptService referenceDataConceptService;
 
     @Autowired
-    public DepartmentEventWorker(HttpClient httpClient, ReferenceDataFeedProperties referenceDataFeedProperties, ConceptService conceptService, ReferenceDataConceptService referenceDataConceptService) {
+    public SampleEventWorker(HttpClient httpClient, ReferenceDataFeedProperties referenceDataFeedProperties, ConceptService conceptService, ReferenceDataConceptService referenceDataConceptService) {
         this.httpClient = httpClient;
         this.referenceDataFeedProperties = referenceDataFeedProperties;
         this.conceptService = conceptService;
@@ -37,13 +40,13 @@ public class DepartmentEventWorker implements EventWorker {
     @Override
     public void process(Event event) {
         try {
-            Department department = httpClient.get(referenceDataFeedProperties.getReferenceDataUri() + event.getContent(), Department.class);
-            ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(department.getId(), department.getName(), department.getDescription(), CONV_SET, ConceptDatatype.N_A_UUID);
-            Concept savedDepartmentConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
-            Concept labDepartmentsConcept = conceptService.getConceptByName(LAB_DEPARTMENTS);
-            if (!labDepartmentsConcept.getSetMembers().contains(savedDepartmentConcept)) {
-                labDepartmentsConcept.addSetMember(savedDepartmentConcept);
-                conceptService.saveConcept(labDepartmentsConcept);
+            Sample sample = httpClient.get(referenceDataFeedProperties.getReferenceDataUri() + event.getContent(), Sample.class);
+            ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(sample.getId(), sample.getName(), sample.getDescription(), LAB_SET, ConceptDatatype.N_A_UUID);
+            Concept savedSampleConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
+            Concept labConcept = conceptService.getConceptByName(LABORATORY);
+            if (!labConcept.getSetMembers().contains(savedSampleConcept)) {
+                labConcept.addSetMember(savedSampleConcept);
+                conceptService.saveConcept(labConcept);
             }
         } catch (IOException e) {
            throw new RuntimeException(e);
