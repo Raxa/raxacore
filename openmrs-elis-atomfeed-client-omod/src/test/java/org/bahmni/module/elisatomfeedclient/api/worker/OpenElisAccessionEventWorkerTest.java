@@ -147,11 +147,6 @@ public class OpenElisAccessionEventWorkerTest {
     }
 
     private void stubAccession(OpenElisAccession accession) throws IOException {
-        String json = getJson(accession);
-        when(httpClient.get(URI.create(openElisUrl + event.getContent()))).thenReturn(json);
-    }
-
-    private String getJson(OpenElisAccession openElisAccession) throws IOException {
-        return objectMapper.writeValueAsString(openElisAccession);
+        when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(accession);
     }
 }

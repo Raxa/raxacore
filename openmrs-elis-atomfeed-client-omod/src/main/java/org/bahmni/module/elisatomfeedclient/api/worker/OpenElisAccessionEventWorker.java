@@ -16,9 +16,6 @@ import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.io.IOException;
-import java.net.URI;
-
-import static org.bahmni.module.elisatomfeedclient.api.util.ObjectMapperRepository.objectMapper;
 
 
 public class OpenElisAccessionEventWorker implements EventWorker {
@@ -43,11 +40,10 @@ public class OpenElisAccessionEventWorker implements EventWorker {
 
     @Override
     public void process(Event event) {
-        String patientUrl = atomFeedProperties.getOpenElisUri() + event.getContent();
-        logger.info("openelisatomfeedclient:Processing event : " + patientUrl);
+        String accessionUrl = atomFeedProperties.getOpenElisUri() + event.getContent();
+        logger.info("openelisatomfeedclient:Processing event : " + accessionUrl);
         try {
-            String response = httpClient.get(URI.create(patientUrl));
-            OpenElisAccession openElisAccession = objectMapper.readValue(response, OpenElisAccession.class);
+            OpenElisAccession openElisAccession = httpClient.get(accessionUrl, OpenElisAccession.class);
 
             Encounter previousEncounter = encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid());
             AccessionDiff diff = null;
@@ -56,10 +52,10 @@ public class OpenElisAccessionEventWorker implements EventWorker {
             }
             Encounter encounterFromAccession = null;
             if (diff == null) {
-                logger.info("openelisatomfeedclient:creating new encounter for accession : " + patientUrl);
+                logger.info("openelisatomfeedclient:creating new encounter for accession : " + accessionUrl);
                 encounterFromAccession = accessionMapper.mapToNewEncounter(openElisAccession);
             } else if (diff.getRemovedTestDetails().size() > 0 || diff.getAddedTestDetails().size() > 0) {
-                logger.info("openelisatomfeedclient:updating encounter for accession : " + patientUrl);
+                logger.info("openelisatomfeedclient:updating encounter for accession : " + accessionUrl);
                 encounterFromAccession = accessionMapper.mapToExistingEncounter(openElisAccession, diff, previousEncounter);
             }
 
@@ -68,7 +64,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 emrEncounterService.save(encounterTransaction);
             }
         } catch (IOException e) {
-            logger.error("openelisatomfeedclient:error processing event : " + patientUrl + e.getMessage(), e);
+            logger.error("openelisatomfeedclient:error processing event : " + accessionUrl + e.getMessage(), e);
             throw new OpenElisFeedException("could not read accession data", e);
         }
     }

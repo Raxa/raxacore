@@ -9,13 +9,8 @@ import org.bahmni.module.elisatomfeedclient.api.mapper.BahmniLabResultMapper;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URI;
-
-import static org.bahmni.module.elisatomfeedclient.api.util.ObjectMapperRepository.objectMapper;
 
 public class OpenElisLabResultEventWorker implements EventWorker {
     private static Logger logger = Logger.getLogger(OpenElisLabResultEventWorker.class);
@@ -35,9 +30,7 @@ public class OpenElisLabResultEventWorker implements EventWorker {
         String labResultUrl = elisAtomFeedProperties.getOpenElisUri() + event.getContent();
         logger.info("openelisatomfeedclient:Processing event : " + labResultUrl);
         try {
-            String response = httpClient.get(URI.create(labResultUrl));
-            OpenElisLabResult openElisLabResult = objectMapper.readValue(response, OpenElisLabResult.class);
-
+            OpenElisLabResult openElisLabResult = httpClient.get(labResultUrl, OpenElisLabResult.class);
             logger.info("openelisatomfeedclient:creating LabResult for event : " + labResultUrl);
             bahmniLabResultService.add(new BahmniLabResultMapper().map(openElisLabResult));
         } catch (IOException e) {

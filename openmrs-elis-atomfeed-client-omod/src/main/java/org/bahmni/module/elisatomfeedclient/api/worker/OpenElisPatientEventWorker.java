@@ -16,17 +16,14 @@ import org.openmrs.api.PersonService;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
-
-import static org.bahmni.module.elisatomfeedclient.api.util.ObjectMapperRepository.objectMapper;
 
 public class OpenElisPatientEventWorker implements EventWorker {
 
+    private final HttpClient httpClient;
     private Interpreter interpreter;
     private BahmniPatientService patientService;
     private PersonService personService;
-    private HttpClient httpClient;
     private ElisAtomFeedProperties elisAtomFeedProperties;
 
     private static Logger logger = Logger.getLogger(OpenElisPatientEventWorker.class);
@@ -49,8 +46,7 @@ public class OpenElisPatientEventWorker implements EventWorker {
         String patientUrl = elisAtomFeedProperties.getOpenElisUri() + event.getContent();
         logger.info("openelisatomfeedclient:Processing event : " + patientUrl);
         try {
-            String response = httpClient.get(URI.create(patientUrl));
-            OpenElisPatient openElisPatient = objectMapper.readValue(response, OpenElisPatient.class);
+            OpenElisPatient openElisPatient = httpClient.get(patientUrl, OpenElisPatient.class);
 
             final List<PersonAttributeType> allPersonAttributeTypes = personService.getAllPersonAttributeTypes();
 
@@ -68,6 +64,7 @@ public class OpenElisPatientEventWorker implements EventWorker {
             throw new OpenElisFeedException("could not read patient data", e);
         }
     }
+
 
     @Override
     public void cleanUp(Event event) {

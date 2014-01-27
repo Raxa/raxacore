@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <concept concept_id="1" retired="false" datatype_id="4" class_id="10" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e060cf44-3d3d-11e3-bf2b-0800271c1b75"/>
+    <concept_name concept_id="1" name="Lab Departments" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="15c9daea-3d3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="2" retired="false" datatype_id="4" class_id="10" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="dc8ac8c0-8716-11e3-baa7-0800200c9a66"/>
+    <concept_name concept_id="2" name="Haematology" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="2" voided="false" uuid="ea291cc0-8716-11e3-baa7-0800200c9a66" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_description concept_id="2" description="Haematology Description" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_description_id="2" uuid="2b2db460-8717-11e3-baa7-0800200c9a66"/>
+    <concept_set concept_id="2" concept_set_id="1" creator="1" date_created="2005-01-01 00:00:00.0" />
+</dataset>

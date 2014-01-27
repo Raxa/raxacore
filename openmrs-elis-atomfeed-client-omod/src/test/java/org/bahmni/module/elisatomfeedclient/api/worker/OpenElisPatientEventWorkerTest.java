@@ -5,7 +5,9 @@ import org.bahmni.module.bahmnicore.model.BahmniAddress;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
+import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisPatient;
 import org.bahmni.webclients.HttpClient;
+import org.bahmni.webclients.ObjectMapperRepository;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.joda.time.LocalDate;
 import org.junit.Before;
@@ -17,6 +19,7 @@ import org.openmrs.api.PersonService;
 import java.net.URI;
 
 import static junit.framework.Assert.assertEquals;
+import static org.bahmni.webclients.ObjectMapperRepository.objectMapper;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -76,7 +79,7 @@ public class OpenElisPatientEventWorkerTest {
                 "    \"stateProvince\": \"Ch\"\n" +
                 "}";
 
-        when(webClient.get(eq(new URI("http://localhost:8085" + patientUrl)))).thenReturn(patientResponse);
+        when(webClient.get("http://localhost:8085" + patientUrl, OpenElisPatient.class)).thenReturn(objectMapper.readValue(patientResponse, OpenElisPatient.class));
         openElisPatientEventWorker.process(new Event("id", patientUrl));
 
         ArgumentCaptor<BahmniPatient> bahmniPatientArgumentCaptor = ArgumentCaptor.forClass(BahmniPatient.class);
