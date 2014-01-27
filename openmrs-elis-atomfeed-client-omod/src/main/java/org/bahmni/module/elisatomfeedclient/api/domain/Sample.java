@@ -13,4 +13,8 @@ public class Sample {
     String id;
     String name;
     String description;
+
+    public Sample(String id) {
+        this(id, null, null);
+    }
 }

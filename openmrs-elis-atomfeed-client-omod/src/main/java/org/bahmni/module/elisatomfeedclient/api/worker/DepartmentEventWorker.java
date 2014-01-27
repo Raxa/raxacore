@@ -39,12 +39,9 @@ public class DepartmentEventWorker implements EventWorker {
         try {
             Department department = httpClient.get(referenceDataFeedProperties.getReferenceDataUri() + event.getContent(), Department.class);
             ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(department.getId(), department.getName(), department.getDescription(), CONV_SET, ConceptDatatype.N_A_UUID);
-            Concept savedDepartmentConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
+            Concept departmentConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
             Concept labDepartmentsConcept = conceptService.getConceptByName(LAB_DEPARTMENTS);
-            if (!labDepartmentsConcept.getSetMembers().contains(savedDepartmentConcept)) {
-                labDepartmentsConcept.addSetMember(savedDepartmentConcept);
-                conceptService.saveConcept(labDepartmentsConcept);
-            }
+            referenceDataConceptService.saveSetMembership(labDepartmentsConcept, departmentConcept);
         } catch (IOException e) {
            throw new RuntimeException(e);
         }

@@ -9,12 +9,12 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Department {
+public class Test {
     String id;
     String name;
     String description;
-
-    public Department(String id) {
-        this(id, null, null);
-    }
+    String shortName;
+    String resultType;
+    Sample sample;
+    Department department;
 }

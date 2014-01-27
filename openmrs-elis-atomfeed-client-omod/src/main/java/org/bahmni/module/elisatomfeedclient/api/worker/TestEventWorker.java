@@ -2,7 +2,7 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 
 import org.bahmni.module.elisatomfeedclient.api.ReferenceDataFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.domain.ReferenceDataConcept;
-import org.bahmni.module.elisatomfeedclient.api.domain.Sample;
+import org.bahmni.module.elisatomfeedclient.api.domain.Test;
 import org.bahmni.module.elisatomfeedclient.api.service.ReferenceDataConceptService;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
@@ -17,8 +17,8 @@ import javax.annotation.Resource;
 import java.io.IOException;
 
 @Component
-public class SampleEventWorker implements EventWorker {
-    public static final String LAB_SET = "LabSet";
+public class TestEventWorker implements EventWorker {
+    public static final String TEST = "Test";
     public static final String LABORATORY = "Laboratory";
     @Resource(name = "referenceDataHttpClient")
     private HttpClient httpClient;
@@ -27,7 +27,7 @@ public class SampleEventWorker implements EventWorker {
     private ReferenceDataConceptService referenceDataConceptService;
 
     @Autowired
-    public SampleEventWorker(HttpClient httpClient, ReferenceDataFeedProperties referenceDataFeedProperties, ConceptService conceptService, ReferenceDataConceptService referenceDataConceptService) {
+    public TestEventWorker(HttpClient httpClient, ReferenceDataFeedProperties referenceDataFeedProperties, ConceptService conceptService, ReferenceDataConceptService referenceDataConceptService) {
         this.httpClient = httpClient;
         this.referenceDataFeedProperties = referenceDataFeedProperties;
         this.conceptService = conceptService;
@@ -37,11 +37,12 @@ public class SampleEventWorker implements EventWorker {
     @Override
     public void process(Event event) {
         try {
-            Sample sample = httpClient.get(referenceDataFeedProperties.getReferenceDataUri() + event.getContent(), Sample.class);
-            ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(sample.getId(), sample.getName(), sample.getDescription(), LAB_SET, ConceptDatatype.N_A_UUID);
-            Concept sampleConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
-            Concept labConcept = conceptService.getConceptByName(LABORATORY);
-            referenceDataConceptService.saveSetMembership(labConcept, sampleConcept);
+            Test test = httpClient.get(referenceDataFeedProperties.getReferenceDataUri() + event.getContent(), Test.class);
+            ConceptDatatype conceptDataType = conceptService.getConceptDatatypeByName(test.getResultType());
+            ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(test.getId(), test.getName(), test.getDescription(), TEST, conceptDataType.getUuid(), test.getShortName());
+            Concept testConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
+            referenceDataConceptService.saveSetMembership(conceptService.getConceptByUuid(test.getSample().getId()), testConcept);
+            referenceDataConceptService.saveSetMembership(conceptService.getConceptByUuid(test.getDepartment().getId()), testConcept);
         } catch (IOException e) {
            throw new RuntimeException(e);
         }

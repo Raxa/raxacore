@@ -13,6 +13,7 @@ import java.util.Locale;
 @Component
 public class ReferenceDataConceptService {
     private ConceptService conceptService;
+    private Locale locale = Locale.ENGLISH;
 
     @Autowired
     public ReferenceDataConceptService(ConceptService conceptService) {
@@ -24,29 +25,38 @@ public class ReferenceDataConceptService {
         if(concept == null) {
             concept = new Concept();
             concept.setUuid(referenceDataConcept.getUuid());
-            concept.setDatatype(conceptService.getConceptDatatypeByUuid(referenceDataConcept.getDataTypeUuid()));
-            concept.setConceptClass(conceptService.getConceptClassByName(referenceDataConcept.getClassName()));
         }
-        addOrUpdateName(referenceDataConcept, concept);
-        addOrUpdateDescription(referenceDataConcept, concept);
+        concept.setDatatype(conceptService.getConceptDatatypeByUuid(referenceDataConcept.getDataTypeUuid()));
+        concept.setConceptClass(conceptService.getConceptClassByName(referenceDataConcept.getClassName()));
+        addOrUpdateName(concept, referenceDataConcept.getName());
+        if(referenceDataConcept.getShortName() != null) {
+            concept.setShortName(new ConceptName(referenceDataConcept.getShortName(), locale));
+        }
+        addOrUpdateDescription(concept, referenceDataConcept.getDescription());
         return conceptService.saveConcept(concept);
     }
 
-    private void addOrUpdateDescription(ReferenceDataConcept referenceDataConcept, Concept concept) {
-        ConceptDescription description = concept.getDescription(Locale.ENGLISH);
-        if(description != null) {
-            description.setDescription(referenceDataConcept.getDescription());
+    public void saveSetMembership(Concept parentConcept, Concept childConcept) {
+        if(parentConcept.getSetMembers().contains(childConcept)) return;
+        parentConcept.addSetMember(childConcept);
+        conceptService.saveConcept(parentConcept);
+    }
+
+    private void addOrUpdateDescription(Concept concept, String description) {
+        ConceptDescription conceptDescription = concept.getDescription(locale);
+        if(conceptDescription != null) {
+            conceptDescription.setDescription(description);
         } else {
-            concept.addDescription(new ConceptDescription(referenceDataConcept.getDescription(), Locale.ENGLISH));
+            concept.addDescription(new ConceptDescription(description, locale));
         }
     }
 
-    private void addOrUpdateName(ReferenceDataConcept referenceDataConcept, Concept concept) {
-        ConceptName name = concept.getName(Locale.ENGLISH);
-        if(name != null) {
-            name.setName(referenceDataConcept.getName());
+    private void addOrUpdateName(Concept concept, String name) {
+        ConceptName conceptName = concept.getFullySpecifiedName(locale);
+        if(conceptName != null) {
+            conceptName.setName(name);
         } else {
-            concept.addName(new ConceptName(referenceDataConcept.getName(), Locale.ENGLISH));
+            concept.setFullySpecifiedName(new ConceptName(name, locale));
         }
     }
 }
