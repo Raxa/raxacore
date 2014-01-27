@@ -13,13 +13,30 @@ public class ReferenceDataEventWorker implements EventWorker{
 
     @Autowired
     private DepartmentEventWorker departmentEventWorker;
+    @Autowired
+    private SampleEventWorker sampleEventWorker;
+    @Autowired
+    private TestEventWorker testEventWorker;
+    @Autowired
+    private PanelEventWorker panelEventWorker;
 
     @Override
     public void process(Event event) {
-        if(event.getTitle().equalsIgnoreCase("department")) {
-            departmentEventWorker.process(event);
+        EventWorker eventWorker = getEventWorker(event.getTitle());
+        if(eventWorker != null) {
+            eventWorker.process(event);
         } else {
             logger.warn("Could not process event : " + event);
+        }
+    }
+
+    private EventWorker getEventWorker(String title) {
+        switch (title) {
+            case "department": return departmentEventWorker;
+            case "sample": return sampleEventWorker;
+            case "test": return testEventWorker;
+            case "panel": return panelEventWorker;
+            default: return null;
         }
     }
 

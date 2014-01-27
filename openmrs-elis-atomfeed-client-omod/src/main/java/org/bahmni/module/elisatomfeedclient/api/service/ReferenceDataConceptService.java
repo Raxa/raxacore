@@ -4,11 +4,15 @@ import org.bahmni.module.elisatomfeedclient.api.domain.ReferenceDataConcept;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptName;
+import org.openmrs.ConceptSet;
+import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Set;
 
 @Component
 public class ReferenceDataConceptService {
@@ -28,12 +32,26 @@ public class ReferenceDataConceptService {
         }
         concept.setDatatype(conceptService.getConceptDatatypeByUuid(referenceDataConcept.getDataTypeUuid()));
         concept.setConceptClass(conceptService.getConceptClassByName(referenceDataConcept.getClassName()));
-        addOrUpdateName(concept, referenceDataConcept.getName());
+        addOrUpdateName(concept, referenceDataConcept.getName(), ConceptNameType.FULLY_SPECIFIED);
         if(referenceDataConcept.getShortName() != null) {
-            concept.setShortName(new ConceptName(referenceDataConcept.getShortName(), locale));
+            addOrUpdateName(concept, referenceDataConcept.getShortName(), ConceptNameType.SHORT);
         }
         addOrUpdateDescription(concept, referenceDataConcept.getDescription());
+        addOrRemoveSetMembers(concept, referenceDataConcept.getSetMemberUuids());
         return conceptService.saveConcept(concept);
+    }
+
+    private void addOrRemoveSetMembers(Concept concept, Set<String> setMemberUuids) {
+        for (String uuid : setMemberUuids) {
+            Concept childConcept = conceptService.getConceptByUuid(uuid);
+            if(!concept.getSetMembers().contains(childConcept))
+                concept.addSetMember(childConcept);
+        }
+        for (ConceptSet conceptSet : new ArrayList<>(concept.getConceptSets())) {
+            if(!setMemberUuids.contains(conceptSet.getConcept().getUuid())){
+                concept.getConceptSets().remove(conceptSet);
+            }
+        }
     }
 
     public void saveSetMembership(Concept parentConcept, Concept childConcept) {
@@ -51,12 +69,14 @@ public class ReferenceDataConceptService {
         }
     }
 
-    private void addOrUpdateName(Concept concept, String name) {
-        ConceptName conceptName = concept.getFullySpecifiedName(locale);
+    private void addOrUpdateName(Concept concept, String name, ConceptNameType type) {
+        ConceptName conceptName = concept.getName(locale, type, null);
         if(conceptName != null) {
             conceptName.setName(name);
         } else {
-            concept.setFullySpecifiedName(new ConceptName(name, locale));
+            ConceptName newName = new ConceptName(name, locale);
+            newName.setConceptNameType(type);
+            concept.addName(newName);
         }
     }
 }

@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 public class ReferenceDataConcept {
@@ -15,8 +18,13 @@ public class ReferenceDataConcept {
     private final String className;
     private final String dataTypeUuid;
     private String shortName;
+    Set<String> setMemberUuids = new HashSet<>();
 
     public ReferenceDataConcept(String uuid, String name, String description, String className, String dataTypeUuid) {
         this(uuid, name, description, className, dataTypeUuid, null);
+    }
+
+    public ReferenceDataConcept(String uuid, String name, String description, String className, String dataTypeUuid, String shortName) {
+        this(uuid, name, description, className, dataTypeUuid, shortName, new HashSet<String>());
     }
 }

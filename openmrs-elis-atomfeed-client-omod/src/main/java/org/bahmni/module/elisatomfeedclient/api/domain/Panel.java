@@ -5,20 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Test {
+public class Panel {
     String id;
     String name;
     String description;
     String shortName;
-    String resultType;
     Sample sample;
-    Department department;
-
-    public Test(String id) {
-        this(id, null, null, null, null, null, null);
-    }
+    Set<Test> tests;
 }
