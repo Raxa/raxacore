@@ -50,6 +50,9 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     private boolean isSameProvider(Provider provider, Encounter encounter) {
         if(provider == null)
             return true;
+        else if(encounter.getProvider() == null){
+            return false;
+        }
         return encounter.getProvider().getId().equals(provider.getPerson().getId());
     }
 
