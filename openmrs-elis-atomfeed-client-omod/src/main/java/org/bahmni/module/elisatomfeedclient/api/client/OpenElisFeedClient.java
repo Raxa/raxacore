@@ -15,19 +15,20 @@ import org.ict4h.atomfeed.client.service.EventWorker;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.joda.time.DateTime;
 import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public abstract class OpenElisFeedClient implements FeedClient{
+public abstract class OpenElisFeedClient{
     protected AtomFeedClient atomFeedClient;
     private ElisAtomFeedProperties properties;
     private JdbcConnectionProvider jdbcConnectionProvider;
     private Logger logger = Logger.getLogger(OpenElisFeedClient.class);
 
-    public OpenElisFeedClient(ElisAtomFeedProperties properties) {
-        this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider();
+    public OpenElisFeedClient(ElisAtomFeedProperties properties, PlatformTransactionManager transactionManager) {
+        this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider(transactionManager);
         this.properties = properties;
     }
 
@@ -60,45 +61,5 @@ public abstract class OpenElisFeedClient implements FeedClient{
 
     protected abstract EventWorker createWorker(HttpClient authenticatedWebClient, ElisAtomFeedProperties properties);
 
-    @Override
-    @Transactional
-    public void processFeed() {
-        try {
-            if(atomFeedClient == null) {
-                initializeAtomFeedClient();
-            }
-            logger.info("openelisatomfeedclient:processing feed " + DateTime.now());
-            atomFeedClient.processEvents();
-        } catch (Exception e) {
-            try {
-                if (e != null && ExceptionUtils.getStackTrace(e).contains("HTTP response code: 401")) {
-                    initializeAtomFeedClient();
-                }
-            }catch (Exception ex){
-                logger.error("openelisatomfeedclient:failed feed execution " + e, e);
-                throw new RuntimeException(ex);
-            }
-        }
-    }
 
-    @Override
-    @Transactional
-    public void processFailedEvents() {
-        try {
-            if(atomFeedClient == null) {
-                initializeAtomFeedClient();
-            }
-            logger.info("openelisatomfeedclient:processing failed events " + DateTime.now());
-            atomFeedClient.processFailedEvents();
-        } catch (Exception e) {
-            try {
-                if (e != null && ExceptionUtils.getStackTrace(e).contains("HTTP response code: 401")) {
-                    initializeAtomFeedClient();
-                }
-            }catch (Exception ex){
-                logger.error("openelisatomfeedclient:failed feed execution while running failed events" + e, e);
-                throw new RuntimeException(ex);
-            }
-        }
-    }
 }

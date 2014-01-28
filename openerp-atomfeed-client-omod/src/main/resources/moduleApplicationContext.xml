@@ -18,8 +18,22 @@
         <property name="moduleService">
             <list>
                 <value>org.bahmni.module.openerpatomfeedclient.api.client.OpenERPSaleOrderFeedClient</value> <!-- service interface name -->
-                <ref bean="openERPSaleOrderFeedClient"/>
+                <ref bean="openERPSaleOrderProcessFeedClient"/>
             </list>
         </property>
     </bean>
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list>
+                <value>org.bahmni.module.openerpatomfeedclient.api.client.OpenERPSaleOrderFailedFeedClient</value> <!-- service interface name -->
+                <ref bean="openERPSaleOrderProcessFailedFeedClient"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--<bean id="openMRSFeedJob" class="org.bahmni.module.openerpatomfeedclient.api.client.impl.OpenERPSaleOrderFeedClientImpl" scope="prototype">-->
+        <!--<constructor-arg ref="openERPAtomFeedProperties"/>-->
+        <!--<constructor-arg ref=""/>-->
+    <!--</bean>-->
+
 </beans>

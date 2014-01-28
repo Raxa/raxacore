@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class CustomJsonDateDeserializer extends JsonDeserializer<Date>
 {
@@ -29,13 +30,12 @@ public class CustomJsonDateDeserializer extends JsonDeserializer<Date>
                             DeserializationContext deserializationcontext) throws IOException {
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
         String date = jsonparser.getText();
         try {
             return format.parse(date);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-
     }
-
 }

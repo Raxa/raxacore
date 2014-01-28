@@ -75,9 +75,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             systemConsultationEncounter = getSystemConsultationEncounter(encounters);
 
         if (systemConsultationEncounter == null) {
-            systemConsultationEncounter = new Encounter();
-            systemConsultationEncounter.setProvider(getEncounterRole(), getSystemProvider());
-            systemConsultationEncounter.setEncounterType(getConsultationEncounterType());
+            systemConsultationEncounter = createNewSystemConsultationEncounter(orderDate, patient);
         }
 
         Set<Order> drugOrders = createOrders(patient, orderDate, systemConsultationEncounter, bahmniDrugOrders);
@@ -90,6 +88,16 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             visit.setStopDatetime(orderDate);
         }
         visitService.saveVisit(visit);
+    }
+
+    private Encounter createNewSystemConsultationEncounter(Date orderDate, Patient patient) {
+        Encounter systemConsultationEncounter;
+        systemConsultationEncounter = new Encounter();
+        systemConsultationEncounter.setProvider(getEncounterRole(), getSystemProvider());
+        systemConsultationEncounter.setEncounterType(getConsultationEncounterType());
+        systemConsultationEncounter.setPatient(patient);
+        systemConsultationEncounter.setEncounterDatetime(orderDate);
+        return systemConsultationEncounter;
     }
 
     private Encounter getSystemConsultationEncounter(Set<Encounter> encounters) {

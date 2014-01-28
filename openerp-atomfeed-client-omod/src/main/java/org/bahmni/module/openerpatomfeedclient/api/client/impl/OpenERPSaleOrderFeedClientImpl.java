@@ -13,13 +13,12 @@ import org.joda.time.DateTime;
 import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-@Component("openERPSaleOrderFeedClient")
-public class OpenERPSaleOrderFeedClientImpl implements OpenERPSaleOrderFeedClient {
+public class OpenERPSaleOrderFeedClientImpl  {
     private static Logger logger = Logger.getLogger(OpenERPSaleOrderFeedClient.class);
 
     private AtomFeedClient atomFeedClient;
@@ -27,11 +26,11 @@ public class OpenERPSaleOrderFeedClientImpl implements OpenERPSaleOrderFeedClien
     private OpenERPAtomFeedProperties properties;
     private BahmniDrugOrderService bahmniDrugOrderService;
 
-    @Autowired
     public OpenERPSaleOrderFeedClientImpl(
             OpenERPAtomFeedProperties properties,
-            BahmniDrugOrderService bahmniDrugOrderService) {
-        this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider();
+            BahmniDrugOrderService bahmniDrugOrderService,
+            PlatformTransactionManager transactionManager) {
+        this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider(transactionManager);
         this.properties = properties;
         this.bahmniDrugOrderService = bahmniDrugOrderService;
     }
@@ -50,20 +49,7 @@ public class OpenERPSaleOrderFeedClientImpl implements OpenERPSaleOrderFeedClien
         }
     }
 
-    @Override
-    @Transactional
-    public void processFeed() {
-        process(new ProcessFeed());
-    }
-
-    @Override
-    @Transactional
-    public void processFailedFeed() {
-        process(new ProcessFailedFeed());
-    }
-
-
-    private void process(FeedProcessor feedProcessor) {
+    protected void process(OpenERPSaleOrderProcessFeedClientImpl.FeedProcessor feedProcessor) {
         try {
             if(atomFeedClient == null) {
                 initializeAtomFeedClient();
@@ -82,19 +68,5 @@ public class OpenERPSaleOrderFeedClientImpl implements OpenERPSaleOrderFeedClien
         }
     }
 
-    private interface FeedProcessor {
-        void process(AtomFeedClient atomFeedClient);
-    }
 
-    private static class ProcessFailedFeed implements FeedProcessor {
-        public void process(AtomFeedClient atomFeedClient){
-            atomFeedClient.processFailedEvents();
-        }
-    }
-
-    private static class ProcessFeed implements FeedProcessor {
-        public void process(AtomFeedClient atomFeedClient){
-            atomFeedClient.processEvents();
-        }
-    }
 }
