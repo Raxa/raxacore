@@ -15,6 +15,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import java.io.IOException;
 import java.net.URI;
@@ -28,9 +29,9 @@ public class ReferenceDataFeedClientImpl implements ReferenceDataFeedClient {
     private ReferenceDataEventWorker referenceDataEventWorker;
 
     @Autowired
-    public ReferenceDataFeedClientImpl(ReferenceDataFeedProperties referenceDataFeedProperties, ReferenceDataEventWorker referenceDataEventWorker) {
+    public ReferenceDataFeedClientImpl(ReferenceDataFeedProperties referenceDataFeedProperties, ReferenceDataEventWorker referenceDataEventWorker,PlatformTransactionManager transactionManager) {
         this.referenceDataEventWorker = referenceDataEventWorker;
-        this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider();
+        this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider(transactionManager);
         this.referenceDataFeedProperties = referenceDataFeedProperties;
     }
 
@@ -57,7 +58,7 @@ public class ReferenceDataFeedClientImpl implements ReferenceDataFeedClient {
         return atomFeedClient;
     }
 
-    @Override
+//    @Override
     public void processFailedEvents() {
 
     }
