@@ -20,7 +20,6 @@ import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -47,48 +46,64 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
     @Override
     public Visit upload(VisitDocumentRequest visitDocumentRequest) {
         Patient patient = Context.getPatientService().getPatientByUuid(visitDocumentRequest.getPatientUuid());
+
         Visit visit = findOrCreateVisit(visitDocumentRequest, patient);
+
         Encounter encounter = findOrCreateEncounter(visit, visitDocumentRequest.getEncounterTypeUuid(), visitDocumentRequest.getEncounterDateTime(), patient, visitDocumentRequest.getProviderUuid());
-        Set<Obs> observations = createObservationGroup(visitDocumentRequest.getEncounterDateTime(), visitDocumentRequest.getDocuments(), patient, encounter);
-        encounter.setObs(observations);
+        visit.addEncounter(encounter);
+
+        updateEncounter(encounter, visitDocumentRequest.getEncounterDateTime(), visitDocumentRequest.getDocuments());
+
         return Context.getVisitService().saveVisit(visit);
     }
 
-    private Set<Obs> createObservationGroup(Date encounterDateTime, List<Document> documents, Patient patient, Encounter encounter) {
-        Set<Obs> observations = new HashSet<>();
-
+    private void updateEncounter(Encounter encounter, Date encounterDateTime, List<Document> documents) {
         for (Document document : documents) {
             Concept testConcept = conceptService.getConceptByUuid(document.getTestUuid());
 
-            Obs parentObservation = findOrCreateObservation(observations, encounterDateTime, encounter, testConcept);
+            Obs parentObservation = findOrCreateParentObs(encounter, encounterDateTime, testConcept);
+            encounter.addObs(parentObservation);
+
             Concept imageConcept = conceptService.getConceptByName(DOCUMENT_OBS_GROUP_CONCEPT_NAME);
-            Obs childObservation = createObservationsWithImageUrl(patient, document, encounterDateTime, encounter, imageConcept);
-            parentObservation.addGroupMember(childObservation);
-            
+            if (document.isVoided()) {
+                voidDocumentObservation(encounter, document);
+            } else {
+                String url = saveDocument(encounter, document);
+                parentObservation.addGroupMember(newObs(encounterDateTime, encounter, imageConcept, url));
+            }
         }
-        return observations;
     }
 
-    private Obs findOrCreateObservation(Set<Obs> observations, Date encounterDateTime, Encounter encounter, Concept testConcept) {
+    private Obs findOrCreateParentObs(Encounter encounter, Date encounterDateTime, Concept testConcept) {
+        Set<Obs> observations = encounter.getAllObs().size() > 0 ? encounter.getAllObs() : new HashSet<Obs>();
         for (Obs observation : observations) {
             if (observation.getConcept().equals(testConcept)) {
                 return observation;
             }
         }
-        Obs observation = createNewObservation(encounterDateTime, encounter, testConcept, null);
-        observations.add(observation);
-        return observation;
+        return newObs(encounterDateTime, encounter, testConcept, null);
     }
 
-    private Obs createObservationsWithImageUrl(Patient patient, Document document, Date encounterDateTime, Encounter encounter, Concept concept) {
+    private String saveDocument(Encounter encounter, Document document) {
         String url = null;
         if (document != null) {
-            url = patientImageService.saveDocument(patient.getId(), encounter.getEncounterType().getName(), document.getImage(), document.getFormat());
+            url = patientImageService.saveDocument(encounter.getPatient().getId(), encounter.getEncounterType().getName(), document.getImage(), document.getFormat());
         }
-        return createNewObservation(encounterDateTime, encounter, concept, url);
+        return url;
     }
 
-    private Obs createNewObservation(Date encounterDateTime, Encounter encounter, Concept concept, String url) {
+    private void voidDocumentObservation(Encounter encounter, Document document) {
+        for (Obs obs : encounter.getAllObs()) {
+            for (Obs member : obs.getGroupMembers()) {
+                if (member.getUuid().equals(document.getObsUuid())) {
+                    member.setVoided(true);
+                    return;
+                }
+            }
+        }
+    }
+
+    private Obs newObs(Date encounterDateTime, Encounter encounter, Concept concept, String url) {
         Obs observation = new Obs();
         observation.setPerson(encounter.getPatient());
         observation.setEncounter(encounter);
@@ -114,7 +129,6 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         EncounterRole encounterRoleByUuid = Context.getEncounterService().getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
         Provider providerByUuid = Context.getProviderService().getProviderByUuid(providerUuid);
         encounter.addProvider(encounterRoleByUuid, providerByUuid);
-        visit.addEncounter(encounter);
         return encounter;
     }
 
