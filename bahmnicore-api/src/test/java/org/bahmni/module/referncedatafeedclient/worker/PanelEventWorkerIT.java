@@ -1,11 +1,10 @@
-package org.bahmni.module.elisatomfeedclient.api.worker;
+package org.bahmni.module.referncedatafeedclient.worker;
 
-import org.bahmni.module.elisatomfeedclient.api.ReferenceDataFeedProperties;
-import org.bahmni.module.elisatomfeedclient.api.domain.Department;
-import org.bahmni.module.elisatomfeedclient.api.domain.Sample;
-import org.bahmni.module.elisatomfeedclient.api.domain.Panel;
-import org.bahmni.module.elisatomfeedclient.api.domain.Test;
-import org.bahmni.module.elisatomfeedclient.api.service.ReferenceDataConceptService;
+import org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties;
+import org.bahmni.module.referncedatafeedclient.domain.Panel;
+import org.bahmni.module.referncedatafeedclient.domain.Sample;
+import org.bahmni.module.referncedatafeedclient.domain.Test;
+import org.bahmni.module.referncedatafeedclient.service.ReferenceDataConceptService;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.Before;
@@ -16,13 +15,11 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 

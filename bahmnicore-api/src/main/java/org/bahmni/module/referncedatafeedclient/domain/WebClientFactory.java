@@ -1,9 +1,8 @@
-package org.bahmni.module.elisatomfeedclient.api.domain;
+package org.bahmni.module.referncedatafeedclient.domain;
 
-import org.bahmni.module.elisatomfeedclient.api.ReferenceDataFeedProperties;
+import org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties;
 import org.bahmni.webclients.ConnectionDetails;
 import org.bahmni.webclients.HttpClient;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 

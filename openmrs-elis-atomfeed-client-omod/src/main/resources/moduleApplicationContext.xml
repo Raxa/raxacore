@@ -46,23 +46,4 @@
             </list>
         </property>
     </bean>
-
-    <bean parent="serviceContext">
-        <property name="moduleService">
-            <list>
-                <value>org.bahmni.module.elisatomfeedclient.api.client.ReferenceDataFeedClient</value>
-                <ref bean="referenceDataFeedClient"/>
-            </list>
-        </property>
-    </bean>
-
-    <util:properties id="referenceDataAtomFeedProperties" location="classpath:referenceData-atomfeed.properties"/>
-
-    <bean id="referenceDataFeedProperties" class="org.bahmni.module.elisatomfeedclient.api.ReferenceDataFeedProperties">
-    </bean>
-
-    <bean id="referenceDataHttpClient" class="org.bahmni.module.elisatomfeedclient.api.domain.WebClientFactory" factory-method="createReferenceDataClient">
-        <constructor-arg name="referenceDataFeedProperties" ref="referenceDataFeedProperties"/>
-    </bean>
-
 </beans>

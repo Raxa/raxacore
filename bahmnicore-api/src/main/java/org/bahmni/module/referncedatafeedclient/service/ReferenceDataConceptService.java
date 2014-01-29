@@ -1,6 +1,6 @@
-package org.bahmni.module.elisatomfeedclient.api.service;
+package org.bahmni.module.referncedatafeedclient.service;
 
-import org.bahmni.module.elisatomfeedclient.api.domain.ReferenceDataConcept;
+import org.bahmni.module.referncedatafeedclient.domain.ReferenceDataConcept;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptName;

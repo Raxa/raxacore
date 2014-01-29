@@ -1,9 +1,8 @@
-package org.bahmni.module.elisatomfeedclient.api.worker;
+package org.bahmni.module.referncedatafeedclient.worker;
 
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
-import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

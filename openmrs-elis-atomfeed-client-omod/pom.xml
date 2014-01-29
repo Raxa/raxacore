@@ -15,7 +15,6 @@
         <MODULE_NAME>${project.name}</MODULE_NAME>
         <MODULE_VERSION>${project.version}</MODULE_VERSION>
         <MODULE_PACKAGE>${project.groupId}.${MODULE_ID}</MODULE_PACKAGE>
-        <atomfeed.version>0.9.3-SNAPSHOT</atomfeed.version>
     </properties>
 
     <build>

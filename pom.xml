@@ -19,10 +19,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <openMRSVersion>1.9.7-SNAPSHOT</openMRSVersion>
-        <openMRSWebServicesVersion>2.4-SNAPSHOT</openMRSWebServicesVersion>
+        <openMRSWebServicesVersion>2.5-SNAPSHOT</openMRSWebServicesVersion>
         <openMRSRuntimeVersion>1.9.3</openMRSRuntimeVersion>
         <springVersion>3.0.5.RELEASE</springVersion>
         <providermanagementModuleVersion>1.1.3</providermanagementModuleVersion>
+        <atomfeed.version>0.9.3-SNAPSHOT</atomfeed.version>
     </properties>
 
 	<distributionManagement>
@@ -142,7 +143,7 @@
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>emrapi-api</artifactId>
-                <version>1.1-SNAPSHOT</version>
+                <version>1.2-SNAPSHOT</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

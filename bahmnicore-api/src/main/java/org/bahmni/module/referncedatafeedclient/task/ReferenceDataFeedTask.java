@@ -1,6 +1,6 @@
-package org.bahmni.module.elisatomfeedclient.api.task;
+package org.bahmni.module.referncedatafeedclient.task;
 
-import org.bahmni.module.elisatomfeedclient.api.client.ReferenceDataFeedClient;
+import org.bahmni.module.referncedatafeedclient.client.ReferenceDataFeedClient;
 import org.openmrs.api.context.Context;
 import org.openmrs.scheduler.tasks.AbstractTask;
 

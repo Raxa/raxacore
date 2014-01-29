@@ -1,4 +1,4 @@
-package org.bahmni.module.elisatomfeedclient.api.domain;
+package org.bahmni.module.referncedatafeedclient.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package org.bahmni.module.elisatomfeedclient.api;
+package org.bahmni.module.referncedatafeedclient;
 
 import org.ict4h.atomfeed.client.factory.AtomFeedProperties;
 import org.springframework.stereotype.Component;

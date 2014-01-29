@@ -1,8 +1,8 @@
-package org.bahmni.module.elisatomfeedclient.api.worker;
+package org.bahmni.module.referncedatafeedclient.worker;
 
-import org.bahmni.module.elisatomfeedclient.api.ReferenceDataFeedProperties;
-import org.bahmni.module.elisatomfeedclient.api.domain.Sample;
-import org.bahmni.module.elisatomfeedclient.api.service.ReferenceDataConceptService;
+import org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties;
+import org.bahmni.module.referncedatafeedclient.domain.Sample;
+import org.bahmni.module.referncedatafeedclient.service.ReferenceDataConceptService;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.Before;

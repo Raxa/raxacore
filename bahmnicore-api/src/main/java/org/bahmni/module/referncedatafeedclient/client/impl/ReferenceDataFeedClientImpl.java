@@ -1,17 +1,16 @@
-package org.bahmni.module.elisatomfeedclient.api.client.impl;
+package org.bahmni.module.referncedatafeedclient.client.impl;
 
 import org.apache.log4j.Logger;
-import org.bahmni.module.elisatomfeedclient.api.ReferenceDataFeedProperties;
-import org.bahmni.module.elisatomfeedclient.api.client.ReferenceDataFeedClient;
-import org.bahmni.module.elisatomfeedclient.api.domain.WebClientFactory;
-import org.bahmni.module.elisatomfeedclient.api.worker.ReferenceDataEventWorker;
+import org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties;
+import org.bahmni.module.referncedatafeedclient.client.ReferenceDataFeedClient;
+import org.bahmni.module.referncedatafeedclient.domain.WebClientFactory;
+import org.bahmni.module.referncedatafeedclient.worker.ReferenceDataEventWorker;
 import org.bahmni.webclients.ClientCookies;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.jdbc.AllFailedEventsJdbcImpl;
 import org.ict4h.atomfeed.client.repository.jdbc.AllMarkersJdbcImpl;
 import org.ict4h.atomfeed.client.service.AtomFeedClient;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,16 +34,6 @@ public class ReferenceDataFeedClientImpl implements ReferenceDataFeedClient {
         this.referenceDataFeedProperties = referenceDataFeedProperties;
     }
 
-    @Override
-    public void processFeed() {
-        try {
-            getAtomFeedClient().processEvents();
-        } catch (Throwable e) {
-            logger.error(e);
-            throw new RuntimeException(e);
-        }
-    }
-
     private AtomFeedClient getAtomFeedClient() throws IOException {
         if(atomFeedClient == null) {
             HttpClient referenceDataClient = WebClientFactory.createReferenceDataClient(referenceDataFeedProperties);
@@ -58,8 +47,13 @@ public class ReferenceDataFeedClientImpl implements ReferenceDataFeedClient {
         return atomFeedClient;
     }
 
-//    @Override
-    public void processFailedEvents() {
-
+    @Override
+    public void processFeed() {
+        try {
+            getAtomFeedClient().processEvents();
+        } catch (Throwable e) {
+            logger.error(e);
+            throw new RuntimeException(e);
+        }
     }
 }
