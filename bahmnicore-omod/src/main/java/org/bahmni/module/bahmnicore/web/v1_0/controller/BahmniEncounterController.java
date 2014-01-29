@@ -35,46 +35,19 @@ public class BahmniEncounterController extends BaseRestController {
     @Autowired
     private VisitService visitService;
     @Autowired
-    private PatientService patientService;
-    @Autowired
     private ConceptService conceptService;
     @Autowired
     private EncounterService encounterService;
     @Autowired
-    private ObsService obsService;
-    @Autowired
     private OrderService orderService;
 
-    public BahmniEncounterController(VisitService visitService, PatientService patientService, ConceptService conceptService, EncounterService encounterService,
-                                     ObsService obsService) {
+    public BahmniEncounterController(VisitService visitService, ConceptService conceptService, EncounterService encounterService) {
         this.visitService = visitService;
-        this.patientService = patientService;
         this.conceptService = conceptService;
         this.encounterService = encounterService;
-        this.obsService = obsService;
     }
 
     public BahmniEncounterController() {
-    }
-
-    @RequestMapping(method = RequestMethod.GET)
-    @ResponseBody
-    public EncounterObservationResponse get(GetObservationsRequest getObservationsRequest) {
-        Visit visit = getActiveVisit(getObservationsRequest.getPatientUUID());
-        ArrayList<ObservationData> observations = new ArrayList<ObservationData>();
-        if (visit == null) return new EncounterObservationResponse(observations);
-
-        Encounter encounter = getMatchingEncounter(visit, getObservationsRequest.getEncounterTypeUUID());
-        if (encounter == null) return new EncounterObservationResponse(observations);
-
-        Set<Obs> allObs = encounter.getAllObs();
-        for (Obs obs : allObs) {
-            Concept concept = obs.getConcept();
-            ConceptDatatype datatype = concept.getDatatype();
-            Object value = datatype.isNumeric() ? obs.getValueNumeric() : obs.getValueAsString(Locale.getDefault());
-            observations.add(new ObservationData(concept.getUuid(), concept.getName().getName(), value));
-        }
-        return new EncounterObservationResponse(observations);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "config")
@@ -104,109 +77,4 @@ public class BahmniEncounterController extends BaseRestController {
         return encounterConfigResponse;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    @ResponseBody
-    public EncounterDataResponse create(@RequestBody CreateEncounterRequest createEncounterRequest)
-            throws Exception {
-        Patient patient = patientService.getPatientByUuid(createEncounterRequest.getPatientUUID());
-        Visit visit = getActiveVisit(createEncounterRequest.getPatientUUID());
-        Date encounterDatetime = new Date();
-        if (visit == null) {
-            visit = new Visit();
-            visit.setPatient(patient);
-            visit.setVisitType(visitService.getVisitTypeByUuid(createEncounterRequest.getVisitTypeUUID()));
-            visit.setStartDatetime(encounterDatetime);
-            visit.setEncounters(new HashSet<Encounter>());
-            visit.setUuid(UUID.randomUUID().toString());
-        }
-        Encounter encounter = getMatchingEncounter(visit, createEncounterRequest.getEncounterTypeUUID());
-        if (encounter == null) {
-            encounter = new Encounter();
-            encounter.setPatient(patient);
-            encounter.setEncounterType(encounterService.getEncounterTypeByUuid(createEncounterRequest.getEncounterTypeUUID()));
-            encounter.setEncounterDatetime(encounterDatetime);
-            encounter.setUuid(UUID.randomUUID().toString());
-            encounter.setObs(new HashSet<Obs>());
-            //should use addEncounter method here, which seems to be have been added later
-            visit.getEncounters().add(encounter);
-        }
-        addOrOverwriteObservations(createEncounterRequest, encounter, patient, encounterDatetime);
-        addOrOverwriteOrders(createEncounterRequest, encounter);
-        visitService.saveVisit(visit);
-        return new EncounterDataResponse(visit.getUuid(), encounter.getUuid(), "");
-    }
-
-    private void addOrOverwriteOrders(CreateEncounterRequest createEncounterRequest, Encounter encounter) {
-        for (TestOrderData testOrderData : createEncounterRequest.getTestOrders()) {
-            if(hasOrderByConceptUuid(encounter, testOrderData.getConceptUUID())) continue;
-            Order order = new TestOrder();
-            order.setConcept(conceptService.getConceptByUuid(testOrderData.getConceptUUID()));
-            encounter.addOrder(order);
-        }
-    }
-
-    private boolean hasOrderByConceptUuid(Encounter encounter, String conceptUuid) {
-        for (Order order: encounter.getOrders()){
-            if(order.getConcept().getUuid().equals(conceptUuid))
-                return true;
-        }
-        return false;
-    }
-
-    private void addOrOverwriteObservations(CreateEncounterRequest createEncounterRequest, Encounter encounter, Patient patient, Date encounterDateTime) throws ParseException {
-        Set<Obs> existingObservations = encounter.getAllObs();
-        for (ObservationData observationData : createEncounterRequest.getObservations()) {
-            Obs observation = getMatchingObservation(existingObservations, observationData.getConceptUUID());
-            Object value = observationData.getValue();
-            boolean observationValueSpecified = value != null && StringUtils.isNotEmpty(value.toString());
-            if (observation == null && observationValueSpecified) {
-                observation = new Obs();
-                Concept concept = conceptService.getConceptByUuid(observationData.getConceptUUID());
-                observation.setConcept(concept);
-                observation.setUuid(UUID.randomUUID().toString());
-                observation.setPerson(patient);
-                observation.setEncounter(encounter);
-                encounter.addObs(observation);
-            }
-            if (observation != null && observationValueSpecified) {
-                setObservationValue(observationData, observation);
-                observation.setObsDatetime(encounterDateTime);
-            }
-            if (observation != null && !observationValueSpecified) {
-                encounter.removeObs(observation);
-                obsService.purgeObs(observation);
-            }
-        }
-    }
-
-    private void setObservationValue(ObservationData observationData, Obs observation) throws ParseException {
-        if (observation.getConcept().getDatatype().isNumeric()) {
-            observation.setValueNumeric(Double.parseDouble(observationData.getValue().toString()));
-        } else {
-            observation.setValueAsString((String) observationData.getValue());
-        }
-    }
-
-    private Obs getMatchingObservation(Set<Obs> existingObservations, String conceptUUID) {
-        for (Obs obs : existingObservations) {
-            if (StringUtils.equals(obs.getConcept().getUuid(), conceptUUID)) return obs;
-        }
-        return null;
-    }
-
-    private Encounter getMatchingEncounter(Visit visit, String encounterTypeUUID) {
-        Set<Encounter> encounters = visit.getEncounters();
-        for (Encounter encounter : encounters) {
-            if (StringUtils.equals(encounter.getEncounterType().getUuid(), encounterTypeUUID)) {
-                return encounter;
-            }
-        }
-        return null;
-    }
-
-    private Visit getActiveVisit(String patientUuid) {
-        Patient patient = patientService.getPatientByUuid(patientUuid);
-        List<Visit> activeVisitsByPatient = visitService.getActiveVisitsByPatient(patient);
-        return activeVisitsByPatient.isEmpty()? null : activeVisitsByPatient.get(0);
-    }
 }

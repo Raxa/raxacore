@@ -14,6 +14,7 @@ import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +33,22 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
     private PatientImageService patientImageService;
 
     private VisitService visitService;
+    private ConceptService conceptService;
+    private EncounterService encounterService;
 
     @Autowired
-    public VisitDocumentServiceImpl(PatientImageService patientImageService, VisitService visitService) {
+    public VisitDocumentServiceImpl(PatientImageService patientImageService, VisitService visitService, ConceptService conceptService, EncounterService encounterService) {
         this.patientImageService = patientImageService;
         this.visitService = visitService;
+        this.conceptService = conceptService;
+        this.encounterService = encounterService;
     }
 
     @Override
     public Visit upload(VisitDocumentRequest visitDocumentRequest) {
         Patient patient = Context.getPatientService().getPatientByUuid(visitDocumentRequest.getPatientUuid());
         Visit visit = findOrCreateVisit(visitDocumentRequest, patient);
-        Encounter encounter = createEncounter(visit, visitDocumentRequest.getEncounterTypeUuid(), visitDocumentRequest.getEncounterDateTime(), patient, visitDocumentRequest.getProviderUuid());
+        Encounter encounter = findOrCreateEncounter(visit, visitDocumentRequest.getEncounterTypeUuid(), visitDocumentRequest.getEncounterDateTime(), patient, visitDocumentRequest.getProviderUuid());
         Set<Obs> observations = createObservationGroup(visitDocumentRequest.getEncounterDateTime(), visitDocumentRequest.getDocuments(), patient, encounter);
         encounter.setObs(observations);
         return Context.getVisitService().saveVisit(visit);
@@ -52,23 +57,19 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
     private Set<Obs> createObservationGroup(Date encounterDateTime, List<Document> documents, Patient patient, Encounter encounter) {
         Set<Obs> observations = new HashSet<>();
 
-        ConceptService conceptService = Context.getConceptService();
-        Concept imageConcept = conceptService.getConceptByName(DOCUMENT_OBS_GROUP_CONCEPT_NAME);
-
         for (Document document : documents) {
             Concept testConcept = conceptService.getConceptByUuid(document.getTestUuid());
 
-            Obs parentObservation = createOrFindObservation(observations, encounterDateTime, encounter, testConcept);
-            List<Obs> childObservations = createObservationsWithImageUrl(patient, document, encounterDateTime, encounter, imageConcept);
-
-            for (Obs childObservation : childObservations) {
-                parentObservation.addGroupMember(childObservation);
-            }
+            Obs parentObservation = findOrCreateObservation(observations, encounterDateTime, encounter, testConcept);
+            Concept imageConcept = conceptService.getConceptByName(DOCUMENT_OBS_GROUP_CONCEPT_NAME);
+            Obs childObservation = createObservationsWithImageUrl(patient, document, encounterDateTime, encounter, imageConcept);
+            parentObservation.addGroupMember(childObservation);
+            
         }
         return observations;
     }
 
-    private Obs createOrFindObservation(Set<Obs> observations, Date encounterDateTime, Encounter encounter, Concept testConcept) {
+    private Obs findOrCreateObservation(Set<Obs> observations, Date encounterDateTime, Encounter encounter, Concept testConcept) {
         for (Obs observation : observations) {
             if (observation.getConcept().equals(testConcept)) {
                 return observation;
@@ -79,14 +80,12 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         return observation;
     }
 
-    private List<Obs> createObservationsWithImageUrl(Patient patient, Document document, Date encounterDateTime, Encounter encounter, Concept concept) {
+    private Obs createObservationsWithImageUrl(Patient patient, Document document, Date encounterDateTime, Encounter encounter, Concept concept) {
         String url = null;
-        List<Obs> imageObservation = new ArrayList<>();
         if (document != null) {
             url = patientImageService.saveDocument(patient.getId(), encounter.getEncounterType().getName(), document.getImage(), document.getFormat());
         }
-        imageObservation.add(createNewObservation(encounterDateTime, encounter, concept, url));
-        return imageObservation;
+        return createNewObservation(encounterDateTime, encounter, concept, url);
     }
 
     private Obs createNewObservation(Date encounterDateTime, Encounter encounter, Concept concept, String url) {
@@ -101,8 +100,13 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         return observation;
     }
 
-    private Encounter createEncounter(Visit visit, String encounterTypeUUID, Date encounterDateTime, Patient patient, String providerUuid) {
-        EncounterType encounterType = Context.getEncounterService().getEncounterTypeByUuid(encounterTypeUUID);
+    private Encounter findOrCreateEncounter(Visit visit, String encounterTypeUUID, Date encounterDateTime, Patient patient, String providerUuid) {
+        Encounter existingEncounter = findEncounter(visit, encounterTypeUUID);
+        if (existingEncounter != null) {
+            return existingEncounter;
+        }
+
+        EncounterType encounterType = encounterService.getEncounterTypeByUuid(encounterTypeUUID);
         Encounter encounter = new Encounter();
         encounter.setPatient(patient);
         encounter.setEncounterType(encounterType);
@@ -112,6 +116,17 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         encounter.addProvider(encounterRoleByUuid, providerByUuid);
         visit.addEncounter(encounter);
         return encounter;
+    }
+
+    private Encounter findEncounter(Visit visit, String encounterTypeUUID) {
+        if (visit != null && visit.getEncounters() != null) {
+            for (Encounter encounter : visit.getEncounters()) {
+                if (encounterTypeUUID.equals(encounter.getEncounterType().getUuid())) {
+                    return encounter;
+                }
+            }
+        }
+        return null;
     }
 
     private Visit createVisit(String visitTypeUUID, Date visitStartDate, Date visitEndDate, Patient patient) {

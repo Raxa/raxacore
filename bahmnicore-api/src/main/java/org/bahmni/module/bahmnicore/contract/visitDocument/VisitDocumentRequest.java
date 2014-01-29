@@ -22,7 +22,9 @@ public class VisitDocumentRequest {
     public VisitDocumentRequest() {
     }
 
-    public VisitDocumentRequest(String patientUUID, String visitUuid, String visitTypeUUID, Date visitStartDate, Date visitEndDate, String encounterTypeUUID, Date encounterDateTime, List<Document> documents, String providerUuid) {
+    public VisitDocumentRequest(String patientUUID, String visitUuid, String visitTypeUUID, Date visitStartDate, 
+                                Date visitEndDate, String encounterTypeUUID, Date encounterDateTime, 
+                                List<Document> documents, String providerUuid) {
         this.patientUuid = patientUUID;
         this.visitUuid = visitUuid;
         this.visitTypeUuid = visitTypeUUID;
