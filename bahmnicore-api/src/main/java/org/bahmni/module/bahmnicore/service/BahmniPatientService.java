@@ -11,7 +11,5 @@ import java.util.List;
 public interface BahmniPatientService {
     public PatientConfigResponse getConfig();
     public Patient createPatient(BahmniPatient bahmniPatient);
-    public Patient updatePatient(BahmniPatient bahmniPatient);
-    public void updateImage(String uuid, String imageData);
     public List<PatientResponse> search(PatientSearchParameters searchParameters);
 }

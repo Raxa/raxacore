@@ -71,23 +71,6 @@ public class BahmniPatientServiceImplTest {
     }
 
     @Test
-    public void shouldMapPostValuesToExistingPatientOnUpdate() throws Exception {
-        String identifier = "BAH420420";
-        PatientMother patientMother = new PatientMother().withName("ram", "boo", "singh").withPatientIdentifier(identifier);
-        when(patientMapper.map(any(Patient.class), any(BahmniPatient.class))).thenReturn(patientMother.build());
-        when(patientService.savePatient(any(Patient.class))).thenReturn(patientMother.build());
-        String uuid = "a23034-asdf954-asdfasdf-342343";
-        Patient patient = patientMother.build();
-        when(patientService.getPatientByUuid(uuid)).thenReturn(patient);
-        BahmniPatient bahmniPatient = patientMother.buildBahmniPatient();
-        bahmniPatient.setUuid(uuid);
-
-        bahmniPatientService.updatePatient(bahmniPatient);
-
-        verify(patientMapper).map(eq(patient), any(BahmniPatient.class));
-    }
-
-    @Test
     public void shouldSaveMappedPatientOnCreate() throws Exception {
         String identifier = "BAH420420";
         PatientMother patientMother = new PatientMother().withName("ram", "boo", "singh").withPatientIdentifier(identifier);
@@ -98,24 +81,6 @@ public class BahmniPatientServiceImplTest {
         bahmniPatientService.createPatient(patientMother.buildBahmniPatient());
 
         verify(patientService).savePatient(patient);
-    }
-
-    @Test
-    public void shouldSaveMappedPatientOnUpdate() throws Exception {
-        String identifier = "BAH420420";
-        PatientMother patientMother = new PatientMother().withName("ram", "boo", "singh").withPatientIdentifier(identifier);
-        String uuid = "a23034-asdf954-asdfasdf-342343";
-        Patient patient = patientMother.build();
-        when(patientService.getPatientByUuid(uuid)).thenReturn(patient);
-        Patient mappedPatient = patientMother.build();
-        when(patientMapper.map(any(Patient.class), any(BahmniPatient.class))).thenReturn(mappedPatient);
-        when(patientService.savePatient(eq(mappedPatient))).thenReturn(patientMother.build());
-        BahmniPatient bahmniPatient = patientMother.buildBahmniPatient();
-        bahmniPatient.setUuid(uuid);
-
-        bahmniPatientService.updatePatient(bahmniPatient);
-
-        verify(patientService).savePatient(mappedPatient);
     }
 
     @Test(expected = APIAuthenticationException.class)
