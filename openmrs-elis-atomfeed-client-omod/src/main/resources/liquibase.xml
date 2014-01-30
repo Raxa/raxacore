@@ -78,4 +78,9 @@
             VALUES ('101','ict4h','sql/db_migrations.xml',now(),'3:29f59eb61eb39a9dee52d81f4026d642','Add Column','',NULL,'2.0.5','EXECUTED','101') ON DUPLICATE KEY UPDATE EXECTYPE = 'EXECUTED';
         </sql>
     </changeSet>
+    <changeSet id="elis-atomfeed-13" author="tw" context="rel3">
+        <sql>
+            update scheduler_task_config set start_on_startup='1' where name in ('OpenElis Patient Atom Feed Task','OpenElis Patient  Atom Feed Failed Event Task');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
