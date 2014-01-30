@@ -40,7 +40,12 @@ public class PanelEventWorker implements EventWorker {
     public void process(Event event) {
         try {
             Panel panel = httpClient.get(referenceDataFeedProperties.getReferenceDataUri() + event.getContent(), Panel.class);
-            ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(panel.getId(), panel.getName(), panel.getDescription(), LAB_SET, ConceptDatatype.N_A_UUID, panel.getShortName(), getTestUuids(panel));
+            ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(panel.getId(), panel.getName(), LAB_SET, ConceptDatatype.N_A_UUID);
+            referenceDataConcept.setDescription(panel.getDescription());
+            referenceDataConcept.setShortName(panel.getShortName());
+            referenceDataConcept.setSetMemberUuids(getTestUuids(panel));
+            referenceDataConcept.setRetired(!panel.isActive());
+            referenceDataConcept.setSet(true);
             Concept panelConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
             referenceDataConceptService.saveSetMembership(conceptService.getConceptByUuid(panel.getSample().getId()), panelConcept);
         } catch (IOException e) {

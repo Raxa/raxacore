@@ -1,8 +1,6 @@
-package org.bahmni.module.referncedatafeedclient.client.impl;
+package org.bahmni.module.referncedatafeedclient.client;
 
-import org.apache.log4j.Logger;
 import org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties;
-import org.bahmni.module.referncedatafeedclient.client.ReferenceDataFeedClient;
 import org.bahmni.module.referncedatafeedclient.domain.WebClientFactory;
 import org.bahmni.module.referncedatafeedclient.worker.ReferenceDataEventWorker;
 import org.bahmni.webclients.ClientCookies;
@@ -16,25 +14,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.io.IOException;
 import java.net.URI;
 
-@Component("referenceDataFeedClient")
-public class ReferenceDataFeedClientImpl implements ReferenceDataFeedClient {
-    private final OpenMRSJdbcConnectionProvider jdbcConnectionProvider;
-    private AtomFeedClient atomFeedClient;
+@Component
+public class ReferenceDataFeedClientFactory implements AtomFeedClientFactory {
     private ReferenceDataFeedProperties referenceDataFeedProperties;
-    private Logger logger = Logger.getLogger(ReferenceDataFeedClientImpl.class);
     private ReferenceDataEventWorker referenceDataEventWorker;
+    private OpenMRSJdbcConnectionProvider jdbcConnectionProvider;
+    private AtomFeedClient atomFeedClient;
 
     @Autowired
-    public ReferenceDataFeedClientImpl(ReferenceDataFeedProperties referenceDataFeedProperties, ReferenceDataEventWorker referenceDataEventWorker,PlatformTransactionManager transactionManager) {
+    public ReferenceDataFeedClientFactory(ReferenceDataFeedProperties referenceDataFeedProperties, ReferenceDataEventWorker referenceDataEventWorker, PlatformTransactionManager transactionManager) {
+        this.referenceDataFeedProperties = referenceDataFeedProperties;
         this.referenceDataEventWorker = referenceDataEventWorker;
         this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider(transactionManager);
-        this.referenceDataFeedProperties = referenceDataFeedProperties;
     }
 
-    private AtomFeedClient getAtomFeedClient() throws IOException {
+    @Override
+    public AtomFeedClient getAtomFeedClient() throws Exception {
         if(atomFeedClient == null) {
             HttpClient referenceDataClient = WebClientFactory.createReferenceDataClient(referenceDataFeedProperties);
             URI feedUri = URI.create(referenceDataFeedProperties.getFeedUri());
@@ -45,15 +42,5 @@ public class ReferenceDataFeedClientImpl implements ReferenceDataFeedClient {
             atomFeedClient = new AtomFeedClient(allFeeds, allMarkers, allFailedEvents, referenceDataFeedProperties, jdbcConnectionProvider, feedUri, referenceDataEventWorker);
         }
         return atomFeedClient;
-    }
-
-    @Override
-    public void processFeed() {
-        try {
-            getAtomFeedClient().processEvents();
-        } catch (Throwable e) {
-            logger.error(e);
-            throw new RuntimeException(e);
-        }
     }
 }

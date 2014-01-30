@@ -17,8 +17,13 @@ public class Test {
     String resultType;
     Sample sample;
     Department department;
+    boolean active = true;
 
     public Test(String id) {
-        this(id, null, null, null, null, null, null);
+        this(id, null, null, null, null, null, null, true);
+    }
+
+    public Test(String id, String name, String description, String shortName, String resultType, Sample sample, Department department) {
+        this(id, name, description, shortName, resultType, sample, department, true);
     }
 }

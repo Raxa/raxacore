@@ -1,10 +1,12 @@
 package org.bahmni.module.referncedatafeedclient.worker;
 
 import org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties;
+import org.bahmni.module.referncedatafeedclient.client.AtomFeedProcessor;
 import org.bahmni.module.referncedatafeedclient.domain.Department;
 import org.bahmni.module.referncedatafeedclient.service.ReferenceDataConceptService;
 import org.bahmni.module.referncedatafeedclient.worker.DepartmentEventWorker;
 import org.bahmni.webclients.HttpClient;
+import org.ict4h.atomfeed.Configuration;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,9 +14,13 @@ import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.context.Context;
+import org.openmrs.api.context.ServiceContext;
+import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
@@ -57,11 +63,12 @@ public class DepartmentEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Concept departmentConcept = conceptService.getConceptByUuid(department.getId());
         assertNotNull(departmentConcept);
         assertEquals(1, departmentConcept.getNames().size());
-        assertEquals(department.getName(), departmentConcept.getName(Locale.ENGLISH).getName());
+        assertEquals("BioChem Department", departmentConcept.getName(Locale.ENGLISH).getName());
         assertEquals(1, departmentConcept.getDescriptions().size());
         assertEquals(department.getDescription(), departmentConcept.getDescription().getDescription());
         assertEquals(ConceptDatatype.N_A_UUID, departmentConcept.getDatatype().getUuid());
         assertEquals(DepartmentEventWorker.CONV_SET, departmentConcept.getConceptClass().getName());
+        assertEquals(true, departmentConcept.isSet());
         Concept labDepartmentsConcept = conceptService.getConceptByName(DepartmentEventWorker.LAB_DEPARTMENTS);
         assertTrue(labDepartmentsConcept.getSetMembers().contains(departmentConcept));
     }
@@ -77,11 +84,12 @@ public class DepartmentEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Concept departmentConcept = conceptService.getConceptByUuid(department.getId());
         assertNotNull(departmentConcept);
         assertEquals(1, departmentConcept.getNames().size());
-        assertEquals(department.getName(), departmentConcept.getName(Locale.ENGLISH).getName());
+        assertEquals("Haematology updated Department",departmentConcept.getName(Locale.ENGLISH).getName());
         assertEquals(1, departmentConcept.getDescriptions().size());
         assertEquals(department.getDescription(), departmentConcept.getDescription().getDescription());
         assertEquals(ConceptDatatype.N_A_UUID, departmentConcept.getDatatype().getUuid());
         assertEquals(DepartmentEventWorker.CONV_SET, departmentConcept.getConceptClass().getName());
+        assertEquals(true, departmentConcept.isSet());
         Concept labDepartmentsConcept = conceptService.getConceptByName(DepartmentEventWorker.LAB_DEPARTMENTS);
         assertTrue(labDepartmentsConcept.getSetMembers().contains(departmentConcept));
     }

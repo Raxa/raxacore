@@ -22,22 +22,21 @@
 
     <bean id="orderDao" class="org.bahmni.module.bahmnicore.dao.impl.OrderDaoImpl" />
 
-    <bean parent="serviceContext">
-        <property name="moduleService">
-            <list>
-                <value>org.bahmni.module.referncedatafeedclient.client.ReferenceDataFeedClient</value>
-                <ref bean="referenceDataFeedClient"/>
-            </list>
-        </property>
-    </bean>
 
     <util:properties id="referenceDataAtomFeedProperties" location="classpath:referenceData-atomfeed.properties"/>
-
-    <bean id="referenceDataFeedProperties" class="org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties">
-    </bean>
-
+    <bean id="referenceDataFeedProperties" class="org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties"/>
     <bean id="referenceDataHttpClient" class="org.bahmni.module.referncedatafeedclient.domain.WebClientFactory" factory-method="createReferenceDataClient">
         <constructor-arg name="referenceDataFeedProperties" ref="referenceDataFeedProperties"/>
     </bean>
-
+    <bean id="referenceDataFeedClientFactory" class="org.bahmni.module.referncedatafeedclient.client.ReferenceDataFeedClientFactory" scope="prototype">
+        <constructor-arg name="referenceDataEventWorker" ref="referenceDataEventWorker"/>
+        <constructor-arg name="referenceDataFeedProperties" ref="referenceDataFeedProperties"/>
+        <constructor-arg name="transactionManager" ref="transactionManager"/>
+    </bean>
+    <bean id="referenceDataFeedProcessor" class="org.bahmni.module.referncedatafeedclient.client.AtomFeedProcessor">
+        <constructor-arg name="atomFeedClientFactory" ref="referenceDataFeedClientFactory"/>
+    </bean>
+    <bean id="referenceDataFailedEventProcessor" class="org.bahmni.module.referncedatafeedclient.client.FailedEventProcessor">
+        <constructor-arg name="atomFeedClientFactory" ref="referenceDataFeedClientFactory"/>
+    </bean>
 </beans>

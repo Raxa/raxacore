@@ -12,7 +12,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 public class Sample {
     String id;
     String name;
-    String description;
+    String shortName;
 
     public Sample(String id) {
         this(id, null, null);

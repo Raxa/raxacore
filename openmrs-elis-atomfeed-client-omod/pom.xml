@@ -211,6 +211,12 @@
             <artifactId>bahmnicore-api</artifactId>
             <version>${version}</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>rome</groupId>
+                    <artifactId>rome</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>

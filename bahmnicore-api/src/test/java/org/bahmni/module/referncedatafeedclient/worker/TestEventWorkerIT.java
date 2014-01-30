@@ -49,7 +49,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Event event = new Event("xxxx-yyyyy", "/reference-data/test/8471dbe5-0465-4eac-94ba-8f8708f3f529");
         Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department department = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b75");
-        Test test = new Test("59474920-8734-11e3-baa7-0800200c9a66", "Haemoglobin", "Haemoglobin Description", "Hb", "Numeric", sample, department);
+        Test test = new Test("59474920-8734-11e3-baa7-0800200c9a66", "Haemoglobin", "Haemoglobin Description", "Hb", "Numeric", sample, department, true);
 
         when(httpClient.get(referenceDataUri + event.getContent(), Test.class)).thenReturn(test);
 
@@ -62,6 +62,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(test.getShortName(), testConcept.getShortNameInLocale(Locale.ENGLISH).getName());
         assertEquals(1, testConcept.getDescriptions().size());
         assertEquals(test.getDescription(), testConcept.getDescription().getDescription());
+        assertEquals(false, testConcept.isRetired());
         assertEquals(ConceptDatatype.NUMERIC_UUID, testConcept.getDatatype().getUuid());
         assertEquals(TestEventWorker.TEST, testConcept.getConceptClass().getName());
         Concept sampleConcept = conceptService.getConceptByUuid(sample.getId());
@@ -75,7 +76,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Event event = new Event("xxxx-yyyyy", "/reference-data/test/4923d0e0-8734-11e3-baa7-0800200c9a66");
         Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department department = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b75");
-        Test test = new Test("4923d0e0-8734-11e3-baa7-0800200c9a66", "Blood Group Updated", "Blood Group Description updated", "BG(U)", "Text", sample, department);
+        Test test = new Test("4923d0e0-8734-11e3-baa7-0800200c9a66", "Blood Group Updated", "Blood Group Description updated", "BG(U)", "Text", sample, department, false);
         when(httpClient.get(referenceDataUri+event.getContent(), Test.class)).thenReturn(test);
 
         testEventWorker.process(event);
@@ -89,6 +90,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(test.getDescription(), testConcept.getDescription().getDescription());
         assertEquals(ConceptDatatype.TEXT_UUID, testConcept.getDatatype().getUuid());
         assertEquals(TestEventWorker.TEST, testConcept.getConceptClass().getName());
+        assertEquals(true, testConcept.isRetired());
         Concept sampleConcept = conceptService.getConceptByUuid(sample.getId());
         assertTrue(sampleConcept.getSetMembers().contains(testConcept));
         Concept departmentConcept = conceptService.getConceptByUuid(department.getId());

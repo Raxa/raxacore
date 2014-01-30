@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -16,6 +17,7 @@ public class Panel {
     String name;
     String description;
     String shortName;
+    boolean active = true;
     Sample sample;
-    Set<Test> tests;
+    Set<Test> tests = new HashSet<>();
 }

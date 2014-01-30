@@ -36,8 +36,12 @@ public class ReferenceDataConceptService {
         if(referenceDataConcept.getShortName() != null) {
             addOrUpdateName(concept, referenceDataConcept.getShortName(), ConceptNameType.SHORT);
         }
-        addOrUpdateDescription(concept, referenceDataConcept.getDescription());
+        if(referenceDataConcept.getDescription() != null) {
+            addOrUpdateDescription(concept, referenceDataConcept.getDescription());
+        }
         addOrRemoveSetMembers(concept, referenceDataConcept.getSetMemberUuids());
+        concept.setRetired(referenceDataConcept.isRetired());
+        concept.setSet(referenceDataConcept.isSet());
         return conceptService.saveConcept(concept);
     }
 

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Locale;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -52,12 +53,12 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
 
         Concept sampleConcept = conceptService.getConceptByUuid(sample.getId());
         assertNotNull(sampleConcept);
-        assertEquals(1, sampleConcept.getNames().size());
+        assertEquals(2, sampleConcept.getNames().size());
         assertEquals(sample.getName(), sampleConcept.getName(Locale.ENGLISH).getName());
-        assertEquals(1, sampleConcept.getDescriptions().size());
-        assertEquals(sample.getDescription(), sampleConcept.getDescription().getDescription());
+        assertEquals(sample.getShortName(), sampleConcept.getShortNameInLocale(Locale.ENGLISH).getName());
         assertEquals(ConceptDatatype.N_A_UUID, sampleConcept.getDatatype().getUuid());
         assertEquals(SampleEventWorker.LAB_SET, sampleConcept.getConceptClass().getName());
+        assertEquals(true, sampleConcept.isSet());
         Concept labConcept = conceptService.getConceptByName(SampleEventWorker.LABORATORY);
         assertTrue(labConcept.getSetMembers().contains(sampleConcept));
     }
@@ -72,12 +73,12 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
 
         Concept sampleConcept = conceptService.getConceptByUuid(sample.getId());
         assertNotNull(sampleConcept);
-        assertEquals(1, sampleConcept.getNames().size());
+        assertEquals(2, sampleConcept.getNames().size());
         assertEquals(sample.getName(), sampleConcept.getName(Locale.ENGLISH).getName());
-        assertEquals(1, sampleConcept.getDescriptions().size());
-        assertEquals(sample.getDescription(), sampleConcept.getDescription().getDescription());
+        assertEquals(sample.getShortName(), sampleConcept.getShortNameInLocale(Locale.ENGLISH).getName());
         assertEquals(ConceptDatatype.N_A_UUID, sampleConcept.getDatatype().getUuid());
         assertEquals(SampleEventWorker.LAB_SET, sampleConcept.getConceptClass().getName());
+        assertEquals(true, sampleConcept.isSet());
         Concept labConcept = conceptService.getConceptByName(SampleEventWorker.LABORATORY);
         assertTrue(labConcept.getSetMembers().contains(sampleConcept));
     }

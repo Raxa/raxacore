@@ -52,7 +52,7 @@ public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Test test1 = new Test("5923d0e0-8734-11e3-baa7-0800200c9a66");
         Test test2 = new Test("7923d0e0-8734-11e3-baa7-0800200c9a66");
         HashSet<Test> tests = new HashSet<>(Arrays.asList(test1, test2));
-        Panel panel = new Panel("59474920-8734-11e3-baa7-0800200c9a66", "Routine Blood", "Routine Blood Description", "RB", sample, tests);
+        Panel panel = new Panel("59474920-8734-11e3-baa7-0800200c9a66", "Routine Blood", "Routine Blood Description", "RB", true, sample, tests);
         when(httpClient.get(referenceDataUri + event.getContent(), Panel.class)).thenReturn(panel);
 
         panelEventWorker.process(event);
@@ -64,8 +64,10 @@ public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(panel.getShortName(), panelConcept.getShortNameInLocale(Locale.ENGLISH).getName());
         assertEquals(1, panelConcept.getDescriptions().size());
         assertEquals(panel.getDescription(), panelConcept.getDescription().getDescription());
+        assertEquals(false, panelConcept.isRetired());
         assertEquals(ConceptDatatype.N_A_UUID, panelConcept.getDatatype().getUuid());
         assertEquals(PanelEventWorker.LAB_SET, panelConcept.getConceptClass().getName());
+        assertEquals(true, panelConcept.isSet());
         Concept sampleConcept = conceptService.getConceptByUuid(sample.getId());
         assertTrue(sampleConcept.getSetMembers().contains(panelConcept));
         assertEquals(2, panelConcept.getSetMembers().size());
@@ -80,7 +82,7 @@ public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Test test1 = new Test("6923d0e0-8734-11e3-baa7-0800200c9a66");
         Test test2 = new Test("7923d0e0-8734-11e3-baa7-0800200c9a66");
         HashSet<Test> tests = new HashSet<>(Arrays.asList(test1, test2));
-        Panel panel = new Panel("4923d0e0-8734-11e3-baa7-0800200c9a66", "Anaemia Panel Updated", "Anaemia Panel Description updated", "AP(U)", sample, tests);
+        Panel panel = new Panel("4923d0e0-8734-11e3-baa7-0800200c9a66", "Anaemia Panel Updated", "Anaemia Panel Description updated", "AP(U)", false, sample, tests);
         when(httpClient.get(referenceDataUri+event.getContent(), Panel.class)).thenReturn(panel);
         assertEquals(2, conceptService.getConceptByUuid(panel.getId()).getSetMembers().size());
 
@@ -93,8 +95,10 @@ public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(panel.getShortName(), panelConcept.getShortNameInLocale(Locale.ENGLISH).getName());
         assertEquals(1, panelConcept.getDescriptions().size());
         assertEquals(panel.getDescription(), panelConcept.getDescription().getDescription());
+        assertEquals(true, panelConcept.isRetired());
         assertEquals(ConceptDatatype.N_A_UUID, panelConcept.getDatatype().getUuid());
         assertEquals(PanelEventWorker.LAB_SET, panelConcept.getConceptClass().getName());
+        assertEquals(true, panelConcept.isSet());
         Concept sampleConcept = conceptService.getConceptByUuid(sample.getId());
         assertTrue(sampleConcept.getSetMembers().contains(panelConcept));
         assertEquals(2, panelConcept.getConceptSets().size());

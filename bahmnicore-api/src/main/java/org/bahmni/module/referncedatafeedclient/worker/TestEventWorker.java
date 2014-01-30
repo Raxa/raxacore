@@ -39,7 +39,10 @@ public class TestEventWorker implements EventWorker {
         try {
             Test test = httpClient.get(referenceDataFeedProperties.getReferenceDataUri() + event.getContent(), Test.class);
             ConceptDatatype conceptDataType = conceptService.getConceptDatatypeByName(test.getResultType());
-            ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(test.getId(), test.getName(), test.getDescription(), TEST, conceptDataType.getUuid(), test.getShortName());
+            ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(test.getId(), test.getName(), TEST, conceptDataType.getUuid());
+            referenceDataConcept.setDescription(test.getDescription());
+            referenceDataConcept.setShortName(test.getShortName());
+            referenceDataConcept.setRetired(!test.isActive());
             Concept testConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
             referenceDataConceptService.saveSetMembership(conceptService.getConceptByUuid(test.getSample().getId()), testConcept);
             referenceDataConceptService.saveSetMembership(conceptService.getConceptByUuid(test.getDepartment().getId()), testConcept);

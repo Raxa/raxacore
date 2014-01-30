@@ -38,7 +38,9 @@ public class SampleEventWorker implements EventWorker {
     public void process(Event event) {
         try {
             Sample sample = httpClient.get(referenceDataFeedProperties.getReferenceDataUri() + event.getContent(), Sample.class);
-            ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(sample.getId(), sample.getName(), sample.getDescription(), LAB_SET, ConceptDatatype.N_A_UUID);
+            ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(sample.getId(), sample.getName(), LAB_SET, ConceptDatatype.N_A_UUID);
+            referenceDataConcept.setShortName(sample.getShortName());
+            referenceDataConcept.setSet(true);
             Concept sampleConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
             Concept labConcept = conceptService.getConceptByName(LABORATORY);
             referenceDataConceptService.saveSetMembership(labConcept, sampleConcept);
