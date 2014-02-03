@@ -46,7 +46,7 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldCreateNewConceptForGivenSample() throws Exception {
         Event event = new Event("xxxx-yyyyy", "/reference-data/sample/8471dbe5-0465-4eac-94ba-8f8708f3f529");
-        Sample sample = new Sample("8471dbe5-0465-4eac-94ba-8f8708f3f529", "Urine Microscopy", "Urine Microscopy Sample Description");
+        Sample sample = new Sample("8471dbe5-0465-4eac-94ba-8f8708f3f529", "Urine Microscopy", "Urine Microscopy Sample Description", true);
         when(httpClient.get(referenceDataUri + event.getContent(), Sample.class)).thenReturn(sample);
 
         sampleEventWorker.process(event);
@@ -59,6 +59,7 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(ConceptDatatype.N_A_UUID, sampleConcept.getDatatype().getUuid());
         assertEquals(SampleEventWorker.LAB_SET, sampleConcept.getConceptClass().getName());
         assertEquals(true, sampleConcept.isSet());
+        assertEquals(false, sampleConcept.isRetired());
         Concept labConcept = conceptService.getConceptByName(SampleEventWorker.LABORATORY);
         assertTrue(labConcept.getSetMembers().contains(sampleConcept));
     }
@@ -66,19 +67,20 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldUpdateConceptForGivenSample() throws Exception {
         Event event = new Event("xxxx-yyyyy", "/reference-data/sample/dc8ac8c0-8716-11e3-baa7-0800200c9a66");
-        Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66", "Blood Sample Updated", "Blood Sample Description updated");
+        Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66", "Blood Sample Updated", null, false);
         when(httpClient.get(referenceDataUri+event.getContent(), Sample.class)).thenReturn(sample);
 
         sampleEventWorker.process(event);
 
         Concept sampleConcept = conceptService.getConceptByUuid(sample.getId());
         assertNotNull(sampleConcept);
-        assertEquals(2, sampleConcept.getNames().size());
+        assertEquals(1, sampleConcept.getNames().size());
         assertEquals(sample.getName(), sampleConcept.getName(Locale.ENGLISH).getName());
-        assertEquals(sample.getShortName(), sampleConcept.getShortNameInLocale(Locale.ENGLISH).getName());
+        assertEquals(sample.getShortName(), sampleConcept.getShortNameInLocale(Locale.ENGLISH));
         assertEquals(ConceptDatatype.N_A_UUID, sampleConcept.getDatatype().getUuid());
         assertEquals(SampleEventWorker.LAB_SET, sampleConcept.getConceptClass().getName());
         assertEquals(true, sampleConcept.isSet());
+        assertEquals(true, sampleConcept.isRetired());
         Concept labConcept = conceptService.getConceptByName(SampleEventWorker.LABORATORY);
         assertTrue(labConcept.getSetMembers().contains(sampleConcept));
     }

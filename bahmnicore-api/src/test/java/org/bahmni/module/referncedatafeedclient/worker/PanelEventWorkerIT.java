@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.*;
@@ -76,34 +77,25 @@ public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @org.junit.Test
-    public void shouldUpdateConceptForGivenPanel() throws Exception {
-        Event event = new Event("xxxx-yyyyy", "/reference-data/panel/4923d0e0-8734-11e3-baa7-0800200c9a66");
-        Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
-        Test test1 = new Test("6923d0e0-8734-11e3-baa7-0800200c9a66");
-        Test test2 = new Test("7923d0e0-8734-11e3-baa7-0800200c9a66");
-        HashSet<Test> tests = new HashSet<>(Arrays.asList(test1, test2));
-        Panel panel = new Panel("4923d0e0-8734-11e3-baa7-0800200c9a66", "Anaemia Panel Updated", "Anaemia Panel Description updated", "AP(U)", false, sample, tests);
-        when(httpClient.get(referenceDataUri+event.getContent(), Panel.class)).thenReturn(panel);
-        assertEquals(2, conceptService.getConceptByUuid(panel.getId()).getSetMembers().size());
+    public void updating_sample_for_panel_moves_the_panel_from_oldsample_to_newsample() throws Exception {
+        Sample oldBloodSample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
+        HashSet<Test> routineBloodTests = new HashSet<>(Arrays.asList(new Test("5923d0e0-8734-11e3-baa7-0800200c9a66"), new Test("7923d0e0-8734-11e3-baa7-0800200c9a66")));
+        Panel routineBloodPanel = new Panel("59474920-8734-11e3-baa7-0800200c9a66", "Routine Blood", "Routine Blood Description", "RB", true, oldBloodSample, routineBloodTests);
+        Event routineBloodPanelCreationEvent = new Event("xxxx-yyyyy-1", "/reference-data/panel/59474920-8734-11e3-baa7-0800200c9a66");
+        when(httpClient.get(referenceDataUri + routineBloodPanelCreationEvent.getContent(), Panel.class)).thenReturn(routineBloodPanel);
+        panelEventWorker.process(routineBloodPanelCreationEvent);
 
-        panelEventWorker.process(event);
+        Sample newUrineSample = new Sample("788ac8c0-8716-11e3-baa7-0800200c9a66");
+        routineBloodPanel.setSample(newUrineSample);
+        Event routineBloodPanelUpdatedEvent = new Event("xxxx-yyyyy-2", "/reference-data/panel/59474920-8734-11e3-baa7-0800200c9a66");
+        when(httpClient.get(referenceDataUri + routineBloodPanelUpdatedEvent.getContent(), Panel.class)).thenReturn(routineBloodPanel);
+        panelEventWorker.process(routineBloodPanelUpdatedEvent);
 
-        Concept panelConcept = conceptService.getConceptByUuid(panel.getId());
-        assertNotNull(panelConcept);
-        assertEquals(2, panelConcept.getNames().size());
-        assertEquals(panel.getName(), panelConcept.getFullySpecifiedName(Locale.ENGLISH).getName());
-        assertEquals(panel.getShortName(), panelConcept.getShortNameInLocale(Locale.ENGLISH).getName());
-        assertEquals(1, panelConcept.getDescriptions().size());
-        assertEquals(panel.getDescription(), panelConcept.getDescription().getDescription());
-        assertEquals(true, panelConcept.isRetired());
-        assertEquals(ConceptDatatype.N_A_UUID, panelConcept.getDatatype().getUuid());
-        assertEquals(PanelEventWorker.LAB_SET, panelConcept.getConceptClass().getName());
-        assertEquals(true, panelConcept.isSet());
-        Concept sampleConcept = conceptService.getConceptByUuid(sample.getId());
-        assertTrue(sampleConcept.getSetMembers().contains(panelConcept));
-        assertEquals(2, panelConcept.getConceptSets().size());
-        assertEquals(2, panelConcept.getSetMembers().size());
-        assertTrue(panelConcept.getSetMembers().contains(conceptService.getConceptByUuid(test1.getId())));
-        assertTrue(panelConcept.getSetMembers().contains(conceptService.getConceptByUuid(test2.getId())));
+        Concept bloodSampleConcept = conceptService.getConceptByUuid(oldBloodSample.getId());
+        Concept routineBloodPanelConcept = conceptService.getConceptByUuid(routineBloodPanel.getId());
+        assertFalse("Older sample should not contain the panel", bloodSampleConcept.getSetMembers().contains(routineBloodPanelConcept));
+
+        Concept newUrineConcept = conceptService.getConceptByUuid(newUrineSample.getId());
+        assertTrue("New Sample should contain the panel", newUrineConcept.getSetMembers().contains(routineBloodPanelConcept));
     }
 }

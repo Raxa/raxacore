@@ -13,8 +13,9 @@ public class Sample {
     String id;
     String name;
     String shortName;
+    Boolean active = true;
 
     public Sample(String id) {
-        this(id, null, null);
+        this(id, null, null, null);
     }
 }

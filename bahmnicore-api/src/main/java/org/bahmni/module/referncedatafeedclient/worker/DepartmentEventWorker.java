@@ -41,6 +41,7 @@ public class DepartmentEventWorker implements EventWorker {
             ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(department.getId(), department.getName()+" Department", CONV_SET, ConceptDatatype.N_A_UUID);
             referenceDataConcept.setDescription(department.getDescription());
             referenceDataConcept.setSet(true);
+            referenceDataConcept.setRetired(!department.getActive());
             Concept departmentConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
             Concept labDepartmentsConcept = conceptService.getConceptByName(LAB_DEPARTMENTS);
             referenceDataConceptService.saveSetMembership(labDepartmentsConcept, departmentConcept);

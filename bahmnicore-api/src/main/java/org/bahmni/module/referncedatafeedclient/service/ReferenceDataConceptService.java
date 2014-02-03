@@ -1,5 +1,6 @@
 package org.bahmni.module.referncedatafeedclient.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referncedatafeedclient.domain.ReferenceDataConcept;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDescription;
@@ -26,16 +27,14 @@ public class ReferenceDataConceptService {
 
     public Concept saveConcept(ReferenceDataConcept referenceDataConcept) {
         Concept concept = conceptService.getConceptByUuid(referenceDataConcept.getUuid());
-        if(concept == null) {
+        if (concept == null) {
             concept = new Concept();
             concept.setUuid(referenceDataConcept.getUuid());
         }
         concept.setDatatype(conceptService.getConceptDatatypeByUuid(referenceDataConcept.getDataTypeUuid()));
         concept.setConceptClass(conceptService.getConceptClassByName(referenceDataConcept.getClassName()));
         addOrUpdateName(concept, referenceDataConcept.getName(), ConceptNameType.FULLY_SPECIFIED);
-        if(referenceDataConcept.getShortName() != null) {
-            addOrUpdateName(concept, referenceDataConcept.getShortName(), ConceptNameType.SHORT);
-        }
+        addOrUpdateName(concept, referenceDataConcept.getShortName(), ConceptNameType.SHORT);
         if(referenceDataConcept.getDescription() != null) {
             addOrUpdateDescription(concept, referenceDataConcept.getDescription());
         }
@@ -76,8 +75,12 @@ public class ReferenceDataConceptService {
     private void addOrUpdateName(Concept concept, String name, ConceptNameType type) {
         ConceptName conceptName = concept.getName(locale, type, null);
         if(conceptName != null) {
-            conceptName.setName(name);
-        } else {
+            if (name == null || StringUtils.isBlank(name)) {
+                conceptName.setVoided(true);
+            } else {
+                conceptName.setName(name);
+            }
+        } else if (name != null){
             ConceptName newName = new ConceptName(name, locale);
             newName.setConceptNameType(type);
             concept.addName(newName);

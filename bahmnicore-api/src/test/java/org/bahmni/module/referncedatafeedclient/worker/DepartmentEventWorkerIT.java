@@ -55,7 +55,7 @@ public class DepartmentEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldCreateNewConceptForGivenDepartment() throws Exception {
         Event event = new Event("xxxx-yyyyy", "/reference-data/department/8471dbe5-0465-4eac-94ba-8f8708f3f529");
-        Department department = new Department("8471dbe5-0465-4eac-94ba-8f8708f3f529", "BioChem", "BioChem Dep");
+        Department department = new Department("8471dbe5-0465-4eac-94ba-8f8708f3f529", "BioChem", "BioChem Dep", true);
         when(httpClient.get(referenceDataUri + event.getContent(), Department.class)).thenReturn(department);
 
         departmentEventWorker.process(event);
@@ -69,6 +69,7 @@ public class DepartmentEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(ConceptDatatype.N_A_UUID, departmentConcept.getDatatype().getUuid());
         assertEquals(DepartmentEventWorker.CONV_SET, departmentConcept.getConceptClass().getName());
         assertEquals(true, departmentConcept.isSet());
+        assertEquals(false, departmentConcept.isRetired());
         Concept labDepartmentsConcept = conceptService.getConceptByName(DepartmentEventWorker.LAB_DEPARTMENTS);
         assertTrue(labDepartmentsConcept.getSetMembers().contains(departmentConcept));
     }
@@ -76,7 +77,7 @@ public class DepartmentEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldUpdateConceptForGivenDepartment() throws Exception {
         Event event = new Event("xxxx-yyyyy", "/reference-data/department/dc8ac8c0-8716-11e3-baa7-0800200c9a66");
-        Department department = new Department("dc8ac8c0-8716-11e3-baa7-0800200c9a66", "Haematology updated", "Haematology Description updated");
+        Department department = new Department("dc8ac8c0-8716-11e3-baa7-0800200c9a66", "Haematology updated", "Haematology Description updated", false);
         when(httpClient.get(referenceDataUri+event.getContent(), Department.class)).thenReturn(department);
 
         departmentEventWorker.process(event);
@@ -90,6 +91,7 @@ public class DepartmentEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(ConceptDatatype.N_A_UUID, departmentConcept.getDatatype().getUuid());
         assertEquals(DepartmentEventWorker.CONV_SET, departmentConcept.getConceptClass().getName());
         assertEquals(true, departmentConcept.isSet());
+        assertEquals(true, departmentConcept.isRetired());
         Concept labDepartmentsConcept = conceptService.getConceptByName(DepartmentEventWorker.LAB_DEPARTMENTS);
         assertTrue(labDepartmentsConcept.getSetMembers().contains(departmentConcept));
     }

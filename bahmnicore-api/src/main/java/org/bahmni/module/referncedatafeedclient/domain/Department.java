@@ -13,8 +13,9 @@ public class Department {
     String id;
     String name;
     String description;
+    Boolean active = true;
 
     public Department(String id) {
-        this(id, null, null);
+        this(id, null, null, null);
     }
 }

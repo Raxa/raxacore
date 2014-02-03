@@ -26,13 +26,13 @@
         <atomfeed.version>0.9.3-SNAPSHOT</atomfeed.version>
     </properties>
 
-	<distributionManagement>
-	    <snapshotRepository>
-	        <id>bahmni-artifactory</id>
-	        <name>bahmni-artifactory-snapshots</name>
-	        <url>http://bahmnirepo.thoughtworks.com/artifactory/libs-snapshot-local</url>
-	    </snapshotRepository>
-	</distributionManagement>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>bahmni-artifactory</id>
+            <name>bahmni-artifactory-snapshots</name>
+            <url>http://bahmnirepo.thoughtworks.com/artifactory/libs-snapshot-local</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
@@ -230,6 +230,26 @@
         </pluginManagement>
     </build>
 
+    <profiles>
+        <profile>
+            <id>integration</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <includes>
+                                <include>**/*IT.java</include>
+                                <include>**/*Test.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <repositories>
         <repository>
             <id>sonatype-nexus-snapshots</id>
@@ -262,7 +282,8 @@
         </repository>
         <repository>
             <id>JBoss</id>
-            <name>The "public-jboss" repository group provides a combined view all JBoss community project artifacts</name>
+            <name>The "public-jboss" repository group provides a combined view all JBoss community project artifacts
+            </name>
             <layout>default</layout>
             <url>http://repository.jboss.org/nexus/content/groups/public-jboss</url>
         </repository>
@@ -282,11 +303,11 @@
             <name>OpenMRS Nexus Repository</name>
             <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
         </repository>
-		<repository>
-	        <id>bahmni-artifactory</id>
-	        <name>bahmni-artifactory-snapshots</name>
-	        <url>http://bahmnirepo.thoughtworks.com/artifactory/libs-snapshot-local</url>
-	    </repository>	    
+        <repository>
+            <id>bahmni-artifactory</id>
+            <name>bahmni-artifactory-snapshots</name>
+            <url>http://bahmnirepo.thoughtworks.com/artifactory/libs-snapshot-local</url>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
