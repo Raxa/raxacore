@@ -1,7 +1,6 @@
-package org.bahmni.module.referncedatafeedclient.task;
+package org.bahmni.module.referencedatafeedclient.task;
 
-import org.bahmni.module.referncedatafeedclient.client.AtomFeedProcessor;
-import org.bahmni.module.referncedatafeedclient.client.FailedEventProcessor;
+import org.bahmni.module.referencedatafeedclient.client.FailedEventProcessor;
 import org.openmrs.api.context.Context;
 import org.openmrs.scheduler.tasks.AbstractTask;
 

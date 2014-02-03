@@ -1,4 +1,4 @@
-package org.bahmni.module.referncedatafeedclient.client;
+package org.bahmni.module.referencedatafeedclient.client;
 
 import org.ict4h.atomfeed.client.service.AtomFeedClient;
 

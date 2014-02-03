@@ -1,6 +1,6 @@
-package org.bahmni.module.referncedatafeedclient.domain;
+package org.bahmni.module.referencedatafeedclient.domain;
 
-import org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties;
+import org.bahmni.module.referencedatafeedclient.ReferenceDataFeedProperties;
 import org.bahmni.webclients.ConnectionDetails;
 import org.bahmni.webclients.HttpClient;
 

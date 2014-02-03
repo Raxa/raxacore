@@ -3,8 +3,13 @@
     <concept concept_id="101" retired="false" datatype_id="4" class_id="10" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e060cf44-3d3d-11e3-bf2b-0800271c1b75"/>
     <concept_name concept_id="101" name="Lab Departments" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="15c9daea-3d3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
-    <concept concept_id="102" retired="false" datatype_id="4" class_id="10" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="dc8ac8c0-8716-11e3-baa7-0800200c9a66"/>
-    <concept_name concept_id="102" name="Haematology" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="2" voided="false" uuid="ea291cc0-8716-11e3-baa7-0800200c9a66" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <concept_description concept_id="102" description="Haematology Description" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_description_id="2" uuid="2b2db460-8717-11e3-baa7-0800200c9a66"/>
-    <concept_set concept_id="102" concept_set="101" concept_set_id="201" sort_weight="100" creator="1" date_created="2005-01-01 00:00:00.0" />
+    <concept concept_id="102" retired="false" datatype_id="1" class_id="1" is_set="true" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e060cf44-3d3d-11e3-bf2b-0800271c1b76"/>
+    <concept_name concept_name_id="4" concept_id="102" name="Bio Chemistry Department" locale="en" creator="1" date_created="2005-01-01 00:00:00.0"  voided="false" uuid="9023d0e0-8734-11e3-baa7-0800200c9a66" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="102" concept_set="101" concept_set_id="997" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+
+    <concept concept_id="103" retired="false" datatype_id="4" class_id="10" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="dc8ac8c0-8716-11e3-baa7-0800200c9a66"/>
+    <concept_name concept_id="103" name="Haematology" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="2" voided="false" uuid="ea291cc0-8716-11e3-baa7-0800200c9a66" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_description concept_id="103" description="Haematology Description" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_description_id="2" uuid="2b2db460-8717-11e3-baa7-0800200c9a66"/>
+    <concept_set concept_id="103" concept_set="102" concept_set_id="201" sort_weight="100" creator="1" date_created="2005-01-01 00:00:00.0" />
+
 </dataset>

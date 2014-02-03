@@ -1,12 +1,9 @@
-package org.bahmni.module.referncedatafeedclient.worker;
+package org.bahmni.module.referencedatafeedclient.worker;
 
-import org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties;
-import org.bahmni.module.referncedatafeedclient.client.AtomFeedProcessor;
-import org.bahmni.module.referncedatafeedclient.domain.Department;
-import org.bahmni.module.referncedatafeedclient.service.ReferenceDataConceptService;
-import org.bahmni.module.referncedatafeedclient.worker.DepartmentEventWorker;
+import org.bahmni.module.referencedatafeedclient.ReferenceDataFeedProperties;
+import org.bahmni.module.referencedatafeedclient.domain.Department;
+import org.bahmni.module.referencedatafeedclient.service.ReferenceDataConceptService;
 import org.bahmni.webclients.HttpClient;
-import org.ict4h.atomfeed.Configuration;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,19 +11,12 @@ import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.api.ConceptService;
-import org.openmrs.api.context.Context;
-import org.openmrs.api.context.ServiceContext;
-import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -47,7 +37,7 @@ public class DepartmentEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        departmentEventWorker = new DepartmentEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService);
+        departmentEventWorker = new DepartmentEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService, new EventWorkerUtility());
         when(referenceDataFeedProperties.getReferenceDataUri()).thenReturn(referenceDataUri);
         executeDataSet("departmentEventWorkerTestData.xml");
     }
@@ -95,4 +85,20 @@ public class DepartmentEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Concept labDepartmentsConcept = conceptService.getConceptByName(DepartmentEventWorker.LAB_DEPARTMENTS);
         assertTrue(labDepartmentsConcept.getSetMembers().contains(departmentConcept));
     }
+
+    @org.junit.Test
+    public void updating_sample_name_keeps_the_test_in_the_same_sample() throws Exception {
+        Department department = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b76");
+        department.setName("new Heamotology");
+
+        Event updatedSampleEvent = new Event("xxxx-yyyyy-2", "/reference-data/department/e060cf44-3d3d-11e3-bf2b-0800271c1b76");
+        when(httpClient.get(referenceDataUri + updatedSampleEvent.getContent(), Department.class)).thenReturn(department);
+        departmentEventWorker.process(updatedSampleEvent);
+
+        Concept departmentConcept = conceptService.getConceptByUuid(department.getId());
+        Concept testConcept = conceptService.getConceptByUuid("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
+        assertTrue("Department should contain the test", departmentConcept.getSetMembers().contains(testConcept));
+        assertEquals("new Heamotology Department", departmentConcept.getName().getName());
+    }
+
 }

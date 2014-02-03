@@ -1,4 +1,4 @@
-package org.bahmni.module.referncedatafeedclient.domain;
+package org.bahmni.module.referencedatafeedclient.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,9 +13,9 @@ public class Sample {
     String id;
     String name;
     String shortName;
-    Boolean active = true;
+    boolean active = true;
 
     public Sample(String id) {
-        this(id, null, null, null);
+        this(id, null, null, true);
     }
 }

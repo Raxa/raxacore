@@ -1,4 +1,4 @@
-package org.bahmni.module.referncedatafeedclient.worker;
+package org.bahmni.module.referencedatafeedclient.worker;
 
 import org.apache.log4j.Logger;
 import org.ict4h.atomfeed.client.domain.Event;

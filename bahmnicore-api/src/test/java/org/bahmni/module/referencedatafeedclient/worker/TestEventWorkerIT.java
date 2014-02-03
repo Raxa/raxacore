@@ -1,10 +1,10 @@
-package org.bahmni.module.referncedatafeedclient.worker;
+package org.bahmni.module.referencedatafeedclient.worker;
 
-import org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties;
-import org.bahmni.module.referncedatafeedclient.domain.Department;
-import org.bahmni.module.referncedatafeedclient.domain.Sample;
-import org.bahmni.module.referncedatafeedclient.domain.Test;
-import org.bahmni.module.referncedatafeedclient.service.ReferenceDataConceptService;
+import org.bahmni.module.referencedatafeedclient.ReferenceDataFeedProperties;
+import org.bahmni.module.referencedatafeedclient.domain.Department;
+import org.bahmni.module.referencedatafeedclient.domain.Sample;
+import org.bahmni.module.referencedatafeedclient.domain.Test;
+import org.bahmni.module.referencedatafeedclient.service.ReferenceDataConceptService;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.Before;
@@ -34,11 +34,12 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Autowired
     private ReferenceDataConceptService referenceDataConceptService;
     private TestEventWorker testEventWorker;
+    private EventWorkerUtility eventWorkerUtility = new EventWorkerUtility();
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        testEventWorker = new TestEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService);
+        testEventWorker = new TestEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService, eventWorkerUtility);
         when(referenceDataFeedProperties.getReferenceDataUri()).thenReturn(referenceDataUri);
         executeDataSet("testEventWorkerTestData.xml");
     }

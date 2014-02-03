@@ -1,10 +1,10 @@
-package org.bahmni.module.referncedatafeedclient.worker;
+package org.bahmni.module.referencedatafeedclient.worker;
 
-import org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties;
-import org.bahmni.module.referncedatafeedclient.domain.Panel;
-import org.bahmni.module.referncedatafeedclient.domain.Sample;
-import org.bahmni.module.referncedatafeedclient.domain.Test;
-import org.bahmni.module.referncedatafeedclient.service.ReferenceDataConceptService;
+import org.bahmni.module.referencedatafeedclient.ReferenceDataFeedProperties;
+import org.bahmni.module.referencedatafeedclient.domain.Panel;
+import org.bahmni.module.referencedatafeedclient.domain.Sample;
+import org.bahmni.module.referencedatafeedclient.domain.Test;
+import org.bahmni.module.referencedatafeedclient.service.ReferenceDataConceptService;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.Before;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 
 import static org.junit.Assert.*;
@@ -37,11 +36,12 @@ public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Autowired
     private ReferenceDataConceptService referenceDataConceptService;
     private PanelEventWorker panelEventWorker;
+    private EventWorkerUtility eventWorkerUtility = new EventWorkerUtility();
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        panelEventWorker = new PanelEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService);
+        panelEventWorker = new PanelEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService, eventWorkerUtility);
         when(referenceDataFeedProperties.getReferenceDataUri()).thenReturn(referenceDataUri);
         executeDataSet("panelEventWorkerTestData.xml");
     }

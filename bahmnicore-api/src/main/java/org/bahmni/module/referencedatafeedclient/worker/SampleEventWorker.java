@@ -1,9 +1,9 @@
-package org.bahmni.module.referncedatafeedclient.worker;
+package org.bahmni.module.referencedatafeedclient.worker;
 
-import org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties;
-import org.bahmni.module.referncedatafeedclient.domain.ReferenceDataConcept;
-import org.bahmni.module.referncedatafeedclient.domain.Sample;
-import org.bahmni.module.referncedatafeedclient.service.ReferenceDataConceptService;
+import org.bahmni.module.referencedatafeedclient.ReferenceDataFeedProperties;
+import org.bahmni.module.referencedatafeedclient.domain.ReferenceDataConcept;
+import org.bahmni.module.referencedatafeedclient.domain.Sample;
+import org.bahmni.module.referencedatafeedclient.service.ReferenceDataConceptService;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
@@ -25,13 +25,17 @@ public class SampleEventWorker implements EventWorker {
     private final ReferenceDataFeedProperties referenceDataFeedProperties;
     private ConceptService conceptService;
     private ReferenceDataConceptService referenceDataConceptService;
+    private EventWorkerUtility eventWorkerUtility;
 
     @Autowired
-    public SampleEventWorker(HttpClient httpClient, ReferenceDataFeedProperties referenceDataFeedProperties, ConceptService conceptService, ReferenceDataConceptService referenceDataConceptService) {
+    public SampleEventWorker(HttpClient httpClient, ReferenceDataFeedProperties referenceDataFeedProperties,
+                             ConceptService conceptService, ReferenceDataConceptService referenceDataConceptService,
+                             EventWorkerUtility eventWorkerUtility) {
         this.httpClient = httpClient;
         this.referenceDataFeedProperties = referenceDataFeedProperties;
         this.conceptService = conceptService;
         this.referenceDataConceptService = referenceDataConceptService;
+        this.eventWorkerUtility = eventWorkerUtility;
     }
 
     @Override
@@ -41,7 +45,9 @@ public class SampleEventWorker implements EventWorker {
             ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(sample.getId(), sample.getName(), LAB_SET, ConceptDatatype.N_A_UUID);
             referenceDataConcept.setShortName(sample.getShortName());
             referenceDataConcept.setSet(true);
-            referenceDataConcept.setRetired(!sample.getActive());
+            referenceDataConcept.setRetired(!sample.isActive());
+            referenceDataConcept.setSetMemberUuids(eventWorkerUtility.getExistingChildUuids(sample.getId(), conceptService));
+
             Concept sampleConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
             Concept labConcept = conceptService.getConceptByName(LABORATORY);
             referenceDataConceptService.saveSetMembership(labConcept, sampleConcept);

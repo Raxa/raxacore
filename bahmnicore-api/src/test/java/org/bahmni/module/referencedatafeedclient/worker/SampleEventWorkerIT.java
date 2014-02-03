@@ -1,8 +1,8 @@
-package org.bahmni.module.referncedatafeedclient.worker;
+package org.bahmni.module.referencedatafeedclient.worker;
 
-import org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties;
-import org.bahmni.module.referncedatafeedclient.domain.Sample;
-import org.bahmni.module.referncedatafeedclient.service.ReferenceDataConceptService;
+import org.bahmni.module.referencedatafeedclient.ReferenceDataFeedProperties;
+import org.bahmni.module.referencedatafeedclient.domain.Sample;
+import org.bahmni.module.referencedatafeedclient.service.ReferenceDataConceptService;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.Before;
@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -38,7 +39,7 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        sampleEventWorker = new SampleEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService);
+        sampleEventWorker = new SampleEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService, new EventWorkerUtility());
         when(referenceDataFeedProperties.getReferenceDataUri()).thenReturn(referenceDataUri);
         executeDataSet("sampleEventWorkerTestData.xml");
     }
@@ -84,4 +85,19 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Concept labConcept = conceptService.getConceptByName(SampleEventWorker.LABORATORY);
         assertTrue(labConcept.getSetMembers().contains(sampleConcept));
     }
+
+    @org.junit.Test
+    public void updating_sample_name_keeps_the_test_in_the_same_sample() throws Exception {
+        Sample bloodSample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
+        bloodSample.setName("newBlood");
+
+        Event updatedSampleEvent = new Event("xxxx-yyyyy-2", "/reference-data/sample/dc8ac8c0-8716-11e3-baa7-0800200c9a66");
+        when(httpClient.get(referenceDataUri + updatedSampleEvent.getContent(), Sample.class)).thenReturn(bloodSample);
+        sampleEventWorker.process(updatedSampleEvent);
+
+        Concept bloodSampleConcept = conceptService.getConceptByUuid(bloodSample.getId());
+        Concept testConcept = conceptService.getConceptByUuid("e060cf44-3d3d-11e3-bf2b-0800271c1b77");
+        assertTrue("Sample should contain the test", bloodSampleConcept.getSetMembers().contains(testConcept));
+    }
+
 }

@@ -1,7 +1,7 @@
-package org.bahmni.module.referncedatafeedclient.service;
+package org.bahmni.module.referencedatafeedclient.service;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bahmni.module.referncedatafeedclient.domain.ReferenceDataConcept;
+import org.bahmni.module.referencedatafeedclient.domain.ReferenceDataConcept;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptName;

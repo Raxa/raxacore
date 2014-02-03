@@ -1,8 +1,8 @@
-package org.bahmni.module.referncedatafeedclient.client;
+package org.bahmni.module.referencedatafeedclient.client;
 
-import org.bahmni.module.referncedatafeedclient.ReferenceDataFeedProperties;
-import org.bahmni.module.referncedatafeedclient.domain.WebClientFactory;
-import org.bahmni.module.referncedatafeedclient.worker.ReferenceDataEventWorker;
+import org.bahmni.module.referencedatafeedclient.ReferenceDataFeedProperties;
+import org.bahmni.module.referencedatafeedclient.domain.WebClientFactory;
+import org.bahmni.module.referencedatafeedclient.worker.ReferenceDataEventWorker;
 import org.bahmni.webclients.ClientCookies;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.repository.AllFeeds;

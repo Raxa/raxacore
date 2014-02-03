@@ -1,6 +1,5 @@
-package org.bahmni.module.referncedatafeedclient.domain;
+package org.bahmni.module.referencedatafeedclient.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.HashSet;

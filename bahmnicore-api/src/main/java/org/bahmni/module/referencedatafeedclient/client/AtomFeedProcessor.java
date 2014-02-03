@@ -1,4 +1,4 @@
-package org.bahmni.module.referncedatafeedclient.client;
+package org.bahmni.module.referencedatafeedclient.client;
 
 import org.apache.log4j.Logger;
 
