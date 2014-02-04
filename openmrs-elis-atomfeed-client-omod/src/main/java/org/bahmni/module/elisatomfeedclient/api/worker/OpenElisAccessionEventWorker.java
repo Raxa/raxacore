@@ -2,9 +2,6 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.bahmni.module.bahmnicore.model.BahmniLabResult;
-import org.bahmni.module.bahmnicore.service.BahmniLabResultService;
-import org.bahmni.module.bahmnicore.service.impl.BahmniLabResultServiceImpl;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
@@ -34,7 +31,10 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 
 public class OpenElisAccessionEventWorker implements EventWorker {
@@ -46,7 +46,6 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     private ConceptService conceptService;
     private AccessionMapper accessionMapper;
     private EncounterTransactionMapper encounterTransactionMapper;
-    private BahmniLabResultService bahmniLabResultService;
     private VisitService visitService;
     private ProviderService providerService;
 
@@ -63,7 +62,6 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         this.encounterTransactionMapper = encounterTransactionMapper;
         this.visitService = visitService;
         this.providerService = providerService;
-        this.bahmniLabResultService = new BahmniLabResultServiceImpl(encounterService, conceptService);
     }
 
     @Override
