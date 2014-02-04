@@ -12,7 +12,6 @@ import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.joda.time.DateTime;
-import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterRole;
 import org.openmrs.EncounterType;
@@ -38,7 +37,7 @@ import java.util.Set;
 
 
 public class OpenElisAccessionEventWorker implements EventWorker {
-    public static final String VOID_REASON = "updated since by lab technician";
+    public static final String SYSTEM_PROVIDER_IDENTIFIER = "system";
     private ElisAtomFeedProperties atomFeedProperties;
     private HttpClient httpClient;
     private EncounterService encounterService;
@@ -100,11 +99,11 @@ public class OpenElisAccessionEventWorker implements EventWorker {
 
     protected void associateTestResultsToOrder(OpenElisAccession openElisAccession) throws ParseException {
         Encounter orderEncounter = encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid());
-        Visit visit = orderEncounter.getVisit(); //TODO:visit wont hav the latest encounters in them
+        Visit visit = orderEncounter.getVisit();
         final EncounterType labResultEncounterType = encounterService.getEncounterType("LAB_RESULT");
         final Set<OpenElisTestDetail> allTests = openElisAccession.getTestDetails();
 
-        ResultObsCreator resultObsCreator = new ResultObsCreator(conceptService.getConceptByName("LABRESULTS_CONCEPT"));
+        ResultObsHelper resultObsHelper = new ResultObsHelper(conceptService);
         List<Provider> labResultProviders = new ArrayList<>();
         for (OpenElisTestDetail testDetail : allTests) {
             if (StringUtils.isNotBlank(testDetail.getResult())) {
@@ -117,14 +116,13 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                     Obs prevObs = identifyResultObs(resultEncounter, testDetail);
                     isResultUpdated = !isSameDate(prevObs.getObsDatetime(), DateTime.parse(testDetail.getDateTime()).toDate());
                     if (isResultUpdated) {
-                        prevObs.setVoided(true);
-                        prevObs.setVoidReason(VOID_REASON);
+                        resultObsHelper.voidObs(prevObs);
                     }
                 }
 
                 if (isResultUpdated) {
-                    resultEncounter = findOrCreateEncounter(openElisAccession, visit, testDetail, labResultEncounterType, testProvider);
-                    resultEncounter.addObs(resultObsCreator.createNewObsForOrder(testDetail, testOrder, resultEncounter));
+                    resultEncounter = findOrCreateEncounter(openElisAccession, visit, labResultEncounterType, testProvider);
+                    resultEncounter.addObs(resultObsHelper.createNewObsForOrder(testDetail, testOrder, resultEncounter));
                     visit.addEncounter(resultEncounter);
                 }
             }
@@ -133,8 +131,23 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         visitService.saveVisit(visit);
     }
 
-    private boolean isSameDate(Date date1, Date date2) {
-        return date1.getTime() == date2.getTime();
+    /**
+     * For a given test/panel result, there ought to be only one encounter containing non voided corresponding observation
+     * @param visit
+     * @param labResultEncounterType
+     * @param testDetail
+     * @return
+     */
+    private Encounter identifyResultEncounter(Visit visit, EncounterType labResultEncounterType, OpenElisTestDetail testDetail) {
+        for (Encounter encounter : visit.getEncounters()) {
+            if (!encounter.getEncounterType().equals(labResultEncounterType)) continue;
+
+            final Obs resultObs = identifyResultObs(encounter, testDetail);
+            if (resultObs != null) {
+                return encounter;
+            }
+        }
+        return null;
     }
 
     private Obs identifyResultObs(Encounter resultEncounter, OpenElisTestDetail testDetail) {
@@ -164,107 +177,6 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         return null; //this should never be the case.
     }
 
-    private class ResultObsCreator {
-        public static final String LAB_RESULT = "LAB_RESULT";
-        public static final String LAB_ABNORMAL = "LAB_ABNORMAL";
-        public static final String LAB_MINNORMAL = "LAB_MINNORMAL";
-        public static final String LAB_MAXNORMAL = "LAB_MAXNORMAL";
-        public static final String LAB_NOTES = "LAB_NOTES";
-        private Concept labConcepts = null;
-        private static final String RESULT_TYPE_NUMERIC = "N";
-
-        private ResultObsCreator(Concept labResultsConcept) {
-            this.labConcepts = labResultsConcept;
-        }
-
-        private Concept getLabConceptByName(String name) {
-            final List<Concept> members = this.labConcepts.getSetMembers();
-            for (Concept concept : members) {
-                if (concept != null && concept.getName().getName().equals(name)) {
-                    return concept;
-                }
-            }
-            return null;
-        }
-
-        public Obs createNewTestObsForOrder(OpenElisTestDetail testDetail, Order order, Concept concept, Date obsDate) throws ParseException {
-            Obs labObs = newParentObs(order, concept, obsDate);
-            labObs.addGroupMember(newChildObs(order, obsDate, concept, testDetail.getResult()));
-            labObs.addGroupMember(newChildObs(order, obsDate, LAB_ABNORMAL, testDetail.getAbnormal().toString()));
-            if(testDetail.getResultType().equals(RESULT_TYPE_NUMERIC)) {
-                labObs.addGroupMember(newChildObs(order, obsDate, LAB_MINNORMAL, testDetail.getMinNormal().toString()));
-                labObs.addGroupMember(newChildObs(order, obsDate, LAB_MAXNORMAL, testDetail.getMaxNormal().toString()));
-            }
-            final Set<String> notes = testDetail.getNotes();
-            if (notes != null) {
-                for (String note : notes) {
-                    if (StringUtils.isNotBlank(note)) {
-                        labObs.addGroupMember(newChildObs(order, obsDate, LAB_NOTES, note));
-                    }
-                }
-            }
-
-            return labObs;
-        }
-
-        private Obs newChildObs(Order order, Date obsDate, String conceptName, String value) throws ParseException {
-            Concept concept = getLabConceptByName(conceptName);
-            Obs resultObs = newChildObs(order, obsDate, concept, value);
-            return resultObs;
-        }
-
-        private Obs newChildObs(Order order, Date obsDate, Concept concept, String value) throws ParseException {
-            Obs resultObs = new Obs();
-            resultObs.setConcept(concept);
-            resultObs.setValueAsString(value);
-            resultObs.setObsDatetime(obsDate);
-            resultObs.setOrder(order);
-            return resultObs;
-        }
-
-        public Obs createNewObsForOrder(OpenElisTestDetail testDetail, Order testOrder, Encounter resultEncounter) throws ParseException {
-            Date obsDate = DateTime.parse(testDetail.getDateTime()).toDate();
-            if(testDetail.getPanelUuid() != null) {
-                Obs panelObs = createOrFindPanelObs(testDetail, testOrder, resultEncounter, obsDate);
-                Concept testConcept = conceptService.getConceptByUuid(testDetail.getTestUuid());
-                panelObs.addGroupMember(createNewTestObsForOrder(testDetail, testOrder, testConcept, obsDate));
-                return panelObs;
-            } else {
-                return createNewTestObsForOrder(testDetail, testOrder, testOrder.getConcept(), obsDate);
-            }
-        }
-
-        private Obs createOrFindPanelObs(OpenElisTestDetail testDetail, Order testOrder, Encounter resultEncounter, Date obsDate) {
-            Obs panelObs = null;
-            for (Obs obs : resultEncounter.getAllObs()) {
-                if(obs.getConcept().getUuid().equals(testDetail.getPanelUuid())){
-                    panelObs = obs;
-                    break;
-                }
-            }
-            return panelObs != null ? panelObs : newParentObs(testOrder, testOrder.getConcept(), obsDate);
-        }
-
-        private Obs newParentObs(Order order, Concept concept, Date obsDate) {
-            Obs labObs = new Obs();
-            labObs.setConcept(concept);
-            labObs.setOrder(order);
-            labObs.setObsDatetime(obsDate);
-            return labObs;
-        }
-    }
-
-    private Encounter findOrCreateEncounter(OpenElisAccession openElisAccession, Visit visit,
-                                            OpenElisTestDetail testDetail, EncounterType labResultEncounterType, Provider testProvider) {
-        Encounter labResultEncounter = getEncounterByEncounterTypeProviderAndVisit(labResultEncounterType, testProvider, visit);
-
-        if (labResultEncounter == null) {
-            labResultEncounter = newEncounterInstance(openElisAccession, visit, visit.getPatient(), testProvider, labResultEncounterType);
-        }
-
-        return  labResultEncounter;
-    }
-
     private Provider getProviderForResults(List<Provider> labResultProviders, String providerUuid) {
         for (Provider labResultProvider : labResultProviders) {
             if (labResultProvider.getUuid().equals(providerUuid)) {
@@ -280,11 +192,21 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         //the lab results provider may not be register as provider in MRS,
         //hence instead of failing, get the system provider
         if (provider == null) {
-            provider = providerService.getProviderByIdentifier("system");
+            provider = providerService.getProviderByIdentifier(SYSTEM_PROVIDER_IDENTIFIER);
         }
 
         labResultProviders.add(provider);
         return provider;
+    }
+
+    private Encounter findOrCreateEncounter(OpenElisAccession openElisAccession, Visit visit,
+                                            EncounterType labResultEncounterType, Provider testProvider) {
+        Encounter labResultEncounter = getEncounterByEncounterTypeProviderAndVisit(labResultEncounterType, testProvider, visit);
+
+        if (labResultEncounter == null) {
+            labResultEncounter = newEncounterInstance(openElisAccession, visit, visit.getPatient(), testProvider, labResultEncounterType);
+        }
+        return  labResultEncounter;
     }
 
     private Encounter getEncounterByEncounterTypeProviderAndVisit(EncounterType labResultEncounterType, Provider provider, Visit visit) {
@@ -294,14 +216,6 @@ public class OpenElisAccessionEventWorker implements EventWorker {
             }
         }
         return null;
-    }
-
-    private boolean hasSameEncounterType(EncounterType labResultEncounterType, Encounter encounter) {
-        return encounter.getEncounterType().getUuid().equals(labResultEncounterType.getUuid());
-    }
-
-    private boolean hasSameProvider(Provider provider, Encounter encounter) {
-        return encounter.getEncounterProviders().iterator().next().getProvider().getUuid().equals(provider.getUuid());
     }
 
     private Encounter newEncounterInstance(OpenElisAccession openElisAccession, Visit visit, Patient patient, Provider labSystemProvider, EncounterType encounterType) {
@@ -315,23 +229,16 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         return encounter;
     }
 
-    /**
-     * For a given test/panel result, there ought to be only one encounter containing non voided corresponding observation
-     * @param visit
-     * @param labResultEncounterType
-     * @param testDetail
-     * @return
-     */
-    private Encounter identifyResultEncounter(Visit visit, EncounterType labResultEncounterType, OpenElisTestDetail testDetail) {
-        for (Encounter encounter : visit.getEncounters()) {
-            if (!encounter.getEncounterType().equals(labResultEncounterType)) continue;
+    private boolean hasSameEncounterType(EncounterType labResultEncounterType, Encounter encounter) {
+        return encounter.getEncounterType().getUuid().equals(labResultEncounterType.getUuid());
+    }
 
-            final Obs resultObs = identifyResultObs(encounter, testDetail);
-            if (resultObs != null) {
-               return encounter;
-            }
-        }
-        return null;
+    private boolean hasSameProvider(Provider provider, Encounter encounter) {
+        return encounter.getEncounterProviders().iterator().next().getProvider().getUuid().equals(provider.getUuid());
+    }
+
+    private boolean isSameDate(Date date1, Date date2) {
+        return date1.getTime() == date2.getTime();
     }
 
     @Override

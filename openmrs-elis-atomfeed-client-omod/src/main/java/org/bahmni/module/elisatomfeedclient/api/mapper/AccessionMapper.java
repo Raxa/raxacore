@@ -72,23 +72,6 @@ public class AccessionMapper {
         return encounter;
     }
 
-    public Encounter getEncounterForTestResult(OpenElisAccession openElisAccession, Visit accessionVisit, String providerUuid) {
-        EncounterType labResultEncounterType = encounterService.getEncounterType("LAB_RESULT");
-        //TODO: if the providerUuid is blank, enter as default provider? admin
-        Provider provider = providerService.getProviderByUuid(providerUuid);
-        List<Encounter> labResultEncounters = encounterService.getEncounters(null, null, null, null, null,
-                new HashSet<>(Arrays.asList(labResultEncounterType)), new HashSet<>(Arrays.asList(provider)),
-                null, new HashSet<>(Arrays.asList(accessionVisit)), false);
-
-        if (labResultEncounters.size() > 0) {
-            return labResultEncounters.get(0);
-        }
-        else {
-            return newEncounterInstance(openElisAccession, accessionVisit, accessionVisit.getPatient(), provider, labResultEncounterType);
-        }
-    }
-
-
     private void checkAndUpdateVisitEndDatetime(Visit visit, Date accessionDatetime) {
         if (visit.getStopDatetime() != null && visit.getStopDatetime().before(accessionDatetime)) {
             Calendar calendar = Calendar.getInstance();
