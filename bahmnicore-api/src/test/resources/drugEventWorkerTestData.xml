@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <concept concept_id="1001" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e060cf44-3d3d-11e3-bf2b-0800271c1b75"/>
+    <concept_name concept_id="1001" name="Paracetamol" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1001" voided="false" uuid="15c9daea-3d3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="1002" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="a85c5035-8d85-11e3-9b86-0800271c1b75"/>
+    <concept_name concept_id="1002" name="tablet" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1002" voided="false" uuid="be9901cb-8d85-11e3-9b86-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="1003" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="677cbcf0-8d86-11e3-9b86-0800271c1b75"/>
+    <concept_name concept_id="1003" name="oral" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1003" voided="false" uuid="6cd5067c-8d86-11e3-9b86-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+</dataset>

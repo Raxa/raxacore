@@ -18,6 +18,8 @@ public class ReferenceDataEventWorker implements EventWorker{
     private TestEventWorker testEventWorker;
     @Autowired
     private PanelEventWorker panelEventWorker;
+    @Autowired
+    private DrugEventWorker drugEventWorker;
 
     @Override
     public void process(Event event) {
@@ -35,6 +37,7 @@ public class ReferenceDataEventWorker implements EventWorker{
             case "sample": return sampleEventWorker;
             case "test": return testEventWorker;
             case "panel": return panelEventWorker;
+            case "drug" : return drugEventWorker;
             default: return null;
         }
     }

@@ -1,6 +1,7 @@
 package org.bahmni.module.referencedatafeedclient.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bahmni.module.referencedatafeedclient.domain.Drug;
 import org.bahmni.module.referencedatafeedclient.domain.ReferenceDataConcept;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDescription;
@@ -61,6 +62,21 @@ public class ReferenceDataConceptService {
         if (parentConcept.getSetMembers().contains(childConcept)) return;
         parentConcept.addSetMember(childConcept);
         conceptService.saveConcept(parentConcept);
+    }
+
+    public void saveDrug(Drug drug) {
+        org.openmrs.Drug conceptDrug = conceptService.getDrugByUuid(drug.getId());
+        if(conceptDrug == null){
+            conceptDrug = new org.openmrs.Drug();
+            conceptDrug.setUuid(drug.getId());
+        }
+        conceptDrug.setName(drug.getName());
+        conceptDrug.setConcept(conceptService.getConceptByName(drug.getGenericName()));
+        conceptDrug.setDosageForm(conceptService.getConceptByUuid(drug.getForm().getId()));
+        conceptDrug.setDoseStrength(Double.parseDouble(drug.getStrength()));
+        conceptDrug.setUnits(drug.getStrengthUnits());
+        conceptDrug.setRoute(conceptService.getConceptByName(drug.getRoute()));
+        conceptService.saveDrug(conceptDrug);
     }
 
     private void addOrUpdateDescription(Concept concept, String description) {
