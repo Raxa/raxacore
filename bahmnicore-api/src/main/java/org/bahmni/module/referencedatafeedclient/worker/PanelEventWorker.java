@@ -46,7 +46,7 @@ public class PanelEventWorker implements EventWorker {
             Panel panel = httpClient.get(referenceDataFeedProperties.getReferenceDataUri() + event.getContent(), Panel.class);
             Concept laboratoryConcept = conceptService.getConceptByName(SampleEventWorker.LABORATORY);
             Concept panelConcept = conceptService.getConceptByUuid(panel.getId());
-            eventWorkerUtility.removeChildFromExistingParent(panelConcept, laboratoryConcept, panel.getId(), panel.getSample().getId(), conceptService);
+            eventWorkerUtility.removeChildFromExistingParent(panelConcept, laboratoryConcept, panel.getId(), panel.getSample().getId());
 
             createNewPanelConcept(panel);
         } catch (IOException e) {
@@ -64,11 +64,19 @@ public class PanelEventWorker implements EventWorker {
         referenceDataConcept.setDescription(panel.getDescription());
         referenceDataConcept.setShortName(panel.getShortName());
         referenceDataConcept.setSetMemberUuids(getTestUuids(panel));
-        referenceDataConcept.setRetired(!panel.isActive());
+        referenceDataConcept.setRetired(!panel.getIsActive());
         referenceDataConcept.setSet(true);
 
         Concept newPanelConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
         addNewPanelToSample(panel, newPanelConcept);
+        if (newPanelConcept.isRetired()){
+            removePanelFromSample(panel, newPanelConcept);
+        }
+    }
+
+    private void removePanelFromSample(Panel panel, Concept newPanelConcept) {
+        Concept parentSample = conceptService.getConceptByUuid(panel.getSample().getId());
+        eventWorkerUtility.removeChildFromOldParent(parentSample, newPanelConcept);
     }
 
     private void addNewPanelToSample(Panel panel, Concept newPanelConcept) {

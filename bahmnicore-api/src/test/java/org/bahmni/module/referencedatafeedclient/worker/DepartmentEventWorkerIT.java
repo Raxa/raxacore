@@ -37,7 +37,7 @@ public class DepartmentEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        departmentEventWorker = new DepartmentEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService, new EventWorkerUtility());
+        departmentEventWorker = new DepartmentEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService, new EventWorkerUtility(conceptService));
         when(referenceDataFeedProperties.getReferenceDataUri()).thenReturn(referenceDataUri);
         executeDataSet("departmentEventWorkerTestData.xml");
     }

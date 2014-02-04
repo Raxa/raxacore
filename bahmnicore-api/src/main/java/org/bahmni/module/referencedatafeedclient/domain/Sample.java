@@ -13,7 +13,7 @@ public class Sample {
     String id;
     String name;
     String shortName;
-    boolean active = true;
+    Boolean isActive = true;
 
     public Sample(String id) {
         this(id, null, null, true);

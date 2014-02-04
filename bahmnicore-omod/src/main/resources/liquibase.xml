@@ -318,4 +318,12 @@
             VALUES ('Reference Data Failed Event Task', 'org.bahmni.module.referncedatafeedclient.task.ReferenceDataFailedEventTask', now(),'MM/dd/yyyy HH:mm:ss', 60, 1, 0, 1, curdate(), uuid());
         </sql>
     </changeSet>
+    <changeSet id="bahmni-39" author="tw" context="rel3">
+        <comment>Update class name of reference data feed task and failed event task.</comment>
+        <sql>
+            UPDATE scheduler_task_config SET schedulable_class = 'org.bahmni.module.referencedatafeedclient.task.ReferenceDataFeedTask' WHERE name = 'Reference Data Task';
+            UPDATE scheduler_task_config SET schedulable_class = 'org.bahmni.module.referencedatafeedclient.task.ReferenceDataFailedEventTask' WHERE name = 'Reference Data Failed Event Task';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

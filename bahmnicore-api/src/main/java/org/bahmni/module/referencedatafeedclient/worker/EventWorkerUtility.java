@@ -3,6 +3,7 @@ package org.bahmni.module.referencedatafeedclient.worker;
 import org.openmrs.Concept;
 import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -11,14 +12,21 @@ import java.util.Set;
 
 @Component
 public class EventWorkerUtility {
-    public void removeChildFromExistingParent(Concept conceptToRemove, Concept rootConcept, String conceptIdToRemove, String parentId, ConceptService conceptService) {
+    private ConceptService conceptService;
+
+    @Autowired
+    public EventWorkerUtility(ConceptService conceptService) {
+        this.conceptService = conceptService;
+    }
+
+    public void removeChildFromExistingParent(Concept conceptToRemove, Concept rootConcept, String conceptIdToRemove, String parentId) {
         Concept parentConcept = findChildOfRootWithThisId(rootConcept, conceptIdToRemove);
         if (parentConcept != null && !parentId.equals(parentConcept.getUuid())) {
-            removeChildFromOldParent(parentConcept, conceptToRemove, conceptService);
+            removeChildFromOldParent(parentConcept, conceptToRemove);
         }
     }
 
-    private void removeChildFromOldParent(Concept parentConcept, Concept childConcept, ConceptService conceptService) {
+    public void removeChildFromOldParent(Concept parentConcept, Concept childConcept) {
         Collection<ConceptSet> conceptSets = parentConcept.getConceptSets();
         ConceptSet matchingOldChildConceptSet = getMatchingConceptSet(conceptSets, childConcept);
         if (matchingOldChildConceptSet != null) {
@@ -48,7 +56,7 @@ public class EventWorkerUtility {
         return null;
     }
 
-    public Set<String> getExistingChildUuids(String conceptIdToSearch, ConceptService conceptService) {
+    public Set<String> getExistingChildUuids(String conceptIdToSearch) {
         Concept existingParentConcept = conceptService.getConceptByUuid(conceptIdToSearch);
         if (existingParentConcept == null)
             return new HashSet<>();

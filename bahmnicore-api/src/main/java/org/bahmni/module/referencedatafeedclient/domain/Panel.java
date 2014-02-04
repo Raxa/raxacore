@@ -17,7 +17,7 @@ public class Panel {
     String name;
     String description;
     String shortName;
-    boolean active = true;
+    Boolean isActive = true;
     Sample sample;
     Set<Test> tests = new HashSet<>();
 }

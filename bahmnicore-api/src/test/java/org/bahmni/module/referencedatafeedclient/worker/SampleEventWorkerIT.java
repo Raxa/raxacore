@@ -3,8 +3,11 @@ package org.bahmni.module.referencedatafeedclient.worker;
 import org.bahmni.module.referencedatafeedclient.ReferenceDataFeedProperties;
 import org.bahmni.module.referencedatafeedclient.domain.Sample;
 import org.bahmni.module.referencedatafeedclient.service.ReferenceDataConceptService;
+import org.bahmni.module.referencedatafeedclient.worker.util.FileReader;
 import org.bahmni.webclients.HttpClient;
+import org.bahmni.webclients.ObjectMapperRepository;
 import org.ict4h.atomfeed.client.domain.Event;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Locale;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -39,7 +40,7 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        sampleEventWorker = new SampleEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService, new EventWorkerUtility());
+        sampleEventWorker = new SampleEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService, new EventWorkerUtility(conceptService));
         when(referenceDataFeedProperties.getReferenceDataUri()).thenReturn(referenceDataUri);
         executeDataSet("sampleEventWorkerTestData.xml");
     }
@@ -98,6 +99,34 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Concept bloodSampleConcept = conceptService.getConceptByUuid(bloodSample.getId());
         Concept testConcept = conceptService.getConceptByUuid("e060cf44-3d3d-11e3-bf2b-0800271c1b77");
         assertTrue("Sample should contain the test", bloodSampleConcept.getSetMembers().contains(testConcept));
+    }
+
+    @org.junit.Test
+    public void retire_the_sample_when_isActive_is_false() throws Exception {
+        String fileContents = new FileReader("inActiveSampleEventFeedData.json").readFile();
+        Sample sample = ObjectMapperRepository.objectMapper.readValue(fileContents, Sample.class);
+        Assert.assertFalse("sample is not active", sample.getIsActive());
+
+        Event updatedSampleEvent = new Event("xxxx-yyyyy-2", "/reference-data/sample/dc8ac8c0-8716-11e3-baa7-0800200c9a66");
+        when(httpClient.get(referenceDataUri + updatedSampleEvent.getContent(), Sample.class)).thenReturn(sample);
+        sampleEventWorker.process(updatedSampleEvent);
+
+        Concept sampleConcept = conceptService.getConcept(sample.getName());
+        Assert.assertNull(sampleConcept);
+    }
+
+    @org.junit.Test
+    public void not_retire_the_sample_when_isActive_is_true() throws Exception {
+        String fileContents = new FileReader("activeSampleEventFeedData.json").readFile();
+        Sample sample = ObjectMapperRepository.objectMapper.readValue(fileContents, Sample.class);
+        Assert.assertTrue("sample is not active", sample.getIsActive());
+
+        Event updatedSampleEvent = new Event("xxxx-yyyyy-2", "/reference-data/sample/dc8ac8c0-8716-11e3-baa7-0800200c9a66");
+        when(httpClient.get(referenceDataUri + updatedSampleEvent.getContent(), Sample.class)).thenReturn(sample);
+        sampleEventWorker.process(updatedSampleEvent);
+
+        Concept sampleConcept = conceptService.getConcept(sample.getName());
+        Assert.assertNotNull(sampleConcept);
     }
 
 }

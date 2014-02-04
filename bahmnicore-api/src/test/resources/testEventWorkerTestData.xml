@@ -29,4 +29,21 @@
     <concept_set concept_id="107" concept_set="104" concept_set_id="997" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
     <concept_set concept_id="108" concept_set="104" concept_set_id="998" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
 
+    <concept concept_id="109" retired="false" datatype_id="4" class_id="8" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e5e25a7d-b3b2-40f4-9081-d440a7f98b77"/>
+    <concept_name concept_name_type="FULLY_SPECIFIED" concept_id="109" name="Anaemia Panel" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="3" voided="false" uuid="da725065-f18f-4821-b138-2d75adac1788" locale_preferred="0"/>
+    <concept_name concept_name_type="SHORT" concept_id="109" name="AP" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="10" voided="false" uuid="991546f4-1359-445c-9de2-3c89162eebf0" locale_preferred="0"/>
+    <concept_description concept_id="109" description="Anaemia Panel Description" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_description_id="3" uuid="51212c3c-a65b-4015-bab4-6e1b513f3c1d"/>
+    <concept_set concept_id="109" concept_set="102" concept_set_id="204" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+    <concept_set concept_id="109" concept_set="108" concept_set_id="205" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+
+
+    <concept concept_id="110" retired="false" datatype_id="4" class_id="8" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="a63c32d4-79d5-4a5f-95c1-0be1cd8f2dee"/>
+    <concept_name concept_id="110" name="Platelet Count" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="11" voided="false" concept_name_type="FULLY_SPECIFIED" uuid="231e72e5-cf7c-47a8-a5b2-dd75c251bc80" locale_preferred="0"/>
+    <concept_set concept_id="110" concept_set="109" concept_set_id="202" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+
+    <concept concept_id="111" retired="false" datatype_id="4" class_id="8" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="bc0b0064-ad62-40a6-a989-ed6775c49375"/>
+    <concept_name concept_id="111" name="MCHC" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="12" voided="false" concept_name_type="FULLY_SPECIFIED" uuid="3896e552-383b-43a4-891c-49b8289b3cb2" locale_preferred="0"/>
+    <concept_set concept_id="111" concept_set="109" concept_set_id="203" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+
+
 </dataset>

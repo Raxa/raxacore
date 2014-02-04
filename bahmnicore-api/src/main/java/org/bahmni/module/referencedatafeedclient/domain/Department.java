@@ -13,7 +13,7 @@ public class Department {
     String id;
     String name;
     String description;
-    boolean active = true;
+    Boolean isActive = true;
 
     public Department(String id) {
         this(id, null, null, true);

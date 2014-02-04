@@ -5,8 +5,11 @@ import org.bahmni.module.referencedatafeedclient.domain.Department;
 import org.bahmni.module.referencedatafeedclient.domain.Sample;
 import org.bahmni.module.referencedatafeedclient.domain.Test;
 import org.bahmni.module.referencedatafeedclient.service.ReferenceDataConceptService;
+import org.bahmni.module.referencedatafeedclient.worker.util.FileReader;
 import org.bahmni.webclients.HttpClient;
+import org.bahmni.webclients.ObjectMapperRepository;
 import org.ict4h.atomfeed.client.domain.Event;
+import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.openmrs.Concept;
@@ -34,12 +37,11 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Autowired
     private ReferenceDataConceptService referenceDataConceptService;
     private TestEventWorker testEventWorker;
-    private EventWorkerUtility eventWorkerUtility = new EventWorkerUtility();
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        testEventWorker = new TestEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService, eventWorkerUtility);
+        testEventWorker = new TestEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService, new EventWorkerUtility(conceptService));
         when(referenceDataFeedProperties.getReferenceDataUri()).thenReturn(referenceDataUri);
         executeDataSet("testEventWorkerTestData.xml");
     }
@@ -92,9 +94,9 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(TestEventWorker.TEST, testConcept.getConceptClass().getName());
         assertEquals(true, testConcept.isRetired());
         Concept sampleConcept = conceptService.getConceptByUuid(sample.getId());
-        assertTrue(sampleConcept.getSetMembers().contains(testConcept));
+        assertFalse(sampleConcept.getSetMembers().contains(testConcept));
         Concept departmentConcept = conceptService.getConceptByUuid(department.getId());
-        assertTrue(departmentConcept.getSetMembers().contains(testConcept));
+        assertFalse(departmentConcept.getSetMembers().contains(testConcept));
     }
 
 
@@ -102,7 +104,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     public void updating_sample_for_test_moves_the_test_from_oldsample_to_newsample() throws Exception {
         Sample oldBloodSample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department bioChemistry = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b76");
-        Test test = new Test("4923d0e0-8734-11e3-baa7-0800200c9a66", "Blood Group Updated", "Blood Group Description updated", null, "NNNN", oldBloodSample, bioChemistry, false);
+        Test test = new Test("4923d0e0-8734-11e3-baa7-0800200c9a66", "Blood Group Updated", "Blood Group Description updated", null, "NNNN", oldBloodSample, bioChemistry, true);
 
         Event testEvent = new Event("xxxx-yyyyy-1", "/reference-data/test/59474920-8734-11e3-baa7-0800200c9a66");
         when(httpClient.get(referenceDataUri + testEvent.getContent(), Test.class)).thenReturn(test);
@@ -127,7 +129,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     public void updating_department_for_test_moves_the_test_from_old_department_to_new_department() throws Exception {
         Sample bloodSample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department bioChemistry = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b76");
-        Test test = new Test("4923d0e0-8734-11e3-baa7-0800200c9a66", "Blood Group Updated", "Blood Group Description updated", null, "NNNN", bloodSample, bioChemistry, false);
+        Test test = new Test("4923d0e0-8734-11e3-baa7-0800200c9a66", "Blood Group Updated", "Blood Group Description updated", null, "NNNN", bloodSample, bioChemistry, true);
 
         Event testEvent = new Event("xxxx-yyyyy-1", "/reference-data/test/59474920-8734-11e3-baa7-0800200c9a66");
         when(httpClient.get(referenceDataUri + testEvent.getContent(), Test.class)).thenReturn(test);
@@ -146,5 +148,27 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
 
         Concept microBiologyDepartment = conceptService.getConceptByUuid(microBiology.getId());
         assertTrue("New Department should contain the test", microBiologyDepartment.getSetMembers().contains(bloodGroupTest));
+    }
+
+    @org.junit.Test
+    public void remove_the_test_from_panel_when_test_is_inactivated() throws Exception {
+        Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
+        Department department = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b77");
+        Test test = new Test("5923d0e0-8734-11e3-baa7-0800200c9a66");
+        test.setIsActive(false);
+        test.setSample(sample);
+        test.setDepartment(department);
+        test.setResultType("Numeric");
+        test.setName("Test");
+
+        Event updateTestEvent = new Event("xxxx-yyyyy-2", "/reference-data/test/5923d0e0-8734-11e3-baa7-0800200c9a66");
+        when(httpClient.get(referenceDataUri + updateTestEvent.getContent(), Test.class)).thenReturn(test);
+        testEventWorker.process(updateTestEvent);
+
+        Concept testConcept = conceptService.getConceptByUuid("5923d0e0-8734-11e3-baa7-0800200c9a66");
+        Assert.assertTrue(testConcept.isRetired());
+
+        Concept panelConcept = conceptService.getConceptByUuid("e5e25a7d-b3b2-40f4-9081-d440a7f98b77");
+        Assert.assertFalse(panelConcept.getSetMembers().contains(testConcept));
     }
 }

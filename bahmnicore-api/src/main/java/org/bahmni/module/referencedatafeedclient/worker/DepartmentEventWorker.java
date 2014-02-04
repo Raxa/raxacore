@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.Set;
 
 @Component
 public class DepartmentEventWorker implements EventWorker {
@@ -48,9 +47,9 @@ public class DepartmentEventWorker implements EventWorker {
             ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(department.getId(), department.getName()+ SUFFIX_FOR_DEPARTMENT, CONV_SET, ConceptDatatype.N_A_UUID);
             referenceDataConcept.setDescription(department.getDescription());
             referenceDataConcept.setSet(true);
-            referenceDataConcept.setRetired(!department.isActive());
+            referenceDataConcept.setRetired(!department.getIsActive());
 
-            referenceDataConcept.setSetMemberUuids(eventWorkerUtility.getExistingChildUuids(department.getId(), conceptService));
+            referenceDataConcept.setSetMemberUuids(eventWorkerUtility.getExistingChildUuids(department.getId()));
 
             Concept departmentConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
             Concept labDepartmentsConcept = conceptService.getConceptByName(LAB_DEPARTMENTS);

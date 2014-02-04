@@ -17,7 +17,7 @@ public class Test {
     String resultType;
     Sample sample;
     Department department;
-    boolean active = true;
+    Boolean isActive = true;
 
     public Test(String id) {
         this(id, null, null, null, null, null, null, true);

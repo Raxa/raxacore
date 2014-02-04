@@ -5,8 +5,11 @@ import org.bahmni.module.referencedatafeedclient.domain.Panel;
 import org.bahmni.module.referencedatafeedclient.domain.Sample;
 import org.bahmni.module.referencedatafeedclient.domain.Test;
 import org.bahmni.module.referencedatafeedclient.service.ReferenceDataConceptService;
+import org.bahmni.module.referencedatafeedclient.worker.util.FileReader;
 import org.bahmni.webclients.HttpClient;
+import org.bahmni.webclients.ObjectMapperRepository;
 import org.ict4h.atomfeed.client.domain.Event;
+import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.openmrs.Concept;
@@ -15,6 +18,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.validation.constraints.AssertFalse;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
@@ -36,12 +40,11 @@ public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Autowired
     private ReferenceDataConceptService referenceDataConceptService;
     private PanelEventWorker panelEventWorker;
-    private EventWorkerUtility eventWorkerUtility = new EventWorkerUtility();
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        panelEventWorker = new PanelEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService, eventWorkerUtility);
+        panelEventWorker = new PanelEventWorker(httpClient, referenceDataFeedProperties, conceptService, referenceDataConceptService, new EventWorkerUtility(conceptService));
         when(referenceDataFeedProperties.getReferenceDataUri()).thenReturn(referenceDataUri);
         executeDataSet("panelEventWorkerTestData.xml");
     }
@@ -98,4 +101,38 @@ public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Concept newUrineConcept = conceptService.getConceptByUuid(newUrineSample.getId());
         assertTrue("New Sample should contain the panel", newUrineConcept.getSetMembers().contains(routineBloodPanelConcept));
     }
+
+    @org.junit.Test
+    public void retire_the_panel_when_isActive_is_false() throws Exception {
+        String fileContents = new FileReader("inActivePanelEventFeedData.json").readFile();
+        Panel panel = ObjectMapperRepository.objectMapper.readValue(fileContents, Panel.class);
+        Assert.assertFalse("panel is not active", panel.getIsActive());
+
+        Event panelEvent = new Event("xxxx-yyyyy-2", "/reference-data/panel/dc8ac8c0-8716-11e3-baa7-0800200c9a66");
+        when(httpClient.get(referenceDataUri + panelEvent.getContent(), Panel.class)).thenReturn(panel);
+        panelEventWorker.process(panelEvent);
+
+        Concept panelConcept = conceptService.getConceptByUuid(panel.getId());
+        Concept sampleConcept = conceptService.getConceptByUuid(panel.getSample().getId());
+
+        Assert.assertFalse(sampleConcept.getSetMembers().contains(panelConcept));
+    }
+
+    @org.junit.Test
+    public void not_retire_the_panel_when_isActive_is_true() throws Exception {
+        String fileContents = new FileReader("activePanelEventFeedData.json").readFile();
+        Panel panel = ObjectMapperRepository.objectMapper.readValue(fileContents, Panel.class);
+        Assert.assertTrue("panel is not active", panel.getIsActive());
+
+        Event updatedSampleEvent = new Event("xxxx-yyyyy-2", "/reference-data/panel/dc8ac8c0-8716-11e3-baa7-0800200c9a66");
+        when(httpClient.get(referenceDataUri + updatedSampleEvent.getContent(), Panel.class)).thenReturn(panel);
+        panelEventWorker.process(updatedSampleEvent);
+
+        Concept panelConcept = conceptService.getConcept(panel.getName());
+        Assert.assertNotNull(panelConcept);
+
+        Concept sampleConcept = conceptService.getConceptByUuid(panel.getSample().getId());
+        Assert.assertTrue(sampleConcept.getSetMembers().contains(panelConcept));
+    }
+
 }

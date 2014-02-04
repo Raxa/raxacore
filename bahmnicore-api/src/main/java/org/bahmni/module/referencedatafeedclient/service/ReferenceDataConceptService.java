@@ -58,7 +58,7 @@ public class ReferenceDataConceptService {
     }
 
     public void saveSetMembership(Concept parentConcept, Concept childConcept) {
-        if(parentConcept.getSetMembers().contains(childConcept)) return;
+        if (parentConcept.getSetMembers().contains(childConcept)) return;
         parentConcept.addSetMember(childConcept);
         conceptService.saveConcept(parentConcept);
     }

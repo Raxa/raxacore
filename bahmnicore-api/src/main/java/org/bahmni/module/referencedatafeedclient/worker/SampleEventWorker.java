@@ -45,8 +45,8 @@ public class SampleEventWorker implements EventWorker {
             ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(sample.getId(), sample.getName(), LAB_SET, ConceptDatatype.N_A_UUID);
             referenceDataConcept.setShortName(sample.getShortName());
             referenceDataConcept.setSet(true);
-            referenceDataConcept.setRetired(!sample.isActive());
-            referenceDataConcept.setSetMemberUuids(eventWorkerUtility.getExistingChildUuids(sample.getId(), conceptService));
+            referenceDataConcept.setRetired(!sample.getIsActive());
+            referenceDataConcept.setSetMemberUuids(eventWorkerUtility.getExistingChildUuids(sample.getId()));
 
             Concept sampleConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
             Concept labConcept = conceptService.getConceptByName(LABORATORY);

@@ -1,0 +1,22 @@
+{
+    "class": "org.bahmni.referenceData.domain.Panel",
+    "id": "4d904bfd-7a49-46b8-a9fd-7cf583733faf",
+    "dateCreated": "2014-02-04T08:41:54Z",
+    "description": "dsdsf",
+    "isActive": true,
+    "lastUpdated": "2014-02-04T08:44:02Z",
+    "name": "Abracadabra",
+    "salePrice": 0,
+    "sample": {
+        "class": "Sample",
+        "id": "dc8ac8c0-8716-11e3-baa7-0800200c9a66"
+    },
+    "shortName": null,
+    "sortOrder": 2,
+    "tests": [
+        {
+            "class": "Test",
+            "id": "5923d0e0-8734-11e3-baa7-0800200c9a66"
+        }
+    ]
+}
