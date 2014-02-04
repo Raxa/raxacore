@@ -29,4 +29,39 @@ public class OpenElisTestDetailBuilder {
         testDetail.setPanelUuid(panelUuid);
         return this;
     }
+
+    public OpenElisTestDetailBuilder withResult(String result) {
+        testDetail.setResult(result);
+        return this;
+    }
+
+    public OpenElisTestDetailBuilder withProviderUuid(String providerUuid) {
+        testDetail.setProviderUuid(providerUuid);
+        return this;
+    }
+
+    public OpenElisTestDetailBuilder withDateTime(String dateTime) {
+        testDetail.setDateTime(dateTime);
+        return this;
+    }
+
+    public OpenElisTestDetailBuilder withMinNormal(String minNormalValue) {
+        testDetail.setMinNormal(Double.valueOf(minNormalValue));
+        return this;
+    }
+
+    public OpenElisTestDetailBuilder withMaxNormal(String maxNormalValue) {
+        testDetail.setMaxNormal(Double.valueOf(maxNormalValue));
+        return this;
+    }
+
+    public OpenElisTestDetailBuilder withAbnormal(String value) {
+        testDetail.setAbnormal(Boolean.valueOf(value));
+        return this;
+    }
+
+    public OpenElisTestDetailBuilder withResultType(String resultType) {
+        testDetail.setResultType(resultType);
+        return this;
+    }
 }

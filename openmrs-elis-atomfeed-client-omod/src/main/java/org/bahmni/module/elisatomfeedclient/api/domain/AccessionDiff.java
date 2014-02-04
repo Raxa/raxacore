@@ -22,4 +22,8 @@ public class AccessionDiff {
     public void addRemovedTestDetails(OpenElisTestDetail testDetail) {
         removedTestDetails.add(testDetail);
     }
+
+    public boolean hasDifference() {
+        return (getRemovedTestDetails().size() > 0 || getAddedTestDetails().size() > 0);
+    }
 }

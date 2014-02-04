@@ -44,20 +44,14 @@ public class AccessionMapper {
             labUser = userService.getUserByUsername(properties.getLabSystemUserName());
         }
 
-        Encounter encounter = new Encounter();
-        encounter.setUuid(openElisAccession.getAccessionUuid());
-        encounter.setEncounterType(encounterService.getEncounterType(properties.getEncounterTypeClinical()));
-        encounter.setPatient(patient);
-        encounter.setEncounterDatetime(openElisAccession.fetchDate());
-        EncounterRole encounterRole = encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
-
         Provider labSystemProvider = getLabSystemProvider();
-        encounter.setProvider(encounterRole, labSystemProvider);
+        EncounterType encounterType = encounterService.getEncounterType(properties.getEncounterTypeClinical());
 
         Visit visit = getNearestVisit(patient, openElisAccession);
         checkAndUpdateVisitEndDatetime(visit, openElisAccession.fetchDate());
 
-        encounter.setVisit(visit);
+        Encounter encounter = newEncounterInstance(openElisAccession, visit, patient, labSystemProvider, encounterType);
+        encounter.setUuid(openElisAccession.getAccessionUuid());
 
         Set<String> groupedOrders = groupOrders(openElisAccession.getTestDetails());
 
@@ -66,6 +60,34 @@ public class AccessionMapper {
 
         return encounter;
     }
+
+    private Encounter newEncounterInstance(OpenElisAccession openElisAccession, Visit visit, Patient patient, Provider labSystemProvider, EncounterType encounterType) {
+        Encounter encounter = new Encounter();
+        encounter.setEncounterType(encounterType);
+        encounter.setPatient(patient);
+        encounter.setEncounterDatetime(openElisAccession.fetchDate());
+        EncounterRole encounterRole = encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
+        encounter.setProvider(encounterRole, labSystemProvider);
+        encounter.setVisit(visit);
+        return encounter;
+    }
+
+    public Encounter getEncounterForTestResult(OpenElisAccession openElisAccession, Visit accessionVisit, String providerUuid) {
+        EncounterType labResultEncounterType = encounterService.getEncounterType("LAB_RESULT");
+        //TODO: if the providerUuid is blank, enter as default provider? admin
+        Provider provider = providerService.getProviderByUuid(providerUuid);
+        List<Encounter> labResultEncounters = encounterService.getEncounters(null, null, null, null, null,
+                new HashSet<>(Arrays.asList(labResultEncounterType)), new HashSet<>(Arrays.asList(provider)),
+                null, new HashSet<>(Arrays.asList(accessionVisit)), false);
+
+        if (labResultEncounters.size() > 0) {
+            return labResultEncounters.get(0);
+        }
+        else {
+            return newEncounterInstance(openElisAccession, accessionVisit, accessionVisit.getPatient(), provider, labResultEncounterType);
+        }
+    }
+
 
     private void checkAndUpdateVisitEndDatetime(Visit visit, Date accessionDatetime) {
         if (visit.getStopDatetime() != null && visit.getStopDatetime().before(accessionDatetime)) {

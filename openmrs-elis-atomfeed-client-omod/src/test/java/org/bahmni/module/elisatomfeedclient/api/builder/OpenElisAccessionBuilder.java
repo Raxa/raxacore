@@ -24,4 +24,9 @@ public class OpenElisAccessionBuilder {
         openElisAccession.setTestDetails(testDetails);
         return this;
     }
+
+    public OpenElisAccessionBuilder withDateTime(String dateTime) {
+        openElisAccession.setDateTime(dateTime);
+        return this;
+    }
 }
