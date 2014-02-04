@@ -24,6 +24,7 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -89,10 +90,12 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
 
         assertEquals(2, encounters.size());
         assertNotNull(labEncounter);
-        Set<Obs> obs = labEncounter.getAllObs();
-        assertEquals(1, obs.size());
-        Obs testObs = obs.iterator().next();
-        assertEquals(4, testObs.getGroupMembers().size());
+        Set<Obs> topLevelObs = labEncounter.getAllObs();
+        assertEquals(1, topLevelObs.size());
+        final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
+        assertEquals(1, testLevelObs.size());
+        final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
+        assertEquals(4, resultMembers.size());
     }
 
     @Test
@@ -127,10 +130,13 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         assertEquals(2, encounters.size());
         assertNotNull(labEncounter);
         assertEquals("system", labEncounter.getEncounterProviders().iterator().next().getProvider().getIdentifier());
-        Set<Obs> obs = labEncounter.getAllObs();
-        assertEquals(1, obs.size());
-        Obs testObs = obs.iterator().next();
-        assertEquals(4, testObs.getGroupMembers().size());
+
+        Set<Obs> topLevelObs = labEncounter.getAllObs();
+        assertEquals(1, topLevelObs.size());
+        final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
+        assertEquals(1, testLevelObs.size());
+        final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
+        assertEquals(4, resultMembers.size());
     }
 
     @Test
@@ -170,6 +176,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
 
         assertEquals(2, encounters.size());
         assertNotNull(labEncounter);
+
         Set<Obs> obs = labEncounter.getAllObs();
         assertEquals(1, obs.size());
         Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
@@ -177,25 +184,22 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
         assertEquals(1,panel1ResultMembers.size());
 
-        Obs testResultObs = getObsByConceptUuid(panel1ResultMembers, haemoglobinConceptUuid);
+        Set<Obs> topLevelObs = panel1ResultMembers;
+        assertEquals(1, topLevelObs.size());
+        final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
+        assertEquals(1, testLevelObs.size());
+        final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
+        assertEquals(4, resultMembers.size());
+
+        Obs testResultObs = getObsByConceptUuid(testLevelObs, haemoglobinConceptUuid);
         assertNotNull(testResultObs);
         assertEquals(4, testResultObs.getGroupMembers().size());
 
     }
 
-    private Obs getObsByConceptUuid(Set<Obs> panel1ResultMembers, String conceptUuid) {
-        Obs testResultObs = null;
-        for (Obs testObs : panel1ResultMembers) {
-            if (testObs.getConcept().getUuid().equals(conceptUuid)) {
-                testResultObs = testObs;
-                break;
-            }
-        }
-        return testResultObs;
-    }
-
     @Test
     public void shouldCreateResultEncounterAndObsForPanelWithMoreThanOnetestWithResultAndOtherValues() throws Exception {
+        //same provider for both tests in panel
         executeDataSet("labResult.xml");
 
          String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
@@ -253,11 +257,17 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
 
         Obs haemoglobinTestResultObs = getObsByConceptUuid(panel1ResultMembers, haemoglobinConceptUuid);
         assertNotNull(haemoglobinTestResultObs);
-        assertEquals(4, haemoglobinTestResultObs.getGroupMembers().size());
+        Set<Obs> testLevelObs = haemoglobinTestResultObs.getGroupMembers();
+        assertEquals(1, testLevelObs.size());
+        Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
+        assertEquals(4, resultMembers.size());
 
         Obs esrTestResultObs = getObsByConceptUuid(panel1ResultMembers, esrConceptUuid);
         assertNotNull(esrTestResultObs);
-        assertEquals(4, esrTestResultObs.getGroupMembers().size());
+        testLevelObs = esrTestResultObs.getGroupMembers();
+        assertEquals(1, testLevelObs.size());
+        resultMembers = getGroupMembersForObs(testLevelObs);
+        assertEquals(4, resultMembers.size());
     }
 
     @Test
@@ -318,11 +328,17 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
 
         Obs haemoglobinTestResultObs = getObsByConceptUuid(panel1ResultMembers, haemoglobinConceptUuid);
         assertNotNull(haemoglobinTestResultObs);
-        assertEquals(4, haemoglobinTestResultObs.getGroupMembers().size());
+        Set<Obs> testLevelObs = haemoglobinTestResultObs.getGroupMembers();
+        assertEquals(1, testLevelObs.size());
+        Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
+        assertEquals(4, resultMembers.size());
 
         Obs nirtoTestResultObs = getObsByConceptUuid(obs, nitroUreaConceptUuid);
         assertNotNull(nitroUreaConceptUuid);
-        assertEquals(4, nirtoTestResultObs.getGroupMembers().size());
+        testLevelObs = nirtoTestResultObs.getGroupMembers();
+        assertEquals(1, testLevelObs.size());
+        resultMembers = getGroupMembersForObs(testLevelObs);
+        assertEquals(4, resultMembers.size());
     }
 
     @Test
@@ -389,16 +405,19 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         assertEquals(1, nonVoidedObs.size());
 
         Obs nitroTestResultObs = getObsByConceptUuid(nonVoidedObs, nitroUreaConceptUuid);
-        assertNotNull(nitroUreaConceptUuid);
-        Set<Obs> groupMembers = nitroTestResultObs.getGroupMembers();
-        assertEquals(4, groupMembers.size());
-        Obs resultObs = getObsByConceptUuid(nitroTestResultObs.getGroupMembers(), nitroUreaConceptUuid);
+        assertNotNull(nitroTestResultObs);
+
+        Set<Obs> testLevelObs = nitroTestResultObs.getGroupMembers();
+        assertEquals(1, testLevelObs.size());
+        Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
+        assertEquals(4, resultMembers.size());
+        Obs resultObs = getObsByConceptUuid(resultMembers, nitroUreaConceptUuid);
         assertEquals(new Double(20.0), resultObs.getValueNumeric());
     }
 
-
     @Test
     public void shouldUpdateResultForPanelWithMultipleTests() throws Exception {
+        //same provider updates all results
         executeDataSet("labResult.xml");
 
         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
@@ -445,7 +464,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
         assertNotNull(panelResultObs);
         Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
-        assertEquals(1,panel1ResultMembers.size());
+        assertEquals(1,panel1ResultMembers.size()); //only one test has results
 
 
         OpenElisTestDetail hbTestUpdated = new OpenElisTestDetailBuilder()
@@ -491,15 +510,15 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Set<Obs> allObs = labEncounter.getAllObs(true);
         assertEquals(1, allObs.size());
         Obs panelObs = getObsByConceptUuid(allObs, panelConceptUuid);
-        final Set<Obs> groupMembers = panelObs.getGroupMembers(true);
-        assertEquals(3, groupMembers.size());
-        assertEquals(1, getVoidedObservations(groupMembers).size());
-        final Set<Obs> unvoidedObservation = panelObs.getGroupMembers(false);
-        assertEquals(2, unvoidedObservation.size());
-        assertEquals(new Double(9.0), getConceptResultObs(unvoidedObservation, haemoglobinConceptUuid).getValueNumeric());
+        final Set<Obs> testObservations = panelObs.getGroupMembers(true);
+        assertEquals(3, testObservations.size()); //one voided, 1 updated, 1 new
+        assertEquals(1, getVoidedObservations(testObservations).size());
+        final Set<Obs> unvoidedObservations = panelObs.getGroupMembers(false);
+        assertEquals(2, unvoidedObservations.size());
+        final Obs resultsForHaemoglobin = getObsByConceptUuid(unvoidedObservations, haemoglobinConceptUuid);
+        assertEquals(new Double(9.0), getConceptResultObs(resultsForHaemoglobin.getGroupMembers(), haemoglobinConceptUuid).getValueNumeric());
 
     }
-
 
     @Test
     public void shouldUpdateResultForPanelWithMultipleTestsWithDiffProviders() throws Exception {
@@ -555,6 +574,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         assertNotNull(panelResultObs);
         Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
         assertEquals(1,panel1ResultMembers.size());
+        assertNotNull(getObsByConceptUuid(panel1ResultMembers,haemoglobinConceptUuid));
 
 
         OpenElisTestDetail hbTestUpdated = new OpenElisTestDetailBuilder()
@@ -584,7 +604,6 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(hbTestUpdated, esrTestUpdated))).withDateTime("2014-01-30T11:50:18+0530").build();
         openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
         when(httpClient.get(properties.getOpenElisUri() + firstEvent.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
-        //openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
         openElisAccessionEventWorker.process(firstEvent);
 
         visit = Context.getVisitService().getVisit(2);
@@ -601,31 +620,26 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
 
         List<Encounter> encountersByLabTech = findEncountersForProvider(labEncounters, labTechProviderUuid);
         assertEquals(1, encountersByLabTech.size());
-        final Set<Obs> obsByLabTech = encountersByLabTech.get(0).getAllObs(true);
-        assertEquals(1, obsByLabTech.size());
-        Set<Obs> testsByLabTech = obsByLabTech.iterator().next().getGroupMembers(true);
-        assertEquals(1, testsByLabTech.size());
-        assertEquals(1, getVoidedObservations(testsByLabTech).size());
-
+        final Set<Obs> panelObsByLabTech = encountersByLabTech.get(0).getAllObs(true);
+        assertEquals(1, panelObsByLabTech.size());
+        Set<Obs> topLevelTestsByLabTech = panelObsByLabTech.iterator().next().getGroupMembers(true);
+        assertEquals(1, topLevelTestsByLabTech.size());
+        final ArrayList<Obs> voidedObservations = getVoidedObservations(topLevelTestsByLabTech);
+        assertEquals(1, voidedObservations.size());
+        final Set<Obs> testObs = voidedObservations.get(0).getGroupMembers(true);
+        assertEquals(1, testObs.size());
+        final Set<Obs> testResults = testObs.iterator().next().getGroupMembers(true);
+        for (Obs testOb : testResults) {
+            assertTrue(testOb.getVoided());
+        }
 
         List<Encounter> encountersBySystem = findEncountersForProvider(labEncounters, systemProviderUuid);
         assertEquals(1, encountersBySystem.size());
-        final Set<Obs> obsBySystem = encountersBySystem.get(0).getAllObs(true);
-        assertEquals(1, obsBySystem.size());
-        Set<Obs> testsBySystem = obsBySystem.iterator().next().getGroupMembers(true);
-        assertEquals(2, testsBySystem.size());
-        assertEquals(0, getVoidedObservations(testsBySystem).size());
-    }
-
-    private List<Encounter> findEncountersForProvider(List<Encounter> labEncounters, String providerUuid) {
-        List<Encounter> encounters = new ArrayList<>();
-        for (Encounter encounter : labEncounters) {
-            String encProviderUuid = encounter.getEncounterProviders().iterator().next().getProvider().getUuid();
-            if (encProviderUuid.equals(providerUuid)) {
-                encounters.add(encounter);
-            }
-        }
-        return encounters;
+        final Set<Obs> panelObsBySystem = encountersBySystem.get(0).getAllObs(true);
+        assertEquals(1, panelObsBySystem.size());
+        Set<Obs> topLevelPanelTestsBySystem = panelObsBySystem.iterator().next().getGroupMembers(true);
+        assertEquals(2, topLevelPanelTestsBySystem.size());
+        assertEquals(0, getVoidedObservations(topLevelPanelTestsBySystem).size());
     }
 
     @Test
@@ -680,6 +694,28 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         assertEquals(1, obs.size());
     }
 
+    private Obs getObsByConceptUuid(Set<Obs> panel1ResultMembers, String conceptUuid) {
+        Obs testResultObs = null;
+        for (Obs testObs : panel1ResultMembers) {
+            if (testObs.getConcept().getUuid().equals(conceptUuid)) {
+                testResultObs = testObs;
+                break;
+            }
+        }
+        return testResultObs;
+    }
+
+    private List<Encounter> findEncountersForProvider(List<Encounter> labEncounters, String providerUuid) {
+        List<Encounter> encounters = new ArrayList<>();
+        for (Encounter encounter : labEncounters) {
+            String encProviderUuid = encounter.getEncounterProviders().iterator().next().getProvider().getUuid();
+            if (encProviderUuid.equals(providerUuid)) {
+                encounters.add(encounter);
+            }
+        }
+        return encounters;
+    }
+
     private Obs getConceptResultObs(Set<Obs> members, String conceptUuid) {
         Obs obs = getObsByConceptUuid(members, conceptUuid);
         return getObsByConceptUuid(obs.getGroupMembers(), conceptUuid);
@@ -704,5 +740,9 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         return voidedObs;
     }
 
+    private Set<Obs> getGroupMembersForObs(Set<Obs> obs) {
+        Obs testObs = obs.iterator().next();
+        return testObs.getGroupMembers();
+    }
 
 }

@@ -114,9 +114,10 @@ public class OpenElisAccessionEventWorker implements EventWorker {
 
                 if (resultEncounter != null) {
                     Obs prevObs = identifyResultObs(resultEncounter, testDetail);
-                    isResultUpdated = !isSameDate(prevObs.getObsDatetime(), DateTime.parse(testDetail.getDateTime()).toDate());
+                    final Date testDate = DateTime.parse(testDetail.getDateTime()).toDate();
+                    isResultUpdated = !isSameDate(prevObs.getObsDatetime(), testDate);
                     if (isResultUpdated) {
-                        resultObsHelper.voidObs(prevObs);
+                        resultObsHelper.voidObs(prevObs, testDate);
                     }
                 }
 
@@ -150,6 +151,17 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         return null;
     }
 
+    /**
+     * This method currenly checks at the topLevel Obs.
+     * if its a panel, then it goes through the next level and identifes a test by the concept at the next level
+     * If its a test, then it just checks at the top level concept
+     *
+     * However, for future multi-value tests, in both the cases (panel and indiv test), it would need go to one more
+     * level down and return the matching observation.
+     * @param resultEncounter
+     * @param testDetail
+     * @return
+     */
     private Obs identifyResultObs(Encounter resultEncounter, OpenElisTestDetail testDetail) {
         boolean isPanel = StringUtils.isNotBlank(testDetail.getPanelUuid());
         final Set<Obs> obsAtTopLevel = resultEncounter.getObsAtTopLevel(false);

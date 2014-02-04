@@ -43,19 +43,23 @@ public class ResultObsHelper {
         }
     }
 
-    public void voidObs(Obs obs) {
+    public void voidObs(Obs obs, Date testDate) {
         obs.setVoided(true);
         obs.setVoidReason(VOID_REASON);
+        obs.setDateVoided(testDate);
         final Set<Obs> groupMembers = obs.getGroupMembers();
         if ((groupMembers != null) && (groupMembers.size() > 0)) {
             for (Obs member : groupMembers) {
-                voidObs(member);
+                voidObs(member, testDate);
             }
         }
     }
 
     private Obs createNewTestObsForOrder(OpenElisTestDetail testDetail, Order order, Concept concept, Date obsDate) throws ParseException {
+        Obs topLevelObs = newParentObs(order, concept, obsDate);
         Obs labObs = newParentObs(order, concept, obsDate);
+        topLevelObs.addGroupMember(labObs);
+
         labObs.addGroupMember(newChildObs(order, obsDate, concept, testDetail.getResult()));
         labObs.addGroupMember(newChildObs(order, obsDate, LAB_ABNORMAL, testDetail.getAbnormal().toString()));
         if(testDetail.getResultType().equals(RESULT_TYPE_NUMERIC)) {
@@ -70,13 +74,12 @@ public class ResultObsHelper {
                 }
             }
         }
-
-        return labObs;
+        return topLevelObs;
     }
 
     private Obs createOrFindPanelObs(OpenElisTestDetail testDetail, Order testOrder, Encounter resultEncounter, Date obsDate) {
         Obs panelObs = null;
-        for (Obs obs : resultEncounter.getAllObs()) {
+        for (Obs obs : resultEncounter.getObsAtTopLevel(false)) {
             if(obs.getConcept().getUuid().equals(testDetail.getPanelUuid())){
                 panelObs = obs;
                 break;
