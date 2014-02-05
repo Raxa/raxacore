@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedatafeedclient.domain.Drug;
 import org.bahmni.module.referencedatafeedclient.domain.ReferenceDataConcept;
 import org.openmrs.Concept;
+import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptSet;
@@ -20,6 +21,7 @@ import java.util.Set;
 public class ReferenceDataConceptService {
     private ConceptService conceptService;
     private Locale locale = Locale.ENGLISH;
+    public static final String MISC = "Misc";
 
     @Autowired
     public ReferenceDataConceptService(ConceptService conceptService) {
@@ -45,19 +47,6 @@ public class ReferenceDataConceptService {
         return conceptService.saveConcept(concept);
     }
 
-    private void addOrRemoveSetMembers(Concept concept, Set<String> setMemberUuids) {
-        for (String uuid : setMemberUuids) {
-            Concept childConcept = conceptService.getConceptByUuid(uuid);
-            if(!concept.getSetMembers().contains(childConcept))
-                concept.addSetMember(childConcept);
-        }
-        for (ConceptSet conceptSet : new ArrayList<>(concept.getConceptSets())) {
-            if(!setMemberUuids.contains(conceptSet.getConcept().getUuid())){
-                concept.getConceptSets().remove(conceptSet);
-            }
-        }
-    }
-
     public void saveSetMembership(Concept parentConcept, Concept childConcept) {
         if (parentConcept.getSetMembers().contains(childConcept)) return;
         parentConcept.addSetMember(childConcept);
@@ -71,12 +60,40 @@ public class ReferenceDataConceptService {
             conceptDrug.setUuid(drug.getId());
         }
         conceptDrug.setName(drug.getName());
-        conceptDrug.setConcept(conceptService.getConceptByName(drug.getGenericName()));
-        conceptDrug.setDosageForm(conceptService.getConceptByUuid(drug.getForm().getId()));
-        conceptDrug.setDoseStrength(Double.parseDouble(drug.getStrength()));
+        Concept dosageForm = conceptService.getConceptByUuid(drug.getForm().getId());
+        if(dosageForm == null){
+            throw new RuntimeException(String.format("Could not find dosage form for %s", drug.getForm().getName()));
+        }
+        conceptDrug.setDosageForm(dosageForm);
+        if(drug.getStrength() != null){
+            conceptDrug.setDoseStrength(Double.parseDouble(drug.getStrength()));
+        }
         conceptDrug.setUnits(drug.getStrengthUnits());
-        conceptDrug.setRoute(conceptService.getConceptByName(drug.getRoute()));
+        conceptDrug.setConcept(getConceptByName(drug.getGenericName()));
+        conceptDrug.setRoute(getConceptByName(drug.getRoute()));
         conceptService.saveDrug(conceptDrug);
+    }
+
+    private Concept getConceptByName(String drugName) {
+        if (StringUtils.isBlank(drugName)) return null;
+        Concept concept = conceptService.getConceptByName(drugName);
+        if(concept == null){
+            concept = saveConcept(new ReferenceDataConcept(null, drugName, MISC, ConceptDatatype.N_A_UUID));
+        }
+        return concept;
+    }
+
+    private void addOrRemoveSetMembers(Concept concept, Set<String> setMemberUuids) {
+        for (String uuid : setMemberUuids) {
+            Concept childConcept = conceptService.getConceptByUuid(uuid);
+            if(!concept.getSetMembers().contains(childConcept))
+                concept.addSetMember(childConcept);
+        }
+        for (ConceptSet conceptSet : new ArrayList<>(concept.getConceptSets())) {
+            if(!setMemberUuids.contains(conceptSet.getConcept().getUuid())){
+                concept.getConceptSets().remove(conceptSet);
+            }
+        }
     }
 
     private void addOrUpdateDescription(Concept concept, String description) {
