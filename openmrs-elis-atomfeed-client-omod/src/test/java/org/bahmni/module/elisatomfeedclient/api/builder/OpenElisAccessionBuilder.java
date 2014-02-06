@@ -29,4 +29,9 @@ public class OpenElisAccessionBuilder {
         openElisAccession.setDateTime(dateTime);
         return this;
     }
+
+    public OpenElisAccessionBuilder withPatientUuid(String uuid) {
+        openElisAccession.setPatientUuid(uuid);
+        return this;
+    }
 }

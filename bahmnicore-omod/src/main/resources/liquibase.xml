@@ -389,5 +389,14 @@
             call add_concept_set_members (@labresults_concept_id,@set_concept_id,1);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-clinical-201402061215" author="Angshu,RT" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from visit_type where name = 'LAB_RESULTS_IN_ABSENTEE'</sqlCheck>
+        </preConditions>
+        <comment>Add new visit type LAB_RESULTS_IN_ABSENTEE</comment>
+        <sql>
+            INSERT INTO visit_type (name, description, creator, uuid, date_created) VALUES ('LAB_RESULTS_IN_ABSENTEE', 'Visit for which results come when patient is not present', 1, uuid(), curdate());
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

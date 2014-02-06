@@ -13,27 +13,18 @@ import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.joda.time.DateTime;
 import org.openmrs.Encounter;
-import org.openmrs.EncounterRole;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Order;
-import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
-import org.openmrs.api.VisitService;
-import org.openmrs.module.emrapi.encounter.EmrEncounterService;
-import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
-import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class OpenElisAccessionEventWorker implements EventWorker {
@@ -41,25 +32,24 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     private ElisAtomFeedProperties atomFeedProperties;
     private HttpClient httpClient;
     private EncounterService encounterService;
-    private EmrEncounterService emrEncounterService;
     private ConceptService conceptService;
     private AccessionMapper accessionMapper;
-    private EncounterTransactionMapper encounterTransactionMapper;
-    private VisitService visitService;
     private ProviderService providerService;
 
     private static Logger logger = Logger.getLogger(OpenElisAccessionEventWorker.class);
 
-    public OpenElisAccessionEventWorker(ElisAtomFeedProperties atomFeedProperties, HttpClient httpClient, EncounterService encounterService, EmrEncounterService emrEncounterService, ConceptService conceptService, AccessionMapper accessionMapper, EncounterTransactionMapper encounterTransactionMapper, VisitService visitService, ProviderService providerService) {
+    public OpenElisAccessionEventWorker(ElisAtomFeedProperties atomFeedProperties,
+                                        HttpClient httpClient,
+                                        EncounterService encounterService,
+                                        ConceptService conceptService,
+                                        AccessionMapper accessionMapper,
+                                        ProviderService providerService) {
 
         this.atomFeedProperties = atomFeedProperties;
         this.httpClient = httpClient;
         this.encounterService = encounterService;
-        this.emrEncounterService = emrEncounterService;
         this.conceptService = conceptService;
         this.accessionMapper = accessionMapper;
-        this.encounterTransactionMapper = encounterTransactionMapper;
-        this.visitService = visitService;
         this.providerService = providerService;
     }
 
@@ -69,25 +59,25 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         logger.info("openelisatomfeedclient:Processing event : " + accessionUrl);
         try {
             OpenElisAccession openElisAccession = httpClient.get(accessionUrl, OpenElisAccession.class);
-            Encounter previousEncounter = encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid());
-            Encounter encounterFromAccession = null;
-            if (previousEncounter != null) {
-                AccessionDiff diff = openElisAccession.getDiff(previousEncounter);
+            Encounter orderEncounter = encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid());
+            boolean shouldSaveOrderEncounter = false;
+            if (orderEncounter != null) {
+                AccessionDiff diff = openElisAccession.getDiff(orderEncounter);
                 if (diff.hasDifference()) {
                     logger.info("openelisatomfeedclient:updating encounter for accession : " + accessionUrl);
-                    encounterFromAccession = accessionMapper.mapToExistingEncounter(openElisAccession, diff, previousEncounter);
+                    accessionMapper.addOrVoidOrderDifferences(openElisAccession, diff, orderEncounter);
+                    shouldSaveOrderEncounter = true;
                 }
             } else {
                 logger.info("openelisatomfeedclient:creating new encounter for accession : " + accessionUrl);
-                encounterFromAccession = accessionMapper.mapToNewEncounter(openElisAccession);
+                orderEncounter = accessionMapper.mapToNewEncounter(openElisAccession);
+                shouldSaveOrderEncounter = true;
             }
 
-            if (encounterFromAccession != null) {
-                EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounterFromAccession, true);
-                emrEncounterService.save(encounterTransaction);
+            if (shouldSaveOrderEncounter) {
+                encounterService.saveEncounter(orderEncounter);
             }
             associateTestResultsToOrder(openElisAccession);
-
         } catch (IOException e) {
             logger.error("openelisatomfeedclient:error processing event : " + accessionUrl + e.getMessage(), e);
             throw new OpenElisFeedException("could not read accession data", e);
@@ -99,50 +89,59 @@ public class OpenElisAccessionEventWorker implements EventWorker {
 
     protected void associateTestResultsToOrder(OpenElisAccession openElisAccession) throws ParseException {
         Encounter orderEncounter = encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid());
-        Visit visit = orderEncounter.getVisit();
         final EncounterType labResultEncounterType = encounterService.getEncounterType("LAB_RESULT");
         final Set<OpenElisTestDetail> allTests = openElisAccession.getTestDetails();
 
+        List<Encounter> labResultEncounters = encounterService.getEncounters(orderEncounter.getPatient(),
+                null, orderEncounter.getEncounterDatetime(), null, null,
+                Arrays.asList(labResultEncounterType),
+                null, null, null, false);
+
+        Set<Encounter> updatedEncounters = new HashSet<>();
         ResultObsHelper resultObsHelper = new ResultObsHelper(conceptService);
         List<Provider> labResultProviders = new ArrayList<>();
+        Visit resultVisit = accessionMapper.findOrCreateVisit(orderEncounter.getPatient(), new Date());
         for (OpenElisTestDetail testDetail : allTests) {
             if (StringUtils.isNotBlank(testDetail.getResult())) {
-                Encounter resultEncounter = identifyResultEncounter(visit, labResultEncounterType, testDetail);
+                Encounter resultEncounterForTest = identifyResultEncounter(labResultEncounters, testDetail);
                 Order testOrder = identifyOrder(orderEncounter, testDetail);
                 Provider testProvider = getProviderForResults(labResultProviders, testDetail.getProviderUuid());
                 boolean isResultUpdated = true;
 
-                if (resultEncounter != null) {
-                    Obs prevObs = identifyResultObs(resultEncounter, testDetail);
+                if (resultEncounterForTest != null) {
+                    Obs prevObs = identifyResultObs(resultEncounterForTest, testDetail);
                     final Date testDate = DateTime.parse(testDetail.getDateTime()).toDate();
                     isResultUpdated = !isSameDate(prevObs.getObsDatetime(), testDate);
                     if (isResultUpdated) {
                         resultObsHelper.voidObs(prevObs, testDate);
+                        updatedEncounters.add(resultEncounterForTest);
                     }
                 }
 
                 if (isResultUpdated) {
-                    resultEncounter = findOrCreateEncounter(openElisAccession, visit, labResultEncounterType, testProvider);
-                    resultEncounter.addObs(resultObsHelper.createNewObsForOrder(testDetail, testOrder, resultEncounter));
-                    visit.addEncounter(resultEncounter);
+                    resultEncounterForTest = findOrCreateEncounter(resultVisit, testProvider, labResultEncounterType);
+                    resultEncounterForTest.addObs(resultObsHelper.createNewObsForOrder(testDetail, testOrder, resultEncounterForTest));
+                    resultVisit.addEncounter(resultEncounterForTest);
+                    updatedEncounters.add(resultEncounterForTest);
                 }
             }
         }
 
-        visitService.saveVisit(visit);
+        for (Encounter updatedEncounter : updatedEncounters) {
+            encounterService.saveEncounter(updatedEncounter);
+        }
     }
+
 
     /**
      * For a given test/panel result, there ought to be only one encounter containing non voided corresponding observation
-     * @param visit
-     * @param labResultEncounterType
+     *
+     * @param labResultEncounters
      * @param testDetail
      * @return
      */
-    private Encounter identifyResultEncounter(Visit visit, EncounterType labResultEncounterType, OpenElisTestDetail testDetail) {
-        for (Encounter encounter : visit.getEncounters()) {
-            if (!encounter.getEncounterType().equals(labResultEncounterType)) continue;
-
+    private Encounter identifyResultEncounter(List<Encounter> labResultEncounters, OpenElisTestDetail testDetail) {
+        for (Encounter encounter : labResultEncounters) {
             final Obs resultObs = identifyResultObs(encounter, testDetail);
             if (resultObs != null) {
                 return encounter;
@@ -211,18 +210,18 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         return provider;
     }
 
-    private Encounter findOrCreateEncounter(OpenElisAccession openElisAccession, Visit visit,
-                                            EncounterType labResultEncounterType, Provider testProvider) {
-        Encounter labResultEncounter = getEncounterByEncounterTypeProviderAndVisit(labResultEncounterType, testProvider, visit);
+    private Encounter findOrCreateEncounter(Visit resultVisit,
+                                            Provider testProvider, EncounterType labResultEncounterType) {
 
+        Encounter labResultEncounter = getEncounterByProviderAndEncounterType(testProvider, labResultEncounterType, resultVisit.getEncounters());
         if (labResultEncounter == null) {
-            labResultEncounter = newEncounterInstance(openElisAccession, visit, visit.getPatient(), testProvider, labResultEncounterType);
+            labResultEncounter = accessionMapper.newEncounterInstance(resultVisit, resultVisit.getPatient(), testProvider, labResultEncounterType, new Date());
         }
         return  labResultEncounter;
     }
 
-    private Encounter getEncounterByEncounterTypeProviderAndVisit(EncounterType labResultEncounterType, Provider provider, Visit visit) {
-        for (Encounter encounter : visit.getEncounters()) {
+    private Encounter getEncounterByProviderAndEncounterType(Provider provider, EncounterType labResultEncounterType, Set<Encounter> labResultEncounters) {
+        for (Encounter encounter : labResultEncounters) {
             if(hasSameEncounterType(labResultEncounterType, encounter) && hasSameProvider(provider, encounter)) {
                 return encounter;
             }
@@ -230,23 +229,15 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         return null;
     }
 
-    private Encounter newEncounterInstance(OpenElisAccession openElisAccession, Visit visit, Patient patient, Provider labSystemProvider, EncounterType encounterType) {
-        Encounter encounter = new Encounter();
-        encounter.setEncounterType(encounterType);
-        encounter.setPatient(patient);
-        encounter.setEncounterDatetime(openElisAccession.fetchDate());
-        EncounterRole encounterRole = encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
-        encounter.setProvider(encounterRole, labSystemProvider);
-        encounter.setVisit(visit);
-        return encounter;
-    }
-
     private boolean hasSameEncounterType(EncounterType labResultEncounterType, Encounter encounter) {
         return encounter.getEncounterType().getUuid().equals(labResultEncounterType.getUuid());
     }
 
     private boolean hasSameProvider(Provider provider, Encounter encounter) {
-        return encounter.getEncounterProviders().iterator().next().getProvider().getUuid().equals(provider.getUuid());
+        if(encounter.getEncounterProviders().size() > 0) {
+            return encounter.getEncounterProviders().iterator().next().getProvider().getUuid().equals(provider.getUuid());
+        }
+        return false;
     }
 
     private boolean isSameDate(Date date1, Date date2) {

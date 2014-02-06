@@ -11,20 +11,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Visit;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.emrapi.encounter.EmrEncounterService;
-import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.bahmni.webclients.HttpClient;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -35,8 +34,6 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
     HttpClient httpClient;
     @Autowired
     private ElisAtomFeedProperties properties;
-    @Autowired
-    EncounterTransactionMapper encounterTransactionMapper;
 
     private OpenElisAccessionEventWorker openElisAccessionEventWorker;
     private String openElisUrl = "http://localhost:8080/";
@@ -49,11 +46,8 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
                 properties,
                 httpClient,
                 Context.getEncounterService(),
-                Context.getService(EmrEncounterService.class),
                 Context.getConceptService(),
                 new AccessionMapper(properties),
-                encounterTransactionMapper,
-                Context.getVisitService(),
                 Context.getProviderService());
 
     }
@@ -73,13 +67,13 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
                 .withResultType("N")
                 .build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
-        openElisAccession.setAccessionUuid("6d0ae386-707a-4629-9850-f15206e63ab0");
+        openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
 
         when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
 
         openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
 
-        Visit visit = Context.getVisitService().getVisit(1);
+        Visit visit = Context.getVisitService().getVisit(2);
         Encounter labEncounter = null;
          Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
@@ -112,13 +106,13 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
                 .withResultType("N")
                 .build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
-        openElisAccession.setAccessionUuid("6d0ae386-707a-4629-9850-f15206e63ab0");
+        openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
 
         when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
 
         openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
 
-        Visit visit = Context.getVisitService().getVisit(1);
+        Visit visit = Context.getVisitService().getVisit(2);
         Encounter labEncounter = null;
          Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
@@ -548,13 +542,10 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
                 .build();
 
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(hbTest, esrTest))).withDateTime("2014-01-30T11:50:18+0530").build();
-        openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
+        String accessionUuid = "6d0af4567-707a-4629-9850-f15206e63ab0";
+        openElisAccession.setAccessionUuid(accessionUuid);
 
-        Event firstEvent = new Event("id", "openelis/accession/6d0af4567-707a-4629-9850-f15206e63ab0", "title", "feedUri");
-
-        when(httpClient.get(properties.getOpenElisUri() + firstEvent.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
-
-        //openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
+        Event firstEvent = stubHttpClientToGetOpenElisAccession(accessionUuid, openElisAccession);
         openElisAccessionEventWorker.process(firstEvent);
 
         Visit visit = Context.getVisitService().getVisit(2);
@@ -602,8 +593,8 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
                 .build();
 
         openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(hbTestUpdated, esrTestUpdated))).withDateTime("2014-01-30T11:50:18+0530").build();
-        openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
-        when(httpClient.get(properties.getOpenElisUri() + firstEvent.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
+        openElisAccession.setAccessionUuid(accessionUuid);
+        firstEvent = stubHttpClientToGetOpenElisAccession(accessionUuid, openElisAccession);
         openElisAccessionEventWorker.process(firstEvent);
 
         visit = Context.getVisitService().getVisit(2);
@@ -657,13 +648,13 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
                 .withResultType("N")
                 .build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
-        openElisAccession.setAccessionUuid("6d0ae386-707a-4629-9850-f15206e63ab0");
+        openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
 
         when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
 
         openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
 
-        Visit visit = Context.getVisitService().getVisit(1);
+        Visit visit = Context.getVisitService().getVisit(2);
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
@@ -678,7 +669,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         assertEquals(1, obs.size());
 
         openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
-        visit = Context.getVisitService().getVisit(1);
+        visit = Context.getVisitService().getVisit(2);
         labEncounter = null;
         encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
@@ -692,6 +683,175 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         obs = labEncounter.getAllObs(true);
         assertEquals(0, getVoidedObservations(obs).size());
         assertEquals(1, obs.size());
+    }
+
+    @Test
+    public void shouldCreateOrderEncounterAndAssociateResultsForNewAccession() throws Exception {
+        executeDataSet("labResult.xml");
+        EncounterService encounterService = Context.getEncounterService();
+
+        String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
+        String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
+        String accessionUuid = "6xfe4567-707a-4629-9850-f15206e9b0eX";
+        String patientUuidWithNoOrders = "75e04d42-3ca8-11e3-bf2b-ab87271c1b75";
+
+        assertNull(encounterService.getEncounterByUuid(accessionUuid));
+
+        OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
+                .withPanelUuid(panelConceptUuid)
+                .withTestUuid(haemoglobinConceptUuid)
+                .withResult("10.5")
+                .withProviderUuid("331c6bf8-7846-11e3-a96a-09xD371c1b75")
+                .withMinNormal("10")
+                .withMaxNormal("20.2")
+                .withAbnormal("false")
+                .withDateTime("2014-01-30T11:50:18+0530")
+                .withResultType("N")
+                .build();
+
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder()
+                .withDateTime("2014-01-30T11:50:18+0530")
+                .withTestDetails(new HashSet<>(Arrays.asList(test1)))
+                .withPatientUuid(patientUuidWithNoOrders)
+                .build();
+        openElisAccession.setAccessionUuid(accessionUuid);
+
+        Event firstEvent = stubHttpClientToGetOpenElisAccession(accessionUuid, openElisAccession);
+        openElisAccessionEventWorker.process(firstEvent);
+
+        Visit visit = encounterService.getEncounterByUuid(accessionUuid).getVisit();
+        Encounter labEncounter = null;
+        Set<Encounter> encounters = visit.getEncounters();
+        for (Encounter encounter : encounters) {
+            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+                labEncounter = encounter;
+            }
+        }
+
+        assertEquals(2, encounters.size());
+        assertNotNull(labEncounter);
+
+        Set<Obs> obs = labEncounter.getAllObs();
+        assertEquals(1, obs.size());
+        Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
+        assertNotNull(panelResultObs);
+        Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
+        assertEquals(1,panel1ResultMembers.size());
+
+        Set<Obs> topLevelObs = panel1ResultMembers;
+        assertEquals(1, topLevelObs.size());
+        final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
+        assertEquals(1, testLevelObs.size());
+        final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
+        assertEquals(4, resultMembers.size());
+
+        Obs testResultObs = getObsByConceptUuid(testLevelObs, haemoglobinConceptUuid);
+        assertNotNull(testResultObs);
+        assertEquals(4, testResultObs.getGroupMembers().size());
+
+    }
+
+    @Test
+    public void shouldCreateOrderEncounterAndAssociateResultsForNewAccessionWhenTheVisitToOrderEncounterIsClosed() throws Exception {
+        executeDataSet("labResult.xml");
+        EncounterService encounterService = Context.getEncounterService();
+
+        String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
+        String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
+        String accessionUuid = "6xfe4567-707a-4629-9850-f15206e9b0eX";
+        String patientUuidWithNoOrders = "75e04d42-3ca8-11e3-bf2b-ab87271c1b75";
+
+        assertNull(encounterService.getEncounterByUuid(accessionUuid));
+
+        OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
+                .withPanelUuid(panelConceptUuid)
+                .withTestUuid(haemoglobinConceptUuid)
+                .build();
+
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder()
+                .withDateTime("2014-01-30T11:50:18+0530")
+                .withTestDetails(new HashSet<>(Arrays.asList(test1)))
+                .withPatientUuid(patientUuidWithNoOrders)
+                .build();
+        openElisAccession.setAccessionUuid(accessionUuid);
+
+        Event firstEvent = stubHttpClientToGetOpenElisAccession(accessionUuid, openElisAccession);
+        openElisAccessionEventWorker.process(firstEvent);
+
+        Visit visit = encounterService.getEncounterByUuid(accessionUuid).getVisit();
+        Encounter labEncounter = null;
+        Set<Encounter> encounters = visit.getEncounters();
+        for (Encounter encounter : encounters) {
+            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+                labEncounter = encounter;
+            }
+        }
+
+        assertEquals(1, encounters.size());
+        assertNull(labEncounter);
+
+        visit.setStopDatetime(new Date());
+        Context.getVisitService().saveVisit(visit);
+
+        test1 = new OpenElisTestDetailBuilder()
+                .withPanelUuid(panelConceptUuid)
+                .withTestUuid(haemoglobinConceptUuid)
+                .withResult("10.5")
+                .withProviderUuid("331c6bf8-7846-11e3-a96a-09xD371c1b75")
+                .withMinNormal("10")
+                .withMaxNormal("20.2")
+                .withAbnormal("false")
+                .withDateTime("2014-01-30T11:50:18+0530")
+                .withResultType("N")
+                .build();
+
+        openElisAccession = new OpenElisAccessionBuilder()
+                .withDateTime("2014-01-30T11:50:18+0530")
+                .withTestDetails(new HashSet<>(Arrays.asList(test1)))
+                .withPatientUuid(patientUuidWithNoOrders)
+                .build();
+        openElisAccession.setAccessionUuid(accessionUuid);
+
+        firstEvent = stubHttpClientToGetOpenElisAccession(accessionUuid, openElisAccession);
+        openElisAccessionEventWorker.process(firstEvent);
+
+        Encounter orderEncounter = encounterService.getEncounterByUuid(accessionUuid);
+        labEncounter = null;
+        EncounterType labResultEncounterType = encounterService.getEncounterType("LAB_RESULT");
+
+        List<Encounter> encounterList = encounterService.getEncounters(orderEncounter.getPatient(),
+                null, orderEncounter.getEncounterDatetime(), null, null,
+                Arrays.asList(labResultEncounterType),
+                null, null, null, false);
+
+        assertEquals(1, encounterList.size());
+        labEncounter = encounterList.get(0);
+        assertNotNull(labEncounter);
+
+        Set<Obs> obs = labEncounter.getAllObs();
+        assertEquals(1, obs.size());
+        Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
+        assertNotNull(panelResultObs);
+        Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
+        assertEquals(1,panel1ResultMembers.size());
+
+        Set<Obs> topLevelObs = panel1ResultMembers;
+        assertEquals(1, topLevelObs.size());
+        final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
+        assertEquals(1, testLevelObs.size());
+        final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
+        assertEquals(4, resultMembers.size());
+
+        Obs testResultObs = getObsByConceptUuid(testLevelObs, haemoglobinConceptUuid);
+        assertNotNull(testResultObs);
+        assertEquals(4, testResultObs.getGroupMembers().size());
+
+    }
+
+    private Event stubHttpClientToGetOpenElisAccession(String accessionUuid, OpenElisAccession openElisAccession) throws java.io.IOException {
+        Event firstEvent = new Event("id", "openelis/accession/" + accessionUuid, "title", "feedUri");
+        when(httpClient.get(properties.getOpenElisUri() + firstEvent.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
+        return firstEvent;
     }
 
     private Obs getObsByConceptUuid(Set<Obs> panel1ResultMembers, String conceptUuid) {

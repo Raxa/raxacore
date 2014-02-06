@@ -127,9 +127,7 @@ public class AccessionMapperTest {
         Encounter encounter = accessionMapper.mapToNewEncounter(openElisAccession);
 
         Date startDatetime = encounter.getVisit().getStartDatetime();
-        Date stopDatetime = encounter.getVisit().getStopDatetime();
-        Assert.assertTrue(encounter.getEncounterDatetime().after(startDatetime));
-        Assert.assertTrue(encounter.getEncounterDatetime().before(stopDatetime));
+        Assert.assertTrue("Encounter should be before or after visit start", encounter.getEncounterDatetime().compareTo(startDatetime) >= 0);
         Set<Order> orders = encounter.getOrders();
         Assert.assertEquals(2, orders.size());
         verify(conceptService, never()).getConceptByUuid("test1");
@@ -153,7 +151,7 @@ public class AccessionMapperTest {
         diff.addAddedTestDetail(new OpenElisTestDetailBuilder().withTestUuid("test2").build());
         diff.addAddedTestDetail(new OpenElisTestDetailBuilder().withTestUuid("panel1").build());
 
-        Encounter encounter = accessionMapper.mapToExistingEncounter(new OpenElisAccessionBuilder().build(), diff, previousEncounter);
+        Encounter encounter = accessionMapper.addOrVoidOrderDifferences(new OpenElisAccessionBuilder().build(), diff, previousEncounter);
 
         Assert.assertEquals(4, encounter.getOrders().size());
     }
@@ -171,7 +169,7 @@ public class AccessionMapperTest {
         AccessionDiff diff = new AccessionDiff();
         diff.addRemovedTestDetails(new OpenElisTestDetailBuilder().withTestUuid("test2").withStatus("Cancelled").build());
 
-        Encounter encounter = accessionMapper.mapToExistingEncounter(new OpenElisAccessionBuilder().build(), diff, previousEncounter);
+        Encounter encounter = accessionMapper.addOrVoidOrderDifferences(new OpenElisAccessionBuilder().build(), diff, previousEncounter);
 
         Set<Order> result = encounter.getOrders();
         Assert.assertEquals(2, result.size());
