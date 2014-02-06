@@ -83,4 +83,18 @@
             update scheduler_task_config set start_on_startup='1' where name in ('OpenElis Patient Atom Feed Task','OpenElis Patient  Atom Feed Failed Event Task');
         </sql>
     </changeSet>
+    <changeSet id="elis-atomfeed-14-201402041600" author="tw" context="rel3">
+        <comment>Remove scheduled job to process failed Openelis lab results</comment>
+        <sql>
+            DELETE FROM scheduler_task_config WHERE schedulable_class = 'org.bahmni.module.elisatomfeedclient.api.task.OpenElisLabResultFeedFailedEventsTask';
+        </sql>
+    </changeSet>
+    <changeSet id="elis-atomfeed-15-201402041605" author="tw" context="rel3">
+        <comment>Remove scheduled job to process Openelis lab results, as this is now part of accession worker</comment>
+        <sql>
+            DELETE FROM scheduler_task_config WHERE schedulable_class = 'org.bahmni.module.elisatomfeedclient.api.task.OpenElisLabResultFeedTask';
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>

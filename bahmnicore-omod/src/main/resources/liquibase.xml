@@ -325,5 +325,78 @@
             UPDATE scheduler_task_config SET schedulable_class = 'org.bahmni.module.referencedatafeedclient.task.ReferenceDataFailedEventTask' WHERE name = 'Reference Data Failed Event Task';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-clinical-201401281730" author="Banka,RT" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from encounter_type where name = 'LAB_RESULT'</sqlCheck>
+        </preConditions>
+        <comment>Add new encounter type for Lab Result</comment>
+        <sql>
+            INSERT INTO encounter_type (name, description, creator, date_created, uuid) VALUES ('LAB_RESULT', 'Lab Result encounter', 1, curdate(), uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-clinical-201401311600" author="TW" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_name where name = 'LAB_RESULTS_CONCEPT_SET'
+            </sqlCheck>
+        </preConditions>
+        <comment>Add concept set for Lab results</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            set @answer_concept_id = 0;
+            call add_concept(@concept_id, @concept_name_short_id,
+            @concept_name_full_id,'LABRESULTS_CONCEPT','LABRESULTS_CONCEPT', 'N/A', 'Finding', true);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'LABRESULTS', 1);
+
+            set @labresults_concept_id = @concept_id;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id,'LAB_RESULT','LAB_RESULT',
+            'Text', 'Finding', false);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'LAB', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'RESULT', 1);
+            set @set_concept_id = @concept_id;
+            call add_concept_set_members (@labresults_concept_id,@set_concept_id,1);
+
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id,'LAB_NOTES','LAB_NOTES', 'Text',
+            'Finding', false);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'LAB', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'NOTES', 1);
+            set @set_concept_id = @concept_id;
+            call add_concept_set_members (@labresults_concept_id,@set_concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id,'LAB_MINNORMAL','LAB_MINNORMAL',
+            'Numeric', 'Finding', false);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'LAB', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'MINNORMAL', 1);
+            set @set_concept_id = @concept_id;
+            call add_concept_set_members (@labresults_concept_id,@set_concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id,'LAB_MAXNORMAL','LAB_MAXNORMAL',
+            'Numeric', 'Finding', false);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'LAB', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'MAXNORMAL', 1);
+            set @set_concept_id = @concept_id;
+            call add_concept_set_members (@labresults_concept_id,@set_concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id,'LAB_ABNORMAL','LAB_ABNORMAL',
+            'Boolean', 'Finding', false);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'LAB', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'ABNORMAL', 1);
+            set @set_concept_id = @concept_id;
+            call add_concept_set_members (@labresults_concept_id,@set_concept_id,1);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-clinical-201402061215" author="Angshu,RT" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from visit_type where name = 'LAB_RESULTS_IN_ABSENTEE'</sqlCheck>
+        </preConditions>
+        <comment>Add new visit type LAB_RESULTS_IN_ABSENTEE</comment>
+        <sql>
+            INSERT INTO visit_type (name, description, creator, uuid, date_created) VALUES ('LAB_RESULTS_IN_ABSENTEE', 'Visit for which results come when patient is not present', 1, uuid(), curdate());
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

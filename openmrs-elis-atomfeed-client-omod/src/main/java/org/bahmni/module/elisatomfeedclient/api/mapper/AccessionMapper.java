@@ -4,6 +4,7 @@ import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
+import org.joda.time.DateTime;
 import org.openmrs.*;
 import org.openmrs.api.*;
 import org.openmrs.api.context.Context;
@@ -11,6 +12,7 @@ import org.openmrs.api.context.Context;
 import java.util.*;
 
 public class AccessionMapper {
+    public static final String LAB_RESULTS_IN_ABSENTEE = "LAB_RESULTS_IN_ABSENTEE";
     private final EncounterService encounterService;
     private final PatientService patientService;
     private final VisitService visitService;
@@ -44,39 +46,60 @@ public class AccessionMapper {
             labUser = userService.getUserByUsername(properties.getLabSystemUserName());
         }
 
-        Encounter encounter = new Encounter();
-        encounter.setUuid(openElisAccession.getAccessionUuid());
-        encounter.setEncounterType(encounterService.getEncounterType(properties.getEncounterTypeClinical()));
-        encounter.setPatient(patient);
-        encounter.setEncounterDatetime(openElisAccession.fetchDate());
-        EncounterRole encounterRole = encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
-
         Provider labSystemProvider = getLabSystemProvider();
-        encounter.setProvider(encounterRole, labSystemProvider);
+        EncounterType encounterType = encounterService.getEncounterType(properties.getEncounterTypeClinical());
 
-        Visit visit = getNearestVisit(patient, openElisAccession);
-        checkAndUpdateVisitEndDatetime(visit, openElisAccession.fetchDate());
+        Visit visit = findOrCreateVisit(patient, DateTime.parse(openElisAccession.getDateTime()).toDate());
 
-        encounter.setVisit(visit);
+        Encounter encounter = newEncounterInstance(visit, patient, labSystemProvider, encounterType,  openElisAccession.fetchDate());
+        encounter.setUuid(openElisAccession.getAccessionUuid());
 
         Set<String> groupedOrders = groupOrders(openElisAccession.getTestDetails());
 
         Set<Order> orders = createOrders(openElisAccession, groupedOrders, patient);
         addOrdersToEncounter(encounter, orders);
-
+        visit.addEncounter(encounter);
         return encounter;
     }
 
-    private void checkAndUpdateVisitEndDatetime(Visit visit, Date accessionDatetime) {
-        if (visit.getStopDatetime() != null && visit.getStopDatetime().before(accessionDatetime)) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(accessionDatetime);
-            calendar.add(Calendar.HOUR, 1);
-            visit.setStopDatetime(calendar.getTime());
-        }
+    public Encounter newEncounterInstance(Visit visit, Patient patient, Provider labSystemProvider, EncounterType encounterType, Date date) {
+        Encounter encounter = new Encounter();
+        encounter.setEncounterType(encounterType);
+        encounter.setPatient(patient);
+        encounter.setEncounterDatetime(date);
+        EncounterRole encounterRole = encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
+        encounter.setProvider(encounterRole, labSystemProvider);
+        encounter.setVisit(visit);
+        return encounter;
     }
 
-    public Encounter mapToExistingEncounter(OpenElisAccession openElisAccession, AccessionDiff diff, Encounter previousEncounter) {
+
+    public Visit findOrCreateVisit(Patient patient, Date startDatetime) {
+        Visit activeVisit = getActiveVisit(patient);
+        if (activeVisit != null){
+            return activeVisit;
+        }
+        Visit visit = new Visit();
+        visit.setPatient(patient);
+        visit.setVisitType(getVisitTypeByName(LAB_RESULTS_IN_ABSENTEE));
+        visit.setStartDatetime(startDatetime);
+        visit.setEncounters(new HashSet<Encounter>());
+        visit.setUuid(UUID.randomUUID().toString());
+        return visit;
+    }
+
+    private VisitType getVisitTypeByName(String visitTypeName) {
+        List<VisitType> visitTypes = visitService.getVisitTypes(visitTypeName);
+        return visitTypes.isEmpty() ? null : visitTypes.get(0);
+    }
+
+
+    private Visit getActiveVisit(Patient patient) {
+        List<Visit> activeVisitsByPatient = visitService.getActiveVisitsByPatient(patient);
+        return activeVisitsByPatient != null && !activeVisitsByPatient.isEmpty() ? activeVisitsByPatient.get(0) : null;
+    }
+
+    public Encounter addOrVoidOrderDifferences(OpenElisAccession openElisAccession, AccessionDiff diff, Encounter previousEncounter) {
         if (diff.getAddedTestDetails().size() > 0) {
             Set<String> addedOrders = groupOrders(diff.getAddedTestDetails());
             Set<Order> newOrders = createOrders(openElisAccession, addedOrders, previousEncounter.getPatient());
@@ -85,7 +108,7 @@ public class AccessionMapper {
 
         if (diff.getRemovedTestDetails().size() > 0) {
             Set<String> removedOrders = groupOrders(diff.getRemovedTestDetails());
-            removeOrders(previousEncounter, removedOrders);
+            voidOrders(previousEncounter, removedOrders);
         }
 
         return previousEncounter;
@@ -128,7 +151,7 @@ public class AccessionMapper {
         return labOrderType;
     }
 
-    private void removeOrders(Encounter previousEncounter, Set<String> removedOrders) {
+    private void voidOrders(Encounter previousEncounter, Set<String> removedOrders) {
         for (String removedOrder : removedOrders) {
             for (Order order : previousEncounter.getOrders()) {
                 if (removedOrder.equals(order.getConcept().getUuid())) {
@@ -155,16 +178,5 @@ public class AccessionMapper {
     private Provider getLabSystemProvider() {
         Collection<Provider> labSystemProviders = providerService.getProvidersByPerson(labUser.getPerson());
         return labSystemProviders == null ? null : labSystemProviders.iterator().next();
-    }
-
-    private Visit getNearestVisit(Patient patient, OpenElisAccession accession) {
-        List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, accession.fetchDate(), null, null, null, true, false);
-        Visit nearestVisit = visits.get(0);
-        for (Visit visit : visits) {
-            if (nearestVisit.getStartDatetime().before(visit.getStartDatetime())) {
-                nearestVisit = visit;
-            }
-        }
-        return nearestVisit;
     }
 }

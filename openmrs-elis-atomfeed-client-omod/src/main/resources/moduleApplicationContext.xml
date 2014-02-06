@@ -29,21 +29,4 @@
             </list>
         </property>
     </bean>
-
-    <bean parent="serviceContext">
-        <property name="moduleService">
-            <list>
-                <value>org.bahmni.module.elisatomfeedclient.api.client.OpenElisLabResultFeedClient</value> <!-- service interface name -->
-                <ref bean="openElisLabResultFeedClient"/>
-            </list>
-        </property>
-    </bean>
-    <bean parent="serviceContext">
-        <property name="moduleService">
-            <list>
-                <value>org.bahmni.module.elisatomfeedclient.api.client.OpenElisLabResultFailedEventsFeedClient</value> <!-- service interface name -->
-                <ref bean="openElisLabResultFailedEventFeedClient"/>
-            </list>
-        </property>
-    </bean>
 </beans>

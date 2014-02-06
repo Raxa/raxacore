@@ -13,12 +13,11 @@ import org.bahmni.module.elisatomfeedclient.api.worker.OpenElisPatientFeedWorker
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.joda.time.DateTime;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
+import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.emrapi.encounter.EmrEncounterService;
-import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -26,22 +25,15 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Component("openElisPatientFeedClient")
 public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements OpenElisPatientFeedClient {
     private BahmniPatientService bahmniPatientService;
-    private PersonService personService;
-    private EncounterTransactionMapper encounterTransactionMapper;
-    private EmrEncounterService emrEncounterService;
     private Logger logger = Logger.getLogger(OpenElisPatientFeedClientImpl.class);
 
 
     @Autowired
     public OpenElisPatientFeedClientImpl(ElisAtomFeedProperties properties,
                                          BahmniPatientService bahmniPatientService,
-                                         PersonService personService, EncounterTransactionMapper encounterTransactionMapper, EmrEncounterService emrEncounterService,
                                          PlatformTransactionManager transactionManager) {
-        super(properties, transactionManager);
+            super(properties, transactionManager);
         this.bahmniPatientService = bahmniPatientService;
-        this.personService = personService;
-        this.encounterTransactionMapper = encounterTransactionMapper;
-        this.emrEncounterService = emrEncounterService;
     }
 
     @Override
@@ -51,10 +43,12 @@ public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements
 
     @Override
     protected EventWorker createWorker(HttpClient authenticatedWebClient, ElisAtomFeedProperties properties) {
-        PatientService patientService = Context.getService(PatientService.class);
         EncounterService encounterService = Context.getService(EncounterService.class);
+        ConceptService conceptService = Context.getService(ConceptService.class);
+        PersonService personService = Context.getPersonService();
+        ProviderService providerService = Context.getProviderService();
 
-        OpenElisAccessionEventWorker accessionEventWorker = new OpenElisAccessionEventWorker(properties, authenticatedWebClient, encounterService, emrEncounterService, new AccessionMapper(properties), encounterTransactionMapper);
+        OpenElisAccessionEventWorker accessionEventWorker = new OpenElisAccessionEventWorker(properties, authenticatedWebClient, encounterService, conceptService, new AccessionMapper(properties), providerService);
         OpenElisPatientEventWorker openElisPatientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, authenticatedWebClient, properties);
         return new OpenElisPatientFeedWorker(openElisPatientEventWorker, accessionEventWorker);
     }

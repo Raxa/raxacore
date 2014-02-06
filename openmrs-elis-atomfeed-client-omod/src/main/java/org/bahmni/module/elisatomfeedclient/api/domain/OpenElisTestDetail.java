@@ -13,8 +13,8 @@ public class OpenElisTestDetail {
     private String testUnitOfMeasurement;
     private String testUuid;
     private String panelUuid;
-    private int minNormal;
-    private int maxNormal;
+    private Double minNormal;
+    private Double maxNormal;
     private String result;
     private Set<String> notes;
     private String resultType;
