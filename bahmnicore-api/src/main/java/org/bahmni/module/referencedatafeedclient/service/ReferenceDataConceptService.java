@@ -71,6 +71,9 @@ public class ReferenceDataConceptService {
         conceptDrug.setUnits(drug.getStrengthUnits());
         conceptDrug.setConcept(getConceptByName(drug.getGenericName()));
         conceptDrug.setRoute(getConceptByName(drug.getRoute()));
+        if(!drug.getIsActive()){
+            conceptDrug.setRetired(true);
+        }
         conceptService.saveDrug(conceptDrug);
     }
 

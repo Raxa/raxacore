@@ -17,4 +17,5 @@ public class Drug {
     String strength;
     String strengthUnits;
     String route;
+    Boolean isActive;
 }
