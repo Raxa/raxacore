@@ -61,27 +61,23 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         for (Document document : documents) {
             Concept testConcept = conceptService.getConceptByUuid(document.getTestUuid());
 
-            Obs parentObservation = findOrCreateParentObs(encounter, encounterDateTime, testConcept);
+            Obs parentObservation = findOrCreateParentObs(encounter, encounterDateTime, testConcept, document.getObsUuid());
+            parentObservation.setConcept(testConcept);
             encounter.addObs(parentObservation);
 
             Concept imageConcept = conceptService.getConceptByName(DOCUMENT_OBS_GROUP_CONCEPT_NAME);
             if (document.isVoided()) {
-                voidDocumentObservation(encounter, document);
-            } else {
+                voidDocumentObservation(encounter.getAllObs(), document.getObsUuid());
+            } else if(document.getObsUuid() == null) {
                 String url = saveDocument(encounter, document);
                 parentObservation.addGroupMember(newObs(encounterDateTime, encounter, imageConcept, url));
             }
         }
     }
 
-    private Obs findOrCreateParentObs(Encounter encounter, Date encounterDateTime, Concept testConcept) {
-        Set<Obs> observations = encounter.getAllObs().size() > 0 ? encounter.getAllObs() : new HashSet<Obs>();
-        for (Obs observation : observations) {
-            if (observation.getConcept().equals(testConcept)) {
-                return observation;
-            }
-        }
-        return newObs(encounterDateTime, encounter, testConcept, null);
+    private Obs findOrCreateParentObs(Encounter encounter, Date observationDateTime, Concept testConcept, String obsUuid) {
+        Obs observation = findObservation(encounter.getAllObs(), obsUuid);
+        return observation != null ? observation : newObs(observationDateTime, encounter, testConcept, null) ;
     }
 
     private String saveDocument(Encounter encounter, Document document) {
@@ -92,25 +88,29 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         return url;
     }
 
-    private void voidDocumentObservation(Encounter encounter, Document document) {
-        for (Obs obs : encounter.getAllObs()) {
-            for (Obs member : obs.getGroupMembers()) {
-                if (member.getUuid().equals(document.getObsUuid())) {
-                    member.setVoided(true);
-                    return;
-                }
-            }
-        }
+    private void voidDocumentObservation(Set<Obs> allObs, String obsUuid) {
+        Obs observation = findObservation(allObs, obsUuid);
+        if(observation != null)
+            observation.setVoided(true);
     }
 
-    private Obs newObs(Date encounterDateTime, Encounter encounter, Concept concept, String url) {
+    private Obs findObservation(Set<Obs> allObs, String obsUuid) {
+        for (Obs obs : allObs) {
+            if (obs.getUuid().equals(obsUuid)) {
+                return obs;
+            }
+        }
+        return null;
+    }
+
+    private Obs newObs(Date obsDate, Encounter encounter, Concept concept, String value) {
         Obs observation = new Obs();
         observation.setPerson(encounter.getPatient());
         observation.setEncounter(encounter);
         observation.setConcept(concept);
-        observation.setObsDatetime(encounterDateTime);
-        if (url != null) {
-            observation.setValueText(url);
+        observation.setObsDatetime(obsDate);
+        if (value != null) {
+            observation.setValueText(value);
         }
         return observation;
     }

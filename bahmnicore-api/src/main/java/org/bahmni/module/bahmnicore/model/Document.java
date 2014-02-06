@@ -1,8 +1,10 @@
 package org.bahmni.module.bahmnicore.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class Document {
     String image;
     String format;
@@ -11,13 +13,5 @@ public class Document {
     boolean voided;
 
     public Document() {
-    }
-
-    public Document(String image, String format, String testUUID, String obsUuid, boolean voided) {
-        this.image = image;
-        this.format = format;
-        this.testUuid = testUUID;
-        this.obsUuid = obsUuid;
-        this.voided = voided;
     }
 }

@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -109,7 +110,7 @@ public class VisitDocumentControllerIT extends BaseEmrControllerTest {
     }
 
     @Test
-    public void shouldDoMultipleUploads() throws Exception {
+    public void shouldDoMultipleUploadsToSameTest() throws Exception {
         executeDataSet("uploadDocuments.xml");
         Patient patient = Context.getPatientService().getPatientByUuid("75e04d42-3ca8-11e3-bf2b-0800271c1b75");
         Visit visit = createVisitForDate(patient, null, new Date(), true);
@@ -148,14 +149,15 @@ public class VisitDocumentControllerIT extends BaseEmrControllerTest {
         assertEquals(1, existingVisit.getEncounters().size());
         Encounter encounter = new ArrayList<>(existingVisit.getEncounters()).get(0);
         assertEquals(1, encounter.getEncounterProviders().size());
-        assertEquals(1, encounter.getAllObs().size());
-        Obs parentObs = new ArrayList<>(encounter.getAllObs()).get(0);
-        assertEquals(2, parentObs.getGroupMembers().size());
-        Iterator<Obs> iterator = parentObs.getGroupMembers().iterator();
+        assertEquals(2, encounter.getAllObs().size());
+        Obs parentObs1 = new ArrayList<>(encounter.getAllObs()).get(0);
+        Obs parentObs2 = new ArrayList<>(encounter.getAllObs()).get(1);
+        assertEquals(1, parentObs1.getGroupMembers().size());
+        assertEquals(1, parentObs1.getGroupMembers().size());
 
-        String imageUrl = iterator.next().getValueText();
+        String imageUrl = parentObs1.getGroupMembers().iterator().next().getValueText();
         assertTrue(imageUrl.contains("jpeg") || imageUrl.contains("png"));
-        imageUrl = iterator.next().getValueText();
+        imageUrl = parentObs2.getGroupMembers().iterator().next().getValueText();
         assertTrue(imageUrl.contains("jpeg") || imageUrl.contains("png"));
     }
 
@@ -184,7 +186,7 @@ public class VisitDocumentControllerIT extends BaseEmrControllerTest {
 
         VisitDocumentResponse documentAddedResponse = deserialize(handle(newPostRequest("/rest/v1/bahmnicore/visitDocument", addDocumentJSON)), VisitDocumentResponse.class);
         Visit addedVisit = visitService.getVisitByUuid(documentAddedResponse.getVisitUuid());
-        String obsUuid = addedVisit.getEncounters().iterator().next().getAllObs().iterator().next().getGroupMembers().iterator().next().getUuid();
+        String obsUuid = addedVisit.getEncounters().iterator().next().getAllObs().iterator().next().getUuid();
 
         String deleteDocumentJSON = "{" +
                 "\"patientUuid\":\"" + patientUUID + "\"," +
@@ -203,15 +205,61 @@ public class VisitDocumentControllerIT extends BaseEmrControllerTest {
 
         assertEquals(1, updatedVisit.getEncounters().size());
         Encounter encounter = new ArrayList<>(updatedVisit.getEncounters()).get(0);
+        assertEquals(1, encounter.getAllObs(true).size());
+        assertEquals(true, encounter.getAllObs(true).iterator().next().getVoided());
+    }
+
+    @Test
+    public void shouldUpdateTestAssociatedToExisitingDocument() throws Exception {
+        executeDataSet("uploadDocuments.xml");
+        String patientUUID = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
+        String encounterTypeUUID = "759799ab-c9a5-435e-b671-77773ada74e4";
+        String visitTypeUUID = "b45ca846-c79a-11e2-b0c0-8e397087571c";
+        String testUUID = "e340cf44-3d3d-11e3-bf2b-0800271c1b75";
+        String otherTestUUID = "07a90a4b-0fca-42ff-8988-f5b519be06ab";
+
+        Patient patient = Context.getPatientService().getPatientByUuid(patientUUID);
+        Visit visit = createVisitForDate(patient, null, new Date(), true);
+
+        String addDocumentJSON = "{" +
+                "\"patientUuid\":\"" + patientUUID + "\"," +
+                "\"visitTypeUuid\":\"" + visitTypeUUID + "\"," +
+                "\"visitStartDate\":\"2019-12-31T18:30:00.000Z\"," +
+                "\"visitEndDate\":\"2019-12-31T18:30:00.000Z\"," +
+                "\"encounterTypeUuid\":\"" + encounterTypeUUID + "\"," +
+                "\"visitUuid\":\"" + visit.getUuid() + "\"," +
+                "\"encounterDateTime\":\"2019-12-31T18:30:00.000Z\"," +
+                "\"providerUuid\":\"331c6bf8-7846-11e3-a96a-0800271c1b75\"," +
+                "\"documents\": [{\"testUuid\": \"" + testUUID + "\", \"image\": \"" + image + "\", \"format\": \".jpeg\"}]" +
+                "}";
+
+        VisitDocumentResponse documentAddedResponse = deserialize(handle(newPostRequest("/rest/v1/bahmnicore/visitDocument", addDocumentJSON)), VisitDocumentResponse.class);
+        Visit addedVisit = visitService.getVisitByUuid(documentAddedResponse.getVisitUuid());
+        String obsUuid = addedVisit.getEncounters().iterator().next().getAllObs().iterator().next().getUuid();
+
+        String updateTestInDocumentJSON = "{" +
+                "\"patientUuid\":\"" + patientUUID + "\"," +
+                "\"visitTypeUuid\":\"" + visitTypeUUID + "\"," +
+                "\"visitStartDate\":\"2019-12-31T18:30:00.000Z\"," +
+                "\"visitEndDate\":\"2019-12-31T18:30:00.000Z\"," +
+                "\"encounterTypeUuid\":\"" + encounterTypeUUID + "\"," +
+                "\"visitUuid\":\"" + visit.getUuid() + "\"," +
+                "\"encounterDateTime\":\"2019-12-31T18:30:00.000Z\"," +
+                "\"providerUuid\":\"331c6bf8-7846-11e3-a96a-0800271c1b75\"," +
+                "\"documents\": [{\"testUuid\": \"" + otherTestUUID + "\", \"image\": \"" + "/x/y/1-1-1-1.jpg" + "\", \"format\": \".jpeg\", \"obsUuid\" : \""+obsUuid+"\"}]" +
+                "}";
+
+        VisitDocumentResponse response = deserialize(handle(newPostRequest("/rest/v1/bahmnicore/visitDocument", updateTestInDocumentJSON)), VisitDocumentResponse.class);
+        Visit updatedVisit = visitService.getVisitByUuid(response.getVisitUuid());
+
+        assertEquals(1, updatedVisit.getEncounters().size());
+        Encounter encounter = new ArrayList<>(updatedVisit.getEncounters()).get(0);
         assertEquals(1, encounter.getAllObs().size());
 
         Obs parentObs = new ArrayList<>(encounter.getAllObs()).get(0);
-        Set<Obs> groupMembers = parentObs.getGroupMembers(true);
-        assertEquals(1, groupMembers.size());
-        Obs obs = new ArrayList<>(groupMembers).get(0);
-        assertTrue(obs.isVoided());
+        assertEquals(otherTestUUID, parentObs.getConcept().getUuid());
+        assertEquals(1, parentObs.getGroupMembers(true).size());
     }
-
 
     private Visit createVisitForDate(Patient patient, Encounter encounter, Date orderDate, boolean isActive) {
         VisitType opdVisitType = visitService.getVisitType(1);
