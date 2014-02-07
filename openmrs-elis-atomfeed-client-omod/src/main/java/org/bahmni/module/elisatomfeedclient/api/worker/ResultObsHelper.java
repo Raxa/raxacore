@@ -60,11 +60,14 @@ public class ResultObsHelper {
         Obs labObs = newParentObs(order, concept, obsDate);
         topLevelObs.addGroupMember(labObs);
 
-        labObs.addGroupMember(newChildObs(order, obsDate, concept, testDetail.getResult()));
-        labObs.addGroupMember(newChildObs(order, obsDate, LAB_ABNORMAL, testDetail.getAbnormal().toString()));
-        if(testDetail.getResultType().equals(RESULT_TYPE_NUMERIC)) {
-            labObs.addGroupMember(newChildObs(order, obsDate, LAB_MINNORMAL, testDetail.getMinNormal().toString()));
-            labObs.addGroupMember(newChildObs(order, obsDate, LAB_MAXNORMAL, testDetail.getMaxNormal().toString()));
+        if(StringUtils.isNotBlank(testDetail.getResult())) {
+            labObs.addGroupMember(newChildObs(order, obsDate, concept, testDetail.getResult()));
+            labObs.addGroupMember(newChildObs(order, obsDate, LAB_ABNORMAL, testDetail.getAbnormal().toString()));
+
+            if (testDetail.getResultType().equals(RESULT_TYPE_NUMERIC)) {
+                labObs.addGroupMember(newChildObs(order, obsDate, LAB_MINNORMAL, testDetail.getMinNormal().toString()));
+                labObs.addGroupMember(newChildObs(order, obsDate, LAB_MAXNORMAL, testDetail.getMaxNormal().toString()));
+            }
         }
         final Set<String> notes = testDetail.getNotes();
         if (notes != null) {

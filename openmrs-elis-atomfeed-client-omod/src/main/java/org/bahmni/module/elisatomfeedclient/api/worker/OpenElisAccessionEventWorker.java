@@ -102,7 +102,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         List<Provider> labResultProviders = new ArrayList<>();
         Visit resultVisit = accessionMapper.findOrCreateVisit(orderEncounter.getPatient(), new Date());
         for (OpenElisTestDetail testDetail : allTests) {
-            if (StringUtils.isNotBlank(testDetail.getResult())) {
+            if (StringUtils.isNotBlank(testDetail.getDateTime())) {
                 Encounter resultEncounterForTest = identifyResultEncounter(labResultEncounters, testDetail);
                 Order testOrder = identifyOrder(orderEncounter, testDetail);
                 Provider testProvider = getProviderForResults(labResultProviders, testDetail.getProviderUuid());
