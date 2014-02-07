@@ -398,5 +398,15 @@
             INSERT INTO visit_type (name, description, creator, uuid, date_created) VALUES ('LAB_RESULTS_IN_ABSENTEE', 'Visit for which results come when patient is not present', 1, uuid(), curdate());
         </sql>
     </changeSet>
+    <changeSet id="bahmni-clinical-201402101443" author="sush" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege = 'app:document-upload'</sqlCheck>
+        </preConditions>
+        <insert tableName="privilege">
+            <column name="privilege" value="app:document-upload"/>
+            <column name="description" value="bahmni document upload access privilege"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
 
 </databaseChangeLog>
