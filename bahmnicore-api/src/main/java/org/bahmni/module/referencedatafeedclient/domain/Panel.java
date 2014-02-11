@@ -13,6 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Panel {
+    private static final String PANEL_SUFFIX = " (Panel)";
     String id;
     String name;
     String description;
@@ -20,4 +21,8 @@ public class Panel {
     Boolean isActive = true;
     Sample sample;
     Set<Test> tests = new HashSet<>();
+
+    public void suffixPanelToName() {
+        name = name + PANEL_SUFFIX;
+    }
 }

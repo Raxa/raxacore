@@ -1,31 +1,24 @@
 package org.bahmni.module.referencedatafeedclient.worker;
 
-import org.bahmni.module.referencedatafeedclient.ReferenceDataFeedProperties;
-import org.bahmni.module.referencedatafeedclient.domain.Panel;
-import org.bahmni.module.referencedatafeedclient.domain.Sample;
+import org.bahmni.module.referencedatafeedclient.*;
+import org.bahmni.module.referencedatafeedclient.domain.*;
 import org.bahmni.module.referencedatafeedclient.domain.Test;
-import org.bahmni.module.referencedatafeedclient.service.ReferenceDataConceptService;
-import org.bahmni.module.referencedatafeedclient.worker.util.FileReader;
-import org.bahmni.webclients.HttpClient;
-import org.bahmni.webclients.ObjectMapperRepository;
-import org.ict4h.atomfeed.client.domain.Event;
-import org.junit.Assert;
-import org.junit.Before;
+import org.bahmni.module.referencedatafeedclient.service.*;
+import org.bahmni.module.referencedatafeedclient.worker.util.*;
+import org.bahmni.webclients.*;
+import org.ict4h.atomfeed.client.domain.*;
+import org.junit.*;
 import org.mockito.Mock;
-import org.openmrs.Concept;
-import org.openmrs.ConceptDatatype;
-import org.openmrs.api.ConceptService;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.openmrs.*;
+import org.openmrs.api.*;
+import org.openmrs.web.test.*;
+import org.springframework.beans.factory.annotation.*;
 
-import javax.validation.constraints.AssertFalse;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Locale;
+import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
@@ -133,6 +126,18 @@ public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
 
         Concept sampleConcept = conceptService.getConceptByUuid(panel.getSample().getId());
         Assert.assertTrue(sampleConcept.getSetMembers().contains(panelConcept));
+    }
+
+    @org.junit.Test
+    public void prepend_Panel_to_panelname_when_a_test_exists_with_same_name() throws Exception {
+        Panel panel = new Panel("12207b51-0d2f-4e0a-9ff7-65fc14aa362e", "Platelet Count", "description", "PC", true, new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66"), new HashSet<Test>());
+
+        Event panelEventWithSameNameAsTest = new Event("xxxx-yyyyy-2", "/reference-data/panel/12207b51-0d2f-4e0a-9ff7-65fc14aa362e");
+        when(httpClient.get(referenceDataUri + panelEventWithSameNameAsTest.getContent(), Panel.class)).thenReturn(panel);
+        panelEventWorker.process(panelEventWithSameNameAsTest);
+
+        Concept panelConcept = conceptService.getConcept(panel.getName());
+        Assert.assertEquals("Platelet Count (Panel)", panelConcept.getName().getName());
     }
 
 }

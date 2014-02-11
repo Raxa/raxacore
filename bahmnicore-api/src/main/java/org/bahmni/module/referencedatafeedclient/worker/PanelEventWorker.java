@@ -60,6 +60,8 @@ public class PanelEventWorker implements EventWorker {
     }
 
     private void createNewPanelConcept(Panel panel) {
+        suffixPanelToNameIfTestWithSameNameExists(panel);
+
         ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(panel.getId(), panel.getName(), LAB_SET, ConceptDatatype.N_A_UUID);
         referenceDataConcept.setDescription(panel.getDescription());
         referenceDataConcept.setShortName(panel.getShortName());
@@ -71,6 +73,13 @@ public class PanelEventWorker implements EventWorker {
         addNewPanelToSample(panel, newPanelConcept);
         if (newPanelConcept.isRetired()){
             removePanelFromSample(panel, newPanelConcept);
+        }
+    }
+
+    private void suffixPanelToNameIfTestWithSameNameExists(Panel panel) {
+        Concept conceptByName = conceptService.getConceptByName(panel.getName());
+        if (conceptByName != null && ! conceptByName.getUuid().equals(panel.getId())) {
+            panel.suffixPanelToName();
         }
     }
 

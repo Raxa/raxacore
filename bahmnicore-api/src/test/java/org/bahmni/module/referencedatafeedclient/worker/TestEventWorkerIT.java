@@ -1,28 +1,24 @@
 package org.bahmni.module.referencedatafeedclient.worker;
 
-import org.bahmni.module.referencedatafeedclient.ReferenceDataFeedProperties;
-import org.bahmni.module.referencedatafeedclient.domain.Department;
-import org.bahmni.module.referencedatafeedclient.domain.Sample;
+import org.bahmni.module.referencedatafeedclient.*;
+import org.bahmni.module.referencedatafeedclient.domain.*;
 import org.bahmni.module.referencedatafeedclient.domain.Test;
-import org.bahmni.module.referencedatafeedclient.service.ReferenceDataConceptService;
-import org.bahmni.module.referencedatafeedclient.worker.util.FileReader;
-import org.bahmni.webclients.HttpClient;
-import org.bahmni.webclients.ObjectMapperRepository;
-import org.ict4h.atomfeed.client.domain.Event;
-import org.junit.Assert;
-import org.junit.Before;
+import org.bahmni.module.referencedatafeedclient.service.*;
+import org.bahmni.webclients.*;
+import org.ict4h.atomfeed.client.domain.*;
+import org.junit.*;
 import org.mockito.Mock;
-import org.openmrs.Concept;
-import org.openmrs.ConceptDatatype;
-import org.openmrs.api.ConceptService;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.openmrs.*;
+import org.openmrs.api.*;
+import org.openmrs.web.test.*;
+import org.springframework.beans.factory.annotation.*;
 
-import java.util.Locale;
+import java.io.*;
+import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
@@ -170,5 +166,25 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
 
         Concept panelConcept = conceptService.getConceptByUuid("e5e25a7d-b3b2-40f4-9081-d440a7f98b77");
         Assert.assertFalse(panelConcept.getSetMembers().contains(testConcept));
+    }
+
+    @org.junit.Test
+    public void prepend_Test_to_testname_when_a_panel_exists_with_same_name() throws IOException {
+        Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
+        Department department = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b77");
+        Test test = new Test("5923d0e0-8734-11e3-baa7-0800200c9a66");
+        test.setIsActive(true);
+        test.setSample(sample);
+        test.setDepartment(department);
+        test.setResultType("Numeric");
+        test.setName("Anaemia Panel");
+        test.setShortName("AP");
+
+        Event testEventWithSameNameAsPanel = new Event("xxxx-yyyyy-2", "/reference-data/test/5923d0e0-8734-11e3-baa7-0800200c9a66");
+        when(httpClient.get(referenceDataUri + testEventWithSameNameAsPanel.getContent(), Test.class)).thenReturn(test);
+        testEventWorker.process(testEventWithSameNameAsPanel);
+
+        Concept testConcept = conceptService.getConceptByUuid("5923d0e0-8734-11e3-baa7-0800200c9a66");
+        Assert.assertEquals("Anaemia Panel (Test)", testConcept.getName().getName());
     }
 }

@@ -27,4 +27,7 @@
     <concept_set concept_id="101" concept_set="107" concept_set_id="999" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
     <concept_set concept_id="106" concept_set="107" concept_set_id="998" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
 
+    <concept concept_id="108" retired="false" datatype_id="4" class_id="8" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="a63c32d4-79d5-4a5f-95c1-0be1cd8f2dee"/>
+    <concept_name concept_id="108" name="Platelet Count" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="11" voided="false" concept_name_type="FULLY_SPECIFIED" uuid="231e72e5-cf7c-47a8-a5b2-dd75c251bc80" locale_preferred="0"/>
+
 </dataset>

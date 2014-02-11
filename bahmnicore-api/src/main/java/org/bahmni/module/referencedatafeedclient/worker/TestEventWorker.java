@@ -68,6 +68,8 @@ public class TestEventWorker implements EventWorker {
         if (conceptDataType == null){
             conceptDataType = conceptService.getConceptDatatypeByName(TEXT_CONCEPT_DATATYPE);
         }
+        suffixTestToNameIfPanelWithSameNameExists(test);
+
         ReferenceDataConcept referenceDataConcept = new ReferenceDataConcept(test.getId(), test.getName(), TEST, conceptDataType.getUuid());
         referenceDataConcept.setDescription(test.getDescription());
         referenceDataConcept.setShortName(test.getShortName());
@@ -76,6 +78,13 @@ public class TestEventWorker implements EventWorker {
         addNewTestToSampleAndDepartment(test, newTestConcept);
         if (newTestConcept.isRetired()){
             removeTestFromSampleDepartmentAndPanel(test, newTestConcept);
+        }
+    }
+
+    private void suffixTestToNameIfPanelWithSameNameExists(Test test) {
+        Concept conceptByName = conceptService.getConceptByName(test.getName());
+        if (conceptByName != null && ! conceptByName.getUuid().equals(test.getId())) {
+            test.suffixTestToName();
         }
     }
 

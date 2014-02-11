@@ -10,6 +10,8 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Test {
+    public static final String TEST_SUFFIX = " (Test)";
+
     String id;
     String name;
     String description;
@@ -25,5 +27,9 @@ public class Test {
 
     public Test(String id, String name, String description, String shortName, String resultType, Sample sample, Department department) {
         this(id, name, description, shortName, resultType, sample, department, true);
+    }
+
+    public void suffixTestToName() {
+        name = name + TEST_SUFFIX;
     }
 }
