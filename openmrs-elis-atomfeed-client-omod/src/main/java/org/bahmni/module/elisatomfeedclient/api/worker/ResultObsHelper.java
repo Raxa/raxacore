@@ -3,10 +3,7 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
 import org.joda.time.DateTime;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
-import org.openmrs.Order;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 
 import java.text.ParseException;
@@ -121,9 +118,17 @@ public class ResultObsHelper {
     private Obs newChildObs(Order order, Date obsDate, Concept concept, String value) throws ParseException {
         Obs resultObs = new Obs();
         resultObs.setConcept(concept);
-        resultObs.setValueAsString(value);
+        setValue(value, resultObs);
         resultObs.setObsDatetime(obsDate);
         resultObs.setOrder(order);
         return resultObs;
+    }
+
+    private void setValue(String value, Obs resultObs) throws ParseException {
+        try {
+            resultObs.setValueAsString(value);
+        } catch (NumberFormatException e) {
+            resultObs.setValueText(null);
+        }
     }
 }
