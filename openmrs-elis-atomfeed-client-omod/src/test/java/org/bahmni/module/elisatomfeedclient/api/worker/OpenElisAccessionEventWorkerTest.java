@@ -6,7 +6,7 @@ import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisTestDetailBuilde
 import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
-import org.bahmni.module.elisatomfeedclient.api.mapper.AccessionMapper;
+import org.bahmni.module.elisatomfeedclient.api.mapper.AccessionHelper;
 import org.bahmni.webclients.HttpClient;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.ict4h.atomfeed.client.domain.Event;
@@ -19,9 +19,6 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.VisitService;
-import org.openmrs.module.emrapi.encounter.EmrEncounterService;
-import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
-import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.io.IOException;
 import java.util.*;
@@ -37,13 +34,16 @@ public class OpenElisAccessionEventWorkerTest {
     @Mock
     private EncounterService encounterService;
     @Mock
-    private AccessionMapper accessionMapper;
+    private AccessionHelper accessionMapper;
     @Mock
     private ElisAtomFeedProperties feedProperties;
     @Mock
     private ConceptService conceptService;
     @Mock
     private ProviderService providerService;
+
+    @Mock
+    private VisitService visitService;
 
     private OpenElisAccessionEventWorker accessionEventWorker;
     private String openElisUrl;
@@ -52,7 +52,7 @@ public class OpenElisAccessionEventWorkerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService, conceptService, accessionMapper, providerService);
+        accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService, conceptService, accessionMapper, providerService, visitService);
         openElisUrl = "http://localhost:8080";
         event = new Event("id", "/openelis/accession/12-34-56-78", "title", "feedUri");
         when(feedProperties.getOpenElisUri()).thenReturn(openElisUrl);
@@ -61,12 +61,15 @@ public class OpenElisAccessionEventWorkerTest {
     @Test
     public void shouldSaveEncounterWhenEncounterForGivenAccessionDoesNotExists() throws Exception {
         final Encounter encounter = getEncounterWithTests("test1");
+        final Visit visit = new Visit();
+        visit.setId(1);
         final OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().build();
         stubAccession(openElisAccession);
 
         // first time when it calls it should return null as there is no encounter at that point
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(null).thenReturn(encounter);
         when(accessionMapper.mapToNewEncounter(any(OpenElisAccession.class))).thenReturn(encounter);
+        when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class))).thenReturn(visit);
 
         accessionEventWorker.process(event);
 
@@ -80,9 +83,12 @@ public class OpenElisAccessionEventWorkerTest {
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").build();
         OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2))).build();
+        final Visit visit = new Visit();
+        visit.setId(1);
         stubAccession(openElisAccession);
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
         when(accessionMapper.addOrVoidOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
+        when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class))).thenReturn(visit);
 
         accessionEventWorker.process(event);
 
@@ -104,6 +110,9 @@ public class OpenElisAccessionEventWorkerTest {
         AccessionDiff accessionDiff = new AccessionDiff();
         accessionDiff.addRemovedTestDetails(test3);
         when(accessionMapper.addOrVoidOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
+        final Visit visit = new Visit();
+        visit.setId(1);
+        when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class))).thenReturn(visit);
 
         accessionEventWorker.process(event);
 
@@ -122,6 +131,9 @@ public class OpenElisAccessionEventWorkerTest {
         previousEncounter.setUuid(openElisAccession.getAccessionUuid());
         stubAccession(openElisAccession);
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
+        final Visit visit = new Visit();
+        visit.setId(1);
+        when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class))).thenReturn(visit);
 
         accessionEventWorker.process(event);
 

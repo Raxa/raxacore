@@ -28,7 +28,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
-public class AccessionMapperTest {
+public class AccessionHelperTest {
     @Mock
     EncounterService encounterService;
     @Mock
@@ -46,7 +46,7 @@ public class AccessionMapperTest {
     @Mock
     private OrderService orderService;
 
-    private AccessionMapper accessionMapper;
+    private AccessionHelper accessionHelper;
     private static final String VISIT_START_DATE = "2014-01-15 15:25:43+0530";
     private static final String ENCOUNTER_START_DATE = "2014-01-17T17:25:43Z";
     private static String DATE_FORMAT = "yyyy-MM-dd HH:mm:ssZ";
@@ -56,7 +56,7 @@ public class AccessionMapperTest {
     @Before
     public void setUp() {
         initMocks(this);
-        accessionMapper = new AccessionMapper(encounterService, patientService, visitService, conceptService, userService, providerService, orderService, feedProperties);
+        accessionHelper = new AccessionHelper(encounterService, patientService, visitService, conceptService, userService, providerService, orderService, feedProperties);
         simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
     }
 
@@ -87,7 +87,7 @@ public class AccessionMapperTest {
 
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(testDetails).build();
         openElisAccession.setDateTime(ENCOUNTER_START_DATE);
-        Encounter encounter = accessionMapper.mapToNewEncounter(openElisAccession);
+        Encounter encounter = accessionHelper.mapToNewEncounter(openElisAccession);
 
         Set<Order> orders = encounter.getOrders();
         Assert.assertEquals(2, orders.size());
@@ -124,7 +124,7 @@ public class AccessionMapperTest {
 
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(testDetails).build();
         openElisAccession.setDateTime(ENCOUNTER_START_DATE);
-        Encounter encounter = accessionMapper.mapToNewEncounter(openElisAccession);
+        Encounter encounter = accessionHelper.mapToNewEncounter(openElisAccession);
 
         Date startDatetime = encounter.getVisit().getStartDatetime();
         Assert.assertTrue("Encounter should be before or after visit start", encounter.getEncounterDatetime().compareTo(startDatetime) >= 0);
@@ -151,7 +151,7 @@ public class AccessionMapperTest {
         diff.addAddedTestDetail(new OpenElisTestDetailBuilder().withTestUuid("test2").build());
         diff.addAddedTestDetail(new OpenElisTestDetailBuilder().withTestUuid("panel1").build());
 
-        Encounter encounter = accessionMapper.addOrVoidOrderDifferences(new OpenElisAccessionBuilder().build(), diff, previousEncounter);
+        Encounter encounter = accessionHelper.addOrVoidOrderDifferences(new OpenElisAccessionBuilder().build(), diff, previousEncounter);
 
         Assert.assertEquals(4, encounter.getOrders().size());
     }
@@ -169,7 +169,7 @@ public class AccessionMapperTest {
         AccessionDiff diff = new AccessionDiff();
         diff.addRemovedTestDetails(new OpenElisTestDetailBuilder().withTestUuid("test2").withStatus("Cancelled").build());
 
-        Encounter encounter = accessionMapper.addOrVoidOrderDifferences(new OpenElisAccessionBuilder().build(), diff, previousEncounter);
+        Encounter encounter = accessionHelper.addOrVoidOrderDifferences(new OpenElisAccessionBuilder().build(), diff, previousEncounter);
 
         Set<Order> result = encounter.getOrders();
         Assert.assertEquals(2, result.size());

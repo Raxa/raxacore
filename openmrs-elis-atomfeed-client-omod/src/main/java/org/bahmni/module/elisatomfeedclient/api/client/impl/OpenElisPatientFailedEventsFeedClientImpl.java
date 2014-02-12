@@ -6,17 +6,14 @@ import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.client.OpenElisFeedClient;
 import org.bahmni.module.elisatomfeedclient.api.client.OpenElisPatientFailedEventsFeedClient;
-import org.bahmni.module.elisatomfeedclient.api.mapper.AccessionMapper;
+import org.bahmni.module.elisatomfeedclient.api.mapper.AccessionHelper;
 import org.bahmni.module.elisatomfeedclient.api.worker.OpenElisAccessionEventWorker;
 import org.bahmni.module.elisatomfeedclient.api.worker.OpenElisPatientEventWorker;
 import org.bahmni.module.elisatomfeedclient.api.worker.OpenElisPatientFeedWorker;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.joda.time.DateTime;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.PersonService;
-import org.openmrs.api.ProviderService;
+import org.openmrs.api.*;
 import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -53,13 +50,14 @@ public class OpenElisPatientFailedEventsFeedClientImpl extends OpenElisFeedClien
     @Override
     protected EventWorker createWorker(HttpClient authenticatedWebClient, ElisAtomFeedProperties properties) {
         EncounterService encounterService = Context.getService(EncounterService.class);
+        VisitService visitService = Context.getVisitService();
         OpenElisAccessionEventWorker accessionEventWorker = new OpenElisAccessionEventWorker(
                 properties,
                 authenticatedWebClient,
                 encounterService,
                 conceptService,
-                new AccessionMapper(properties),
-                providerService);
+                new AccessionHelper(properties),
+                providerService, visitService);
         OpenElisPatientEventWorker openElisPatientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, authenticatedWebClient, properties);
         return new OpenElisPatientFeedWorker(openElisPatientEventWorker, accessionEventWorker);
     }
