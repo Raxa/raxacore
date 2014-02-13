@@ -5,14 +5,37 @@ import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
 import org.joda.time.DateTime;
-import org.openmrs.*;
-import org.openmrs.api.*;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterRole;
+import org.openmrs.EncounterType;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
+import org.openmrs.Provider;
+import org.openmrs.TestOrder;
+import org.openmrs.User;
+import org.openmrs.Visit;
+import org.openmrs.VisitType;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.OrderService;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.ProviderService;
+import org.openmrs.api.UserService;
+import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class AccessionHelper {
-    public static final String LAB_RESULTS_IN_ABSENTEE = "LAB_RESULTS_IN_ABSENTEE";
     private final EncounterService encounterService;
     private final PatientService patientService;
     private final VisitService visitService;
@@ -40,17 +63,17 @@ public class AccessionHelper {
 
     }
 
-    public Encounter mapToNewEncounter(OpenElisAccession openElisAccession) {
+    public Encounter mapToNewEncounter(OpenElisAccession openElisAccession, String visitType) {
         Patient patient = patientService.getPatientByUuid(openElisAccession.getPatientUuid());
         if (labUser == null) {
             labUser = userService.getUserByUsername(properties.getLabSystemUserName());
         }
 
         Provider labSystemProvider = getLabSystemProvider();
-        EncounterType encounterType = encounterService.getEncounterType(properties.getEncounterTypeClinical());
+        EncounterType encounterType = encounterService.getEncounterType(properties.getEncounterTypeInvestigation());
 
         Date accessionDate = openElisAccession.fetchDate();
-        Visit visit = findOrInitializeVisit(patient, accessionDate);
+        Visit visit = findOrInitializeVisit(patient, accessionDate, visitType);
 
         Encounter encounter = newEncounterInstance(visit, patient, labSystemProvider, encounterType,  accessionDate);
         encounter.setUuid(openElisAccession.getAccessionUuid());
@@ -75,14 +98,14 @@ public class AccessionHelper {
     }
 
 
-    public Visit findOrInitializeVisit(Patient patient, Date visitDate) {
+    public Visit findOrInitializeVisit(Patient patient, Date visitDate, String visitType) {
         Visit applicableVisit = getVisitForPatientWithinDates(patient, visitDate);
         if (applicableVisit != null){
             return applicableVisit;
         }
         Visit visit = new Visit();
         visit.setPatient(patient);
-        visit.setVisitType(getVisitTypeByName(LAB_RESULTS_IN_ABSENTEE));
+        visit.setVisitType(getVisitTypeByName(visitType));
         visit.setStartDatetime(visitDate);
         visit.setEncounters(new HashSet<Encounter>());
         visit.setUuid(UUID.randomUUID().toString());

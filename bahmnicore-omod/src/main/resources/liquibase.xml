@@ -418,5 +418,14 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
+    <changeSet id="bahmni-clinical-201402131522" author="Angshu,RT" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from visit_type where name = 'LAB_VISIT'</sqlCheck>
+        </preConditions>
+        <comment>Creating new visit type LAB_VISIT</comment>
+        <sql>
+            INSERT INTO visit_type (name, description, creator, uuid, date_created) VALUES ('LAB_VISIT', 'Visits for lab visit by patient when the tests are not ordered through OpenMRS', 1, uuid(), curdate());
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

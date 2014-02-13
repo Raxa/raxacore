@@ -13,10 +13,10 @@ public class ElisAtomFeedProperties extends AtomFeedProperties {
     private static final String CONNECT_TIMEOUT = "feed.connectionTimeoutInMilliseconds";
     private static final String MAX_FAILED_EVENTS = "feed.maxFailedEvents";
     private static final String READ_TIMEOUT = "feed.replyTimeoutInMilliseconds";
-    private static final String ENCOUNTER_TYPE_CLINICAL = "openmrs.clinical.encounterType";
+    private static final String ENCOUNTER_TYPE_CLINICAL = "openmrs.encounterType.clinical";
     private static final String LAB_SYSTEM_USERNAME= "openmrs.labSystem.username";
     private static final String ORDER_TYPE_LAB_ORDER= "openmrs.orderType.labOrder";
-
+    private static final String ENCOUNTER_TYPE_INVESTIGATION = "openmrs.encounterType.investigation";
 
 
     @Resource(name = "openElisAtomFeedProperties")
@@ -47,6 +47,10 @@ public class ElisAtomFeedProperties extends AtomFeedProperties {
 
     public String getEncounterTypeClinical() {
         return atomFeedProperties.getProperty(ENCOUNTER_TYPE_CLINICAL);
+    }
+
+    public String getEncounterTypeInvestigation() {
+        return atomFeedProperties.getProperty(ENCOUNTER_TYPE_INVESTIGATION);
     }
 
     public String getLabSystemUserName() {

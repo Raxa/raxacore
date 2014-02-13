@@ -25,6 +25,8 @@ import java.util.*;
 
 public class OpenElisAccessionEventWorker implements EventWorker {
     public static final String SYSTEM_PROVIDER_IDENTIFIER = "system";
+    public static final String LAB_RESULTS_IN_ABSENTEE = "LAB_RESULTS_IN_ABSENTEE";
+    public static final String LAB_VISIT = "LAB_VISIT";
     private ElisAtomFeedProperties atomFeedProperties;
     private HttpClient httpClient;
     private EncounterService encounterService;
@@ -68,7 +70,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 }
             } else {
                 logger.info("openelisatomfeedclient:creating new encounter for accession : " + accessionUrl);
-                orderEncounter = accessionMapper.mapToNewEncounter(openElisAccession);
+                orderEncounter = accessionMapper.mapToNewEncounter(openElisAccession, LAB_VISIT);
                 shouldSaveOrderEncounter = true;
             }
 
@@ -136,7 +138,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     }
 
     private Visit identifyResultVisit(Patient patient, Date date) {
-        Visit resultVisit = accessionMapper.findOrInitializeVisit(patient, date);
+        Visit resultVisit = accessionMapper.findOrInitializeVisit(patient, date, LAB_RESULTS_IN_ABSENTEE);
         if (resultVisit.getId() == null) {
             visitService.saveVisit(resultVisit);
         }

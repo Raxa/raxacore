@@ -39,6 +39,8 @@
                     date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
     <encounter_type encounter_type_id="3" name="LAB_RESULT" description="Some desc 2" creator="1"
                     date_created="2005-01-01 00:00:00.0" retired="false" uuid="4fe21921-01cc-4720-a6bf-a61a17c4d05b"/>
+    <encounter_type encounter_type_id="4" name="INVESTIGATION" description="Some desc 2" creator="1"
+                    date_created="2005-01-01 00:00:00.0" retired="false" uuid="xv341921-01cc-4720-a6bf-a61a17c4d05b"/>
 
     <person person_id="2" gender="M" dead="false" creator="1" birthdate_estimated="0"
             date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
@@ -127,6 +129,10 @@
     <visit_type visit_type_id="2" name="LAB_RESULTS_IN_ABSENTEE" creator="1" date_created="2012-10-23 18:04:14"
                 changed_by="1" date_changed="2012-10-23 18:04:14"
                 retired="0" uuid="XvfZ54cb-2225-471a-9cd5-1234552c337c"/>
+
+    <visit_type visit_type_id="3" name="LAB_VISIT" creator="1" date_created="2012-10-23 18:04:14"
+                changed_by="1" date_changed="2012-10-23 18:04:14"
+                retired="0" uuid="ef4554cb-2225-471a-9cd5-1234552c337c"/>
 
     <!--encounter for panel order-->
 

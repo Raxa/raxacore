@@ -87,7 +87,7 @@ public class AccessionHelperTest {
 
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(testDetails).build();
         openElisAccession.setDateTime(ENCOUNTER_START_DATE);
-        Encounter encounter = accessionHelper.mapToNewEncounter(openElisAccession);
+        Encounter encounter = accessionHelper.mapToNewEncounter(openElisAccession, "LAB_RESULTS");
 
         Set<Order> orders = encounter.getOrders();
         Assert.assertEquals(2, orders.size());
@@ -124,7 +124,7 @@ public class AccessionHelperTest {
 
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(testDetails).build();
         openElisAccession.setDateTime(ENCOUNTER_START_DATE);
-        Encounter encounter = accessionHelper.mapToNewEncounter(openElisAccession);
+        Encounter encounter = accessionHelper.mapToNewEncounter(openElisAccession, "LAB_RESULTS");
 
         Date startDatetime = encounter.getVisit().getStartDatetime();
         Assert.assertTrue("Encounter should be before or after visit start", encounter.getEncounterDatetime().compareTo(startDatetime) >= 0);

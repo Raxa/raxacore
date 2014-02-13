@@ -68,8 +68,8 @@ public class OpenElisAccessionEventWorkerTest {
 
         // first time when it calls it should return null as there is no encounter at that point
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(null).thenReturn(encounter);
-        when(accessionMapper.mapToNewEncounter(any(OpenElisAccession.class))).thenReturn(encounter);
-        when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class))).thenReturn(visit);
+        when(accessionMapper.mapToNewEncounter(any(OpenElisAccession.class), any(String.class))).thenReturn(encounter);
+        when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class), any(String.class))).thenReturn(visit);
 
         accessionEventWorker.process(event);
 
@@ -88,7 +88,7 @@ public class OpenElisAccessionEventWorkerTest {
         stubAccession(openElisAccession);
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
         when(accessionMapper.addOrVoidOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
-        when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class))).thenReturn(visit);
+        when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class), any(String.class))).thenReturn(visit);
 
         accessionEventWorker.process(event);
 
@@ -112,12 +112,12 @@ public class OpenElisAccessionEventWorkerTest {
         when(accessionMapper.addOrVoidOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
         final Visit visit = new Visit();
         visit.setId(1);
-        when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class))).thenReturn(visit);
+        when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class), any(String.class))).thenReturn(visit);
 
         accessionEventWorker.process(event);
 
         verify(encounterService, times(2)).getEncounterByUuid(openElisAccession.getAccessionUuid());
-        verify(accessionMapper, never()).mapToNewEncounter(any(OpenElisAccession.class));
+        verify(accessionMapper, never()).mapToNewEncounter(any(OpenElisAccession.class), any(String.class));
         verify(accessionMapper).addOrVoidOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class));
         verify(encounterService).saveEncounter(previousEncounter);
     }
@@ -133,7 +133,7 @@ public class OpenElisAccessionEventWorkerTest {
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
         final Visit visit = new Visit();
         visit.setId(1);
-        when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class))).thenReturn(visit);
+        when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class), any(String.class))).thenReturn(visit);
 
         accessionEventWorker.process(event);
 
