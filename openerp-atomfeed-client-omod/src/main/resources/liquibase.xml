@@ -64,4 +64,22 @@
             VALUES ('101','ict4h','sql/db_migrations.xml',now(),'3:29f59eb61eb39a9dee52d81f4026d642','Add Column','',NULL,'2.0.5','EXECUTED','101') ON DUPLICATE KEY UPDATE EXECTYPE = 'EXECUTED';
         </sql>
     </changeSet>
+    <changeSet id="openerp-atomfeed-client-201402131804" author="tw" context="rel3">
+        <delete tableName="provider">
+            <where>identifier='system'</where>
+        </delete>
+    </changeSet>
+    <changeSet id="openerp-atomfeed-client-201402131819" author="tw" context="rel3">
+        <sql>
+            set @puuid = uuid();
+
+            insert into person(birthdate_estimated, dead, creator, date_created, uuid)
+            values(0, 0, 1, now(), @puuid);
+
+            insert into users(system_id, creator, date_created, person_id, uuid, username)
+            values ('Billing System', 1, now(),(select person_id from person where uuid = @puuid) , uuid(), 'Billing System');
+
+            insert into provider (person_id, identifier, creator, date_created, uuid, name) values ((select person_id from person where uuid = @puuid), 'BILLINGSYSTEM', 1, now(), uuid(), 'Billing System');
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -28,8 +28,9 @@
 
     <person person_id="22" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-15 15:57:09.0" voided="false" void_reason="" uuid="e64e2541-7845-11e3-a96a-0800271c1b7"/>
     <person_name person_name_id="22" preferred="true" person_id="22" prefix="" given_name="System" middle_name="" family_name="" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="2c0a6b97-7846-11e3-a96a-0800271c1b75"/>
+    <users user_id="777" person_id="22" system_id="3-6" username="System" retired="false" password="ff6d1655327d385e11a04e1632b4f33ceb8fafd2" salt="5d32c5fd9fde391c755f1f4dfd5e1d6e3debe6" secret_question="" creator="1" date_created="2008-08-15 15:46:47.0" uuid="Z9fd3a7b-6482-487d-87eR-c07b123MxF10"/>
     <encounter_role encounter_role_id="2" name = "bot" description = "feed consumer" creator="1" date_created="2005-01-01 00:00:00.0" retired = "false" uuid="b0f064d1-7846-11e3-a96a-0800271c1b75"/>
-    <provider provider_id="22" person_id="22" name="system" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="331c6bf8-7846-11e3-a96a-0800271c1b75" />
+    <provider provider_id="22" person_id="22" name="System" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="331c6bf8-7846-11e3-a96a-0800271c1b75" />
 
     <visit_type visit_type_id="4" name="REGULAR" description="REGULAR" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="fe898a34-1ade-11e1-9c71-00248140a5eb"/>
 </dataset>

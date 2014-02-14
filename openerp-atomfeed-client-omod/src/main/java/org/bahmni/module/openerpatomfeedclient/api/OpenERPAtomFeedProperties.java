@@ -13,7 +13,7 @@ public class OpenERPAtomFeedProperties extends AtomFeedProperties {
     private static final String CONNECT_TIMEOUT = "feed.connectionTimeoutInMilliseconds";
     private static final String MAX_FAILED_EVENTS = "feed.maxFailedEvents";
     private static final String READ_TIMEOUT = "feed.replyTimeoutInMilliseconds";
-
+    private static final String SYSTEM_USERNAME= "openmrs.system.username";
 
     @Resource(name = "erpAtomFeedProperties")
     private Properties atomFeedProperties;
@@ -39,5 +39,9 @@ public class OpenERPAtomFeedProperties extends AtomFeedProperties {
     @Override
     public int getConnectTimeout() {
         return Integer.parseInt(atomFeedProperties.getProperty(CONNECT_TIMEOUT));
+    }
+
+    public String getSystemUserName() {
+        return atomFeedProperties.getProperty(SYSTEM_USERNAME);
     }
 }

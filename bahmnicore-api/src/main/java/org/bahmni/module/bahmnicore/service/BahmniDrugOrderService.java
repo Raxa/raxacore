@@ -6,5 +6,5 @@ import java.util.Date;
 import java.util.List;
 
 public interface BahmniDrugOrderService {
-    void add(String patientId, Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders);
+    void add(String patientId, Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, String systemUserName);
 }

@@ -11,8 +11,6 @@ import org.ict4h.atomfeed.client.service.AtomFeedClient;
 import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.joda.time.DateTime;
 import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.net.URI;
@@ -40,7 +38,7 @@ public class OpenERPSaleOrderFeedClientImpl  {
         try {
             atomFeedClient = new AtomFeedClientBuilder().
                     forFeedAt(new URI(feedUri)).
-                    processedBy(new SaleOrderFeedEventWorker(bahmniDrugOrderService)).
+                    processedBy(new SaleOrderFeedEventWorker(bahmniDrugOrderService, properties)).
                     usingConnectionProvider(jdbcConnectionProvider).
                     with(properties).
                     build();

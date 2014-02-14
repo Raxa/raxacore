@@ -2,6 +2,7 @@ package org.bahmni.module.openerpatomfeedclient.api.worker;
 
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
+import org.bahmni.module.openerpatomfeedclient.api.OpenERPAtomFeedProperties;
 import org.bahmni.module.openerpatomfeedclient.api.domain.SaleOrder;
 import org.bahmni.module.openerpatomfeedclient.api.exception.OpenERPFeedException;
 import org.bahmni.module.openerpatomfeedclient.api.util.ObjectMapperRepository;
@@ -13,9 +14,11 @@ import java.io.IOException;
 public class SaleOrderFeedEventWorker implements EventWorker{
     private static Logger logger = Logger.getLogger(SaleOrderFeedEventWorker.class);
     private BahmniDrugOrderService bahmniDrugOrderService;
+    private OpenERPAtomFeedProperties properties;
 
-    public SaleOrderFeedEventWorker(BahmniDrugOrderService bahmniDrugOrderService) {
+    public SaleOrderFeedEventWorker(BahmniDrugOrderService bahmniDrugOrderService, OpenERPAtomFeedProperties properties) {
         this.bahmniDrugOrderService = bahmniDrugOrderService;
+        this.properties = properties;
     }
 
     @Override
@@ -25,7 +28,7 @@ public class SaleOrderFeedEventWorker implements EventWorker{
         try {
             SaleOrder saleOrder = ObjectMapperRepository.objectMapper.readValue(saleOrderContent, SaleOrder.class);
             if(saleOrder.getExternalId() == null) {
-                bahmniDrugOrderService.add(saleOrder.getCustomerId(), saleOrder.getOrderDate(), saleOrder.getSaleOrderItems());
+                bahmniDrugOrderService.add(saleOrder.getCustomerId(), saleOrder.getOrderDate(), saleOrder.getSaleOrderItems(), properties.getSystemUserName());
             }
         } catch (IOException e) {
             logger.error("openERPatomfeedclient:error processing : " + saleOrderContent + e.getMessage(), e);

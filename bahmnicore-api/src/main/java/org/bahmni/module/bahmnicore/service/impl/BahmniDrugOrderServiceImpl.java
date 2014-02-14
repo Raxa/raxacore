@@ -13,17 +13,20 @@ import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
+import org.openmrs.User;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProviderService;
+import org.openmrs.api.UserService;
 import org.openmrs.api.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -38,25 +41,30 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private OrderService orderService;
     private EncounterService encounterService;
     private ProviderService providerService;
+    private UserService userService;
     private OrderType drugOrderType = null;
     private Provider systemProvider = null;
     private EncounterRole unknownEncounterRole = null;
     private EncounterType consultationEncounterType = null;
+    private String systemUserName = null;
 
     @Autowired
     public BahmniDrugOrderServiceImpl(VisitService visitService, PatientService patientService,
                                       ConceptService conceptService, OrderService orderService,
-                                      ProviderService providerService, EncounterService encounterService) {
+                                      ProviderService providerService, EncounterService encounterService,
+                                      UserService userService) {
         this.visitService = visitService;
         this.patientService = patientService;
         this.conceptService = conceptService;
         this.orderService = orderService;
         this.providerService = providerService;
         this.encounterService = encounterService;
+        this.userService = userService;
     }
 
     @Override
-    public void add(String patientId, Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders) {
+    public void add(String patientId, Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, String systemUserName) {
+        this.systemUserName = systemUserName;
         Patient patient = patientService.getPatients(null, patientId, null, true, null, null).get(0);
         List<Visit> activeVisits = visitService.getActiveVisitsByPatient(patient);
         if (!activeVisits.isEmpty()) {
@@ -140,10 +148,9 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
     private Provider getSystemProvider() {
         if (systemProvider == null) {
-            List<Provider> providers = providerService.getProviders("system", null, null, null, false);
-            if (!providers.isEmpty()) {
-                systemProvider = providers.get(0);
-            }
+            User systemUser = userService.getUserByUsername(systemUserName);
+            Collection<Provider> providers = providerService.getProvidersByPerson(systemUser.getPerson());
+            systemProvider = providers == null ? null : providers.iterator().next();
         }
         return systemProvider;
     }

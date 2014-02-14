@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
@@ -59,7 +60,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         Visit activeVisit = createActiveVisit(patient);
         assertNull(activeVisit.getEncounters());
 
-        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders);
+        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System");
 
         Visit visit = visitService.getVisit(activeVisit.getId());
         Encounter encounter = (Encounter) visit.getEncounters().toArray()[0];
@@ -88,7 +89,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         Visit visit = createVisitForDate(patient, null, orderDate, false);
         assertNull(visit.getEncounters());
 
-        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders);
+        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System");
 
         Visit savedVisit = visitService.getVisit(visit.getId());
         Encounter encounter = (Encounter) savedVisit.getEncounters().toArray()[0];
@@ -119,7 +120,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         Visit visit2 = createVisitForDate(patient, null, DateUtils.addDays(orderDate, -3), false);
         assertNull(visit2.getEncounters());
 
-        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders);
+        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System");
 
         Visit savedVisit = visitService.getVisit(visit2.getId());
         Encounter encounter = (Encounter) savedVisit.getEncounters().toArray()[0];
@@ -151,7 +152,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         Visit visit = createVisitForDate(patient, systemConsultationEncounter, visitStartDate, false);
         assertEquals(1, visit.getEncounters().size());
 
-        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders);
+        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System");
 
         Visit savedVisit = visitService.getVisit(visit.getId());
         assertEquals(1, savedVisit.getEncounters().size());
