@@ -121,7 +121,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
 
         assertEquals(2, encounters.size());
         assertNotNull(labEncounter);
-        assertEquals("system", labEncounter.getEncounterProviders().iterator().next().getProvider().getIdentifier());
+        assertEquals("LABSYSTEM", labEncounter.getEncounterProviders().iterator().next().getProvider().getIdentifier());
 
         Set<Obs> topLevelObs = labEncounter.getAllObs();
         assertEquals(1, topLevelObs.size());

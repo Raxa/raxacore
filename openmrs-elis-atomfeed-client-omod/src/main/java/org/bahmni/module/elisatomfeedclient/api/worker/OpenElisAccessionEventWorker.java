@@ -24,7 +24,6 @@ import java.util.*;
 
 
 public class OpenElisAccessionEventWorker implements EventWorker {
-    public static final String SYSTEM_PROVIDER_IDENTIFIER = "system";
     public static final String LAB_RESULTS_IN_ABSENTEE = "LAB_RESULTS_IN_ABSENTEE";
     public static final String LAB_VISIT = "LAB_VISIT";
     private ElisAtomFeedProperties atomFeedProperties;
@@ -223,7 +222,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         //the lab results provider may not be register as provider in MRS,
         //hence instead of failing, get the system provider
         if (provider == null) {
-            provider = providerService.getProviderByIdentifier(SYSTEM_PROVIDER_IDENTIFIER);
+            provider = providerService.getProviderByIdentifier(atomFeedProperties.getLabSystemIdentifier());
         }
 
         labResultProviders.add(provider);
