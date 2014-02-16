@@ -3,6 +3,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
+import org.bahmni.module.bahmnicore.service.VisitIdentifierService;
 import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
@@ -35,6 +36,8 @@ import java.util.Set;
 @Service
 public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
+    public static final String DRUG_ORDER = "DRUG_ORDER";
+
     private VisitService visitService;
     private PatientService patientService;
     private ConceptService conceptService;
@@ -66,13 +69,19 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     public void add(String patientId, Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, String systemUserName) {
         this.systemUserName = systemUserName;
         Patient patient = patientService.getPatients(null, patientId, null, true, null, null).get(0);
-        List<Visit> activeVisits = visitService.getActiveVisitsByPatient(patient);
-        if (!activeVisits.isEmpty()) {
-            addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, activeVisits.get(0));
-        } else {
-            List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, orderDate, null, null, null, true, false);
-            addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visits.get(0));
-        }
+
+
+//        List<Visit> activeVisits = visitService.getActiveVisitsByPatient(patient);
+//        if (!activeVisits.isEmpty()) {
+//            addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, activeVisits.get(0));
+//        } else {
+//            List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, orderDate, null, null, null, true, false);
+//            addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visits.get(0));
+//        }
+
+        // TODO : Mujir/Vinay/Angshu - visit type should NEVER be used in code. "DRUG ORDER" is used below.. need to change
+        Visit visit = new VisitIdentifierService(visitService).findOrInitializeVisit(patient, orderDate, DRUG_ORDER);
+        addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visit);
     }
 
     private void addDrugOrdersToVisit(Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {

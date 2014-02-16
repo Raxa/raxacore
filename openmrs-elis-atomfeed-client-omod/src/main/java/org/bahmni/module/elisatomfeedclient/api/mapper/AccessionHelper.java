@@ -1,10 +1,10 @@
 package org.bahmni.module.elisatomfeedclient.api.mapper;
 
+import org.bahmni.module.bahmnicore.service.VisitIdentifierService;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
-import org.joda.time.DateTime;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterRole;
 import org.openmrs.EncounterType;
@@ -15,7 +15,6 @@ import org.openmrs.Provider;
 import org.openmrs.TestOrder;
 import org.openmrs.User;
 import org.openmrs.Visit;
-import org.openmrs.VisitType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
@@ -25,15 +24,11 @@ import org.openmrs.api.UserService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 public class AccessionHelper {
     private final EncounterService encounterService;
@@ -96,61 +91,6 @@ public class AccessionHelper {
         encounter.setVisit(visit);
         return encounter;
     }
-
-
-    public Visit findOrInitializeVisit(Patient patient, Date visitDate, String visitType) {
-        Visit applicableVisit = getVisitForPatientWithinDates(patient, visitDate);
-        if (applicableVisit != null){
-            return applicableVisit;
-        }
-        Visit visit = new Visit();
-        visit.setPatient(patient);
-        visit.setVisitType(getVisitTypeByName(visitType));
-        visit.setStartDatetime(visitDate);
-        visit.setEncounters(new HashSet<Encounter>());
-        visit.setUuid(UUID.randomUUID().toString());
-
-        Visit nextVisit = getVisitForPatientForNearestStartDate(patient, visitDate);
-        if (nextVisit == null) {
-            Date stopTime = new DateTime(visitDate).plusSeconds(1).toDate();
-            visit.setStopDatetime(stopTime);
-        } else {
-            DateTime nextVisitStartTime = new DateTime(nextVisit.getStartDatetime());
-            DateTime startTime = new DateTime(visitDate);
-            DateTime visitStopDate = startTime.withTime(23,59, 59, 000);
-            boolean isEndTimeBeforeNextVisitStart = visitStopDate.isBefore(nextVisitStartTime);
-            if (!isEndTimeBeforeNextVisitStart) {
-                visitStopDate = nextVisitStartTime.minusSeconds(1);
-            }
-            visit.setStopDatetime(visitStopDate.toDate());
-        }
-        return visit;
-    }
-
-    protected Visit getVisitForPatientWithinDates(Patient patient, Date startTime) {
-        List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, startTime, startTime, null, null, true, false);
-        return visits.isEmpty() ? null : visits.get(0);
-    }
-
-    protected Visit getVisitForPatientForNearestStartDate(Patient patient, Date startTime) {
-        List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, startTime, null, null, null, null, true, false);
-        if (visits.isEmpty()) {
-            return null;
-        }
-        Collections.sort(visits, new Comparator<Visit>() {
-            @Override
-            public int compare(Visit v1, Visit v2) {
-                return v1.getStartDatetime().compareTo(v2.getStartDatetime());
-            }
-        });
-        return visits.get(0);
-    }
-
-    private VisitType getVisitTypeByName(String visitTypeName) {
-        List<VisitType> visitTypes = visitService.getVisitTypes(visitTypeName);
-        return visitTypes.isEmpty() ? null : visitTypes.get(0);
-    }
-
 
     private Visit getActiveVisit(Patient patient) {
         List<Visit> activeVisitsByPatient = visitService.getActiveVisitsByPatient(patient);
@@ -236,5 +176,9 @@ public class AccessionHelper {
     private Provider getLabSystemProvider() {
         Collection<Provider> labSystemProviders = providerService.getProvidersByPerson(labUser.getPerson());
         return labSystemProviders == null ? null : labSystemProviders.iterator().next();
+    }
+
+    public Visit findOrInitializeVisit(Patient patient, Date date, String visitType) {
+        return new VisitIdentifierService(visitService).findOrInitializeVisit(patient, date, visitType);
     }
 }
