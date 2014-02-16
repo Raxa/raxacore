@@ -428,11 +428,11 @@
         </sql>
     </changeSet>
 
-    <changeSet id="bahmni-clinical-201402131522" author="Mujir,Vinay" context="rel3">
+    <changeSet id="bahmni-clinical-201402161951" author="Mujir,Vinay" context="rel3">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from visit_type where name = 'DRUG_ORDER'</sqlCheck>
         </preConditions>
-        <comment>Creating new visit type LAB_VISIT</comment>
+        <comment>Creating new visit type DRUG_ORDER</comment>
         <sql>
             INSERT INTO visit_type (name, description, creator, uuid, date_created) VALUES ('DRUG_ORDER', 'Placeholder visit for orders created when no visit is open', 1, uuid(), curdate());
         </sql>
