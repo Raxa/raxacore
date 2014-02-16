@@ -3,9 +3,11 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisAccessionBuilder;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisTestDetailBuilder;
+import org.bahmni.module.elisatomfeedclient.api.client.impl.HealthCenterFilterRule;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
 import org.bahmni.module.elisatomfeedclient.api.mapper.AccessionHelper;
+import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -17,7 +19,6 @@ import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.bahmni.webclients.HttpClient;
 
 import java.util.*;
 
@@ -30,6 +31,10 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
 
     @Mock
     HttpClient httpClient;
+
+    @Mock
+    HealthCenterFilterRule healthCenterFilterRule;
+
     @Autowired
     private ElisAtomFeedProperties properties;
 
@@ -37,17 +42,15 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
     private String openElisUrl = "http://localhost:8080/";
     private Event event = new Event("id", "openelis/accession/12-34-56-78", "title", "feedUri");
 
+
     @Before
     public void setUp() {
         initMocks(this);
-        this.openElisAccessionEventWorker = new OpenElisAccessionEventWorker(
-                properties,
-                httpClient,
-                Context.getEncounterService(),
-                Context.getConceptService(),
-                new AccessionHelper(properties),
-                Context.getProviderService(),
-                Context.getVisitService());
+        this.openElisAccessionEventWorker = new OpenElisAccessionEventWorker(properties, httpClient,
+                Context.getEncounterService(), Context.getConceptService(), new AccessionHelper(properties),
+                Context.getProviderService(), Context.getVisitService(), healthCenterFilterRule);
+        when(healthCenterFilterRule.passesWith("GAN")).thenReturn(true);
+        when(healthCenterFilterRule.passesWith("ANC")).thenReturn(false);
     }
 
     @Test

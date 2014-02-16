@@ -17,6 +17,7 @@ public class OpenElisAccession {
     private String patientFirstName;
     private String patientLastName;
     private String dateTime;
+    private String patientIdentifier;
     private Set<OpenElisTestDetail> testDetails = new HashSet<>();
 
     public void addTestDetail(OpenElisTestDetail testDetail) {
@@ -51,5 +52,9 @@ public class OpenElisAccession {
 
     public Date fetchDate() {
         return  dateTime == null ? null : DateTime.parse(dateTime).toDate();
+    }
+
+    public String getHealthCenter() {
+        return patientIdentifier.substring(0, 3);
     }
 }

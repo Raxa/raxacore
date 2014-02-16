@@ -58,6 +58,8 @@ public class OpenERPSaleOrderFeedClientImpl  {
             try {
                 if (e != null && ExceptionUtils.getStackTrace(e).contains("HTTP response code: 401")) {
                     initializeAtomFeedClient();
+                } else {
+                    logger.error("Could not process Sale order feed", e);
                 }
             }catch (Exception ex){
                 logger.error("openerpatomfeedclient:failed feed execution " + e, e);

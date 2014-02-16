@@ -3,6 +3,7 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
+import org.bahmni.module.elisatomfeedclient.api.client.impl.HealthCenterFilterRule;
 import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
@@ -33,6 +34,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     private AccessionHelper accessionMapper;
     private ProviderService providerService;
     private VisitService visitService;
+    private HealthCenterFilterRule healthCenterFilterRule;
 
     private static Logger logger = Logger.getLogger(OpenElisAccessionEventWorker.class);
 
@@ -41,7 +43,8 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                                         EncounterService encounterService,
                                         ConceptService conceptService,
                                         AccessionHelper accessionMapper,
-                                        ProviderService providerService, VisitService visitService) {
+                                        ProviderService providerService,
+                                        VisitService visitService, HealthCenterFilterRule healthCenterFilterRule) {
 
         this.atomFeedProperties = atomFeedProperties;
         this.httpClient = httpClient;
@@ -50,25 +53,32 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         this.accessionMapper = accessionMapper;
         this.providerService = providerService;
         this.visitService = visitService;
+        this.healthCenterFilterRule = healthCenterFilterRule;
     }
 
     @Override
     public void process(Event event) {
         String accessionUrl = atomFeedProperties.getOpenElisUri() + event.getContent();
-        logger.info("openelisatomfeedclient:Processing event : " + accessionUrl);
+        logger.info("Processing event : " + accessionUrl);
         try {
             OpenElisAccession openElisAccession = httpClient.get(accessionUrl, OpenElisAccession.class);
+
+            if (!healthCenterFilterRule.passesWith(openElisAccession.getHealthCenter())) {
+                logger.info("Skipping. Event " + accessionUrl + " will not be persisted");
+                return;
+            }
+
             Encounter orderEncounter = encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid());
             boolean shouldSaveOrderEncounter = false;
             if (orderEncounter != null) {
                 AccessionDiff diff = openElisAccession.getDiff(orderEncounter);
                 if (diff.hasDifference()) {
-                    logger.info("openelisatomfeedclient:updating encounter for accession : " + accessionUrl);
+                    logger.info("updating encounter for accession : " + accessionUrl);
                     accessionMapper.addOrVoidOrderDifferences(openElisAccession, diff, orderEncounter);
                     shouldSaveOrderEncounter = true;
                 }
             } else {
-                logger.info("openelisatomfeedclient:creating new encounter for accession : " + accessionUrl);
+                logger.info("creating new encounter for accession : " + accessionUrl);
                 orderEncounter = accessionMapper.mapToNewEncounter(openElisAccession, LAB_VISIT);
                 shouldSaveOrderEncounter = true;
             }

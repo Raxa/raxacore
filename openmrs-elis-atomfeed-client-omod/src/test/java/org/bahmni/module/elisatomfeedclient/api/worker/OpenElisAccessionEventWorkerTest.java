@@ -3,6 +3,7 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisAccessionBuilder;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisTestDetailBuilder;
+import org.bahmni.module.elisatomfeedclient.api.client.impl.HealthCenterFilterRule;
 import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
@@ -21,7 +22,9 @@ import org.openmrs.api.ProviderService;
 import org.openmrs.api.VisitService;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -43,6 +46,9 @@ public class OpenElisAccessionEventWorkerTest {
     private ProviderService providerService;
 
     @Mock
+    private HealthCenterFilterRule healthCenterFilterRule;
+
+    @Mock
     private VisitService visitService;
 
     private OpenElisAccessionEventWorker accessionEventWorker;
@@ -52,10 +58,12 @@ public class OpenElisAccessionEventWorkerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService, conceptService, accessionMapper, providerService, visitService);
+        accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService, conceptService, accessionMapper, providerService, visitService, healthCenterFilterRule);
         openElisUrl = "http://localhost:8080";
         event = new Event("id", "/openelis/accession/12-34-56-78", "title", "feedUri");
         when(feedProperties.getOpenElisUri()).thenReturn(openElisUrl);
+        when(healthCenterFilterRule.passesWith("GAN")).thenReturn(true);
+        when(healthCenterFilterRule.passesWith("ANC")).thenReturn(false);
     }
 
     @Test
@@ -139,6 +147,15 @@ public class OpenElisAccessionEventWorkerTest {
 
         verify(encounterService, times(2)).getEncounterByUuid(openElisAccession.getAccessionUuid());
         verify(encounterService, never()).saveEncounter(previousEncounter);
+    }
+
+
+    @Test
+    public void shouldNotProcessPatientsThatDoNotGoThroughTheFilter() throws Exception {
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withPatientIdentifier("ANC12345").build();
+        stubAccession(openElisAccession);
+
+        accessionEventWorker.process(event);
     }
 
     private Encounter createEncounterWithResults(Visit visit, EncounterType labEncounterType, EncounterRole encounterRole, OpenElisTestDetail test1) {

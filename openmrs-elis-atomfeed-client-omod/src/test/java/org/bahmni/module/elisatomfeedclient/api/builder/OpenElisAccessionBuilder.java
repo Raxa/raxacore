@@ -14,6 +14,7 @@ public class OpenElisAccessionBuilder {
         openElisAccession = new OpenElisAccession();
         openElisAccession.setAccessionUuid("1234");
         openElisAccession.addTestDetail(new OpenElisTestDetailBuilder().build());
+        openElisAccession.setPatientIdentifier("GAN12345");
     }
 
     public OpenElisAccession build() {
@@ -32,6 +33,12 @@ public class OpenElisAccessionBuilder {
 
     public OpenElisAccessionBuilder withPatientUuid(String uuid) {
         openElisAccession.setPatientUuid(uuid);
+        return this;
+    }
+
+
+    public OpenElisAccessionBuilder withPatientIdentifier(String patientIdentifier) {
+        openElisAccession.setPatientIdentifier(patientIdentifier);
         return this;
     }
 }

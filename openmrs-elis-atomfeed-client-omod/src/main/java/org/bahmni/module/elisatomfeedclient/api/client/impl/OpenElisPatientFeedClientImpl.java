@@ -46,9 +46,11 @@ public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements
         ProviderService providerService = Context.getProviderService();
         VisitService visitService = Context.getVisitService();
 
-        OpenElisAccessionEventWorker accessionEventWorker = new OpenElisAccessionEventWorker(properties, authenticatedWebClient, encounterService, conceptService, new AccessionHelper(properties), providerService, visitService);
-        OpenElisPatientEventWorker openElisPatientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, authenticatedWebClient, properties);
-        return new OpenElisPatientFeedWorker(openElisPatientEventWorker, accessionEventWorker);
+        OpenElisAccessionEventWorker accessionEventWorker = new OpenElisAccessionEventWorker(properties,
+                authenticatedWebClient, encounterService, conceptService, new AccessionHelper(properties),
+                providerService, visitService, new HealthCenterFilterRule());
+        OpenElisPatientEventWorker patientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, authenticatedWebClient, properties);
+        return new OpenElisPatientFeedWorker(patientEventWorker, accessionEventWorker);
     }
 
     @Override

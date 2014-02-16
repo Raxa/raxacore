@@ -57,7 +57,7 @@ public class OpenElisPatientFailedEventsFeedClientImpl extends OpenElisFeedClien
                 encounterService,
                 conceptService,
                 new AccessionHelper(properties),
-                providerService, visitService);
+                providerService, visitService, new HealthCenterFilterRule());
         OpenElisPatientEventWorker openElisPatientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, authenticatedWebClient, properties);
         return new OpenElisPatientFeedWorker(openElisPatientEventWorker, accessionEventWorker);
     }
