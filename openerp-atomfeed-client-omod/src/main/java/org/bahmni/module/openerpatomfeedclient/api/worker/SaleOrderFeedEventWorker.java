@@ -27,7 +27,7 @@ public class SaleOrderFeedEventWorker implements EventWorker{
         logger.info("openERPatomfeedclient:Processing : " + saleOrderContent);
         try {
             SaleOrder saleOrder = ObjectMapperRepository.objectMapper.readValue(saleOrderContent, SaleOrder.class);
-            if(saleOrder.getExternalId() == null) {
+            if(saleOrder.getExternalId() == null || saleOrder.getExternalId().trim().length() == 0) {
                 bahmniDrugOrderService.add(saleOrder.getCustomerId(), saleOrder.getOrderDate(), saleOrder.getSaleOrderItems(), properties.getSystemUserName());
             }
         } catch (IOException e) {
