@@ -49,7 +49,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         initMocks(this);
         this.openElisAccessionEventWorker = new OpenElisAccessionEventWorker(properties, httpClient,
                 Context.getEncounterService(), Context.getConceptService(), new AccessionHelper(properties),
-                Context.getProviderService(), Context.getVisitService(), healthCenterFilterRule);
+                Context.getProviderService(), healthCenterFilterRule);
         when(healthCenterFilterRule.passesWith("GAN")).thenReturn(true);
         when(healthCenterFilterRule.passesWith("ANC")).thenReturn(false);
     }
@@ -847,83 +847,6 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Obs testResultObs = getObsByConceptUuid(testLevelObs, haemoglobinConceptUuid);
         assertNotNull(testResultObs);
         assertEquals(4, testResultObs.getGroupMembers().size());
-
-    }
-
-    @Test
-    public void shouldTestNewOrdersAndResultsAreCreatedInRightVisit() throws Exception {
-        executeDataSet("labResultForOldVisits.xml");
-
-        String patientUuid = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
-
-        OpenElisTestDetail ureaNitrogenTest = new OpenElisTestDetailBuilder()
-                .withTestUuid("7923d0e0-8734-11e3-baa7-0800200c9a66")
-                .build();
-        OpenElisTestDetail haemoglobinTest = new OpenElisTestDetailBuilder()
-                .withTestUuid("7f7379ba-3ca8-11e3-bf2b-0800271c1b75")
-                .build();
-
-        String accessionDateStr = "2014-01-02T11:50:18+0530";
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder()
-                .withDateTime(accessionDateStr)
-                .withPatientUuid(patientUuid)
-                .withTestDetails(new HashSet<>(Arrays.asList(ureaNitrogenTest, haemoglobinTest)))
-                .build();
-        openElisAccession.setAccessionUuid("NA0af4567-707a-4629-9850-f15206e63ab0");
-
-        when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
-        openElisAccessionEventWorker.process(event);
-
-        VisitService visitService = Context.getVisitService();
-        Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
-        List<Visit> visits = visitService.getVisitsByPatient(patient, true, false);
-        assertEquals(3, visits.size());
-        Visit orderVisit = getVisitByStartDate(visits, DateTime.parse(accessionDateStr).toDate());
-        assertNotNull(orderVisit);
-
-        String ureaNitrogenTestDateStr = "2014-01-30T11:50:18+0530";
-        ureaNitrogenTest = new OpenElisTestDetailBuilder()
-                .withTestUuid("7923d0e0-8734-11e3-baa7-0800200c9a66")
-                .withResult("10.5")
-                .withProviderUuid("331c6bf8-7846-11e3-a96a-09xD371c1b75")
-                .withMinNormal("10")
-                .withMaxNormal("20.2")
-                .withAbnormal("false")
-                .withDateTime(ureaNitrogenTestDateStr)
-                .withResultType("N")
-                .build();
-        String haemoglobinTestDateStr = "2014-02-01T11:50:18+0530";
-        haemoglobinTest = new OpenElisTestDetailBuilder()
-                .withTestUuid("7f7379ba-3ca8-11e3-bf2b-0800271c1b75")
-                .withResult("120")
-                .withProviderUuid("331c6bf8-7846-11e3-a96a-09xD371c1b75")
-                .withMinNormal("100")
-                .withMaxNormal("200")
-                .withAbnormal("false")
-                .withDateTime(haemoglobinTestDateStr)
-                .withResultType("N")
-                .build();
-
-        openElisAccession = new OpenElisAccessionBuilder()
-                .withDateTime(accessionDateStr)
-                .withPatientUuid(patientUuid)
-                .withTestDetails(new HashSet<>(Arrays.asList(ureaNitrogenTest, haemoglobinTest)))
-                .build();
-        openElisAccession.setAccessionUuid("NA0af4567-707a-4629-9850-f15206e63ab0");
-
-        when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
-        openElisAccessionEventWorker.process(event);
-
-        List<Visit> allVisits = visitService.getVisitsByPatient(patient, true, false);
-        assertEquals(4, allVisits.size());
-        orderVisit = getVisitByStartDate(allVisits, DateTime.parse(accessionDateStr).toDate());
-        assertNotNull(orderVisit);
-
-        Visit visitForUreaResult = getVisitByStartDate(allVisits, DateTime.parse(ureaNitrogenTestDateStr).toDate());
-        assertNotNull(visitForUreaResult);
-
-        Visit visitForHaemoglobinResult = getVisitByStartDate(allVisits, DateTime.parse(haemoglobinTestDateStr).toDate());
-        assertNotNull(visitForHaemoglobinResult);
 
     }
 

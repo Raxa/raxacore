@@ -31,6 +31,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
+@Ignore
 public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired

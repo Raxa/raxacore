@@ -3,7 +3,6 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
-import org.bahmni.module.bahmnicore.service.VisitIdentifierService;
 import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
@@ -80,8 +79,8 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 //        }
 
         // TODO : Mujir/Vinay/Angshu - visit type should NEVER be used in code. "DRUG ORDER" is used below.. need to change
-        Visit visit = new VisitIdentifierService(visitService).findOrInitializeVisit(patient, orderDate, DRUG_ORDER);
-        addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visit);
+//        Visit visit = new VisitIdentifierService(visitService).findOrInitializeVisit(patient, orderDate, DRUG_ORDER);
+//        addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visit);
     }
 
     private void addDrugOrdersToVisit(Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {

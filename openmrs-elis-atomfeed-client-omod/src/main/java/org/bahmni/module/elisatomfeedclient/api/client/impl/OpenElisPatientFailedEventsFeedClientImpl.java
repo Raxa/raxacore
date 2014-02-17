@@ -50,14 +50,13 @@ public class OpenElisPatientFailedEventsFeedClientImpl extends OpenElisFeedClien
     @Override
     protected EventWorker createWorker(HttpClient authenticatedWebClient, ElisAtomFeedProperties properties) {
         EncounterService encounterService = Context.getService(EncounterService.class);
-        VisitService visitService = Context.getVisitService();
         OpenElisAccessionEventWorker accessionEventWorker = new OpenElisAccessionEventWorker(
                 properties,
                 authenticatedWebClient,
                 encounterService,
                 conceptService,
                 new AccessionHelper(properties),
-                providerService, visitService, new HealthCenterFilterRule());
+                providerService, new HealthCenterFilterRule());
         OpenElisPatientEventWorker openElisPatientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, authenticatedWebClient, properties);
         return new OpenElisPatientFeedWorker(openElisPatientEventWorker, accessionEventWorker);
     }

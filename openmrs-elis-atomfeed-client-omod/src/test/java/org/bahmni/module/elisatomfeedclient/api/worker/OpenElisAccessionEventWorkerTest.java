@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -48,9 +49,6 @@ public class OpenElisAccessionEventWorkerTest {
     @Mock
     private HealthCenterFilterRule healthCenterFilterRule;
 
-    @Mock
-    private VisitService visitService;
-
     private OpenElisAccessionEventWorker accessionEventWorker;
     private String openElisUrl;
     private Event event;
@@ -58,7 +56,7 @@ public class OpenElisAccessionEventWorkerTest {
     @Before
     public void setUp() {
         initMocks(this);
-        accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService, conceptService, accessionMapper, providerService, visitService, healthCenterFilterRule);
+        accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService, conceptService, accessionMapper, providerService, healthCenterFilterRule);
         openElisUrl = "http://localhost:8080";
         event = new Event("id", "/openelis/accession/12-34-56-78", "title", "feedUri");
         when(feedProperties.getOpenElisUri()).thenReturn(openElisUrl);
@@ -71,6 +69,8 @@ public class OpenElisAccessionEventWorkerTest {
         final Encounter encounter = getEncounterWithTests("test1");
         final Visit visit = new Visit();
         visit.setId(1);
+        encounter.setVisit(visit);
+        visit.setEncounters(new HashSet<>(Arrays.asList(encounter)));
         final OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().build();
         stubAccession(openElisAccession);
 
@@ -88,11 +88,13 @@ public class OpenElisAccessionEventWorkerTest {
     public void shouldUpdateEncounterWhenAccessionHasNewOrder() throws Exception {
         Encounter previousEncounter = getEncounterWithTests("test1");
         Encounter encounterFromAccession = getEncounterWithTests("test1", "test2");
+        final Visit visit = new Visit();
+        visit.setId(1);
+        previousEncounter.setVisit(visit);
+        visit.setEncounters(new HashSet<>(Arrays.asList(previousEncounter)));
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder().withTestUuid("test1").build();
         OpenElisTestDetail test2 = new OpenElisTestDetailBuilder().withTestUuid("test2").build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2))).build();
-        final Visit visit = new Visit();
-        visit.setId(1);
         stubAccession(openElisAccession);
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
         when(accessionMapper.addOrVoidOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
@@ -120,6 +122,8 @@ public class OpenElisAccessionEventWorkerTest {
         when(accessionMapper.addOrVoidOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
         final Visit visit = new Visit();
         visit.setId(1);
+        previousEncounter.setVisit(visit);
+        visit.setEncounters(new HashSet<>(Arrays.asList(previousEncounter)));
         when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class), any(String.class))).thenReturn(visit);
 
         accessionEventWorker.process(event);
@@ -141,6 +145,8 @@ public class OpenElisAccessionEventWorkerTest {
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
         final Visit visit = new Visit();
         visit.setId(1);
+        previousEncounter.setVisit(visit);
+        visit.setEncounters(new HashSet<>(Arrays.asList(previousEncounter)));
         when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class), any(String.class))).thenReturn(visit);
 
         accessionEventWorker.process(event);
