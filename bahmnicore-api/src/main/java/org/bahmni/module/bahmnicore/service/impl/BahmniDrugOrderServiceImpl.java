@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -34,8 +35,6 @@ import java.util.Set;
 
 @Service
 public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
-
-    public static final String DRUG_ORDER = "DRUG_ORDER";
 
     private VisitService visitService;
     private PatientService patientService;
@@ -68,19 +67,30 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     public void add(String patientId, Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, String systemUserName) {
         this.systemUserName = systemUserName;
         Patient patient = patientService.getPatients(null, patientId, null, true, null, null).get(0);
+        addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, getVisitForDrugOrders(orderDate, patient));
+    }
 
+    private Visit getVisitForDrugOrders(Date orderDate, Patient patient) {
+        List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, orderDate, null, null, null, true, false);
+        if (visits == null || visits.isEmpty()) {
+            visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, getNextDate(orderDate), null, null, null, true, false);
+        }
+        if (visits == null || visits.isEmpty()) {
+            throw new RuntimeException(
+                    String.format("Could not find suitable visit for orderDate %s patient %s", orderDate, patient.getPatientIdentifier()));
+        }
+        return visits.get(0);
+    }
 
-//        List<Visit> activeVisits = visitService.getActiveVisitsByPatient(patient);
-//        if (!activeVisits.isEmpty()) {
-//            addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, activeVisits.get(0));
-//        } else {
-//            List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, orderDate, null, null, null, true, false);
-//            addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visits.get(0));
-//        }
-
-        // TODO : Mujir/Vinay/Angshu - visit type should NEVER be used in code. "DRUG ORDER" is used below.. need to change
-//        Visit visit = new VisitIdentifierService(visitService).findOrInitializeVisit(patient, orderDate, DRUG_ORDER);
-//        addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visit);
+    private static Date getNextDate(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.add(Calendar.DAY_OF_YEAR, 1);
+        return cal.getTime();
     }
 
     private void addDrugOrdersToVisit(Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {
