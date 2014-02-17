@@ -29,6 +29,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensitiveTest {
 
+    public static final String ENCOUNTER_TYPE_LAB_RESULT = "LAB_RESULT";
     @Mock
     HttpClient httpClient;
 
@@ -78,7 +79,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
          Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -117,7 +118,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
          Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -164,7 +165,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
          Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -236,7 +237,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
          Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -307,7 +308,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -382,7 +383,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -447,7 +448,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -495,7 +496,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         labEncounter = null;
         encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -553,7 +554,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -602,7 +603,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         List<Encounter> labEncounters = new ArrayList<>();
         encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounters.add(encounter);
             }
         }
@@ -659,7 +660,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -674,7 +675,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         labEncounter = null;
         encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -724,7 +725,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -783,7 +784,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals("LAB_RESULT")) {
+            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -818,7 +819,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
 
         Encounter orderEncounter = encounterService.getEncounterByUuid(accessionUuid);
         labEncounter = null;
-        EncounterType labResultEncounterType = encounterService.getEncounterType("LAB_RESULT");
+        EncounterType labResultEncounterType = encounterService.getEncounterType(ENCOUNTER_TYPE_LAB_RESULT);
 
         List<Encounter> encounterList = encounterService.getEncounters(orderEncounter.getPatient(),
                 null, orderEncounter.getEncounterDatetime(), null, null,

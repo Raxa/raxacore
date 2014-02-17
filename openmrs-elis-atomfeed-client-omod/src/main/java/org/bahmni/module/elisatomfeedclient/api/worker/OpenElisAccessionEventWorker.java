@@ -99,7 +99,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
 
     protected void associateTestResultsToOrder(OpenElisAccession openElisAccession) throws ParseException {
         Encounter orderEncounter = encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid());
-        final EncounterType labResultEncounterType = encounterService.getEncounterType("LAB_RESULT");
+        final EncounterType labResultEncounterType = getLabResultEncounterType();
         final Set<OpenElisTestDetail> allTests = openElisAccession.getTestDetails();
 
         List<Encounter> labResultEncounters = encounterService.getEncounters(orderEncounter.getPatient(),
@@ -144,6 +144,11 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         for (Encounter updatedEncounter : updatedEncounters) {
             encounterService.saveEncounter(updatedEncounter);
         }
+    }
+
+    private EncounterType getLabResultEncounterType() {
+        String resultEncounterType = atomFeedProperties.getEncounterTypeForInvestigation();
+        return encounterService.getEncounterType(resultEncounterType);
     }
 
     private Visit identifyResultVisit(Patient patient, Date date) {

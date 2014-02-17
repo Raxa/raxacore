@@ -18,6 +18,7 @@ public class ElisAtomFeedProperties extends AtomFeedProperties {
     private static final String ORDER_TYPE_LAB_ORDER= "openmrs.orderType.labOrder";
     private static final String ENCOUNTER_TYPE_INVESTIGATION = "openmrs.encounterType.investigation";
     private static final String LAB_SYSTEM_PROVIDER_IDENTIFIER = "openmrs.labSystem.identifier";
+    public static final String ENCOUNTER_TYPE_LAB_RESULT = "openmrs.encounterType.labResult";
 
 
     @Resource(name = "openElisAtomFeedProperties")
@@ -65,5 +66,9 @@ public class ElisAtomFeedProperties extends AtomFeedProperties {
 
     public String getLabSystemIdentifier() {
         return atomFeedProperties.getProperty(LAB_SYSTEM_PROVIDER_IDENTIFIER);
+    }
+
+    public String getEncounterTypeForInvestigation() {
+        return atomFeedProperties.getProperty(ENCOUNTER_TYPE_LAB_RESULT);
     }
 }
