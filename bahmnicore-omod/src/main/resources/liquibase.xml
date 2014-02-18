@@ -438,4 +438,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-40" author="tw" context="rel3">
+        <comment>Allow registration clerk to manage encounter roles</comment>
+        <sql>
+            INSERT INTO role_privilege(role, privilege) VALUES('RegistrationClerk', 'Manage Encounter Roles')
+            ON DUPLICATE KEY UPDATE role = 'RegistrationClerk';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
