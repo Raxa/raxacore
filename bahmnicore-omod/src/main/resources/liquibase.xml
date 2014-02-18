@@ -445,4 +445,14 @@
             ON DUPLICATE KEY UPDATE role = 'RegistrationClerk';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-clinical-201402182015" author="Mujir,Vinay,Shruthi" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from visit_type where name = 'PHARMACY_VISIT'</sqlCheck>
+        </preConditions>
+        <comment>Add new visit type PHARMACY_VISIT</comment>
+        <sql>
+            INSERT INTO visit_type (name, description, creator, uuid, date_created) VALUES ('PHARMACY_VISIT', 'Visit for PHARMACY_VISIT', 1, uuid(), curdate());
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

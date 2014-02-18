@@ -3,6 +3,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
@@ -85,7 +86,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         List<BahmniDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
 
         Patient patient = patientService.getPatient(1);
-        Visit visit = createVisitForDate(patient, null, orderDate, false);
+        Visit visit = createVisitForDate(patient, null, orderDate, false, DateUtils.addDays(orderDate, 1));
         assertNull(visit.getEncounters());
 
         bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System");
@@ -105,6 +106,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
     }
 
     @Test
+    @Ignore("Mujir/Shruthi - we dont need this test now")
     public void shouldCreateNewEncounterAndAddOrdersAndChangeVisitEndDate_ToVisitAtTheDateClosestToOrderDate_WhenActiveVisitDoesNotExist() throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Date orderDate = simpleDateFormat.parse("01-01-2014");
@@ -115,8 +117,8 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         List<BahmniDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
 
         Patient patient = patientService.getPatient(1);
-        Visit visit1 = createVisitForDate(patient, null, DateUtils.addDays(orderDate, -5), false);
-        Visit visit2 = createVisitForDate(patient, null, DateUtils.addDays(orderDate, -3), false);
+        Visit visit1 = createVisitForDate(patient, null, DateUtils.addDays(orderDate, -5), false, DateUtils.addDays(DateUtils.addDays(orderDate, -5), 1));
+        Visit visit2 = createVisitForDate(patient, null, DateUtils.addDays(orderDate, -3), false, DateUtils.addDays(DateUtils.addDays(orderDate, -3), 1));
         assertNull(visit2.getEncounters());
 
         bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System");
@@ -148,7 +150,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         List<BahmniDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
 
         Encounter systemConsultationEncounter = createSystemConsultationEncounter(patient, visitStartDate);
-        Visit visit = createVisitForDate(patient, systemConsultationEncounter, visitStartDate, false);
+        Visit visit = createVisitForDate(patient, systemConsultationEncounter, visitStartDate, false, DateUtils.addDays(orderDate, 1));
         assertEquals(1, visit.getEncounters().size());
 
         bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System");
@@ -161,7 +163,6 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         assertEquals("bot", encounterProvider.getEncounterRole().getName());
         assertEquals("OPD", encounter.getEncounterType().getName());
         assertEquals(3, encounter.getOrders().size());
-        assertEquals(orderDate, visit.getStopDatetime());
         assertDrugOrder(encounter.getOrders(), "Calpol", orderDate, calpol.getDosage(), calpol.getNumberOfDays());
         assertDrugOrder(encounter.getOrders(), "Cetirizine", orderDate, cetrizine.getDosage(), cetrizine.getNumberOfDays());
         assertDrugOrder(encounter.getOrders(), "Cetzine", orderDate, cetzine.getDosage(), cetzine.getNumberOfDays());
@@ -181,7 +182,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         List<BahmniDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
 
         Encounter systemConsultationEncounter = createSystemConsultationEncounter(patient, visitStartDate);
-        Visit visit = createVisitForDate(patient, systemConsultationEncounter, visitStartDate, false);
+        Visit visit = createVisitForDate(patient, systemConsultationEncounter, visitStartDate, false, DateUtils.addDays(visitStartDate, 1));
         assertEquals(1, visit.getEncounters().size());
 
         bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System");
@@ -208,18 +209,19 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         return systemConsultationEncounter;
     }
 
-    private Visit createVisitForDate(Patient patient, Encounter encounter, Date orderDate, boolean isActive) {
+    private Visit createVisitForDate(Patient patient, Encounter encounter, Date orderDate, boolean isActive, Date stopDatetime) {
         VisitType regularVisitType = visitService.getVisitType(4);
         Visit visit = new Visit(patient, regularVisitType, orderDate);
         if(encounter != null)
             visit.addEncounter(encounter);
         if (!isActive)
-            visit.setStopDatetime(DateUtils.addDays(orderDate, 1));
+            visit.setStopDatetime(stopDatetime);
         return visitService.saveVisit(visit);
     }
 
     private Visit createActiveVisit(Patient patient) {
-        return createVisitForDate(patient, null, new Date(), true);
+        final Date orderDate = new Date();
+        return createVisitForDate(patient, null, orderDate, true, DateUtils.addDays(orderDate, 1));
     }
 
     private void assertDrugOrder(Set<Order> orders, String drugName, Date orderDate, Double dosage, int numberOfDays) {

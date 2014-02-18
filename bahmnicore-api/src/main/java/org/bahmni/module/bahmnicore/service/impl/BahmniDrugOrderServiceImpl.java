@@ -3,18 +3,8 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
-import org.openmrs.Drug;
-import org.openmrs.DrugOrder;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterProvider;
-import org.openmrs.EncounterRole;
-import org.openmrs.EncounterType;
-import org.openmrs.Order;
-import org.openmrs.OrderType;
-import org.openmrs.Patient;
-import org.openmrs.Provider;
-import org.openmrs.User;
-import org.openmrs.Visit;
+import org.joda.time.DateTime;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
@@ -49,6 +39,8 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private EncounterType consultationEncounterType = null;
     private String systemUserName = null;
 
+    public static final String PHARMACY_VISIT = "PHARMACY_VISIT";
+
     @Autowired
     public BahmniDrugOrderServiceImpl(VisitService visitService, PatientService patientService,
                                       ConceptService conceptService, OrderService orderService,
@@ -71,15 +63,29 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     private Visit getVisitForDrugOrders(Date orderDate, Patient patient) {
-        List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, orderDate, null, null, null, true, false);
-        if (visits == null || visits.isEmpty()) {
-            visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, getNextDate(orderDate), null, null, null, true, false);
+        List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, getNextDate(orderDate), orderDate, null, null, true, false);
+        if (visits != null && !visits.isEmpty()) {
+            Visit visit = visits.get(0);
+            if (visit.getStartDatetime().after(orderDate)) {
+                visit.setStartDatetime(orderDate);
+            }
+            return visit;
         }
-        if (visits == null || visits.isEmpty()) {
-            throw new RuntimeException(
-                    String.format("Could not find suitable visit for orderDate %s patient %s", orderDate, patient.getPatientIdentifier()));
-        }
-        return visits.get(0);
+        return createNewPharmacyVisit(patient, orderDate);
+    }
+
+    private Visit createNewPharmacyVisit(Patient patient, Date date) {
+        Visit visit = new Visit();
+        visit.setPatient(patient);
+        visit.setStartDatetime(date);
+        visit.setStopDatetime(new DateTime(date).toDateMidnight().toDateTime().minusSeconds(1).toDate());
+        visit.setVisitType(getVisitTypeByName(PHARMACY_VISIT));
+        return visit;
+    }
+
+    private VisitType getVisitTypeByName(String visitTypeName) {
+        List<VisitType> visitTypes = visitService.getVisitTypes(visitTypeName);
+        return visitTypes.isEmpty() ? null : visitTypes.get(0);
     }
 
     private static Date getNextDate(Date date) {
