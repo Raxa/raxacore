@@ -8,6 +8,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -88,6 +90,16 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
         sqlQuery.setParameter(OFFSET_PARAM, offset);
 
         return sqlQuery.list();
+    }
+
+    @Override
+    public Patient getPatient(String identifier) {
+        Session currentSession = sessionFactory.getCurrentSession();
+        List<PatientIdentifier> ident = currentSession.createQuery("from PatientIdentifier where identifier = :ident").setString("ident", identifier).list();
+        if (!ident.isEmpty()) {
+            return ident.get(0).getPatient();
+        }
+        return null;
     }
 
     private String getNameSearchCondition(NameSearchParameter nameSearchParameter) {

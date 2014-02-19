@@ -1,15 +1,27 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
 import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.util.VisitIdentificationHelper;
 import org.joda.time.DateTime;
-import org.openmrs.*;
+import org.openmrs.Drug;
+import org.openmrs.DrugOrder;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterProvider;
+import org.openmrs.EncounterRole;
+import org.openmrs.EncounterType;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
+import org.openmrs.Provider;
+import org.openmrs.User;
+import org.openmrs.Visit;
+import org.openmrs.VisitType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.UserService;
 import org.openmrs.api.VisitService;
@@ -27,38 +39,37 @@ import java.util.Set;
 @Service
 public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private VisitService visitService;
-    private PatientService patientService;
     private ConceptService conceptService;
     private OrderService orderService;
     private EncounterService encounterService;
     private ProviderService providerService;
     private UserService userService;
+    private BahmniPatientDao bahmniPatientDao;
     private OrderType drugOrderType = null;
     private Provider systemProvider = null;
     private EncounterRole unknownEncounterRole = null;
     private EncounterType consultationEncounterType = null;
     private String systemUserName = null;
-
+    private VisitType pharmacyVisitType = null;
     public static final String PHARMACY_VISIT = "PHARMACY_VISIT";
 
     @Autowired
-    public BahmniDrugOrderServiceImpl(VisitService visitService, PatientService patientService,
-                                      ConceptService conceptService, OrderService orderService,
+    public BahmniDrugOrderServiceImpl(VisitService visitService, ConceptService conceptService, OrderService orderService,
                                       ProviderService providerService, EncounterService encounterService,
-                                      UserService userService) {
+                                      UserService userService, BahmniPatientDao bahmniPatientDao) {
         this.visitService = visitService;
-        this.patientService = patientService;
         this.conceptService = conceptService;
         this.orderService = orderService;
         this.providerService = providerService;
         this.encounterService = encounterService;
         this.userService = userService;
+        this.bahmniPatientDao = bahmniPatientDao;
     }
 
     @Override
     public void add(String patientId, Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, String systemUserName) {
         this.systemUserName = systemUserName;
-        Patient patient = patientService.getPatients(null, patientId, null, true, null, null).get(0);
+        Patient patient = bahmniPatientDao.getPatient(patientId);
         Visit visitForDrugOrders = new VisitIdentificationHelper(visitService).getVisitFor(patient, orderDate, PHARMACY_VISIT);
         addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visitForDrugOrders);
     }
@@ -66,14 +77,12 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private void addDrugOrdersToVisit(Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {
         Set<Encounter> encounters = visit.getEncounters();
         Encounter systemConsultationEncounter = null;
-
         if (encounters != null && encounters.size() > 0)
             systemConsultationEncounter = getSystemConsultationEncounter(encounters);
 
         if (systemConsultationEncounter == null) {
             systemConsultationEncounter = createNewSystemConsultationEncounter(orderDate, patient);
         }
-
         Set<Order> drugOrders = createOrders(patient, orderDate, systemConsultationEncounter, bahmniDrugOrders);
         for (Order drugOrder : drugOrders) {
             systemConsultationEncounter.addOrder(drugOrder);
