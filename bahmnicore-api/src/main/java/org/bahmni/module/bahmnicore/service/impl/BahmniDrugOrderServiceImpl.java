@@ -78,7 +78,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         Visit visit = new Visit();
         visit.setPatient(patient);
         visit.setStartDatetime(date);
-        visit.setStopDatetime(new DateTime(date).toDateMidnight().toDateTime().minusSeconds(1).toDate());
+        visit.setStopDatetime(new DateTime(date).toDateMidnight().toDateTime().plusDays(1).minusSeconds(1).toDate());
         visit.setVisitType(getVisitTypeByName(PHARMACY_VISIT));
         return visit;
     }
@@ -115,10 +115,10 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             systemConsultationEncounter.addOrder(drugOrder);
         }
         visit.addEncounter(systemConsultationEncounter);
-        Date visitStopDatetime = visit.getStopDatetime();
-        if (visitStopDatetime != null && visitStopDatetime.compareTo(orderDate) < 0) {
-            visit.setStopDatetime(orderDate);
-        }
+//        Date visitStopDatetime = visit.getStopDatetime();
+//        if (visitStopDatetime != null && visitStopDatetime.compareTo(orderDate) < 0) {
+//            visit.setStopDatetime(orderDate);
+//        }
         visitService.saveVisit(visit);
     }
 
