@@ -5,6 +5,7 @@ import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
+import org.bahmni.module.bahmnicore.util.VisitIdentificationHelper;
 import org.joda.time.DateTime;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
@@ -56,7 +57,7 @@ public class AccessionHelper {
         EncounterType encounterType = encounterService.getEncounterType(properties.getEncounterTypeInvestigation());
 
         Date accessionDate = openElisAccession.fetchDate();
-        Visit visit = findOrInitializeVisit(patient, accessionDate, visitType);
+        Visit visit = new VisitIdentificationHelper(visitService).getVisitFor(patient, accessionDate, visitType);
 
         Encounter encounter = newEncounterInstance(visit, patient, labSystemProvider, encounterType,  accessionDate);
         encounter.setUuid(openElisAccession.getAccessionUuid());
@@ -78,11 +79,6 @@ public class AccessionHelper {
         encounter.setProvider(encounterRole, labSystemProvider);
         encounter.setVisit(visit);
         return encounter;
-    }
-
-    private Visit getActiveVisit(Patient patient) {
-        List<Visit> activeVisitsByPatient = visitService.getActiveVisitsByPatient(patient);
-        return activeVisitsByPatient != null && !activeVisitsByPatient.isEmpty() ? activeVisitsByPatient.get(0) : null;
     }
 
     public Encounter addOrVoidOrderDifferences(OpenElisAccession openElisAccession, AccessionDiff diff, Encounter previousEncounter) {
@@ -201,7 +197,6 @@ public class AccessionHelper {
         List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, startTime, startTime, null, null, true, false);
         return visits.isEmpty() ? null : visits.get(0);
     }
-
 
     protected Visit getVisitForPatientForNearestStartDate(Patient patient, Date startTime) {
         List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, startTime, null, null, null, null, true, false);

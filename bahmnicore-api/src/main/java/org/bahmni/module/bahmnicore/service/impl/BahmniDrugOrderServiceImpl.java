@@ -3,6 +3,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
+import org.bahmni.module.bahmnicore.util.VisitIdentificationHelper;
 import org.joda.time.DateTime;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
@@ -25,7 +26,6 @@ import java.util.Set;
 
 @Service
 public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
-
     private VisitService visitService;
     private PatientService patientService;
     private ConceptService conceptService;
@@ -59,44 +59,8 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     public void add(String patientId, Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, String systemUserName) {
         this.systemUserName = systemUserName;
         Patient patient = patientService.getPatients(null, patientId, null, true, null, null).get(0);
-        addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, getVisitForDrugOrders(orderDate, patient));
-    }
-
-    private Visit getVisitForDrugOrders(Date orderDate, Patient patient) {
-        List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, getNextDate(orderDate), orderDate, null, null, true, false);
-        if (visits != null && !visits.isEmpty()) {
-            Visit visit = visits.get(0);
-            if (visit.getStartDatetime().after(orderDate)) {
-                visit.setStartDatetime(orderDate);
-            }
-            return visit;
-        }
-        return createNewPharmacyVisit(patient, orderDate);
-    }
-
-    private Visit createNewPharmacyVisit(Patient patient, Date date) {
-        Visit visit = new Visit();
-        visit.setPatient(patient);
-        visit.setStartDatetime(date);
-        visit.setStopDatetime(new DateTime(date).toDateMidnight().toDateTime().plusDays(1).minusSeconds(1).toDate());
-        visit.setVisitType(getVisitTypeByName(PHARMACY_VISIT));
-        return visit;
-    }
-
-    private VisitType getVisitTypeByName(String visitTypeName) {
-        List<VisitType> visitTypes = visitService.getVisitTypes(visitTypeName);
-        return visitTypes.isEmpty() ? null : visitTypes.get(0);
-    }
-
-    private static Date getNextDate(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        cal.add(Calendar.DAY_OF_YEAR, 1);
-        return cal.getTime();
+        Visit visitForDrugOrders = new VisitIdentificationHelper(visitService).getVisitFor(patient, orderDate, PHARMACY_VISIT);
+        addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visitForDrugOrders);
     }
 
     private void addDrugOrdersToVisit(Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {
@@ -115,10 +79,6 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             systemConsultationEncounter.addOrder(drugOrder);
         }
         visit.addEncounter(systemConsultationEncounter);
-//        Date visitStopDatetime = visit.getStopDatetime();
-//        if (visitStopDatetime != null && visitStopDatetime.compareTo(orderDate) < 0) {
-//            visit.setStopDatetime(orderDate);
-//        }
         visitService.saveVisit(visit);
     }
 
