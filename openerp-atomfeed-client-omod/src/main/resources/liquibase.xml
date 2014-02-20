@@ -82,4 +82,9 @@
             insert into provider (person_id, identifier, creator, date_created, uuid, name) values ((select person_id from person where uuid = @puuid), 'BILLINGSYSTEM', 1, now(), uuid(), 'Billing System');
         </sql>
     </changeSet>
+    <changeSet id="openerp-atomfeed-client-201402201505" author="tw" context="rel3">
+        <sql>
+            delete from users where username = 'Billing System';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
