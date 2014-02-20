@@ -460,4 +460,22 @@
             DELETE from visit_type where name in ('DRUG_ORDER','LAB_RESULTS_IN_ABSENTEE');
         </sql>
     </changeSet>
+    <changeSet id="bahmni-clinical-201402201520" author="Angshu" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from global_property where property = 'emr.primaryIdentifierType'</sqlCheck>
+        </preConditions>
+        <comment>Add global property for emr primary identifier type</comment>
+        <sql>
+            INSERT INTO global_property (property, uuid, description) values ('emr.primaryIdentifierType', UUID(), 'Primary identifier type for looking up patients, generating barcodes, etc') ON DUPLICATE KEY UPDATE description = 'Primary identifier type for looking up patients, generating barcodes, etc';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-clinical-201402201530" author="Angshu" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from patient_identifier_type where name = 'Bahmni Id'</sqlCheck>
+        </preConditions>
+        <comment>set global property value for emr primary identifier type</comment>
+        <sql>
+            update global_property set property_value = (select uuid from patient_identifier_type where name = 'Bahmni Id') where property = 'emr.primaryIdentifierType';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
