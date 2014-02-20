@@ -478,4 +478,11 @@
             update global_property set property_value = (select uuid from patient_identifier_type where name = 'Bahmni Id') where property = 'emr.primaryIdentifierType';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-clinical-201402201700" author="D3" context="rel3">
+        <comment>Remove unused app:documents privilege</comment>
+        <sql>
+            DELETE from role_privilege where privilege = 'app:documents';
+            DELETE from privilege where privilege = 'app:documents';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
