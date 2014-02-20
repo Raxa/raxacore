@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.matcher;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
@@ -40,7 +42,7 @@ public class EncounterSessionMatcherTest {
         encounterSessionMatcher.setAdministrationService(administrationService);
         visit = new Visit();
 
-        providers = new HashSet<Provider>();
+        providers = new HashSet<>();
         Provider provider = new Provider();
         provider.setId(1234);
         providers.add(provider);
@@ -50,69 +52,55 @@ public class EncounterSessionMatcherTest {
         person = new Person();
         person.setId(1234);
         provider.setPerson(person);
-
-
     }
 
     @Test
-    public void shouldReturnEncounterWithinEncounterSessionInterval(){
+    public void shouldReturnEncounterLastUpdatedWithinEncounterSessionInterval(){
         when(encounter.getProvider()).thenReturn(person);
         when(encounter.getEncounterType()).thenReturn(encounterType);
-        when(encounter.getEncounterDatetime()).thenReturn(new Date());
+        when(encounter.getDateChanged()).thenReturn(new Date());
+        when(encounter.getDateCreated()).thenReturn(DateUtils.addHours(new Date(), -2));
         when(administrationService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
+        visit.addEncounter(encounter);
 
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters());
 
-        Set<Encounter> encounters = new HashSet<Encounter>();
-        encounters.add(encounter);
-        visit.setEncounters(encounters);
-
-        EncounterParameters encounterParameters =  EncounterParameters.instance();
-
-        encounterParameters.setEncounterType(encounterType);
-        encounterParameters.setProviders(providers);
-
-        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
         assertNotNull(encounterReturned);
+        assertEquals(encounter, encounterReturned);
+    }
+
+    @Test
+    public void shouldUseCreatedDateForEncounterWithOutUpdates(){
+        when(encounter.getProvider()).thenReturn(person);
+        when(encounter.getEncounterType()).thenReturn(encounterType);
+        when(encounter.getDateChanged()).thenReturn(null);
+        when(encounter.getDateCreated()).thenReturn(new Date());
+        when(administrationService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
+        visit.addEncounter(encounter);
+
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters());
+
+        assertNotNull(encounterReturned);
+        assertEquals(encounter, encounterReturned);
     }
 
     @Test
     public void shouldNotReturnEncounterIfOutsideEncounterSessionInterval(){
-
-        when(administrationService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
-
-        Visit visit = new Visit();
-
-        Set<Provider> providers = new HashSet<Provider>();
-        Provider provider = new Provider();
-        provider.setId(1234);
-        providers.add(provider);
-        EncounterType encounterType = new EncounterType("Test", "Test");
-
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.HOUR, -2);
-        Date timeBefore2Hours = cal.getTime();
-
-        Encounter encounter = mock(Encounter.class);
-        Person person = new Person();
-        person.setId(1234);
+        visit.addEncounter(encounter);
         when(encounter.getProvider()).thenReturn(person);
         when(encounter.getEncounterType()).thenReturn(encounterType);
-        when(encounter.getDateCreated()).thenReturn(timeBefore2Hours);
+        when(administrationService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
+        when(encounter.getDateChanged()).thenReturn(DateUtils.addHours(new Date(), -2));
 
-        Set<Encounter> encounters = new HashSet<Encounter>();
-        encounters.add(encounter);
-        visit.setEncounters(encounters);
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters());
 
+        assertNull(encounterReturned);
+    }
+
+    private EncounterParameters getEncounterParameters() {
         EncounterParameters encounterParameters =  EncounterParameters.instance();
-
         encounterParameters.setEncounterType(encounterType);
         encounterParameters.setProviders(providers);
-
-        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
-        assertNull(encounterReturned);
-
+        return encounterParameters;
     }
-
-    }
+}

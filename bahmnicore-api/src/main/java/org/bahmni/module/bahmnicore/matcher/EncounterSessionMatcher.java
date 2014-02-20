@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.matcher;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.Period;
@@ -11,10 +12,13 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 
+import java.util.Calendar;
+import java.util.Date;
+
 
 public class EncounterSessionMatcher implements BaseEncounterMatcher {
 
-    public static final int DEFAULT_SESSION_DURATION = 60;
+    public static final int DEFAULT_SESSION_DURATION_IN_MINUTES = 60;
     private AdministrationService adminService;
 
     public EncounterSessionMatcher() {
@@ -38,8 +42,8 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         if(visit.getEncounters()!=null){
             for (Encounter encounter : visit.getEncounters()) {
                 if (encounterType.equals(encounter.getEncounterType())) {
-                    Interval interval = new Interval(new DateTime(encounter.getDateCreated()), DateTime.now());
-                    if(!isCurrentSessionTimeExpired(interval) && isSameProvider(provider, encounter))
+                    Date encounterDateChanged = encounter.getDateChanged() == null ? encounter.getDateCreated() : encounter.getDateChanged();
+                    if(!isCurrentSessionTimeExpired(encounterDateChanged) && isSameProvider(provider, encounter))
                         return encounter;
                 }
             }
@@ -56,13 +60,13 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         return encounter.getProvider().getId().equals(provider.getPerson().getId());
     }
 
-    private boolean isCurrentSessionTimeExpired(Interval interval) {
+    private boolean isCurrentSessionTimeExpired(Date encounterCreatedDate) {
         String configuredSessionDuration = adminService.getGlobalProperty("bahmni.encountersession.duration");
-        int sessionDuration = DEFAULT_SESSION_DURATION;
+        int sessionDurationInMinutes = DEFAULT_SESSION_DURATION_IN_MINUTES;
         if(configuredSessionDuration != null)
-            sessionDuration = Integer.parseInt(configuredSessionDuration);
+            sessionDurationInMinutes = Integer.parseInt(configuredSessionDuration);
+        Date allowedEncounterTIme = DateUtils.addMinutes(encounterCreatedDate, sessionDurationInMinutes);
 
-        Period period = interval.toDuration().toPeriod();
-        return (period.getHours() * 60 + period.getMinutes()) > sessionDuration;
+        return DateUtils.truncatedCompareTo(allowedEncounterTIme, new Date(), Calendar.MILLISECOND) <= 0;
     }
 }
