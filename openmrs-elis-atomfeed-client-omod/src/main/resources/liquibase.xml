@@ -95,10 +95,6 @@
             DELETE FROM scheduler_task_config WHERE schedulable_class = 'org.bahmni.module.elisatomfeedclient.api.task.OpenElisLabResultFeedTask';
         </sql>
     </changeSet>
-    <changeSet id="elis-atomfeed-201402201516" author="tw" context="rel3">
-        <sql>
-            delete from users where username = 'Lab System';
-        </sql>
-    </changeSet>
+
 
 </databaseChangeLog>
