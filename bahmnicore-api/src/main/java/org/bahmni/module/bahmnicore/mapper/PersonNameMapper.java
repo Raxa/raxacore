@@ -43,7 +43,9 @@ public class PersonNameMapper {
 	
 	private void addName(Patient patient, List<BahmniName> names) {
 		for (BahmniName name : names) {
-			patient.addName(new PersonName(name.getGivenName(), null, name.getFamilyName()));
+            PersonName personName = new PersonName(name.getGivenName(), null, name.getFamilyName());
+            personName.setPreferred(true);
+            patient.addName(personName);
 		}
 	}
 }
