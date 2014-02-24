@@ -1,9 +1,6 @@
 package org.bahmni.module.bahmnicore.matcher;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
-import org.joda.time.Period;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Provider;
@@ -52,11 +49,10 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     }
 
     private boolean isSameProvider(Provider provider, Encounter encounter) {
-        if(provider == null)
-            return true;
-        else if(encounter.getProvider() == null){
+        if(provider == null || encounter.getProvider() == null){
             return false;
         }
+
         return encounter.getProvider().getId().equals(provider.getPerson().getId());
     }
 

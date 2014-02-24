@@ -12,7 +12,6 @@ import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -63,7 +62,7 @@ public class EncounterSessionMatcherTest {
         when(administrationService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
         visit.addEncounter(encounter);
 
-        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters());
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers));
 
         assertNotNull(encounterReturned);
         assertEquals(encounter, encounterReturned);
@@ -78,7 +77,7 @@ public class EncounterSessionMatcherTest {
         when(administrationService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
         visit.addEncounter(encounter);
 
-        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters());
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers));
 
         assertNotNull(encounterReturned);
         assertEquals(encounter, encounterReturned);
@@ -92,12 +91,40 @@ public class EncounterSessionMatcherTest {
         when(administrationService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
         when(encounter.getDateChanged()).thenReturn(DateUtils.addHours(new Date(), -2));
 
-        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters());
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers));
 
         assertNull(encounterReturned);
     }
 
-    private EncounterParameters getEncounterParameters() {
+    @Test
+    public void shouldNotReturnEncounterIfEncounterParametersDoesNotHaveProvider(){
+        visit.addEncounter(encounter);
+        when(encounter.getProvider()).thenReturn(person);
+        when(encounter.getEncounterType()).thenReturn(encounterType);
+        when(administrationService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
+        when(encounter.getDateChanged()).thenReturn(new Date());
+
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(new HashSet<Provider>()));
+
+        assertNull(encounterReturned);
+    }
+
+    @Test
+    public void shouldNotReturnEncounterIfEncounterDoesNotHaveProvider(){
+        visit.addEncounter(encounter);
+        when(encounter.getProvider()).thenReturn(null);
+        when(encounter.getEncounterType()).thenReturn(encounterType);
+        when(administrationService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
+        when(encounter.getDateChanged()).thenReturn(new Date());
+
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers));
+
+        assertNull(encounterReturned);
+    }
+
+
+
+    private EncounterParameters getEncounterParameters(Set<Provider> providers) {
         EncounterParameters encounterParameters =  EncounterParameters.instance();
         encounterParameters.setEncounterType(encounterType);
         encounterParameters.setProviders(providers);
