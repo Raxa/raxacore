@@ -94,12 +94,19 @@
     <concept concept_id="106" retired="false" datatype_id="3" class_id="8" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="6923d0e0-8734-11e3-baa7-0800200c9aef"/>
     <concept_name concept_name_id="8" concept_id="106" name="LAB_ABNORMAL" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED" uuid="352b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
     <concept_set concept_set_id="205" concept_id="106" concept_set="101" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+
     <!--concept set for lab_result_concept_set-->
 
     <!--test Urea Nitorgen-->
     <concept concept_id="107" retired="false" datatype_id="1" class_id="8" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="7923d0e0-8734-11e3-baa7-0800200c9a66"/>
     <concept_name concept_name_id="9" concept_id="107" name="Urea Nitorgen" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED" uuid="252b58c0-872e-11f3-baa7-080X12Fc9a66" locale_preferred="0"/>
     <!--test Urea Nitorgen-->
+
+
+    <concept concept_id="108" retired="false" datatype_id="2" class_id="8" is_set="true" creator="1" date_created="2005-01-01 00:00:00.0" uuid="dc8ac8c0-8716-11e3-baa7-0800f00c9a66"/>
+    <concept_name concept_name_id="9" concept_id="108" name="REFERRED_OUT" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="ea291cc0-e716-11e3-baa7-0800200c9a66" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set_id="206" concept_id="108" concept_set="101" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+
 
 
     <!--blood panel-->

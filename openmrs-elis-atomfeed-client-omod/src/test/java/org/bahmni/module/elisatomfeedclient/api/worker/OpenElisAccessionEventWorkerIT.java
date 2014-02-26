@@ -9,13 +9,14 @@ import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
 import org.bahmni.module.elisatomfeedclient.api.mapper.AccessionHelper;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.openmrs.*;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Obs;
+import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
-import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensitiveTest {
+public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiveTest {
 
     public static final String ENCOUNTER_TYPE_LAB_RESULT = "LAB_RESULT";
     @Mock
@@ -77,6 +78,41 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
 
         Visit visit = Context.getVisitService().getVisit(2);
         Encounter labEncounter = null;
+        Set<Encounter> encounters = visit.getEncounters();
+        for (Encounter encounter : encounters) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+                labEncounter = encounter;
+            }
+        }
+
+        assertEquals(2, encounters.size());
+        assertNotNull(labEncounter);
+        Set<Obs> topLevelObs = labEncounter.getAllObs();
+        assertEquals(1, topLevelObs.size());
+        final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
+        assertEquals(1, testLevelObs.size());
+        final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
+        assertEquals(4, resultMembers.size());
+    }
+
+    @Test
+    public void shouldCreateResultObsWhenTestIsReferredOut() throws Exception {
+        executeDataSet("labResult.xml");
+
+        OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
+                .withTestUuid("7923d0e0-8734-11e3-baa7-0800200c9a66")
+                .withStatus("referred out")
+                .build();
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
+        openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
+
+        when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
+
+        openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
+
+
+        Visit visit = Context.getVisitService().getVisit(2);
+        Encounter labEncounter = null;
          Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
             if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
@@ -91,7 +127,9 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
         final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(4, resultMembers.size());
+        assertEquals(1, resultMembers.size());
+        Obs status = resultMembers.iterator().next();
+        assertEquals("Ensure the concept is Referred Out", status.getConcept(), Context.getConceptService().getConcept(108));
     }
 
     @Test
@@ -116,9 +154,9 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
 
         Visit visit = Context.getVisitService().getVisit(2);
         Encounter labEncounter = null;
-         Set<Encounter> encounters = visit.getEncounters();
+        Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -139,9 +177,9 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
     public void shouldCreateResultEncounterAndObsForPanelWithOnetestWithResultAndOtherValues() throws Exception {
         executeDataSet("labResult.xml");
 
-         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
-         String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
-        
+        String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
+        String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
+
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
                 .withPanelUuid(panelConceptUuid)
                 .withTestUuid(haemoglobinConceptUuid)
@@ -163,9 +201,9 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
 
         Visit visit = Context.getVisitService().getVisit(2);
         Encounter labEncounter = null;
-         Set<Encounter> encounters = visit.getEncounters();
+        Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -178,7 +216,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
         assertNotNull(panelResultObs);
         Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
-        assertEquals(1,panel1ResultMembers.size());
+        assertEquals(1, panel1ResultMembers.size());
 
         Set<Obs> topLevelObs = panel1ResultMembers;
         assertEquals(1, topLevelObs.size());
@@ -198,9 +236,9 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         //same provider for both tests in panel
         executeDataSet("labResult.xml");
 
-         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
-         String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
-         String providerUuid = "331c6bf8-7846-11e3-a96a-09xD371c1b75";
+        String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
+        String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
+        String providerUuid = "331c6bf8-7846-11e3-a96a-09xD371c1b75";
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
                 .withPanelUuid(panelConceptUuid)
                 .withTestUuid(haemoglobinConceptUuid)
@@ -213,7 +251,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
                 .withResultType("N")
                 .build();
 
-         String esrConceptUuid = "a04c36be-3f90-11e3-968c-0800271c1b75";
+        String esrConceptUuid = "a04c36be-3f90-11e3-968c-0800271c1b75";
         OpenElisTestDetail test2 = new OpenElisTestDetailBuilder()
                 .withPanelUuid(panelConceptUuid)
                 .withTestUuid(esrConceptUuid)
@@ -235,9 +273,9 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
 
         Visit visit = Context.getVisitService().getVisit(2);
         Encounter labEncounter = null;
-         Set<Encounter> encounters = visit.getEncounters();
+        Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -249,7 +287,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
         assertNotNull(panelResultObs);
         Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
-        assertEquals(2,panel1ResultMembers.size());
+        assertEquals(2, panel1ResultMembers.size());
 
         Obs haemoglobinTestResultObs = getObsByConceptUuid(panel1ResultMembers, haemoglobinConceptUuid);
         assertNotNull(haemoglobinTestResultObs);
@@ -308,7 +346,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -320,7 +358,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
         assertNotNull(panelResultObs);
         Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
-        assertEquals(1,panel1ResultMembers.size());
+        assertEquals(1, panel1ResultMembers.size());
 
         Obs haemoglobinTestResultObs = getObsByConceptUuid(panel1ResultMembers, haemoglobinConceptUuid);
         assertNotNull(haemoglobinTestResultObs);
@@ -383,7 +421,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -448,7 +486,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -460,7 +498,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
         assertNotNull(panelResultObs);
         Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
-        assertEquals(1,panel1ResultMembers.size()); //only one test has results
+        assertEquals(1, panel1ResultMembers.size()); //only one test has results
 
 
         OpenElisTestDetail hbTestUpdated = new OpenElisTestDetailBuilder()
@@ -496,7 +534,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         labEncounter = null;
         encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -554,7 +592,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -566,8 +604,8 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
         assertNotNull(panelResultObs);
         Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
-        assertEquals(1,panel1ResultMembers.size());
-        assertNotNull(getObsByConceptUuid(panel1ResultMembers,haemoglobinConceptUuid));
+        assertEquals(1, panel1ResultMembers.size());
+        assertNotNull(getObsByConceptUuid(panel1ResultMembers, haemoglobinConceptUuid));
 
 
         OpenElisTestDetail hbTestUpdated = new OpenElisTestDetailBuilder()
@@ -603,7 +641,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         List<Encounter> labEncounters = new ArrayList<>();
         encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounters.add(encounter);
             }
         }
@@ -660,7 +698,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -675,7 +713,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         labEncounter = null;
         encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -725,7 +763,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -738,7 +776,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
         assertNotNull(panelResultObs);
         Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
-        assertEquals(1,panel1ResultMembers.size());
+        assertEquals(1, panel1ResultMembers.size());
 
         Set<Obs> topLevelObs = panel1ResultMembers;
         assertEquals(1, topLevelObs.size());
@@ -784,7 +822,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
         for (Encounter encounter : encounters) {
-            if(encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
             }
         }
@@ -835,7 +873,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
         Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
         assertNotNull(panelResultObs);
         Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
-        assertEquals(1,panel1ResultMembers.size());
+        assertEquals(1, panel1ResultMembers.size());
 
         Set<Obs> topLevelObs = panel1ResultMembers;
         assertEquals(1, topLevelObs.size());
@@ -853,7 +891,7 @@ public class OpenElisAccessionEventWorkerIT  extends BaseModuleWebContextSensiti
     private Visit getVisitByStartDate(List<Visit> visits, Date date) {
         for (Visit visit : visits) {
             if ((visit.getStartDatetime().compareTo(date) <= 0) &&
-                   ((visit.getStopDatetime() == null) || (visit.getStopDatetime().compareTo(date) >= 0))) {
+                    ((visit.getStopDatetime() == null) || (visit.getStopDatetime().compareTo(date) >= 0))) {
                 return visit;
             }
         }

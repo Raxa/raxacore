@@ -17,7 +17,6 @@ import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
-import org.openmrs.api.VisitService;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -106,6 +105,9 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         List<Provider> labResultProviders = new ArrayList<>();
         Visit resultVisit = orderEncounter.getVisit();
         for (OpenElisTestDetail testDetail : allTests) {
+            if (testDetail.isReferredOut() && StringUtils.isBlank(testDetail.getDateTime())) {
+                    testDetail.setDateTime(openElisAccession.getDateTime());
+            }
             if (StringUtils.isNotBlank(testDetail.getDateTime())) {
                 Order testOrder = identifyOrder(orderEncounter, testDetail);
                 Encounter resultEncounterForTest = identifyResultEncounter(resultEncounters, testDetail, testOrder);

@@ -20,6 +20,7 @@ public class ResultObsHelper {
     public static final String LABRESULTS_CONCEPT = "LABRESULTS_CONCEPT";
     public static final String VOID_REASON = "updated since by lab technician";
     private static final String RESULT_TYPE_NUMERIC = "N";
+    private static final String REFERRED_OUT = "REFERRED_OUT";
 
     private final ConceptService conceptService;
     private Concept labConcepts = null;
@@ -65,6 +66,9 @@ public class ResultObsHelper {
                 labObs.addGroupMember(newChildObs(order, obsDate, LAB_MINNORMAL, testDetail.getMinNormal().toString()));
                 labObs.addGroupMember(newChildObs(order, obsDate, LAB_MAXNORMAL, testDetail.getMaxNormal().toString()));
             }
+        }
+        if (testDetail.isReferredOut()) {
+            labObs.addGroupMember(newChildObs(order, obsDate, REFERRED_OUT, null ));
         }
         final Set<String> notes = testDetail.getNotes();
         if (notes != null) {
@@ -125,6 +129,7 @@ public class ResultObsHelper {
     }
 
     private void setValue(String value, Obs resultObs) throws ParseException {
+        if (value == null || value.isEmpty()) return;
         try {
             resultObs.setValueAsString(value);
         } catch (NumberFormatException e) {

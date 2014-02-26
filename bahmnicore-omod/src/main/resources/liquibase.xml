@@ -485,4 +485,23 @@
             DELETE from privilege where privilege = 'app:documents';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-clinical-201402251700" author="Mihir,Vinay">
+        <comment>Add new concept to mark referred out tests</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+            set @labresults_concept_id = 0;
+
+            set @answer_concept_id = 0;
+            call add_concept(@concept_id, @concept_name_short_id,
+            @concept_name_full_id,'REFERRED_OUT','REFERRED_OUT', 'N/A', 'Misc', true);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'REFERRED', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'OUT', 1);
+            select @labresults_concept_id := concept_id, min(concept_id) from concept_name where name = 'LABRESULTS_CONCEPT';
+            set @set_concept_id = @concept_id;
+            call add_concept_set_members (@labresults_concept_id,@set_concept_id,1);
+
+        </sql>
+    </changeSet>
 </databaseChangeLog>

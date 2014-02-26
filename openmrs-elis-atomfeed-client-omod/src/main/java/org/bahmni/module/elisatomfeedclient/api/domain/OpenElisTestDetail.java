@@ -31,4 +31,9 @@ public class OpenElisTestDetail {
     public Date fetchDate() {
         return  dateTime == null ? null : DateTime.parse(dateTime).toDate();
     }
+
+    @JsonIgnore
+    public boolean isReferredOut() {
+        return status != null && (status.equalsIgnoreCase("referred out") || status.equalsIgnoreCase("Finalized RO"));
+    }
 }
