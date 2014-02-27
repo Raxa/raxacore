@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.util;
 
 
+import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -38,7 +39,9 @@ public class VisitIdentificationHelper {
         Visit visit = new Visit();
         visit.setPatient(patient);
         visit.setStartDatetime(date);
-        visit.setStopDatetime(new DateTime(date).toDateMidnight().toDateTime().plusDays(1).minusSeconds(1).toDate());
+        if(!DateUtils.isSameDay(date, new Date())) {
+            visit.setStopDatetime(new DateTime(date).toDateMidnight().toDateTime().plusDays(1).minusSeconds(1).toDate());
+        }
         visit.setVisitType(getVisitTypeByName(visitType));
         return visit;
     }
