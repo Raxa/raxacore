@@ -504,4 +504,24 @@
 
         </sql>
     </changeSet>
+    <changeSet id="bahmni-clinical-201402281633" author="Indraneel,Neha" context="rel4">
+        <comment>Add concept Lab Order Notes</comment>
+        <sql>
+            insert into concept (retired, short_name, description, datatype_id, class_id, is_set, creator, date_created,
+            changed_by, date_changed, uuid)
+            values (0, 'Lab Order Notes', 'Lab Order Notes',
+            (select concept_datatype_id from concept_datatype where name = 'Text'),
+            (select concept_class_id from concept_class where name = 'Misc'),
+            0, 1, now(), 1, now(), uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-clinical-201402281635" author="Indraneel,Neha" context="rel4">
+        <comment>Add concept-name Lab Order Notes</comment>
+        <sql>
+            insert into concept_name (concept_id, name, locale, locale_preferred, creator, date_created,
+            concept_name_type, voided, uuid)
+            values ((select concept_id from concept where short_name='Document'),
+            'Lab Order Notes', 'en', 1, 1, now(), 'FULLY_SPECIFIED', 0, uuid());
+        </sql>
+    </changeSet>
 </databaseChangeLog>
