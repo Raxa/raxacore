@@ -36,7 +36,7 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
             " inner join patient_identifier pi on pi.patient_id = p.person_id " +
             " where p.voided = 'false' and pn.voided = 'false' and pn.preferred=true";
 
-    public static final String BY_ID = "pi.identifier = :" + PATIENT_IDENTIFIER_PARAM;
+    public static final String BY_ID = "pi.identifier like :" + PATIENT_IDENTIFIER_PARAM;
     public static final String BY_NAME = "pn.given_name like :" + NAME_PARAM + " or pn.family_name like :" + NAME_PARAM;
     public static final String BY_NAME_PARTS = "pn.given_name like :" + NAME_PARAM_1_PART_1 + " and pn.family_name like :" + NAME_PARAM_1_PART_2;
     public static final String BY_VILLAGE = "pa.city_village like :" + VILLAGE_PARAM;
@@ -76,7 +76,7 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
                 .setResultTransformer(Transformers.aliasToBean(PatientResponse.class));
 
         if (isNotEmpty(identifier))
-            sqlQuery.setParameter(PATIENT_IDENTIFIER_PARAM, identifier);
+            sqlQuery.setParameter(PATIENT_IDENTIFIER_PARAM, "%" + identifier + "%");
         if (isNotEmpty(name))
             sqlQuery.setParameter(NAME_PARAM, name + "%");
         if (nameSearchParameter.hasMultipleParts())
