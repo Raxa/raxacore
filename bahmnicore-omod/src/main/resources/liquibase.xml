@@ -524,4 +524,27 @@
             'Lab Order Notes', 'en', 1, 1, now(), 'FULLY_SPECIFIED', 0, uuid());
         </sql>
     </changeSet>
+    <changeSet id="bahmni-clinical-201403051245" author="Neha" context="rel4">
+        <comment>Delete concept Lab Order Notes</comment>
+        <sql>
+            DELETE from concept where short_name = 'Lab Order Notes';
+            DELETE from concept_name where name = 'Lab Order Notes';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-clinical-201403051246" author="Neha">
+        <comment>Add new concept to lab order notes</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            set @answer_concept_id = 0;
+            call add_concept(@concept_id, @concept_name_short_id,
+            @concept_name_full_id,'Lab Order Notes','Lab Order Notes', 'Text', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'LAB', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'ORDER', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'NOTES', 1);
+            set @set_concept_id = @concept_id;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
