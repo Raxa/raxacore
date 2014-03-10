@@ -64,7 +64,8 @@ public class VisitSummaryServiceImplTest  {
         when(transactionMapperBuilder.withProviderMapper().build()).thenReturn(transactionMapper);
 
 
-        List<EncounterTransaction> visitSummary = visitSummaryService.getVisitSummary(visitUUID);
+        Boolean includeAll = Boolean.FALSE;
+        List<EncounterTransaction> visitSummary = visitSummaryService.getVisitSummary(visitUUID, includeAll);
         verify(transactionMapperBuilder).withProviderMapper();
         verify(transactionMapperBuilder).build();
 

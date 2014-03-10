@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class VisitSummaryController extends BaseRestController {
     @RequestMapping(method = RequestMethod.GET, value = "/{visitUUID}")
     @WSDoc("Get a summary of the visit")
     @ResponseBody
-    public List<EncounterTransaction> get(@PathVariable("visitUUID")  String visitUUID){
-        return visitSummaryService.getVisitSummary(visitUUID);
+    public List<EncounterTransaction> get(@PathVariable("visitUUID")  String visitUUID, @RequestParam("includeAll") Boolean includeAll){
+        return visitSummaryService.getVisitSummary(visitUUID, includeAll);
     }
 }

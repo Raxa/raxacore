@@ -49,9 +49,9 @@ public class VisitSummaryControllerTest {
                         .build())
                 .build();
 
-        when(visitSummaryService.getVisitSummary(visitUuid)).thenReturn(visitResponse.getEncounters());
+        when(visitSummaryService.getVisitSummary(visitUuid,false)).thenReturn(visitResponse.getEncounters());
 
-        List<EncounterTransaction> encounterTransactions= new VisitSummaryController(visitSummaryService).get(visitUuid);
+        List<EncounterTransaction> encounterTransactions= new VisitSummaryController(visitSummaryService).get(visitUuid, false);
 
 //        VisitSummary summary = null;
 

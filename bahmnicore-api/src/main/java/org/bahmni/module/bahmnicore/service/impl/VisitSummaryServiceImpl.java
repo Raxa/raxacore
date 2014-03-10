@@ -28,12 +28,12 @@ public class VisitSummaryServiceImpl implements VisitSummaryService{
         this.encounterTransactionMapperBuilder = encounterTransactionMapperBuilder;
     }
 
-    public List<EncounterTransaction> getVisitSummary(String visitUUID){
+    public List<EncounterTransaction> getVisitSummary(String visitUUID, Boolean includeAll){
         Visit visit = visitService.getVisitByUuid(visitUUID);
         EncounterTransactionMapper encounterTransactionMapper = encounterTransactionMapperBuilder.withProviderMapper().withOrderMapper().build();
         List<EncounterTransaction> encounterTransactions = new ArrayList<EncounterTransaction>();
         for(Encounter encounter : visit.getEncounters()){
-            encounterTransactions.add(encounterTransactionMapper.map(encounter, true));
+            encounterTransactions.add(encounterTransactionMapper.map(encounter, includeAll));
         }
         return encounterTransactions;
     }
