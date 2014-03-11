@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDatatype;
+import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     private ConceptService conceptService;
     @Autowired
     private ReferenceDataConceptService referenceDataConceptService;
+    @Autowired
+    private EventWorkerUtility eventWorkerUtility;
+
     private SampleEventWorker sampleEventWorker;
 
     @Before
@@ -48,7 +52,7 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldCreateNewConceptForGivenSample() throws Exception {
         Event event = new Event("xxxx-yyyyy", "/reference-data/sample/8471dbe5-0465-4eac-94ba-8f8708f3f529");
-        Sample sample = new Sample("8471dbe5-0465-4eac-94ba-8f8708f3f529", "Urine Microscopy", "Urine Microscopy Sample Description", true);
+        Sample sample = new Sample("8471dbe5-0465-4eac-94ba-8f8708f3f529", "Urine Microscopy", "Urine Microscopy Sample Description", true, 100);
         when(httpClient.get(referenceDataUri + event.getContent(), Sample.class)).thenReturn(sample);
 
         sampleEventWorker.process(event);
@@ -64,27 +68,35 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(false, sampleConcept.isRetired());
         Concept labConcept = conceptService.getConceptByName(SampleEventWorker.LABORATORY);
         assertTrue(labConcept.getSetMembers().contains(sampleConcept));
+
+        ConceptSet matchingConceptSet = eventWorkerUtility.getMatchingConceptSet(labConcept.getConceptSets(), sampleConcept);
+        assertEquals(100, matchingConceptSet.getSortWeight(), 0.001);
     }
 
     @Test
     public void shouldUpdateConceptForGivenSample() throws Exception {
-        Event event = new Event("xxxx-yyyyy", "/reference-data/sample/dc8ac8c0-8716-11e3-baa7-0800200c9a66");
-        Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66", "Blood Sample Updated", null, false);
-        when(httpClient.get(referenceDataUri+event.getContent(), Sample.class)).thenReturn(sample);
+        int newSortOrder = 5;
+        Event bloodSampleUpdateEvent = new Event("xxxx-yyyyy", "/reference-data/sample/dc8ac8c0-8716-11e3-baa7-0800200c9a66");
+        Sample bloodSample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66", "Blood Sample Updated", null, false, newSortOrder);
+        when(httpClient.get(referenceDataUri + bloodSampleUpdateEvent.getContent(), Sample.class)).thenReturn(bloodSample);
 
-        sampleEventWorker.process(event);
+        sampleEventWorker.process(bloodSampleUpdateEvent);
 
-        Concept sampleConcept = conceptService.getConceptByUuid(sample.getId());
+        Concept sampleConcept = conceptService.getConceptByUuid(bloodSample.getId());
         assertNotNull(sampleConcept);
         assertEquals(1, sampleConcept.getNames().size());
-        assertEquals(sample.getName(), sampleConcept.getName(Locale.ENGLISH).getName());
-        assertEquals(sample.getShortName(), sampleConcept.getShortNameInLocale(Locale.ENGLISH));
+        assertEquals(bloodSample.getName(), sampleConcept.getName(Locale.ENGLISH).getName());
+        assertEquals(bloodSample.getShortName(), sampleConcept.getShortNameInLocale(Locale.ENGLISH));
         assertEquals(ConceptDatatype.N_A_UUID, sampleConcept.getDatatype().getUuid());
         assertEquals(SampleEventWorker.LAB_SET, sampleConcept.getConceptClass().getName());
         assertEquals(true, sampleConcept.isSet());
         assertEquals(true, sampleConcept.isRetired());
-        Concept labConcept = conceptService.getConceptByName(SampleEventWorker.LABORATORY);
-        assertTrue(labConcept.getSetMembers().contains(sampleConcept));
+
+        ConceptSet bloodConceptSet = conceptService.getConceptSetByUuid("4644c0f6-04f7-4db7-9f27-7448af90e5e4");
+        assertEquals(newSortOrder, bloodConceptSet.getSortWeight(), 0.0001);
+
+        ConceptSet urineConceptSet = conceptService.getConceptSetByUuid("e4c6e385-74f7-4036-bcc6-cd0ce9172ad2");
+        assertEquals(99, urineConceptSet.getSortWeight(), 0.0001);
     }
 
     @org.junit.Test

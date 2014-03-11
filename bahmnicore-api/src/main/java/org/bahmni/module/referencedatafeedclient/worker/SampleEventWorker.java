@@ -9,12 +9,14 @@ import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDatatype;
+import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class SampleEventWorker implements EventWorker {
@@ -50,7 +52,11 @@ public class SampleEventWorker implements EventWorker {
 
             Concept sampleConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
             Concept labConcept = conceptService.getConceptByName(LABORATORY);
-            referenceDataConceptService.saveSetMembership(labConcept, sampleConcept);
+
+            if (labConcept.getSetMembers().contains(sampleConcept))
+                referenceDataConceptService.saveExistingSetMembership(labConcept, sampleConcept, sample.getSortOrder());
+            else
+                referenceDataConceptService.saveNewSetMembership(labConcept, sampleConcept, sample.getSortOrder());
         } catch (IOException e) {
            throw new RuntimeException(e);
         }

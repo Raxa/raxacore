@@ -36,7 +36,7 @@ public class EventWorkerUtility {
         }
     }
 
-    private  ConceptSet getMatchingConceptSet(Collection<ConceptSet> conceptSets, Concept childConcept) {
+    public ConceptSet getMatchingConceptSet(Collection<ConceptSet> conceptSets, Concept childConcept) {
         for (ConceptSet conceptSet : conceptSets) {
             if (conceptSet.getConcept().equals(childConcept)) {
                 return conceptSet;

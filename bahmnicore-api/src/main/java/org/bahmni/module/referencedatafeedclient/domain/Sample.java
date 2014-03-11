@@ -14,8 +14,9 @@ public class Sample {
     String name;
     String shortName;
     Boolean isActive = true;
+    double sortOrder;
 
     public Sample(String id) {
-        this(id, null, null, true);
+        this(id, null, null, true, 0);
     }
 }
