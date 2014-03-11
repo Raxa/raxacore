@@ -547,4 +547,15 @@
             set @set_concept_id = @concept_id;
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201403110603" author="Hemanth">
+        <comment>Add new concept for test and panel</comment>
+        <sql>
+            insert into concept(datatype_id, class_id, is_set, creator, date_created, uuid) values(4, 10, true, 1, now(), uuid());
+
+            select max(concept_id) from concept into @laboratory_concept_id;
+
+            insert into concept_name(concept_id, name, locale, locale_preferred,creator, date_created, concept_name_type, uuid) values (@laboratory_concept_id, 'All_Tests_and_Panels', 'en', true, 1, now(), 'FULLY_SPECIFIED', uuid());
+            insert into concept_name(concept_id, name, locale, locale_preferred,creator, date_created, concept_name_type, uuid) values (@laboratory_concept_id, 'A_T_and_P', 'en', false, 1, now(), 'SHORT', uuid());
+        </sql>
+    </changeSet>
 </databaseChangeLog>
