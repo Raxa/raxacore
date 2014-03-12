@@ -32,6 +32,9 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     private ConceptService conceptService;
     @Autowired
     private ReferenceDataConceptService referenceDataConceptService;
+    @Autowired
+    private EventWorkerUtility eventWorkerUtility;
+
     private TestEventWorker testEventWorker;
 
     @Before
@@ -47,7 +50,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Event event = new Event("xxxx-yyyyy", "/reference-data/test/8471dbe5-0465-4eac-94ba-8f8708f3f529");
         Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department department = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b75");
-        Test test = new Test("59474920-8734-11e3-baa7-0800200c9a66", "Haemoglobin", "Haemoglobin Description", "Hb", "Numeric", sample, department, true);
+        Test test = new Test("59474920-8734-11e3-baa7-0800200c9a66", "Haemoglobin", "Haemoglobin Description", "Hb", "Numeric", sample, department, true, 12);
 
         when(httpClient.get(referenceDataUri + event.getContent(), Test.class)).thenReturn(test);
 
@@ -67,6 +70,11 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         assertTrue(sampleConcept.getSetMembers().contains(testConcept));
         Concept departmentConcept = conceptService.getConceptByUuid(department.getId());
         assertTrue(departmentConcept.getSetMembers().contains(testConcept));
+
+        Concept allTestsAndPanelsConcept = conceptService.getConceptByName(TestEventWorker.ALL_TESTS_AND_PANELS);
+        ConceptSet matchingConceptSet = eventWorkerUtility.getMatchingConceptSet(allTestsAndPanelsConcept.getConceptSets(), testConcept);
+        assertNotNull(matchingConceptSet);
+        assertEquals(12, matchingConceptSet.getSortWeight(), 0.001);
     }
 
     @org.junit.Test
@@ -74,7 +82,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Event event = new Event("xxxx-yyyyy", "/reference-data/test/4923d0e0-8734-11e3-baa7-0800200c9a66");
         Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department department = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b75");
-        Test test = new Test("4923d0e0-8734-11e3-baa7-0800200c9a66", "Blood Group Updated", "Blood Group Description updated", null, "NNNN", sample, department, false);
+        Test test = new Test("4923d0e0-8734-11e3-baa7-0800200c9a66", "Blood Group Updated", "Blood Group Description updated", null, "NNNN", sample, department, false, 12);
         when(httpClient.get(referenceDataUri+event.getContent(), Test.class)).thenReturn(test);
 
         testEventWorker.process(event);
@@ -100,7 +108,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     public void updating_sample_for_test_moves_the_test_from_oldsample_to_newsample() throws Exception {
         Sample oldBloodSample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department bioChemistry = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b76");
-        Test test = new Test("4923d0e0-8734-11e3-baa7-0800200c9a66", "Blood Group Updated", "Blood Group Description updated", null, "NNNN", oldBloodSample, bioChemistry, true);
+        Test test = new Test("4923d0e0-8734-11e3-baa7-0800200c9a66", "Blood Group Updated", "Blood Group Description updated", null, "NNNN", oldBloodSample, bioChemistry, true, 12);
 
         Event testEvent = new Event("xxxx-yyyyy-1", "/reference-data/test/59474920-8734-11e3-baa7-0800200c9a66");
         when(httpClient.get(referenceDataUri + testEvent.getContent(), Test.class)).thenReturn(test);
@@ -125,7 +133,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     public void updating_department_for_test_moves_the_test_from_old_department_to_new_department() throws Exception {
         Sample bloodSample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department bioChemistry = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b76");
-        Test test = new Test("4923d0e0-8734-11e3-baa7-0800200c9a66", "Blood Group Updated", "Blood Group Description updated", null, "NNNN", bloodSample, bioChemistry, true);
+        Test test = new Test("4923d0e0-8734-11e3-baa7-0800200c9a66", "Blood Group Updated", "Blood Group Description updated", null, "NNNN", bloodSample, bioChemistry, true, 12);
 
         Event testEvent = new Event("xxxx-yyyyy-1", "/reference-data/test/59474920-8734-11e3-baa7-0800200c9a66");
         when(httpClient.get(referenceDataUri + testEvent.getContent(), Test.class)).thenReturn(test);

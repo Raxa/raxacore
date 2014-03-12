@@ -22,6 +22,7 @@ import java.util.Set;
 @Component
 public class PanelEventWorker implements EventWorker {
     public static final String LAB_SET = "LabSet";
+    public static final String ALL_TESTS_AND_PANELS = "All_Tests_and_Panels";
     @Resource(name = "referenceDataHttpClient")
     private HttpClient httpClient;
     private final ReferenceDataFeedProperties referenceDataFeedProperties;
@@ -70,7 +71,7 @@ public class PanelEventWorker implements EventWorker {
         referenceDataConcept.setSet(true);
 
         Concept newPanelConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
-        addNewPanelToSample(panel, newPanelConcept);
+        setMembership(panel, newPanelConcept);
         if (newPanelConcept.isRetired()){
             removePanelFromSample(panel, newPanelConcept);
         }
@@ -88,9 +89,23 @@ public class PanelEventWorker implements EventWorker {
         eventWorkerUtility.removeChildFromOldParent(parentSample, newPanelConcept);
     }
 
-    private void addNewPanelToSample(Panel panel, Concept newPanelConcept) {
+    private void setMembership(Panel panel, Concept panelConcept) {
+        addPanelToSample(panel, panelConcept);
+        addPanelToAllTestsAndPanels(panel, panelConcept);
+    }
+
+    private void addPanelToSample(Panel panel, Concept panelConcept) {
         Concept parentSampleConcept = conceptService.getConceptByUuid(panel.getSample().getId());
-        referenceDataConceptService.saveSetMembership(parentSampleConcept, newPanelConcept);
+        referenceDataConceptService.saveSetMembership(parentSampleConcept, panelConcept);
+    }
+
+    private void addPanelToAllTestsAndPanels(Panel panel, Concept panelConcept) {
+        Concept allTestsAndPanelsConcept = conceptService.getConceptByName(ALL_TESTS_AND_PANELS);
+        if (allTestsAndPanelsConcept.getSetMembers().contains(panelConcept)){
+            referenceDataConceptService.saveExistingSetMembership(allTestsAndPanelsConcept, panelConcept, panel.getSortOrder());
+        } else{
+            referenceDataConceptService.saveNewSetMembership(allTestsAndPanelsConcept, panelConcept, panel.getSortOrder());
+        }
     }
 
     private Set<String> getTestUuids(Panel panel) {

@@ -22,6 +22,7 @@ import java.util.List;
 public class TestEventWorker implements EventWorker {
     public static final String TEST = "Test";
     public static final String TEXT_CONCEPT_DATATYPE = "Text";
+    public static final String ALL_TESTS_AND_PANELS = "All_Tests_and_Panels";
 
     @Resource(name = "referenceDataHttpClient")
     private HttpClient httpClient;
@@ -75,7 +76,7 @@ public class TestEventWorker implements EventWorker {
         referenceDataConcept.setShortName(test.getShortName());
         referenceDataConcept.setRetired(!test.getIsActive());
         Concept newTestConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
-        addNewTestToSampleAndDepartment(test, newTestConcept);
+        setMembership(test, newTestConcept);
         if (newTestConcept.isRetired()){
             removeTestFromSampleDepartmentAndPanel(test, newTestConcept);
         }
@@ -104,11 +105,28 @@ public class TestEventWorker implements EventWorker {
         }
     }
 
-    private void addNewTestToSampleAndDepartment(Test test, Concept newTestConcept) {
-        Concept parentSampleConcept = conceptService.getConceptByUuid(test.getSample().getId());
-        referenceDataConceptService.saveSetMembership(parentSampleConcept, newTestConcept);
+    private void setMembership(Test test, Concept testConcept) {
+        setTestToSample(test, testConcept);
+        setTestToDepartment(test, testConcept);
+        setTestToAllTestsAndPanels(test, testConcept);
+    }
 
+    private void setTestToDepartment(Test test, Concept testConcept) {
         Concept parentDepartmentConcept = conceptService.getConceptByUuid(test.getDepartment().getId());
-        referenceDataConceptService.saveSetMembership(parentDepartmentConcept, newTestConcept);
+        referenceDataConceptService.saveSetMembership(parentDepartmentConcept, testConcept);
+    }
+
+    private void setTestToSample(Test test, Concept testConcept) {
+        Concept parentSampleConcept = conceptService.getConceptByUuid(test.getSample().getId());
+        referenceDataConceptService.saveSetMembership(parentSampleConcept, testConcept);
+    }
+
+    private void setTestToAllTestsAndPanels(Test test, Concept testConcept) {
+        Concept allTestsAndPanelsConcept = conceptService.getConceptByName(ALL_TESTS_AND_PANELS);
+        if (allTestsAndPanelsConcept.getSetMembers().contains(testConcept)){
+            referenceDataConceptService.saveExistingSetMembership(allTestsAndPanelsConcept, testConcept, test.getSortOrder());
+        } else{
+            referenceDataConceptService.saveNewSetMembership(allTestsAndPanelsConcept, testConcept, test.getSortOrder());
+        }
     }
 }

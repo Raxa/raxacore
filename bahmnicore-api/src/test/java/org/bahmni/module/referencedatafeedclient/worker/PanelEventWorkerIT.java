@@ -32,6 +32,9 @@ public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     private ConceptService conceptService;
     @Autowired
     private ReferenceDataConceptService referenceDataConceptService;
+    @Autowired
+    private EventWorkerUtility eventWorkerUtility;
+
     private PanelEventWorker panelEventWorker;
 
     @Before
@@ -49,7 +52,7 @@ public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Test test1 = new Test("5923d0e0-8734-11e3-baa7-0800200c9a66");
         Test test2 = new Test("7923d0e0-8734-11e3-baa7-0800200c9a66");
         HashSet<Test> tests = new HashSet<>(Arrays.asList(test1, test2));
-        Panel panel = new Panel("59474920-8734-11e3-baa7-0800200c9a66", "Routine Blood", "Routine Blood Description", "RB", true, sample, tests);
+        Panel panel = new Panel("59474920-8734-11e3-baa7-0800200c9a66", "Routine Blood", "Routine Blood Description", "RB", true, sample, tests, 12);
         when(httpClient.get(referenceDataUri + event.getContent(), Panel.class)).thenReturn(panel);
 
         panelEventWorker.process(event);
@@ -70,13 +73,18 @@ public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(2, panelConcept.getSetMembers().size());
         assertTrue(panelConcept.getSetMembers().contains(conceptService.getConceptByUuid(test1.getId())));
         assertTrue(panelConcept.getSetMembers().contains(conceptService.getConceptByUuid(test2.getId())));
+
+        Concept allTestsAndPanelsConcept = conceptService.getConceptByName(PanelEventWorker.ALL_TESTS_AND_PANELS);
+        ConceptSet matchingConceptSet = eventWorkerUtility.getMatchingConceptSet(allTestsAndPanelsConcept.getConceptSets(), panelConcept);
+        assertNotNull(matchingConceptSet);
+        assertEquals(12, matchingConceptSet.getSortWeight(), 0.001);
     }
 
     @org.junit.Test
     public void updating_sample_for_panel_moves_the_panel_from_oldsample_to_newsample() throws Exception {
         Sample oldBloodSample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         HashSet<Test> routineBloodTests = new HashSet<>(Arrays.asList(new Test("5923d0e0-8734-11e3-baa7-0800200c9a66"), new Test("7923d0e0-8734-11e3-baa7-0800200c9a66")));
-        Panel routineBloodPanel = new Panel("59474920-8734-11e3-baa7-0800200c9a66", "Routine Blood", "Routine Blood Description", "RB", true, oldBloodSample, routineBloodTests);
+        Panel routineBloodPanel = new Panel("59474920-8734-11e3-baa7-0800200c9a66", "Routine Blood", "Routine Blood Description", "RB", true, oldBloodSample, routineBloodTests, 14);
         Event routineBloodPanelCreationEvent = new Event("xxxx-yyyyy-1", "/reference-data/panel/59474920-8734-11e3-baa7-0800200c9a66");
         when(httpClient.get(referenceDataUri + routineBloodPanelCreationEvent.getContent(), Panel.class)).thenReturn(routineBloodPanel);
         panelEventWorker.process(routineBloodPanelCreationEvent);
@@ -130,7 +138,7 @@ public class PanelEventWorkerIT extends BaseModuleWebContextSensitiveTest {
 
     @org.junit.Test
     public void prepend_Panel_to_panelname_when_a_test_exists_with_same_name() throws Exception {
-        Panel panel = new Panel("12207b51-0d2f-4e0a-9ff7-65fc14aa362e", "Platelet Count", "description", "PC", true, new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66"), new HashSet<Test>());
+        Panel panel = new Panel("12207b51-0d2f-4e0a-9ff7-65fc14aa362e", "Platelet Count", "description", "PC", true, new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66"), new HashSet<Test>(), 12);
 
         Event panelEventWithSameNameAsTest = new Event("xxxx-yyyyy-2", "/reference-data/panel/12207b51-0d2f-4e0a-9ff7-65fc14aa362e");
         when(httpClient.get(referenceDataUri + panelEventWithSameNameAsTest.getContent(), Panel.class)).thenReturn(panel);

@@ -21,6 +21,7 @@ public class Panel {
     Boolean isActive = true;
     Sample sample;
     Set<Test> tests = new HashSet<>();
+    double sortOrder;
 
     public void suffixPanelToName() {
         name = name + PANEL_SUFFIX;

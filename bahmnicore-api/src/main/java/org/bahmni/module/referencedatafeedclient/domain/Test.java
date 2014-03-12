@@ -20,13 +20,14 @@ public class Test {
     Sample sample;
     Department department;
     Boolean isActive = true;
+    double sortOrder;
 
     public Test(String id) {
-        this(id, null, null, null, null, null, null, true);
+        this(id, null, null, null, null, null, null, true, 0);
     }
 
-    public Test(String id, String name, String description, String shortName, String resultType, Sample sample, Department department) {
-        this(id, name, description, shortName, resultType, sample, department, true);
+    public Test(String id, String name, String description, String shortName, String resultType, Sample sample, Department department, double sortOrder) {
+        this(id, name, description, shortName, resultType, sample, department, true, sortOrder);
     }
 
     public void suffixTestToName() {
