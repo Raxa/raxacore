@@ -55,17 +55,14 @@ public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements
     @Override
     public void processFeed() {
         try {
-            if(atomFeedClient == null) {
-                initializeAtomFeedClient();
-            }
             logger.info("openelisatomfeedclient:processing feed " + DateTime.now());
-            atomFeedClient.processEvents();
+            getAtomFeedClient().processEvents();
         } catch (Exception e) {
             try {
                 if (e != null && ExceptionUtils.getStackTrace(e).contains("HTTP response code: 401")) {
-                    initializeAtomFeedClient();
+                    getAtomFeedClient();
                 }
-            }catch (Exception ex){
+            } catch (Exception ex){
                 logger.error("openelisatomfeedclient:failed feed execution " + e, e);
                 throw new RuntimeException(ex);
             }

@@ -1,6 +1,5 @@
 package org.bahmni.module.elisatomfeedclient.api.client;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.webclients.AnonymousAuthenticator;
@@ -10,47 +9,60 @@ import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.jdbc.AllFailedEventsJdbcImpl;
 import org.ict4h.atomfeed.client.repository.jdbc.AllMarkersJdbcImpl;
-import org.ict4h.atomfeed.client.service.AtomFeedClient;
-import org.ict4h.atomfeed.client.service.EventWorker;
-import org.ict4h.atomfeed.client.service.FeedClient;
-import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
-import org.joda.time.DateTime;
-import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
+import org.ict4h.atomfeed.client.service.*;
+import org.openmrs.module.atomfeed.transaction.support.AtomFeedSpringTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public abstract class OpenElisFeedClient{
+public abstract class OpenElisFeedClient {
     protected AtomFeedClient atomFeedClient;
     private ElisAtomFeedProperties properties;
-    private JdbcConnectionProvider jdbcConnectionProvider;
+    private PlatformTransactionManager transactionManager;
     private Logger logger = Logger.getLogger(OpenElisFeedClient.class);
 
     public OpenElisFeedClient(ElisAtomFeedProperties properties, PlatformTransactionManager transactionManager) {
-        this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider(transactionManager);
         this.properties = properties;
+        this.transactionManager = transactionManager;
     }
 
-    protected void initializeAtomFeedClient() {
-        String feedUri = getFeedUri(properties);
+
+    /**
+     *
+     * @param feedUri
+     * @return
+     * @throws java.lang.RuntimeException if feed Uri is invalid
+     */
+    private URI getURIForFeed(String feedUri) {
         try {
-            ConnectionDetails connectionDetails = createConnectionDetails(properties);
-            HttpClient httpClient = new HttpClient(connectionDetails, new AnonymousAuthenticator(connectionDetails));
-            ClientCookies cookies = httpClient.getCookies(new URI(feedUri));
-            EventWorker openMRSEventWorker = createWorker(httpClient, properties);
-            atomFeedClient = new AtomFeedClient(
-                    new AllFeeds(properties, cookies),
-                    new AllMarkersJdbcImpl(jdbcConnectionProvider),
-                    new AllFailedEventsJdbcImpl(jdbcConnectionProvider),
-                    properties,
-                    jdbcConnectionProvider,
-                    new URI(feedUri),
-                    openMRSEventWorker);
+            return new URI(feedUri);
         } catch (URISyntaxException e) {
             logger.error("openelisatomfeedclient:error instantiating client:" + e.getMessage(), e);
             throw new RuntimeException("error for uri:" + feedUri);
+        }
+    }
+
+    public org.ict4h.atomfeed.client.service.FeedClient getAtomFeedClient() {
+        URI uriForFeed = getURIForFeed(getFeedUri(properties));
+        if(atomFeedClient == null) {
+            ConnectionDetails connectionDetails = createConnectionDetails(properties);
+                HttpClient httpClient = new HttpClient(connectionDetails, new AnonymousAuthenticator(connectionDetails));
+                ClientCookies cookies = httpClient.getCookies(uriForFeed);
+                EventWorker openMRSEventWorker = createWorker(httpClient, properties);
+                AtomFeedSpringTransactionManager txMgr = new AtomFeedSpringTransactionManager(transactionManager);
+            atomFeedClient = new AtomFeedClient(
+                        new AllFeeds(properties, cookies),
+                        new AllMarkersJdbcImpl(txMgr),
+                        new AllFailedEventsJdbcImpl(txMgr),
+                        properties,
+                        txMgr,
+                        uriForFeed,
+                        openMRSEventWorker);
+            return atomFeedClient;
+        }
+        else {
+            return atomFeedClient;
         }
     }
 
@@ -61,5 +73,4 @@ public abstract class OpenElisFeedClient{
     }
 
     protected abstract EventWorker createWorker(HttpClient authenticatedWebClient, ElisAtomFeedProperties properties);
-
 }

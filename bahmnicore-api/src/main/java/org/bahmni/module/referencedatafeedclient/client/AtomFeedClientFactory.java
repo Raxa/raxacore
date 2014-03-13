@@ -1,7 +1,7 @@
 package org.bahmni.module.referencedatafeedclient.client;
 
-import org.ict4h.atomfeed.client.service.AtomFeedClient;
+import org.ict4h.atomfeed.client.service.FeedClient;
 
 public interface AtomFeedClientFactory {
-    AtomFeedClient getAtomFeedClient() throws Exception;
+    FeedClient getAtomFeedClient() throws Exception;
 }

@@ -1,6 +1,6 @@
 package org.bahmni.module.openerpatomfeedclient.api;
 
-import org.ict4h.atomfeed.client.factory.AtomFeedProperties;
+import org.ict4h.atomfeed.client.AtomFeedProperties;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;

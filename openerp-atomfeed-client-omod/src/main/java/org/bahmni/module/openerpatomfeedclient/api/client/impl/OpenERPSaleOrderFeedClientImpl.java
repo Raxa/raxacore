@@ -6,62 +6,73 @@ import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.openerpatomfeedclient.api.OpenERPAtomFeedProperties;
 import org.bahmni.module.openerpatomfeedclient.api.client.OpenERPSaleOrderFeedClient;
 import org.bahmni.module.openerpatomfeedclient.api.worker.SaleOrderFeedEventWorker;
-import org.ict4h.atomfeed.client.factory.AtomFeedClientBuilder;
+import org.ict4h.atomfeed.client.repository.AllFeeds;
+import org.ict4h.atomfeed.client.repository.jdbc.AllFailedEventsJdbcImpl;
+import org.ict4h.atomfeed.client.repository.jdbc.AllMarkersJdbcImpl;
 import org.ict4h.atomfeed.client.service.AtomFeedClient;
-import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.client.service.FeedClient;
 import org.joda.time.DateTime;
-import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
+import org.openmrs.module.atomfeed.transaction.support.AtomFeedSpringTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 
 public class OpenERPSaleOrderFeedClientImpl  {
     private static Logger logger = Logger.getLogger(OpenERPSaleOrderFeedClient.class);
 
-    private AtomFeedClient atomFeedClient;
-    private JdbcConnectionProvider jdbcConnectionProvider;
+    private FeedClient atomFeedClient;
     private OpenERPAtomFeedProperties properties;
     private BahmniDrugOrderService bahmniDrugOrderService;
+    private PlatformTransactionManager transactionManager;
 
     public OpenERPSaleOrderFeedClientImpl(
             OpenERPAtomFeedProperties properties,
             BahmniDrugOrderService bahmniDrugOrderService,
             PlatformTransactionManager transactionManager) {
-        this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider(transactionManager);
         this.properties = properties;
         this.bahmniDrugOrderService = bahmniDrugOrderService;
+        this.transactionManager = transactionManager;
     }
 
     protected void initializeAtomFeedClient() {
-        String feedUri = properties.getFeedUri("sale.order.feed.uri");
-        try {
-            atomFeedClient = new AtomFeedClientBuilder().
-                    forFeedAt(new URI(feedUri)).
-                    processedBy(new SaleOrderFeedEventWorker(bahmniDrugOrderService, properties)).
-                    usingConnectionProvider(jdbcConnectionProvider).
-                    with(properties).
-                    build();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(String.format("Is not a valid URI - %s", feedUri));
+        getAtomFeedClient();
+    }
+
+    private FeedClient getAtomFeedClient() {
+        if(atomFeedClient == null) {
+            String feedUri = properties.getFeedUri("sale.order.feed.uri");
+            try {
+                AtomFeedSpringTransactionManager txManager = new AtomFeedSpringTransactionManager(transactionManager);
+                atomFeedClient = new AtomFeedClient(
+                        new AllFeeds(properties, new HashMap<String, String>()),
+                        new AllMarkersJdbcImpl(txManager),
+                        new AllFailedEventsJdbcImpl(txManager),
+                        properties,
+                        txManager,
+                        new URI(feedUri),
+                        new SaleOrderFeedEventWorker(bahmniDrugOrderService,properties));
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(String.format("Is not a valid URI - %s", feedUri));
+            }
         }
+        return atomFeedClient;
     }
 
     protected void process(OpenERPSaleOrderProcessFeedClientImpl.FeedProcessor feedProcessor) {
         try {
-            if(atomFeedClient == null) {
-                initializeAtomFeedClient();
-            }
             logger.info("openerpatomfeedclient:processing feed " + DateTime.now());
-            feedProcessor.process(atomFeedClient);
+            feedProcessor.process(getAtomFeedClient());
         } catch (Exception e) {
             try {
                 if (e != null && ExceptionUtils.getStackTrace(e).contains("HTTP response code: 401")) {
                     initializeAtomFeedClient();
                 } else {
                     logger.error("Could not process Sale order feed", e);
+                    initializeAtomFeedClient();
                 }
-            }catch (Exception ex){
+            } catch (Exception ex){
                 logger.error("openerpatomfeedclient:failed feed execution " + e, e);
                 throw new RuntimeException(ex);
             }

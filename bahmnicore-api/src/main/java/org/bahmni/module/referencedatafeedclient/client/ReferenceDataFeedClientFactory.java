@@ -9,7 +9,8 @@ import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.jdbc.AllFailedEventsJdbcImpl;
 import org.ict4h.atomfeed.client.repository.jdbc.AllMarkersJdbcImpl;
 import org.ict4h.atomfeed.client.service.AtomFeedClient;
-import org.openmrs.module.atomfeed.common.repository.OpenMRSJdbcConnectionProvider;
+import org.ict4h.atomfeed.client.service.FeedClient;
+import org.openmrs.module.atomfeed.transaction.support.AtomFeedSpringTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -18,28 +19,40 @@ import java.net.URI;
 
 @Component
 public class ReferenceDataFeedClientFactory implements AtomFeedClientFactory {
+    private final PlatformTransactionManager transactionManager;
     private ReferenceDataFeedProperties referenceDataFeedProperties;
     private ReferenceDataEventWorker referenceDataEventWorker;
-    private OpenMRSJdbcConnectionProvider jdbcConnectionProvider;
-    private AtomFeedClient atomFeedClient;
+    private FeedClient atomFeedClient;
 
     @Autowired
     public ReferenceDataFeedClientFactory(ReferenceDataFeedProperties referenceDataFeedProperties, ReferenceDataEventWorker referenceDataEventWorker, PlatformTransactionManager transactionManager) {
         this.referenceDataFeedProperties = referenceDataFeedProperties;
         this.referenceDataEventWorker = referenceDataEventWorker;
-        this.jdbcConnectionProvider = new OpenMRSJdbcConnectionProvider(transactionManager);
+        this.transactionManager = transactionManager;
     }
 
     @Override
-    public AtomFeedClient getAtomFeedClient() throws Exception {
+    public FeedClient getAtomFeedClient() throws Exception {
         if(atomFeedClient == null) {
             HttpClient referenceDataClient = WebClientFactory.createReferenceDataClient(referenceDataFeedProperties);
             URI feedUri = URI.create(referenceDataFeedProperties.getFeedUri());
             ClientCookies cookies = referenceDataClient.getCookies(feedUri);
+
+            AtomFeedSpringTransactionManager txMgr = new AtomFeedSpringTransactionManager(transactionManager);
+
             AllFeeds allFeeds = new AllFeeds(referenceDataFeedProperties, cookies);
-            AllMarkersJdbcImpl allMarkers = new AllMarkersJdbcImpl(jdbcConnectionProvider);
-            AllFailedEventsJdbcImpl allFailedEvents = new AllFailedEventsJdbcImpl(jdbcConnectionProvider);
-            atomFeedClient = new AtomFeedClient(allFeeds, allMarkers, allFailedEvents, referenceDataFeedProperties, jdbcConnectionProvider, feedUri, referenceDataEventWorker);
+            AllFailedEventsJdbcImpl allFailedEvents = new AllFailedEventsJdbcImpl(txMgr);
+            AllMarkersJdbcImpl allMarkers = new AllMarkersJdbcImpl(txMgr);
+
+            atomFeedClient = new AtomFeedClient(
+                    allFeeds,
+                    allMarkers,
+                    allFailedEvents,
+                    referenceDataFeedProperties,
+                    txMgr,
+                    feedUri,
+                    referenceDataEventWorker);
+
         }
         return atomFeedClient;
     }

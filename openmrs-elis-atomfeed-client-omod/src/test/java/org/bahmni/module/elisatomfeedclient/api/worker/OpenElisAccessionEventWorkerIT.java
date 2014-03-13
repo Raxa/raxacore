@@ -2,6 +2,7 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisAccessionBuilder;
+
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisTestDetailBuilder;
 import org.bahmni.module.elisatomfeedclient.api.client.impl.HealthCenterFilterRule;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
@@ -92,7 +93,9 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
         final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(4, resultMembers.size());
+        assertEquals(1, resultMembers.size());
+        Obs status = resultMembers.iterator().next();
+        assertEquals("Ensure the concept is Referred Out", status.getConcept(), Context.getConceptService().getConcept(108));
     }
 
     @Test

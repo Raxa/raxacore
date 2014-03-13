@@ -4,6 +4,7 @@ import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.openerpatomfeedclient.api.OpenERPAtomFeedProperties;
 import org.bahmni.module.openerpatomfeedclient.api.client.OpenERPSaleOrderFailedFeedClient;
 import org.ict4h.atomfeed.client.service.AtomFeedClient;
+import org.ict4h.atomfeed.client.service.FeedClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -22,7 +23,7 @@ public class OpenERPSaleOrderFailedFeedClientImpl extends OpenERPSaleOrderFeedCl
     }
 
     private static class ProcessFailedFeed implements OpenERPSaleOrderProcessFeedClientImpl.FeedProcessor {
-        public void process(AtomFeedClient atomFeedClient){
+        public void process(FeedClient atomFeedClient){
             atomFeedClient.processFailedEvents();
         }
     }

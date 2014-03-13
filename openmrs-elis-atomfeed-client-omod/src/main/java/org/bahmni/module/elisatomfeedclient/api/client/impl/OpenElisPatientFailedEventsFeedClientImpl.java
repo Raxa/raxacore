@@ -64,15 +64,12 @@ public class OpenElisPatientFailedEventsFeedClientImpl extends OpenElisFeedClien
     @Override
     public void processFailedEvents() {
         try {
-            if(atomFeedClient == null) {
-                initializeAtomFeedClient();
-            }
             logger.info("openelisatomfeedclient:processing failed events " + DateTime.now());
-            atomFeedClient.processFailedEvents();
+            getAtomFeedClient().processFailedEvents();
         } catch (Exception e) {
             try {
                 if (e != null && ExceptionUtils.getStackTrace(e).contains("HTTP response code: 401")) {
-                    initializeAtomFeedClient();
+                    getAtomFeedClient();
                 }
             }catch (Exception ex){
                 logger.error("openelisatomfeedclient:failed feed execution while running failed events" + e, e);
