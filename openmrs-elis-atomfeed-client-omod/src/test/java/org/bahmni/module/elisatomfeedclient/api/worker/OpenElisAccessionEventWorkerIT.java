@@ -93,9 +93,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
         final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(1, resultMembers.size());
-        Obs status = resultMembers.iterator().next();
-        assertEquals("Ensure the concept is Referred Out", status.getConcept(), Context.getConceptService().getConcept(108));
+        assertEquals(4, resultMembers.size());
     }
 
     @Test
