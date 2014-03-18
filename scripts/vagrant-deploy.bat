@@ -10,8 +10,8 @@ REM All config is here
 
 set MACHINE_IP=192.168.33.10
 set MODULE_DEPLOYMENT_FOLDER=/tmp/deploy_bahmni_core
-set VERSION=4.0-SNAPSHOT
-set CWD=./
+set VERSION=%2
+set CWD=%1
 set SCRIPTS_DIR=%CWD%/scripts
 set KEY_FILE=%USERPROFILE%\.vagrant.d\win_insecure_private_key.ppk
 

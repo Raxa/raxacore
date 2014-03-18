@@ -254,7 +254,7 @@
             </properties>
         </profile>
         <profile>
-            <id>deploy</id>
+            <id>vagrant-deploy</id>
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
@@ -272,7 +272,11 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${basedir}/scripts/deploy${script.extension}</executable>
+                                    <executable>${basedir}/scripts/vagrant-deploy${script.extension}</executable>
+                                    <arguments>
+                                        <argument>${basedir}</argument>
+                                        <argument>${project.version}</argument>
+                                    </arguments>
                                 </configuration>
                             </execution>
                         </executions>

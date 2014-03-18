@@ -3,8 +3,9 @@
 #All config is here
 MODULE_DEPLOYMENT_FOLDER=/tmp/deploy_bahmni_core
 MACHINE_IP=192.168.33.10
-VERSION=4.0-SNAPSHOT
-SCRIPTS_DIR=./scripts
+VERSION=$2
+CWD=$1
+SCRIPTS_DIR=$CWDscripts
 KEY_FILE=~/.vagrant.d/insecure_private_key
 
 # Setup environment
