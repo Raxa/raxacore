@@ -230,7 +230,11 @@
         </pluginManagement>
     </build>
 
-    <profiles>
+   <profiles>
+
+
+    <!-- COMMENTED OUT. MIGHT NOT BE NEEDED
+
         <profile>
             <id>Windows</id>
             <activation>
@@ -277,6 +281,7 @@
                 </plugins>
             </build>
         </profile>
+-->
         <profile>
             <id>IT</id>
             <build>
