@@ -15,7 +15,7 @@ set CWD=./
 set SCRIPTS_DIR=%CWD%/scripts
 set KEY_FILE=%USERPROFILE%\.vagrant.d\win_insecure_private_key.ppk
 
-if exist {%KEY_FILE%} (
+if exist %KEY_FILE% (
     REM setup
     putty -ssh vagrant@%MACHINE_IP% -i %KEY_FILE% -m %SCRIPTS_DIR%/setup_environment.sh
     REM Kill tomcat

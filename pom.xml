@@ -231,10 +231,6 @@
     </build>
 
    <profiles>
-
-
-    <!-- COMMENTED OUT. MIGHT NOT BE NEEDED
-
         <profile>
             <id>Windows</id>
             <activation>
@@ -259,6 +255,9 @@
         </profile>
         <profile>
             <id>deploy</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
@@ -281,7 +280,6 @@
                 </plugins>
             </build>
         </profile>
--->
         <profile>
             <id>IT</id>
             <build>
