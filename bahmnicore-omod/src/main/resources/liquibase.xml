@@ -576,4 +576,8 @@
 
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201403191516" author="tw">
+        <comment>Changing admitted patient search query</comment>
+        <sqlFile path="V1_79__PatientSearchSqlAllAdmittedPatients.sql"/>
+    </changeSet>
 </databaseChangeLog>
