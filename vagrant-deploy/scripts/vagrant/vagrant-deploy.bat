@@ -12,7 +12,7 @@ set MACHINE_IP=192.168.33.10
 set MODULE_DEPLOYMENT_FOLDER=/tmp/deploy_bahmni_core
 set VERSION=%2
 set CWD=%1
-set SCRIPTS_DIR=%CWD%/scripts
+set SCRIPTS_DIR=%CWD%/scripts/vagrant
 set KEY_FILE=%USERPROFILE%\.vagrant.d\win_insecure_private_key.ppk
 
 if exist %KEY_FILE% (
@@ -21,11 +21,11 @@ if exist %KEY_FILE% (
     REM Kill tomcat
     putty -ssh vagrant@%MACHINE_IP% -i %KEY_FILE% -m %SCRIPTS_DIR%/tomcat_stop.sh
     REM Deploy Bhamni core
-    pscp  -i %KEY_FILE% %CWD%/../bahmnicore-omod/target/bahmnicore-omod-%VERSION%.omod vagrant@%MACHINE_IP%:%MODULE_DEPLOYMENT_FOLDER%
+    pscp  -i %KEY_FILE% %CWD%/../../bahmnicore-omod/target/bahmnicore-omod-%VERSION%.omod vagrant@%MACHINE_IP%:%MODULE_DEPLOYMENT_FOLDER%
     REM Deploy Open erp atom feed client
-    pscp  -i %KEY_FILE% %CWD%/../openerp-atomfeed-client-omod/target/openerp-atomfeed-client-omod-%VERSION%.omod vagrant@%MACHINE_IP%:%MODULE_DEPLOYMENT_FOLDER%
+    pscp  -i %KEY_FILE% %CWD%/../../openerp-atomfeed-client-omod/target/openerp-atomfeed-client-omod-%VERSION%.omod vagrant@%MACHINE_IP%:%MODULE_DEPLOYMENT_FOLDER%
     REM Deploy Open elis
-    pscp  -i %KEY_FILE% %CWD%/../openmrs-elis-atomfeed-client-omod/target/elisatomfeedclient-omod-%VERSION%.omod vagrant@%MACHINE_IP%:%MODULE_DEPLOYMENT_FOLDER%
+    pscp  -i %KEY_FILE% %CWD%/../../openmrs-elis-atomfeed-client-omod/target/elisatomfeedclient-omod-%VERSION%.omod vagrant@%MACHINE_IP%:%MODULE_DEPLOYMENT_FOLDER%
     REM Copy omods into module directories
     putty -ssh vagrant@%MACHINE_IP% -i %KEY_FILE% -m %SCRIPTS_DIR%/deploy_omods.sh
     REM Start tomcat

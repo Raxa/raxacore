@@ -77,7 +77,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${basedir}/scripts/vagrant-deploy${script.extension}</executable>
+                                    <executable>${basedir}/scripts/vagrant/vagrant-deploy${script.extension}</executable>
                                     <arguments>
                                         <argument>${basedir}</argument>
                                         <argument>${project.version}</argument>
