@@ -24,6 +24,5 @@ function run_in_vagrant {
 
 # $1: Source  $2: Dest
 function scp_to_vagrant {
-    ssh vagrant@$MACHINE_IP -i $KEY_FILE $TIMEOUT < "$2"
     scp  -i $KEY_FILE $TIMEOUT $1 vagrant@$MACHINE_IP:$2
 }
