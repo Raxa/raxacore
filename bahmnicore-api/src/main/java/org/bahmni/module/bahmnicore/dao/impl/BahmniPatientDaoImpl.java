@@ -29,11 +29,12 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
     public static final String VILLAGE_PARAM = "village";
 
     public static final String FIND = "select p.uuid as uuid, pi.identifier as identifier, pn.given_name as givenName, pn.family_name as familyName, p.gender as gender, p.birthdate as birthDate," +
-            " p.death_date as deathDate, pa.city_village as cityVillage, p.date_created as dateCreated" +
+            " p.death_date as deathDate, pa.city_village as cityVillage, p.date_created as dateCreated, v.uuid as activeVisitUuid " +
             " from patient pat inner join person p on pat.patient_id=p.person_id " +
             " left join person_name pn on pn.person_id = p.person_id" +
             " left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
             " inner join patient_identifier pi on pi.patient_id = p.person_id " +
+            " left outer join visit v on v.patient_id = pat.patient_id and v.date_stopped is null " +
             " where p.voided = 'false' and pn.voided = 'false' and pn.preferred=true";
 
     public static final String BY_ID = "pi.identifier like :" + PATIENT_IDENTIFIER_PARAM;
@@ -73,6 +74,7 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
                 .addScalar("deathDate", StandardBasicTypes.DATE)
                 .addScalar("cityVillage", StandardBasicTypes.STRING)
                 .addScalar("dateCreated", StandardBasicTypes.TIMESTAMP)
+                .addScalar("activeVisitUuid", StandardBasicTypes.STRING)
                 .setResultTransformer(Transformers.aliasToBean(PatientResponse.class));
 
         if (isNotEmpty(identifier))
