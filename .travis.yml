@@ -1,0 +1,10 @@
+language: java
+jdk:
+  - oraclejdk7
+script: mvn clean install
+notifications:
+  email:
+      recipients:
+        - bahmni@thoughtworks.com
+      on_success: never
+      on_failure: change
