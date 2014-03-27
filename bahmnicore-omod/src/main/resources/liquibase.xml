@@ -586,4 +586,21 @@
             update concept set datatype_id = (select concept_datatype_id from concept_datatype where name = 'Boolean'), class_id = (select concept_class_id from concept_class where name = 'Finding'), is_set = 0 where concept_id = (select concept_id from concept_name where name = 'IS_ABNORMAL' and concept_name_type='FULLY_SPECIFIED');
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201403251424" author="Mujir">
+        <comment>Add new concept for Ruled Out Diagnosis</comment>
+        <sql>
+            set @concept_id = 0;
+            set @answer_concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Ruled Out Diagnosis', 'Ruled Out Diagnosis', 'N/A', 'Misc', true);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'RULED OUT DIAGNOSIS', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'DIAGNOSIS', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'RULED', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'RULED OUT DIAGNOSIS', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'DIAGNOSIS', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'RULED', '1');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
