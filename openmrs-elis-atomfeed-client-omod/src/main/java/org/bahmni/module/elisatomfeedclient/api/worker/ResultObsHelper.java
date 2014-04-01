@@ -62,7 +62,7 @@ public class ResultObsHelper {
             labObs.addGroupMember(newChildObs(order, obsDate, concept, testDetail.getResult()));
             labObs.addGroupMember(newChildObs(order, obsDate, LAB_ABNORMAL, testDetail.getAbnormal().toString()));
 
-            if (testDetail.getResultType().equals(RESULT_TYPE_NUMERIC)) {
+            if (testDetail.getResultType().equals(RESULT_TYPE_NUMERIC) && hasRange(testDetail)) {
                 labObs.addGroupMember(newChildObs(order, obsDate, LAB_MINNORMAL, testDetail.getMinNormal().toString()));
                 labObs.addGroupMember(newChildObs(order, obsDate, LAB_MAXNORMAL, testDetail.getMaxNormal().toString()));
             }
@@ -79,6 +79,10 @@ public class ResultObsHelper {
             }
         }
         return topLevelObs;
+    }
+
+    private boolean hasRange(OpenElisTestDetail testDetail) {
+        return testDetail.getMinNormal() != null && testDetail.getMaxNormal() != null;
     }
 
     private Obs createOrFindPanelObs(OpenElisTestDetail testDetail, Order testOrder, Encounter resultEncounter, Date obsDate) {
