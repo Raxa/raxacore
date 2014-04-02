@@ -603,4 +603,37 @@
             call add_concept_word(@concept_id, @concept_name_full_id, 'RULED', '1');
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201404021353" author="Hemanth, Mihir" context="rel4">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM person_attribute_type where name = 'givenNameLocal';
+            </sqlCheck>
+        </preConditions>
+        <comment>adding givenNameLocal person attribute type</comment>
+        <sql>
+            INSERT INTO person_attribute_type (name, description, format, searchable, creator, date_created, retired, sort_weight, uuid) VALUES ('givenNameLocal', 'givenNameLocal', 'java.lang.String', '0', 1, now(), 0, 3, uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201404021359" author="Hemanth, Mihir" context="rel4">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM person_attribute_type where name = 'familyNameLocal';
+            </sqlCheck>
+        </preConditions>
+        <comment>adding familyNameLocal person attribute type</comment>
+        <sql>
+            INSERT INTO person_attribute_type (name, description, format, searchable, creator, date_created, retired, sort_weight, uuid) VALUES ('familyNameLocal', 'familyNameLocal', 'java.lang.String', '0', 1, now(), 0, 3, uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201404021400" author="Hemanth, Mihir" context="rel4">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM person_attribute_type where name = 'middleNameLocal';
+            </sqlCheck>
+        </preConditions>
+        <comment>adding middleNameLocal person attribute type</comment>
+        <sql>
+            INSERT INTO person_attribute_type (name, description, format, searchable, creator, date_created, retired, sort_weight, uuid) VALUES ('middleNameLocal', 'middleNameLocal', 'java.lang.String', '0', 1, now(), 0, 3, uuid());
+        </sql>
+    </changeSet>
 </databaseChangeLog>
