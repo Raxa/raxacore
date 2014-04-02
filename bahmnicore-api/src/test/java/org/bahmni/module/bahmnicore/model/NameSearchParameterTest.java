@@ -3,66 +3,31 @@ package org.bahmni.module.bahmnicore.model;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class NameSearchParameterTest {
     @Test
-    public void hasMultipleNameParts() {
-
-        assertTrue(NameSearchParameter.create("foo bar").hasMultipleParts());
-        assertTrue(NameSearchParameter.create("foo bar qux").hasMultipleParts());
-
-        assertFalse(NameSearchParameter.create("foo").hasMultipleParts());
-        assertFalse(NameSearchParameter.create(" foo").hasMultipleParts());
-        assertFalse(NameSearchParameter.create("foo   ").hasMultipleParts());
-
-        assertFalse(NameSearchParameter.create(" ").hasMultipleParts());
-        assertFalse(NameSearchParameter.create(null).hasMultipleParts());
-    }
-
-
-    @Test
-    public void shouldGetPartsWhenItHasTwoWords(){
-        NameSearchParameter nameSearchParameter = NameSearchParameter.create("foo bar");
-
-        assertThat(nameSearchParameter.getPart1(), is("foo"));
-        assertThat(nameSearchParameter.getPart2(), is("bar"));
-    }
-
-    @Test
-    public void shouldGetPartsWhenItHasThreeWords(){
-        NameSearchParameter nameSearchParameter = NameSearchParameter.create("foo bar qux");
-
-        assertThat(nameSearchParameter.getPart1(), is("foo bar"));
-        assertThat(nameSearchParameter.getPart2(), is("qux"));
-    }
-
-    @Test
-    public void shouldNotGetPartsWhenItHasOneWord(){
-        NameSearchParameter nameSearchParameter = NameSearchParameter.create("foo");
-
-        assertThat(nameSearchParameter.getPart1(), is("foo"));
-        assertThat(nameSearchParameter.getPart2(), is(""));
-    }
-
-    @Test
-    public void shouldNotGetPartsWhenItHasOneWordWithSpaces(){
-        NameSearchParameter nameSearchParameter = NameSearchParameter.create("foo  ");
-
-        assertThat(nameSearchParameter.getPart1(), is("foo"));
-        assertThat(nameSearchParameter.getPart2(), is(""));
-    }
-
-    @Test
-    public void shouldNotGetPartsWhenItIsEmpty(){
+    public void shouldReturnTrueWhenNoNameSearchParametersAreProvided() throws Exception {
         NameSearchParameter nameSearchParameter = NameSearchParameter.create("");
-
-        assertThat(nameSearchParameter.getPart1(), is(""));
-        assertThat(nameSearchParameter.getPart2(), is(""));
+        assertTrue(nameSearchParameter.isEmpty());
     }
 
+    @Test
+    public void shouldReturnTrueWhenSearchParametersAreNull() throws Exception {
+        NameSearchParameter nameSearchParameter = NameSearchParameter.create(null);
+        assertTrue(nameSearchParameter.isEmpty());
 
+    }
 
+    @Test
+    public void shouldReturnNameSearchParametersSplitBySpace() throws Exception {
+        String searchParameter = "FirstName MiddleName LastName";
+        String[] splitSearchParameters = searchParameter.split(" ");
+        NameSearchParameter nameSearchParameter = NameSearchParameter.create(searchParameter);
+        assertFalse(nameSearchParameter.isEmpty());
+        assertEquals(3, nameSearchParameter.getNameParts().length);
+        for(int i=0;i<splitSearchParameters.length;i++){
+            nameSearchParameter.getNameParts()[i].contains(splitSearchParameters[i]);
+        }
+    }
 }

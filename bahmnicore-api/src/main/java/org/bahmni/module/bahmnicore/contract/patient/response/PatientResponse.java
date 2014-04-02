@@ -16,6 +16,7 @@ public class PatientResponse {
     private String identifier;
     private String cityVillage;
     private String givenName;
+    private String middleName;
     private String familyName;
     private String gender;
     private Date dateCreated;

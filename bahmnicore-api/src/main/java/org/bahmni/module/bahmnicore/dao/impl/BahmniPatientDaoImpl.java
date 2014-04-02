@@ -21,14 +21,11 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
 @Repository
 public class BahmniPatientDaoImpl implements BahmniPatientDao {
     public static final String PATIENT_IDENTIFIER_PARAM = "patientIdentifier";
-    public static final String NAME_PARAM = "name";
     public static final String LIMIT_PARAM = "limit";
     public static final String OFFSET_PARAM = "offset";
-    public static final String NAME_PARAM_1_PART_1 = "name_1_part_1";
-    public static final String NAME_PARAM_1_PART_2 = "name_1_part_2";
     public static final String VILLAGE_PARAM = "village";
 
-    public static final String FIND = "select p.uuid as uuid, pi.identifier as identifier, pn.given_name as givenName, pn.family_name as familyName, p.gender as gender, p.birthdate as birthDate," +
+    public static final String FIND = "select p.uuid as uuid, pi.identifier as identifier, pn.given_name as givenName, pn.middle_name as middleName, pn.family_name as familyName, p.gender as gender, p.birthdate as birthDate," +
             " p.death_date as deathDate, pa.city_village as cityVillage, p.date_created as dateCreated, v.uuid as activeVisitUuid " +
             " from patient pat inner join person p on pat.patient_id=p.person_id " +
             " left join person_name pn on pn.person_id = p.person_id" +
@@ -38,11 +35,9 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
             " where p.voided = 'false' and pn.voided = 'false' and pn.preferred=true";
 
     public static final String BY_ID = "pi.identifier like :" + PATIENT_IDENTIFIER_PARAM;
-    public static final String BY_NAME = "pn.given_name like :" + NAME_PARAM + " or pn.family_name like :" + NAME_PARAM;
-    public static final String BY_NAME_PARTS = "pn.given_name like :" + NAME_PARAM_1_PART_1 + " and pn.family_name like :" + NAME_PARAM_1_PART_2;
+    public static final String BY_NAME_PARTS = "concat(coalesce(given_name, ''), coalesce(middle_name, ''), coalesce(family_name, '')) like";
     public static final String BY_VILLAGE = "pa.city_village like :" + VILLAGE_PARAM;
     public static final String ORDER_BY = "order by p.date_created desc LIMIT :" + LIMIT_PARAM + " OFFSET :" + OFFSET_PARAM;
-
 
     private SessionFactory sessionFactory;
 
@@ -68,6 +63,7 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
                 .addScalar("uuid", StandardBasicTypes.STRING)
                 .addScalar("identifier", StandardBasicTypes.STRING)
                 .addScalar("givenName", StandardBasicTypes.STRING)
+                .addScalar("middleName", StandardBasicTypes.STRING)
                 .addScalar("familyName", StandardBasicTypes.STRING)
                 .addScalar("gender", StandardBasicTypes.STRING)
                 .addScalar("birthDate", StandardBasicTypes.DATE)
@@ -79,13 +75,6 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
 
         if (isNotEmpty(identifier))
             sqlQuery.setParameter(PATIENT_IDENTIFIER_PARAM, "%" + identifier + "%");
-        if (isNotEmpty(name))
-            sqlQuery.setParameter(NAME_PARAM, name + "%");
-        if (nameSearchParameter.hasMultipleParts())
-        {
-            sqlQuery.setParameter(NAME_PARAM_1_PART_1, nameSearchParameter.getPart1() + '%');
-            sqlQuery.setParameter(NAME_PARAM_1_PART_2, nameSearchParameter.getPart2() + '%');
-        }
         if (isNotEmpty(village))
             sqlQuery.setParameter(VILLAGE_PARAM, village + "%");
         sqlQuery.setParameter(LIMIT_PARAM, length);
@@ -105,11 +94,19 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
     }
 
     private String getNameSearchCondition(NameSearchParameter nameSearchParameter) {
-        if(nameSearchParameter.isEmpty())
+        if (nameSearchParameter.isEmpty())
             return "";
-        if(nameSearchParameter.hasMultipleParts())
-            return combine(enclose(BY_NAME), "or", BY_NAME_PARTS);
-        return  BY_NAME;
+        else {
+            String query_by_name_parts = "";
+            for (String part : nameSearchParameter.getNameParts()) {
+                if (!query_by_name_parts.equals("")) {
+                    query_by_name_parts +=" and " + BY_NAME_PARTS + " '" + part + "'";
+                } else {
+                    query_by_name_parts += BY_NAME_PARTS + " '" + part + "'";
+                }
+            }
+            return query_by_name_parts;
+        }
     }
 
     private static String combine(String query, String operator, String condition) {
