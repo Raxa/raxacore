@@ -11,10 +11,13 @@ import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterDataRes
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterObservationResponse;
 import org.openmrs.*;
 import org.openmrs.api.*;
+import org.openmrs.module.emrapi.encounter.EmrEncounterService;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,6 +43,8 @@ public class BahmniEncounterController extends BaseRestController {
     private EncounterService encounterService;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private EmrEncounterService emrEncounterService;
 
     public BahmniEncounterController(VisitService visitService, ConceptService conceptService, EncounterService encounterService) {
         this.visitService = visitService;
@@ -76,5 +81,13 @@ public class BahmniEncounterController extends BaseRestController {
         }
         return encounterConfigResponse;
     }
+
+    @RequestMapping(method = RequestMethod.POST)
+    @ResponseBody
+    @Transactional
+    public EncounterTransaction update(@RequestBody EncounterTransaction encounterTransaction) {
+        return emrEncounterService.save(encounterTransaction);
+    }
+
 
 }
