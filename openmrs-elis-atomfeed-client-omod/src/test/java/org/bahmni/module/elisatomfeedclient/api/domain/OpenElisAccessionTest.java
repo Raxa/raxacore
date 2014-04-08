@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
+import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.TestOrder;
 
@@ -13,9 +14,16 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.internal.matchers.IsCollectionContaining.hasItem;
+
 
 public class OpenElisAccessionTest {
+    private Encounter accessionNotesEncounter;
+    private Concept accessionNotesConcept;
+    private OpenElisAccession openElisAccessionWithNotes;
+
     @Test
     public void shouldGetDiffWhenAccessionHasNewOrder() throws Exception {
         Encounter previousEncounter = getEncounterWithOrders("test1");
@@ -25,8 +33,8 @@ public class OpenElisAccessionTest {
 
         AccessionDiff diff = openElisAccession.getDiff(previousEncounter);
 
-        Assert.assertEquals(1, diff.getAddedTestDetails().size());
-        Assert.assertEquals(test2, diff.getAddedTestDetails().toArray()[0]);
+        assertEquals(1, diff.getAddedTestDetails().size());
+        assertEquals(test2, diff.getAddedTestDetails().toArray()[0]);
     }
 
     @Test
@@ -41,8 +49,8 @@ public class OpenElisAccessionTest {
 
         Set<OpenElisTestDetail> removedTestDetails = diff.getRemovedTestDetails();
 
-        Assert.assertEquals(1, removedTestDetails.size());
-        Assert.assertEquals(test3, removedTestDetails.toArray()[0]);
+        assertEquals(1, removedTestDetails.size());
+        assertEquals(test3, removedTestDetails.toArray()[0]);
 
     }
 
@@ -56,9 +64,9 @@ public class OpenElisAccessionTest {
 
         AccessionDiff diff = openElisAccession.getDiff(previousEncounter);
 
-        Assert.assertEquals(1, diff.getAddedTestDetails().size());
-        Assert.assertEquals(test2, diff.getAddedTestDetails().toArray()[0]);
-        Assert.assertEquals(0, diff.getRemovedTestDetails().size());
+        assertEquals(1, diff.getAddedTestDetails().size());
+        assertEquals(test2, diff.getAddedTestDetails().toArray()[0]);
+        assertEquals(0, diff.getRemovedTestDetails().size());
     }
 
     @Test
@@ -71,8 +79,8 @@ public class OpenElisAccessionTest {
 
         AccessionDiff diff = openElisAccession.getDiff(previousEncounter);
 
-        Assert.assertEquals(0, diff.getAddedTestDetails().size());
-        Assert.assertEquals(0, diff.getRemovedTestDetails().size());
+        assertEquals(0, diff.getAddedTestDetails().size());
+        assertEquals(0, diff.getRemovedTestDetails().size());
 
     }
 
@@ -87,8 +95,8 @@ public class OpenElisAccessionTest {
 
         AccessionDiff diff = openElisAccession.getDiff(previousEncounter);
 
-        Assert.assertEquals(0, diff.getAddedTestDetails().size());
-        Assert.assertEquals(0, diff.getRemovedTestDetails().size());
+        assertEquals(0, diff.getAddedTestDetails().size());
+        assertEquals(0, diff.getRemovedTestDetails().size());
     }
 
     @Test
@@ -103,8 +111,8 @@ public class OpenElisAccessionTest {
 
         AccessionDiff diff = openElisAccession.getDiff(previousEncounter);
 
-        Assert.assertEquals(1, diff.getAddedTestDetails().size());
-        Assert.assertEquals(test1ReOrdered, diff.getAddedTestDetails().toArray()[0]);
+        assertEquals(1, diff.getAddedTestDetails().size());
+        assertEquals(test1ReOrdered, diff.getAddedTestDetails().toArray()[0]);
     }
 
     @Test
@@ -118,8 +126,9 @@ public class OpenElisAccessionTest {
 
         AccessionDiff diff = openElisAccession.getDiff(previousEncounter);
 
-        Assert.assertEquals(2, diff.getAddedTestDetails().size());
-        Assert.assertThat(diff.getAddedTestDetails(), hasItems(test2, test3));
+        assertEquals(2, diff.getAddedTestDetails().size());
+        Assert.assertThat(diff.getAddedTestDetails(), hasItem(test2));
+        Assert.assertThat(diff.getAddedTestDetails(), hasItem(test3));
     }
 
     @Test
@@ -133,8 +142,9 @@ public class OpenElisAccessionTest {
 
         AccessionDiff diff = openElisAccession.getDiff(previousEncounter);
 
-        Assert.assertEquals(2, diff.getRemovedTestDetails().size());
-        Assert.assertThat(diff.getRemovedTestDetails(), hasItems(test2, test3));
+        assertEquals(2, diff.getRemovedTestDetails().size());
+        Assert.assertThat(diff.getRemovedTestDetails(), hasItem(test2));
+        Assert.assertThat(diff.getRemovedTestDetails(), hasItem(test3));
     }
 
     @Test
@@ -148,8 +158,8 @@ public class OpenElisAccessionTest {
 
         AccessionDiff diff = openElisAccession.getDiff(previousEncounter);
 
-        Assert.assertEquals(0, diff.getAddedTestDetails().size());
-        Assert.assertEquals(0, diff.getRemovedTestDetails().size());
+        assertEquals(0, diff.getAddedTestDetails().size());
+        assertEquals(0, diff.getRemovedTestDetails().size());
     }
 
     @Test
@@ -164,13 +174,68 @@ public class OpenElisAccessionTest {
 
         AccessionDiff diff = openElisAccession.getDiff(previousEncounter);
 
-        Assert.assertEquals(1, diff.getAddedTestDetails().size());
-        Assert.assertEquals(panel1ReOrdered, diff.getAddedTestDetails().toArray()[0]);
+        assertEquals(1, diff.getAddedTestDetails().size());
+        assertEquals(panel1ReOrdered, diff.getAddedTestDetails().toArray()[0]);
+    }
+
+    public void accessionNotesTestSetup() {
+        accessionNotesEncounter = new Encounter(343);
+        accessionNotesConcept = new Concept();
+        accessionNotesConcept.setUuid("123");
+        openElisAccessionWithNotes = new OpenElisAccessionBuilder().withAccessionNotes("note1", "note2").build();
+    }
+
+    @Test
+    public void shouldReturnTheAccessionNotesToBeAdded() {
+        accessionNotesTestSetup();
+        AccessionDiff diff = openElisAccessionWithNotes.getAccessionNoteDiff(accessionNotesEncounter, accessionNotesConcept);
+        assertNotNull(diff);
+        assertEquals(2, diff.getAccessionNotesToBeAdded().size());
+        assertEquals("note1", diff.getAccessionNotesToBeAdded().get(0));
+        assertEquals("note2", diff.getAccessionNotesToBeAdded().get(1));
+    }
+
+    @Test
+    public void shouldUpdateTheAccessionNotesToBeAdded() {
+        accessionNotesTestSetup();
+        Obs obs = createNewAccessionNotesObs("note1");
+        accessionNotesEncounter.addObs(obs);
+        AccessionDiff diff = openElisAccessionWithNotes.getAccessionNoteDiff(accessionNotesEncounter, accessionNotesConcept);
+        assertNotNull(diff);
+        assertEquals(1, diff.getAccessionNotesToBeAdded().size());
+        assertEquals("note2", diff.getAccessionNotesToBeAdded().get(0));
+    }
+
+    @Test
+    public void shouldntReturnDiffWhenNotesAlreadyExist() {
+        accessionNotesTestSetup();
+        Obs obs1 = createNewAccessionNotesObs("note1");
+        Obs obs2 = createNewAccessionNotesObs("note2");
+        accessionNotesEncounter.addObs(obs1);
+        accessionNotesEncounter.addObs(obs2);
+        AccessionDiff diff = openElisAccessionWithNotes.getAccessionNoteDiff(accessionNotesEncounter, accessionNotesConcept);
+        assertNotNull(diff);
+        assertEquals(0, diff.getAccessionNotesToBeAdded().size());
+    }
+    @Test
+    public void shouldntReturnDiffWhenNotesAreAddedAndNoNotesExist() {
+        accessionNotesTestSetup();
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().build();
+        AccessionDiff diff = openElisAccession.getAccessionNoteDiff(accessionNotesEncounter, accessionNotesConcept);
+        assertNotNull(diff);
+        assertEquals(0, diff.getAccessionNotesToBeAdded().size());
+    }
+
+    private Obs createNewAccessionNotesObs(String testText) {
+        Obs obs = new Obs();
+        obs.setConcept(accessionNotesConcept);
+        obs.setValueText(testText);
+        return obs;
     }
 
     private Order getOrderByName(Encounter encounter, String testUuid) {
         for (Order order : encounter.getOrders()) {
-            if(order.getConcept().getUuid().equals(testUuid))
+            if (order.getConcept().getUuid().equals(testUuid))
                 return order;
         }
         return null;

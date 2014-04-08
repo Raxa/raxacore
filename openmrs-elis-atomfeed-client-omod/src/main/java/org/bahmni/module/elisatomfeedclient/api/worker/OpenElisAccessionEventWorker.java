@@ -13,18 +13,37 @@ import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.joda.time.DateTime;
-import org.openmrs.*;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Obs;
+import org.openmrs.Order;
+import org.openmrs.Provider;
+import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.OrderService;
 import org.openmrs.api.ProviderService;
+import org.openmrs.api.VisitService;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 public class OpenElisAccessionEventWorker implements EventWorker {
     public static final String LAB_VISIT = "LAB_VISIT";
+    public static final String LAB_MANAGER_NOTES = "Lab Manager Notes";
+    private static final String LAB_ORDER_TYPE = "Lab Order";
+    public static final String LAB_MANAGER_IDENTIFIER = "LABMANAGER";
+    private static Logger logger = Logger.getLogger(OpenElisAccessionEventWorker.class);
+    private final OrderService orderService;
+    private final OrdersHelper ordersHelper;
+    private final VisitService visitService;
+    private final EncounterHelper encounterHelper;
     private ElisAtomFeedProperties atomFeedProperties;
     private HttpClient httpClient;
     private EncounterService encounterService;
@@ -33,15 +52,15 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     private ProviderService providerService;
     private HealthCenterFilterRule healthCenterFilterRule;
 
-    private static Logger logger = Logger.getLogger(OpenElisAccessionEventWorker.class);
-
+    //TODO : add the new service classes to bean initialization
     public OpenElisAccessionEventWorker(ElisAtomFeedProperties atomFeedProperties,
                                         HttpClient httpClient,
                                         EncounterService encounterService,
                                         ConceptService conceptService,
                                         AccessionHelper accessionMapper,
                                         ProviderService providerService,
-                                        HealthCenterFilterRule healthCenterFilterRule) {
+                                        OrderService orderService,
+                                        VisitService visitService, HealthCenterFilterRule healthCenterFilterRule) {
 
         this.atomFeedProperties = atomFeedProperties;
         this.httpClient = httpClient;
@@ -49,7 +68,11 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         this.conceptService = conceptService;
         this.accessionMapper = accessionMapper;
         this.providerService = providerService;
+        this.visitService = visitService;
         this.healthCenterFilterRule = healthCenterFilterRule;
+        this.orderService = orderService;
+        this.ordersHelper = new OrdersHelper(orderService, conceptService, encounterService);
+        this.encounterHelper = new EncounterHelper(encounterService, this.visitService);
     }
 
     @Override
@@ -65,6 +88,8 @@ public class OpenElisAccessionEventWorker implements EventWorker {
             }
 
             Encounter orderEncounter = encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid());
+
+
             boolean shouldSaveOrderEncounter = false;
             if (orderEncounter != null) {
                 AccessionDiff diff = openElisAccession.getDiff(orderEncounter);
@@ -83,6 +108,9 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 //will save new visit as well
                 encounterService.saveEncounter(orderEncounter);
             }
+            if(openElisAccession.getAccessionNotes() != null && !openElisAccession.getAccessionNotes().isEmpty()){
+                processAccessionNotes(openElisAccession, orderEncounter);
+            }
             associateTestResultsToOrder(openElisAccession);
         } catch (IOException e) {
             logger.error("openelisatomfeedclient:error processing event : " + accessionUrl + e.getMessage(), e);
@@ -91,6 +119,42 @@ public class OpenElisAccessionEventWorker implements EventWorker {
             logger.error("openelisatomfeedclient:error processing lab results. Invalid result data type : " + accessionUrl + pe.getMessage(), pe);
             throw new OpenElisFeedException("could not read accession data. Invalid result data type.", pe);
         }
+    }
+
+    private void processAccessionNotes(OpenElisAccession openElisAccession, Encounter orderEncounter) {
+        Order labMangerNoteOrder = ordersHelper.getOrderByConceptName(orderEncounter, LAB_MANAGER_NOTES);
+        Provider labManagerProvider = providerService.getProviderByIdentifier(LAB_MANAGER_IDENTIFIER);
+        EncounterType labResultEncounterType = getLabResultEncounterType();
+        Encounter encounter = null;
+        if (labMangerNoteOrder == null) {
+            labMangerNoteOrder = ordersHelper.createOrderInEncounter(orderEncounter, LAB_ORDER_TYPE, LAB_MANAGER_NOTES);
+        } else {
+            encounter = encounterHelper.getEncounterByObservationLinkedToOrder(labMangerNoteOrder, orderEncounter.getPatient(), labManagerProvider, labResultEncounterType);
+        }
+
+        if (encounter == null) {
+            encounter = encounterHelper.createNewEncounter(labResultEncounterType, labManagerProvider, orderEncounter.getPatient());
+        }
+        saveAccessionNoteInEncounter(encounter, openElisAccession, labMangerNoteOrder);
+    }
+
+    private void saveAccessionNoteInEncounter(Encounter encounter, OpenElisAccession openElisAccession, Order labMangerNoteOrder) {
+        AccessionDiff accessionNoteDiff = openElisAccession.getAccessionNoteDiff(encounter, labMangerNoteOrder.getConcept());
+        List<String> accessionNotes = accessionNoteDiff.getAccessionNotesToBeAdded();
+        if (accessionNotes != null && !accessionNotes.isEmpty()) {
+            for (String accessionNote : accessionNotes) {
+                encounter.addObs(createObsWith(accessionNote, labMangerNoteOrder));
+            }
+            encounterService.saveEncounter(encounter);
+        }
+    }
+
+    private Obs createObsWith(String accessionNote, Order labMangerNoteOrder) {
+        Obs observation = new Obs();
+        observation.setConcept(labMangerNoteOrder.getConcept());
+        observation.setValueText(accessionNote);
+        observation.setOrder(labMangerNoteOrder);
+        return observation;
     }
 
     protected void associateTestResultsToOrder(OpenElisAccession openElisAccession) throws ParseException {
@@ -106,7 +170,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         Visit resultVisit = orderEncounter.getVisit();
         for (OpenElisTestDetail testDetail : allTests) {
             if (testDetail.isReferredOut() && StringUtils.isBlank(testDetail.getDateTime())) {
-                    testDetail.setDateTime(openElisAccession.getDateTime());
+                testDetail.setDateTime(openElisAccession.getDateTime());
             }
             if (StringUtils.isNotBlank(testDetail.getDateTime())) {
                 Order testOrder = identifyOrder(orderEncounter, testDetail);
@@ -153,11 +217,8 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         return encounterService.getEncounterType(resultEncounterType);
     }
 
-
     /**
      * For a given test/panel result, there ought to be only one encounter containing non voided corresponding observation
-     *
-     *
      *
      * @param labResultEncounters
      * @param testDetail
@@ -178,7 +239,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
      * This method currenly checks at the topLevel Obs.
      * if its a panel, then it goes through the next level and identifes a test by the concept at the next level
      * If its a test, then it just checks at the top level concept
-     *
+     * <p/>
      * However, for future multi-value tests, in both the cases (panel and indiv test), it would need go to one more
      * level down and return the matching observation.
      *
@@ -209,7 +270,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     private Order identifyOrder(Encounter orderEncounter, OpenElisTestDetail testDetail) {
         for (Order order : orderEncounter.getOrders()) {
             String testConceptUuid = StringUtils.isBlank(testDetail.getPanelUuid()) ? testDetail.getTestUuid() : testDetail.getPanelUuid();
-            if (order.getConcept().getUuid().equals(testConceptUuid)) {
+            if (order.getConcept() != null && order.getConcept().getUuid().equals(testConceptUuid)) {
                 return order;
             }
         }
@@ -225,7 +286,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
 
         Provider provider = null;
         if (StringUtils.isNotBlank(providerUuid)) {
-            provider =  providerService.getProviderByUuid(providerUuid);
+            provider = providerService.getProviderByUuid(providerUuid);
         }
 
         //the lab results provider may not be register as provider in MRS,
@@ -243,12 +304,12 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         if (labResultEncounter == null) {
             labResultEncounter = accessionMapper.newEncounterInstance(resultVisit, resultVisit.getPatient(), testProvider, labResultEncounterType, encounterDate);
         }
-        return  labResultEncounter;
+        return labResultEncounter;
     }
 
     private Encounter getEncounterByProviderAndEncounterType(Provider provider, EncounterType labResultEncounterType, Set<Encounter> labResultEncounters) {
         for (Encounter encounter : labResultEncounters) {
-            if(hasSameEncounterType(labResultEncounterType, encounter) && hasSameProvider(provider, encounter)) {
+            if (hasSameEncounterType(labResultEncounterType, encounter) && hasSameProvider(provider, encounter)) {
                 return encounter;
             }
         }
@@ -260,7 +321,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     }
 
     private boolean hasSameProvider(Provider provider, Encounter encounter) {
-        if(encounter.getEncounterProviders().size() > 0) {
+        if (encounter.getEncounterProviders().size() > 0) {
             return encounter.getEncounterProviders().iterator().next().getProvider().getUuid().equals(provider.getUuid());
         }
         return false;

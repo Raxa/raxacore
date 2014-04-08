@@ -4,6 +4,7 @@ package org.bahmni.module.elisatomfeedclient.api.builder;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
 
+import java.util.Arrays;
 import java.util.Set;
 
 public class OpenElisAccessionBuilder {
@@ -33,6 +34,10 @@ public class OpenElisAccessionBuilder {
 
     public OpenElisAccessionBuilder withPatientUuid(String uuid) {
         openElisAccession.setPatientUuid(uuid);
+        return this;
+    }
+    public OpenElisAccessionBuilder withAccessionNotes(String... accessionNotes) {
+        openElisAccession.setAccessionNotes(Arrays.asList(accessionNotes));
         return this;
     }
 

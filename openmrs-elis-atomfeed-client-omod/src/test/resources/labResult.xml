@@ -57,77 +57,142 @@
                  voided="false" void_reason="" uuid="Xv9e3a7b-6482-487d-94ce-c07b123CxfP8"/>
     <users user_id="777" person_id="3" system_id="3-6" username="Lab System" retired="false"
            password="ff6d1655327d385e11a04e1632b4f33ceb8fafd2" salt="5d32c5fd9fde391c755f1f4dfd5e1d6e3debe6"
-           secret_question="" creator="1" date_created="2008-08-15 15:46:47.0" uuid="Z9fd3a7b-6482-487d-87eR-c07b123MxF99"/>
-    <provider provider_id="777" person_id="3" name="Lab System" identifier="LABSYSTEM" creator="1" date_created="2005-01-01 00:00:00.0"
+           secret_question="" creator="1" date_created="2008-08-15 15:46:47.0"
+           uuid="Z9fd3a7b-6482-487d-87eR-c07b123MxF99"/>
+    <provider provider_id="777" person_id="3" name="Lab System" identifier="LABSYSTEM" creator="1"
+              date_created="2005-01-01 00:00:00.0"
               retired="false" uuid="Dx7R6bf8-7846-11e3-a96a-0xVFT71c1b75"/>
 
-    <provider provider_id="22" person_id="2" name="system" identifier="system" creator="1" date_created="2005-01-01 00:00:00.0"
+    <provider provider_id="22" person_id="2" name="system" identifier="system" creator="1"
+              date_created="2005-01-01 00:00:00.0"
               retired="false" uuid="331c6bf8-7846-11e3-a96a-0909871c1b75"/>
 
-    <provider provider_id="23" person_id="2" name="labtechnician" identifier="labtechnician" creator="1" date_created="2005-01-01 00:00:00.0"
+    <provider provider_id="23" person_id="2" name="labtechnician" identifier="labtechnician" creator="1"
+              date_created="2005-01-01 00:00:00.0"
               retired="false" uuid="331c6bf8-7846-11e3-a96a-09xD371c1b75"/>
 
-    <concept_datatype concept_datatype_id="1" name="numeric" hl7_abbreviation="NM" description="numeric" date_created="2013-12-04 11:36:42" retired="0"/>
-    <concept_datatype concept_datatype_id="2" name="text" hl7_abbreviation="ST" description="text" date_created="2013-12-04 11:36:42" retired="0"/>
-    <concept_datatype concept_datatype_id="3" name="boolean" hl7_abbreviation="BIT" description="boolean" date_created="2013-12-04 11:36:42" retired="0"/>
+    <provider provider_id="24" person_id="2" name="LABMANAGER" identifier="LABMANAGER" creator="1"
+              date_created="2005-01-01 00:00:00.0"
+              retired="false" uuid="771c6bf8-7846-11e3-a96a-09xD371c1b75"/>
+
+    <concept_datatype concept_datatype_id="1" name="numeric" hl7_abbreviation="NM" description="numeric"
+                      date_created="2013-12-04 11:36:42" retired="0"/>
+    <concept_datatype concept_datatype_id="2" name="text" hl7_abbreviation="ST" description="text"
+                      date_created="2013-12-04 11:36:42" retired="0"/>
+    <concept_datatype concept_datatype_id="3" name="boolean" hl7_abbreviation="BIT" description="boolean"
+                      date_created="2013-12-04 11:36:42" retired="0"/>
 
     <!--concept set for lab_result_concept_set-->
-    <concept concept_id="101" retired="false" datatype_id="2" class_id="8" is_set="true" creator="1" date_created="2005-01-01 00:00:00.0" uuid="dc8ac8c0-8716-11e3-baa7-0800200c9a66"/>
-    <concept_name concept_name_id="2" concept_id="101" name="LABRESULTS_CONCEPT" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="ea291cc0-8716-11e3-baa7-0800200c9a66" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept concept_id="101" retired="false" datatype_id="2" class_id="8" is_set="true" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="dc8ac8c0-8716-11e3-baa7-0800200c9a66"/>
+    <concept_name concept_name_id="2" concept_id="101" name="LABRESULTS_CONCEPT" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="ea291cc0-8716-11e3-baa7-0800200c9a66"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
-    <concept concept_id="102" retired="false" datatype_id="2" class_id="8" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="4923d0e0-8734-11e3-baa7-0800200c9a66"/>
-    <concept_name concept_name_id="3" concept_name_type="FULLY_SPECIFIED" concept_id="102" name="LAB_RESULT" locale="en" creator="1" date_created="2005-01-01 00:00:00.0"  voided="false" uuid="d52b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
-    <concept_set concept_id="102" concept_set="101" concept_set_id="201" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+    <concept concept_id="102" retired="false" datatype_id="2" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="4923d0e0-8734-11e3-baa7-0800200c9a66"/>
+    <concept_name concept_name_id="3" concept_name_type="FULLY_SPECIFIED" concept_id="102" name="LAB_RESULT" locale="en"
+                  creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+                  uuid="d52b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
+    <concept_set concept_id="102" concept_set="101" concept_set_id="201" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
 
-    <concept concept_id="103" retired="false" datatype_id="2" class_id="8" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="5923d0e0-8734-11e3-baa7-0800200c9a66"/>
-    <concept_name concept_name_id="5" concept_id="103" name="LAB_NOTES" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED" uuid="e52b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
-    <concept_set concept_id="103" concept_set="101" concept_set_id="202" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+    <concept concept_id="103" retired="false" datatype_id="2" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="5923d0e0-8734-11e3-baa7-0800200c9a66"/>
+    <concept_name concept_name_id="5" concept_id="103" name="LAB_NOTES" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="e52b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
+    <concept_set concept_id="103" concept_set="101" concept_set_id="202" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
 
-    <concept concept_id="104" retired="false" datatype_id="1" class_id="8" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="6923d0e0-8734-11e3-baa7-0800200c9a66"/>
-    <concept_name concept_name_id="6" concept_id="104" name="LAB_MINNORMAL" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED" uuid="152b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
-    <concept_set concept_id="104" concept_set="101" concept_set_id="203" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+    <concept concept_id="104" retired="false" datatype_id="1" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="6923d0e0-8734-11e3-baa7-0800200c9a66"/>
+    <concept_name concept_name_id="6" concept_id="104" name="LAB_MINNORMAL" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="152b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
+    <concept_set concept_id="104" concept_set="101" concept_set_id="203" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
 
-    <concept concept_id="105" retired="false" datatype_id="1" class_id="8" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="6923d0e0-8734-11e3-baa7-0800200c9a76"/>
-    <concept_name concept_name_id="7" concept_id="105" name="LAB_MAXNORMAL" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED" uuid="252b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
-    <concept_set concept_id="105" concept_set="101" concept_set_id="204" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+    <concept concept_id="105" retired="false" datatype_id="1" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="6923d0e0-8734-11e3-baa7-0800200c9a76"/>
+    <concept_name concept_name_id="7" concept_id="105" name="LAB_MAXNORMAL" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="252b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
+    <concept_set concept_id="105" concept_set="101" concept_set_id="204" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
 
-    <concept concept_id="106" retired="false" datatype_id="3" class_id="8" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="6923d0e0-8734-11e3-baa7-0800200c9aef"/>
-    <concept_name concept_name_id="8" concept_id="106" name="LAB_ABNORMAL" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED" uuid="352b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
-    <concept_set concept_set_id="205" concept_id="106" concept_set="101" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+    <concept concept_id="106" retired="false" datatype_id="3" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="6923d0e0-8734-11e3-baa7-0800200c9aef"/>
+    <concept_name concept_name_id="8" concept_id="106" name="LAB_ABNORMAL" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="352b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
+    <concept_set concept_set_id="205" concept_id="106" concept_set="101" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
 
     <!--concept set for lab_result_concept_set-->
 
     <!--test Urea Nitorgen-->
-    <concept concept_id="107" retired="false" datatype_id="1" class_id="8" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="7923d0e0-8734-11e3-baa7-0800200c9a66"/>
-    <concept_name concept_name_id="9" concept_id="107" name="Urea Nitorgen" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED" uuid="252b58c0-872e-11f3-baa7-080X12Fc9a66" locale_preferred="0"/>
+    <concept concept_id="107" retired="false" datatype_id="1" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7923d0e0-8734-11e3-baa7-0800200c9a66"/>
+    <concept_name concept_name_id="9" concept_id="107" name="Urea Nitorgen" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="252b58c0-872e-11f3-baa7-080X12Fc9a66" locale_preferred="0"/>
     <!--test Urea Nitorgen-->
 
 
-    <concept concept_id="108" retired="false" datatype_id="2" class_id="8" is_set="true" creator="1" date_created="2005-01-01 00:00:00.0" uuid="dc8ac8c0-8716-11e3-baa7-0800f00c9a66"/>
-    <concept_name concept_name_id="9" concept_id="108" name="REFERRED_OUT" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="ea291cc0-e716-11e3-baa7-0800200c9a66" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <concept_set concept_set_id="206" concept_id="108" concept_set="101" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
-
+    <concept concept_id="108" retired="false" datatype_id="2" class_id="8" is_set="true" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="dc8ac8c0-8716-11e3-baa7-0800f00c9a66"/>
+    <concept_name concept_name_id="9" concept_id="108" name="REFERRED_OUT" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="ea291cc0-e716-11e3-baa7-0800200c9a66"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set_id="206" concept_id="108" concept_set="101" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
 
 
     <!--blood panel-->
-    <concept concept_id="302" retired="false" datatype_id="1" class_id="1" is_set="true" creator="1" date_created="2005-01-01 00:00:00.0" uuid="cfc5056c-3f8e-11e3-968c-0800271c1b75"/>
-    <concept_name concept_name_id="302" concept_id="302" name="Blood Panel" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="d81ce11c-3f8e-11e3-968c-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept concept_id="302" retired="false" datatype_id="1" class_id="1" is_set="true" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="cfc5056c-3f8e-11e3-968c-0800271c1b75"/>
+    <concept_name concept_name_id="302" concept_id="302" name="Blood Panel" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="d81ce11c-3f8e-11e3-968c-0800271c1b75"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
-    <concept concept_id="303" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-0800271c1b75"/>
-    <concept_name concept_name_id="303" concept_id="303" name="Haemoglobin" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="637de959-e1c4-41d4-b2d6-bc4335835ea9" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <concept_set concept_set_id="301" concept_id="303" concept_set="302" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+    <concept concept_id="303" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-0800271c1b75"/>
+    <concept_name concept_name_id="303" concept_id="303" name="Haemoglobin" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="637de959-e1c4-41d4-b2d6-bc4335835ea9"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set_id="301" concept_id="303" concept_set="302" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
 
-    <concept concept_id="304" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="a04c36be-3f90-11e3-968c-0800271c1b75"/>
-    <concept_name concept_name_id="304" concept_id="304" name="ESR" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="d5af5872-3f90-11e3-968c-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <concept_set concept_set_id="302" concept_id="304" concept_set="302" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
+    <concept concept_id="304" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="a04c36be-3f90-11e3-968c-0800271c1b75"/>
+    <concept_name concept_name_id="304" concept_id="304" name="ESR" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="d5af5872-3f90-11e3-968c-0800271c1b75"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set_id="302" concept_id="304" concept_set="302" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
 
-    <concept concept_id="305" retired="false" datatype_id="2" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="da4bf386-3fcc-11e3-968c-0800271c1b75"/>
-    <concept_name  concept_name_id="305" concept_id="305" name="Hb Electrophoresis" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="e019e8c2-3fcc-11e3-968c-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <concept_set  concept_set_id="303" concept_id="305" concept_set="302" creator="1" sort_weight="100" date_created="2005-01-01 00:00:00.0" />
-<!--blood panel-->
+    <concept concept_id="305" retired="false" datatype_id="2" class_id="1" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="da4bf386-3fcc-11e3-968c-0800271c1b75"/>
+    <concept_name concept_name_id="305" concept_id="305" name="Hb Electrophoresis" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="e019e8c2-3fcc-11e3-968c-0800271c1b75"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set_id="303" concept_id="305" concept_set="302" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+    <!--blood panel-->
+
+    <!-- lab manger note concept-->
+    <concept concept_id="702" retired="false" datatype_id="2" class_id="1" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="ffc5056c-3f8e-11e3-968c-0800271c1b75"/>
+    <concept_name concept_name_id="702" concept_id="702" name="Lab Manager Notes" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="ff1ce11c-3f8e-11e3-968c-0800271c1b75"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <!-- lab manger note concept-->
 
 
-    <order_type order_type_id="15" name="Lab Order" description="An order for tests" creator="1" date_created="2008-08-15 13:49:47.0" retired="false" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>
+    <order_type order_type_id="15" name="Lab Order" description="An order for tests" creator="1"
+                date_created="2008-08-15 13:49:47.0" retired="false" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>
 
     <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14"
                 changed_by="1" date_changed="2012-10-23 18:04:14"
@@ -146,11 +211,53 @@
     <visit visit_id="2" date_started="2005-09-26 00:00:00" date_created="2005-09-22 00:00:00" patient_id="1"
            visit_type_id="1" location_id="2" creator="1" uuid="ad41ef34-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
 
-    <encounter encounter_id="16" encounter_type="2" patient_id="1"  visit_id="2" location_id="2" encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" uuid="6d0af4567-707a-4629-9850-f15206e63ab0"/>
+    <encounter encounter_id="16" encounter_type="2" patient_id="1" visit_id="2" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af4567-707a-4629-9850-f15206e63ab0"/>
 
-    <orders order_id="16" order_type_id="15" encounter_id="16" urgency="ROUTINE" concept_id="302" instructions="Blood panel" start_date="2008-08-08 00:00:00.0" discontinued="false" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="6d0ae386-707a-f123-9850-f15206e63ab0"/>
+    <orders order_id="16" order_type_id="15" encounter_id="16" urgency="ROUTINE" concept_id="302"
+            instructions="Blood panel" start_date="2008-08-08 00:00:00.0" discontinued="false" creator="1"
+            date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1"
+            uuid="6d0ae386-707a-f123-9850-f15206e63ab0"/>
 
-    <orders order_id="17" order_type_id="15" encounter_id="16" urgency="ROUTINE" concept_id="107" instructions="Regular Urea Nitrogen test" start_date="2008-08-08 00:00:00.0" discontinued="false" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="6d0ae386-efab-4629-9850-f15206e63ab0"/>
+    <orders order_id="17" order_type_id="15" encounter_id="16" urgency="ROUTINE" concept_id="107"
+            instructions="Regular Urea Nitrogen test" start_date="2008-08-08 00:00:00.0" discontinued="false"
+            creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1"
+            uuid="6d0ae386-efab-4629-9850-f15206e63ab0"/>
     <!--encounter for panel order-->
+
+
+    <!--encounter for accession notes-->
+    <patient patient_id="3" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+    <visit visit_id="33" date_started="2005-09-26 00:00:00" date_created="2005-09-22 00:00:00" patient_id="3"
+           visit_type_id="1" location_id="2" creator="1" uuid="ad41ef34-a41a-4ad6-9945-2f59099acf5a" voided="0"/>
+
+    <encounter encounter_id="36" encounter_type="3" patient_id="3" visit_id="33" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="6d0af6767-707a-4629-9850-f15206e63ab0"/>
+
+    <obs obs_id="1" encounter_id="36" person_id="3" order_id="45" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         uuid="ef4554cb-2225-471a-9cd7-1434552c337c" creator="1" value_text="Note1" concept_id="702" voided="0" />
+
+    <encounter_provider encounter_provider_id="1" encounter_id="36" provider_id="24" creator="1" date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63ab0"/>
+    <!--encounter for accession notes-->
+
+    <!--encounter for accession notes order-->
+
+
+    <encounter encounter_id="35" encounter_type="3" patient_id="3" visit_id="33" location_id="2"
+               encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-07-01 14:09:05.0"
+               voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63ab0"/>
+
+    <orders order_id="45" order_type_id="15" encounter_id="35" urgency="ROUTINE" concept_id="702"
+            instructions="Lab Manager Notes" start_date="2008-08-08 00:00:00.0" discontinued="false"
+            creator="1" date_created="2008-08-13 12:20:22.0" voided="false" patient_id="3"
+            accession_number="6g0bf6767-707a-4329-9850-f15206e63ab0" uuid="6d0ae486-efab-4629-9850-f15206e63ab0"/>
+
+
+    <!--encounter for accession notes order-->
 
 </dataset>

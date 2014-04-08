@@ -18,7 +18,9 @@ import org.mockito.Mock;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.OrderService;
 import org.openmrs.api.ProviderService;
+import org.openmrs.api.VisitService;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -50,11 +52,16 @@ public class OpenElisAccessionEventWorkerTest {
     private OpenElisAccessionEventWorker accessionEventWorker;
     private String openElisUrl;
     private Event event;
+    @Mock
+    private OrderService orderService;
+    @Mock
+    private VisitService visitService;
 
     @Before
     public void setUp() {
         initMocks(this);
-        accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService, conceptService, accessionMapper, providerService, healthCenterFilterRule);
+        accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService,
+                conceptService, accessionMapper, providerService, orderService, visitService, healthCenterFilterRule);
         openElisUrl = "http://localhost:8080";
         event = new Event("id", "/openelis/accession/12-34-56-78", "title", "feedUri");
         when(feedProperties.getOpenElisUri()).thenReturn(openElisUrl);
