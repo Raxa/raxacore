@@ -669,7 +669,67 @@
             call add_concept_word(@concept_id, @concept_name_short_id, 'DIAGNOSIS', '1');
             call add_concept_word(@concept_id, @concept_name_short_id, 'BAHMNI', '1');
             call add_concept_word(@concept_id, @concept_name_short_id, 'REVISED', '1');
-            
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201404081612" author="Indraneel, Mihir" context="rel4">
+        <comment>Adding Lab Manager Notes Concept</comment>
+        <sql>
+            set @concept_id = 0;
+            set @answer_concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Lab Manager Notes', 'Lab Manager Notes', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'LAB MANAGER NOTES', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'LAB', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'MANAGER', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'NOTES', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'LAB MANAGER NOTES', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'LAB', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'MANAGER', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'NOTES', '1');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201404081625" author="Indraneel, Mihir" context="rel4">
+        <comment>Adding Lab Manager Notes Provider</comment>
+        <sql>
+            set @puuid = uuid();
+
+            insert into person(birthdate_estimated, dead, creator, date_created, uuid)
+            values(0, 0, 1, now(), @puuid);
+
+            insert into users(system_id, creator, date_created, person_id, uuid, username)
+            values ('Lab Manager', 1, now(),(select person_id from person where uuid = @puuid) , uuid(), 'Lab Manager');
+
+            insert into provider (person_id, identifier, creator, date_created, uuid, name) values ((select person_id from person where uuid = @puuid), 'LABMANAGER', 1, now(), uuid(), 'Lab Manager');</sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201404101558" author="Indraneel, Neha" context="rel4">
+        <comment>Adding Accession Uuid Concept</comment>
+        <sql>
+            set @concept_id = 0;
+            set @answer_concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Accession Uuid', 'Accession Uuid', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'ACCESSION UUID', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'ACCESSION', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'UUID', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'ACCESSION UUID', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'ACCESSION', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'UUID', '1');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201404101600" author="Neha,Indraneel" context="rel4">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM encounter_type where name = 'VALIDATION NOTES';
+            </sqlCheck>
+        </preConditions>
+        <comment>Add Encounter Type Validation Notes</comment>
+        <sql>
+            insert into encounter_type (name, description, creator, date_created, uuid)
+            VALUES ('VALIDATION NOTES', 'Validation Notes encounter', 1, curdate(), uuid());
         </sql>
     </changeSet>
 
