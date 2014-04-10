@@ -2,11 +2,13 @@ package org.bahmni.module.elisatomfeedclient.api.domain;
 
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.bahmni.module.elisatomfeedclient.api.worker.ProviderHelper;
 import org.joda.time.DateTime;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Order;
+import org.openmrs.Provider;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +24,7 @@ public class OpenElisAccession {
     private String patientLastName;
     private String dateTime;
     private String patientIdentifier;
-    private List<String> accessionNotes;
+    private List<OpenElisAccessionNote> accessionNotes;
     private Set<OpenElisTestDetail> testDetails = new HashSet<>();
 
     public void addTestDetail(OpenElisTestDetail testDetail) {
@@ -63,27 +65,36 @@ public class OpenElisAccession {
         return patientIdentifier.substring(0, 3);
     }
 
-    public AccessionDiff getAccessionNoteDiff(Encounter encounter, Concept labManagerNoteConcept) {
+    public AccessionDiff getAccessionNoteDiff(List<Encounter> encounters, Concept labManagerNoteConcept,Provider defaultLabManagerProvider) {
         AccessionDiff accessionNotesDiff = new AccessionDiff();
         if (accessionNotes != null) {
-            List<String> accessionNotesCopy = new ArrayList<>(accessionNotes);
-            filterOutAlreadyAddedAccessionNotes(encounter, labManagerNoteConcept, accessionNotesCopy);
+            ArrayList<OpenElisAccessionNote> accessionNotesCopy = new ArrayList<>(accessionNotes);
+            if(encounters != null){
+                for(Encounter labManagerEncounter : encounters){
+                    filterOutAlreadyAddedAccessionNotes(labManagerEncounter, labManagerNoteConcept, accessionNotesCopy,defaultLabManagerProvider);
+                }
+            }
             accessionNotesDiff.setAccessionNotesToBeAdded(accessionNotesCopy);
         }
         return accessionNotesDiff;
     }
 
-    private void filterOutAlreadyAddedAccessionNotes(Encounter encounter, Concept labManagerNoteConcept, List<String> accessionNotesCopy) {
+    private void filterOutAlreadyAddedAccessionNotes(Encounter encounter, Concept labManagerNoteConcept, ArrayList<OpenElisAccessionNote> accessionNotesCopy, Provider defaultLabManagerProvider) {
         Set<Obs> encObs = encounter.getObs();
         for (Obs obs : encObs) {
             if (obs.getConcept().equals(labManagerNoteConcept)) {
-                for (String accessionNote : accessionNotes) {
-                    if (accessionNote.equals(obs.getValueText())) {
+                for (OpenElisAccessionNote accessionNote : accessionNotes) {
+                    if (shouldMatchNoteInEncounter(encounter, defaultLabManagerProvider, obs, accessionNote)) {
                         accessionNotesCopy.remove(accessionNote);
                     }
                 }
             }
         }
+    }
+
+    private boolean shouldMatchNoteInEncounter(Encounter encounter, Provider defaultLabManagerProvider, Obs obs, OpenElisAccessionNote accessionNote) {
+        return accessionNote.getNote().equals(obs.getValueText()) &&
+                (accessionNote.isProviderInEncounter(encounter) || ProviderHelper.getProviderFrom(encounter).equals(defaultLabManagerProvider));
     }
 
 

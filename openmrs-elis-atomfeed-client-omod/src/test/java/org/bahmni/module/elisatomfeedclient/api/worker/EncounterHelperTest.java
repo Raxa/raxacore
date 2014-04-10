@@ -92,19 +92,6 @@ public class EncounterHelperTest {
         return visit;
     }
 
-    @Test
-    public void shouldReturnEncounterWithObservationsLinkedToGivenOrder() {
-        when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class),
-                anyListOf(Form.class), anyListOf(EncounterType.class), anyListOf(Provider.class),
-                anyListOf(VisitType.class), anyListOf(Visit.class), anyBoolean())).thenReturn(getEncounterWithObs());
-        Order order = new Order();
-        order.setUuid("30");
-        Encounter encounter = encounterHelper.getEncounterByObservationLinkedToOrder(order, new Patient(), new Provider(), new EncounterType());
-        assertEquals((Integer) 1, encounter.getId());
-        assertEquals(order, encounter.getObs().iterator().next().getOrder());
-
-    }
-
     public List<Encounter> getEncounterWithObs() {
         List<Encounter> encounters = new ArrayList<>();
         Encounter encounter = new Encounter(1);

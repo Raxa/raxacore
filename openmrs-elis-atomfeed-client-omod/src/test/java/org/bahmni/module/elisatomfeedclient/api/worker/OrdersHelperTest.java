@@ -110,7 +110,6 @@ public class OrdersHelperTest {
     private Concept createConcept(String conceptName) {
         Concept concept = new Concept();
         ConceptName name= new ConceptName(conceptName, Locale.getDefault());
-       // name.setName(conceptName);
         concept.addName(name);
         return concept;
     }

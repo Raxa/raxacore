@@ -4,13 +4,13 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterRole;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
-import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -24,29 +24,32 @@ public class EncounterHelper {
     private EncounterRole unknownEncounterRole = null;
 
 
+
     public EncounterHelper(EncounterService encounterService, VisitService visitService) {
         this.encounterService = encounterService;
         this.visitService = visitService;
         this.visitHelper = new VisitHelper(visitService);
     }
 
-    public Encounter getEncounterByObservationLinkedToOrder(Order order, Patient patient, Provider provider, EncounterType encounterType) {
+    public List<Encounter> getEncountersForAccession(String accessionUuid, Patient patient, EncounterType encounterType) {
         List<Visit> activeVisits = visitService.getActiveVisitsByPatient(patient);
-        List<Encounter> encounters = encounterService.getEncounters(patient, null, null, null, null, Arrays.asList(encounterType), Arrays.asList(provider), null, activeVisits, false);
+        List<Encounter> encounters = encounterService.getEncounters(patient, null, null, null, null, Arrays.asList(encounterType), null, null, activeVisits, false);
+        List<Encounter> matchedEncounters = new ArrayList<>();
         if (encounters != null && !encounters.isEmpty()) {
             for (Encounter encounter : encounters) {
-                if (encounterContainsObsLinkedToOrders(encounter, order)) {
-                    return encounter;
+                if (encounterContainsObsPointingToAccession(encounter, accessionUuid)) {
+                    matchedEncounters.add(encounter);
                 }
             }
         }
-        return null;
+        return matchedEncounters;
     }
 
-    private boolean encounterContainsObsLinkedToOrders(Encounter encounter, Order order) {
+    private boolean encounterContainsObsPointingToAccession(Encounter encounter, String accessionUuid) {
         Set<Obs> observations = encounter.getObs();
         for (Obs obs : observations) {
-            if(obs.getOrder().equals(order)){
+            if(obs.getValueText().equals(accessionUuid) &&
+                    obs.getConcept().getName().getName().equals(OpenElisAccessionEventWorker.ACCESSION_UUID_CONCEPT)){
                 return true;
             }
         }
@@ -76,6 +79,15 @@ public class EncounterHelper {
         return unknownEncounterRole;
     }
 
-
-
+    public boolean hasObservationWithText(String observationText, Encounter encounter) {
+        Set<Obs> observations = encounter.getObs();
+        if(!observations.isEmpty()){
+            for (Obs observation : observations) {
+                if(observation.getValueText().equals(observationText)){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

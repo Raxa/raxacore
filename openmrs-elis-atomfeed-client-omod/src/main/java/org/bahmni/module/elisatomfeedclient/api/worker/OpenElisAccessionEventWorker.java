@@ -6,6 +6,7 @@ import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.client.impl.HealthCenterFilterRule;
 import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
+import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccessionNote;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
 import org.bahmni.module.elisatomfeedclient.api.exception.OpenElisFeedException;
 import org.bahmni.module.elisatomfeedclient.api.mapper.AccessionHelper;
@@ -13,10 +14,12 @@ import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.joda.time.DateTime;
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Order;
+import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
@@ -37,13 +40,16 @@ import java.util.Set;
 public class OpenElisAccessionEventWorker implements EventWorker {
     public static final String LAB_VISIT = "LAB_VISIT";
     public static final String LAB_MANAGER_NOTES = "Lab Manager Notes";
-    private static final String LAB_ORDER_TYPE = "Lab Order";
     public static final String LAB_MANAGER_IDENTIFIER = "LABMANAGER";
+    public static final String ACCESSION_UUID_CONCEPT = "Accession Uuid";
+    private static final String LAB_ORDER_TYPE = "Lab Order";
+    private static final String ACCESSION_NOTE_ENCOUNTER_TYPE = "VALIDATION NOTES";
     private static Logger logger = Logger.getLogger(OpenElisAccessionEventWorker.class);
     private final OrderService orderService;
     private final OrdersHelper ordersHelper;
     private final VisitService visitService;
     private final EncounterHelper encounterHelper;
+    private final ProviderHelper providerHelper;
     private ElisAtomFeedProperties atomFeedProperties;
     private HttpClient httpClient;
     private EncounterService encounterService;
@@ -73,6 +79,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         this.orderService = orderService;
         this.ordersHelper = new OrdersHelper(orderService, conceptService, encounterService);
         this.encounterHelper = new EncounterHelper(encounterService, this.visitService);
+        this.providerHelper = new ProviderHelper(providerService);
     }
 
     @Override
@@ -108,8 +115,8 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 //will save new visit as well
                 encounterService.saveEncounter(orderEncounter);
             }
-            if(openElisAccession.getAccessionNotes() != null && !openElisAccession.getAccessionNotes().isEmpty()){
-                processAccessionNotes(openElisAccession, orderEncounter);
+            if (openElisAccession.getAccessionNotes() != null && !openElisAccession.getAccessionNotes().isEmpty()) {
+                processAccessionNotes(openElisAccession, orderEncounter.getPatient());
             }
             associateTestResultsToOrder(openElisAccession);
         } catch (IOException e) {
@@ -121,39 +128,60 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         }
     }
 
-    private void processAccessionNotes(OpenElisAccession openElisAccession, Encounter orderEncounter) {
-        Order labMangerNoteOrder = ordersHelper.getOrderByConceptName(orderEncounter, LAB_MANAGER_NOTES);
-        Provider labManagerProvider = providerService.getProviderByIdentifier(LAB_MANAGER_IDENTIFIER);
-        EncounterType labResultEncounterType = getLabResultEncounterType();
-        Encounter encounter = null;
-        if (labMangerNoteOrder == null) {
-            labMangerNoteOrder = ordersHelper.createOrderInEncounter(orderEncounter, LAB_ORDER_TYPE, LAB_MANAGER_NOTES);
-        } else {
-            encounter = encounterHelper.getEncounterByObservationLinkedToOrder(labMangerNoteOrder, orderEncounter.getPatient(), labManagerProvider, labResultEncounterType);
-        }
+    private void processAccessionNotes(OpenElisAccession openElisAccession, Patient patient) {
 
-        if (encounter == null) {
-            encounter = encounterHelper.createNewEncounter(labResultEncounterType, labManagerProvider, orderEncounter.getPatient());
-        }
-        saveAccessionNoteInEncounter(encounter, openElisAccession, labMangerNoteOrder);
-    }
+        EncounterType labNotesEncounterType = getLabNotesEncounterType();
+        Provider defaultLabManagerProvider = providerService.getProviderByIdentifier(LAB_MANAGER_IDENTIFIER);
 
-    private void saveAccessionNoteInEncounter(Encounter encounter, OpenElisAccession openElisAccession, Order labMangerNoteOrder) {
-        AccessionDiff accessionNoteDiff = openElisAccession.getAccessionNoteDiff(encounter, labMangerNoteOrder.getConcept());
-        List<String> accessionNotes = accessionNoteDiff.getAccessionNotesToBeAdded();
-        if (accessionNotes != null && !accessionNotes.isEmpty()) {
-            for (String accessionNote : accessionNotes) {
-                encounter.addObs(createObsWith(accessionNote, labMangerNoteOrder));
+        List<Encounter> encountersForAccession = encounterHelper.getEncountersForAccession(openElisAccession.getAccessionUuid(), patient, labNotesEncounterType);
+        Concept labNotesConcept = getLabNotesConcept();
+        Concept accessionConcept = getAccessionConcept();
+        AccessionDiff accessionNoteDiff = openElisAccession.getAccessionNoteDiff(encountersForAccession, labNotesConcept, defaultLabManagerProvider);
+        if (accessionNoteDiff.hasDifferenceInAccessionNotes()) {
+            for (OpenElisAccessionNote note : accessionNoteDiff.getAccessionNotesToBeAdded()) {
+                Encounter noteEncounter = getEncounterForNote(note, encountersForAccession, patient, labNotesEncounterType);
+                if(!encounterHelper.hasObservationWithText(openElisAccession.getAccessionUuid(),noteEncounter)){
+                    noteEncounter.addObs(createObsWith(openElisAccession.getAccessionUuid(), accessionConcept));
+                }
+                noteEncounter.addObs(createObsWith(note.getNote(), labNotesConcept));
+                encounterService.saveEncounter(noteEncounter);
             }
-            encounterService.saveEncounter(encounter);
         }
     }
 
-    private Obs createObsWith(String accessionNote, Order labMangerNoteOrder) {
+    private Encounter getEncounterForNote(OpenElisAccessionNote note, List<Encounter> encountersForAccession, Patient patient, EncounterType encounterType) {
+        Provider provider = providerHelper.getProviderByUuidOrReturnDefault(note.getProviderUuid(), LAB_MANAGER_IDENTIFIER);
+        Encounter encounterWithDefaultProvider = null;
+
+        if (encountersForAccession != null) {
+            for (Encounter encounter : encountersForAccession) {
+                if (note.isProviderInEncounter(encounter)) {
+                    return encounter;
+                }
+                else if(ProviderHelper.getProviderFrom(encounter).equals(provider)){
+                    encounterWithDefaultProvider = encounter;
+                }
+            }
+        }
+        return encounterWithDefaultProvider != null? encounterWithDefaultProvider : encounterHelper.createNewEncounter(encounterType, provider, patient);
+    }
+
+    private Concept getAccessionConcept() {
+        return conceptService.getConcept(ACCESSION_UUID_CONCEPT);
+    }
+
+    private Concept getLabNotesConcept() {
+        return conceptService.getConcept(LAB_MANAGER_NOTES);
+    }
+
+    private EncounterType getLabNotesEncounterType() {
+        return encounterService.getEncounterType(ACCESSION_NOTE_ENCOUNTER_TYPE);
+    }
+
+    private Obs createObsWith(String textValue, Concept concept) {
         Obs observation = new Obs();
-        observation.setConcept(labMangerNoteOrder.getConcept());
-        observation.setValueText(accessionNote);
-        observation.setOrder(labMangerNoteOrder);
+        observation.setConcept(concept);
+        observation.setValueText(textValue);
         return observation;
     }
 
