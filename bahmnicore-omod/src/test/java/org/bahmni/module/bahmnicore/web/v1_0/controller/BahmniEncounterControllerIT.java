@@ -18,6 +18,7 @@ import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -51,7 +52,8 @@ public class BahmniEncounterControllerIT extends BaseEmrControllerTest {
         assertEquals("1e5d5d48-6b78-11e0-93c3-18a905e044dc", encounterTransaction.getVisitUuid());
         assertEquals(1, encounterTransaction.getDiagnoses().size());
         final BahmniDiagnosis bahmniDiagnosisAfterFirstSave = encounterTransaction.getBahmniDiagnoses().get(0);
-        assertDiagnosis(bahmniDiagnosisAfterFirstSave, Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", bahmniDiagnosisAfterFirstSave.getExistingObs());
+        assertDiagnosis(bahmniDiagnosisAfterFirstSave, Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", false);
+        assertNull(bahmniDiagnosisAfterFirstSave.getFirstDiagnosis());
 
         bahmniEncounterTransaction.setBahmniDiagnoses(new ArrayList<BahmniDiagnosisRequest>() {
             {
@@ -66,7 +68,8 @@ public class BahmniEncounterControllerIT extends BaseEmrControllerTest {
         });
         encounterTransaction = bahmniEncounterController.update(bahmniEncounterTransaction);
         final BahmniDiagnosis bahmniDiagnosisAfterSecondSave = encounterTransaction.getBahmniDiagnoses().get(0);
-        assertDiagnosis(bahmniDiagnosisAfterSecondSave, Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, bahmniDiagnosisAfterFirstSave.getExistingObs());
+        assertDiagnosis(bahmniDiagnosisAfterSecondSave, Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false);
+        assertNull(bahmniDiagnosisAfterSecondSave.getFirstDiagnosis());
         Context.flushSession();
         closeVisit(encounterTransaction.getVisitUuid());
     }
@@ -87,7 +90,7 @@ public class BahmniEncounterControllerIT extends BaseEmrControllerTest {
         closeVisit(firstEncounterTransaction.getVisitUuid());
 
         final BahmniDiagnosis bahmniDiagnosisAfterFirstSave = firstEncounterTransaction.getBahmniDiagnoses().get(0);
-        assertDiagnosis(bahmniDiagnosisAfterFirstSave, Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, bahmniDiagnosisAfterFirstSave.getExistingObs());
+        assertDiagnosis(bahmniDiagnosisAfterFirstSave, Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false);
 
         BahmniEncounterTransaction encounterTransactionForSecondVisit = bahmniEncounterTransaction();
         encounterTransactionForSecondVisit.setBahmniDiagnoses(new ArrayList<BahmniDiagnosisRequest>() {
@@ -108,7 +111,8 @@ public class BahmniEncounterControllerIT extends BaseEmrControllerTest {
 
         final BahmniDiagnosis bahmniDiagnosisAfterSecondSave = secondEncounterTransaction.getBahmniDiagnoses().get(0);
         assertNotEquals(bahmniDiagnosisAfterFirstSave.getExistingObs(), bahmniDiagnosisAfterSecondSave.getExistingObs());
-        assertDiagnosis(bahmniDiagnosisAfterSecondSave, Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", bahmniDiagnosisAfterFirstSave.getExistingObs());
+        assertDiagnosis(bahmniDiagnosisAfterSecondSave, Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", false);
+        assertDiagnosis(bahmniDiagnosisAfterSecondSave.getFirstDiagnosis(), Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, true);
         BahmniEncounterTransaction bahmniEncounterTransaction = bahmniEncounterController.get(firstEncounterTransaction.getEncounterUuid());
         assertTrue(bahmniEncounterTransaction.getBahmniDiagnoses().get(0).isRevised());
 
@@ -121,13 +125,13 @@ public class BahmniEncounterControllerIT extends BaseEmrControllerTest {
         visitService.saveVisit(visit);
     }
 
-    private void assertDiagnosis(BahmniDiagnosis bahmniDiagnosisAfterFirstSave, Diagnosis.Certainty certainty, Diagnosis.Order order, String status, String firstDiagnosisUuid) {
-        assertEquals(certainty.name(), bahmniDiagnosisAfterFirstSave.getCertainty());
-        assertEquals(order.name(), bahmniDiagnosisAfterFirstSave.getOrder());
+    private void assertDiagnosis(BahmniDiagnosis bahmniDiagnosis, Diagnosis.Certainty certainty, Diagnosis.Order order, String status, boolean isRevised) {
+        assertEquals(certainty.name(), bahmniDiagnosis.getCertainty());
+        assertEquals(order.name(), bahmniDiagnosis.getOrder());
         if (status != null) {
-            assertEquals(status, bahmniDiagnosisAfterFirstSave.getDiagnosisStatusConcept().getName());
+            assertEquals(status, bahmniDiagnosis.getDiagnosisStatusConcept().getName());
         }
-        assertEquals(firstDiagnosisUuid, bahmniDiagnosisAfterFirstSave.getFirstDiagnosis().getExistingObs());
+        assertEquals(isRevised, bahmniDiagnosis.isRevised());
     }
 
     private BahmniEncounterTransaction bahmniEncounterTransaction() {

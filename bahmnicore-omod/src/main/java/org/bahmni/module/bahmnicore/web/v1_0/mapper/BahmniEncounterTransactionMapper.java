@@ -41,14 +41,17 @@ public class BahmniEncounterTransactionMapper {
             bahmniDiagnosis.setDiagnosisStatusConcept(new EncounterTransaction.Concept(statusConcept.getUuid(), statusConcept.getName().getName()));
         }
 
-        Obs initialDiagnosisObsGroup = obsService.getObsByUuid(findObs(diagnosisObsGroup, BahmniDiagnosisHelper.BAHMNI_INITIAL_DIAGNOSIS).getValueText());
-        EncounterTransaction encounterTransactionWithInitialDiagnosis = encounterTransactionMapper.map(initialDiagnosisObsGroup.getEncounter(), true);
-        EncounterTransaction.Diagnosis initialDiagnosis = findInitialDiagnosis(encounterTransactionWithInitialDiagnosis, initialDiagnosisObsGroup);
+        String initialDiagnosisObsGroupUuid = findObs(diagnosisObsGroup, BahmniDiagnosisHelper.BAHMNI_INITIAL_DIAGNOSIS).getValueText();
+        if (!initialDiagnosisObsGroupUuid.equals(diagnosisObsGroup.getUuid())) {
+            Obs initialDiagnosisObsGroup = obsService.getObsByUuid(initialDiagnosisObsGroupUuid);
+            EncounterTransaction encounterTransactionWithInitialDiagnosis = encounterTransactionMapper.map(initialDiagnosisObsGroup.getEncounter(), true);
+            EncounterTransaction.Diagnosis initialDiagnosis = findInitialDiagnosis(encounterTransactionWithInitialDiagnosis, initialDiagnosisObsGroup);
+            bahmniDiagnosis.setFirstDiagnosis(mapBahmniDiagnosis(initialDiagnosis));
+        }
 
         Obs revisedObs = findObs(diagnosisObsGroup, BahmniDiagnosisHelper.BAHMNI_DIAGNOSIS_REVISED);
         bahmniDiagnosis.setRevised(revisedObs.getValueAsBoolean());
 
-        bahmniDiagnosis.setFirstDiagnosis(mapBasicDiagnosis(initialDiagnosis));
         bahmniDiagnosis.setEncounterUuid(diagnosisObsGroup.getEncounter().getUuid());
         return bahmniDiagnosis;
     }
