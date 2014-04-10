@@ -1,17 +1,20 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.apache.commons.lang.StringUtils;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
 import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
 import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniDiagnosis;
 import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniDiagnosisRequest;
 import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniEncounterTransaction;
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterConfigResponse;
+import org.bahmni.module.bahmnicore.web.v1_0.InvalidInputException;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.BahmniDiagnosisHelper;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.BahmniEncounterTransactionMapper;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.EncounterTransactionDiagnosisMapper;
 import org.openmrs.*;
 import org.openmrs.api.*;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
+import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
 import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -24,6 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -78,6 +84,33 @@ public class BahmniEncounterController extends BaseRestController {
             encounterConfigResponse.addOrderType(orderType.getName(), orderType.getUuid());
         }
         return encounterConfigResponse;
+    }
+
+    @RequestMapping(method = RequestMethod.GET)
+    @ResponseBody
+    public List<BahmniEncounterTransaction> find(EncounterSearchParameters encounterSearchParameters) {
+        checkForValidInput(encounterSearchParameters);
+        List<EncounterTransaction> encounterTransactions = emrEncounterService.find(encounterSearchParameters);
+        List<BahmniEncounterTransaction> bahmniEncounterTransactions = new ArrayList<>();
+        for (EncounterTransaction encounterTransaction : encounterTransactions) {
+            bahmniEncounterTransactions.add(new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper).map(encounterTransaction));
+        }
+        return bahmniEncounterTransactions;
+    }
+
+    private void checkForValidInput(EncounterSearchParameters encounterSearchParameters) {
+        String visitUuid = encounterSearchParameters.getVisitUuid();
+        if (StringUtils.isBlank(visitUuid))
+            throw new InvalidInputException("Visit UUID cannot be empty.");
+
+        String encounterDate = encounterSearchParameters.getEncounterDate();
+        if (StringUtils.isNotBlank(encounterDate)){
+            try {
+                new SimpleDateFormat("yyyy-MM-dd").parse(encounterDate);
+            } catch (ParseException e) {
+                throw new InvalidInputException("Date format needs to be 'yyyy-MM-dd'. Incorrect Date:" + encounterDate + ".", e);
+            }
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST)
