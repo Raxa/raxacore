@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <visit_type visit_type_id="1" name="REG" uuid="b45ca846-c79a-11e2-b0c0-8e397087571c"/>
+
+    <location location_id="1" name="Test Location" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="f1771d8e-bf1f-4dc5-957f-0d40a5eebf08"/>
+
+    <person person_id="1" gender="M" dead="false" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="a76e8d23-0c38-408c-b2a8-ea5540f01b51"/>
+    <person_name person_name_id="1" preferred="true" person_id="1" given_name="John" middle_name=" " family_name="Doe" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="84889c43-32cb-4625-8bd8-d1dd1c04a38c"/>
+
+    <patient patient_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
+    <patient_identifier patient_identifier_id="1" patient_id="2" identifier="1234" identifier_type="1" preferred="1" location_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="0b7cf2fa-b377-455c-8750-231cf34a21ac"/>
+
+    <visit visit_id="1" patient_id="1" visit_type_id="1" date_started="2005-01-01 00:00:00.0" location_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="1e5d5d48-6b78-11e0-93c3-18a905e044dc" />
+
+    <encounter_type encounter_type_id="1" name="Registration Encounter" description="Some desc" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="2b377dba-62c3-4e53-91ef-b51c68899890"/>
+
+    <concept concept_id="503" retired="false" datatype_id="1" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dh"/>
+    <concept_name concept_id="503" name="Cancer" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_id="1439" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dh"/>
+</dataset>

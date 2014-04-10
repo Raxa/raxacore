@@ -650,6 +650,33 @@
             <column name="date_created" valueComputed="curdate()"/>
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
+    <changeSet id="bahmni-core-201404081624" author="Vivek, Shruthi">
+        <comment>Adding diagnosis meta data concepts</comment>
+        <sql>
+            set @concept_id = 0;
+            set @answer_concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Bahmni Diagnosis Status', 'Bahmni Diagnosis Status', 'Coded', 'Misc', true);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'BAHMNI DIAGNOSIS STATUS', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'DIAGNOSIS', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'BAHMNI', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'STATUS', '1');
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Bahmni Initial Diagnosis', 'Bahmni Initial Diagnosis', 'Text', 'Misc', true);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'BAHMNI INITIAL DIAGNOSIS', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'DIAGNOSIS', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'BAHMNI', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'INITIAL', '1');
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Bahmni Diagnosis Revised', 'Bahmni Diagnosis Revised', 'Boolean', 'Misc', true);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'BAHMNI DIAGNOSIS REVISED', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'DIAGNOSIS', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'BAHMNI', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'REVISED', '1');
+            
+        </sql>
     </changeSet>
 
 </databaseChangeLog>
