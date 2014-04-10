@@ -438,13 +438,6 @@
         </sql>
     </changeSet>
 
-    <changeSet id="bahmni-40" author="tw" context="rel3">
-        <comment>Allow registration clerk to manage encounter roles</comment>
-        <sql>
-            INSERT INTO role_privilege(role, privilege) VALUES('RegistrationClerk', 'Manage Encounter Roles')
-            ON DUPLICATE KEY UPDATE role = 'RegistrationClerk';
-        </sql>
-    </changeSet>
     <changeSet id="bahmni-clinical-201402182015" author="Mujir,Vinay,Shruthi" context="rel3">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from visit_type where name = 'PHARMACY_VISIT'</sqlCheck>
