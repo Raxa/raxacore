@@ -41,8 +41,8 @@ public class BahmniDiagnosisHelper {
         if (bahmniDiagnosis.getPreviousObs() == null && obs.getId() == null) { //Diagnosis captured for first time in this encounter 
             obs.setValueText(diagnosisObs.getUuid());
         } else { //Diagnosis update in the same encounter it was created in AND Diagnosis updated from another encounter
-            Obs firstDiagnosis = obsService.getObsByUuid(bahmniDiagnosis.getFirstDiagnosis().getExistingObs());
-            obs.setValueText(firstDiagnosis.getUuid());
+            Obs firstDiagnosisObs = obsService.getObsByUuid(bahmniDiagnosis.getFirstDiagnosis().getExistingObs());
+            obs.setValueText(firstDiagnosisObs.getUuid());
         }
         addToObsGroup(diagnosisObs, obs);
     }

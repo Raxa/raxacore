@@ -53,7 +53,7 @@ public class BahmniEncounterControllerIT extends BaseEmrControllerTest {
         assertEquals(1, encounterTransaction.getDiagnoses().size());
         final BahmniDiagnosis bahmniDiagnosisAfterFirstSave = encounterTransaction.getBahmniDiagnoses().get(0);
         assertDiagnosis(bahmniDiagnosisAfterFirstSave, Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", false);
-        assertNull(bahmniDiagnosisAfterFirstSave.getFirstDiagnosis());
+        assertDiagnosis(bahmniDiagnosisAfterFirstSave.getFirstDiagnosis(), Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", false);
 
         bahmniEncounterTransaction.setBahmniDiagnoses(new ArrayList<BahmniDiagnosisRequest>() {
             {
@@ -69,7 +69,7 @@ public class BahmniEncounterControllerIT extends BaseEmrControllerTest {
         encounterTransaction = bahmniEncounterController.update(bahmniEncounterTransaction);
         final BahmniDiagnosis bahmniDiagnosisAfterSecondSave = encounterTransaction.getBahmniDiagnoses().get(0);
         assertDiagnosis(bahmniDiagnosisAfterSecondSave, Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false);
-        assertNull(bahmniDiagnosisAfterSecondSave.getFirstDiagnosis());
+        assertDiagnosis(bahmniDiagnosisAfterSecondSave.getFirstDiagnosis(), Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false);
         Context.flushSession();
         closeVisit(encounterTransaction.getVisitUuid());
     }
