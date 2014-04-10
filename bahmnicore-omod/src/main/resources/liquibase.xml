@@ -650,6 +650,7 @@
             <column name="date_created" valueComputed="curdate()"/>
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
+    </changeSet>
     <changeSet id="bahmni-core-201404081624" author="Vivek, Shruthi">
         <comment>Adding diagnosis meta data concepts</comment>
         <sql>
