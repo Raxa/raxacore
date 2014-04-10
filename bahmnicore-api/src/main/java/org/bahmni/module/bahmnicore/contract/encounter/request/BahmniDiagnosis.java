@@ -32,4 +32,26 @@ public class BahmniDiagnosis extends EncounterTransaction.Diagnosis {
     public void setRevised(boolean revised) {
         this.revised = revised;
     }
+
+    public boolean isSame(EncounterTransaction.Diagnosis diagnosis) {
+        if (getFreeTextAnswer() != null || diagnosis.getFreeTextAnswer() != null) {
+            return isSameFreeTextAnswer(diagnosis);
+        }
+        return isSameCodedAnswer(diagnosis);
+    }
+
+    public boolean isSameFreeTextAnswer(EncounterTransaction.Diagnosis diagnosis) {
+        if (getFreeTextAnswer() == null || diagnosis.getFreeTextAnswer() == null)
+            return false;
+
+        return getFreeTextAnswer().equals(diagnosis.getFreeTextAnswer());
+    }
+
+    public boolean isSameCodedAnswer(EncounterTransaction.Diagnosis diagnosis) {
+        if (getCodedAnswer() == null || diagnosis.getCodedAnswer() == null)
+            return false;
+
+        return getCodedAnswer().getUuid().equals(diagnosis.getCodedAnswer().getUuid());
+    }
+
 }

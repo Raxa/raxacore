@@ -60,6 +60,7 @@ public class BahmniEncounterTransactionMapper {
         BahmniDiagnosisRequest bahmniDiagnosis = new BahmniDiagnosisRequest();
         bahmniDiagnosis.setCertainty(diagnosis.getCertainty());
         bahmniDiagnosis.setCodedAnswer(diagnosis.getCodedAnswer());
+        bahmniDiagnosis.setFreeTextAnswer(diagnosis.getFreeTextAnswer());
         bahmniDiagnosis.setOrder(diagnosis.getOrder());
         bahmniDiagnosis.setExistingObs(diagnosis.getExistingObs());
         bahmniDiagnosis.setDiagnosisDateTime(diagnosis.getDiagnosisDateTime());

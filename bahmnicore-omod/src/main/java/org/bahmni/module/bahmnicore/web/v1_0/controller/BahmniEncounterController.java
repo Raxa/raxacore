@@ -138,8 +138,7 @@ public class BahmniEncounterController extends BaseRestController {
         for (BahmniDiagnosisRequest bahmniDiagnosis : bahmniEncounterTransaction.getBahmniDiagnoses()) {
             String previousDiagnosisObs = bahmniDiagnosis.getPreviousObs();
             if (previousDiagnosisObs == null) continue;
-            
-            
+
             Obs diagnosisObs = obsService.getObsByUuid(previousDiagnosisObs);
             Encounter encounterForDiagnosis = encounterService.getEncounterByUuid(diagnosisObs.getEncounter().getUuid());
             if (!encounterForDiagnosis.equals(currentEncounter)) {
@@ -152,7 +151,7 @@ public class BahmniEncounterController extends BaseRestController {
 
     private EncounterTransaction.Diagnosis getMatchingEncounterTransactionDiagnosis(BahmniDiagnosis bahmniDiagnosis, List<EncounterTransaction.Diagnosis> encounterTransactionDiagnoses) {
         for (EncounterTransaction.Diagnosis diagnosis : encounterTransactionDiagnoses) {
-            if (bahmniDiagnosis.getCodedAnswer().getUuid().equals(diagnosis.getCodedAnswer().getUuid())) {
+            if (bahmniDiagnosis.isSame(diagnosis)) {
                 return diagnosis;
             }
         }
