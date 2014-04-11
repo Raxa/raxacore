@@ -19,7 +19,6 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.Order;
-import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
@@ -78,7 +77,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         this.healthCenterFilterRule = healthCenterFilterRule;
         this.orderService = orderService;
         this.ordersHelper = new OrdersHelper(orderService, conceptService, encounterService);
-        this.encounterHelper = new EncounterHelper(encounterService, this.visitService);
+        this.encounterHelper = new EncounterHelper(encounterService);
         this.providerHelper = new ProviderHelper(providerService);
     }
 
@@ -116,7 +115,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 encounterService.saveEncounter(orderEncounter);
             }
             if (openElisAccession.getAccessionNotes() != null && !openElisAccession.getAccessionNotes().isEmpty()) {
-                processAccessionNotes(openElisAccession, orderEncounter.getPatient());
+                processAccessionNotes(openElisAccession, orderEncounter);
             }
             associateTestResultsToOrder(openElisAccession);
         } catch (IOException e) {
@@ -128,18 +127,18 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         }
     }
 
-    private void processAccessionNotes(OpenElisAccession openElisAccession, Patient patient) {
+    private void processAccessionNotes(OpenElisAccession openElisAccession, Encounter orderEncounter) {
 
         EncounterType labNotesEncounterType = getLabNotesEncounterType();
         Provider defaultLabManagerProvider = providerService.getProviderByIdentifier(LAB_MANAGER_IDENTIFIER);
 
-        List<Encounter> encountersForAccession = encounterHelper.getEncountersForAccession(openElisAccession.getAccessionUuid(), patient, labNotesEncounterType);
+        List<Encounter> encountersForAccession = encounterHelper.getEncountersForAccession(openElisAccession.getAccessionUuid(),labNotesEncounterType,orderEncounter.getVisit());
         Concept labNotesConcept = getLabNotesConcept();
         Concept accessionConcept = getAccessionConcept();
         AccessionDiff accessionNoteDiff = openElisAccession.getAccessionNoteDiff(encountersForAccession, labNotesConcept, defaultLabManagerProvider);
         if (accessionNoteDiff.hasDifferenceInAccessionNotes()) {
             for (OpenElisAccessionNote note : accessionNoteDiff.getAccessionNotesToBeAdded()) {
-                Encounter noteEncounter = getEncounterForNote(note, encountersForAccession, patient, labNotesEncounterType);
+                Encounter noteEncounter = getEncounterForNote(note, encountersForAccession, labNotesEncounterType, orderEncounter);
                 if(!encounterHelper.hasObservationWithText(openElisAccession.getAccessionUuid(),noteEncounter)){
                     noteEncounter.addObs(createObsWith(openElisAccession.getAccessionUuid(), accessionConcept));
                 }
@@ -149,7 +148,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         }
     }
 
-    private Encounter getEncounterForNote(OpenElisAccessionNote note, List<Encounter> encountersForAccession, Patient patient, EncounterType encounterType) {
+    private Encounter getEncounterForNote(OpenElisAccessionNote note, List<Encounter> encountersForAccession, EncounterType encounterType, Encounter orderEncounter) {
         Provider provider = providerHelper.getProviderByUuidOrReturnDefault(note.getProviderUuid(), LAB_MANAGER_IDENTIFIER);
         Encounter encounterWithDefaultProvider = null;
 
@@ -163,7 +162,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 }
             }
         }
-        return encounterWithDefaultProvider != null? encounterWithDefaultProvider : encounterHelper.createNewEncounter(encounterType, provider, patient);
+        return encounterWithDefaultProvider != null? encounterWithDefaultProvider : encounterHelper.createNewEncounter(orderEncounter.getVisit(),encounterType, orderEncounter.getEncounterDatetime(), orderEncounter.getPatient(), provider );
     }
 
     private Concept getAccessionConcept() {
@@ -216,7 +215,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 }
 
                 if (isResultUpdated) {
-                    resultEncounterForTest = findOrInitializeEncounter(resultVisit, testProvider, labResultEncounterType, orderEncounter.getEncounterDatetime());
+                    resultEncounterForTest = encounterHelper.findOrInitializeEncounter(resultVisit, testProvider, labResultEncounterType, orderEncounter.getEncounterDatetime());
                     resultEncounterForTest.addObs(resultObsHelper.createNewObsForOrder(testDetail, testOrder, resultEncounterForTest));
                     resultVisit.addEncounter(resultEncounterForTest);
                     updatedEncounters.add(resultEncounterForTest);
@@ -325,34 +324,6 @@ public class OpenElisAccessionEventWorker implements EventWorker {
 
         labResultProviders.add(provider);
         return provider;
-    }
-
-    private Encounter findOrInitializeEncounter(Visit resultVisit, Provider testProvider, EncounterType labResultEncounterType, Date encounterDate) {
-        Encounter labResultEncounter = getEncounterByProviderAndEncounterType(testProvider, labResultEncounterType, resultVisit.getEncounters());
-        if (labResultEncounter == null) {
-            labResultEncounter = accessionMapper.newEncounterInstance(resultVisit, resultVisit.getPatient(), testProvider, labResultEncounterType, encounterDate);
-        }
-        return labResultEncounter;
-    }
-
-    private Encounter getEncounterByProviderAndEncounterType(Provider provider, EncounterType labResultEncounterType, Set<Encounter> labResultEncounters) {
-        for (Encounter encounter : labResultEncounters) {
-            if (hasSameEncounterType(labResultEncounterType, encounter) && hasSameProvider(provider, encounter)) {
-                return encounter;
-            }
-        }
-        return null;
-    }
-
-    private boolean hasSameEncounterType(EncounterType labResultEncounterType, Encounter encounter) {
-        return encounter.getEncounterType().getUuid().equals(labResultEncounterType.getUuid());
-    }
-
-    private boolean hasSameProvider(Provider provider, Encounter encounter) {
-        if (encounter.getEncounterProviders().size() > 0) {
-            return encounter.getEncounterProviders().iterator().next().getProvider().getUuid().equals(provider.getUuid());
-        }
-        return false;
     }
 
     private boolean isSameDate(Date date1, Date date2) {

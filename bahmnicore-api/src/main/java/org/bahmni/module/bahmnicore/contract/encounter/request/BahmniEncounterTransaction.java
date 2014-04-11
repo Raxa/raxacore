@@ -15,6 +15,7 @@ import java.util.Set;
 public class BahmniEncounterTransaction extends EncounterTransaction {
     private List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
     private EncounterTransaction encounterTransaction = new EncounterTransaction();
+    private List<AccessionNote> accessionNotes;
 
     public BahmniEncounterTransaction() {
     }
@@ -182,6 +183,14 @@ public class BahmniEncounterTransaction extends EncounterTransaction {
     @Override
     public EncounterTransaction setLocationUuid(String locationUuid) {
         return encounterTransaction.setLocationUuid(locationUuid);
+    }
+
+    public List<AccessionNote> getAccessionNotes() {
+        return accessionNotes;
+    }
+
+    public void setAccessionNotes(List<AccessionNote> accessionNotes) {
+        this.accessionNotes = accessionNotes;
     }
 }
 

@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniDiagnosis;
 import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniDiagnosisRequest;
+import org.bahmni.module.bahmnicore.web.v1_0.mapper.AccessionNotesMapper;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.Patient;
 import org.openmrs.api.ObsService;
@@ -38,6 +38,8 @@ public class BahmniDiagnosisController extends BaseRestController {
     private ObsService obsService;
     @Autowired
     private EncounterTransactionMapper encounterTransactionMapper;
+    @Autowired
+    private AccessionNotesMapper accessionNotesMapper;
 
 
     @RequestMapping(method = RequestMethod.GET, value = "search")
@@ -49,7 +51,7 @@ public class BahmniDiagnosisController extends BaseRestController {
 
         List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
         for (EncounterTransaction.Diagnosis diagnosis : pastDiagnoses) {
-            BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper).mapBahmniDiagnosis(diagnosis);
+            BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper).mapBahmniDiagnosis(diagnosis);
             if (!bahmniDiagnosisRequest.isRevised()) {
                 bahmniDiagnoses.add(bahmniDiagnosisRequest);
             }

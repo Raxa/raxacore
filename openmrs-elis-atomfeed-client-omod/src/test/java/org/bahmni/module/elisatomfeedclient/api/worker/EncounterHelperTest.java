@@ -24,7 +24,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -55,11 +54,10 @@ public class EncounterHelperTest {
     public void setUp() throws ParseException {
         initMocks(this);
         encounterType = new EncounterType("TestEncounter", "Encounter for test");
-        when(visitService.getActiveVisitsByPatient(any(Patient.class))).thenReturn(sampleVisits());
         when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class),
                 anyListOf(Form.class), anyListOf(EncounterType.class), anyListOf(Provider.class),
                 anyListOf(VisitType.class), anyListOf(Visit.class), anyBoolean())).thenReturn(getEncounters());
-        encounterHelper = new EncounterHelper(encounterService, visitService);
+        encounterHelper = new EncounterHelper(encounterService);
         provider = new Provider(333);
         patient = new Patient(444);
         PowerMockito.mockStatic(Context.class);
@@ -68,28 +66,12 @@ public class EncounterHelperTest {
 
     @Test
     public void shouldCreateEncounterWithGivenParameters() throws Exception {
-        Encounter newEncounter = encounterHelper.createNewEncounter(encounterType, provider, patient);
+        Visit visit = new Visit();
+        visit.setEncounters(new HashSet<>(getEncounters()));
+        Encounter newEncounter = encounterHelper.createNewEncounter(visit, encounterType, new Date(), patient, provider);
         assertEquals(encounterType, newEncounter.getEncounterType());
         assertEquals(provider.getIdentifier(), newEncounter.getEncounterProviders().iterator().next().getProvider().getIdentifier());
         assertEquals(patient.getId(), newEncounter.getPatient().getId());
-        assertEquals((Integer) 3, newEncounter.getVisit().getId());
-    }
-
-    private List<Visit> sampleVisits() throws ParseException {
-        List<Visit> activeVisits = new ArrayList<>();
-        activeVisits.add(createVisitWithDateTime("05/04/2014", 1));
-        activeVisits.add(createVisitWithDateTime("06/04/2014", 2));
-        activeVisits.add(createVisitWithDateTime("07/04/2014", 3));
-        return activeVisits;
-    }
-
-    private Visit createVisitWithDateTime(String date, int id) throws ParseException {
-        Visit visit = new Visit();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date d = sdf.parse(date);
-        visit.setStartDatetime(d);
-        visit.setId(id);
-        return visit;
     }
 
     public List<Encounter> getEncounterWithObs() {

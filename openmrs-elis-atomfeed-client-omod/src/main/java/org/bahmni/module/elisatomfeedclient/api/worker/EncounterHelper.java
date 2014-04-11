@@ -8,32 +8,26 @@ import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
-import org.openmrs.api.VisitService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 public class EncounterHelper {
-    private static final String ENCOUNTER_TYPE_LAB_RESULT = "LAB_RESULT";
     private EncounterService encounterService;
-    private VisitService visitService;
-    private VisitHelper visitHelper;
-    private EncounterRole unknownEncounterRole = null;
+//    private VisitService visitService;
+//    private AccessionHelper accessionMapper;
+//    private VisitHelper visitHelper;
 
 
 
-    public EncounterHelper(EncounterService encounterService, VisitService visitService) {
+    public EncounterHelper(EncounterService encounterService) {
         this.encounterService = encounterService;
-        this.visitService = visitService;
-        this.visitHelper = new VisitHelper(visitService);
     }
 
-    public List<Encounter> getEncountersForAccession(String accessionUuid, Patient patient, EncounterType encounterType) {
-        List<Visit> activeVisits = visitService.getActiveVisitsByPatient(patient);
-        List<Encounter> encounters = encounterService.getEncounters(patient, null, null, null, null, Arrays.asList(encounterType), null, null, activeVisits, false);
+    public List<Encounter> getEncountersForAccession(String accessionUuid, EncounterType encounterType, Visit visit) {
+        List<Encounter> encounters = filterEncountersByType(visit.getEncounters(),encounterType);
         List<Encounter> matchedEncounters = new ArrayList<>();
         if (encounters != null && !encounters.isEmpty()) {
             for (Encounter encounter : encounters) {
@@ -56,27 +50,16 @@ public class EncounterHelper {
         return false;
     }
 
-    public Encounter createNewEncounter(EncounterType encounterType, Provider provider, Patient patient) {
-        Visit latestActiveVist = visitHelper.getLatestVisit(patient);
+    public Encounter createNewEncounter(Visit visit, EncounterType encounterType, Date encounterDate, Patient patient, Provider provider) {
         Encounter encounter = new Encounter();
         encounter.setPatient(patient);
-        encounter.addProvider(getEncounterRole(),provider);
+        EncounterRole encounterRole = encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
+        encounter.addProvider(encounterRole, provider);
         encounter.setEncounterType(encounterType);
-        encounter.setEncounterDatetime(new Date());
-        encounter.setVisit(latestActiveVist);
+        encounter.setEncounterDatetime(encounterDate);
+        encounter.setVisit(visit);
         return encounter;
 
-    }
-
-    private EncounterRole getEncounterRole() {
-        if (unknownEncounterRole == null) {
-            for (EncounterRole encounterRole : encounterService.getAllEncounterRoles(false)) {
-                if (encounterRole.getName().equalsIgnoreCase("unknown")) {
-                    unknownEncounterRole = encounterRole;
-                }
-            }
-        }
-        return unknownEncounterRole;
     }
 
     public boolean hasObservationWithText(String observationText, Encounter encounter) {
@@ -89,5 +72,43 @@ public class EncounterHelper {
             }
         }
         return false;
+    }
+
+    public boolean hasSameEncounterType(EncounterType encounterType, Encounter encounter) {
+        return encounter.getEncounterType().getUuid().equals(encounterType.getUuid());
+    }
+
+    public boolean hasSameProvider(Provider provider, Encounter encounter) {
+        if (encounter.getEncounterProviders().size() > 0) {
+            return encounter.getEncounterProviders().iterator().next().getProvider().getUuid().equals(provider.getUuid());
+        }
+        return false;
+    }
+
+    public Encounter getEncounterByProviderAndEncounterType(Provider provider, EncounterType encounterType, Set<Encounter> encounters) {
+        for (Encounter encounter : encounters) {
+            if (hasSameEncounterType(encounterType, encounter) && hasSameProvider(provider, encounter)) {
+                return encounter;
+            }
+        }
+        return null;
+    }
+
+    public Encounter findOrInitializeEncounter(Visit visit, Provider testProvider, EncounterType encounterType, Date encounterDate) {
+        Encounter encounter = getEncounterByProviderAndEncounterType(testProvider, encounterType, visit.getEncounters());
+        if (encounter == null) {
+            encounter = createNewEncounter(visit, encounterType,  encounterDate, visit.getPatient(), testProvider);
+        }
+        return encounter;
+    }
+
+    public List<Encounter> filterEncountersByType(Set<Encounter> encounters,EncounterType encounterType){
+        List<Encounter> matchedEncounters = new ArrayList<>();
+        for(Encounter encounter: encounters){
+            if(hasSameEncounterType(encounterType,encounter)){
+                matchedEncounters.add(encounter);
+            }
+        }
+        return matchedEncounters;
     }
 }

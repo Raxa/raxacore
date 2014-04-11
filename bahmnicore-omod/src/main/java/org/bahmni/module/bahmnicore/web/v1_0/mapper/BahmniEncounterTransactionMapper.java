@@ -14,10 +14,12 @@ import java.util.List;
 public class BahmniEncounterTransactionMapper {
     private ObsService obsService;
     private EncounterTransactionMapper encounterTransactionMapper;
+    private AccessionNotesMapper validationNotesMapper;
 
-    public BahmniEncounterTransactionMapper(ObsService obsService, EncounterTransactionMapper encounterTransactionMapper) {
+    public BahmniEncounterTransactionMapper(ObsService obsService, EncounterTransactionMapper encounterTransactionMapper, AccessionNotesMapper validationNotesMapper) {
         this.obsService = obsService;
         this.encounterTransactionMapper = encounterTransactionMapper;
+        this.validationNotesMapper = validationNotesMapper;
     }
 
     public BahmniEncounterTransaction map(EncounterTransaction encounterTransaction) {
@@ -27,6 +29,7 @@ public class BahmniEncounterTransactionMapper {
             bahmniDiagnoses.add(mapBahmniDiagnosis(diagnosis));
         }
         bahmniEncounterTransaction.setBahmniDiagnoses(bahmniDiagnoses);
+        bahmniEncounterTransaction.setAccessionNotes(validationNotesMapper.map(encounterTransaction));
         return bahmniEncounterTransaction;
     }
 

@@ -8,6 +8,7 @@ import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniDiagnosisRe
 import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniEncounterTransaction;
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterConfigResponse;
 import org.bahmni.module.bahmnicore.web.v1_0.InvalidInputException;
+import org.bahmni.module.bahmnicore.web.v1_0.mapper.AccessionNotesMapper;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.BahmniDiagnosisHelper;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.BahmniEncounterTransactionMapper;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.EncounterTransactionDiagnosisMapper;
@@ -49,6 +50,8 @@ public class BahmniEncounterController extends BaseRestController {
     private ObsService obsService;
     @Autowired
     private EncounterTransactionMapper encounterTransactionMapper;
+    @Autowired
+    private AccessionNotesMapper accessionNotesMapper;
 
     public BahmniEncounterController(VisitService visitService, ConceptService conceptService, EncounterService encounterService) {
         this.visitService = visitService;
@@ -93,7 +96,7 @@ public class BahmniEncounterController extends BaseRestController {
         List<EncounterTransaction> encounterTransactions = emrEncounterService.find(encounterSearchParameters);
         List<BahmniEncounterTransaction> bahmniEncounterTransactions = new ArrayList<>();
         for (EncounterTransaction encounterTransaction : encounterTransactions) {
-            bahmniEncounterTransactions.add(new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper).map(encounterTransaction));
+            bahmniEncounterTransactions.add(new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper).map(encounterTransaction));
         }
         return bahmniEncounterTransactions;
     }
@@ -146,7 +149,7 @@ public class BahmniEncounterController extends BaseRestController {
                 encounterService.saveEncounter(encounterForDiagnosis);
             }
         }
-        return new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper).map(updatedEncounterTransaction);
+        return new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper).map(updatedEncounterTransaction);
     }
 
     private EncounterTransaction.Diagnosis getMatchingEncounterTransactionDiagnosis(BahmniDiagnosis bahmniDiagnosis, List<EncounterTransaction.Diagnosis> encounterTransactionDiagnoses) {
@@ -161,6 +164,6 @@ public class BahmniEncounterController extends BaseRestController {
     public BahmniEncounterTransaction get(String encounterUuid) {
         Encounter encounter = encounterService.getEncounterByUuid(encounterUuid);
         EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, true);
-        return new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper).map(encounterTransaction);
+        return new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper).map(encounterTransaction);
     }
 }
