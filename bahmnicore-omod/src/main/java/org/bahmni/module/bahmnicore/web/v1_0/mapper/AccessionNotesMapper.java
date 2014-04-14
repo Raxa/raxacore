@@ -27,14 +27,16 @@ public class AccessionNotesMapper {
     public List<AccessionNote> map(EncounterTransaction encounterTransaction) {
         if(hasValidationNotes(encounterTransaction)){
             String providerName = encounterTransaction.getProviders().iterator().next().getName();
-            return getAccessionNotes(encounterTransaction.getObservations(),providerName);
+            return getAccessionNotes(encounterTransaction,providerName);
         }
         return Collections.emptyList();
     }
 
-    private List<AccessionNote> getAccessionNotes(List<EncounterTransaction.Observation> observations, String providerName) {
+    private List<AccessionNote> getAccessionNotes(EncounterTransaction encounterTransaction, String providerName) {
+        List<EncounterTransaction.Observation> observations =    encounterTransaction.getObservations();
         List<AccessionNote> accessionNotes = new ArrayList<>();
         String accessionUuid = getAccessionUuid(observations);
+        List<EncounterTransaction.Observation> filteredObservations = new ArrayList<>();
         for (EncounterTransaction.Observation observation : observations) {
             if(observation.getConcept().getName().equals(ACCESSION_NOTES_CONCEPT_NAME)){
                 AccessionNote note = new AccessionNote();
@@ -44,7 +46,11 @@ public class AccessionNotesMapper {
                 note.setProviderName(providerName);
                 accessionNotes.add(note);
             }
+            else if(!observation.getConcept().getName().equals(ACCESSION_UUID_CONCEPT_NAME)){
+                filteredObservations.add(observation);
+            }
         }
+        encounterTransaction.setObservations(filteredObservations);
         return accessionNotes;
     }
 
