@@ -5,7 +5,6 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import java.util.Date;
 
 public class AccessionNote {
-    private static final String DATETIME_FORMAT = "dd MMM yy HH:m`m";
     private String text;
     private String providerName;
     private String accessionUuid;
@@ -54,6 +53,6 @@ public class AccessionNote {
     }
 
     public void setDateTime(Date dateTime){
-        this.dateTime = DateFormatUtils.format(dateTime,DATETIME_FORMAT);
+        this.dateTime = DateFormatUtils.format(dateTime,DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
     }
 }

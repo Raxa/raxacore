@@ -127,7 +127,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         }
     }
 
-    private void processAccessionNotes(OpenElisAccession openElisAccession, Encounter orderEncounter) {
+    private void processAccessionNotes(OpenElisAccession openElisAccession, Encounter orderEncounter) throws ParseException {
 
         EncounterType labNotesEncounterType = getLabNotesEncounterType();
         Provider defaultLabManagerProvider = providerService.getProviderByIdentifier(LAB_MANAGER_IDENTIFIER);
@@ -140,9 +140,9 @@ public class OpenElisAccessionEventWorker implements EventWorker {
             for (OpenElisAccessionNote note : accessionNoteDiff.getAccessionNotesToBeAdded()) {
                 Encounter noteEncounter = getEncounterForNote(note, encountersForAccession, labNotesEncounterType, orderEncounter);
                 if(!encounterHelper.hasObservationWithText(openElisAccession.getAccessionUuid(),noteEncounter)){
-                    noteEncounter.addObs(createObsWith(openElisAccession.getAccessionUuid(), accessionConcept));
+                    noteEncounter.addObs(createObsWith(openElisAccession.getAccessionUuid(), accessionConcept,note.getDateTimeAsDate()));
                 }
-                noteEncounter.addObs(createObsWith(note.getNote(), labNotesConcept));
+                noteEncounter.addObs(createObsWith(note.getNote(), labNotesConcept,note.getDateTimeAsDate()));
                 encounterService.saveEncounter(noteEncounter);
             }
         }
@@ -177,10 +177,11 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         return encounterService.getEncounterType(ACCESSION_NOTE_ENCOUNTER_TYPE);
     }
 
-    private Obs createObsWith(String textValue, Concept concept) {
+    private Obs createObsWith(String textValue, Concept concept,Date obsDateTime) {
         Obs observation = new Obs();
         observation.setConcept(concept);
         observation.setValueText(textValue);
+        observation.setObsDatetime(obsDateTime);
         return observation;
     }
 

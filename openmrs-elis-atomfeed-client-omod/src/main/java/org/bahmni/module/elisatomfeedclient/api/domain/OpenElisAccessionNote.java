@@ -1,18 +1,25 @@
 package org.bahmni.module.elisatomfeedclient.api.domain;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.Encounter;
 import org.openmrs.Provider;
+
+import java.text.ParseException;
+import java.util.Date;
 
 public class OpenElisAccessionNote {
     private String note;
     private String providerUuid;
+    private String dateTime;
 
     public OpenElisAccessionNote() {
     }
 
-    public OpenElisAccessionNote(String note, String providerUuid) {
+    public OpenElisAccessionNote(String note, String providerUuid, String dateTime) {
         this.note = note;
         this.providerUuid = providerUuid;
+        this.dateTime = dateTime;
     }
 
     public String getNote() {
@@ -29,6 +36,15 @@ public class OpenElisAccessionNote {
 
     public void setProviderUuid(String providerUuid) {
         this.providerUuid = providerUuid;
+    }
+
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
     }
 
     public boolean isProviderInEncounter(Encounter encounter){
@@ -56,5 +72,9 @@ public class OpenElisAccessionNote {
         int result = note != null ? note.hashCode() : 0;
         result = 31 * result + (providerUuid != null ? providerUuid.hashCode() : 0);
         return result;
+    }
+
+    public Date getDateTimeAsDate() throws ParseException {
+        return DateUtils.parseDateStrictly(dateTime.toString(), DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
     }
 }

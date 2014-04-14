@@ -229,10 +229,10 @@ public class OpenElisAccessionTest {
     public void shouldUpdateTheAccessionNotesToBeAdded() {
         accessionNotesTestSetup();
         openElisAccessionWithNotes = new OpenElisAccessionBuilder().withAccessionNotes(
-                new OpenElisAccessionNote("note1","p1"),
-                new OpenElisAccessionNote("note2","p2"),
-                new OpenElisAccessionNote("note3","p2"),
-                new OpenElisAccessionNote("note4","p1")).build();
+                new OpenElisAccessionNote("note1","p1", "2014-01-30T11:50:18+0530"),
+                new OpenElisAccessionNote("note2","p2", "2014-01-30T11:50:18+0530"),
+                new OpenElisAccessionNote("note3","p2", "2014-01-30T11:50:18+0530"),
+                new OpenElisAccessionNote("note4","p1", "2014-01-30T11:50:18+0530")).build();
 
         AccessionDiff diff = openElisAccessionWithNotes.getAccessionNoteDiff(accessionNotesEncounters, accessionNotesConcept,defaultLabManagerProvider);
         assertNotNull(diff);
@@ -245,9 +245,9 @@ public class OpenElisAccessionTest {
     public void shouldntReturnDiffWhenNotesAlreadyExist() {
         accessionNotesTestSetup();
        openElisAccessionWithNotes = new OpenElisAccessionBuilder().withAccessionNotes(
-               new OpenElisAccessionNote("note1","p1"),
-               new OpenElisAccessionNote("note2","p2"),
-               new OpenElisAccessionNote("note3","p2")).build();
+               new OpenElisAccessionNote("note1","p1", "2014-01-30T11:50:18+0530"),
+               new OpenElisAccessionNote("note2","p2", "2014-01-30T11:50:18+0530"),
+               new OpenElisAccessionNote("note3","p2", "2014-01-30T11:50:18+0530")).build();
         AccessionDiff diff = openElisAccessionWithNotes.getAccessionNoteDiff(accessionNotesEncounters, accessionNotesConcept,defaultLabManagerProvider);
         assertNotNull(diff);
         assertEquals(0, diff.getAccessionNotesToBeAdded().size());

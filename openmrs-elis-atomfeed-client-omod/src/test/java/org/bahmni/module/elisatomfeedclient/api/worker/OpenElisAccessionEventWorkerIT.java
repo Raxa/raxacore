@@ -761,7 +761,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withDateTime("2014-01-30T11:50:18+0530")
                 .withTestDetails(new HashSet<>(Arrays.asList(test1)))
                 .withPatientUuid(patientUuidWithNoOrders)
-                .withAccessionNotes(new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75"))
+                .withAccessionNotes(new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))
                 .build();
         openElisAccession.setAccessionUuid(accessionUuid);
 
@@ -851,8 +851,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withDateTime("2014-01-30T11:50:18+0530")
                 .withTestDetails(new HashSet<>(Arrays.asList(test1)))
                 .withPatientUuid(patientUuidWithAccessionNotes)
-                .withAccessionNotes(new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75"),
-                        new OpenElisAccessionNote("Note2", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75"))
+                .withAccessionNotes(new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"),
+                        new OpenElisAccessionNote("Note2", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))
                 .build();
         openElisAccession.setAccessionUuid(accessionUuid);
         Encounter notesEncounter1 = encounterService.getEncounter(36);
@@ -895,8 +895,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withDateTime("2014-01-30T11:50:18+0530")
                 .withTestDetails(new HashSet<>(Arrays.asList(test1)))
                 .withPatientUuid(patientUuidWithAccessionNotes)
-                .withAccessionNotes(new OpenElisAccessionNote("Note1", "non-existent-provider"),
-                        new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75"))
+                .withAccessionNotes(new OpenElisAccessionNote("Note1", "non-existent-provider", "2014-01-30T11:50:18+0530"),
+                        new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))
                 .build();
         openElisAccession.setAccessionUuid(accessionUuid);
         Encounter notesEncounter1 = encounterService.getEncounter(36);
@@ -946,8 +946,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder()
                 .withDateTime("2014-01-30T11:50:18+0530")
                 .withPatientUuid(patientUuidWithAccessionNotes)
-                .withAccessionNotes(new OpenElisAccessionNote("Note1", "331c6bf8-7846-11e3-a96a-09xD371c1b75"),
-                        new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75"))
+                .withAccessionNotes(new OpenElisAccessionNote("Note1", "331c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"),
+                        new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))
                 .build();
         openElisAccession.setAccessionUuid(accessionUuid);
         Encounter notesEncounter1 = encounterService.getEncounter(36);
