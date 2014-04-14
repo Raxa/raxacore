@@ -11,6 +11,7 @@ import org.openmrs.api.EncounterService;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -26,9 +27,9 @@ public class EncounterHelper {
         this.encounterService = encounterService;
     }
 
-    public List<Encounter> getEncountersForAccession(String accessionUuid, EncounterType encounterType, Visit visit) {
+    public Set<Encounter> getEncountersForAccession(String accessionUuid, EncounterType encounterType, Visit visit) {
         List<Encounter> encounters = filterEncountersByType(visit.getEncounters(),encounterType);
-        List<Encounter> matchedEncounters = new ArrayList<>();
+        Set<Encounter> matchedEncounters = new HashSet<>();
         if (encounters != null && !encounters.isEmpty()) {
             for (Encounter encounter : encounters) {
                 if (encounterContainsObsPointingToAccession(encounter, accessionUuid)) {

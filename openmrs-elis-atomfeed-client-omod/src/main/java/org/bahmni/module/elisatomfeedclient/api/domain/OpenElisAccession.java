@@ -65,7 +65,7 @@ public class OpenElisAccession {
         return patientIdentifier.substring(0, 3);
     }
 
-    public AccessionDiff getAccessionNoteDiff(List<Encounter> encounters, Concept labManagerNoteConcept,Provider defaultLabManagerProvider) {
+    public AccessionDiff getAccessionNoteDiff(Set<Encounter> encounters, Concept labManagerNoteConcept,Provider defaultLabManagerProvider) {
         AccessionDiff accessionNotesDiff = new AccessionDiff();
         if (accessionNotes != null) {
             ArrayList<OpenElisAccessionNote> accessionNotesCopy = new ArrayList<>(accessionNotes);

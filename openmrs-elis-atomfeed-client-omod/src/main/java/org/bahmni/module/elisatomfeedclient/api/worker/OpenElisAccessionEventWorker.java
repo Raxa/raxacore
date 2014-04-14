@@ -132,9 +132,9 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         EncounterType labNotesEncounterType = getLabNotesEncounterType();
         Provider defaultLabManagerProvider = providerService.getProviderByIdentifier(LAB_MANAGER_IDENTIFIER);
 
-        List<Encounter> encountersForAccession = encounterHelper.getEncountersForAccession(openElisAccession.getAccessionUuid(),labNotesEncounterType,orderEncounter.getVisit());
         Concept labNotesConcept = getLabNotesConcept();
         Concept accessionConcept = getAccessionConcept();
+        Set<Encounter> encountersForAccession = encounterHelper.getEncountersForAccession(openElisAccession.getAccessionUuid(), labNotesEncounterType, orderEncounter.getVisit());
         AccessionDiff accessionNoteDiff = openElisAccession.getAccessionNoteDiff(encountersForAccession, labNotesConcept, defaultLabManagerProvider);
         if (accessionNoteDiff.hasDifferenceInAccessionNotes()) {
             for (OpenElisAccessionNote note : accessionNoteDiff.getAccessionNotesToBeAdded()) {
@@ -143,12 +143,13 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                     noteEncounter.addObs(createObsWith(openElisAccession.getAccessionUuid(), accessionConcept,note.getDateTimeAsDate()));
                 }
                 noteEncounter.addObs(createObsWith(note.getNote(), labNotesConcept,note.getDateTimeAsDate()));
-                encounterService.saveEncounter(noteEncounter);
+                Encounter newEncounter = encounterService.saveEncounter(noteEncounter);
+                encountersForAccession.add(newEncounter);
             }
         }
     }
 
-    private Encounter getEncounterForNote(OpenElisAccessionNote note, List<Encounter> encountersForAccession, EncounterType encounterType, Encounter orderEncounter) {
+    private Encounter getEncounterForNote(OpenElisAccessionNote note, Set<Encounter> encountersForAccession, EncounterType encounterType,Encounter orderEncounter) {
         Provider provider = providerHelper.getProviderByUuidOrReturnDefault(note.getProviderUuid(), LAB_MANAGER_IDENTIFIER);
         Encounter encounterWithDefaultProvider = null;
 

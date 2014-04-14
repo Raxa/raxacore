@@ -18,10 +18,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -32,7 +30,7 @@ import static org.mockito.Mockito.when;
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
 public class OpenElisAccessionTest {
-    private List<Encounter> accessionNotesEncounters;
+    private HashSet<Encounter> accessionNotesEncounters;
     private Concept accessionNotesConcept;
     private OpenElisAccession openElisAccessionWithNotes;
     private Provider defaultLabManagerProvider;
@@ -195,7 +193,7 @@ public class OpenElisAccessionTest {
         PowerMockito.mockStatic(Context.class);
         when(Context.getAuthenticatedUser()).thenReturn(new User());
 
-        accessionNotesEncounters = new ArrayList<>();
+        accessionNotesEncounters = new HashSet<>();
         Encounter encounter1 = createEncounterWithProviderAndObservations("e1","p1","c1","note1");
         Encounter encounter2 =createEncounterWithProviderAndObservations("e2","p2","c1","note2","note3");
         accessionNotesEncounters.add(encounter1);

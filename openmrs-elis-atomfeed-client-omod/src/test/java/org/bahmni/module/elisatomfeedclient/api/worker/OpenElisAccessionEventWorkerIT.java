@@ -761,7 +761,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withDateTime("2014-01-30T11:50:18+0530")
                 .withTestDetails(new HashSet<>(Arrays.asList(test1)))
                 .withPatientUuid(patientUuidWithNoOrders)
-                .withAccessionNotes(new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))
+                .withAccessionNotes(new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"),
+                                    new OpenElisAccessionNote("Note2", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))
                 .build();
         openElisAccession.setAccessionUuid(accessionUuid);
 
@@ -807,7 +808,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         assertEquals("aa1c6bf8-7846-11e3-a96a-09xD371c1b75",ProviderHelper.getProviderFrom(notesEncounter).getUuid());
         Set<Obs> notesObservations = notesEncounter.getObs();
 
-        assertEquals(2, notesObservations.size());
+        assertEquals(3, notesObservations.size());
         boolean containsAccessionUuidObservation = false;
         for (Obs notesObservation : notesObservations) {
 
@@ -817,7 +818,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
             }
             else{
                 assertEquals(OpenElisAccessionEventWorker.LAB_MANAGER_NOTES, notesObservation.getConcept().getName().getName());
-                assertTrue(Arrays.asList("Note1", "6xfe4567-707a-4629-9850-f15206e9b0eX").contains(notesObservation.getValueText()));
+                assertTrue(Arrays.asList("Note1", "6xfe4567-707a-4629-9850-f15206e9b0eX","Note2").contains(notesObservation.getValueText()));
             }
         }
         assertTrue(containsAccessionUuidObservation);
