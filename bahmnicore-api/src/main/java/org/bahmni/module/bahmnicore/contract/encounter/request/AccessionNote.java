@@ -1,6 +1,8 @@
 package org.bahmni.module.bahmnicore.contract.encounter.request;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
 
 import java.util.Date;
 
@@ -8,12 +10,12 @@ public class AccessionNote {
     private String text;
     private String providerName;
     private String accessionUuid;
-    private String dateTime;
+    private Date dateTime;
 
     public AccessionNote() {
     }
 
-    public AccessionNote(String text, String providerName, String accessionUuid, String dateTime) {
+    public AccessionNote(String text, String providerName, String accessionUuid, Date dateTime) {
         this.text = text;
         this.providerName = providerName;
         this.accessionUuid = accessionUuid;
@@ -44,15 +46,12 @@ public class AccessionNote {
         this.accessionUuid = accessionUuid;
     }
 
-    public String getDateTime() {
+    @JsonSerialize(using = CustomJsonDateSerializer.class)
+    public Date getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(String dateTime) {
-        this.dateTime = dateTime;
-    }
-
     public void setDateTime(Date dateTime){
-        this.dateTime = DateFormatUtils.format(dateTime,DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
+        this.dateTime = dateTime;
     }
 }
