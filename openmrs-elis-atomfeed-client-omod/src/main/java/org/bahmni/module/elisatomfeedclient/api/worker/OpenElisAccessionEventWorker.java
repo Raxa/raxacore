@@ -281,7 +281,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         boolean isPanel = StringUtils.isNotBlank(testDetail.getPanelUuid());
         final Set<Obs> obsAtTopLevel = resultEncounter.getObsAtTopLevel(false);
         for (Obs obs : obsAtTopLevel) {
-            if (isPanel && obs.getConcept().getUuid().equals(testDetail.getPanelUuid())) {
+            if (isPanel && obs.getConcept().getUuid().equals(testDetail.getPanelUuid()) && obs.getOrder().getId().equals(testOrder.getId())) {
                 for (Obs member : obs.getGroupMembers()) {
                     if (member.getConcept().getUuid().equals(testDetail.getTestUuid())
                             && member.getOrder().getId().equals(testOrder.getId())) {

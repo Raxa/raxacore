@@ -88,7 +88,7 @@ public class ResultObsHelper {
     private Obs createOrFindPanelObs(OpenElisTestDetail testDetail, Order testOrder, Encounter resultEncounter, Date obsDate) {
         Obs panelObs = null;
         for (Obs obs : resultEncounter.getObsAtTopLevel(false)) {
-            if(obs.getConcept().getUuid().equals(testDetail.getPanelUuid())){
+            if(obs.getConcept().getUuid().equals(testDetail.getPanelUuid()) && obs.getOrder().getId().equals(testOrder.getId())){
                 panelObs = obs;
                 break;
             }
