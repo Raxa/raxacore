@@ -1,0 +1,8 @@
+ Diagnosis Name, Synonyms, Short Name, Description, Source, Map Type, ICD -10 Code, ICD 10 short name,Parent Concept Set
+Condyloma acuminata,Condyloma acuminata one | Condyloma acuminata two,shortname,Condyloma acuminata,org.openmrs.module.emrapi,SAME-AS,A63.Ø,Anogenital (venereal) warts,JSS Coded diagnoses
+"Dermatomycosis, unspec.",,shortname,,org.openmrs.module.emrapi,SAME-AS,B36.9,"Superficial mycosis, unspecified",threathening diagnoses
+"Exanthems, viral, unspec.","Exanthems, viral, unspec. One",shortname,,org.openmrs.module.emrapi,SAME-AS,B41,Unspecified viral infection characterized by skin and mucous membrane lesions,JSS Coded diagnoses
+Giardiasis,Giardiasis one,,Giardiasis,org.openmrs.module.emrapi,SAME-AS,AØ7.1,,JSS Coded diagnoses
+"Gonorrhea, acute, lower GU tract","Gonorrhea, acute, lower GU tract one",shortname,"Gonorrhea, acute, lower GU tract",org.openmrs.module.emrapi,SAME-AS,A54.ØØ,"Gonococcal infection of lower genitourinary tract, unspecified",JSS Coded diagnoses
+Condyloma acuminata2,Condyloma acuminata one | Condyloma acuminata two,shortname,Condyloma acuminata,org.openmrs.module.emra,SAME-AS,A63.Ø,Anogenital (venereal) warts,timpass diagnoses
+test diag,testing,this,stuff,org.openmrs.module.emrapi,SAME-AS,icd,sdfsd,timpass diagnoses
