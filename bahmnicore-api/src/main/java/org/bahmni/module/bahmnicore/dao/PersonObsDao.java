@@ -7,7 +7,7 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import java.util.List;
 
 public interface PersonObsDao {
-    List<Obs> getObsByPerson(String identifier);
+    List<Obs> getObsByPerson(String personUUID);
 
     List<Concept> getNumericConceptsForPerson(String personUUID);
 }

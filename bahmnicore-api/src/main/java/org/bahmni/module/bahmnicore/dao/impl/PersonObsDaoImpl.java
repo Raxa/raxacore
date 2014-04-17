@@ -15,14 +15,15 @@ public class PersonObsDaoImpl implements PersonObsDao {
     @Autowired
     private SessionFactory sessionFactory;
     @Override
-    public List<Obs> getObsByPerson(String identifier) {
+    public List<Obs> getObsByPerson(String personUUID) {
         Query query = sessionFactory
                 .getCurrentSession().createQuery(
                         "select obs from Obs as obs inner join fetch " +
                                 "obs.concept as concept inner join fetch " +
                                 "concept.datatype as datatype inner join " +
                                 "obs.person as person " +
-                                "where datatype.hl7Abbreviation= 'NM' and person.uuid='" + identifier + "'");
+                                "where datatype.hl7Abbreviation= 'NM' and person.uuid= :personUUID");
+        query.setString("personUUID", personUUID);
         return query.list();
 
     }
@@ -35,7 +36,8 @@ public class PersonObsDaoImpl implements PersonObsDao {
                                 "obs.concept as concept inner join " +
                                 "concept.datatype as datatype inner join " +
                                 "obs.person as person " +
-                                "where datatype.hl7Abbreviation= 'NM' and person.uuid='" + personUUID + "'");
+                                "where datatype.hl7Abbreviation= 'NM' and person.uuid= :personUUID");
+        query.setString("personUUID", personUUID);
         return query.list();
 
     }
