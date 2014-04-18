@@ -12,6 +12,7 @@ parser = Parser.new do |p|
    p.option :host, "Host name or IP", :default => "127.0.0.1", :short => 'H'
    p.option :user, "Mysql user", :default => "openmrs-user"
    p.option :password, "Mysql password", :default => "password"
+   p.option :verbose, "Mysql password", :default => false
 end
 options = parser.process!
 
@@ -22,6 +23,7 @@ end
 
 @csv_file = ARGV.shift
 @synonym_separator = '|'
+@verbose = options[:verbose]
 
 @col_to_index_mapping = {
     "diagnosis_name" => 0,
@@ -66,10 +68,10 @@ def import_from_csv
 
       parent_concept_id = get_concept_by_name(parent_concept)
       if parent_concept_id ==-1
-        parent_concept_id = insert_concept(parent_concept,nil,nil,conv_concept_class_id,na_datatype_id,true,nil)
+        parent_concept_id = insert_concept_without_duplicate(parent_concept,nil,nil,conv_concept_class_id,na_datatype_id,true,nil)
       end
 
-      concept_id = insert_concept(diag_name, diag_short_name, diag_desc, diagnosis_concept_class_id, na_datatype_id, false, synonyms)
+      concept_id = insert_concept_without_duplicate(diag_name, diag_short_name, diag_desc, diagnosis_concept_class_id, na_datatype_id, false, synonyms)
 
       if concept_id != -1
         add_to_concept_set(concept_id,parent_concept_id)
@@ -96,7 +98,7 @@ def create_diagnosis_concept_set (conv_concept_class_id, na_datatype_id)
   if diagnosis_concept_set_id != -1
     return diagnosis_concept_set_id
   end
-  return insert_concept(diagnosis_set_of_sets, nil, nil, conv_concept_class_id, na_datatype_id, true, nil)
+  return insert_concept_without_duplicate(diagnosis_set_of_sets, nil, nil, conv_concept_class_id, na_datatype_id, true, nil)
 end
 
 def create_icd_code_mappings(source,map_type,icd_code,icd_code_name,concept_id)
@@ -109,12 +111,12 @@ def create_icd_code_mappings(source,map_type,icd_code,icd_code_name,concept_id)
   source_id = get_concept_source_by_name(source)
   map_type_id = get_concept_map_type_id_by_name(map_type)
 
-  if source_id == -1
+  if source_id
     show_error("Concept reference source #{source} doesn't exist")
     return false
   end
 
-  if map_type_id == -1
+  if map_type_id
     show_error("Concept reference term mapping type #{map_type} doesn't exist")
     return false
   end
