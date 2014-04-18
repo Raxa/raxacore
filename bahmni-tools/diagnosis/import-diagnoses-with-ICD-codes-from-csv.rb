@@ -12,7 +12,7 @@ parser = Parser.new do |p|
    p.option :host, "Host name or IP", :default => "127.0.0.1", :short => 'H'
    p.option :user, "Mysql user", :default => "openmrs-user"
    p.option :password, "Mysql password", :default => "password"
-   p.option :verbose, "Mysql password", :default => false
+   p.option :verbose, "Verbose mode", :default => false
 end
 options = parser.process!
 
