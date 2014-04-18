@@ -38,7 +38,7 @@ def import_from_csv
     @current_row_number = index + 1
     answer_concept_name = row[0]
     answer_concept_id = get_concept_by_name_or_insert(answer_concept_name, answer_concept_name, nil, misc_concept_class_id, na_datatype_id, false, nil)
-    get_or_add_concept_answer(question_concept_id, answer_concept_id, index - 1)
+    get_or_add_concept_answer(question_concept_id, answer_concept_id, index)
   end
 end
 

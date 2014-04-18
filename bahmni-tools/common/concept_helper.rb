@@ -87,8 +87,13 @@ module ConceptHelper
 
 	def get_or_add_concept_answer(question_id, answer_id, sort_weight)
 		concept_answer_id = get_concept_answer(question_id, answer_id)
-		puts "Found concept answer: question_id=#{question_id}, answer_id=#{answer_id}" if @verbose and concept_answer_id
-		concept_answer_id || add_concept_answer(question_id, answer_id, sort_weight)
+		if(concept_answer_id)
+			puts "Found concept answer: question_id=#{question_id}, answer_id=#{answer_id}" if @verbose
+			@openmrs_conn.query("UPDATE concept_answer SET sort_weight=#{sort_weight} where concept_answer_id=#{concept_answer_id}")
+			return concept_answer_id
+		else			
+			add_concept_answer(question_id, answer_id, sort_weight)
+		end
 	end
 
 	def get_concept_map_type_id_by_name(map_type)
