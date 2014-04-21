@@ -5,7 +5,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.joda.time.DateTime;
 
 import java.util.Date;
-import java.util.Set;
 
 @Data
 public class OpenElisTestDetail {
@@ -16,7 +15,7 @@ public class OpenElisTestDetail {
     private Double minNormal;
     private Double maxNormal;
     private String result;
-    private Set<String> notes;
+    private String notes;
     private String resultType;
     private String providerUuid;
     private String dateTime;

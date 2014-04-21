@@ -70,13 +70,9 @@ public class ResultObsHelper {
         if (testDetail.isReferredOut()) {
             labObs.addGroupMember(newChildObs(order, obsDate, REFERRED_OUT, null ));
         }
-        final Set<String> notes = testDetail.getNotes();
-        if (notes != null) {
-            for (String note : notes) {
-                if (StringUtils.isNotBlank(note)) {
-                    labObs.addGroupMember(newChildObs(order, obsDate, LAB_NOTES, note));
-                }
-            }
+        final String notes = testDetail.getNotes();
+        if (StringUtils.isNotBlank(notes)) {
+            labObs.addGroupMember(newChildObs(order, obsDate, LAB_NOTES, notes));
         }
         return topLevelObs;
     }
