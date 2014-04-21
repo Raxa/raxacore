@@ -97,7 +97,7 @@ public class ReferenceDataConceptService {
 
     private Concept getConceptByName(String drugName) {
         if (StringUtils.isBlank(drugName)) return null;
-        Concept concept = conceptService.getConceptByName(drugName);
+        Concept concept = conceptService.getConceptByName(drugName.trim());
         if (concept == null) {
             concept = saveConcept(new ReferenceDataConcept(null, drugName, MISC, ConceptDatatype.N_A_UUID));
         }
