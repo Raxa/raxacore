@@ -24,9 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -91,13 +92,27 @@ public class BahmniEncounterController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public List<BahmniEncounterTransaction> find(EncounterSearchParameters encounterSearchParameters) {
-        checkForValidInput(encounterSearchParameters);
-        List<EncounterTransaction> encounterTransactions = emrEncounterService.find(encounterSearchParameters);
+    public List<BahmniEncounterTransaction> find(@RequestParam(value = "visitUuids", required = true) String[] visitUuids,
+                                                 @RequestParam(value = "includeAll", required = false) boolean includeAll,
+                                                 @RequestParam(value = "encounterDate", required = false) String encounterDate) {
         List<BahmniEncounterTransaction> bahmniEncounterTransactions = new ArrayList<>();
-        for (EncounterTransaction encounterTransaction : encounterTransactions) {
-            bahmniEncounterTransactions.add(new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper).map(encounterTransaction));
+
+        BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper = new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper);
+
+        for (String visitUuid : visitUuids ) {
+            EncounterSearchParameters encounterSearchParameters = new EncounterSearchParameters();
+            encounterSearchParameters.setVisitUuid(visitUuid);
+            encounterSearchParameters.setEncounterDate(encounterDate);
+            encounterSearchParameters.setIncludeAll(includeAll);
+
+            checkForValidInput(encounterSearchParameters);
+            List<EncounterTransaction> encounterTransactions = emrEncounterService.find(encounterSearchParameters);
+            for (EncounterTransaction encounterTransaction : encounterTransactions) {
+                bahmniEncounterTransactions.add(bahmniEncounterTransactionMapper.map(encounterTransaction));
+            }
         }
+
+
         return bahmniEncounterTransactions;
     }
 
