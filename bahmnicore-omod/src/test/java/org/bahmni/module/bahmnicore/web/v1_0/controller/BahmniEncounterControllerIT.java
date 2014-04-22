@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.openmrs.Visit;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmnicore.web.v1_0.controller.BahmniEncounterController;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.web.controller.BaseEmrControllerTest;

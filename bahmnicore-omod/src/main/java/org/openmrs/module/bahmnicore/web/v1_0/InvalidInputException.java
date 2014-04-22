@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.bahmni.module.bahmnicore.web.v1_0;
+package org.openmrs.module.bahmnicore.web.v1_0;
 
 import org.openmrs.api.APIException;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.web.v1_0.mapper;
+package org.openmrs.module.bahmnicore.web.v1_0.mapper;
 
 import org.bahmni.module.bahmnicore.contract.encounter.request.AccessionNote;
 import org.openmrs.EncounterType;

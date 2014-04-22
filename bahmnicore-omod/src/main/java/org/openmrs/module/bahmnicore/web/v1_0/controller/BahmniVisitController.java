@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.web.v1_0.controller;
+package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
 import org.openmrs.Visit;
 import org.openmrs.api.VisitService;

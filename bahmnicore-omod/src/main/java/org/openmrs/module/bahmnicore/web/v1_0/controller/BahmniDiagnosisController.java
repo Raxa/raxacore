@@ -1,11 +1,13 @@
-package org.bahmni.module.bahmnicore.web.v1_0.controller;
+package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniDiagnosisRequest;
-import org.bahmni.module.bahmnicore.web.v1_0.mapper.AccessionNotesMapper;
-import org.bahmni.module.bahmnicore.web.v1_0.mapper.BahmniEncounterTransactionMapper;
+import org.openmrs.module.bahmnicore.web.v1_0.mapper.AccessionNotesMapper;
+import org.openmrs.module.bahmnicore.web.v1_0.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.Patient;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.PatientService;
+import org.openmrs.module.bahmnicore.web.v1_0.mapper.AccessionNotesMapper;
+import org.openmrs.module.bahmnicore.web.v1_0.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.emrapi.diagnosis.DiagnosisService;
 import org.openmrs.module.emrapi.encounter.DateMapper;
 import org.openmrs.module.emrapi.encounter.DiagnosisMapper;

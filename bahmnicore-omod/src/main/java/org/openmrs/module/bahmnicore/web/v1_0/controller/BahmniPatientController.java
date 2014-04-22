@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.web.v1_0.controller;
+package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientConfigResponse;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;

@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.web.v1_0.mapper;
+package org.openmrs.module.bahmnicore.web.v1_0.mapper;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;

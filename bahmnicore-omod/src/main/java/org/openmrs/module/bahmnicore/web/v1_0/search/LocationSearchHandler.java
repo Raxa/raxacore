@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.web.v1_0.search;
+package org.openmrs.module.bahmnicore.web.v1_0.search;
 
 import org.openmrs.Location;
 import org.openmrs.LocationTag;
