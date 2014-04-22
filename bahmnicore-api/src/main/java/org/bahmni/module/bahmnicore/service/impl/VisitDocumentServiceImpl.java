@@ -59,7 +59,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         for (Document document : documents) {
             Concept testConcept = conceptService.getConceptByUuid(document.getTestUuid());
 
-            Obs parentObservation = findOrCreateParentObs(encounter, encounterDateTime, testConcept, document.getObsUuid());
+            Obs parentObservation = findOrCreateParentObs(encounter, document.getObsDateTime(), testConcept, document.getObsUuid());
             parentObservation.setConcept(testConcept);
             observations.add(parentObservation);
 
@@ -68,7 +68,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
                 voidDocumentObservation(encounter.getAllObs(), document.getObsUuid());
             } else if(document.getObsUuid() == null) {
                 String url = saveDocument(encounter, document);
-                parentObservation.addGroupMember(newObs(encounterDateTime, encounter, imageConcept, url));
+                parentObservation.addGroupMember(newObs(document.getObsDateTime(), encounter, imageConcept, url));
             }
         }
         encounter.setObs(observations);
