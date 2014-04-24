@@ -40,6 +40,9 @@
     <person_name person_name_id="1051" preferred="false" person_id="1027" prefix="Mr." given_name="John" middle_name="Peeter" family_name="testlast21" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c072b3ca3c2g"/>
 
     <person_attribute_type person_attribute_type_id="1" name="caste" description="caste" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="b3b6d540-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
+    <person_attribute_type person_attribute_type_id="2" name="givenNameLocal" description="caste" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="b3b6d900-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
+    <person_attribute_type person_attribute_type_id="3" name="middleNameLocal" description="caste" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="b436d540-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
+    <person_attribute_type person_attribute_type_id="4" name="familyNameLocal" description="caste" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="z3b6d540-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
 
     <person_attribute person_attribute_id="1" person_id="1024" value="caste1" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:46:47.0" voided="false" uuid="0768f3da-b692-44b7-a33f-abf2c450474a"/>
     <person_attribute person_attribute_id="2" person_id="1025" value="caste1" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:46:47.0" voided="false" uuid="56beb8bd-287c-47f2-9786-a7b98c933c0b"/>
@@ -67,6 +70,9 @@
     <person_attribute person_attribute_id="22" person_id="1027" value="testCaste19" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="898f6ecd-78f1-42a5-8768-e0c219a34a30"/>
     <person_attribute person_attribute_id="23" person_id="1027" value="testCaste20" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="898f6ecd-78f1-42a5-8768-e0c219a35a30"/>
     <person_attribute person_attribute_id="24" person_id="1027" value="testCaste21" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="898f6ecd-78f1-42a5-8768-e0c219a36a30"/>
+    <person_attribute person_attribute_id="25" person_id="1025" value="Ram" person_attribute_type_id="2" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="438f6ecd-78f1-42a5-8438-e0c219a36a30"/>
+    <person_attribute person_attribute_id="26" person_id="1025" value="Singh" person_attribute_type_id="3" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="438f6ecd-78f1-42a5-8768-e0c219a36a30"/>
+    <person_attribute person_attribute_id="27" person_id="1025" value="Gond" person_attribute_type_id="4" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="348f6ecd-78f1-42a5-8768-e0c219a36a30"/>
 
 
     <location location_id="1" name="Unknown_Location" description=" 0" creator="1" retired="0" retired_by=" 0" parent_location=" 0" uuid="8d6c993e-c2cc-11de-8d13-0010c6dffd0f" date_created="2005-09-22 00:00:00"/>

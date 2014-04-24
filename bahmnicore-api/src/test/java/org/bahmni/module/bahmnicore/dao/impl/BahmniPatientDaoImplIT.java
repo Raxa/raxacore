@@ -1,17 +1,14 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
 import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
-import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Properties;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
@@ -30,7 +27,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldSearchByPatientIdentifier() {
-        List<PatientResponse> patients = bahmniPatientDao.getPatients("GAN200001", "", "", 100, 0);
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("GAN200001", "", null, "", 100, 0);
         assertEquals(1, patients.size());
         PatientResponse patient = patients.get(0);
         assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
@@ -47,7 +44,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldSearchByName() {
 
-        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Horatio", "", 100, 0);
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Horatio", null, "", 100, 0);
 
         assertEquals(2, patients.size());
         PatientResponse patient1 = patients.get(0);
@@ -63,7 +60,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldSearchAcrossFirstNameAndLastName() {
-        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Horati Sinha", "", 100, 0);
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Horati Sinha", null, "", 100, 0);
 
         assertEquals(1, patients.size());
         PatientResponse patient1 = patients.get(0);
@@ -74,7 +71,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldSearchByVillage() {
-        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "", "Ramgarh", 100, 0);
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "", null, "Ramgarh", 100, 0);
         assertEquals(1, patients.size());
         PatientResponse patient = patients.get(0);
         assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
@@ -90,7 +87,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldSearchByNameAndVillage() {
-        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sin", "Ramgarh", 100, 0);
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sin", null, "Ramgarh", 100, 0);
         assertEquals(1, patients.size());
         PatientResponse patient = patients.get(0);
         assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
@@ -106,7 +103,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldSortResultsByCreationDate() {
-        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sinha", "", 100, 0);
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sinha", null, "", 100, 0);
         assertEquals(2, patients.size());
         assertEquals("Sinha", patients.get(0).getFamilyName());
         assertEquals("Sinha", patients.get(0).getFamilyName());
@@ -114,11 +111,17 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldReturnResultAfterGivenOffset() throws Exception {
-        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sinha", "", 100, 1);
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sinha", null, "", 100, 1);
         assertEquals(1, patients.size());
 
-        patients = bahmniPatientDao.getPatients("", "Sinha", "", 100, 2);
+        patients = bahmniPatientDao.getPatients("", "Sinha", null, "", 100, 2);
         assertEquals(0, patients.size());
+    }
+
+    @Test
+    public void shouldFetchBasedOnLocalName() throws Exception {
+        List<PatientResponse> patients = bahmniPatientDao.getPatients("", "", "Ram", null, 100, 0);
+        assertEquals(1, patients.size());
     }
 }
 

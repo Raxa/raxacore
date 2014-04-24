@@ -10,6 +10,7 @@ public class PatientSearchParameters {
     private String cityVillage;
     private Integer start;
     private Integer length;
+    private String localName;
 
     public PatientSearchParameters(RequestContext context) {
         String query = context.getParameter("q");
@@ -20,7 +21,7 @@ public class PatientSearchParameters {
         }
         this.setStart(context.getStartIndex());
         this.setLength(context.getLimit());
-
+        this.setLocalName(context.getParameter("local_name"));
         this.setCityVillage(context.getParameter("city_village"));
     }
 }

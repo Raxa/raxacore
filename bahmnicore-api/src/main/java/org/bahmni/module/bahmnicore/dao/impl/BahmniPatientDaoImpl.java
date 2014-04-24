@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
 import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
 import org.bahmni.module.bahmnicore.model.NameSearchParameter;
@@ -24,16 +25,16 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
     public static final String LIMIT_PARAM = "limit";
     public static final String OFFSET_PARAM = "offset";
     public static final String VILLAGE_PARAM = "village";
+    public static final String LOCAL_NAME_PARAM = "localName";
 
-    public static final String FIND = "select p.uuid as uuid, pi.identifier as identifier, pn.given_name as givenName, pn.middle_name as middleName, pn.family_name as familyName, p.gender as gender, p.birthdate as birthDate," +
+    public static final String WHERE_CLAUSE = " where p.voided = 'false' and pn.voided = 'false' and pn.preferred=true ";
+    public static final String SELECT_STATEMENT = "select p.uuid as uuid, pi.identifier as identifier, pn.given_name as givenName, pn.middle_name as middleName, pn.family_name as familyName, p.gender as gender, p.birthdate as birthDate," +
             " p.death_date as deathDate, pa.city_village as cityVillage, p.date_created as dateCreated, v.uuid as activeVisitUuid " +
             " from patient pat inner join person p on pat.patient_id=p.person_id " +
             " left join person_name pn on pn.person_id = p.person_id" +
             " left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
             " inner join patient_identifier pi on pi.patient_id = p.person_id " +
-            " left outer join visit v on v.patient_id = pat.patient_id and v.date_stopped is null " +
-            " where p.voided = 'false' and pn.voided = 'false' and pn.preferred=true";
-
+            " left outer join visit v on v.patient_id = pat.patient_id and v.date_stopped is null ";
     public static final String BY_ID = "pi.identifier like :" + PATIENT_IDENTIFIER_PARAM;
     public static final String BY_NAME_PARTS = "concat(coalesce(given_name, ''), coalesce(middle_name, ''), coalesce(family_name, '')) like";
     public static final String BY_VILLAGE = "pa.city_village like :" + VILLAGE_PARAM;
@@ -47,12 +48,14 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
     }
 
     @Override
-    public List<PatientResponse> getPatients(String identifier, String name, String village, Integer length, Integer offset) {
+    public List<PatientResponse> getPatients(String identifier, String name, String localName, String village, Integer length, Integer offset) {
         Session currentSession = sessionFactory.getCurrentSession();
 
         NameSearchParameter nameSearchParameter = NameSearchParameter.create(name);
         String nameSearchCondition = getNameSearchCondition(nameSearchParameter);
-        String query = FIND;
+        NameSearchParameter localNameParameters = NameSearchParameter.create(localName);
+        String localNameJoins = getLocalNameJoins(localNameParameters);
+        String query = SELECT_STATEMENT + localNameJoins + WHERE_CLAUSE;
         query = isEmpty(identifier) ? query : combine(query, "and", enclose(BY_ID));
         query = isEmpty(nameSearchCondition) ? query : combine(query, "and", enclose(nameSearchCondition));
         query = isEmpty(village) ? query : combine(query, "and", enclose(BY_VILLAGE));
@@ -79,8 +82,32 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
             sqlQuery.setParameter(VILLAGE_PARAM, village + "%");
         sqlQuery.setParameter(LIMIT_PARAM, length);
         sqlQuery.setParameter(OFFSET_PARAM, offset);
-
+        sqlQuery = replaceLocalNamePartParameters(localNameParameters, sqlQuery);
         return sqlQuery.list();
+    }
+
+    private Query replaceLocalNamePartParameters(NameSearchParameter localNameParameters, Query sqlQuery) {
+        for (String localNamePart : localNameParameters.getNameParts()) {
+            String index = String.valueOf(ArrayUtils.indexOf(localNameParameters.getNameParts(), localNamePart));
+            sqlQuery.setParameter(LOCAL_NAME_PARAM + index, localNamePart);
+        }
+        return sqlQuery;
+    }
+
+    private String getLocalNameJoins(NameSearchParameter localNameParameters) {
+        if (localNameParameters.isEmpty()) {
+            return "";
+        } else {
+            String joinStatement = "";
+            for (int index = 0; index < localNameParameters.getNameParts().length; index++) {
+                String indexString = String.valueOf(index);
+                joinStatement = joinStatement +
+                        " inner join person_attribute pattr" + indexString +
+                        " on pattr" + indexString + ".person_id=pat.patient_id" +
+                        " and pattr" + indexString + ".value like :" + LOCAL_NAME_PARAM + indexString;
+            }
+            return joinStatement;
+        }
     }
 
     @Override
@@ -100,7 +127,7 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
             String query_by_name_parts = "";
             for (String part : nameSearchParameter.getNameParts()) {
                 if (!query_by_name_parts.equals("")) {
-                    query_by_name_parts +=" and " + BY_NAME_PARTS + " '" + part + "'";
+                    query_by_name_parts += " and " + BY_NAME_PARTS + " '" + part + "'";
                 } else {
                     query_by_name_parts += BY_NAME_PARTS + " '" + part + "'";
                 }
