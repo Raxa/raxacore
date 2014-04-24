@@ -6,9 +6,10 @@ import org.bahmni.module.referencedatafeedclient.domain.ReferenceDataConcept;
 import org.bahmni.module.referencedatafeedclient.worker.EventWorkerUtility;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDatatype;
+import org.openmrs.ConceptNumeric;
+import org.openmrs.ConceptSet;
 import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptName;
-import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,15 @@ public class ReferenceDataConceptService {
 
     public Concept saveConcept(ReferenceDataConcept referenceDataConcept) {
         Concept concept = conceptService.getConceptByUuid(referenceDataConcept.getUuid());
-        if (concept == null) {
-            concept = new Concept();
+        ConceptDatatype conceptDatatype = conceptService.getConceptDatatypeByUuid(referenceDataConcept.getDataTypeUuid());
+        if (conceptDatatype.isNumeric()) {
+            if(shouldStoreUnits(referenceDataConcept, conceptDatatype))
+                concept = new ConceptNumeric();
+            else
+                concept = new Concept();
             concept.setUuid(referenceDataConcept.getUuid());
         }
-        concept.setDatatype(conceptService.getConceptDatatypeByUuid(referenceDataConcept.getDataTypeUuid()));
+        concept.setDatatype(conceptDatatype);
         concept.setConceptClass(conceptService.getConceptClassByName(referenceDataConcept.getClassName()));
         addOrUpdateName(concept, referenceDataConcept.getName(), ConceptNameType.FULLY_SPECIFIED);
         addOrUpdateName(concept, referenceDataConcept.getShortName(), ConceptNameType.SHORT);
@@ -47,6 +52,9 @@ public class ReferenceDataConceptService {
         addOrRemoveSetMembers(concept, referenceDataConcept.getSetMemberUuids());
         concept.setRetired(referenceDataConcept.isRetired());
         concept.setSet(referenceDataConcept.isSet());
+        if (referenceDataConcept.getTestUnitOfMeasure() != null && concept.isNumeric()) {
+            ((ConceptNumeric) concept).setUnits(referenceDataConcept.getTestUnitOfMeasure());
+        }
         return conceptService.saveConcept(concept);
     }
 

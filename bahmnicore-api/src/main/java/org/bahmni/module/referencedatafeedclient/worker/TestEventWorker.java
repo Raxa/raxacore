@@ -3,6 +3,7 @@ package org.bahmni.module.referencedatafeedclient.worker;
 import org.bahmni.module.referencedatafeedclient.ReferenceDataFeedProperties;
 import org.bahmni.module.referencedatafeedclient.domain.ReferenceDataConcept;
 import org.bahmni.module.referencedatafeedclient.domain.Test;
+import org.bahmni.module.referencedatafeedclient.domain.TestUnitOfMeasure;
 import org.bahmni.module.referencedatafeedclient.service.ReferenceDataConceptService;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
@@ -75,6 +76,10 @@ public class TestEventWorker implements EventWorker {
         referenceDataConcept.setDescription(test.getDescription());
         referenceDataConcept.setShortName(test.getShortName());
         referenceDataConcept.setRetired(!test.getIsActive());
+        TestUnitOfMeasure testUnitOfMeasure = test.getTestUnitOfMeasure();
+        if(testUnitOfMeasure != null){
+            referenceDataConcept.setTestUnitOfMeasure(testUnitOfMeasure.getName());
+        }
         Concept newTestConcept = referenceDataConceptService.saveConcept(referenceDataConcept);
         setMembership(test, newTestConcept);
         if (newTestConcept.isRetired()){

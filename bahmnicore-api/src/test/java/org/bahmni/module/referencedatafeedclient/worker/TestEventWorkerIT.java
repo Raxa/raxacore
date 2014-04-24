@@ -195,4 +195,26 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
         Concept testConcept = conceptService.getConceptByUuid("5923d0e0-8734-11e3-baa7-0800200c9a66");
         Assert.assertEquals("Anaemia Panel (Test)", testConcept.getName().getName());
     }
+
+    @org.junit.Test
+    public void should_save_units_for_numeric_tests() throws IOException {
+        Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
+        Department department = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b77");
+        Test test = new Test("5923d0e4-8734-11e3-baa7-0800200c9a66");
+        test.setIsActive(true);
+        test.setSample(sample);
+        test.setDepartment(department);
+        test.setResultType("Numeric");
+        test.setName("Haemoglobin");
+        test.setShortName("Hb");
+        test.setTestUnitOfMeasure(new TestUnitOfMeasure("gm/dl", "4223fge0-8734-11e3-caa7-2802202c9a62", true));
+
+        Event testEvent = new Event("xxxx-yyyyy-2", "/reference-data/test/5923d0e4-8734-11e3-baa7-0800200c9a66");
+        when(httpClient.get(referenceDataUri + testEvent.getContent(), Test.class)).thenReturn(test);
+        testEventWorker.process(testEvent);
+
+        Concept testConcept = conceptService.getConceptByUuid("5923d0e4-8734-11e3-baa7-0800200c9a66");
+        Assert.assertEquals("Haemoglobin", testConcept.getName().getName());
+        Assert.assertEquals("gm/dl", ((ConceptNumeric)testConcept).getUnits());
+    }
 }

@@ -16,6 +16,7 @@ public class ReferenceDataConcept {
     private boolean retired = false;
     private boolean set = false;
     Set<String> setMemberUuids = new HashSet<>();
+    private String testUnitOfMeasure;
 
     public ReferenceDataConcept(String uuid, String name, String className, String dataTypeUuid) {
         this.uuid = uuid;

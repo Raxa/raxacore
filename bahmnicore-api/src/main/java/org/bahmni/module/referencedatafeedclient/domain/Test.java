@@ -21,13 +21,22 @@ public class Test {
     Department department;
     Boolean isActive = true;
     double sortOrder;
+    TestUnitOfMeasure testUnitOfMeasure;
 
     public Test(String id) {
-        this(id, null, null, null, null, null, null, true, 0);
+        this(id, null, null, null, null, null, null, true, 0, null);
     }
 
     public Test(String id, String name, String description, String shortName, String resultType, Sample sample, Department department, double sortOrder) {
-        this(id, name, description, shortName, resultType, sample, department, true, sortOrder);
+        this(id, name, description, shortName, resultType, sample, department, true, sortOrder, null);
+    }
+
+    public Test(String id, String name, String description, String shortName, String resultType, Sample sample, Department department, double sortOrder, TestUnitOfMeasure testUnitOfMeasure) {
+        this(id, name, description, shortName, resultType, sample, department, true, sortOrder, testUnitOfMeasure);
+    }
+
+    public Test(String id, String name, String description, String shortName, String resultType, Sample sample, Department department, boolean isActive, double sortOrder) {
+        this(id, name, description, shortName, resultType, sample, department, isActive, sortOrder,null);
     }
 
     public void suffixTestToName() {
