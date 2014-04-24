@@ -35,7 +35,8 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
             " left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
             " inner join patient_identifier pi on pi.patient_id = p.person_id " +
             " left outer join visit v on v.patient_id = pat.patient_id and v.date_stopped is null ";
-    public static final String BY_ID = "pi.identifier like :" + PATIENT_IDENTIFIER_PARAM;
+
+    public static final String BY_ID = "pi.identifier = :" + PATIENT_IDENTIFIER_PARAM;
     public static final String BY_NAME_PARTS = "concat(coalesce(given_name, ''), coalesce(middle_name, ''), coalesce(family_name, '')) like";
     public static final String BY_VILLAGE = "pa.city_village like :" + VILLAGE_PARAM;
     public static final String ORDER_BY = "order by p.date_created desc LIMIT :" + LIMIT_PARAM + " OFFSET :" + OFFSET_PARAM;
@@ -77,7 +78,7 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
                 .setResultTransformer(Transformers.aliasToBean(PatientResponse.class));
 
         if (isNotEmpty(identifier))
-            sqlQuery.setParameter(PATIENT_IDENTIFIER_PARAM, "%" + identifier + "%");
+            sqlQuery.setParameter(PATIENT_IDENTIFIER_PARAM, identifier);
         if (isNotEmpty(village))
             sqlQuery.setParameter(VILLAGE_PARAM, village + "%");
         sqlQuery.setParameter(LIMIT_PARAM, length);
