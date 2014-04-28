@@ -84,6 +84,10 @@
             <artifactId>lombok</artifactId>
             <version>0.12.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>appframework-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.ict4h</groupId>
