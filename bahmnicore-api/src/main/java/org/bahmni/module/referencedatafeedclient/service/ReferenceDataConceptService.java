@@ -35,8 +35,8 @@ public class ReferenceDataConceptService {
     public Concept saveConcept(ReferenceDataConcept referenceDataConcept) {
         Concept concept = conceptService.getConceptByUuid(referenceDataConcept.getUuid());
         ConceptDatatype conceptDatatype = conceptService.getConceptDatatypeByUuid(referenceDataConcept.getDataTypeUuid());
-        if (conceptDatatype.isNumeric()) {
-            if(shouldStoreUnits(referenceDataConcept, conceptDatatype))
+        if (concept == null) {
+            if(conceptDatatype.isNumeric())
                 concept = new ConceptNumeric();
             else
                 concept = new Concept();

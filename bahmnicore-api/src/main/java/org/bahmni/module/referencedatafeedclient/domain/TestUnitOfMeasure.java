@@ -10,7 +10,11 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TestUnitOfMeasure {
-    String name;
     String id;
+    String name;
     Boolean isActive;
+
+    public TestUnitOfMeasure(String id) {
+        this(id, null, true);
+    }
 }

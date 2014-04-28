@@ -22,7 +22,6 @@
 
     <bean id="orderDao" class="org.bahmni.module.bahmnicore.dao.impl.OrderDaoImpl" />
 
-
     <util:properties id="referenceDataAtomFeedProperties" location="classpath:referenceData-atomfeed.properties"/>
     <bean id="referenceDataFeedProperties" class="org.bahmni.module.referencedatafeedclient.ReferenceDataFeedProperties"/>
     <bean id="referenceDataHttpClient" class="org.bahmni.module.referencedatafeedclient.domain.WebClientFactory" factory-method="createReferenceDataClient">

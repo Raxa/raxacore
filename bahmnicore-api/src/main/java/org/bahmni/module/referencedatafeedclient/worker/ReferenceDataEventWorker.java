@@ -22,6 +22,8 @@ public class ReferenceDataEventWorker implements EventWorker{
     private DrugEventWorker drugEventWorker;
     @Autowired
     private DrugFormEventWorker drugFormEventWorker;
+    @Autowired
+    private TestUnitOfMeasureEventWorker testUnitOfMeasureEventWorker;
 
     @Override
     public void process(Event event) {
@@ -41,6 +43,7 @@ public class ReferenceDataEventWorker implements EventWorker{
             case "panel": return panelEventWorker;
             case "drug" : return drugEventWorker;
             case "drug_form" : return drugFormEventWorker;
+            case "test_unit_of_measure" : return testUnitOfMeasureEventWorker;
             default: return null;
         }
     }

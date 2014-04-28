@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <concept concept_id="100" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="7463d0e4-8254-12e3-baa7-0830200e9a67"/>
+    <concept_name concept_name_id="100" concept_id="100" name="mg" locale="en" creator="1" date_created="2005-01-01 00:00:00.0"  voided="false" uuid="35c9dbba-3d3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="101" retired="false" datatype_id="4" class_id="10" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e060cf44-3d3d-11e3-bf2b-0800271c1b75"/>
+    <concept_name concept_name_id="301" concept_id="101" name="Haematology" locale="en" creator="1" date_created="2005-01-01 00:00:00.0"  voided="false" uuid="67c9daea-3f3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="102" retired="false" datatype_id="4" class_id="8" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="dc8be8c0-2016-60e3-baa7-0800200c9a66"/>
+    <concept_name concept_name_id="302" concept_id="102" name="Blood" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="ef494cc0-f316-11e3-baa7-0800200c9a66" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="105" retired="false" datatype_id="1" class_id="1" is_set="true" creator="1" date_created="2005-01-01 00:00:00.0" uuid="808ac8c0-8716-11e3-bff7-0867200c9a66"/>
+    <concept_name concept_name_id="306" concept_id="105" name="Urine" locale="en" creator="1" date_created="2005-01-01 00:00:00.0"  voided="false" uuid="ae2910c0-8346-13e3-baf7-0800220c9a63" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_numeric concept_id="105" units="mg" precise="false"/>
+</dataset>
+
+        <!--update concept_numeric set units = 'pg/dl' where concept_id in-->
+        <!--(select concept_id from concept where-->
+        <!--datatype_id = (select concept_datatype_id from concept_datatype where name = 'Numeric')-->
+        <!--and class_id = (select concept_class_id from concept_class where name = 'Test')-->
+        <!--) and units = 'pg';-->
+
