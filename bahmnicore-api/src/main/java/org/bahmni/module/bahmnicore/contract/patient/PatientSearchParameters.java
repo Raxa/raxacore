@@ -3,6 +3,8 @@ package org.bahmni.module.bahmnicore.contract.patient;
 import lombok.Data;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 
+import java.util.Map;
+
 @Data
 public class PatientSearchParameters {
     private String identifier;
@@ -11,6 +13,7 @@ public class PatientSearchParameters {
     private Integer start;
     private Integer length;
     private String localName;
+    private String[] patientAttributes;
 
     public PatientSearchParameters(RequestContext context) {
         String query = context.getParameter("q");
@@ -23,5 +26,7 @@ public class PatientSearchParameters {
         this.setLength(context.getLimit());
         this.setLocalName(context.getParameter("local_name"));
         this.setCityVillage(context.getParameter("city_village"));
+        Map parameterMap = context.getRequest().getParameterMap();
+        this.patientAttributes = (String[]) parameterMap.get("patientAttributes");
     }
 }

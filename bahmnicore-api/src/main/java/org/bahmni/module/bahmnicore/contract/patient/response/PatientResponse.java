@@ -21,6 +21,7 @@ public class PatientResponse {
     private String gender;
     private Date dateCreated;
     private String activeVisitUuid;
+    private String localName;
 
     public String getAge() {
         if (birthDate == null)
