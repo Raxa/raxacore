@@ -748,5 +748,17 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
-
+    <changeSet id="bahmni-core-201404281212" author="RT, Neha">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) != 0 FROM concept WHERE datatype_id = 1 AND concept_id NOT IN (SELECT concept_id FROM concept_numeric);
+            </sqlCheck>
+        </preConditions>
+        <comment>add concept numeric feild to all numeric concepts</comment>
+        <sql>
+            INSERT INTO concept_numeric (concept_id) (SELECT concept_id FROM concept WHERE
+            datatype_id  = (SELECT concept_datatype_id FROM concept_datatype WHERE name = 'Numeric')
+            AND concept_id NOT IN (SELECT concept_id FROM concept_numeric));
+        </sql>
+    </changeSet>
 </databaseChangeLog>
