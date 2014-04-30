@@ -761,4 +761,60 @@
             AND concept_id NOT IN (SELECT concept_id FROM concept_numeric));
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201404281819" author="RT, Mujir">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept_class where name = 'Abnormal';
+            </sqlCheck>
+        </preConditions>
+        <comment>add concept class Abnormal</comment>
+        <insert tableName="concept_class">
+            <column name="name" value="Abnormal"/>
+            <column name="description" value="Abnormal class"/>
+            <column name="creator" value="1"/>
+            <column name="date_created" valueComputed="curdate()"/>
+            <column name="retired" value="0"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bahmni-core-201404281820" author="RT, Mujir">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept_class where name = 'Duration';
+            </sqlCheck>
+        </preConditions>
+        <comment>add concept class Duration</comment>
+        <insert tableName="concept_class">
+            <column name="name" value="Duration"/>
+            <column name="description" value="Duration class"/>
+            <column name="creator" value="1"/>
+            <column name="date_created" valueComputed="curdate()"/>
+            <column name="retired" value="0"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bahmni-core-201404281823" author="RT, Mujir">
+        <comment>add concept numeric proc</comment>
+        <sqlFile splitStatements="false" path="V1_80__AddConceptNumericProc.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-core-201404281825" author="RT, Mujir">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept_class where name = 'Concept Details';
+            </sqlCheck>
+        </preConditions>
+        <comment>add concept class Concept Details</comment>
+        <insert tableName="concept_class">
+            <column name="name" value="Concept Details"/>
+            <column name="description" value="Concept Details class"/>
+            <column name="creator" value="1"/>
+            <column name="date_created" valueComputed="curdate()"/>
+            <column name="retired" value="0"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bahmni-core-201404301204" author="RT, Mujir">
+        <comment>delete Concept Proc</comment>
+        <sqlFile splitStatements="false" path="V1_81__DeleteConcept.sql"/>
+    </changeSet>
 </databaseChangeLog>
