@@ -7,15 +7,13 @@ import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniDiagnosis;
 import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniDiagnosisRequest;
 import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniEncounterTransaction;
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterConfigResponse;
+import org.openmrs.*;
+import org.openmrs.api.*;
 import org.openmrs.module.bahmnicore.web.v1_0.InvalidInputException;
 import org.openmrs.module.bahmnicore.web.v1_0.mapper.AccessionNotesMapper;
 import org.openmrs.module.bahmnicore.web.v1_0.mapper.BahmniDiagnosisHelper;
 import org.openmrs.module.bahmnicore.web.v1_0.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.bahmnicore.web.v1_0.mapper.EncounterTransactionDiagnosisMapper;
-import org.openmrs.*;
-import org.openmrs.api.*;
-import org.openmrs.module.bahmnicore.web.v1_0.InvalidInputException;
-import org.openmrs.module.bahmnicore.web.v1_0.mapper.BahmniDiagnosisHelper;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
 import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
 import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
@@ -25,11 +23,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestControlle
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -71,7 +65,9 @@ public class BahmniEncounterController extends BaseRestController {
         EncounterConfigResponse encounterConfigResponse = new EncounterConfigResponse();
         List<VisitType> visitTypes = visitService.getAllVisitTypes();
         for (VisitType visitType : visitTypes) {
-            encounterConfigResponse.addVisitType(visitType.getName(), visitType.getUuid());
+            if (!visitType.isRetired()) {
+                encounterConfigResponse.addVisitType(visitType.getName(), visitType.getUuid());
+            }
         }
         List<EncounterType> allEncounterTypes = encounterService.getAllEncounterTypes(false);
         for (EncounterType encounterType : allEncounterTypes) {
