@@ -2,7 +2,7 @@
 PATH_OF_CURRENT_SCRIPT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $PATH_OF_CURRENT_SCRIPT/../vagrant-deploy/scripts/vagrant/vagrant_functions.sh
 
-$PATH_OF_CURRENT_SCRIPT/$vagrant-deploy.sh
+$PATH_OF_CURRENT_SCRIPT/vagrant-deploy.sh
 
 #invoke migration of openmrs core
 run_in_vagrant -c "sudo su - jss -c 'cd /bahmni_temp/ && ./run-liquibase-openmrs.sh'"
