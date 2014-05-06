@@ -855,7 +855,7 @@
                 delete from concept_numeric where concept_id = conceptId;
                 delete from concept_answer where concept_id = conceptId;
                 delete from concept_answer where answer_concept = conceptId;
-                delete from concept_reference_map where concept_id = concept_id;
+                delete from concept_reference_map where concept_id = conceptId;
                 delete from concept where concept_id = conceptId;
             END;
             ]]>
