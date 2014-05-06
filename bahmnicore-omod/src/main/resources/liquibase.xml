@@ -842,9 +842,9 @@
     </changeSet>
     <changeSet id="bahmni-core-201405061428" author="vinay">
         <comment>Fix delete_concept</comment>
-        <sql>
-            DROP PROCEDURE delete_concept;
-            DELIMITER $$
+        <sql>DROP PROCEDURE IF EXISTS delete_concept;</sql>
+        <sql  splitStatements="false" stripComments="false">
+            <![CDATA[
             CREATE  PROCEDURE delete_concept (name_concept VARCHAR(255))
             BEGIN
             DECLARE conceptId INT default 0;
@@ -858,7 +858,7 @@
                 delete from concept_reference_map where concept_id = concept_id;
                 delete from concept where concept_id = conceptId;
             END;
-            $$
+            ]]>
         </sql>
     </changeSet>
 </databaseChangeLog>
