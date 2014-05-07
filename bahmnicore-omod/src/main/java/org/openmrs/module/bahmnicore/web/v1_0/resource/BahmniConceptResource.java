@@ -15,22 +15,14 @@ import java.util.List;
 @Resource(name = RestConstants.VERSION_1 + "/concept", supportedClass = Concept.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*"}, order = 1)
 public class BahmniConceptResource extends ConceptResource1_9 {
 
-    @RepHandler(value = NamedRepresentation.class, name = "conceptsetconfig")
-    public SimpleObject asConfig(Concept delegate) throws ConversionException {
-        SimpleObject simpleObject = this.asFullChildren(delegate);
-        List<SimpleObject> setMembers = ((List<SimpleObject>) simpleObject.get("setMembers"));
-
-        List<SimpleObject> attributes = new ArrayList<>();
-
-        for (SimpleObject setMember : setMembers) {
-            if (((SimpleObject) setMember.get("conceptClass")).get("name").equals("Concept Attribute")) {
-                attributes.add(setMember);
-            }
-        }
-
-        setMembers.removeAll(attributes);
-        simpleObject.put("attributes", attributes);
-        return simpleObject;
+    public BahmniConceptResource() {
+        allowedMissingProperties.add("hiNormal");
+        allowedMissingProperties.add("hiAbsolute");
+        allowedMissingProperties.add("hiCritical");
+        allowedMissingProperties.add("lowNormal");
+        allowedMissingProperties.add("lowAbsolute");
+        allowedMissingProperties.add("lowCritical");
+        allowedMissingProperties.add("units");
+        allowedMissingProperties.add("precise");
     }
-
 }
