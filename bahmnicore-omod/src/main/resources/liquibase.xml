@@ -861,4 +861,23 @@
             ]]>
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201405071329" author="mujir" context="rel4">
+        <comment>add adt notes data concept set</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            select concept_id INTO @adt_notes_id from concept_name where name='Adt Notes' and locale_preferred = 1;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Adt Notes Data', 'Adt Notes Data', 'N/A', 'Concept Details', true);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Non-Coded', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Adt', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Notes', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Data', 1);
+            set @adt_notes_data_id = @concept_id;
+            call add_concept_set_members(@adt_notes_data_id, @adt_notes_id, 0);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
