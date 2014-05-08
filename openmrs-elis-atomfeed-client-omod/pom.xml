@@ -114,27 +114,6 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>create-zip</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <zip basedir="${project.basedir}/beanshell"
-                                     destfile="${project.build.directory}/${artifactId}-beanshell.zip"/>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.openmrs.maven.plugins</groupId>
                 <artifactId>maven-openmrs-plugin</artifactId>
                 <extensions>true</extensions>
