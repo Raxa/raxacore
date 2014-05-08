@@ -879,5 +879,11 @@
             call add_concept_set_members(@adt_notes_data_id, @adt_notes_id, 0);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201405081436" author="mujir" context="rel4">
+        <comment>remove adt notes data concept set</comment>
+        <sql>
+            call delete_concept('Adt Notes Data');
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
