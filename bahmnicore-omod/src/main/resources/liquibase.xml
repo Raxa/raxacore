@@ -907,4 +907,40 @@
             ]]>
         </sql>
     </changeSet>
+
+    <changeSet id="bahmni-core-201405091936" author="rohan">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="2">
+                SELECT COUNT(*) FROM concept_name where name in ('Admit Patient');
+            </sqlCheck>
+        </preConditions>
+        <comment>Change sort weight for Admit Patients.</comment>
+        <sql>
+            update concept_answer set sort_weight=10 where answer_concept=(select concept_id from concept_name where name='Admit Patient' limit 1);
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201405110939" author="rohan">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="2">
+                SELECT COUNT(*) FROM concept_name where name in ('Discharge Patient');
+            </sqlCheck>
+        </preConditions>
+        <comment>Change sort weight for Discharge Patients.</comment>
+        <sql>
+            update concept_answer set sort_weight=100 where answer_concept=(select concept_id from concept_name where name='Discharge Patient' limit 1);
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201405110940" author="rohan">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="2">
+                SELECT COUNT(*) FROM concept_name where name in ('Transfer Patient');
+            </sqlCheck>
+        </preConditions>
+        <comment>Change sort weight for Transfer Patients.</comment>
+        <sql>
+            update concept_answer set sort_weight=200 where answer_concept=(select concept_id from concept_name where name='Transfer Patient' limit 1);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
