@@ -26,7 +26,7 @@
         <providermanagementModuleVersion>1.1.3</providermanagementModuleVersion>
         <atomfeed.version>1.0-SNAPSHOT</atomfeed.version>
         <reportingModuleVersion>0.9.1-SNAPSHOT</reportingModuleVersion>
-        <calculationModuleVersion>1.0</calculationModuleVersion>
+        <calculationModuleVersion>1.1</calculationModuleVersion>
         <serializationXstreamModuleVersion>0.2.7</serializationXstreamModuleVersion>
     </properties>
 
