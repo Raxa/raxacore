@@ -37,7 +37,7 @@ import java.util.Set;
 
 
 public class OpenElisAccessionEventWorker implements EventWorker {
-    public static final String LAB_VISIT = "LAB_VISIT";
+    public static final String LAB_VISIT = "LAB VISIT";
     public static final String LAB_MANAGER_NOTES = "Lab Manager Notes";
     public static final String LAB_MANAGER_IDENTIFIER = "LABMANAGER";
     public static final String ACCESSION_UUID_CONCEPT = "Accession Uuid";
