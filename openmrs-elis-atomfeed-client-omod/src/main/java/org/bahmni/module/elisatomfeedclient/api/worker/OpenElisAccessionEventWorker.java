@@ -210,7 +210,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 Date testDate = DateTime.parse(testDetail.getDateTime()).toDate();
                 if (resultEncounterForTest != null) {
                     Obs prevObs = identifyResultObs(resultEncounterForTest, testDetail, testOrder);
-                    isResultUpdated = prevObs.getObsDatetime().getTime() <= testDate.getTime();
+                    isResultUpdated = prevObs.getObsDatetime().getTime() < testDate.getTime();
                     if (isResultUpdated) {
                         resultObsHelper.voidObs(prevObs, testDate);
                     }
