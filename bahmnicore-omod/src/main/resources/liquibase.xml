@@ -959,4 +959,12 @@
             update global_property set property_value='1000' where property='webservices.rest.maxResultsAbsolute';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201405211239" author="d3" context="rel4">
+        <comment>Add global property bahmni.cacheHeadersFilter.expiresDuration</comment>
+        <sql>
+            INSERT INTO global_property(`property`, `property_value`, `description`, `uuid`)
+            VALUES ('bahmni.cacheHeadersFilter.expiresDuration', '0', 'Expires duration in minutes', '672dc790-e0b6-11e3-8b68-0800200c9a66')
+            ON DUPLICATE KEY UPDATE property_value = '0';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

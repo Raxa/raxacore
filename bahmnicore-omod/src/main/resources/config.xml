@@ -83,8 +83,21 @@
     <!-- Required Global Properties -->
     <!-- DWR -->
     <!-- Servlets -->
+
     <!-- Filters -->
-	
+    <filter>
+        <filter-name>CacheHeaders</filter-name>
+        <filter-class>org.openmrs.module.bahmnicore.web.filter.CacheHeadersFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>shallowEtagHeaderFilter</filter-name>
+        <url-pattern>/ws/rest/v1/concept</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>CacheHeaders</filter-name>
+        <url-pattern>/ws/rest/v1/concept</url-pattern>
+    </filter-mapping>
+
     <!-- Internationalization -->
     <!-- All message codes should start with moduleId.* -->
     <messages>
