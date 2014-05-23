@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.bahmni.module.bahmnicore.service.OrderService;
+import org.openmrs.DrugOrder;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
@@ -40,5 +41,11 @@ public class OrderServiceImpl implements OrderService {
 
         allOrders.removeAll(completedOrders);
         return allOrders;
+    }
+
+    @Override
+    public List<DrugOrder> getActiveDrugOrders(String patientUuid) {
+        Patient patient = patientService.getPatientByUuid(patientUuid);
+        return orderDao.getActiveDrugOrders(patient);
     }
 }
