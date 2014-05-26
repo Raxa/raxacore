@@ -51,7 +51,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private EncounterType consultationEncounterType = null;
     private String systemUserName = null;
     private VisitType pharmacyVisitType = null;
-    public static final String PHARMACY_VISIT = "PHARMACY_VISIT";
+    public static final String PHARMACY_VISIT = "PHARMACY VISIT";
 
     @Autowired
     public BahmniDrugOrderServiceImpl(VisitService visitService, ConceptService conceptService, OrderService orderService,

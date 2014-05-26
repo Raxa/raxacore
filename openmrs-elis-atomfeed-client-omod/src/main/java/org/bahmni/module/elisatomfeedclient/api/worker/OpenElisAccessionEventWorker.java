@@ -37,7 +37,7 @@ import java.util.Set;
 
 
 public class OpenElisAccessionEventWorker implements EventWorker {
-    public static final String LAB_VISIT = "LAB_VISIT";
+    public static final String LAB_VISIT = "LAB VISIT";
     public static final String LAB_MANAGER_NOTES = "Lab Manager Notes";
     public static final String LAB_MANAGER_IDENTIFIER = "LABMANAGER";
     public static final String ACCESSION_UUID_CONCEPT = "Accession Uuid";
@@ -210,7 +210,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 Date testDate = DateTime.parse(testDetail.getDateTime()).toDate();
                 if (resultEncounterForTest != null) {
                     Obs prevObs = identifyResultObs(resultEncounterForTest, testDetail, testOrder);
-                    isResultUpdated = !isSameDate(prevObs.getObsDatetime(), testDate);
+                    isResultUpdated = prevObs.getObsDatetime().getTime() < testDate.getTime();
                     if (isResultUpdated) {
                         resultObsHelper.voidObs(prevObs, testDate);
                     }

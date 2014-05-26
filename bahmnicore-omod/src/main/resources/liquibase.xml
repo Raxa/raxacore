@@ -953,4 +953,24 @@
             update global_property set property_value='select distinct concat(pn.given_name," ", pn.family_name) as name, pi.identifier as identifier, concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid from encounter e join visit v on e.visit_id = v.visit_id join person_name pn on v.patient_id = pn.person_id and pn.voided = 0 join patient_identifier pi on v.patient_id = pi.patient_id join person p on v.patient_id = p.person_id join encounter_type et on et.encounter_type_id = e.encounter_type where v.date_stopped is null and v.voided=0 and et.name = "ADMISSION"' where property='emrapi.sqlSearch.admittedPatients';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201405161709" author="d3" context="rel4">
+        <comment>Update webservices.rest.maxResultsAbsolute to 1000</comment>
+        <sql>
+            update global_property set property_value='1000' where property='webservices.rest.maxResultsAbsolute';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201405211239" author="d3" context="rel4">
+        <comment>Add global property bahmni.cacheHeadersFilter.expiresDuration</comment>
+        <sql>
+            INSERT INTO global_property(`property`, `property_value`, `description`, `uuid`)
+            VALUES ('bahmni.cacheHeadersFilter.expiresDuration', '0', 'Expires duration in minutes', '672dc790-e0b6-11e3-8b68-0800200c9a66')
+            ON DUPLICATE KEY UPDATE property_value = '0';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201405231142" author="rt" context="rel4">
+        <comment>Update global property emrapi.sqlSearch.admittedPatients</comment>
+        <sql>
+            update global_property set property_value='select distinct concat(pn.given_name,\' \', pn.family_name) as name, pi.identifier as identifier, concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid from encounter e join visit v on e.visit_id = v.visit_id join person_name pn on v.patient_id = pn.person_id and pn.voided = 0 join patient_identifier pi on v.patient_id = pi.patient_id join person p on v.patient_id = p.person_id join encounter_type et on et.encounter_type_id = e.encounter_type where v.date_stopped is null and et.name = \'ADMISSION\' and v.voided=0 and e.patient_id not in (select distinct enc.patient_id from encounter enc join encounter_type ent on enc.encounter_type = ent.encounter_type_id where ent.name = \'DISCHARGE\' and enc.patient_id = v.patient_id and enc.visit_id = v.visit_id)' where property='emrapi.sqlSearch.admittedPatients';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
