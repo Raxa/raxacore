@@ -2,7 +2,7 @@ package org.bahmni.jss.registration;
 
 import org.bahmni.datamigration.AddressService;
 import org.bahmni.datamigration.AllLookupValues;
-import org.bahmni.datamigration.session.AllPatientAttributeTypes;
+import org.bahmni.openmrsconnector.AllPatientAttributeTypes;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;

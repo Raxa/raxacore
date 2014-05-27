@@ -4,10 +4,16 @@ import org.apache.log4j.Logger;
 import org.bahmni.csv.MigrateResult;
 import org.bahmni.csv.MigratorBuilder;
 import org.bahmni.csv.exception.MigrationException;
-import org.bahmni.datamigration.*;
+import org.bahmni.datamigration.AddressService;
+import org.bahmni.datamigration.AllLookupValues;
+import org.bahmni.datamigration.AmbiguousTehsils;
+import org.bahmni.datamigration.CorrectedTehsils;
+import org.bahmni.datamigration.MasterTehsils;
 import org.bahmni.datamigration.csv.Patient;
 import org.bahmni.datamigration.csv.PatientPersister;
-import org.bahmni.datamigration.session.AllPatientAttributeTypes;
+import org.bahmni.openmrsconnector.AllPatientAttributeTypes;
+import org.bahmni.openmrsconnector.OpenMRSRESTConnection;
+import org.bahmni.openmrsconnector.OpenMRSRestService;
 
 import java.io.File;
 import java.io.IOException;
