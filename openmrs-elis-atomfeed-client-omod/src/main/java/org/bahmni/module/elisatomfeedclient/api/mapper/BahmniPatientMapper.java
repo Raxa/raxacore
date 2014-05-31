@@ -35,7 +35,7 @@ public class BahmniPatientMapper {
         bahmniAddress.setCountyDistrict(openElisPatient.getCountyDistrict());
         bahmniAddress.setStateProvince(openElisPatient.getStateProvince());
         bahmniPatient.addAddress(bahmniAddress);
-
+        bahmniPatient.setUuid(openElisPatient.getPatientUUID());
         bahmniPatient.setIdentifier(openElisPatient.getPatientIdentifier());
         bahmniPatient.setCenter(openElisPatient.getHealthCenter());
 

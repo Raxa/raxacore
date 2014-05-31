@@ -33,6 +33,7 @@ public class PatientMapper {
         if (patient == null) {
             patient = new Patient();
             patient.setPersonDateCreated(bahmniPatient.getPersonDateCreated());
+            patient.setUuid(bahmniPatient.getUuid());
         }
         patient.setGender(bahmniPatient.getGender());
         patient = personNameMapper.map(patient, bahmniPatient.getNames());

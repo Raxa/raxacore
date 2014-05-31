@@ -20,6 +20,7 @@ public class OpenElisPatient {
     private String stateProvince;
     private String dateOfBirth;
     private String healthCenter;
+    private String patientUUID;
 
     private List<OpenElisPatientAttribute> attributes;
 
