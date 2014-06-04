@@ -1,10 +1,12 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import liquibase.util.file.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
+import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -86,7 +88,17 @@ public class PatientImageServiceImpl implements PatientImageService {
         byte[] decodedBytes = DatatypeConverter.parseBase64Binary(image);
         BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decodedBytes));
         ImageIO.write(bufferedImage, format, outputFile);
+        createThumbnail(bufferedImage, outputFile);
         bufferedImage.flush();
         log.info(String.format("Successfully created patient image at %s", outputFile));
+    }
+
+    private void createThumbnail(BufferedImage image, File outputFile) throws IOException {
+        String nameWithoutExtension = FilenameUtils.removeExtension(outputFile.getAbsolutePath());
+        String extension = FilenameUtils.getExtension(outputFile.getAbsolutePath());
+        File thumbnailFile = new File(String.format("%s_thumbnail.%s", nameWithoutExtension, extension));
+        BufferedImage reSizedImage = Scalr.resize(image, 100);
+        ImageIO.write(reSizedImage, extension, thumbnailFile);
+        reSizedImage.flush();
     }
 }
