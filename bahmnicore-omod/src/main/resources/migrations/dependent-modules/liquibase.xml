@@ -66,4 +66,38 @@
         </modifySql>
     </changeSet>
 
+    <changeSet id="050620141511" author="tw">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists columnName="user" tableName="idgen_remote_source"/></not>
+        </preConditions>
+        <comment>IDGEN - add column for user in idgen</comment>
+        <sql>
+            ALTER TABLE `idgen_remote_source` ADD COLUMN `user` varchar(50) ;
+        </sql>
+    </changeSet>
+
+    <changeSet id="050620141512" author="tw">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists columnName="password" tableName="idgen_remote_source"/></not>
+        </preConditions>
+        <comment>IDGEN - add column for password in idgen</comment>
+        <sql>
+            ALTER TABLE `idgen_remote_source` ADD COLUMN `user` varchar(50) ;
+            ALTER TABLE `idgen_remote_source` ADD COLUMN `password` varchar(20) ;
+        </sql>
+    </changeSet>
+
+    <changeSet id="050620141513" author="tw">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists columnName="min_length" tableName="idgen_seq_id_gen"/></not>
+            <not><columnExists columnName="max_length" tableName="idgen_seq_id_gen"/></not>
+        </preConditions>
+        <comment>IDGEN - modify seq table to add min length and max length instead of length</comment>
+        <sql>
+            ALTER TABLE `idgen_seq_id_gen` CHANGE COLUMN `length` `min_length` int(11);
+            ALTER TABLE `idgen_seq_id_gen` ADD COLUMN `max_length` int(11);
+            UPDATE `idgen_seq_id_gen` SET `max_length` = `min_length`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
