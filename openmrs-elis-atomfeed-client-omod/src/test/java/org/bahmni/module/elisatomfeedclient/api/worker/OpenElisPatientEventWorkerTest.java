@@ -1,6 +1,5 @@
 package org.bahmni.module.elisatomfeedclient.api.worker;
 
-import bsh.Interpreter;
 import org.bahmni.module.bahmnicore.model.BahmniAddress;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
@@ -17,7 +16,6 @@ import org.openmrs.api.PersonService;
 
 import static junit.framework.Assert.assertEquals;
 import static org.bahmni.webclients.ObjectMapperRepository.objectMapper;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -32,17 +30,14 @@ public class OpenElisPatientEventWorkerTest {
     private HttpClient webClient;
     @Mock
     private ElisAtomFeedProperties elisAtomFeedProperties;
-    @Mock
-    private Interpreter intepreter;
 
     private OpenElisPatientEventWorker openElisPatientEventWorker;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        openElisPatientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, webClient, elisAtomFeedProperties, intepreter);
+        openElisPatientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, webClient, elisAtomFeedProperties);
         when(elisAtomFeedProperties.getOpenElisUri()).thenReturn("http://localhost:8085");
-        when(intepreter.source(anyString())).thenReturn(true);
     }
 
     @Test
