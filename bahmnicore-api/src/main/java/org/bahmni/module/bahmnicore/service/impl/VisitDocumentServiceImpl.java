@@ -67,7 +67,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
             if (document.isVoided()) {
                 voidDocumentObservation(encounter.getAllObs(), document.getObsUuid());
             } else if(document.getObsUuid() == null) {
-                String url = saveDocument(encounter, document);
+                String url = document.getImage();
                 parentObservation.addGroupMember(newObs(document.getObsDateTime(), encounter, imageConcept, url));
             }
         }
@@ -77,14 +77,6 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
     private Obs findOrCreateParentObs(Encounter encounter, Date observationDateTime, Concept testConcept, String obsUuid) {
         Obs observation = findObservation(encounter.getAllObs(), obsUuid);
         return observation != null ? observation : newObs(observationDateTime, encounter, testConcept, null) ;
-    }
-
-    private String saveDocument(Encounter encounter, Document document) {
-        String url = null;
-        if (document != null) {
-            url = patientImageService.saveDocument(encounter.getPatient().getId(), encounter.getEncounterType().getName(), document.getImage(), document.getFormat());
-        }
-        return url;
     }
 
     private void voidDocumentObservation(Set<Obs> allObs, String obsUuid) {
