@@ -66,7 +66,7 @@ public class OpenERPSaleOrderFeedClientImpl  {
             feedProcessor.process(getAtomFeedClient());
         } catch (Exception e) {
             try {
-                if (e != null && ExceptionUtils.getStackTrace(e).contains("HTTP response code: 401")) {
+                if (e != null && isUnauthorised(e)) {
                     initializeAtomFeedClient();
                 } else {
                     logger.error("Could not process Sale order feed", e);
@@ -78,6 +78,10 @@ public class OpenERPSaleOrderFeedClientImpl  {
             }
         }
     }
-
+    
+    private boolean isUnauthorised(Exception e) {
+        return ExceptionUtils.getStackTrace(e).contains("HTTP response code: 401")
+                || ExceptionUtils.getStackTrace(e).contains("HTTP response code: 403");
+    }
 
 }

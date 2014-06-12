@@ -67,7 +67,7 @@ public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements
             getAtomFeedClient().processEvents();
         } catch (Exception e) {
             try {
-                if (e != null && ExceptionUtils.getStackTrace(e).contains("HTTP response code: 401")) {
+                if (e != null && isUnauthorised(e)) {
                     getAtomFeedClient();
                 }
             } catch (Exception ex) {
@@ -75,6 +75,11 @@ public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements
                 throw new RuntimeException(ex);
             }
         }
+    }
+
+    private boolean isUnauthorised(Exception e) {
+        return ExceptionUtils.getStackTrace(e).contains("HTTP response code: 401")
+                || ExceptionUtils.getStackTrace(e).contains("HTTP response code: 403");
     }
 
 }
