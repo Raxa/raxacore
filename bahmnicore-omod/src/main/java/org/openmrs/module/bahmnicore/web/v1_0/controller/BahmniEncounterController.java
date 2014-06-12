@@ -10,10 +10,7 @@ import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterConfigR
 import org.openmrs.*;
 import org.openmrs.api.*;
 import org.openmrs.module.bahmnicore.web.v1_0.InvalidInputException;
-import org.openmrs.module.bahmnicore.web.v1_0.mapper.AccessionNotesMapper;
-import org.openmrs.module.bahmnicore.web.v1_0.mapper.BahmniDiagnosisHelper;
-import org.openmrs.module.bahmnicore.web.v1_0.mapper.BahmniEncounterTransactionMapper;
-import org.openmrs.module.bahmnicore.web.v1_0.mapper.EncounterTransactionDiagnosisMapper;
+import org.openmrs.module.bahmnicore.web.v1_0.mapper.*;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
 import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
 import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
@@ -49,6 +46,8 @@ public class BahmniEncounterController extends BaseRestController {
     private EncounterTransactionMapper encounterTransactionMapper;
     @Autowired
     private AccessionNotesMapper accessionNotesMapper;
+    @Autowired
+    private BahmniObservationMapper bahmniObservationMapper;
 
     public BahmniEncounterController(VisitService visitService, ConceptService conceptService, EncounterService encounterService) {
         this.visitService = visitService;
@@ -95,7 +94,7 @@ public class BahmniEncounterController extends BaseRestController {
                                                  @RequestParam(value = "encounterDate", required = false) String encounterDate) {
         List<BahmniEncounterTransaction> bahmniEncounterTransactions = new ArrayList<>();
 
-        BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper = new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper);
+        BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper = new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper, bahmniObservationMapper);
 
         for (String visitUuid : visitUuids ) {
             EncounterSearchParameters encounterSearchParameters = new EncounterSearchParameters();
@@ -162,7 +161,7 @@ public class BahmniEncounterController extends BaseRestController {
                 encounterService.saveEncounter(encounterForDiagnosis);
             }
         }
-        return new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper).map(updatedEncounterTransaction);
+        return new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper, bahmniObservationMapper).map(updatedEncounterTransaction);
     }
 
     private EncounterTransaction.Diagnosis getMatchingEncounterTransactionDiagnosis(BahmniDiagnosis bahmniDiagnosis, List<EncounterTransaction.Diagnosis> encounterTransactionDiagnoses) {
@@ -177,6 +176,6 @@ public class BahmniEncounterController extends BaseRestController {
     public BahmniEncounterTransaction get(String encounterUuid) {
         Encounter encounter = encounterService.getEncounterByUuid(encounterUuid);
         EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, true);
-        return new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper).map(encounterTransaction);
+        return new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper, bahmniObservationMapper).map(encounterTransaction);
     }
 }

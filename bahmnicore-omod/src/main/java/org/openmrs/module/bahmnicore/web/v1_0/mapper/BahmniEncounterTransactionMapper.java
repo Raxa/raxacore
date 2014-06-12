@@ -8,15 +8,16 @@ import org.openmrs.api.ObsService;
 import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class BahmniEncounterTransactionMapper {
+    private BahmniObservationMapper bahmniObservationMapper;
     private ObsService obsService;
     private EncounterTransactionMapper encounterTransactionMapper;
     private AccessionNotesMapper validationNotesMapper;
 
-    public BahmniEncounterTransactionMapper(ObsService obsService, EncounterTransactionMapper encounterTransactionMapper, AccessionNotesMapper validationNotesMapper) {
+    public BahmniEncounterTransactionMapper(ObsService obsService, EncounterTransactionMapper encounterTransactionMapper, AccessionNotesMapper validationNotesMapper, BahmniObservationMapper bahmniObservationMapper) {
+        this.bahmniObservationMapper = bahmniObservationMapper;
         this.obsService = obsService;
         this.encounterTransactionMapper = encounterTransactionMapper;
         this.validationNotesMapper = validationNotesMapper;
@@ -30,13 +31,14 @@ public class BahmniEncounterTransactionMapper {
         }
         bahmniEncounterTransaction.setBahmniDiagnoses(bahmniDiagnoses);
         bahmniEncounterTransaction.setAccessionNotes(validationNotesMapper.map(encounterTransaction));
+        bahmniEncounterTransaction.setObservations(bahmniObservationMapper.map(encounterTransaction));
         return bahmniEncounterTransaction;
     }
 
     public BahmniDiagnosisRequest mapBahmniDiagnosis(EncounterTransaction.Diagnosis diagnosis) {
         return mapBahmniDiagnosis(diagnosis, true);
     }
-    
+
     private BahmniDiagnosisRequest mapBahmniDiagnosis(EncounterTransaction.Diagnosis diagnosis, boolean mapFirstDiagnosis) {
         BahmniDiagnosisRequest bahmniDiagnosis = mapBasicDiagnosis(diagnosis);
         bahmniDiagnosis.setExistingObs(diagnosis.getExistingObs());
