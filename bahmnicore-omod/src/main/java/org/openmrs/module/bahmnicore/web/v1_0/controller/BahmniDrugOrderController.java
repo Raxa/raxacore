@@ -2,7 +2,7 @@ package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
 
 import org.apache.log4j.Logger;
-import org.bahmni.module.bahmnicore.service.OrderService;
+import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.openmrs.DrugOrder;
@@ -15,35 +15,52 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
 
 @Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/orders")
-public class BahmniOrderController {
+public class BahmniDrugOrderController {
 
+    private final String baseUrl = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/drugOrders";
     @Autowired
-    private OrderService orderService;
-    private static Logger logger = Logger.getLogger(BahmniOrderController.class);
+    private BahmniDrugOrderService drugOrderService;
+    private static Logger logger = Logger.getLogger(BahmniDrugOrderController.class);
 
 
-    public BahmniOrderController(OrderService orderService) {
-        this.orderService = orderService;
+    public BahmniDrugOrderController(BahmniDrugOrderService drugOrderService) {
+        this.drugOrderService = drugOrderService;
     }
 
-    public BahmniOrderController() {
+    public BahmniDrugOrderController() {
     }
 
     //TODO: Active orders are available in OMRS 1.10.x. Consider moving once we upgrade OpenMRS.
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = baseUrl + "/active", method = RequestMethod.GET)
     @ResponseBody
     public List<Map> getActiveDrugOrders(@RequestParam(value = "patientUuid") String patientUuid){
         logger.info("Retrieving active drug orders for patient with uuid " + patientUuid);
-        List<DrugOrder> activeDrugOrders = orderService.getActiveDrugOrders(patientUuid);
+        List<DrugOrder> activeDrugOrders = drugOrderService.getActiveDrugOrders(patientUuid);
         logger.info(activeDrugOrders.size() + " active drug orders found");
 
         return mapToResponse(activeDrugOrders);
     }
+
+
+    @RequestMapping(value = baseUrl + "/past", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Map> getPrescribedDrugOrders(@RequestParam(value = "patientUuid") String patientUuid, @RequestParam(value = "numberOfVisits") Integer numberOfVisits){
+        logger.info("Retrieving active drug orders for patient with uuid " + patientUuid);
+        List<DrugOrder> activeDrugOrders = drugOrderService.getPrescribedDrugOrders(patientUuid, numberOfVisits);
+        logger.info(activeDrugOrders.size() + " active drug orders found");
+
+        return mapToResponse(activeDrugOrders);
+    }
+
 
     private ArrayList<Map> mapToResponse(List<DrugOrder> activeDrugOrders) {
         ArrayList<Map> response = new ArrayList<>();
@@ -59,6 +76,7 @@ public class BahmniOrderController {
                 DateTime startDate = new DateTime(drugOrder.getStartDate());
                 responseHashMap.put("days", Days.daysBetween(startDate, autoExpireDate).getDays());
             }
+            responseHashMap.put("expireDate", serializeDate(drugOrder.getAutoExpireDate()));
             responseHashMap.put("name", drugOrder.getDrug().getName());
             response.add(responseHashMap);
         }

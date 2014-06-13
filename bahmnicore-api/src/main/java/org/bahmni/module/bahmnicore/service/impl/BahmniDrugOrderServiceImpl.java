@@ -2,10 +2,10 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
+import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.util.VisitIdentificationHelper;
-import org.joda.time.DateTime;
 import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
@@ -22,14 +22,13 @@ import org.openmrs.VisitType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.UserService;
 import org.openmrs.api.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -45,6 +44,8 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private ProviderService providerService;
     private UserService userService;
     private BahmniPatientDao bahmniPatientDao;
+    private PatientService openmrsPatientService;
+    private OrderDao orderDao;
     private OrderType drugOrderType = null;
     private Provider systemProvider = null;
     private EncounterRole unknownEncounterRole = null;
@@ -56,7 +57,8 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     @Autowired
     public BahmniDrugOrderServiceImpl(VisitService visitService, ConceptService conceptService, OrderService orderService,
                                       ProviderService providerService, EncounterService encounterService,
-                                      UserService userService, BahmniPatientDao bahmniPatientDao) {
+                                      UserService userService, BahmniPatientDao bahmniPatientDao,
+                                      PatientService patientService, OrderDao orderDao) {
         this.visitService = visitService;
         this.conceptService = conceptService;
         this.orderService = orderService;
@@ -64,6 +66,8 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         this.encounterService = encounterService;
         this.userService = userService;
         this.bahmniPatientDao = bahmniPatientDao;
+        this.openmrsPatientService = patientService;
+        this.orderDao = orderDao;
     }
 
     @Override
@@ -72,6 +76,18 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         Patient patient = bahmniPatientDao.getPatient(patientId);
         Visit visitForDrugOrders = new VisitIdentificationHelper(visitService).getVisitFor(patient, orderDate, PHARMACY_VISIT);
         addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visitForDrugOrders);
+    }
+
+    @Override
+    public List<DrugOrder> getActiveDrugOrders(String patientUuid) {
+        Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
+        return orderDao.getActiveDrugOrders(patient);
+    }
+
+    @Override
+    public List<DrugOrder> getPrescribedDrugOrders(String patientUuid, Integer numberOfVisits) {
+        Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
+        return orderDao.getPrescribedDrugOrders(patient, numberOfVisits);
     }
 
     private void addDrugOrdersToVisit(Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {

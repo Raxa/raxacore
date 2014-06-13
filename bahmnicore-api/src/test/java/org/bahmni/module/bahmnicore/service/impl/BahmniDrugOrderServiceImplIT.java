@@ -2,9 +2,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
-import org.joda.time.DateTime;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;

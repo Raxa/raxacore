@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItemInArray;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.assertThat;
@@ -31,10 +30,26 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
 
         List<DrugOrder> activeOrders = orderDao.getActiveDrugOrders(patient);
 
-        assertThat(activeOrders.size(), is(equalTo(2)));
+        assertThat(activeOrders.size(), is(equalTo(3)));
         List<String> instructions = getInstructions(activeOrders);
         assertThat(instructions, hasItem("non-expiring"));
+        assertThat(instructions, hasItem("another-non-expiring"));
         assertThat(instructions, hasItem("expire-date in future"));
+    }
+
+    @Test
+    public void shouldFetchAllPrescribedDrugOrdersInPastVisits() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Patient patient = Context.getPatientService().getPatient(1);
+
+        List<DrugOrder> drugOrdersInLastVisit = orderDao.getPrescribedDrugOrders(patient, 1);
+        assertThat(drugOrdersInLastVisit.size(), is(equalTo(2)));
+
+        List<DrugOrder> drugOrdersInLastTwoVisit = orderDao.getPrescribedDrugOrders(patient, 2);
+        assertThat(drugOrdersInLastTwoVisit.size(), is(equalTo(4)));
+
+        List<DrugOrder> drugOrders = orderDao.getPrescribedDrugOrders(patient, null);
+        assertThat(drugOrders.size(), is(equalTo(4)));
     }
 
     private List<String> getInstructions(List<DrugOrder> activeOrders) {
