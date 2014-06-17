@@ -55,8 +55,9 @@ public class OrderDaoImpl implements OrderDao {
     public List<DrugOrder> getPrescribedDrugOrders(Patient patient, Integer numberOfVisits) {
         Session currentSession = sessionFactory.getCurrentSession();
         Query queryVisitsWithDrugOrders = currentSession.createQuery("select v.visitId from DrugOrder d, Encounter e, Visit v where d.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
-                "and d.voided = false group by v.visitId order by v.startDatetime desc");
+                "and d.voided = false and v.stopDatetime is not null and v.stopDatetime < :now group by v.visitId order by v.startDatetime desc");
         queryVisitsWithDrugOrders.setParameter("patientId", patient);
+        queryVisitsWithDrugOrders.setParameter("now", new Date());
         if(numberOfVisits != null ) {
             queryVisitsWithDrugOrders.setMaxResults(numberOfVisits);
         }
