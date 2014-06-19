@@ -51,14 +51,13 @@ public class BahmniDrugOrderController {
     }
 
 
-    @RequestMapping(value = baseUrl + "/past", method = RequestMethod.GET)
+    @RequestMapping(value = baseUrl, method = RequestMethod.GET)
     @ResponseBody
-    public List<Map> getPrescribedDrugOrders(@RequestParam(value = "patientUuid") String patientUuid, @RequestParam(value = "numberOfVisits") Integer numberOfVisits){
-        logger.info("Retrieving active drug orders for patient with uuid " + patientUuid);
-        List<DrugOrder> activeDrugOrders = drugOrderService.getPrescribedDrugOrders(patientUuid, numberOfVisits);
-        logger.info(activeDrugOrders.size() + " active drug orders found");
-
-        return mapToResponse(activeDrugOrders);
+    public List<Map> getPrescribedDrugOrders(@RequestParam(value = "patientUuid") String patientUuid,
+                                             @RequestParam(value = "includeActiveVisit", required = false) Boolean includeActiveVisit,
+                                             @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits){
+        List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrders(patientUuid, includeActiveVisit, numberOfVisits);
+        return mapToResponse(drugOrders);
     }
 
 

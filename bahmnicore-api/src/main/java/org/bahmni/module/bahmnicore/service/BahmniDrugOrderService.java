@@ -9,6 +9,6 @@ import java.util.List;
 public interface BahmniDrugOrderService {
     void add(String patientId, Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, String systemUserName);
     List<DrugOrder> getActiveDrugOrders(String patientUuid);
-    List<DrugOrder> getPrescribedDrugOrders(String patientUuid, Integer numberOfVisit);
+    List<DrugOrder> getPrescribedDrugOrders(String patientUuid, Boolean includeActiveVisit, Integer numberOfVisit);
 
 }

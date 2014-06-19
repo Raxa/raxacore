@@ -85,9 +85,9 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     @Override
-    public List<DrugOrder> getPrescribedDrugOrders(String patientUuid, Integer numberOfVisits) {
+    public List<DrugOrder> getPrescribedDrugOrders(String patientUuid, Boolean includeActiveVisit, Integer numberOfVisits) {
         Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
-        return orderDao.getPrescribedDrugOrders(patient, numberOfVisits);
+        return orderDao.getPrescribedDrugOrders(patient, includeActiveVisit, numberOfVisits);
     }
 
     private void addDrugOrdersToVisit(Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {

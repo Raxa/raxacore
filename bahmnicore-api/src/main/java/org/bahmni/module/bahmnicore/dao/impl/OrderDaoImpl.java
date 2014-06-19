@@ -52,22 +52,30 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<DrugOrder> getPrescribedDrugOrders(Patient patient, Integer numberOfVisits) {
+    public List<DrugOrder> getPrescribedDrugOrders(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits) {
         Session currentSession = sessionFactory.getCurrentSession();
-        Query queryVisitsWithDrugOrders = currentSession.createQuery("select v.visitId from DrugOrder d, Encounter e, Visit v where d.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
-                "and d.voided = false and v.stopDatetime is not null and v.stopDatetime < :now group by v.visitId order by v.startDatetime desc");
-        queryVisitsWithDrugOrders.setParameter("patientId", patient);
-        queryVisitsWithDrugOrders.setParameter("now", new Date());
-        if(numberOfVisits != null ) {
-            queryVisitsWithDrugOrders.setMaxResults(numberOfVisits);
-        }
-        List<Integer> visitWithDrugOrderIds = (List<Integer>) queryVisitsWithDrugOrders.list();
+        List<Integer> visitWithDrugOrderIds = getVisitsWithDrugOrders(patient, includeActiveVisit, numberOfVisits);
         if(!visitWithDrugOrderIds.isEmpty()) {
             Query query = currentSession.createQuery("select d from DrugOrder d, Encounter e, Visit v where d.encounter = e.encounterId and e.visit = v.visitId and v.visitId in (:visitIds) " +
-                    "and d.voided = false order by e.encounterDatetime desc");
+                    "and d.voided = false order by d.startDate desc");
             query.setParameterList("visitIds", visitWithDrugOrderIds);
             return (List<DrugOrder>) query.list();
         }
         return new ArrayList<>();
+    }
+
+    private List<Integer> getVisitsWithDrugOrders(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits) {
+        Session currentSession = sessionFactory.getCurrentSession();
+        String includevisit = includeActiveVisit == null || includeActiveVisit == false ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
+        Query queryVisitsWithDrugOrders = currentSession.createQuery("select v.visitId from DrugOrder d, Encounter e, Visit v where d.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
+                "and d.voided = false " +  includevisit + " group by v.visitId order by v.startDatetime desc");
+        queryVisitsWithDrugOrders.setParameter("patientId", patient);
+        if(includeActiveVisit == null || includeActiveVisit == false) {
+            queryVisitsWithDrugOrders.setParameter("now", new Date());
+        }
+        if(numberOfVisits != null ) {
+            queryVisitsWithDrugOrders.setMaxResults(numberOfVisits);
+        }
+        return (List<Integer>) queryVisitsWithDrugOrders.list();
     }
 }

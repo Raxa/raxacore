@@ -30,11 +30,12 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
 
         List<DrugOrder> activeOrders = orderDao.getActiveDrugOrders(patient);
 
-        assertThat(activeOrders.size(), is(equalTo(3)));
+        assertThat(activeOrders.size(), is(equalTo(4)));
         List<String> instructions = getInstructions(activeOrders);
         assertThat(instructions, hasItem("non-expiring"));
         assertThat(instructions, hasItem("another-non-expiring"));
         assertThat(instructions, hasItem("expire-date in future"));
+        assertThat(instructions, hasItem("drug in active visit"));
     }
 
     @Test
@@ -42,13 +43,25 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1);
 
-        List<DrugOrder> drugOrdersInLastVisit = orderDao.getPrescribedDrugOrders(patient, 1);
+        List<DrugOrder> drugOrdersInLastVisit = orderDao.getPrescribedDrugOrders(patient, false, 1);
         assertThat(drugOrdersInLastVisit.size(), is(equalTo(2)));
 
-        List<DrugOrder> drugOrdersInLastTwoVisit = orderDao.getPrescribedDrugOrders(patient, 2);
+        List<DrugOrder> drugOrdersInLastTwoVisit = orderDao.getPrescribedDrugOrders(patient, false, 2);
         assertThat(drugOrdersInLastTwoVisit.size(), is(equalTo(4)));
 
-        List<DrugOrder> drugOrders = orderDao.getPrescribedDrugOrders(patient, null);
+        List<DrugOrder> drugOrders = orderDao.getPrescribedDrugOrders(patient, false, null);
+        assertThat(drugOrders.size(), is(equalTo(4)));
+    }
+
+    @Test
+    public void shouldFetchAllPrescribedDrugOrdersIncludingActiveVisit() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Patient patient = Context.getPatientService().getPatient(1);
+
+        List<DrugOrder> drugOrders = orderDao.getPrescribedDrugOrders(patient, true, null);
+        assertThat(drugOrders.size(), is(equalTo(5)));
+
+        drugOrders = orderDao.getPrescribedDrugOrders(patient, null, null);
         assertThat(drugOrders.size(), is(equalTo(4)));
     }
 
