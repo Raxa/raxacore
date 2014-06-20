@@ -181,15 +181,9 @@
             <version>${openMRSWebServicesVersion}</version>
         </dependency>
         <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>webservices.rest-omod-common</artifactId>
-            <version>${openMRSWebServicesVersion}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>bahmnicore-api</artifactId>
-            <version>${version}</version>
+            <version>${project.version}</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
