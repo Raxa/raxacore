@@ -185,7 +185,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
     private OrderType getDrugOrderType() {
         if (drugOrderType == null) {
-            List<OrderType> allOrderTypes = orderService.getAllOrderTypes();
+            List<OrderType> allOrderTypes = orderService.getOrderTypes(true);
             for (OrderType type : allOrderTypes) {
                 if (type.getName().toLowerCase().equals("drug order")) {
                     drugOrderType = type;

@@ -80,7 +80,7 @@ public class BahmniEncounterController extends BaseRestController {
                 encounterConfigResponse.addConcept(concept.getName().getName(), conceptData);
             }
         }
-        List<OrderType> orderTypes = orderService.getAllOrderTypes();
+        List<OrderType> orderTypes = orderService.getOrderTypes(true);
         for (OrderType orderType : orderTypes) {
             encounterConfigResponse.addOrderType(orderType.getName(), orderType.getUuid());
         }

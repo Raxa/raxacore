@@ -37,7 +37,7 @@ public class OrdersHelper {
     }
 
     private OrderType getOrderTypeByName(String orderTypeName) {
-        List<OrderType> allOrderTypes = orderService.getAllOrderTypes();
+        List<OrderType> allOrderTypes = orderService.getOrderTypes(true);
         for (OrderType orderType : allOrderTypes) {
             if (orderType.getName().equals(orderTypeName)) {
                 return orderType;

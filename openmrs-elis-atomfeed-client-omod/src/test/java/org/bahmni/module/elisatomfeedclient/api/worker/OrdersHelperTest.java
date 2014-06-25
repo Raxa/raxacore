@@ -49,13 +49,13 @@ public class OrdersHelperTest {
         PowerMockito.mockStatic(Context.class);
         when(Context.getAdministrationService()).thenReturn(administrationService);
         when(Context.getLocale()).thenReturn(Locale.UK);
-        when(orderService.getAllOrderTypes()).thenReturn(createOrderTypes());
+        when(orderService.getOrderTypes(true)).thenReturn(createOrderTypes());
         orderHelper = new OrdersHelper(orderService, conceptService, encounterService);
 
     }
 
     private List<OrderType> createOrderTypes() {
-        return Arrays.asList(new OrderType("Lab Order", "Good Order"));
+        return Arrays.asList(new OrderType("Lab Order", "Good Order", "org.openmrs.TestOrder"));
     }
 
     public void setConceptMock(String conceptName){

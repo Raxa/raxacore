@@ -122,7 +122,7 @@ public class AccessionHelper {
 
     private OrderType getLabOrderType() {
         if(labOrderType == null){
-            List<OrderType> orderTypes = orderService.getAllOrderTypes();
+            List<OrderType> orderTypes = orderService.getOrderTypes(true);
             for (OrderType orderType : orderTypes) {
                 if (orderType.getName().equals(properties.getOrderTypeLabOrderName())){
                     labOrderType = orderType;
