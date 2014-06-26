@@ -331,6 +331,7 @@
             </releases>
             <snapshots>
                 <enabled>true</enabled>
+                <updatePolicy>interval:10080</updatePolicy>
             </snapshots>
         </repository>
         <repository>
@@ -339,17 +340,24 @@
             <name>Repository for dependencies</name>
             <snapshots>
                 <enabled>true</enabled>
+                <updatePolicy>interval:10080</updatePolicy>
             </snapshots>
         </repository>
         <repository>
             <id>spring-maven-release</id>
             <name>Spring Maven Release Repository</name>
             <url>http://maven.springframework.org/release</url>
+            <releases>
+                <updatePolicy>interval:10080</updatePolicy>
+            </releases>
         </repository>
         <repository>
             <id>apache-maven-release</id>
             <name>Apache Maven Release Repository</name>
             <url>https://repository.apache.org/content/repositories/releases</url>
+            <releases>
+                <updatePolicy>interval:10080</updatePolicy>
+            </releases>
         </repository>
         <repository>
             <id>JBoss</id>
@@ -357,27 +365,36 @@
             </name>
             <layout>default</layout>
             <url>http://repository.jboss.org/nexus/content/groups/public-jboss</url>
+            <releases>
+                <updatePolicy>interval:10080</updatePolicy>
+            </releases>
         </repository>
         <repository>
             <id>spring-repo</id>
             <name>Spring Maven Repository</name>
             <url>http://maven.springframework.org/milestone</url>
             <releases>
-                <updatePolicy>daily</updatePolicy>
+                <updatePolicy>interval:10080</updatePolicy>
             </releases>
             <snapshots>
-                <updatePolicy>daily</updatePolicy>
+                <updatePolicy>interval:10080</updatePolicy>
             </snapshots>
         </repository>
         <repository>
             <id>openmrs-repo</id>
             <name>OpenMRS Nexus Repository</name>
             <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+            <releases>
+                <updatePolicy>interval:10080</updatePolicy>
+            </releases>
         </repository>
         <repository>
             <id>bahmni-artifactory</id>
             <name>bahmni-artifactory-snapshots</name>
             <url>http://bahmnirepo.thoughtworks.com/artifactory/libs-snapshot-local</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
         </repository>
     </repositories>
     <pluginRepositories>
