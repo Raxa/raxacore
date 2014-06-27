@@ -16,7 +16,6 @@ package org.bahmni.module.bahmnicore.mapper.builder;
 import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
 
-import java.util.Date;
 import java.util.UUID;
 
 public class DrugOrderBuilder {
@@ -25,9 +24,8 @@ public class DrugOrderBuilder {
     public DrugOrderBuilder() {
         this.order = new DrugOrder();
         this.order.setUuid(UUID.randomUUID().toString());
-        this.order.setDateCreated(new Date());
+        this.order.setDateCreated(null);
         this.order.setDrug(new Drug(123));
-        this.order.setDateCreated(new Date());
     }
 
     public DrugOrderBuilder withUuid(UUID uuid) {
