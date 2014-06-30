@@ -115,6 +115,8 @@ public class AccessionHelper {
             order.setCreator(labUser);
             order.setPatient(patient);
             order.setOrderType(orderType);
+            order.setOrderer(getLabSystemProvider());
+            order.setStartDate(openElisAccession.fetchDate());
             orders.add(order);
         }
         return orders;

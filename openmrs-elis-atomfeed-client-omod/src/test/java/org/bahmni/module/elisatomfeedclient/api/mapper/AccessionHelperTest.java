@@ -146,6 +146,8 @@ public class AccessionHelperTest {
         orders.add(panel);
         orders.add(test);
         previousEncounter.setOrders(orders);
+        when(userService.getUserByUsername(anyString())).thenReturn(new User());
+        when(providerService.getProvidersByPerson(any(Person.class))).thenReturn(Arrays.asList(new Provider()));
 
         AccessionDiff diff = new AccessionDiff();
         diff.addAddedTestDetail(new OpenElisTestDetailBuilder().withTestUuid("test2").build());
