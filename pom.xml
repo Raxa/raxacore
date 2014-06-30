@@ -385,7 +385,7 @@
             <name>OpenMRS Nexus Repository</name>
             <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
             <releases>
-                <updatePolicy>interval:10080</updatePolicy>
+                <updatePolicy>always</updatePolicy>
             </releases>
         </repository>
         <repository>
