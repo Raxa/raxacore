@@ -1,6 +1,7 @@
 package org.openmrs.module.bahmnicore.web.v1_0.resource;
 
 import org.openmrs.Concept;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.RepHandler;
@@ -24,5 +25,15 @@ public class BahmniConceptResource extends ConceptResource1_9 {
         allowedMissingProperties.add("lowCritical");
         allowedMissingProperties.add("units");
         allowedMissingProperties.add("precise");
+    }
+
+    @Override
+    public Concept getByUniqueId(String uuidOrName) {
+        Concept byUniqueId = super.getByUniqueId(uuidOrName);
+        if (byUniqueId != null) {
+            return byUniqueId;
+        }
+
+        return Context.getConceptService().getConceptByName(uuidOrName);
     }
 }
