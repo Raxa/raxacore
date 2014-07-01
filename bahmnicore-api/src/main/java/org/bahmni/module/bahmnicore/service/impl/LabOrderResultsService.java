@@ -62,7 +62,9 @@ public class LabOrderResultsService {
             if(obsGroup != null) {
                 labOrderResults.addAll(mapObs(obsGroup, encounterTestOrderMap));
             } else {
-                labOrderResults.add(new LabOrderResult());
+                EncounterTransaction.Concept orderConcept = testOrder.getConcept();
+                Encounter orderEncounter = encounterTestOrderMap.get(testOrder.getUuid());
+                labOrderResults.add(new LabOrderResult(orderEncounter.getUuid(), orderEncounter.getEncounterDatetime(), orderConcept.getName(), orderConcept.getUnits(), null, null, null, null));
             }
         }
         return new LabOrderResults(labOrderResults);

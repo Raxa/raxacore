@@ -24,7 +24,8 @@ public class LabOrderResult {
     public LabOrderResult() {
     }
 
-    public LabOrderResult(String testName, String testUnitOfMeasurement, Double minNormal, Double maxNormal, Date accessionDateTime, String result, Boolean abnormal) {
+    public LabOrderResult(String accessionUuid, Date accessionDateTime, String testName, String testUnitOfMeasurement, Double minNormal, Double maxNormal, String result, Boolean abnormal) {
+        this.accessionUuid = accessionUuid;
         this.testName = testName;
         this.testUnitOfMeasurement = testUnitOfMeasurement;
         this.minNormal = minNormal;

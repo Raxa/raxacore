@@ -35,12 +35,14 @@ public class LabOrderResults {
                 orderMap.put(result.getTestName(), new TabularLabOrderResults.TestOrderLabel(testOrderLabelCounter++, result.getTestName(), result.getMinNormal(), result.getMaxNormal(), result.getTestUnitOfMeasurement()));
             }
 
-            TabularLabOrderResults.CoordinateValue coordinateValue = new TabularLabOrderResults.CoordinateValue();
-            coordinateValue.setDateIndex(dateMap.get(orderDate).getIndex());
-            coordinateValue.setTestOrderIndex(orderMap.get(result.getTestName()).getIndex());
-            coordinateValue.setResult(result.getResult());
-            coordinateValue.setAbnormal(result.getAbnormal());
-            coordinateValues.add(coordinateValue);
+            if(result.getResult() != null) {
+                TabularLabOrderResults.CoordinateValue coordinateValue = new TabularLabOrderResults.CoordinateValue();
+                coordinateValue.setDateIndex(dateMap.get(orderDate).getIndex());
+                coordinateValue.setTestOrderIndex(orderMap.get(result.getTestName()).getIndex());
+                coordinateValue.setResult(result.getResult());
+                coordinateValue.setAbnormal(result.getAbnormal());
+                coordinateValues.add(coordinateValue);
+            }
         }
 
         return new TabularLabOrderResults(new ArrayList<>(dateMap.values()), new ArrayList<>(orderMap.values()), coordinateValues);
