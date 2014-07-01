@@ -23,6 +23,7 @@ import org.openmrs.module.emrapi.encounter.exception.EncounterMatcherNotFoundExc
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 import org.openmrs.module.emrapi.encounter.matcher.DefaultEncounterMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -38,16 +39,17 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
     private VisitService visitService;
     private ConceptService conceptService;
     private EncounterService encounterService;
-
+	private AdministrationService administrationService;
 	private Map<String, BaseEncounterMatcher> encounterMatcherMap ;
 
 	@Autowired
-    public VisitDocumentServiceImpl(PatientImageService patientImageService, VisitService visitService, ConceptService conceptService, EncounterService encounterService) {
+	public VisitDocumentServiceImpl(PatientImageService patientImageService, VisitService visitService, ConceptService conceptService, EncounterService encounterService,@Qualifier("adminService")AdministrationService administrationService) {
         this.patientImageService = patientImageService;
         this.visitService = visitService;
         this.conceptService = conceptService;
         this.encounterService = encounterService;
-    }
+		this.administrationService = administrationService;
+	}
 
     @Override
     public Visit upload(VisitDocumentRequest visitDocumentRequest) {
@@ -149,7 +151,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
 
 	private Encounter findEncounter(Visit visit, EncounterParameters encounterParameters) {
 
-		AdministrationService administrationService = Context.getAdministrationService();
+//		AdministrationService administrationService = Context.getAdministrationService();
 		String matcherClass = administrationService.getGlobalProperty("emr.encounterMatcher");
 		BaseEncounterMatcher encounterMatcher = isNotEmpty(matcherClass)? getEncounterMatcherMap().get(matcherClass) : new DefaultEncounterMatcher();
 		if (encounterMatcher == null) {
