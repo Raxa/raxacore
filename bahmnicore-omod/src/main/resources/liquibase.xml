@@ -985,4 +985,31 @@
 			  update global_property set property_value='select distinct concat(pn.given_name," ",pn.family_name) as name, pi.identifier as identifier, concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid from visit v inner join person_name pn on v.patient_id = pn.person_id and pn.voided = 0 inner join patient_identifier pi on v.patient_id = pi.patient_id inner join person p on v.patient_id = p.person_id inner join encounter e on v.visit_id = e.visit_id inner join obs o on e.encounter_id = o.encounter_id inner join concept c on o.value_coded = c.concept_id inner join concept_name cn on c.concept_id = cn.concept_id left outer join encounter e1 on e1.visit_id = v.visit_id and e1.encounter_type = (select encounter_type_id from encounter_type where name = "DISCHARGE") where v.date_stopped is null and v.voided=0 and o.voided=0 and cn.name = "Discharge Patient" and e1.encounter_id is null' where property='emrapi.sqlSearch.patientsToDischarge';
 			</sql>
 		</changeSet>
+    <changeSet id="bahmni-core-201407011714" author="tw" runAlways="true">
+        <comment>Meant to run always till OpenMRS 1.10 is being used by everyone</comment>
+        <sql>
+            update orders o, encounter e, order_type ot
+            set o.start_date = e.encounter_datetime
+            where o.encounter_id = e.encounter_id and
+                o.start_date is null and
+                ot.order_type_id=o.order_type_id and
+                ot.name='Lab Order';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201407011715" author="tw">
+        <comment>Meant to run always till OpenMRS 1.10 is being used by everyone</comment>
+        <sql>
+            update orders o, encounter_provider ep, users u, provider p
+            set o.orderer = u.user_id
+            where o.encounter_id = ep.encounter_id and
+            ep.provider_id = p.provider_id and
+            p.person_id = u.person_id ;
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201407011716" author="tw">
+        <comment>Add person name for lab and billing system users</comment>
+        <sql>
+            in
+        </sql>
+    </changeSet>
 </databaseChangeLog>
