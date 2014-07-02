@@ -35,12 +35,13 @@ public class LabOrderResults {
                 orderMap.put(result.getTestName(), new TabularLabOrderResults.TestOrderLabel(testOrderLabelCounter++, result.getTestName(), result.getMinNormal(), result.getMaxNormal(), result.getTestUnitOfMeasurement()));
             }
 
-            if(result.getResult() != null) {
+            if(result.getResult() != null || result.getReferredOut() == true) {
                 TabularLabOrderResults.CoordinateValue coordinateValue = new TabularLabOrderResults.CoordinateValue();
                 coordinateValue.setDateIndex(dateMap.get(orderDate).getIndex());
                 coordinateValue.setTestOrderIndex(orderMap.get(result.getTestName()).getIndex());
                 coordinateValue.setResult(result.getResult());
                 coordinateValue.setAbnormal(result.getAbnormal());
+                coordinateValue.setReferredOut(result.getReferredOut());
                 coordinateValues.add(coordinateValue);
             }
         }

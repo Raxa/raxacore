@@ -32,15 +32,16 @@ public class LabOrderResultsServiceIT extends BaseModuleWebContextSensitiveTest 
         List<LabOrderResult> labOrderResults = results.getResults();
 
         assertNotNull(labOrderResults);
-        assertEquals(4, labOrderResults.size());
+        assertEquals(5, labOrderResults.size());
 
-        assertOrderPresent(labOrderResults, "Haemoglobin", "Blood Panel", 16, "99.0", 200.0, 300.0, true, null);
-        assertOrderPresent(labOrderResults, "ESR", "Blood Panel", 16, "10.0", null, null, false, "Some Notes");
-        assertOrderPresent(labOrderResults, "Urea Nitrogen", null, 16, "20.0", null, null, null, null);
-        assertOrderPresent(labOrderResults, "HIV ELISA", null, 16, null, null, null, null, null);
+        assertOrderPresent(labOrderResults, "Haemoglobin", "Blood Panel", 16, "99.0", 200.0, 300.0, true, null, false);
+        assertOrderPresent(labOrderResults, "ESR", "Blood Panel", 16, "10.0", null, null, false, "Some Notes", false);
+        assertOrderPresent(labOrderResults, "Urea Nitrogen", null, 16, "20.0", null, null, null, null, false);
+        assertOrderPresent(labOrderResults, "HIV ELISA", null, 16, null, null, null, null, null, null);
+        assertOrderPresent(labOrderResults, "PS for Malaria", null, 16, null, null, null, null, null, true);
     }
 
-    private void assertOrderPresent(List<LabOrderResult> labOrderResults, String testName, String panelName, Integer accessionEncounterId, String value, Double minNormal, Double maxNormal, Boolean abnormal, String notes) {
+    private void assertOrderPresent(List<LabOrderResult> labOrderResults, String testName, String panelName, Integer accessionEncounterId, String value, Double minNormal, Double maxNormal, Boolean abnormal, String notes, Boolean referredOut) {
         Encounter accessionEncounter = Context.getEncounterService().getEncounter(accessionEncounterId);
         for (LabOrderResult labOrderResult : labOrderResults) {
             if(labOrderResult.getTestName().equals(testName)) {
@@ -52,6 +53,7 @@ public class LabOrderResultsServiceIT extends BaseModuleWebContextSensitiveTest 
                 assertEquals(maxNormal, labOrderResult.getMaxNormal());
                 assertEquals(abnormal, labOrderResult.getAbnormal());
                 assertEquals(notes, labOrderResult.getNotes());
+                assertEquals(referredOut, labOrderResult.getReferredOut());
                 return;
             }
         }

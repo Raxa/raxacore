@@ -52,5 +52,6 @@ public class TabularLabOrderResults {
         private Integer testOrderIndex;
         private String result;
         private Boolean abnormal;
+        private Boolean referredOut;
     }
 }

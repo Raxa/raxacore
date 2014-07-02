@@ -24,6 +24,7 @@ public class LabOrderResultsService {
     public static final String LAB_MINNORMAL = "LAB_MINNORMAL";
     public static final String LAB_MAXNORMAL = "LAB_MAXNORMAL";
     public static final String LAB_NOTES = "LAB_NOTES";
+    private static final String REFERRED_OUT = "REFERRED_OUT";
 
     @Autowired
     private EncounterTransactionMapperBuilder encounterTransactionMapperBuilder;
@@ -64,7 +65,7 @@ public class LabOrderResultsService {
             } else {
                 EncounterTransaction.Concept orderConcept = testOrder.getConcept();
                 Encounter orderEncounter = encounterTestOrderMap.get(testOrder.getUuid());
-                labOrderResults.add(new LabOrderResult(orderEncounter.getUuid(), orderEncounter.getEncounterDatetime(), orderConcept.getName(), orderConcept.getUnits(), null, null, null, null));
+                labOrderResults.add(new LabOrderResult(orderEncounter.getUuid(), orderEncounter.getEncounterDatetime(), orderConcept.getName(), orderConcept.getUnits(), null, null, null, null, false));
             }
         }
         return new LabOrderResults(labOrderResults);
@@ -95,6 +96,7 @@ public class LabOrderResultsService {
         Object resultValue = getValue(observation, observation.getConcept().getName());
         labOrderResult.setAccessionUuid(encounter.getUuid());
         labOrderResult.setAccessionDateTime(encounter.getEncounterDatetime());
+        labOrderResult.setResultDateTime(observation.getObservationDateTime());
         labOrderResult.setTestUuid(observation.getConceptUuid());
         labOrderResult.setTestName(observation.getConcept().getName());
         labOrderResult.setResult(resultValue != null ? resultValue.toString() : null);
@@ -102,17 +104,23 @@ public class LabOrderResultsService {
         labOrderResult.setMinNormal((Double) getValue(observation, LAB_MINNORMAL));
         labOrderResult.setMaxNormal((Double) getValue(observation, LAB_MAXNORMAL));
         labOrderResult.setNotes((String) getValue(observation, LAB_NOTES));
+        labOrderResult.setReferredOut(getLeafObservation(observation, REFERRED_OUT) != null);
         labOrderResult.setTestUnitOfMeasurement(observation.getConcept().getUnits());
         return labOrderResult;
     }
 
     private Object getValue(EncounterTransaction.Observation observation, String conceptName) {
+        EncounterTransaction.Observation leafObservation = getLeafObservation(observation, conceptName);
+        return leafObservation != null ? leafObservation.getValue() : null;
+    }
+
+    private EncounterTransaction.Observation getLeafObservation(EncounterTransaction.Observation observation, String conceptName) {
         for (EncounterTransaction.Observation childObs : observation.getGroupMembers()) {
             if(!childObs.getGroupMembers().isEmpty()) {
-                return getValue(childObs, conceptName);
+                return getLeafObservation(childObs, conceptName);
             }
             if(childObs.getConcept().getName().equals(conceptName)) {
-                return childObs.getValue();
+                return childObs;
             }
         }
         return null;
