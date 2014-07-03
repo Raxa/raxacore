@@ -1006,10 +1006,4 @@
             p.person_id = u.person_id ;
         </sql>
     </changeSet>
-    <changeSet id="bahmni-core-201407011716" author="tw">
-        <comment>Add person name for lab and billing system users</comment>
-        <sql>
-            in
-        </sql>
-    </changeSet>
 </databaseChangeLog>
