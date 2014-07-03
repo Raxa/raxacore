@@ -985,4 +985,17 @@
 			  update global_property set property_value='select distinct concat(pn.given_name," ",pn.family_name) as name, pi.identifier as identifier, concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid from visit v inner join person_name pn on v.patient_id = pn.person_id and pn.voided = 0 inner join patient_identifier pi on v.patient_id = pi.patient_id inner join person p on v.patient_id = p.person_id inner join encounter e on v.visit_id = e.visit_id inner join obs o on e.encounter_id = o.encounter_id inner join concept c on o.value_coded = c.concept_id inner join concept_name cn on c.concept_id = cn.concept_id left outer join encounter e1 on e1.visit_id = v.visit_id and e1.encounter_type = (select encounter_type_id from encounter_type where name = "DISCHARGE") where v.date_stopped is null and v.voided=0 and o.voided=0 and cn.name = "Discharge Patient" and e1.encounter_id is null' where property='emrapi.sqlSearch.patientsToDischarge';
 			</sql>
 		</changeSet>
+    <changeSet id="bahmni-core-201407011716" author="Crude Oil with our names">
+        <comment>Add person name for lab and billing system users</comment>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            insert into person_name (preferred, person_id,given_name, family_name, creator,uuid, date_created)
+            select true, person_id, 'Lab', 'System', 1, @uuid, now() from users where username =  'Lab System';
+
+            select uuid() into @uuid;
+            insert into person_name (preferred, person_id,given_name, family_name, creator,uuid, date_created)
+            select true, person_id, 'Billing', 'System', 1, @uuid, now() from users where username =  'Billing System';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
