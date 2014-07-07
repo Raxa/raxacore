@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
@@ -72,8 +73,14 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
     @Override
     public void add(String patientId, Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, String systemUserName) {
-        this.systemUserName = systemUserName;
+        if (StringUtils.isEmpty(patientId))
+            throwPatientNotFoundException(patientId);
+
         Patient patient = bahmniPatientDao.getPatient(patientId);
+        if (patient == null)
+            throwPatientNotFoundException(patientId);
+
+        this.systemUserName = systemUserName;
         Visit visitForDrugOrders = new VisitIdentificationHelper(visitService).getVisitFor(patient, orderDate, PHARMACY_VISIT);
         addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visitForDrugOrders);
     }
@@ -88,6 +95,10 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     public List<DrugOrder> getPrescribedDrugOrders(String patientUuid, Boolean includeActiveVisit, Integer numberOfVisits) {
         Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
         return orderDao.getPrescribedDrugOrders(patient, includeActiveVisit, numberOfVisits);
+    }
+
+    private void throwPatientNotFoundException(String patientId) {
+        throw new RuntimeException("Patient Id is null or empty. PatientId='" + patientId + "'. Patient may have been directly created in billing system.");
     }
 
     private void addDrugOrdersToVisit(Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {

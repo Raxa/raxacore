@@ -4,13 +4,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.DrugOrder;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterProvider;
-import org.openmrs.Order;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
-import org.openmrs.VisitType;
+import org.openmrs.*;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProviderService;
@@ -25,9 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
