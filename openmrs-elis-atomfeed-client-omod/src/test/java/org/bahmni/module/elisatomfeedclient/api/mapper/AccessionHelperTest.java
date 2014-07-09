@@ -81,7 +81,7 @@ public class AccessionHelperTest {
         when(userService.getUserByUsername(anyString())).thenReturn(provider);
         when(providerService.getProvidersByPerson(any(Person.class))).thenReturn(Arrays.asList(new Provider()));
         when(encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID)).thenReturn(new EncounterRole());
-        when(orderService.getAllOrderTypes()).thenReturn(Arrays.asList(getOrderType()));
+        when(orderService.getOrderTypes(true)).thenReturn(Arrays.asList(getOrderType()));
         PowerMockito.mockStatic(Context.class);
         when(Context.getAuthenticatedUser()).thenReturn(provider);
 
@@ -118,7 +118,7 @@ public class AccessionHelperTest {
         when(userService.getUserByUsername(anyString())).thenReturn(provider);
         when(providerService.getProvidersByPerson(any(Person.class))).thenReturn(Arrays.asList(new Provider()));
         when(encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID)).thenReturn(new EncounterRole());
-        when(orderService.getAllOrderTypes()).thenReturn(Arrays.asList(getOrderType()));
+        when(orderService.getOrderTypes(true)).thenReturn(Arrays.asList(getOrderType()));
         PowerMockito.mockStatic(Context.class);
         when(Context.getAuthenticatedUser()).thenReturn(provider);
 
@@ -146,6 +146,8 @@ public class AccessionHelperTest {
         orders.add(panel);
         orders.add(test);
         previousEncounter.setOrders(orders);
+        when(userService.getUserByUsername(anyString())).thenReturn(new User());
+        when(providerService.getProvidersByPerson(any(Person.class))).thenReturn(Arrays.asList(new Provider()));
 
         AccessionDiff diff = new AccessionDiff();
         diff.addAddedTestDetail(new OpenElisTestDetailBuilder().withTestUuid("test2").build());

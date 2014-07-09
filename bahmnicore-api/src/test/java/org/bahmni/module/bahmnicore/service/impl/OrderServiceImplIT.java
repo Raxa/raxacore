@@ -3,6 +3,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openmrs.CareSetting;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
@@ -10,7 +11,6 @@ import org.openmrs.api.PatientService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
 import java.util.List;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -46,7 +46,8 @@ public class OrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
     private void ensureCorrectDataSetup(String patientUuid, String radiologyOrderTypeUuid) {
         Patient patient = patientService.getPatientByUuid(patientUuid);
         OrderType orderType = orderService.getOrderTypeByUuid(radiologyOrderTypeUuid);
-        List<Order> allRadiologyOrdersForPatient = orderService.getOrders(Order.class, Arrays.asList(patient), null, org.openmrs.api.OrderService.ORDER_STATUS.NOTVOIDED, null, null, Arrays.asList(orderType));
+        CareSetting careSetting = orderService.getCareSettingByName("OUTPATIENT");
+        List<Order> allRadiologyOrdersForPatient  = orderService.getOrders(patient, careSetting, orderType, true);
         Assert.assertTrue("More than 1 radiology orders are setup for the patient", allRadiologyOrdersForPatient.size() > 1);
     }
 

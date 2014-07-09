@@ -29,7 +29,7 @@ public class PatientSearchHandler implements SearchHandler {
 
     @Override
     public SearchConfig getSearchConfig() {
-        return new SearchConfig("byIdOrNameOrVillage", RestConstants.VERSION_1 + "/patient", Arrays.asList("1.9.*"),
+        return new SearchConfig("byIdOrNameOrVillage", RestConstants.VERSION_1 + "/patient", Arrays.asList("1.9.*", "1.10.*"),
                 new SearchQuery.Builder("Allows you to find patients which map to id or name or village name given as input").withOptionalParameters("id", "name", "village").build());
     }
 

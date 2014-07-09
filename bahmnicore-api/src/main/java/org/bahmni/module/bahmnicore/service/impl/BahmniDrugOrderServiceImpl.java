@@ -7,34 +7,12 @@ import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.util.VisitIdentificationHelper;
-import org.openmrs.Drug;
-import org.openmrs.DrugOrder;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterProvider;
-import org.openmrs.EncounterRole;
-import org.openmrs.EncounterType;
-import org.openmrs.Order;
-import org.openmrs.OrderType;
-import org.openmrs.Patient;
-import org.openmrs.Provider;
-import org.openmrs.User;
-import org.openmrs.Visit;
-import org.openmrs.VisitType;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.OrderService;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.ProviderService;
-import org.openmrs.api.UserService;
-import org.openmrs.api.VisitService;
+import org.openmrs.*;
+import org.openmrs.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
@@ -87,8 +65,12 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
     @Override
     public List<DrugOrder> getActiveDrugOrders(String patientUuid) {
+        return (List<DrugOrder>) getDrugOrders(patientUuid);
+    }
+
+    private List<? extends Order> getDrugOrders(String patientUuid) {
         Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
-        return orderDao.getActiveDrugOrders(patient);
+        return orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug Order"), orderService.getCareSettingByName("Outpatient"), new Date());
     }
 
     @Override
@@ -116,6 +98,9 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         }
         visit.addEncounter(systemConsultationEncounter);
         visitService.saveVisit(visit);
+        for (Encounter encounter : visit.getEncounters()) {
+            encounterService.saveEncounter(encounter);
+        }
     }
 
     private Encounter createNewSystemConsultationEncounter(Date orderDate, Patient patient) {
@@ -182,21 +167,31 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             Drug drug = conceptService.getDrugByUuid(bahmniDrugOrder.getProductUuid());
             drugOrder.setDrug(drug);
             drugOrder.setConcept(drug.getConcept());
-            drugOrder.setDose(bahmniDrugOrder.getDosage());
             drugOrder.setStartDate(orderDate);
             drugOrder.setAutoExpireDate(DateUtils.addDays(orderDate, bahmniDrugOrder.getNumberOfDays()));
             drugOrder.setEncounter(encounter);
             drugOrder.setPatient(patient);
             drugOrder.setPrn(false);
             drugOrder.setOrderType(getDrugOrderType());
+            drugOrder.setOrderer(getSystemProvider());
+            drugOrder.setCareSetting(orderService.getCareSettingByName("Outpatient"));
+            drugOrder.setDosingType(DrugOrder.DosingType.FREE_TEXT);
+            drugOrder.setDosingInstructions(createInstructions(drugOrder));
+            drugOrder.setQuantity(bahmniDrugOrder.getQuantity());
+            drugOrder.setQuantityUnits(drug.getDosageForm());
+            drugOrder.setNumRefills(0);
             orders.add(drugOrder);
         }
         return orders;
     }
 
+    private String createInstructions(DrugOrder drugOrder) {
+        return "Some nice string";
+    }
+
     private OrderType getDrugOrderType() {
         if (drugOrderType == null) {
-            List<OrderType> allOrderTypes = orderService.getAllOrderTypes();
+            List<OrderType> allOrderTypes = orderService.getOrderTypes(true);
             for (OrderType type : allOrderTypes) {
                 if (type.getName().toLowerCase().equals("drug order")) {
                     drugOrderType = type;

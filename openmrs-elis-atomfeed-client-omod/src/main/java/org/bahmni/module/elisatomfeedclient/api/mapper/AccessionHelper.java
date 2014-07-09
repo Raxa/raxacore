@@ -115,6 +115,9 @@ public class AccessionHelper {
             order.setCreator(labUser);
             order.setPatient(patient);
             order.setOrderType(orderType);
+            order.setOrderer(getLabSystemProvider());
+            order.setStartDate(openElisAccession.fetchDate());
+            order.setCareSetting(orderService.getCareSettingByName("Outpatient"));
             orders.add(order);
         }
         return orders;
@@ -122,7 +125,7 @@ public class AccessionHelper {
 
     private OrderType getLabOrderType() {
         if(labOrderType == null){
-            List<OrderType> orderTypes = orderService.getAllOrderTypes();
+            List<OrderType> orderTypes = orderService.getOrderTypes(true);
             for (OrderType orderType : orderTypes) {
                 if (orderType.getName().equals(properties.getOrderTypeLabOrderName())){
                     labOrderType = orderType;

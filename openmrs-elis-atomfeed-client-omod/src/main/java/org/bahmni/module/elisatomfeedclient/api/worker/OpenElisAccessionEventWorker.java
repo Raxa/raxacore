@@ -45,7 +45,6 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     private static final String ACCESSION_NOTE_ENCOUNTER_TYPE = "VALIDATION NOTES";
     private static Logger logger = Logger.getLogger(OpenElisAccessionEventWorker.class);
     private final OrderService orderService;
-    private final OrdersHelper ordersHelper;
     private final VisitService visitService;
     private final EncounterHelper encounterHelper;
     private final ProviderHelper providerHelper;
@@ -76,7 +75,6 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         this.visitService = visitService;
         this.healthCenterFilterRule = healthCenterFilterRule;
         this.orderService = orderService;
-        this.ordersHelper = new OrdersHelper(orderService, conceptService, encounterService);
         this.encounterHelper = new EncounterHelper(encounterService);
         this.providerHelper = new ProviderHelper(providerService);
     }

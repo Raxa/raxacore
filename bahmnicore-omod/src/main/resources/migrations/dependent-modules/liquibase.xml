@@ -99,5 +99,12 @@
             UPDATE `idgen_seq_id_gen` SET `max_length` = `min_length`;
         </sql>
     </changeSet>
+    <changeSet id="170620141122" author="mujir/vinay">
+        <comment>Update version for above change</comment>
+        <update tableName="global_property">
+            <column name="property_value" value="2.4.2"/>
+            <where>property='idgen.database_version'</where>
+        </update>
+    </changeSet>
 
 </databaseChangeLog>
