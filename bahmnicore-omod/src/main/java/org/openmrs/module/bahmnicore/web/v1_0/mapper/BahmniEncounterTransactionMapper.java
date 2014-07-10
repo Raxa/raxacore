@@ -11,13 +11,13 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import java.util.*;
 
 public class BahmniEncounterTransactionMapper {
-    private BahmniObservationMapper bahmniObservationMapper;
+    private BahmniObsMapper bahmniObsMapper;
     private ObsService obsService;
     private EncounterTransactionMapper encounterTransactionMapper;
     private AccessionNotesMapper validationNotesMapper;
 
-    public BahmniEncounterTransactionMapper(ObsService obsService, EncounterTransactionMapper encounterTransactionMapper, AccessionNotesMapper validationNotesMapper, BahmniObservationMapper bahmniObservationMapper) {
-        this.bahmniObservationMapper = bahmniObservationMapper;
+    public BahmniEncounterTransactionMapper(ObsService obsService, EncounterTransactionMapper encounterTransactionMapper, AccessionNotesMapper validationNotesMapper, BahmniObsMapper bahmniObsMapper) {
+        this.bahmniObsMapper = bahmniObsMapper;
         this.obsService = obsService;
         this.encounterTransactionMapper = encounterTransactionMapper;
         this.validationNotesMapper = validationNotesMapper;
@@ -31,7 +31,7 @@ public class BahmniEncounterTransactionMapper {
         }
         bahmniEncounterTransaction.setBahmniDiagnoses(bahmniDiagnoses);
         bahmniEncounterTransaction.setAccessionNotes(validationNotesMapper.map(encounterTransaction));
-        bahmniEncounterTransaction.setObservations(bahmniObservationMapper.map(encounterTransaction));
+        bahmniEncounterTransaction.setObservations(bahmniObsMapper.map(encounterTransaction));
         return bahmniEncounterTransaction;
     }
 

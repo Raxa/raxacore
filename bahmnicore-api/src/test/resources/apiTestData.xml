@@ -108,8 +108,11 @@
     <visit visit_id="10" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="11" visit_type_id="1" indication_concept_id="1000" location_id="2" creator="1" changed_by="1000" voided_by="1000" uuid="00bfb3d3-247f-4404-a040-1116acdb7875" voided="0"/>
     <visit visit_id="11" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="12" visit_type_id="1" indication_concept_id="1000" location_id="2" creator="1" changed_by="1000" voided_by="1000" uuid="2eac608a-31bc-4c0e-b6b7-4ff9cd57646a" voided="0"/>
 
-    <concept_datatype concept_datatype_id="1" name="numeric" hl7_abbreviation="NM" description="foo" date_created="2013-12-04 11:36:42" retired="0"/>
-    <concept_datatype concept_datatype_id="2" name="text" hl7_abbreviation="ST" description="bar" date_created="2013-12-04 11:36:42" retired="0"/>
+    <concept_datatype concept_datatype_id="1" name="numeric" hl7_abbreviation="NM" description="numeric concept" date_created="2013-12-04 11:36:42" retired="0"/>
+    <concept_datatype concept_datatype_id="2" name="text" hl7_abbreviation="ST" description="text concept" date_created="2013-12-04 11:36:42" retired="0"/>
+    <concept_datatype concept_datatype_id="3" name="Boolean" hl7_abbreviation="BIT" description="boolean concept" date_created="2013-12-04 11:36:42" retired="0"/>
+    <concept_datatype concept_datatype_id="4" name="Coded" hl7_abbreviation="CWE" description="coded concept" date_created="2013-12-04 11:36:42" retired="0"/>
+    <concept_datatype concept_datatype_id="5" name="N/A" hl7_abbreviation="ZZ" description="not associated" date_created="2013-12-04 11:36:42" retired="0"/>
 
     <concept concept_id="111" retired="0" datatype_id="1" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="3f596de5-5caa-11e3-a4c0-0800271c1b75" />
     <concept concept_id="222" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="4f596de5-5caa-11e3-a4c0-0800271c1b75" />
@@ -117,6 +120,58 @@
     <concept concept_id="444" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="6f596de5-5caa-11e3-a4c0-0800271c1b75" />
     <concept concept_id="555" retired="0" datatype_id="1" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="7f596de5-5caa-11e3-a4c0-0800271c1b75" />
     <concept concept_id="666" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="8f596de5-5caa-11e3-a4c0-0800271c1b75" />
+
+
+
+    <concept concept_id="100" retired="0" datatype_id="5" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="True_concept_uuid" />
+    <concept_name concept_id="100" name="True" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="6d2d4cb7-955b-4837-80f7-0ebb94092afh" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="200" retired="0" datatype_id="5" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="False_concept_uuid" />
+    <concept_name concept_id="200" name="False" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="6d2d4cb7-955b-4837-80f7-0ebb94092afi" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="90" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="blood_pressure_concept_uuid" />
+    <concept_name concept_id="90" name="Blood Pressure" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="901" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="systolic_data_uuid" />
+    <concept_name concept_id="901" name="Systolic Data" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afc" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="9011" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="systolic_value_uuid" />
+    <concept_name concept_id="9011" name="Systolic Value" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afd" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="9012" retired="0" datatype_id="3" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="systolic_abnormal_uuid" />
+    <concept_name concept_id="9012" name="Systolic Abnormal" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afe" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_answer concept_answer_id="406" concept_id="9012" answer_concept="100" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_answer concept_answer_id="407" concept_id="9012" answer_concept="200" creator="1" date_created="2004-08-12 00:00:00.0"/>
+
+    <concept concept_id="902" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="diastolic_data_uuid" />
+    <concept_name concept_id="902" name="Diastolic Data" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092aff" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="9021" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="diastolic_value_uuid" />
+    <concept_name concept_id="9021" name="Diastolic Value" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afg" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="9022" retired="0" datatype_id="3" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="diastolic_abnormal_uuid" />
+    <concept_name concept_id="9022" name="Diastolic Abnormal" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afh" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_answer concept_answer_id="408" concept_id="9022" answer_concept="100" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_answer concept_answer_id="409" concept_id="9022" answer_concept="200" creator="1" date_created="2004-08-12 00:00:00.0"/>
+
+
+    <location location_id="1" name="OPD Room 1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
+    <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14" changed_by="1" date_changed="2012-10-23 18:04:14" retired="0" uuid="f01c54cb-2225-471a-9cd5-d348552c337c"/>
+    <visit visit_id="901" date_started="2008-08-18 00:00:00" date_created="2008-08-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-08-20 04:08:16" location_id="2" creator="1" changed_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5b" voided="0"/>
+
+    <encounter_type encounter_type_id="1" name="OPD" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
+    <encounter encounter_id="38" encounter_type="1" patient_id="1024" visit_id="901" location_id="1" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63ab0"/>
+
+    <obs obs_id="1" concept_id="90" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bb" creator="1" voided="0" />
+
+    <obs obs_id="2" obs_group_id="1" concept_id="901" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bc" creator="1" voided="0" />
+    <obs obs_id="3" obs_group_id="2" concept_id="9011" person_id="1024" value_numeric="120" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bd" creator="1" voided="0" />
+    <obs obs_id="4" obs_group_id="2" concept_id="9012" person_id="1024" value_coded="200" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9be" creator="1" voided="0" />
+
+    <obs obs_id="5" obs_group_id="1" concept_id="902" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bf" creator="1" voided="0" />
+    <obs obs_id="6" obs_group_id="5" concept_id="9021" person_id="1024" value_numeric="100" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bg" creator="1" voided="0" />
+    <obs obs_id="7" obs_group_id="5" concept_id="9022" person_id="1024" value_coded="100" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bh" creator="1" voided="0" />
+
 
     <obs obs_id="1024" person_id="1024" concept_id="111" value_numeric="1.1" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
     <obs obs_id="1025" person_id="1024" concept_id="222" value_text="foo" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />

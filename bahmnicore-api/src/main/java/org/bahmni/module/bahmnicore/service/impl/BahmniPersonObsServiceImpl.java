@@ -26,6 +26,11 @@ public class BahmniPersonObsServiceImpl implements BahmniPersonObsService {
     }
 
     @Override
+    public List<Obs> getObsForPersonAndConceptNameAndNumberOfVisits(String patientUuid, String conceptName, Integer numberOfVisits) {
+        return personObsDao.getObsFor(patientUuid, conceptName, numberOfVisits);
+    }
+
+    @Override
     public List<Concept> getNumericConceptsForPerson(String personUUID) {
         return personObsDao.getNumericConceptsForPerson(personUUID);
     }

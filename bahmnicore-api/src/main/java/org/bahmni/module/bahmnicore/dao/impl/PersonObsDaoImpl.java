@@ -4,7 +4,9 @@ import org.bahmni.module.bahmnicore.dao.PersonObsDao;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.Concept;
+import org.openmrs.ConceptDatatype;
 import org.openmrs.Obs;
+import org.openmrs.module.emrapi.test.builder.ConceptDataTypeBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,29 +18,56 @@ public class PersonObsDaoImpl implements PersonObsDao {
     private SessionFactory sessionFactory;
     @Override
     public List<Obs> getObsByPerson(String personUUID) {
-        Query query = sessionFactory
-                .getCurrentSession().createQuery(
+        Query query = sessionFactory.getCurrentSession().createQuery(
                         "select obs from Obs as obs inner join fetch " +
                                 "obs.concept as concept inner join fetch " +
                                 "concept.datatype as datatype inner join " +
                                 "obs.person as person " +
-                                "where datatype.hl7Abbreviation= 'NM' and person.uuid= :personUUID");
+                                "where datatype.hl7Abbreviation= '" + ConceptDatatype.NUMERIC + "' and person.uuid= :personUUID");
         query.setString("personUUID", personUUID);
+        ConceptDatatype numeric = new ConceptDataTypeBuilder().numeric();
         return query.list();
 
     }
 
     @Override
     public List<Concept> getNumericConceptsForPerson(String personUUID) {
-        Query query = sessionFactory
-                .getCurrentSession().createQuery(
+        Query query = sessionFactory.getCurrentSession().createQuery(
                         "select concept from Obs as obs inner join " +
                                 "obs.concept as concept inner join " +
                                 "concept.datatype as datatype inner join " +
                                 "obs.person as person " +
-                                "where datatype.hl7Abbreviation= 'NM' and person.uuid= :personUUID");
+                                "where datatype.hl7Abbreviation= '" + ConceptDatatype.NUMERIC + "' and person.uuid= :personUUID");
         query.setString("personUUID", personUUID);
         return query.list();
 
+    }
+
+    @Override
+    public List<Obs> getObsFor(String patientUuid, String conceptName, Integer numberOfVisits) {
+        List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
+
+        Query queryToGetObservations = sessionFactory.getCurrentSession().createQuery("select obs" +
+                        " from Obs as obs, ConceptName as cn " +
+                        " where " +
+                        " obs.person.uuid=:patientUuid " +
+                        " and obs.encounter.visit.visitId in (:listOfVisitIds) and cn.concept=obs.concept.conceptId " +
+                        " and cn.name" +
+                "=:conceptName");
+        queryToGetObservations.setString("patientUuid", patientUuid);
+        queryToGetObservations.setString("conceptName", conceptName);
+        queryToGetObservations.setParameterList("listOfVisitIds", listOfVisitIds);
+        return queryToGetObservations.list();
+    }
+
+    private List<Integer> getVisitIdsFor(String patientUuid, Integer numberOfVisits) {
+        Query queryToGetVisitIds = sessionFactory
+                .getCurrentSession().createQuery("select v.visitId from Visit as v " +
+                        "where v.patient.uuid = :patientUuid order by v.startDatetime desc");
+        queryToGetVisitIds.setString("patientUuid", patientUuid);
+        if(numberOfVisits != null){
+            queryToGetVisitIds.setMaxResults(numberOfVisits);
+        }
+        return queryToGetVisitIds.list();
     }
 }

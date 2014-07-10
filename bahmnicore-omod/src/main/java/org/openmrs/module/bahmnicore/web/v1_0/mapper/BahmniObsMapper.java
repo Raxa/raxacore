@@ -12,14 +12,14 @@ import java.util.Comparator;
 import java.util.List;
 
 @Component
-public class BahmniObservationMapper {
+public class BahmniObsMapper {
     @Autowired
     private ConceptService conceptService;
 
-    public BahmniObservationMapper() {
+    public BahmniObsMapper() {
     }
 
-    public BahmniObservationMapper(ConceptService conceptService) {
+    public BahmniObsMapper(ConceptService conceptService) {
         this.conceptService = conceptService;
     }
 

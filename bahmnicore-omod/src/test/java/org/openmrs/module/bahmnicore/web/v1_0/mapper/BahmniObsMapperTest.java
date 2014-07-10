@@ -14,7 +14,7 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class BahmniObservationMapperTest {
+public class BahmniObsMapperTest {
     @Mock
     ConceptService conceptService;
 
@@ -43,8 +43,8 @@ public class BahmniObservationMapperTest {
 
 
         when(conceptService.getConceptByUuid(obsGroupConcept.getUuid())).thenReturn(obsGroupConcept);
-        BahmniObservationMapper bahmniObservationMapper = new BahmniObservationMapper(conceptService);
-        List<EncounterTransaction.Observation> observations = bahmniObservationMapper.map(encounterTransaction);
+        BahmniObsMapper bahmniObsMapper = new BahmniObsMapper(conceptService);
+        List<EncounterTransaction.Observation> observations = bahmniObsMapper.map(encounterTransaction);
 
         EncounterTransaction.Observation observationGroup = observations.get(0);
         Assert.assertEquals(obsGroupConcept.getUuid(), observationGroup.getConcept().getUuid());
@@ -82,8 +82,8 @@ public class BahmniObservationMapperTest {
 
         when(conceptService.getConceptByUuid(obsGroupConcept.getUuid())).thenReturn(obsGroupConcept);
         when(conceptService.getConceptByUuid(obsGroup2Concept.getUuid())).thenReturn(obsGroup2Concept);
-        BahmniObservationMapper bahmniObservationMapper = new BahmniObservationMapper(conceptService);
-        List<EncounterTransaction.Observation> observations = bahmniObservationMapper.map(encounterTransaction);
+        BahmniObsMapper bahmniObsMapper = new BahmniObsMapper(conceptService);
+        List<EncounterTransaction.Observation> observations = bahmniObsMapper.map(encounterTransaction);
 
         EncounterTransaction.Observation observationGroup = observations.get(0);
         Assert.assertEquals(obsGroupConcept.getUuid(), observationGroup.getConcept().getUuid());

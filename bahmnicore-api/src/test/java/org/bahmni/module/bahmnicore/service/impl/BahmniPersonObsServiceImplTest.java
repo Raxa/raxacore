@@ -5,11 +5,6 @@ import org.bahmni.module.bahmnicore.service.BahmniPersonObsService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.openmrs.Concept;
-import org.openmrs.Obs;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
-
-import java.util.List;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -20,6 +15,8 @@ public class BahmniPersonObsServiceImplTest {
     @Mock
     PersonObsDao personObsDao;
     private String personUUID = "12345";
+    private String conceptName = "Concept Name";
+    private Integer numberOfVisits = 3;
 
     @Before
     public void setUp(){
@@ -29,14 +26,20 @@ public class BahmniPersonObsServiceImplTest {
 
     @Test
     public void shouldGetPersonObs() throws Exception {
-        List<Obs> obsForPerson = personObsService.getObsForPerson(personUUID);
+        personObsService.getObsForPerson(personUUID);
         verify(personObsDao).getObsByPerson(personUUID);
     }
 
     @Test
     public void shouldGetNumericConcepts() throws Exception {
-        List<Concept> conceptList = personObsService.getNumericConceptsForPerson(personUUID);
+        personObsService.getNumericConceptsForPerson(personUUID);
         verify(personObsDao).getNumericConceptsForPerson(personUUID);
+    }
+
+    @Test
+    public void shouldGetObsByPatientUuidConceptNameAndNumberOfVisits() throws Exception {
+        personObsService.getObsForPersonAndConceptNameAndNumberOfVisits(personUUID, conceptName, numberOfVisits);
+        verify(personObsDao).getObsFor(personUUID, conceptName, numberOfVisits);
     }
 }
 
