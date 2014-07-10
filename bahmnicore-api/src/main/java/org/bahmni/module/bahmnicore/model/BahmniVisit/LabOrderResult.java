@@ -19,7 +19,7 @@ public class LabOrderResult {
     private String result;
     private String notes;
     private Boolean abnormal;
-    private String providerUuid;
+    private String provider;
     private Boolean referredOut;
     private Date resultDateTime;
 
