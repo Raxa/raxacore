@@ -4,21 +4,30 @@
     <patient patient_id="1" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
     <person_name person_name_id="1" preferred="true" person_id="1" prefix="" given_name="firstName" middle_name="" family_name="lastName" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
     <patient_identifier identifier="GAN200000" patient_identifier_id="1" patient_id ="1"  identifier_type="3" creator="1"  uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0" date_created="2005-09-22 00:00:00" />
+    <global_property property="order.drugDispensingUnitsConceptUuid" property_value="9235827e-26fe-102b-80cb-2017a47871b3" uuid="4f55827e-26fe-102b-80cb-2017a47871b3"/>
+
+    <concept concept_id="101" retired="false" datatype_id="1" class_id="1" is_set="true" creator="1" date_created="2005-01-01 00:00:00.0" uuid="9235827e-26fe-102b-80cb-2017a47871b3"/>
+    <concept_name concept_id="100" name="DispensingUnitsConcept" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="90c9daee-3d3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="100" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e060cf44-3d3d-11e3-bf2b-9800271c1b75"/>
+    <concept_name concept_id="1" name="Tablet" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="15c9daee-3d3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept_set concept_set_id="123" concept_id="100" concept_set="101" sort_weight="0.0" creator="1" date_created="2008-08-18 12:38:58.0" uuid="1a211827-639f-4cb4-961f-1e025bf88d90"/>
 
     <concept_datatype concept_datatype_id="1" name="N/A" hl7_abbreviation="ZZ" description="Misc" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="8d4a4488-c2cc-11de-8d13-0010c6dffd0f"/>
     <concept_class concept_class_id="1" name="Drug" description="For Drugs" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="bc980fba-7798-11e3-a96a-0800271c1b75"/>
 
     <concept concept_id="1" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e060cf44-3d3d-11e3-bf2b-0800271c1b75"/>
     <concept_name concept_id="1" name="Calpol 250mg" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="15c9daea-3d3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <drug drug_id="1" concept_id="1" name="Calpol" combination="false" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="3e4933ff-7799-11e3-a96a-0800271c1b75" />
+    <drug drug_id="1" concept_id="1" name="Calpol" combination="false" dosage_form="100" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="3e4933ff-7799-11e3-a96a-0800271c1b75" />
 
     <concept concept_id="2" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="60211202-7855-11e3-a96a-0800271c1b75"/>
     <concept_name concept_id="2" name="cetirizine 100mg" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="2" voided="false" uuid="6a629643-7855-11e3-a96a-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <drug drug_id="2" concept_id="2" name="Cetirizine" combination="false" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="f5bf0aa6-7855-11e3-bd53-328f386b70f0" />
+    <drug drug_id="2" concept_id="2" name="Cetirizine" combination="false" dosage_form="100" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="f5bf0aa6-7855-11e3-bd53-328f386b70f0" />
 
     <concept concept_id="3" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="60211202-7855-11e3-a96a-0800271c1b7a"/>
     <concept_name concept_name_id="3" concept_id="3" name="cetzine 100mg" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="6a629643-7855-11e3-a96a-0800271c1b7a" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <drug drug_id="3" concept_id="3" name="Cetzine" combination="false" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="f5bf0aa6-7855-11e3-bd53-328f386b70fa" />
+    <drug drug_id="3" concept_id="3" name="Cetzine" combination="false" dosage_form="100" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="f5bf0aa6-7855-11e3-bd53-328f386b70fa" />
 
     <location location_id="1" name="REG" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
     <location location_id="2" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="be69741b-29e9-49a1-adc9-2a726e6610e4"/>

@@ -57,7 +57,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         initMocks(this);
         this.openElisAccessionEventWorker = new OpenElisAccessionEventWorker(properties, httpClient,
                 Context.getEncounterService(), Context.getConceptService(), new AccessionHelper(properties),
-                Context.getProviderService(), Context.getOrderService(), Context.getVisitService(),
+                Context.getProviderService(),
                 healthCenterFilterRule);
         when(healthCenterFilterRule.passesWith("GAN")).thenReturn(true);
         when(healthCenterFilterRule.passesWith("ANC")).thenReturn(false);

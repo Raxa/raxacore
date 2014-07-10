@@ -30,7 +30,6 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private EncounterRole unknownEncounterRole = null;
     private EncounterType consultationEncounterType = null;
     private String systemUserName = null;
-    private VisitType pharmacyVisitType = null;
     public static final String PHARMACY_VISIT = "PHARMACY VISIT";
 
     @Autowired
@@ -84,14 +83,8 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     private void addDrugOrdersToVisit(Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {
-        Set<Encounter> encounters = visit.getEncounters();
-        Encounter systemConsultationEncounter = null;
-        if (encounters != null && encounters.size() > 0)
-            systemConsultationEncounter = getSystemConsultationEncounter(encounters);
-
-        if (systemConsultationEncounter == null) {
-            systemConsultationEncounter = createNewSystemConsultationEncounter(orderDate, patient);
-        }
+        Encounter systemConsultationEncounter;
+        systemConsultationEncounter = createNewSystemConsultationEncounter(orderDate, patient);
         Set<Order> drugOrders = createOrders(patient, orderDate, systemConsultationEncounter, bahmniDrugOrders);
         for (Order drugOrder : drugOrders) {
             systemConsultationEncounter.addOrder(drugOrder);
@@ -111,26 +104,6 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         systemConsultationEncounter.setPatient(patient);
         systemConsultationEncounter.setEncounterDatetime(orderDate);
         return systemConsultationEncounter;
-    }
-
-    private Encounter getSystemConsultationEncounter(Set<Encounter> encounters) {
-        for (Encounter encounter : encounters) {
-            if (isSystemConsultationEncounter(encounter)) {
-                return encounter;
-            }
-        }
-        return null;
-    }
-
-    private boolean isSystemConsultationEncounter(Encounter encounter) {
-        boolean isSystemEncounter = false;
-        Provider systemProvider = getSystemProvider();
-        Set<EncounterProvider> encounterProviders = encounter.getEncounterProviders();
-        for (EncounterProvider encounterProvider : encounterProviders) {
-            if (encounterProvider.getProvider().getId() == systemProvider.getId())
-                isSystemEncounter = true;
-        }
-        return encounter.getEncounterType().equals(getConsultationEncounterType()) && isSystemEncounter;
     }
 
     private EncounterType getConsultationEncounterType() {

@@ -14,26 +14,14 @@ import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.joda.time.DateTime;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
-import org.openmrs.Order;
-import org.openmrs.Provider;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
-import org.openmrs.api.OrderService;
 import org.openmrs.api.ProviderService;
-import org.openmrs.api.VisitService;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class OpenElisAccessionEventWorker implements EventWorker {
@@ -41,11 +29,8 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     public static final String LAB_MANAGER_NOTES = "Lab Manager Notes";
     public static final String LAB_MANAGER_IDENTIFIER = "LABMANAGER";
     public static final String ACCESSION_UUID_CONCEPT = "Accession Uuid";
-    private static final String LAB_ORDER_TYPE = "Lab Order";
     private static final String ACCESSION_NOTE_ENCOUNTER_TYPE = "VALIDATION NOTES";
     private static Logger logger = Logger.getLogger(OpenElisAccessionEventWorker.class);
-    private final OrderService orderService;
-    private final VisitService visitService;
     private final EncounterHelper encounterHelper;
     private final ProviderHelper providerHelper;
     private ElisAtomFeedProperties atomFeedProperties;
@@ -63,8 +48,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                                         ConceptService conceptService,
                                         AccessionHelper accessionMapper,
                                         ProviderService providerService,
-                                        OrderService orderService,
-                                        VisitService visitService, HealthCenterFilterRule healthCenterFilterRule) {
+                                        HealthCenterFilterRule healthCenterFilterRule) {
 
         this.atomFeedProperties = atomFeedProperties;
         this.httpClient = httpClient;
@@ -72,9 +56,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         this.conceptService = conceptService;
         this.accessionMapper = accessionMapper;
         this.providerService = providerService;
-        this.visitService = visitService;
         this.healthCenterFilterRule = healthCenterFilterRule;
-        this.orderService = orderService;
         this.encounterHelper = new EncounterHelper(encounterService);
         this.providerHelper = new ProviderHelper(providerService);
     }

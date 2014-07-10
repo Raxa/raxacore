@@ -61,7 +61,7 @@ public class OpenElisAccessionEventWorkerTest {
     public void setUp() {
         initMocks(this);
         accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService,
-                conceptService, accessionMapper, providerService, orderService, visitService, healthCenterFilterRule);
+                conceptService, accessionMapper, providerService, healthCenterFilterRule);
         openElisUrl = "http://localhost:8080";
         event = new Event("id", "/openelis/accession/12-34-56-78", "title", "feedUri");
         when(feedProperties.getOpenElisUri()).thenReturn(openElisUrl);
