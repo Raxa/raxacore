@@ -23,17 +23,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -929,23 +921,9 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         String accessionUuid = "6g0bf6767-707a-4329-9850-f15206e63ab0";
         String patientUuidWithAccessionNotes = "86e04d42-3ca8-11e3-bf2b-0x7009861b97";
 
-        //String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
-        //String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
-
-        /*OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
-                .withPanelUuid(panelConceptUuid)
-                .withTestUuid(haemoglobinConceptUuid)
-                .withResult("10.5")
-                .withProviderUuid("331c6bf8-7846-11e3-a96a-09xD371c1b75")
-                .withMinNormal("10")
-                .withMaxNormal("20.2")
-                .withAbnormal("false")
-                .withDateTime("2014-01-30T11:50:18+0530")
-                .withResultType("N")
-                .build();
-*/
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder()
                 .withDateTime("2014-01-30T11:50:18+0530")
+                .withTestDetails(new HashSet<OpenElisTestDetail>())
                 .withPatientUuid(patientUuidWithAccessionNotes)
                 .withAccessionNotes(new OpenElisAccessionNote("Note1", "331c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"),
                         new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))

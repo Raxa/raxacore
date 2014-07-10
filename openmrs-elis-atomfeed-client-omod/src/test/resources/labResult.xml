@@ -12,6 +12,8 @@
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="1" patient_id="1"
                         identifier="GAN200000" identifier_type="3" creator="1"
                         uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0"/>
+    <care_setting care_setting_id="1" name="OutPatient" description="OutPatient" care_setting_type="OUTPATIENT" creator="1" date_created="2008-08-19 12:35:30.0" retired="false" uuid="6f0c9a92-6f24-11e3-af88-005056821db0"/>
+
     <!--patient who has order encounter-->
 
     <!--patient who doesnot hav an order encounter-->
@@ -202,8 +204,8 @@
     <!-- lab manger note concept-->
 
 
-    <!--<order_type order_type_id="15" name="Lab Order" description="An order for tests" creator="1"-->
-                <!--date_created="2008-08-15 13:49:47.0" retired="false" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>-->
+    <order_type order_type_id="16" name="Lab Order" description="An order for tests" creator="1" java_class_name="org.openmrs.Order"
+                date_created="2008-08-15 13:49:47.0" retired="false" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>
 
     <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14"
                 changed_by="1" date_changed="2012-10-23 18:04:14"
