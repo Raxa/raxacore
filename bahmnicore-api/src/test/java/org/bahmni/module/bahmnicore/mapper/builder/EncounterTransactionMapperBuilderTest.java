@@ -101,7 +101,7 @@ public class EncounterTransactionMapperBuilderTest {
         EncounterTransactionMapperBuilder transactionMapperBuilder = new EncounterTransactionMapperBuilder(observationsMapper,new TestOrderMapper(),new DrugOrderMapper_1_10(),new EncounterProviderMapper());
         EncounterTransactionMapper encounterTransactionMapper = transactionMapperBuilder.withProviderMapper().withOrderMapper().build();
 
-        Encounter encounter = new EncounterBuilder().build();
+        Encounter encounter = new EncounterBuilder().withDefaults().build();
         encounter.setOrders(orders);
         encounter.setObs(allObs);
         EncounterTransaction.Disposition disposition = new EncounterTransaction.Disposition();
