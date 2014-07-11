@@ -24,7 +24,7 @@ public class PersonObsDaoImplIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void retrieve_all_observations_when_no_visit_ids_are_specified() throws Exception {
         executeDataSet("apiTestData.xml");
-        List<Obs> allObs = personObsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", "Blood Pressure", null);
+        List<Obs> allObs = personObsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", new String[]{"Blood Pressure"}, null);
         assertEquals(1, allObs.size());
         Obs parent_obs = allObs.get(0);
         ArrayList<Obs> groupMembers = new ArrayList<Obs>(parent_obs.getGroupMembers());

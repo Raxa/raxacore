@@ -15,7 +15,6 @@ public class BahmniPersonObsServiceImplTest {
     @Mock
     PersonObsDao personObsDao;
     private String personUUID = "12345";
-    private String conceptName = "Concept Name";
     private Integer numberOfVisits = 3;
 
     @Before
@@ -38,8 +37,8 @@ public class BahmniPersonObsServiceImplTest {
 
     @Test
     public void shouldGetObsByPatientUuidConceptNameAndNumberOfVisits() throws Exception {
-        personObsService.getObsForPersonAndConceptNameAndNumberOfVisits(personUUID, conceptName, numberOfVisits);
-        verify(personObsDao).getObsFor(personUUID, conceptName, numberOfVisits);
+        personObsService.getObsForPersonAndConceptNameAndNumberOfVisits(personUUID,  new String[]{"Blood Pressure"}, numberOfVisits);
+        verify(personObsDao).getObsFor(personUUID,  new String[]{"Blood Pressure"}, numberOfVisits);
     }
 }
 

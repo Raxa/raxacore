@@ -10,5 +10,5 @@ public interface PersonObsDao {
 
     List<Concept> getNumericConceptsForPerson(String personUUID);
 
-    List<Obs> getObsFor(String patientUuid, String conceptName, Integer numberOfVisits);
+    List<Obs> getObsFor(String patientUuid, String[] conceptName, Integer numberOfVisits);
 }

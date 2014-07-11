@@ -44,7 +44,7 @@ public class PersonObsDaoImpl implements PersonObsDao {
     }
 
     @Override
-    public List<Obs> getObsFor(String patientUuid, String conceptName, Integer numberOfVisits) {
+    public List<Obs> getObsFor(String patientUuid, String[] conceptNames, Integer numberOfVisits) {
         List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
 
         Query queryToGetObservations = sessionFactory.getCurrentSession().createQuery("select obs" +
@@ -52,10 +52,9 @@ public class PersonObsDaoImpl implements PersonObsDao {
                         " where " +
                         " obs.person.uuid=:patientUuid " +
                         " and obs.encounter.visit.visitId in (:listOfVisitIds) and cn.concept=obs.concept.conceptId " +
-                        " and cn.name" +
-                "=:conceptName");
+                        " and cn.name in (:conceptNames) ");
         queryToGetObservations.setString("patientUuid", patientUuid);
-        queryToGetObservations.setString("conceptName", conceptName);
+        queryToGetObservations.setParameterList("conceptNames", conceptNames);
         queryToGetObservations.setParameterList("listOfVisitIds", listOfVisitIds);
         return queryToGetObservations.list();
     }

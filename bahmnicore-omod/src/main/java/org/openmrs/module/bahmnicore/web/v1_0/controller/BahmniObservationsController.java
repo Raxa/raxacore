@@ -33,8 +33,8 @@ public class BahmniObservationsController extends BaseRestController {
     @ResponseBody
     public List<ObservationData> get(@RequestParam(value = "patientUuid", required = true) String patientUUID,
                                      @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
-                                     @RequestParam(value = "conceptName", required = true) String conceptName) {
-        List<Obs> obsForPerson = personObsService.getObsForPersonAndConceptNameAndNumberOfVisits(patientUUID, conceptName, numberOfVisits);
+                                     @RequestParam(value = "conceptName", required = true) String[] conceptNames) {
+        List<Obs> obsForPerson = personObsService.getObsForPersonAndConceptNameAndNumberOfVisits(patientUUID, conceptNames, numberOfVisits);
         List<ObservationData> observationDataList = new BahmniObservationsMapper().map(obsForPerson);
         return observationDataList;
     }
