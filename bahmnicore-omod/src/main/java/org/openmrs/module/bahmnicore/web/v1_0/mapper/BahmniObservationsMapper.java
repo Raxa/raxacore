@@ -21,12 +21,11 @@ public class BahmniObservationsMapper {
 
     private List<ObservationData> recurse(Set<Obs> obsForPerson, List<ObservationData> mappedObservations) {
         for (Obs obs : obsForPerson) {
-            Set<Obs> groupMembers = obs.getGroupMembers(); // TODO : null condition
-
+            Set<Obs> groupMembers = obs.getGroupMembers();
             if (groupMembers == null || groupMembers.isEmpty()) {
                 mappedObservations.add(new ObservationData(obs));
             } else if (isConceptDetails(obs.getConcept())) {
-                mappedObservations.add(mapFruit(obs));
+                mappedObservations.add(createBahmniObservation(obs));
             } else {
                 recurse(groupMembers, mappedObservations);
             }
@@ -35,7 +34,7 @@ public class BahmniObservationsMapper {
         return mappedObservations;
     }
 
-    private ObservationData mapFruit(Obs conceptDetailsObs) {
+    private ObservationData createBahmniObservation(Obs conceptDetailsObs) {
         ObservationData observationData = null;
         long duration = 0l;
         boolean isAbnormal = false;
@@ -43,7 +42,7 @@ public class BahmniObservationsMapper {
             if (isDuration(anObservation.getConcept())) {
                 duration = anObservation.getValueNumeric().longValue();
             } else if (isAbnormal(anObservation.getConcept())) {
-                isAbnormal = Boolean.parseBoolean(anObservation.getValueCoded().getName().getName());
+                isAbnormal = Boolean.parseBoolean(anObservation.getValueCoded().getName(LocaleUtility.getDefaultLocale()).getName());
             } else if (hasValue(anObservation)) {
                 observationData = new ObservationData(anObservation);
             }

@@ -61,7 +61,7 @@ public class EncounterTransactionMapperBuilderTest {
         EncounterTransactionMapperBuilder transactionMapperBuilder = new EncounterTransactionMapperBuilder(observationsMapper,null,null,new EncounterProviderMapper());
         EncounterTransactionMapper encounterTransactionMapper = transactionMapperBuilder.withProviderMapper().build();
 
-        Encounter encounter = new EncounterBuilder().build();
+        Encounter encounter = new EncounterBuilder().withDefaults().build();
         encounter.setOrders(orders);
         encounter.setObs(allObs);
         EncounterTransaction.Disposition disposition = new EncounterTransaction.Disposition();

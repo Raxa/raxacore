@@ -22,7 +22,6 @@ public class BahmniObservationsController extends BaseRestController {
     private BahmniPersonObsService personObsService;
 
     @Autowired
-
     public BahmniObservationsController(BahmniPersonObsService personObsService) {
         this.personObsService = personObsService;
     }

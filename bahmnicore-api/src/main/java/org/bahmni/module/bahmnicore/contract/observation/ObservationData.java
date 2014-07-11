@@ -10,7 +10,7 @@ public class ObservationData {
     private ConceptData concept;
     private EncounterData encounter;
     private PatientData patient;
-    private ValueData value;
+    private ValueData valueData;
     private Date obsDateTime;
     private boolean isAbnormal;
     private long duration;
@@ -23,7 +23,7 @@ public class ObservationData {
         this.concept = new ConceptData(obs.getConcept());
         this.encounter = new EncounterData(obs.getEncounter());
         this.patient = new PatientData(obs.getPerson());
-        this.value = new ValueData(obs);
+        this.valueData = new ValueData(obs);
         this.obsDateTime = obs.getObsDatetime();
     }
 
@@ -59,12 +59,12 @@ public class ObservationData {
         this.patient = patient;
     }
 
-    public ValueData getValue() {
-        return value;
+    public ValueData getValueData() {
+        return valueData;
     }
 
-    public void setValue(ValueData value) {
-        this.value = value;
+    public void setValueData(ValueData value) {
+        this.valueData = value;
     }
 
     public Date getObsDateTime() {

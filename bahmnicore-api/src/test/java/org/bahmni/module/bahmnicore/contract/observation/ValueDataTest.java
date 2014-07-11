@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 public class ValueDataTest {
     @Test
     public void value_coded_answer_should_be_set_as_name() throws Exception {
@@ -27,6 +29,21 @@ public class ValueDataTest {
         ValueData valueData = new ValueData(obs);
         assertEquals("N/A", valueData.getConceptDataType());
         assertEquals("True", valueData.getValue());
+    }
+
+    @Test
+    public void value_coded_answer_should_be_set_as_null_when_value_coded_absent() throws Exception {
+        Concept conceptAnswer = new Concept();
+        conceptAnswer.setNames(getTrueConceptName());
+
+        Concept concept = getNAConcept();
+
+        Obs obs = new Obs();
+        obs.setConcept(concept);
+
+        ValueData valueData = new ValueData(obs);
+        assertEquals("N/A", valueData.getConceptDataType());
+        assertNull(valueData.getValue());
     }
 
     private Concept getNAConcept() {
