@@ -998,4 +998,43 @@
             select true, person_id, 'Billing', 'System', 1, @uuid, now() from users where username =  'Billing System';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201407141716" author="vinay">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM privilege where privilege = 'Get Order Frequencies';
+            </sqlCheck>
+        </preConditions>
+        <comment>New privileges added</comment>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            INSERT INTO `privilege` (`privilege`,`description`,`uuid`) VALUES ('Get Order Frequencies','Able to get Order Frequencies',@uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201407141717" author="vinay">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM privilege where privilege = 'Manage Order Frequencies';
+            </sqlCheck>
+        </preConditions>
+        <comment>New privileges added</comment>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            INSERT INTO `privilege` (`privilege`,`description`,`uuid`) VALUES ('Manage Order Frequencies','Able to add/edit/retire Order Frequencies',@uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201407141718" author="vinay">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM privilege where privilege = 'Get Care Settings';
+            </sqlCheck>
+        </preConditions>
+        <comment>New privileges added</comment>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            INSERT INTO `privilege` (`privilege`,`description`,`uuid`) VALUES ('Get Care Settings','Able to get Care Settings',@uuid);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
