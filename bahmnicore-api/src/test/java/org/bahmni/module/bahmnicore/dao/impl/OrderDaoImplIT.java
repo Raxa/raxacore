@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
 import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,17 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
 
         drugOrders = orderDao.getPrescribedDrugOrders(patient, null, null);
         assertThat(drugOrders.size(), is(equalTo(3)));
+    }
+
+    @Test
+    public void shouldFetchVisitsWithGivenOrderType() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Patient patient = Context.getPatientService().getPatient(1);
+
+        List<Visit> visits = orderDao.getVisitsWithOrders(patient, "TestOrder", true, 1);
+
+        assertThat(visits.size(), is(equalTo(1)));
+        assertThat(visits.get(0).getId(), is(equalTo(5)));
     }
 
     private List<String> getInstructions(List<DrugOrder> activeOrders) {

@@ -319,6 +319,8 @@
                             <includes>
                                 <include>**/*EventWorkerIT.java</include>
                                 <include>**/*ServiceImplIT.java</include>
+                                <include>**/LabOrderResultsServiceIT.java</include>
+                                <include>**/OrderDaoImplIT.java</include>
                                 <include>**/*Test.java</include>
                             </includes>
                         </configuration>

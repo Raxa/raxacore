@@ -6,6 +6,7 @@ import org.bahmni.module.bahmnicore.model.BahmniVisit.LabOrderResults;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
 import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
@@ -33,13 +34,13 @@ public class LabOrderResultsService {
     @Autowired
     private EncounterService encounterService;
 
-    public LabOrderResults getAll(Patient patient) {
+    public LabOrderResults getAll(Patient patient, List<Visit> visits) {
         List<EncounterTransaction.TestOrder> testOrders = new ArrayList<>();
         List<EncounterTransaction.Observation> observations = new ArrayList<>();
         Map<String, Encounter> encounterTestOrderUuidMap = new HashMap<>();
         Map<String, Encounter> encounterObservationMap = new HashMap<>();
 
-        List<Encounter> encounters = encounterService.getEncounters(patient, null, null, null, null, null, null, null, null, false);
+        List<Encounter> encounters = encounterService.getEncounters(patient, null, null, null, null, null, null, null, visits, false);
         EncounterTransactionMapper encounterTransactionMapper = encounterTransactionMapperBuilder.withOrderMapper().build();
         for (Encounter encounter : encounters) {
             EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, false);

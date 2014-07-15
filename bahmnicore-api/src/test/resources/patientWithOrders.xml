@@ -55,6 +55,7 @@
     <orders order_id="23" order_type_id="15" encounter_id="17" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="NEW" order_number="6" instructions="another expire-date in future" start_date="2013-08-08 00:00:00.0" auto_expire_date="2099-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="2" uuid="bda9d548-f22a-11e3-b47b-c6959a4485cd"/>
 
     <orders order_id="24" order_type_id="15" encounter_id="18" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="NEW" order_number="7" instructions="drug in active visit" start_date="2014-02-01 00:00:00.0" creator="1" date_created="2014-02-01 00:00:00.0" voided="false" patient_id="1" uuid="0246222e-f5f5-11e3-b47b-c6959a4485cd"/>
+    <orders order_id="25" order_type_id="15" encounter_id="18" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="NEW" order_number="8" instructions="LabOrder in active visit" start_date="2014-02-01 00:00:00.0" creator="1" date_created="2014-02-01 00:00:00.0" voided="false" patient_id="1" uuid="cba00378-0c03-11e4-bb80-f18addb6f9bb"/>
 
     <drug_order order_id="15" drug_inventory_id="3" dose="125.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
     <drug_order order_id="16" drug_inventory_id="3" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
@@ -63,5 +64,7 @@
     <drug_order order_id="23" drug_inventory_id="3" dose="515.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
     <drug_order order_id="24" drug_inventory_id="3" dose="615.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
 
+
+    <test_order order_id="25"/>
 
 </dataset>
