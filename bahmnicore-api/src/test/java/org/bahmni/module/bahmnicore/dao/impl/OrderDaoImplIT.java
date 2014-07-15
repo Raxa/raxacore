@@ -47,10 +47,10 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
         assertThat(drugOrdersInLastVisit.size(), is(equalTo(2)));
 
         List<DrugOrder> drugOrdersInLastTwoVisit = orderDao.getPrescribedDrugOrders(patient, false, 2);
-        assertThat(drugOrdersInLastTwoVisit.size(), is(equalTo(4)));
+        assertThat(drugOrdersInLastTwoVisit.size(), is(equalTo(3)));
 
         List<DrugOrder> drugOrders = orderDao.getPrescribedDrugOrders(patient, false, null);
-        assertThat(drugOrders.size(), is(equalTo(4)));
+        assertThat(drugOrders.size(), is(equalTo(3)));
     }
 
     @Test
@@ -59,10 +59,10 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
         Patient patient = Context.getPatientService().getPatient(1);
 
         List<DrugOrder> drugOrders = orderDao.getPrescribedDrugOrders(patient, true, null);
-        assertThat(drugOrders.size(), is(equalTo(5)));
+        assertThat(drugOrders.size(), is(equalTo(4)));
 
         drugOrders = orderDao.getPrescribedDrugOrders(patient, null, null);
-        assertThat(drugOrders.size(), is(equalTo(4)));
+        assertThat(drugOrders.size(), is(equalTo(3)));
     }
 
     private List<String> getInstructions(List<DrugOrder> activeOrders) {

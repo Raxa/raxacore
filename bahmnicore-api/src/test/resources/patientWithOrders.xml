@@ -14,9 +14,12 @@
     <order_type order_type_id="15" name="Radiology Order" description="An order for radiology tests" creator="1" date_created="2008-08-15 13:49:47.0" retired="false" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>
 
     <concept concept_id="24" retired="false" datatype_id="4" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-e601-4326-bb05-c6e11fe3d9ba"/>
-    <concept_name concept_id="24" name="Paracetamol" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="49310077-e601-4326-bb05-c6e11fe3d9ba" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_name concept_id="24" name="Paracetamol" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="24" voided="false" uuid="49310077-e601-4326-bb05-c6e11fe3d9ba" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
     <concept concept_id="25" retired="false" datatype_id="3" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb"/>
-    <concept_name concept_id="25" name="Radiology Results" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_name concept_id="25" name="Radiology Results" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="25" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="2000" retired="false" datatype_id="3" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="28bdd848-08ec-11e4-bb80-f18addb6f9bb"/>
+    <concept_name concept_id="2000" name="2/day x 7 days/week" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="2000" voided="false" uuid="00e9260a-08ed-11e4-bb80-f18addb6f9bb" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
     <location location_id="1" name="REG" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
     <location location_id="2" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="be69741b-29e9-49a1-adc9-2a726e6610e4"/>
@@ -42,25 +45,23 @@
     <encounter encounter_id="17" encounter_type="2" patient_id="2" visit_id="4" location_id="2" encounter_datetime="2008-09-01 00:00:00.0" creator="1" date_created="2004-08-18 14:09:05.0" voided="false" uuid="968317d6-f22a-11e3-b47b-c6959a4485cd"/>
     <encounter encounter_id="18" encounter_type="2" patient_id="1" visit_id="5" location_id="2" encounter_datetime="2014-02-01 00:00:00.0" creator="1" date_created="2014-02-01 14:09:05.0" voided="false" uuid="b12798aa-f5f4-11e3-b47b-c6959a4485cd"/>
 
-    <orders order_id="15" order_type_id="15" encounter_id="15" urgency="ROUTINE" concept_id="24" instructions="non-expiring" start_date="2008-08-08 00:00:00.0" discontinued="false" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="6d0ae386-707a-4629-9850-f15206e63ab0"/>
-    <orders order_id="16" order_type_id="15" encounter_id="15" urgency="ROUTINE" concept_id="24" instructions="expire-date in future" start_date="2013-08-08 00:00:00.0" auto_expire_date="2099-08-08 00:00:00.0" discontinued="false" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="92c1bdef-72d4-49d9-8a1f-804892f66acf"/>
-    <orders order_id="17" order_type_id="15" encounter_id="15" urgency="ROUTINE" concept_id="24" instructions="discontinued 1" start_date="2014-08-08 00:00:00.0" auto_expire_date="2099-08-08 00:00:00.0" discontinued="true" discontinued_date="2008-08-15 00:00:00.0" discontinued_by="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abf"/>
-    <orders order_id="18" order_type_id="15" encounter_id="15" urgency="ROUTINE" concept_id="24" instructions="expired" start_date="2014-08-08 00:00:00.0" discontinued="false" auto_expire_date="2009-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abe"/>
-    <orders order_id="19" order_type_id="15" encounter_id="15" urgency="ROUTINE" concept_id="24" instructions="discontinued 2" start_date="2014-01-08 00:00:00.0" discontinued="true" discontinued_date="2008-08-15 00:00:00.0" discontinued_by="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abc"/>
-    <orders order_id="20" order_type_id="15" encounter_id="15" urgency="ROUTINE" concept_id="24" instructions="voided" start_date="2013-08-08 00:00:00.0" auto_expire_date="2099-08-08 00:00:00.0" discontinued="false" creator="1" date_created="2008-08-19 12:20:22.0" voided="true" patient_id="1" uuid="92c1bdef-72d4-49d9-8a1f-804892f66bcf"/>
+    <orders order_id="15" order_type_id="15" encounter_id="15" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="NEW" order_number="1" instructions="non-expiring" start_date="2008-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="6d0ae386-707a-4629-9850-f15206e63ab0"/>
+    <orders order_id="16" order_type_id="15" encounter_id="15" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="NEW" order_number="2" instructions="expire-date in future" start_date="2013-08-08 00:00:00.0" auto_expire_date="2099-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="92c1bdef-72d4-49d9-8a1f-804892f66acf"/>
+    <orders order_id="17" order_type_id="15" encounter_id="15" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="DISCONTINUE" order_number="2" instructions="discontinued 1" start_date="2014-08-08 00:00:00.0" auto_expire_date="2099-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abf"/>
+    <orders order_id="18" order_type_id="15" encounter_id="15" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="NEW" order_number="3" instructions="expired" start_date="2014-08-08 00:00:00.0" auto_expire_date="2009-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abe"/>
 
-    <orders order_id="21" order_type_id="15" encounter_id="16" urgency="ROUTINE" concept_id="24" instructions="another-non-expiring" start_date="2008-08-08 00:00:00.0" discontinued="false" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="a5db75ba-f208-11e3-b47b-c6959a4485cd"/>
-    <orders order_id="22" order_type_id="15" encounter_id="16" urgency="ROUTINE" concept_id="24" instructions="discontinued 1" start_date="2004-08-08 00:00:00.0" auto_expire_date="2099-08-08 00:00:00.0" discontinued="true" discontinued_date="2008-08-15 00:00:00.0" discontinued_by="1" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="a939d5b2-f208-11e3-b47b-c6959a4485cd"/>
+    <orders order_id="21" order_type_id="15" encounter_id="16" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="NEW" order_number="5" instructions="another-non-expiring" start_date="2008-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="a5db75ba-f208-11e3-b47b-c6959a4485cd"/>
 
-    <orders order_id="23" order_type_id="15" encounter_id="17" urgency="ROUTINE" concept_id="24" instructions="another expire-date in future" start_date="2013-08-08 00:00:00.0" auto_expire_date="2099-08-08 00:00:00.0" discontinued="false" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="2" uuid="bda9d548-f22a-11e3-b47b-c6959a4485cd"/>
+    <orders order_id="23" order_type_id="15" encounter_id="17" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="NEW" order_number="6" instructions="another expire-date in future" start_date="2013-08-08 00:00:00.0" auto_expire_date="2099-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="2" uuid="bda9d548-f22a-11e3-b47b-c6959a4485cd"/>
 
-    <orders order_id="24" order_type_id="15" encounter_id="18" urgency="ROUTINE" concept_id="24" instructions="drug in active visit" start_date="2014-02-01 00:00:00.0" discontinued="false" creator="1" date_created="2014-02-01 00:00:00.0" voided="false" patient_id="1" uuid="0246222e-f5f5-11e3-b47b-c6959a4485cd"/>
+    <orders order_id="24" order_type_id="15" encounter_id="18" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="NEW" order_number="7" instructions="drug in active visit" start_date="2014-02-01 00:00:00.0" creator="1" date_created="2014-02-01 00:00:00.0" voided="false" patient_id="1" uuid="0246222e-f5f5-11e3-b47b-c6959a4485cd"/>
 
-    <drug_order order_id="15" drug_inventory_id="3" dose="125.0" units="mg" frequency="2/day x 7 days/week" prn="false" complex="false"/>
-    <drug_order order_id="16" drug_inventory_id="3" dose="225.0" units="mg" frequency="1/day x 7 days/week" prn="false" complex="false"/>
-    <drug_order order_id="21" drug_inventory_id="3" dose="135.0" units="mg" frequency="1/day x 7 days/week" prn="false" complex="false"/>
-    <drug_order order_id="22" drug_inventory_id="3" dose="215.0" units="mg" frequency="1/day x 7 days/week" prn="false" complex="false"/>
-    <drug_order order_id="23" drug_inventory_id="3" dose="515.0" units="mg" frequency="1/day x 7 days/week" prn="false" complex="false"/>
-    <drug_order order_id="24" drug_inventory_id="3" dose="615.0" units="mg" frequency="1/day x 7 days/week" prn="false" complex="false"/>
+    <drug_order order_id="15" drug_inventory_id="3" dose="125.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="16" drug_inventory_id="3" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="17" drug_inventory_id="3" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="21" drug_inventory_id="3" dose="135.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="23" drug_inventory_id="3" dose="515.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="24" drug_inventory_id="3" dose="615.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+
 
 </dataset>

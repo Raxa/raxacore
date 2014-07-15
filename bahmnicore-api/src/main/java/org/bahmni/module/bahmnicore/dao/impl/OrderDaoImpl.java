@@ -38,7 +38,7 @@ public class OrderDaoImpl implements OrderDao {
 
         Criterion notAutoExpired = Restrictions.or(Restrictions.ge("autoExpireDate", new Date()),
                 Restrictions.isNull("autoExpireDate"));
-        Criterion notDiscontinued = Restrictions.eq("discontinued", false);
+        Criterion notDiscontinued = Restrictions.ne("action", Order.Action.DISCONTINUE);
         Criterion notVoided = Restrictions.eq("voided", false);
 
         Junction allConditions = Restrictions.conjunction()
@@ -57,8 +57,9 @@ public class OrderDaoImpl implements OrderDao {
         List<Integer> visitWithDrugOrderIds = getVisitsWithDrugOrders(patient, includeActiveVisit, numberOfVisits);
         if(!visitWithDrugOrderIds.isEmpty()) {
             Query query = currentSession.createQuery("select d from DrugOrder d, Encounter e, Visit v where d.encounter = e.encounterId and e.visit = v.visitId and v.visitId in (:visitIds) " +
-                    "and d.voided = false order by d.startDate desc");
+                    "and d.voided = false and d.action != :discontinued order by d.startDate desc");
             query.setParameterList("visitIds", visitWithDrugOrderIds);
+            query.setParameter("discontinued", Order.Action.DISCONTINUE);
             return (List<DrugOrder>) query.list();
         }
         return new ArrayList<>();
