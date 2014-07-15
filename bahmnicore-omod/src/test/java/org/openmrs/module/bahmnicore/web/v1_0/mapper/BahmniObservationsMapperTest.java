@@ -4,21 +4,62 @@ import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
 import org.bahmni.module.bahmnicore.mapper.builder.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openmrs.*;
+import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.openmrs.module.webservices.rest.web.resource.api.Resource;
 import org.openmrs.util.LocaleUtility;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({LocaleUtility.class})
 public class BahmniObservationsMapperTest {
+    public static final String PATIENT_RESOURCE_URI = "/patient/Uri";
+    public static final String ENCOUNTER_RESOURCE_URI = "/encounter/Uri";
+    public static final String VISIT_RESOURCE_URI = "/visit/Uri";
+
     private BahmniObservationsMapper bahmniObservationsMapper;
+
 
     @Before
     public void setUp() throws Exception {
-        bahmniObservationsMapper = new BahmniObservationsMapper();
+        Locale defaultLocale = new Locale("en", "GB");
+        mockStatic(LocaleUtility.class);
+        when(LocaleUtility.getDefaultLocale()).thenReturn(defaultLocale);
+
+        Resource mockResource = mock(Resource.class);
+        when(mockResource.getUri(any())).thenAnswer(new Answer<String>() {
+            @Override
+            public String answer(InvocationOnMock invocation) throws Throwable {
+                Object[] arguments = invocation.getArguments();
+                if (arguments[0] instanceof Patient)
+                    return PATIENT_RESOURCE_URI;
+                else if (arguments[0] instanceof Encounter)
+                    return ENCOUNTER_RESOURCE_URI;
+                else if (arguments[0] instanceof Visit)
+                    return VISIT_RESOURCE_URI;
+
+                return null;
+            }
+        });
+        RestService mockRestService = mock(RestService.class);
+        when(mockRestService.getResourceByName(anyString())).thenReturn(mockResource);
+
+        bahmniObservationsMapper = new BahmniObservationsMapper(mockRestService);
     }
 
     @Test
@@ -32,19 +73,20 @@ public class BahmniObservationsMapperTest {
         Person person = new PersonBuilder().withUUID("puuid").build();
         Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(date).build();
         Encounter encounter = new EncounterBuilder().withVisit(visit).withPerson(person).withUUID("euuid").withDatetime(date).build();
-        Concept concept1 = new ConceptBuilder().withName("tconcept1").withDataType("cdatatype").withUUID("cuuid1").withClass("").build();
+        Concept concept1 = new ConceptBuilder().withName("tconcept1").withDataTypeNumeric().withUUID("cuuid1").withClass("").build();
 
-        Obs obs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept1).withValue("ovalue1").withDatetime(date).build();
+        Obs obs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept1).withValue(5.0).withDatetime(date).build();
 
         List<ObservationData> mappedObservations = bahmniObservationsMapper.map(Arrays.asList(obs));
 
         assertEquals(1, mappedObservations.size());
         ObservationData observationData = mappedObservations.get(0);
-        assertEquals(obs.getConcept().getName(LocaleUtility.getDefaultLocale()).getName(), observationData.getConcept().getName());
-        assertEquals(obs.getEncounter().getVisit().getUuid(), observationData.getVisit().getUuid());
-        assertEquals(obs.getEncounter().getVisit().getStartDatetime(), observationData.getVisit().getStartDateTime());
-        assertEquals(obs.getPerson().getUuid(), observationData.getPatient().getUuid());
-        assertEquals(obs.getConcept().getDatatype().getName(), observationData.getValueData().getConceptDataType());
+        assertEquals(obs.getConcept().getName().getName(), observationData.getConcept());
+        assertEquals(PATIENT_RESOURCE_URI, observationData.getPatientURI());
+        assertEquals(VISIT_RESOURCE_URI, observationData.getVisitURI());
+        assertEquals(ENCOUNTER_RESOURCE_URI, observationData.getEncounterURI());
+        assertEquals("5.0", observationData.getValue());
+        assertEquals("Numeric", observationData.getValueDatatype());
     }
 
     @Test
@@ -53,9 +95,9 @@ public class BahmniObservationsMapperTest {
         Person person = new PersonBuilder().withUUID("puuid").build();
         Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(date).build();
         Encounter encounter = new EncounterBuilder().withVisit(visit).withPerson(person).withUUID("euuid").withDatetime(date).build();
-        Concept concept1 = new ConceptBuilder().withName("tconcept").withDataType("cdatatype").withUUID("cuuid").withClass("").build();
-        Concept concept11 = new ConceptBuilder().withName("tconcept1").withDataType("cdatatype").withUUID("cuuid1").withClass("").build();
-        Concept concept12 = new ConceptBuilder().withName("tconcept2").withDataType("cdatatype").withUUID("cuuid2").withClass("").build();
+        Concept concept1 = new ConceptBuilder().withName("tconcept").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid").withClass("").build();
+        Concept concept11 = new ConceptBuilder().withName("tconcept1").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid1").withClass("").build();
+        Concept concept12 = new ConceptBuilder().withName("tconcept2").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid2").withClass("").build();
 
         Obs obs11 = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept11).withValue("ovalue1").withDatetime(date).build();
         Obs obs12 = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept12).withValue("ovalue2").withDatetime(date).build();
@@ -66,34 +108,29 @@ public class BahmniObservationsMapperTest {
         assertEquals(2, mappedObservations.size());
         ObservationData observationData1 = mappedObservations.get(0);
         ObservationData observationData2 = mappedObservations.get(1);
-        assertEquals("puuid", observationData1.getPatient().getUuid());
-        assertEquals("puuid", observationData2.getPatient().getUuid());
-        assertEquals("vuuid", observationData2.getVisit().getUuid());
-        assertEquals("vuuid", observationData2.getVisit().getUuid());
         assertEquals(0, observationData1.getDuration());
         assertEquals(0, observationData2.getDuration());
         assertEquals(false, observationData1.isAbnormal());
         assertEquals(false, observationData2.isAbnormal());
         String[] concepts = {"tconcept1", "tconcept2"};
         String[] obsValues = {"ovalue1", "ovalue2"};
-        assertTrue(Arrays.asList(concepts).contains(observationData1.getConcept().getName()));
-        assertTrue(Arrays.asList(concepts).contains(observationData2.getConcept().getName()));
-        assertTrue(Arrays.asList(obsValues).contains(observationData1.getValueData().getValue()));
-        assertTrue(Arrays.asList(obsValues).contains(observationData2.getValueData().getValue()));
+        assertTrue(Arrays.asList(concepts).contains(observationData1.getConcept()));
+        assertTrue(Arrays.asList(concepts).contains(observationData2.getConcept()));
+        assertTrue(Arrays.asList(obsValues).contains(observationData1.getValue()));
+        assertTrue(Arrays.asList(obsValues).contains(observationData2.getValue()));
     }
 
     @Test
     public void return_mapped_observations_for_abnormal_observation_structure() throws Exception {
-
         Date date = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse("January 2, 2010");
         Person person = new PersonBuilder().withUUID("puuid").build();
         Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(date).build();
         Encounter encounter = new EncounterBuilder().withVisit(visit).withPerson(person).withUUID("euuid").withDatetime(date).build();
 
-        Concept concept1 = new ConceptBuilder().withName("tconcept").withDataType("cdatatype").withUUID("cuuid").withClass(BahmniObservationsMapper.CONCEPT_DETAILS_CONCEPT_CLASS).build();
-        Concept concept11 = new ConceptBuilder().withName("tconcept1").withDataType("CODED").withUUID("cuuid1").withClass(BahmniObservationsMapper.ABNORMAL_CONCEPT_CLASS).build();
-        Concept concept111 = new ConceptBuilder().withName("True").withDataType("cdatatype").withUUID("cuuid11").withClass("").build();
-        Concept concept12 = new ConceptBuilder().withName("tconcept2").withDataType("cdatatype").withUUID("cuuid2").withClass("").build();
+        Concept concept1 = new ConceptBuilder().withName("tconcept").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid").withClass(BahmniObservationsMapper.CONCEPT_DETAILS_CONCEPT_CLASS).build();
+        Concept concept11 = new ConceptBuilder().withName("tconcept1").withCodedDataType().withUUID("cuuid1").withClass(BahmniObservationsMapper.ABNORMAL_CONCEPT_CLASS).build();
+        Concept concept111 = new ConceptBuilder().withName("True").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid11").withClass("").build();
+        Concept concept12 = new ConceptBuilder().withName("tconcept2").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid2").withClass("").build();
 
         Obs obs11 = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept11).withValue(concept111).withDatetime(date).build();
         Obs obs12 = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept12).withValue("ovalue").withDatetime(date).build();
@@ -104,8 +141,8 @@ public class BahmniObservationsMapperTest {
         ObservationData observationData = mappedObservations.get(0);
         assertEquals(1, mappedObservations.size());
         assertTrue(observationData.isAbnormal());
-        assertEquals("ovalue", observationData.getValueData().getValue());
-        assertEquals("cdatatype", observationData.getValueData().getConceptDataType());
+        assertEquals("ovalue", observationData.getValue());
+        assertEquals("cdatatype", observationData.getValueDatatype());
     }
 
     @Test
@@ -117,9 +154,9 @@ public class BahmniObservationsMapperTest {
         Encounter encounter = new EncounterBuilder().withVisit(visit).withPerson(person).withUUID("euuid").withDatetime(date).build();
 
         Concept concept1 = new ConceptBuilder().withName("tconcept").withDataType("cdatatype").withUUID("cuuid").withClass(BahmniObservationsMapper.CONCEPT_DETAILS_CONCEPT_CLASS).build();
-        Concept concept11 = new ConceptBuilder().withName("tconcept1").withDataType("CODED").withUUID("cuuid1").withClass(BahmniObservationsMapper.ABNORMAL_CONCEPT_CLASS).build();
+        Concept concept11 = new ConceptBuilder().withName("tconcept1").withCodedDataType().withUUID("cuuid1").withClass(BahmniObservationsMapper.ABNORMAL_CONCEPT_CLASS).build();
         Concept concept111 = new ConceptBuilder().withName("True").withDataType("cdatatype").withUUID("cuuid11").withClass("").build();
-        Concept concept12 = new ConceptBuilder().withName("tconcept2").withDataType(ConceptDatatype.CODED).withUUID("cuuid2").withClass("").build();
+        Concept concept12 = new ConceptBuilder().withName("tconcept2").withCodedDataType().withUUID("cuuid2").withClass("").build();
         Concept concept112 = new ConceptBuilder().withName("tconcept3").withDataType("answer").withUUID("cuuid12").withClass("").build();
 
         Obs obs11 = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept11).withValue(concept111).withDatetime(date).build();
@@ -131,8 +168,7 @@ public class BahmniObservationsMapperTest {
         ObservationData observationData = mappedObservations.get(0);
         assertEquals(1, mappedObservations.size());
         assertTrue(observationData.isAbnormal());
-        assertEquals("tconcept3", observationData.getValueData().getValue());
-        assertEquals("CWE", observationData.getValueData().getConceptDataType());
+        assertEquals("tconcept3", observationData.getValue());
     }
 
 }

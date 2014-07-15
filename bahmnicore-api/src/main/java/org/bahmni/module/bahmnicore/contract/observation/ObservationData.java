@@ -2,69 +2,74 @@ package org.bahmni.module.bahmnicore.contract.observation;
 
 
 import org.openmrs.Obs;
+import org.openmrs.api.context.Context;
 
 import java.util.Date;
 
 public class ObservationData {
-    private VisitData visit;
-    private ConceptData concept;
-    private EncounterData encounter;
-    private PatientData patient;
-    private ValueData valueData;
-    private Date obsDateTime;
+    private String concept;
+    private String value;
+    private String valueDatatype;
+
     private boolean isAbnormal;
     private long duration;
+
+    private Date obsDateTime;
+    private String visitURI;
+    private String encounterURI;
+    private String patientURI;
 
     public ObservationData() {
     }
 
-    public ObservationData(Obs obs) {
-        this.visit = new VisitData(obs.getEncounter().getVisit());
-        this.concept = new ConceptData(obs.getConcept());
-        this.encounter = new EncounterData(obs.getEncounter());
-        this.patient = new PatientData(obs.getPerson());
-        this.valueData = new ValueData(obs);
+    public ObservationData(Obs obs, String patientURI, String visitURI, String encounterURI) {
+        this.visitURI = visitURI;
+        this.concept = obs.getConcept().getName().getName();
+        this.encounterURI = encounterURI;
+        this.patientURI = patientURI;
+        this.value = obs.getValueAsString(Context.getLocale());
+        this.valueDatatype = obs.getConcept().getDatatype().getName();
         this.obsDateTime = obs.getObsDatetime();
     }
 
-    public VisitData getVisit() {
-        return visit;
+    public String getVisitURI() {
+        return visitURI;
     }
 
-    public void setVisit(VisitData visit) {
-        this.visit = visit;
+    public void setVisitURI(String visit) {
+        this.visitURI = visit;
     }
 
-    public ConceptData getConcept() {
+    public String getConcept() {
         return concept;
     }
 
-    public void setConcept(ConceptData concept) {
+    public void setConcept(String concept) {
         this.concept = concept;
     }
 
-    public EncounterData getEncounter() {
-        return encounter;
+    public String getEncounterURI() {
+        return encounterURI;
     }
 
-    public void setEncounter(EncounterData encounter) {
-        this.encounter = encounter;
+    public void setEncounterURI(String encounter) {
+        this.encounterURI = encounter;
     }
 
-    public PatientData getPatient() {
-        return patient;
+    public String getPatientURI() {
+        return patientURI;
     }
 
-    public void setPatient(PatientData patient) {
-        this.patient = patient;
+    public void setPatientURI(String patientURI) {
+        this.patientURI = patientURI;
     }
 
-    public ValueData getValueData() {
-        return valueData;
+    public String getValue() {
+        return value;
     }
 
-    public void setValueData(ValueData value) {
-        this.valueData = value;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public Date getObsDateTime() {
@@ -91,4 +96,11 @@ public class ObservationData {
         this.duration = duration;
     }
 
+    public String getValueDatatype() {
+        return valueDatatype;
+    }
+
+    public void setValueDatatype(String valueDatatype) {
+        this.valueDatatype = valueDatatype;
+    }
 }

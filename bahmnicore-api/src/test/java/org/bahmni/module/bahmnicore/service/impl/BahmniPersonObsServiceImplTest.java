@@ -26,7 +26,7 @@ public class BahmniPersonObsServiceImplTest {
     @Test
     public void shouldGetPersonObs() throws Exception {
         personObsService.getObsForPerson(personUUID);
-        verify(personObsDao).getObsByPerson(personUUID);
+        verify(personObsDao).getNumericObsByPerson(personUUID);
     }
 
     @Test

@@ -16,8 +16,9 @@ import java.util.List;
 public class PersonObsDaoImpl implements PersonObsDao {
     @Autowired
     private SessionFactory sessionFactory;
+
     @Override
-    public List<Obs> getObsByPerson(String personUUID) {
+    public List<Obs> getNumericObsByPerson(String personUUID) {
         Query query = sessionFactory.getCurrentSession().createQuery(
                         "select obs from Obs as obs inner join fetch " +
                                 "obs.concept as concept inner join fetch " +
@@ -25,7 +26,6 @@ public class PersonObsDaoImpl implements PersonObsDao {
                                 "obs.person as person " +
                                 "where datatype.hl7Abbreviation= '" + ConceptDatatype.NUMERIC + "' and person.uuid= :personUUID");
         query.setString("personUUID", personUUID);
-        ConceptDatatype numeric = new ConceptDataTypeBuilder().numeric();
         return query.list();
 
     }
@@ -33,11 +33,12 @@ public class PersonObsDaoImpl implements PersonObsDao {
     @Override
     public List<Concept> getNumericConceptsForPerson(String personUUID) {
         Query query = sessionFactory.getCurrentSession().createQuery(
-                        "select concept from Obs as obs inner join " +
-                                "obs.concept as concept inner join " +
-                                "concept.datatype as datatype inner join " +
-                                "obs.person as person " +
-                                "where datatype.hl7Abbreviation= '" + ConceptDatatype.NUMERIC + "' and person.uuid= :personUUID");
+                    "select concept " +
+                        "from Obs as obs " +
+                        "inner join obs.concept as concept " +
+                        "inner join concept.datatype as datatype " +
+                        "inner join obs.person as person " +
+                        "where datatype.hl7Abbreviation = '" + ConceptDatatype.NUMERIC + "' and person.uuid = :personUUID");
         query.setString("personUUID", personUUID);
         return query.list();
 
@@ -47,11 +48,12 @@ public class PersonObsDaoImpl implements PersonObsDao {
     public List<Obs> getObsFor(String patientUuid, String[] conceptNames, Integer numberOfVisits) {
         List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
 
-        Query queryToGetObservations = sessionFactory.getCurrentSession().createQuery("select obs" +
+        Query queryToGetObservations = sessionFactory.getCurrentSession().createQuery(
+                    "select obs" +
                         " from Obs as obs, ConceptName as cn " +
-                        " where " +
-                        " obs.person.uuid=:patientUuid " +
-                        " and obs.encounter.visit.visitId in (:listOfVisitIds) and cn.concept=obs.concept.conceptId " +
+                        " where obs.person.uuid = :patientUuid " +
+                        " and obs.encounter.visit.visitId in (:listOfVisitIds) " +
+                        " and cn.concept = obs.concept.conceptId " +
                         " and cn.name in (:conceptNames) ");
         queryToGetObservations.setString("patientUuid", patientUuid);
         queryToGetObservations.setParameterList("conceptNames", conceptNames);
@@ -60,11 +62,13 @@ public class PersonObsDaoImpl implements PersonObsDao {
     }
 
     private List<Integer> getVisitIdsFor(String patientUuid, Integer numberOfVisits) {
-        Query queryToGetVisitIds = sessionFactory
-                .getCurrentSession().createQuery("select v.visitId from Visit as v " +
-                        "where v.patient.uuid = :patientUuid order by v.startDatetime desc");
+        Query queryToGetVisitIds = sessionFactory.getCurrentSession().createQuery(
+                    "select v.visitId " +
+                        "from Visit as v " +
+                        "where v.patient.uuid = :patientUuid " +
+                        "order by v.startDatetime desc");
         queryToGetVisitIds.setString("patientUuid", patientUuid);
-        if(numberOfVisits != null){
+        if (numberOfVisits != null) {
             queryToGetVisitIds.setMaxResults(numberOfVisits);
         }
         return queryToGetVisitIds.list();

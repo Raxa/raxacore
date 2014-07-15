@@ -3,9 +3,10 @@ package org.openmrs.module.bahmnicore.web.v1_0.mapper;
 
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
-import org.openmrs.Concept;
-import org.openmrs.Obs;
-import org.openmrs.util.LocaleUtility;
+import org.openmrs.*;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 
 import java.util.*;
 
@@ -15,6 +16,16 @@ public class BahmniObservationsMapper {
     public static final String ABNORMAL_CONCEPT_CLASS = "Abnormal";
     private static final String DURATION_CONCEPT_CLASS = "Duration";
 
+    public static final String PATIENT_RESORUCE_NAME = RestConstants.VERSION_1 + "/patient";
+    public static final String ENCOUNTER_RESORUCE_NAME = RestConstants.VERSION_1 + "/encounter";
+    public static final String VISIT_RESORUCE_NAME = RestConstants.VERSION_1 + "/visit";
+
+    private final RestService restService;
+
+    public BahmniObservationsMapper(RestService restService) {
+        this.restService = restService;
+    }
+
     public List<ObservationData> map(List<Obs> obsForPerson) {
         return recurse(new HashSet<>(obsForPerson), new ArrayList<ObservationData>());
     }
@@ -23,9 +34,9 @@ public class BahmniObservationsMapper {
         for (Obs obs : obsForPerson) {
             Set<Obs> groupMembers = obs.getGroupMembers();
             if (groupMembers == null || groupMembers.isEmpty()) {
-                mappedObservations.add(new ObservationData(obs));
+                mappedObservations.add(createObservationForLeaf(obs));
             } else if (isConceptDetails(obs.getConcept())) {
-                mappedObservations.add(createBahmniObservation(obs));
+                mappedObservations.add(createObservationForGroup(obs));
             } else {
                 recurse(groupMembers, mappedObservations);
             }
@@ -34,7 +45,7 @@ public class BahmniObservationsMapper {
         return mappedObservations;
     }
 
-    private ObservationData createBahmniObservation(Obs conceptDetailsObs) {
+    private ObservationData createObservationForGroup(Obs conceptDetailsObs) {
         ObservationData observationData = null;
         long duration = 0l;
         boolean isAbnormal = false;
@@ -42,9 +53,10 @@ public class BahmniObservationsMapper {
             if (isDuration(anObservation.getConcept())) {
                 duration = anObservation.getValueNumeric().longValue();
             } else if (isAbnormal(anObservation.getConcept())) {
-                isAbnormal = Boolean.parseBoolean(anObservation.getValueCoded().getName(LocaleUtility.getDefaultLocale()).getName());
+                isAbnormal = Boolean.parseBoolean(anObservation.getValueCoded().getName().getName());
             } else if (hasValue(anObservation)) {
-                observationData = new ObservationData(anObservation);
+                observationData = createObservationForLeaf(anObservation);
+
             }
         }
 
@@ -53,8 +65,28 @@ public class BahmniObservationsMapper {
         return observationData;
     }
 
+    private ObservationData createObservationForLeaf(Obs anObservation) {
+        return new ObservationData(anObservation, getPatientURI(anObservation), getVisitURI(anObservation), getEncounterURI(anObservation));
+    }
+
+    private String getPatientURI(Obs anObservation) {
+        return getURI(PATIENT_RESORUCE_NAME, new Patient(anObservation.getPerson()));
+    }
+
+    private String getVisitURI(Obs anObservation) {
+        return getURI(VISIT_RESORUCE_NAME, anObservation.getEncounter().getVisit());
+    }
+
+    private String getEncounterURI(Obs anObservation) {
+        return getURI(ENCOUNTER_RESORUCE_NAME, anObservation.getEncounter());
+    }
+
+    private String getURI(String resourceName, Object resourceInstance){
+        return restService.getResourceByName(resourceName).getUri(resourceInstance);
+    }
+
     private boolean hasValue(Obs anObservation) {
-        return StringUtils.isNotBlank(anObservation.getValueAsString(LocaleUtility.getDefaultLocale()));
+        return StringUtils.isNotBlank(anObservation.getValueAsString(Context.getLocale()));
     }
 
     private boolean isAbnormal(Concept obsConcept) {

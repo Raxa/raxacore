@@ -4,10 +4,8 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptName;
+import org.openmrs.api.ConceptNameType;
 import org.openmrs.util.LocaleUtility;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ConceptBuilder {
     private final Concept concept;
@@ -21,17 +19,19 @@ public class ConceptBuilder {
     }
 
     public ConceptBuilder withName(String conceptName) {
-        List<ConceptName> conceptNames = new ArrayList<>();
-        conceptNames.add(new ConceptName(conceptName, LocaleUtility.getDefaultLocale()));
-        concept.setNames(conceptNames);
+        ConceptName name = new ConceptName(conceptName, LocaleUtility.getDefaultLocale());
+        name.setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
+        concept.setPreferredName(name);
         return this;
     }
 
-    public ConceptBuilder withDataType(String dataType) {
-        ConceptDatatype conceptDatatype = new ConceptDatatype();
-        conceptDatatype.setHl7Abbreviation(dataType);
-        conceptDatatype.setName(dataType);
-        concept.setDatatype(conceptDatatype);
+    public ConceptBuilder withDataType(String name) {
+        withDataType(name, "hl7Abbreviation", null);
+        return this;
+    }
+
+    public ConceptBuilder withDataType(String name, String hl7Abbreviation) {
+        withDataType(name, hl7Abbreviation, null);
         return this;
     }
 
@@ -44,6 +44,25 @@ public class ConceptBuilder {
         ConceptClass conceptClass = new ConceptClass();
         conceptClass.setName(conceptClassName);
         concept.setConceptClass(conceptClass);
+        return this;
+    }
+
+    public ConceptBuilder withDataTypeNumeric() {
+        withDataType("Numeric", ConceptDatatype.NUMERIC, ConceptDatatype.NUMERIC_UUID);
+        return this;
+    }
+
+    public ConceptBuilder withCodedDataType() {
+        withDataType("Coded", ConceptDatatype.CODED, ConceptDatatype.CODED_UUID);
+        return this;
+    }
+
+    private ConceptBuilder withDataType(String name, String hl7Abbreviation, String uuid) {
+        ConceptDatatype conceptDatatype = new ConceptDatatype();
+        conceptDatatype.setHl7Abbreviation(hl7Abbreviation);
+        conceptDatatype.setName(name);
+        conceptDatatype.setUuid(uuid);
+        concept.setDatatype(conceptDatatype);
         return this;
     }
 }

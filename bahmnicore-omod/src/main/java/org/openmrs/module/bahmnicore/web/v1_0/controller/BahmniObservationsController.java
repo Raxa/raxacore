@@ -3,8 +3,10 @@ package org.openmrs.module.bahmnicore.web.v1_0.controller;
 import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
 import org.bahmni.module.bahmnicore.service.BahmniPersonObsService;
 import org.openmrs.Obs;
+import org.openmrs.annotation.OpenmrsProfile;
 import org.openmrs.module.bahmnicore.web.v1_0.mapper.BahmniObservationsMapper;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,10 +22,12 @@ import java.util.List;
 public class BahmniObservationsController extends BaseRestController {
     @Autowired
     private BahmniPersonObsService personObsService;
-
     @Autowired
-    public BahmniObservationsController(BahmniPersonObsService personObsService) {
+    private RestService restService;
+
+    public BahmniObservationsController(BahmniPersonObsService personObsService, RestService restService) {
         this.personObsService = personObsService;
+        this.restService = restService;
     }
 
     public BahmniObservationsController() {
@@ -32,10 +36,10 @@ public class BahmniObservationsController extends BaseRestController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public List<ObservationData> get(@RequestParam(value = "patientUuid", required = true) String patientUUID,
-                                     @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
-                                     @RequestParam(value = "conceptName", required = true) String[] conceptNames) {
+                                     @RequestParam(value = "concept", required = true) String[] conceptNames,
+                                     @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits) {
         List<Obs> obsForPerson = personObsService.getObsForPersonAndConceptNameAndNumberOfVisits(patientUUID, conceptNames, numberOfVisits);
-        List<ObservationData> observationDataList = new BahmniObservationsMapper().map(obsForPerson);
+        List<ObservationData> observationDataList = new BahmniObservationsMapper(restService).map(obsForPerson);
         return observationDataList;
     }
 }

@@ -22,7 +22,7 @@ public class BahmniPersonObsServiceImpl implements BahmniPersonObsService {
 
     @Override
     public List<Obs> getObsForPerson(String identifier) {
-        return personObsDao.getObsByPerson(identifier);
+        return personObsDao.getNumericObsByPerson(identifier);
     }
 
     @Override
