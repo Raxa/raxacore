@@ -10,7 +10,14 @@ import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.module.emrapi.EmrApiProperties;
 import org.openmrs.module.emrapi.diagnosis.DiagnosisMetadata;
-import org.openmrs.module.emrapi.encounter.*;
+import org.openmrs.module.emrapi.encounter.DiagnosisMapper;
+import org.openmrs.module.emrapi.encounter.DispositionMapper;
+import org.openmrs.module.emrapi.encounter.DrugOrderMapper_1_10;
+import org.openmrs.module.emrapi.encounter.EncounterObservationsMapper;
+import org.openmrs.module.emrapi.encounter.EncounterProviderMapper;
+import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
+import org.openmrs.module.emrapi.encounter.ObservationMapper;
+import org.openmrs.module.emrapi.encounter.TestOrderMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.util.Arrays;

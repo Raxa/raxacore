@@ -20,6 +20,10 @@
         <property name="administrationService" ref="adminService"/>
     </bean>
 
+    <bean id="bahmniEncounterProviderSessionmatcher" class="org.bahmni.module.bahmnicore.matcher.EncounterProviderSessionMatcher">
+        <property name="administrationService" ref="adminService"/>
+    </bean>
+
     <bean id="orderDao" class="org.bahmni.module.bahmnicore.dao.impl.OrderDaoImpl" />
 
     <util:properties id="referenceDataAtomFeedProperties" location="classpath:referenceData-atomfeed.properties"/>

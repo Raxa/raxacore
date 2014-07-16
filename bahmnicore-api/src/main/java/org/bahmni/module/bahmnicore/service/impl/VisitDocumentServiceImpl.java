@@ -26,7 +26,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
@@ -57,32 +63,50 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
 
         Visit visit = findOrCreateVisit(visitDocumentRequest, patient);
 
-        Encounter encounter = findOrCreateEncounter(visit, visitDocumentRequest.getEncounterTypeUuid(), visitDocumentRequest.getEncounterDateTime(), patient, visitDocumentRequest.getProviderUuid());
+        Date encounterDate = (visit.getStopDatetime() != null) ? visit.getStartDatetime() : new Date();
+
+        Encounter encounter = findOrCreateEncounter(visit, visitDocumentRequest.getEncounterTypeUuid(), encounterDate, patient, visitDocumentRequest.getProviderUuid());
         visit.addEncounter(encounter);
 
-        updateEncounter(encounter, visitDocumentRequest.getEncounterDateTime(), visitDocumentRequest.getDocuments());
+        updateEncounter(encounter, encounterDate, visitDocumentRequest.getDocuments());
 
         return Context.getVisitService().saveVisit(visit);
     }
 
-    private void updateEncounter(Encounter encounter, Date encounterDateTime, List<Document> documents) {
-        LinkedHashSet<Obs> observations = new LinkedHashSet<>(encounter.getAllObs());
+    private void updateEncounter(Encounter encounter, Date encounterDateTime, List<Document> documents){
+        Concept imageConcept = conceptService.getConceptByName(DOCUMENT_OBS_GROUP_CONCEPT_NAME);
         for (Document document : documents) {
             Concept testConcept = conceptService.getConceptByUuid(document.getTestUuid());
 
-            Obs parentObservation = findOrCreateParentObs(encounter, document.getObsDateTime(), testConcept, document.getObsUuid());
-            parentObservation.setConcept(testConcept);
-            observations.add(parentObservation);
+            Obs parentObservation = findOrCreateParentObs(encounter, encounterDateTime, testConcept, document.getObsUuid());
 
-            Concept imageConcept = conceptService.getConceptByName(DOCUMENT_OBS_GROUP_CONCEPT_NAME);
-            if (document.isVoided()) {
-                voidDocumentObservation(encounter.getAllObs(), document.getObsUuid());
-            } else if(document.getObsUuid() == null) {
+            if(!document.isVoided()){
+                if(documentConceptChanged(parentObservation,document.getTestUuid())) {
+                    parentObservation = voidExistingAndCreateNewObs(testConcept, parentObservation);
+                }
+                else{
+                    parentObservation.setConcept(testConcept);
+                }
+
                 String url = document.getImage();
-                parentObservation.addGroupMember(newObs(document.getObsDateTime(), encounter, imageConcept, url));
+                parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), encounter, imageConcept, url));
+                encounter.addObs(parentObservation);
+            }
+            else{
+                voidDocumentObservationTree(parentObservation);
             }
         }
-        encounter.setObs(observations);
+    }
+
+    private Obs voidExistingAndCreateNewObs(Concept testConcept, Obs parentObservation) {
+        voidDocumentObservationTree(parentObservation);
+        Obs newObs = new Obs(parentObservation.getPerson(),testConcept,parentObservation.getObsDatetime(),parentObservation.getLocation());
+        newObs.setEncounter(parentObservation.getEncounter());
+        return newObs;
+    }
+
+    private boolean documentConceptChanged(Obs parentObservation, String testUuid) {
+        return !parentObservation.getConcept().getUuid().equals(testUuid);
     }
 
     private Obs findOrCreateParentObs(Encounter encounter, Date observationDateTime, Concept testConcept, String obsUuid) {
@@ -90,10 +114,14 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         return observation != null ? observation : newObs(observationDateTime, encounter, testConcept, null) ;
     }
 
-    private void voidDocumentObservation(Set<Obs> allObs, String obsUuid) {
-        Obs observation = findObservation(allObs, obsUuid);
-        if(observation != null)
-            observation.setVoided(true);
+    private void voidDocumentObservationTree(Obs obs) {
+        obs.setVoided(true);
+        Set<Obs> groupMembers = obs.getGroupMembers();
+        if(groupMembers != null){
+            for (Obs groupMember : groupMembers) {
+                groupMember.setVoided(true);
+            }
+        }
     }
 
     private Obs findObservation(Set<Obs> allObs, String obsUuid) {
@@ -138,27 +166,14 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         return encounter;
     }
 
-  /*  private Encounter findEncounter(Visit visit, String encounterTypeUUID) {
-        if (visit != null && visit.getEncounters() != null) {
-            for (Encounter encounter : visit.getEncounters()) {
-                if (encounterTypeUUID.equals(encounter.getEncounterType().getUuid())) {
-                    return encounter;
-                }
-            }
+    private Encounter findEncounter(Visit visit, EncounterParameters encounterParameters) {
+        String matcherClass = administrationService.getGlobalProperty("emr.encounterProviderMatcher");
+        BaseEncounterMatcher encounterMatcher = isNotEmpty(matcherClass)? getEncounterMatcherMap().get(matcherClass) : new DefaultEncounterMatcher();
+        if (encounterMatcher == null) {
+            throw new EncounterMatcherNotFoundException();
         }
-        return null;
-    }*/
-
-	private Encounter findEncounter(Visit visit, EncounterParameters encounterParameters) {
-
-//		AdministrationService administrationService = Context.getAdministrationService();
-		String matcherClass = administrationService.getGlobalProperty("emr.encounterMatcher");
-		BaseEncounterMatcher encounterMatcher = isNotEmpty(matcherClass)? getEncounterMatcherMap().get(matcherClass) : new DefaultEncounterMatcher();
-		if (encounterMatcher == null) {
-			throw new EncounterMatcherNotFoundException();
-		}
-		return encounterMatcher.findEncounter(visit, encounterParameters);
-	}
+        return encounterMatcher.findEncounter(visit, encounterParameters);
+    }
 
 	private Visit createVisit(String visitTypeUUID, Date visitStartDate, Date visitEndDate, Patient patient) {
         VisitType visitType = Context.getVisitService().getVisitTypeByUuid(visitTypeUUID);

@@ -1037,4 +1037,19 @@
             INSERT INTO `privilege` (`privilege`,`description`,`uuid`) VALUES ('Get Care Settings','Able to get Care Settings',@uuid);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201407161230" author="Rohan,Indraneel">
+        <comment>Global property pointing to the new encounter provider only session matcher</comment>
+        <sql>
+            insert into global_property
+                (`property`,
+                `property_value`,
+                `description`,
+                `uuid`)
+            values
+                ('emr.encounterProviderMatcher',
+                'org.bahmni.module.bahmnicore.matcher.EncounterProviderSessionMatcher',
+                'Encountersession matcher which considers only encounter type and provider',
+                uuid());
+        </sql>
+    </changeSet>
 </databaseChangeLog>
