@@ -19,6 +19,7 @@ public class BahmniObservationsMapper {
     public static final String PATIENT_RESORUCE_NAME = RestConstants.VERSION_1 + "/patient";
     public static final String ENCOUNTER_RESORUCE_NAME = RestConstants.VERSION_1 + "/encounter";
     public static final String VISIT_RESORUCE_NAME = RestConstants.VERSION_1 + "/visit";
+    public static final long INVALID_DEFAULT_DURATION = -1l;
 
     private final RestService restService;
 
@@ -47,7 +48,7 @@ public class BahmniObservationsMapper {
 
     private ObservationData createObservationForGroup(Obs conceptDetailsObs) {
         ObservationData observationData = null;
-        long duration = 0l;
+        Long duration = null;
         boolean isAbnormal = false;
         for (Obs anObservation : conceptDetailsObs.getGroupMembers()) {
             if (isDuration(anObservation.getConcept())) {
@@ -56,12 +57,11 @@ public class BahmniObservationsMapper {
                 isAbnormal = Boolean.parseBoolean(anObservation.getValueCoded().getName().getName());
             } else if (hasValue(anObservation)) {
                 observationData = createObservationForLeaf(anObservation);
-
             }
         }
 
         observationData.setDuration(duration);
-        observationData.setAbnormal(isAbnormal);
+        observationData.setIsAbnormal(isAbnormal);
         return observationData;
     }
 
@@ -81,7 +81,7 @@ public class BahmniObservationsMapper {
         return getURI(ENCOUNTER_RESORUCE_NAME, anObservation.getEncounter());
     }
 
-    private String getURI(String resourceName, Object resourceInstance){
+    private String getURI(String resourceName, Object resourceInstance) {
         return restService.getResourceByName(resourceName).getUri(resourceInstance);
     }
 

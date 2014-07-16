@@ -1,43 +1,33 @@
 package org.bahmni.module.bahmnicore.contract.observation;
 
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 
 import java.util.Date;
 
+@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 public class ObservationData {
     private String concept;
     private String value;
-    private String valueDatatype;
+    private String type;
 
-    private boolean isAbnormal;
-    private long duration;
+    private Boolean isAbnormal;
+    private Long duration;
 
-    private Date obsDateTime;
-    private String visitURI;
-    private String encounterURI;
-    private String patientURI;
+    private Date time;
+    private LinkData links;
 
     public ObservationData() {
     }
 
     public ObservationData(Obs obs, String patientURI, String visitURI, String encounterURI) {
-        this.visitURI = visitURI;
         this.concept = obs.getConcept().getName().getName();
-        this.encounterURI = encounterURI;
-        this.patientURI = patientURI;
         this.value = obs.getValueAsString(Context.getLocale());
-        this.valueDatatype = obs.getConcept().getDatatype().getName();
-        this.obsDateTime = obs.getObsDatetime();
-    }
-
-    public String getVisitURI() {
-        return visitURI;
-    }
-
-    public void setVisitURI(String visit) {
-        this.visitURI = visit;
+        this.type = obs.getConcept().getDatatype().getName();
+        this.time = obs.getObsDatetime();
+        this.links = new LinkData(visitURI, encounterURI, patientURI);
     }
 
     public String getConcept() {
@@ -48,22 +38,6 @@ public class ObservationData {
         this.concept = concept;
     }
 
-    public String getEncounterURI() {
-        return encounterURI;
-    }
-
-    public void setEncounterURI(String encounter) {
-        this.encounterURI = encounter;
-    }
-
-    public String getPatientURI() {
-        return patientURI;
-    }
-
-    public void setPatientURI(String patientURI) {
-        this.patientURI = patientURI;
-    }
-
     public String getValue() {
         return value;
     }
@@ -72,35 +46,45 @@ public class ObservationData {
         this.value = value;
     }
 
-    public Date getObsDateTime() {
-        return obsDateTime;
+    public Date getTime() {
+        return time;
     }
 
-    public void setObsDateTime(Date obsDateTime) {
-        this.obsDateTime = obsDateTime;
+    public void setTime(Date obsDateTime) {
+        this.time = obsDateTime;
     }
 
-    public boolean isAbnormal() {
+    public LinkData getLinks() {
+        return links;
+    }
+
+    public void setLinks(LinkData links) {
+        this.links = links;
+    }
+
+    public void setIsAbnormal(Boolean isAbnormal) {
+        if (isAbnormal != null && isAbnormal)
+            this.isAbnormal = isAbnormal;
+    }
+
+    public Boolean getIsAbnormal() {
         return isAbnormal;
     }
 
-    public void setAbnormal(boolean isAbnormal) {
-        this.isAbnormal = isAbnormal;
-    }
-
-    public long getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
-    public void setDuration(long duration) {
-        this.duration = duration;
+    public void setDuration(Long duration) {
+        if (duration != null && duration != 0)
+            this.duration = duration;
     }
 
-    public String getValueDatatype() {
-        return valueDatatype;
+    public String getType() {
+        return type;
     }
 
-    public void setValueDatatype(String valueDatatype) {
-        this.valueDatatype = valueDatatype;
+    public void setType(String valueDatatype) {
+        this.type = valueDatatype;
     }
 }

@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -82,11 +83,11 @@ public class BahmniObservationsMapperTest {
         assertEquals(1, mappedObservations.size());
         ObservationData observationData = mappedObservations.get(0);
         assertEquals(obs.getConcept().getName().getName(), observationData.getConcept());
-        assertEquals(PATIENT_RESOURCE_URI, observationData.getPatientURI());
-        assertEquals(VISIT_RESOURCE_URI, observationData.getVisitURI());
-        assertEquals(ENCOUNTER_RESOURCE_URI, observationData.getEncounterURI());
+        assertEquals(PATIENT_RESOURCE_URI, observationData.getLinks().getPatientURI());
+        assertEquals(VISIT_RESOURCE_URI, observationData.getLinks().getVisitURI());
+        assertEquals(ENCOUNTER_RESOURCE_URI, observationData.getLinks().getEncounterURI());
         assertEquals("5.0", observationData.getValue());
-        assertEquals("Numeric", observationData.getValueDatatype());
+        assertEquals("Numeric", observationData.getType());
     }
 
     @Test
@@ -108,10 +109,10 @@ public class BahmniObservationsMapperTest {
         assertEquals(2, mappedObservations.size());
         ObservationData observationData1 = mappedObservations.get(0);
         ObservationData observationData2 = mappedObservations.get(1);
-        assertEquals(0, observationData1.getDuration());
-        assertEquals(0, observationData2.getDuration());
-        assertEquals(false, observationData1.isAbnormal());
-        assertEquals(false, observationData2.isAbnormal());
+        assertNull("Zero duration goes as null", observationData1.getDuration());
+        assertNull("Zero duration goes as null", observationData2.getDuration());
+        assertNull("isAbnormal should not be set", observationData1.getIsAbnormal());
+        assertNull("isAbnormal should not be set", observationData2.getIsAbnormal());
         String[] concepts = {"tconcept1", "tconcept2"};
         String[] obsValues = {"ovalue1", "ovalue2"};
         assertTrue(Arrays.asList(concepts).contains(observationData1.getConcept()));
@@ -140,14 +141,13 @@ public class BahmniObservationsMapperTest {
 
         ObservationData observationData = mappedObservations.get(0);
         assertEquals(1, mappedObservations.size());
-        assertTrue(observationData.isAbnormal());
+        assertTrue(observationData.getIsAbnormal());
         assertEquals("ovalue", observationData.getValue());
-        assertEquals("cdatatype", observationData.getValueDatatype());
+        assertEquals("cdatatype", observationData.getType());
     }
 
     @Test
     public void return_mapped_observations_for_abnormal_and_coded_observation_structure() throws Exception {
-
         Date date = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse("January 2, 2010");
         Person person = new PersonBuilder().withUUID("puuid").build();
         Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(date).build();
@@ -167,7 +167,7 @@ public class BahmniObservationsMapperTest {
 
         ObservationData observationData = mappedObservations.get(0);
         assertEquals(1, mappedObservations.size());
-        assertTrue(observationData.isAbnormal());
+        assertTrue(observationData.getIsAbnormal());
         assertEquals("tconcept3", observationData.getValue());
     }
 
