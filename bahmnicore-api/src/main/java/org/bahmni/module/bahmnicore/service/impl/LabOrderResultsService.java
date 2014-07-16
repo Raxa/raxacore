@@ -107,6 +107,7 @@ public class LabOrderResultsService {
         LabOrderResult labOrderResult = new LabOrderResult();
         Encounter orderEncounter = encounterTestOrderMap.get(observation.getOrderUuid());
         Object resultValue = getValue(observation, observation.getConcept().getName());
+        String notes = (String) getValue(observation, LAB_NOTES);
         labOrderResult.setAccessionUuid(orderEncounter.getUuid());
         labOrderResult.setAccessionDateTime(orderEncounter.getEncounterDatetime());
         labOrderResult.setProvider(getProviderName(observation, encounterObservationMap));
@@ -117,7 +118,7 @@ public class LabOrderResultsService {
         labOrderResult.setAbnormal((Boolean) getValue(observation, LAB_ABNORMAL));
         labOrderResult.setMinNormal((Double) getValue(observation, LAB_MINNORMAL));
         labOrderResult.setMaxNormal((Double) getValue(observation, LAB_MAXNORMAL));
-        labOrderResult.setNotes((String) getValue(observation, LAB_NOTES));
+        labOrderResult.setNotes(notes != null && notes.trim().length() > 1 ? notes.trim() : null);
         labOrderResult.setReferredOut(getLeafObservation(observation, REFERRED_OUT) != null);
         labOrderResult.setTestUnitOfMeasurement(observation.getConcept().getUnits());
         return labOrderResult;

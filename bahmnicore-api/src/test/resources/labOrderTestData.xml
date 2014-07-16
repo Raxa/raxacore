@@ -346,7 +346,7 @@
     <obs obs_id="1102" obs_group_id="1101" encounter_id="50" person_id="1" order_id="100" obs_datetime="2013-08-19 15:09:05.0" date_created="2013-08-19 15:09:05.0"
          uuid="88458526-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="1008" value_text="Result for PS Malaria" voided="0" />
     <obs obs_id="1103" obs_group_id="1101" encounter_id="50" person_id="1" order_id="100" obs_datetime="2008-08-19 15:09:05.0" date_created="2013-08-19 15:09:05.0"
-         uuid="45f88574-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="103" value_text="Not good" voided="0" />
+         uuid="45f88574-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="103" value_text=" - " voided="0" />
 
 
     <encounter_provider encounter_provider_id="2" encounter_id="36" provider_id="25" creator="1" date_created="2008-07-01 14:09:05.0"

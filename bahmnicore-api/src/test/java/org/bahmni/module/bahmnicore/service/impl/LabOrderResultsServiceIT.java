@@ -41,7 +41,7 @@ public class LabOrderResultsServiceIT extends BaseModuleWebContextSensitiveTest 
         assertOrderPresent(labOrderResults, "Urea Nitrogen", null, 16, "System OpenMRS", "20.0", null, null, null, null, false);
         assertOrderPresent(labOrderResults, "HIV ELISA", null, 16, null, null, null, null, null, null, false);
         assertOrderPresent(labOrderResults, "PS for Malaria", null, 16, "System OpenMRS", null, null, null, null, null, true);
-        assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, "Not good", false);
+        assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, null, false);
     }
 
     @Test
@@ -58,7 +58,7 @@ public class LabOrderResultsServiceIT extends BaseModuleWebContextSensitiveTest 
         assertNotNull(labOrderResults);
         assertEquals(1, labOrderResults.size());
 
-        assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, "Not good", false);
+        assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, null, false);
     }
 
     private void assertOrderPresent(List<LabOrderResult> labOrderResults, String testName, String panelName, Integer accessionEncounterId, String provider, String value, Double minNormal, Double maxNormal, Boolean abnormal, String notes, Boolean referredOut) {
