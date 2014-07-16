@@ -1052,4 +1052,15 @@
                 uuid());
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201407161630" author="Vinay">
+        <comment>Set dosing type and dosing instructions</comment>
+        <sql>
+            update drug_order
+            inner join drug on drug_order.drug_inventory_id = drug.drug_id
+            inner join concept_name on drug.dosage_form = concept_name.concept_id and
+            concept_name.concept_name_type = 'FULLY_SPECIFIED'
+            set drug_order.dosing_instructions = concat(drug_order.dose, ' ', concept_name.name),
+            drug_order.dosing_type = 'FREE_TEXT';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
