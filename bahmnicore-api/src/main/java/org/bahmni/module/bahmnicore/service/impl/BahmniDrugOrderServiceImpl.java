@@ -149,7 +149,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             drugOrder.setOrderer(getSystemProvider());
             drugOrder.setCareSetting(orderService.getCareSettingByName("Outpatient"));
             drugOrder.setDosingType(DrugOrder.DosingType.FREE_TEXT);
-            drugOrder.setDosingInstructions(createInstructions(drugOrder));
+            drugOrder.setDosingInstructions(createInstructions(bahmniDrugOrder, drugOrder));
             drugOrder.setQuantity(bahmniDrugOrder.getQuantity());
             drugOrder.setQuantityUnits(drug.getDosageForm());
             drugOrder.setNumRefills(0);
@@ -158,8 +158,8 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         return orders;
     }
 
-    private String createInstructions(DrugOrder drugOrder) {
-        return "Some nice string";
+    private String createInstructions(BahmniDrugOrder bahmniDrugOrder, DrugOrder drugOrder) {
+        return bahmniDrugOrder.getDosage() + " " + drugOrder.getDrug().getDosageForm().getDisplayString();
     }
 
     private OrderType getDrugOrderType() {
