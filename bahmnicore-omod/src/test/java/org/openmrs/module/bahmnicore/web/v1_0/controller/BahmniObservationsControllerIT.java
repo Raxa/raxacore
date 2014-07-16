@@ -21,7 +21,7 @@ public class BahmniObservationsControllerIT extends BaseModuleWebContextSensitiv
     @Test
     public void get_observations_for_a_group_concept() throws Exception {
         executeDataSet("apiTestData.xml");
-        List<ObservationData> observationDatas = bahmniObservationsController.get("86526ed5-3c11-11de-a0ba-001e378eb67a", 1, new String[]{"Blood Pressure"});
+        List<ObservationData> observationDatas = bahmniObservationsController.get("86526ed5-3c11-11de-a0ba-001e378eb67a", new String[]{"Blood Pressure"}, 1);
         assertEquals(2, observationDatas.size());
     }
 }
