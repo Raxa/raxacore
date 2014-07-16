@@ -18,6 +18,7 @@ public class BahmniConceptResource extends ConceptResource1_9 {
         allowedMissingProperties.add("lowCritical");
         allowedMissingProperties.add("units");
         allowedMissingProperties.add("precise");
+        allowedMissingProperties.add("handler");
     }
 
     @Override

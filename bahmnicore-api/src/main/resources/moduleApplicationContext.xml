@@ -42,4 +42,17 @@
     <bean id="referenceDataFailedEventProcessor" class="org.bahmni.module.referencedatafeedclient.client.FailedEventProcessor">
         <constructor-arg name="atomFeedClientFactory" ref="referenceDataFeedClientFactory"/>
     </bean>
+
+    <bean parent="obsServiceTarget" >
+        <property name="handlers">
+            <map>
+                <entry>
+                    <key><value>ImageUrlHandler</value></key>
+                    <bean class="org.bahmni.module.bahmnicore.obs.handler.ImageUrlHandler"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    
+    
 </beans>
