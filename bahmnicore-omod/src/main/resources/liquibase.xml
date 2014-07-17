@@ -1063,4 +1063,15 @@
             drug_order.dosing_type = 'FREE_TEXT';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201407171606" author="Rohan, D3">
+        <comment>add concept class Image</comment>
+        <insert tableName="concept_class">
+            <column name="name" value="Image"/>
+            <column name="description" value="Image class"/>
+            <column name="creator" value="1"/>
+            <column name="date_created" valueComputed="curdate()"/>
+            <column name="retired" value="0"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
