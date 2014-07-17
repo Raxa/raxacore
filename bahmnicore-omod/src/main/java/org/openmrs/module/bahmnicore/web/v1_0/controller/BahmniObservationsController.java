@@ -38,6 +38,6 @@ public class BahmniObservationsController extends BaseRestController {
                                      @RequestParam(value = "concept", required = true) String[] conceptNames,
                                      @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits) {
         List<Obs> observations = personObsService.observationsFor(patientUUID, conceptNames, numberOfVisits);
-        return new BahmniObservationsMapper(restService).map(observations);
+        return new BahmniObservationsMapper(restService, conceptNames).map(observations);
     }
 }

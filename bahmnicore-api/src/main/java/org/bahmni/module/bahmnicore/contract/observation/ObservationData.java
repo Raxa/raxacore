@@ -19,6 +19,7 @@ public class ObservationData {
 
     private Date time;
     private LinkData links;
+    private String rootConcept;
 
     public ObservationData() {
     }
@@ -95,6 +96,14 @@ public class ObservationData {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public String getRootConcept() {
+        return rootConcept;
+    }
+
+    public void setRootConcept(String rootConcept) {
+        this.rootConcept = rootConcept;
     }
 
 

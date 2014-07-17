@@ -23,31 +23,36 @@ public class BahmniObservationsMapper {
     public static final long INVALID_DEFAULT_DURATION = -1l;
 
     private final RestService restService;
+    private final List<String> conceptNames;
+    private String rootConcept;
 
-    public BahmniObservationsMapper(RestService restService) {
+    public BahmniObservationsMapper(RestService restService, String[] conceptNames) {
         this.restService = restService;
+        this.conceptNames = new ArrayList<>(Arrays.asList(conceptNames));
     }
 
     public List<ObservationData> map(List<Obs> obsForPerson) {
-        return recurse(new HashSet<>(obsForPerson), new ArrayList<ObservationData>());
+        return recurse(new HashSet<>(obsForPerson), new ArrayList<ObservationData>(), "");
     }
 
-    private List<ObservationData> recurse(Set<Obs> obsForPerson, List<ObservationData> mappedObservations) {
+    private List<ObservationData> recurse(Set<Obs> obsForPerson, List<ObservationData> mappedObservations, String rootConceptName) {
+        String rootConcept = rootConceptName;
         for (Obs obs : obsForPerson) {
+            rootConcept = setRootConcept(obs.getConcept().getName().getName(), rootConcept);
             Set<Obs> groupMembers = obs.getGroupMembers();
             if (groupMembers == null || groupMembers.isEmpty()) {
-                mappedObservations.add(createObservationForLeaf(obs));
+                mappedObservations.add(createObservationForLeaf(obs, rootConcept));
             } else if (isConceptDetails(obs.getConcept())) {
-                mappedObservations.add(createObservationForGroup(obs));
+                mappedObservations.add(createObservationForGroup(obs, rootConcept));
             } else {
-                recurse(groupMembers, mappedObservations);
+                recurse(groupMembers, mappedObservations, rootConcept);
             }
         }
 
         return mappedObservations;
     }
 
-    private ObservationData createObservationForGroup(Obs conceptDetailsObs) {
+    private ObservationData createObservationForGroup(Obs conceptDetailsObs, String rootConcept) {
         ObservationData observationData = null;
         Long duration = null;
         boolean isAbnormal = false;
@@ -57,9 +62,10 @@ public class BahmniObservationsMapper {
             } else if (isAbnormal(anObservation.getConcept())) {
                 isAbnormal = Boolean.parseBoolean(anObservation.getValueCoded().getName().getName());
             } else if (hasValue(anObservation)) {
-                observationData = createObservationForLeaf(anObservation);
+                observationData = createObservationForLeaf(anObservation, this.rootConcept);
+                observationData.setRootConcept(rootConcept);
                 // Mujir/Mihir - not pre loading complex concepts as we don't need them yet.
-                if (isNumeric(anObservation)){
+                if (isNumeric(anObservation)) {
                     observationData.setUnit(getUnit(anObservation.getConcept()));
                 }
             }
@@ -79,8 +85,10 @@ public class BahmniObservationsMapper {
         return anObservation.getConcept().getDatatype().getHl7Abbreviation().equals(ConceptDatatype.NUMERIC);
     }
 
-    private ObservationData createObservationForLeaf(Obs anObservation) {
-        return new ObservationData(anObservation, getPatientURI(anObservation), getVisitURI(anObservation), getEncounterURI(anObservation));
+    private ObservationData createObservationForLeaf(Obs anObservation, String rootConcept) {
+        ObservationData observationData = new ObservationData(anObservation, getPatientURI(anObservation), getVisitURI(anObservation), getEncounterURI(anObservation));
+        observationData.setRootConcept(rootConcept);
+        return observationData;
     }
 
     private String getPatientURI(Obs anObservation) {
@@ -115,4 +123,12 @@ public class BahmniObservationsMapper {
         return obsConcept.getConceptClass().getName().equals(CONCEPT_DETAILS_CONCEPT_CLASS);
     }
 
+    public String setRootConcept(String concept, String rootConcept) {
+        if(conceptNames.contains(concept)){
+            return concept;
+        }
+        else {
+            return rootConcept;
+        }
+    }
 }

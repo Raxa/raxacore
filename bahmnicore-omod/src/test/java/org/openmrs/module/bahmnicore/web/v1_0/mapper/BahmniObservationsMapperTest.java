@@ -59,8 +59,8 @@ public class BahmniObservationsMapperTest {
         });
         RestService mockRestService = mock(RestService.class);
         when(mockRestService.getResourceByName(anyString())).thenReturn(mockResource);
-
-        bahmniObservationsMapper = new BahmniObservationsMapper(mockRestService);
+        String[] conceptNames = {"tconcept1", "tconcept2", "True", "tconcept", "tconcept3"};
+        bahmniObservationsMapper = new BahmniObservationsMapper(mockRestService, conceptNames);
     }
 
     @Test
@@ -119,6 +119,7 @@ public class BahmniObservationsMapperTest {
         assertTrue(Arrays.asList(concepts).contains(observationData2.getConcept()));
         assertTrue(Arrays.asList(obsValues).contains(observationData1.getValue()));
         assertTrue(Arrays.asList(obsValues).contains(observationData2.getValue()));
+        System.out.println(observationData1.getRootConcept());
     }
 
     @Test
