@@ -12,6 +12,7 @@ public class ObservationData {
     private String concept;
     private String value;
     private String type;
+    private String unit;
 
     private Boolean isAbnormal;
     private Long duration;
@@ -87,4 +88,14 @@ public class ObservationData {
     public void setType(String valueDatatype) {
         this.type = valueDatatype;
     }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+
 }

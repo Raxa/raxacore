@@ -5,6 +5,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 
@@ -57,12 +58,25 @@ public class BahmniObservationsMapper {
                 isAbnormal = Boolean.parseBoolean(anObservation.getValueCoded().getName().getName());
             } else if (hasValue(anObservation)) {
                 observationData = createObservationForLeaf(anObservation);
+                // Mujir/Mihir - not pre loading complex concepts as we don't need them yet.
+                if (isNumeric(anObservation)){
+                    observationData.setUnit(getUnit(anObservation.getConcept()));
+                }
             }
         }
 
         observationData.setDuration(duration);
         observationData.setIsAbnormal(isAbnormal);
         return observationData;
+    }
+
+    private String getUnit(Concept concept) {
+        ConceptNumeric conceptNumeric = (ConceptNumeric) new HibernateLazyLoader().load(concept);
+        return conceptNumeric.getUnits();
+    }
+
+    private boolean isNumeric(Obs anObservation) {
+        return anObservation.getConcept().getDatatype().getHl7Abbreviation().equals(ConceptDatatype.NUMERIC);
     }
 
     private ObservationData createObservationForLeaf(Obs anObservation) {

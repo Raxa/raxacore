@@ -49,7 +49,7 @@ public class PersonObsDaoImpl implements PersonObsDao {
         List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
 
         Query queryToGetObservations = sessionFactory.getCurrentSession().createQuery(
-                    "select obs" +
+                    "select obs " +
                         " from Obs as obs, ConceptName as cn " +
                         " where obs.person.uuid = :patientUuid " +
                         " and obs.encounter.visit.visitId in (:listOfVisitIds) " +
