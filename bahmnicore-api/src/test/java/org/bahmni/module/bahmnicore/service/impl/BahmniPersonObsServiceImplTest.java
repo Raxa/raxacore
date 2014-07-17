@@ -37,7 +37,7 @@ public class BahmniPersonObsServiceImplTest {
 
     @Test
     public void shouldGetObsByPatientUuidConceptNameAndNumberOfVisits() throws Exception {
-        personObsService.getObsForPersonAndConceptNameAndNumberOfVisits(personUUID,  new String[]{"Blood Pressure"}, numberOfVisits);
+        personObsService.observationsFor(personUUID, new String[]{"Blood Pressure"}, numberOfVisits);
         verify(personObsDao).getObsFor(personUUID,  new String[]{"Blood Pressure"}, numberOfVisits);
     }
 }

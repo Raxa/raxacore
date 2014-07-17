@@ -11,7 +11,6 @@ import java.util.List;
 
 @Service
 public class BahmniPersonObsServiceImpl implements BahmniPersonObsService {
-
     private PersonObsDao personObsDao;
 
     @Autowired
@@ -19,14 +18,13 @@ public class BahmniPersonObsServiceImpl implements BahmniPersonObsService {
         this.personObsDao = personObsDao;
     }
 
-
     @Override
     public List<Obs> getObsForPerson(String identifier) {
         return personObsDao.getNumericObsByPerson(identifier);
     }
 
     @Override
-    public List<Obs> getObsForPersonAndConceptNameAndNumberOfVisits(String patientUuid, String[] conceptNames, Integer numberOfVisits) {
+    public List<Obs> observationsFor(String patientUuid, String[] conceptNames, Integer numberOfVisits) {
         return personObsDao.getObsFor(patientUuid, conceptNames, numberOfVisits);
     }
 

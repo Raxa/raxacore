@@ -8,6 +8,6 @@ import java.util.List;
 public interface BahmniPersonObsService {
     public List<Obs> getObsForPerson(String identifier);
 
-    public List<Obs> getObsForPersonAndConceptNameAndNumberOfVisits(String patientUuid, String[] conceptName, Integer numberOfVisits);
+    public List<Obs> observationsFor(String patientUuid, String[] conceptName, Integer numberOfVisits);
     public List<Concept> getNumericConceptsForPerson(String personUUID);
 }
