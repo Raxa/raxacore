@@ -17,35 +17,45 @@ public class BahmniObservationsMapper {
     public static final String ABNORMAL_CONCEPT_CLASS = "Abnormal";
     private static final String DURATION_CONCEPT_CLASS = "Duration";
 
-    public static final String PATIENT_RESORUCE_NAME = RestConstants.VERSION_1 + "/patient";
-    public static final String ENCOUNTER_RESORUCE_NAME = RestConstants.VERSION_1 + "/encounter";
-    public static final String VISIT_RESORUCE_NAME = RestConstants.VERSION_1 + "/visit";
-    public static final long INVALID_DEFAULT_DURATION = -1l;
+    public static final String PATIENT_RESOURCE_NAME = RestConstants.VERSION_1 + "/patient";
+    public static final String ENCOUNTER_RESOURCE_NAME = RestConstants.VERSION_1 + "/encounter";
+    public static final String VISIT_RESOURCE_NAME = RestConstants.VERSION_1 + "/visit";
 
     private final RestService restService;
-    private final List<String> conceptNames;
-    private String rootConcept;
+    private final List<String> rootConceptNames;
 
     public BahmniObservationsMapper(RestService restService, String[] conceptNames) {
         this.restService = restService;
-        this.conceptNames = new ArrayList<>(Arrays.asList(conceptNames));
+        this.rootConceptNames = Arrays.asList(conceptNames);
     }
 
     public List<ObservationData> map(List<Obs> obsForPerson) {
-        return recurse(new HashSet<>(obsForPerson), new ArrayList<ObservationData>(), "");
+        List<ObservationData> observations = flatten(obsForPerson, new ArrayList<ObservationData>(), null);
+
+        sortByDatetime(observations);
+        return observations;
     }
 
-    private List<ObservationData> recurse(Set<Obs> obsForPerson, List<ObservationData> mappedObservations, String rootConceptName) {
-        String rootConcept = rootConceptName;
+    private void sortByDatetime(List<ObservationData> observations) {
+        Collections.sort(observations, new Comparator<ObservationData>() {
+            @Override
+            public int compare(ObservationData anObs, ObservationData anotherObs) {
+                return anotherObs.getTime().compareTo(anObs.getTime());
+            }
+        });
+    }
+
+    private List<ObservationData> flatten(Collection<Obs> obsForPerson, List<ObservationData> mappedObservations, String rootConcept) {
         for (Obs obs : obsForPerson) {
-            rootConcept = setRootConcept(obs.getConcept().getName().getName(), rootConcept);
-            Set<Obs> groupMembers = obs.getGroupMembers();
+            rootConcept = getRootConcept(obs, rootConcept);
+
+            Collection<Obs> groupMembers = obs.getGroupMembers();
             if (groupMembers == null || groupMembers.isEmpty()) {
                 mappedObservations.add(createObservationForLeaf(obs, rootConcept));
             } else if (isConceptDetails(obs.getConcept())) {
                 mappedObservations.add(createObservationForGroup(obs, rootConcept));
             } else {
-                recurse(groupMembers, mappedObservations, rootConcept);
+                flatten(groupMembers, mappedObservations, rootConcept);
             }
         }
 
@@ -62,7 +72,7 @@ public class BahmniObservationsMapper {
             } else if (isAbnormal(anObservation.getConcept())) {
                 isAbnormal = Boolean.parseBoolean(anObservation.getValueCoded().getName().getName());
             } else if (hasValue(anObservation)) {
-                observationData = createObservationForLeaf(anObservation, this.rootConcept);
+                observationData = createObservationForLeaf(anObservation, rootConcept);
                 observationData.setRootConcept(rootConcept);
                 // Mujir/Mihir - not pre loading complex concepts as we don't need them yet.
                 if (isNumeric(anObservation)) {
@@ -92,15 +102,15 @@ public class BahmniObservationsMapper {
     }
 
     private String getPatientURI(Obs anObservation) {
-        return getURI(PATIENT_RESORUCE_NAME, new Patient(anObservation.getPerson()));
+        return getURI(PATIENT_RESOURCE_NAME, new Patient(anObservation.getPerson()));
     }
 
     private String getVisitURI(Obs anObservation) {
-        return getURI(VISIT_RESORUCE_NAME, anObservation.getEncounter().getVisit());
+        return getURI(VISIT_RESOURCE_NAME, anObservation.getEncounter().getVisit());
     }
 
     private String getEncounterURI(Obs anObservation) {
-        return getURI(ENCOUNTER_RESORUCE_NAME, anObservation.getEncounter());
+        return getURI(ENCOUNTER_RESOURCE_NAME, anObservation.getEncounter());
     }
 
     private String getURI(String resourceName, Object resourceInstance) {
@@ -123,12 +133,8 @@ public class BahmniObservationsMapper {
         return obsConcept.getConceptClass().getName().equals(CONCEPT_DETAILS_CONCEPT_CLASS);
     }
 
-    public String setRootConcept(String concept, String rootConcept) {
-        if(conceptNames.contains(concept)){
-            return concept;
-        }
-        else {
-            return rootConcept;
-        }
+    public String getRootConcept(Obs obs, String rootConcept) {
+        String conceptName = obs.getConcept().getName().getName();
+        return rootConceptNames.contains(conceptName) ? conceptName : rootConcept;
     }
 }

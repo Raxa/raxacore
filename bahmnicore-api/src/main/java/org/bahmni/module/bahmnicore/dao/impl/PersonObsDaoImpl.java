@@ -54,7 +54,8 @@ public class PersonObsDaoImpl implements PersonObsDao {
                         " where obs.person.uuid = :patientUuid " +
                         " and obs.encounter.visit.visitId in (:listOfVisitIds) " +
                         " and cn.concept = obs.concept.conceptId " +
-                        " and cn.name in (:conceptNames) ");
+                        " and cn.name in (:conceptNames) " +
+                        "order by obs.obsDatetime desc");
         queryToGetObservations.setString("patientUuid", patientUuid);
         queryToGetObservations.setParameterList("conceptNames", conceptNames);
         queryToGetObservations.setParameterList("listOfVisitIds", listOfVisitIds);
