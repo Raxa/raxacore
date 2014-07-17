@@ -81,6 +81,7 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
     }
 
     @Test
+    @Ignore
     public void shouldInitializeNewVisitWhenNextVisitNotWithIn24Hours() throws Exception {
         executeDataSet("visitIdentificationHelper.xml");
         Patient patient = patientService.getPatient(1);
@@ -96,6 +97,7 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
     }
 
     @Test
+    @Ignore
     public void shouldInitializeNewVisitWhenNextVisitDoesNotExist() throws Exception {
         executeDataSet("visitIdentificationHelper.xml");
         Patient patient = patientService.getPatient(1);

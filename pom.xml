@@ -316,16 +316,10 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <includes>
-                                <include>**/*EventWorkerIT.java</include>
-                                <include>**/*ServiceImplIT.java</include>
-                                <include>**/LabOrderResultsServiceIT.java</include>
-                                <include>**/OrderDaoImplIT.java</include>
-                                <include>**/*Test.java</include>
-                                <include>**/OrderServiceImplIT.java</include>
-                                <include>**/PersonObsDaoIT.java</include>
+                                <include>**/*IT.java</include>
                             </includes>
                             <classpathDependencyExcludes>
-                                <classpathDependencyExcludes>org.openmrs.module:emrapi-api-1.10</classpathDependencyExcludes>
+                                <classpathDependencyExcludes>org.openmrs.module:emrapi-api-1.9</classpathDependencyExcludes>
                             </classpathDependencyExcludes>
                         </configuration>
                     </plugin>

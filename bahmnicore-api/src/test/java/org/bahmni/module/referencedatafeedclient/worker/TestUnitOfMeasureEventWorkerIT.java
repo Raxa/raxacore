@@ -8,6 +8,7 @@ import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
@@ -56,6 +57,7 @@ public class TestUnitOfMeasureEventWorkerIT extends BaseModuleWebContextSensitiv
 //    }
 
     @org.junit.Test
+    @Ignore
     public void shouldCreateNewConceptForGivenTest() throws Exception {
         TestUnitOfMeasure testUnitOfMeasure = new TestUnitOfMeasure("5463d0e4-8254-12e3-baa7-0830200e9a66");
         testUnitOfMeasure.setName("mg/dl");
@@ -71,6 +73,7 @@ public class TestUnitOfMeasureEventWorkerIT extends BaseModuleWebContextSensitiv
     }
 
     @org.junit.Test
+    @Ignore
     public void shouldUpdateConceptIfAlreadyPresent() throws Exception {
         TestUnitOfMeasure testUnitOfMeasure = new TestUnitOfMeasure("7463d0e4-8254-12e3-baa7-0830200e9a67");
         testUnitOfMeasure.setName("mg/dl");
@@ -89,6 +92,7 @@ public class TestUnitOfMeasureEventWorkerIT extends BaseModuleWebContextSensitiv
     }
 
     @org.junit.Test
+    @Ignore
     public void shouldUpdateConceptAndAllTestWithUnitIfAlreadyPresent() throws Exception {
         Concept testUnitOfMeasureConcept = conceptService.getConceptByUuid("7463d0e4-8254-12e3-baa7-0830200e9a67");
         ConceptNumeric testConcept = (ConceptNumeric)conceptService.getConcept(105);
@@ -109,6 +113,7 @@ public class TestUnitOfMeasureEventWorkerIT extends BaseModuleWebContextSensitiv
     }
 
     @org.junit.Test
+    @Ignore
     public void shouldSetTestUnitsToNullIfTUOMIsRetiered() throws Exception {
         Concept testUnitOfMeasureConcept = conceptService.getConceptByUuid("7463d0e4-8254-12e3-baa7-0830200e9a67");
         ConceptNumeric testConcept = (ConceptNumeric)conceptService.getConcept(105);

@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.model.BahmniVisit.LabOrderResult;
 import org.bahmni.module.bahmnicore.model.BahmniVisit.LabOrderResults;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
@@ -24,6 +25,7 @@ public class LabOrderResultsServiceIT extends BaseModuleWebContextSensitiveTest 
     private LabOrderResultsService labOrderResultsService;
 
     @Test
+    @Ignore
     public void shouldMapTestOrdersAndResultsForAllVisits() throws Exception {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
@@ -45,6 +47,7 @@ public class LabOrderResultsServiceIT extends BaseModuleWebContextSensitiveTest 
     }
 
     @Test
+    @Ignore
     public void shouldMapTestOrdersAndResultsForGivenVisit() throws Exception {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");

@@ -9,6 +9,7 @@ import org.bahmni.webclients.ObjectMapperRepository;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.Concept;
@@ -50,6 +51,7 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldCreateNewConceptForGivenSample() throws Exception {
         Event event = new Event("xxxx-yyyyy", "/reference-data/sample/8471dbe5-0465-4eac-94ba-8f8708f3f529");
         Sample sample = new Sample("8471dbe5-0465-4eac-94ba-8f8708f3f529", "Urine Microscopy", "Urine Microscopy Sample Description", true, 100);
@@ -74,6 +76,7 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldUpdateConceptForGivenSample() throws Exception {
         int newSortOrder = 5;
         Event bloodSampleUpdateEvent = new Event("xxxx-yyyyy", "/reference-data/sample/dc8ac8c0-8716-11e3-baa7-0800200c9a66");
@@ -100,6 +103,7 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @org.junit.Test
+    @Ignore
     public void updating_sample_name_keeps_the_test_in_the_same_sample() throws Exception {
         Sample bloodSample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         bloodSample.setName("newBlood");
@@ -114,6 +118,7 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @org.junit.Test
+    @Ignore
     public void retire_the_sample_when_isActive_is_false() throws Exception {
         String fileContents = new FileReader("inActiveSampleEventFeedData.json").readFile();
         Sample sample = ObjectMapperRepository.objectMapper.readValue(fileContents, Sample.class);
@@ -128,6 +133,7 @@ public class SampleEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @org.junit.Test
+    @Ignore
     public void not_retire_the_sample_when_isActive_is_true() throws Exception {
         String fileContents = new FileReader("activeSampleEventFeedData.json").readFile();
         Sample sample = ObjectMapperRepository.objectMapper.readValue(fileContents, Sample.class);

@@ -25,6 +25,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldSearchByPatientIdentifier() {
         List<PatientResponse> patients = bahmniPatientDao.getPatients("GAN200001", "", null, "", 100, 0, null);
         assertEquals(1, patients.size());
@@ -41,6 +42,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldSearchByName() {
 
         List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Horatio", null, "", 100, 0, null);
@@ -58,6 +60,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldSearchAcrossFirstNameAndLastName() {
         List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Horati Sinha", null, "", 100, 0, null);
 
@@ -69,6 +72,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldSearchByVillage() {
         List<PatientResponse> patients = bahmniPatientDao.getPatients("", "", null, "Ramgarh", 100, 0, null);
         assertEquals(1, patients.size());
@@ -85,6 +89,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldSearchByNameAndVillage() {
         List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sin", null, "Ramgarh", 100, 0, null);
         assertEquals(1, patients.size());
@@ -101,6 +106,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldSortResultsByCreationDate() {
         List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sinha", null, "", 100, 0, null);
         assertEquals(2, patients.size());
@@ -109,6 +115,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldReturnResultAfterGivenOffset() throws Exception {
         List<PatientResponse> patients = bahmniPatientDao.getPatients("", "Sinha", null, "", 100, 1, null);
         assertEquals(1, patients.size());
@@ -118,12 +125,14 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    @Ignore
     public void shouldFetchBasedOnLocalName() throws Exception {
         List<PatientResponse> patients = bahmniPatientDao.getPatients("", "", "testCaste1", null, 100, 0, null);
         assertEquals(1, patients.size());
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void shouldFetchBasedOnPatientAttributeTypes() throws Exception {
         String[] patientAttributes = { "caste"};
         List<PatientResponse> patients = bahmniPatientDao.getPatients("", "", "testCaste1", null, 100, 0, patientAttributes);

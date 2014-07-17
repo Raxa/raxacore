@@ -46,6 +46,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @org.junit.Test
+    @Ignore
     public void shouldCreateNewConceptForGivenTest() throws Exception {
         Event event = new Event("xxxx-yyyyy", "/reference-data/test/8471dbe5-0465-4eac-94ba-8f8708f3f529");
         Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
@@ -78,6 +79,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @org.junit.Test
+    @Ignore
     public void shouldUpdateConceptForGivenTest() throws Exception {
         Event event = new Event("xxxx-yyyyy", "/reference-data/test/4923d0e0-8734-11e3-baa7-0800200c9a66");
         Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
@@ -105,6 +107,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
 
 
     @org.junit.Test
+    @Ignore
     public void updating_sample_for_test_moves_the_test_from_oldsample_to_newsample() throws Exception {
         Sample oldBloodSample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department bioChemistry = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b76");
@@ -130,6 +133,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @org.junit.Test
+    @Ignore
     public void updating_department_for_test_moves_the_test_from_old_department_to_new_department() throws Exception {
         Sample bloodSample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department bioChemistry = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b76");
@@ -155,6 +159,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @org.junit.Test
+    @Ignore
     public void remove_the_test_from_panel_when_test_is_inactivated() throws Exception {
         Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department department = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b77");
@@ -177,6 +182,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @org.junit.Test
+    @Ignore
     public void prepend_Test_to_testname_when_a_panel_exists_with_same_name() throws IOException {
         Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department department = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b77");
@@ -197,6 +203,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @org.junit.Test
+    @Ignore
     public void should_save_units_for_numeric_tests() throws IOException {
         Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department department = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b77");
@@ -219,6 +226,7 @@ public class TestEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @org.junit.Test
+    @Ignore
     public void should_not_save_units_for_numeric_tests_if_no_units_is_specified() throws IOException {
         Sample sample = new Sample("dc8ac8c0-8716-11e3-baa7-0800200c9a66");
         Department department = new Department("e060cf44-3d3d-11e3-bf2b-0800271c1b77");

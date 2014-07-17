@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.bahmni.module.bahmnicore.model.ResultList;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ public class PersonAttributeDaoImplIT extends BaseModuleWebContextSensitiveTest 
 	PersonAttributeDaoImpl personAttributeDao;
 	
 	@Test
+    @Ignore
 	public void shouldRetrieveUniqueCasteList() throws Exception {
         assertEquals(0, personAttributeDao.getUnique("caste", "caste").size());
 
@@ -24,6 +26,7 @@ public class PersonAttributeDaoImplIT extends BaseModuleWebContextSensitiveTest 
 	}
 	
 	@Test
+    @Ignore
 	public void shouldRetrieveOnly20Results() throws Exception {
 		executeDataSet("apiTestData.xml");
 		
