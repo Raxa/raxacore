@@ -6,6 +6,7 @@ import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 
 import java.util.Date;
+import java.util.List;
 
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 public class ObservationData {
@@ -24,12 +25,12 @@ public class ObservationData {
     public ObservationData() {
     }
 
-    public ObservationData(Obs obs, String patientURI, String visitURI, String encounterURI) {
+    public ObservationData(Obs obs, String patientURI, String visitURI, String encounterURI, List<String> providerURIs) {
         this.concept = obs.getConcept().getName().getName();
         this.value = obs.getValueAsString(Context.getLocale());
         this.type = obs.getConcept().getDatatype().getName();
         this.time = obs.getObsDatetime();
-        this.links = new LinkData(visitURI, encounterURI, patientURI);
+        this.links = new LinkData(visitURI, encounterURI, patientURI, providerURIs);
     }
 
     public String getConcept() {

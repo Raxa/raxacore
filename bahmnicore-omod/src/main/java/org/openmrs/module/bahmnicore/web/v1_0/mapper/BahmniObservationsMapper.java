@@ -20,6 +20,7 @@ public class BahmniObservationsMapper {
     public static final String PATIENT_RESOURCE_NAME = RestConstants.VERSION_1 + "/patient";
     public static final String ENCOUNTER_RESOURCE_NAME = RestConstants.VERSION_1 + "/encounter";
     public static final String VISIT_RESOURCE_NAME = RestConstants.VERSION_1 + "/visit";
+    private static final String PROVIDER_RESOURCE_NAME = RestConstants.VERSION_1 + "/provider";
 
     private final RestService restService;
     private final List<String> rootConceptNames;
@@ -96,9 +97,17 @@ public class BahmniObservationsMapper {
     }
 
     private ObservationData createObservationForLeaf(Obs anObservation, String rootConcept) {
-        ObservationData observationData = new ObservationData(anObservation, getPatientURI(anObservation), getVisitURI(anObservation), getEncounterURI(anObservation));
+        ObservationData observationData = new ObservationData(anObservation, getPatientURI(anObservation), getVisitURI(anObservation), getEncounterURI(anObservation), getProviderURIs(anObservation));
         observationData.setRootConcept(rootConcept);
         return observationData;
+    }
+
+    private List<String> getProviderURIs(Obs anObservation) {
+        List<String> providerURIs = new ArrayList<>();
+        for (EncounterProvider encounterProvider : anObservation.getEncounter().getEncounterProviders()) {
+            providerURIs.add(getURI(PROVIDER_RESOURCE_NAME, encounterProvider.getProvider()));
+        }
+        return providerURIs;
     }
 
     private String getPatientURI(Obs anObservation) {
