@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -74,7 +75,9 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
     }
 
     private void updateEncounter(Encounter encounter, Date encounterDateTime, List<Document> documents){
+        LinkedHashSet<Obs> observations = new LinkedHashSet<>(encounter.getAllObs());
         Concept imageConcept = conceptService.getConceptByName(DOCUMENT_OBS_GROUP_CONCEPT_NAME);
+
         for (Document document : documents) {
             Concept testConcept = conceptService.getConceptByUuid(document.getTestUuid());
 
@@ -90,12 +93,13 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
 
                 String url = document.getImage();
                 parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), encounter, imageConcept, url));
-                encounter.addObs(parentObservation);
+                observations.add(parentObservation);
             }
             else{
                 voidDocumentObservationTree(parentObservation);
             }
         }
+        encounter.setObs(observations);
     }
 
     private Obs voidExistingAndCreateNewObs(Concept testConcept, Obs parentObservation) {
