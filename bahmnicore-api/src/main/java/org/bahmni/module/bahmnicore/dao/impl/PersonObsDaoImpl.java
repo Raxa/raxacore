@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.Obs;
+import org.openmrs.api.ConceptNameType;
 import org.openmrs.module.emrapi.test.builder.ConceptDataTypeBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -55,10 +56,12 @@ public class PersonObsDaoImpl implements PersonObsDao {
                         " and obs.encounter.visit.visitId in (:listOfVisitIds) " +
                         " and cn.concept = obs.concept.conceptId " +
                         " and cn.name in (:conceptNames) " +
-                        "order by obs.obsDatetime desc");
+                        " and cn.conceptNameType = :conceptNameType " +
+                        " order by obs.obsDatetime desc ");
         queryToGetObservations.setString("patientUuid", patientUuid);
         queryToGetObservations.setParameterList("conceptNames", conceptNames);
         queryToGetObservations.setParameterList("listOfVisitIds", listOfVisitIds);
+        queryToGetObservations.setParameter("conceptNameType", ConceptNameType.FULLY_SPECIFIED);
         return queryToGetObservations.list();
     }
 

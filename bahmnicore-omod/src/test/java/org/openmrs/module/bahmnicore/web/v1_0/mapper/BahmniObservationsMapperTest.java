@@ -1,7 +1,9 @@
 package org.openmrs.module.bahmnicore.web.v1_0.mapper;
 
+import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
 import org.bahmni.module.bahmnicore.mapper.builder.*;
+import org.bahmni.module.bahmnicore.service.ConceptService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -32,8 +35,10 @@ public class BahmniObservationsMapperTest {
     public static final String PATIENT_RESOURCE_URI = "/patient/Uri";
     public static final String ENCOUNTER_RESOURCE_URI = "/encounter/Uri";
     public static final String VISIT_RESOURCE_URI = "/visit/Uri";
+    public static final int CONCEPT_SORT_WEIGHT = 111;
 
     private BahmniObservationsMapper bahmniObservationsMapper;
+    public ConceptDefinition mockConceptDefinition;
 
 
     @Before
@@ -60,7 +65,11 @@ public class BahmniObservationsMapperTest {
         RestService mockRestService = mock(RestService.class);
         when(mockRestService.getResourceByName(anyString())).thenReturn(mockResource);
         String[] conceptNames = {"tconcept1", "tconcept2", "True", "tconcept", "tconcept3"};
-        bahmniObservationsMapper = new BahmniObservationsMapper(mockRestService, conceptNames);
+
+        mockConceptDefinition = mock(ConceptDefinition.class);
+        when(mockConceptDefinition.getSortWeightFor(any(Concept.class))).thenReturn(CONCEPT_SORT_WEIGHT);
+
+        bahmniObservationsMapper = new BahmniObservationsMapper(mockRestService, conceptNames, mockConceptDefinition);
     }
 
     @Test
@@ -80,6 +89,8 @@ public class BahmniObservationsMapperTest {
 
         List<ObservationData> mappedObservations = bahmniObservationsMapper.map(Arrays.asList(obs));
 
+        verify(mockConceptDefinition).getSortWeightFor(any(Concept.class));
+
         assertEquals(1, mappedObservations.size());
         ObservationData observationData = mappedObservations.get(0);
         assertEquals(obs.getConcept().getName().getName(), observationData.getConcept());
@@ -88,6 +99,7 @@ public class BahmniObservationsMapperTest {
         assertEquals(ENCOUNTER_RESOURCE_URI, observationData.getLinks().getEncounterURI());
         assertEquals("5.0", observationData.getValue());
         assertEquals("Numeric", observationData.getType());
+        assertEquals(CONCEPT_SORT_WEIGHT, observationData.getConceptSortWeight());
     }
 
     @Test
@@ -129,8 +141,8 @@ public class BahmniObservationsMapperTest {
         Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(date).build();
         Encounter encounter = new EncounterBuilder().withVisit(visit).withPerson(person).withUUID("euuid").withDatetime(date).build();
 
-        Concept concept1 = new ConceptBuilder().withName("tconcept").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid").withClass(BahmniObservationsMapper.CONCEPT_DETAILS_CONCEPT_CLASS).build();
-        Concept concept11 = new ConceptBuilder().withName("tconcept1").withCodedDataType().withUUID("cuuid1").withClass(BahmniObservationsMapper.ABNORMAL_CONCEPT_CLASS).build();
+        Concept concept1 = new ConceptBuilder().withName("tconcept").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid").withClass(ConceptService.CONCEPT_DETAILS_CONCEPT_CLASS).build();
+        Concept concept11 = new ConceptBuilder().withName("tconcept1").withCodedDataType().withUUID("cuuid1").withClass(ConceptService.ABNORMAL_CONCEPT_CLASS).build();
         Concept concept111 = new ConceptBuilder().withName("True").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid11").withClass("").build();
         Concept concept12 = new ConceptBuilder().withName("tconcept2").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid2").withClass("").build();
 
@@ -154,8 +166,8 @@ public class BahmniObservationsMapperTest {
         Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(date).build();
         Encounter encounter = new EncounterBuilder().withVisit(visit).withPerson(person).withUUID("euuid").withDatetime(date).build();
 
-        Concept concept1 = new ConceptBuilder().withName("tconcept").withDataType("cdatatype").withUUID("cuuid").withClass(BahmniObservationsMapper.CONCEPT_DETAILS_CONCEPT_CLASS).build();
-        Concept concept11 = new ConceptBuilder().withName("tconcept1").withCodedDataType().withUUID("cuuid1").withClass(BahmniObservationsMapper.ABNORMAL_CONCEPT_CLASS).build();
+        Concept concept1 = new ConceptBuilder().withName("tconcept").withDataType("cdatatype").withUUID("cuuid").withClass(ConceptService.CONCEPT_DETAILS_CONCEPT_CLASS).build();
+        Concept concept11 = new ConceptBuilder().withName("tconcept1").withCodedDataType().withUUID("cuuid1").withClass(ConceptService.ABNORMAL_CONCEPT_CLASS).build();
         Concept concept111 = new ConceptBuilder().withName("True").withDataType("cdatatype").withUUID("cuuid11").withClass("").build();
         Concept concept12 = new ConceptBuilder().withName("tconcept2").withCodedDataType().withUUID("cuuid2").withClass("").build();
         Concept concept112 = new ConceptBuilder().withName("tconcept3").withDataType("answer").withUUID("cuuid12").withClass("").build();

@@ -1,6 +1,8 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
+import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
+import org.bahmni.module.bahmnicore.service.ConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniPersonObsService;
 import org.openmrs.Obs;
 import org.openmrs.module.bahmnicore.web.v1_0.mapper.BahmniObservationsMapper;
@@ -22,6 +24,8 @@ public class BahmniObservationsController extends BaseRestController {
     @Autowired
     private BahmniPersonObsService personObsService;
     @Autowired
+    private ConceptService conceptService;
+    @Autowired
     private RestService restService;
 
     public BahmniObservationsController(BahmniPersonObsService personObsService, RestService restService) {
@@ -38,6 +42,8 @@ public class BahmniObservationsController extends BaseRestController {
                                      @RequestParam(value = "concept", required = true) String[] conceptNames,
                                      @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits) {
         List<Obs> observations = personObsService.observationsFor(patientUUID, conceptNames, numberOfVisits);
-        return new BahmniObservationsMapper(restService, conceptNames).map(observations);
+        ConceptDefinition conceptDefinition = conceptService.conceptsFor(conceptNames);
+
+        return new BahmniObservationsMapper(restService, conceptNames, conceptDefinition).map(observations);
     }
 }

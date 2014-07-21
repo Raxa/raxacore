@@ -2,7 +2,9 @@ package org.openmrs.module.bahmnicore.web.v1_0.mapper;
 
 
 import org.apache.commons.lang.StringUtils;
+import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
+import org.bahmni.module.bahmnicore.service.ConceptService;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
@@ -12,38 +14,34 @@ import org.openmrs.module.webservices.rest.web.api.RestService;
 import java.util.*;
 
 public class BahmniObservationsMapper {
-
-    public static final String CONCEPT_DETAILS_CONCEPT_CLASS = "Concept Details";
-    public static final String ABNORMAL_CONCEPT_CLASS = "Abnormal";
-    private static final String DURATION_CONCEPT_CLASS = "Duration";
-
     public static final String PATIENT_RESOURCE_NAME = RestConstants.VERSION_1 + "/patient";
     public static final String ENCOUNTER_RESOURCE_NAME = RestConstants.VERSION_1 + "/encounter";
     public static final String VISIT_RESOURCE_NAME = RestConstants.VERSION_1 + "/visit";
     private static final String PROVIDER_RESOURCE_NAME = RestConstants.VERSION_1 + "/provider";
 
     private final RestService restService;
+    private ConceptDefinition conceptDefinition;
     private final List<String> rootConceptNames;
 
-    public BahmniObservationsMapper(RestService restService, String[] conceptNames) {
+    public BahmniObservationsMapper(RestService restService, String[] conceptNames, ConceptDefinition conceptDefinition) {
         this.restService = restService;
         this.rootConceptNames = Arrays.asList(conceptNames);
+        this.conceptDefinition = conceptDefinition;
     }
 
     public List<ObservationData> map(List<Obs> obsForPerson) {
         List<ObservationData> observations = flatten(obsForPerson, new ArrayList<ObservationData>(), null);
-
-        sortByDatetime(observations);
-        return observations;
+        return sortByDatetime(observations);
     }
 
-    private void sortByDatetime(List<ObservationData> observations) {
+    private List<ObservationData> sortByDatetime(List<ObservationData> observations) {
         Collections.sort(observations, new Comparator<ObservationData>() {
             @Override
             public int compare(ObservationData anObs, ObservationData anotherObs) {
                 return anotherObs.getTime().compareTo(anObs.getTime());
             }
         });
+        return observations;
     }
 
     private List<ObservationData> flatten(Collection<Obs> obsForPerson, List<ObservationData> mappedObservations, String rootConcept) {
@@ -74,7 +72,7 @@ public class BahmniObservationsMapper {
                 isAbnormal = Boolean.parseBoolean(anObservation.getValueCoded().getName().getName());
             } else if (hasValue(anObservation)) {
                 observationData = createObservationForLeaf(anObservation, rootConcept);
-                observationData.setRootConcept(rootConcept);
+//                observationData.setRootConcept(rootConcept);
                 // Mujir/Mihir - not pre loading complex concepts as we don't need them yet.
                 if (isNumeric(anObservation)) {
                     observationData.setUnit(getUnit(anObservation.getConcept()));
@@ -97,9 +95,15 @@ public class BahmniObservationsMapper {
     }
 
     private ObservationData createObservationForLeaf(Obs anObservation, String rootConcept) {
-        ObservationData observationData = new ObservationData(anObservation, getPatientURI(anObservation), getVisitURI(anObservation), getEncounterURI(anObservation), getProviderURIs(anObservation));
+        ObservationData observationData = new ObservationData(anObservation, getPatientURI(anObservation),
+                getVisitURI(anObservation), getEncounterURI(anObservation), getProviderURIs(anObservation),
+                getConceptSortWeight(conceptDefinition, anObservation.getConcept()));
         observationData.setRootConcept(rootConcept);
         return observationData;
+    }
+
+    private int getConceptSortWeight(ConceptDefinition conceptDefinition, Concept observationConcept) {
+        return conceptDefinition.getSortWeightFor(observationConcept);
     }
 
     private List<String> getProviderURIs(Obs anObservation) {
@@ -131,18 +135,18 @@ public class BahmniObservationsMapper {
     }
 
     private boolean isAbnormal(Concept obsConcept) {
-        return obsConcept.getConceptClass().getName().equals(ABNORMAL_CONCEPT_CLASS);
+        return obsConcept.getConceptClass().getName().equals(ConceptService.ABNORMAL_CONCEPT_CLASS);
     }
 
     private boolean isDuration(Concept obsConcept) {
-        return obsConcept.getConceptClass().getName().equals(DURATION_CONCEPT_CLASS);
+        return obsConcept.getConceptClass().getName().equals(ConceptService.DURATION_CONCEPT_CLASS);
     }
 
     private boolean isConceptDetails(Concept obsConcept) {
-        return obsConcept.getConceptClass().getName().equals(CONCEPT_DETAILS_CONCEPT_CLASS);
+        return obsConcept.getConceptClass().getName().equals(ConceptService.CONCEPT_DETAILS_CONCEPT_CLASS);
     }
 
-    public String getRootConcept(Obs obs, String rootConcept) {
+    private String getRootConcept(Obs obs, String rootConcept) {
         String conceptName = obs.getConcept().getName().getName();
         return rootConceptNames.contains(conceptName) ? conceptName : rootConcept;
     }
