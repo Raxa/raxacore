@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTransactionObsMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.util.Arrays;
@@ -43,8 +44,8 @@ public class BahmniObsMapperTest {
 
 
         when(conceptService.getConceptByUuid(obsGroupConcept.getUuid())).thenReturn(obsGroupConcept);
-        BahmniObsMapper bahmniObsMapper = new BahmniObsMapper(conceptService);
-        List<EncounterTransaction.Observation> observations = bahmniObsMapper.map(encounterTransaction);
+        EncounterTransactionObsMapper encounterTransactionObsMapper = new EncounterTransactionObsMapper(conceptService);
+        List<EncounterTransaction.Observation> observations = encounterTransactionObsMapper.map(encounterTransaction);
 
         EncounterTransaction.Observation observationGroup = observations.get(0);
         Assert.assertEquals(obsGroupConcept.getUuid(), observationGroup.getConcept().getUuid());
@@ -82,8 +83,8 @@ public class BahmniObsMapperTest {
 
         when(conceptService.getConceptByUuid(obsGroupConcept.getUuid())).thenReturn(obsGroupConcept);
         when(conceptService.getConceptByUuid(obsGroup2Concept.getUuid())).thenReturn(obsGroup2Concept);
-        BahmniObsMapper bahmniObsMapper = new BahmniObsMapper(conceptService);
-        List<EncounterTransaction.Observation> observations = bahmniObsMapper.map(encounterTransaction);
+        EncounterTransactionObsMapper encounterTransactionObsMapper = new EncounterTransactionObsMapper(conceptService);
+        List<EncounterTransaction.Observation> observations = encounterTransactionObsMapper.map(encounterTransaction);
 
         EncounterTransaction.Observation observationGroup = observations.get(0);
         Assert.assertEquals(obsGroupConcept.getUuid(), observationGroup.getConcept().getUuid());

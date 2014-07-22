@@ -1,11 +1,11 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.dao.OrderDao;
-import org.bahmni.module.bahmnicore.model.BahmniVisit.LabOrderResults;
-import org.bahmni.module.bahmnicore.service.impl.LabOrderResultsService;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
+import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResults;
+import org.openmrs.module.bahmniemrapi.laborder.service.LabOrderResultsService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -2,13 +2,13 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.bahmni.module.bahmnicore.contract.visitDocument.VisitDocumentResponse;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;

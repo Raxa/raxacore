@@ -1,16 +1,24 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
 import org.apache.commons.lang.StringUtils;
-import org.bahmni.module.bahmnicore.BahmniCoreException;
 import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
-import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniDiagnosis;
-import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniDiagnosisRequest;
-import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniEncounterTransaction;
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterConfigResponse;
-import org.openmrs.*;
-import org.openmrs.api.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.OrderType;
+import org.openmrs.VisitType;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.ObsService;
+import org.openmrs.api.OrderService;
+import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmnicore.web.v1_0.InvalidInputException;
-import org.openmrs.module.bahmnicore.web.v1_0.mapper.*;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
+import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
+import org.openmrs.module.bahmniemrapi.accessionnote.mapper.AccessionNotesMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTransactionObsMapper;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
 import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
 import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
@@ -20,7 +28,11 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestControlle
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,16 +59,9 @@ public class BahmniEncounterController extends BaseRestController {
     @Autowired
     private AccessionNotesMapper accessionNotesMapper;
     @Autowired
-    private BahmniObsMapper bahmniObsMapper;
-
-    public BahmniEncounterController(VisitService visitService, ConceptService conceptService, EncounterService encounterService) {
-        this.visitService = visitService;
-        this.conceptService = conceptService;
-        this.encounterService = encounterService;
-    }
-
-    public BahmniEncounterController() {
-    }
+    private EncounterTransactionObsMapper encounterTransactionObsMapper;
+    @Autowired
+    private BahmniEncounterTransactionService bahmniEncounterTransactionService;
 
     @RequestMapping(method = RequestMethod.GET, value = "config")
     @ResponseBody
@@ -94,7 +99,7 @@ public class BahmniEncounterController extends BaseRestController {
                                                  @RequestParam(value = "encounterDate", required = false) String encounterDate) {
         List<BahmniEncounterTransaction> bahmniEncounterTransactions = new ArrayList<>();
 
-        BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper = new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper, bahmniObsMapper);
+        BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper = new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper, encounterTransactionObsMapper);
 
         for (String visitUuid : visitUuids ) {
             EncounterSearchParameters encounterSearchParameters = new EncounterSearchParameters();
@@ -132,50 +137,12 @@ public class BahmniEncounterController extends BaseRestController {
     @ResponseBody
     @Transactional
     public BahmniEncounterTransaction update(@RequestBody BahmniEncounterTransaction bahmniEncounterTransaction) {
-        //Reconstruct the encounter transaction as understood by emr-api and save
-        new EncounterTransactionDiagnosisMapper().populateDiagnosis(bahmniEncounterTransaction);
-        EncounterTransaction encounterTransaction = emrEncounterService.save(bahmniEncounterTransaction);
-
-        //Get the saved encounter transaction from emr-api
-        String encounterUuid = encounterTransaction.getEncounterUuid();
-        Encounter currentEncounter = encounterService.getEncounterByUuid(encounterUuid);
-        EncounterTransaction updatedEncounterTransaction = encounterTransactionMapper.map(currentEncounter, true);
-
-        //Update the diagnosis information with Meta Data managed by Bahmni
-        BahmniDiagnosisHelper bahmniDiagnosisHelper = new BahmniDiagnosisHelper(obsService, conceptService);
-        for (BahmniDiagnosisRequest bahmniDiagnosis : bahmniEncounterTransaction.getBahmniDiagnoses()) {
-            EncounterTransaction.Diagnosis diagnosis = getMatchingEncounterTransactionDiagnosis(bahmniDiagnosis, updatedEncounterTransaction.getDiagnoses());
-            bahmniDiagnosisHelper.updateDiagnosisMetaData(bahmniDiagnosis, diagnosis, currentEncounter);
-        }
-        encounterService.saveEncounter(currentEncounter);
-
-        // Void the previous diagnosis if required
-        for (BahmniDiagnosisRequest bahmniDiagnosis : bahmniEncounterTransaction.getBahmniDiagnoses()) {
-            String previousDiagnosisObs = bahmniDiagnosis.getPreviousObs();
-            if (previousDiagnosisObs == null) continue;
-
-            Obs diagnosisObs = obsService.getObsByUuid(previousDiagnosisObs);
-            Encounter encounterForDiagnosis = encounterService.getEncounterByUuid(diagnosisObs.getEncounter().getUuid());
-            if (!encounterForDiagnosis.equals(currentEncounter)) {
-                bahmniDiagnosisHelper.markAsRevised(encounterForDiagnosis, diagnosisObs.getUuid());
-                encounterService.saveEncounter(encounterForDiagnosis);
-            }
-        }
-        return new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper, bahmniObsMapper).map(updatedEncounterTransaction);
-    }
-
-    private EncounterTransaction.Diagnosis getMatchingEncounterTransactionDiagnosis(BahmniDiagnosis bahmniDiagnosis, List<EncounterTransaction.Diagnosis> encounterTransactionDiagnoses) {
-        for (EncounterTransaction.Diagnosis diagnosis : encounterTransactionDiagnoses) {
-            if (bahmniDiagnosis.isSame(diagnosis)) {
-                return diagnosis;
-            }
-        }
-        throw new BahmniCoreException("Error fetching the saved diagnosis for  " + bahmniDiagnosis.getCodedAnswer().getName());
+        return bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
     }
 
     public BahmniEncounterTransaction get(String encounterUuid) {
         Encounter encounter = encounterService.getEncounterByUuid(encounterUuid);
         EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, true);
-        return new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper, bahmniObsMapper).map(encounterTransaction);
+        return new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper, encounterTransactionObsMapper).map(encounterTransaction);
     }
 }

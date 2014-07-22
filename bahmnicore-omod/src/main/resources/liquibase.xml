@@ -1074,4 +1074,44 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
+    <changeSet id="bahmni-core-201407180800" author="Shruthi">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept_class where name = 'Computed';
+            </sqlCheck>
+        </preConditions>
+        <comment>add concept class Computed</comment>
+        <insert tableName="concept_class">
+            <column name="name" value="Computed"/>
+            <column name="description" value="Computed"/>
+            <column name="creator" value="1"/>
+            <column name="date_created" valueComputed="curdate()"/>
+            <column name="retired" value="0"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bahmni-core-201407221627" author="Rohan, Shruthi">
+        <preConditions>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property where property = 'emr.encounterMatcher'
+            </sqlCheck>
+        </preConditions>
+        <comment>Update custom encounter session matcher</comment>
+        <sql>
+            update global_property set property_value='org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterSessionMatcher' where property='emr.encounterMatcher' ;
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201407221628" author="Rohan, Shruthi">
+        <preConditions>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property where property = 'emr.encounterProviderMatcher'
+            </sqlCheck>
+        </preConditions>
+        <comment>Update custom encounter session matcher</comment>
+        <sql>
+            update global_property set property_value='org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterProviderSessionMatcher' where property='emr.encounterProviderMatcher';
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>

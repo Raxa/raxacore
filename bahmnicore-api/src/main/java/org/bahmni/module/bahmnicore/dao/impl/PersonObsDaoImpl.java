@@ -7,7 +7,6 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.Obs;
 import org.openmrs.api.ConceptNameType;
-import org.openmrs.module.emrapi.test.builder.ConceptDataTypeBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

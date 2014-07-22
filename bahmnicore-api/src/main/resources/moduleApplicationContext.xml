@@ -16,14 +16,6 @@
 
     <bean id="propertiesReader" class="org.bahmni.module.bahmnicore.properties.PropertiesReaderImpl" factory-method="load" scope="singleton"/>
 
-    <bean id="bahmniEncounterSessionmatcher" class="org.bahmni.module.bahmnicore.matcher.EncounterSessionMatcher">
-        <property name="administrationService" ref="adminService"/>
-    </bean>
-
-    <bean id="bahmniEncounterProviderSessionmatcher" class="org.bahmni.module.bahmnicore.matcher.EncounterProviderSessionMatcher">
-        <property name="administrationService" ref="adminService"/>
-    </bean>
-
     <bean id="orderDao" class="org.bahmni.module.bahmnicore.dao.impl.OrderDaoImpl" />
 
     <util:properties id="referenceDataAtomFeedProperties" location="classpath:referenceData-atomfeed.properties"/>

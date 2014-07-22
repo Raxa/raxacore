@@ -1,13 +1,13 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.contract.visitDocument.VisitDocumentRequest;
-import org.bahmni.module.bahmnicore.contract.visitDocument.VisitDocumentResponse;
 import org.bahmni.module.bahmnicore.model.DocumentImage;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
-import org.bahmni.module.bahmnicore.service.VisitDocumentService;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentRequest;
+import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentResponse;
+import org.openmrs.module.bahmniemrapi.document.service.VisitDocumentService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;

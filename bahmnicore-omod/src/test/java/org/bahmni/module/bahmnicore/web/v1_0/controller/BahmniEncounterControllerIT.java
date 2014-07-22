@@ -1,8 +1,5 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniDiagnosis;
-import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniDiagnosisRequest;
-import org.bahmni.module.bahmnicore.contract.encounter.request.BahmniEncounterTransaction;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -10,6 +7,9 @@ import org.openmrs.Visit;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmnicore.web.v1_0.controller.BahmniEncounterController;
+import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
+import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
