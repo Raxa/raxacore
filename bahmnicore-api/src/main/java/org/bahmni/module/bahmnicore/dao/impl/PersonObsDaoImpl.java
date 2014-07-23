@@ -10,6 +10,7 @@ import org.openmrs.api.ConceptNameType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -47,6 +48,8 @@ public class PersonObsDaoImpl implements PersonObsDao {
     @Override
     public List<Obs> getObsFor(String patientUuid, String[] conceptNames, Integer numberOfVisits) {
         List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
+        if (listOfVisitIds == null || listOfVisitIds.isEmpty())
+            return new ArrayList<>();
 
         Query queryToGetObservations = sessionFactory.getCurrentSession().createQuery(
                     "select obs " +
