@@ -59,6 +59,8 @@ public class PersonObsDaoImpl implements PersonObsDao {
                         " and cn.concept = obs.concept.conceptId " +
                         " and cn.name in (:conceptNames) " +
                         " and cn.conceptNameType = :conceptNameType " +
+                        " and cn.voided = 0 " +
+                        " and obs.voided = 0 " +
                         " order by obs.obsDatetime desc ");
         queryToGetObservations.setString("patientUuid", patientUuid);
         queryToGetObservations.setParameterList("conceptNames", conceptNames);
@@ -70,8 +72,9 @@ public class PersonObsDaoImpl implements PersonObsDao {
     private List<Integer> getVisitIdsFor(String patientUuid, Integer numberOfVisits) {
         Query queryToGetVisitIds = sessionFactory.getCurrentSession().createQuery(
                     "select v.visitId " +
-                        "from Visit as v " +
-                        "where v.patient.uuid = :patientUuid " +
+                        " from Visit as v " +
+                        " where v.patient.uuid = :patientUuid " +
+                        " and v.voided = 0 " +
                         "order by v.startDatetime desc");
         queryToGetVisitIds.setString("patientUuid", patientUuid);
         if (numberOfVisits != null) {

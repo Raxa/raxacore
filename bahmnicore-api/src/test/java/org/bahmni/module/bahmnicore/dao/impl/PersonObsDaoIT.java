@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
+import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.dao.PersonObsDao;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,4 +63,11 @@ public class PersonObsDaoIT extends BaseModuleWebContextSensitiveTest {
 	public void shouldRetrieveNumericalConceptsForPatient() throws Exception {
 		assertEquals(5, personObsDao.getNumericConceptsForPerson("86526ed5-3c11-11de-a0ba-001e378eb67a").size());
 	}
+
+    @Test
+    public void do_not_fetch_voided_observations() throws Exception {
+        List<Obs> allObs = personObsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", new String[]{"Blood Pressure"}, null);
+        assertEquals(1, allObs.size());
+    }
+
 }

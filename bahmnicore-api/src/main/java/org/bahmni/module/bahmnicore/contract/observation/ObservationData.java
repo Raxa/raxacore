@@ -17,8 +17,8 @@ public class ObservationData {
     private String type;
     private String unit;
 
-    private Boolean isAbnormal;
-    private Long duration;
+    private Boolean isAbnormal = null;
+    private Long duration = null;
 
     private Date time;
     private LinkData links;

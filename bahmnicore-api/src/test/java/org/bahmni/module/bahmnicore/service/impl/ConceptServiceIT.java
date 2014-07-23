@@ -47,7 +47,11 @@ public class ConceptServiceIT extends BaseModuleWebContextSensitiveTest {
 
         int childSortWeight = conceptDefinition.getSortWeightFor(childConcept);
         assertEquals(-1, childSortWeight);
-
     }
 
+    @Test
+    public void do_not_fetch_voided_concepts() throws Exception {
+        ConceptDefinition conceptDefinition = conceptService.conceptsFor(new String[]{"Blood Pressure voided node"});
+        assertEquals(0, conceptDefinition.size());
+    }
 }

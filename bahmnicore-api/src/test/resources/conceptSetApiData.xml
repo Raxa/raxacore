@@ -3,6 +3,9 @@
     <concept concept_id="90" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="blood_pressure_concept_uuid" />
     <concept_name concept_id="90" name="Blood Pressure" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
+    <concept concept_id="99990" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="blood_pressure_concept_uuid_voided" />
+    <concept_name voided="1" concept_id="99990" name="Blood Pressure voided node" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="9991" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092agk" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
     <concept concept_id="901" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="systolic_data_uuid" />
     <concept_name concept_id="901" name="Systolic Data" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="2" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afc" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
     <concept_set concept_id="901" concept_set="90" concept_set_id="1" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />

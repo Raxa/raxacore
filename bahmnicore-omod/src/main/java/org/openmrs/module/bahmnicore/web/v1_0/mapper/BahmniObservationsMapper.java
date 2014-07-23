@@ -64,7 +64,7 @@ public class BahmniObservationsMapper {
     private ObservationData createObservationForGroup(Obs conceptDetailsObs, String rootConcept) {
         ObservationData observationData = null;
         Long duration = null;
-        boolean isAbnormal = false;
+        Boolean isAbnormal = false;
         for (Obs anObservation : conceptDetailsObs.getGroupMembers()) {
             if (isDuration(anObservation.getConcept())) {
                 duration = anObservation.getValueNumeric().longValue();
@@ -72,7 +72,6 @@ public class BahmniObservationsMapper {
                 isAbnormal = Boolean.parseBoolean(anObservation.getValueCoded().getName().getName());
             } else if (hasValue(anObservation)) {
                 observationData = createObservationForLeaf(anObservation, rootConcept);
-//                observationData.setRootConcept(rootConcept);
                 // Mujir/Mihir - not pre loading complex concepts as we don't need them yet.
                 if (isNumeric(anObservation)) {
                     observationData.setUnit(getUnit(anObservation.getConcept()));
@@ -148,6 +147,10 @@ public class BahmniObservationsMapper {
 
     private String getRootConcept(Obs obs, String rootConcept) {
         String conceptName = obs.getConcept().getName().getName();
-        return rootConceptNames.contains(conceptName) ? conceptName : rootConcept;
+        for (String rootConceptName : rootConceptNames) {
+            if (rootConceptName.equalsIgnoreCase(conceptName))
+                return conceptName;
+        }
+        return rootConcept;
     }
 }

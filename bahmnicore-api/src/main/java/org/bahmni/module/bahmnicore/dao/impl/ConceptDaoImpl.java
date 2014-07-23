@@ -29,6 +29,7 @@ public class ConceptDaoImpl implements ConceptDao {
                         " from Concept as c, ConceptName as cn " +
                         " where cn.concept = c.conceptId " +
                         " and lower(cn.name) in (:lowerCaseConceptNames) " +
+                        " and cn.voided=0 " +
                         " and cn.conceptNameType = :conceptNameType");
         conceptsSortedByWeightQuery.setParameterList("lowerCaseConceptNames", lowerCaseConceptNames.toArray());
         conceptsSortedByWeightQuery.setParameter("conceptNameType", ConceptNameType.FULLY_SPECIFIED);
