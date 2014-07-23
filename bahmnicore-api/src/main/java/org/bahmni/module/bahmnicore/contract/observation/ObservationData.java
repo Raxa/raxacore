@@ -10,6 +10,7 @@ import java.util.List;
 
 @JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
 public class ObservationData {
+    private Date encounterTime;
     private int conceptSortWeight;
     private String concept;
     private String value;
@@ -26,13 +27,23 @@ public class ObservationData {
     public ObservationData() {
     }
 
-    public ObservationData(Obs obs, String patientURI, String visitURI, String encounterURI, List<String> providerURIs, int conceptSortWeight) {
-        this.concept = obs.getConcept().getName().getName();
+    public ObservationData(Obs anObservation, String patientURI, String visitURI, String encounterURI, List<String> providerURIs, int conceptSortWeight) {
+        this.concept = anObservation.getConcept().getName().getName();
         this.conceptSortWeight = conceptSortWeight;
-        this.value = obs.getValueAsString(Context.getLocale());
-        this.type = obs.getConcept().getDatatype().getName();
-        this.time = obs.getObsDatetime();
+        this.value = anObservation.getValueAsString(Context.getLocale());
+        this.type = anObservation.getConcept().getDatatype().getName();
+        this.time = anObservation.getObsDatetime();
+        this.encounterTime = anObservation.getEncounter().getEncounterDatetime();
+
         this.links = new LinkData(visitURI, encounterURI, patientURI, providerURIs);
+    }
+
+    public Date getEncounterTime() {
+        return encounterTime;
+    }
+
+    public void setEncounterTime(Date encounterTime) {
+        this.encounterTime = encounterTime;
     }
 
     public int getConceptSortWeight() {

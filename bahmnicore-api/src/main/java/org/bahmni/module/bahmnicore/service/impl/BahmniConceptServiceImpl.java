@@ -15,7 +15,6 @@ import java.util.List;
 @Service
 public class BahmniConceptServiceImpl implements ConceptService {
     private ConceptDao bahmniConceptDao;
-    private List<String> rootConceptNames;
 
     @Autowired
     public BahmniConceptServiceImpl(ConceptDao bahmniConceptDao) {
@@ -23,18 +22,18 @@ public class BahmniConceptServiceImpl implements ConceptService {
     }
 
     @Override
-    public ConceptDefinition conceptsFor(String[] rootConceptNames) {
-        this.rootConceptNames = Arrays.asList(rootConceptNames);
+    public ConceptDefinition conceptsFor(String[] rootConceptNamesArg) {
+        List<String> rootConceptNames = Arrays.asList(rootConceptNamesArg);
 
-        List<Concept> rootConcepts = bahmniConceptDao.conceptFor(rootConceptNames);
+        List<Concept> rootConcepts = bahmniConceptDao.conceptFor(rootConceptNamesArg);
         ConceptDefinition conceptDefinition = new ConceptDefinition();
-        flatten(rootConcepts, conceptDefinition, null);
+        flatten(rootConcepts, conceptDefinition, null, rootConceptNames);
         return conceptDefinition;
     }
 
-    private ConceptDefinition flatten(Collection<Concept> concepts, ConceptDefinition conceptDefinition, Concept rootConcept) {
+    private ConceptDefinition flatten(Collection<Concept> concepts, ConceptDefinition conceptDefinition, Concept rootConcept, List<String> rootConceptNames) {
         for (Concept aConcept : concepts) {
-            rootConcept = getRootConcept(aConcept, rootConcept);
+            rootConcept = getRootConcept(aConcept, rootConcept, rootConceptNames);
 
             Collection<Concept> conceptMembers = aConcept.getSetMembers();
             if (conceptMembers == null || conceptMembers.isEmpty()) {
@@ -42,7 +41,7 @@ public class BahmniConceptServiceImpl implements ConceptService {
             } else if (isConceptDetails(aConcept)) {
                 conceptDefinition.add(createConceptForGroup(aConcept, rootConcept));
             } else {
-                flatten(conceptMembers, conceptDefinition, rootConcept);
+                flatten(conceptMembers, conceptDefinition, rootConcept, rootConceptNames);
             }
         }
 
@@ -79,7 +78,7 @@ public class BahmniConceptServiceImpl implements ConceptService {
         return conceptData;
     }
 
-    public Concept getRootConcept(Concept aConcept, Concept rootConcept) {
+    public Concept getRootConcept(Concept aConcept, Concept rootConcept, List<String> rootConceptNames) {
         for (String rootConceptName : rootConceptNames) {
             if (rootConceptName.equalsIgnoreCase(aConcept.getName().getName()))
                 return aConcept;
