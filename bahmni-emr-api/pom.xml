@@ -111,8 +111,13 @@
             <groupId>org.openmrs.module</groupId>
             <artifactId>providermanagement-api</artifactId>
         </dependency>
-        
-        
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <scope>provided</scope>
+            <version>1.7.6</version>
+        </dependency>
+
 
     </dependencies>
 
