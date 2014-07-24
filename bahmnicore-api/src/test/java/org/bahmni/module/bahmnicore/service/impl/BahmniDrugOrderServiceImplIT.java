@@ -161,7 +161,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         int firstOrderNumberOfDays = 10;
         BahmniDrugOrder calpolFirstOrder = new BahmniDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, firstOrderNumberOfDays, firstOrderNumberOfDays * 2.0, "mg");
         bahmniDrugOrderService.add("GAN200000", firstOrderDate, Arrays.asList(calpolFirstOrder), "System");
-        Date secondOrderDate = DateUtils.addDays(firstOrderDate, 5);
+        Date secondOrderDate = DateUtils.addDays(firstOrderDate, 1);
         int secondOrderNumberOfDays = 20;
         BahmniDrugOrder calpolSecondOrder = new BahmniDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, secondOrderNumberOfDays, secondOrderNumberOfDays * 2.0, "mg");
 

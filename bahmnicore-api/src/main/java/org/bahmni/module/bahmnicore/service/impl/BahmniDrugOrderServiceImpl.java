@@ -109,12 +109,13 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         while (newDrugOrdersIterator.hasNext()) {
             DrugOrder newDrugOrder = newDrugOrdersIterator.next();
             for(DrugOrder activeDrugOrder: activeDrugOrders) {
-                if(activeDrugOrder.getConcept().equals(newDrugOrder.getConcept())) {
+                if(newDrugOrder.hasSameOrderableAs(activeDrugOrder)) {
                     Encounter encounter = activeDrugOrder.getEncounter();
                     newDrugOrder.setEncounter(encounter);
                     encounter.addOrder(newDrugOrder);
-                    Days daysBetweenDrugs = Days.daysBetween(new DateTime(activeDrugOrder.getStartDate()), new DateTime(newDrugOrder.getStartDate()));
-                    newDrugOrder.setAutoExpireDate(DateUtils.addDays(newDrugOrder.getAutoExpireDate(), daysBetweenDrugs.getDays()));
+                    int numberOfDaysBetweenDrugs = Days.daysBetween(new DateTime(activeDrugOrder.getStartDate()), new DateTime(newDrugOrder.getStartDate())).getDays();
+                    int activeDrugOrderNumberOfDays = Days.daysBetween(new DateTime(activeDrugOrder.getStartDate()), new DateTime(activeDrugOrder.getAutoExpireDate())).getDays();
+                    newDrugOrder.setAutoExpireDate(DateUtils.addDays(newDrugOrder.getAutoExpireDate(), (activeDrugOrderNumberOfDays - numberOfDaysBetweenDrugs)));
                     newDrugOrder.setStartDate(activeDrugOrder.getStartDate());
                     newDrugOrder.setQuantity(activeDrugOrder.getQuantity() + newDrugOrder.getQuantity());
                     activeDrugOrder.setVoided(true);
