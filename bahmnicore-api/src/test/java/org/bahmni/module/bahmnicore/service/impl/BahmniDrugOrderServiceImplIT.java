@@ -145,16 +145,64 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
 
         Visit savedVisit = visitService.getVisit(visit.getId());
         assertEquals(2, savedVisit.getEncounters().size());
-        Set<Encounter> encounters = savedVisit.getEncounters();
-        Set<Order> orders = new HashSet<>();
-        for (Encounter encounter : encounters) {
-            orders.addAll(encounter.getOrders());
-        }
+        List<Order> orders = getOrders(savedVisit);
 
         assertEquals(3, orders.size());
         assertDrugOrder(orders, "Calpol", orderDate, calpol.getDosage(), calpol.getNumberOfDays());
         assertDrugOrder(orders, "Cetirizine", orderDate, cetrizine.getDosage(), cetrizine.getNumberOfDays());
         assertDrugOrder(orders, "Cetzine", orderDate, cetzine.getDosage(), cetzine.getNumberOfDays());
+    }
+
+    @Test
+    public void shouldMergeNewDrugOrderWithActiveOrderOfSameConcept() throws ParseException {
+        Date firstOrderDate = createDate("01-01-2014");
+        Patient patient = patientService.getPatient(1);
+        Visit visit = createVisitForDate(patient, null, firstOrderDate, false, firstOrderDate);
+        int firstOrderNumberOfDays = 10;
+        BahmniDrugOrder calpolFirstOrder = new BahmniDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, firstOrderNumberOfDays, firstOrderNumberOfDays * 2.0, "mg");
+        bahmniDrugOrderService.add("GAN200000", firstOrderDate, Arrays.asList(calpolFirstOrder), "System");
+        Date secondOrderDate = DateUtils.addDays(firstOrderDate, 5);
+        int secondOrderNumberOfDays = 20;
+        BahmniDrugOrder calpolSecondOrder = new BahmniDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, secondOrderNumberOfDays, secondOrderNumberOfDays * 2.0, "mg");
+
+        bahmniDrugOrderService.add("GAN200000", secondOrderDate, Arrays.asList(calpolSecondOrder), "System");
+
+        Visit savedVisit = visitService.getVisit(visit.getId());
+        assertEquals(1, savedVisit.getEncounters().size());
+        List<Order> orders = getOrders(savedVisit);
+        assertEquals(2, orders.size());
+        Order voidedOrder = getFirstVoidedOrder(orders);
+        Order nonVoidedOrder = getFirstNonVoidedOrder(orders);
+        assertEquals(createDate("01-01-2014"), nonVoidedOrder.getStartDate());
+        assertEquals(createDate("31-01-2014"), nonVoidedOrder.getAutoExpireDate());
+        assertNotNull(voidedOrder);
+    }
+
+    private Order getFirstVoidedOrder(List<Order> orders) {
+        for(Order order: orders){
+            if(order.getVoided()) return order;
+        }
+        return null;
+    }
+
+    private Order getFirstNonVoidedOrder(List<Order> orders) {
+        for(Order order: orders){
+            if(!order.getVoided()) return order;
+        }
+        return null;
+    }
+
+    private Date createDate(String str) throws ParseException {
+        return DateUtils.parseDate(str, "dd-MM-yyyy");
+    }
+
+    private ArrayList<Order> getOrders(Visit savedVisit) {
+        Set<Encounter> encounters = savedVisit.getEncounters();
+        Set<Order> orders = new HashSet<>();
+        for (Encounter encounter : encounters) {
+            orders.addAll(encounter.getOrders());
+        }
+        return new ArrayList<Order>(orders);
     }
 
     private Encounter createSystemConsultationEncounter(Patient patient, Date encounterDate) {
@@ -181,7 +229,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         return createVisitForDate(patient, null, orderDate, true, DateUtils.addDays(orderDate, 1));
     }
 
-    private void assertDrugOrder(Set<Order> orders, String drugName, Date orderDate, Double dosage, int numberOfDays) {
+    private void assertDrugOrder(Collection<Order> orders, String drugName, Date orderDate, Double dosage, int numberOfDays) {
         for (Order order : orders) {
             DrugOrder drugOrder = (DrugOrder) order;
             if (drugOrder.getDrug().getName().equals(drugName)) {
