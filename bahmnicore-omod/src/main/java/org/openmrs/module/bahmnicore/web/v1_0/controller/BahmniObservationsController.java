@@ -44,6 +44,6 @@ public class BahmniObservationsController extends BaseRestController {
         List<Obs> observations = personObsService.observationsFor(patientUUID, conceptNames, numberOfVisits);
         ConceptDefinition conceptDefinition = conceptService.conceptsFor(conceptNames);
 
-        return new BahmniObservationsMapper(restService, conceptNames, conceptDefinition).map(observations);
+        return new BahmniObservationsMapper(restService, conceptNames, conceptDefinition).mapNonVoidedObservations(observations);
     }
 }

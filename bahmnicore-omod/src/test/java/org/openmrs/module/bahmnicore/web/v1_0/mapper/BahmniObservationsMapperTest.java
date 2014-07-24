@@ -4,6 +4,7 @@ import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
 import org.bahmni.module.bahmnicore.mapper.builder.*;
 import org.bahmni.module.bahmnicore.service.ConceptService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +17,7 @@ import org.openmrs.util.LocaleUtility;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -74,7 +76,7 @@ public class BahmniObservationsMapperTest {
 
     @Test
     public void return_empty_list_for_no_obs() throws Exception {
-        assertEquals(0, bahmniObservationsMapper.map(new ArrayList<Obs>()).size());
+        assertEquals(0, bahmniObservationsMapper.mapNonVoidedObservations(new ArrayList<Obs>()).size());
     }
 
     @Test
@@ -87,7 +89,7 @@ public class BahmniObservationsMapperTest {
 
         Obs obs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept1).withValue(5.0).withDatetime(date).build();
 
-        List<ObservationData> mappedObservations = bahmniObservationsMapper.map(Arrays.asList(obs));
+        List<ObservationData> mappedObservations = bahmniObservationsMapper.mapNonVoidedObservations(Arrays.asList(obs));
 
         verify(mockConceptDefinition).getSortWeightFor(any(Concept.class));
 
@@ -116,7 +118,7 @@ public class BahmniObservationsMapperTest {
         Obs obs12 = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept12).withValue("ovalue2").withDatetime(date).build();
         Obs observations = new ObsBuilder().withConcept(concept1).withGroupMembers(obs11, obs12).build();
 
-        List<ObservationData> mappedObservations = bahmniObservationsMapper.map(Arrays.asList(observations));
+        List<ObservationData> mappedObservations = bahmniObservationsMapper.mapNonVoidedObservations(Arrays.asList(observations));
 
         assertEquals(2, mappedObservations.size());
         ObservationData observationData1 = mappedObservations.get(0);
@@ -150,7 +152,7 @@ public class BahmniObservationsMapperTest {
         Obs obs12 = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept12).withValue("ovalue").withDatetime(date).build();
         Obs observations = new ObsBuilder().withConcept(concept1).withGroupMembers(obs11, obs12).build();
 
-        List<ObservationData> mappedObservations = bahmniObservationsMapper.map(Arrays.asList(observations));
+        List<ObservationData> mappedObservations = bahmniObservationsMapper.mapNonVoidedObservations(Arrays.asList(observations));
 
         ObservationData observationData = mappedObservations.get(0);
         assertEquals(1, mappedObservations.size());
@@ -176,12 +178,27 @@ public class BahmniObservationsMapperTest {
         Obs obs12 = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept12).withValue(concept112).withDatetime(date).build();
         Obs observations = new ObsBuilder().withConcept(concept1).withGroupMembers(obs11, obs12).build();
 
-        List<ObservationData> mappedObservations = bahmniObservationsMapper.map(Arrays.asList(observations));
+        List<ObservationData> mappedObservations = bahmniObservationsMapper.mapNonVoidedObservations(Arrays.asList(observations));
 
         ObservationData observationData = mappedObservations.get(0);
         assertEquals(1, mappedObservations.size());
         assertTrue(observationData.getIsAbnormal());
         assertEquals("tconcept3", observationData.getValue());
+    }
+
+    @Test
+    public void do_not_return_voided_observations() throws ParseException {
+        Date date = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse("January 2, 2010");
+        Person person = new PersonBuilder().withUUID("puuid").build();
+        Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(date).build();
+        Encounter encounter = new EncounterBuilder().withVisit(visit).withPerson(person).withUUID("euuid").withDatetime(date).build();
+
+        Concept concept1 = new ConceptBuilder().withName("tconcept").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid").withClass(ConceptService.CONCEPT_DETAILS_CONCEPT_CLASS).build();
+        Obs voidedObservation = new ObsBuilder().withPerson(person).withConcept(concept1).withEncounter(encounter).build();
+        voidedObservation.setVoided(true);
+
+        List<ObservationData> mappedObservations = bahmniObservationsMapper.mapNonVoidedObservations(Arrays.asList(voidedObservation));
+        assertEquals(0, mappedObservations.size());
     }
 
 }

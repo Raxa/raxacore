@@ -29,7 +29,7 @@ public class BahmniObservationsMapper {
         this.conceptDefinition = conceptDefinition;
     }
 
-    public List<ObservationData> map(List<Obs> obsForPerson) {
+    public List<ObservationData> mapNonVoidedObservations(List<Obs> obsForPerson) {
         List<ObservationData> observations = flatten(obsForPerson, new ArrayList<ObservationData>(), null);
         return sortByDatetime(observations);
     }
@@ -46,6 +46,9 @@ public class BahmniObservationsMapper {
 
     private List<ObservationData> flatten(Collection<Obs> obsForPerson, List<ObservationData> mappedObservations, String rootConcept) {
         for (Obs obs : obsForPerson) {
+            if (obs.isVoided())
+                continue;
+
             rootConcept = getRootConcept(obs, rootConcept);
 
             Collection<Obs> groupMembers = obs.getGroupMembers();
@@ -66,6 +69,9 @@ public class BahmniObservationsMapper {
         Long duration = null;
         Boolean isAbnormal = false;
         for (Obs anObservation : conceptDetailsObs.getGroupMembers()) {
+            if (anObservation.isVoided())
+                continue;
+
             if (isDuration(anObservation.getConcept())) {
                 duration = anObservation.getValueNumeric().longValue();
             } else if (isAbnormal(anObservation.getConcept())) {

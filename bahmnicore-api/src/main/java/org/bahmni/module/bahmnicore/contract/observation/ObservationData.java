@@ -8,7 +8,7 @@ import org.openmrs.api.context.Context;
 import java.util.Date;
 import java.util.List;
 
-@JsonSerialize(include= JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class ObservationData {
     private Date encounterTime;
     private int conceptSortWeight;
