@@ -20,27 +20,30 @@ import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
+@Transactional
 public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTransactionService {
 
-    @Autowired
     private ConceptService conceptService;
-    @Autowired
     private EncounterService encounterService;
-    @Autowired
     private EmrEncounterService emrEncounterService;
-    
-    @Autowired
     private EncounterTransactionMapper encounterTransactionMapper;
-    @Autowired
     private ObsService obsService;
-    @Autowired
     private AccessionNotesMapper accessionNotesMapper;
-    @Autowired
     private EncounterTransactionObsMapper encounterTransactionObsMapper;
+
+    public BahmniEncounterTransactionServiceImpl(ConceptService conceptService, EncounterService encounterService, EmrEncounterService emrEncounterService, EncounterTransactionMapper encounterTransactionMapper, ObsService obsService, AccessionNotesMapper accessionNotesMapper, EncounterTransactionObsMapper encounterTransactionObsMapper) {
+        this.conceptService = conceptService;
+        this.encounterService = encounterService;
+        this.emrEncounterService = emrEncounterService;
+        this.encounterTransactionMapper = encounterTransactionMapper;
+        this.obsService = obsService;
+        this.accessionNotesMapper = accessionNotesMapper;
+        this.encounterTransactionObsMapper = encounterTransactionObsMapper;
+    }
 
     @Override
     public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction) {

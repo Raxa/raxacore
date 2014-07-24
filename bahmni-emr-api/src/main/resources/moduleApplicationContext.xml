@@ -17,5 +17,38 @@
     <bean id="bahmniEncounterProviderSessionmatcher" class="org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterProviderSessionMatcher">
         <property name="administrationService" ref="adminService"/>
     </bean>
-    
+
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService</value>
+                <ref local="bahmniEncounterTransactionService"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="bahmniEncounterTransactionService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="target"><ref local="bahmniEncounterTransactionServiceTarget"/></property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="bahmniEncounterTransactionServiceTarget" class="org.openmrs.module.bahmniemrapi.encountertransaction.impl.BahmniEncounterTransactionServiceImpl" autowire="constructor">
+        <constructor-arg  ref="conceptService"/>
+        <constructor-arg  ref="encounterService"/>
+        <constructor-arg  ref="emrEncounterService"/>
+        <constructor-arg  ref="encounterTransactionMapper"/>
+        <constructor-arg  ref="obsService"/>
+        <constructor-arg  ref="accessionNotesMapper"/>
+        <constructor-arg  ref="encounterTransactionObsMapper"/>
+    </bean>
+
+
 </beans>

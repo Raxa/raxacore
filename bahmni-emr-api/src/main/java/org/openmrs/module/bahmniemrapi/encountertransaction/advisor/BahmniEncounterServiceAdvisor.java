@@ -1,7 +1,8 @@
-package org.bahmni.module.bahmnicore.advisor;
+package org.openmrs.module.bahmniemrapi.encountertransaction.advisor;
 
 import org.aopalliance.aop.Advice;
-import org.bahmni.module.bahmnicore.advice.BahmniEncounterTransactionUpdateAdvice;
+import org.openmrs.module.bahmniemrapi.encountertransaction.advice.BahmniEncounterTransactionUpdateAdvice;
+import org.openmrs.module.bahmniemrapi.encountertransaction.advice.BahmniEncounterTransactionUpdateAdvice;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.support.StaticMethodMatcherPointcutAdvisor;
 

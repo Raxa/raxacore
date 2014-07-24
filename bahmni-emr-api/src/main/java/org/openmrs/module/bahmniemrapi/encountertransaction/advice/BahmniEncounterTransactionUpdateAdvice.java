@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.advice;
+package org.openmrs.module.bahmniemrapi.encountertransaction.advice;
 
 import org.springframework.aop.MethodBeforeAdvice;
 
