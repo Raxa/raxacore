@@ -43,17 +43,31 @@ public class LabOrderResultsService {
         for (Encounter encounter : encounters) {
             EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, false);
             testOrders.addAll(getTestOrders(encounterTransaction, encounter, encounterTestOrderUuidMap));
-            observations.addAll(encounterTransaction.getObservations());
-            mapObservationsWithEncounter(encounterTransaction.getObservations(), encounter, encounterObservationMap);
+            List<EncounterTransaction.Observation> nonVoidedObservations = filterVoided(encounterTransaction.getObservations());
+            observations.addAll(nonVoidedObservations);
+            mapObservationsWithEncounter(nonVoidedObservations, encounter, encounterObservationMap);
         }
 
         return mapOrdersWithObs(testOrders, observations, encounterTestOrderUuidMap, encounterObservationMap);
     }
 
+    private List<EncounterTransaction.Observation> filterVoided(List<EncounterTransaction.Observation> observations) {
+        List<EncounterTransaction.Observation> nonVoidedObservations = new ArrayList<>();
+        for (EncounterTransaction.Observation observation : observations) {
+            if(!observation.getVoided()){
+                nonVoidedObservations.add(observation);
+            }
+        }
+        return nonVoidedObservations;
+    }
+
     private List<EncounterTransaction.TestOrder> getTestOrders(EncounterTransaction encounterTransaction, Encounter encounter, Map<String, Encounter> encounterTestOrderUuidMap) {
-        List<EncounterTransaction.TestOrder> orders = encounterTransaction.getTestOrders();
-        for (EncounterTransaction.TestOrder order : orders) {
-            encounterTestOrderUuidMap.put(order.getUuid(), encounter);
+        List<EncounterTransaction.TestOrder> orders = new ArrayList<>();
+        for (EncounterTransaction.TestOrder order : encounterTransaction.getTestOrders()) {
+            if(!order.isVoided()){
+                encounterTestOrderUuidMap.put(order.getUuid(), encounter);
+                orders.add(order);
+            }
         }
         return orders;
     }
