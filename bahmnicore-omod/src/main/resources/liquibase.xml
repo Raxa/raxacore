@@ -1112,6 +1112,21 @@
             update global_property set property_value='org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterProviderSessionMatcher' where property='emr.encounterProviderMatcher';
         </sql>
     </changeSet>
-
-
+    <changeSet id="bahmni-core-201407251510" author="D3">
+        <comment>Set quantity for drug orders without this data</comment>
+        <sql>
+            UPDATE drug_order
+            JOIN orders on drug_order.order_id = orders.order_id
+            SET quantity = (datediff(auto_expire_date, start_date) * dose)
+            WHERE quantity IS NULL;
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201407251511" author="D3">
+        <comment>Set num_refills for drug orders without this data</comment>
+        <sql>
+            UPDATE drug_order
+            SET num_refills = 0
+            WHERE num_refills IS NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
