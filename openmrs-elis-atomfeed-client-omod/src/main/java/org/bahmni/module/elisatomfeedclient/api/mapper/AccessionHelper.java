@@ -117,6 +117,7 @@ public class AccessionHelper {
             order.setOrderType(orderType);
             order.setOrderer(getLabSystemProvider());
             order.setStartDate(openElisAccession.fetchDate());
+            order.setAutoExpireDate(order.getStartDate());
             order.setCareSetting(orderService.getCareSettingByName("Outpatient"));
             orders.add(order);
         }
