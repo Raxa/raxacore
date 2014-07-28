@@ -84,9 +84,11 @@ public class LabOrderResultsService {
     private LabOrderResults mapOrdersWithObs(List<EncounterTransaction.TestOrder> testOrders, List<EncounterTransaction.Observation> observations, Map<String, Encounter> encounterTestOrderMap, Map<String, Encounter> encounterObservationMap) {
         List<LabOrderResult> labOrderResults = new ArrayList<>();
         for (EncounterTransaction.TestOrder testOrder : testOrders) {
-            EncounterTransaction.Observation obsGroup = findObsGroup(observations, testOrder);
-            if(obsGroup != null) {
-                labOrderResults.addAll(mapObs(obsGroup, encounterTestOrderMap, encounterObservationMap));
+            List<EncounterTransaction.Observation> obsGroups = findObsGroup(observations, testOrder);
+            if(!obsGroups.isEmpty()) {
+                for (EncounterTransaction.Observation obsGroup : obsGroups) {
+                    labOrderResults.addAll(mapObs(obsGroup, encounterTestOrderMap, encounterObservationMap));
+                }
             } else {
                 EncounterTransaction.Concept orderConcept = testOrder.getConcept();
                 Encounter orderEncounter = encounterTestOrderMap.get(testOrder.getUuid());
@@ -159,12 +161,13 @@ public class LabOrderResultsService {
         return null;
     }
 
-    private EncounterTransaction.Observation findObsGroup(List<EncounterTransaction.Observation> observations, EncounterTransaction.TestOrder testOrder) {
+    private List<EncounterTransaction.Observation> findObsGroup(List<EncounterTransaction.Observation> observations, EncounterTransaction.TestOrder testOrder) {
+        List<EncounterTransaction.Observation> obsGroups = new ArrayList<>();
         for (EncounterTransaction.Observation observation : observations) {
             if(observation.getOrderUuid() != null && observation.getOrderUuid().equals(testOrder.getUuid())) {
-                return observation;
+                obsGroups.add(observation);
             }
         }
-        return null;
+        return obsGroups;
     }
 }

@@ -36,7 +36,7 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
         assertNotNull(labOrderResults);
         assertEquals(6, labOrderResults.size());
 
-        assertOrderPresent(labOrderResults, "Haemoglobin", "Blood Panel", 16, "System OpenMRS", "99.0", 200.0, 300.0, true, null, false);
+        assertOrderPresent(labOrderResults, "Haemoglobin", "Blood Panel", 16, "System OpenMRS", "99.0", 200.0, 300.0, true, null, true);
         assertOrderPresent(labOrderResults, "ESR", "Blood Panel", 16, "System OpenMRS", "10.0", null, null, false, "Some Notes", false);
         assertOrderPresent(labOrderResults, "Urea Nitrogen", null, 16, "System OpenMRS", "20.0", null, null, null, null, false);
         assertOrderPresent(labOrderResults, "HIV ELISA", null, 16, null, null, null, null, null, null, false);

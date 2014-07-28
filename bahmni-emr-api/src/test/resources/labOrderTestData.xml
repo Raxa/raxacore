@@ -263,6 +263,10 @@
 
 
     <!--encounter for Lab Results-->
+    <encounter encounter_id="30" encounter_type="3" patient_id="1" visit_id="2" location_id="2"
+               encounter_datetime="2008-08-18 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
+               voided="false" uuid="0d2d50ba-164b-11e4-9f26-005056823b95"/>
+
     <encounter encounter_id="36" encounter_type="3" patient_id="1" visit_id="2" location_id="2"
                encounter_datetime="2008-08-18 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
                voided="false" uuid="6d0af6767-707a-4629-9850-f15206e63ab0"/>
@@ -272,22 +276,37 @@
                voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63ab0"/>
 
     <!-- Blood Panel -->
-    <obs obs_id="1" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+    <obs obs_id="1" encounter_id="30" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         uuid="49f1b989-164b-11e4-9f26-005056823b95" creator="1" concept_id="302" voided="0" />
+
+    <!-- Referred out Haemoglobin in Blood panel -->
+    <obs obs_id="2" obs_group_id="1" encounter_id="30" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         uuid="c558b3c5-164b-11e4-9f26-005056823b95" creator="1" concept_id="303" voided="1" />
+    <obs obs_id="3" obs_group_id="2" encounter_id="30" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         uuid="c973ba6a-164b-11e4-9f26-005056823b95" creator="1" concept_id="303" voided="1" />
+    <obs obs_id="4003" obs_group_id="3" encounter_id="30" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         uuid="5243aebc-164c-11e4-9f26-005056823b95" creator="1" concept_id="108" voided="1" />
+
+
+    <!-- updated Blood Panel -->
+    <obs obs_id="5000" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
          uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bb" creator="1" concept_id="302" voided="0" />
 
-    <!--Haemoglobin in Blood panel -->
-    <obs obs_id="2" obs_group_id="1" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+    <!-- updated Haemoglobin in Blood panel -->
+    <obs obs_id="5001" obs_group_id="5000" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
          uuid="ef4554cb-2225-471a-9cd7-1434552c337c" creator="1" concept_id="303" voided="0" />
-    <obs obs_id="3" obs_group_id="2" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+    <obs obs_id="5002" obs_group_id="5001" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
          uuid="ac51bde8-fb89-11e3-bb80-f18addb6f9bb" creator="1" concept_id="303" voided="0" />
-    <obs obs_id="4" obs_group_id="3" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+    <obs obs_id="5003" obs_group_id="5002" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
          uuid="b2b08d40-fb89-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="99" concept_id="303" voided="0" />
-    <obs obs_id="4000" obs_group_id="3" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+    <obs obs_id="5004" obs_group_id="5002" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
          uuid="12107e26-fd15-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="200" concept_id="104" voided="0" />
-    <obs obs_id="4001" obs_group_id="3" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+    <obs obs_id="5005" obs_group_id="5002" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
          uuid="950ab026-fd15-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="300" concept_id="105" voided="0" />
-    <obs obs_id="4002" obs_group_id="3" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+    <obs obs_id="5006" obs_group_id="5002" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
          uuid="994156f4-fd15-11e3-bb80-f18addb6f9bb" creator="1" value_coded="7" concept_id="106" voided="0" />
+    <obs obs_id="5007" obs_group_id="5002" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         uuid="65393513-163c-11e4-9f26-005056823b95" creator="1" concept_id="108" voided="0" />
 
     <!-- ESR in Blood panel -->
     <obs obs_id="5" obs_group_id="1" encounter_id="36" person_id="1" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
@@ -348,6 +367,9 @@
     <obs obs_id="1103" obs_group_id="1101" encounter_id="50" person_id="1" order_id="100" obs_datetime="2008-08-19 15:09:05.0" date_created="2013-08-19 15:09:05.0"
          uuid="45f88574-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="103" value_text=" - " voided="0" />
 
+
+    <encounter_provider encounter_provider_id="4" encounter_id="30" provider_id="24" creator="1" date_created="2008-07-01 14:09:05.0"
+                        voided="false" uuid="226f61a7-164b-11e4-9f26-005056823b95"/>
 
     <encounter_provider encounter_provider_id="2" encounter_id="36" provider_id="25" creator="1" date_created="2008-07-01 14:09:05.0"
                         voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63ab0"/>
