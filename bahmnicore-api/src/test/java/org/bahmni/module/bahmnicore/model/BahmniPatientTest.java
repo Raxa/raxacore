@@ -44,20 +44,4 @@ public class BahmniPatientTest {
         Assert.assertEquals(expectedBalance, person.getBalance());
         Assert.assertEquals(registrationDate, person.getPersonDateCreated());
     }
-//
-//    @Test
-//    public void hasBalance() {
-//        BahmniPatient bahmniPatient = new BahmniPatient();
-//        bahmniPatient.setBalance("0.0");
-//        assertFalse(bahmniPatient.hasBalance());
-//
-//        bahmniPatient.setBalance("0.1");
-//        assertTrue(bahmniPatient.hasBalance());
-//
-//        bahmniPatient.setBalance("");
-//        assertFalse(bahmniPatient.hasBalance());
-//
-//        bahmniPatient.setBalance(null);
-//        assertFalse(bahmniPatient.hasBalance());
-//    }
 }
