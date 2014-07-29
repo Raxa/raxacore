@@ -46,7 +46,7 @@ public class PersonObsDaoImpl implements PersonObsDao {
     }
 
     @Override
-    public List<Obs> getObsFor(String patientUuid, String[] conceptNames, Integer numberOfVisits) {
+    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits) {
         List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
         if (listOfVisitIds == null || listOfVisitIds.isEmpty())
             return new ArrayList<>();
@@ -65,6 +65,25 @@ public class PersonObsDaoImpl implements PersonObsDao {
         queryToGetObservations.setString("patientUuid", patientUuid);
         queryToGetObservations.setParameterList("conceptNames", conceptNames);
         queryToGetObservations.setParameterList("listOfVisitIds", listOfVisitIds);
+        queryToGetObservations.setParameter("conceptNameType", ConceptNameType.FULLY_SPECIFIED);
+        return queryToGetObservations.list();
+    }
+
+    @Override
+    public List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer limit) {
+        Query queryToGetObservations = sessionFactory.getCurrentSession().createQuery(
+                "select obs " +
+                        " from Obs as obs, ConceptName as cn " +
+                        " where obs.person.uuid = :patientUuid " +
+                        " and cn.concept = obs.concept.conceptId " +
+                        " and cn.name = (:conceptName) " +
+                        " and cn.conceptNameType = :conceptNameType " +
+                        " and obs.voided = false" +
+                        " order by obs.obsDatetime desc ");
+
+        queryToGetObservations.setMaxResults(limit);
+        queryToGetObservations.setString("patientUuid", patientUuid);
+        queryToGetObservations.setParameter("conceptName", conceptName);
         queryToGetObservations.setParameter("conceptNameType", ConceptNameType.FULLY_SPECIFIED);
         return queryToGetObservations.list();
     }

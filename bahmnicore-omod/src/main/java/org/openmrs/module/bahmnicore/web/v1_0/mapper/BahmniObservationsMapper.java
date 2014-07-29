@@ -23,9 +23,9 @@ public class BahmniObservationsMapper {
     private ConceptDefinition conceptDefinition;
     private final List<String> rootConceptNames;
 
-    public BahmniObservationsMapper(RestService restService, String[] conceptNames, ConceptDefinition conceptDefinition) {
+    public BahmniObservationsMapper(RestService restService, List<String> conceptNames, ConceptDefinition conceptDefinition) {
         this.restService = restService;
-        this.rootConceptNames = Arrays.asList(conceptNames);
+        this.rootConceptNames = conceptNames;
         this.conceptDefinition = conceptDefinition;
     }
 

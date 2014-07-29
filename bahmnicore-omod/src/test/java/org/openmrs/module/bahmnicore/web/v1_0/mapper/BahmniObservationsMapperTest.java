@@ -66,7 +66,7 @@ public class BahmniObservationsMapperTest {
         });
         RestService mockRestService = mock(RestService.class);
         when(mockRestService.getResourceByName(anyString())).thenReturn(mockResource);
-        String[] conceptNames = {"tconcept1", "tconcept2", "True", "tconcept", "tconcept3"};
+        List<String> conceptNames = Arrays.asList("tconcept1", "tconcept2", "True", "tconcept", "tconcept3");
 
         mockConceptDefinition = mock(ConceptDefinition.class);
         when(mockConceptDefinition.getSortWeightFor(any(Concept.class))).thenReturn(CONCEPT_SORT_WEIGHT);

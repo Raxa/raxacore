@@ -17,7 +17,7 @@ public class ConceptDaoImpl implements ConceptDao {
     private SessionFactory sessionFactory;
 
     @Override
-    public List<Concept> conceptFor(String[] conceptNames) {
+    public List<Concept> conceptFor(List<String> conceptNames) {
         List<String> lowerCaseConceptNames = new ArrayList<>();
         for (String conceptName : conceptNames) {
             lowerCaseConceptNames.add(conceptName.toLowerCase());

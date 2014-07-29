@@ -9,6 +9,7 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
@@ -30,7 +31,7 @@ public class PersonObsDaoIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void retrieve_all_observations_when_no_visit_ids_are_specified() throws Exception {
-        List<Obs> allObs = personObsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", new String[]{"Blood Pressure"}, null);
+        List<Obs> allObs = personObsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), null);
 
         assertEquals(1, allObs.size());
 
@@ -66,7 +67,7 @@ public class PersonObsDaoIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void do_not_fetch_voided_observations() throws Exception {
-        List<Obs> allObs = personObsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", new String[]{"Blood Pressure"}, null);
+        List<Obs> allObs = personObsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), null);
         assertEquals(1, allObs.size());
     }
 

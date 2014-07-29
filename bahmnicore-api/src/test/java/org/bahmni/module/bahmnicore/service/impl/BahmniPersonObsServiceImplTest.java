@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.Arrays;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -37,12 +39,7 @@ public class BahmniPersonObsServiceImplTest {
 
     @Test
     public void shouldGetObsByPatientUuidConceptNameAndNumberOfVisits() throws Exception {
-        personObsService.observationsFor(personUUID, new String[]{"Blood Pressure"}, numberOfVisits);
-        verify(personObsDao).getObsFor(personUUID,  new String[]{"Blood Pressure"}, numberOfVisits);
+        personObsService.observationsFor(personUUID, Arrays.asList("Blood Pressure"), numberOfVisits);
+        verify(personObsDao).getObsFor(personUUID,  Arrays.asList("Blood Pressure"), numberOfVisits);
     }
 }
-
-
-
-
-

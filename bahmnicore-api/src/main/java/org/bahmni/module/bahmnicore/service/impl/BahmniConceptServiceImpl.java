@@ -8,7 +8,6 @@ import org.openmrs.Concept;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,10 +21,8 @@ public class BahmniConceptServiceImpl implements ConceptService {
     }
 
     @Override
-    public ConceptDefinition conceptsFor(String[] rootConceptNamesArg) {
-        List<String> rootConceptNames = Arrays.asList(rootConceptNamesArg);
-
-        List<Concept> rootConcepts = bahmniConceptDao.conceptFor(rootConceptNamesArg);
+    public ConceptDefinition conceptsFor(List<String> rootConceptNames) {
+        List<Concept> rootConcepts = bahmniConceptDao.conceptFor(rootConceptNames);
         ConceptDefinition conceptDefinition = new ConceptDefinition();
         flatten(rootConcepts, conceptDefinition, null, rootConceptNames);
         return conceptDefinition;
@@ -51,8 +48,7 @@ public class BahmniConceptServiceImpl implements ConceptService {
     private ConceptData createConceptForGroup(Concept conceptGroup, Concept rootConcept) {
         ConceptData conceptData = null;
         for (Concept aConcept : conceptGroup.getSetMembers()) {
-            if (isDuration(aConcept) || isAbnormal(aConcept)) {
-            } else {
+            if (!isDuration(aConcept) && !isAbnormal(aConcept)) {
                 conceptData = createConceptForLeaf(aConcept, rootConcept);
             }
         }
@@ -78,7 +74,7 @@ public class BahmniConceptServiceImpl implements ConceptService {
         return conceptData;
     }
 
-    public Concept getRootConcept(Concept aConcept, Concept rootConcept, List<String> rootConceptNames) {
+    private Concept getRootConcept(Concept aConcept, Concept rootConcept, List<String> rootConceptNames) {
         for (String rootConceptName : rootConceptNames) {
             if (rootConceptName.equalsIgnoreCase(aConcept.getName().getName()))
                 return aConcept;

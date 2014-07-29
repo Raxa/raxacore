@@ -5,5 +5,5 @@ import org.openmrs.Concept;
 import java.util.List;
 
 public interface ConceptDao {
-    List<Concept> conceptFor(String[] conceptNames);
+    List<Concept> conceptFor(List<String> conceptNames);
 }
