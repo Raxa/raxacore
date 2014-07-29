@@ -62,6 +62,8 @@ public class BahmniEncounterTransactionMapper {
         Obs revisedObs = findObs(diagnosisObsGroup, BahmniDiagnosisHelper.BAHMNI_DIAGNOSIS_REVISED);
         bahmniDiagnosis.setRevised(revisedObs.getValueAsBoolean());
 
+        bahmniDiagnosis.setComments(diagnosisObsGroup.getComment());
+
         bahmniDiagnosis.setEncounterUuid(diagnosisObsGroup.getEncounter().getUuid());
         return bahmniDiagnosis;
     }

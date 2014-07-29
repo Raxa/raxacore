@@ -34,7 +34,6 @@ public class BahmniEncounterControllerIT extends BaseModuleWebContextSensitiveTe
     }
 
     @Test
-    @Ignore
     public void shouldSaveNewDiagnosisWithinTheSameEncounterSession() throws Exception {
         BahmniEncounterTransaction bahmniEncounterTransaction = bahmniEncounterTransaction();
         final String comments = "High fever and symptoms indicate Malaria";
@@ -70,8 +69,8 @@ public class BahmniEncounterControllerIT extends BaseModuleWebContextSensitiveTe
         });
         encounterTransaction = bahmniEncounterController.update(bahmniEncounterTransaction);
         final BahmniDiagnosis bahmniDiagnosisAfterSecondSave = encounterTransaction.getBahmniDiagnoses().get(0);
-        assertDiagnosis(bahmniDiagnosisAfterSecondSave, Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false, comments);
-        assertDiagnosis(bahmniDiagnosisAfterSecondSave.getFirstDiagnosis(), Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false, comments);
+        assertDiagnosis(bahmniDiagnosisAfterSecondSave, Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false, null);
+        assertDiagnosis(bahmniDiagnosisAfterSecondSave.getFirstDiagnosis(), Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false, null);
         Context.flushSession();
         closeVisit(encounterTransaction.getVisitUuid());
     }
