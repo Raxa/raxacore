@@ -1129,4 +1129,305 @@
             WHERE num_refills IS NULL;
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201407171215" author="Vinay,Indraneel">
+        <comment>Adding concepts and concept set related to dosing units </comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+            set @concept_set_uuid='';
+            set @uuid = '';
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Dosing Units', 'dosing  units', 'N/A', 'ConvSet', true);
+            set @set_concept_id = @concept_id;
+            call add_concept_word(@concept_id, @concept_name_full_id, 'DOSING', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'DOSING', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'UNITS', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'UNITS', '1');
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Capsule', 'capsule', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'CAPSULE', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'CAPSULE', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Tablet', 'tablet', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'TABLET', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'TABLET', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Teaspoon', 'teaspoon', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'TEASPOON', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'TEASPOON', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Tablespoon', 'tablespoon', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'TABLESPOON', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'TABLESPOON', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Drop', 'drop', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'DROP', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'DROP', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'ml', 'ml', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'ML', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'ML', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'mg', 'mg', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'MG', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'MG', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            select c.uuid from concept_name cn inner join concept c on cn.concept_id = c.concept_id where cn.name = 'Dosing Units' and cn.concept_name_type = 'FULLY_SPECIFIED' into @concept_set_uuid;
+            select uuid() into @uuid;
+
+            insert into global_property
+            (`property`,
+            `property_value`,
+            `description`,
+            `uuid`)
+            values
+            ('order.drugDosingUnitsConceptUuid',
+            @concept_set_uuid,
+            'Global property pointing to dosing units concept set',
+            @uuid)
+            ON DUPLICATE KEY UPDATE
+            `property_value`=@concept_set_uuid;
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201407171300" author="Vinay, Indraneel">
+        <comment>Add drug routes and set global property</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+            set @uuid = '';
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Drug Routes', 'drug routes', 'N/A', 'ConvSet', true);
+            set @set_concept_id = @concept_id;
+            call add_concept_word(@concept_id, @concept_name_full_id, 'DRUG', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'DRUG', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'ROUTES', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'ROUTES', '1');
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Intramuscular', 'IM', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'INTRAMUSCULAR', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'INTRAMUSCULAR', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Intravenous', 'IV', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'INTRAVENOUS', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'INTRAVENOUS', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Per Os', 'PO', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'PER', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'OS', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'PO', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Per Vaginal', 'PV', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'PER', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'VAGINAL', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'PV', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Sub Cutaneous', 'SC', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'SUB', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'CUTANEOUS', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'SC', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Per Rectum', 'PR', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'PER', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'RECTUM', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'PR', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Sub Lingual', 'SL', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'SUB', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'LINGUAL', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'SL', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Percutaneous Endoscopic Gastrostomy', 'PEG', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Percutaneous', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Endoscopic', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Gastrostomy', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'PEG', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Nasogastric', 'NG', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Nasogastric', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'NG', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            select c.uuid from concept_name cn inner join concept c on cn.concept_id = c.concept_id where cn.name = 'Drug Routes' and cn.concept_name_type = 'FULLY_SPECIFIED' into @concept_set_uuid;
+            select uuid() into @uuid;
+
+            insert into global_property
+            (`property`,
+            `property_value`,
+            `description`,
+            `uuid`)
+            values
+            ('order.drugRoutesConceptUuid',
+            @concept_set_uuid,
+            'Global property pointing to drug routes concept set',
+            @uuid)
+            ON DUPLICATE KEY UPDATE
+            `property_value`=@concept_set_uuid;
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201407171700" author="Vinay, Indraneel">
+        <comment>Adding duration unit concepts and setting up associated global property</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Duration Units', 'duration units', 'N/A', 'ConvSet', true);
+            set @set_concept_id = @concept_id;
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Duration', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'duration', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Units', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'units', '1');
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Days', 'days', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Days', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'days', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+            select c.uuid from concept_name cn inner join concept c on cn.concept_id = c.concept_id where cn.name = 'Duration Units' and cn.concept_name_type = 'FULLY_SPECIFIED' into @concept_set_uuid;
+            select uuid() into @uuid;
+
+            insert into global_property
+            (`property`,
+            `property_value`,
+            `description`,
+            `uuid`)
+            values
+            ('order.durationUnitsConceptUuid',
+            @concept_set_uuid,
+            'Global property pointing to duration units concept set',
+            @uuid)
+            ON DUPLICATE KEY UPDATE
+            `property_value`=@concept_set_uuid;
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201407171715" author="Vinay, Indraneel">
+        <comment></comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+            set @uuid = 0;
+            set @now = now();
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Once a day', 'OD', 'N/A', 'Frequency', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'ONCE', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'DAY', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'OD', '1');
+            select uuid() into @uuid;
+            insert into order_frequency(concept_id, frequency_per_day, creator, date_created, uuid) values(@concept_id, 1, 1, @now, @uuid);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Twice a day', 'BD', 'N/A', 'Frequency', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'TWICE', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'DAY', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'BD', '1');
+            select uuid() into @uuid;
+            insert into order_frequency(concept_id, frequency_per_day, creator, date_created, uuid) values(@concept_id, 2, 1, @now, @uuid);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Thrice a day', 'TDS', 'N/A', 'Frequency', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'THRICE', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'DAY', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'TDS', '1');
+            select uuid() into @uuid;
+            insert into order_frequency(concept_id, frequency_per_day, creator, date_created, uuid) values(@concept_id, 3, 1, @now, @uuid);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Four times a day', 'QDS', 'N/A', 'Frequency', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'FOUR', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'TIMES', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'DAY', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'QDS', '1');
+            select uuid() into @uuid;
+            insert into order_frequency(concept_id, frequency_per_day, creator, date_created, uuid) values(@concept_id, 4, 1, @now, @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201407291254" author="Vinay, Deepak">
+        <comment></comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Dosing Instructions', 'Dosing Instructions', 'N/A', 'ConvSet', true);
+            set @set_concept_id = @concept_id;
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Dosing', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Instructions', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Dosing', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Instructions', '1');
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Before meals', 'ac', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Before', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'meals', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'ac', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,1);
+
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Empty stomach', '', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Empty', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'stomach', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,2);
+
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'After meals', 'pc', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'After', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'meals', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'pc', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,3);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'In the morning', 'cm', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'morning', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'cm', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,4);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'In the evening', '', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'evening', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,5);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'At bedtime', 'hs', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'bedtime', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'hs', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,6);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Immediately', 'STAT', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Immediately', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'STAT', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,7);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'As directed', '', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'directed', '1');
+            call add_concept_set_members (@set_concept_id,@concept_id,8);
+
+            select c.uuid from concept_name cn inner join concept c on cn.concept_id = c.concept_id where cn.name = 'Dosing Instructions' and cn.concept_name_type = 'FULLY_SPECIFIED' into @concept_set_uuid;
+            select uuid() into @uuid;
+
+            insert into global_property
+            (`property`,
+            `property_value`,
+            `description`,
+            `uuid`)
+            values
+            ('order.dosingInstructionsConceptUuid',
+            @concept_set_uuid,
+            'Global property pointing to duration units concept set',
+            @uuid)
+            ON DUPLICATE KEY UPDATE
+            `property_value`=@concept_set_uuid;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
