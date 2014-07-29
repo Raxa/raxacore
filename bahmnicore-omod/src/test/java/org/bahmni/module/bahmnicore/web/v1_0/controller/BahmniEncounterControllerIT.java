@@ -37,6 +37,7 @@ public class BahmniEncounterControllerIT extends BaseModuleWebContextSensitiveTe
     @Ignore
     public void shouldSaveNewDiagnosisWithinTheSameEncounterSession() throws Exception {
         BahmniEncounterTransaction bahmniEncounterTransaction = bahmniEncounterTransaction();
+        final String comments = "High fever and symptoms indicate Malaria";
         bahmniEncounterTransaction.setBahmniDiagnoses(new ArrayList<BahmniDiagnosisRequest>() {
             {
                 this.add(new BahmniDiagnosisRequest() {{
@@ -44,6 +45,7 @@ public class BahmniEncounterControllerIT extends BaseModuleWebContextSensitiveTe
                     this.setOrder(Diagnosis.Order.PRIMARY.name());
                     this.setCodedAnswer(new EncounterTransaction.Concept("d102c80f-1yz9-4da3-bb88-8122ce8868dh"));
                     this.setDiagnosisStatusConcept(new EncounterTransaction.Concept(null, "Ruled Out"));
+                    this.setComments(comments);
                 }});
             }
         });
@@ -52,8 +54,8 @@ public class BahmniEncounterControllerIT extends BaseModuleWebContextSensitiveTe
         assertEquals("1e5d5d48-6b78-11e0-93c3-18a905e044dc", encounterTransaction.getVisitUuid());
         assertEquals(1, encounterTransaction.getDiagnoses().size());
         final BahmniDiagnosis bahmniDiagnosisAfterFirstSave = encounterTransaction.getBahmniDiagnoses().get(0);
-        assertDiagnosis(bahmniDiagnosisAfterFirstSave, Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", false);
-        assertDiagnosis(bahmniDiagnosisAfterFirstSave.getFirstDiagnosis(), Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", false);
+        assertDiagnosis(bahmniDiagnosisAfterFirstSave, Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", false, comments);
+        assertDiagnosis(bahmniDiagnosisAfterFirstSave.getFirstDiagnosis(), Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", false, comments);
 
         bahmniEncounterTransaction.setBahmniDiagnoses(new ArrayList<BahmniDiagnosisRequest>() {
             {
@@ -68,8 +70,8 @@ public class BahmniEncounterControllerIT extends BaseModuleWebContextSensitiveTe
         });
         encounterTransaction = bahmniEncounterController.update(bahmniEncounterTransaction);
         final BahmniDiagnosis bahmniDiagnosisAfterSecondSave = encounterTransaction.getBahmniDiagnoses().get(0);
-        assertDiagnosis(bahmniDiagnosisAfterSecondSave, Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false);
-        assertDiagnosis(bahmniDiagnosisAfterSecondSave.getFirstDiagnosis(), Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false);
+        assertDiagnosis(bahmniDiagnosisAfterSecondSave, Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false, comments);
+        assertDiagnosis(bahmniDiagnosisAfterSecondSave.getFirstDiagnosis(), Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false, comments);
         Context.flushSession();
         closeVisit(encounterTransaction.getVisitUuid());
     }
@@ -91,7 +93,7 @@ public class BahmniEncounterControllerIT extends BaseModuleWebContextSensitiveTe
         closeVisit(firstEncounterTransaction.getVisitUuid());
 
         final BahmniDiagnosis bahmniDiagnosisAfterFirstSave = firstEncounterTransaction.getBahmniDiagnoses().get(0);
-        assertDiagnosis(bahmniDiagnosisAfterFirstSave, Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false);
+        assertDiagnosis(bahmniDiagnosisAfterFirstSave, Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, false, null);
 
         BahmniEncounterTransaction encounterTransactionForSecondVisit = bahmniEncounterTransaction();
         encounterTransactionForSecondVisit.setBahmniDiagnoses(new ArrayList<BahmniDiagnosisRequest>() {
@@ -112,8 +114,8 @@ public class BahmniEncounterControllerIT extends BaseModuleWebContextSensitiveTe
 
         final BahmniDiagnosis bahmniDiagnosisAfterSecondSave = secondEncounterTransaction.getBahmniDiagnoses().get(0);
         assertNotEquals(bahmniDiagnosisAfterFirstSave.getExistingObs(), bahmniDiagnosisAfterSecondSave.getExistingObs());
-        assertDiagnosis(bahmniDiagnosisAfterSecondSave, Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", false);
-        assertDiagnosis(bahmniDiagnosisAfterSecondSave.getFirstDiagnosis(), Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, true);
+        assertDiagnosis(bahmniDiagnosisAfterSecondSave, Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", false, null);
+        assertDiagnosis(bahmniDiagnosisAfterSecondSave.getFirstDiagnosis(), Diagnosis.Certainty.PRESUMED, Diagnosis.Order.SECONDARY, null, true, null);
         BahmniEncounterTransaction bahmniEncounterTransaction = bahmniEncounterController.get(firstEncounterTransaction.getEncounterUuid());
         assertTrue(bahmniEncounterTransaction.getBahmniDiagnoses().get(0).isRevised());
 
@@ -126,13 +128,14 @@ public class BahmniEncounterControllerIT extends BaseModuleWebContextSensitiveTe
         visitService.saveVisit(visit);
     }
 
-    private void assertDiagnosis(BahmniDiagnosis bahmniDiagnosis, Diagnosis.Certainty certainty, Diagnosis.Order order, String status, boolean isRevised) {
+    private void assertDiagnosis(BahmniDiagnosis bahmniDiagnosis, Diagnosis.Certainty certainty, Diagnosis.Order order, String status, boolean isRevised, String comments) {
         assertEquals(certainty.name(), bahmniDiagnosis.getCertainty());
         assertEquals(order.name(), bahmniDiagnosis.getOrder());
         if (status != null) {
             assertEquals(status, bahmniDiagnosis.getDiagnosisStatusConcept().getName());
         }
         assertEquals(isRevised, bahmniDiagnosis.isRevised());
+        assertEquals(comments, bahmniDiagnosis.getComments());
     }
 
     private BahmniEncounterTransaction bahmniEncounterTransaction() {

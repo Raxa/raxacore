@@ -25,15 +25,17 @@ public class BahmniDiagnosisHelper {
     }
 
     public void updateDiagnosisMetaData(BahmniDiagnosisRequest bahmniDiagnosis, EncounterTransaction.Diagnosis diagnosis, Encounter encounter) {
-        Concept bahmniInitialDiagnosis = conceptService.getConceptByName(BAHMNI_INITIAL_DIAGNOSIS);
+        Concept bahmniInitialDiagnosisConcept = conceptService.getConceptByName(BAHMNI_INITIAL_DIAGNOSIS);
         Obs matchingDiagnosisObs = findDiagnosisObsGroup(encounter, diagnosis.getExistingObs());
-        updateFirstDiagnosis(matchingDiagnosisObs, bahmniDiagnosis, bahmniInitialDiagnosis);
+        updateFirstDiagnosis(matchingDiagnosisObs, bahmniDiagnosis, bahmniInitialDiagnosisConcept);
 
         Concept bahmniDiagnosisStatusConcept = conceptService.getConceptByName(BAHMNI_DIAGNOSIS_STATUS);
         updateStatusConcept(matchingDiagnosisObs, bahmniDiagnosis, bahmniDiagnosisStatusConcept);
 
         Concept bahmniDiagnosisRevisedConcept = conceptService.getConceptByName(BAHMNI_DIAGNOSIS_REVISED);
         updateRevisedConcept(matchingDiagnosisObs, bahmniDiagnosisRevisedConcept);
+
+        matchingDiagnosisObs.setComment(bahmniDiagnosis.getComments());
     }
 
     private void updateFirstDiagnosis(Obs diagnosisObs, BahmniDiagnosisRequest bahmniDiagnosis, Concept bahmniInitialDiagnosis) {
@@ -113,5 +115,4 @@ public class BahmniDiagnosisHelper {
         member.setEncounter(obsGroup.getEncounter());
         obsGroup.addGroupMember(member);
     }
-
 }
