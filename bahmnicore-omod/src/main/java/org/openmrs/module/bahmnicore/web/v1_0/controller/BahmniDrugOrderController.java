@@ -2,6 +2,7 @@ package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
 
 import org.apache.log4j.Logger;
+import org.bahmni.module.bahmnicore.contract.drugorder.*;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -58,6 +59,12 @@ public class BahmniDrugOrderController {
                                              @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits){
         List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrders(patientUuid, includeActiveVisit, numberOfVisits);
         return mapToResponse(drugOrders);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = baseUrl + "/config")
+    @ResponseBody
+    public DrugOrderConfigResponse getConfig() {
+        return drugOrderService.getConfig();
     }
 
 

@@ -2,6 +2,8 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.bahmni.module.bahmnicore.contract.drugorder.*;
+import org.bahmni.module.bahmnicore.contract.observation.*;
 import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
@@ -11,6 +13,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.openmrs.*;
 import org.openmrs.api.*;
+import org.openmrs.api.context.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +36,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private EncounterType consultationEncounterType = null;
     private String systemUserName = null;
     public static final String PHARMACY_VISIT = "PHARMACY VISIT";
+    private static final String GP_DOSING_INSTRUCTIONS_CONCEPT_UUID = "order.dosingInstructionsConceptUuid";
 
     @Autowired
     public BahmniDrugOrderServiceImpl(VisitService visitService, ConceptService conceptService, OrderService orderService,
@@ -79,6 +83,43 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     public List<DrugOrder> getPrescribedDrugOrders(String patientUuid, Boolean includeActiveVisit, Integer numberOfVisits) {
         Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
         return orderDao.getPrescribedDrugOrders(patient, includeActiveVisit, numberOfVisits);
+    }
+
+    @Override
+    public DrugOrderConfigResponse getConfig() {
+        DrugOrderConfigResponse response = new DrugOrderConfigResponse();
+        response.setFrequencies(getFrequencies());
+        response.setRoutes(mapConcepts(orderService.getDrugRoutes()));
+        response.setDoseUnits(mapConcepts(orderService.getDrugDosingUnits()));
+        response.setDurationUnits(mapConcepts(orderService.getDurationUnits()));
+        response.setDispensingUnits(mapConcepts(orderService.getDrugDispensingUnits()));
+        response.setDosingInstructions(mapConcepts(getSetMembersOfConceptSetFromGP(GP_DOSING_INSTRUCTIONS_CONCEPT_UUID)));
+        return response;
+    }
+
+    private List<Concept> getSetMembersOfConceptSetFromGP(String globalProperty) {
+        String conceptUuid = Context.getAdministrationService().getGlobalProperty(globalProperty);
+        Concept concept = Context.getConceptService().getConceptByUuid(conceptUuid);
+        if (concept != null && concept.isSet()) {
+            return concept.getSetMembers();
+        }
+        return Collections.emptyList();
+    }
+
+    private List<ConceptData> mapConcepts(List<Concept> drugDosingUnits) {
+        List<ConceptData> listOfDoseUnits = new ArrayList<>();
+        for (Concept drugDosingUnit : drugDosingUnits) {
+            listOfDoseUnits.add(new ConceptData(drugDosingUnit));
+        }
+        return listOfDoseUnits;
+    }
+
+    private List<OrderFrequencyData> getFrequencies() {
+        List<OrderFrequencyData> listOfFrequencyData = new ArrayList<>();
+        for (OrderFrequency orderFrequency : orderService.getOrderFrequencies(false)) {
+            listOfFrequencyData.add(new OrderFrequencyData(orderFrequency));
+        }
+        return listOfFrequencyData;
     }
 
     private void throwPatientNotFoundException(String patientId) {

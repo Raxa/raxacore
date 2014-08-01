@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.service;
 
+import org.bahmni.module.bahmnicore.contract.drugorder.*;
 import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
@@ -15,4 +16,5 @@ public interface BahmniDrugOrderService {
 
     List<DrugOrder> getPrescribedDrugOrders(String patientUuid, Boolean includeActiveVisit, Integer numberOfVisit);
 
+    DrugOrderConfigResponse getConfig();
 }
