@@ -27,7 +27,7 @@ public class BahmniPersonObsServiceImplIT extends BaseModuleWebContextSensitiveT
     @Before
     public void setUp() throws Exception {
         personObsService = new BahmniPersonObsServiceImpl(personObsDao, conceptService);
-        executeDataSet("apiTestData.xml");
+        executeDataSet("observationsTestData.xml");
     }
 
     @Test
