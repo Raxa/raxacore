@@ -1,7 +1,10 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.bahmni.module.bahmnicore.contract.observation.ConceptData;
+import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.dao.PersonObsDao;
 import org.bahmni.module.bahmnicore.service.BahmniPersonObsService;
+import org.bahmni.module.bahmnicore.service.ConceptService;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +16,12 @@ import java.util.List;
 @Service
 public class BahmniPersonObsServiceImpl implements BahmniPersonObsService {
     private PersonObsDao personObsDao;
+    private ConceptService conceptService;
 
     @Autowired
-    public BahmniPersonObsServiceImpl(PersonObsDao personObsDao) {
+    public BahmniPersonObsServiceImpl(PersonObsDao personObsDao, ConceptService conceptService) {
         this.personObsDao = personObsDao;
+        this.conceptService = conceptService;
     }
 
     @Override
@@ -32,8 +37,9 @@ public class BahmniPersonObsServiceImpl implements BahmniPersonObsService {
     @Override
     public List<Obs> getLatest(String patientUuid, List<String> conceptNames) {
         List<Obs> latestObs = new ArrayList<>();
-        for (String name : conceptNames) {
-            latestObs.addAll(personObsDao.getLatestObsFor(patientUuid, name, 1));
+        ConceptDefinition conceptDefinition = conceptService.conceptsFor(conceptNames);
+        for (ConceptData concept : conceptDefinition.getConcepts()) {
+            latestObs.addAll(personObsDao.getLatestObsFor(patientUuid, concept.getName(), 1));
         }
         return latestObs;
     }

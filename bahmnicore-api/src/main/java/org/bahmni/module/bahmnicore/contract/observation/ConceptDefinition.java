@@ -27,4 +27,8 @@ public class ConceptDefinition {
     public int size() {
         return concepts.size();
     }
+
+    public List<ConceptData> getConcepts() {
+        return concepts;
+    }
 }
