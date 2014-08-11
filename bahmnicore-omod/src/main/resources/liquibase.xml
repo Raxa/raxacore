@@ -1429,5 +1429,23 @@
             `property_value`=@concept_set_uuid;
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201408111300" author="Indraneel" >
+        <comment>Adding all templates concept set of sets</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'All Observation Templates', 'All Observation templates', 'N/A', 'ConvSet', true);
+            set @set_concept_id = @concept_id;
+            call add_concept_word(@concept_id, @concept_name_full_id, 'ALL', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'OBSERVATION', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'TEMPLATES', '1');
+
+            call add_concept_word(@concept_id, @concept_name_short_id, 'ALL', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'OBSERVATION', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'TEMPLATES', '1');
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
