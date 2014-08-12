@@ -32,11 +32,10 @@ public class EncounterRow extends CSVEntity {
 
     public List<String> getDiagnoses() {
         List<String> aDiagnosesRows = new ArrayList<>();
-        if(diagnosesRows == null){
-            return aDiagnosesRows;
-        }
-        for (KeyValue diagnosesRow : diagnosesRows) {
-            aDiagnosesRows.add(diagnosesRow.getValue());
+        if (diagnosesRows != null) {
+            for (KeyValue diagnosesRow : diagnosesRows) {
+                aDiagnosesRows.add(diagnosesRow.getValue());
+            }
         }
         return aDiagnosesRows;
     }
