@@ -45,9 +45,7 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
     @Autowired
     private VisitService visitService;
 
-    private String encounterTypeUUID;
-    private String visitTypeUUID;
-    private Patient patient;
+    private HashMap<String, EncounterTransaction.Concept> cachedConcepts = new HashMap<>();
 
     public EncounterPersister() {
     }
@@ -59,17 +57,11 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
         String errorMessage = null;
         EncounterType encounterType = encounterService.getEncounterType(encounterRow.encounterType);
         List<VisitType> visitTypes = visitService.getVisitTypes(encounterRow.visitType);
-        patient = matchPatients(patientService.get(encounterRow.patientIdentifier));
         Context.closeSession();
         if (encounterType == null) {
             errorMessage = String.format("Encounter Type %s not found", encounterRow.encounterType);
         } else if (visitTypes == null || visitTypes.size() == 0) {
             errorMessage = String.format("Visit Type %s not found", encounterRow.visitType);
-        } else if (patient == null) {
-            errorMessage = String.format("Patient with identifier %s not found", encounterRow.patientIdentifier);
-        } else {
-            encounterTypeUUID = encounterType.getUuid();
-            visitTypeUUID = visitTypes.get(0).getUuid();
         }
         return new RowResult<>(encounterRow, errorMessage);
     }
@@ -77,17 +69,20 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
 
     @Override
     public RowResult<EncounterRow> persist(EncounterRow encounterRow) {
+        Context.openSession();
+        Context.authenticate("admin", "test");
+        Exception exception = null;
         try {
-            Context.openSession();
-            Context.authenticate("admin", "test");
+            Patient patient = matchPatients(patientService.get(encounterRow.patientIdentifier));
             BahmniEncounterTransaction bahmniEncounterTransaction = getBahmniEncounterTransaction(encounterRow, patient);
             bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
-            Context.flushSession();
-            Context.closeSession();
-            return new RowResult<>(encounterRow);
         } catch (Exception e) {
             log.error(e);
-            return new RowResult<>(encounterRow, e);
+            exception = e;
+        } finally {
+            Context.flushSession();
+            Context.closeSession();
+            return new RowResult<>(encounterRow, exception);
         }
     }
 
@@ -104,19 +99,23 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
         bahmniEncounterTransaction.setBahmniDiagnoses(getBahmniDiagnosis(encounterRow.getDiagnoses()));
         bahmniEncounterTransaction.setObservations(getObservations(encounterRow.obsRows));
         bahmniEncounterTransaction.setPatientUuid(patient.getUuid());
+        String encounterTypeUUID = encounterService.getEncounterType(encounterRow.encounterType).getUuid();
         bahmniEncounterTransaction.setEncounterTypeUuid(encounterTypeUUID);
+        String visitTypeUUID = visitService.getVisitTypes(encounterRow.visitType).get(0).getUuid();
         bahmniEncounterTransaction.setVisitTypeUuid(visitTypeUUID);
         return bahmniEncounterTransaction;
     }
 
     private List<EncounterTransaction.Observation> getObservations(List<KeyValue> obsRows) {
         List<EncounterTransaction.Observation> observations = new ArrayList<>();
-        for (KeyValue obsRow : obsRows) {
-            EncounterTransaction.Observation observation = new EncounterTransaction.Observation();
-            Concept concept = conceptService.getConceptByName(obsRow.getKey());
-            observation.setConcept(new EncounterTransaction.Concept(concept.getUuid()));
-            observation.setValue(obsRow.getValue());
-            observations.add(observation);
+        if (obsRows != null) {
+            for (KeyValue obsRow : obsRows) {
+                EncounterTransaction.Observation observation = new EncounterTransaction.Observation();
+                Concept concept = conceptService.getConceptByName(obsRow.getKey());
+                observation.setConcept(new EncounterTransaction.Concept(concept.getUuid()));
+                observation.setValue(obsRow.getValue());
+                observations.add(observation);
+            }
         }
         return observations;
     }
@@ -135,8 +134,11 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
     }
 
     private EncounterTransaction.Concept getDiagnosisConcept(String diagnosis) {
-        Concept diagnosisConcept = conceptService.getConceptByName(diagnosis);
-        return getEncounterTransactionConcept(diagnosisConcept);
+        if (!cachedConcepts.containsKey(diagnosis)) {
+            Concept diagnosisConcept = conceptService.getConceptByName(diagnosis);
+            cachedConcepts.put(diagnosis, getEncounterTransactionConcept(diagnosisConcept));
+        }
+        return cachedConcepts.get(diagnosis);
     }
 
 

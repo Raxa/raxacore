@@ -25,25 +25,16 @@ public class EncounterPersisterTest extends BaseModuleContextSensitiveTest {
     @Test
     public void should_fail_validation_for_encounter_type_not_found() throws Exception {
         EncounterRow encounterRow = new EncounterRow();
-        RowResult<EncounterRow> validate = encounterPersister.validate(encounterRow);
-        assertEquals("Encounter Type null not found", validate.getErrorMessage());
+        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
+        assertEquals("Encounter Type null not found", validationResult.getErrorMessage());
     }
 
     @Test
     public void should_fail_validation_for_visit_type_not_found() throws Exception {
         EncounterRow encounterRow = new EncounterRow();
         encounterRow.encounterType = "OPD";
-        RowResult<EncounterRow> validate = encounterPersister.validate(encounterRow);
-        assertEquals("Visit Type null not found", validate.getErrorMessage());
-    }
-
-    @Test
-    public void should_fail_validation_for_patient_not_found() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterType = "OPD";
-        encounterRow.visitType = "OPD";
-        RowResult<EncounterRow> validate = encounterPersister.validate(encounterRow);
-        assertEquals("Patient with identifier null not found", validate.getErrorMessage());
+        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
+        assertEquals("Visit Type null not found", validationResult.getErrorMessage());
     }
 
     @Test
@@ -52,8 +43,9 @@ public class EncounterPersisterTest extends BaseModuleContextSensitiveTest {
         encounterRow.encounterType = "OPD";
         encounterRow.visitType = "OPD";
         encounterRow.patientIdentifier = "GAN200000";
-        RowResult<EncounterRow> validate = encounterPersister.validate(encounterRow);
-        assertNull(validate.getErrorMessage());
+        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
+        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        assertNull(validationResult.getErrorMessage());
     }
 
 }
