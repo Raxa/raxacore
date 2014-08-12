@@ -4,8 +4,13 @@ import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Encounter;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -16,6 +21,9 @@ public class EncounterPersisterTest extends BaseModuleContextSensitiveTest {
 
     @Autowired
     private EncounterPersister encounterPersister;
+
+    @Autowired
+    private EncounterService encounterService;
 
     @Before
     public void setUp() throws Exception {
@@ -44,8 +52,31 @@ public class EncounterPersisterTest extends BaseModuleContextSensitiveTest {
         encounterRow.visitType = "OPD";
         encounterRow.patientIdentifier = "GAN200000";
         RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
-        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
         assertNull(validationResult.getErrorMessage());
     }
+
+    @Test
+    public void should_pass_validation_and_persist_for_correct_entries() throws Exception {
+        EncounterRow encounterRow = new EncounterRow();
+        encounterRow.encounterType = "OPD";
+        encounterRow.visitType = "OPD";
+        encounterRow.patientIdentifier = "GAN200000";
+        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
+        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        Context.openSession();
+        Context.authenticate("admin", "test");
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
+        Context.flushSession();
+        Context.closeSession();
+        Encounter encounter = encounters.get(0);
+        assertNull(validationResult.getErrorMessage());
+        assertNull(persistenceResult.getErrorMessage());
+        assertEquals(1, encounters.size());
+        assertEquals("Anad", encounter.getPatient().getGivenName());
+        assertEquals("Kewat", encounter.getPatient().getFamilyName());
+        assertEquals("OPD", encounter.getVisit().getVisitType().getName());
+        assertEquals("OPD", encounter.getEncounterType().getName());
+    }
+
 
 }
