@@ -123,9 +123,9 @@ public class EncounterPersisterTest extends BaseModuleContextSensitiveTest {
         encounterRow.obsRows = new ArrayList<>();
         KeyValue weight = new KeyValue("WEIGHT", "150");
         encounterRow.obsRows.add(weight);
-        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
+        encounterPersister.validate(encounterRow);
         encounterRow.encounterType = "O1PD";
-        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        encounterPersister.persist(encounterRow);
         Context.openSession();
         Context.authenticate("admin", "test");
         List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
