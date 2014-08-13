@@ -1,10 +1,13 @@
 package org.bahmni.module.admin.csv;
 
+import groovy.lang.GroovyClassLoader;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.EntityPersister;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.EncounterRow;
+import org.bahmni.module.admin.csv.patientmatchingalgorithm.BahmniPatientMatchingAlgorithm;
+import org.bahmni.module.admin.csv.patientmatchingalgorithm.PatientMatchingAlgorithm;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -17,12 +20,15 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
-import org.openmrs.module.emrapi.EmrApiConstants;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,7 +80,7 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
         Context.authenticate("admin", "test");
         Exception exception = null;
         try {
-            Patient patient = matchPatients(patientService.get(encounterRow.patientIdentifier));
+            Patient patient = matchPatients(patientService.get(encounterRow.patientIdentifier), encounterRow.patientAttributes);
             BahmniEncounterTransaction bahmniEncounterTransaction = getBahmniEncounterTransaction(encounterRow, patient);
             bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
         } catch (Exception e) {
@@ -88,11 +94,19 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
         }
     }
 
-    private Patient matchPatients(List<Patient> matchingPatients) {
-        if (matchingPatients.size() == 1) {
-            return matchingPatients.get(0);
-        } else {
-            return null;
+    private Patient matchPatients(List<Patient> matchingPatients, List<KeyValue> patientAttributes) throws IOException, IllegalAccessException, InstantiationException {
+        log.info("PatientMatching : Start");
+        PatientMatchingAlgorithm patientMatchingAlgorithm = new BahmniPatientMatchingAlgorithm();
+        try {
+            GroovyClassLoader gcl = new GroovyClassLoader();
+            Class clazz = gcl.parseClass(new File(OpenmrsUtil.getApplicationDataDirectory() + "patientMatchingAlgorithm/BahmniPatientMatchingAlgorithm.groovy"));
+            patientMatchingAlgorithm = (PatientMatchingAlgorithm) clazz.newInstance();
+        } catch (FileNotFoundException ignored) {
+        } finally {
+            log.info("PatientMatching : Using Algorithm in " + patientMatchingAlgorithm.getClass().getName());
+            Patient patient = patientMatchingAlgorithm.run(matchingPatients, patientAttributes);
+            log.info("PatientMatching : Done");
+            return patient;
         }
     }
 
