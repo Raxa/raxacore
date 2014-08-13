@@ -4,10 +4,12 @@ import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Encounter;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +29,14 @@ public class EncounterPersisterTest extends BaseModuleContextSensitiveTest {
     @Autowired
     private EncounterService encounterService;
 
+    @Autowired
+    private VisitService visitService;
+
     @Before
     public void setUp() throws Exception {
+        executeDataSet("baseMetaData.xml");
+        executeDataSet("diagnosisMetaData.xml");
+        executeDataSet("dispositionMetaData.xml");
         executeDataSet("dataSetup.xml");
     }
 
@@ -81,7 +89,6 @@ public class EncounterPersisterTest extends BaseModuleContextSensitiveTest {
     }
 
     @Test
-    @Ignore
     public void should_pass_validation_and_persist_encounter_and_observations_for_patient() throws Exception {
         EncounterRow encounterRow = new EncounterRow();
         encounterRow.encounterType = "OPD";
@@ -95,7 +102,6 @@ public class EncounterPersisterTest extends BaseModuleContextSensitiveTest {
         Context.openSession();
         Context.authenticate("admin", "test");
         List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
-        Context.flushSession();
         Context.closeSession();
         Encounter encounter = encounters.get(0);
         assertNull(validationResult.getErrorMessage());
@@ -106,6 +112,27 @@ public class EncounterPersisterTest extends BaseModuleContextSensitiveTest {
         assertEquals("OPD", encounter.getVisit().getVisitType().getName());
         assertEquals("OPD", encounter.getEncounterType().getName());
         assertEquals(1, encounter.getAllObs().size());
+    }
+
+    @Test
+    public void should_roll_back_transaction_once_persistence_fails_for_one_resource() throws Exception {
+        EncounterRow encounterRow = new EncounterRow();
+        encounterRow.encounterType = "OPD";
+        encounterRow.visitType = "OPD";
+        encounterRow.patientIdentifier = "GAN200000";
+        encounterRow.obsRows = new ArrayList<>();
+        KeyValue weight = new KeyValue("WEIGHT", "150");
+        encounterRow.obsRows.add(weight);
+        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
+        encounterRow.encounterType = "O1PD";
+        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        Context.openSession();
+        Context.authenticate("admin", "test");
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
+        List<Visit> visits = visitService.getVisitsByPatient(new Patient(1));
+        Context.closeSession();
+        assertEquals(0, visits.size());
+        assertEquals(0, encounters.size());
     }
 
 
