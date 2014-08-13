@@ -99,7 +99,7 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
         PatientMatchingAlgorithm patientMatchingAlgorithm = new BahmniPatientMatchingAlgorithm();
         try {
             GroovyClassLoader gcl = new GroovyClassLoader();
-            Class clazz = gcl.parseClass(new File(OpenmrsUtil.getApplicationDataDirectory() + "patientMatchingAlgorithm/BahmniPatientMatchingAlgorithm.groovy"));
+            Class clazz = gcl.parseClass(new File(OpenmrsUtil.getApplicationDataDirectory() + "/patientMatchingAlgorithm/BahmniPatientMatchingAlgorithm.groovy"));
             patientMatchingAlgorithm = (PatientMatchingAlgorithm) clazz.newInstance();
         } catch (FileNotFoundException ignored) {
         } finally {
