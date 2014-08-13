@@ -77,6 +77,7 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
             BahmniEncounterTransaction bahmniEncounterTransaction = getBahmniEncounterTransaction(encounterRow, patient);
             bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
         } catch (Exception e) {
+            Context.clearSession();
             log.error(e);
             exception = e;
         } finally {
