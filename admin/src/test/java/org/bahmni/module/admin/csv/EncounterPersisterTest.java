@@ -6,8 +6,10 @@ import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
+import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
@@ -17,8 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class EncounterPersisterTest extends BaseModuleContextSensitiveTest {
@@ -112,6 +113,8 @@ public class EncounterPersisterTest extends BaseModuleContextSensitiveTest {
         assertEquals("OPD", encounter.getVisit().getVisitType().getName());
         assertEquals("OPD", encounter.getEncounterType().getName());
         assertEquals(1, encounter.getAllObs().size());
+        assertEquals("WEIGHT", encounter.getAllObs().iterator().next().getConcept().getName().getName());
+        assertEquals("150.0", encounter.getAllObs().iterator().next().getValueAsString(Context.getLocale()));
     }
 
     @Test
@@ -133,6 +136,59 @@ public class EncounterPersisterTest extends BaseModuleContextSensitiveTest {
         Context.closeSession();
         assertEquals(0, visits.size());
         assertEquals(0, encounters.size());
+    }
+
+    @Test
+    public void should_validate_and_persist_diagnosis() throws Exception {
+        EncounterRow encounterRow = new EncounterRow();
+        encounterRow.encounterType = "OPD";
+        encounterRow.visitType = "OPD";
+        encounterRow.patientIdentifier = "GAN200000";
+        encounterRow.obsRows = new ArrayList<>();
+        encounterRow.diagnosesRows = new ArrayList<>();
+        KeyValue weight = new KeyValue("WEIGHT", "150");
+        KeyValue diabetes = new KeyValue("Diagnosis1", "Diabetes");
+        encounterRow.obsRows.add(weight);
+        encounterRow.diagnosesRows.add(diabetes);
+        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
+        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        Context.openSession();
+        Context.authenticate("admin", "test");
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
+        Context.closeSession();
+        Encounter encounter = encounters.get(0);
+        assertNull(validationResult.getErrorMessage());
+        assertNull(persistenceResult.getErrorMessage());
+        assertEquals(1, encounters.size());
+        assertEquals("Anad", encounter.getPatient().getGivenName());
+        assertEquals("Kewat", encounter.getPatient().getFamilyName());
+        assertEquals("OPD", encounter.getVisit().getVisitType().getName());
+        assertEquals("OPD", encounter.getEncounterType().getName());
+        ArrayList<Obs> allObs = new ArrayList<>();
+        allObs.addAll(encounter.getAllObs());
+        assertEquals(2, allObs.size());
+        int weightIndex = 0;
+        int diagnosisIndex = 0;
+        if (allObs.get(0).getGroupMembers() == null || allObs.get(0).getGroupMembers().size() == 0) {
+            diagnosisIndex = 1;
+        } else {
+            weightIndex = 1;
+        }
+        Obs weightObs = allObs.get(weightIndex);
+        Obs diagnosisObs = allObs.get(diagnosisIndex);
+        assertEquals("WEIGHT", weightObs.getConcept().getName().getName());
+        assertEquals("150.0", weightObs.getValueAsString(Context.getLocale()));
+        assertEquals("Diagnosis Concept Set", diagnosisObs.getConcept().getName().getName());
+        List<String> obsConceptNames = new ArrayList<>();
+        for (Obs obs : diagnosisObs.getGroupMembers()) {
+            obsConceptNames.add(obs.getConcept().getName().getName());
+        }
+        assertTrue(obsConceptNames.contains("Diabetes"));
+        assertTrue(obsConceptNames.contains("Diagnosis Certainty"));
+        assertTrue(obsConceptNames.contains("Diagnosis Order"));
+        assertTrue(obsConceptNames.contains("Bahmni Diagnosis Status"));
+        assertTrue(obsConceptNames.contains("Bahmni Diagnosis Revised"));
+        assertTrue(obsConceptNames.contains("Bahmni Initial Diagnosis"));
     }
 
 

@@ -18,6 +18,7 @@ import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.emrapi.EmrApiConstants;
+import org.openmrs.module.emrapi.diagnosis.Diagnosis;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -127,8 +128,8 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
             EncounterTransaction.Concept diagnosisConcept = getDiagnosisConcept(diagnosis);
             BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
             bahmniDiagnosisRequest.setCodedAnswer(diagnosisConcept);
-            bahmniDiagnosisRequest.setOrder(EmrApiConstants.CONCEPT_CODE_DIAGNOSIS_ORDER_PRIMARY);
-            bahmniDiagnosisRequest.setCertainty(EmrApiConstants.CONCEPT_CODE_DIAGNOSIS_CERTAINTY_CONFIRMED);
+            bahmniDiagnosisRequest.setOrder(String.valueOf(Diagnosis.Order.PRIMARY));
+            bahmniDiagnosisRequest.setCertainty(String.valueOf(Diagnosis.Certainty.CONFIRMED));
             bahmniDiagnoses.add(bahmniDiagnosisRequest);
         }
         return bahmniDiagnoses;
