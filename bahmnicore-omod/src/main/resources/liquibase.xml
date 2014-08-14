@@ -1447,5 +1447,12 @@
             call add_concept_word(@concept_id, @concept_name_short_id, 'TEMPLATES', '1');
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-20140814132600" author="Rohan, Vinay" >
+        <comment>Update Dosing type from ENUM to Class Name</comment>
+        <sql>
+            update drug_order set dosing_type='org.openmrs.FreeTextDosingInstructions' where dosing_type='FREE_TEXT';
+            update drug_order set dosing_type='org.openmrs.SimpleDosingInstructions' where dosing_type='SIMPLE';
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
