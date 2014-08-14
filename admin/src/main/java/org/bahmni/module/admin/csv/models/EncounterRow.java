@@ -5,7 +5,10 @@ import org.bahmni.csv.CSVHeader;
 import org.bahmni.csv.CSVRegexHeader;
 import org.bahmni.csv.KeyValue;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EncounterRow extends CSVEntity {
@@ -38,5 +41,11 @@ public class EncounterRow extends CSVEntity {
             }
         }
         return aDiagnosesRows;
+    }
+
+    public Date getEncounterDate() throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        simpleDateFormat.setLenient(false);
+        return simpleDateFormat.parse(encounterDateTime);
     }
 }

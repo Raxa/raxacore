@@ -12,8 +12,8 @@ public class EncounterTransactionDiagnosisMapper {
     public void populateDiagnosis(BahmniEncounterTransaction bahmniEncounterTransaction) {
         List<EncounterTransaction.Diagnosis> diagnoses = new ArrayList<>();
         for (BahmniDiagnosis bahmniDiagnosis : bahmniEncounterTransaction.getBahmniDiagnoses()) {
-            //TODO: Mihir - Move new Date to emrapi
-            bahmniDiagnosis.setDiagnosisDateTime(new Date());
+            // TODO: (Mihir, Mujir) Move to EMR-API
+            bahmniDiagnosis.setDiagnosisDateTime( bahmniDiagnosis.getDiagnosisDateTime() != null ? bahmniDiagnosis.getDiagnosisDateTime() : new Date());
             diagnoses.add(bahmniDiagnosis);
         }
         bahmniEncounterTransaction.setDiagnoses(diagnoses);

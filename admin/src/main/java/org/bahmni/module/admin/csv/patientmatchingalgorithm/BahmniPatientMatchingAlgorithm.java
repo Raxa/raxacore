@@ -8,7 +8,7 @@ import java.util.List;
 public class BahmniPatientMatchingAlgorithm implements PatientMatchingAlgorithm {
     @Override
     public Patient run(List<Patient> patientList, List<KeyValue> patientAttributes) {
-        if(patientList.size() > 0)
+        if (patientList.size() > 0)
             return patientList.get(0);
         return null;
     }

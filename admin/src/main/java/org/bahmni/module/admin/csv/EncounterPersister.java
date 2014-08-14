@@ -17,6 +17,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,44 +55,54 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
     private VisitService visitService;
 
     private HashMap<String, EncounterTransaction.Concept> cachedConcepts = new HashMap<>();
-
-    public EncounterPersister() {
-    }
+    private UserContext userContext;
 
     @Override
     public RowResult<EncounterRow> validate(EncounterRow encounterRow) {
-        Context.openSession();
-        Context.authenticate("admin", "test");
-        String errorMessage = null;
-        EncounterType encounterType = encounterService.getEncounterType(encounterRow.encounterType);
-        List<VisitType> visitTypes = visitService.getVisitTypes(encounterRow.visitType);
-        Context.closeSession();
-        if (encounterType == null) {
-            errorMessage = String.format("Encounter Type %s not found", encounterRow.encounterType);
-        } else if (visitTypes == null || visitTypes.size() == 0) {
-            errorMessage = String.format("Visit Type %s not found", encounterRow.visitType);
-        }
-        return new RowResult<>(encounterRow, errorMessage);
-    }
+        try {
+            Context.openSession();
+            Context.setUserContext(userContext);
 
+            EncounterType encounterType = encounterService.getEncounterType(encounterRow.encounterType);
+            List<VisitType> visitTypes = visitService.getVisitTypes(encounterRow.visitType);
+
+            StringBuilder errorMessage = new StringBuilder();
+            if (encounterType == null) {
+                errorMessage.append(String.format("Encounter Type %s not found\n", encounterRow.encounterType));
+            }
+            if (visitTypes == null || visitTypes.size() == 0) {
+                errorMessage.append(String.format("Visit Type %s not found\n", encounterRow.visitType));
+            }
+
+            try {
+                encounterRow.getEncounterDate();
+            } catch (ParseException | NullPointerException e) {
+                errorMessage.append("Encounter date time is required and should be 'dd/mm/yyyy' format\n");
+            }
+
+            return new RowResult<>(encounterRow, errorMessage.toString());
+        } finally {
+            Context.closeSession();
+        }
+    }
 
     @Override
     public RowResult<EncounterRow> persist(EncounterRow encounterRow) {
-        Context.openSession();
-        Context.authenticate("admin", "test");
-        Exception exception = null;
         try {
+            Context.openSession();
+            Context.setUserContext(userContext);
+
             Patient patient = matchPatients(patientService.get(encounterRow.patientIdentifier), encounterRow.patientAttributes);
             BahmniEncounterTransaction bahmniEncounterTransaction = getBahmniEncounterTransaction(encounterRow, patient);
             bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
+            return new RowResult<>(encounterRow);
         } catch (Exception e) {
-            Context.clearSession();
             log.error(e);
-            exception = e;
+            Context.clearSession();
+            return new RowResult<>(encounterRow, e);
         } finally {
             Context.flushSession();
             Context.closeSession();
-            return new RowResult<>(encounterRow, exception);
         }
     }
 
@@ -110,11 +122,12 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
         }
     }
 
-    private BahmniEncounterTransaction getBahmniEncounterTransaction(EncounterRow encounterRow, Patient patient) {
+    private BahmniEncounterTransaction getBahmniEncounterTransaction(EncounterRow encounterRow, Patient patient) throws ParseException {
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-        bahmniEncounterTransaction.setBahmniDiagnoses(getBahmniDiagnosis(encounterRow.getDiagnoses()));
-        bahmniEncounterTransaction.setObservations(getObservations(encounterRow.obsRows));
+        bahmniEncounterTransaction.setBahmniDiagnoses(getBahmniDiagnosis(encounterRow));
+        bahmniEncounterTransaction.setObservations(getObservations(encounterRow));
         bahmniEncounterTransaction.setPatientUuid(patient.getUuid());
+        bahmniEncounterTransaction.setEncounterDateTime((encounterRow.getEncounterDate()));
         String encounterTypeUUID = encounterService.getEncounterType(encounterRow.encounterType).getUuid();
         bahmniEncounterTransaction.setEncounterTypeUuid(encounterTypeUUID);
         String visitTypeUUID = visitService.getVisitTypes(encounterRow.visitType).get(0).getUuid();
@@ -122,28 +135,35 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
         return bahmniEncounterTransaction;
     }
 
-    private List<EncounterTransaction.Observation> getObservations(List<KeyValue> obsRows) {
+    private List<EncounterTransaction.Observation> getObservations(EncounterRow encounterRow) throws ParseException {
         List<EncounterTransaction.Observation> observations = new ArrayList<>();
-        if (obsRows != null) {
+
+        List<KeyValue> obsRows = encounterRow.obsRows;
+        if (obsRows != null && !obsRows.isEmpty()) {
             for (KeyValue obsRow : obsRows) {
-                EncounterTransaction.Observation observation = new EncounterTransaction.Observation();
                 Concept concept = conceptService.getConceptByName(obsRow.getKey());
+
+                EncounterTransaction.Observation observation = new EncounterTransaction.Observation();
                 observation.setConcept(new EncounterTransaction.Concept(concept.getUuid()));
                 observation.setValue(obsRow.getValue());
+                observation.setObservationDateTime(encounterRow.getEncounterDate());
                 observations.add(observation);
             }
         }
         return observations;
     }
 
-    private List<BahmniDiagnosisRequest> getBahmniDiagnosis(List<String> diagnoses) {
+    private List<BahmniDiagnosisRequest> getBahmniDiagnosis(EncounterRow encounterRow) throws ParseException {
         List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
+
+        List<String> diagnoses = encounterRow.getDiagnoses();
         for (String diagnosis : diagnoses) {
             EncounterTransaction.Concept diagnosisConcept = getDiagnosisConcept(diagnosis);
             BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
             bahmniDiagnosisRequest.setCodedAnswer(diagnosisConcept);
             bahmniDiagnosisRequest.setOrder(String.valueOf(Diagnosis.Order.PRIMARY));
             bahmniDiagnosisRequest.setCertainty(String.valueOf(Diagnosis.Certainty.CONFIRMED));
+            bahmniDiagnosisRequest.setDiagnosisDateTime(encounterRow.getEncounterDate());
             bahmniDiagnoses.add(bahmniDiagnosisRequest);
         }
         return bahmniDiagnoses;
@@ -157,10 +177,13 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
         return cachedConcepts.get(diagnosis);
     }
 
-
     private EncounterTransaction.Concept getEncounterTransactionConcept(Concept diagnosisConcept) {
         EncounterTransaction.Concept concept = new EncounterTransaction.Concept();
         concept.setUuid(diagnosisConcept.getUuid());
         return concept;
+    }
+
+    public void setUserContext(UserContext userContext) {
+        this.userContext = userContext;
     }
 }

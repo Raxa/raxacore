@@ -262,7 +262,18 @@
                 <artifactId>jackson-mapper-asl</artifactId>
                 <version>1.5.0</version>
             </dependency>
+            <dependency>
+                <groupId>org.bahmni.module</groupId>
+                <artifactId>admin</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bahmni.module</groupId>
+                <artifactId>file-uploader</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
         </dependencies>
+
     </dependencyManagement>
     
     <dependencies>
