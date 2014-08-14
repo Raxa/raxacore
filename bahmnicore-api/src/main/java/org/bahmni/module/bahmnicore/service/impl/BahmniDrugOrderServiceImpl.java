@@ -220,7 +220,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             drugOrder.setOrderType(getDrugOrderType());
             drugOrder.setOrderer(getSystemProvider());
             drugOrder.setCareSetting(orderService.getCareSettingByName("Outpatient"));
-            drugOrder.setDosingType(DrugOrder.DosingType.FREE_TEXT);
+            drugOrder.setDosingType(FreeTextDosingInstructions.class);
             drugOrder.setDosingInstructions(createInstructions(bahmniDrugOrder, drugOrder));
             drugOrder.setQuantity(bahmniDrugOrder.getQuantity());
             drugOrder.setQuantityUnits(drug.getDosageForm());

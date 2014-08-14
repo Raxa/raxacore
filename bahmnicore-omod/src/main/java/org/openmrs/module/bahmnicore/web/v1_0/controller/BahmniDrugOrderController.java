@@ -7,6 +7,7 @@ import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.openmrs.DrugOrder;
+import org.openmrs.FreeTextDosingInstructions;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -75,8 +76,8 @@ public class BahmniDrugOrderController {
             responseHashMap.put("name", drugOrder.getDrug().getName());
             responseHashMap.put("orderDate", serializeDate(drugOrder.getDateActivated()));
 
-            responseHashMap.put("dosingType", drugOrder.getDosingType().name());
-            if (drugOrder.getDosingType() == DrugOrder.DosingType.FREE_TEXT) {
+            responseHashMap.put("dosingType", drugOrder.getDosingType().getSimpleName());
+            if (drugOrder.getDosingType() == FreeTextDosingInstructions.class) {
                 populateFreeTextOrderDetails(drugOrder, responseHashMap);
             } else {
                 populateSimpleOrderDetails(drugOrder, responseHashMap);
