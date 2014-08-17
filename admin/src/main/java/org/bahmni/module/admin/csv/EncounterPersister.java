@@ -1,6 +1,7 @@
 package org.bahmni.module.admin.csv;
 
 import groovy.lang.GroovyClassLoader;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.EntityPersister;
 import org.bahmni.csv.KeyValue;
@@ -8,8 +9,11 @@ import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.csv.patientmatchingalgorithm.BahmniPatientMatchingAlgorithm;
 import org.bahmni.module.admin.csv.patientmatchingalgorithm.PatientMatchingAlgorithm;
+import org.bahmni.module.admin.encounter.BahmniEncounterTransactionImportService;
+import org.bahmni.module.admin.observation.DiagnosisImportService;
+import org.bahmni.module.admin.observation.ObservationImportService;
+import org.bahmni.module.admin.visit.VisitMatcher;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
-import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
 import org.openmrs.VisitType;
@@ -18,11 +22,8 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
-import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
-import org.openmrs.module.emrapi.diagnosis.Diagnosis;
-import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,8 +32,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @Component
@@ -54,7 +53,6 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
     @Autowired
     private VisitService visitService;
 
-    private HashMap<String, EncounterTransaction.Concept> cachedConcepts = new HashMap<>();
     private UserContext userContext;
 
     @Override
@@ -63,22 +61,18 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
             Context.openSession();
             Context.setUserContext(userContext);
 
-            EncounterType encounterType = encounterService.getEncounterType(encounterRow.encounterType);
-            List<VisitType> visitTypes = visitService.getVisitTypes(encounterRow.visitType);
-
             StringBuilder errorMessage = new StringBuilder();
-            if (encounterType == null) {
-                errorMessage.append(String.format("Encounter Type %s not found\n", encounterRow.encounterType));
-            }
-            if (visitTypes == null || visitTypes.size() == 0) {
-                errorMessage.append(String.format("Visit Type %s not found\n", encounterRow.visitType));
-            }
 
-            try {
-                encounterRow.getEncounterDate();
-            } catch (ParseException | NullPointerException e) {
-                errorMessage.append("Encounter date time is required and should be 'dd/mm/yyyy' format\n");
-            }
+            String messageForInvalidEncounterType = messageForInvalidEncounterType(encounterRow.encounterType);
+            if (!StringUtils.isEmpty(messageForInvalidEncounterType))
+                errorMessage.append(messageForInvalidEncounterType);
+
+            String messageForInvalidVisitType = messageForInvalidVisitType(encounterRow.visitType);
+            if (!StringUtils.isEmpty(messageForInvalidVisitType)) errorMessage.append(messageForInvalidVisitType);
+
+            String messageForInvalidEncounterDate = messageForInvalidEncounterDate(encounterRow);
+            if (!StringUtils.isEmpty(messageForInvalidEncounterDate))
+                errorMessage.append(messageForInvalidEncounterDate);
 
             return new RowResult<>(encounterRow, errorMessage.toString());
         } finally {
@@ -93,8 +87,17 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
             Context.setUserContext(userContext);
 
             Patient patient = matchPatients(patientService.get(encounterRow.patientIdentifier), encounterRow.patientAttributes);
-            BahmniEncounterTransaction bahmniEncounterTransaction = getBahmniEncounterTransaction(encounterRow, patient);
+
+            VisitMatcher visitMatcher = new VisitMatcher(visitService);
+            ObservationImportService observationService = new ObservationImportService(conceptService);
+            DiagnosisImportService diagnosisService = new DiagnosisImportService(conceptService);
+
+            BahmniEncounterTransactionImportService encounterTransactionImportService =
+                    new BahmniEncounterTransactionImportService(encounterService, visitMatcher, observationService, diagnosisService);
+            BahmniEncounterTransaction bahmniEncounterTransaction = encounterTransactionImportService.getBahmniEncounterTransaction(encounterRow, patient);
+
             bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
+
             return new RowResult<>(encounterRow);
         } catch (Exception e) {
             log.error(e);
@@ -104,6 +107,38 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
             Context.flushSession();
             Context.closeSession();
         }
+    }
+
+    private String messageForInvalidEncounterDate(EncounterRow encounterRow) {
+        try {
+            encounterRow.getEncounterDate();
+        } catch (ParseException | NullPointerException e) {
+            return "Encounter date time is required and should be 'dd/mm/yyyy' format\n";
+        }
+        return null;
+    }
+
+    private String messageForInvalidVisitType(String visitTypeAsString) {
+        if (StringUtils.isEmpty(visitTypeAsString)) {
+            return "Empty Visit Type";
+        }
+        List<VisitType> visitTypes = visitService.getVisitTypes(visitTypeAsString);
+        if (visitTypes == null || visitTypes.size() == 0) {
+            return String.format("Visit Type '%s' not found\n", visitTypeAsString);
+        }
+        return null;
+    }
+
+
+    private String messageForInvalidEncounterType(String encounterTypeAsString) {
+        if (StringUtils.isEmpty(encounterTypeAsString)) {
+            return "Empty Encounter Type\n";
+        }
+        EncounterType encounterType = encounterService.getEncounterType(encounterTypeAsString);
+        if (encounterType == null) {
+            return String.format("Encounter Type '%s' not found\n", encounterTypeAsString);
+        }
+        return null;
     }
 
     private Patient matchPatients(List<Patient> matchingPatients, List<KeyValue> patientAttributes) throws IOException, IllegalAccessException, InstantiationException {
@@ -120,67 +155,6 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
             log.info("PatientMatching : Done");
             return patient;
         }
-    }
-
-    private BahmniEncounterTransaction getBahmniEncounterTransaction(EncounterRow encounterRow, Patient patient) throws ParseException {
-        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-        bahmniEncounterTransaction.setBahmniDiagnoses(getBahmniDiagnosis(encounterRow));
-        bahmniEncounterTransaction.setObservations(getObservations(encounterRow));
-        bahmniEncounterTransaction.setPatientUuid(patient.getUuid());
-        bahmniEncounterTransaction.setEncounterDateTime((encounterRow.getEncounterDate()));
-        String encounterTypeUUID = encounterService.getEncounterType(encounterRow.encounterType).getUuid();
-        bahmniEncounterTransaction.setEncounterTypeUuid(encounterTypeUUID);
-        String visitTypeUUID = visitService.getVisitTypes(encounterRow.visitType).get(0).getUuid();
-        bahmniEncounterTransaction.setVisitTypeUuid(visitTypeUUID);
-        return bahmniEncounterTransaction;
-    }
-
-    private List<EncounterTransaction.Observation> getObservations(EncounterRow encounterRow) throws ParseException {
-        List<EncounterTransaction.Observation> observations = new ArrayList<>();
-
-        List<KeyValue> obsRows = encounterRow.obsRows;
-        if (obsRows != null && !obsRows.isEmpty()) {
-            for (KeyValue obsRow : obsRows) {
-                Concept concept = conceptService.getConceptByName(obsRow.getKey());
-
-                EncounterTransaction.Observation observation = new EncounterTransaction.Observation();
-                observation.setConcept(new EncounterTransaction.Concept(concept.getUuid()));
-                observation.setValue(obsRow.getValue());
-                observation.setObservationDateTime(encounterRow.getEncounterDate());
-                observations.add(observation);
-            }
-        }
-        return observations;
-    }
-
-    private List<BahmniDiagnosisRequest> getBahmniDiagnosis(EncounterRow encounterRow) throws ParseException {
-        List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
-
-        List<String> diagnoses = encounterRow.getDiagnoses();
-        for (String diagnosis : diagnoses) {
-            EncounterTransaction.Concept diagnosisConcept = getDiagnosisConcept(diagnosis);
-            BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
-            bahmniDiagnosisRequest.setCodedAnswer(diagnosisConcept);
-            bahmniDiagnosisRequest.setOrder(String.valueOf(Diagnosis.Order.PRIMARY));
-            bahmniDiagnosisRequest.setCertainty(String.valueOf(Diagnosis.Certainty.CONFIRMED));
-            bahmniDiagnosisRequest.setDiagnosisDateTime(encounterRow.getEncounterDate());
-            bahmniDiagnoses.add(bahmniDiagnosisRequest);
-        }
-        return bahmniDiagnoses;
-    }
-
-    private EncounterTransaction.Concept getDiagnosisConcept(String diagnosis) {
-        if (!cachedConcepts.containsKey(diagnosis)) {
-            Concept diagnosisConcept = conceptService.getConceptByName(diagnosis);
-            cachedConcepts.put(diagnosis, getEncounterTransactionConcept(diagnosisConcept));
-        }
-        return cachedConcepts.get(diagnosis);
-    }
-
-    private EncounterTransaction.Concept getEncounterTransactionConcept(Concept diagnosisConcept) {
-        EncounterTransaction.Concept concept = new EncounterTransaction.Concept();
-        concept.setUuid(diagnosisConcept.getUuid());
-        return concept;
     }
 
     public void setUserContext(UserContext userContext) {

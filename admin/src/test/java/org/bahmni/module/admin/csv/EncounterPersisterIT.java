@@ -49,18 +49,36 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     }
 
     @Test
-    public void fail_validation_for_encounter_type_not_found() throws Exception {
+    public void fail_validation_for_empty_encounter_type() throws Exception {
         EncounterRow encounterRow = new EncounterRow();
         RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
-        assertTrue("Encounter Type null not found", validationResult.getErrorMessage().contains("Encounter Type null not found"));
+        assertTrue("Empty Encounter Type", validationResult.getErrorMessage().contains("Empty Encounter Type"));
+    }
+
+    @Test
+    public void fail_validation_for_encounter_type_not_found() throws Exception {
+        EncounterRow encounterRow = new EncounterRow();
+        encounterRow.encounterType = "INVALID ENCOUNTER TYPE";
+        encounterRow.visitType = "OPD";
+        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
+        assertTrue("Invalid Encounter Type not found", validationResult.getErrorMessage().contains("Encounter Type 'INVALID ENCOUNTER TYPE' not found"));
     }
 
     @Test
     public void fail_validation_for_visit_type_not_found() throws Exception {
         EncounterRow encounterRow = new EncounterRow();
         encounterRow.encounterType = "OPD";
+        encounterRow.visitType = "INVALID VISIT TYPE";
         RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
-        assertTrue("Visit Type null not found", validationResult.getErrorMessage().contains("Visit Type null not found"));
+        assertTrue("Invalid Visit Type not found", validationResult.getErrorMessage().contains("Visit Type 'INVALID VISIT TYPE' not found"));
+    }
+
+    @Test
+    public void fail_validation_for_empty_visit_type() throws Exception {
+        EncounterRow encounterRow = new EncounterRow();
+        encounterRow.encounterType = "OPD";
+        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
+        assertTrue("Visit Type null not found", validationResult.getErrorMessage().contains("Empty Visit Type"));
     }
 
     @Test
