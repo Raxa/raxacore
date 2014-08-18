@@ -12,6 +12,7 @@ import org.openmrs.api.VisitService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -31,9 +32,11 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
     private EncounterService encounterService;
     @Autowired
     private ProviderService providerService;
+    private DateFormat dateOnly;
 
     @Before
     public void setUp() throws Exception {
+        dateOnly = new SimpleDateFormat("dd.MM.yyyy");
         executeDataSet("drugOrdersTestData.xml");
     }
 
@@ -174,7 +177,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         Order voidedOrder = getFirstVoidedOrder(orders);
         Order nonVoidedOrder = getFirstNonVoidedOrder(orders);
         assertEquals(createDate("01-01-2014"), nonVoidedOrder.getDateActivated());
-        assertEquals(createDate("31-01-2014"), nonVoidedOrder.getAutoExpireDate());
+        assertEquals(dateOnly.format(createDate("31-01-2014")), dateOnly.format(nonVoidedOrder.getAutoExpireDate()));
         assertNotNull(voidedOrder);
     }
 
