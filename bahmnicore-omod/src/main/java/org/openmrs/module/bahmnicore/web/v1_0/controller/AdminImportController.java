@@ -7,6 +7,8 @@ import org.bahmni.module.admin.csv.EncounterPersister;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
+import org.hibernate.engine.SessionImplementor;
+import org.hibernate.impl.SessionImpl;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
@@ -103,7 +105,7 @@ public class AdminImportController extends BaseRestController {
         @Override
         public Connection getConnection() {
             //TODO: ensure that only connection associated with current thread current transaction is given
-            Session session = sessionFactory.openSession();
+            SessionImplementor session = (SessionImpl) sessionFactory.openSession();
             return session.connection();
         }
 
