@@ -12,6 +12,7 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class DiagnosisImportService {
         this.conceptService = conceptService;
     }
 
-    public List<BahmniDiagnosisRequest> getBahmniDiagnosis(EncounterRow encounterRow, DuplicateObservationsMatcher duplicateObservationsMatcher) throws ParseException {
+    public List<BahmniDiagnosisRequest> getBahmniDiagnosis(EncounterRow encounterRow, Date visitStartDatetime, DuplicateObservationsMatcher duplicateObservationsMatcher) throws ParseException {
         List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
         if (encounterRow.getDiagnoses() != null) {
             boolean shouldMatchDiagnosisValue = true;
@@ -36,7 +37,7 @@ public class DiagnosisImportService {
                 if (shouldIgnoreDiagnosis(matchingDiagnosisKeyValue, diagnosis)) {
                     continue;
                 }
-                BahmniDiagnosisRequest bahmniDiagnosisRequest = createDiagnosis(encounterRow, diagnosis);
+                BahmniDiagnosisRequest bahmniDiagnosisRequest = createDiagnosis(visitStartDatetime, diagnosis);
                 bahmniDiagnoses.add(bahmniDiagnosisRequest);
             }
         }
@@ -51,14 +52,14 @@ public class DiagnosisImportService {
         return diagnosisKeyValues;
     }
 
-    private BahmniDiagnosisRequest createDiagnosis(EncounterRow encounterRow, String diagnosis) throws ParseException {
+    private BahmniDiagnosisRequest createDiagnosis(Date visitStartDatetime, String diagnosis) throws ParseException {
         EncounterTransaction.Concept diagnosisConcept = getDiagnosisConcept(diagnosis);
 
         BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
         bahmniDiagnosisRequest.setCodedAnswer(diagnosisConcept);
         bahmniDiagnosisRequest.setOrder(String.valueOf(Diagnosis.Order.PRIMARY));
         bahmniDiagnosisRequest.setCertainty(String.valueOf(Diagnosis.Certainty.CONFIRMED));
-        bahmniDiagnosisRequest.setDiagnosisDateTime(encounterRow.getEncounterDate());
+        bahmniDiagnosisRequest.setDiagnosisDateTime(visitStartDatetime);
         bahmniDiagnosisRequest.setComments(ObservationImportService.FILE_IMPORT_COMMENT);
         return bahmniDiagnosisRequest;
     }

@@ -13,6 +13,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncou
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 public class BahmniEncounterTransactionImportService {
@@ -33,16 +34,18 @@ public class BahmniEncounterTransactionImportService {
     public BahmniEncounterTransaction getBahmniEncounterTransaction(EncounterRow encounterRow, Patient patient) throws ParseException {
         EncounterType requestedEncounterType = encounterService.getEncounterType(encounterRow.encounterType);
         Visit matchingVisit = visitMatcher.getMatchingVisit(patient, encounterRow.visitType, encounterRow.getEncounterDate());
+        Date visitStartDatetime = matchingVisit.getStartDatetime();
+
         DuplicateObservationsMatcher duplicateObservationsMatcher = new DuplicateObservationsMatcher(matchingVisit, requestedEncounterType);
 
-        List<EncounterTransaction.Observation> bahmniObservations = observationService.getObservations(encounterRow, duplicateObservationsMatcher);
-        List<BahmniDiagnosisRequest> bahmniDiagnosis = diagnosisService.getBahmniDiagnosis(encounterRow, duplicateObservationsMatcher);
+        List<EncounterTransaction.Observation> bahmniObservations = observationService.getObservations(encounterRow, visitStartDatetime, duplicateObservationsMatcher);
+        List<BahmniDiagnosisRequest> bahmniDiagnosis = diagnosisService.getBahmniDiagnosis(encounterRow, visitStartDatetime, duplicateObservationsMatcher);
 
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         bahmniEncounterTransaction.setBahmniDiagnoses(bahmniDiagnosis);
         bahmniEncounterTransaction.setObservations(bahmniObservations);
         bahmniEncounterTransaction.setPatientUuid(patient.getUuid());
-        bahmniEncounterTransaction.setEncounterDateTime((encounterRow.getEncounterDate()));
+        bahmniEncounterTransaction.setEncounterDateTime(visitStartDatetime);
         bahmniEncounterTransaction.setEncounterTypeUuid(requestedEncounterType.getUuid());
 
         // TODO : Mujir - is this alright? Should we further check the actual visit types as this is a fuzzy search?

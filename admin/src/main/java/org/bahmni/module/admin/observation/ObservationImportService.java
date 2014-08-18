@@ -4,12 +4,12 @@ import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.encounter.DuplicateObservationsMatcher;
 import org.openmrs.Concept;
-import org.openmrs.EncounterType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ObservationImportService {
@@ -20,8 +20,7 @@ public class ObservationImportService {
         this.conceptService = conceptService;
     }
 
-    public List<EncounterTransaction.Observation> getObservations(EncounterRow encounterRow,
-                             DuplicateObservationsMatcher duplicateObservationsMatcher) throws ParseException {
+    public List<EncounterTransaction.Observation> getObservations(EncounterRow encounterRow, Date visitStartDatetime, DuplicateObservationsMatcher duplicateObservationsMatcher) throws ParseException {
         List<EncounterTransaction.Observation> observations = new ArrayList<>();
         if (encounterRow.obsRows != null) {
             List<KeyValue> matchingObservations = duplicateObservationsMatcher.matchingObservations(encounterRow.obsRows);
@@ -31,18 +30,18 @@ public class ObservationImportService {
                 if (shouldIgnoreObservation(matchingObservations, obsRow)) {
                     continue;
                 }
-                EncounterTransaction.Observation observation = createObservation(encounterRow, obsRow);
+                EncounterTransaction.Observation observation = createObservation(visitStartDatetime, obsRow);
                 observations.add(observation);
             }
         }
         return observations;
     }
 
-    private EncounterTransaction.Observation createObservation(EncounterRow encounterRow, KeyValue obsRow) throws ParseException {
+    private EncounterTransaction.Observation createObservation(Date visitStartDatetime, KeyValue obsRow) throws ParseException {
         EncounterTransaction.Observation observation = new EncounterTransaction.Observation();
         observation.setConcept(getConcept(obsRow.getKey()));
         observation.setValue(obsRow.getValue());
-        observation.setObservationDateTime(encounterRow.getEncounterDate());
+        observation.setObservationDateTime(visitStartDatetime);
         observation.setComment(FILE_IMPORT_COMMENT);
         return observation;
     }
