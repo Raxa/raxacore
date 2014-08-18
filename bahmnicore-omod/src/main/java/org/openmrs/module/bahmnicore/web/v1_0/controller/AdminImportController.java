@@ -7,11 +7,13 @@ import org.bahmni.module.admin.csv.EncounterPersister;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,7 +35,7 @@ public class AdminImportController extends BaseRestController {
     private static Logger logger = Logger.getLogger(AdminImportController.class);
 
     public static final String YYYY_MM_DD_HH_MM_SS = "_yyyy-MM-dd_HH:mm:ss";
-    public static final String PARENT_FOR_UPLOADED_FILES_DIRECTORY = "/home/jss/uploaded-files/mrs/";
+    public static final String PARENT_DIRECTORY_UPLOADED_FILES_CONFIG = "uploaded.files.directory";
     public static final String ENCOUNTER_FILES_DIRECTORY = "encounter/";
 
     @Autowired
@@ -41,6 +43,10 @@ public class AdminImportController extends BaseRestController {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    @Qualifier("adminService")
+    private AdministrationService administrationService;
 
     @RequestMapping(value = baseUrl + "/encounter", method = RequestMethod.POST)
     @ResponseBody
@@ -51,18 +57,15 @@ public class AdminImportController extends BaseRestController {
             File persistedUploadedFile = writeToLocalFile(fileBytes, uploadedOriginalFileName);
 
             UserContext userContext = Context.getUserContext();
-            encounterPersister.setUserContext(userContext);
+            encounterPersister.init(userContext, null);
 
             FileImporter<EncounterRow> csvPatientFileImporter = new FileImporter<>();
-            JDBCConnectionProvider jdbcConnectionProvider = new MRSConnectionProvider();
-            boolean hasStartedUpload = csvPatientFileImporter.importCSV(uploadedOriginalFileName, persistedUploadedFile,
-                    encounterPersister, EncounterRow.class, jdbcConnectionProvider, userContext.getAuthenticatedUser().getUsername());
+            return csvPatientFileImporter.importCSV(uploadedOriginalFileName, persistedUploadedFile,
+                    encounterPersister, EncounterRow.class, new MRSConnectionProvider(), userContext.getAuthenticatedUser().getUsername());
         } catch (Exception e) {
             logger.error("Could not upload file", e);
             return false;
         }
-
-        return true;
     }
 
     private File writeToLocalFile(byte[] fileBytes, String uploadedFileName) {
@@ -91,7 +94,9 @@ public class AdminImportController extends BaseRestController {
         String fileExtension = fileName.substring(fileName.lastIndexOf("."));
 
         String timestampForFile = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS).format(new Date());
-        return new File(PARENT_FOR_UPLOADED_FILES_DIRECTORY + ENCOUNTER_FILES_DIRECTORY + fileNameWithoutExtension + timestampForFile + fileExtension);
+
+        String uploadDirectory = administrationService.getGlobalProperty(PARENT_DIRECTORY_UPLOADED_FILES_CONFIG);
+        return new File(uploadDirectory + ENCOUNTER_FILES_DIRECTORY + fileNameWithoutExtension + timestampForFile + fileExtension);
     }
 
     private class MRSConnectionProvider implements JDBCConnectionProvider {

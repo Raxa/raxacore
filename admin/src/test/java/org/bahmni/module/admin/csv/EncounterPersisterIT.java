@@ -35,6 +35,8 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     private VisitService visitService;
 
     private static final SimpleDateFormat observationDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private String path;
+    protected UserContext userContext;
 
     @Before
     public void setUp() throws Exception {
@@ -42,10 +44,13 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         executeDataSet("diagnosisMetaData.xml");
         executeDataSet("dispositionMetaData.xml");
         executeDataSet("dataSetup.xml");
+        path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        System.setProperty("OPENMRS_APPLICATION_DATA_DIRECTORY", path);
+
 
         Context.authenticate("admin", "test");
-        UserContext userContext = Context.getUserContext();
-        encounterPersister.setUserContext(userContext);
+        userContext = Context.getUserContext();
+        encounterPersister.init(userContext, "");
     }
 
     @Test
@@ -247,5 +252,68 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         assertTrue(obsConceptNames.contains("Bahmni Diagnosis Status"));
         assertTrue(obsConceptNames.contains("Bahmni Diagnosis Revised"));
         assertTrue(obsConceptNames.contains("Bahmni Initial Diagnosis"));
+    }
+
+    @Test
+    public void throw_error_when_patient_not_found() throws Exception {
+        EncounterRow encounterRow = new EncounterRow();
+        encounterRow.encounterDateTime = "11/11/1111";
+        encounterRow.encounterType = "OPD";
+        encounterRow.visitType = "OPD";
+        encounterRow.patientIdentifier = "GAN200001";
+
+        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        encounterPersister.init(userContext, "NoMatch.groovy");
+        assertNotNull(persistenceResult.getErrorMessage());
+        assertEquals("Patient not found. Patient Id : 'GAN200001'",persistenceResult.getErrorMessage());
+    }
+
+    @Test
+    public void external_algorithm_should_return_only_patients_with_GAN_identifier() throws Exception {
+        EncounterRow encounterRow = new EncounterRow();
+        encounterRow.encounterDateTime = "11/11/1111";
+        encounterRow.encounterType = "OPD";
+        encounterRow.visitType = "OPD";
+        String patientId = "200000";
+        encounterRow.patientIdentifier = patientId;
+
+        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        encounterPersister.init(userContext, "GANIdentifier.groovy");
+        assertNull(persistenceResult.getErrorMessage());
+        Context.openSession();
+        Context.authenticate("admin", "test");
+
+        encounterRow.patientIdentifier = "GAN" + patientId;
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
+        Context.closeSession();
+        assertEquals(1, encounters.size());
+    }
+
+    @Test
+    public void external_algorithm_returns_patients_matching_id_and_name() throws Exception {
+        EncounterRow encounterRow = new EncounterRow();
+        encounterRow.encounterDateTime = "11/11/1111";
+        encounterRow.encounterType = "OPD";
+        encounterRow.visitType = "OPD";
+        String patientId = "200000";
+        encounterRow.patientIdentifier = patientId;
+        encounterRow.patientAttributes = getPatientAttributes();
+
+        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        encounterPersister.init(userContext, "IdAndNameMatch.groovy");
+        assertNull(persistenceResult.getErrorMessage());
+        Context.openSession();
+        Context.authenticate("admin", "test");
+
+        encounterRow.patientIdentifier = "GAN" + patientId;
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
+        Context.closeSession();
+        assertEquals(1, encounters.size());
+    }
+
+    private List<KeyValue> getPatientAttributes() {
+        List<KeyValue> patientAttributes = new ArrayList<>();
+        patientAttributes.add(new KeyValue("given_name", "Ramesh"));
+        return patientAttributes;
     }
 }

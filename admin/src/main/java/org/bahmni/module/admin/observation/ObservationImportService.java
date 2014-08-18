@@ -52,7 +52,7 @@ public class ObservationImportService {
 
     private EncounterTransaction.Concept getConcept(String conceptName) {
         Concept obsConcept = conceptService.getConceptByName(conceptName);
-        return new EncounterTransaction.Concept(obsConcept.getUuid());
+        return new EncounterTransaction.Concept(obsConcept.getUuid(), obsConcept.getName().getName());
     }
 
 }

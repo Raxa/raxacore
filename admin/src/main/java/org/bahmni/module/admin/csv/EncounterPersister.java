@@ -37,6 +37,7 @@ import java.util.List;
 @Component
 public class EncounterPersister implements EntityPersister<EncounterRow> {
     private static final Logger log = Logger.getLogger(EncounterPersister.class);
+    public static final String PATIENT_MATCHING_ALGORITHM_DIRECTORY = "/patientMatchingAlgorithm/";
 
     @Autowired
     private BahmniPatientService patientService;
@@ -54,6 +55,13 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
     private VisitService visitService;
 
     private UserContext userContext;
+
+    private String patientMatchingAlgorithmClassName;
+
+    public void init(UserContext userContext, String patientMatchingAlgorithmClassName){
+        this.userContext = userContext;
+        this.patientMatchingAlgorithmClassName = patientMatchingAlgorithmClassName;
+    }
 
     @Override
     public RowResult<EncounterRow> validate(EncounterRow encounterRow) {
@@ -87,6 +95,9 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
             Context.setUserContext(userContext);
 
             Patient patient = matchPatients(patientService.get(encounterRow.patientIdentifier), encounterRow.patientAttributes);
+            if (patient == null) {
+                return new RowResult<>(encounterRow, "Patient not found. Patient Id : '" + encounterRow.patientIdentifier + "'");
+            }
 
             VisitMatcher visitMatcher = new VisitMatcher(visitService);
             ObservationImportService observationService = new ObservationImportService(conceptService);
@@ -142,22 +153,23 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
     }
 
     private Patient matchPatients(List<Patient> matchingPatients, List<KeyValue> patientAttributes) throws IOException, IllegalAccessException, InstantiationException {
-        log.info("PatientMatching : Start");
+        log.debug("PatientMatching : Start");
         PatientMatchingAlgorithm patientMatchingAlgorithm = new BahmniPatientMatchingAlgorithm();
         try {
             GroovyClassLoader gcl = new GroovyClassLoader();
-            Class clazz = gcl.parseClass(new File(OpenmrsUtil.getApplicationDataDirectory() + "/patientMatchingAlgorithm/BahmniPatientMatchingAlgorithm.groovy"));
+            Class clazz = gcl.parseClass(new File(getAlgorithmClassPath()));
             patientMatchingAlgorithm = (PatientMatchingAlgorithm) clazz.newInstance();
         } catch (FileNotFoundException ignored) {
         } finally {
-            log.info("PatientMatching : Using Algorithm in " + patientMatchingAlgorithm.getClass().getName());
+            log.debug("PatientMatching : Using Algorithm in " + patientMatchingAlgorithm.getClass().getName());
             Patient patient = patientMatchingAlgorithm.run(matchingPatients, patientAttributes);
-            log.info("PatientMatching : Done");
+            log.debug("PatientMatching : Done");
             return patient;
         }
     }
 
-    public void setUserContext(UserContext userContext) {
-        this.userContext = userContext;
+    private String getAlgorithmClassPath() {
+        return OpenmrsUtil.getApplicationDataDirectory() + PATIENT_MATCHING_ALGORITHM_DIRECTORY + patientMatchingAlgorithmClassName;
     }
+
 }

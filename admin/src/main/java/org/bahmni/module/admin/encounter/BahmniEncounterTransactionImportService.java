@@ -47,8 +47,6 @@ public class BahmniEncounterTransactionImportService {
         bahmniEncounterTransaction.setPatientUuid(patient.getUuid());
         bahmniEncounterTransaction.setEncounterDateTime(visitStartDatetime);
         bahmniEncounterTransaction.setEncounterTypeUuid(requestedEncounterType.getUuid());
-
-        // TODO : Mujir - is this alright? Should we further check the actual visit types as this is a fuzzy search?
         bahmniEncounterTransaction.setVisitTypeUuid(matchingVisit.getVisitType().getUuid());
         bahmniEncounterTransaction.setVisitUuid(matchingVisit.getUuid());
 
