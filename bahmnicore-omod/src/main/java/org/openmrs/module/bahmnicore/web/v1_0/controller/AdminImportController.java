@@ -50,14 +50,14 @@ public class AdminImportController extends BaseRestController {
 
     @RequestMapping(value = baseUrl + "/encounter", method = RequestMethod.POST)
     @ResponseBody
-    public boolean upload(@RequestParam(value = "file") MultipartFile file) {
+    public boolean upload(@RequestParam(value = "file") MultipartFile file, @RequestParam(value="patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
         try {
             String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
             byte[] fileBytes = file.getBytes();
             File persistedUploadedFile = writeToLocalFile(fileBytes, uploadedOriginalFileName);
 
             UserContext userContext = Context.getUserContext();
-            encounterPersister.init(userContext, null);
+            encounterPersister.init(userContext, patientMatchingAlgorithm);
 
             FileImporter<EncounterRow> csvPatientFileImporter = new FileImporter<>();
             return csvPatientFileImporter.importCSV(uploadedOriginalFileName, persistedUploadedFile,
