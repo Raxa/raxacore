@@ -50,7 +50,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
 
         Context.authenticate("admin", "test");
         userContext = Context.getUserContext();
-        encounterPersister.init(userContext, "");
+        encounterPersister.init(userContext, null);
     }
 
     @Test
@@ -261,24 +261,39 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         encounterRow.encounterType = "OPD";
         encounterRow.visitType = "OPD";
         encounterRow.patientIdentifier = "GAN200001";
+        encounterPersister.init(userContext, "NoMatch.groovy");
 
         RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
-        encounterPersister.init(userContext, "NoMatch.groovy");
         assertNotNull(persistenceResult.getErrorMessage());
-        assertEquals("Patient not found. Patient Id : 'GAN200001'",persistenceResult.getErrorMessage());
+        assertEquals("Patient not found. Patient Id : 'GAN200001'", persistenceResult.getErrorMessage());
     }
 
     @Test
-    public void external_algorithm_should_return_only_patients_with_GAN_identifier() throws Exception {
+    public void throw_error_when_multiple_patients_found() throws Exception {
         EncounterRow encounterRow = new EncounterRow();
         encounterRow.encounterDateTime = "11/11/1111";
         encounterRow.encounterType = "OPD";
         encounterRow.visitType = "OPD";
-        String patientId = "200000";
-        encounterRow.patientIdentifier = patientId;
+        encounterRow.patientIdentifier = "200000";
+        encounterPersister.init(userContext, "MultipleMatchPatient.groovy");
 
         RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+
+        assertTrue(persistenceResult.getErrorMessage().contains("GAN200000, SEM200000"));
+    }
+
+    @Test
+    public void external_algorithm_should_return_only_patients_with_GAN_identifier() throws Exception {
+        String patientId = "200000";
+
+        EncounterRow encounterRow = new EncounterRow();
+        encounterRow.encounterDateTime = "11/11/1111";
+        encounterRow.encounterType = "OPD";
+        encounterRow.visitType = "OPD";
+        encounterRow.patientIdentifier = patientId;
         encounterPersister.init(userContext, "GANIdentifier.groovy");
+
+        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
         assertNull(persistenceResult.getErrorMessage());
         Context.openSession();
         Context.authenticate("admin", "test");
@@ -295,17 +310,15 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         encounterRow.encounterDateTime = "11/11/1111";
         encounterRow.encounterType = "OPD";
         encounterRow.visitType = "OPD";
-        String patientId = "200000";
-        encounterRow.patientIdentifier = patientId;
+        encounterRow.patientIdentifier = "GAN200000";
         encounterRow.patientAttributes = getPatientAttributes();
+        encounterPersister.init(userContext, "IdAndNameMatch.groovy");
 
         RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
-        encounterPersister.init(userContext, "IdAndNameMatch.groovy");
         assertNull(persistenceResult.getErrorMessage());
         Context.openSession();
         Context.authenticate("admin", "test");
 
-        encounterRow.patientIdentifier = "GAN" + patientId;
         List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
         Context.closeSession();
         assertEquals(1, encounters.size());
@@ -313,7 +326,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
 
     private List<KeyValue> getPatientAttributes() {
         List<KeyValue> patientAttributes = new ArrayList<>();
-        patientAttributes.add(new KeyValue("given_name", "Ramesh"));
+        patientAttributes.add(new KeyValue("given_name", "Anad"));
         return patientAttributes;
     }
 }

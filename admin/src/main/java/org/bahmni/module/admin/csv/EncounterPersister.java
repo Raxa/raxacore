@@ -9,6 +9,7 @@ import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.csv.patientmatchingalgorithm.BahmniPatientMatchingAlgorithm;
 import org.bahmni.module.admin.csv.patientmatchingalgorithm.PatientMatchingAlgorithm;
+import org.bahmni.module.admin.csv.patientmatchingalgorithm.exception.CannotMatchPatientException;
 import org.bahmni.module.admin.encounter.BahmniEncounterTransactionImportService;
 import org.bahmni.module.admin.observation.DiagnosisImportService;
 import org.bahmni.module.admin.observation.ObservationImportService;
@@ -151,7 +152,7 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
         return null;
     }
 
-    private Patient matchPatients(List<Patient> matchingPatients, List<KeyValue> patientAttributes) throws IOException, IllegalAccessException, InstantiationException {
+    private Patient matchPatients(List<Patient> matchingPatients, List<KeyValue> patientAttributes) throws IOException, IllegalAccessException, InstantiationException, CannotMatchPatientException {
         if (patientMatchingAlgorithmClassName == null) {
             Patient patient = new BahmniPatientMatchingAlgorithm().run(matchingPatients, patientAttributes);
             return patient;

@@ -18,7 +18,7 @@ public class IdAndNameMatch implements PatientMatchingAlgorithm{
         return null;
     }
 
-    private String getGetPatientGivenName(List<KeyValue> patientAttributes) {
+    private String getPatientGivenName(List<KeyValue> patientAttributes) {
         for (KeyValue patientAttribute : patientAttributes) {
             if(patientAttribute.getKey().equals("given_name")){
                 return patientAttribute.getValue();
