@@ -21,15 +21,15 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class BahmniDrugOrdersTest {
+public class BahmniFeedDrugOrdersTest {
     @Test
     public void testGetUniqueOrdersReturnsUniqueOrdersWithDosageAndQuantityAdjusted() throws Exception {
-        BahmniDrugOrder order1 = new BahmniDrugOrderBuilder().withProductUuid("11").withNumberOfDaysAndDosage(10, 2).build();
-        BahmniDrugOrder order2 = new BahmniDrugOrderBuilder().withProductUuid("22").withNumberOfDaysAndDosage(5, 1).build();
-        BahmniDrugOrder order3 = new BahmniDrugOrderBuilder().withProductUuid("11").withNumberOfDaysAndDosage(10, 1).build();
-        BahmniDrugOrders bahmniDrugOrders = new BahmniDrugOrders(Arrays.asList(order1, order2, order3));
+        BahmniFeedDrugOrder order1 = new BahmniDrugOrderBuilder().withProductUuid("11").withNumberOfDaysAndDosage(10, 2).build();
+        BahmniFeedDrugOrder order2 = new BahmniDrugOrderBuilder().withProductUuid("22").withNumberOfDaysAndDosage(5, 1).build();
+        BahmniFeedDrugOrder order3 = new BahmniDrugOrderBuilder().withProductUuid("11").withNumberOfDaysAndDosage(10, 1).build();
+        BahmniFeedDrugOrders bahmniFeedDrugOrders = new BahmniFeedDrugOrders(Arrays.asList(order1, order2, order3));
 
-        List<BahmniDrugOrder> uniqueOrders = bahmniDrugOrders.getUniqueOrders();
+        List<BahmniFeedDrugOrder> uniqueOrders = bahmniFeedDrugOrders.getUniqueOrders();
 
         assertEquals(2, uniqueOrders.size());
         assertEquals("11", uniqueOrders.get(0).getProductUuid());

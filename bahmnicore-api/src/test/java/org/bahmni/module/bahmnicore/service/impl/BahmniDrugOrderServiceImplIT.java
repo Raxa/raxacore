@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
+import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.*;
@@ -46,10 +46,10 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         Visit activeVisit = createActiveVisit(patient);
         assertNull(activeVisit.getEncounters());
         Date orderDate = new Date();
-        BahmniDrugOrder calpol = new BahmniDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, 10, 20.0, "mg");
-        BahmniDrugOrder cetrizine = new BahmniDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70f0", 3.0, 5, 21.0, "mg");
-        BahmniDrugOrder cetzine = new BahmniDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70fa", 0.0, 0, 10.0, "mg");
-        List<BahmniDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
+        BahmniFeedDrugOrder calpol = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, 10, 20.0, "mg");
+        BahmniFeedDrugOrder cetrizine = new BahmniFeedDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70f0", 3.0, 5, 21.0, "mg");
+        BahmniFeedDrugOrder cetzine = new BahmniFeedDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70fa", 0.0, 0, 10.0, "mg");
+        List<BahmniFeedDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
 
         bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System");
 
@@ -71,10 +71,10 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         Date orderDate = simpleDateFormat.parse("01-01-2014");
 
-        BahmniDrugOrder calpol = new BahmniDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, 10, 20.0, "mg");
-        BahmniDrugOrder cetrizine = new BahmniDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70f0", 3.0, 5, 21.0, "mg");
-        BahmniDrugOrder cetzine = new BahmniDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70fa", 0.0, 0, 10.0, "mg");
-        List<BahmniDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
+        BahmniFeedDrugOrder calpol = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, 10, 20.0, "mg");
+        BahmniFeedDrugOrder cetrizine = new BahmniFeedDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70f0", 3.0, 5, 21.0, "mg");
+        BahmniFeedDrugOrder cetzine = new BahmniFeedDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70fa", 0.0, 0, 10.0, "mg");
+        List<BahmniFeedDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
 
         Patient patient = patientService.getPatient(1);
         Visit visit = createVisitForDate(patient, null, orderDate, false, DateUtils.addDays(orderDate, 1));
@@ -99,10 +99,10 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
     public void shouldCreateNewEncounterAndAddOrdersAndChangeVisitEndDate_ToVisitAtTheDateClosestToOrderDate_WhenActiveVisitDoesNotExist() throws ParseException {
         Date orderDate = new SimpleDateFormat("dd-MM-yyyy").parse("01-01-2014");
 
-        BahmniDrugOrder calpol = new BahmniDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, 10, 20.0, "mg");
-        BahmniDrugOrder cetrizine = new BahmniDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70f0", 3.0, 5, 21.0, "mg");
-        BahmniDrugOrder cetzine = new BahmniDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70fa", 0.0, 0, 10.0, "mg");
-        List<BahmniDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
+        BahmniFeedDrugOrder calpol = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, 10, 20.0, "mg");
+        BahmniFeedDrugOrder cetrizine = new BahmniFeedDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70f0", 3.0, 5, 21.0, "mg");
+        BahmniFeedDrugOrder cetzine = new BahmniFeedDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70fa", 0.0, 0, 10.0, "mg");
+        List<BahmniFeedDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
 
         Patient patient = patientService.getPatient(1);
         Visit visit1 = createVisitForDate(patient, null, DateUtils.addDays(orderDate, -5), false, DateUtils.addDays(DateUtils.addDays(orderDate, -5), 1));
@@ -135,10 +135,10 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         Patient patient = patientService.getPatient(1);
         Date visitStartDate = DateUtils.addHours(orderDate, 10);
 
-        BahmniDrugOrder calpol = new BahmniDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, 10, 20.0, "mg");
-        BahmniDrugOrder cetrizine = new BahmniDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70f0", 3.0, 5, 21.0, "mg");
-        BahmniDrugOrder cetzine = new BahmniDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70fa", 0.0, 0, 10.0, "mg");
-        List<BahmniDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
+        BahmniFeedDrugOrder calpol = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, 10, 20.0, "mg");
+        BahmniFeedDrugOrder cetrizine = new BahmniFeedDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70f0", 3.0, 5, 21.0, "mg");
+        BahmniFeedDrugOrder cetzine = new BahmniFeedDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70fa", 0.0, 0, 10.0, "mg");
+        List<BahmniFeedDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
 
         Encounter systemConsultationEncounter = createSystemConsultationEncounter(patient, visitStartDate);
         Visit visit = createVisitForDate(patient, systemConsultationEncounter, visitStartDate, false, DateUtils.addDays(visitStartDate, 1));
@@ -162,11 +162,11 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         Patient patient = patientService.getPatient(1);
         Visit visit = createVisitForDate(patient, null, firstOrderDate, false, firstOrderDate);
         int firstOrderNumberOfDays = 10;
-        BahmniDrugOrder calpolFirstOrder = new BahmniDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, firstOrderNumberOfDays, firstOrderNumberOfDays * 2.0, "mg");
+        BahmniFeedDrugOrder calpolFirstOrder = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, firstOrderNumberOfDays, firstOrderNumberOfDays * 2.0, "mg");
         bahmniDrugOrderService.add("GAN200000", firstOrderDate, Arrays.asList(calpolFirstOrder), "System");
         Date secondOrderDate = DateUtils.addDays(firstOrderDate, 1);
         int secondOrderNumberOfDays = 20;
-        BahmniDrugOrder calpolSecondOrder = new BahmniDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, secondOrderNumberOfDays, secondOrderNumberOfDays * 2.0, "mg");
+        BahmniFeedDrugOrder calpolSecondOrder = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, secondOrderNumberOfDays, secondOrderNumberOfDays * 2.0, "mg");
 
         bahmniDrugOrderService.add("GAN200000", secondOrderDate, Arrays.asList(calpolSecondOrder), "System");
 

@@ -1,16 +1,16 @@
 package org.bahmni.module.bahmnicore.model;
 
-public class BahmniDrugOrder {
+public class BahmniFeedDrugOrder {
     private int numberOfDays;
     private String productUuid;
     private Double quantity;
     private Double dosage;
     private String unit;
 
-    public BahmniDrugOrder() {
+    public BahmniFeedDrugOrder() {
     }
 
-    public BahmniDrugOrder(int numberOfDays, String productUuid, Double quantity, Double dosage, String unit) {
+    public BahmniFeedDrugOrder(int numberOfDays, String productUuid, Double quantity, Double dosage, String unit) {
         this.numberOfDays = numberOfDays;
         this.productUuid = productUuid;
         this.quantity = quantity;
@@ -41,7 +41,7 @@ public class BahmniDrugOrder {
         return unit;
     }
 
-    public BahmniDrugOrder(String productUuid, Double dosage, int numberOfDays, Double quantity, String unit) {
+    public BahmniFeedDrugOrder(String productUuid, Double dosage, int numberOfDays, Double quantity, String unit) {
         this.numberOfDays = numberOfDays;
         this.productUuid = productUuid;
         this.quantity = quantity;

@@ -6,7 +6,7 @@ import org.bahmni.module.bahmnicore.contract.drugorder.*;
 import org.bahmni.module.bahmnicore.contract.observation.*;
 import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
-import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
+import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.util.VisitIdentificationHelper;
 import org.joda.time.DateTime;
@@ -55,7 +55,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     @Override
-    public void add(String patientId, Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, String systemUserName) {
+    public void add(String patientId, Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders, String systemUserName) {
         if (StringUtils.isEmpty(patientId))
             throwPatientNotFoundException(patientId);
 
@@ -126,7 +126,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         throw new RuntimeException("Patient Id is null or empty. PatientId='" + patientId + "'. Patient may have been directly created in billing system.");
     }
 
-    private void addDrugOrdersToVisit(Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {
+    private void addDrugOrdersToVisit(Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {
         Set<DrugOrder> drugOrders = createOrders(patient, orderDate, bahmniDrugOrders);
         Set<DrugOrder> remainingNewDrugOrders = checkOverlappingOrderAndUpdate(drugOrders, patient.getUuid(), orderDate);
         if(remainingNewDrugOrders.isEmpty()) return;
@@ -206,9 +206,9 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         return systemProvider;
     }
 
-    private Set<DrugOrder> createOrders(Patient patient, Date orderDate, List<BahmniDrugOrder> bahmniDrugOrders) {
+    private Set<DrugOrder> createOrders(Patient patient, Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders) {
         Set<DrugOrder> orders = new HashSet<>();
-        for (BahmniDrugOrder bahmniDrugOrder : bahmniDrugOrders) {
+        for (BahmniFeedDrugOrder bahmniDrugOrder : bahmniDrugOrders) {
             DrugOrder drugOrder = new DrugOrder();
             Drug drug = conceptService.getDrugByUuid(bahmniDrugOrder.getProductUuid());
             drugOrder.setDrug(drug);
@@ -230,7 +230,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         return orders;
     }
 
-    private String createInstructions(BahmniDrugOrder bahmniDrugOrder, DrugOrder drugOrder) {
+    private String createInstructions(BahmniFeedDrugOrder bahmniDrugOrder, DrugOrder drugOrder) {
         return bahmniDrugOrder.getDosage() + " " + drugOrder.getDrug().getDosageForm().getDisplayString();
     }
 

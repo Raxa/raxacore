@@ -13,9 +13,11 @@
  */
 package org.bahmni.module.bahmnicore.mapper.builder;
 
-import org.openmrs.Drug;
-import org.openmrs.DrugOrder;
+import org.openmrs.*;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 public class DrugOrderBuilder {
@@ -37,8 +39,69 @@ public class DrugOrderBuilder {
         order.setId(id);
         return this;
     }
+    public DrugOrderBuilder withDrugName(String drugName) {
+        order.getDrug().setName(drugName);
+        return this;
+    }
+
+    public DrugOrderBuilder withDosingType(java.lang.Class<? extends org.openmrs.DosingInstructions> dosingType){
+        order.setDosingType(dosingType);
+        return this;
+    }
+
+    public DrugOrderBuilder withDose(Double dose){
+        order.setDose(dose);
+        return this;
+    }
+
+    public DrugOrderBuilder withDrugForm(String form){
+        Concept dosageForm = new Concept();
+        dosageForm.setFullySpecifiedName(new ConceptName(form, Locale.getDefault()));
+        order.getDrug().setDosageForm(dosageForm);
+        return this;
+    }
+
+    public DrugOrderBuilder withDosingInstructions(String dosingInstructions){
+        order.setDosingInstructions(dosingInstructions);
+        return this;
+    }
+
+    public DrugOrderBuilder withDateActivated(Date date){
+        order.setDateActivated(date);
+        return this;
+    }
+
+    public DrugOrderBuilder withScheduledDate(Date date){
+        order.setUrgency(Order.Urgency.ON_SCHEDULED_DATE);
+        order.setScheduledDate(date);
+        return this;
+    }
 
     public DrugOrder build() {
         return order;
+    }
+
+    public DrugOrderBuilder withDoseUnits(String doseUnitsString) {
+        Concept doseUnits = new Concept();
+        doseUnits.setFullySpecifiedName(new ConceptName(doseUnitsString, Locale.getDefault()));
+        order.setDoseUnits(doseUnits);
+        return this;
+    }
+
+    public DrugOrderBuilder withDuration(double duration) {
+        order.setDuration(duration);
+        return this;
+    }
+
+    public DrugOrderBuilder withDurationUnits(String unit) {
+        Concept durationUnit = new Concept();
+        durationUnit.setFullySpecifiedName(new ConceptName(unit, Locale.getDefault()));
+        order.setDurationUnits(durationUnit);
+        return this;
+    }
+
+    public DrugOrderBuilder withAutoExpireDate(Date date) {
+        order.setAutoExpireDate(date);
+        return this;
     }
 }

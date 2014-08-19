@@ -18,20 +18,20 @@ import org.apache.commons.lang3.ObjectUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BahmniDrugOrders extends ArrayList<BahmniDrugOrder> {
+public class BahmniFeedDrugOrders extends ArrayList<BahmniFeedDrugOrder> {
 
-    public BahmniDrugOrders(List<BahmniDrugOrder> bahmniDrugOrders) {
+    public BahmniFeedDrugOrders(List<BahmniFeedDrugOrder> bahmniDrugOrders) {
         super(bahmniDrugOrders);
     }
 
-    public BahmniDrugOrders() {
+    public BahmniFeedDrugOrders() {
         super();
     }
 
-    public BahmniDrugOrders getUniqueOrders() {
-        BahmniDrugOrders uniqueDrugOrders = new BahmniDrugOrders();
-        for (BahmniDrugOrder drugOrder: this) {
-            BahmniDrugOrder existingDrugOrder = uniqueDrugOrders.findOrderByUuid(drugOrder.getProductUuid());
+    public BahmniFeedDrugOrders getUniqueOrders() {
+        BahmniFeedDrugOrders uniqueDrugOrders = new BahmniFeedDrugOrders();
+        for (BahmniFeedDrugOrder drugOrder: this) {
+            BahmniFeedDrugOrder existingDrugOrder = uniqueDrugOrders.findOrderByUuid(drugOrder.getProductUuid());
             if(existingDrugOrder == null) {
                 uniqueDrugOrders.add(drugOrder);
             } else {
@@ -46,8 +46,8 @@ public class BahmniDrugOrders extends ArrayList<BahmniDrugOrder> {
         return uniqueDrugOrders;
     }
 
-    public BahmniDrugOrder findOrderByUuid(String productUuid) {
-        for (BahmniDrugOrder bahmniDrugOrder: this) {
+    public BahmniFeedDrugOrder findOrderByUuid(String productUuid) {
+        for (BahmniFeedDrugOrder bahmniDrugOrder: this) {
             if(ObjectUtils.equals(bahmniDrugOrder.getProductUuid(), productUuid)) {
                 return bahmniDrugOrder;
             }

@@ -1,6 +1,6 @@
 package org.bahmni.module.openerpatomfeedclient.api.domain;
 
-import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
+import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrder;
 import org.bahmni.module.openerpatomfeedclient.api.util.CustomJsonDateDeserializer;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 
@@ -11,7 +11,7 @@ public class SaleOrder {
     private String customerId;
     private String externalId;
     private int id;
-    private List<BahmniDrugOrder> saleOrderItems;
+    private List<BahmniFeedDrugOrder> saleOrderItems;
     private Date orderDate;
 
     public String getCustomerId() {
@@ -47,11 +47,11 @@ public class SaleOrder {
         this.orderDate = orderDate;
     }
 
-    public List<BahmniDrugOrder> getSaleOrderItems() {
+    public List<BahmniFeedDrugOrder> getSaleOrderItems() {
         return saleOrderItems;
     }
 
-    public void setSaleOrderItems(List<BahmniDrugOrder> saleOrderItems) {
+    public void setSaleOrderItems(List<BahmniFeedDrugOrder> saleOrderItems) {
         this.saleOrderItems = saleOrderItems;
     }
 }

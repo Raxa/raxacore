@@ -13,16 +13,16 @@
  */
 package org.bahmni.module.bahmnicore.mapper.builder;
 
-import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
+import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrder;
 
 import java.util.UUID;
 
 public class BahmniDrugOrderBuilder {
 
-    private final BahmniDrugOrder bahmniDrugOrder;
+    private final BahmniFeedDrugOrder bahmniDrugOrder;
 
     public BahmniDrugOrderBuilder() {
-        bahmniDrugOrder = new BahmniDrugOrder();
+        bahmniDrugOrder = new BahmniFeedDrugOrder();
         bahmniDrugOrder.setDosage(2.5);
         bahmniDrugOrder.setProductUuid(UUID.randomUUID().toString());
         bahmniDrugOrder.setQuantity(3.0);
@@ -34,7 +34,7 @@ public class BahmniDrugOrderBuilder {
         return this;
     }
 
-    public BahmniDrugOrder build() {
+    public BahmniFeedDrugOrder build() {
         return bahmniDrugOrder;
     }
 

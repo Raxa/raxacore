@@ -1,11 +1,7 @@
 package org.bahmni.module.openerpatomfeedclient.api.worker;
 
-import liquibase.util.ObjectUtil;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
-import org.bahmni.module.bahmnicore.model.BahmniDrugOrder;
-import org.bahmni.module.bahmnicore.model.BahmniDrugOrders;
+import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrders;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.openerpatomfeedclient.api.OpenERPAtomFeedProperties;
 import org.bahmni.module.openerpatomfeedclient.api.domain.SaleOrder;
@@ -13,9 +9,6 @@ import org.bahmni.module.openerpatomfeedclient.api.exception.OpenERPFeedExceptio
 import org.bahmni.module.openerpatomfeedclient.api.util.ObjectMapperRepository;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SaleOrderFeedEventWorker implements EventWorker{
     private static Logger logger = Logger.getLogger(SaleOrderFeedEventWorker.class);
@@ -34,7 +27,7 @@ public class SaleOrderFeedEventWorker implements EventWorker{
         try {
             SaleOrder saleOrder = ObjectMapperRepository.objectMapper.readValue(saleOrderContent, SaleOrder.class);
             if(saleOrder.getExternalId() == null || saleOrder.getExternalId().trim().length() == 0) {
-                BahmniDrugOrders uniqueOrders = new BahmniDrugOrders(saleOrder.getSaleOrderItems()).getUniqueOrders();
+                BahmniFeedDrugOrders uniqueOrders = new BahmniFeedDrugOrders(saleOrder.getSaleOrderItems()).getUniqueOrders();
                 bahmniDrugOrderService.add(saleOrder.getCustomerId(), saleOrder.getOrderDate(), uniqueOrders, properties.getSystemUserName());
             }
         } catch (Exception e) {
