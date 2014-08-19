@@ -5,7 +5,7 @@ import org.bahmni.module.admin.csv.patientmatchingalgorithm.PatientMatchingAlgor
 import org.openmrs.Patient;
 
 
-public class IdAndNameMatch implements PatientMatchingAlgorithm{
+public class IdAndNameMatch extends PatientMatchingAlgorithm{
     @Override
     Patient run(List<Patient> patientList, List<KeyValue> patientAttributes) {
         String patientNameToMatch = getPatientGivenName(patientAttributes)

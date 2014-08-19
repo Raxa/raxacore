@@ -5,7 +5,7 @@ import org.openmrs.Patient;
 
 import java.util.List;
 
-public class BahmniPatientMatchingAlgorithm implements PatientMatchingAlgorithm {
+public class BahmniPatientMatchingAlgorithm extends PatientMatchingAlgorithm {
     @Override
     public Patient run(List<Patient> patientList, List<KeyValue> patientAttributes) {
         if (patientList.size() > 0)

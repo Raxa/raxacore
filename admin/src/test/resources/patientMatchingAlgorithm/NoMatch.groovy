@@ -4,7 +4,7 @@ import org.bahmni.module.admin.csv.patientmatchingalgorithm.PatientMatchingAlgor
 import org.openmrs.Patient;
 
 
-public class NoMatch implements PatientMatchingAlgorithm{
+public class NoMatch extends PatientMatchingAlgorithm{
 
 
     @Override

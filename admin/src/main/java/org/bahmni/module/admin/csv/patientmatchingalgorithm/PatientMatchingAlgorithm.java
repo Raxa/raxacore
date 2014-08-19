@@ -6,6 +6,15 @@ import org.openmrs.Patient;
 
 import java.util.List;
 
-public interface PatientMatchingAlgorithm {
-    public Patient run(List<Patient> patientList, List<KeyValue> patientAttributes) throws CannotMatchPatientException;
+public abstract class PatientMatchingAlgorithm {
+    public String valueFor(String keyToSearch, List<KeyValue> patientAttributes) {
+        for (KeyValue patientAttributeKeyValue : patientAttributes) {
+            if (patientAttributeKeyValue.getKey().equalsIgnoreCase(keyToSearch)) {
+                return patientAttributeKeyValue.getValue();
+            }
+        }
+        return null;
+    }
+
+    public abstract Patient run(List<Patient> patientList, List<KeyValue> patientAttributes) throws CannotMatchPatientException;
 }

@@ -265,7 +265,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
 
         RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
         assertNotNull(persistenceResult.getErrorMessage());
-        assertEquals("Patient not found. Patient Id : 'GAN200001'", persistenceResult.getErrorMessage());
+        assertEquals("No matching patients found with ID:'GAN200001'", persistenceResult.getErrorMessage());
     }
 
     @Test

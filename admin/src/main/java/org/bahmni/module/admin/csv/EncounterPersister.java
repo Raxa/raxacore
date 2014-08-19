@@ -94,9 +94,14 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
             Context.openSession();
             Context.setUserContext(userContext);
 
-            Patient patient = matchPatients(patientService.get(encounterRow.patientIdentifier), encounterRow.patientAttributes);
+            List<Patient> matchingPatients = patientService.get(encounterRow.patientIdentifier);
+            if (matchingPatients == null || matchingPatients.isEmpty()) {
+                return noMatchingPatients(encounterRow);
+            }
+
+            Patient patient = matchPatients(matchingPatients, encounterRow.patientAttributes);
             if (patient == null) {
-                return new RowResult<>(encounterRow, "Patient not found. Patient Id : '" + encounterRow.patientIdentifier + "'");
+                return noMatchingPatients(encounterRow);
             }
 
             VisitMatcher visitMatcher = new VisitMatcher(visitService);
@@ -118,6 +123,10 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
             Context.flushSession();
             Context.closeSession();
         }
+    }
+
+    private RowResult<EncounterRow> noMatchingPatients(EncounterRow encounterRow) {
+        return new RowResult<>(encounterRow, "No matching patients found with ID:'" + encounterRow.patientIdentifier + "'");
     }
 
     private String messageForInvalidEncounterDate(EncounterRow encounterRow) {
