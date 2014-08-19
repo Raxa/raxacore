@@ -36,27 +36,22 @@ import java.util.List;
 
 @Component
 public class EncounterPersister implements EntityPersister<EncounterRow> {
-    private static final Logger log = Logger.getLogger(EncounterPersister.class);
-    public static final String PATIENT_MATCHING_ALGORITHM_DIRECTORY = "/patientMatchingAlgorithm/";
-
     @Autowired
     private BahmniPatientService patientService;
-
     @Autowired
     private BahmniEncounterTransactionService bahmniEncounterTransactionService;
-
     @Autowired
     private ConceptService conceptService;
-
     @Autowired
     private EncounterService encounterService;
-
     @Autowired
     private VisitService visitService;
 
     private UserContext userContext;
-
     private String patientMatchingAlgorithmClassName;
+
+    private static final Logger log = Logger.getLogger(EncounterPersister.class);
+    public static final String PATIENT_MATCHING_ALGORITHM_DIRECTORY = "/patientMatchingAlgorithm/";
 
     public void init(UserContext userContext, String patientMatchingAlgorithmClassName) {
         this.userContext = userContext;
@@ -107,7 +102,6 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
             VisitMatcher visitMatcher = new VisitMatcher(visitService);
             ObservationImportService observationService = new ObservationImportService(conceptService);
             DiagnosisImportService diagnosisService = new DiagnosisImportService(conceptService);
-
             BahmniEncounterTransactionImportService encounterTransactionImportService =
                     new BahmniEncounterTransactionImportService(encounterService, visitMatcher, observationService, diagnosisService);
             BahmniEncounterTransaction bahmniEncounterTransaction = encounterTransactionImportService.getBahmniEncounterTransaction(encounterRow, patient);
@@ -169,10 +163,8 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
 
         Class clazz = new GroovyClassLoader().parseClass(new File(getAlgorithmClassPath()));
         PatientMatchingAlgorithm patientMatchingAlgorithm = (PatientMatchingAlgorithm) clazz.newInstance();
-
         log.debug("PatientMatching : Using Algorithm in " + patientMatchingAlgorithm.getClass().getName());
-        Patient patient = patientMatchingAlgorithm.run(matchingPatients, patientAttributes);
-        return patient;
+        return patientMatchingAlgorithm.run(matchingPatients, patientAttributes);
     }
 
     private String getAlgorithmClassPath() {

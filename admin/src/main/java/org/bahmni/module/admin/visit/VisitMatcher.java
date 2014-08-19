@@ -21,8 +21,7 @@ public class VisitMatcher {
                 getNextDate(encounterDate), encounterDate, null, null, true, false);
 
         if (matchingVisits.size() > 0) {
-            Visit matchingVisit = matchingVisits.get(0);
-            return matchingVisit;
+            return matchingVisits.get(0);
         } else {
             Visit newVisit = new Visit();
             newVisit.setPatient(patient);

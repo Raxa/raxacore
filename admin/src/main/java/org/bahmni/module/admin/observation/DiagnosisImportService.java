@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DiagnosisImportService {
-    public static final String BAHMNI_DIAGNOSIS_CONCEPT_NAME = EmrApiConstants.CONCEPT_CODE_CODED_DIAGNOSIS;
     private HashMap<String, EncounterTransaction.Concept> cachedConcepts = new HashMap<>();
 
     private ConceptService conceptService;
@@ -47,7 +46,7 @@ public class DiagnosisImportService {
     private List<KeyValue> getKeyValueForDiagnosis(List<String> diagnoses) {
         List<KeyValue> diagnosisKeyValues = new ArrayList<>();
         for (String diagnosis : diagnoses) {
-            diagnosisKeyValues.add(new KeyValue(BAHMNI_DIAGNOSIS_CONCEPT_NAME, diagnosis));
+            diagnosisKeyValues.add(new KeyValue(EmrApiConstants.CONCEPT_CODE_CODED_DIAGNOSIS, diagnosis));
         }
         return diagnosisKeyValues;
     }
@@ -65,7 +64,7 @@ public class DiagnosisImportService {
     }
 
     private boolean shouldIgnoreDiagnosis(List<KeyValue> matchingDiagnosisKeyValue, String diagnosis) {
-        return matchingDiagnosisKeyValue.contains(new KeyValue(BAHMNI_DIAGNOSIS_CONCEPT_NAME, diagnosis));
+        return matchingDiagnosisKeyValue.contains(new KeyValue(EmrApiConstants.CONCEPT_CODE_CODED_DIAGNOSIS, diagnosis));
     }
 
     private EncounterTransaction.Concept getDiagnosisConcept(String diagnosis) {

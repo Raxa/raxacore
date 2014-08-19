@@ -6,7 +6,6 @@ import org.bahmni.fileimport.dao.JDBCConnectionProvider;
 import org.bahmni.module.admin.csv.EncounterPersister;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
 import org.hibernate.engine.SessionImplementor;
 import org.hibernate.impl.SessionImpl;
 import org.openmrs.api.AdministrationService;
@@ -54,24 +53,24 @@ public class AdminImportController extends BaseRestController {
     @ResponseBody
     public boolean upload(@RequestParam(value = "file") MultipartFile file, @RequestParam(value="patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
         try {
+            File persistedUploadedFile = writeToLocalFile(file);
+
+            encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm);
             String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
-            byte[] fileBytes = file.getBytes();
-            File persistedUploadedFile = writeToLocalFile(fileBytes, uploadedOriginalFileName);
+            String username = Context.getUserContext().getAuthenticatedUser().getUsername();
 
-            UserContext userContext = Context.getUserContext();
-            encounterPersister.init(userContext, patientMatchingAlgorithm);
-
-            FileImporter<EncounterRow> csvPatientFileImporter = new FileImporter<>();
-            return csvPatientFileImporter.importCSV(uploadedOriginalFileName, persistedUploadedFile,
-                    encounterPersister, EncounterRow.class, new MRSConnectionProvider(), userContext.getAuthenticatedUser().getUsername());
+            return new FileImporter<EncounterRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
+                    encounterPersister, EncounterRow.class, new MRSConnectionProvider(), username);
         } catch (Exception e) {
             logger.error("Could not upload file", e);
             return false;
         }
     }
 
-    private File writeToLocalFile(byte[] fileBytes, String uploadedFileName) {
-        File uploadedFile = getFile(uploadedFileName);
+    private File writeToLocalFile(MultipartFile file) throws IOException {
+        String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
+        byte[] fileBytes = file.getBytes();
+        File uploadedFile = getFile(uploadedOriginalFileName);
         FileOutputStream uploadedFileStream = null;
         try {
             uploadedFileStream = new FileOutputStream(uploadedFile);

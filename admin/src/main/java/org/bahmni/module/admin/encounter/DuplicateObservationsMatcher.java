@@ -47,9 +47,9 @@ public class DuplicateObservationsMatcher {
 
     private KeyValue matchingObsRow(Obs obs, List<KeyValue> obsRows, boolean shouldMatchValue) {
         for (KeyValue obsRow : obsRows) {
-            if (doesConceptNameMatch(obs, obsRow)) {
-                if (!shouldMatchValue || doesObsValueMatch(obs, obsRow)) return obsRow;
-            }
+            if (doesConceptNameMatch(obs, obsRow) &&
+                    (!shouldMatchValue || doesObsValueMatch(obs, obsRow)))
+                return obsRow;
         }
         return null;
     }
