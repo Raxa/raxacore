@@ -22,7 +22,6 @@ public class VisitIdentificationHelper {
         List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, nextDate, orderDate, null, null, true, false);
         if (visits != null && !visits.isEmpty()) {
             Visit matchingVisit = getVisit(orderDate, visits);
-
             return stretchVisits(orderDate, matchingVisit);
         }
         return createNewVisit(patient, orderDate, visitType);
@@ -32,7 +31,7 @@ public class VisitIdentificationHelper {
         if (matchingVisit.getStartDatetime().after(orderDate)) {
             matchingVisit.setStartDatetime(orderDate);
         }
-        if (matchingVisit.getStopDatetime().before(orderDate)) {
+        if (matchingVisit.getStopDatetime() != null && matchingVisit.getStopDatetime().before(orderDate)) {
             matchingVisit.setStopDatetime(orderDate);
         }
         return matchingVisit;
