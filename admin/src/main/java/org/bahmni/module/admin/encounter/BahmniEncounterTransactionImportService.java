@@ -3,7 +3,7 @@ package org.bahmni.module.admin.encounter;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.observation.DiagnosisImportService;
 import org.bahmni.module.admin.observation.ObservationImportService;
-import org.bahmni.module.admin.visit.VisitMatcher;
+import org.bahmni.module.bahmnicore.util.VisitIdentificationHelper;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -21,19 +21,19 @@ public class BahmniEncounterTransactionImportService {
     private EncounterService encounterService;
     private final ObservationImportService observationService;
     private final DiagnosisImportService diagnosisService;
-    private VisitMatcher visitMatcher;
+    private VisitIdentificationHelper visitIdentificationHelper;
 
-    public BahmniEncounterTransactionImportService(EncounterService encounterService, VisitMatcher visitMatcher,
-                                                   ObservationImportService observationService, DiagnosisImportService diagnosisService) {
+    public BahmniEncounterTransactionImportService(EncounterService encounterService,
+                                                   ObservationImportService observationService, DiagnosisImportService diagnosisService, VisitIdentificationHelper visitIdentificationHelper) {
         this.encounterService = encounterService;
-        this.visitMatcher = visitMatcher;
         this.observationService = observationService;
         this.diagnosisService = diagnosisService;
+        this.visitIdentificationHelper = visitIdentificationHelper;
     }
 
     public BahmniEncounterTransaction getBahmniEncounterTransaction(EncounterRow encounterRow, Patient patient) throws ParseException {
         EncounterType requestedEncounterType = encounterService.getEncounterType(encounterRow.encounterType);
-        Visit matchingVisit = visitMatcher.getMatchingVisit(patient, encounterRow.visitType, encounterRow.getEncounterDate());
+        Visit matchingVisit = visitIdentificationHelper.getVisitFor(patient, encounterRow.visitType, encounterRow.getEncounterDate());
         Date visitStartDatetime = matchingVisit.getStartDatetime();
 
         DuplicateObservationsMatcher duplicateObservationsMatcher = new DuplicateObservationsMatcher(matchingVisit, requestedEncounterType);

@@ -57,7 +57,7 @@ public class AccessionHelper {
         EncounterType encounterType = encounterService.getEncounterType(properties.getEncounterTypeInvestigation());
 
         Date accessionDate = openElisAccession.fetchDate();
-        Visit visit = new VisitIdentificationHelper(visitService).getVisitFor(patient, accessionDate, visitType);
+        Visit visit = new VisitIdentificationHelper(visitService).getVisitFor(patient, visitType, accessionDate);
 
         Encounter encounter = newEncounterInstance(visit, patient, labSystemProvider, encounterType,  accessionDate);
         encounter.setUuid(openElisAccession.getAccessionUuid());

@@ -1,17 +1,14 @@
 package org.bahmni.module.bahmnicore.util;
 
-
 import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
+import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class VisitIdentificationHelper {
     private VisitService visitService;
@@ -20,30 +17,51 @@ public class VisitIdentificationHelper {
         this.visitService = visitService;
     }
 
-    public Visit getVisitFor(Patient patient, Date orderDate, String visitType) {
-//        Visit applicableVisit = getVisitForPatientWithinDates(patient, orderDate);
-//        if (applicableVisit != null)
-//            return applicableVisit;
-        List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, getNextDate(orderDate), orderDate, null, null, true, false);
+    public Visit getVisitFor(Patient patient, String visitType, Date orderDate) {
+        Date nextDate = getNextDate(orderDate);
+        List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, nextDate, orderDate, null, null, true, false);
         if (visits != null && !visits.isEmpty()) {
-            Visit visit = visits.get(0);
-            if (visit.getStartDatetime().after(orderDate)) {
-                visit.setStartDatetime(orderDate);
+            Visit matchingVisit = getVisit(orderDate, visits);
+
+            if (matchingVisit.getStartDatetime().after(orderDate)) {
+                matchingVisit.setStartDatetime(orderDate);
             }
-            return visit;
+            return matchingVisit;
         }
-        return createNewLabVisit(patient, orderDate, visitType);
+        return createNewVisit(patient, orderDate, visitType);
     }
 
-    private Visit createNewLabVisit(Patient patient, Date date, String visitType) {
+    private Visit getVisit(Date orderDate, List<Visit> visits) {
+        if (visits.size() > 1) {
+            return getMatchingVisit(orderDate, visits);
+        } else {
+            return visits.get(0);
+        }
+    }
+
+    private Visit getMatchingVisit(Date orderDate, List<Visit> visits) {
+        for (Visit visit : visits) {
+            if (visit.getStartDatetime().before(orderDate) && visit.getStopDatetime().after(orderDate))
+                return visit;
+        }
+        return null;
+    }
+
+    private Visit createNewVisit(Patient patient, Date date, String visitType) {
         Visit visit = new Visit();
         visit.setPatient(patient);
+        visit.setVisitType(getVisitTypeByName(visitType));
         visit.setStartDatetime(date);
-        if(!DateUtils.isSameDay(date, new Date())) {
+        if (!DateUtils.isSameDay(date, new Date())) {
             visit.setStopDatetime(new DateTime(date).toDateMidnight().toDateTime().plusDays(1).minusSeconds(1).toDate());
         }
-        visit.setVisitType(getVisitTypeByName(visitType));
-        return visit;
+        visit.setEncounters(new HashSet<Encounter>());
+        return visitService.saveVisit(visit);
+    }
+
+    private VisitType getVisitTypeByName(String visitTypeName) {
+        List<VisitType> visitTypes = visitService.getVisitTypes(visitTypeName);
+        return visitTypes.isEmpty() ? null : visitTypes.get(0);
     }
 
     private static Date getNextDate(Date date) {
@@ -56,10 +74,4 @@ public class VisitIdentificationHelper {
         cal.add(Calendar.DAY_OF_YEAR, 1);
         return cal.getTime();
     }
-
-    private VisitType getVisitTypeByName(String visitTypeName) {
-        List<VisitType> visitTypes = visitService.getVisitTypes(visitTypeName);
-        return visitTypes.isEmpty() ? null : visitTypes.get(0);
-    }
-
 }

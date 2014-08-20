@@ -13,8 +13,8 @@ import org.bahmni.module.admin.csv.patientmatchingalgorithm.exception.CannotMatc
 import org.bahmni.module.admin.encounter.BahmniEncounterTransactionImportService;
 import org.bahmni.module.admin.observation.DiagnosisImportService;
 import org.bahmni.module.admin.observation.ObservationImportService;
-import org.bahmni.module.admin.visit.VisitMatcher;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
+import org.bahmni.module.bahmnicore.util.VisitIdentificationHelper;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
 import org.openmrs.VisitType;
@@ -99,11 +99,12 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
                 return noMatchingPatients(encounterRow);
             }
 
-            VisitMatcher visitMatcher = new VisitMatcher(visitService);
             ObservationImportService observationService = new ObservationImportService(conceptService);
             DiagnosisImportService diagnosisService = new DiagnosisImportService(conceptService);
+            VisitIdentificationHelper visitIdentificationHelper = new VisitIdentificationHelper(visitService);
+
             BahmniEncounterTransactionImportService encounterTransactionImportService =
-                    new BahmniEncounterTransactionImportService(encounterService, visitMatcher, observationService, diagnosisService);
+                    new BahmniEncounterTransactionImportService(encounterService, observationService, diagnosisService, visitIdentificationHelper);
             BahmniEncounterTransaction bahmniEncounterTransaction = encounterTransactionImportService.getBahmniEncounterTransaction(encounterRow, patient);
 
             bahmniEncounterTransactionService.save(bahmniEncounterTransaction);

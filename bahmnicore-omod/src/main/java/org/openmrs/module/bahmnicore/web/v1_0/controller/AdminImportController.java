@@ -10,7 +10,6 @@ import org.hibernate.engine.SessionImplementor;
 import org.hibernate.impl.SessionImpl;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.context.UserContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +50,7 @@ public class AdminImportController extends BaseRestController {
 
     @RequestMapping(value = baseUrl + "/encounter", method = RequestMethod.POST)
     @ResponseBody
-    public boolean upload(@RequestParam(value = "file") MultipartFile file, @RequestParam(value="patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
+    public boolean upload(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
         try {
             File persistedUploadedFile = writeToLocalFile(file);
 
@@ -59,8 +58,9 @@ public class AdminImportController extends BaseRestController {
             String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
             String username = Context.getUserContext().getAuthenticatedUser().getUsername();
 
+            boolean skipValidation = true;
             return new FileImporter<EncounterRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
-                    encounterPersister, EncounterRow.class, new MRSConnectionProvider(), username);
+                    encounterPersister, EncounterRow.class, new MRSConnectionProvider(), username, skipValidation);
         } catch (Exception e) {
             logger.error("Could not upload file", e);
             return false;
