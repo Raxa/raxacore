@@ -23,12 +23,19 @@ public class VisitIdentificationHelper {
         if (visits != null && !visits.isEmpty()) {
             Visit matchingVisit = getVisit(orderDate, visits);
 
-            if (matchingVisit.getStartDatetime().after(orderDate)) {
-                matchingVisit.setStartDatetime(orderDate);
-            }
-            return matchingVisit;
+            return stretchVisits(orderDate, matchingVisit);
         }
         return createNewVisit(patient, orderDate, visitType);
+    }
+
+    private Visit stretchVisits(Date orderDate, Visit matchingVisit) {
+        if (matchingVisit.getStartDatetime().after(orderDate)) {
+            matchingVisit.setStartDatetime(orderDate);
+        }
+        if (matchingVisit.getStopDatetime().before(orderDate)) {
+            matchingVisit.setStopDatetime(orderDate);
+        }
+        return matchingVisit;
     }
 
     private Visit getVisit(Date orderDate, List<Visit> visits) {
