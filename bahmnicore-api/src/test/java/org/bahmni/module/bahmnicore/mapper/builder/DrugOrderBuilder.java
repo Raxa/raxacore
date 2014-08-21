@@ -104,4 +104,25 @@ public class DrugOrderBuilder {
         order.setAutoExpireDate(date);
         return this;
     }
+
+    public DrugOrderBuilder withFrequency(String frequency) {
+        final Concept frequencyConcept = new Concept();
+        frequencyConcept.setFullySpecifiedName(new ConceptName(frequency, Locale.getDefault()));
+        order.setFrequency(new OrderFrequency() {{setConcept(frequencyConcept);}});
+        return this;
+    }
+
+    public DrugOrderBuilder withRoute(String route) {
+        final Concept routeConcept = new Concept();
+        routeConcept.setFullySpecifiedName(new ConceptName(route, Locale.getDefault()));
+        order.setRoute(routeConcept);
+        return this;
+    }
+
+
+    public DrugOrderBuilder withVisit(Visit visit) {
+        order.setEncounter(visit.getEncounters().iterator().next());
+        order.getEncounter().setVisit(visit);
+        return this;
+    }
 }

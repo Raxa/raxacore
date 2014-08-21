@@ -1,10 +1,12 @@
 package org.bahmni.module.bahmnicore.mapper.builder;
 
+import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Visit;
 
 import java.util.Date;
+import java.util.HashSet;
 
 public class VisitBuilder {
 
@@ -31,5 +33,12 @@ public class VisitBuilder {
 
     public Visit build() {
         return visit;
+    }
+
+    public VisitBuilder withEncounter(Encounter encounter) {
+        HashSet<Encounter> encounters = new HashSet<>();
+        encounters.add(encounter);
+        visit.setEncounters(encounters);
+        return this;
     }
 }
