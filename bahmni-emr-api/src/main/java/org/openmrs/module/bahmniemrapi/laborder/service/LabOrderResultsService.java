@@ -26,6 +26,7 @@ public class LabOrderResultsService {
     public static final String LAB_MAXNORMAL = "LAB_MAXNORMAL";
     public static final String LAB_NOTES = "LAB_NOTES";
     private static final String REFERRED_OUT = "REFERRED_OUT";
+    public static final String LAB_REPORT = "LAB_REPORT";
 
     @Autowired
     private EncounterTransactionMapper encounterTransactionMapper;
@@ -92,7 +93,7 @@ public class LabOrderResultsService {
             } else {
                 EncounterTransaction.Concept orderConcept = testOrder.getConcept();
                 Encounter orderEncounter = encounterTestOrderMap.get(testOrder.getUuid());
-                labOrderResults.add(new LabOrderResult(orderEncounter.getUuid(), orderEncounter.getEncounterDatetime(), orderConcept.getName(), orderConcept.getUnits(), null, null, null, null, false));
+                labOrderResults.add(new LabOrderResult(orderEncounter.getUuid(), orderEncounter.getEncounterDatetime(), orderConcept.getName(), orderConcept.getUnits(), null, null, null, null, false, null));
             }
         }
         return new LabOrderResults(labOrderResults);
@@ -122,6 +123,7 @@ public class LabOrderResultsService {
         Encounter orderEncounter = encounterTestOrderMap.get(observation.getOrderUuid());
         Object resultValue = getValue(observation, observation.getConcept().getName());
         String notes = (String) getValue(observation, LAB_NOTES);
+        String uploadedFileName = (String) getValue(observation, LAB_REPORT);
         labOrderResult.setAccessionUuid(orderEncounter.getUuid());
         labOrderResult.setAccessionDateTime(orderEncounter.getEncounterDatetime());
         labOrderResult.setProvider(getProviderName(observation, encounterObservationMap));
@@ -135,6 +137,7 @@ public class LabOrderResultsService {
         labOrderResult.setNotes(notes != null && notes.trim().length() > 1 ? notes.trim() : null);
         labOrderResult.setReferredOut(getLeafObservation(observation, REFERRED_OUT) != null);
         labOrderResult.setTestUnitOfMeasurement(observation.getConcept().getUnits());
+        labOrderResult.setUploadedFileName(uploadedFileName != null && uploadedFileName.trim().length() > 0 ? uploadedFileName.trim() : null);
         return labOrderResult;
     }
 
@@ -154,7 +157,7 @@ public class LabOrderResultsService {
             if(!childObs.getGroupMembers().isEmpty()) {
                 return getLeafObservation(childObs, conceptName);
             }
-            if(childObs.getConcept().getName().equals(conceptName)) {
+            if(childObs.getConcept().getName().equalsIgnoreCase(conceptName)) {
                 return childObs;
             }
         }

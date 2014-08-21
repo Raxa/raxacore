@@ -21,6 +21,7 @@ public class ResultObsHelper {
     public static final String VOID_REASON = "updated since by lab technician";
     private static final String RESULT_TYPE_NUMERIC = "N";
     private static final String REFERRED_OUT = "REFERRED_OUT";
+    public static final String LAB_REPORT = "LAB_REPORT";
 
     private final ConceptService conceptService;
     private Concept labConcepts = null;
@@ -74,6 +75,9 @@ public class ResultObsHelper {
         if (StringUtils.isNotBlank(notes)) {
             labObs.addGroupMember(newChildObs(order, obsDate, LAB_NOTES, notes));
         }
+        if(StringUtils.isNotBlank(testDetail.getUploadedFileName())) {
+            labObs.addGroupMember(newChildObs(order, obsDate, LAB_REPORT, testDetail.getUploadedFileName()));
+        }
         return topLevelObs;
     }
 
@@ -98,7 +102,7 @@ public class ResultObsHelper {
         }
         final List<Concept> members = this.labConcepts.getSetMembers();
         for (Concept concept : members) {
-            if (concept != null && concept.getName().getName().equals(name)) {
+            if (concept != null && concept.getName().getName().equalsIgnoreCase(name)) {
                 return concept;
             }
         }

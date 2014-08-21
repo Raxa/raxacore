@@ -156,6 +156,13 @@
     <concept_set concept_set_id="206" concept_id="108" concept_set="101" creator="1" sort_weight="100"
                  date_created="2005-01-01 00:00:00.0"/>
 
+    <concept concept_id="109" retired="false" datatype_id="2" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="a5909c8e-332e-464c-a0d7-ca36828672d6"/>
+    <concept_name concept_name_id="10" concept_id="109" name="LAB_REPORT" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="18363cfe-a24e-40bc-82b9-160f90ebeabf" locale_preferred="0"/>
+    <concept_set concept_set_id="207" concept_id="109" concept_set="101" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
 
     <!--blood panel-->
     <concept concept_id="302" retired="false" datatype_id="1" class_id="1" is_set="true" creator="1"

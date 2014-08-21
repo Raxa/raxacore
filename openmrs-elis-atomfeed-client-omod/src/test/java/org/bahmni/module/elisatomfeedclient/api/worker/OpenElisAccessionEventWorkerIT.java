@@ -68,6 +68,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withAbnormal("false")
                 .withDateTime("2014-01-30T11:50:18+0530")
                 .withResultType("N")
+                .withUploadedFileName("8834dedb-dc15-4afe-a491-ea3ca4150bce_sample.jpeg")
                 .build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
         openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
@@ -92,7 +93,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
         final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(4, resultMembers.size());
+        assertEquals(5, resultMembers.size());
     }
 
     @Test
@@ -190,6 +191,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withAbnormal("false")
                 .withDateTime("2014-01-30T11:50:18+0530")
                 .withResultType("N")
+                .withUploadedFileName("8834dedb-dc15-4afe-a491-ea3ca4150bce_sample.jpeg")
                 .build();
 
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
@@ -223,11 +225,74 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
         final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(4, resultMembers.size());
+        assertEquals(5, resultMembers.size());
 
         Obs testResultObs = getObsByConceptUuid(testLevelObs, haemoglobinConceptUuid);
         assertNotNull(testResultObs);
-        assertEquals(4, testResultObs.getGroupMembers().size());
+        assertEquals(5, testResultObs.getGroupMembers().size());
+
+    }
+
+    @Test
+    public void shouldCreateResultEncounterAndObsForPanelWithOnetestWithOnlyUploadedFileName() throws Exception {
+        executeDataSet("labResult.xml");
+
+        String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
+        String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
+        final String documentConceptUuid = "a5909c8e-332e-464c-a0d7-ca36828672d6";
+
+        OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
+                .withPanelUuid(panelConceptUuid)
+                .withTestUuid(haemoglobinConceptUuid)
+                .withProviderUuid("331c6bf8-7846-11e3-a96a-09xD371c1b75")
+                .withMinNormal("10")
+                .withMaxNormal("20.2")
+                .withAbnormal("false")
+                .withDateTime("2014-01-30T11:50:18+0530")
+                .withResultType("N")
+                .withUploadedFileName("8834dedb-dc15-4afe-a491-ea3ca4150bce_sample.jpeg")
+                .build();
+
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
+        openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
+
+        when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
+
+        openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
+
+        Visit visit = Context.getVisitService().getVisit(2);
+        Encounter labEncounter = null;
+        Set<Encounter> encounters = visit.getEncounters();
+        for (Encounter encounter : encounters) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+                labEncounter = encounter;
+            }
+        }
+
+        assertEquals(2, encounters.size());
+        assertNotNull(labEncounter);
+
+        Set<Obs> obs = labEncounter.getAllObs();
+        assertEquals(1, obs.size());
+        Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
+        assertNotNull(panelResultObs);
+        Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
+        assertEquals(1, panel1ResultMembers.size());
+
+        Set<Obs> topLevelObs = panel1ResultMembers;
+        assertEquals(1, topLevelObs.size());
+        final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
+        assertEquals(1, testLevelObs.size());
+        final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
+        assertEquals(1, resultMembers.size());
+
+        Obs testResultObs = getObsByConceptUuid(testLevelObs, haemoglobinConceptUuid);
+        assertNotNull(testResultObs);
+        assertEquals(1, testResultObs.getGroupMembers().size());
+
+        Obs documentUploadedObs = getObsByConceptUuid(resultMembers, documentConceptUuid);
+        assertNotNull(documentUploadedObs);
+        assertEquals("8834dedb-dc15-4afe-a491-ea3ca4150bce_sample.jpeg", documentUploadedObs.getValueText());
 
     }
 
@@ -249,6 +314,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withAbnormal("false")
                 .withDateTime("2014-01-30T11:50:18+0530")
                 .withResultType("N")
+                .withUploadedFileName("8834dedb-dc15-4afe-a491-ea3ca4150bce_sample.jpeg")
                 .build();
 
         String esrConceptUuid = "a04c36be-3f90-11e3-968c-0800271c1b75";
@@ -294,7 +360,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         Set<Obs> testLevelObs = haemoglobinTestResultObs.getGroupMembers();
         assertEquals(1, testLevelObs.size());
         Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(4, resultMembers.size());
+        assertEquals(5, resultMembers.size());
 
         Obs esrTestResultObs = getObsByConceptUuid(panel1ResultMembers, esrConceptUuid);
         assertNotNull(esrTestResultObs);
@@ -376,11 +442,12 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
     }
 
     @Test
-    public void shouldUpdateValueForAlreadyExistingTestResult() throws Exception {
+    public void shouldUpdateValueAndUploadedFileNameForAlreadyExistingTestResult() throws Exception {
         executeDataSet("labResult.xml");
 
         final String nitroUreaConceptUuid = "7923d0e0-8734-11e3-baa7-0800200c9a66";
         final String accessionUuid = "6d0af4567-707a-4629-9850-f15206e63ab0";
+        final String documentConceptUuid = "a5909c8e-332e-464c-a0d7-ca36828672d6";
 
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
                 .withTestUuid(nitroUreaConceptUuid)
@@ -391,6 +458,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withAbnormal("false")
                 .withDateTime("2014-01-30T11:50:18+0530")
                 .withResultType("N")
+                .withUploadedFileName("8834dedb-dc15-4afe-a491-ea3ca4150bce_sample.jpeg")
                 .build();
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
         openElisAccession.setAccessionUuid(accessionUuid);
@@ -409,6 +477,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withAbnormal("false")
                 .withDateTime("2014-01-30T11:55:18+0530") //date changed
                 .withResultType("N")
+                .withUploadedFileName("8834dedb-dc15-4afe-a491-ea3ca4150bce_sample1.jpeg")
                 .build();
         openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
         openElisAccession.setAccessionUuid(accessionUuid);
@@ -444,9 +513,12 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         Set<Obs> testLevelObs = nitroTestResultObs.getGroupMembers();
         assertEquals(1, testLevelObs.size());
         Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(4, resultMembers.size());
+        assertEquals(5, resultMembers.size());
         Obs resultObs = getObsByConceptUuid(resultMembers, nitroUreaConceptUuid);
         assertEquals(new Double(20.0), resultObs.getValueNumeric());
+
+        Obs uploadedFileObs = getObsByConceptUuid(resultMembers, documentConceptUuid);
+        assertEquals("8834dedb-dc15-4afe-a491-ea3ca4150bce_sample1.jpeg", uploadedFileObs.getValueText());
     }
 
     @Test

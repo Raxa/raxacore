@@ -22,11 +22,12 @@ public class LabOrderResult {
     private String provider;
     private Boolean referredOut;
     private Date resultDateTime;
+    private String uploadedFileName;
 
     public LabOrderResult() {
     }
 
-    public LabOrderResult(String accessionUuid, Date accessionDateTime, String testName, String testUnitOfMeasurement, Double minNormal, Double maxNormal, String result, Boolean abnormal, Boolean referredOut) {
+    public LabOrderResult(String accessionUuid, Date accessionDateTime, String testName, String testUnitOfMeasurement, Double minNormal, Double maxNormal, String result, Boolean abnormal, Boolean referredOut, String uploadedFileName) {
         this.accessionUuid = accessionUuid;
         this.testName = testName;
         this.testUnitOfMeasurement = testUnitOfMeasurement;
@@ -36,5 +37,6 @@ public class LabOrderResult {
         this.result = result;
         this.abnormal = abnormal;
         this.referredOut = referredOut;
+        this.uploadedFileName = uploadedFileName;
     }
 }

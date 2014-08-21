@@ -163,6 +163,15 @@
     <concept_set concept_set_id="206" concept_id="108" concept_set="101" creator="1" sort_weight="100"
                  date_created="2005-01-01 00:00:00.0"/>
 
+    <!--lab report concept-->
+    <concept concept_id="109" retired="false" datatype_id="3" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="a5909c8e-332e-464c-a0d7-ca36828672d6"/>
+    <concept_name concept_name_id="109" concept_id="109" name="LAB_REPORT" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="18363cfe-a24e-40bc-82b9-160f90ebeabf" locale_preferred="0"/>
+    <concept_set concept_set_id="206" concept_id="109" concept_set="101" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+    <!--lab report concept-->
 
     <!--blood panel-->
     <concept concept_id="302" retired="false" datatype_id="1" class_id="1" is_set="true" creator="1"
@@ -328,6 +337,8 @@
          uuid="0f929e0e-fb8a-11e3-bb80-f18addb6f9bb" creator="1" concept_id="107" voided="0" />
     <obs obs_id="19" obs_group_id="9" encounter_id="38" person_id="1" order_id="17" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-19 15:09:05.0"
          uuid="16645826-fb8a-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="20" concept_id="107" voided="0" />
+    <obs obs_id="20" obs_group_id="9" encounter_id="38" person_id="1" order_id="17" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-19 15:09:05.0"
+         uuid="0784c619-ef6a-4e81-a498-ab339894f92b" creator="1" value_text="8834dedb-dc15-4afe-a491-ea3ca4150bce_sample.jpeg" concept_id="109" voided="0" />
 
     <!-- PS for Malaria -->
     <obs obs_id="100" encounter_id="38" person_id="1" order_id="19" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-19 15:09:05.0"

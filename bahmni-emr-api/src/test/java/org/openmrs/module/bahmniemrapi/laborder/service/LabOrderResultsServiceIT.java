@@ -36,12 +36,12 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
         assertNotNull(labOrderResults);
         assertEquals(6, labOrderResults.size());
 
-        assertOrderPresent(labOrderResults, "Haemoglobin", "Blood Panel", 16, "System OpenMRS", "99.0", 200.0, 300.0, true, null, true);
-        assertOrderPresent(labOrderResults, "ESR", "Blood Panel", 16, "System OpenMRS", "10.0", null, null, false, "Some Notes", false);
-        assertOrderPresent(labOrderResults, "Urea Nitrogen", null, 16, "System OpenMRS", "20.0", null, null, null, null, false);
-        assertOrderPresent(labOrderResults, "HIV ELISA", null, 16, null, null, null, null, null, null, false);
-        assertOrderPresent(labOrderResults, "PS for Malaria", null, 16, "System OpenMRS", null, null, null, null, null, true);
-        assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, null, false);
+        assertOrderPresent(labOrderResults, "Haemoglobin", "Blood Panel", 16, "System OpenMRS", "99.0", 200.0, 300.0, true, null, true, null);
+        assertOrderPresent(labOrderResults, "ESR", "Blood Panel", 16, "System OpenMRS", "10.0", null, null, false, "Some Notes", false, null);
+        assertOrderPresent(labOrderResults, "Urea Nitrogen", null, 16, "System OpenMRS", "20.0", null, null, null, null, false, "8834dedb-dc15-4afe-a491-ea3ca4150bce_sample.jpeg");
+        assertOrderPresent(labOrderResults, "HIV ELISA", null, 16, null, null, null, null, null, null, false, null);
+        assertOrderPresent(labOrderResults, "PS for Malaria", null, 16, "System OpenMRS", null, null, null, null, null, true, null);
+        assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, null, false, null);
     }
 
     @Test
@@ -59,10 +59,10 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
         assertNotNull(labOrderResults);
         assertEquals(1, labOrderResults.size());
 
-        assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, null, false);
+        assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, null, false, null);
     }
 
-    private void assertOrderPresent(List<LabOrderResult> labOrderResults, String testName, String panelName, Integer accessionEncounterId, String provider, String value, Double minNormal, Double maxNormal, Boolean abnormal, String notes, Boolean referredOut) {
+    private void assertOrderPresent(List<LabOrderResult> labOrderResults, String testName, String panelName, Integer accessionEncounterId, String provider, String value, Double minNormal, Double maxNormal, Boolean abnormal, String notes, Boolean referredOut, String uploadedFileName) {
         Encounter accessionEncounter = Context.getEncounterService().getEncounter(accessionEncounterId);
         for (LabOrderResult labOrderResult : labOrderResults) {
             if(labOrderResult.getTestName().equals(testName) && labOrderResult.getAccessionUuid().equals(accessionEncounter.getUuid())) {
@@ -75,6 +75,7 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
                 assertEquals(notes, labOrderResult.getNotes());
                 assertEquals(referredOut, labOrderResult.getReferredOut());
                 assertEquals(provider, labOrderResult.getProvider());
+                assertEquals(uploadedFileName, labOrderResult.getUploadedFileName());
                 return;
             }
         }

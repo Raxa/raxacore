@@ -1510,4 +1510,39 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
+
+    <changeSet id="bahmni-core-201408251455" author="Rohan">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept_class where name = 'URL';
+            </sqlCheck>
+        </preConditions>
+        <comment>add concept class URL</comment>
+        <insert tableName="concept_class">
+            <column name="name" value="URL"/>
+            <column name="description" value="URL"/>
+            <column name="creator" value="1"/>
+            <column name="date_created" valueComputed="curdate()"/>
+            <column name="retired" value="0"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bahmni-core-201408251456" author="Rohan">
+        <comment>Add new concept LAB REPORT for uploaded file</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+            set @labresults_concept_id = 0;
+
+            set @answer_concept_id = 0;
+            call add_concept(@concept_id, @concept_name_short_id,
+            @concept_name_full_id,'LAB_REPORT','LAB_REPORT', 'Text', 'URL', true);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'LAB', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'REPORT', 1);
+            select @labresults_concept_id := concept_id, min(concept_id) from concept_name where name = 'LABRESULTS_CONCEPT';
+            set @set_concept_id = @concept_id;
+            call add_concept_set_members (@labresults_concept_id,@set_concept_id,1);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -64,4 +64,9 @@ public class OpenElisTestDetailBuilder {
         testDetail.setResultType(resultType);
         return this;
     }
+
+    public OpenElisTestDetailBuilder withUploadedFileName(String uploadedFileName) {
+        testDetail.setUploadedFileName(uploadedFileName);
+        return this;
+    }
 }
