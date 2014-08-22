@@ -4,7 +4,7 @@
 
     <groupId>org.bahmni.module</groupId>
     <artifactId>bahmni</artifactId>
-    <version>5.0-SNAPSHOT</version>
+    <version>5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>BahmniEMR Core</name>
 
@@ -169,7 +169,7 @@
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>bahmni-migrator</artifactId>
-                <version>5.0-SNAPSHOT</version>
+                <version>5.1-SNAPSHOT</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
