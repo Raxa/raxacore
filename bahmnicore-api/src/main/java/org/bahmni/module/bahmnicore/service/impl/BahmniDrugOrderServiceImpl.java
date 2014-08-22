@@ -216,7 +216,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             drugOrder.setDateActivated(orderDate);
             drugOrder.setAutoExpireDate(DateUtils.addDays(orderDate, bahmniDrugOrder.getNumberOfDays()));
             drugOrder.setPatient(patient);
-            drugOrder.setPrn(false);
+            drugOrder.setAsNeeded(false);
             drugOrder.setOrderType(getDrugOrderType());
             drugOrder.setOrderer(getSystemProvider());
             drugOrder.setCareSetting(orderService.getCareSettingByName("Outpatient"));
