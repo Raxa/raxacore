@@ -1,7 +1,10 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.fileimport.FileImporter;
+import org.bahmni.fileimport.ImportStatus;
+import org.bahmni.fileimport.dao.ImportStatusDao;
 import org.bahmni.fileimport.dao.JDBCConnectionProvider;
 import org.bahmni.module.admin.csv.EncounterPersister;
 import org.bahmni.module.admin.csv.models.EncounterRow;
@@ -26,8 +29,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class AdminImportController extends BaseRestController {
@@ -37,6 +42,7 @@ public class AdminImportController extends BaseRestController {
     public static final String YYYY_MM_DD_HH_MM_SS = "_yyyy-MM-dd_HH:mm:ss";
     public static final String PARENT_DIRECTORY_UPLOADED_FILES_CONFIG = "uploaded.files.directory";
     public static final String ENCOUNTER_FILES_DIRECTORY = "encounter/";
+    private static final int DEFAULT_NUMBER_OF_DAYS = 30;
 
     @Autowired
     private EncounterPersister encounterPersister;
@@ -47,6 +53,7 @@ public class AdminImportController extends BaseRestController {
     @Autowired
     @Qualifier("adminService")
     private AdministrationService administrationService;
+    private ImportStatusDao importStatusDao = new ImportStatusDao(new MRSConnectionProvider());
 
     @RequestMapping(value = baseUrl + "/encounter", method = RequestMethod.POST)
     @ResponseBody
@@ -65,6 +72,13 @@ public class AdminImportController extends BaseRestController {
             logger.error("Could not upload file", e);
             return false;
         }
+    }
+
+    @RequestMapping(value = baseUrl + "/status", method = RequestMethod.GET)
+    @ResponseBody
+    public List<ImportStatus> status(@RequestParam(required = false) Integer numberOfDays) throws SQLException {
+        numberOfDays = numberOfDays == null ? DEFAULT_NUMBER_OF_DAYS : numberOfDays;
+        return importStatusDao.getImportStatusFromDate(DateUtils.addDays(new Date(), (numberOfDays * -1)));
     }
 
     private File writeToLocalFile(MultipartFile file) throws IOException {
