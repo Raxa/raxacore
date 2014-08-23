@@ -9,6 +9,7 @@ import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest
 import org.openmrs.module.emrapi.EmrApiConstants;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -29,14 +30,10 @@ public class DiagnosisImportService {
         List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
         if (encounterRow.getDiagnoses() != null) {
             boolean shouldMatchDiagnosisValue = true;
-            List<KeyValue> matchingDiagnosisKeyValue = duplicateObservationsMatcher.matchingObservations(getKeyValueForDiagnosis(encounterRow.getDiagnoses()), shouldMatchDiagnosisValue);
+            List<KeyValue> uniqueDiagnoses = duplicateObservationsMatcher.getUniqueObsRows(getKeyValueForDiagnosis(encounterRow.getDiagnoses()), shouldMatchDiagnosisValue);
 
-            List<String> diagnoses = encounterRow.getDiagnoses();
-            for (String diagnosis : diagnoses) {
-                if (shouldIgnoreDiagnosis(matchingDiagnosisKeyValue, diagnosis)) {
-                    continue;
-                }
-                BahmniDiagnosisRequest bahmniDiagnosisRequest = createDiagnosis(visitStartDatetime, diagnosis);
+            for (KeyValue uniqueDiagnosisKeyValue : uniqueDiagnoses) {
+                BahmniDiagnosisRequest bahmniDiagnosisRequest = createDiagnosis(visitStartDatetime, uniqueDiagnosisKeyValue.getValue());
                 bahmniDiagnoses.add(bahmniDiagnosisRequest);
             }
         }
@@ -63,13 +60,12 @@ public class DiagnosisImportService {
         return bahmniDiagnosisRequest;
     }
 
-    private boolean shouldIgnoreDiagnosis(List<KeyValue> matchingDiagnosisKeyValue, String diagnosis) {
-        return matchingDiagnosisKeyValue.contains(new KeyValue(EmrApiConstants.CONCEPT_CODE_CODED_DIAGNOSIS, diagnosis));
-    }
-
     private EncounterTransaction.Concept getDiagnosisConcept(String diagnosis) {
         if (!cachedConcepts.containsKey(diagnosis)) {
             Concept diagnosisConcept = conceptService.getConceptByName(diagnosis);
+            if(diagnosisConcept == null){
+                throw new ConceptNotFoundException("Concept '"+ diagnosis +"' not found");
+            }
             cachedConcepts.put(diagnosis, getEncounterTransactionConcept(diagnosisConcept));
         }
         return cachedConcepts.get(diagnosis);

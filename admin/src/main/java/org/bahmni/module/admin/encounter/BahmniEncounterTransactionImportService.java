@@ -33,10 +33,14 @@ public class BahmniEncounterTransactionImportService {
 
     public BahmniEncounterTransaction getBahmniEncounterTransaction(EncounterRow encounterRow, Patient patient) throws ParseException {
         EncounterType requestedEncounterType = encounterService.getEncounterType(encounterRow.encounterType);
+        if (requestedEncounterType == null) {
+            throw new RuntimeException("Encounter type:'" + encounterRow.encounterType + "' not found.");
+        }
         Visit matchingVisit = visitIdentificationHelper.getVisitFor(patient, encounterRow.visitType, encounterRow.getEncounterDate());
         Date visitStartDatetime = matchingVisit.getStartDatetime();
 
-        DuplicateObservationsMatcher duplicateObservationsMatcher = new DuplicateObservationsMatcher(matchingVisit, requestedEncounterType);
+        BahmniVisit bahmniVisit = new BahmniVisit(matchingVisit);
+        DuplicateObservationsMatcher duplicateObservationsMatcher = new DuplicateObservationsMatcher(bahmniVisit, requestedEncounterType);
 
         List<EncounterTransaction.Observation> bahmniObservations = observationService.getObservations(encounterRow, visitStartDatetime, duplicateObservationsMatcher);
         List<BahmniDiagnosisRequest> bahmniDiagnosis = diagnosisService.getBahmniDiagnosis(encounterRow, visitStartDatetime, duplicateObservationsMatcher);

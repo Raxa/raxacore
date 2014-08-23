@@ -55,9 +55,14 @@ public class VisitIdentificationHelper {
     }
 
     private Visit createNewVisit(Patient patient, Date date, String visitType) {
+        VisitType visitTypeByName = getVisitTypeByName(visitType);
+        if (visitTypeByName == null) {
+            throw new RuntimeException("Visit type:'" + visitType + "' not found.");
+        }
+
         Visit visit = new Visit();
         visit.setPatient(patient);
-        visit.setVisitType(getVisitTypeByName(visitType));
+        visit.setVisitType(visitTypeByName);
         visit.setStartDatetime(date);
         if (!DateUtils.isSameDay(date, new Date())) {
             visit.setStopDatetime(new DateTime(date).toDateMidnight().toDateTime().plusDays(1).minusSeconds(1).toDate());

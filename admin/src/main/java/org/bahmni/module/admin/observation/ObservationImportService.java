@@ -6,6 +6,7 @@ import org.bahmni.module.admin.encounter.DuplicateObservationsMatcher;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -21,15 +22,12 @@ public class ObservationImportService {
     }
 
     public List<EncounterTransaction.Observation> getObservations(EncounterRow encounterRow, Date visitStartDatetime, DuplicateObservationsMatcher duplicateObservationsMatcher) throws ParseException {
+        boolean shouldMatchValue = false;
         List<EncounterTransaction.Observation> observations = new ArrayList<>();
-        if (encounterRow.obsRows != null) {
-            List<KeyValue> matchingObservations = duplicateObservationsMatcher.matchingObservations(encounterRow.obsRows);
+        if (encounterRow.hasObservations()) {
+            List<KeyValue> uniqueObsRows = duplicateObservationsMatcher.getUniqueObsRows(encounterRow.obsRows, shouldMatchValue);
 
-            List<KeyValue> obsRows = encounterRow.obsRows;
-            for (KeyValue obsRow : obsRows) {
-                if (shouldIgnoreObservation(matchingObservations, obsRow)) {
-                    continue;
-                }
+            for (KeyValue obsRow : uniqueObsRows) {
                 EncounterTransaction.Observation observation = createObservation(visitStartDatetime, obsRow);
                 observations.add(observation);
             }
@@ -46,12 +44,10 @@ public class ObservationImportService {
         return observation;
     }
 
-    private boolean shouldIgnoreObservation(List<KeyValue> matchingObservations, KeyValue anObsRow) {
-        return matchingObservations.contains(anObsRow);
-    }
-
     private EncounterTransaction.Concept getConcept(String conceptName) {
         Concept obsConcept = conceptService.getConceptByName(conceptName);
+        if(obsConcept == null)
+            throw new ConceptNotFoundException("Concept '"+ conceptName +"' not found");
         return new EncounterTransaction.Concept(obsConcept.getUuid(), obsConcept.getName().getName());
     }
 

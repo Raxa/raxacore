@@ -48,4 +48,8 @@ public class EncounterRow extends CSVEntity {
         simpleDateFormat.setLenient(false);
         return simpleDateFormat.parse(encounterDateTime);
     }
+
+    public boolean hasObservations() {
+        return obsRows != null && !obsRows.isEmpty();
+    }
 }

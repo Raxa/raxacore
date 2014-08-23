@@ -89,11 +89,10 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
             Context.openSession();
             Context.setUserContext(userContext);
 
-            List<Patient> matchingPatients = patientService.get(encounterRow.patientIdentifier);
-            if (matchingPatients == null || matchingPatients.isEmpty()) {
+            if (StringUtils.isEmpty(encounterRow.patientIdentifier)) {
                 return noMatchingPatients(encounterRow);
             }
-
+            List<Patient> matchingPatients = patientService.get(encounterRow.patientIdentifier);
             Patient patient = matchPatients(matchingPatients, encounterRow.patientAttributes);
             if (patient == null) {
                 return noMatchingPatients(encounterRow);
