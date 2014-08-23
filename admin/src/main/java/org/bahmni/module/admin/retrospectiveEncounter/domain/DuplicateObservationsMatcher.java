@@ -21,14 +21,13 @@ public class DuplicateObservationsMatcher {
     }
 
     public List<EncounterTransaction.Observation> getUniqueObservations(List<EncounterTransaction.Observation> observations) {
-        boolean shouldMatchValue = false;
         List<Obs> allObs = getObservationsForVisit();
 
         List<EncounterTransaction.Observation> uniqueObservations = new ArrayList<>();
         for (EncounterTransaction.Observation anObservation : observations) {
             String anObservationValue = (String) anObservation.getValue();
             String observationConceptName = anObservation.getConcept().getName();
-            if (isUnique(allObs, shouldMatchValue, anObservationValue, observationConceptName)) {
+            if (isUnique(allObs, anObservationValue, observationConceptName)) {
                 uniqueObservations.add(anObservation);
             }
         }
@@ -36,13 +35,12 @@ public class DuplicateObservationsMatcher {
     }
 
     public List<BahmniDiagnosisRequest> getUniqueDiagnoses(List<BahmniDiagnosisRequest> bahmniDiagnoses) {
-        boolean shouldMatchValue = true;
         List<Obs> allObs = getObservationsForVisit();
 
         List<BahmniDiagnosisRequest> uniqueDiagnoses = new ArrayList<>();
         for (BahmniDiagnosisRequest diagnosisRequest : bahmniDiagnoses) {
             String diagnosis = diagnosisRequest.getCodedAnswer().getName();
-            if (isUnique(allObs, shouldMatchValue, diagnosis, EmrApiConstants.CONCEPT_CODE_CODED_DIAGNOSIS)) {
+            if (isUnique(allObs, diagnosis, EmrApiConstants.CONCEPT_CODE_CODED_DIAGNOSIS)) {
                 uniqueDiagnoses.add(diagnosisRequest);
             }
         }
@@ -56,7 +54,8 @@ public class DuplicateObservationsMatcher {
         return visitObservations;
     }
 
-    private boolean isUnique(List<Obs> allObs, boolean shouldMatchValue, String anObservationValue, String observationConceptName) {
+    private boolean isUnique(List<Obs> allObs, String anObservationValue, String observationConceptName) {
+        boolean shouldMatchValue = true;
         for (Obs anObs : allObs) {
             if (doesConceptNameMatch(anObs, observationConceptName) &&
                     (!shouldMatchValue || doesObsValueMatch(anObs, anObservationValue)))
