@@ -1,25 +1,26 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
 import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ObsService;
+import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.BahmniEmrAPIException;
+import org.openmrs.module.bahmniemrapi.accessionnote.mapper.AccessionNotesMapper;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisHelper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
-import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
-import org.openmrs.module.bahmniemrapi.accessionnote.mapper.AccessionNotesMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTransactionObsMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTransactionDiagnosisMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTransactionObsMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
 import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.List;
 public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTransactionService {
 
     private ConceptService conceptService;
+    private VisitService visitService;
     private EncounterService encounterService;
     private EmrEncounterService emrEncounterService;
     private EncounterTransactionMapper encounterTransactionMapper;
@@ -35,8 +37,12 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     private AccessionNotesMapper accessionNotesMapper;
     private EncounterTransactionObsMapper encounterTransactionObsMapper;
 
-    public BahmniEncounterTransactionServiceImpl(ConceptService conceptService, EncounterService encounterService, EmrEncounterService emrEncounterService, EncounterTransactionMapper encounterTransactionMapper, ObsService obsService, AccessionNotesMapper accessionNotesMapper, EncounterTransactionObsMapper encounterTransactionObsMapper) {
+    public BahmniEncounterTransactionServiceImpl(ConceptService conceptService, VisitService visitService,
+                                                 EncounterService encounterService, ObsService obsService,
+                                                 EmrEncounterService emrEncounterService, EncounterTransactionMapper encounterTransactionMapper,
+                                                 EncounterTransactionObsMapper encounterTransactionObsMapper, AccessionNotesMapper accessionNotesMapper) {
         this.conceptService = conceptService;
+        this.visitService = visitService;
         this.encounterService = encounterService;
         this.emrEncounterService = emrEncounterService;
         this.encounterTransactionMapper = encounterTransactionMapper;
@@ -47,7 +53,18 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
 
     @Override
     public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction) {
+        // TODO : Mujir - map string VisitType to the uuids and set on bahmniEncounterTransaction object
+        String encounterTypeString = bahmniEncounterTransaction.getEncounterType();
+        if (bahmniEncounterTransaction.getEncounterTypeUuid() == null && StringUtils.isNotEmpty(encounterTypeString)) {
+            EncounterType encounterType = encounterService.getEncounterType(encounterTypeString);
+            if (encounterType == null) {
+                throw new RuntimeException("Encounter type:'" + encounterTypeString + "' not found.");
+            }
+            bahmniEncounterTransaction.setEncounterTypeUuid(encounterType.getUuid());
+        }
+
         new EncounterTransactionDiagnosisMapper().populateDiagnosis(bahmniEncounterTransaction);
+
         EncounterTransaction encounterTransaction = emrEncounterService.save(bahmniEncounterTransaction);
 
         //Get the saved encounter transaction from emr-api
@@ -58,7 +75,8 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         //Update the diagnosis information with Meta Data managed by Bahmni
         BahmniDiagnosisHelper bahmniDiagnosisHelper = new BahmniDiagnosisHelper(obsService, conceptService);
         for (BahmniDiagnosisRequest bahmniDiagnosis : bahmniEncounterTransaction.getBahmniDiagnoses()) {
-            EncounterTransaction.Diagnosis diagnosis = getMatchingEncounterTransactionDiagnosis(bahmniDiagnosis, updatedEncounterTransaction.getDiagnoses());
+            EncounterTransaction.Diagnosis diagnosis = getMatchingEncounterTransactionDiagnosis(bahmniDiagnosis,
+                    updatedEncounterTransaction.getDiagnoses());
             bahmniDiagnosisHelper.updateDiagnosisMetaData(bahmniDiagnosis, diagnosis, currentEncounter);
         }
         encounterService.saveEncounter(currentEncounter);

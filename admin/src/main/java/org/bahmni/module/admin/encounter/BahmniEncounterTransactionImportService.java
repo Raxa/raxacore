@@ -1,34 +1,29 @@
 package org.bahmni.module.admin.encounter;
 
 import org.bahmni.module.admin.csv.models.EncounterRow;
-import org.bahmni.module.admin.observation.DiagnosisImportService;
-import org.bahmni.module.admin.observation.ObservationImportService;
-import org.bahmni.module.bahmnicore.util.VisitIdentificationHelper;
+import org.bahmni.module.admin.observation.DiagnosisMapper;
+import org.bahmni.module.admin.observation.ObservationMapper;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
-import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 public class BahmniEncounterTransactionImportService {
 
     private EncounterService encounterService;
-    private final ObservationImportService observationService;
-    private final DiagnosisImportService diagnosisService;
-    private VisitIdentificationHelper visitIdentificationHelper;
+    private final ObservationMapper observationService;
+    private final DiagnosisMapper diagnosisService;
 
     public BahmniEncounterTransactionImportService(EncounterService encounterService,
-                                                   ObservationImportService observationService, DiagnosisImportService diagnosisService, VisitIdentificationHelper visitIdentificationHelper) {
+                                                   ObservationMapper observationService, DiagnosisMapper diagnosisService) {
         this.encounterService = encounterService;
         this.observationService = observationService;
         this.diagnosisService = diagnosisService;
-        this.visitIdentificationHelper = visitIdentificationHelper;
     }
 
     public BahmniEncounterTransaction getBahmniEncounterTransaction(EncounterRow encounterRow, Patient patient) throws ParseException {
@@ -36,23 +31,17 @@ public class BahmniEncounterTransactionImportService {
         if (requestedEncounterType == null) {
             throw new RuntimeException("Encounter type:'" + encounterRow.encounterType + "' not found.");
         }
-        Visit matchingVisit = visitIdentificationHelper.getVisitFor(patient, encounterRow.visitType, encounterRow.getEncounterDate());
-        Date visitStartDatetime = matchingVisit.getStartDatetime();
 
-        BahmniVisit bahmniVisit = new BahmniVisit(matchingVisit);
-        DuplicateObservationsMatcher duplicateObservationsMatcher = new DuplicateObservationsMatcher(bahmniVisit, requestedEncounterType);
-
-        List<EncounterTransaction.Observation> bahmniObservations = observationService.getObservations(encounterRow, visitStartDatetime, duplicateObservationsMatcher);
-        List<BahmniDiagnosisRequest> bahmniDiagnosis = diagnosisService.getBahmniDiagnosis(encounterRow, visitStartDatetime, duplicateObservationsMatcher);
+        List<EncounterTransaction.Observation> allObservations = observationService.getObservations(encounterRow);
+        List<BahmniDiagnosisRequest> allDiagnosis = diagnosisService.getBahmniDiagnosis(encounterRow);
 
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-        bahmniEncounterTransaction.setBahmniDiagnoses(bahmniDiagnosis);
-        bahmniEncounterTransaction.setObservations(bahmniObservations);
         bahmniEncounterTransaction.setPatientUuid(patient.getUuid());
-        bahmniEncounterTransaction.setEncounterDateTime(visitStartDatetime);
-        bahmniEncounterTransaction.setEncounterTypeUuid(requestedEncounterType.getUuid());
-        bahmniEncounterTransaction.setVisitTypeUuid(matchingVisit.getVisitType().getUuid());
-        bahmniEncounterTransaction.setVisitUuid(matchingVisit.getUuid());
+        bahmniEncounterTransaction.setBahmniDiagnoses(allDiagnosis);
+        bahmniEncounterTransaction.setObservations(allObservations);
+        bahmniEncounterTransaction.setEncounterDateTime(encounterRow.getEncounterDate());
+        bahmniEncounterTransaction.setEncounterType(encounterRow.encounterType);
+        bahmniEncounterTransaction.setVisitType(encounterRow.visitType);
 
         return bahmniEncounterTransaction;
     }

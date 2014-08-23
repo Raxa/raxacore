@@ -11,13 +11,11 @@ import org.bahmni.module.admin.csv.patientmatchingalgorithm.BahmniPatientMatchin
 import org.bahmni.module.admin.csv.patientmatchingalgorithm.PatientMatchingAlgorithm;
 import org.bahmni.module.admin.csv.patientmatchingalgorithm.exception.CannotMatchPatientException;
 import org.bahmni.module.admin.encounter.BahmniEncounterTransactionImportService;
-import org.bahmni.module.admin.observation.DiagnosisImportService;
-import org.bahmni.module.admin.observation.ObservationImportService;
+import org.bahmni.module.admin.observation.DiagnosisMapper;
+import org.bahmni.module.admin.observation.ObservationMapper;
+import org.bahmni.module.admin.retrospectiveEncounter.service.RetrospectiveEncounterTransactionService;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
-import org.bahmni.module.bahmnicore.util.VisitIdentificationHelper;
-import org.openmrs.EncounterType;
 import org.openmrs.Patient;
-import org.openmrs.VisitType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
@@ -31,7 +29,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.List;
 
 @Component
@@ -52,61 +49,45 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
 
     private static final Logger log = Logger.getLogger(EncounterPersister.class);
     public static final String PATIENT_MATCHING_ALGORITHM_DIRECTORY = "/patientMatchingAlgorithm/";
+    protected DiagnosisMapper diagnosisMapper;
 
     public void init(UserContext userContext, String patientMatchingAlgorithmClassName) {
         this.userContext = userContext;
         this.patientMatchingAlgorithmClassName = patientMatchingAlgorithmClassName;
+
+        // Diagnosis Service caches the diagnoses concept. Better if there is one instance of it for the one file import.
+        diagnosisMapper = new DiagnosisMapper(conceptService);
     }
 
     @Override
     public RowResult<EncounterRow> validate(EncounterRow encounterRow) {
-        try {
-            Context.openSession();
-            Context.setUserContext(userContext);
-
-            StringBuilder errorMessage = new StringBuilder();
-
-            String messageForInvalidEncounterType = messageForInvalidEncounterType(encounterRow.encounterType);
-            if (!StringUtils.isEmpty(messageForInvalidEncounterType))
-                errorMessage.append(messageForInvalidEncounterType);
-
-            String messageForInvalidVisitType = messageForInvalidVisitType(encounterRow.visitType);
-            if (!StringUtils.isEmpty(messageForInvalidVisitType)) errorMessage.append(messageForInvalidVisitType);
-
-            String messageForInvalidEncounterDate = messageForInvalidEncounterDate(encounterRow);
-            if (!StringUtils.isEmpty(messageForInvalidEncounterDate))
-                errorMessage.append(messageForInvalidEncounterDate);
-
-            return new RowResult<>(encounterRow, errorMessage.toString());
-        } finally {
-            Context.closeSession();
-        }
+        return new RowResult<>(encounterRow);
     }
 
     @Override
     public RowResult<EncounterRow> persist(EncounterRow encounterRow) {
+        // This validation is needed as patientservice get returns all patients for empty patient identifier
+        if (StringUtils.isEmpty(encounterRow.patientIdentifier)) {
+            return noMatchingPatients(encounterRow);
+        }
+
         try {
             Context.openSession();
             Context.setUserContext(userContext);
 
-            if (StringUtils.isEmpty(encounterRow.patientIdentifier)) {
-                return noMatchingPatients(encounterRow);
-            }
             List<Patient> matchingPatients = patientService.get(encounterRow.patientIdentifier);
             Patient patient = matchPatients(matchingPatients, encounterRow.patientAttributes);
             if (patient == null) {
                 return noMatchingPatients(encounterRow);
             }
 
-            ObservationImportService observationService = new ObservationImportService(conceptService);
-            DiagnosisImportService diagnosisService = new DiagnosisImportService(conceptService);
-            VisitIdentificationHelper visitIdentificationHelper = new VisitIdentificationHelper(visitService);
-
             BahmniEncounterTransactionImportService encounterTransactionImportService =
-                    new BahmniEncounterTransactionImportService(encounterService, observationService, diagnosisService, visitIdentificationHelper);
+                    new BahmniEncounterTransactionImportService(encounterService, new ObservationMapper(conceptService), diagnosisMapper);
             BahmniEncounterTransaction bahmniEncounterTransaction = encounterTransactionImportService.getBahmniEncounterTransaction(encounterRow, patient);
 
-            bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
+            RetrospectiveEncounterTransactionService retrospectiveEncounterTransactionService =
+                    new RetrospectiveEncounterTransactionService(bahmniEncounterTransactionService, visitService);
+            retrospectiveEncounterTransactionService.save(bahmniEncounterTransaction, patient);
 
             return new RowResult<>(encounterRow);
         } catch (Exception e) {
@@ -123,44 +104,11 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
         return new RowResult<>(encounterRow, "No matching patients found with ID:'" + encounterRow.patientIdentifier + "'");
     }
 
-    private String messageForInvalidEncounterDate(EncounterRow encounterRow) {
-        try {
-            encounterRow.getEncounterDate();
-        } catch (ParseException | NullPointerException e) {
-            return "Encounter date time is required and should be 'dd/mm/yyyy' format\n";
-        }
-        return null;
-    }
-
-    private String messageForInvalidVisitType(String visitTypeAsString) {
-        if (StringUtils.isEmpty(visitTypeAsString)) {
-            return "Empty Visit Type";
-        }
-        List<VisitType> visitTypes = visitService.getVisitTypes(visitTypeAsString);
-        if (visitTypes == null || visitTypes.size() == 0) {
-            return String.format("Visit Type '%s' not found\n", visitTypeAsString);
-        }
-        return null;
-    }
-
-
-    private String messageForInvalidEncounterType(String encounterTypeAsString) {
-        if (StringUtils.isEmpty(encounterTypeAsString)) {
-            return "Empty Encounter Type\n";
-        }
-        EncounterType encounterType = encounterService.getEncounterType(encounterTypeAsString);
-        if (encounterType == null) {
-            return String.format("Encounter Type '%s' not found\n", encounterTypeAsString);
-        }
-        return null;
-    }
-
     private Patient matchPatients(List<Patient> matchingPatients, List<KeyValue> patientAttributes) throws IOException, IllegalAccessException, InstantiationException, CannotMatchPatientException {
         if (patientMatchingAlgorithmClassName == null) {
             Patient patient = new BahmniPatientMatchingAlgorithm().run(matchingPatients, patientAttributes);
             return patient;
         }
-
         Class clazz = new GroovyClassLoader().parseClass(new File(getAlgorithmClassPath()));
         PatientMatchingAlgorithm patientMatchingAlgorithm = (PatientMatchingAlgorithm) clazz.newInstance();
         log.debug("PatientMatching : Using Algorithm in " + patientMatchingAlgorithm.getClass().getName());

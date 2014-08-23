@@ -7,11 +7,12 @@ import org.bahmni.csv.KeyValue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class EncounterRow extends CSVEntity {
+    public static final String ENCOUNTER_DATE_PATTERN = "dd/MM/yyyy";
+
     @CSVHeader(name = "registrationNumber")
     public String patientIdentifier;
 
@@ -33,23 +34,17 @@ public class EncounterRow extends CSVEntity {
     @CSVRegexHeader(pattern = "Diagnosis.*")
     public List<KeyValue> diagnosesRows;
 
-    public List<String> getDiagnoses() {
-        List<String> aDiagnosesRows = new ArrayList<>();
-        if (diagnosesRows != null) {
-            for (KeyValue diagnosesRow : diagnosesRows) {
-                aDiagnosesRows.add(diagnosesRow.getValue());
-            }
-        }
-        return aDiagnosesRows;
-    }
-
     public Date getEncounterDate() throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ENCOUNTER_DATE_PATTERN);
         simpleDateFormat.setLenient(false);
         return simpleDateFormat.parse(encounterDateTime);
     }
 
     public boolean hasObservations() {
         return obsRows != null && !obsRows.isEmpty();
+    }
+
+    public boolean hasDiagnoses() {
+        return diagnosesRows != null && !diagnosesRows.isEmpty();
     }
 }

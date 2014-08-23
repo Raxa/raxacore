@@ -20,6 +20,8 @@ public class BahmniEncounterTransaction extends EncounterTransaction {
     private List<AccessionNote> accessionNotes;
     
     private EncounterTransaction encounterTransaction = new EncounterTransaction();
+    private String encounterType;
+    private String visitType;
 
     public BahmniEncounterTransaction() {
     }
@@ -195,6 +197,22 @@ public class BahmniEncounterTransaction extends EncounterTransaction {
 
     public void setAccessionNotes(List<AccessionNote> accessionNotes) {
         this.accessionNotes = accessionNotes;
+    }
+
+    public void setEncounterType(String encounterType) {
+        this.encounterType = encounterType;
+    }
+
+    public void setVisitType(String visitType) {
+        this.visitType = visitType;
+    }
+
+    public String getEncounterType() {
+        return encounterType;
+    }
+
+    public String getVisitType() {
+        return visitType;
     }
 }
 

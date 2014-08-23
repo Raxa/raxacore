@@ -17,14 +17,14 @@ public class VisitIdentificationHelper {
         this.visitService = visitService;
     }
 
-    public Visit getVisitFor(Patient patient, String visitType, Date orderDate) {
+    public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate) {
         Date nextDate = getNextDate(orderDate);
         List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, nextDate, orderDate, null, null, true, false);
         if (visits != null && !visits.isEmpty()) {
             Visit matchingVisit = getVisit(orderDate, visits);
             return stretchVisits(orderDate, matchingVisit);
         }
-        return createNewVisit(patient, orderDate, visitType);
+        return createNewVisit(patient, orderDate, visitTypeForNewVisit);
     }
 
     private Visit stretchVisits(Date orderDate, Visit matchingVisit) {
@@ -54,10 +54,10 @@ public class VisitIdentificationHelper {
         return null;
     }
 
-    private Visit createNewVisit(Patient patient, Date date, String visitType) {
-        VisitType visitTypeByName = getVisitTypeByName(visitType);
+    private Visit createNewVisit(Patient patient, Date date, String visitTypeForNewVisit) {
+        VisitType visitTypeByName = getVisitTypeByName(visitTypeForNewVisit);
         if (visitTypeByName == null) {
-            throw new RuntimeException("Visit type:'" + visitType + "' not found.");
+            throw new RuntimeException("Visit type:'" + visitTypeForNewVisit + "' not found.");
         }
 
         Visit visit = new Visit();

@@ -1,5 +1,6 @@
 package org.bahmni.module.admin.csv;
 
+import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.EncounterRow;
@@ -56,8 +57,8 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     @Test
     public void fail_validation_for_empty_encounter_type() throws Exception {
         EncounterRow encounterRow = new EncounterRow();
-        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
-        assertTrue("Empty Encounter Type", validationResult.getErrorMessage().contains("Empty Encounter Type"));
+        RowResult<EncounterRow> rowResult = encounterPersister.persist(encounterRow);
+        assertTrue("No Encounter details. Should have failed", !rowResult.getErrorMessage().isEmpty());
     }
 
     @Test
@@ -65,8 +66,10 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         EncounterRow encounterRow = new EncounterRow();
         encounterRow.encounterType = "INVALID ENCOUNTER TYPE";
         encounterRow.visitType = "OPD";
-        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
-        assertTrue("Invalid Encounter Type not found", validationResult.getErrorMessage().contains("Encounter Type 'INVALID ENCOUNTER TYPE' not found"));
+        encounterRow.patientIdentifier = "GAN200000";
+        RowResult<EncounterRow> validationResult = encounterPersister.persist(encounterRow);
+        assertTrue("Invalid Encounter Type not found. Error Message:" + validationResult.getErrorMessage(),
+                validationResult.getErrorMessage().contains("Encounter type:'INVALID ENCOUNTER TYPE' not found"));
     }
 
     @Test
@@ -74,16 +77,22 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         EncounterRow encounterRow = new EncounterRow();
         encounterRow.encounterType = "OPD";
         encounterRow.visitType = "INVALID VISIT TYPE";
-        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
-        assertTrue("Invalid Visit Type not found", validationResult.getErrorMessage().contains("Visit Type 'INVALID VISIT TYPE' not found"));
+        encounterRow.patientIdentifier = "GAN200000";
+        encounterRow.encounterDateTime = "23/08/1977";
+        RowResult<EncounterRow> validationResult = encounterPersister.persist(encounterRow);
+        assertTrue("Invalid Visit Type not found. Error Message:" + validationResult.getErrorMessage(),
+                validationResult.getErrorMessage().contains("Visit type:'INVALID VISIT TYPE' not found"));
     }
 
     @Test
     public void fail_validation_for_empty_visit_type() throws Exception {
         EncounterRow encounterRow = new EncounterRow();
         encounterRow.encounterType = "OPD";
-        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
-        assertTrue("Visit Type null not found", validationResult.getErrorMessage().contains("Empty Visit Type"));
+        encounterRow.patientIdentifier = "GAN200000";
+        encounterRow.encounterDateTime = "23/08/1977";
+        RowResult<EncounterRow> validationResult = encounterPersister.persist(encounterRow);
+        assertTrue("Visit Type null not found. Error Message:" + validationResult.getErrorMessage(),
+                        validationResult.getErrorMessage().contains("Visit type:'null' not found"));
     }
 
     @Test
@@ -91,35 +100,29 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         EncounterRow encounterRow = new EncounterRow();
         encounterRow.encounterType = "OPD";
         encounterRow.encounterDateTime = "1977/08/23";
-        encounterRow.visitType = "OPD";
-        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
-        assertTrue("Encounter date time is required and should be 'dd/mm/yyyy' format", validationResult.getErrorMessage().contains("Encounter date time is required and should be 'dd/mm/yyyy' format"));
-    }
-
-    @Test
-    public void pass_validation_for_correct_entries() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterType = "OPD";
-        encounterRow.visitType = "OPD";
         encounterRow.patientIdentifier = "GAN200000";
-        encounterRow.encounterDateTime = "23/08/1977";
-
-        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
-        assertEquals("", validationResult.getErrorMessage());
+        encounterRow.visitType = "OPD";
+        RowResult<EncounterRow> validationResult = encounterPersister.persist(encounterRow);
+        assertTrue("Encounter date time is required and should be 'dd/mm/yyyy' format.. Error Message:" + validationResult.getErrorMessage(),
+                validationResult.getErrorMessage().contains("Unparseable date: \"1977/08/23\""));
     }
 
     @Test
-    public void pass_validation_and_persist_encounters_for_patient() throws Exception {
+    public void no_validation_for_encounters() {
+        RowResult<EncounterRow> validationResult = encounterPersister.validate(new EncounterRow());
+        assertTrue("No Validation failure. Encounter Import does not run validation stage", StringUtils.isEmpty(validationResult.getErrorMessage()));
+    }
+
+    @Test
+    public void persist_encounters_for_patient() throws Exception {
         EncounterRow encounterRow = new EncounterRow();
         encounterRow.encounterDateTime = "11/11/1111";
         encounterRow.encounterType = "OPD";
         encounterRow.visitType = "OPD";
         encounterRow.patientIdentifier = "GAN200000";
-        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
-        assertEquals("", validationResult.getErrorMessage());
 
         RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
-        assertNull(persistenceResult.getErrorMessage());
+        assertTrue("Should have persisted the encounter row.", StringUtils.isEmpty(persistenceResult.getErrorMessage()));
 
         Context.openSession();
         Context.authenticate("admin", "test");
@@ -139,25 +142,23 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     }
 
     @Test
-    public void pass_validation_and_persist_encounter_and_observations_for_patient() throws Exception {
+    public void persist_observations_for_patient() throws Exception {
         EncounterRow encounterRow = new EncounterRow();
         encounterRow.encounterType = "OPD";
         encounterRow.visitType = "OPD";
         encounterRow.patientIdentifier = "GAN200000";
         encounterRow.encounterDateTime = "11/11/1111";
         encounterRow.obsRows = new ArrayList<>();
-        KeyValue weight = new KeyValue("WEIGHT", "150");
-        encounterRow.obsRows.add(weight);
-        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
-        assertEquals("", validationResult.getErrorMessage());
+        encounterRow.obsRows.add(new KeyValue("WEIGHT", "150"));
 
         RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
-        assertNull(persistenceResult.getErrorMessage());
+        assertTrue("Should have persisted the encounter row.", StringUtils.isEmpty(persistenceResult.getErrorMessage()));
 
         Context.openSession();
         Context.authenticate("admin", "test");
         List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
         Context.closeSession();
+
         Encounter encounter = encounters.get(0);
         assertEquals(1, encounters.size());
         assertEquals("Anad", encounter.getPatient().getGivenName());
@@ -172,27 +173,6 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     }
 
     @Test
-    public void roll_back_transaction_once_persistence_fails_for_one_resource() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterType = "OPD";
-        encounterRow.visitType = "OPD";
-        encounterRow.patientIdentifier = "GAN200000";
-        encounterRow.obsRows = new ArrayList<>();
-        KeyValue weight = new KeyValue("WEIGHT", "150");
-        encounterRow.obsRows.add(weight);
-        encounterPersister.validate(encounterRow);
-        encounterRow.encounterType = "O1PD";
-        encounterPersister.persist(encounterRow);
-        Context.openSession();
-        Context.authenticate("admin", "test");
-        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
-        List<Visit> visits = visitService.getVisitsByPatient(new Patient(1));
-        Context.closeSession();
-        assertEquals(0, visits.size());
-        assertEquals(0, encounters.size());
-    }
-
-    @Test
     public void persist_diagnosis() throws Exception {
         EncounterRow encounterRow = new EncounterRow();
         encounterRow.encounterType = "OPD";
@@ -200,14 +180,9 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         encounterRow.patientIdentifier = "GAN200000";
         encounterRow.encounterDateTime = "11/11/1111";
         encounterRow.obsRows = new ArrayList<>();
+        encounterRow.obsRows.add(new KeyValue("WEIGHT", "150"));
         encounterRow.diagnosesRows = new ArrayList<>();
-        KeyValue weight = new KeyValue("WEIGHT", "150");
-        KeyValue diabetes = new KeyValue("Diagnosis1", "Diabetes");
-        encounterRow.obsRows.add(weight);
-        encounterRow.diagnosesRows.add(diabetes);
-
-        RowResult<EncounterRow> validationResult = encounterPersister.validate(encounterRow);
-        assertEquals("", validationResult.getErrorMessage());
+        encounterRow.diagnosesRows.add(new KeyValue("Diagnosis1", "Diabetes"));
 
         RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
         assertNull(persistenceResult.getErrorMessage());
@@ -252,6 +227,27 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         assertTrue(obsConceptNames.contains("Bahmni Diagnosis Status"));
         assertTrue(obsConceptNames.contains("Bahmni Diagnosis Revised"));
         assertTrue(obsConceptNames.contains("Bahmni Initial Diagnosis"));
+    }
+
+    @Test
+    public void roll_back_transaction_once_persistence_fails_for_one_resource() throws Exception {
+        EncounterRow encounterRow = new EncounterRow();
+        encounterRow.encounterType = "OPD";
+        encounterRow.visitType = "OPD";
+        encounterRow.patientIdentifier = "GAN200000";
+        encounterRow.obsRows = new ArrayList<>();
+        encounterRow.obsRows.add(new KeyValue("WEIGHT", "150"));
+
+        encounterRow.encounterType = "O1PD";
+        encounterPersister.persist(encounterRow);
+        Context.openSession();
+        Context.authenticate("admin", "test");
+
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
+        List<Visit> visits = visitService.getVisitsByPatient(new Patient(1));
+        Context.closeSession();
+        assertEquals(0, visits.size());
+        assertEquals(0, encounters.size());
     }
 
     @Test
