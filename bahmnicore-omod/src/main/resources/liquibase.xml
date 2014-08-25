@@ -1500,4 +1500,14 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-clinical-201408251220" author="D3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege = 'app:admin'</sqlCheck>
+        </preConditions>
+        <insert tableName="privilege">
+            <column name="privilege" value="app:admin"/>
+            <column name="description" value="Bahmni admin app access privilege"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
