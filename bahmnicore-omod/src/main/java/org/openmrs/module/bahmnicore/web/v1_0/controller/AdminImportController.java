@@ -2,6 +2,7 @@ package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
+import org.bahmni.csv.CSVFile;
 import org.bahmni.fileimport.FileImporter;
 import org.bahmni.fileimport.ImportStatus;
 import org.bahmni.fileimport.dao.ImportStatusDao;
@@ -59,7 +60,7 @@ public class AdminImportController extends BaseRestController {
     @ResponseBody
     public boolean upload(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
         try {
-            File persistedUploadedFile = writeToLocalFile(file);
+            CSVFile persistedUploadedFile = writeToLocalFile(file);
 
             encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm);
             String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
@@ -81,13 +82,13 @@ public class AdminImportController extends BaseRestController {
         return importStatusDao.getImportStatusFromDate(DateUtils.addDays(new Date(), (numberOfDays * -1)));
     }
 
-    private File writeToLocalFile(MultipartFile file) throws IOException {
+    private CSVFile writeToLocalFile(MultipartFile file) throws IOException {
         String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
         byte[] fileBytes = file.getBytes();
-        File uploadedFile = getFile(uploadedOriginalFileName);
+        CSVFile uploadedFile = getFile(uploadedOriginalFileName);
         FileOutputStream uploadedFileStream = null;
         try {
-            uploadedFileStream = new FileOutputStream(uploadedFile);
+            uploadedFileStream = new FileOutputStream(new File(uploadedFile.getAbsolutePath()));
             uploadedFileStream.write(fileBytes);
             uploadedFileStream.flush();
         } catch (Exception e) {
@@ -104,14 +105,15 @@ public class AdminImportController extends BaseRestController {
         return uploadedFile;
     }
 
-    private File getFile(String fileName) {
+    private CSVFile getFile(String fileName) {
         String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
         String fileExtension = fileName.substring(fileName.lastIndexOf("."));
 
         String timestampForFile = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS).format(new Date());
 
         String uploadDirectory = administrationService.getGlobalProperty(PARENT_DIRECTORY_UPLOADED_FILES_CONFIG);
-        return new File(uploadDirectory + ENCOUNTER_FILES_DIRECTORY + fileNameWithoutExtension + timestampForFile + fileExtension);
+        String relativePath = ENCOUNTER_FILES_DIRECTORY + fileNameWithoutExtension + timestampForFile + fileExtension;
+        return new CSVFile(uploadDirectory, relativePath);
     }
 
     private class MRSConnectionProvider implements JDBCConnectionProvider {
