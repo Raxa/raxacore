@@ -10,9 +10,12 @@ import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class ObservationMapper {
+    private HashMap<String, EncounterTransaction.Concept> cachedConcepts = new HashMap<>();
+
     static final String FILE_IMPORT_COMMENT = "through file import";
 
     private ConceptService conceptService;
@@ -33,6 +36,13 @@ public class ObservationMapper {
         return observations;
     }
 
+    protected EncounterTransaction.Concept getConcept(String conceptName) {
+        if (!cachedConcepts.containsKey(conceptName)) {
+            cachedConcepts.put(conceptName, fetchConcept(conceptName));
+        }
+        return cachedConcepts.get(conceptName);
+    }
+
     private EncounterTransaction.Observation createObservation(Date encounterDate, KeyValue obsRow) throws ParseException {
         EncounterTransaction.Observation observation = new EncounterTransaction.Observation();
         observation.setConcept(getConcept(obsRow.getKey()));
@@ -42,11 +52,12 @@ public class ObservationMapper {
         return observation;
     }
 
-    protected EncounterTransaction.Concept getConcept(String conceptName) {
+    private EncounterTransaction.Concept fetchConcept(String conceptName) {
         Concept obsConcept = conceptService.getConceptByName(conceptName);
         if (obsConcept == null)
             throw new ConceptNotFoundException("Concept '"+ conceptName +"' not found");
 
         return new EncounterTransaction.Concept(obsConcept.getUuid(), obsConcept.getName().getName());
     }
+
 }

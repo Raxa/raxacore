@@ -20,11 +20,15 @@ public class VisitIdentificationHelper {
     public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate) {
         Date nextDate = getNextDate(orderDate);
         List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, nextDate, orderDate, null, null, true, false);
-        if (visits != null && !visits.isEmpty()) {
+        if (matchingVisitsFound(visits)) {
             Visit matchingVisit = getVisit(orderDate, visits);
             return stretchVisits(orderDate, matchingVisit);
         }
         return createNewVisit(patient, orderDate, visitTypeForNewVisit);
+    }
+
+    private boolean matchingVisitsFound(List<Visit> visits) {
+        return visits != null && !visits.isEmpty();
     }
 
     private Visit stretchVisits(Date orderDate, Visit matchingVisit) {
@@ -39,13 +43,13 @@ public class VisitIdentificationHelper {
 
     private Visit getVisit(Date orderDate, List<Visit> visits) {
         if (visits.size() > 1) {
-            return getMatchingVisit(orderDate, visits);
+            return getVisitMatchingOrderDate(orderDate, visits);
         } else {
             return visits.get(0);
         }
     }
 
-    private Visit getMatchingVisit(Date orderDate, List<Visit> visits) {
+    private Visit getVisitMatchingOrderDate(Date orderDate, List<Visit> visits) {
         for (Visit visit : visits) {
             if ( (visit.getStartDatetime().equals(orderDate) || visit.getStartDatetime().before(orderDate)) &&
                     (visit.getStopDatetime().equals(orderDate) || visit.getStopDatetime().after(orderDate)) )

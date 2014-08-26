@@ -26,19 +26,24 @@ public class RetrospectiveEncounterTransactionService {
                 bahmniEncounterTransaction.getEncounterDateTime());
 
         DuplicateObservationsMatcher duplicateObservationsMatcher = new DuplicateObservationsMatcher(matchingVisit, bahmniEncounterTransaction.getEncounterType());
+        List<EncounterTransaction.Observation> uniqueObservations = duplicateObservationsMatcher.getUniqueObservations(bahmniEncounterTransaction.getObservations());
+        List<BahmniDiagnosisRequest> uniqueDiagnoses = duplicateObservationsMatcher.getUniqueDiagnoses(bahmniEncounterTransaction.getBahmniDiagnoses());
 
-        List<EncounterTransaction.Observation> observations = bahmniEncounterTransaction.getObservations();
-        bahmniEncounterTransaction.setObservations(duplicateObservationsMatcher.getUniqueObservations(observations));
-
-        List<BahmniDiagnosisRequest> bahmniDiagnoses = bahmniEncounterTransaction.getBahmniDiagnoses();
-        bahmniEncounterTransaction.setBahmniDiagnoses(duplicateObservationsMatcher.getUniqueDiagnoses(bahmniDiagnoses));
-
-        // TODO : Mujir - this should not happen here. Just set the visitType. BahmniEncounterTransaction should handle string visitTypes.
-        bahmniEncounterTransaction.setVisitTypeUuid(matchingVisit.getVisitType().getUuid());
-
-        bahmniEncounterTransaction.setEncounterDateTime(matchingVisit.getStartDatetime());
-        bahmniEncounterTransaction.setVisitUuid(matchingVisit.getUuid());
+        bahmniEncounterTransaction = updateBahmniEncounterTransaction(bahmniEncounterTransaction, matchingVisit, uniqueObservations, uniqueDiagnoses);
 
         return bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
+    }
+
+    private BahmniEncounterTransaction updateBahmniEncounterTransaction(BahmniEncounterTransaction bahmniEncounterTransaction,
+                    Visit visit, List<EncounterTransaction.Observation> uniqueObservations, List<BahmniDiagnosisRequest> uniqueDiagnoses) {
+        bahmniEncounterTransaction.setObservations(uniqueObservations);
+        bahmniEncounterTransaction.setBahmniDiagnoses(uniqueDiagnoses);
+        bahmniEncounterTransaction.setEncounterDateTime(visit.getStartDatetime());
+        bahmniEncounterTransaction.setVisitUuid(visit.getUuid());
+
+        // TODO : Mujir - this should not happen here. Just set the visitType. BahmniEncounterTransaction should handle string visitTypes.
+        bahmniEncounterTransaction.setVisitTypeUuid(visit.getVisitType().getUuid());
+
+        return bahmniEncounterTransaction;
     }
 }

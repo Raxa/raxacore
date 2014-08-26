@@ -10,11 +10,9 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public class DiagnosisMapper extends ObservationMapper {
-    private HashMap<String, EncounterTransaction.Concept> cachedConcepts = new HashMap<>();
 
     public DiagnosisMapper(ConceptService conceptService) {
         super(conceptService);
@@ -33,7 +31,7 @@ public class DiagnosisMapper extends ObservationMapper {
     }
 
     private BahmniDiagnosisRequest createDiagnosis(Date encounterDate, String diagnosis) throws ParseException {
-        EncounterTransaction.Concept diagnosisConcept = getDiagnosisConcept(diagnosis);
+        EncounterTransaction.Concept diagnosisConcept = getConcept(diagnosis);
 
         BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
         bahmniDiagnosisRequest.setCodedAnswer(diagnosisConcept);
@@ -44,10 +42,4 @@ public class DiagnosisMapper extends ObservationMapper {
         return bahmniDiagnosisRequest;
     }
 
-    private EncounterTransaction.Concept getDiagnosisConcept(String diagnosis) {
-        if (!cachedConcepts.containsKey(diagnosis)) {
-            cachedConcepts.put(diagnosis, getConcept(diagnosis));
-        }
-        return cachedConcepts.get(diagnosis);
-    }
 }
