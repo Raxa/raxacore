@@ -88,7 +88,7 @@ public class DrugOrderBuilder {
         return this;
     }
 
-    public DrugOrderBuilder withDuration(double duration) {
+    public DrugOrderBuilder withDuration(int duration) {
         order.setDuration(duration);
         return this;
     }
