@@ -48,7 +48,7 @@ public class DrugOrderMapperTest {
         visitDate = dateActivated = new Date();
         Date dateScheduled = DateUtils.addDays(dateActivated, 2);
         Date expireDate = DateUtils.addDays(dateActivated, 20);
-        double duration = 2.5;
+        int duration = 2;
 
         Person person = new PersonBuilder().withUUID("puuid").build();
         Encounter encounter = new EncounterBuilder().build();
@@ -96,7 +96,7 @@ public class DrugOrderMapperTest {
         Encounter encounter = new EncounterBuilder().build();
         Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(visitDate).withEncounter(encounter).build();
 
-        double duration = 2.5;
+        int duration = 2;
         String dosingInstructions = "{\"instructions\": \"Before meals\", \"notes\": \"Take before waking up\"}";
         DrugOrder drugOrder1 = drugBuilder.withDrugName("Paracetamol 120mg/5ml 60ml")
                 .withDosingType(SimpleDosingInstructions.class)
