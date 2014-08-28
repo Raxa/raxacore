@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.EncounterRow;
+import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
@@ -35,7 +36,6 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     @Autowired
     private VisitService visitService;
 
-    private static final SimpleDateFormat observationDateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private String path;
     protected UserContext userContext;
 
@@ -56,107 +56,180 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
 
     @Test
     public void fail_validation_for_empty_encounter_type() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        RowResult<EncounterRow> rowResult = encounterPersister.persist(encounterRow);
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        RowResult<MultipleEncounterRow> rowResult = encounterPersister.persist(multipleEncounterRow);
         assertTrue("No Encounter details. Should have failed", !rowResult.getErrorMessage().isEmpty());
     }
 
     @Test
     public void fail_validation_for_encounter_type_not_found() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterType = "INVALID ENCOUNTER TYPE";
-        encounterRow.visitType = "OPD";
-        encounterRow.patientIdentifier = "GAN200000";
-        RowResult<EncounterRow> validationResult = encounterPersister.persist(encounterRow);
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "INVALID ENCOUNTER TYPE";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.encounterDateTime = "11-11-1111";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        RowResult<MultipleEncounterRow> validationResult = encounterPersister.persist(multipleEncounterRow);
         assertTrue("Invalid Encounter Type not found. Error Message:" + validationResult.getErrorMessage(),
                 validationResult.getErrorMessage().contains("Encounter type:'INVALID ENCOUNTER TYPE' not found"));
     }
 
     @Test
     public void fail_validation_for_visit_type_not_found() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterType = "OPD";
-        encounterRow.visitType = "INVALID VISIT TYPE";
-        encounterRow.patientIdentifier = "GAN200000";
-        encounterRow.encounterDateTime = "23/08/1977";
-        RowResult<EncounterRow> validationResult = encounterPersister.persist(encounterRow);
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.visitType = "INVALID VISIT TYPE";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
+        anEncounter.encounterDateTime = "11-11-1111";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        RowResult<MultipleEncounterRow> validationResult = encounterPersister.persist(multipleEncounterRow);
         assertTrue("Invalid Visit Type not found. Error Message:" + validationResult.getErrorMessage(),
                 validationResult.getErrorMessage().contains("Visit type:'INVALID VISIT TYPE' not found"));
     }
 
     @Test
     public void fail_validation_for_empty_visit_type() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterType = "OPD";
-        encounterRow.patientIdentifier = "GAN200000";
-        encounterRow.encounterDateTime = "23/08/1977";
-        RowResult<EncounterRow> validationResult = encounterPersister.persist(encounterRow);
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.encounterDateTime = "11-11-1111";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        RowResult<MultipleEncounterRow> validationResult = encounterPersister.persist(multipleEncounterRow);
         assertTrue("Visit Type null not found. Error Message:" + validationResult.getErrorMessage(),
                         validationResult.getErrorMessage().contains("Visit type:'null' not found"));
     }
 
     @Test
     public void fail_validation_for_encounter_date_in_incorrect_format() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterType = "OPD";
-        encounterRow.encounterDateTime = "1977/08/23";
-        encounterRow.patientIdentifier = "GAN200000";
-        encounterRow.visitType = "OPD";
-        RowResult<EncounterRow> validationResult = encounterPersister.persist(encounterRow);
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+        multipleEncounterRow.visitType = "OPD";
+
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.encounterDateTime = "1977/08/23";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        RowResult<MultipleEncounterRow> validationResult = encounterPersister.persist(multipleEncounterRow);
         assertTrue("Encounter date time is required and should be 'dd/mm/yyyy' format.. Error Message:" + validationResult.getErrorMessage(),
                 validationResult.getErrorMessage().contains("Unparseable date: \"1977/08/23\""));
     }
 
     @Test
     public void no_validation_for_encounters() {
-        RowResult<EncounterRow> validationResult = encounterPersister.validate(new EncounterRow());
+        RowResult<MultipleEncounterRow> validationResult = encounterPersister.validate(new MultipleEncounterRow());
         assertTrue("No Validation failure. Encounter Import does not run validation stage", StringUtils.isEmpty(validationResult.getErrorMessage()));
     }
 
     @Test
     public void persist_encounters_for_patient() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterDateTime = "11/11/1111";
-        encounterRow.encounterType = "OPD";
-        encounterRow.visitType = "OPD";
-        encounterRow.patientIdentifier = "GAN200000";
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
 
-        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
+        anEncounter.encounterDateTime = "11-11-1111";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
         assertTrue("Should have persisted the encounter row.", StringUtils.isEmpty(persistenceResult.getErrorMessage()));
 
         Context.openSession();
         Context.authenticate("admin", "test");
-        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
         Context.flushSession();
         Context.closeSession();
 
-        Encounter encounter = encounters.get(0);
         assertEquals(1, encounters.size());
+
+        Encounter encounter = encounters.get(0);
         assertEquals("Anad", encounter.getPatient().getGivenName());
         assertEquals("Kewat", encounter.getPatient().getFamilyName());
         assertEquals("OPD", encounter.getVisit().getVisitType().getName());
         assertEquals("OPD", encounter.getEncounterType().getName());
 
         Date encounterDatetime = encounter.getEncounterDatetime();
-        assertEquals("11/11/1111", observationDateFormat.format(encounterDatetime));
+        assertEquals("11-11-1111", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(encounterDatetime));
     }
 
     @Test
-    public void persist_observations_for_patient() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterType = "OPD";
-        encounterRow.visitType = "OPD";
-        encounterRow.patientIdentifier = "GAN200000";
-        encounterRow.encounterDateTime = "11/11/1111";
-        encounterRow.obsRows = new ArrayList<>();
-        encounterRow.obsRows.add(new KeyValue("WEIGHT", "150"));
+    public void persist_multiple_encounters_for_patient() throws Exception {
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
 
-        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
+        anEncounter.encounterDateTime = "11-11-1111";
+
+        EncounterRow anotherEncounter = new EncounterRow();
+        anotherEncounter.obsRows = new ArrayList<>();
+        anotherEncounter.obsRows.add(new KeyValue("HEIGHT", "75"));
+        anotherEncounter.encounterDateTime = "12-11-1111";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+        multipleEncounterRow.encounterRows.add(anotherEncounter);
+
+        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
         assertTrue("Should have persisted the encounter row.", StringUtils.isEmpty(persistenceResult.getErrorMessage()));
 
         Context.openSession();
         Context.authenticate("admin", "test");
-        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
+        Context.flushSession();
+        Context.closeSession();
+
+        assertEquals(2, encounters.size());
+    }
+
+    @Test
+    public void persist_observations_for_patient() throws Exception {
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
+        anEncounter.encounterDateTime = "11-11-1111";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounter row.", StringUtils.isEmpty(persistenceResult.getErrorMessage()));
+
+        Context.openSession();
+        Context.authenticate("admin", "test");
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
         Context.closeSession();
 
         Encounter encounter = encounters.get(0);
@@ -168,28 +241,33 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         assertEquals(1, encounter.getAllObs().size());
         assertEquals("WEIGHT", encounter.getAllObs().iterator().next().getConcept().getName().getName());
         Date obsDatetime = encounter.getAllObs().iterator().next().getObsDatetime();
-        assertEquals("11/11/1111", observationDateFormat.format(obsDatetime));
+        assertEquals("11-11-1111", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(obsDatetime));
         assertEquals("150.0", encounter.getAllObs().iterator().next().getValueAsString(Context.getLocale()));
     }
 
     @Test
     public void persist_diagnosis() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterType = "OPD";
-        encounterRow.visitType = "OPD";
-        encounterRow.patientIdentifier = "GAN200000";
-        encounterRow.encounterDateTime = "11/11/1111";
-        encounterRow.obsRows = new ArrayList<>();
-        encounterRow.obsRows.add(new KeyValue("WEIGHT", "150"));
-        encounterRow.diagnosesRows = new ArrayList<>();
-        encounterRow.diagnosesRows.add(new KeyValue("Diagnosis1", "Diabetes"));
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
 
-        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
+        anEncounter.encounterDateTime = "11-11-1111";
+        anEncounter.diagnosesRows = new ArrayList<>();
+        anEncounter.diagnosesRows.add(new KeyValue("Diagnosis1", "Diabetes"));
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
         assertNull(persistenceResult.getErrorMessage());
 
         Context.openSession();
         Context.authenticate("admin", "test");
-        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
         Context.closeSession();
 
         Encounter encounter = encounters.get(0);
@@ -215,7 +293,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         assertEquals("WEIGHT", weightObs.getConcept().getName().getName());
         assertEquals("150.0", weightObs.getValueAsString(Context.getLocale()));
         assertEquals("Diagnosis Concept Set", diagnosisObs.getConcept().getName().getName());
-        assertEquals("11/11/1111", observationDateFormat.format(diagnosisObs.getObsDatetime()));
+        assertEquals("11-11-1111", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(diagnosisObs.getObsDatetime()));
 
         List<String> obsConceptNames = new ArrayList<>();
         for (Obs obs : diagnosisObs.getGroupMembers()) {
@@ -231,19 +309,24 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
 
     @Test
     public void roll_back_transaction_once_persistence_fails_for_one_resource() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterType = "OPD";
-        encounterRow.visitType = "OPD";
-        encounterRow.patientIdentifier = "GAN200000";
-        encounterRow.obsRows = new ArrayList<>();
-        encounterRow.obsRows.add(new KeyValue("WEIGHT", "150"));
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+        multipleEncounterRow.encounterRows = new ArrayList<>();
 
-        encounterRow.encounterType = "O1PD";
-        encounterPersister.persist(encounterRow);
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
+
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        multipleEncounterRow.encounterType = "O1PD";
+        encounterPersister.persist(multipleEncounterRow);
         Context.openSession();
         Context.authenticate("admin", "test");
 
-        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
         List<Visit> visits = visitService.getVisitsByPatient(new Patient(1));
         Context.closeSession();
         assertEquals(0, visits.size());
@@ -252,28 +335,29 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
 
     @Test
     public void throw_error_when_patient_not_found() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterDateTime = "11/11/1111";
-        encounterRow.encounterType = "OPD";
-        encounterRow.visitType = "OPD";
-        encounterRow.patientIdentifier = "GAN200001";
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+//        multipleEncounterRow.encounterDateTime = "11/11/1111";
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200001";
+
         encounterPersister.init(userContext, "NoMatch.groovy");
 
-        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
         assertNotNull(persistenceResult.getErrorMessage());
         assertEquals("No matching patients found with ID:'GAN200001'", persistenceResult.getErrorMessage());
     }
 
     @Test
     public void throw_error_when_multiple_patients_found() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterDateTime = "11/11/1111";
-        encounterRow.encounterType = "OPD";
-        encounterRow.visitType = "OPD";
-        encounterRow.patientIdentifier = "200000";
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+//        multipleEncounterRow.encounterDateTime = "11/11/1111";
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "200000";
         encounterPersister.init(userContext, "MultipleMatchPatient.groovy");
 
-        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
 
         assertTrue(persistenceResult.getErrorMessage().contains("GAN200000, SEM200000"));
     }
@@ -282,40 +366,54 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     public void external_algorithm_should_return_only_patients_with_GAN_identifier() throws Exception {
         String patientId = "200000";
 
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterDateTime = "11/11/1111";
-        encounterRow.encounterType = "OPD";
-        encounterRow.visitType = "OPD";
-        encounterRow.patientIdentifier = patientId;
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = patientId;
         encounterPersister.init(userContext, "GANIdentifier.groovy");
 
-        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
+        anEncounter.encounterDateTime = "11-11-1111";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
         assertNull(persistenceResult.getErrorMessage());
         Context.openSession();
         Context.authenticate("admin", "test");
 
-        encounterRow.patientIdentifier = "GAN" + patientId;
-        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
+        multipleEncounterRow.patientIdentifier = "GAN" + patientId;
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
         Context.closeSession();
         assertEquals(1, encounters.size());
     }
 
     @Test
     public void external_algorithm_returns_patients_matching_id_and_name() throws Exception {
-        EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterDateTime = "11/11/1111";
-        encounterRow.encounterType = "OPD";
-        encounterRow.visitType = "OPD";
-        encounterRow.patientIdentifier = "GAN200000";
-        encounterRow.patientAttributes = getPatientAttributes();
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+        multipleEncounterRow.patientAttributes = getPatientAttributes();
         encounterPersister.init(userContext, "IdAndNameMatch.groovy");
 
-        RowResult<EncounterRow> persistenceResult = encounterPersister.persist(encounterRow);
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
+        anEncounter.encounterDateTime = "11-11-1111";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
         assertNull(persistenceResult.getErrorMessage());
         Context.openSession();
         Context.authenticate("admin", "test");
 
-        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(encounterRow.patientIdentifier);
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
         Context.closeSession();
         assertEquals(1, encounters.size());
     }

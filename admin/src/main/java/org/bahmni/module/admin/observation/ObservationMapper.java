@@ -1,5 +1,6 @@
 package org.bahmni.module.admin.observation;
 
+import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.openmrs.Concept;
@@ -16,8 +17,6 @@ import java.util.List;
 public class ObservationMapper {
     private HashMap<String, EncounterTransaction.Concept> cachedConcepts = new HashMap<>();
 
-    static final String FILE_IMPORT_COMMENT = "through file import";
-
     private ConceptService conceptService;
 
     public ObservationMapper(ConceptService conceptService) {
@@ -29,8 +28,10 @@ public class ObservationMapper {
         if (encounterRow.hasObservations()) {
             Date encounterDate = encounterRow.getEncounterDate();
             for (KeyValue obsRow : encounterRow.obsRows) {
-                EncounterTransaction.Observation observation = createObservation(encounterDate, obsRow);
-                observations.add(observation);
+                if (obsRow.getValue() != null && !StringUtils.isEmpty(obsRow.getValue().trim())) {
+                    EncounterTransaction.Observation observation = createObservation(encounterDate, obsRow);
+                    observations.add(observation);
+                }
             }
         }
         return observations;
@@ -48,7 +49,6 @@ public class ObservationMapper {
         observation.setConcept(getConcept(obsRow.getKey()));
         observation.setValue(obsRow.getValue());
         observation.setObservationDateTime(encounterDate);
-        observation.setComment(FILE_IMPORT_COMMENT);
         return observation;
     }
 

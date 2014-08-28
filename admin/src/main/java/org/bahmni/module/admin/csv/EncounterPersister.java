@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 import org.bahmni.csv.EntityPersister;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.RowResult;
-import org.bahmni.module.admin.csv.models.EncounterRow;
+import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
 import org.bahmni.module.admin.csv.patientmatchingalgorithm.BahmniPatientMatchingAlgorithm;
 import org.bahmni.module.admin.csv.patientmatchingalgorithm.PatientMatchingAlgorithm;
 import org.bahmni.module.admin.csv.patientmatchingalgorithm.exception.CannotMatchPatientException;
@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class EncounterPersister implements EntityPersister<EncounterRow> {
+public class EncounterPersister implements EntityPersister<MultipleEncounterRow> {
     @Autowired
     private BahmniPatientService patientService;
     @Autowired
@@ -60,48 +60,51 @@ public class EncounterPersister implements EntityPersister<EncounterRow> {
     }
 
     @Override
-    public RowResult<EncounterRow> validate(EncounterRow encounterRow) {
-        return new RowResult<>(encounterRow);
+    public RowResult<MultipleEncounterRow> validate(MultipleEncounterRow multipleEncounterRow) {
+        return new RowResult<>(multipleEncounterRow);
     }
 
     @Override
-    public RowResult<EncounterRow> persist(EncounterRow encounterRow) {
+    public RowResult<MultipleEncounterRow> persist(MultipleEncounterRow multipleEncounterRow) {
         // This validation is needed as patientservice get returns all patients for empty patient identifier
-        if (StringUtils.isEmpty(encounterRow.patientIdentifier)) {
-            return noMatchingPatients(encounterRow);
+        if (StringUtils.isEmpty(multipleEncounterRow.patientIdentifier)) {
+            return noMatchingPatients(multipleEncounterRow);
         }
 
         try {
             Context.openSession();
             Context.setUserContext(userContext);
 
-            List<Patient> matchingPatients = patientService.get(encounterRow.patientIdentifier);
-            Patient patient = matchPatients(matchingPatients, encounterRow.patientAttributes);
+            List<Patient> matchingPatients = patientService.get(multipleEncounterRow.patientIdentifier);
+            Patient patient = matchPatients(matchingPatients, multipleEncounterRow.patientAttributes);
             if (patient == null) {
-                return noMatchingPatients(encounterRow);
+                return noMatchingPatients(multipleEncounterRow);
             }
 
             BahmniEncounterTransactionImportService encounterTransactionImportService =
                     new BahmniEncounterTransactionImportService(encounterService, new ObservationMapper(conceptService), diagnosisMapper);
-            BahmniEncounterTransaction bahmniEncounterTransaction = encounterTransactionImportService.getBahmniEncounterTransaction(encounterRow, patient);
+            List<BahmniEncounterTransaction> bahmniEncounterTransactions = encounterTransactionImportService.getBahmniEncounterTransaction(multipleEncounterRow, patient);
 
             RetrospectiveEncounterTransactionService retrospectiveEncounterTransactionService =
                     new RetrospectiveEncounterTransactionService(bahmniEncounterTransactionService, visitService);
-            retrospectiveEncounterTransactionService.save(bahmniEncounterTransaction, patient);
 
-            return new RowResult<>(encounterRow);
+            for (BahmniEncounterTransaction bahmniEncounterTransaction : bahmniEncounterTransactions) {
+                retrospectiveEncounterTransactionService.save(bahmniEncounterTransaction, patient);
+            }
+
+            return new RowResult<>(multipleEncounterRow);
         } catch (Exception e) {
             log.error(e);
             Context.clearSession();
-            return new RowResult<>(encounterRow, e);
+            return new RowResult<>(multipleEncounterRow, e);
         } finally {
             Context.flushSession();
             Context.closeSession();
         }
     }
 
-    private RowResult<EncounterRow> noMatchingPatients(EncounterRow encounterRow) {
-        return new RowResult<>(encounterRow, "No matching patients found with ID:'" + encounterRow.patientIdentifier + "'");
+    private RowResult<MultipleEncounterRow> noMatchingPatients(MultipleEncounterRow multipleEncounterRow) {
+        return new RowResult<>(multipleEncounterRow, "No matching patients found with ID:'" + multipleEncounterRow.patientIdentifier + "'");
     }
 
     private Patient matchPatients(List<Patient> matchingPatients, List<KeyValue> patientAttributes) throws IOException, IllegalAccessException, InstantiationException, CannotMatchPatientException {

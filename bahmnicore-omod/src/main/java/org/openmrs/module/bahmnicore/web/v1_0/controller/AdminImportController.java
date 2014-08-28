@@ -8,7 +8,7 @@ import org.bahmni.fileimport.ImportStatus;
 import org.bahmni.fileimport.dao.ImportStatusDao;
 import org.bahmni.fileimport.dao.JDBCConnectionProvider;
 import org.bahmni.module.admin.csv.EncounterPersister;
-import org.bahmni.module.admin.csv.models.EncounterRow;
+import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.SessionImplementor;
 import org.hibernate.impl.SessionImpl;
@@ -67,8 +67,8 @@ public class AdminImportController extends BaseRestController {
             String username = Context.getUserContext().getAuthenticatedUser().getUsername();
 
             boolean skipValidation = true;
-            return new FileImporter<EncounterRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
-                    encounterPersister, EncounterRow.class, new MRSConnectionProvider(), username, skipValidation);
+            return new FileImporter<MultipleEncounterRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
+                    encounterPersister, MultipleEncounterRow.class, new MRSConnectionProvider(), username, skipValidation);
         } catch (Exception e) {
             logger.error("Could not upload file", e);
             return false;

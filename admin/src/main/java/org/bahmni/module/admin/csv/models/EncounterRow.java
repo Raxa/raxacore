@@ -11,22 +11,10 @@ import java.util.Date;
 import java.util.List;
 
 public class EncounterRow extends CSVEntity {
-    public static final String ENCOUNTER_DATE_PATTERN = "dd/MM/yyyy";
+    public static final String ENCOUNTER_DATE_PATTERN = "d-M-yyyy";
 
-    @CSVHeader(name = "registrationNumber")
-    public String patientIdentifier;
-
-    @CSVHeader(name = "encounterType")
-    public String encounterType;
-
-    @CSVHeader(name = "visitType")
-    public String visitType;
-
-    @CSVHeader(name = "Registration Date")
+    @CSVHeader(name = "EncounterDate")
     public String encounterDateTime;
-
-    @CSVRegexHeader(pattern = "Patient.*")
-    public List<KeyValue> patientAttributes;
 
     @CSVRegexHeader(pattern = "Obs.*")
     public List<KeyValue> obsRows;
@@ -47,4 +35,5 @@ public class EncounterRow extends CSVEntity {
     public boolean hasDiagnoses() {
         return diagnosesRows != null && !diagnosesRows.isEmpty();
     }
+
 }

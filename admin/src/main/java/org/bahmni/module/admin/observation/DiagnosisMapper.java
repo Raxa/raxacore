@@ -18,11 +18,11 @@ public class DiagnosisMapper extends ObservationMapper {
         super(conceptService);
     }
 
-    public List<BahmniDiagnosisRequest> getBahmniDiagnosis(EncounterRow encounterRow) throws ParseException {
+    public List<BahmniDiagnosisRequest> getBahmniDiagnosis(EncounterRow multipleEncounterRow) throws ParseException {
         List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
-        if (encounterRow.hasDiagnoses()) {
-            Date encounterDate = encounterRow.getEncounterDate();
-            for (KeyValue uniqueDiagnosisKeyValue : encounterRow.diagnosesRows) {
+        if (multipleEncounterRow.hasDiagnoses()) {
+            Date encounterDate = multipleEncounterRow.getEncounterDate();
+            for (KeyValue uniqueDiagnosisKeyValue : multipleEncounterRow.diagnosesRows) {
                 BahmniDiagnosisRequest bahmniDiagnosisRequest = createDiagnosis(encounterDate, uniqueDiagnosisKeyValue.getValue());
                 bahmniDiagnoses.add(bahmniDiagnosisRequest);
             }
@@ -38,7 +38,6 @@ public class DiagnosisMapper extends ObservationMapper {
         bahmniDiagnosisRequest.setOrder(String.valueOf(Diagnosis.Order.PRIMARY));
         bahmniDiagnosisRequest.setCertainty(String.valueOf(Diagnosis.Certainty.CONFIRMED));
         bahmniDiagnosisRequest.setDiagnosisDateTime(encounterDate);
-        bahmniDiagnosisRequest.setComments(ObservationMapper.FILE_IMPORT_COMMENT);
         return bahmniDiagnosisRequest;
     }
 
