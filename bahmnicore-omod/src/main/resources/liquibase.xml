@@ -957,6 +957,9 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201405161709" author="d3" context="rel4">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="1">select count(*) from global_property where property='webservices.rest.maxResultsAbsolute'</sqlCheck>
+        </preConditions>
         <comment>Update webservices.rest.maxResultsAbsolute to 1000</comment>
         <sql>
             update global_property set property_value='1000' where property='webservices.rest.maxResultsAbsolute';
