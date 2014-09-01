@@ -1,9 +1,9 @@
 package org.bahmni.module.admin.csv.models;
 
 import org.bahmni.csv.CSVEntity;
-import org.bahmni.csv.CSVHeader;
-import org.bahmni.csv.CSVRegexHeader;
-import org.bahmni.csv.CSVRepeatingRegexHeaders;
+import org.bahmni.csv.annotation.CSVHeader;
+import org.bahmni.csv.annotation.CSVRegexHeader;
+import org.bahmni.csv.annotation.CSVRepeatingRegexHeaders;
 import org.bahmni.csv.KeyValue;
 
 import java.util.List;

@@ -2,7 +2,7 @@ package org.bahmni.datamigration.csv;
 
 
 import org.bahmni.csv.CSVEntity;
-import org.bahmni.csv.CSVHeader;
+import org.bahmni.csv.annotation.CSVHeader;
 
 public class Patient extends CSVEntity {
     @CSVHeader(name="REG_NO")
