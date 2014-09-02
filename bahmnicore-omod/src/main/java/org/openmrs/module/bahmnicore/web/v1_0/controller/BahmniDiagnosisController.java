@@ -4,6 +4,7 @@ import org.openmrs.Patient;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.PatientService;
 import org.openmrs.module.bahmniemrapi.accessionnote.mapper.AccessionNotesMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniDiagnosisMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTransactionObsMapper;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
@@ -43,6 +44,8 @@ public class BahmniDiagnosisController extends BaseRestController {
     private AccessionNotesMapper accessionNotesMapper;
     @Autowired
     private EncounterTransactionObsMapper encounterTransactionObsMapper;
+    @Autowired
+    private BahmniDiagnosisMapper bahmniDiagnosisMapper;
 
 
     @RequestMapping(method = RequestMethod.GET, value = "search")
@@ -53,10 +56,10 @@ public class BahmniDiagnosisController extends BaseRestController {
         List<EncounterTransaction.Diagnosis> pastDiagnoses = diagnosisMapper.convert(diagnosisService.getDiagnoses(patient, fromDate));
 
         List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
-        for (EncounterTransaction.Diagnosis diagnosis : pastDiagnoses) {
-            BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper, encounterTransactionObsMapper).mapBahmniDiagnosis(diagnosis);
-            if (!bahmniDiagnosisRequest.isRevised()) {
-                bahmniDiagnoses.add(bahmniDiagnosisRequest);
+        List<BahmniDiagnosisRequest> mappedBahmniDiagnoses = bahmniDiagnosisMapper.map(pastDiagnoses);
+        for (BahmniDiagnosisRequest mappedBahmniDiagnose : mappedBahmniDiagnoses) {
+            if (!mappedBahmniDiagnose.isRevised()) {
+                bahmniDiagnoses.add(mappedBahmniDiagnose);
             }
         }
         return bahmniDiagnoses;

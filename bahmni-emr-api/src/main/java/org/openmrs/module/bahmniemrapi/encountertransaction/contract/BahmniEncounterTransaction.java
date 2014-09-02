@@ -15,11 +15,12 @@ import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BahmniEncounterTransaction extends EncounterTransaction {
-    
-    private List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
-    private List<AccessionNote> accessionNotes;
-    
+
     private EncounterTransaction encounterTransaction = new EncounterTransaction();
+
+    private List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
+    private List<BahmniObservation> bahmniObservations = new ArrayList<>();
+    private List<AccessionNote> accessionNotes;
     private String encounterType;
     private String visitType;
 
@@ -148,6 +149,14 @@ public class BahmniEncounterTransaction extends EncounterTransaction {
     @Override
     public List<Observation> getObservations() {
         return encounterTransaction.getObservations();
+    }
+
+    public List<BahmniObservation> getBahmniObservations() {
+        return this.bahmniObservations;
+    }
+
+    public void setBahmniObservations(List<BahmniObservation> bahmniObservations){
+        this.bahmniObservations = bahmniObservations;
     }
 
     @Override

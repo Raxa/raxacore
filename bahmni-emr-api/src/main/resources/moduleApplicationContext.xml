@@ -41,14 +41,18 @@
     </bean>
 
     <bean id="bahmniEncounterTransactionServiceTarget" class="org.openmrs.module.bahmniemrapi.encountertransaction.impl.BahmniEncounterTransactionServiceImpl" autowire="constructor">
-        <constructor-arg  ref="conceptService"/>
         <constructor-arg  ref="encounterService"/>
         <constructor-arg  ref="emrEncounterService"/>
         <constructor-arg  ref="encounterTransactionMapper"/>
-        <constructor-arg  ref="obsService"/>
-        <constructor-arg  ref="accessionNotesMapper"/>
-        <constructor-arg  ref="encounterTransactionObsMapper"/>
+        <constructor-arg>
+            <list>
+                <ref bean="bahmniDiagnosisSaveCommandImpl"/>
+                <!--<ref bean="bahmniObservationSaveCommandImpl"/>-->
+            </list>
+        </constructor-arg>
+        <constructor-arg ref="bahmniEncounterTransactionMapper" />
     </bean>
+
 
 
 </beans>

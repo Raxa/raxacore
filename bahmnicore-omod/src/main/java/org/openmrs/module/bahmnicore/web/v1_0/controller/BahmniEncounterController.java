@@ -53,15 +53,11 @@ public class BahmniEncounterController extends BaseRestController {
     @Autowired
     private EmrEncounterService emrEncounterService;
     @Autowired
-    private ObsService obsService;
-    @Autowired
     private EncounterTransactionMapper encounterTransactionMapper;
     @Autowired
-    private AccessionNotesMapper accessionNotesMapper;
-    @Autowired
-    private EncounterTransactionObsMapper encounterTransactionObsMapper;
-    @Autowired
     private BahmniEncounterTransactionService bahmniEncounterTransactionService;
+    @Autowired
+    private BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper;
 
     @RequestMapping(method = RequestMethod.GET, value = "config")
     @ResponseBody
@@ -98,8 +94,6 @@ public class BahmniEncounterController extends BaseRestController {
                                                  @RequestParam(value = "includeAll", required = false) boolean includeAll,
                                                  @RequestParam(value = "encounterDate", required = false) String encounterDate) {
         List<BahmniEncounterTransaction> bahmniEncounterTransactions = new ArrayList<>();
-
-        BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper = new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper, encounterTransactionObsMapper);
 
         for (String visitUuid : visitUuids ) {
             EncounterSearchParameters encounterSearchParameters = new EncounterSearchParameters();
@@ -143,6 +137,6 @@ public class BahmniEncounterController extends BaseRestController {
     public BahmniEncounterTransaction get(String encounterUuid) {
         Encounter encounter = encounterService.getEncounterByUuid(encounterUuid);
         EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, true);
-        return new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper, encounterTransactionObsMapper).map(encounterTransaction);
+        return bahmniEncounterTransactionMapper.map(encounterTransaction);
     }
 }
