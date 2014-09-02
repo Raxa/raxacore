@@ -1,6 +1,5 @@
 package org.bahmni.module.admin.csv.models;
 
-import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.CSVEntity;
 import org.bahmni.csv.annotation.CSVHeader;
 import org.bahmni.csv.annotation.CSVRegexHeader;
@@ -16,9 +15,6 @@ public class EncounterRow extends CSVEntity {
 
     @CSVHeader(name = "EncounterDate")
     public String encounterDateTime;
-
-    @CSVHeader(name = "ProgramName")
-    public String programName;
 
     @CSVRegexHeader(pattern = "Obs.*")
     public List<KeyValue> obsRows;
@@ -38,13 +34,6 @@ public class EncounterRow extends CSVEntity {
 
     public boolean hasDiagnoses() {
         return diagnosesRows != null && !diagnosesRows.isEmpty();
-    }
-
-    public CSVPatientProgram getPatientProgram() throws ParseException {
-        if (StringUtils.isEmpty(programName)) {
-            return null;
-        }
-        return new CSVPatientProgram(programName, getEncounterDate());
     }
 
 }

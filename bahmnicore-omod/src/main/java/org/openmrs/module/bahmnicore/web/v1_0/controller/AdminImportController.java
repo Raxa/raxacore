@@ -8,7 +8,9 @@ import org.bahmni.fileimport.ImportStatus;
 import org.bahmni.fileimport.dao.ImportStatusDao;
 import org.bahmni.fileimport.dao.JDBCConnectionProvider;
 import org.bahmni.module.admin.csv.EncounterPersister;
+import org.bahmni.module.admin.csv.PatientProgramPersister;
 import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
+import org.bahmni.module.admin.csv.models.PatientProgramRow;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.SessionImplementor;
 import org.hibernate.impl.SessionImpl;
@@ -41,12 +43,17 @@ public class AdminImportController extends BaseRestController {
     private static Logger logger = Logger.getLogger(AdminImportController.class);
 
     public static final String YYYY_MM_DD_HH_MM_SS = "_yyyy-MM-dd_HH:mm:ss";
+    private static final int DEFAULT_NUMBER_OF_DAYS = 30;
+
     public static final String PARENT_DIRECTORY_UPLOADED_FILES_CONFIG = "uploaded.files.directory";
     public static final String ENCOUNTER_FILES_DIRECTORY = "encounter/";
-    private static final int DEFAULT_NUMBER_OF_DAYS = 30;
+    private static final String PROGRAM_FILES_DIRECTORY = "program/";
 
     @Autowired
     private EncounterPersister encounterPersister;
+
+    @Autowired
+    private PatientProgramPersister patientProgramPersister;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -60,7 +67,7 @@ public class AdminImportController extends BaseRestController {
     @ResponseBody
     public boolean upload(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
         try {
-            CSVFile persistedUploadedFile = writeToLocalFile(file);
+            CSVFile persistedUploadedFile = writeToLocalFile(file, ENCOUNTER_FILES_DIRECTORY);
 
             encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm);
             String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
@@ -75,6 +82,25 @@ public class AdminImportController extends BaseRestController {
         }
     }
 
+    @RequestMapping(value = baseUrl + "/program", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean uploadProgram(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
+        try {
+            CSVFile persistedUploadedFile = writeToLocalFile(file, PROGRAM_FILES_DIRECTORY);
+
+            patientProgramPersister.init(Context.getUserContext(), patientMatchingAlgorithm);
+            String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
+            String username = Context.getUserContext().getAuthenticatedUser().getUsername();
+
+            boolean skipValidation = true;
+            return new FileImporter<PatientProgramRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
+                    patientProgramPersister, PatientProgramRow.class, new MRSConnectionProvider(), username, skipValidation);
+        } catch (Exception e) {
+            logger.error("Could not upload file", e);
+            return false;
+        }
+    }
+
     @RequestMapping(value = baseUrl + "/status", method = RequestMethod.GET)
     @ResponseBody
     public List<ImportStatus> status(@RequestParam(required = false) Integer numberOfDays) throws SQLException {
@@ -82,10 +108,10 @@ public class AdminImportController extends BaseRestController {
         return importStatusDao.getImportStatusFromDate(DateUtils.addDays(new Date(), (numberOfDays * -1)));
     }
 
-    private CSVFile writeToLocalFile(MultipartFile file) throws IOException {
+    private CSVFile writeToLocalFile(MultipartFile file, String filesDirectory) throws IOException {
         String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
         byte[] fileBytes = file.getBytes();
-        CSVFile uploadedFile = getFile(uploadedOriginalFileName);
+        CSVFile uploadedFile = getFile(uploadedOriginalFileName, filesDirectory);
         FileOutputStream uploadedFileStream = null;
         try {
             uploadedFileStream = new FileOutputStream(new File(uploadedFile.getAbsolutePath()));
@@ -105,14 +131,14 @@ public class AdminImportController extends BaseRestController {
         return uploadedFile;
     }
 
-    private CSVFile getFile(String fileName) {
+    private CSVFile getFile(String fileName, String filesDirectory) {
         String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
         String fileExtension = fileName.substring(fileName.lastIndexOf("."));
 
         String timestampForFile = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS).format(new Date());
 
         String uploadDirectory = administrationService.getGlobalProperty(PARENT_DIRECTORY_UPLOADED_FILES_CONFIG);
-        String relativePath = ENCOUNTER_FILES_DIRECTORY + fileNameWithoutExtension + timestampForFile + fileExtension;
+        String relativePath = filesDirectory + fileNameWithoutExtension + timestampForFile + fileExtension;
         return new CSVFile(uploadDirectory, relativePath);
     }
 

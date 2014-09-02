@@ -6,7 +6,6 @@ import org.apache.log4j.Logger;
 import org.bahmni.csv.EntityPersister;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.RowResult;
-import org.bahmni.module.admin.csv.models.CSVPatientProgram;
 import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
 import org.bahmni.module.admin.csv.patientmatchingalgorithm.BahmniPatientMatchingAlgorithm;
 import org.bahmni.module.admin.csv.patientmatchingalgorithm.PatientMatchingAlgorithm;
@@ -17,11 +16,8 @@ import org.bahmni.module.admin.observation.ObservationMapper;
 import org.bahmni.module.admin.retrospectiveEncounter.service.RetrospectiveEncounterTransactionService;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.openmrs.Patient;
-import org.openmrs.PatientProgram;
-import org.openmrs.Program;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
-import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
@@ -47,8 +43,6 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
     private EncounterService encounterService;
     @Autowired
     private VisitService visitService;
-    @Autowired
-    private ProgramWorkflowService programWorkflowService;
 
     private UserContext userContext;
     private String patientMatchingAlgorithmClassName;
@@ -96,23 +90,6 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
 
             for (BahmniEncounterTransaction bahmniEncounterTransaction : bahmniEncounterTransactions) {
                 retrospectiveEncounterTransactionService.save(bahmniEncounterTransaction, patient);
-            }
-
-            for (CSVPatientProgram csvPatientProgram : multipleEncounterRow.getPatientPrograms()) {
-                Program program = programWorkflowService.getProgramByName(csvPatientProgram.programName);
-
-                List<PatientProgram> patientPrograms = programWorkflowService.getPatientPrograms(patient, program, null, null, null, null, false);
-                if (patientPrograms != null && !patientPrograms.isEmpty()) {
-                    PatientProgram existingProgram = patientPrograms.get(0);
-                    throw new RuntimeException("Patient already enrolled in " + csvPatientProgram.programName + " from " + existingProgram.getDateEnrolled() + " to " + existingProgram.getDateCompleted());
-                }
-
-                PatientProgram patientProgram = new PatientProgram();
-                patientProgram.setPatient(patient);
-                patientProgram.setProgram(program);
-                patientProgram.setDateEnrolled(csvPatientProgram.encounterDate);
-
-                programWorkflowService.savePatientProgram(patientProgram);
             }
 
             return new RowResult<>(multipleEncounterRow);
