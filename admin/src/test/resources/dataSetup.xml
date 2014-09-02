@@ -55,4 +55,12 @@
     <visit_type visit_type_id="1" name="OPD" creator="1" date_created="2012-10-23 18:04:14"
                 changed_by="1" date_changed="2012-10-23 18:04:14"
                 retired="0" uuid="visitType"/>
+
+    <concept concept_id="9" retired="false" datatype_id="4" class_id="16" is_set="false" creator="1" date_created="2008-08-15 13:57:57.0" version="" uuid="0a9afe04-088b-44ca-9291-0a8c3b5c96fa"/>
+    <concept_name concept_id="9" name="DIABETES PROGRAM" locale="en" creator="1" date_created="2008-08-15 13:57:57.0" concept_name_id="2451" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="dcf41b94-f1af-45fd-8cb9-5ef8c15bab37"/>
+    <program program_id="1" concept_id="9" creator="1" date_created="2008-08-15 16:07:11.0" changed_by="1" date_changed="2008-08-15 17:04:50.0" retired="false" name="Diabetes Program" description="Diabetes program" uuid="da4a0391-ba62-4fad-ad66-1e3722d16380"/>
+
+    <patient_program patient_program_id="1" patient_id="2" program_id="1" date_enrolled="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 11:40:48.0" changed_by="1" date_changed="2008-08-18 12:29:29.0" voided="false" uuid="b75462a0-4c92-451e-b8bc-e98b38b76534"/>
+
+
 </dataset>

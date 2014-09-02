@@ -7,11 +7,10 @@ import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
@@ -35,6 +34,11 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
 
     @Autowired
     private VisitService visitService;
+
+    @Autowired
+    private ProgramWorkflowService programWorkflowService;
+    @Autowired
+    private PatientService patientService;
 
     private String path;
     protected UserContext userContext;
@@ -156,7 +160,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         multipleEncounterRow.encounterRows.add(anEncounter);
 
         RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertTrue("Should have persisted the encounter row.", StringUtils.isEmpty(persistenceResult.getErrorMessage()));
+        assertTrue("Should have persisted the encounter row." + persistenceResult.getErrorMessage(), StringUtils.isEmpty(persistenceResult.getErrorMessage()));
 
         Context.openSession();
         Context.authenticate("admin", "test");
@@ -198,7 +202,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         multipleEncounterRow.encounterRows.add(anotherEncounter);
 
         RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertTrue("Should have persisted the encounter row.", StringUtils.isEmpty(persistenceResult.getErrorMessage()));
+        assertTrue("Should have persisted the encounter row." + persistenceResult.getErrorMessage(), StringUtils.isEmpty(persistenceResult.getErrorMessage()));
 
         Context.openSession();
         Context.authenticate("admin", "test");
@@ -225,7 +229,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         multipleEncounterRow.encounterRows.add(anEncounter);
 
         RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertTrue("Should have persisted the encounter row.", StringUtils.isEmpty(persistenceResult.getErrorMessage()));
+        assertTrue("Should have persisted the encounter row." + persistenceResult.getErrorMessage(), StringUtils.isEmpty(persistenceResult.getErrorMessage()));
 
         Context.openSession();
         Context.authenticate("admin", "test");
@@ -263,7 +267,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         multipleEncounterRow.encounterRows.add(anEncounter);
 
         RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertNull(persistenceResult.getErrorMessage());
+        assertNull("Should have persisted the encounters." + persistenceResult.getErrorMessage(), persistenceResult.getErrorMessage());
 
         Context.openSession();
         Context.authenticate("admin", "test");
@@ -381,7 +385,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         multipleEncounterRow.encounterRows.add(anEncounter);
 
         RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertNull(persistenceResult.getErrorMessage());
+        assertNull("Should have persisted the encounters." + persistenceResult.getErrorMessage(), persistenceResult.getErrorMessage());
         Context.openSession();
         Context.authenticate("admin", "test");
 
@@ -409,7 +413,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         multipleEncounterRow.encounterRows.add(anEncounter);
 
         RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertNull(persistenceResult.getErrorMessage());
+        assertNull("Should have persisted the encounters." + persistenceResult.getErrorMessage(), persistenceResult.getErrorMessage());
         Context.openSession();
         Context.authenticate("admin", "test");
 
@@ -417,6 +421,56 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         Context.closeSession();
         assertEquals(1, encounters.size());
     }
+
+    @Test
+    public void enroll_patient_in_a_program() throws Exception {
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.encounterDateTime = "11-11-1111";
+        anEncounter.programName = "DIABETES PROGRAM";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounter row with the program. " + persistenceResult.getErrorMessage(), StringUtils.isEmpty(persistenceResult.getErrorMessage()));
+
+        Context.openSession();
+        Context.authenticate("admin", "test");
+        Patient patient = patientService.getPatients(null, "GAN200000", null, true).get(0);
+        List<PatientProgram> patientPrograms = programWorkflowService.getPatientPrograms(patient, null, null, null, null, null, false);
+
+        assertTrue("patient should have been enrolled in a program", !patientPrograms.isEmpty());
+        assertEquals("Diabetes Program", patientPrograms.get(0).getProgram().getName());
+
+        Context.flushSession();
+        Context.closeSession();
+    }
+
+    @Test
+    public void should_not_enroll_an_already_enrolled_patient_in_a_program() throws Exception {
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "SEM200000";
+
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.encounterDateTime = "11-11-1111";
+        anEncounter.programName = "DIABETES PROGRAM";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
+        assertTrue(persistenceResult.getErrorMessage().contains("Patient already enrolled in DIABETES PROGRAM"));
+
+    }
+
 
     private List<KeyValue> getPatientAttributes() {
         List<KeyValue> patientAttributes = new ArrayList<>();
