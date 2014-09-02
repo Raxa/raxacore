@@ -45,7 +45,6 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
     }
 
     @Test
-    @Ignore
     public void shouldMapTestOrdersAndResultsForGivenVisit() throws Exception {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
