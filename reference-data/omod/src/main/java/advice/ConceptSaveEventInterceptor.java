@@ -16,16 +16,16 @@ import java.util.List;
 
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
-public class ConceptEventInterceptor implements AfterReturningAdvice {
+public class ConceptSaveEventInterceptor implements AfterReturningAdvice {
     private AtomFeedSpringTransactionManager atomFeedSpringTransactionManager;
     private EventService eventService;
 
-    public ConceptEventInterceptor() {
+    public ConceptSaveEventInterceptor() {
         atomFeedSpringTransactionManager = createTransactionManager();
         this.eventService = createService(atomFeedSpringTransactionManager);
     }
 
-    public ConceptEventInterceptor(AtomFeedSpringTransactionManager atomFeedSpringTransactionManager, EventService eventService) {
+    public ConceptSaveEventInterceptor(AtomFeedSpringTransactionManager atomFeedSpringTransactionManager, EventService eventService) {
         this.atomFeedSpringTransactionManager = atomFeedSpringTransactionManager;
         this.eventService = eventService;
     }

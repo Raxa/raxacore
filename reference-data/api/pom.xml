@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>api</artifactId>
+    <artifactId>${project.parent.artifactId}-api</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.openmrs.api</groupId>

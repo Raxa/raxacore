@@ -41,9 +41,28 @@ public class ConceptBuilder {
     }
 
     public ConceptBuilder withClass(String conceptClassName) {
-        ConceptClass conceptClass = new ConceptClass();
+        ConceptClass conceptClass = concept.getConceptClass();
+        if (conceptClass == null) {
+            conceptClass = new ConceptClass();
+        }
         conceptClass.setName(conceptClassName);
         concept.setConceptClass(conceptClass);
+        return this;
+    }
+
+    public ConceptBuilder withClassUUID(String uuid) {
+        ConceptClass conceptClass = concept.getConceptClass();
+        if (conceptClass == null) {
+            conceptClass = new ConceptClass();
+        }
+        conceptClass.setUuid(uuid);
+        concept.setConceptClass(conceptClass);
+        return this;
+    }
+
+
+    public ConceptBuilder withSetMember(Concept concept){
+        concept.addSetMember(concept);
         return this;
     }
 
