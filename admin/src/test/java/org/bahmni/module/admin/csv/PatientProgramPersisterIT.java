@@ -20,7 +20,6 @@ import static org.junit.Assert.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class PatientProgramPersisterIT extends BaseModuleContextSensitiveTest {
-
     @Autowired
     private PatientProgramPersister patientProgramPersister;
     @Autowired
@@ -28,8 +27,7 @@ public class PatientProgramPersisterIT extends BaseModuleContextSensitiveTest {
     @Autowired
     private PatientService patientService;
 
-
-    protected UserContext userContext;    
+    protected UserContext userContext;
     
     @Before
     public void setUp() throws Exception {
@@ -73,7 +71,7 @@ public class PatientProgramPersisterIT extends BaseModuleContextSensitiveTest {
         patientProgramRow.programName = "DIABETES PROGRAM";
 
         RowResult<PatientProgramRow> persistenceResult = patientProgramPersister.persist(patientProgramRow);
-        assertTrue(persistenceResult.getErrorMessage().contains("Patient already enrolled in DIABETES PROGRAM"));
+        assertTrue(persistenceResult.getErrorMessage().contains("Patient already enrolled in Diabetes Program"));
 
     }
     
