@@ -7,6 +7,15 @@ public class ObsRelationship {
     private String uuid;
     private String relationshipType;
 
+    public ObsRelationship() {
+    }
+
+    public ObsRelationship(BahmniObservation targetObs, String uuid, String relationshipType) {
+        this.targetObs = targetObs;
+        this.uuid = uuid;
+        this.relationshipType = relationshipType;
+    }
+
     public BahmniObservation getTargetObs() {
         return targetObs;
     }

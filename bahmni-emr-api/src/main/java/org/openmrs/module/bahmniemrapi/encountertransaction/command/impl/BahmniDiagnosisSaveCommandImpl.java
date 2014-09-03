@@ -36,6 +36,9 @@ public class BahmniDiagnosisSaveCommandImpl implements SaveCommand {
 
     @Override
     public EncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Encounter currentEncounter, EncounterTransaction updatedEncounterTransaction) {
+        if(bahmniEncounterTransaction.getBahmniDiagnoses().size() == 0){
+            return updatedEncounterTransaction;
+        }
         return saveDiagnoses(bahmniEncounterTransaction,currentEncounter,updatedEncounterTransaction);
     }
 

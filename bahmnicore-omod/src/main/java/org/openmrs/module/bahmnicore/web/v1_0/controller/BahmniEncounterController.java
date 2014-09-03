@@ -15,6 +15,7 @@ import org.openmrs.api.OrderService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmnicore.web.v1_0.InvalidInputException;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.accessionnote.mapper.AccessionNotesMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
@@ -38,6 +39,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/bahmniencounter")
@@ -131,6 +133,7 @@ public class BahmniEncounterController extends BaseRestController {
     @ResponseBody
     @Transactional
     public BahmniEncounterTransaction update(@RequestBody BahmniEncounterTransaction bahmniEncounterTransaction) {
+        setUuidsForObservations(bahmniEncounterTransaction.getBahmniObservations());
         return bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
     }
 
@@ -138,5 +141,13 @@ public class BahmniEncounterController extends BaseRestController {
         Encounter encounter = encounterService.getEncounterByUuid(encounterUuid);
         EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, true);
         return bahmniEncounterTransactionMapper.map(encounterTransaction);
+    }
+
+    private void setUuidsForObservations(List<BahmniObservation> bahmniObservations) {
+        for (BahmniObservation bahmniObservation : bahmniObservations) {
+            if (org.apache.commons.lang3.StringUtils.isBlank(bahmniObservation.getUuid())){
+                bahmniObservation.setUuid(UUID.randomUUID().toString());
+            }
+        }
     }
 }

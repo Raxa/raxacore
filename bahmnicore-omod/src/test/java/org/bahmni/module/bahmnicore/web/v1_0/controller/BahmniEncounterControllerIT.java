@@ -51,7 +51,7 @@ public class BahmniEncounterControllerIT extends BaseModuleWebContextSensitiveTe
 
         BahmniEncounterTransaction encounterTransaction = bahmniEncounterController.update(bahmniEncounterTransaction);
         assertEquals("1e5d5d48-6b78-11e0-93c3-18a905e044dc", encounterTransaction.getVisitUuid());
-        assertEquals(1, encounterTransaction.getDiagnoses().size());
+        assertEquals(1, encounterTransaction.getBahmniDiagnoses().size());
         final BahmniDiagnosis bahmniDiagnosisAfterFirstSave = encounterTransaction.getBahmniDiagnoses().get(0);
         assertDiagnosis(bahmniDiagnosisAfterFirstSave, Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", false, comments);
         assertDiagnosis(bahmniDiagnosisAfterFirstSave.getFirstDiagnosis(), Diagnosis.Certainty.CONFIRMED, Diagnosis.Order.PRIMARY, "Ruled Out", false, comments);

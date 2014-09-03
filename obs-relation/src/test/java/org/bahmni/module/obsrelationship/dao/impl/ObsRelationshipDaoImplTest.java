@@ -136,5 +136,18 @@ public class ObsRelationshipDaoImplTest extends BaseModuleContextSensitiveTest {
         assertNull(relationshipType);
     }
 
+    @Test
+    public void shouldReturnObsRelationsInGivenEncounter(){
+        String encounterUuid = "6519d653-393b-4118-9c83-a3715b82d4ac";
+        List<ObsRelationship> obsRelationships = obsRelationshipDao.getRelationsWhereSourceObsInEncounter(encounterUuid);
+        assertEquals(2,obsRelationships.size());
+        assertEquals("2cc6880e-2c46-11e4-9038-a6c5e4d22fb7", obsRelationships.get(0).getUuid());
+        assertEquals(new Integer(9), obsRelationships.get(0).getSourceObs().getId());
+        assertEquals(new Integer(7), obsRelationships.get(0).getTargetObs().getId());
+
+        assertEquals("2cc6880e-2c46-11e4-9038-a6c5e4d22222", obsRelationships.get(1).getUuid());
+        assertEquals(new Integer(9), obsRelationships.get(1).getSourceObs().getId());
+        assertEquals(new Integer(11), obsRelationships.get(1).getTargetObs().getId());
+    }
 
 }

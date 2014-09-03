@@ -12,6 +12,9 @@ public interface ObsRelationService {
     ObsRelationshipType saveOrUpdateRelationshipType(ObsRelationshipType obsRelationshipType);
     ObsRelationship getRelationByUuid(String uuid);
     List<ObsRelationship> getRelationsBy(Obs sourceObs, Obs targetObs);
+
+    List<ObsRelationship> getRelationsWhereSourceObsInEncounter(String encounterUuid);
+
     List<ObsRelationshipType> getAllRelationshipTypes();
     ObsRelationshipType getRelationshipTypeByName(String name);
 }

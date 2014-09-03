@@ -7,8 +7,8 @@ import org.openmrs.EncounterType;
 import org.openmrs.api.EncounterService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.SaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTransactionDiagnosisMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
 import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Transactional
 public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTransactionService {
@@ -38,18 +39,8 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     @Override
     public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction) {
         // TODO : Mujir - map string VisitType to the uuids and set on bahmniEncounterTransaction object
-        String encounterTypeString = bahmniEncounterTransaction.getEncounterType();
-        if (bahmniEncounterTransaction.getEncounterTypeUuid() == null && StringUtils.isNotEmpty(encounterTypeString)) {
-            EncounterType encounterType = encounterService.getEncounterType(encounterTypeString);
-            if (encounterType == null) {
-                throw new RuntimeException("Encounter type:'" + encounterTypeString + "' not found.");
-            }
-            bahmniEncounterTransaction.setEncounterTypeUuid(encounterType.getUuid());
-        }
-
-        new EncounterTransactionDiagnosisMapper().populateDiagnosis(bahmniEncounterTransaction);
-
-        EncounterTransaction encounterTransaction = emrEncounterService.save(bahmniEncounterTransaction);
+        setEncounterType(bahmniEncounterTransaction);
+        EncounterTransaction encounterTransaction = emrEncounterService.save(bahmniEncounterTransaction.toEncounterTransaction());
 
         //Get the saved encounter transaction from emr-api
         String encounterUuid = encounterTransaction.getEncounterUuid();
@@ -60,6 +51,19 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
             updatedEncounterTransaction = saveCommand.save(bahmniEncounterTransaction,currentEncounter, updatedEncounterTransaction);
         }
         return bahmniEncounterTransactionMapper.map(updatedEncounterTransaction);
+    }
+
+
+
+    private void setEncounterType(BahmniEncounterTransaction bahmniEncounterTransaction) {
+        String encounterTypeString = bahmniEncounterTransaction.getEncounterType();
+        if (bahmniEncounterTransaction.getEncounterTypeUuid() == null && StringUtils.isNotEmpty(encounterTypeString)) {
+            EncounterType encounterType = encounterService.getEncounterType(encounterTypeString);
+            if (encounterType == null) {
+                throw new RuntimeException("Encounter type:'" + encounterTypeString + "' not found.");
+            }
+            bahmniEncounterTransaction.setEncounterTypeUuid(encounterType.getUuid());
+        }
     }
 
 

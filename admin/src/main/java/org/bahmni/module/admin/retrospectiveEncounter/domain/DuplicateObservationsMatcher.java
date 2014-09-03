@@ -4,6 +4,7 @@ import org.openmrs.Obs;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.EmrApiConstants;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
@@ -25,6 +26,19 @@ public class DuplicateObservationsMatcher {
 
         List<EncounterTransaction.Observation> uniqueObservations = new ArrayList<>();
         for (EncounterTransaction.Observation anObservation : observations) {
+            String anObservationValue = (String) anObservation.getValue();
+            String observationConceptName = anObservation.getConcept().getName();
+            if (isUnique(allObs, anObservationValue, observationConceptName)) {
+                uniqueObservations.add(anObservation);
+            }
+        }
+        return uniqueObservations;
+    }
+
+    public List<BahmniObservation> getUniqueBahmniObservations(List<BahmniObservation> observations) {
+        List<Obs> allObs = getObservationsForVisit();
+        List<BahmniObservation> uniqueObservations = new ArrayList<>();
+        for (BahmniObservation anObservation : observations) {
             String anObservationValue = (String) anObservation.getValue();
             String observationConceptName = anObservation.getConcept().getName();
             if (isUnique(allObs, anObservationValue, observationConceptName)) {

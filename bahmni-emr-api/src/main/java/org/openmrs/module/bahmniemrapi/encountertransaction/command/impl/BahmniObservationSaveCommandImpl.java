@@ -29,6 +29,9 @@ public class BahmniObservationSaveCommandImpl implements SaveCommand {
         for (BahmniObservation  bahmniObservation : bahmniEncounterTransaction.getBahmniObservations()) {
             if(bahmniObservation.getTargetObsRelation() != null){
                 Obs srcObservation =findMatchingObservation(bahmniObservation, currentEncounter);
+                if(bahmniObservation.getTargetObsRelation() == null || bahmniObservation.getTargetObsRelation().getTargetObs() == null){
+                    continue;
+                }
                 Obs targetObservation =findMatchingObservation(bahmniObservation.getTargetObsRelation().getTargetObs(), currentEncounter);
                 if(targetObservation == null){
                     String uuid = bahmniObservation.getTargetObsRelation().getTargetObs().getUuid();

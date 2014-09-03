@@ -47,7 +47,7 @@
         <constructor-arg>
             <list>
                 <ref bean="bahmniDiagnosisSaveCommandImpl"/>
-                <!--<ref bean="bahmniObservationSaveCommandImpl"/>-->
+                <ref bean="bahmniObservationSaveCommandImpl"/>
             </list>
         </constructor-arg>
         <constructor-arg ref="bahmniEncounterTransactionMapper" />

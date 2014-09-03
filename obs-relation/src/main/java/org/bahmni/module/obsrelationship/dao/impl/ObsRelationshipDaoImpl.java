@@ -5,6 +5,7 @@ import org.bahmni.module.obsrelationship.model.ObsRelationship;
 import org.bahmni.module.obsrelationship.model.ObsRelationshipType;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -81,6 +82,15 @@ public class ObsRelationshipDaoImpl implements ObsRelationshipDao {
             return (ObsRelationshipType) query.list().get(0);
         }
         return null;
+    }
+
+    @Override
+    @Transactional
+    public List<ObsRelationship> getRelationsWhereSourceObsInEncounter(String encounterUuid) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from ObsRelationship obsRel where obsRel.sourceObs.encounter.uuid =:encounterUuid");
+        query.setString("encounterUuid", encounterUuid);
+        List<ObsRelationship> obsRelations = query.list();
+        return obsRelations;
     }
 
     private Query createGetRelationsQueryFor(Obs sourceObs, Obs targetObs) {
