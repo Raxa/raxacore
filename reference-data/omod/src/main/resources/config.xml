@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<module configVersion="1.2">
+    <!-- Module Properties -->
+    <id>${project.parent.artifactId}</id>
+    <name>${project.parent.name}</name>
+    <version>${project.parent.version}</version>
+    <package>${project.parent.groupId}.${project.parent.artifactId}</package>
+    <author>Thoughtworks</author>
+    <description>
+        ${project.parent.description}
+    </description>
+    <!-- Required Modules -->
+    <require_modules>
+    </require_modules>
+    <!-- Module Activator -->
+    <!-- Internationalization -->
+    <!-- All message codes should start with ${project.parent.artifactId}. -->
+</module>
+

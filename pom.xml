@@ -17,6 +17,7 @@
         <module>bahmnicore-omod</module>
         <module>vagrant-deploy</module>
         <module>admin</module>
+        <module>reference-data</module>
     </modules>
 
     <properties>
