@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.model;
+package org.openmrs.module.bahmniemrapi.drugorder.contract;
 
 import lombok.Data;
 

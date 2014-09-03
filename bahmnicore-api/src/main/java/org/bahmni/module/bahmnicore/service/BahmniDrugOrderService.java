@@ -12,8 +12,6 @@ public interface BahmniDrugOrderService {
     void add(String patientId, Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders, String systemUserName, String visitTypeName);
     List getActiveDrugOrders(String patientUuid);
 
-    List<? extends Order> getActiveDrugOrders(String patientUuid, Date asOfDate);
-
     List<DrugOrder> getPrescribedDrugOrders(String patientUuid, Boolean includeActiveVisit, Integer numberOfVisit);
 
     DrugOrderConfigResponse getConfig();

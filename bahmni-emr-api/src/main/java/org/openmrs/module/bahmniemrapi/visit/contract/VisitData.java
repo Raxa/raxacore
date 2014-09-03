@@ -1,9 +1,8 @@
-package org.bahmni.module.bahmnicore.model;
+package org.openmrs.module.bahmniemrapi.visit.contract;
 
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bahmni.module.bahmnicore.util.CustomDateSerializer;
 import org.openmrs.Visit;
 
 import java.util.Date;
@@ -11,7 +10,7 @@ import java.util.Date;
 public class VisitData {
     @Getter @Setter
     private String uuid;
-    @Setter
+    @Getter @Setter
     private Date startDateTime;
 
     public VisitData(Visit visit) {
@@ -19,7 +18,4 @@ public class VisitData {
         this.startDateTime = visit.getStartDatetime();
     }
 
-    public String getStartDateTime() {
-        return CustomDateSerializer.serializeDate(startDateTime);
-    }
 }
