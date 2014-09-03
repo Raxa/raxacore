@@ -47,7 +47,7 @@ public class SampleEventTest {
 
         List<ConceptSet> conceptSets = setConceptSet(parentConcept);
 
-        when(conceptService.getConceptSetsByConcept(any(Concept.class))).thenReturn(conceptSets);
+        when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
 
         Locale defaultLocale = new Locale("en", "GB");
         PowerMockito.mockStatic(Context.class);
@@ -76,7 +76,7 @@ public class SampleEventTest {
 
     @Test
     public void should_not_create_event_for_sample_event_if_parent_concept_is_missing() throws Exception {
-        when(conceptService.getConceptSetsByConcept(any(Concept.class))).thenReturn(new ArrayList<ConceptSet>());
+        when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(new ArrayList<ConceptSet>());
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         assertTrue(events.isEmpty());
     }
@@ -85,7 +85,7 @@ public class SampleEventTest {
     @Test
     public void should_not_create_event_for_sample_event_if_parent_concept_is_wrong() throws Exception {
         parentConcept = new ConceptBuilder().withName("Some wrong name").withSetMember(concept).build();
-        when(conceptService.getConceptSetsByConcept(any(Concept.class))).thenReturn(setConceptSet(parentConcept));
+        when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(setConceptSet(parentConcept));
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         assertTrue(events.isEmpty());
     }

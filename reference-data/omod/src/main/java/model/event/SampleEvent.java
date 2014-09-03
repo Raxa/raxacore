@@ -45,7 +45,7 @@ public class SampleEvent implements ConceptOperationEvent {
     }
 
     private boolean isChildOf(Concept concept) {
-        for (ConceptSet conceptSet : Context.getConceptService().getConceptSetsByConcept(concept)) {
+        for (ConceptSet conceptSet : Context.getConceptService().getSetsContainingConcept(concept)) {
             if (conceptSet.getConceptSet().getName(Context.getLocale()).getName().equals(SAMPLE_PARENT_CONCEPT_NAME)) {
                 return true;
             }

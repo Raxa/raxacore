@@ -3,7 +3,6 @@ package advice;
 import model.event.SampleEvent;
 import model.event.SampleEventTest;
 import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
-import org.ict4h.atomfeed.server.service.Event;
 import org.ict4h.atomfeed.server.service.EventService;
 import org.ict4h.atomfeed.transaction.AFTransactionWork;
 import org.ict4h.atomfeed.transaction.AFTransactionWorkWithoutResult;
@@ -33,7 +32,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 
 @PrepareForTest(Context.class)
@@ -48,7 +46,7 @@ public class ConceptOperationEventInterceptorTest {
 
     private ArgumentCaptor<AFTransactionWorkWithoutResult> captor = ArgumentCaptor.forClass(AFTransactionWorkWithoutResult.class);
 
-    private ConceptSaveEventInterceptor publishedFeed;
+    private ConceptOperationEventInterceptor publishedFeed;
 
     private Concept concept;
     private Concept parentConcept;
@@ -64,14 +62,14 @@ public class ConceptOperationEventInterceptorTest {
 
         List<ConceptSet> conceptSets = setConceptSet(parentConcept);
 
-        when(conceptService.getConceptSetsByConcept(any(Concept.class))).thenReturn(conceptSets);
+        when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
 
         Locale defaultLocale = new Locale("en", "GB");
         PowerMockito.mockStatic(Context.class);
         when(Context.getConceptService()).thenReturn(conceptService);
         PowerMockito.when(Context.getLocale()).thenReturn(defaultLocale);
 
-        publishedFeed = new ConceptSaveEventInterceptor(atomFeedSpringTransactionManager, eventService);
+        publishedFeed = new ConceptOperationEventInterceptor(atomFeedSpringTransactionManager, eventService);
     }
 
     public static List<ConceptSet> setConceptSet(Concept concept) {
