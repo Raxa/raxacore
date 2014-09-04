@@ -103,6 +103,10 @@
         <url-pattern>/ws/rest/v1/concept</url-pattern>
     </filter-mapping>
 
+    <mappingFiles>
+        ObsRelationship.hbm.xml
+        ObsRelationshipType.hbm.xml
+    </mappingFiles>
     <!-- Internationalization -->
     <!-- All message codes should start with moduleId.* -->
     <messages>

@@ -10,6 +10,19 @@
 
     <context:component-scan base-package="org.bahmni.module.obsrelationship"/>
 
+   <!-- <bean id="sessionFactory" class="org.openmrs.api.db.hibernate.HibernateSessionFactoryBean">
+        <property name="configLocations">
+            <list>
+                <value>classpath:hibernate.cfg.xml</value>
+                <value>classpath:obsrelation-hibernate.cfg.xml</value>
+            </list>
+        </property>
+        <property name="mappingJarLocations">
+            <ref bean="mappingJarResources"/>
+        </property>
+        &lt;!&ndash;  default properties must be set in the hibernate.default.properties &ndash;&gt;
+    </bean>-->
+
     <bean id="obsRelationshipDao" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
             <ref bean="transactionManager"/>

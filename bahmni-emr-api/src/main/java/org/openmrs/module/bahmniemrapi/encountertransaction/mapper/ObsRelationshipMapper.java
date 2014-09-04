@@ -12,15 +12,11 @@ import java.util.List;
 
 @Component
 public class ObsRelationshipMapper {
-
-    @Autowired
     private ObsRelationService obsRelationService;
-
-    @Autowired
     private ObservationMapper observationMapper;
 
+    @Autowired
     public ObsRelationshipMapper(ObsRelationService obsRelationService, ObservationMapper observationMapper) {
-
         this.obsRelationService = obsRelationService;
         this.observationMapper = observationMapper;
     }

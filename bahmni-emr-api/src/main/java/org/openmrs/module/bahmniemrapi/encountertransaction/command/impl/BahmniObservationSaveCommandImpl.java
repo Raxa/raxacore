@@ -38,17 +38,26 @@ public class BahmniObservationSaveCommandImpl implements SaveCommand {
                     targetObservation = obsService.getObsByUuid(uuid);
                 }
                 ObsRelationshipType obsRelationshipType = obsRelationService.getRelationshipTypeByName(bahmniObservation.getTargetObsRelation().getRelationshipType());
-
-                ObsRelationship obsRelation =  new ObsRelationship();
+                ObsRelationship obsRelation =  createNewIfDoesntExist(bahmniObservation.getTargetObsRelation().getUuid());
                 obsRelation.setSourceObs(srcObservation);
                 obsRelation.setTargetObs(targetObservation);
                 obsRelation.setObsRelationshipType(obsRelationshipType);
-                obsRelation.setUuid(bahmniObservation.getTargetObsRelation().getUuid());
 
                 obsRelationService.saveOrUpdate(obsRelation);
             }
         }
         return updatedEncounterTransaction;
+    }
+
+    private ObsRelationship createNewIfDoesntExist(String obsRelationUuid){
+        ObsRelationship obsRelation = new ObsRelationship();
+        if(obsRelationUuid!= null){
+            obsRelation = obsRelationService.getRelationByUuid(obsRelationUuid);
+            if(obsRelation == null){
+                obsRelation = new ObsRelationship();
+            }
+        }
+        return obsRelation;
     }
 
     private Obs findMatchingObservation(BahmniObservation bahmniObservation, Encounter currentEncounter) {
