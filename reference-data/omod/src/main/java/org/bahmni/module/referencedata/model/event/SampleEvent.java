@@ -26,18 +26,15 @@ public class SampleEvent implements ConceptOperationEvent {
         return asList("saveConcept", "updateConcept", "retireConcept", "purgeConcept");
     }
 
-    public Boolean isApplicable(String operation) {
-        return this.operations().contains(operation);
+    public Boolean isApplicable(String operation, Object[] arguments) {
+        return this.operations().contains(operation) && isSampleConcept((Concept) arguments[0]);
     }
 
     @Override
     public Event asAtomFeedEvent(Object[] arguments) throws URISyntaxException {
         Concept concept = (Concept) arguments[0];
-        if (isSampleConcept(concept)) {
-            String url = String.format(this.url, "sample", concept.getUuid());
-            return new Event(UUID.randomUUID().toString(), "sample", DateTime.now(), url, url, "lab");
-        }
-        return null;
+        String url = String.format(this.url, "sample", concept.getUuid());
+        return new Event(UUID.randomUUID().toString(), "sample", DateTime.now(), url, url, "lab");
     }
 
     private boolean isSampleConcept(Concept concept) {

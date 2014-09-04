@@ -26,7 +26,7 @@ public class Operation {
     public List<Event> apply(Object[] arguments) throws Exception {
         List<Event> atomFeedEvents = new ArrayList<>();
         for (ConceptOperationEvent event : events) {
-            if (event.isApplicable(name)) {
+            if (event.isApplicable(name, arguments)) {
                 addIgnoreNull(atomFeedEvents, event.asAtomFeedEvent(arguments));
             }
         }
