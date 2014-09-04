@@ -1,8 +1,8 @@
-package advice;
+package org.bahmni.module.referencedata.advice;
 
-import model.event.SampleEvent;
-import model.event.SampleEventTest;
 import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
+import org.bahmni.module.referencedata.model.event.SampleEvent;
+import org.bahmni.module.referencedata.model.event.SampleEventTest;
 import org.ict4h.atomfeed.server.service.EventService;
 import org.ict4h.atomfeed.transaction.AFTransactionWork;
 import org.ict4h.atomfeed.transaction.AFTransactionWorkWithoutResult;
@@ -29,9 +29,7 @@ import java.util.Locale;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @PrepareForTest(Context.class)
@@ -60,7 +58,7 @@ public class ConceptOperationEventInterceptorTest {
 
         parentConcept = new ConceptBuilder().withName(SampleEvent.SAMPLE_PARENT_CONCEPT_NAME).withSetMember(concept).build();
 
-        List<ConceptSet> conceptSets = setConceptSet(parentConcept);
+        List<ConceptSet> conceptSets = getConceptSets(parentConcept, concept);
 
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
 
@@ -72,12 +70,24 @@ public class ConceptOperationEventInterceptorTest {
         publishedFeed = new ConceptOperationEventInterceptor(atomFeedSpringTransactionManager, eventService);
     }
 
-    public static List<ConceptSet> setConceptSet(Concept concept) {
+    public static List<ConceptSet> getConceptSets(Concept parentConcept, Concept conceptMember) {
         List<ConceptSet> conceptSets = new ArrayList<>();
-        ConceptSet conceptSet = new ConceptSet();
-        conceptSet.setConceptSet(concept);
+        ConceptSet conceptSet = getConceptSet(parentConcept, conceptMember);
         conceptSets.add(conceptSet);
         return conceptSets;
+    }
+
+    public static List<ConceptSet> getConceptSets(ConceptSet conceptSet) {
+        List<ConceptSet> conceptSets = new ArrayList<>();
+        conceptSets.add(conceptSet);
+        return conceptSets;
+    }
+
+    public static ConceptSet getConceptSet(Concept parentConcept, Concept conceptMember) {
+        ConceptSet conceptSet = new ConceptSet();
+        conceptSet.setConceptSet(parentConcept);
+        conceptSet.setConcept(conceptMember);
+        return conceptSet;
     }
 
     @Test

@@ -1,6 +1,6 @@
-package advice;
+package org.bahmni.module.referencedata.advice;
 
-import model.Operation;
+import org.bahmni.module.referencedata.model.Operation;
 import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
 import org.ict4h.atomfeed.server.service.Event;
 import org.ict4h.atomfeed.server.service.EventService;

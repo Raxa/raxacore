@@ -80,6 +80,11 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>emrapi-api</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

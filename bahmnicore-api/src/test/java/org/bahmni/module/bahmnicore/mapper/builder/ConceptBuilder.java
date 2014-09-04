@@ -5,7 +5,10 @@ import org.openmrs.ConceptClass;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptNameType;
+import org.openmrs.api.context.Context;
 import org.openmrs.util.LocaleUtility;
+
+import java.util.Date;
 
 public class ConceptBuilder {
     private final Concept concept;
@@ -73,6 +76,27 @@ public class ConceptBuilder {
 
     public ConceptBuilder withCodedDataType() {
         withDataType("Coded", ConceptDatatype.CODED, ConceptDatatype.CODED_UUID);
+        return this;
+    }
+
+    public ConceptBuilder withDateCreated(Date dateCreated){
+        concept.setDateCreated(dateCreated);
+        return this;
+    }
+
+    public ConceptBuilder withDateChanged(Date dateChanged){
+        concept.setDateChanged(dateChanged);
+        return this;
+    }
+
+    public ConceptBuilder withRetired(Boolean retired){
+        concept.setRetired(retired);
+        return this;
+    }
+
+    public ConceptBuilder withShortName(String name){
+        ConceptName conceptName = new ConceptName(name, Context.getLocale());
+        concept.setShortName(conceptName);
         return this;
     }
 

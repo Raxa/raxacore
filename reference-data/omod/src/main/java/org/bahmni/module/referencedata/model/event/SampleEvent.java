@@ -1,4 +1,4 @@
-package model.event;
+package org.bahmni.module.referencedata.model.event;
 
 import org.ict4h.atomfeed.server.service.Event;
 import org.joda.time.DateTime;

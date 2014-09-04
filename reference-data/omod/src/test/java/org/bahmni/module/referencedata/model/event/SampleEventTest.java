@@ -1,6 +1,6 @@
-package model.event;
+package org.bahmni.module.referencedata.model.event;
 
-import model.Operation;
+import org.bahmni.module.referencedata.model.Operation;
 import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
 import org.ict4h.atomfeed.server.service.Event;
 import org.junit.Before;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static advice.ConceptOperationEventInterceptorTest.setConceptSet;
+import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -45,7 +45,7 @@ public class SampleEventTest {
 
         parentConcept = new ConceptBuilder().withName(SampleEvent.SAMPLE_PARENT_CONCEPT_NAME).withSetMember(concept).build();
 
-        List<ConceptSet> conceptSets = setConceptSet(parentConcept);
+        List<ConceptSet> conceptSets = getConceptSets(parentConcept, concept);
 
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
 
@@ -85,7 +85,7 @@ public class SampleEventTest {
     @Test
     public void should_not_create_event_for_sample_event_if_parent_concept_is_wrong() throws Exception {
         parentConcept = new ConceptBuilder().withName("Some wrong name").withSetMember(concept).build();
-        when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(setConceptSet(parentConcept));
+        when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(getConceptSets(parentConcept, concept));
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         assertTrue(events.isEmpty());
     }
