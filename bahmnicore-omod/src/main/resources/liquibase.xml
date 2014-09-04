@@ -1551,4 +1551,14 @@
             call add_concept_set_members (@labresults_concept_id,@set_concept_id,1);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201409041224" author="Banka">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT count(*) from role_privilege where role='Anonymous' and privilege='View Locations'</sqlCheck>
+        </preConditions>
+        <comment>Add View Location privilege to Anonymous</comment>
+        <insert tableName="role_privilege">
+            <column name="role" value="Anonymous"/>
+            <column name="privilege" value="View Locations"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
