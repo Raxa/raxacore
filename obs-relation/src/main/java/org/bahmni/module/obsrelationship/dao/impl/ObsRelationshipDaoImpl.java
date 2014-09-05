@@ -89,8 +89,14 @@ public class ObsRelationshipDaoImpl implements ObsRelationshipDao {
     public List<ObsRelationship> getRelationsWhereSourceObsInEncounter(String encounterUuid) {
         Query query = sessionFactory.getCurrentSession().createQuery("from ObsRelationship obsRel where obsRel.sourceObs.encounter.uuid =:encounterUuid");
         query.setString("encounterUuid", encounterUuid);
-        List<ObsRelationship> obsRelations = query.list();
-        return obsRelations;
+        return query.list();
+    }
+
+    @Override
+    public List<ObsRelationship> getObsRelationshipsByTargetObsUuid(String targetObsUuid) {
+        Query query = sessionFactory.getCurrentSession().createQuery("from ObsRelationship obsRel where obsRel.targetObs.uuid =:targetObsUuid");
+        query.setString("targetObsUuid", targetObsUuid);
+        return query.list();
     }
 
     private Query createGetRelationsQueryFor(Obs sourceObs, Obs targetObs) {

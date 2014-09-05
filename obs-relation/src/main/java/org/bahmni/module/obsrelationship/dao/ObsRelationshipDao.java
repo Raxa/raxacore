@@ -16,4 +16,6 @@ public interface ObsRelationshipDao {
     ObsRelationshipType getRelationshipTypeByName(String name);
 
     List<ObsRelationship> getRelationsWhereSourceObsInEncounter(String encounterUuid);
+
+    List<ObsRelationship> getObsRelationshipsByTargetObsUuid(String targetObsUuid);
 }

@@ -4,9 +4,7 @@ import org.bahmni.module.obsrelationship.api.ObsRelationService;
 import org.bahmni.module.obsrelationship.dao.ObsRelationshipDao;
 import org.bahmni.module.obsrelationship.model.ObsRelationship;
 import org.bahmni.module.obsrelationship.model.ObsRelationshipType;
-import org.openmrs.Encounter;
 import org.openmrs.Obs;
-import org.openmrs.api.EncounterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -59,5 +57,10 @@ public class ObsRelationServiceImpl implements ObsRelationService {
     @Override
     public ObsRelationshipType getRelationshipTypeByName(String name) {
         return obsRelationshipDao.getRelationshipTypeByName(name);
+    }
+
+    @Override
+    public List<ObsRelationship> getObsRelationshipsByTargetObsUuid(String targetObsUuid) {
+        return obsRelationshipDao.getObsRelationshipsByTargetObsUuid(targetObsUuid);
     }
 }
