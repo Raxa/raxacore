@@ -1510,34 +1510,39 @@
             Introducing Obs relationship type and obs relationship tables
         </comment>
         <sql>
-            create table obs_relationship_type(
-            obs_relationship_type_id INT not null primary key auto_increment ,
-            name VARCHAR (50) not null ,
-            description VARCHAR (255),
-            uuid CHAR (38) not null unique ,
-            creator INT not null ,
-            date_created DATETIME not null default now(),
-            retired tinyint not null default 0,
-            date_retired datetime,
-            retired_by INT,
-            retired_reason varchar (255),
-            date_changed DATETIME,
-            changed_by int,
-            FOREIGN KEY ( creator ) REFERENCES users ( user_id ),
-            FOREIGN KEY ( changed_by ) REFERENCES users ( user_id ),
-            FOREIGN KEY ( retired_by ) REFERENCES users ( user_id )
+            CREATE TABLE obs_relationship_type(
+                obs_relationship_type_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                name VARCHAR(50) NOT NULL,
+                description VARCHAR(255),
+                uuid CHAR(38) NOT NULL,
+                creator INT NOT NULL,
+                date_created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                retired TINYINT DEFAULT 0 NOT NULL,
+                date_retired DATETIME,
+                retired_by INT,
+                retire_reason VARCHAR(255),
+                date_changed DATETIME,
+                changed_by INT,
+                FOREIGN KEY (creator) REFERENCES users (user_id),
+                FOREIGN KEY (changed_by) REFERENCES users (user_id),
+                FOREIGN KEY (retired_by) REFERENCES users (user_id)
             );
+            CREATE UNIQUE INDEX uuid ON obs_relationship_type (uuid);
 
-            create table obs_relation(
-            obs_relation_id int not null primary key auto_increment ,
-            obs_relationship_type_id int not null ,
-            source_obs_id int not null ,
-            target_obs_id int not null ,
-            uuid CHAR (38) not null unique ,
-            FOREIGN KEY (obs_relationship_type_id) REFERENCES obs_relationship_type (obs_relationship_type_id),
-            FOREIGN KEY (source_obs_id) REFERENCES obs(obs_id) ,
-            FOREIGN KEY (target_obs_id) REFERENCES obs(obs_id)
+            CREATE TABLE obs_relationship(
+                obs_relationship_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                obs_relationship_type_id INT NOT NULL,
+                source_obs_id INT NOT NULL,
+                target_obs_id INT NOT NULL,
+                uuid CHAR(38) NOT NULL,
+                date_created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                creator INT NOT NULL,
+                FOREIGN KEY (obs_relationship_type_id) REFERENCES obs_relationship_type (obs_relationship_type_id),
+                FOREIGN KEY (source_obs_id) REFERENCES obs (obs_id),
+                FOREIGN KEY (target_obs_id) REFERENCES obs (obs_id),
+                FOREIGN KEY (creator) REFERENCES person (person_id)
             );
+            CREATE UNIQUE INDEX uuid ON obs_relationship (uuid);
         </sql>
     </changeSet>
 
