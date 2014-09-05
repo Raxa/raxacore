@@ -30,11 +30,12 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private BahmniPatientDao bahmniPatientDao;
     private PatientService openmrsPatientService;
     private OrderDao orderDao;
-    private OrderType drugOrderType = null;
-    private Provider systemProvider = null;
-    private EncounterRole unknownEncounterRole = null;
-    private EncounterType consultationEncounterType = null;
-    private String systemUserName = null;
+    private OrderType drugOrderType;
+    private Provider systemProvider;
+    private EncounterRole unknownEncounterRole;
+    private EncounterType consultationEncounterType;
+    private String systemUserName;
+
     public static final String PHARMACY_VISIT = "PHARMACY VISIT";
     private static final String GP_DOSING_INSTRUCTIONS_CONCEPT_UUID = "order.dosingInstructionsConceptUuid";
 
@@ -76,7 +77,8 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     @Override
     public List<DrugOrder> getActiveDrugOrders(String patientUuid, Date asOfDate) {
         Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
-        return (List<DrugOrder>)(List<? extends Order>)orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug Order"), orderService.getCareSettingByName("Outpatient"), asOfDate);
+        return (List<DrugOrder>)(List<? extends Order>)orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
+                orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString()), asOfDate);
     }
 
     @Override
@@ -219,7 +221,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             drugOrder.setAsNeeded(false);
             drugOrder.setOrderType(getDrugOrderType());
             drugOrder.setOrderer(getSystemProvider());
-            drugOrder.setCareSetting(orderService.getCareSettingByName("Outpatient"));
+            drugOrder.setCareSetting(orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString()));
             drugOrder.setDosingType(FreeTextDosingInstructions.class);
             drugOrder.setDosingInstructions(createInstructions(bahmniDrugOrder, drugOrder));
             drugOrder.setQuantity(bahmniDrugOrder.getQuantity());
@@ -236,12 +238,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
     private OrderType getDrugOrderType() {
         if (drugOrderType == null) {
-            List<OrderType> allOrderTypes = orderService.getOrderTypes(true);
-            for (OrderType type : allOrderTypes) {
-                if (type.getName().toLowerCase().equals("drug order")) {
-                    drugOrderType = type;
-                }
-            }
+            drugOrderType = orderService.getOrderTypeByName("Drug order");
         }
         return drugOrderType;
     }

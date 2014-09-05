@@ -107,32 +107,25 @@ public class AccessionHelper {
         if (labUser == null) {
             labUser = userService.getUserByUsername(properties.getLabSystemUserName());
         }
-        OrderType orderType = getLabOrderType();
         for (String orderConceptUuid : orderConceptUuids) {
             TestOrder order = new TestOrder();
             order.setConcept(conceptService.getConceptByUuid(orderConceptUuid));
             order.setAccessionNumber(openElisAccession.getAccessionUuid());
             order.setCreator(labUser);
             order.setPatient(patient);
-            order.setOrderType(orderType);
+            order.setOrderType(getLabOrderType());
             order.setOrderer(getLabSystemProvider());
             order.setDateActivated(openElisAccession.fetchDate());
             order.setAutoExpireDate(order.getDateActivated());
-            order.setCareSetting(orderService.getCareSettingByName("Outpatient"));
+            order.setCareSetting(orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString()));
             orders.add(order);
         }
         return orders;
     }
 
     private OrderType getLabOrderType() {
-        if(labOrderType == null){
-            List<OrderType> orderTypes = orderService.getOrderTypes(true);
-            for (OrderType orderType : orderTypes) {
-                if (orderType.getName().equals(properties.getOrderTypeLabOrderName())){
-                    labOrderType = orderType;
-                    break;
-                }
-            }
+        if (labOrderType == null){
+            labOrderType = orderService.getOrderTypeByName(properties.getOrderTypeLabOrderName());
         }
         return labOrderType;
     }
@@ -150,7 +143,7 @@ public class AccessionHelper {
     private Set<String> groupOrders(Set<OpenElisTestDetail> openElisAccessionTestDetails) {
         Set<String> orderConceptUuids = new HashSet<>();
         for (OpenElisTestDetail testDetail : openElisAccessionTestDetails) {
-            String uuid = null;
+            String uuid;
             if (testDetail.getPanelUuid() != null) {
                 uuid = testDetail.getPanelUuid();
             } else {

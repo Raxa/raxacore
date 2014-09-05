@@ -47,7 +47,7 @@ public class OrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
     private void ensureCorrectDataSetup(String patientUuid, String radiologyOrderTypeUuid) {
         Patient patient = patientService.getPatientByUuid(patientUuid);
         OrderType orderType = orderService.getOrderTypeByUuid(radiologyOrderTypeUuid);
-        CareSetting careSetting = orderService.getCareSettingByName("OUTPATIENT");
+        CareSetting careSetting = orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString());
         List<Order> allRadiologyOrdersForPatient  = orderService.getOrders(patient, careSetting, orderType, true);
         Assert.assertTrue("More than 1 radiology orders are setup for the patient", allRadiologyOrdersForPatient.size() > 1);
     }
