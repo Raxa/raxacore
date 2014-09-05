@@ -3,6 +3,7 @@ package org.openmrs.module.bahmnicore.web.v1_0.search;
 import org.openmrs.Location;
 import org.openmrs.LocationTag;
 import org.openmrs.api.LocationService;
+import org.openmrs.module.emrapi.utils.GeneralUtils;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
@@ -11,6 +12,7 @@ import org.openmrs.module.webservices.rest.web.resource.api.SearchHandler;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
+import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +32,7 @@ public class LocationSearchHandler  implements SearchHandler{
 
     @Override
     public SearchConfig getSearchConfig() {
-        return new SearchConfig("byTags", RestConstants.VERSION_1 + "/location", Arrays.asList("1.9.*"),
+        return new SearchConfig("byTags", RestConstants.VERSION_1 + "/location", Arrays.asList("1.9.*", "1.10.*"),
                 new SearchQuery.Builder("Allows you to find locations by tags attached to the location").withRequiredParameters("tags").build());
 
     }
@@ -39,13 +41,13 @@ public class LocationSearchHandler  implements SearchHandler{
     public PageableResult search(RequestContext requestContext) throws ResponseException {
         String query = requestContext.getParameter("q");
         List<LocationTag> tags = new ArrayList<>();
-        for(String tag : query.split(",")){
-           tags.add(locationService.getLocationTagByName(tag));
+        if(query != null && !query.isEmpty()) {
+            for(String tag : query.split(",")){
+                tags.add(locationService.getLocationTagByName(tag));
+            }
         }
 
         List<Location> locations =  locationService.getLocationsHavingAllTags(tags);
         return new AlreadyPaged<>(requestContext, locations, false);
     }
 }
-
-
