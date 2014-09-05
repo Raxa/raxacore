@@ -25,7 +25,7 @@ public class BahmniEncounterTransactionTest {
     public void shouldConvertBahmniEncounterTransactionToET() {
         bahmniEncounterTransaction = new BahmniEncounterTransaction();
         bahmniEncounterTransaction.setBahmniDiagnoses(createBahmniDiagnoses());
-        bahmniEncounterTransaction.setBahmniObservations(createBahmniObservations());
+        bahmniEncounterTransaction.setObservations(createBahmniObservations());
         EncounterTransaction encounterTransaction = bahmniEncounterTransaction.toEncounterTransaction();
 
         assertEquals(2,encounterTransaction.getDiagnoses().size());

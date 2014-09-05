@@ -44,7 +44,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContex
 
         BahmniObservation bahmniObservation = createBahmniObservation(obsUuid, "obs-value", createConcept("96408258-000b-424e-af1a-403919332938", "FAVORITE FOOD, NON-CODED"), obsDate, null);
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-        bahmniEncounterTransaction.addBahmniObservation(bahmniObservation);
+        bahmniEncounterTransaction.addObservation(bahmniObservation);
 
         bahmniEncounterTransaction.setEncounterTypeUuid("07000be2-26b6-4cce-8b40-866d8435b613");
         bahmniEncounterTransaction.setPatientUuid(patientUuid);
@@ -53,9 +53,9 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContex
         BahmniEncounterTransaction encounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
 
         assertNotNull(encounterTransaction);
-        assertEquals(1, encounterTransaction.getBahmniObservations().size());
-        assertEquals(bahmniObservation.getValue(),encounterTransaction.getBahmniObservations().get(0).getValue());
-        assertEquals(obsUuid, encounterTransaction.getBahmniObservations().get(0).getUuid());
+        assertEquals(1, encounterTransaction.getObservations().size());
+        assertEquals(bahmniObservation.getValue(),encounterTransaction.getObservations().get(0).getValue());
+        assertEquals(obsUuid, encounterTransaction.getObservations().get(0).getUuid());
 
     }
 
@@ -74,17 +74,17 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContex
 
         EncounterTransaction.Concept targetConcept = createConcept("c607c80f-1ea9-4da3-bb88-6276ce8868dd", "WEIGHT (KG)");
         BahmniObservation targetObs = createBahmniObservation(targetObsUuid, 150.0, targetConcept, obsDate, null);
-        bahmniEncounterTransaction.addBahmniObservation(targetObs);
+        bahmniEncounterTransaction.addObservation(targetObs);
 
         EncounterTransaction.Concept srcConcept = createConcept("96408258-000b-424e-af1a-403919332938", "FAVORITE FOOD, NON-CODED");
         BahmniObservation srcObs = createBahmniObservation(srcObsUuid, "src-value", srcConcept, obsDate, targetObs);
-        bahmniEncounterTransaction.addBahmniObservation(srcObs);
+        bahmniEncounterTransaction.addObservation(srcObs);
 
         BahmniEncounterTransaction encounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
 
-        assertEquals(2, encounterTransaction.getBahmniObservations().size());
+        assertEquals(2, encounterTransaction.getObservations().size());
 
-        BahmniObservation savedSrcObs = getObservationByConceptUuid(encounterTransaction.getBahmniObservations(), srcConcept.getUuid());
+        BahmniObservation savedSrcObs = getObservationByConceptUuid(encounterTransaction.getObservations(), srcConcept.getUuid());
         assertEquals(srcObs.getValue(), savedSrcObs.getValue());
         assertEquals(srcObsUuid, savedSrcObs.getUuid());
         assertEquals(srcConcept.getUuid(), savedSrcObs.getConceptUuid());
@@ -113,12 +113,12 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContex
         EncounterTransaction.Concept srcConcept = createConcept("96408258-000b-424e-af1a-403919332938", "FAVORITE FOOD, NON-CODED");
         BahmniObservation srcObs = createBahmniObservation(srcObsUuid, "src-value", srcConcept, obsDate, targetObs);
 
-        bahmniEncounterTransaction.addBahmniObservation(srcObs);
+        bahmniEncounterTransaction.addObservation(srcObs);
 
         BahmniEncounterTransaction mappedBahmniEncounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
 
-        assertEquals(1, mappedBahmniEncounterTransaction.getBahmniObservations().size());
-        BahmniObservation savedSrcObs = mappedBahmniEncounterTransaction.getBahmniObservations().get(0);
+        assertEquals(1, mappedBahmniEncounterTransaction.getObservations().size());
+        BahmniObservation savedSrcObs = mappedBahmniEncounterTransaction.getObservations().get(0);
         assertEquals(srcObs.getValue(), savedSrcObs.getValue());
         assertEquals(srcObsUuid, savedSrcObs.getUuid());
         assertEquals(srcObs.getConcept().getUuid(), savedSrcObs.getConceptUuid());

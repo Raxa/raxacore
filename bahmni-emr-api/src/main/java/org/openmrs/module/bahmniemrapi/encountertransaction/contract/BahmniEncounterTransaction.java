@@ -20,7 +20,7 @@ public class BahmniEncounterTransaction{
     private EncounterTransaction encounterTransaction = new EncounterTransaction();
 
     private List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
-    private List<BahmniObservation> bahmniObservations = new ArrayList<>();
+    private List<BahmniObservation> observations = new ArrayList<>();
     private List<AccessionNote> accessionNotes;
     private String encounterType;
     private String visitType;
@@ -64,9 +64,8 @@ public class BahmniEncounterTransaction{
     }
 
 
-    public void addBahmniObservation(BahmniObservation observation) {
-        bahmniObservations.add(observation);
-        encounterTransaction.addObservation(observation.toETObservation());
+    public void addObservation(BahmniObservation observation) {
+        observations.add(observation);
     }
 
 
@@ -135,13 +134,12 @@ public class BahmniEncounterTransaction{
         return encounterTransaction.setEncounterTypeUuid(encounterTypeUuid);
     }
 
-    public List<BahmniObservation> getBahmniObservations() {
-        return this.bahmniObservations;
+    public List<BahmniObservation> getObservations() {
+        return this.observations;
     }
 
-    public void setBahmniObservations(List<BahmniObservation> bahmniObservations){
-        this.bahmniObservations = bahmniObservations;
-        encounterTransaction.setObservations(BahmniObservation.toETObsFromBahmniObs(bahmniObservations));
+    public void setObservations(List<BahmniObservation> observations){
+        this.observations = observations;
     }
 
 
@@ -210,17 +208,8 @@ public class BahmniEncounterTransaction{
     }
 
     public EncounterTransaction toEncounterTransaction(){
+        encounterTransaction.setObservations(BahmniObservation.toETObsFromBahmniObs(this.observations));
         return encounterTransaction;
-    }
-
-    public void setObservations(List<EncounterTransaction.Observation> allObservations) {
-        if(allObservations == null) return;
-        encounterTransaction.setObservations(allObservations);
-        setBahmniObservations(BahmniObservation.toBahmniObsFromETObs(allObservations));
-    }
-
-    public List<EncounterTransaction.Observation> getObservations() {
-        return encounterTransaction.getObservations();
     }
 }
 

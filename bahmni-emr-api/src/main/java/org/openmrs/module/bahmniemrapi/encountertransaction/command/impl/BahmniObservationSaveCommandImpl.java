@@ -26,7 +26,7 @@ public class BahmniObservationSaveCommandImpl implements SaveCommand {
 
     @Override
     public EncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Encounter currentEncounter, EncounterTransaction updatedEncounterTransaction) {
-        for (BahmniObservation  bahmniObservation : bahmniEncounterTransaction.getBahmniObservations()) {
+        for (BahmniObservation  bahmniObservation : bahmniEncounterTransaction.getObservations()) {
             if(bahmniObservation.getTargetObsRelation() != null){
                 Obs srcObservation =findMatchingObservation(bahmniObservation, currentEncounter);
                 if(bahmniObservation.getTargetObsRelation() == null || bahmniObservation.getTargetObsRelation().getTargetObs() == null){

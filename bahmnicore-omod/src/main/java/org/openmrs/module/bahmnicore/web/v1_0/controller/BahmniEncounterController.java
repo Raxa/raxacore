@@ -133,7 +133,7 @@ public class BahmniEncounterController extends BaseRestController {
     @ResponseBody
     @Transactional
     public BahmniEncounterTransaction update(@RequestBody BahmniEncounterTransaction bahmniEncounterTransaction) {
-        setUuidsForObservations(bahmniEncounterTransaction.getBahmniObservations());
+        setUuidsForObservations(bahmniEncounterTransaction.getObservations());
         return bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
     }
 

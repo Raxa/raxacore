@@ -4,4 +4,17 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
   		    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     <bean id="propertiesReader" class="org.bahmni.module.bahmnicore.properties.SystemPropertiesReader" scope="singleton"/>
+
+    <bean id="sessionFactory" class="org.openmrs.api.db.hibernate.HibernateSessionFactoryBean">
+        <property name="configLocations">
+            <list>
+                <value>classpath:hibernate.cfg.xml</value>
+                <value>classpath:test-hibernate.cfg.xml</value>
+            </list>
+        </property>
+        <property name="mappingJarLocations">
+            <ref bean="mappingJarResources"/>
+        </property>
+        <!--  default properties must be set in the hibernate.default.properties -->
+    </bean>
 </beans>

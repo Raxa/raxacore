@@ -129,7 +129,7 @@ public class BahmniObservationSaveCommandImplTest {
 
     private BahmniEncounterTransaction createBahmniEncounterTransaction(List<BahmniObservation> bahmniObservations) {
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-        bahmniEncounterTransaction.setBahmniObservations(bahmniObservations);
+        bahmniEncounterTransaction.setObservations(bahmniObservations);
         return bahmniEncounterTransaction;
     }
 
