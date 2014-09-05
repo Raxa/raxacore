@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.bahmni.module.referencedata.model.event.ConceptEventFactory.labConceptSetEvent;
 import static org.bahmni.module.referencedata.model.event.ConceptEventFactory.sampleEvent;
 import static org.apache.commons.collections.CollectionUtils.addIgnoreNull;
 
@@ -15,7 +16,8 @@ public class Operation {
 
     private String name;
     private static final List<ConceptOperationEvent> events = asList(
-            sampleEvent()
+            sampleEvent(),
+            labConceptSetEvent()
     );
 
 

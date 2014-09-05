@@ -5,4 +5,8 @@ public class ConceptEventFactory {
     public static ConceptOperationEvent sampleEvent() {
         return new SampleEvent(CONCEPT_URL);
     }
+
+    public static ConceptOperationEvent labConceptSetEvent() {
+        return new LabConceptSetEvent();
+    }
 }

@@ -7,6 +7,7 @@ import org.openmrs.ConceptClass;
 import org.openmrs.ConceptSet;
 import org.openmrs.api.context.Context;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class SampleEvent implements ConceptOperationEvent {
     }
 
     private boolean isSampleConcept(Concept concept) {
-        return concept.getConceptClass().getUuid().equals(ConceptClass.LABSET_UUID) && isChildOf(concept);
+        return concept.getConceptClass() != null && concept.getConceptClass().getUuid().equals(ConceptClass.LABSET_UUID) && isChildOf(concept);
     }
 
     private boolean isChildOf(Concept concept) {

@@ -64,7 +64,6 @@ public class SampleEventTest {
         assertFalse(event.getUuid().equals(anotherEvent.getUuid()));
         assertEquals(event.getTitle(), "sample");
         assertEquals(event.getCategory(), "lab");
-        assertTrue(event.getUri().toString().contains("/openmrs/ws/rest/v1/reference-data/sample/"));
     }
 
     @Test

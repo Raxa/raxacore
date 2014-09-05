@@ -64,8 +64,8 @@ public class ConceptBuilder {
     }
 
 
-    public ConceptBuilder withSetMember(Concept concept){
-        concept.addSetMember(concept);
+    public ConceptBuilder withSetMember(Concept setMember){
+        concept.addSetMember(setMember);
         return this;
     }
 
