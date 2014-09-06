@@ -14,19 +14,24 @@ import static java.util.Arrays.asList;
 
 public abstract class ConceptOperationEvent {
     String url;
-    String title;
     String category;
+    String title;
 
     public ConceptOperationEvent(String url, String category, String title) {
         this.url = url;
-        this.title = title;
         this.category = category;
+        this.title = title;
     }
 
     public ConceptOperationEvent() {
     }
 
-    public abstract Boolean isApplicable(String operation, Object[] arguments);
+    protected abstract boolean isResourceConcept(Concept argument);
+
+    public Boolean isApplicable(String operation, Object[] arguments) {
+        return this.operations().contains(operation) && isResourceConcept((Concept) arguments[0]);
+    }
+
 
     List<String> operations() {
         return asList("saveConcept", "updateConcept", "retireConcept", "purgeConcept");

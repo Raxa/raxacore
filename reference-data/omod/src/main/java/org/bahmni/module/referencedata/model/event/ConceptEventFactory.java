@@ -5,9 +5,10 @@ public class ConceptEventFactory {
     public static final String LAB = "lab";
     public static final String SAMPLE = "sample";
     private static final String DEPARTMENT = "department";
+    public static final String TEST = "test";
 
     public static ConceptOperationEvent sampleEvent() {
-        return new SampleEvent(CONCEPT_URL, LAB, SAMPLE);
+        return new SampleEvent(CONCEPT_URL, SAMPLE, LAB);
     }
 
     public static ConceptOperationEvent labConceptSetEvent() {
@@ -16,5 +17,9 @@ public class ConceptEventFactory {
 
     public static ConceptOperationEvent departmentEvent() {
         return new DepartmentEvent(CONCEPT_URL, LAB, DEPARTMENT);
+    }
+
+    public static ConceptOperationEvent testEvent() {
+        return new TestEvent(CONCEPT_URL, LAB, TEST);
     }
 }
