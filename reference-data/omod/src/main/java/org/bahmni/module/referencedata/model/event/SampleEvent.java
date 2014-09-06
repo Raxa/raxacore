@@ -11,8 +11,12 @@ public class SampleEvent extends ConceptOperationEvent {
     }
 
 
+    @Override
+    public boolean isResourceConcept(Concept concept) {
+        return isSampleConcept(concept);
+    }
 
-    protected boolean isResourceConcept(Concept concept) {
+    public static boolean isSampleConcept(Concept concept) {
         return concept.getConceptClass() != null && concept.getConceptClass().getUuid().equals(ConceptClass.LABSET_UUID) && isChildOf(concept, SAMPLE_PARENT_CONCEPT_NAME);
     }
 }

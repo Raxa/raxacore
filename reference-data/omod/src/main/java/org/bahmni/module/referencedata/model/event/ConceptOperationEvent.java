@@ -26,7 +26,7 @@ public abstract class ConceptOperationEvent {
     public ConceptOperationEvent() {
     }
 
-    protected abstract boolean isResourceConcept(Concept argument);
+    public abstract boolean isResourceConcept(Concept argument);
 
     public Boolean isApplicable(String operation, Object[] arguments) {
         return this.operations().contains(operation) && isResourceConcept((Concept) arguments[0]);
@@ -43,8 +43,9 @@ public abstract class ConceptOperationEvent {
         return new Event(UUID.randomUUID().toString(), title, DateTime.now(), url, url, category);
     }
 
-    public boolean isChildOf(Concept concept, String parentConceptName) {
+    public static boolean isChildOf(Concept concept, String parentConceptName) {
         List<ConceptSet> conceptSets = Context.getConceptService().getSetsContainingConcept(concept);
+        if (conceptSets == null) return false;
         for (ConceptSet conceptSet : conceptSets) {
             if (conceptSet.getConceptSet().getName(Context.getLocale()).getName().equals(parentConceptName)) {
                 return true;

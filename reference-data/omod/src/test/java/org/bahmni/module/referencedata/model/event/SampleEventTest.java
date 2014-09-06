@@ -1,7 +1,7 @@
 package org.bahmni.module.referencedata.model.event;
 
-import org.bahmni.module.referencedata.model.Operation;
 import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
+import org.bahmni.module.referencedata.model.Operation;
 import org.ict4h.atomfeed.server.service.Event;
 import org.junit.Before;
 import org.junit.Test;

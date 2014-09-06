@@ -2,7 +2,6 @@ package org.bahmni.module.referencedata.model.event;
 
 import org.ict4h.atomfeed.server.service.Event;
 import org.openmrs.Concept;
-import org.openmrs.ConceptClass;
 import org.openmrs.api.context.Context;
 
 import java.net.URISyntaxException;
@@ -14,13 +13,13 @@ public class LabConceptSetEvent extends ConceptOperationEvent {
     }
 
     @Override
-    protected boolean isResourceConcept(Concept concept) {
+    public boolean isResourceConcept(Concept concept) {
         return isLaboratoryConcept(concept) || isDepartmentConcept(concept) || isTestConcept(concept);
     }
 
     private boolean isTestConcept(Concept concept) {
         return concept.getName(Context.getLocale()) != null &&
-               concept.getName(Context.getLocale()).getName().equals(TestEvent.TEST_PARENT_CONCEPT_NAME);
+                concept.getName(Context.getLocale()).getName().equals(TestEvent.TEST_PARENT_CONCEPT_NAME);
     }
 
     private boolean isDepartmentConcept(Concept concept) {

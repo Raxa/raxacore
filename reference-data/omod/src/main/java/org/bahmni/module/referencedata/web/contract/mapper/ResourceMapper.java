@@ -1,6 +1,5 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
-import org.bahmni.module.referencedata.web.contract.Department;
 import org.bahmni.module.referencedata.web.contract.Resource;
 import org.openmrs.Concept;
 import org.openmrs.ConceptSet;

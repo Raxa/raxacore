@@ -85,6 +85,10 @@
             <artifactId>emrapi-api</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>reporting-api</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -186,7 +190,6 @@
             </plugin>
         </plugins>
     </build>
-
 
 
 </project>

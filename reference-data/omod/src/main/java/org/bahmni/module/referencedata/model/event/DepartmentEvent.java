@@ -11,7 +11,11 @@ public class DepartmentEvent extends ConceptOperationEvent {
     }
 
     @Override
-    protected boolean isResourceConcept(Concept concept) {
+    public boolean isResourceConcept(Concept concept) {
+        return isDepartmentConcept(concept);
+    }
+
+    public static boolean isDepartmentConcept(Concept concept) {
         return concept.getConceptClass() != null && concept.getConceptClass().getUuid().equals(ConceptClass.CONVSET_UUID) && isChildOf(concept, DEPARTMENT_PARENT_CONCEPT_NAME);
     }
 }

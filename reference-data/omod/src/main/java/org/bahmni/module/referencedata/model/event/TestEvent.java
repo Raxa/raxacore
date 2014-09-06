@@ -10,7 +10,7 @@ public class TestEvent extends ConceptOperationEvent {
         super(url, category, title);
     }
 
-    protected boolean isResourceConcept(Concept concept) {
+    public boolean isResourceConcept(Concept concept) {
         return concept.getConceptClass() != null &&
                 concept.getConceptClass().getUuid().equals(ConceptClass.TEST_UUID) &&
                 isChildOf(concept, TEST_PARENT_CONCEPT_NAME);

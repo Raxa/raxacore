@@ -23,9 +23,7 @@ import java.util.Locale;
 
 import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSet;
 import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSets;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 

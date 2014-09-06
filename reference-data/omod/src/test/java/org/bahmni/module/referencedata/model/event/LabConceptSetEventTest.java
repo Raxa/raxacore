@@ -38,7 +38,6 @@ public class LabConceptSetEventTest {
     private ConceptService conceptService;
 
 
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
