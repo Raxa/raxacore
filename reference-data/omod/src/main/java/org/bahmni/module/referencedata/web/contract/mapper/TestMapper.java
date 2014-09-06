@@ -18,9 +18,9 @@ public class TestMapper extends ResourceMapper {
         test = mapResource(test, testConcept);
         test.setDepartment(getDepartment(testConcept));
         test.setDescription(getDescription(testConcept));
-        test.setResultType(testConcept.getDatatype().getName());
         test.setShortName(testConcept.getShortestName(Context.getLocale(), false).getName());
         test.setSample(getSample(testConcept));
+        test.setResultType(testConcept.getDatatype().getName());
         return test;
     }
 

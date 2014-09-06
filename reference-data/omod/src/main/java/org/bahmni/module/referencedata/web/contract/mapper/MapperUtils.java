@@ -2,11 +2,14 @@ package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.referencedata.web.contract.Department;
 import org.bahmni.module.referencedata.web.contract.Sample;
+import org.bahmni.module.referencedata.web.contract.Test;
 import org.openmrs.Concept;
+import org.openmrs.ConceptClass;
 import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptSet;
 import org.openmrs.api.context.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.bahmni.module.referencedata.model.event.DepartmentEvent.isDepartmentConcept;
@@ -35,6 +38,7 @@ public class MapperUtils {
 
     public static Sample getSample(Concept concept) {
         List<ConceptSet> parentConcepts = Context.getConceptService().getSetsContainingConcept(concept);
+        if (parentConcepts == null) return null;
         for (ConceptSet parentConcept : parentConcepts) {
             if (isSampleConcept(parentConcept.getConceptSet())) {
                 SampleMapper sampleMapper = new SampleMapper();
@@ -42,5 +46,24 @@ public class MapperUtils {
             }
         }
         return null;
+    }
+
+
+    public static List<Test> getTests(Concept concept) {
+        List<Test> tests = new ArrayList<>();
+        TestMapper testMapper = new TestMapper();
+        List<Concept> setMembers = concept.getSetMembers();
+        if (setMembers == null) return tests;
+        for (Concept setMember : setMembers) {
+            if (isTestConcept(setMember)) {
+                tests.add(testMapper.map(setMember));
+            }
+        }
+        return tests;
+    }
+
+    private static boolean isTestConcept(Concept concept) {
+        return concept.getConceptClass() != null &&
+                concept.getConceptClass().getUuid().equals(ConceptClass.TEST_UUID);
     }
 }

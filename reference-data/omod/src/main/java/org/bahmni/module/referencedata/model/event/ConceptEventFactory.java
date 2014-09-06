@@ -6,6 +6,7 @@ public class ConceptEventFactory {
     public static final String SAMPLE = "sample";
     private static final String DEPARTMENT = "department";
     public static final String TEST = "test";
+    private static final String PANEL = "panel";
 
     public static ConceptOperationEvent sampleEvent() {
         return new SampleEvent(CONCEPT_URL, SAMPLE, LAB);
@@ -17,6 +18,10 @@ public class ConceptEventFactory {
 
     public static ConceptOperationEvent departmentEvent() {
         return new DepartmentEvent(CONCEPT_URL, LAB, DEPARTMENT);
+    }
+
+    public static ConceptOperationEvent panelEvent() {
+        return new PanelEvent(CONCEPT_URL, LAB, PANEL);
     }
 
     public static ConceptOperationEvent testEvent() {

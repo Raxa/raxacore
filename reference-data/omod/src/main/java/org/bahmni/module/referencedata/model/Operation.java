@@ -18,6 +18,7 @@ public class Operation {
             sampleEvent(),
             departmentEvent(),
             testEvent(),
+            panelEvent(),
             labConceptSetEvent()
     );
 

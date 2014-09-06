@@ -4,6 +4,7 @@ import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
 import org.bahmni.module.referencedata.model.event.DepartmentEvent;
 import org.bahmni.module.referencedata.model.event.SampleEvent;
 import org.bahmni.module.referencedata.model.event.TestEvent;
+import org.bahmni.module.referencedata.web.contract.Panel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,10 +32,11 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
+//TODO: Mihir write a test for empty tests list
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
-public class TestMapperTest {
-    private TestMapper testMapper;
+public class PanelMapperTest {
+    private PanelMapper panelMapper;
     private Concept sampleConcept;
     private Date dateCreated;
     private Date dateChanged;
@@ -43,48 +45,62 @@ public class TestMapperTest {
     private ConceptService conceptService;
     private Concept departmentConcept;
     private Concept labDepartmentConcept;
-    private Concept testConcept;
+    private Concept panelConcept;
     private Concept testAndPanelsConcept;
     private List<ConceptSet> sampleConceptSets;
     private List<ConceptSet> departmentConceptSets;
     private List<ConceptSet> testConceptSets;
     private ConceptSet testDepartmentConceptSet;
+    private ConceptSet panelSampleConceptSet;
+    private Concept testConcept;
+    private ConceptSet testPanelConceptSet;
     private ConceptSet testSampleConceptSet;
+    private List<ConceptSet> panelConceptSets;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        testMapper = new TestMapper();
+        panelMapper = new PanelMapper();
         dateCreated = new Date();
         dateChanged = new Date();
         Locale defaultLocale = new Locale("en", "GB");
         PowerMockito.mockStatic(Context.class);
         when(Context.getLocale()).thenReturn(defaultLocale);
         testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.TEST_UUID).withDescription("SomeDescription")
-                .withDateChanged(dateChanged).withShortName("ShortName").withName("Test Name Here").withDataType(ConceptDatatype.NUMERIC).build();
+                .withDateChanged(dateChanged).withShortName("ShortName").withName("Panel Name Here").withDataType(ConceptDatatype.NUMERIC).build();
+        panelConcept = new ConceptBuilder().withUUID("Panel UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).withDescription("SomeDescription")
+                .withSetMember(testConcept).withDateChanged(dateChanged).withShortName("ShortName").withName("Panel Name Here").withDataType(ConceptDatatype.NUMERIC).build();
         testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID)
-                .withDateChanged(dateChanged).withShortName("ShortName").withName(TestEvent.TEST_PARENT_CONCEPT_NAME).withSetMember(testConcept).build();
+                .withDateChanged(dateChanged).withShortName("ShortName").withName(TestEvent.TEST_PARENT_CONCEPT_NAME).withSetMember(panelConcept).build();
         sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).
-                withDateChanged(dateChanged).withSetMember(testConcept).withShortName("ShortName").withName("SampleName").build();
+                withDateChanged(dateChanged).withSetMember(panelConcept).withShortName("ShortName").withName("SampleName").build();
         laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
                 .withName(SampleEvent.SAMPLE_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.LABSET_UUID)
                 .withSetMember(sampleConcept).build();
         departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
-                withDateChanged(dateChanged).withClassUUID(ConceptClass.CONVSET_UUID).withSetMember(testConcept).withDescription("Some Description").withName("Department Name").build();
+                withDateChanged(dateChanged).withClassUUID(ConceptClass.CONVSET_UUID).withSetMember(panelConcept).withDescription("Some Description").withName("Department Name").build();
         labDepartmentConcept = new ConceptBuilder().withUUID("Laboratory Department UUID")
                 .withName(DepartmentEvent.DEPARTMENT_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.CONVSET_UUID)
                 .withSetMember(departmentConcept).build();
         ConceptSet sampleConceptSet = getConceptSet(laboratoryConcept, sampleConcept);
         ConceptSet departmentConceptSet = getConceptSet(labDepartmentConcept, departmentConcept);
+        ConceptSet panelConceptSet = getConceptSet(testAndPanelsConcept, panelConcept);
         ConceptSet testConceptSet = getConceptSet(testAndPanelsConcept, testConcept);
+        testPanelConceptSet = getConceptSet(testConcept, panelConcept);
+        panelSampleConceptSet = getConceptSet(sampleConcept, panelConcept);
         testSampleConceptSet = getConceptSet(sampleConcept, testConcept);
         testDepartmentConceptSet = getConceptSet(departmentConcept, testConcept);
         departmentConceptSets = getConceptSets(departmentConceptSet);
         sampleConceptSets = getConceptSets(sampleConceptSet);
+
         testConceptSets = getConceptSets(testConceptSet);
         testConceptSets.add(testSampleConceptSet);
         testConceptSets.add(testDepartmentConceptSet);
+
+        panelConceptSets = getConceptSets(panelConceptSet);
+        panelConceptSets.add(panelSampleConceptSet);
+        panelConceptSets.add(testPanelConceptSet);
 
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenAnswer(new Answer<List<ConceptSet>>() {
             @Override
@@ -95,6 +111,8 @@ public class TestMapperTest {
                     return testConceptSets;
                 else if (concept.getUuid().equals("Sample UUID"))
                     return sampleConceptSets;
+                else if (concept.getUuid().equals("Panel UUID"))
+                    return panelConceptSets;
                 else if (concept.getUuid().equals("Department UUID"))
                     return departmentConceptSets;
 
@@ -105,48 +123,39 @@ public class TestMapperTest {
     }
 
     @Test
-    public void map_all_test_fields_from_concept() throws Exception {
-        org.bahmni.module.referencedata.web.contract.Test testData = testMapper.map(testConcept);
-        assertEquals("Test UUID", testData.getId());
-        assertEquals("Test Name Here", testData.getName());
-        assertEquals(ConceptDatatype.NUMERIC, testData.getResultType());
-        assertNull(testData.getSalePrice());
-        assertEquals(dateCreated, testData.getDateCreated());
-        assertEquals(dateChanged, testData.getLastUpdated());
-        assertEquals("ShortName", testData.getShortName());
-        assertEquals("Department UUID", testData.getDepartment().getId());
-        assertEquals("Department Name", testData.getDepartment().getName());
-        assertEquals("Some Description", testData.getDepartment().getDescription());
-        assertEquals("Sample UUID", testData.getSample().getId());
-        assertEquals("SampleName", testData.getSample().getName());
+    public void map_all_panel_fields_from_concept() throws Exception {
+        Panel panelData = panelMapper.map(panelConcept);
+        assertEquals("Panel UUID", panelData.getId());
+        assertEquals("Panel Name Here", panelData.getName());
+        assertNull(panelData.getSalePrice());
+        assertEquals(dateCreated, panelData.getDateCreated());
+        assertEquals(dateChanged, panelData.getLastUpdated());
+        assertEquals("ShortName", panelData.getShortName());
+        assertEquals("Sample UUID", panelData.getSample().getId());
+        assertEquals("SampleName", panelData.getSample().getName());
+        assertEquals(1, panelData.getTests().size());
+        assertEquals("Test UUID", panelData.getTests().get(0).getId());
     }
 
     @Test
     public void send_default_for_no_short_name() throws Exception {
-        testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.TEST_UUID).withDescription("SomeDescription")
-                .withDateChanged(dateChanged).withName("Test Name Here").withDataType(ConceptDatatype.NUMERIC).build();
-        org.bahmni.module.referencedata.web.contract.Test testData = testMapper.map(testConcept);
-        assertEquals("Test UUID", testData.getId());
-        assertEquals("Test Name Here", testData.getShortName());
+        panelConcept = new ConceptBuilder().withUUID("Panel UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).withDescription("SomeDescription")
+                .withDateChanged(dateChanged).withName("Panel Name Here").withDataType(ConceptDatatype.NUMERIC).build();
+        Panel panelData = panelMapper.map(panelConcept);
+        assertEquals("Panel UUID", panelData.getId());
+        assertEquals("Panel Name Here", panelData.getShortName());
     }
 
     @Test
     public void is_active_true_by_default() throws Exception {
-        org.bahmni.module.referencedata.web.contract.Test testData = testMapper.map(testConcept);
-        assertTrue(testData.getIsActive());
-    }
-
-    @Test
-    public void null_if_department_not_specified() throws Exception {
-        testConceptSets.remove(testDepartmentConceptSet);
-        org.bahmni.module.referencedata.web.contract.Test testData = testMapper.map(testConcept);
-        assertNull(testData.getDepartment());
+        Panel panelData = panelMapper.map(panelConcept);
+        assertTrue(panelData.getIsActive());
     }
 
     @Test
     public void null_if_sample_not_specified() throws Exception {
-        testConceptSets.remove(testSampleConceptSet);
-        org.bahmni.module.referencedata.web.contract.Test testData = testMapper.map(testConcept);
-        assertNull(testData.getSample());
+        panelConceptSets.remove(panelSampleConceptSet);
+        Panel panelData = panelMapper.map(panelConcept);
+        assertNull(panelData.getSample());
     }
 }

@@ -14,10 +14,10 @@ public class LabConceptSetEvent extends ConceptOperationEvent {
 
     @Override
     public boolean isResourceConcept(Concept concept) {
-        return isLaboratoryConcept(concept) || isDepartmentConcept(concept) || isTestConcept(concept);
+        return isLaboratoryConcept(concept) || isDepartmentConcept(concept) || isTestPanelConcept(concept);
     }
 
-    private boolean isTestConcept(Concept concept) {
+    private boolean isTestPanelConcept(Concept concept) {
         return concept.getName(Context.getLocale()) != null &&
                 concept.getName(Context.getLocale()).getName().equals(TestEvent.TEST_PARENT_CONCEPT_NAME);
     }
