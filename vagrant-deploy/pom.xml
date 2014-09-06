@@ -34,6 +34,11 @@
             <groupId>org.bahmni.module</groupId>
             <artifactId>bahmnicore-omod</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
+            <artifactId>reference-data-omod</artifactId>
+            <version>5.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <profiles>

@@ -1,13 +1,12 @@
 package org.bahmni.module.bahmnicore.mapper.builder;
 
-import org.openmrs.Concept;
-import org.openmrs.ConceptClass;
-import org.openmrs.ConceptDatatype;
-import org.openmrs.ConceptName;
+import org.openmrs.*;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.LocaleUtility;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Date;
 
 public class ConceptBuilder {
@@ -64,7 +63,7 @@ public class ConceptBuilder {
     }
 
 
-    public ConceptBuilder withSetMember(Concept setMember){
+    public ConceptBuilder withSetMember(Concept setMember) {
         concept.addSetMember(setMember);
         return this;
     }
@@ -79,22 +78,22 @@ public class ConceptBuilder {
         return this;
     }
 
-    public ConceptBuilder withDateCreated(Date dateCreated){
+    public ConceptBuilder withDateCreated(Date dateCreated) {
         concept.setDateCreated(dateCreated);
         return this;
     }
 
-    public ConceptBuilder withDateChanged(Date dateChanged){
+    public ConceptBuilder withDateChanged(Date dateChanged) {
         concept.setDateChanged(dateChanged);
         return this;
     }
 
-    public ConceptBuilder withRetired(Boolean retired){
+    public ConceptBuilder withRetired(Boolean retired) {
         concept.setRetired(retired);
         return this;
     }
 
-    public ConceptBuilder withShortName(String name){
+    public ConceptBuilder withShortName(String name) {
         ConceptName conceptName = new ConceptName(name, Context.getLocale());
         concept.setShortName(conceptName);
         return this;
@@ -106,6 +105,12 @@ public class ConceptBuilder {
         conceptDatatype.setName(name);
         conceptDatatype.setUuid(uuid);
         concept.setDatatype(conceptDatatype);
+        return this;
+    }
+
+    public ConceptBuilder withDescription(String description) {
+        ConceptDescription conceptDescription = new ConceptDescription(description, Context.getLocale());
+        concept.setDescriptions(Arrays.asList(conceptDescription));
         return this;
     }
 }

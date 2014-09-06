@@ -15,9 +15,9 @@
         <module>openmrs-elis-atomfeed-client-omod</module>
         <module>openerp-atomfeed-client-omod</module>
         <module>bahmnicore-omod</module>
-        <module>vagrant-deploy</module>
-        <module>admin</module>
         <module>reference-data</module>
+        <module>admin</module>
+        <module>vagrant-deploy</module>
     </modules>
 
     <properties>

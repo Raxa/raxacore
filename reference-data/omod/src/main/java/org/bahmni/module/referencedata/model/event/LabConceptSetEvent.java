@@ -7,23 +7,22 @@ import org.openmrs.api.context.Context;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import static java.util.Arrays.asList;
-
-public class LabConceptSetEvent implements ConceptOperationEvent{
+public class LabConceptSetEvent extends ConceptOperationEvent {
 
     public LabConceptSetEvent() {
     }
 
-    private List<String> operations() {
-        return asList("saveConcept", "updateConcept", "retireConcept", "purgeConcept");
-    }
 
     public Boolean isApplicable(String operation, Object[] arguments) {
         return this.operations().contains(operation) && isLabSetConcept((Concept) arguments[0]);
     }
 
     private boolean isLabSetConcept(Concept concept) {
-        return isLaboratoryConcept(concept);
+        return isLaboratoryConcept(concept) || isDepartmentConcept(concept);
+    }
+
+    private boolean isDepartmentConcept(Concept concept) {
+        return concept.getName(Context.getLocale()) != null && concept.getName(Context.getLocale()).getName().equals(DepartmentEvent.DEPARTMENT_PARENT_CONCEPT_NAME);
     }
 
     private boolean isLaboratoryConcept(Concept concept) {
@@ -36,7 +35,7 @@ public class LabConceptSetEvent implements ConceptOperationEvent{
         Concept concept = (Concept) arguments[0];
         List<Concept> setMembers = concept.getSetMembers();
         for (Concept setMember : setMembers) {
-            if (!isLabSetConcept(setMember)){
+            if (!isLabSetConcept(setMember)) {
                 Context.getConceptService().saveConcept(setMember);
             }
         }
