@@ -36,7 +36,9 @@ public class LabConceptSetEvent implements ConceptOperationEvent{
         Concept concept = (Concept) arguments[0];
         List<Concept> setMembers = concept.getSetMembers();
         for (Concept setMember : setMembers) {
-            Context.getConceptService().saveConcept(setMember);
+            if (!isLabSetConcept(setMember)){
+                Context.getConceptService().saveConcept(setMember);
+            }
         }
         return null;
     }
