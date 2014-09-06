@@ -18,10 +18,12 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSet;
 import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -64,5 +66,23 @@ public class LabConceptSetEventTest {
     public void should_publish_conceptset_and_child_concepts() throws Exception {
         new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{parentConcept});
         verify(conceptService, times(2)).saveConcept(any(Concept.class));
+    }
+
+    @Test
+    public void should_not_publish_parent_concept_if_setmember() throws Exception {
+        parentConcept.addSetMember(parentConcept);
+        List<ConceptSet> conceptSets = getConceptSets(parentConcept, concept);
+        conceptSets.add(getConceptSet(parentConcept, parentConcept));
+        when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
+        new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{parentConcept});
+        verify(conceptService, times(2)).saveConcept(any(Concept.class));
+    }
+
+    @Test
+    public void should_not_publish_anything_if_parent_concept_set_is_empty() throws Exception {
+        when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(new ArrayList<ConceptSet>());
+        parentConcept = new ConceptBuilder().withName(SampleEvent.SAMPLE_PARENT_CONCEPT_NAME).build();
+        new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{parentConcept});
+        verify(conceptService, times(0)).saveConcept(any(Concept.class));
     }
 }
