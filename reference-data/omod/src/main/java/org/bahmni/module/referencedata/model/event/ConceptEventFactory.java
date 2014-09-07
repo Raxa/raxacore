@@ -9,7 +9,7 @@ public class ConceptEventFactory {
     private static final String PANEL = "panel";
 
     public static ConceptOperationEvent sampleEvent() {
-        return new SampleEvent(CONCEPT_URL, SAMPLE, LAB);
+        return new SampleEvent(CONCEPT_URL, LAB, SAMPLE);
     }
 
     public static ConceptOperationEvent labConceptSetEvent() {

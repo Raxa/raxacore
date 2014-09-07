@@ -7,7 +7,7 @@ public class SampleEvent extends ConceptOperationEvent {
     public static final String SAMPLE_PARENT_CONCEPT_NAME = "Laboratory";
 
     public SampleEvent(String url, String category, String title) {
-        super(url, title, category);
+        super(url, category, title);
     }
 
 
