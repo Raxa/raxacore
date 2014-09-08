@@ -52,6 +52,18 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.ict4h.openmrs</groupId>
+            <artifactId>openmrs-atomfeed-omod</artifactId>
+            <version>${openmrsAtomfeedVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ict4h.openmrs</groupId>
+            <artifactId>openmrs-atomfeed-api</artifactId>
+            <version>${openmrsAtomfeedVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-server</artifactId>
             <version>${atomfeed.version}</version>
@@ -82,7 +94,7 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>emrapi-api</artifactId>
+            <artifactId>emrapi-api-1.10</artifactId>
             <version>1.4-SNAPSHOT</version>
         </dependency>
     </dependencies>

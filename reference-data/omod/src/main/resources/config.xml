@@ -14,7 +14,7 @@
     <!-- Required Modules -->
     <require_modules>
         <require_module version="${openmrsAtomfeedVersion}">org.ict4h.openmrs.openmrs-atomfeed</require_module>
-        <require_module version="1.9">org.openmrs.module.webservices.rest</require_module>
+        <require_module version="${openMRSWebServicesVersion}">org.openmrs.module.webservices.rest</require_module>
         <require_module version="${version}">org.bahmni.module.bahmnicore</require_module>
     </require_modules>
     <activator>feed.FeedActivator</activator>
