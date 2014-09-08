@@ -2,17 +2,20 @@ package org.bahmni.module.bahmnicore.contract.observation;
 
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.openmrs.ConceptName;
 import org.openmrs.Obs;
+import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 
 import java.util.Date;
 import java.util.List;
 
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ObservationData {
     private Date encounterTime;
     private int conceptSortWeight;
     private String concept;
+    private String conceptShortName;
     private String value;
     private String type;
     private String unit;
@@ -29,6 +32,12 @@ public class ObservationData {
 
     public ObservationData(Obs anObservation, String patientURI, String visitURI, String encounterURI, List<String> providerURIs, int conceptSortWeight) {
         this.concept = anObservation.getConcept().getName().getName();
+        for (ConceptName conceptName : anObservation.getConcept().getNames()) {
+            if (ConceptNameType.SHORT.equals(conceptName.getConceptNameType())) {
+                this.conceptShortName = conceptName.getName();
+                break;
+            }
+        }
         this.conceptSortWeight = conceptSortWeight;
         this.value = anObservation.getValueAsString(Context.getLocale());
         this.type = anObservation.getConcept().getDatatype().getName();
@@ -129,4 +138,11 @@ public class ObservationData {
     }
 
 
+    public String getConceptShortName() {
+        return conceptShortName;
+    }
+
+    public void setConceptShortName(String conceptShortName) {
+        this.conceptShortName = conceptShortName;
+    }
 }
