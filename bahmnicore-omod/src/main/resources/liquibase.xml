@@ -1541,6 +1541,7 @@
             <column name="role" value="Anonymous"/>
             <column name="privilege" value="View Locations"/>
         </insert>
+    </changeSet>
     <changeSet id="bahmni-core-201409041530" author="Rohan, Sravanthi">
         <comment>Adding hours, weeks and months concepts for drug order duration units</comment>
         <sql>
@@ -1590,5 +1591,66 @@
         <sql>
             delete from global_property where property='emr.encounterProviderMatcher';
         </sql>
+    </changeSet>
+    <changeSet  id="bahmni-core-201409081430" author="Rohan, Vinay">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(distinct cn.concept_id) from global_property gp
+                inner join concept c on gp.property_value = c.uuid
+                inner join concept_set cp on cp.concept_set = c.concept_id
+                inner join concept_name cn on cp.concept_id = cn.concept_id
+                where gp.property = 'order.drugDosingUnitsConceptUuid'
+                and cn.name = 'Capsule';
+            </sqlCheck>
+        </preConditions>
+        <comment>Removing Capsule duplicate concept</comment>
+        <sql>
+            select distinct cn.concept_id into @concept_id from global_property gp
+            inner join concept c on gp.property_value = c.uuid
+            inner join concept_set cp on cp.concept_set = c.concept_id
+            inner join concept_name cn on cp.concept_id = cn.concept_id
+            where gp.property = 'order.drugDosingUnitsConceptUuid'
+            and cn.name = 'Capsule';
+
+            delete from concept_set where concept_id = @concept_id;
+            delete from concept_word where concept_id = @concept_id;
+            delete from concept_name where concept_id = @concept_id;
+            delete from concept where concept_id = @concept_id;
+        </sql>
+    </changeSet>
+
+    <changeSet  id="bahmni-core-201409081431" author="Rohan, Vinay">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(distinct cn.concept_id) from global_property gp
+                inner join concept c on gp.property_value = c.uuid
+                inner join concept_set cp on cp.concept_set = c.concept_id
+                inner join concept_name cn on cp.concept_id = cn.concept_id
+                where gp.property = 'order.drugDosingUnitsConceptUuid'
+                and cn.name = 'Tablet';
+            </sqlCheck>
+        </preConditions>
+        <comment>Removing Tablet duplicate concept</comment>
+        <sql>
+            select distinct cn.concept_id into @concept_id from global_property gp
+            inner join concept c on gp.property_value = c.uuid
+            inner join concept_set cp on cp.concept_set = c.concept_id
+            inner join concept_name cn on cp.concept_id = cn.concept_id
+            where gp.property = 'order.drugDosingUnitsConceptUuid'
+            and cn.name = 'Tablet';
+
+            delete from concept_set where concept_id = @concept_id;
+            delete from concept_word where concept_id = @concept_id;
+            delete from concept_name where concept_id = @concept_id;
+            delete from concept where concept_id = @concept_id;
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201409081432" author="Rohan, Vinay">
+        <comment>rel2</comment>
+        <sql>
+            DROP PROCEDURE IF EXISTS add_concept;
+        </sql>
+        <sqlFile splitStatements="false" path="V1_82__ChangeAddConceptProc.sql"/>
     </changeSet>
 </databaseChangeLog>
