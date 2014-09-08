@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.contract;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openmrs.Obs;
 import org.openmrs.module.bahmniemrapi.obsrelation.contract.ObsRelationship;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BahmniObservation{
     private ObsRelationship targetObsRelation;
     private EncounterTransaction.Observation encounterTransactionObservation;
