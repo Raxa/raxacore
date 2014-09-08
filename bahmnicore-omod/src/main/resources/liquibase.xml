@@ -1591,4 +1591,15 @@
             call add_concept_set_members (@labresults_concept_id,@set_concept_id,1);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-20140908172845" author="Indraneel, Hemanth">
+        <comment>Add Impression concept</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Impression', 'Impression', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Impression', '1');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
