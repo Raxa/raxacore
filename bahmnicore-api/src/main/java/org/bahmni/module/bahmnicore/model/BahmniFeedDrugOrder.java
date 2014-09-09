@@ -19,10 +19,7 @@ public class BahmniFeedDrugOrder {
     }
 
     public int getNumberOfDays() {
-        if(dosage == 0.0){
-            return quantity.intValue();
-        }
-        return (int) (quantity / dosage);
+        return numberOfDays;
     }
 
     public String getProductUuid() {
