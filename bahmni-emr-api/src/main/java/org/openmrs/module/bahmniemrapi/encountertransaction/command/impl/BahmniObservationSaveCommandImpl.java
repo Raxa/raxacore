@@ -27,18 +27,16 @@ public class BahmniObservationSaveCommandImpl implements SaveCommand {
     @Override
     public EncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Encounter currentEncounter, EncounterTransaction updatedEncounterTransaction) {
         for (BahmniObservation  bahmniObservation : bahmniEncounterTransaction.getObservations()) {
-            if(bahmniObservation.getTargetObsRelation() != null){
+            if(bahmniObservation.hasTargetObsRelation()){
                 Obs srcObservation =findMatchingObservation(bahmniObservation, currentEncounter);
-                if(bahmniObservation.getTargetObsRelation() == null || bahmniObservation.getTargetObsRelation().getTargetObs() == null){
-                    continue;
-                }
                 Obs targetObservation =findMatchingObservation(bahmniObservation.getTargetObsRelation().getTargetObs(), currentEncounter);
+
                 if(targetObservation == null){
                     String uuid = bahmniObservation.getTargetObsRelation().getTargetObs().getUuid();
                     targetObservation = obsService.getObsByUuid(uuid);
                 }
                 ObsRelationshipType obsRelationshipType = obsRelationService.getRelationshipTypeByName(bahmniObservation.getTargetObsRelation().getRelationshipType());
-                ObsRelationship obsRelation =  createNewIfDoesntExist(bahmniObservation.getTargetObsRelation().getUuid());
+                ObsRelationship obsRelation =  createNewIfDoesNotExist(bahmniObservation.getTargetObsRelation().getUuid());
                 obsRelation.setSourceObs(srcObservation);
                 obsRelation.setTargetObs(targetObservation);
                 obsRelation.setObsRelationshipType(obsRelationshipType);
@@ -49,7 +47,7 @@ public class BahmniObservationSaveCommandImpl implements SaveCommand {
         return updatedEncounterTransaction;
     }
 
-    private ObsRelationship createNewIfDoesntExist(String obsRelationUuid){
+    private ObsRelationship createNewIfDoesNotExist(String obsRelationUuid){
         ObsRelationship obsRelation = new ObsRelationship();
         if(obsRelationUuid!= null){
             obsRelation = obsRelationService.getRelationByUuid(obsRelationUuid);

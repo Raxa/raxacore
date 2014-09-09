@@ -157,4 +157,8 @@ public class BahmniObservation{
         }
         return etObservations;
     }
+
+    public boolean hasTargetObsRelation() {
+        return targetObsRelation != null && targetObsRelation.getTargetObs() != null;
+    }
 }
