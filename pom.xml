@@ -55,7 +55,7 @@
             </dependency>
             <dependency>
                 <groupId>org.bahmni.module</groupId>
-                <artifactId>elisatomfeedclient-omod</artifactId>
+                <artifactId>openelis-atomfeed-client-omod</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
