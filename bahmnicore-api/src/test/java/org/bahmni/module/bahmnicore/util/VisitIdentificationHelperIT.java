@@ -17,6 +17,8 @@ import static org.junit.Assert.assertTrue;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTest {
+    public static final String TEST_VISIT_TYPE = "TEST VISIT TYPE";
+
     @Autowired
     VisitService visitService;
     @Autowired
@@ -35,11 +37,11 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
         Patient patient = patientService.getPatient(1);
         Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-11 01:00:00");
 
-        Visit visit = visitIdentificationHelper.getVisitFor(patient, "LAB VISIT", accessionDate);
+        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate);
         assertEquals(1, visit.getId().intValue());
 
         accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-13 01:00:00");
-        visit = visitIdentificationHelper.getVisitFor(patient, "LAB VISIT", accessionDate);
+        visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate);
         assertEquals(2, visit.getId().intValue());
     }
 
@@ -49,7 +51,7 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
         Patient patient = patientService.getPatient(1);
         Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-13 03:00:00");
 
-        Visit visit = visitIdentificationHelper.getVisitFor(patient, "LAB VISIT", accessionDate);
+        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate);
         assertEquals(3, visit.getId().intValue());
 
         Date stopTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-14 05:00:00");
@@ -64,7 +66,7 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
         Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-18 03:00:00");
         Date stopTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-18 23:59:59");
 
-        Visit visit = visitIdentificationHelper.getVisitFor(patient, "LAB VISIT", accessionDate);
+        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate);
 
         assertTrue("Setup (visitIdentificationHelper.xml) creates visit ids 1-5. New visit id should be greater than 5", visit.getId() > 5);
         assertEquals(accessionDate, visit.getStartDatetime());
@@ -78,7 +80,7 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
         Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-21 03:00:00");
         Date stopTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-21 23:59:59");
 
-        Visit visit = visitIdentificationHelper.getVisitFor(patient, "LAB VISIT", accessionDate);
+        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate);
 
         assertTrue("Setup (visitIdentificationHelper.xml) creates visit ids 1-5. New visit id should be greater than 5", visit.getId() > 5);
         assertEquals(accessionDate, visit.getStartDatetime());

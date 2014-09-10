@@ -82,4 +82,13 @@
             insert into provider (person_id, identifier, creator, date_created, uuid, name) values ((select person_id from person where uuid = @puuid), 'BILLINGSYSTEM', 1, now(), uuid(), 'Billing System');
         </sql>
     </changeSet>
+    <changeSet id="openerp-atomfeed-client-201409101233" author="Chethan, D3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from visit_type where name = 'PHARMACY VISIT'</sqlCheck>
+        </preConditions>
+        <comment>Add new visit type PHARMACY VISIT</comment>
+        <sql>
+            INSERT INTO visit_type (name, description, creator, uuid, date_created) VALUES ('PHARMACY VISIT', 'Visit for syncing sale orders from pharmacy', 1, uuid(), curdate());
+        </sql>
+    </changeSet>
 </databaseChangeLog>

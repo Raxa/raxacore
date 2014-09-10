@@ -36,7 +36,6 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private EncounterType consultationEncounterType;
     private String systemUserName;
 
-    public static final String PHARMACY_VISIT = "PHARMACY VISIT";
     private static final String GP_DOSING_INSTRUCTIONS_CONCEPT_UUID = "order.dosingInstructionsConceptUuid";
 
     @Autowired
@@ -56,7 +55,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     @Override
-    public void add(String patientId, Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders, String systemUserName) {
+    public void add(String patientId, Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders, String systemUserName, String visitTypeName) {
         if (StringUtils.isEmpty(patientId))
             throwPatientNotFoundException(patientId);
 
@@ -65,7 +64,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             throwPatientNotFoundException(patientId);
 
         this.systemUserName = systemUserName;
-        Visit visitForDrugOrders = new VisitIdentificationHelper(visitService).getVisitFor(patient, PHARMACY_VISIT, orderDate);
+        Visit visitForDrugOrders = new VisitIdentificationHelper(visitService).getVisitFor(patient, visitTypeName, orderDate);
         addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visitForDrugOrders);
     }
 

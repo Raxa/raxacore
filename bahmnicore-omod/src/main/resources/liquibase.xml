@@ -418,16 +418,6 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
-    <changeSet id="bahmni-clinical-201402131522" author="Angshu,RT" context="rel3">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from visit_type where name = 'LAB_VISIT'</sqlCheck>
-        </preConditions>
-        <comment>Creating new visit type LAB_VISIT</comment>
-        <sql>
-            INSERT INTO visit_type (name, description, creator, uuid, date_created) VALUES ('LAB_VISIT', 'Visits for lab visit by patient when the tests are not ordered through OpenMRS', 1, uuid(), curdate());
-        </sql>
-    </changeSet>
-
     <changeSet id="bahmni-clinical-201402161951" author="Mujir,Vinay" context="rel3">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from visit_type where name = 'DRUG_ORDER'</sqlCheck>
@@ -438,15 +428,6 @@
         </sql>
     </changeSet>
 
-    <changeSet id="bahmni-clinical-201402182015" author="Mujir,Vinay,Shruthi" context="rel3">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from visit_type where name = 'PHARMACY_VISIT'</sqlCheck>
-        </preConditions>
-        <comment>Add new visit type PHARMACY_VISIT</comment>
-        <sql>
-            INSERT INTO visit_type (name, description, creator, uuid, date_created) VALUES ('PHARMACY_VISIT', 'Visit for PHARMACY_VISIT', 1, uuid(), curdate());
-        </sql>
-    </changeSet>
     <changeSet id="bahmni-clinical-201402201226" author="Neha,Indraneel" context="rel3">
         <comment>deleting visit types DRUG_ORDER and LAB_RESULTS_IN_ABSENTEE</comment>
         <sql>

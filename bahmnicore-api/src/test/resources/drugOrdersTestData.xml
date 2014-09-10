@@ -43,5 +43,5 @@
 
     <visit_type visit_type_id="4" name="REGULAR" description="REGULAR" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="fe898a34-1ade-11e1-9c71-00248140a5eb"/>
     <visit_type visit_type_id="5" name="DRUG_ORDER" description="DRUG_ORDER" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="fe898a34-1ade-11e1-9c71-00248140a6fr"/>
-    <visit_type visit_type_id="6" name="PHARMACY VISIT" description="PHARMACY VISIT" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="fe898a34-1ade-11e1-9c71-00248140a6fs"/>
+    <visit_type visit_type_id="6" name="TEST VISIT TYPE" description="TEST VISIT TYPE" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="fe898a34-1ade-11e1-9c71-00248140a6fs"/>
 </dataset>

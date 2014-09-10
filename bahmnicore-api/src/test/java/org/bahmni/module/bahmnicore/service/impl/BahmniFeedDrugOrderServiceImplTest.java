@@ -16,6 +16,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class BahmniFeedDrugOrderServiceImplTest {
+    public static final String TEST_VISIT_TYPE = "TEST VISIT TYPE";
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -30,7 +31,7 @@ public class BahmniFeedDrugOrderServiceImplTest {
         List<BahmniFeedDrugOrder> drugOrders = Arrays.asList(calpol);
 
         BahmniDrugOrderService bahmniDrugOrderService = new BahmniDrugOrderServiceImpl(null, null, null, null, null, null, new BahmniPatientDaoImpl(null), null, null);
-        bahmniDrugOrderService.add("", orderDate, drugOrders, "System");
+        bahmniDrugOrderService.add("", orderDate, drugOrders, "System", TEST_VISIT_TYPE);
     }
 
     @Test
@@ -43,7 +44,7 @@ public class BahmniFeedDrugOrderServiceImplTest {
         List<BahmniFeedDrugOrder> drugOrders = Arrays.asList(calpol);
 
         BahmniDrugOrderService bahmniDrugOrderService = new BahmniDrugOrderServiceImpl(null, null, null, null, null, null, new BahmniPatientDaoImpl(null), null, null);
-        bahmniDrugOrderService.add(null, orderDate, drugOrders, "System");
+        bahmniDrugOrderService.add(null, orderDate, drugOrders, "System", TEST_VISIT_TYPE);
     }
 
     @Test
@@ -61,7 +62,7 @@ public class BahmniFeedDrugOrderServiceImplTest {
         when(bahmniPatientDao.getPatient(patientId)).thenReturn(null);
 
         BahmniDrugOrderServiceImpl bahmniDrugOrderService = new BahmniDrugOrderServiceImpl(null, null, null, null, null, null, bahmniPatientDao, null, null);
-        bahmniDrugOrderService.add(patientId, orderDate, drugOrders, "System");
+        bahmniDrugOrderService.add(patientId, orderDate, drugOrders, "System", TEST_VISIT_TYPE);
     }
 
 }

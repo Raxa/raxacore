@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface BahmniDrugOrderService {
-    void add(String patientId, Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders, String systemUserName);
+    void add(String patientId, Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders, String systemUserName, String visitTypeName);
     List getActiveDrugOrders(String patientUuid);
 
     List<? extends Order> getActiveDrugOrders(String patientUuid, Date asOfDate);

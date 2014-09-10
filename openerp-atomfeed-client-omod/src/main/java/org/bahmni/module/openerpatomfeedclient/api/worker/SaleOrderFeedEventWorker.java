@@ -11,6 +11,7 @@ import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 
 public class SaleOrderFeedEventWorker implements EventWorker{
+    public static final String PHARMACY_VISIT = "PHARMACY VISIT";
     private static Logger logger = Logger.getLogger(SaleOrderFeedEventWorker.class);
     private BahmniDrugOrderService bahmniDrugOrderService;
     private OpenERPAtomFeedProperties properties;
@@ -28,7 +29,7 @@ public class SaleOrderFeedEventWorker implements EventWorker{
             SaleOrder saleOrder = ObjectMapperRepository.objectMapper.readValue(saleOrderContent, SaleOrder.class);
             if(saleOrder.getExternalId() == null || saleOrder.getExternalId().trim().length() == 0) {
                 BahmniFeedDrugOrders uniqueOrders = new BahmniFeedDrugOrders(saleOrder.getSaleOrderItems()).getUniqueOrders();
-                bahmniDrugOrderService.add(saleOrder.getCustomerId(), saleOrder.getOrderDate(), uniqueOrders, properties.getSystemUserName());
+                bahmniDrugOrderService.add(saleOrder.getCustomerId(), saleOrder.getOrderDate(), uniqueOrders, properties.getSystemUserName(), PHARMACY_VISIT);
             }
         } catch (Exception e) {
             logger.error("openERPatomfeedclient:error processing : " + saleOrderContent + e.getMessage(), e);

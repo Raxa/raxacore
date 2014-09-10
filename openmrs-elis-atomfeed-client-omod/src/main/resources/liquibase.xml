@@ -95,6 +95,13 @@
             DELETE FROM scheduler_task_config WHERE schedulable_class = 'org.bahmni.module.elisatomfeedclient.api.task.OpenElisLabResultFeedTask';
         </sql>
     </changeSet>
-
-
+    <changeSet id="elis-atomfeed-16-201409101232" author="Chethan,D3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from visit_type where name = 'LAB VISIT'</sqlCheck>
+        </preConditions>
+        <comment>Creating new visit type LAB VISIT</comment>
+        <sql>
+            INSERT INTO visit_type (name, description, creator, uuid, date_created) VALUES ('LAB VISIT', 'Visits for lab visit by patient when the tests are not ordered through OpenMRS', 1, uuid(), curdate());
+        </sql>
+    </changeSet>
 </databaseChangeLog>

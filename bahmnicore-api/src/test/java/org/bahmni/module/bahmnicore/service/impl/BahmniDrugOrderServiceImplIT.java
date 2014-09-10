@@ -22,6 +22,7 @@ import static org.junit.Assert.*;
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
+    public static final String TEST_VISIT_TYPE = "TEST VISIT TYPE";
     @Autowired
     private BahmniDrugOrderServiceImpl bahmniDrugOrderService;
     @Autowired
@@ -51,7 +52,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         BahmniFeedDrugOrder cetzine = new BahmniFeedDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70fa", 0.0, 0, 10.0, "mg");
         List<BahmniFeedDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
 
-        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System");
+        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System", TEST_VISIT_TYPE);
 
         Visit visit = visitService.getVisit(activeVisit.getId());
         Encounter encounter = (Encounter) visit.getEncounters().toArray()[0];
@@ -80,7 +81,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         Visit visit = createVisitForDate(patient, null, orderDate, false, DateUtils.addDays(orderDate, 1));
         assertNull(visit.getEncounters());
 
-        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System");
+        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System", TEST_VISIT_TYPE);
 
         Visit savedVisit = visitService.getVisit(visit.getId());
         Encounter encounter = (Encounter) savedVisit.getEncounters().toArray()[0];
@@ -109,7 +110,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         Visit visit2 = createVisitForDate(patient, null, DateUtils.addDays(orderDate, -3), false, DateUtils.addDays(DateUtils.addDays(orderDate, -3), 1));
         assertNull(visit2.getEncounters());
 
-        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System");
+        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System", TEST_VISIT_TYPE);
 
         Visit savedVisit = visitService.getVisitsByPatient(patient).get(0);
 
@@ -144,7 +145,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         Visit visit = createVisitForDate(patient, systemConsultationEncounter, visitStartDate, false, DateUtils.addDays(visitStartDate, 1));
         assertEquals(1, visit.getEncounters().size());
 
-        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System");
+        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System", TEST_VISIT_TYPE);
 
         Visit savedVisit = visitService.getVisit(visit.getId());
         assertEquals(2, savedVisit.getEncounters().size());
@@ -163,12 +164,12 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         Visit visit = createVisitForDate(patient, null, firstOrderDate, false, firstOrderDate);
         int firstOrderNumberOfDays = 10;
         BahmniFeedDrugOrder calpolFirstOrder = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, firstOrderNumberOfDays, firstOrderNumberOfDays * 2.0, "mg");
-        bahmniDrugOrderService.add("GAN200000", firstOrderDate, Arrays.asList(calpolFirstOrder), "System");
+        bahmniDrugOrderService.add("GAN200000", firstOrderDate, Arrays.asList(calpolFirstOrder), "System", TEST_VISIT_TYPE);
         Date secondOrderDate = DateUtils.addDays(firstOrderDate, 1);
         int secondOrderNumberOfDays = 20;
         BahmniFeedDrugOrder calpolSecondOrder = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, secondOrderNumberOfDays, secondOrderNumberOfDays * 2.0, "mg");
 
-        bahmniDrugOrderService.add("GAN200000", secondOrderDate, Arrays.asList(calpolSecondOrder), "System");
+        bahmniDrugOrderService.add("GAN200000", secondOrderDate, Arrays.asList(calpolSecondOrder), "System", TEST_VISIT_TYPE);
 
         Visit savedVisit = visitService.getVisit(visit.getId());
         assertEquals(1, savedVisit.getEncounters().size());
