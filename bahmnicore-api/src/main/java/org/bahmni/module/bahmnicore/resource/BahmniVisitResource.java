@@ -134,7 +134,7 @@ public class BahmniVisitResource extends DataDelegatingCrudResource<Visit> {
         if (patient == null)
             throw new ObjectNotFoundException();
         return new NeedsPaging<Visit>(Context.getVisitService().getVisitsByPatient(patient, true, false), context)
-                .toSimpleObject();
+                .toSimpleObject(this);
     }
 
     @Override
