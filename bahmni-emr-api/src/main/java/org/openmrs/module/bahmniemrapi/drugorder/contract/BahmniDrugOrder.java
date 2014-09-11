@@ -40,7 +40,15 @@ public class BahmniDrugOrder {
     }
 
     public EncounterTransaction.DosingInstructions getDosingInstructions() {
-        return new BahmniDosingInstructionsFactory().get(drugOrder.getDosingInstructionType(), drugOrder.getDosingInstructions());
+        EncounterTransaction.DosingInstructions dosingInstructions = drugOrder.getDosingInstructions();
+        if (FreeTextDosingInstructions.class.getName().equals(drugOrder.getDosingInstructionType())) {
+            String instructions = dosingInstructions.getAdministrationInstructions();
+            String[] splittedInstructions = instructions.split("\\s+");
+            dosingInstructions.setDose(Double.parseDouble(splittedInstructions[0]));
+            dosingInstructions.setDoseUnits(splittedInstructions[1]);
+            dosingInstructions.setAdministrationInstructions(null);
+        }
+        return dosingInstructions;
     }
 
     public String getDosingInstructionType() {

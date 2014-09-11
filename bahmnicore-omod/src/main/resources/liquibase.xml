@@ -1653,4 +1653,21 @@
         </sql>
         <sqlFile splitStatements="false" path="V1_82__ChangeAddConceptProc.sql"/>
     </changeSet>
+
+    <changeSet id="bahmni-core-201409111200" author="Rohan, Vinay">
+        <comment>Adding tablet and capsule concepts to dosing units</comment>
+        <sql>
+            set @tablet_concept_id = 0;
+            set @capsule_concept_id = 0;
+            set @concept_set_id=0;
+
+            select concept_id from concept_name where name = 'Dosing Units' and concept_name_type = 'FULLY_SPECIFIED' into @set_concept_id;
+            select concept_id from concept_name where name = 'Tablet' and concept_name_type = 'FULLY_SPECIFIED' into @tablet_concept_id;
+            select concept_id from concept_name where name = 'Capsule' and concept_name_type = 'FULLY_SPECIFIED' into @capsule_concept_id;
+
+            call add_concept_set_members (@set_concept_id,@tablet_concept_id,1);
+
+            call add_concept_set_members (@set_concept_id,@capsule_concept_id,1);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
