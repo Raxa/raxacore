@@ -1,5 +1,6 @@
 package org.bahmni.module.admin.csv.models;
 
+import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.CSVEntity;
 import org.bahmni.csv.annotation.CSVHeader;
 import org.bahmni.csv.annotation.CSVRegexHeader;
@@ -36,4 +37,37 @@ public class EncounterRow extends CSVEntity {
         return diagnosesRows != null && !diagnosesRows.isEmpty();
     }
 
+    public boolean isEmpty() {
+        return areObservationsEmpty() && areDiagnosesEmpty() && noEncounterDate();
+    }
+
+    private boolean areDiagnosesEmpty() {
+        if (diagnosesRows == null || diagnosesRows.isEmpty())
+            return true;
+
+        for (KeyValue diagnosisRow : diagnosesRows) {
+            if (StringUtils.isNotBlank(diagnosisRow.getValue())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean areObservationsEmpty() {
+        if (obsRows == null || obsRows.isEmpty())
+            return true;
+
+        for (KeyValue obsRow : obsRows) {
+            if (StringUtils.isNotBlank(obsRow.getValue())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean noEncounterDate() {
+        return StringUtils.isBlank(encounterDateTime);
+    }
 }

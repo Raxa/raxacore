@@ -1,0 +1,32 @@
+package org.bahmni.module.admin.encounter;
+
+import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
+import org.bahmni.module.admin.csv.models.MultipleEncounterRowBuilder;
+import org.junit.Test;
+import org.openmrs.EncounterType;
+import org.openmrs.api.EncounterService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
+import org.springframework.util.Assert;
+
+import java.text.ParseException;
+import java.util.List;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+public class BahmniEncounterTransactionImportServiceTest {
+    @Test
+    public void return_empty_encounterTransaction_for_empty_encounter_row() throws ParseException {
+        EncounterService mockEncounterService = mock(EncounterService.class);
+        when(mockEncounterService.getEncounterType("OPD")).thenReturn(new EncounterType());
+
+        BahmniEncounterTransactionImportService bahmniEncounterTransactionImportService = new BahmniEncounterTransactionImportService(mockEncounterService, null, null);
+        MultipleEncounterRow emptyEncounterRow = new MultipleEncounterRowBuilder().getEmptyMultipleEncounterRow("GAN12345");
+        emptyEncounterRow.encounterType = "OPD";
+        List<BahmniEncounterTransaction> bahmniEncounterTransaction = bahmniEncounterTransactionImportService.getBahmniEncounterTransaction(emptyEncounterRow, null);
+        Assert.isTrue(bahmniEncounterTransaction.isEmpty(), "Should ignore empty encounters");
+
+        bahmniEncounterTransaction = bahmniEncounterTransactionImportService.getBahmniEncounterTransaction(new MultipleEncounterRow(), null);
+        Assert.isTrue(bahmniEncounterTransaction.isEmpty(), "Should ignore empty encounters");
+    }
+}

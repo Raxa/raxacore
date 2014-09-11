@@ -41,7 +41,7 @@ public class BahmniEncounterTransactionImportService {
         String encounterType = multipleEncounterRow.encounterType;
         String visitType = multipleEncounterRow.visitType;
 
-        for (EncounterRow encounterRow : multipleEncounterRow.encounterRows) {
+        for (EncounterRow encounterRow : multipleEncounterRow.getNonEmptyEncounterRows()) {
             List<EncounterTransaction.Observation> allObservations = observationService.getObservations(encounterRow);
             List<BahmniDiagnosisRequest> allDiagnosis = diagnosisService.getBahmniDiagnosis(encounterRow);
 

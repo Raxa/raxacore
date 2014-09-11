@@ -13,9 +13,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ObservationMapper {
-    private HashMap<String, EncounterTransaction.Concept> cachedConcepts = new HashMap<>();
+    private Map<String, EncounterTransaction.Concept> cachedConcepts = new HashMap<>();
 
     private ConceptService conceptService;
 

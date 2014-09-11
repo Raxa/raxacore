@@ -1,5 +1,6 @@
 package org.bahmni.module.admin.observation;
 
+import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.openmrs.api.ConceptService;
@@ -13,18 +14,20 @@ import java.util.Date;
 import java.util.List;
 
 public class DiagnosisMapper extends ObservationMapper {
-
     public DiagnosisMapper(ConceptService conceptService) {
         super(conceptService);
     }
 
-    public List<BahmniDiagnosisRequest> getBahmniDiagnosis(EncounterRow multipleEncounterRow) throws ParseException {
+    public List<BahmniDiagnosisRequest> getBahmniDiagnosis(EncounterRow encounterRow) throws ParseException {
         List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
-        if (multipleEncounterRow.hasDiagnoses()) {
-            Date encounterDate = multipleEncounterRow.getEncounterDate();
-            for (KeyValue uniqueDiagnosisKeyValue : multipleEncounterRow.diagnosesRows) {
-                BahmniDiagnosisRequest bahmniDiagnosisRequest = createDiagnosis(encounterDate, uniqueDiagnosisKeyValue.getValue());
-                bahmniDiagnoses.add(bahmniDiagnosisRequest);
+        if (encounterRow.hasDiagnoses()) {
+            Date encounterDate = encounterRow.getEncounterDate();
+            for (KeyValue uniqueDiagnosisKeyValue : encounterRow.diagnosesRows) {
+                String diagnosis = uniqueDiagnosisKeyValue.getValue();
+                if (StringUtils.isNotBlank(diagnosis)) {
+                    BahmniDiagnosisRequest bahmniDiagnosisRequest = createDiagnosis(encounterDate, diagnosis);
+                    bahmniDiagnoses.add(bahmniDiagnosisRequest);
+                }
             }
         }
         return bahmniDiagnoses;
@@ -40,5 +43,4 @@ public class DiagnosisMapper extends ObservationMapper {
         bahmniDiagnosisRequest.setDiagnosisDateTime(encounterDate);
         return bahmniDiagnosisRequest;
     }
-
 }
