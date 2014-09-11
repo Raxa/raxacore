@@ -71,7 +71,7 @@ public class DuplicateObservationsMatcher {
 
     private boolean doesObsValueMatch(Obs obs, String anObservationValue) {
         return obs.getConcept().isNumeric() ?
-                anObservationValue.equals(obs.getValueNumeric()) :
+                Double.parseDouble(anObservationValue) == obs.getValueNumeric() :
                 anObservationValue.equalsIgnoreCase(obs.getValueAsString(Context.getLocale()));
     }
 }
