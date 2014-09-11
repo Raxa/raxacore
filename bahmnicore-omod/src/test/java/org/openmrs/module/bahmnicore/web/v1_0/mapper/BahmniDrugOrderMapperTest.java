@@ -6,20 +6,25 @@ import org.bahmni.module.bahmnicore.mapper.builder.EncounterBuilder;
 import org.bahmni.module.bahmnicore.mapper.builder.PersonBuilder;
 import org.bahmni.module.bahmnicore.mapper.builder.VisitBuilder;
 import org.bahmni.module.bahmnicore.util.CustomDateSerializer;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.FreeTextDosingInstructions;
 import org.openmrs.Person;
+import org.openmrs.Provider;
 import org.openmrs.SimpleDosingInstructions;
 import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
+import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniProviderMapper;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.util.LocaleUtility;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -32,7 +37,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
+import static org.hamcrest.Matchers.any;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @PrepareForTest(LocaleUtility.class)
@@ -42,12 +49,16 @@ public class BahmniDrugOrderMapperTest {
     @Mock
     private AdministrationService administrationService;
 
+    @Mock
+    private BahmniProviderMapper providerMapper;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         PowerMockito.mockStatic(LocaleUtility.class);
         when(LocaleUtility.getLocalesInOrder()).thenReturn(new HashSet<Locale>(Arrays.asList(Locale.getDefault())));
+        when(providerMapper.map(null)).thenReturn(null);
     }
 
     @Test
@@ -57,7 +68,7 @@ public class BahmniDrugOrderMapperTest {
         visitDate = dateActivated = new Date();
         Date dateScheduled = DateUtils.addDays(dateActivated, 2);
         Date expireDate = DateUtils.addDays(dateActivated, 20);
-        int duration = 2;
+
 
         Person person = new PersonBuilder().withUUID("puuid").build();
         Encounter encounter = new EncounterBuilder().build();
@@ -68,7 +79,6 @@ public class BahmniDrugOrderMapperTest {
                 .withDrugForm("Capsule")
                 .withScheduledDate(dateScheduled)
                 .withDateActivated(dateActivated)
-                .withDuration(duration)
                 .withDurationUnits("Week")
                 .withDosingInstructions("2.0 Tablet")
                 .withVisit(visit)
@@ -77,20 +87,22 @@ public class BahmniDrugOrderMapperTest {
         List<DrugOrder> drugOrderList = new ArrayList<>();
         drugOrderList.add(drugOrder1);
 
-        List<BahmniDrugOrder> mappedDrugOrders = new BahmniDrugOrderMapper().mapToResponse(drugOrderList);
+        List<BahmniDrugOrder> mappedDrugOrders = new BahmniDrugOrderMapper(providerMapper).mapToResponse(drugOrderList);
         assertEquals(1, mappedDrugOrders.size());
         BahmniDrugOrder mappedOrder = mappedDrugOrders.get(0);
+        EncounterTransaction.DosingInstructions dosingInstructions = mappedOrder.getDosingInstructions();
 
         assertEquals("Paracetamol 120mg/5ml 60ml", mappedOrder.getDrug().getName());
         assertEquals("Capsule", mappedOrder.getDrug().getForm());
-//        assertEquals(2.0, mappedOrder.getDosingInstructions().getDose(), 0);
-//        assertEquals("Tablet", mappedOrder.getDosingInstructions().getDoseUnits());
-//        assertEquals(CustomDateSerializer.serializeDate(dateScheduled), mappedOrder.getEffectiveStartDate());
-//        assertEquals(CustomDateSerializer.serializeDate(expireDate), mappedOrder.getEffectiveStopDate());
-        assertEquals(duration, mappedOrder.getDuration(), 0);
-        assertEquals("Days", mappedOrder.getDurationUnits());
+        assertEquals(2.0, dosingInstructions.getDose(), 0);
+        assertEquals("Tablet", dosingInstructions.getDoseUnits());
+        assertEquals(dateScheduled, mappedOrder.getEffectiveStartDate());
+        assertEquals(expireDate, mappedOrder.getEffectiveStopDate());
+        assertEquals(18, mappedOrder.getDuration(), 0);
+        assertEquals("Week", mappedOrder.getDurationUnits());
         assertEquals("vuuid", mappedOrder.getVisit().getUuid());
-//        assertEquals(CustomDateSerializer.serializeDate(visitDate), mappedOrder.getVisit().getStartDateTime());
+        assertEquals(visitDate, mappedOrder.getVisit().getStartDateTime());
+        verify(providerMapper);
     }
 
     @Test
@@ -106,7 +118,7 @@ public class BahmniDrugOrderMapperTest {
         Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(visitDate).withEncounter(encounter).build();
 
         int duration = 2;
-        String dosingInstructions = "{\"instructions\": \"Before meals\", \"notes\": \"Take before waking up\"}";
+        String dosingInstructions = "{\"instructions\": \"Before meals\", \"additionalInstructions\": \"Take before waking up\"}";
         DrugOrder drugOrder1 = drugBuilder.withDrugName("Paracetamol 120mg/5ml 60ml")
                 .withDosingType(SimpleDosingInstructions.class)
                 .withDosingInstructions(dosingInstructions)
@@ -124,24 +136,23 @@ public class BahmniDrugOrderMapperTest {
         List<DrugOrder> drugOrderList = new ArrayList<>();
         drugOrderList.add(drugOrder1);
 
-        List<BahmniDrugOrder> mappedDrugOrders = new BahmniDrugOrderMapper().mapToResponse(drugOrderList);
+        List<BahmniDrugOrder> mappedDrugOrders = new BahmniDrugOrderMapper(providerMapper).mapToResponse(drugOrderList);
         assertEquals(1, mappedDrugOrders.size());
         BahmniDrugOrder mappedOrder = mappedDrugOrders.get(0);
 
         assertEquals("Paracetamol 120mg/5ml 60ml", mappedOrder.getDrug().getName());
         assertEquals("Tablet", mappedOrder.getDrug().getForm());
-//        assertEquals(2.0, mappedOrder.getDosingInstructions().getDose(), 0);
-//        assertEquals("Capsule", mappedOrder.getDosingInstructions().getDoseUnits());
-//        assertEquals(CustomDateSerializer.serializeDate(dateActivated), mappedOrder.getEffectiveStartDate());
-//        assertEquals(CustomDateSerializer.serializeDate(expireDate), mappedOrder.getEffectiveStopDate());
+        assertEquals(2.0, mappedOrder.getDosingInstructions().getDose(), 0);
+        assertEquals("Capsule", mappedOrder.getDosingInstructions().getDoseUnits());
+        assertEquals(dateActivated, mappedOrder.getEffectiveStartDate());
+        assertEquals(expireDate, mappedOrder.getEffectiveStopDate());
         assertEquals(duration, mappedOrder.getDuration(), 0);
         assertEquals("Week", mappedOrder.getDurationUnits());
-        assertEquals("Before meals", mappedOrder.getInstructions());
-        assertEquals("Take before waking up", mappedOrder.getDosingInstructions().getAdministrationInstructions());
+        assertEquals(dosingInstructions, mappedOrder.getDosingInstructions().getAdministrationInstructions());
         assertEquals("Once a day", mappedOrder.getDosingInstructions().getFrequency());
         assertEquals("Orally", mappedOrder.getDosingInstructions().getRoute());
         assertEquals("vuuid", mappedOrder.getVisit().getUuid());
-//        assertEquals(CustomDateSerializer.serializeDate(visitDate), mappedOrder.getVisit().getStartDateTime());
+        assertEquals(visitDate, mappedOrder.getVisit().getStartDateTime());
+        verify(providerMapper);
     }
-
 }

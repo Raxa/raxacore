@@ -3,6 +3,7 @@ package org.openmrs.module.bahmniemrapi.drugorder.contract;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.openmrs.FreeTextDosingInstructions;
+import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.module.bahmniemrapi.visit.contract.VisitData;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
@@ -14,6 +15,7 @@ public class BahmniDrugOrder {
 
     private VisitData visit;
     private EncounterTransaction.DrugOrder drugOrder;
+    private EncounterTransaction.Provider provider;
 
     public String getAction() {
         return drugOrder.getAction();
@@ -119,5 +121,13 @@ public class BahmniDrugOrder {
 
     public void setDrugOrder(EncounterTransaction.DrugOrder drugOrder) {
         this.drugOrder = drugOrder;
+    }
+
+    public void setProvider(EncounterTransaction.Provider provider) {
+        this.provider = provider;
+    }
+
+    public EncounterTransaction.Provider getProvider() {
+        return provider;
     }
 }

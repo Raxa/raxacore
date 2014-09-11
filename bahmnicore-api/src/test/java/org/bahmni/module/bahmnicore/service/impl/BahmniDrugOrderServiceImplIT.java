@@ -47,7 +47,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         Visit activeVisit = createActiveVisit(patient);
         assertNull(activeVisit.getEncounters());
         Date orderDate = new Date();
-        BahmniFeedDrugOrder calpol = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, 10, 20.0, "mg");
+        BahmniFeedDrugOrder calpol = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, 10, 20.0,"mg");
         BahmniFeedDrugOrder cetrizine = new BahmniFeedDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70f0", 3.0, 5, 21.0, "mg");
         BahmniFeedDrugOrder cetzine = new BahmniFeedDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70fa", 0.0, 0, 10.0, "mg");
         List<BahmniFeedDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);

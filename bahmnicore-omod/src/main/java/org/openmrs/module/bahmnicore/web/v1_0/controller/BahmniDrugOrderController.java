@@ -7,6 +7,7 @@ import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.openmrs.DrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
+import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniProviderMapper;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,7 +43,7 @@ public class BahmniDrugOrderController {
         logger.info(activeDrugOrders.size() + " active drug orders found");
 
         try {
-            return new BahmniDrugOrderMapper().mapToResponse(activeDrugOrders);
+            return new BahmniDrugOrderMapper(new BahmniProviderMapper()).mapToResponse(activeDrugOrders);
         } catch (IOException e) {
             logger.error("Could not parse dosing instructions",e);
             throw new RuntimeException("Could not parse dosing instructions",e);
@@ -57,7 +58,7 @@ public class BahmniDrugOrderController {
                                                          @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits){
         List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrders(patientUuid, includeActiveVisit, numberOfVisits);
         try {
-            return new BahmniDrugOrderMapper().mapToResponse(drugOrders);
+            return new BahmniDrugOrderMapper(new BahmniProviderMapper()).mapToResponse(drugOrders);
         } catch (IOException e) {
             logger.error("Could not parse drug order",e);
              throw new RuntimeException("Could not parse drug order",e);

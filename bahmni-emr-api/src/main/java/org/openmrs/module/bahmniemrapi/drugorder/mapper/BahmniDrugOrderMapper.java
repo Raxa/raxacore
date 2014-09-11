@@ -11,6 +11,12 @@ import java.util.List;
 
 public class BahmniDrugOrderMapper {
 
+    private BahmniProviderMapper providerMapper;
+
+    public BahmniDrugOrderMapper(BahmniProviderMapper providerMapper) {
+        this.providerMapper = providerMapper;
+    }
+
     public List<BahmniDrugOrder> mapToResponse(List<DrugOrder> activeDrugOrders) throws IOException {
 
         OrderMapper drugOrderMapper = new OrderMapper1_10();
@@ -21,9 +27,9 @@ public class BahmniDrugOrderMapper {
             BahmniDrugOrder bahmniDrugOrder = new BahmniDrugOrder();
             bahmniDrugOrder.setDrugOrder(drugOrderMapper.mapDrugOrder(openMRSDrugOrder));
             bahmniDrugOrder.setVisit(openMRSDrugOrder.getEncounter().getVisit());
+            bahmniDrugOrder.setProvider(providerMapper.map(openMRSDrugOrder.getOrderer()));
             bahmniDrugOrders.add(bahmniDrugOrder);
         }
         return bahmniDrugOrders;
     }
-
 }
