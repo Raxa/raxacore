@@ -3,25 +3,19 @@ package org.bahmni.module.referencedata.web.contract;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Concept {
-    private String uuid;
     private String uniqueName;
     private String displayName;
     private String description;
     private String className;
     private String dataType;
+    private List<String> answers;
 
     public Concept() {
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
     }
 
     @NotNull
@@ -65,5 +59,13 @@ public class Concept {
 
     public void setDataType(String dataType) {
         this.dataType = dataType;
+    }
+
+    public List<String> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<String> answers) {
+        this.answers = answers;
     }
 }
