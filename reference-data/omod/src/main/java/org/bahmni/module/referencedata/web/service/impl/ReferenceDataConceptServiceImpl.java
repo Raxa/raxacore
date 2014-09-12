@@ -8,16 +8,20 @@ import org.openmrs.ConceptDatatype;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptService {
     private ConceptMapper conceptMapper;
+
     private ConceptService conceptService;
 
-    public ReferenceDataConceptServiceImpl() {
+    @Autowired
+    public ReferenceDataConceptServiceImpl(ConceptService conceptService) {
         this.conceptMapper = new ConceptMapper();
-        conceptService = Context.getConceptService();
+        this.conceptService = conceptService;
     }
 
     @Override

@@ -26,7 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@PrepareForTest({ReferenceDataConceptServiceImpl.class, Context.class})
+@PrepareForTest({ReferenceDataConceptServiceImpl.class})
 @RunWith(PowerMockRunner.class)
 public class ReferenceDataConceptServiceImplTest {
     private ReferenceDataConceptService referenceDataConceptService;
@@ -59,11 +59,8 @@ public class ReferenceDataConceptServiceImplTest {
 
         PowerMockito.when(this.conceptMapper.map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class))).thenReturn(openmrsConcept);
         PowerMockito.whenNew(ConceptMapper.class).withAnyArguments().thenReturn(conceptMapper);
-        PowerMockito.mock(org.bahmni.module.bahmnicore.service.ConceptService.class);
-        PowerMockito.mockStatic(Context.class);
-        when(Context.getConceptService()).thenReturn(conceptService);
 
-        referenceDataConceptService = new ReferenceDataConceptServiceImpl();
+        referenceDataConceptService = new ReferenceDataConceptServiceImpl(conceptService);
     }
 
     @Test
