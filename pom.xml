@@ -18,6 +18,7 @@
         <module>reference-data</module>
         <module>admin</module>
         <module>vagrant-deploy</module>
+        <module>bahmni-mapping</module>
     </modules>
 
     <properties>
@@ -43,6 +44,11 @@
     <dependencyManagement>
         <dependencies>
             <!--Child modules-->
+            <dependency>
+                <groupId>org.bahmni.module</groupId>
+                <artifactId>bahmni-mapping</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.bahmni.module</groupId>
                 <artifactId>bahmni-emr-api</artifactId>

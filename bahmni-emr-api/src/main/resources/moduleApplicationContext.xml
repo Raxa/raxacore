@@ -44,7 +44,6 @@
         <constructor-arg  ref="obsService"/>
         <constructor-arg  ref="accessionNotesMapper"/>
         <constructor-arg  ref="encounterTransactionObsMapper"/>
+        <constructor-arg  ref="locationBasedEncounterTypeIdentifier"/>
     </bean>
-
-
 </beans>

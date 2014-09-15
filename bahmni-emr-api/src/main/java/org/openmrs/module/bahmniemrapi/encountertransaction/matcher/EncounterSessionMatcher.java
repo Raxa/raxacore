@@ -32,13 +32,9 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         if(encounterParameters.getProviders() != null && encounterParameters.getProviders().iterator().hasNext())
             provider = encounterParameters.getProviders().iterator().next();
 
-        if (encounterType == null){
-            throw new IllegalArgumentException("Encounter Type not found");
-        }
-
         if(visit.getEncounters()!=null){
             for (Encounter encounter : visit.getEncounters()) {
-                if (encounterType.equals(encounter.getEncounterType())) {
+                if (encounterType == null || encounterType.equals(encounter.getEncounterType())) {
                     Date encounterDateChanged = encounter.getDateChanged() == null ? encounter.getDateCreated() : encounter.getDateChanged();
                     if(!isCurrentSessionTimeExpired(encounterDateChanged) && isSameProvider(provider, encounter))
                         if (locationNotDefined(encounterParameters, encounter) || isSameLocation(encounterParameters, encounter))

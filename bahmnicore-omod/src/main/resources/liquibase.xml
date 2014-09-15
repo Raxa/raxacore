@@ -1670,4 +1670,38 @@
             call add_concept_set_members (@set_concept_id,@capsule_concept_id,1);
         </sql>
     </changeSet>
+    <changeSet id="bahmnimapping-201409121125" author="Chethan, D3">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="location_encounter_type_map"/></not>
+        </preConditions>
+        <createTable tableName="location_encounter_type_map">
+            <column autoIncrement="true" name="id" type="int"> <constraints nullable="false" primaryKey="true"/> </column>
+            <column name="location_id" type="int"> <constraints nullable="false"/> </column>
+            <column name="encounter_type_id" type="int"> <constraints nullable="false"/> </column>
+            <column name="creator" type="int"> <constraints nullable="false"/> </column>
+            <column name="date_created" type="DATETIME"> <constraints nullable="false"/> </column>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="DATETIME"/>
+            <column name="uuid" type="char(38)" />
+            <column defaultValueBoolean="false" name="voided" type="BOOLEAN"><constraints nullable="false" /></column>
+            <column name="date_voided" type="datetime" />
+            <column name="voided_by" type="int" />
+            <column name="void_reason" type="varchar(255)" />
+        </createTable>
+        <addForeignKeyConstraint constraintName="location_encounter_type_map_location_id_fk"
+                                 baseTableName="location_encounter_type_map" baseColumnNames="location_id"
+                                 referencedTableName="location" referencedColumnNames="location_id" />
+        <addForeignKeyConstraint constraintName="location_encounter_type_map_encounter_type_id_fk"
+                                 baseTableName="location_encounter_type_map" baseColumnNames="encounter_type_id"
+                                 referencedTableName="encounter_type" referencedColumnNames="encounter_type_id" />
+        <addForeignKeyConstraint constraintName="location_encounter_type_map_creator_fk"
+                                 baseTableName="location_encounter_type_map" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="location_encounter_type_map_changed_by_fk"
+                                 baseTableName="location_encounter_type_map" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="location_encounter_type_map_voided_by_fk"
+                                 baseTableName="location_encounter_type_map" baseColumnNames="voided_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+    </changeSet>
 </databaseChangeLog>

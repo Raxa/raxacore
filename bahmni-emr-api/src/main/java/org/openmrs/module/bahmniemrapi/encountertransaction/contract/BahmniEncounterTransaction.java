@@ -19,11 +19,12 @@ public class BahmniEncounterTransaction extends EncounterTransaction {
     private List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
     private List<AccessionNote> accessionNotes;
     
-    private EncounterTransaction encounterTransaction = new EncounterTransaction();
+    private EncounterTransaction encounterTransaction;
     private String encounterType;
     private String visitType;
 
     public BahmniEncounterTransaction() {
+        this(new EncounterTransaction());
     }
 
     public BahmniEncounterTransaction(EncounterTransaction encounterTransaction) {

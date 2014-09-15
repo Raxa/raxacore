@@ -109,4 +109,8 @@
         <lang>en</lang>
         <file>messages.properties</file>
     </messages>
+
+    <mappingFiles>
+        LocationEncounterTypeMap.hbm.xml
+    </mappingFiles>
 </module>
