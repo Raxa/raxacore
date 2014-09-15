@@ -30,8 +30,11 @@ public class BahmniPersonObsServiceImpl implements BahmniPersonObsService {
     }
 
     @Override
-    public List<Obs> observationsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits) {
-        return personObsDao.getObsFor(patientUuid, conceptNames, numberOfVisits);
+    public List<Obs> observationsFor(String patientUuid, List<String> rootConceptNames, Integer numberOfVisits) {
+        List<Obs> orphanedObservations = personObsDao.getObsFor(patientUuid, getChildConceptNames(rootConceptNames), numberOfVisits, true);
+        List<Obs> observations = personObsDao.getObsFor(patientUuid, rootConceptNames, numberOfVisits);
+        observations.addAll(orphanedObservations);
+        return observations;
     }
 
     @Override
@@ -47,5 +50,14 @@ public class BahmniPersonObsServiceImpl implements BahmniPersonObsService {
     @Override
     public List<Concept> getNumericConceptsForPerson(String personUUID) {
         return personObsDao.getNumericConceptsForPerson(personUUID);
+    }
+
+    private List<String> getChildConceptNames(List<String> conceptNames) {
+        ConceptDefinition conceptDefinition = conceptService.conceptsFor(conceptNames);
+        List<String> childConceptNames = new ArrayList<>();
+        for (ConceptData concept : conceptDefinition.getConcepts()) {
+            childConceptNames.add(concept.getName());
+        }
+        return childConceptNames;
     }
 }

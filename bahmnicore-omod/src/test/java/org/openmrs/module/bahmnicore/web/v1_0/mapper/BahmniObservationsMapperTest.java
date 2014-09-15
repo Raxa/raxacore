@@ -4,7 +4,6 @@ import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
 import org.bahmni.module.bahmnicore.mapper.builder.*;
 import org.bahmni.module.bahmnicore.service.ConceptService;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,7 +70,7 @@ public class BahmniObservationsMapperTest {
         mockConceptDefinition = mock(ConceptDefinition.class);
         when(mockConceptDefinition.getSortWeightFor(any(Concept.class))).thenReturn(CONCEPT_SORT_WEIGHT);
 
-        bahmniObservationsMapper = new BahmniObservationsMapper(mockRestService, conceptNames, mockConceptDefinition);
+        bahmniObservationsMapper = new BahmniObservationsMapper(mockRestService, mockConceptDefinition);
     }
 
     @Test

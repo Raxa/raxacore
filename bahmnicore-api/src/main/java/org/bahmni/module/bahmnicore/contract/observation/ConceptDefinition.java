@@ -31,4 +31,13 @@ public class ConceptDefinition {
     public List<ConceptData> getConcepts() {
         return concepts;
     }
+
+    public String rootConceptFor(String childConceptName) {
+        for (ConceptData conceptData : concepts) {
+            if (conceptData.getName().equalsIgnoreCase(childConceptName)) {
+                return conceptData.getRootConcept();
+            }
+        }
+        return null;
+    }
 }

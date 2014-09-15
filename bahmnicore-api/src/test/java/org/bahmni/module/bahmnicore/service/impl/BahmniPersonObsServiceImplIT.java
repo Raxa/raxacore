@@ -38,4 +38,13 @@ public class BahmniPersonObsServiceImplIT extends BaseModuleWebContextSensitiveT
         assertEquals("Weight", obsForConceptSet.get(0).getConcept().getName().getName());
         assertEquals("Pulse", obsForConceptSet.get(1).getConcept().getName().getName());
     }
+
+    @Test
+    public void return_orphaned_obs_for_patient() throws Exception {
+        List<Obs> obsForConceptSet = personObsService.observationsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), null);
+        assertEquals(2, obsForConceptSet.size());
+
+        assertEquals("Systolic", obsForConceptSet.get(1).getConcept().getName().getName());
+        assertEquals((Double) 110.0, obsForConceptSet.get(1).getValueNumeric());
+    }
 }

@@ -21,11 +21,14 @@ public class PersonObsDaoImpl implements PersonObsDao {
     @Override
     public List<Obs> getNumericObsByPerson(String personUUID) {
         Query query = sessionFactory.getCurrentSession().createQuery(
-                        "select obs from Obs as obs inner join fetch " +
-                                "obs.concept as concept inner join fetch " +
-                                "concept.datatype as datatype inner join " +
-                                "obs.person as person " +
-                                "where datatype.hl7Abbreviation= '" + ConceptDatatype.NUMERIC + "' and person.uuid= :personUUID");
+                    "select obs from Obs as obs inner join fetch " +
+                        "obs.concept as concept inner join fetch " +
+                        "concept.datatype as datatype inner join " +
+                        "obs.person as person " +
+                        "where datatype.hl7Abbreviation = :hl7abrv  " +
+                        "and person.uuid= :personUUID  " +
+                        "and obs.voided = false ");
+        query.setString("hl7abrv", ConceptDatatype.NUMERIC);
         query.setString("personUUID", personUUID);
         return query.list();
 
@@ -39,14 +42,22 @@ public class PersonObsDaoImpl implements PersonObsDao {
                         "inner join obs.concept as concept " +
                         "inner join concept.datatype as datatype " +
                         "inner join obs.person as person " +
-                        "where datatype.hl7Abbreviation = '" + ConceptDatatype.NUMERIC + "' and person.uuid = :personUUID");
+                        "where datatype.hl7Abbreviation = :hl7abrv " +
+                        "and person.uuid = :personUUID " +
+                        "and obs.voided = false ");
+        query.setString("hl7abrv", ConceptDatatype.NUMERIC);
         query.setString("personUUID", personUUID);
         return query.list();
 
     }
 
     @Override
-    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits) {
+    public List<Obs> getObsFor(String patientUuid, List<String> rootConceptNames, Integer numberOfVisits) {
+        return getObsFor(patientUuid, rootConceptNames, numberOfVisits, false);
+    }
+
+    @Override
+    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, boolean getOrphanedObservations) {
         List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
         if (listOfVisitIds == null || listOfVisitIds.isEmpty())
             return new ArrayList<>();
@@ -59,8 +70,9 @@ public class PersonObsDaoImpl implements PersonObsDao {
                         " and cn.concept = obs.concept.conceptId " +
                         " and cn.name in (:conceptNames) " +
                         " and cn.conceptNameType = :conceptNameType " +
-                        " and cn.voided = 0 " +
-                        " and obs.voided = 0 " +
+                        " and cn.voided = false " +
+                        " and obs.voided = false " +
+                        (getOrphanedObservations ? " and obs.obsGroup is null " : "")    +
                         " order by obs.obsDatetime desc ");
         queryToGetObservations.setString("patientUuid", patientUuid);
         queryToGetObservations.setParameterList("conceptNames", conceptNames);
@@ -78,6 +90,7 @@ public class PersonObsDaoImpl implements PersonObsDao {
                         " and cn.concept = obs.concept.conceptId " +
                         " and cn.name = (:conceptName) " +
                         " and cn.conceptNameType = :conceptNameType " +
+                        " and cn.voided = false " +
                         " and obs.voided = false" +
                         " order by obs.obsDatetime desc ");
 
@@ -93,7 +106,7 @@ public class PersonObsDaoImpl implements PersonObsDao {
                     "select v.visitId " +
                         " from Visit as v " +
                         " where v.patient.uuid = :patientUuid " +
-                        " and v.voided = 0 " +
+                        " and v.voided = false " +
                         "order by v.startDatetime desc");
         queryToGetVisitIds.setString("patientUuid", patientUuid);
         if (numberOfVisits != null) {

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -40,18 +39,18 @@ public class BahmniObservationsController extends BaseRestController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public List<ObservationData> get(@RequestParam(value = "patientUuid", required = true) String patientUUID,
-                                     @RequestParam(value = "concept", required = true) List<String> conceptNames,
+                                     @RequestParam(value = "concept", required = true) List<String> rootConceptNames,
                                      @RequestParam(value = "scope", required = false) String scope,
                                      @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits) {
 
         List<Obs> observations;
         if ("latest".equals(scope)) {
-            observations = personObsService.getLatest(patientUUID, conceptNames);
+            observations = personObsService.getLatest(patientUUID, rootConceptNames);
         } else {
-            observations = personObsService.observationsFor(patientUUID, conceptNames, numberOfVisits);
+            observations = personObsService.observationsFor(patientUUID, rootConceptNames, numberOfVisits);
         }
 
-        ConceptDefinition conceptDefinition = conceptService.conceptsFor(conceptNames);
-        return new BahmniObservationsMapper(restService, conceptNames, conceptDefinition).mapNonVoidedObservations(observations);
+        ConceptDefinition conceptDefinition = conceptService.conceptsFor(rootConceptNames);
+        return new BahmniObservationsMapper(restService, conceptDefinition).mapNonVoidedObservations(observations);
     }
 }

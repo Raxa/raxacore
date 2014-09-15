@@ -60,6 +60,15 @@ public class PersonObsDaoIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
+    public void retrieve_only_orphaned_observation() throws Exception {
+        List<Obs> allObs = personObsDao.getObsFor("341b4e41-790c-484f-b6ed-71dc8da222db", Arrays.asList("Diastolic"), null, true);
+
+        assertEquals(1, allObs.size());
+        assertEquals("Diastolic", allObs.get(0).getConcept().getName().getName());
+        assertEquals(125.0, allObs.get(0).getValueNumeric());
+    }
+
+    @Test
 	public void shouldRetrieveNumericalConceptsForPatient() throws Exception {
 		assertEquals(5, personObsDao.getNumericConceptsForPerson("86526ed5-3c11-11de-a0ba-001e378eb67a").size());
 	}
@@ -69,5 +78,4 @@ public class PersonObsDaoIT extends BaseModuleWebContextSensitiveTest {
         List<Obs> allObs = personObsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), null);
         assertEquals(1, allObs.size());
     }
-
 }

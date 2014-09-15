@@ -188,12 +188,17 @@
     <obs obs_id="6" obs_group_id="5" concept_id="9021" person_id="1024" value_numeric="100" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bg" creator="1" voided="0" />
     <obs obs_id="7" obs_group_id="5" concept_id="9022" person_id="1024" value_coded="100" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bh" creator="1" voided="0" />
 
-
     <obs obs_id="1024" person_id="1024" concept_id="111" value_numeric="1.1" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
     <obs obs_id="1025" person_id="1024" concept_id="222" value_text="foo" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
     <obs obs_id="1026" person_id="1024" concept_id="333" value_numeric="2.1" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
     <obs obs_id="1027" person_id="1024" concept_id="444" value_text="foo" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
     <obs obs_id="1028" person_id="1024" concept_id="555" value_numeric="3.1" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
     <obs obs_id="1029" person_id="1024" concept_id="666" value_text="foo" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
+
+
+    <visit visit_id="111" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="1025" visit_type_id="1" indication_concept_id="1000" location_id="2" creator="1" changed_by="1000" voided_by="1000" uuid="2eac608a-31bc-4c0e-b6b7-4ff9cd5banka" voided="0"/>
+    <encounter encounter_id="381" encounter_type="1" patient_id="1025" visit_id="111" location_id="1" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206ebanka"/>
+    <obs obs_id="66" concept_id="9021" person_id="1025" value_numeric="125" encounter_id="381" obs_datetime="2008-08-18 18:09:05.0" date_created="2008-08-18 18:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addbbanka" creator="1" voided="0" />
+
 
 </dataset>

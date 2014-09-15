@@ -21,16 +21,14 @@ public class BahmniObservationsMapper {
 
     private final RestService restService;
     private ConceptDefinition conceptDefinition;
-    private final List<String> rootConceptNames;
 
-    public BahmniObservationsMapper(RestService restService, List<String> conceptNames, ConceptDefinition conceptDefinition) {
+    public BahmniObservationsMapper(RestService restService, ConceptDefinition conceptDefinition) {
         this.restService = restService;
-        this.rootConceptNames = conceptNames;
         this.conceptDefinition = conceptDefinition;
     }
 
     public List<ObservationData> mapNonVoidedObservations(List<Obs> obsForPerson) {
-        List<ObservationData> observations = flatten(obsForPerson, new ArrayList<ObservationData>(), null);
+        List<ObservationData> observations = flatten(obsForPerson, new ArrayList<ObservationData>());
         return sortByDatetime(observations);
     }
 
@@ -44,27 +42,25 @@ public class BahmniObservationsMapper {
         return observations;
     }
 
-    private List<ObservationData> flatten(Collection<Obs> obsForPerson, List<ObservationData> mappedObservations, String rootConcept) {
+    private List<ObservationData> flatten(Collection<Obs> obsForPerson, List<ObservationData> mappedObservations) {
         for (Obs obs : obsForPerson) {
             if (obs.isVoided())
                 continue;
 
-            rootConcept = getRootConcept(obs, rootConcept);
-
             Collection<Obs> groupMembers = obs.getGroupMembers();
             if (groupMembers == null || groupMembers.isEmpty()) {
-                mappedObservations.add(createObservationForLeaf(obs, rootConcept));
+                mappedObservations.add(createObservationForLeaf(obs));
             } else if (isConceptDetails(obs.getConcept())) {
-                mappedObservations.add(createObservationForGroup(obs, rootConcept));
+                mappedObservations.add(createObservationForGroup(obs));
             } else {
-                flatten(groupMembers, mappedObservations, rootConcept);
+                flatten(groupMembers, mappedObservations);
             }
         }
 
         return mappedObservations;
     }
 
-    private ObservationData createObservationForGroup(Obs conceptDetailsObs, String rootConcept) {
+    private ObservationData createObservationForGroup(Obs conceptDetailsObs) {
         ObservationData observationData = null;
         Long duration = null;
         Boolean isAbnormal = false;
@@ -77,7 +73,7 @@ public class BahmniObservationsMapper {
             } else if (isAbnormal(anObservation.getConcept())) {
                 isAbnormal = Boolean.parseBoolean(anObservation.getValueCoded().getName().getName());
             } else if (hasValue(anObservation)) {
-                observationData = createObservationForLeaf(anObservation, rootConcept);
+                observationData = createObservationForLeaf(anObservation);
                 // Mujir/Mihir - not pre loading complex concepts as we don't need them yet.
                 if (isNumeric(anObservation)) {
                     observationData.setUnit(getUnit(anObservation.getConcept()));
@@ -99,11 +95,11 @@ public class BahmniObservationsMapper {
         return anObservation.getConcept().getDatatype().getHl7Abbreviation().equals(ConceptDatatype.NUMERIC);
     }
 
-    private ObservationData createObservationForLeaf(Obs anObservation, String rootConcept) {
+    private ObservationData createObservationForLeaf(Obs anObservation) {
         ObservationData observationData = new ObservationData(anObservation, getPatientURI(anObservation),
                 getVisitURI(anObservation), getEncounterURI(anObservation), getProviderURIs(anObservation),
                 getConceptSortWeight(conceptDefinition, anObservation.getConcept()));
-        observationData.setRootConcept(rootConcept);
+        observationData.setRootConcept(conceptDefinition.rootConceptFor(anObservation.getConcept().getName().getName()));
         return observationData;
     }
 
@@ -151,12 +147,4 @@ public class BahmniObservationsMapper {
         return obsConcept.getConceptClass().getName().equals(ConceptService.CONCEPT_DETAILS_CONCEPT_CLASS);
     }
 
-    private String getRootConcept(Obs obs, String rootConcept) {
-        String conceptName = obs.getConcept().getName().getName();
-        for (String rootConceptName : rootConceptNames) {
-            if (rootConceptName.equalsIgnoreCase(conceptName))
-                return conceptName;
-        }
-        return rootConcept;
-    }
 }
