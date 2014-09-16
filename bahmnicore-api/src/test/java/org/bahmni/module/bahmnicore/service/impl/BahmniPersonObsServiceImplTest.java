@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.dao.PersonObsDao;
 import org.bahmni.module.bahmnicore.service.BahmniPersonObsService;
 import org.bahmni.module.bahmnicore.service.ConceptService;
@@ -7,9 +8,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class BahmniPersonObsServiceImplTest {
@@ -28,6 +31,7 @@ public class BahmniPersonObsServiceImplTest {
     public void setUp(){
         initMocks(this);
         personObsService = new BahmniPersonObsServiceImpl(personObsDao,conceptService);
+        when(conceptService.conceptsFor(Arrays.asList("Blood Pressure"))).thenReturn(new ConceptDefinition());
     }
 
     @Test
