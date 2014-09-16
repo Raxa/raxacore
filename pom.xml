@@ -19,6 +19,7 @@
         <module>admin</module>
         <module>vagrant-deploy</module>
         <module>bahmni-mapping</module>
+        <module>obs-relation</module>
     </modules>
 
     <properties>
@@ -263,11 +264,13 @@
                 <groupId>org.codehaus.jackson</groupId>
                 <artifactId>jackson-core-asl</artifactId>
                 <version>1.5.0</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.jackson</groupId>
                 <artifactId>jackson-mapper-asl</artifactId>
                 <version>1.5.0</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.bahmni.module</groupId>

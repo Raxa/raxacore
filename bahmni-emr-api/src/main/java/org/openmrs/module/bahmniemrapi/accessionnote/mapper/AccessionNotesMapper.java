@@ -65,6 +65,7 @@ public class AccessionNotesMapper {
     private boolean hasValidationNotes(EncounterTransaction encounterTransaction) {
         if(validationNotesEncounterType == null){
             validationNotesEncounterType = encounterService.getEncounterType(VALIDATION_NOTES_ENCOUNTER_TYPE);
+            if(validationNotesEncounterType == null) return false;
         }
         if(encounterTransaction.getEncounterTypeUuid().equals(validationNotesEncounterType.getUuid()) && !encounterTransaction.getObservations().isEmpty()){
             return true;

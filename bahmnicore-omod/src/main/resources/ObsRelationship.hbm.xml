@@ -1,0 +1,30 @@
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.bahmni.module.obsrelationship.model" >
+    <class name="ObsRelationship" table="obs_relationship" batch-size="25">
+        <id name="id" type="int" column="obs_relationship_id" unsaved-value="0">
+            <generator class="native">
+                <param name="sequence">obs_relationship_obs_relationship_id_seq</param>
+            </generator>
+        </id>
+
+        <property name="uuid" type="java.lang.String"
+                  column="uuid" length="38" unique="true" />
+
+        <property name="dateCreated" type="java.util.Date" column="date_created" length="19" not-null="true" />
+
+        <many-to-one name="creator" class="org.openmrs.User" column="creator" not-null="true"/>
+
+
+        <many-to-one name="targetObs" class="org.openmrs.Obs"
+                  column="target_obs_id" not-null="true"  />
+
+        <many-to-one name="sourceObs" class="org.openmrs.Obs"
+                     column="source_obs_id" not-null="true"  />
+
+        <many-to-one name="obsRelationshipType" class="ObsRelationshipType"
+                     column="obs_relationship_type_id" not-null="true"  />
+
+    </class>
+</hibernate-mapping>

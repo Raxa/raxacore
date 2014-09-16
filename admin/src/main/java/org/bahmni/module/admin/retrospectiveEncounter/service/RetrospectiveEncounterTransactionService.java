@@ -7,6 +7,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
@@ -26,7 +27,7 @@ public class RetrospectiveEncounterTransactionService {
                 bahmniEncounterTransaction.getEncounterDateTime());
 
         DuplicateObservationsMatcher duplicateObservationsMatcher = new DuplicateObservationsMatcher(matchingVisit, bahmniEncounterTransaction.getEncounterType());
-        List<EncounterTransaction.Observation> uniqueObservations = duplicateObservationsMatcher.getUniqueObservations(bahmniEncounterTransaction.getObservations());
+        List<BahmniObservation> uniqueObservations = duplicateObservationsMatcher.getUniqueBahmniObservations(bahmniEncounterTransaction.getObservations());
         List<BahmniDiagnosisRequest> uniqueDiagnoses = duplicateObservationsMatcher.getUniqueDiagnoses(bahmniEncounterTransaction.getBahmniDiagnoses());
 
         bahmniEncounterTransaction = updateBahmniEncounterTransaction(bahmniEncounterTransaction, matchingVisit, uniqueObservations, uniqueDiagnoses);
@@ -35,7 +36,7 @@ public class RetrospectiveEncounterTransactionService {
     }
 
     private BahmniEncounterTransaction updateBahmniEncounterTransaction(BahmniEncounterTransaction bahmniEncounterTransaction,
-                    Visit visit, List<EncounterTransaction.Observation> uniqueObservations, List<BahmniDiagnosisRequest> uniqueDiagnoses) {
+                    Visit visit, List<BahmniObservation> uniqueObservations, List<BahmniDiagnosisRequest> uniqueDiagnoses) {
         bahmniEncounterTransaction.setObservations(uniqueObservations);
         bahmniEncounterTransaction.setBahmniDiagnoses(uniqueDiagnoses);
         bahmniEncounterTransaction.setEncounterDateTime(visit.getStartDatetime());

@@ -1486,6 +1486,46 @@
             values ('uploaded.files.directory', '/home/bahmni/uploaded-files/mrs/', 'Directory where files uploaded to Bahmni are stored', uuid());
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201408251140" author="Sravanthi,Indraneel">
+        <comment>
+            Introducing Obs relationship type and obs relationship tables
+        </comment>
+        <sql>
+            CREATE TABLE obs_relationship_type(
+                obs_relationship_type_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                name VARCHAR(50) NOT NULL,
+                description VARCHAR(255),
+                uuid CHAR(38) NOT NULL,
+                creator INT NOT NULL,
+                date_created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                retired TINYINT DEFAULT 0 NOT NULL,
+                date_retired DATETIME,
+                retired_by INT,
+                retire_reason VARCHAR(255),
+                date_changed DATETIME,
+                changed_by INT,
+                FOREIGN KEY (creator) REFERENCES users (user_id),
+                FOREIGN KEY (changed_by) REFERENCES users (user_id),
+                FOREIGN KEY (retired_by) REFERENCES users (user_id)
+            );
+            CREATE UNIQUE INDEX uuid ON obs_relationship_type (uuid);
+
+            CREATE TABLE obs_relationship(
+                obs_relationship_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+                obs_relationship_type_id INT NOT NULL,
+                source_obs_id INT NOT NULL,
+                target_obs_id INT NOT NULL,
+                uuid CHAR(38) NOT NULL,
+                date_created DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                creator INT NOT NULL,
+                FOREIGN KEY (obs_relationship_type_id) REFERENCES obs_relationship_type (obs_relationship_type_id),
+                FOREIGN KEY (source_obs_id) REFERENCES obs (obs_id),
+                FOREIGN KEY (target_obs_id) REFERENCES obs (obs_id),
+                FOREIGN KEY (creator) REFERENCES person (person_id)
+            );
+            CREATE UNIQUE INDEX uuid ON obs_relationship (uuid);
+        </sql>
+    </changeSet>
 
     <changeSet id="bahmni-clinical-201408251220" author="D3">
         <preConditions onFail="MARK_RAN">
@@ -1703,5 +1743,26 @@
         <addForeignKeyConstraint constraintName="location_encounter_type_map_voided_by_fk"
                                  baseTableName="location_encounter_type_map" baseColumnNames="voided_by"
                                  referencedTableName="users" referencedColumnNames="user_id" />
+    </changeSet>
+    <changeSet id="bahmni-core-20140908172845" author="Indraneel, Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from concept_name where name = 'Impression';
+            </sqlCheck>
+        </preConditions>
+        <comment>Add Impression concept</comment>
+        <sql>
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Impression', 'Impression', 'Text', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Impression', '1');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409161415" author="Indraneel">
+        <comment>
+            Adding obs relationship type : qualified-by
+        </comment>
+        <sql>
+            INSERT INTO obs_relationship_type (name, description, uuid, creator)
+            VALUES ('qualified-by', 'target is qualified by source', 'dbde17aa-3d7e-11e4-8782-164230d1df67', 1);
+        </sql>
     </changeSet>
 </databaseChangeLog>

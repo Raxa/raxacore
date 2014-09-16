@@ -15,6 +15,7 @@ import org.openmrs.api.OrderService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmnicore.web.v1_0.InvalidInputException;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.accessionnote.mapper.AccessionNotesMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
@@ -38,6 +39,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/bahmniencounter")
@@ -53,15 +55,11 @@ public class BahmniEncounterController extends BaseRestController {
     @Autowired
     private EmrEncounterService emrEncounterService;
     @Autowired
-    private ObsService obsService;
-    @Autowired
     private EncounterTransactionMapper encounterTransactionMapper;
     @Autowired
-    private AccessionNotesMapper accessionNotesMapper;
-    @Autowired
-    private EncounterTransactionObsMapper encounterTransactionObsMapper;
-    @Autowired
     private BahmniEncounterTransactionService bahmniEncounterTransactionService;
+    @Autowired
+    private BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper;
 
     @RequestMapping(method = RequestMethod.GET, value = "config")
     @ResponseBody
@@ -99,8 +97,6 @@ public class BahmniEncounterController extends BaseRestController {
                                                  @RequestParam(value = "encounterDate", required = false) String encounterDate) {
         List<BahmniEncounterTransaction> bahmniEncounterTransactions = new ArrayList<>();
 
-        BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper = new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper, encounterTransactionObsMapper);
-
         for (String visitUuid : visitUuids ) {
             EncounterSearchParameters encounterSearchParameters = new EncounterSearchParameters();
             encounterSearchParameters.setVisitUuid(visitUuid);
@@ -137,12 +133,21 @@ public class BahmniEncounterController extends BaseRestController {
     @ResponseBody
     @Transactional
     public BahmniEncounterTransaction update(@RequestBody BahmniEncounterTransaction bahmniEncounterTransaction) {
+        setUuidsForObservations(bahmniEncounterTransaction.getObservations());
         return bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
     }
 
     public BahmniEncounterTransaction get(String encounterUuid) {
         Encounter encounter = encounterService.getEncounterByUuid(encounterUuid);
         EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, true);
-        return new BahmniEncounterTransactionMapper(obsService, encounterTransactionMapper, accessionNotesMapper, encounterTransactionObsMapper).map(encounterTransaction);
+        return bahmniEncounterTransactionMapper.map(encounterTransaction);
+    }
+
+    private void setUuidsForObservations(List<BahmniObservation> bahmniObservations) {
+        for (BahmniObservation bahmniObservation : bahmniObservations) {
+            if (org.apache.commons.lang3.StringUtils.isBlank(bahmniObservation.getUuid())){
+                bahmniObservation.setUuid(UUID.randomUUID().toString());
+            }
+        }
     }
 }

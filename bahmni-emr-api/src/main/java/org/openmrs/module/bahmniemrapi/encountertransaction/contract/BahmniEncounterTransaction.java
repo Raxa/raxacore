@@ -5,6 +5,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openmrs.module.bahmniemrapi.accessionnote.contract.AccessionNote;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
+import org.openmrs.module.emrapi.diagnosis.Diagnosis;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
 
@@ -14,12 +15,13 @@ import java.util.List;
 import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BahmniEncounterTransaction extends EncounterTransaction {
-    
+public class BahmniEncounterTransaction{
+
+    private EncounterTransaction encounterTransaction = new EncounterTransaction();
+
     private List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
+    private List<BahmniObservation> observations = new ArrayList<>();
     private List<AccessionNote> accessionNotes;
-    
-    private EncounterTransaction encounterTransaction;
     private String encounterType;
     private String visitType;
 
@@ -37,157 +39,147 @@ public class BahmniEncounterTransaction extends EncounterTransaction {
 
     public void setBahmniDiagnoses(List<BahmniDiagnosisRequest> bahmniDiagnoses) {
         this.bahmniDiagnoses = bahmniDiagnoses;
+        List<EncounterTransaction.Diagnosis> newDiagnoses = new ArrayList<>();
+        for (BahmniDiagnosisRequest bahmniDiagnose : bahmniDiagnoses) {
+            newDiagnoses.add(bahmniDiagnose);
+        }
+        encounterTransaction.setDiagnoses(newDiagnoses);
     }
 
-    @Override
-    @JsonIgnore
-    public List<Diagnosis> getDiagnoses() {
-        return encounterTransaction.getDiagnoses();
-    }
-
-    @Override
-    @JsonIgnore
-    public void setDiagnoses(List<Diagnosis> diagnoses) {
-        encounterTransaction.setDiagnoses(diagnoses);
-    }
-
-    @Override
     public String getVisitUuid() {
         return encounterTransaction.getVisitUuid();
     }
 
-    @Override
     public void setVisitUuid(String visitUuid) {
         encounterTransaction.setVisitUuid(visitUuid);
     }
 
-    @Override
+
     public String getEncounterUuid() {
         return encounterTransaction.getEncounterUuid();
     }
 
-    @Override
+
     public void setEncounterUuid(String encounterUuid) {
         encounterTransaction.setEncounterUuid(encounterUuid);
     }
 
-    @Override
-    public void addObservation(Observation observation) {
-        encounterTransaction.addObservation(observation);
+
+    public void addObservation(BahmniObservation observation) {
+        observations.add(observation);
     }
 
-    @Override
-    public void addTestOrder(TestOrder testOrder) {
+
+    public void addTestOrder(EncounterTransaction.TestOrder testOrder) {
         encounterTransaction.addTestOrder(testOrder);
     }
 
-    @Override
-    public void addDrugOrder(DrugOrder drugOrder) {
+
+    public void addDrugOrder(EncounterTransaction.DrugOrder drugOrder) {
         encounterTransaction.addDrugOrder(drugOrder);
     }
 
-    @Override
-    public void addDiagnosis(Diagnosis diagnosis) {
+
+    public void addBahmniDiagnosis(BahmniDiagnosisRequest diagnosis) {
+        bahmniDiagnoses.add(diagnosis);
         encounterTransaction.addDiagnosis(diagnosis);
     }
 
-    @Override
-    public Set<Provider> getProviders() {
+
+    public Set<EncounterTransaction.Provider> getProviders() {
         return encounterTransaction.getProviders();
     }
 
-    @Override
-    public void setProviders(Set<Provider> providers) {
+
+    public void setProviders(Set<EncounterTransaction.Provider> providers) {
         encounterTransaction.setProviders(providers);
     }
 
-    @Override
-    public Disposition getDisposition() {
+
+    public EncounterTransaction.Disposition getDisposition() {
         return encounterTransaction.getDisposition();
     }
 
-    @Override
-    public void setDisposition(Disposition disposition) {
+
+    public void setDisposition(EncounterTransaction.Disposition disposition) {
         encounterTransaction.setDisposition(disposition);
     }
 
-    @Override
+
     public String getPatientUuid() {
         return encounterTransaction.getPatientUuid();
     }
 
-    @Override
+
     public String getEncounterTypeUuid() {
         return encounterTransaction.getEncounterTypeUuid();
     }
 
-    @Override
+
     public String getVisitTypeUuid() {
         return encounterTransaction.getVisitTypeUuid();
     }
 
-    @Override
+
     public EncounterTransaction setPatientUuid(String patientUuid) {
         return encounterTransaction.setPatientUuid(patientUuid);
     }
 
-    @Override
+
     public EncounterTransaction setVisitTypeUuid(String visitTypeUuid) {
         return encounterTransaction.setVisitTypeUuid(visitTypeUuid);
     }
 
-    @Override
+
     public EncounterTransaction setEncounterTypeUuid(String encounterTypeUuid) {
         return encounterTransaction.setEncounterTypeUuid(encounterTypeUuid);
     }
 
-    @Override
-    public EncounterTransaction setObservations(List<Observation> observations) {
-        return encounterTransaction.setObservations(observations);
+    public List<BahmniObservation> getObservations() {
+        return this.observations;
     }
 
-    @Override
-    public List<Observation> getObservations() {
-        return encounterTransaction.getObservations();
+    public void setObservations(List<BahmniObservation> observations){
+        this.observations = observations;
     }
 
-    @Override
-    public List<TestOrder> getTestOrders() {
+
+    public List<EncounterTransaction.TestOrder> getTestOrders() {
         return encounterTransaction.getTestOrders();
     }
 
-    @Override
-    public void setTestOrders(List<TestOrder> testOrders) {
+
+    public void setTestOrders(List<EncounterTransaction.TestOrder> testOrders) {
         encounterTransaction.setTestOrders(testOrders);
     }
 
-    @Override
-    public List<DrugOrder> getDrugOrders() {
+
+    public List<EncounterTransaction.DrugOrder> getDrugOrders() {
         return encounterTransaction.getDrugOrders();
     }
 
-    @Override
-    public void setDrugOrders(List<DrugOrder> drugOrders) {
+
+    public void setDrugOrders(List<EncounterTransaction.DrugOrder> drugOrders) {
         encounterTransaction.setDrugOrders(drugOrders);
     }
 
-    @Override
+
     @JsonSerialize(using = CustomJsonDateSerializer.class)
     public Date getEncounterDateTime() {
         return encounterTransaction.getEncounterDateTime();
     }
 
-    @Override
+
     public EncounterTransaction setEncounterDateTime(Date encounterDateTime) {
         return encounterTransaction.setEncounterDateTime(encounterDateTime);
     }
 
-    @Override
+
     public String getLocationUuid() {
         return encounterTransaction.getLocationUuid();
     }
 
-    @Override
+
     public EncounterTransaction setLocationUuid(String locationUuid) {
         return encounterTransaction.setLocationUuid(locationUuid);
     }
@@ -214,6 +206,11 @@ public class BahmniEncounterTransaction extends EncounterTransaction {
 
     public String getVisitType() {
         return visitType;
+    }
+
+    public EncounterTransaction toEncounterTransaction(){
+        encounterTransaction.setObservations(BahmniObservation.toETObsFromBahmniObs(this.observations));
+        return encounterTransaction;
     }
 }
 

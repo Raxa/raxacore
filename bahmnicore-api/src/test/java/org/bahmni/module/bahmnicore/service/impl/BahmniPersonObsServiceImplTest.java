@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.dao.PersonObsDao;
 import org.bahmni.module.bahmnicore.service.BahmniPersonObsService;
 import org.bahmni.module.bahmnicore.service.ConceptService;
@@ -9,7 +10,9 @@ import org.mockito.Mock;
 
 import java.util.Arrays;
 
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class BahmniPersonObsServiceImplTest {
@@ -44,6 +47,7 @@ public class BahmniPersonObsServiceImplTest {
 
     @Test
     public void shouldGetObsByPatientUuidConceptNameAndNumberOfVisits() throws Exception {
+        when(conceptService.conceptsFor(anyList())).thenReturn(new ConceptDefinition());
         personObsService.observationsFor(personUUID, Arrays.asList("Blood Pressure"), numberOfVisits);
         verify(personObsDao).getObsFor(personUUID,  Arrays.asList("Blood Pressure"), numberOfVisits);
     }
