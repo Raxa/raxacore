@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -416,6 +417,33 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
         Context.closeSession();
         assertEquals(1, encounters.size());
+    }
+
+    @Test
+    public void persist_coded_concept_values() {
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("Diagnosis Certainty", "Confirmed"));
+        anEncounter.encounterDateTime = "1111-11-11";
+        anEncounter.diagnosesRows = new ArrayList<>();
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
+
+        Context.openSession();
+        Context.authenticate("admin", "test");
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
+        Context.closeSession();
+
+        Set<Obs> allObs = encounters.get(0).getAllObs();
+        assertEquals(407, allObs.iterator().next().getValueCoded().getId().intValue());
     }
 
     private List<KeyValue> getPatientAttributes() {

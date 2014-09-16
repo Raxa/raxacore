@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.bahmni.module.bahmnicore.contract.observation.ConceptData;
 import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.service.ConceptService;
 import org.junit.Before;
@@ -54,5 +55,16 @@ public class ConceptServiceIT extends BaseModuleWebContextSensitiveTest {
     public void do_not_fetch_voided_concepts() throws Exception {
         ConceptDefinition conceptDefinition = conceptService.conceptsFor(Arrays.asList("Blood Pressure voided node"));
         assertEquals(0, conceptDefinition.size());
+    }
+
+    @Test
+    public void return_all_leaf_nodes_in_a_group() throws Exception {
+        String conceptNameInAnyCase = "Chief Complaint Data";
+        ConceptDefinition conceptDefinition = conceptService.conceptsFor(Arrays.asList(conceptNameInAnyCase, "non_existent_concept"));
+        assertEquals(2, conceptDefinition.size());
+
+        List<ConceptData> chiefComplaintDataChildrenConcepts = conceptDefinition.getConcepts();
+        assertEquals("Coded Complaint", chiefComplaintDataChildrenConcepts.get(0).getName());
+        assertEquals("Non Coded Complaint", chiefComplaintDataChildrenConcepts.get(1).getName());
     }
 }
