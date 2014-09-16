@@ -22,6 +22,7 @@ import org.openmrs.SimpleDosingInstructions;
 import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
+import org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniProviderMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
@@ -75,13 +76,14 @@ public class BahmniDrugOrderMapperTest {
         Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(visitDate).withEncounter(encounter).build();
 
         DrugOrder drugOrder1 = drugBuilder.withDrugName("Paracetamol 120mg/5ml 60ml")
-                .withDosingType(FreeTextDosingInstructions.class)
+                .withDosingType(FlexibleDosingInstructions.class)
                 .withDrugForm("Capsule")
                 .withScheduledDate(dateScheduled)
                 .withDateActivated(dateActivated)
                 .withDurationUnits("Week")
-                .withDosingInstructions("2.0 Tablet")
+                .withDosingInstructions("{\"dose\": \"2.0\", \"doseUnits\": \"Tablet\"}")
                 .withVisit(visit)
+                .withDuration(18)
                 .withAutoExpireDate(expireDate).build();
 
         List<DrugOrder> drugOrderList = new ArrayList<>();
@@ -94,13 +96,12 @@ public class BahmniDrugOrderMapperTest {
 
         assertEquals("Paracetamol 120mg/5ml 60ml", mappedOrder.getDrug().getName());
         assertEquals("Capsule", mappedOrder.getDrug().getForm());
-        assertEquals(2.0, dosingInstructions.getDose(), 0);
-        assertEquals("Tablet", dosingInstructions.getDoseUnits());
         assertEquals(dateScheduled, mappedOrder.getEffectiveStartDate());
         assertEquals(expireDate, mappedOrder.getEffectiveStopDate());
         assertEquals(18, mappedOrder.getDuration(), 0);
         assertEquals("Week", mappedOrder.getDurationUnits());
         assertEquals("vuuid", mappedOrder.getVisit().getUuid());
+        assertEquals("{\"dose\": \"2.0\", \"doseUnits\": \"Tablet\"}",mappedOrder.getDosingInstructions().getAdministrationInstructions());
         assertEquals(visitDate, mappedOrder.getVisit().getStartDateTime());
         verify(providerMapper);
     }

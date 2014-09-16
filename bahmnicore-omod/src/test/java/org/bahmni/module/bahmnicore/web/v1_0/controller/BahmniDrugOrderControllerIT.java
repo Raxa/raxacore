@@ -32,7 +32,7 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
         BahmniDrugOrder drugOrder1 = prescribedDrugOrders.get(0);
         assertEquals("d798916f-210d-4c4e-8978-467d1a969f31", drugOrder1.getVisit().getUuid());
         EncounterTransaction.DosingInstructions dosingInstructions1 = drugOrder1.getDosingInstructions();
-        assertEquals(1.5, dosingInstructions1.getDose(), 0);
+        assertEquals("{\"dose\": \"1.5\", \"doseUnits\": \"Tablet\"}", dosingInstructions1.getAdministrationInstructions());
         assertEquals(15, drugOrder1.getDuration(), 0);
         assertEquals("Triomune-30", drugOrder1.getDrug().getName());
         assertEquals("2011-10-24 00:00:00.0", drugOrder1.getEffectiveStartDate().toString());
@@ -54,8 +54,7 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
         BahmniDrugOrder drugOrder3 = prescribedDrugOrders.get(2);
         assertEquals("adf4fb41-a41a-4ad6-8835-2f59889acf5a", drugOrder3.getVisit().getUuid());
         EncounterTransaction.DosingInstructions dosingInstructions3 = drugOrder3.getDosingInstructions();
-        assertEquals(5.0, dosingInstructions3.getDose(), 0);
-        assertEquals("Tablet", dosingInstructions3.getDoseUnits());
+        assertEquals("{\"dose\": \"5.0\", \"doseUnits\": \"Tablet\"}", dosingInstructions3.getAdministrationInstructions());
         assertEquals("tab (s)", drugOrder3.getDrug().getForm());
         assertEquals(6, drugOrder3.getDuration(), 0);
         assertEquals("Triomune-30", drugOrder3.getDrug().getName());
@@ -65,7 +64,7 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
         BahmniDrugOrder drugOrder4 = prescribedDrugOrders.get(3);
         assertEquals("adf4fb41-a41a-4ad6-8835-2f59889acf5a", drugOrder4.getVisit().getUuid());
         EncounterTransaction.DosingInstructions dosingInstructions4 = drugOrder4.getDosingInstructions();
-        assertEquals(2.5, dosingInstructions4.getDose(), 0);
+        assertEquals("{\"dose\": \"2.5\", \"doseUnits\": \"Tablet\"}", dosingInstructions4.getAdministrationInstructions());
         assertEquals(6, drugOrder4.getDuration(), 0);
         assertEquals("Triomune-40", drugOrder4.getDrug().getName());
         assertEquals("2005-09-23 00:00:00.0", drugOrder4.getEffectiveStartDate().toString());

@@ -14,6 +14,7 @@ import org.joda.time.Days;
 import org.openmrs.*;
 import org.openmrs.api.*;
 import org.openmrs.api.context.*;
+import org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -220,7 +221,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             drugOrder.setOrderType(getDrugOrderType());
             drugOrder.setOrderer(getSystemProvider());
             drugOrder.setCareSetting(orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString()));
-            drugOrder.setDosingType(FreeTextDosingInstructions.class);
+            drugOrder.setDosingType(FlexibleDosingInstructions.class);
             drugOrder.setDosingInstructions(createInstructions(bahmniDrugOrder, drugOrder));
             drugOrder.setQuantity(bahmniDrugOrder.getQuantity());
             drugOrder.setQuantityUnits(drug.getDosageForm());
@@ -233,7 +234,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     private String createInstructions(BahmniFeedDrugOrder bahmniDrugOrder, DrugOrder drugOrder) {
-        return bahmniDrugOrder.getDosage() + " " + drugOrder.getDrug().getDosageForm().getDisplayString();
+        return "{\"dose\":\"" + bahmniDrugOrder.getDosage() + "\", \"doseUnits\":\"" + drugOrder.getDrug().getDosageForm().getDisplayString()+"\"}";
     }
 
     private OrderType getDrugOrderType() {

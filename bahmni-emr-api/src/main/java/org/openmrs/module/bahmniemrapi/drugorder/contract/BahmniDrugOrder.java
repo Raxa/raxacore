@@ -42,15 +42,7 @@ public class BahmniDrugOrder {
     }
 
     public EncounterTransaction.DosingInstructions getDosingInstructions() {
-        EncounterTransaction.DosingInstructions dosingInstructions = drugOrder.getDosingInstructions();
-        if (FreeTextDosingInstructions.class.getName().equals(drugOrder.getDosingInstructionType())) {
-            String instructions = dosingInstructions.getAdministrationInstructions();
-            String[] splittedInstructions = instructions.split("\\s+");
-            dosingInstructions.setDose(Double.parseDouble(splittedInstructions[0]));
-            dosingInstructions.setDoseUnits(splittedInstructions[1]);
-            dosingInstructions.setAdministrationInstructions(null);
-        }
-        return dosingInstructions;
+        return drugOrder.getDosingInstructions();
     }
 
     public String getDosingInstructionType() {
@@ -62,12 +54,6 @@ public class BahmniDrugOrder {
     }
 
     public Integer getDuration() {
-        if (FreeTextDosingInstructions.class.getName().equals(getDosingInstructionType())) {
-            // TODO: move out logic of calculating duration after adding migration to add duration in database.
-            DateTime stopDate = new DateTime(drugOrder.getEffectiveStopDate());
-            DateTime startDate = new DateTime(drugOrder.getEffectiveStartDate());
-            return Days.daysBetween(startDate, stopDate).getDays();
-        }
         return drugOrder.getDuration();
     }
 
