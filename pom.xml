@@ -353,6 +353,7 @@
                         <configuration>
                             <includes>
                                 <include>**/*IT.java</include>
+                                <include>**/*Test.java</include>
                             </includes>
                             <classpathDependencyExcludes>
                                 <classpathDependencyExcludes>org.openmrs.module:emrapi-api-1.9</classpathDependencyExcludes>

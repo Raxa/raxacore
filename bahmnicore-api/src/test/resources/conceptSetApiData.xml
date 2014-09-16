@@ -1,5 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
+    <concept_class concept_class_id="99" name="Concept Details" description="Concept Details" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="concept_details_concept_class_uuid"/>
+    <concept_class concept_class_id="999" name="Abnormal" description="abnormal" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="abnormal_concept_class_uuid"/>
+    <concept_class concept_class_id="9999" name="Duration" description="Duration" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="duration_concept_class_uuid"/>
+
     <concept concept_id="90" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="blood_pressure_concept_uuid" />
     <concept_name concept_id="90" name="Blood Pressure" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
@@ -34,4 +38,23 @@
     <concept_answer concept_answer_id="408" concept_id="9022" answer_concept="100" creator="1" date_created="2004-08-12 00:00:00.0"/>
     <concept_answer concept_answer_id="409" concept_id="9022" answer_concept="200" creator="1" date_created="2004-08-12 00:00:00.0"/>
 
+    <!-- Chief Complaint concept tree setup -->
+    <concept concept_id="80" retired="0" datatype_id="4" class_id="99" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="chief_complaint_data_uuid" />
+    <concept_name concept_id="80" name="Chief Complaint Data" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="80" voided="false" uuid="chief_complaint_data_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="801" retired="0" datatype_id="2" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="coded_chief_complaint_uuid" />
+    <concept_name concept_id="801" name="Coded Complaint" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="801" voided="false" uuid="coded_chief_complaint_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="801" concept_set="80" concept_set_id="8011" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
+
+    <concept concept_id="802" retired="0" datatype_id="2" class_id="999" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="chief_complaint_abnormal_uuid" />
+    <concept_name concept_id="802" name="Coded Complaint Abnormal" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="802" voided="false" uuid="chief_complaint_abnormal_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="802" concept_set="80" concept_set_id="8021" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
+
+    <concept concept_id="803" retired="0" datatype_id="2" class_id="9999" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="chief_complaint_duration_uuid" />
+    <concept_name concept_id="803" name="Coded Complaint Duration" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="803" voided="false" uuid="chief_complaint_duration_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="803" concept_set="80" concept_set_id="8031" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
+
+    <concept concept_id="804" retired="0" datatype_id="2" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="noncoded_chief_complaint_uuid" />
+    <concept_name concept_id="804" name="Non Coded Complaint" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="804" voided="false" uuid="noncoded_chief_complaint_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="804" concept_set="80" concept_set_id="8041" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
 </dataset>

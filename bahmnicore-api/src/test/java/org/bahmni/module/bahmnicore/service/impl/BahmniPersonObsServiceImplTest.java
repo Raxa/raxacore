@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.mockito.Matchers.anyList;
@@ -31,6 +32,7 @@ public class BahmniPersonObsServiceImplTest {
     public void setUp(){
         initMocks(this);
         personObsService = new BahmniPersonObsServiceImpl(personObsDao,conceptService);
+        when(conceptService.conceptsFor(Arrays.asList("Blood Pressure"))).thenReturn(new ConceptDefinition());
     }
 
     @Test
