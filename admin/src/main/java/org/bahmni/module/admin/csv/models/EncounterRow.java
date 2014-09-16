@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 public class EncounterRow extends CSVEntity {
-    public static final String ENCOUNTER_DATE_PATTERN = "d-M-yyyy";
+    public static final String ENCOUNTER_DATE_PATTERN = "yyyy-M-d";
 
     @CSVHeader(name = "EncounterDate")
     public String encounterDateTime;

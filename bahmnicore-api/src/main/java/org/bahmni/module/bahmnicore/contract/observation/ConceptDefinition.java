@@ -12,6 +12,10 @@ public class ConceptDefinition {
         concepts.add(conceptData);
     }
 
+    public void addAll(List<ConceptData> conceptDatas) {
+        concepts.addAll(conceptDatas);
+    }
+
     public int getSortWeightFor(Concept observationConcept) {
         int sortWeight = 1;
         for (ConceptData aConcept : concepts) {

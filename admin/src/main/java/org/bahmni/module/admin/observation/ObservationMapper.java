@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ObservationMapper {
-    private Map<String, EncounterTransaction.Concept> cachedConcepts = new HashMap<>();
+    private Map<String, Concept> cachedConcepts = new HashMap<>();
 
     private ConceptService conceptService;
 
@@ -38,7 +38,7 @@ public class ObservationMapper {
         return observations;
     }
 
-    protected EncounterTransaction.Concept getConcept(String conceptName) {
+    protected Concept getConcept(String conceptName) {
         if (!cachedConcepts.containsKey(conceptName)) {
             cachedConcepts.put(conceptName, fetchConcept(conceptName));
         }
@@ -46,19 +46,32 @@ public class ObservationMapper {
     }
 
     private EncounterTransaction.Observation createObservation(Date encounterDate, KeyValue obsRow) throws ParseException {
+        Concept obsConcept = getConcept(obsRow.getKey());
+        EncounterTransaction.Concept concept = new EncounterTransaction.Concept(obsConcept.getUuid(), obsConcept.getName().getName());
+
         EncounterTransaction.Observation observation = new EncounterTransaction.Observation();
-        observation.setConcept(getConcept(obsRow.getKey()));
-        observation.setValue(obsRow.getValue());
+        observation.setConcept(concept);
+        observation.setValue(getValue(obsRow, obsConcept));
         observation.setObservationDateTime(encounterDate);
         return observation;
     }
 
-    private EncounterTransaction.Concept fetchConcept(String conceptName) {
+    private String getValue(KeyValue obsRow, Concept obsConcept) throws ParseException {
+        if (obsConcept.getDatatype().isCoded()) {
+            Concept valueConcept = conceptService.getConceptByName(obsRow.getValue());
+            if (valueConcept == null)
+                throw new ConceptNotFoundException(obsRow.getValue() + " not found");
+            return valueConcept.getUuid();
+        }
+        return obsRow.getValue();
+    }
+
+    private Concept fetchConcept(String conceptName) {
         Concept obsConcept = conceptService.getConceptByName(conceptName);
         if (obsConcept == null)
             throw new ConceptNotFoundException("Concept '"+ conceptName +"' not found");
 
-        return new EncounterTransaction.Concept(obsConcept.getUuid(), obsConcept.getName().getName());
+        return obsConcept;
     }
 
 }

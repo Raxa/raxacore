@@ -8,6 +8,7 @@ import org.openmrs.Concept;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class BahmniConceptServiceImpl implements ConceptService {
             if (conceptMembers == null || conceptMembers.isEmpty()) {
                 conceptDefinition.add(createConceptForLeaf(aConcept, rootConcept));
             } else if (isConceptDetails(aConcept)) {
-                conceptDefinition.add(createConceptForGroup(aConcept, rootConcept));
+                conceptDefinition.addAll(createConceptForGroup(aConcept, rootConcept));
             } else {
                 flatten(conceptMembers, conceptDefinition, rootConcept, rootConceptNames);
             }
@@ -45,16 +46,15 @@ public class BahmniConceptServiceImpl implements ConceptService {
         return conceptDefinition;
     }
 
-    private ConceptData createConceptForGroup(Concept conceptGroup, Concept rootConcept) {
-        ConceptData conceptData = null;
+    private List<ConceptData> createConceptForGroup(Concept conceptGroup, Concept rootConcept) {
+        List<ConceptData> conceptDatas = new ArrayList<>();
         for (Concept aConcept : conceptGroup.getSetMembers()) {
             if (!isDuration(aConcept) && !isAbnormal(aConcept)) {
-                conceptData = createConceptForLeaf(aConcept, rootConcept);
+                conceptDatas.add(createConceptForLeaf(aConcept, rootConcept));
             }
         }
-        return conceptData;
+        return conceptDatas;
     }
-
 
     private boolean isConceptDetails(Concept aConcept) {
         return aConcept.getConceptClass().getName().equals(CONCEPT_DETAILS_CONCEPT_CLASS);

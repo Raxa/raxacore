@@ -3,6 +3,7 @@ package org.bahmni.module.admin.observation;
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.EncounterRow;
+import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
@@ -34,7 +35,8 @@ public class DiagnosisMapper extends ObservationMapper {
     }
 
     private BahmniDiagnosisRequest createDiagnosis(Date encounterDate, String diagnosis) throws ParseException {
-        EncounterTransaction.Concept diagnosisConcept = getConcept(diagnosis);
+        Concept obsConcept = getConcept(diagnosis);
+        EncounterTransaction.Concept diagnosisConcept = new EncounterTransaction.Concept(obsConcept.getUuid(), obsConcept.getName().getName());
 
         BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
         bahmniDiagnosisRequest.setCodedAnswer(diagnosisConcept);

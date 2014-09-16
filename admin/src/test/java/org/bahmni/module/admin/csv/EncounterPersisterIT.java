@@ -89,7 +89,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         EncounterRow anEncounter = new EncounterRow();
         anEncounter.obsRows = new ArrayList<>();
         anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
-        anEncounter.encounterDateTime = "11-11-1111";
+        anEncounter.encounterDateTime = "1111-11-11";
 
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
@@ -106,7 +106,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         multipleEncounterRow.patientIdentifier = "GAN200000";
 
         EncounterRow anEncounter = new EncounterRow();
-        anEncounter.encounterDateTime = "11-11-1111";
+        anEncounter.encounterDateTime = "1111-11-11";
 
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
@@ -150,7 +150,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         EncounterRow anEncounter = new EncounterRow();
         anEncounter.obsRows = new ArrayList<>();
         anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
-        anEncounter.encounterDateTime = "11-11-1111";
+        anEncounter.encounterDateTime = "1111-11-11";
 
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
@@ -173,7 +173,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         assertEquals("OPD", encounter.getEncounterType().getName());
 
         Date encounterDatetime = encounter.getEncounterDatetime();
-        assertEquals("11-11-1111", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(encounterDatetime));
+        assertEquals("1111-11-11", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(encounterDatetime));
     }
 
     @Test
@@ -186,12 +186,12 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         EncounterRow anEncounter = new EncounterRow();
         anEncounter.obsRows = new ArrayList<>();
         anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
-        anEncounter.encounterDateTime = "11-11-1111";
+        anEncounter.encounterDateTime = "1111-11-11";
 
         EncounterRow anotherEncounter = new EncounterRow();
         anotherEncounter.obsRows = new ArrayList<>();
         anotherEncounter.obsRows.add(new KeyValue("HEIGHT", "75"));
-        anotherEncounter.encounterDateTime = "12-11-1111";
+        anotherEncounter.encounterDateTime = "1111-11-12";
 
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
@@ -219,7 +219,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         EncounterRow anEncounter = new EncounterRow();
         anEncounter.obsRows = new ArrayList<>();
         anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
-        anEncounter.encounterDateTime = "11-11-1111";
+        anEncounter.encounterDateTime = "1111-11-11";
 
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
@@ -241,7 +241,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         assertEquals(1, encounter.getAllObs().size());
         assertEquals("WEIGHT", encounter.getAllObs().iterator().next().getConcept().getName().getName());
         Date obsDatetime = encounter.getAllObs().iterator().next().getObsDatetime();
-        assertEquals("11-11-1111", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(obsDatetime));
+        assertEquals("1111-11-11", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(obsDatetime));
         assertEquals("150.0", encounter.getAllObs().iterator().next().getValueAsString(Context.getLocale()));
     }
 
@@ -255,7 +255,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         EncounterRow anEncounter = new EncounterRow();
         anEncounter.obsRows = new ArrayList<>();
         anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
-        anEncounter.encounterDateTime = "11-11-1111";
+        anEncounter.encounterDateTime = "1111-11-11";
         anEncounter.diagnosesRows = new ArrayList<>();
         anEncounter.diagnosesRows.add(new KeyValue("Diagnosis1", "Diabetes"));
 
@@ -293,7 +293,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         assertEquals("WEIGHT", weightObs.getConcept().getName().getName());
         assertEquals("150.0", weightObs.getValueAsString(Context.getLocale()));
         assertEquals("Diagnosis Concept Set", diagnosisObs.getConcept().getName().getName());
-        assertEquals("11-11-1111", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(diagnosisObs.getObsDatetime()));
+        assertEquals("1111-11-11", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(diagnosisObs.getObsDatetime()));
 
         List<String> obsConceptNames = new ArrayList<>();
         for (Obs obs : diagnosisObs.getGroupMembers()) {
@@ -375,7 +375,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         EncounterRow anEncounter = new EncounterRow();
         anEncounter.obsRows = new ArrayList<>();
         anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
-        anEncounter.encounterDateTime = "11-11-1111";
+        anEncounter.encounterDateTime = "1111-11-11";
 
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
@@ -403,7 +403,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         EncounterRow anEncounter = new EncounterRow();
         anEncounter.obsRows = new ArrayList<>();
         anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
-        anEncounter.encounterDateTime = "11-11-1111";
+        anEncounter.encounterDateTime = "1111-11-11";
 
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
