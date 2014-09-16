@@ -12,6 +12,7 @@ import org.openmrs.api.context.Context;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -39,7 +40,7 @@ public class ConceptMapperTest {
         conceptDatatype.setName("N/A");
         org.openmrs.Concept mappedConcept = conceptMapper.map(concept, conceptClassName, conceptDatatype, null);
 
-        assertEquals(concept.getUniqueName(), mappedConcept.getFullySpecifiedName(Context.getLocale()).getName());
+        assertEquals(concept.getUniqueName(), mappedConcept.getFullySpecifiedName(Locale.ENGLISH).getName());
         assertEquals(concept.getDisplayName(), mappedConcept.getShortNames().iterator().next().getName());
         assertEquals(concept.getDescription(), mappedConcept.getDescription().getDescription());
         assertEquals(concept.getClassName(), mappedConcept.getConceptClass().getName());
@@ -60,7 +61,7 @@ public class ConceptMapperTest {
         conceptDatatype.setName("N/A");
         org.openmrs.Concept mappedConcept = conceptMapper.map(concept, conceptClassName, conceptDatatype, null);
 
-        assertEquals(concept.getUniqueName(), mappedConcept.getFullySpecifiedName(Context.getLocale()).getName());
+        assertEquals(concept.getUniqueName(), mappedConcept.getFullySpecifiedName(Locale.ENGLISH).getName());
         assertEquals(concept.getDisplayName(), mappedConcept.getShortNames().iterator().next().getName());
         assertNull(mappedConcept.getDescriptions());
         assertEquals(concept.getClassName(), mappedConcept.getConceptClass().getName());
@@ -80,7 +81,7 @@ public class ConceptMapperTest {
         conceptDatatype.setName("N/A");
         org.openmrs.Concept mappedConcept = conceptMapper.map(concept, conceptClassName, conceptDatatype, null);
 
-        assertEquals(concept.getUniqueName(), mappedConcept.getFullySpecifiedName(Context.getLocale()).getName());
+        assertEquals(concept.getUniqueName(), mappedConcept.getFullySpecifiedName(Locale.ENGLISH).getName());
         assertEquals(0, mappedConcept.getShortNames().size());
         assertNull(mappedConcept.getDescriptions());
         assertEquals(concept.getClassName(), mappedConcept.getConceptClass().getName());
@@ -101,15 +102,15 @@ public class ConceptMapperTest {
         conceptDatatype.setName("Coded");
         Set<ConceptAnswer> answers = new HashSet<>();
         org.openmrs.Concept answerConcept = new org.openmrs.Concept();
-        answerConcept.setFullySpecifiedName(new ConceptName("answer-concept-name", Context.getLocale()));
+        answerConcept.setFullySpecifiedName(new ConceptName("answer-concept-name", Locale.ENGLISH));
         answers.add(new ConceptAnswer(answerConcept));
         org.openmrs.Concept mappedConcept = conceptMapper.map(concept, conceptClassName, conceptDatatype, answers);
 
-        assertEquals(concept.getUniqueName(), mappedConcept.getFullySpecifiedName(Context.getLocale()).getName());
+        assertEquals(concept.getUniqueName(), mappedConcept.getFullySpecifiedName(Locale.ENGLISH).getName());
         assertEquals(0, mappedConcept.getShortNames().size());
         assertNull(mappedConcept.getDescriptions());
         assertEquals(concept.getClassName(), mappedConcept.getConceptClass().getName());
         assertEquals(concept.getDataType(), mappedConcept.getDatatype().getName());
-        assertEquals(concept.getAnswers().iterator().next(), mappedConcept.getAnswers().iterator().next().getAnswerConcept().getName(Context.getLocale()).getName());
+        assertEquals(concept.getAnswers().iterator().next(), mappedConcept.getAnswers().iterator().next().getAnswerConcept().getName(Locale.ENGLISH).getName());
     }
 }
