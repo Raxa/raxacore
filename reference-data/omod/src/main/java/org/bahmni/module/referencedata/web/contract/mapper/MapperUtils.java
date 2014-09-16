@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.web.contract.Department;
 import org.bahmni.module.referencedata.web.contract.Sample;
 import org.bahmni.module.referencedata.web.contract.Test;
@@ -12,6 +13,7 @@ import org.openmrs.api.context.Context;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import static org.bahmni.module.referencedata.model.event.DepartmentEvent.isDepartmentConcept;
@@ -27,8 +29,8 @@ public class MapperUtils {
     }
 
     public static Set<ConceptDescription> constructDescription(String description) {
-        if (description == null) return null;
-        ConceptDescription conceptDescription = new ConceptDescription(description, Context.getLocale());
+        if (StringUtils.isBlank(description)) return null;
+        ConceptDescription conceptDescription = new ConceptDescription(description, Locale.ENGLISH);
         Set<ConceptDescription> descriptions = new HashSet<>();
         descriptions.add(conceptDescription);
         return descriptions;

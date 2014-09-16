@@ -47,10 +47,10 @@ public class ConceptControllerIT extends BaseWebControllerTest {
 
         Concept concept = conceptService.getConcept(conceptId);
 
-        assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
-        assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
+        assertEquals(uniqueName, concept.getFullySpecifiedName(Locale.ENGLISH).getName());
+        assertEquals(displayName, concept.getShortestName(Locale.ENGLISH, false).getName());
         assertEquals(className, concept.getConceptClass().getName());
-        assertEquals(description, concept.getDescription(Context.getLocale()).getDescription());
+        assertEquals(description, concept.getDescription(Locale.ENGLISH).getDescription());
         assertEquals(dataType, concept.getDatatype().getName());
     }
 
@@ -81,12 +81,12 @@ public class ConceptControllerIT extends BaseWebControllerTest {
 
         Concept concept = conceptService.getConcept(conceptId);
 
-        assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
-        assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
+        assertEquals(uniqueName, concept.getFullySpecifiedName(Locale.ENGLISH).getName());
+        assertEquals(displayName, concept.getShortestName(Locale.ENGLISH, false).getName());
         assertEquals(className, concept.getConceptClass().getName());
-        assertEquals(description, concept.getDescription(Context.getLocale()).getDescription());
+        assertEquals(description, concept.getDescription(Locale.ENGLISH).getDescription());
         assertEquals(dataType, concept.getDatatype().getName());
-        assertEquals(answerConceptName, concept.getAnswers().iterator().next().getAnswerConcept().getName(Context.getLocale()).getName());
+        assertEquals(answerConceptName, concept.getAnswers().iterator().next().getAnswerConcept().getName(Locale.ENGLISH).getName());
     }
 
     @Test
@@ -114,10 +114,10 @@ public class ConceptControllerIT extends BaseWebControllerTest {
 
         Concept concept = conceptService.getConcept(conceptId);
 
-        assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
-        assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
+        assertEquals(uniqueName, concept.getFullySpecifiedName(Locale.ENGLISH).getName());
+        assertEquals(displayName, concept.getShortestName(Locale.ENGLISH, false).getName());
         assertEquals(className, concept.getConceptClass().getName());
-        assertEquals(description, concept.getDescription(Context.getLocale()).getDescription());
+        assertEquals(description, concept.getDescription(Locale.ENGLISH).getDescription());
         assertEquals(dataType, concept.getDatatype().getName());
         assertEquals(0, concept.getAnswers().size());
     }
@@ -150,13 +150,13 @@ public class ConceptControllerIT extends BaseWebControllerTest {
 
         Concept concept = conceptService.getConcept(conceptId);
 
-        assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
-        assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
+        assertEquals(uniqueName, concept.getFullySpecifiedName(Locale.ENGLISH).getName());
+        assertEquals(displayName, concept.getShortestName(Locale.ENGLISH, false).getName());
         assertEquals(className, concept.getConceptClass().getName());
-        assertEquals(description, concept.getDescription(Context.getLocale()).getDescription());
+        assertEquals(description, concept.getDescription(Locale.ENGLISH).getDescription());
         assertEquals(dataType, concept.getDatatype().getName());
         for (ConceptAnswer conceptAnswer : concept.getAnswers()) {
-            String answerConceptName = conceptAnswer.getAnswerConcept().getName(Context.getLocale()).getName();
+            String answerConceptName = conceptAnswer.getAnswerConcept().getName(Locale.ENGLISH).getName();
             if (answerConceptName.equals(answerConceptName1)){
                 assertEquals(1, conceptAnswer.getSortWeight(), 0);
             }
