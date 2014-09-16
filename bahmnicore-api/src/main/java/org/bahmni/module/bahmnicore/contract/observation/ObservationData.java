@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.contract.observation;
 
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptName;
 import org.openmrs.Obs;
 import org.openmrs.api.ConceptNameType;
@@ -39,12 +40,23 @@ public class ObservationData {
             }
         }
         this.conceptSortWeight = conceptSortWeight;
-        this.value = anObservation.getValueAsString(Context.getLocale());
+        this.value = getValue(anObservation);
         this.type = anObservation.getConcept().getDatatype().getName();
         this.time = anObservation.getObsDatetime();
         this.encounterTime = anObservation.getEncounter().getEncounterDatetime();
 
         this.links = new LinkData(visitURI, encounterURI, patientURI, providerURIs);
+    }
+
+    private boolean isNumeric(Obs anObservation) {
+        return anObservation.getConcept().getDatatype().getHl7Abbreviation().equals(ConceptDatatype.NUMERIC);
+    }
+
+    private String getValue(Obs anObservation) {
+        if(isNumeric(anObservation)) {
+            return anObservation.getValueNumeric() != null ? anObservation.getValueNumeric().toString() : "";
+        }
+        return anObservation.getValueAsString(Context.getLocale());
     }
 
     public Date getEncounterTime() {
