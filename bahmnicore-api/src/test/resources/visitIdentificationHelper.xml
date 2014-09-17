@@ -32,4 +32,11 @@
            visit_type_id="1" location_id="2" creator="1" uuid="v4NXdf34-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
     <visit visit_id="5" date_started="2014-02-20 06:00:00" date_stopped="2014-02-20 09:00:00" date_created="2014-02-20 06:00:00" patient_id="1"
            visit_type_id="1" location_id="2" creator="1" uuid="v5NXdf34-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
+
+    <visit visit_id="6" date_started="2014-05-20 03:00:00" date_stopped="2014-05-20 04:00:00" date_created="2014-05-20 06:00:00" patient_id="1"
+           visit_type_id="1" location_id="2" creator="1" uuid="19df86b3-1ec3-4a0a-9805-c58bbb594a02" voided="0"/>
+    <visit visit_id="7" date_started="2014-05-20 06:00:00" date_stopped="2014-05-20 09:00:00" date_created="2014-05-20 06:00:00" patient_id="1"
+           visit_type_id="1" location_id="2" creator="1" uuid="67433730-5d8a-4a3a-8e8d-1afcc33d5376" voided="0"/>
+
+
 </dataset>

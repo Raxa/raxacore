@@ -55,7 +55,7 @@ public class VisitIdentificationHelper {
                     (orderDate.equals(visit.getStopDatetime()) || visit.getStopDatetime().after(orderDate)) )
                 return visit;
         }
-        return null;
+        return visits.get(visits.size() - 1);
     }
 
     private Visit createNewVisit(Patient patient, Date date, String visitTypeForNewVisit) {
