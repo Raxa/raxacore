@@ -9,7 +9,7 @@ import org.openmrs.module.bahmniemrapi.BahmniEmrAPIException;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisHelper;
-import org.openmrs.module.bahmniemrapi.encountertransaction.command.SaveCommand;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataSaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 @Component
-public class BahmniDiagnosisSaveCommandImpl implements SaveCommand {
+public class BahmniDiagnosisSaveCommandImpl implements EncounterDataSaveCommand {
 
 
     private EncounterTransactionMapper encounterTransactionMapper;
