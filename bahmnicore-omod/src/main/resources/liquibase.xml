@@ -1771,6 +1771,6 @@
         <sql>
             DROP PROCEDURE IF EXISTS add_concept;
         </sql>
-        <sqlFile splitStatements="false" path="V1_83__ChangeAddConceptProc.sql"/>
+        <sqlFile splitStatements="false" path="V1_83__FixAddConceptProc.sql"/>
     </changeSet>
 </databaseChangeLog>
