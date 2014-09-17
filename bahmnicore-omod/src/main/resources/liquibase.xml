@@ -1765,4 +1765,12 @@
             VALUES ('qualified-by', 'target is qualified by source', 'dbde17aa-3d7e-11e4-8782-164230d1df67', 1);
         </sql>
     </changeSet>
+
+    <changeSet id="bahmni-core-201409171047" author="Rohan, Hemanth">
+        <comment>Fix the new add_concept procedure</comment>
+        <sql>
+            DROP PROCEDURE IF EXISTS add_concept;
+        </sql>
+        <sqlFile splitStatements="false" path="V1_82__ChangeAddConceptProc.sql"/>
+    </changeSet>
 </databaseChangeLog>

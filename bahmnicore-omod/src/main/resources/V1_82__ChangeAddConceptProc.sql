@@ -18,7 +18,7 @@ BEGIN
        SET is_set_val = '0';
   END CASE;
 
-  SELECT count(distinct concept_id) into @concept_count from concept_name where name = name_of_concept;
+  SELECT count(distinct concept_id) into @concept_count from concept_name where name = name_of_concept and concept_name_type='FULLY_SPECIFIED';
   IF @concept_count > 0 THEN
     SIGNAL SQLSTATE '45000'
       SET MESSAGE_TEXT = 'Concept Already Exists';
