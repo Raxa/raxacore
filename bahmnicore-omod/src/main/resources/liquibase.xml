@@ -1773,4 +1773,12 @@
         </sql>
         <sqlFile splitStatements="false" path="V1_83__FixAddConceptProc.sql"/>
     </changeSet>
+    <changeSet id="bahmni-core-201409171530" author="D3">
+        <comment>Rename OPD encounter type to Consultation</comment>
+        <update tableName="encounter_type">
+            <column name="name" value="Consultation"/>
+            <column name="description" value="Consultation encounter"/>
+            <where>name = 'OPD'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>

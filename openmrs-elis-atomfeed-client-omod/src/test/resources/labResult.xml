@@ -37,7 +37,7 @@
 
     <encounter_type encounter_type_id="1" name="REG" description="Some desc" creator="1"
                     date_created="2005-01-01 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
-    <encounter_type encounter_type_id="2" name="OPD" description="Some desc 2" creator="1"
+    <encounter_type encounter_type_id="2" name="Consultation" description="Some desc 2" creator="1"
                     date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
     <encounter_type encounter_type_id="3" name="LAB_RESULT" description="Some desc 2" creator="1"
                     date_created="2005-01-01 00:00:00.0" retired="false" uuid="4fe21921-01cc-4720-a6bf-a61a17c4d05b"/>

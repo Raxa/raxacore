@@ -6,7 +6,7 @@
     <concept_datatype concept_datatype_id="4" name="N/A" hl7_abbreviation="NA" description="Not applicable" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="94e6e242-9bf1-4c04-841c-b606e74fe949"/>
 
     <encounter_type encounter_type_id="1" name="REG" description="Some desc" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
-    <encounter_type encounter_type_id="2" name="OPD" description="Some desc 2" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
+    <encounter_type encounter_type_id="2" name="Consultation" description="Some desc 2" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
 
     <drug drug_id="2" concept_id="792" name="Triomune-30" combination="true" creator="2" date_created="2005-02-24 00:00:00.0" retired="false" uuid="42f00b94-26fe-102b-80cb-0017a47871b2"/>
     <drug drug_id="3" concept_id="792" name="Triomune-40" combination="true" creator="2" date_created="2005-02-24 00:00:00.0" retired="false" uuid="42f00efa-26fe-102b-80cb-0017a47871b2"/>

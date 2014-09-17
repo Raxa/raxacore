@@ -70,7 +70,7 @@ public class LocationBasedEncounterTypeIdentifierTest {
         BahmniEncounterTransaction encounterTransaction = new BahmniEncounterTransaction();
         String locationUuid = UUID.randomUUID().toString();
         encounterTransaction.setEncounterTypeUuid(null);
-        encounterTransaction.setEncounterType("OPD Room");
+        encounterTransaction.setEncounterType("Consultation");
         encounterTransaction.setLocationUuid(locationUuid);
 
         identifier.populateEncounterType(encounterTransaction);

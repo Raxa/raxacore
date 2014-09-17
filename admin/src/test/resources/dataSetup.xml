@@ -48,7 +48,7 @@
     <concept_name concept_id="3" name="HEIGHT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0"
                   concept_name_id="1441" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false"
                   uuid="d102c8hh-1aa9-4ty3-bb88-8122ce8868dh"/>
-    <encounter_type encounter_type_id="1" name="OPD" description="Some desc" creator="1"
+    <encounter_type encounter_type_id="1" name="Consultation" description="Some desc" creator="1"
                     date_created="2005-01-01 00:00:00.0" retired="false" uuid="encounterType"/>
     <encounter_type encounter_type_id="2" name="VALIDATION NOTES" description="Some desc" creator="1"
                     date_created="2005-01-01 00:00:00.0" retired="false" uuid="validationNotes"/>

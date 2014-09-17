@@ -18,11 +18,11 @@ public class BahmniEncounterTransactionImportServiceTest {
     @Test
     public void return_empty_encounterTransaction_for_empty_encounter_row() throws ParseException {
         EncounterService mockEncounterService = mock(EncounterService.class);
-        when(mockEncounterService.getEncounterType("OPD")).thenReturn(new EncounterType());
+        when(mockEncounterService.getEncounterType("Consultation")).thenReturn(new EncounterType());
 
         BahmniEncounterTransactionImportService bahmniEncounterTransactionImportService = new BahmniEncounterTransactionImportService(mockEncounterService, null, null);
         MultipleEncounterRow emptyEncounterRow = new MultipleEncounterRowBuilder().getEmptyMultipleEncounterRow("GAN12345");
-        emptyEncounterRow.encounterType = "OPD";
+        emptyEncounterRow.encounterType = "Consultation";
         List<BahmniEncounterTransaction> bahmniEncounterTransaction = bahmniEncounterTransactionImportService.getBahmniEncounterTransaction(emptyEncounterRow, null);
         Assert.isTrue(bahmniEncounterTransaction.isEmpty(), "Should ignore empty encounters");
 

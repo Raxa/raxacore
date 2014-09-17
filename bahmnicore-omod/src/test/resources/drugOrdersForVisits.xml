@@ -15,7 +15,7 @@
     <visit visit_id="2001" date_started="2011-09-22 00:00:00" date_created="2011-09-22 00:00:00" patient_id="1024" visit_type_id="67" date_stopped="2012-05-08 04:08:16" creator="1" uuid="d798916f-210d-4c4e-8978-467d1a969f31" voided="0"/>
     <visit visit_id="3001" date_started="2012-09-22 00:00:00" date_created="2012-09-22 00:00:00" patient_id="1024" visit_type_id="67" date_stopped="2013-05-08 04:08:16" creator="1" uuid="c809162f-dc55-4814-be3f-33d23c8c471d" voided="0"/>
 
-    <encounter_type encounter_type_id="1" name="OPD" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
+    <encounter_type encounter_type_id="1" name="Consultation" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
 
     <encounter encounter_id="1001" encounter_type="1" patient_id="1024" visit_id="1001" location_id="1" encounter_datetime="2005-09-23 00:00:00.0" creator="1" date_created="2005-09-23 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63ab0"/>
 

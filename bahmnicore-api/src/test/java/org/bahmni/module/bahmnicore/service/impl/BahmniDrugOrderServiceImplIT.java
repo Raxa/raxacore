@@ -59,7 +59,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         EncounterProvider encounterProvider = (EncounterProvider) encounter.getEncounterProviders().toArray()[0];
         assertEquals("System", encounterProvider.getProvider().getName());
         assertEquals("Unknown", encounterProvider.getEncounterRole().getName());
-        assertEquals("OPD", encounter.getEncounterType().getName());
+        assertEquals("Consultation", encounter.getEncounterType().getName());
         assertEquals(3, encounter.getOrders().size());
 
         assertDrugOrder(encounter.getOrders(), "Calpol", orderDate, calpol.getDosage(), calpol.getNumberOfDays());
@@ -88,7 +88,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         EncounterProvider encounterProvider = (EncounterProvider) encounter.getEncounterProviders().toArray()[0];
         assertEquals("System", encounterProvider.getProvider().getName());
         assertEquals("Unknown", encounterProvider.getEncounterRole().getName());
-        assertEquals("OPD", encounter.getEncounterType().getName());
+        assertEquals("Consultation", encounter.getEncounterType().getName());
         assertEquals(3, encounter.getOrders().size());
 
         assertDrugOrder(encounter.getOrders(), "Calpol", orderDate, calpol.getDosage(), calpol.getNumberOfDays());
@@ -120,7 +120,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         EncounterProvider encounterProvider = (EncounterProvider) encounter.getEncounterProviders().toArray()[0];
         assertEquals("System", encounterProvider.getProvider().getName());
         assertEquals("Unknown", encounterProvider.getEncounterRole().getName());
-        assertEquals("OPD", encounter.getEncounterType().getName());
+        assertEquals("Consultation", encounter.getEncounterType().getName());
         assertEquals(3, encounter.getOrders().size());
 
         assertDrugOrder(encounter.getOrders(), "Calpol", orderDate, calpol.getDosage(), calpol.getNumberOfDays());
@@ -211,7 +211,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
 
     private Encounter createSystemConsultationEncounter(Patient patient, Date encounterDate) {
         Encounter systemConsultationEncounter = new Encounter();
-        systemConsultationEncounter.setEncounterType(encounterService.getEncounterType("OPD"));
+        systemConsultationEncounter.setEncounterType(encounterService.getEncounterType("Consultation"));
         systemConsultationEncounter.setProvider(encounterService.getEncounterRole(2), providerService.getProvider(22));
         systemConsultationEncounter.setPatient(patient);
         systemConsultationEncounter.setEncounterDatetime(encounterDate);

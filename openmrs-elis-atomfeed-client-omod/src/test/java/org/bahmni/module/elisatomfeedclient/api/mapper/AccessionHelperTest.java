@@ -74,7 +74,7 @@ public class AccessionHelperTest {
 
         when(patientService.getPatientByUuid(any(String.class))).thenReturn(patient);
         when(feedProperties.getEncounterTypeClinical()).thenReturn("OPD");
-        when(encounterService.getEncounterType("OPD")).thenReturn(new EncounterType());
+        when(encounterService.getEncounterType("Consultation")).thenReturn(new EncounterType());
         when(conceptService.getConceptByUuid("panel1")).thenReturn(getConceptByUuid("panel1"));
         when(conceptService.getConceptByUuid("test2")).thenReturn(getConceptByUuid("test2"));
         when(visitService.getVisits(anyCollection(), anyCollection(), anyCollection(), anyCollection(), any(Date.class), any(Date.class), any(Date.class), any(Date.class), anyMap(), anyBoolean(), anyBoolean())).thenReturn(visits);
@@ -110,8 +110,8 @@ public class AccessionHelperTest {
         User provider = new User();
 
         when(patientService.getPatientByUuid(any(String.class))).thenReturn(patient);
-        when(feedProperties.getEncounterTypeClinical()).thenReturn("OPD");
-        when(encounterService.getEncounterType("OPD")).thenReturn(new EncounterType());
+        when(feedProperties.getEncounterTypeClinical()).thenReturn("Consultation");
+        when(encounterService.getEncounterType("Consultation")).thenReturn(new EncounterType());
         when(conceptService.getConceptByUuid("panel1")).thenReturn(getConceptByUuid("panel1"));
         when(conceptService.getConceptByUuid("test2")).thenReturn(getConceptByUuid("test2"));
         when(visitService.getVisits(anyCollection(), anyCollection(), anyCollection(), anyCollection(), any(Date.class), any(Date.class), any(Date.class), any(Date.class), anyMap(), anyBoolean(), anyBoolean())).thenReturn(visits);

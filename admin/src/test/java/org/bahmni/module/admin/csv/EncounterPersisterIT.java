@@ -83,7 +83,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     @Test
     public void fail_validation_for_visit_type_not_found() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "INVALID VISIT TYPE";
         multipleEncounterRow.patientIdentifier = "GAN200000";
 
@@ -103,7 +103,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     @Test
     public void fail_validation_for_empty_visit_type() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.patientIdentifier = "GAN200000";
 
         EncounterRow anEncounter = new EncounterRow();
@@ -120,7 +120,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     @Test
     public void fail_validation_for_encounter_date_in_incorrect_format() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.patientIdentifier = "GAN200000";
         multipleEncounterRow.visitType = "OPD";
 
@@ -144,7 +144,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     @Test
     public void persist_encounters_for_patient() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "GAN200000";
 
@@ -171,7 +171,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         assertEquals("Anad", encounter.getPatient().getGivenName());
         assertEquals("Kewat", encounter.getPatient().getFamilyName());
         assertEquals("OPD", encounter.getVisit().getVisitType().getName());
-        assertEquals("OPD", encounter.getEncounterType().getName());
+        assertEquals("Consultation", encounter.getEncounterType().getName());
 
         Date encounterDatetime = encounter.getEncounterDatetime();
         assertEquals("1111-11-11", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(encounterDatetime));
@@ -180,7 +180,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     @Test
     public void persist_multiple_encounters_for_patient() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "GAN200000";
 
@@ -213,7 +213,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     @Test
     public void persist_observations_for_patient() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "GAN200000";
 
@@ -238,7 +238,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         assertEquals("Anad", encounter.getPatient().getGivenName());
         assertEquals("Kewat", encounter.getPatient().getFamilyName());
         assertEquals("OPD", encounter.getVisit().getVisitType().getName());
-        assertEquals("OPD", encounter.getEncounterType().getName());
+        assertEquals("Consultation", encounter.getEncounterType().getName());
         assertEquals(1, encounter.getAllObs().size());
         assertEquals("WEIGHT", encounter.getAllObs().iterator().next().getConcept().getName().getName());
         Date obsDatetime = encounter.getAllObs().iterator().next().getObsDatetime();
@@ -249,7 +249,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     @Test
     public void persist_diagnosis() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "GAN200000";
 
@@ -276,7 +276,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         assertEquals("Anad", encounter.getPatient().getGivenName());
         assertEquals("Kewat", encounter.getPatient().getFamilyName());
         assertEquals("OPD", encounter.getVisit().getVisitType().getName());
-        assertEquals("OPD", encounter.getEncounterType().getName());
+        assertEquals("Consultation", encounter.getEncounterType().getName());
 
         List<Obs> allObs = new ArrayList<>();
         allObs.addAll(encounter.getAllObs());
@@ -311,7 +311,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     @Test
     public void roll_back_transaction_once_persistence_fails_for_one_resource() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "GAN200000";
         multipleEncounterRow.encounterRows = new ArrayList<>();
@@ -338,7 +338,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     public void throw_error_when_patient_not_found() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
 //        multipleEncounterRow.encounterDateTime = "11/11/1111";
-        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "GAN200001";
 
@@ -353,7 +353,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     public void throw_error_when_multiple_patients_found() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
 //        multipleEncounterRow.encounterDateTime = "11/11/1111";
-        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "200000";
         encounterPersister.init(userContext, "MultipleMatchPatient.groovy");
@@ -368,7 +368,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
         String patientId = "200000";
 
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = patientId;
         encounterPersister.init(userContext, "GANIdentifier.groovy");
@@ -395,7 +395,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     @Test
     public void external_algorithm_returns_patients_matching_id_and_name() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "GAN200000";
         multipleEncounterRow.patientAttributes = getPatientAttributes();
@@ -422,7 +422,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     @Test
     public void persist_coded_concept_values() {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-        multipleEncounterRow.encounterType = "OPD";
+        multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "GAN200000";
 

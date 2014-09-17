@@ -181,7 +181,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
     private EncounterType getConsultationEncounterType() {
         if (consultationEncounterType == null) {
-            consultationEncounterType = encounterService.getEncounterType("OPD");
+            consultationEncounterType = encounterService.getEncounterType("Consultation");
         }
         return consultationEncounterType;
     }

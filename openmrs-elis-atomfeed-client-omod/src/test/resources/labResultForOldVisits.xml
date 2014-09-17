@@ -39,7 +39,7 @@
     <provider provider_id="777" person_id="3" name="Lab System" identifier="LABSYSTEM" creator="1" date_created="2005-01-01 00:00:00.0"
               retired="false" uuid="Dx7R6bf8-7846-11e3-a96a-0xVFT71c1b75"/>
 
-    <encounter_type encounter_type_id="2" name="OPD" description="Some desc 2" creator="1"
+    <encounter_type encounter_type_id="2" name="Consultation" description="Some desc 2" creator="1"
                     date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
     <encounter_type encounter_type_id="3" name="LAB_RESULT" description="Some desc 2" creator="1"
                     date_created="2005-01-01 00:00:00.0" retired="false" uuid="4fe21921-01cc-4720-a6bf-a61a17c4d05b"/>
