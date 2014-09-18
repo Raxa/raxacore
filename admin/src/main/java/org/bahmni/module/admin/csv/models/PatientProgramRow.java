@@ -11,9 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 public class PatientProgramRow extends CSVEntity {
-
-    public static final String ENROLLMENT_DATE_PATTERN = "d-M-yyyy";
-
     @CSVHeader(name = "Registration Number")
     public String patientIdentifier;
 
@@ -27,7 +24,7 @@ public class PatientProgramRow extends CSVEntity {
     public String enrollmentDateTime;
 
     public Date getEnrollmentDate() throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ENROLLMENT_DATE_PATTERN);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN);
         simpleDateFormat.setLenient(false);
         return simpleDateFormat.parse(enrollmentDateTime);
     }

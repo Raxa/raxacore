@@ -46,7 +46,7 @@ public class PatientProgramPersisterIT extends BaseModuleContextSensitiveTest {
         PatientProgramRow patientProgramRow = new PatientProgramRow();
         patientProgramRow.patientIdentifier = "GAN200000";
         patientProgramRow.programName = "DIABETES PROGRAM";
-        patientProgramRow.enrollmentDateTime = "11-11-1111";
+        patientProgramRow.enrollmentDateTime = "1111-11-11";
 
         RowResult<PatientProgramRow> persistenceResult = patientProgramPersister.persist(patientProgramRow);
         assertTrue("Should have persisted the encounter row with the program. " + persistenceResult.getErrorMessage(), StringUtils.isEmpty(persistenceResult.getErrorMessage()));
@@ -67,7 +67,7 @@ public class PatientProgramPersisterIT extends BaseModuleContextSensitiveTest {
     public void should_not_enroll_an_already_enrolled_patient_in_a_program() throws Exception {
         PatientProgramRow patientProgramRow = new PatientProgramRow();
         patientProgramRow.patientIdentifier = "SEM200000";
-        patientProgramRow.enrollmentDateTime = "11-11-1111";
+        patientProgramRow.enrollmentDateTime = "1111-11-11";
         patientProgramRow.programName = "DIABETES PROGRAM";
 
         RowResult<PatientProgramRow> persistenceResult = patientProgramPersister.persist(patientProgramRow);
