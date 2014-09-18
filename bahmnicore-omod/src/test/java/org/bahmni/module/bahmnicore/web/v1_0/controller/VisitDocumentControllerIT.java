@@ -19,7 +19,6 @@ import java.util.Date;
 import static org.junit.Assert.*;
 
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class VisitDocumentControllerIT extends BaseWebControllerTest {
 
     public static final String TMP_DOCUMENT_IMAGES = "/tmp/document_images";

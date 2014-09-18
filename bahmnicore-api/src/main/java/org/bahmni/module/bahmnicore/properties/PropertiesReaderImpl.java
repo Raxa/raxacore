@@ -23,7 +23,7 @@ public class PropertiesReaderImpl implements PropertiesReader {
         Properties properties;
         try {
             properties = new Properties(System.getProperties());
-            properties.load(new FileInputStream(propertyFile));
+                properties.load(new FileInputStream(propertyFile));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
