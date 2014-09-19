@@ -1,10 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-    <concept_class concept_class_id="11" name="Labset" description="Concept Details" creator="1"
+
+    <!--Concept Classes-->
+    <concept_class concept_class_id="11" name="Labset" description="Laboratory Set" creator="1"
                    date_created="2005-01-01 00:00:00.0" retired="false" uuid="8d492026-c2cc-11de-8d13-0010c6dffd0f"/>
 
-    <concept_class concept_class_id="21" name="ConvSet" description="Concept Details" creator="1"
+    <concept_class concept_class_id="21" name="ConvSet" description="Convenience Set" creator="1"
                    date_created="2005-01-01 00:00:00.0" retired="false" uuid="8d492594-c2cc-11de-8d13-0010c6dffd0f"/>
+
+    <concept_class concept_class_id="31" name="Test" description="Test Concept Class" creator="1"
+                   date_created="2005-01-01 00:00:00.0" retired="false" uuid="8d4907b2-c2cc-11de-8d13-0010c6dffd0f"/>
 
     <!--Sample-->
     <concept concept_id="101" retired="0" datatype_id="5" class_id="1" is_set="1" creator="1"
@@ -36,5 +41,21 @@
                   concept_name_id="192" voided="false" uuid="5d2d4cb7-988b-4007-mmcc-0ebb94022222"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
     <concept_set concept_id="202" concept_set="201" concept_set_id="220" creator="1" sort_weight="2"
+                 date_created="2005-01-01 00:00:00.0"/>
+
+
+    <!--Test-->
+    <concept concept_id="301" retired="0" datatype_id="5" class_id="1" is_set="1" creator="1"
+             date_created="2013-12-04 11:36:42" uuid="99992594-c2cc-11de-8d13-cc10c6dppd0f"/>
+    <concept_name concept_id="301" name="All_Tests_and_Panels" locale="en" creator="1" date_created="2014-01-01 00:00:00.0"
+                  concept_name_id="899" voided="false" uuid="66cc4mm7-955b-4837-0dd7-0ecc9477777"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="302" retired="0" datatype_id="1" class_id="11" is_set="0" creator="1"
+             date_created="2013-12-04 11:36:42" uuid="5d2d4cb7-ll5b-0037-70f7-0ebbmmm22222"/>
+    <concept_name concept_id="302" name="Some Test" locale="en" creator="1" date_created="2005-01-01 00:00:00.0"
+                  concept_name_id="1012" voided="false" uuid="5mmd4cb7-988b-4007-mmcc-0ebb94022222"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="302" concept_set="301" concept_set_id="220" creator="1" sort_weight="2"
                  date_created="2005-01-01 00:00:00.0"/>
 </dataset>
