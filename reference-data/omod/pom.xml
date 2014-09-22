@@ -88,7 +88,7 @@
         <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>bahmnicore-api</artifactId>
-            <version>5.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
@@ -100,7 +100,7 @@
         <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>bahmnicore-omod</artifactId>
-            <version>5.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
@@ -127,7 +127,7 @@
         <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>bahmnicore-api</artifactId>
-            <version>5.1-SNAPSHOT</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
