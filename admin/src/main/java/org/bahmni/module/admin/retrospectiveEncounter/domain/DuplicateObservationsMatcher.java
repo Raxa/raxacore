@@ -69,12 +69,10 @@ public class DuplicateObservationsMatcher {
     }
 
     private boolean isUnique(List<Obs> allObs, String anObservationValue, String observationConceptName) {
-        boolean shouldMatchValue = true;
         for (Obs anObs : allObs) {
-            if (doesConceptNameMatch(anObs, observationConceptName) &&
-                    (!shouldMatchValue || doesObsValueMatch(anObs, anObservationValue)))
+            if (doesConceptNameMatch(anObs, observationConceptName) && doesObsValueMatch(anObs, anObservationValue)) {
                 return false;
-
+            }
         }
         return true;
     }
@@ -84,8 +82,11 @@ public class DuplicateObservationsMatcher {
     }
 
     private boolean doesObsValueMatch(Obs obs, String anObservationValue) {
-        return obs.getConcept().isNumeric() ?
-                Double.parseDouble(anObservationValue) == obs.getValueNumeric() :
-                anObservationValue.equalsIgnoreCase(obs.getValueAsString(Context.getLocale()));
+        if(obs.getConcept().getDatatype().isCoded() && obs.getValueCoded() != null) {
+            return anObservationValue.equalsIgnoreCase(obs.getValueCoded().getUuid());
+        } else if(obs.getConcept().isNumeric()) {
+            return Double.parseDouble(anObservationValue) == obs.getValueNumeric();
+        }
+        return anObservationValue.equalsIgnoreCase(obs.getValueAsString(Context.getLocale()));
     }
 }

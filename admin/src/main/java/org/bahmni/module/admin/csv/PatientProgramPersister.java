@@ -6,6 +6,7 @@ import org.bahmni.csv.EntityPersister;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.PatientProgramRow;
 import org.bahmni.module.admin.csv.service.PatientMatchService;
+import org.openmrs.ConceptName;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
@@ -55,7 +56,7 @@ public class PatientProgramPersister implements EntityPersister<PatientProgramRo
                 return noMatchingPatients(patientProgramRow);
             }
 
-            Program program = programWorkflowService.getProgramByName(patientProgramRow.programName);
+            Program program = getProgramByName(patientProgramRow.programName);
             List<PatientProgram> existingEnrolledPrograms = programWorkflowService.getPatientPrograms(patient, program, null, null, null, null, false);
             if (existingEnrolledPrograms != null && !existingEnrolledPrograms.isEmpty()) {
                 return new RowResult<>(patientProgramRow, getErrorMessage(existingEnrolledPrograms));
@@ -88,5 +89,23 @@ public class PatientProgramPersister implements EntityPersister<PatientProgramRo
 
     private RowResult<PatientProgramRow> noMatchingPatients(PatientProgramRow patientProgramRow) {
         return new RowResult<>(patientProgramRow, "No matching patients found with ID:'" + patientProgramRow.patientIdentifier + "'");
+    }
+
+    private Program getProgramByName(String programName) {
+        for (Program program : programWorkflowService.getAllPrograms()) {
+            if(isNamed(program, programName)) {
+                return program;
+            }
+        }
+        throw new RuntimeException("No matching Program found with name: " + programName);
+    }
+
+    private boolean isNamed(Program program, String programName) {
+        for (ConceptName conceptName : program.getConcept().getNames()) {
+            if(programName.equalsIgnoreCase(conceptName.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
