@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
@@ -63,7 +64,8 @@ public class ObservationMapper {
             List<Concept> valueConcepts = conceptService.getConceptsByName(obsRow.getValue());
             Concept valueConcept = null;
             for (Concept concept : valueConcepts) {
-                if (concept.getFullySpecifiedName(Context.getLocale()).getName().equals(obsRow.getValue())) {
+                ConceptName name = concept.getFullySpecifiedName(Context.getLocale()) != null ? concept.getFullySpecifiedName(Context.getLocale()) : concept.getName();
+                if (name.getName().equals(obsRow.getValue())) {
                     valueConcept = concept;
                     break;
                 }
