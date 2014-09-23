@@ -5,6 +5,7 @@ import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class ObservationMapper {
@@ -58,7 +60,14 @@ public class ObservationMapper {
 
     private String getValue(KeyValue obsRow, Concept obsConcept) throws ParseException {
         if (obsConcept.getDatatype().isCoded()) {
-            Concept valueConcept = conceptService.getConceptByName(obsRow.getValue());
+            List<Concept> valueConcepts = conceptService.getConceptsByName(obsRow.getValue());
+            Concept valueConcept = null;
+            for (Concept concept : valueConcepts) {
+                if (concept.getFullySpecifiedName(Context.getLocale()).getName().equals(obsRow.getValue())) {
+                    valueConcept = concept;
+                    break;
+                }
+            }
             if (valueConcept == null)
                 throw new ConceptNotFoundException(obsRow.getValue() + " not found");
             return valueConcept.getUuid();
@@ -69,7 +78,7 @@ public class ObservationMapper {
     private Concept fetchConcept(String conceptName) {
         Concept obsConcept = conceptService.getConceptByName(conceptName);
         if (obsConcept == null)
-            throw new ConceptNotFoundException("Concept '"+ conceptName +"' not found");
+            throw new ConceptNotFoundException("Concept '" + conceptName + "' not found");
 
         return obsConcept;
     }
