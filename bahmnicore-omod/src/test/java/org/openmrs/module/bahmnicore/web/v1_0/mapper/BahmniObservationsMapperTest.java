@@ -2,6 +2,7 @@ package org.openmrs.module.bahmnicore.web.v1_0.mapper;
 
 import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
+import org.bahmni.module.bahmnicore.mapper.BahmniObservationsMapper;
 import org.bahmni.module.bahmnicore.mapper.builder.*;
 import org.bahmni.module.bahmnicore.service.ConceptService;
 import org.junit.Before;

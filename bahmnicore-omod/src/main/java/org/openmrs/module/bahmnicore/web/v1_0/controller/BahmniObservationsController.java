@@ -5,7 +5,7 @@ import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
 import org.bahmni.module.bahmnicore.service.ConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniPersonObsService;
 import org.openmrs.Obs;
-import org.openmrs.module.bahmnicore.web.v1_0.mapper.BahmniObservationsMapper;
+import org.bahmni.module.bahmnicore.mapper.BahmniObservationsMapper;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
