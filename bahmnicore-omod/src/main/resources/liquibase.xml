@@ -578,7 +578,7 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201404021353" author="Hemanth, Mihir" context="rel4">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM person_attribute_type where name = 'givenNameLocal';
             </sqlCheck>
@@ -589,7 +589,7 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201404021359" author="Hemanth, Mihir" context="rel4">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM person_attribute_type where name = 'familyNameLocal';
             </sqlCheck>
@@ -600,7 +600,7 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201404021400" author="Hemanth, Mihir" context="rel4">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM person_attribute_type where name = 'middleNameLocal';
             </sqlCheck>
@@ -611,7 +611,7 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201404091217" author="sushmitharaos, arathyjan" context="rel4">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM encounter_type where name = 'Patient Document';
             </sqlCheck>
@@ -702,7 +702,7 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201404101600" author="Neha,Indraneel" context="rel4">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM encounter_type where name = 'VALIDATION NOTES';
             </sqlCheck>
@@ -714,7 +714,7 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201404211500" author="RT, Shruthi">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM concept_class where name = 'Concept Attribute';
             </sqlCheck>
@@ -730,7 +730,7 @@
         </insert>
     </changeSet>
     <changeSet id="bahmni-core-201404281212" author="RT, Neha">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="1">
                 SELECT COUNT(*) != 0 FROM concept WHERE datatype_id = 1 AND concept_id NOT IN (SELECT concept_id FROM concept_numeric);
             </sqlCheck>
@@ -743,7 +743,7 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201404281819" author="RT, Mujir">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM concept_class where name = 'Abnormal';
             </sqlCheck>
@@ -759,7 +759,7 @@
         </insert>
     </changeSet>
     <changeSet id="bahmni-core-201404281820" author="RT, Mujir">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM concept_class where name = 'Duration';
             </sqlCheck>
@@ -779,7 +779,7 @@
         <sqlFile splitStatements="false" path="V1_80__AddConceptNumericProc.sql"/>
     </changeSet>
     <changeSet id="bahmni-core-201404281825" author="RT, Mujir">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM concept_class where name = 'Concept Details';
             </sqlCheck>
@@ -799,7 +799,7 @@
         <sqlFile splitStatements="false" path="V1_81__DeleteConcept.sql"/>
     </changeSet>
     <changeSet id="bahmni-core-201404301520" author="D3">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="2">select count(*) from global_property where property in ('emr.exitFromInpatientEncounterType', 'emr.admissionEncounterType')</sqlCheck>
         </preConditions>
         <comment>Configure EMR API admit and discharge encounter type</comment>
@@ -809,7 +809,7 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201405041511" author="Mujir">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM concept_class where name = 'Duration';
             </sqlCheck>
@@ -893,7 +893,7 @@
     </changeSet>
 
     <changeSet id="bahmni-core-201405091936" author="rohan">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="2">
                 SELECT COUNT(*) FROM concept_name where name in ('Admit Patient');
             </sqlCheck>
@@ -905,7 +905,7 @@
     </changeSet>
 
     <changeSet id="bahmni-core-201405110939" author="rohan">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="2">
                 SELECT COUNT(*) FROM concept_name where name in ('Discharge Patient');
             </sqlCheck>
@@ -917,7 +917,7 @@
     </changeSet>
 
     <changeSet id="bahmni-core-201405110940" author="rohan">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="2">
                 SELECT COUNT(*) FROM concept_name where name in ('Transfer Patient');
             </sqlCheck>
@@ -938,7 +938,7 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201405161709" author="d3" context="rel4">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="1">select count(*) from global_property where property='webservices.rest.maxResultsAbsolute'</sqlCheck>
         </preConditions>
         <comment>Update webservices.rest.maxResultsAbsolute to 1000</comment>
@@ -1062,7 +1062,7 @@
         </insert>
     </changeSet>
     <changeSet id="bahmni-core-201407180800" author="Shruthi">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM concept_class where name = 'Computed';
             </sqlCheck>
@@ -1539,7 +1539,7 @@
     </changeSet>
 
     <changeSet id="bahmni-core-201408251455" author="Rohan">
-        <preConditions onFail="CONTINUE">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 SELECT COUNT(*) FROM concept_class where name = 'URL';
             </sqlCheck>
