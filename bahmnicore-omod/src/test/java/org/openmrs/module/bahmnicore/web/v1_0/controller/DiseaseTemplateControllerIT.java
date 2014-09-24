@@ -4,6 +4,7 @@ import org.bahmni.module.bahmnicore.contract.observation.DiseaseTemplate;
 import org.bahmni.module.bahmnicore.web.v1_0.controller.BaseWebControllerTest;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

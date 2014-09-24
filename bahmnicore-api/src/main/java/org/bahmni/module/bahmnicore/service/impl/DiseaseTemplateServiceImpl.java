@@ -12,6 +12,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -36,6 +37,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public List<DiseaseTemplate> allDiseaseTemplatesFor(String patientUuid) {
         List<Concept> diseaseTemplateConcepts= getDiseaseTemplateConcepts();
         List<DiseaseTemplate> diseaseTemplates = new ArrayList<>();

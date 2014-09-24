@@ -11,6 +11,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.ProgramWorkflowService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
+import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,8 +19,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class PatientProgramPersisterIT extends BaseModuleContextSensitiveTest {
+@org.springframework.test.context.ContextConfiguration(locations = {"classpath:webModuleApplicationContext.xml","classpath:TestingApplicationContext.xml"}, inheritLocations = true)
+public class PatientProgramPersisterIT extends BaseContextSensitiveTest {
     @Autowired
     private PatientProgramPersister patientProgramPersister;
     @Autowired
