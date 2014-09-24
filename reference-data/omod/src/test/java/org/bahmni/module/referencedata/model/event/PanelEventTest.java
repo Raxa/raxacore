@@ -63,8 +63,8 @@ public class PanelEventTest {
         Event anotherEvent = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept}).get(0);
         assertNotNull(event);
         assertFalse(event.getUuid().equals(anotherEvent.getUuid()));
-        assertEquals(event.getTitle(), "panel");
-        assertEquals(event.getCategory(), "lab");
+        assertEquals(event.getTitle(), ConceptEventFactory.PANEL);
+        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
     }
 
     @Test
@@ -75,19 +75,25 @@ public class PanelEventTest {
     }
 
     @Test
-    public void should_not_create_event_for_panel_event_if_parent_concept_is_missing() throws Exception {
+    public void should_create_event_for_panel_event_if_parent_concept_is_missing() throws Exception {
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(new ArrayList<ConceptSet>());
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
-        assertTrue(events.isEmpty());
+        Event event = events.get(0);
+        assertNotNull(event);
+        assertEquals(event.getTitle(), ConceptEventFactory.PANEL);
+        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
     }
 
 
     @Test
-    public void should_not_create_event_for_panel_event_if_parent_concept_is_wrong() throws Exception {
+    public void should_create_event_for_panel_event_if_parent_concept_is_wrong() throws Exception {
         parentConcept = new ConceptBuilder().withName("Some wrong name").withSetMember(concept).build();
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(getConceptSets(parentConcept, concept));
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
-        assertTrue(events.isEmpty());
+        Event event = events.get(0);
+        assertNotNull(event);
+        assertEquals(event.getTitle(), ConceptEventFactory.PANEL);
+        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
     }
 
 

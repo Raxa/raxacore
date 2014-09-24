@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +42,7 @@ public class DepartmentEventTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        concept = new ConceptBuilder().withClassUUID(ConceptClass.CONVSET_UUID).withUUID(DEPARTMENT_CONCEPT_UUID).build();
+        concept = new ConceptBuilder().withClass("Department").withUUID(DEPARTMENT_CONCEPT_UUID).build();
 
         parentConcept = new ConceptBuilder().withName(DepartmentEvent.DEPARTMENT_PARENT_CONCEPT_NAME).withSetMember(concept).build();
 
@@ -62,8 +63,8 @@ public class DepartmentEventTest {
         Event anotherEvent = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept}).get(0);
         assertNotNull(event);
         assertFalse(event.getUuid().equals(anotherEvent.getUuid()));
-        assertEquals(event.getTitle(), "department");
-        assertEquals(event.getCategory(), "lab");
+        assertEquals(event.getTitle(), ConceptEventFactory.DEPARTMENT);
+        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
     }
 
     @Test
@@ -74,18 +75,24 @@ public class DepartmentEventTest {
     }
 
     @Test
-    public void should_not_create_event_for_department_event_if_parent_concept_is_missing() throws Exception {
+    public void should_create_event_for_department_event_if_parent_concept_is_missing() throws Exception {
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(new ArrayList<ConceptSet>());
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
-        assertTrue(events.isEmpty());
+        Event event = events.get(0);
+        assertNotNull(event);
+        assertEquals(event.getTitle(), ConceptEventFactory.DEPARTMENT);
+        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
     }
 
 
     @Test
-    public void should_not_create_event_for_department_event_if_parent_concept_is_wrong() throws Exception {
+    public void should_create_event_for_department_event_if_parent_concept_is_wrong() throws Exception {
         parentConcept = new ConceptBuilder().withName("Some wrong name").withSetMember(concept).build();
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(getConceptSets(parentConcept, concept));
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
-        assertTrue(events.isEmpty());
+        Event event = events.get(0);
+        assertNotNull(event);
+        assertEquals(event.getTitle(), ConceptEventFactory.DEPARTMENT);
+        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
     }
 }

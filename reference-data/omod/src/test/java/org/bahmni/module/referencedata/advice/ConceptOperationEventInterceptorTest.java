@@ -54,7 +54,7 @@ public class ConceptOperationEventInterceptorTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        concept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).withUUID(SampleEventTest.SAMPLE_CONCEPT_UUID).build();
+        concept = new ConceptBuilder().withClass(SampleEvent.SAMPLE_CONCEPT_CLASS).withUUID(SampleEventTest.SAMPLE_CONCEPT_UUID).build();
 
         parentConcept = new ConceptBuilder().withName(SampleEvent.SAMPLE_PARENT_CONCEPT_NAME).withSetMember(concept).build();
 

@@ -53,7 +53,7 @@ public class DepartmentMapperTest {
         departmentConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withDescription("Some Description").withName("SampleName").build();
         labDepartmentConcept = new ConceptBuilder().withUUID("Laboratory UUID")
-                .withName(DepartmentEvent.DEPARTMENT_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.CONVSET_UUID)
+                .withName(DepartmentEvent.DEPARTMENT_PARENT_CONCEPT_NAME).withClass(DepartmentEvent.DEPARTMENT_CONCEPT_CLASS)
                 .withSetMember(departmentConcept).build();
         ConceptSet conceptSet = getConceptSet(labDepartmentConcept, departmentConcept);
         sortWeight = Double.valueOf(999);
@@ -89,12 +89,12 @@ public class DepartmentMapperTest {
     }
 
     @Test
-    public void double_max_as_sort_order_when_sort_order_not_specified() throws Exception {
+    public void null_as_sort_order_when_sort_order_not_specified() throws Exception {
         ConceptSet conceptSet = getConceptSet(labDepartmentConcept, departmentConcept);
         List<ConceptSet> conceptSets = getConceptSets(conceptSet);
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
         when(Context.getConceptService()).thenReturn(conceptService);
         Department departmentData = departmentMapper.map(departmentConcept);
-        assertTrue(departmentData.getSortOrder().equals(Double.MAX_VALUE));
+        assertNull(departmentData.getSortOrder());
     }
 }

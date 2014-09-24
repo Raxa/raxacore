@@ -24,6 +24,7 @@ import java.util.Locale;
 import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSet;
 import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -54,7 +55,7 @@ public class SampleMapperTest {
         sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withShortName("ShortName").withName("SampleName").build();
         laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
-                .withName(SampleEvent.SAMPLE_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.LABSET_UUID)
+                .withName(SampleEvent.SAMPLE_PARENT_CONCEPT_NAME).withClass(SampleEvent.SAMPLE_CONCEPT_CLASS)
                 .withSetMember(sampleConcept).build();
         ConceptSet conceptSet = getConceptSet(laboratoryConcept, sampleConcept);
         sortWeight = Double.valueOf(999);
@@ -96,6 +97,6 @@ public class SampleMapperTest {
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
         when(Context.getConceptService()).thenReturn(conceptService);
         Sample sampleData = sampleMapper.map(sampleConcept);
-        assertTrue(sampleData.getSortOrder().equals(Double.MAX_VALUE));
+        assertNull(sampleData.getSortOrder());
     }
 }

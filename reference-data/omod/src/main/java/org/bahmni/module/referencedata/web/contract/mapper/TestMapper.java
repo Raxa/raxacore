@@ -21,6 +21,7 @@ public class TestMapper extends ResourceMapper {
         test.setShortName(testConcept.getShortestName(Context.getLocale(), false).getName());
         test.setSample(getSample(testConcept));
         test.setResultType(testConcept.getDatatype().getName());
+        test.setTestUnitOfMeasure(getUnits(testConcept));
         return test;
     }
 

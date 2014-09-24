@@ -11,10 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openmrs.Concept;
-import org.openmrs.ConceptClass;
-import org.openmrs.ConceptDatatype;
-import org.openmrs.ConceptSet;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.powermock.api.mockito.PowerMockito;
@@ -29,6 +26,7 @@ import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterc
 import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @PrepareForTest(Context.class)
@@ -50,6 +48,7 @@ public class TestMapperTest {
     private List<ConceptSet> testConceptSets;
     private ConceptSet testDepartmentConceptSet;
     private ConceptSet testSampleConceptSet;
+    private ConceptNumeric conceptNumeric;
 
     @Before
     public void setUp() throws Exception {
@@ -65,13 +64,13 @@ public class TestMapperTest {
                 .withDateChanged(dateChanged).withShortName("ShortName").withName("Test Name Here").withDataType(ConceptDatatype.NUMERIC).build();
         testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID)
                 .withDateChanged(dateChanged).withShortName("ShortName").withName(TestEvent.TEST_PARENT_CONCEPT_NAME).withSetMember(testConcept).build();
-        sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).
+        sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClass(SampleEvent.SAMPLE_CONCEPT_CLASS).
                 withDateChanged(dateChanged).withSetMember(testConcept).withShortName("ShortName").withName("SampleName").build();
         laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
                 .withName(SampleEvent.SAMPLE_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.LABSET_UUID)
                 .withSetMember(sampleConcept).build();
         departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
-                withDateChanged(dateChanged).withClassUUID(ConceptClass.CONVSET_UUID).withSetMember(testConcept).withDescription("Some Description").withName("Department Name").build();
+                withDateChanged(dateChanged).withClass(DepartmentEvent.DEPARTMENT_CONCEPT_CLASS).withSetMember(testConcept).withDescription("Some Description").withName("Department Name").build();
         labDepartmentConcept = new ConceptBuilder().withUUID("Laboratory Department UUID")
                 .withName(DepartmentEvent.DEPARTMENT_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.CONVSET_UUID)
                 .withSetMember(departmentConcept).build();
@@ -85,6 +84,8 @@ public class TestMapperTest {
         testConceptSets = getConceptSets(testConceptSet);
         testConceptSets.add(testSampleConceptSet);
         testConceptSets.add(testDepartmentConceptSet);
+        conceptNumeric = new ConceptNumeric(testConcept);
+        conceptNumeric.setUnits("unit");
 
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenAnswer(new Answer<List<ConceptSet>>() {
             @Override
@@ -101,6 +102,7 @@ public class TestMapperTest {
                 return null;
             }
         });
+        when(conceptService.getConceptNumeric(anyInt())).thenReturn(conceptNumeric);
         when(Context.getConceptService()).thenReturn(conceptService);
     }
 
@@ -119,6 +121,7 @@ public class TestMapperTest {
         assertEquals("Some Description", testData.getDepartment().getDescription());
         assertEquals("Sample UUID", testData.getSample().getId());
         assertEquals("SampleName", testData.getSample().getName());
+        assertEquals("unit", testData.getTestUnitOfMeasure());
     }
 
     @Test
@@ -148,5 +151,12 @@ public class TestMapperTest {
         testConceptSets.remove(testSampleConceptSet);
         org.bahmni.module.referencedata.web.contract.Test testData = testMapper.map(testConcept);
         assertNull(testData.getSample());
+    }
+
+    @Test
+    public void testUnitOfMeasure_is_null_if_not_specified() throws Exception {
+        when(conceptService.getConceptNumeric(anyInt())).thenReturn(null);
+        org.bahmni.module.referencedata.web.contract.Test testData = testMapper.map(testConcept);
+        assertNull(testData.getTestUnitOfMeasure());
     }
 }

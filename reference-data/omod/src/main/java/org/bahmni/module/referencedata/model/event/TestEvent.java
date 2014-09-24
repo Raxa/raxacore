@@ -12,8 +12,7 @@ public class TestEvent extends ConceptOperationEvent {
 
     public boolean isResourceConcept(Concept concept) {
         return concept.getConceptClass() != null &&
-                concept.getConceptClass().getUuid().equals(ConceptClass.TEST_UUID) &&
-                isChildOf(concept, TEST_PARENT_CONCEPT_NAME);
+                concept.getConceptClass().getUuid().equals(ConceptClass.TEST_UUID);
     }
 
 }

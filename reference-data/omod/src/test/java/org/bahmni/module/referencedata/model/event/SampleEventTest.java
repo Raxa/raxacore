@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +42,7 @@ public class SampleEventTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        concept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).withUUID(SAMPLE_CONCEPT_UUID).build();
+        concept = new ConceptBuilder().withClass("Sample").withUUID(SAMPLE_CONCEPT_UUID).build();
 
         parentConcept = new ConceptBuilder().withName(SampleEvent.SAMPLE_PARENT_CONCEPT_NAME).withSetMember(concept).build();
 
@@ -74,19 +75,23 @@ public class SampleEventTest {
     }
 
     @Test
-    public void should_not_create_event_for_sample_event_if_parent_concept_is_missing() throws Exception {
+    public void should_create_event_for_sample_event_if_parent_concept_is_missing() throws Exception {
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(new ArrayList<ConceptSet>());
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
-        assertTrue(events.isEmpty());
+        assertNotNull(events.get(0));
+        assertEquals(events.get(0).getTitle(), "sample");
+        assertEquals(events.get(0).getCategory(), "lab");
     }
 
 
     @Test
-    public void should_not_create_event_for_sample_event_if_parent_concept_is_wrong() throws Exception {
+    public void should_create_event_for_sample_event_if_parent_concept_is_wrong() throws Exception {
         parentConcept = new ConceptBuilder().withName("Some wrong name").withSetMember(concept).build();
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(getConceptSets(parentConcept, concept));
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
-        assertTrue(events.isEmpty());
+        assertNotNull(events.get(0));
+        assertEquals(events.get(0).getTitle(), "sample");
+        assertEquals(events.get(0).getCategory(), "lab");
     }
 
 }

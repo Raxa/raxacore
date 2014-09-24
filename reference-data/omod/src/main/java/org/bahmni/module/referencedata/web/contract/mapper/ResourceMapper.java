@@ -27,15 +27,15 @@ public abstract class ResourceMapper {
         return (T) resource;
     }
 
-    double getSortWeight(Concept concept) {
+    Double getSortWeight(Concept concept) {
         List<ConceptSet> conceptSets = Context.getConceptService().getSetsContainingConcept(concept);
-        if (conceptSets == null) return Double.MAX_VALUE;
+        if (conceptSets == null) return null;
         for (ConceptSet conceptSet : conceptSets) {
             if (conceptSet.getConceptSet().getName(Context.getLocale()).getName().equals(parentConceptName)) {
-                return conceptSet.getSortWeight() != null ? conceptSet.getSortWeight() : Double.MAX_VALUE;
+                return conceptSet.getSortWeight() != null ? conceptSet.getSortWeight() : null;
             }
         }
-        return Double.MAX_VALUE;
+        return null;
     }
 
 }

@@ -5,6 +5,7 @@ import org.openmrs.ConceptClass;
 
 public class DepartmentEvent extends ConceptOperationEvent {
     public static final String DEPARTMENT_PARENT_CONCEPT_NAME = "Lab Departments";
+    public static final String DEPARTMENT_CONCEPT_CLASS = "Department";
 
     public DepartmentEvent(String url, String category, String title) {
         super(url, category, title);
@@ -16,6 +17,6 @@ public class DepartmentEvent extends ConceptOperationEvent {
     }
 
     public static boolean isDepartmentConcept(Concept concept) {
-        return concept.getConceptClass() != null && concept.getConceptClass().getUuid().equals(ConceptClass.CONVSET_UUID) && isChildOf(concept, DEPARTMENT_PARENT_CONCEPT_NAME);
+        return concept.getConceptClass() != null && concept.getConceptClass().getName() != null && concept.getConceptClass().getName().equals(DEPARTMENT_CONCEPT_CLASS);
     }
 }

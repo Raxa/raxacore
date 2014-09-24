@@ -1982,4 +1982,71 @@
             update concept_reference_source set name='SNOMED', description='SNOMED Duration Source' where name='ISO 8601 Duration';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201409242241" author="Mihir">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept_class where name = 'Sample';
+            </sqlCheck>
+        </preConditions>
+        <comment>Add concept class for lab samples</comment>
+        <sql>
+            set @uuid = '';
+            set @date = '';
+            select uuid() into @uuid;
+            select curdate() into @date;
+            select @uuid;
+            insert into concept_class (name, description, creator, date_created, retired, uuid)
+            values ('Sample', 'Lab Samples Concept Class', 1, @date, 0, @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409242242" author="Mihir">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept_class where name = 'Department';
+            </sqlCheck>
+        </preConditions>
+        <comment>Add concept class for lab samples</comment>
+        <sql>
+            set @uuid = '';
+            set @date = '';
+            select uuid() into @uuid;
+            select curdate() into @date;
+            select @uuid;
+            insert into concept_class (name, description, creator, date_created, retired, uuid)
+            values ('Department', 'Lab Departments Concept Class', 1, @date, 0, @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409242248" author="Mihir">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM concept_class where name = 'Sample';
+            </sqlCheck>
+        </preConditions>
+        <comment>Migrate sample concepts to concept class sample</comment>
+        <sql>
+            UPDATE concept SET class_id = (SELECT concept_class_id FROM concept_class WHERE name = 'Sample') WHERE concept_id IN (SELECT concept_id FROM concept_set WHERE concept_set = (SELECT distinct concept_id FROM concept_name WHERE name = 'Laboratory'));
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409242256" author="Mihir">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM concept_class where name = 'Department';
+            </sqlCheck>
+        </preConditions>
+        <comment>Migrate department concepts to concept class department</comment>
+        <sql>
+            UPDATE concept SET class_id = (SELECT concept_class_id FROM concept_class WHERE name = 'Department') WHERE concept_id IN (SELECT concept_id FROM concept_set WHERE concept_set = (SELECT distinct concept_id FROM concept_name WHERE name = 'Lab Departments'));
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409242259" author="Mihir">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM concept_name where name='Laboratory' and concept_name_type='FULLY_SPECIFIED';
+            </sqlCheck>
+        </preConditions>
+        <comment>Rename Laboratory concept to Lab Samples</comment>
+        <sql>
+            update concept_name set name='Lab Samples' where name='Laboratory' and concept_name_type='FULLY_SPECIFIED';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -4,17 +4,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.web.contract.Department;
 import org.bahmni.module.referencedata.web.contract.Sample;
 import org.bahmni.module.referencedata.web.contract.Test;
-import org.openmrs.Concept;
-import org.openmrs.ConceptClass;
-import org.openmrs.ConceptDescription;
-import org.openmrs.ConceptSet;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 import static org.bahmni.module.referencedata.model.event.DepartmentEvent.isDepartmentConcept;
 import static org.bahmni.module.referencedata.model.event.SampleEvent.isSampleConcept;
@@ -72,6 +65,11 @@ public class MapperUtils {
             }
         }
         return tests;
+    }
+
+    public static String getUnits(Concept concept) {
+        ConceptNumeric conceptNumeric = Context.getConceptService().getConceptNumeric(concept.getConceptId());
+        return conceptNumeric == null ? null : conceptNumeric.getUnits();
     }
 
     private static boolean isTestConcept(Concept concept) {

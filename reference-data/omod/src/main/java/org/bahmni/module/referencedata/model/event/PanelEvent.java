@@ -22,7 +22,7 @@ public class PanelEvent extends ConceptOperationEvent {
     }
 
     private boolean isPanelConcept(Concept concept) {
-        return concept.getConceptClass() != null && concept.getConceptClass().getUuid().equals(ConceptClass.LABSET_UUID) && isChildOf(concept, TestEvent.TEST_PARENT_CONCEPT_NAME);
+        return concept.getConceptClass() != null && concept.getConceptClass().getUuid().equals(ConceptClass.LABSET_UUID);
     }
 
     @Override

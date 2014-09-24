@@ -4,6 +4,7 @@ import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
 import org.bahmni.module.referencedata.model.event.DepartmentEvent;
 import org.bahmni.module.referencedata.model.event.SampleEvent;
 import org.bahmni.module.referencedata.model.event.TestEvent;
+import org.bahmni.module.referencedata.web.contract.Department;
 import org.bahmni.module.referencedata.web.contract.Panel;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,7 +74,7 @@ public class PanelMapperTest {
                 .withSetMember(testConcept).withDateChanged(dateChanged).withShortName("ShortName").withName("Panel Name Here").withDataType(ConceptDatatype.NUMERIC).build();
         testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID)
                 .withDateChanged(dateChanged).withShortName("ShortName").withName(TestEvent.TEST_PARENT_CONCEPT_NAME).withSetMember(panelConcept).build();
-        sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).
+        sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClass(SampleEvent.SAMPLE_CONCEPT_CLASS).
                 withDateChanged(dateChanged).withSetMember(panelConcept).withShortName("ShortName").withName("SampleName").build();
         laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
                 .withName(SampleEvent.SAMPLE_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.LABSET_UUID)
@@ -81,7 +82,7 @@ public class PanelMapperTest {
         departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withClassUUID(ConceptClass.CONVSET_UUID).withSetMember(panelConcept).withDescription("Some Description").withName("Department Name").build();
         labDepartmentConcept = new ConceptBuilder().withUUID("Laboratory Department UUID")
-                .withName(DepartmentEvent.DEPARTMENT_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.CONVSET_UUID)
+                .withName(DepartmentEvent.DEPARTMENT_PARENT_CONCEPT_NAME).withClass(DepartmentEvent.DEPARTMENT_CONCEPT_CLASS)
                 .withSetMember(departmentConcept).build();
         ConceptSet sampleConceptSet = getConceptSet(laboratoryConcept, sampleConcept);
         ConceptSet departmentConceptSet = getConceptSet(labDepartmentConcept, departmentConcept);

@@ -7,6 +7,7 @@ public class Test extends Resource {
     private Sample sample;
     private String resultType;
     private Double salePrice;
+    private String testUnitOfMeasure;
 
     public String getShortName() {
         return shortName;
@@ -55,4 +56,13 @@ public class Test extends Resource {
     public void setSalePrice(Double salePrice) {
         this.salePrice = salePrice;
     }
+
+    public String getTestUnitOfMeasure() {
+        return testUnitOfMeasure;
+    }
+
+    public void setTestUnitOfMeasure(String testUnitOfMeasure) {
+        this.testUnitOfMeasure = testUnitOfMeasure;
+    }
+
 }
