@@ -1582,6 +1582,147 @@
             <column name="privilege" value="View Locations"/>
         </insert>
     </changeSet>
+    <changeSet id="bahmni-core-201409241028" author="Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_reference_source where name='ISO 8601 Duration'</sqlCheck>
+        </preConditions>
+        <comment>Insert concept reference source for Duration units</comment>
+        <sql>
+            set @uuid = 0;
+            select uuid() into @uuid;
+
+            insert into concept_reference_source (name, description, hl7_code, creator, date_created, uuid)
+                values('ISO 8601 Duration', 'ISO 8601 Duration Source', 'SCT', 1, now(), @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241048" author="Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_reference_term where name='Second(s)'</sqlCheck>
+        </preConditions>
+        <comment>Insert concept reference term for Second(s)</comment>
+        <sql>
+            set @uuid = 0;
+            set @source_id = 0;
+
+            select uuid() into @uuid;
+            select concept_source_id from concept_reference_source where name='ISO 8601 Duration' into @source_id;
+
+            insert into concept_reference_term(concept_source_id, name, code, description, creator, date_created, uuid)
+            values(@source_id, 'Second(s)', '257997001', 'Duration in Second(s)', 1, now(), @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241115" author="Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_reference_term where name='Minute(s)'</sqlCheck>
+        </preConditions>
+        <comment>Insert concept reference term for Minute(s)</comment>
+        <sql>
+            set @uuid = 0;
+            set @source_id = 0;
+
+            select uuid() into @uuid;
+            select concept_source_id from concept_reference_source where name='ISO 8601 Duration' into @source_id;
+
+            insert into concept_reference_term(concept_source_id, name, code, description, creator, date_created, uuid)
+            values(@source_id, 'Minute(s)', '258701004', 'Duration in Minute(s)', 1, now(), @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241116" author="Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_reference_term where name='Hour(s)'</sqlCheck>
+        </preConditions>
+        <comment>Insert concept reference term for Hour(s)</comment>
+        <sql>
+            set @uuid = 0;
+            set @source_id = 0;
+
+            select uuid() into @uuid;
+            select concept_source_id from concept_reference_source where name='ISO 8601 Duration' into @source_id;
+
+            insert into concept_reference_term(concept_source_id, name, code, description, creator, date_created, uuid)
+            values(@source_id, 'Hour(s)', '258702006', 'Duration in Hour(s)', 1, now(), @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241117" author="Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_reference_term where name='Day(s)'</sqlCheck>
+        </preConditions>
+        <comment>Insert concept reference term for Day(s)</comment>
+        <sql>
+            set @uuid = 0;
+            set @source_id = 0;
+
+            select uuid() into @uuid;
+            select concept_source_id from concept_reference_source where name='ISO 8601 Duration' into @source_id;
+
+            insert into concept_reference_term(concept_source_id, name, code, description, creator, date_created, uuid)
+            values(@source_id, 'Day(s)', '258703001', 'Duration in Day(s)', 1, now(), @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241119" author="Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_reference_term where name='Week(s)'</sqlCheck>
+        </preConditions>
+        <comment>Insert concept reference term for Week(s)</comment>
+        <sql>
+            set @uuid = 0;
+            set @source_id = 0;
+
+            select uuid() into @uuid;
+            select concept_source_id from concept_reference_source where name='ISO 8601 Duration' into @source_id;
+
+            insert into concept_reference_term(concept_source_id, name, code, description, creator, date_created, uuid)
+            values(@source_id, 'Week(s)', '258705008', 'Duration in Week(s)', 1, now(), @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241120" author="Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_reference_term where name='Month(s)'</sqlCheck>
+        </preConditions>
+        <comment>Insert concept reference term for Month(s)</comment>
+        <sql>
+            set @uuid = 0;
+            set @source_id = 0;
+
+            select uuid() into @uuid;
+            select concept_source_id from concept_reference_source where name='ISO 8601 Duration' into @source_id;
+
+            insert into concept_reference_term(concept_source_id, name, code, description, creator, date_created, uuid)
+            values(@source_id, 'Month(s)', '258706009', 'Duration in Week(s)', 1, now(), @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241122" author="Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_reference_term where name='Year(s)'</sqlCheck>
+        </preConditions>
+        <comment>Insert concept reference term for Year(s)</comment>
+        <sql>
+            set @uuid = 0;
+            set @source_id = 0;
+
+            select uuid() into @uuid;
+            select concept_source_id from concept_reference_source where name='ISO 8601 Duration' into @source_id;
+
+            insert into concept_reference_term(concept_source_id, name, code, description, creator, date_created, uuid)
+            values(@source_id, 'Year(s)', '258707000', 'Duration in Year(s)', 1, now(), @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241123" author="Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_reference_term where name='Time(s)'</sqlCheck>
+        </preConditions>
+        <comment>Insert concept reference term for Time(s)</comment>
+        <sql>
+            set @uuid = 0;
+            set @source_id = 0;
+
+            select uuid() into @uuid;
+            select concept_source_id from concept_reference_source where name='ISO 8601 Duration' into @source_id;
+
+            insert into concept_reference_term(concept_source_id, name, code, description, creator, date_created, uuid)
+            values(@source_id, 'Time(s)', '252109000', 'Duration in Time(s)', 1, now(), @uuid);
+        </sql>
+    </changeSet>
     <changeSet id="bahmni-core-201409041530" author="Rohan, Sravanthi">
         <comment>Adding hours, weeks and months concepts for drug order duration units</comment>
         <sql>
@@ -1780,5 +1921,65 @@
             <column name="description" value="Consultation encounter"/>
             <where>name = 'OPD'</where>
         </update>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241126" author="Hemanth">
+        <comment>Update hl7_code for concept reference source 'ISO 8601 Duration'</comment>
+        <sql>
+            update concept_reference_source set hl7_code = 'SCT' where name='ISO 8601 Duration';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241137" author="Hemanth">
+        <comment>Update code for concept reference term 'Second(s)'</comment>
+        <sql>
+            update concept_reference_term set code='257997001' where name='Second(s)';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241138" author="Hemanth">
+        <comment>Update code for concept reference term 'Minute(s)'</comment>
+        <sql>
+            update concept_reference_term set code='258701004' where name='Minute(s)';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241139" author="Hemanth">
+        <comment>Update code for concept reference term 'Hour(s)'</comment>
+        <sql>
+            update concept_reference_term set code='258702006' where name='Hour(s)';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241140" author="Hemanth">
+        <comment>Update code for concept reference term 'Day(s)'</comment>
+        <sql>
+            update concept_reference_term set code='258703001' where name='Day(s)';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241141" author="Hemanth">
+        <comment>Update code for concept reference term 'Week(s)'</comment>
+        <sql>
+            update concept_reference_term set code='258705008' where name='Week(s)';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241142" author="Hemanth">
+        <comment>Update code for concept reference term 'Month(s)'</comment>
+        <sql>
+            update concept_reference_term set code='258706009' where name='Month(s)';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241143" author="Hemanth">
+        <comment>Update code for concept reference term 'Year(s)'</comment>
+        <sql>
+            update concept_reference_term set code='258707000' where name='Year(s)';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241144" author="Hemanth">
+        <comment>Update code for concept reference term 'Time(s)'</comment>
+        <sql>
+            update concept_reference_term set code='252109000' where name='Time(s)';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201409241241" author="Hemanth">
+        <comment>Update name for concept reference source 'ISO 8601 Duration'</comment>
+        <sql>
+            update concept_reference_source set name='SNOMED', description='SNOMED Duration Source' where name='ISO 8601 Duration';
+        </sql>
     </changeSet>
 </databaseChangeLog>
