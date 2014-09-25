@@ -1,15 +1,14 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
-import org.bahmni.module.referencedata.model.event.DepartmentEvent;
-import org.bahmni.module.referencedata.web.contract.Department;
+import org.bahmni.module.referencedata.labconcepts.contract.Department;
+import org.bahmni.module.referencedata.labconcepts.mapper.DepartmentMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.Concept;
-import org.openmrs.ConceptClass;
 import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -21,8 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSet;
-import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSets;
+import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSet;
+import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -53,7 +52,7 @@ public class DepartmentMapperTest {
         departmentConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withDescription("Some Description").withName("SampleName").build();
         labDepartmentConcept = new ConceptBuilder().withUUID("Laboratory UUID")
-                .withName(DepartmentEvent.DEPARTMENT_PARENT_CONCEPT_NAME).withClass(DepartmentEvent.DEPARTMENT_CONCEPT_CLASS)
+                .withName(Department.DEPARTMENT_PARENT_CONCEPT_NAME).withClass(Department.DEPARTMENT_CONCEPT_CLASS)
                 .withSetMember(departmentConcept).build();
         ConceptSet conceptSet = getConceptSet(labDepartmentConcept, departmentConcept);
         sortWeight = Double.valueOf(999);

@@ -1,15 +1,15 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
-import org.bahmni.module.referencedata.model.event.SampleEvent;
-import org.bahmni.module.referencedata.web.contract.Sample;
+import org.bahmni.module.referencedata.labconcepts.mapper.SampleMapper;
+import org.bahmni.module.referencedata.labconcepts.model.event.SampleEvent;
+import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.Concept;
-import org.openmrs.ConceptClass;
 import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -21,8 +21,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSet;
-import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSets;
+import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSet;
+import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -55,7 +55,7 @@ public class SampleMapperTest {
         sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withShortName("ShortName").withName("SampleName").build();
         laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
-                .withName(SampleEvent.SAMPLE_PARENT_CONCEPT_NAME).withClass(SampleEvent.SAMPLE_CONCEPT_CLASS)
+                .withName(Sample.SAMPLE_PARENT_CONCEPT_NAME).withClass(Sample.SAMPLE_CONCEPT_CLASS)
                 .withSetMember(sampleConcept).build();
         ConceptSet conceptSet = getConceptSet(laboratoryConcept, sampleConcept);
         sortWeight = Double.valueOf(999);

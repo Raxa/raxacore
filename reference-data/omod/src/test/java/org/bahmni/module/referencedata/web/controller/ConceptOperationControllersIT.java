@@ -3,8 +3,8 @@
 package org.bahmni.module.referencedata.web.controller;
 
 import org.bahmni.module.bahmnicore.web.v1_0.controller.BaseWebControllerTest;
-import org.bahmni.module.referencedata.web.contract.Department;
-import org.bahmni.module.referencedata.web.contract.Sample;
+import org.bahmni.module.referencedata.labconcepts.contract.Department;
+import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -59,7 +59,7 @@ public class ConceptOperationControllersIT extends BaseWebControllerTest {
     public void shouldPublishTest() throws Exception {
         MockHttpServletRequest request = newGetRequest("/rest/v1/reference-data/test/" + testConcept.getUuid());
         MockHttpServletResponse response = handle(request);
-        org.bahmni.module.referencedata.web.contract.Test testResponse = deserialize(response, org.bahmni.module.referencedata.web.contract.Test.class);
+        org.bahmni.module.referencedata.labconcepts.contract.Test testResponse = deserialize(response, org.bahmni.module.referencedata.labconcepts.contract.Test.class);
         assertEquals(testConcept.getUuid(), testResponse.getId());
         assertNull(testResponse.getDescription());
         assertEquals(testConcept.getName(Context.getLocale()).getName(), testResponse.getName());

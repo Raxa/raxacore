@@ -1,6 +1,7 @@
 package org.bahmni.module.referencedata.web.controller;
 
-import org.bahmni.module.referencedata.web.contract.mapper.SampleMapper;
+import org.bahmni.module.referencedata.labconcepts.contract.Sample;
+import org.bahmni.module.referencedata.labconcepts.mapper.SampleMapper;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
@@ -26,7 +27,7 @@ public class SampleController extends BaseRestController {
 
     @RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
     @ResponseBody
-    public org.bahmni.module.referencedata.web.contract.Sample getSample(@PathVariable("uuid") String uuid) {
+    public Sample getSample(@PathVariable("uuid") String uuid) {
         final Concept sample = conceptService.getConceptByUuid(uuid);
         if (sample == null) {
             throw new ConceptNotFoundException("No sample concept found with uuid " + uuid);

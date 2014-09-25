@@ -1,11 +1,12 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
-import org.bahmni.module.referencedata.model.event.DepartmentEvent;
-import org.bahmni.module.referencedata.model.event.SampleEvent;
-import org.bahmni.module.referencedata.model.event.TestEvent;
-import org.bahmni.module.referencedata.web.contract.Department;
-import org.bahmni.module.referencedata.web.contract.Panel;
+import org.bahmni.module.referencedata.labconcepts.contract.Department;
+import org.bahmni.module.referencedata.labconcepts.contract.Panel;
+import org.bahmni.module.referencedata.labconcepts.contract.Sample;
+import org.bahmni.module.referencedata.labconcepts.mapper.PanelMapper;
+import org.bahmni.module.referencedata.labconcepts.model.event.DepartmentEvent;
+import org.bahmni.module.referencedata.labconcepts.model.event.SampleEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,8 +28,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSet;
-import static org.bahmni.module.referencedata.advice.ConceptOperationEventInterceptorTest.getConceptSets;
+import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSet;
+import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -73,16 +74,16 @@ public class PanelMapperTest {
         panelConcept = new ConceptBuilder().withUUID("Panel UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).withDescription("SomeDescription")
                 .withSetMember(testConcept).withDateChanged(dateChanged).withShortName("ShortName").withName("Panel Name Here").withDataType(ConceptDatatype.NUMERIC).build();
         testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID)
-                .withDateChanged(dateChanged).withShortName("ShortName").withName(TestEvent.TEST_PARENT_CONCEPT_NAME).withSetMember(panelConcept).build();
-        sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClass(SampleEvent.SAMPLE_CONCEPT_CLASS).
+                .withDateChanged(dateChanged).withShortName("ShortName").withName(org.bahmni.module.referencedata.labconcepts.contract.Test.TEST_PARENT_CONCEPT_NAME).withSetMember(panelConcept).build();
+        sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClass(Sample.SAMPLE_CONCEPT_CLASS).
                 withDateChanged(dateChanged).withSetMember(panelConcept).withShortName("ShortName").withName("SampleName").build();
         laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
-                .withName(SampleEvent.SAMPLE_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.LABSET_UUID)
+                .withName(Sample.SAMPLE_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.LABSET_UUID)
                 .withSetMember(sampleConcept).build();
         departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withClassUUID(ConceptClass.CONVSET_UUID).withSetMember(panelConcept).withDescription("Some Description").withName("Department Name").build();
         labDepartmentConcept = new ConceptBuilder().withUUID("Laboratory Department UUID")
-                .withName(DepartmentEvent.DEPARTMENT_PARENT_CONCEPT_NAME).withClass(DepartmentEvent.DEPARTMENT_CONCEPT_CLASS)
+                .withName(Department.DEPARTMENT_PARENT_CONCEPT_NAME).withClass(Department.DEPARTMENT_CONCEPT_CLASS)
                 .withSetMember(departmentConcept).build();
         ConceptSet sampleConceptSet = getConceptSet(laboratoryConcept, sampleConcept);
         ConceptSet departmentConceptSet = getConceptSet(labDepartmentConcept, departmentConcept);

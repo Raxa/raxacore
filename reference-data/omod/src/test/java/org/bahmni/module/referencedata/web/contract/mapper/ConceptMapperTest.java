@@ -1,13 +1,13 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
-import org.bahmni.module.referencedata.web.contract.Concept;
+import org.bahmni.module.referencedata.labconcepts.contract.Concept;
+import org.bahmni.module.referencedata.labconcepts.mapper.ConceptMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.ConceptAnswer;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptName;
-import org.openmrs.api.context.Context;
 
 import java.util.ArrayList;
 import java.util.Arrays;

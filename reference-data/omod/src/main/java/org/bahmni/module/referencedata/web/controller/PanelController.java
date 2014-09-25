@@ -1,6 +1,7 @@
 package org.bahmni.module.referencedata.web.controller;
 
-import org.bahmni.module.referencedata.web.contract.mapper.PanelMapper;
+import org.bahmni.module.referencedata.labconcepts.contract.Panel;
+import org.bahmni.module.referencedata.labconcepts.mapper.PanelMapper;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
@@ -26,7 +27,7 @@ public class PanelController extends BaseRestController {
 
     @RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
     @ResponseBody
-    public org.bahmni.module.referencedata.web.contract.Panel getPanel(@PathVariable("uuid") String uuid) {
+    public Panel getPanel(@PathVariable("uuid") String uuid) {
         final Concept panel = conceptService.getConceptByUuid(uuid);
         if (panel == null) {
             throw new ConceptNotFoundException("No panel concept found with uuid " + uuid);

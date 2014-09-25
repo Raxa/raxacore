@@ -1,6 +1,7 @@
 package org.bahmni.module.referencedata.web.controller;
 
-import org.bahmni.module.referencedata.web.contract.mapper.DepartmentMapper;
+import org.bahmni.module.referencedata.labconcepts.contract.Department;
+import org.bahmni.module.referencedata.labconcepts.mapper.DepartmentMapper;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
@@ -26,7 +27,7 @@ public class DepartmentController extends BaseRestController {
 
     @RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
     @ResponseBody
-    public org.bahmni.module.referencedata.web.contract.Department getDepartment(@PathVariable("uuid") String uuid) {
+    public Department getDepartment(@PathVariable("uuid") String uuid) {
         final Concept department = conceptService.getConceptByUuid(uuid);
         if (department == null) {
             throw new ConceptNotFoundException("No department concept found with uuid " + uuid);
