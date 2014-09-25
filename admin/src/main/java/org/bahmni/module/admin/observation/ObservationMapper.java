@@ -65,7 +65,7 @@ public class ObservationMapper {
             Concept valueConcept = null;
             for (Concept concept : valueConcepts) {
                 ConceptName name = concept.getFullySpecifiedName(Context.getLocale()) != null ? concept.getFullySpecifiedName(Context.getLocale()) : concept.getName();
-                if (name.getName().equals(obsRow.getValue())) {
+                if (name.getName().equalsIgnoreCase(obsRow.getValue())) {
                     valueConcept = concept;
                     break;
                 }

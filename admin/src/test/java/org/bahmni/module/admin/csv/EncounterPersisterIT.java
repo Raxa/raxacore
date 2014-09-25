@@ -420,7 +420,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
     }
 
     @Test
-    public void persist_coded_concept_values() {
+    public void persist_case_insensitive_coded_concept_values() {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
@@ -428,7 +428,7 @@ public class EncounterPersisterIT extends BaseModuleContextSensitiveTest {
 
         EncounterRow anEncounter = new EncounterRow();
         anEncounter.obsRows = new ArrayList<>();
-        anEncounter.obsRows.add(new KeyValue("Diagnosis Certainty", "Confirmed"));
+        anEncounter.obsRows.add(new KeyValue("Diagnosis Certainty", "ConFirmeD"));
         anEncounter.encounterDateTime = "1111-11-11";
         anEncounter.diagnosesRows = new ArrayList<>();
 
