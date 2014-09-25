@@ -53,8 +53,8 @@ public class DuplicateObservationsMatcher {
 
         List<BahmniDiagnosisRequest> uniqueDiagnoses = new ArrayList<>();
         for (BahmniDiagnosisRequest diagnosisRequest : bahmniDiagnoses) {
-            String diagnosis = diagnosisRequest.getCodedAnswer().getName();
-            if (isUnique(allObs, diagnosis, EmrApiConstants.CONCEPT_CODE_CODED_DIAGNOSIS)) {
+            String diagnosisUuid = diagnosisRequest.getCodedAnswer().getUuid();
+            if (isUnique(allObs, diagnosisUuid, EmrApiConstants.CONCEPT_CODE_CODED_DIAGNOSIS)) {
                 uniqueDiagnoses.add(diagnosisRequest);
             }
         }
