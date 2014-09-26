@@ -33,7 +33,7 @@ public abstract class ResourceMapper {
         if (conceptSets == null) return DEFAULT_SORT_ORDER;
         for (ConceptSet conceptSet : conceptSets) {
             if (conceptSet.getConceptSet().getName(Context.getLocale()).getName().equals(parentConceptName)) {
-                return conceptSet.getSortWeight() != DEFAULT_SORT_ORDER ? conceptSet.getSortWeight() : Double.valueOf(999);
+                return conceptSet.getSortWeight() != null ? conceptSet.getSortWeight() : DEFAULT_SORT_ORDER;
             }
         }
         return DEFAULT_SORT_ORDER;

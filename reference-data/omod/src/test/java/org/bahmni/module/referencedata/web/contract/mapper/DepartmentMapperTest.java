@@ -3,6 +3,7 @@ package org.bahmni.module.referencedata.web.contract.mapper;
 import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.mapper.DepartmentMapper;
+import org.bahmni.module.referencedata.labconcepts.mapper.ResourceMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,6 +95,6 @@ public class DepartmentMapperTest {
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
         when(Context.getConceptService()).thenReturn(conceptService);
         Department departmentData = departmentMapper.map(departmentConcept);
-        assertNull(departmentData.getSortOrder());
+        assertTrue(departmentData.getSortOrder().equals(ResourceMapper.DEFAULT_SORT_ORDER));
     }
 }

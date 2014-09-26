@@ -1,6 +1,7 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
+import org.bahmni.module.referencedata.labconcepts.mapper.ResourceMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.SampleMapper;
 import org.bahmni.module.referencedata.labconcepts.model.event.SampleEvent;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
@@ -97,6 +98,6 @@ public class SampleMapperTest {
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
         when(Context.getConceptService()).thenReturn(conceptService);
         Sample sampleData = sampleMapper.map(sampleConcept);
-        assertNull(sampleData.getSortOrder());
+        assertTrue(sampleData.getSortOrder().equals(ResourceMapper.DEFAULT_SORT_ORDER));
     }
 }
