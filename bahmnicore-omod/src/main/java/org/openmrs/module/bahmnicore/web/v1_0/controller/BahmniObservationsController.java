@@ -5,7 +5,7 @@ import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
 import org.bahmni.module.bahmnicore.service.ConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniPersonObsService;
 import org.openmrs.Obs;
-import org.bahmni.module.bahmnicore.mapper.BahmniObservationsMapper;
+import org.openmrs.module.bahmnicore.web.v1_0.mapper.ObservationDataMapper;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
@@ -51,6 +51,6 @@ public class BahmniObservationsController extends BaseRestController {
         }
 
         ConceptDefinition conceptDefinition = conceptService.conceptsFor(rootConceptNames);
-        return new BahmniObservationsMapper(restService, conceptDefinition).mapNonVoidedObservations(observations);
+        return new ObservationDataMapper(restService, conceptDefinition).mapNonVoidedObservations(observations);
     }
 }

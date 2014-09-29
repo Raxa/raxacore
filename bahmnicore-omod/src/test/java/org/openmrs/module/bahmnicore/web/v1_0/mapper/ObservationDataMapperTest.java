@@ -33,13 +33,13 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({LocaleUtility.class})
-public class BahmniObservationsMapperTest {
+public class ObservationDataMapperTest {
     public static final String PATIENT_RESOURCE_URI = "/patient/Uri";
     public static final String ENCOUNTER_RESOURCE_URI = "/encounter/Uri";
     public static final String VISIT_RESOURCE_URI = "/visit/Uri";
     public static final int CONCEPT_SORT_WEIGHT = 111;
 
-    private BahmniObservationsMapper bahmniObservationsMapper;
+    private ObservationDataMapper observationDataMapper;
     public ConceptDefinition mockConceptDefinition;
 
 
@@ -71,12 +71,12 @@ public class BahmniObservationsMapperTest {
         mockConceptDefinition = mock(ConceptDefinition.class);
         when(mockConceptDefinition.getSortWeightFor(any(Concept.class))).thenReturn(CONCEPT_SORT_WEIGHT);
 
-        bahmniObservationsMapper = new BahmniObservationsMapper(mockRestService, mockConceptDefinition);
+        observationDataMapper = new ObservationDataMapper(mockRestService, mockConceptDefinition);
     }
 
     @Test
     public void return_empty_list_for_no_obs() throws Exception {
-        assertEquals(0, bahmniObservationsMapper.mapNonVoidedObservations(new ArrayList<Obs>()).size());
+        assertEquals(0, observationDataMapper.mapNonVoidedObservations(new ArrayList<Obs>()).size());
     }
 
     @Test
@@ -89,7 +89,7 @@ public class BahmniObservationsMapperTest {
 
         Obs obs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept1).withValue(5.0).withDatetime(date).build();
 
-        List<ObservationData> mappedObservations = bahmniObservationsMapper.mapNonVoidedObservations(Arrays.asList(obs));
+        List<ObservationData> mappedObservations = observationDataMapper.mapNonVoidedObservations(Arrays.asList(obs));
 
         verify(mockConceptDefinition).getSortWeightFor(any(Concept.class));
 
@@ -118,7 +118,7 @@ public class BahmniObservationsMapperTest {
         Obs obs12 = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept12).withValue("ovalue2").withDatetime(date).build();
         Obs observations = new ObsBuilder().withConcept(concept1).withGroupMembers(obs11, obs12).build();
 
-        List<ObservationData> mappedObservations = bahmniObservationsMapper.mapNonVoidedObservations(Arrays.asList(observations));
+        List<ObservationData> mappedObservations = observationDataMapper.mapNonVoidedObservations(Arrays.asList(observations));
 
         assertEquals(2, mappedObservations.size());
         ObservationData observationData1 = mappedObservations.get(0);
@@ -152,7 +152,7 @@ public class BahmniObservationsMapperTest {
         Obs obs12 = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept12).withValue("ovalue").withDatetime(date).build();
         Obs observations = new ObsBuilder().withConcept(concept1).withGroupMembers(obs11, obs12).build();
 
-        List<ObservationData> mappedObservations = bahmniObservationsMapper.mapNonVoidedObservations(Arrays.asList(observations));
+        List<ObservationData> mappedObservations = observationDataMapper.mapNonVoidedObservations(Arrays.asList(observations));
 
         ObservationData observationData = mappedObservations.get(0);
         assertEquals(1, mappedObservations.size());
@@ -178,7 +178,7 @@ public class BahmniObservationsMapperTest {
         Obs obs12 = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept12).withValue(concept112).withDatetime(date).build();
         Obs observations = new ObsBuilder().withConcept(concept1).withGroupMembers(obs11, obs12).build();
 
-        List<ObservationData> mappedObservations = bahmniObservationsMapper.mapNonVoidedObservations(Arrays.asList(observations));
+        List<ObservationData> mappedObservations = observationDataMapper.mapNonVoidedObservations(Arrays.asList(observations));
 
         ObservationData observationData = mappedObservations.get(0);
         assertEquals(1, mappedObservations.size());
@@ -197,7 +197,7 @@ public class BahmniObservationsMapperTest {
         Obs voidedObservation = new ObsBuilder().withPerson(person).withConcept(concept1).withEncounter(encounter).build();
         voidedObservation.setVoided(true);
 
-        List<ObservationData> mappedObservations = bahmniObservationsMapper.mapNonVoidedObservations(Arrays.asList(voidedObservation));
+        List<ObservationData> mappedObservations = observationDataMapper.mapNonVoidedObservations(Arrays.asList(voidedObservation));
         assertEquals(0, mappedObservations.size());
     }
 
