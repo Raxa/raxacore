@@ -18,7 +18,6 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
-
 public class VisitDocumentControllerIT extends BaseWebControllerTest {
 
     public static final String TMP_DOCUMENT_IMAGES = "/tmp/document_images";

@@ -5,6 +5,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptName;
 import org.openmrs.Obs;
+import org.openmrs.Visit;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 
@@ -28,6 +29,8 @@ public class ObservationData {
     private LinkData links;
     private String rootConcept;
 
+    private Date visitStartDate;
+
     public ObservationData() {
     }
 
@@ -44,7 +47,10 @@ public class ObservationData {
         this.type = anObservation.getConcept().getDatatype().getName();
         this.time = anObservation.getObsDatetime();
         this.encounterTime = anObservation.getEncounter().getEncounterDatetime();
-
+        Visit visit = anObservation.getEncounter().getVisit();
+        if(visit != null ){
+            this.visitStartDate = visit.getStartDatetime();
+        }
         this.links = new LinkData(visitURI, encounterURI, patientURI, providerURIs);
     }
 
@@ -156,5 +162,13 @@ public class ObservationData {
 
     public void setConceptShortName(String conceptShortName) {
         this.conceptShortName = conceptShortName;
+    }
+
+    public Date getVisitStartDate() {
+        return visitStartDate;
+    }
+
+    public void setVisitStartDate(Date visitStartDate) {
+        this.visitStartDate = visitStartDate;
     }
 }

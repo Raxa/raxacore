@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class PersonObsDaoImpl implements PersonObsDao {
@@ -101,6 +103,53 @@ public class PersonObsDaoImpl implements PersonObsDao {
         return queryToGetObservations.list();
     }
 
+    @Override
+    public List<Obs> getLatestObsForConceptSetByVisit(String patientUuid, String conceptNames){
+        Integer visit_id = getLatestVisitFor(patientUuid,conceptNames);
+        return getLatestObsInVisit(visit_id,patientUuid,conceptNames);
+    }
+
+    private Integer getLatestVisitFor(String patientUuid, String conceptName){
+        String queryString="select v.visitId\n" +
+                "from Obs obs join obs.encounter enc join enc.visit v, ConceptName cn \n" +
+                "where cn.concept.conceptId = obs.concept.conceptId and cn.name=:conceptName and cn.conceptNameType='FULLY_SPECIFIED' and obs.person.uuid=:patientUuid\n" +
+                "order by v.visitId desc";
+        Query queryToGetVisitId = sessionFactory.getCurrentSession().createQuery(queryString);
+        queryToGetVisitId.setString("conceptName",conceptName);
+        queryToGetVisitId.setString("patientUuid",patientUuid);
+        queryToGetVisitId.setMaxResults(1);
+        Object visitId = queryToGetVisitId.uniqueResult();
+        return visitId == null ?  null: (Integer) visitId;
+    }
+
+    private List<Obs> getLatestObsInVisit(Integer visitId, String patientUuid, String conceptName) {
+        if(visitId == null) return new ArrayList<>();
+
+        String queryString=
+                "select obs\n" +
+                "from Obs obs join obs.encounter enc join enc.visit v \n" +
+                "where obs.concept.conceptId in " +
+                "   ( select cs.concept.conceptId\n" +
+                "     from ConceptName cn, ConceptSet cs\n" +
+                "     where cs.conceptSet.conceptId = cn.concept.conceptId and cn.conceptNameType='FULLY_SPECIFIED' and cn.name=:conceptName)\n" +
+                "   and obs.person.uuid=:patientUuid and v.visitId =:visitId order by enc.encounterId";
+        Query queryToGetObs = sessionFactory.getCurrentSession().createQuery(queryString);
+        queryToGetObs.setString("conceptName", conceptName);
+        queryToGetObs.setString("patientUuid", patientUuid);
+        queryToGetObs.setInteger("visitId", visitId);
+
+        return withUniqueConcepts(queryToGetObs.list());
+    }
+
+    private List<Obs> withUniqueConcepts(List<Obs> obslist) {
+        Map<Integer,Obs> conceptToObsMap = new HashMap<>();
+        for (Obs obs : obslist) {
+            conceptToObsMap.put(obs.getConcept().getId(),obs);
+        }
+        return new ArrayList<>(conceptToObsMap.values());
+    }
+
+
     private List<Integer> getVisitIdsFor(String patientUuid, Integer numberOfVisits) {
         Query queryToGetVisitIds = sessionFactory.getCurrentSession().createQuery(
                     "select v.visitId " +
@@ -114,4 +163,6 @@ public class PersonObsDaoImpl implements PersonObsDao {
         }
         return queryToGetVisitIds.list();
     }
+
+
 }

@@ -1,4 +1,4 @@
-package org.openmrs.module.bahmnicore.web.v1_0.mapper;
+package org.bahmni.module.bahmnicore.mapper;
 
 
 import org.apache.commons.lang.StringUtils;
@@ -7,20 +7,26 @@ import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
 import org.bahmni.module.bahmnicore.service.ConceptService;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
+import org.openmrs.module.webservices.rest.web.HibernateLazyLoader;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public class BahmniObservationsMapper {
     public static final String PATIENT_RESOURCE_NAME = RestConstants.VERSION_1 + "/patient";
     public static final String ENCOUNTER_RESOURCE_NAME = RestConstants.VERSION_1 + "/encounter";
     public static final String VISIT_RESOURCE_NAME = RestConstants.VERSION_1 + "/visit";
     private static final String PROVIDER_RESOURCE_NAME = RestConstants.VERSION_1 + "/provider";
 
-    private final RestService restService;
+
+    private RestService restService;
     private ConceptDefinition conceptDefinition;
+
+    public BahmniObservationsMapper() {
+    }
 
     public BahmniObservationsMapper(RestService restService, ConceptDefinition conceptDefinition) {
         this.restService = restService;

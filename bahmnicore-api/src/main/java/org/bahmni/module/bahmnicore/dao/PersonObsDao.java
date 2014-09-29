@@ -15,4 +15,6 @@ public interface PersonObsDao {
     List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, boolean getOrphanedObservations);
 
     List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer limit);
+
+    List<Obs> getLatestObsForConceptSetByVisit(String patientUuid, String conceptNames);
 }
