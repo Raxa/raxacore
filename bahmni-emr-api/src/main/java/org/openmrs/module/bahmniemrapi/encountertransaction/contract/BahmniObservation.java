@@ -144,14 +144,6 @@ public class BahmniObservation{
         return this.getUuid().equals(obs.getUuid());
     }
 
-    public static List<BahmniObservation> toBahmniObsFromETObs(List<EncounterTransaction.Observation> allObservations) {
-        List<BahmniObservation> bahmniObservations = new ArrayList<>();
-        for (EncounterTransaction.Observation observation : allObservations) {
-            bahmniObservations.add(new BahmniObservation(observation));
-        }
-        return bahmniObservations;
-    }
-
     public static List<EncounterTransaction.Observation> toETObsFromBahmniObs(List<BahmniObservation> bahmniObservations) {
         List<EncounterTransaction.Observation> etObservations = new ArrayList<>();
         for (BahmniObservation bahmniObservation : bahmniObservations) {
