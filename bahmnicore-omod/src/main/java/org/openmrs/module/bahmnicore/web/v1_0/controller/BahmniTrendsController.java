@@ -2,7 +2,7 @@ package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
 import org.bahmni.module.bahmnicore.contract.encounter.data.PersonObservationData;
-import org.bahmni.module.bahmnicore.service.BahmniPersonObsService;
+import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.Obs;
@@ -21,11 +21,11 @@ import java.util.List;
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/bahmniobs")
 public class BahmniTrendsController extends BaseRestController {
     @Autowired
-    private BahmniPersonObsService personObsService;
+    private BahmniObsService personObsService;
 
     @Autowired
 
-    public BahmniTrendsController(BahmniPersonObsService personObsService) {
+    public BahmniTrendsController(BahmniObsService personObsService) {
         this.personObsService = personObsService;
     }
 

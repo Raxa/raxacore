@@ -2,7 +2,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
 import org.bahmni.module.bahmnicore.contract.encounter.data.PersonObservationData;
-import org.bahmni.module.bahmnicore.service.BahmniPersonObsService;
+import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class BahmniTrendsControllerTest {
     @Mock
-    BahmniPersonObsService bahmniPersonObsService;
+    BahmniObsService bahmniObsService;
     @Mock
     AdministrationService administrationService   ;
 
@@ -44,11 +44,11 @@ public class BahmniTrendsControllerTest {
         concept.addName(new ConceptName("concept", Locale.ENGLISH));
         obs.add(new Obs(person, concept, new Date(), null));
 
-        when(bahmniPersonObsService.getObsForPerson("foo")).thenReturn(obs);
+        when(bahmniObsService.getObsForPerson("foo")).thenReturn(obs);
 
-        BahmniTrendsController controller = new BahmniTrendsController(bahmniPersonObsService);
+        BahmniTrendsController controller = new BahmniTrendsController(bahmniObsService);
         List<PersonObservationData> observationDataList = controller.get("foo");
-        verify(bahmniPersonObsService).getObsForPerson("foo");
+        verify(bahmniObsService).getObsForPerson("foo");
 
     }
 
@@ -66,11 +66,11 @@ public class BahmniTrendsControllerTest {
         concepts.add(concept1);
         concepts.add(concept2);
 
-        when(bahmniPersonObsService.getNumericConceptsForPerson("foo")).thenReturn(concepts);
+        when(bahmniObsService.getNumericConceptsForPerson("foo")).thenReturn(concepts);
 
-        BahmniTrendsController controller = new BahmniTrendsController(bahmniPersonObsService);
+        BahmniTrendsController controller = new BahmniTrendsController(bahmniObsService);
         List<ConceptData> observationDataList = controller.getConceptsfor("foo");
-        verify(bahmniPersonObsService).getObsForPerson("foo");
+        verify(bahmniObsService).getObsForPerson("foo");
 
     }
 }

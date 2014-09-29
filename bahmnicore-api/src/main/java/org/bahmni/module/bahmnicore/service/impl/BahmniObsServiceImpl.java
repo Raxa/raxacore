@@ -3,7 +3,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.bahmni.module.bahmnicore.contract.observation.ConceptData;
 import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.dao.PersonObsDao;
-import org.bahmni.module.bahmnicore.service.BahmniPersonObsService;
+import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.service.ConceptService;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class BahmniPersonObsServiceImpl implements BahmniPersonObsService {
+public class BahmniObsServiceImpl implements BahmniObsService {
     private PersonObsDao personObsDao;
     private ConceptService conceptService;
 
     @Autowired
-    public BahmniPersonObsServiceImpl(PersonObsDao personObsDao, ConceptService conceptService) {
+    public BahmniObsServiceImpl(PersonObsDao personObsDao, ConceptService conceptService) {
         this.personObsDao = personObsDao;
         this.conceptService = conceptService;
     }

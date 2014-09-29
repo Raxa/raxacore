@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.dao.PersonObsDao;
-import org.bahmni.module.bahmnicore.service.BahmniPersonObsService;
+import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.service.ConceptService;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniPersonObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
-    BahmniPersonObsService personObsService;
+    BahmniObsService personObsService;
     @Autowired
     PersonObsDao personObsDao;
 
@@ -26,7 +26,7 @@ public class BahmniPersonObsServiceImplIT extends BaseModuleWebContextSensitiveT
 
     @Before
     public void setUp() throws Exception {
-        personObsService = new BahmniPersonObsServiceImpl(personObsDao, conceptService);
+        personObsService = new BahmniObsServiceImpl(personObsDao, conceptService);
         executeDataSet("observationsTestData.xml");
     }
 
