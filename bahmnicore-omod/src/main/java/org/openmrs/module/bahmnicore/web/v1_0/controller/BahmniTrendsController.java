@@ -19,17 +19,17 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/bahmniobs")
-public class BahmniObsController extends BaseRestController {
+public class BahmniTrendsController extends BaseRestController {
     @Autowired
     private BahmniPersonObsService personObsService;
 
     @Autowired
 
-    public BahmniObsController(BahmniPersonObsService personObsService) {
+    public BahmniTrendsController(BahmniPersonObsService personObsService) {
         this.personObsService = personObsService;
     }
 
-    public BahmniObsController() {
+    public BahmniTrendsController() {
     }
 
     @RequestMapping(method = RequestMethod.GET)

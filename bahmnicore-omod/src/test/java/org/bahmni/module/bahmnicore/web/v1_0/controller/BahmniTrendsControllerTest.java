@@ -12,7 +12,7 @@ import org.openmrs.ConceptName;
 import org.openmrs.Obs;
 import org.openmrs.Person;
 import org.openmrs.api.AdministrationService;
-import org.openmrs.module.bahmnicore.web.v1_0.controller.BahmniObsController;
+import org.openmrs.module.bahmnicore.web.v1_0.controller.BahmniTrendsController;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class BahmniObsControllerTest {
+public class BahmniTrendsControllerTest {
     @Mock
     BahmniPersonObsService bahmniPersonObsService;
     @Mock
@@ -46,7 +46,7 @@ public class BahmniObsControllerTest {
 
         when(bahmniPersonObsService.getObsForPerson("foo")).thenReturn(obs);
 
-        BahmniObsController controller = new BahmniObsController(bahmniPersonObsService);
+        BahmniTrendsController controller = new BahmniTrendsController(bahmniPersonObsService);
         List<PersonObservationData> observationDataList = controller.get("foo");
         verify(bahmniPersonObsService).getObsForPerson("foo");
 
@@ -68,7 +68,7 @@ public class BahmniObsControllerTest {
 
         when(bahmniPersonObsService.getNumericConceptsForPerson("foo")).thenReturn(concepts);
 
-        BahmniObsController controller = new BahmniObsController(bahmniPersonObsService);
+        BahmniTrendsController controller = new BahmniTrendsController(bahmniPersonObsService);
         List<ConceptData> observationDataList = controller.getConceptsfor("foo");
         verify(bahmniPersonObsService).getObsForPerson("foo");
 

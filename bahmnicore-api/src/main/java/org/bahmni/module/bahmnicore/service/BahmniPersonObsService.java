@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface BahmniPersonObsService {
     public List<Obs> getObsForPerson(String identifier);
-
     public List<Obs> observationsFor(String patientUuid, List<String> conceptName, Integer numberOfVisits);
     public List<Obs> getLatest(String patientUuid, List<String> conceptNames);
     public List<Concept> getNumericConceptsForPerson(String personUUID);
