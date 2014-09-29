@@ -1,4 +1,4 @@
-package org.bahmni.module.admin.csv;
+package org.bahmni.module.admin.csv.persister;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;

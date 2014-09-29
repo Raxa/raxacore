@@ -76,8 +76,15 @@
         <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>bahmnicore-api</artifactId>
-            <version>5.1-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
+            <artifactId>bahmnicore-api</artifactId>
+            <version>${project.parent.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
@@ -96,6 +103,11 @@
             <artifactId>httpclient</artifactId>
             <version>4.2.5</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
+            <artifactId>reference-data-api</artifactId>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>org.openmrs.api</groupId>

@@ -1,8 +1,9 @@
-package org.bahmni.module.admin.csv;
+package org.bahmni.module.admin.csv.persister;
 
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.PatientProgramRow;
+import org.bahmni.module.admin.csv.persister.PatientProgramPersister;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Patient;

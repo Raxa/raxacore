@@ -1,10 +1,11 @@
-package org.bahmni.module.admin.csv;
+package org.bahmni.module.admin.csv.persister;
 
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
+import org.bahmni.module.admin.csv.persister.EncounterPersister;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;

@@ -64,6 +64,18 @@ public class MapperUtils {
         return tests;
     }
 
+    public static ConceptName getConceptName(String name){
+        ConceptName conceptName = new ConceptName();
+        conceptName.setName(name);
+        conceptName.setLocale(Context.getLocale());
+        return conceptName;
+    }
+
+    public static ConceptClass getConceptClass(String className){
+        ConceptClass conceptClass = Context.getConceptService().getConceptClassByName(className);
+        return conceptClass;
+    }
+
     public static String getUnits(Concept concept) {
         ConceptNumeric conceptNumeric = Context.getConceptService().getConceptNumeric(concept.getConceptId());
         return conceptNumeric == null ? null : conceptNumeric.getUnits();
