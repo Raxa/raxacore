@@ -3,6 +3,7 @@ package org.bahmni.module.referencedata.labconcepts.contract;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,8 +15,18 @@ public class Concept {
     private String className;
     private String dataType;
     private List<String> answers;
+    private List<String> synonyms;
+    private ConceptReferenceTerm conceptReferenceTerm;
 
     public Concept() {
+    }
+
+    public ConceptReferenceTerm getConceptReferenceTerm() {
+        return conceptReferenceTerm;
+    }
+
+    public void setConceptReferenceTerm(ConceptReferenceTerm conceptReferenceTerm) {
+        this.conceptReferenceTerm = conceptReferenceTerm;
     }
 
     @NotNull
@@ -68,4 +79,14 @@ public class Concept {
     public void setAnswers(List<String> answers) {
         this.answers = answers;
     }
+
+    public List<String> getSynonyms() {
+        return synonyms == null ? new ArrayList<String>() : synonyms;
+    }
+
+    public void setSynonyms(List<String> synonyms) {
+        this.synonyms = synonyms;
+    }
+
+
 }

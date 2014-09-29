@@ -3,6 +3,7 @@ package org.bahmni.module.referencedata.web.service.Impl;
 import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptMapper;
+import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptReferenceTermService;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptService;
 import org.bahmni.module.referencedata.labconcepts.service.impl.ReferenceDataConceptServiceImpl;
 import org.junit.Before;
@@ -40,6 +41,9 @@ public class ReferenceDataConceptServiceImplTest {
     private ConceptService conceptService;
 
     @Mock
+    private ReferenceDataConceptReferenceTermService referenceDataConceptReferenceTermService;
+
+    @Mock
     private ConceptClass conceptClass;
 
     @Mock
@@ -66,12 +70,13 @@ public class ReferenceDataConceptServiceImplTest {
         answer = new ConceptBuilder().build();
         answerConcept = new ConceptAnswer();
 
-        PowerMockito.when(this.conceptMapper.map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), any(HashSet.class))).thenReturn(openmrsConcept);
+        PowerMockito.when(this.conceptMapper.map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), any(HashSet.class), any(org.openmrs.Concept.class))).thenReturn(openmrsConcept);
         PowerMockito.whenNew(ConceptMapper.class).withAnyArguments().thenReturn(conceptMapper);
 
-        referenceDataConceptService = new ReferenceDataConceptServiceImpl(conceptService);
+        referenceDataConceptService = new ReferenceDataConceptServiceImpl(conceptService, referenceDataConceptReferenceTermService);
 
         when(conceptService.getConceptClassByName(anyString())).thenReturn(conceptClass);
+        when(referenceDataConceptReferenceTermService.getConceptReferenceTerm(anyString(), anyString())).thenReturn(new org.openmrs.ConceptReferenceTerm());
         when(conceptService.getConceptDatatypeByName(anyString())).thenReturn(conceptDatatype);
         when(conceptService.saveConcept(openmrsConcept)).thenReturn(openmrsConcept);
         when(conceptDatatype.isCoded()).thenReturn(true);
@@ -82,7 +87,7 @@ public class ReferenceDataConceptServiceImplTest {
 
         org.openmrs.Concept savedConcept = referenceDataConceptService.saveConcept(concept);
 
-        verify(conceptMapper).map(concept, conceptClass, conceptDatatype, null);
+        verify(conceptMapper).map(concept, conceptClass, conceptDatatype, new HashSet<ConceptAnswer>(), null);
         verify(conceptService).saveConcept(openmrsConcept);
         verify(conceptService).getConceptClassByName(concept.getClassName());
         verify(conceptService).getConceptDatatypeByName(concept.getDataType());
@@ -105,7 +110,7 @@ public class ReferenceDataConceptServiceImplTest {
 
         org.openmrs.Concept savedConcept = referenceDataConceptService.saveConcept(concept);
 
-        verify(conceptMapper).map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), anySet());
+        verify(conceptMapper).map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), anySet(), any(org.openmrs.Concept.class));
         verify(conceptService).getConcept(answerConceptName);
         verify(conceptService).saveConcept(openmrsConcept);
         verify(conceptService).getConceptClassByName(concept.getClassName());
@@ -135,7 +140,7 @@ public class ReferenceDataConceptServiceImplTest {
 
         org.openmrs.Concept savedConcept = referenceDataConceptService.saveConcept(concept);
 
-        verify(conceptMapper).map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), anySet());
+        verify(conceptMapper).map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), anySet(), any(org.openmrs.Concept.class));
         verify(conceptService).getConcept(answerConceptName1);
         verify(conceptService).getConcept(answerConceptName2);
         verify(conceptService).saveConcept(openmrsConcept);

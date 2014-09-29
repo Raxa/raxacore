@@ -11,12 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import java.util.*;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
+@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class ConceptControllerIT extends BaseWebControllerTest {
     @Autowired
     private ConceptService conceptService;
@@ -46,10 +44,10 @@ public class ConceptControllerIT extends BaseWebControllerTest {
 
         Concept concept = conceptService.getConcept(conceptId);
 
-        assertEquals(uniqueName, concept.getFullySpecifiedName(Locale.ENGLISH).getName());
-        assertEquals(displayName, concept.getShortestName(Locale.ENGLISH, false).getName());
+        assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
+        assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
         assertEquals(className, concept.getConceptClass().getName());
-        assertEquals(description, concept.getDescription(Locale.ENGLISH).getDescription());
+        assertEquals(description, concept.getDescription(Context.getLocale()).getDescription());
         assertEquals(dataType, concept.getDatatype().getName());
     }
 
@@ -80,12 +78,12 @@ public class ConceptControllerIT extends BaseWebControllerTest {
 
         Concept concept = conceptService.getConcept(conceptId);
 
-        assertEquals(uniqueName, concept.getFullySpecifiedName(Locale.ENGLISH).getName());
-        assertEquals(displayName, concept.getShortestName(Locale.ENGLISH, false).getName());
+        assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
+        assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
         assertEquals(className, concept.getConceptClass().getName());
-        assertEquals(description, concept.getDescription(Locale.ENGLISH).getDescription());
+        assertEquals(description, concept.getDescription(Context.getLocale()).getDescription());
         assertEquals(dataType, concept.getDatatype().getName());
-        assertEquals(answerConceptName, concept.getAnswers().iterator().next().getAnswerConcept().getName(Locale.ENGLISH).getName());
+        assertEquals(answerConceptName, concept.getAnswers().iterator().next().getAnswerConcept().getName(Context.getLocale()).getName());
     }
 
     @Test
@@ -113,10 +111,10 @@ public class ConceptControllerIT extends BaseWebControllerTest {
 
         Concept concept = conceptService.getConcept(conceptId);
 
-        assertEquals(uniqueName, concept.getFullySpecifiedName(Locale.ENGLISH).getName());
-        assertEquals(displayName, concept.getShortestName(Locale.ENGLISH, false).getName());
+        assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
+        assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
         assertEquals(className, concept.getConceptClass().getName());
-        assertEquals(description, concept.getDescription(Locale.ENGLISH).getDescription());
+        assertEquals(description, concept.getDescription(Context.getLocale()).getDescription());
         assertEquals(dataType, concept.getDatatype().getName());
         assertEquals(0, concept.getAnswers().size());
     }
@@ -149,17 +147,17 @@ public class ConceptControllerIT extends BaseWebControllerTest {
 
         Concept concept = conceptService.getConcept(conceptId);
 
-        assertEquals(uniqueName, concept.getFullySpecifiedName(Locale.ENGLISH).getName());
-        assertEquals(displayName, concept.getShortestName(Locale.ENGLISH, false).getName());
+        assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
+        assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
         assertEquals(className, concept.getConceptClass().getName());
-        assertEquals(description, concept.getDescription(Locale.ENGLISH).getDescription());
+        assertEquals(description, concept.getDescription(Context.getLocale()).getDescription());
         assertEquals(dataType, concept.getDatatype().getName());
         for (ConceptAnswer conceptAnswer : concept.getAnswers()) {
-            String answerConceptName = conceptAnswer.getAnswerConcept().getName(Locale.ENGLISH).getName();
-            if (answerConceptName.equals(answerConceptName1)){
+            String answerConceptName = conceptAnswer.getAnswerConcept().getName(Context.getLocale()).getName();
+            if (answerConceptName.equals(answerConceptName1)) {
                 assertEquals(1, conceptAnswer.getSortWeight(), 0);
             }
-            if (answerConceptName.equals(answerConceptName2)){
+            if (answerConceptName.equals(answerConceptName2)) {
                 assertEquals(2, conceptAnswer.getSortWeight(), 0);
             }
         }
@@ -327,5 +325,16 @@ public class ConceptControllerIT extends BaseWebControllerTest {
         MockHttpServletRequest request = newPostRequest("/rest/v1/reference-data/concept", conceptDataJson);
         MockHttpServletResponse response = handle(request);
         assertEquals(response.getStatus(), HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void shouldCreateConceptSet() {
+        String uniqueName = "uniqueName";
+        String displayName = "uniqueName";
+        String description = "Sample basic concept being created";
+        String dataType = "N/A";
+        boolean isSet = true;
+
+
     }
 }

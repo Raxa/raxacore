@@ -5,6 +5,7 @@ import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.module.referencedata.labconcepts.contract.Test;
 import org.openmrs.*;
+import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 
 import java.util.*;
@@ -69,6 +70,22 @@ public class MapperUtils {
         conceptName.setName(name);
         conceptName.setLocale(Context.getLocale());
         return conceptName;
+    }
+
+    public static ConceptName getConceptName(String name, ConceptNameType conceptNameType){
+        ConceptName conceptName = getConceptName(name);
+        conceptName.setConceptNameType(conceptNameType);
+        return conceptName;
+    }
+
+    public static ConceptDatatype getDataTypeByUuid(String dataTypeUuid) {
+        ConceptDatatype conceptDatatype = Context.getConceptService().getConceptDatatypeByUuid(dataTypeUuid);
+        return conceptDatatype;
+    }
+
+    public static ConceptDatatype getDataTypeByName(String dataTypeName) {
+        ConceptDatatype conceptDatatype = Context.getConceptService().getConceptDatatypeByName(dataTypeName);
+        return conceptDatatype;
     }
 
     public static ConceptClass getConceptClass(String className){
