@@ -18,6 +18,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.test.BaseContextSensitiveTest;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.SimpleDateFormat;
@@ -28,8 +29,8 @@ import java.util.Set;
 
 import static org.junit.Assert.*;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:webModuleApplicationContext.xml","classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class EncounterPersisterIT extends BaseContextSensitiveTest {
+@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
+public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
     @Autowired
     private EncounterPersister encounterPersister;
 

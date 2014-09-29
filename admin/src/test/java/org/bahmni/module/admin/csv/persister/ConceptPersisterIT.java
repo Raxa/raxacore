@@ -13,6 +13,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.module.emrapi.test.builder.ConceptDataTypeBuilder;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class ConceptPersisterIT extends BaseModuleContextSensitiveTest {
+public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
     public static final String SAME_AS = "SAME-AS";
     @Autowired
     private ConceptPersister conceptPersister;
