@@ -32,7 +32,7 @@ public class BahmniEncounterTransactionMapper {
         bahmniEncounterTransaction.setAccessionNotes(validationNotesMapper.map(encounterTransaction));
         List<EncounterTransaction.Observation> etObservations = encounterTransactionObsMapper.map(encounterTransaction);
         List<BahmniObservation> bahmniObservations = BahmniObservation.toBahmniObsFromETObs(etObservations);
-        bahmniEncounterTransaction.setObservations(obsRelationshipMapper.map(bahmniObservations,encounterTransaction.getEncounterUuid()));
+        bahmniEncounterTransaction.setObservations(obsRelationshipMapper.map(bahmniObservations,encounterTransaction.getEncounterUuid(), encounterTransaction.getProviders()));
         return bahmniEncounterTransaction;
     }
 }

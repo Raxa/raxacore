@@ -10,12 +10,14 @@ import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BahmniObservation{
     private ObsRelationship targetObsRelation;
     private EncounterTransaction.Observation encounterTransactionObservation;
     private List<BahmniObservation> groupMembers = new ArrayList<>();
+    public Set<EncounterTransaction.Provider> providers;
 
     public BahmniObservation(EncounterTransaction.Observation encounterTransactionObservation) {
         for (EncounterTransaction.Observation groupMember : encounterTransactionObservation.getGroupMembers()) {
@@ -160,5 +162,13 @@ public class BahmniObservation{
 
     public boolean hasTargetObsRelation() {
         return targetObsRelation != null && targetObsRelation.getTargetObs() != null;
+    }
+
+    public Set<EncounterTransaction.Provider> getProviders() {
+        return providers;
+    }
+
+    public void setProviders(Set<EncounterTransaction.Provider> providers) {
+        this.providers = providers;
     }
 }
