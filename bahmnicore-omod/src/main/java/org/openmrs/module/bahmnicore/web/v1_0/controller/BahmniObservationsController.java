@@ -1,11 +1,12 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.service.ConceptService;
 import org.openmrs.Obs;
-import org.openmrs.module.bahmnicore.web.v1_0.mapper.ObservationDataMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.module.emrapi.encounter.ObservationMapper;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
@@ -16,32 +17,25 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/observations")
 public class BahmniObservationsController extends BaseRestController {
+    
     @Autowired
     private BahmniObsService personObsService;
-    @Autowired
-    private ConceptService conceptService;
-    @Autowired
-    private RestService restService;
-
-    public BahmniObservationsController(BahmniObsService personObsService, RestService restService) {
-        this.personObsService = personObsService;
-        this.restService = restService;
-    }
 
     public BahmniObservationsController() {
     }
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public List<ObservationData> get(@RequestParam(value = "patientUuid", required = true) String patientUUID,
-                                     @RequestParam(value = "concept", required = true) List<String> rootConceptNames,
-                                     @RequestParam(value = "scope", required = false) String scope,
-                                     @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits) {
+    public List<BahmniObservation> get(@RequestParam(value = "patientUuid", required = true) String patientUUID,
+                                       @RequestParam(value = "concept", required = true) List<String> rootConceptNames,
+                                       @RequestParam(value = "scope", required = false) String scope,
+                                       @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits) {
 
         List<Obs> observations;
         if ("latest".equals(scope)) {
@@ -50,7 +44,10 @@ public class BahmniObservationsController extends BaseRestController {
             observations = personObsService.observationsFor(patientUUID, rootConceptNames, numberOfVisits);
         }
 
-        ConceptDefinition conceptDefinition = conceptService.conceptsFor(rootConceptNames);
-        return new ObservationDataMapper(restService, conceptDefinition).mapNonVoidedObservations(observations);
+        List<EncounterTransaction.Observation> observationList =  new ArrayList<>();
+        for (Obs obs : observations) {
+            observationList.add(new ObservationMapper().map(obs));
+        }
+        return BahmniObservation.toBahmniObsFromETObs(observationList);
     }
 }
