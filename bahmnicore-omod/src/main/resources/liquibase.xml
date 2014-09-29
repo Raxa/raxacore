@@ -2049,4 +2049,13 @@
             update concept_name set name='Lab Samples' where name='Laboratory' and concept_name_type='FULLY_SPECIFIED';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201409291830" author="Indraneel">
+        <comment>Adding All Disease Templates Concept Set</comment>
+        <sql>
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'All Disease Templates', 'All Disease Templates', 'N/A', 'ConvSet', true);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'ALL', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'DISEASE', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'TEMPLATES', '1');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
