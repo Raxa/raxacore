@@ -5,6 +5,7 @@ import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.service.ConceptService;
 import org.openmrs.Obs;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
 import org.openmrs.module.emrapi.encounter.ObservationMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -43,11 +44,7 @@ public class BahmniObservationsController extends BaseRestController {
         } else {
             observations = personObsService.observationsFor(patientUUID, rootConceptNames, numberOfVisits);
         }
-
-        List<EncounterTransaction.Observation> observationList =  new ArrayList<>();
-        for (Obs obs : observations) {
-            observationList.add(new ObservationMapper().map(obs));
-        }
-        return BahmniObservation.toBahmniObsFromETObs(observationList);
+        
+        return BahmniObservationMapper.map(observations);
     }
 }

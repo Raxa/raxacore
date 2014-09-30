@@ -136,30 +136,7 @@ public class ObservationDataMapperTest {
         System.out.println(observationData1.getRootConcept());
     }
 
-    @Test
-    public void return_mapped_observations_for_abnormal_observation_structure() throws Exception {
-        Date date = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse("January 2, 2010");
-        Person person = new PersonBuilder().withUUID("puuid").build();
-        Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(date).build();
-        Encounter encounter = new EncounterBuilder().withVisit(visit).withPerson(person).withUUID("euuid").withDatetime(date).build();
-
-        Concept concept1 = new ConceptBuilder().withName("tconcept").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid").withClass(ConceptService.CONCEPT_DETAILS_CONCEPT_CLASS).build();
-        Concept concept11 = new ConceptBuilder().withName("tconcept1").withCodedDataType().withUUID("cuuid1").withClass(ConceptService.ABNORMAL_CONCEPT_CLASS).build();
-        Concept concept111 = new ConceptBuilder().withName("True").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid11").withClass("").build();
-        Concept concept12 = new ConceptBuilder().withName("tconcept2").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid2").withClass("").build();
-
-        Obs obs11 = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept11).withValue(concept111).withDatetime(date).build();
-        Obs obs12 = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(concept12).withValue("ovalue").withDatetime(date).build();
-        Obs observations = new ObsBuilder().withConcept(concept1).withGroupMembers(obs11, obs12).build();
-
-        List<ObservationData> mappedObservations = observationDataMapper.mapNonVoidedObservations(Arrays.asList(observations));
-
-        ObservationData observationData = mappedObservations.get(0);
-        assertEquals(1, mappedObservations.size());
-        assertTrue(observationData.getIsAbnormal());
-        assertEquals("ovalue", observationData.getValue());
-        assertEquals("cdatatype", observationData.getType());
-    }
+    
 
     @Test
     public void return_mapped_observations_for_abnormal_and_coded_observation_structure() throws Exception {
