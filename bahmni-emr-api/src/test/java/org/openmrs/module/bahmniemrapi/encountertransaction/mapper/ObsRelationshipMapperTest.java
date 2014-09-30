@@ -5,14 +5,29 @@ import org.bahmni.module.obsrelationship.model.ObsRelationship;
 import org.bahmni.module.obsrelationship.model.ObsRelationshipType;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
+import org.openmrs.Obs;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.encounter.*;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction.Observation;
 
 import java.util.*;
+import org.openmrs.util.LocaleUtility;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -22,7 +37,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@PrepareForTest(LocaleUtility.class)
+@RunWith(PowerMockRunner.class)
 public class ObsRelationshipMapperTest {
+
     @Mock
     private ObsRelationService obsrelationService;
     @Mock
@@ -34,12 +52,15 @@ public class ObsRelationshipMapperTest {
 
     @Before
     public void setUp() throws Exception {
+        PowerMockito.mockStatic(LocaleUtility.class);
+        PowerMockito.when(LocaleUtility.getLocalesInOrder()).thenReturn(new HashSet<Locale>(Arrays.asList(Locale.getDefault())));
+
         initMocks(this);
         obsRelationshipMapper = new ObsRelationshipMapper(obsrelationService, observationMapper, encounterProviderMapper);
     }
 
     @Test
-    public void shouldMapObsRelationshipForBahmniObservations(){
+    public void shouldMapObsRelationshipForBahmniObservations() {
         String sourceObsUuid = "source-obs-uuid";
         String targetObsUuid = "target-obs-uuid";
 
@@ -80,7 +101,7 @@ public class ObsRelationshipMapperTest {
     }
 
     @Test
-    public void shouldMapMultipleObsRelationshipForBahmniObservations(){
+    public void shouldMapMultipleObsRelationshipForBahmniObservations() {
         String sourceObs1Uuid = "source1-obs-uuid";
         String targetObs1Uuid = "target1-obs-uuid";
 
@@ -191,6 +212,8 @@ public class ObsRelationshipMapperTest {
     private BahmniObservation getBahmniObservation(String sourceObsUuid) {
         BahmniObservation sourceObservation = new BahmniObservation();
         sourceObservation.setUuid(sourceObsUuid);
+        EncounterTransaction.Concept concept = new EncounterTransaction.Concept("random-uuid", "Random Concept");
+        sourceObservation.setConcept(concept);
         return sourceObservation;
     }
 
@@ -198,6 +221,13 @@ public class ObsRelationshipMapperTest {
         EncounterTransaction.Observation mappedObs = new EncounterTransaction.Observation();
         mappedObs.setUuid(targetObs.getUuid());
         return mappedObs;
+    }
+
+    private Observation mapTargetObs(Obs targetObs) {
+        EncounterTransaction.Observation mappedTargetObs = new EncounterTransaction.Observation();
+        mappedTargetObs.setUuid(targetObs.getUuid());
+        mappedTargetObs.setConcept(new EncounterTransaction.Concept(targetObs.getConcept().getUuid(), targetObs.getConcept().getName().getName()));
+        return mappedTargetObs;
     }
 
     private ObsRelationship createObsRelationship(Obs sourceObs, Obs targetObs) {
@@ -214,6 +244,9 @@ public class ObsRelationshipMapperTest {
     private Obs createObs(String obsUuid) {
         Obs sourceObs = new Obs();
         sourceObs.setUuid(obsUuid);
+        Concept concept = new Concept();
+        concept.setFullySpecifiedName(new ConceptName("Random Concept", Locale.ENGLISH));
+        sourceObs.setConcept(concept);
         return sourceObs;
     }
 }
