@@ -77,7 +77,7 @@ public class BahmniObservationMapperTest {
         BahmniObservation childObservation = childObservations.get(0);
         assertEquals("ovalue", childObservation.getValue());
         assertEquals("cdatatype", childObservation.getType());
-        assertTrue(childObservation.getIsAbnormal());
+        assertTrue(childObservation.isAbnormal());
         assertEquals(10L, childObservation.getDuration().longValue());
     }
 
