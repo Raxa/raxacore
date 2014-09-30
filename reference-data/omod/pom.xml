@@ -86,23 +86,9 @@
             <version>1.5.2</version>
         </dependency>
         <dependency>
-            <groupId>org.bahmni.module</groupId>
-            <artifactId>bahmnicore-api</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>emrapi-api-1.10</artifactId>
             <version>1.4-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bahmni.module</groupId>
-            <artifactId>bahmnicore-omod</artifactId>
-            <version>${project.version}</version>
-            <type>test-jar</type>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
@@ -122,12 +108,6 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>providermanagement-api</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.bahmni.module</groupId>
-            <artifactId>bahmnicore-api</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

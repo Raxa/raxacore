@@ -1,11 +1,9 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
-import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
+import org.bahmni.module.referencedata.builder.ConceptBuilder;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.module.referencedata.labconcepts.mapper.TestMapper;
-import org.bahmni.module.referencedata.labconcepts.model.event.DepartmentEvent;
-import org.bahmni.module.referencedata.labconcepts.model.event.SampleEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +11,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.ConceptClass;
+import org.openmrs.ConceptDatatype;
+import org.openmrs.ConceptNumeric;
+import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.powermock.api.mockito.PowerMockito;
@@ -26,7 +28,9 @@ import java.util.Locale;
 
 import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSet;
 import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;

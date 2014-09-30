@@ -2,7 +2,6 @@
 //TODO : MIHIR : Figure out a way to test the event interceptor.
 package org.bahmni.module.referencedata.web.controller;
 
-import org.bahmni.module.bahmnicore.web.v1_0.controller.BaseWebControllerTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.junit.Before;

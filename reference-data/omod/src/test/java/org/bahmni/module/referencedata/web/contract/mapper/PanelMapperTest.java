@@ -1,6 +1,6 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
-import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
+import org.bahmni.module.referencedata.builder.ConceptBuilder;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.Panel;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;

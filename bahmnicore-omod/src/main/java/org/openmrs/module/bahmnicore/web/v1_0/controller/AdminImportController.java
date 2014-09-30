@@ -7,8 +7,10 @@ import org.bahmni.fileimport.FileImporter;
 import org.bahmni.fileimport.ImportStatus;
 import org.bahmni.fileimport.dao.ImportStatusDao;
 import org.bahmni.fileimport.dao.JDBCConnectionProvider;
+import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
 import org.bahmni.module.admin.csv.models.PatientProgramRow;
+import org.bahmni.module.admin.csv.persister.ConceptPersister;
 import org.bahmni.module.admin.csv.persister.EncounterPersister;
 import org.bahmni.module.admin.csv.persister.PatientProgramPersister;
 import org.hibernate.Session;
@@ -49,12 +51,16 @@ public class AdminImportController extends BaseRestController {
     public static final String PARENT_DIRECTORY_UPLOADED_FILES_CONFIG = "uploaded.files.directory";
     public static final String ENCOUNTER_FILES_DIRECTORY = "encounter/";
     private static final String PROGRAM_FILES_DIRECTORY = "program/";
+    private static final String CONCEPT_FILES_DIRECTORY = "concept/";
 
     @Autowired
     private EncounterPersister encounterPersister;
 
     @Autowired
     private PatientProgramPersister patientProgramPersister;
+
+    @Autowired
+    private ConceptPersister conceptPersister;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -94,6 +100,25 @@ public class AdminImportController extends BaseRestController {
             boolean skipValidation = true;
             return new FileImporter<PatientProgramRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
                     patientProgramPersister, PatientProgramRow.class, new NewMRSConnectionProvider(), username, skipValidation);
+        } catch (Exception e) {
+            logger.error("Could not upload file", e);
+            return false;
+        }
+    }
+
+    @RequestMapping(value = baseUrl + "/concept", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean uploadConcept(@RequestParam(value = "file") MultipartFile file) {
+        try {
+            CSVFile persistedUploadedFile = writeToLocalFile(file, CONCEPT_FILES_DIRECTORY);
+
+            conceptPersister.init(Context.getUserContext());
+            String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
+            String username = Context.getUserContext().getAuthenticatedUser().getUsername();
+
+            boolean skipValidation = true;
+            return new FileImporter<ConceptRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
+                    conceptPersister, ConceptRow.class, new NewMRSConnectionProvider(), username, skipValidation);
         } catch (Exception e) {
             logger.error("Could not upload file", e);
             return false;

@@ -1,6 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.advice;
 
-import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
+import org.bahmni.module.referencedata.builder.ConceptBuilder;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.module.referencedata.labconcepts.model.event.SampleEvent;
 import org.bahmni.module.referencedata.labconcepts.model.event.SampleEventTest;

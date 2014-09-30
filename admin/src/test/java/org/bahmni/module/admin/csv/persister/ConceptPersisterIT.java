@@ -18,7 +18,6 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@Ignore
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
     public static final String SAME_AS = "SAME-AS";

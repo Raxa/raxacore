@@ -163,6 +163,12 @@
             <artifactId>bahmni-emr-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
+            <artifactId>reference-data-api</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

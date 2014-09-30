@@ -5,7 +5,12 @@ import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptMapper;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptReferenceTermService;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptService;
-import org.openmrs.*;
+import org.openmrs.ConceptAnswer;
+import org.openmrs.ConceptClass;
+import org.openmrs.ConceptDatatype;
+import org.openmrs.ConceptMap;
+import org.openmrs.ConceptMapType;
+import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +20,9 @@ import java.util.HashSet;
 
 @Service
 public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptService {
-    private ConceptMapper conceptMapper;
-
     private ConceptService conceptService;
     private ReferenceDataConceptReferenceTermService referenceDataConceptReferenceTermService;
+    private ConceptMapper conceptMapper;
 
     @Autowired
     public ReferenceDataConceptServiceImpl(ConceptService conceptService, ReferenceDataConceptReferenceTermService referenceDataConceptReferenceTermService) {
@@ -28,7 +32,7 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
     }
 
     @Override
-    public org.openmrs.Concept saveConcept(Concept conceptData) throws APIException {
+    public org.openmrs.Concept saveConcept(Concept conceptData) {
         ConceptClass conceptClassName = conceptService.getConceptClassByName(conceptData.getClassName());
         ConceptDatatype conceptDatatype = conceptService.getConceptDatatypeByName(conceptData.getDataType());
         validate(conceptData, conceptClassName, conceptDatatype);

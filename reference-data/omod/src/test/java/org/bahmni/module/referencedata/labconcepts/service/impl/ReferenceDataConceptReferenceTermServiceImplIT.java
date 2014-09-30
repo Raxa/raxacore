@@ -13,13 +13,14 @@ import static org.junit.Assert.assertNotNull;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class ReferenceDataConceptReferenceTermServiceImplIT extends BaseModuleWebContextSensitiveTest {
+
+    @Autowired
+    private ReferenceDataConceptReferenceTermService referenceDataConceptReferenceTermService;
+
     @Before
     public void setUp() throws Exception {
         executeDataSet("referenceTermSetup.xml");
     }
-
-    @Autowired
-    private ReferenceDataConceptReferenceTermService referenceDataConceptReferenceTermService;
 
     @Test
     public void should_get_concept_mapping() throws Exception {
