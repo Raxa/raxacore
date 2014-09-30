@@ -15,44 +15,17 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BahmniObservation {
 
-    public static final String CONCEPT_DETAILS_CONCEPT_CLASS = "Concept Details";
-    public static final String ABNORMAL_CONCEPT_CLASS = "Abnormal";
-    public static final String DURATION_CONCEPT_CLASS = "Duration";
-
+    private Date encounterDateTime;
+    
     private ObsRelationship targetObsRelation;
     private EncounterTransaction.Observation encounterTransactionObservation;
     private List<BahmniObservation> groupMembers = new ArrayList<>();
     public Set<EncounterTransaction.Provider> providers;
     private boolean isAbnormal;
-    private String type;
     private Long duration;
-
-    public BahmniObservation(EncounterTransaction.Observation encounterTransactionObservation) {
-        this(encounterTransactionObservation, false);
-    }
-
-    public BahmniObservation(EncounterTransaction.Observation encounterTransactionObservation, boolean flatten) {
-        this.encounterTransactionObservation = encounterTransactionObservation;
-        if (CONCEPT_DETAILS_CONCEPT_CLASS.equals(encounterTransactionObservation.getConcept().getConceptClass()) && flatten) {
-            for (EncounterTransaction.Observation member : encounterTransactionObservation.getGroupMembers()) {
-                if (member.getVoided()) {
-                    continue;
-                }
-                if (member.getConcept().getConceptClass().equals(ABNORMAL_CONCEPT_CLASS)) {
-                    this.setAbnormal(Boolean.parseBoolean(((EncounterTransaction.Concept) member.getValue()).getName()));
-                } else if (member.getConcept().getConceptClass().equals(DURATION_CONCEPT_CLASS)) {
-                    this.setDuration(new Double(member.getValue().toString()).longValue());
-                } else {
-                    this.setValue(member.getValue());
-                    this.setType(member.getConcept().getDataType());
-                }
-            }
-        } else {
-            for (EncounterTransaction.Observation groupMember : encounterTransactionObservation.getGroupMembers()) {
-                addGroupMember(new BahmniObservation(groupMember, flatten));
-            }
-        }
-    }
+    private String type;
+    
+    private int conceptSortWeight;
 
     public BahmniObservation() {
         encounterTransactionObservation = new EncounterTransaction.Observation();
@@ -218,5 +191,25 @@ public class BahmniObservation {
 
     public void setDuration(Long duration) {
         this.duration = duration;
+    }
+
+    public Date getEncounterDateTime() {
+        return encounterDateTime;
+    }
+
+    public void setEncounterDateTime(Date encounterDateTime) {
+        this.encounterDateTime = encounterDateTime;
+    }
+
+    public Integer getConceptSortWeight() {
+        return conceptSortWeight;
+    }
+
+    public void setConceptSortWeight(Integer conceptSortWeight) {
+        this.conceptSortWeight = conceptSortWeight;
+    }
+
+    public void setEncounterTransactionObservation(EncounterTransaction.Observation encounterTransactionObservation) {
+        this.encounterTransactionObservation = encounterTransactionObservation;
     }
 }

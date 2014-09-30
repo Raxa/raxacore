@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -89,7 +90,8 @@ public class ObsRelationshipMapperTest {
         providers.add(provider);
 
         List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", providers);
-
+        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", new Date());
+        
         verify(obsrelationService).getRelationsWhereSourceObsInEncounter("encounter-uuid");
         verify(observationMapper, times(1)).map(targetObs);
         assertEquals(2, mappedBahmniObservations.size());
@@ -135,6 +137,7 @@ public class ObsRelationshipMapperTest {
         bahmniObservations.add(targetObservation1);
         bahmniObservations.add(targetObservation2);
 
+<<<<<<< HEAD
         HashSet<EncounterTransaction.Provider> providers = new HashSet<>();
         EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
         provider.setName("superman");
@@ -142,6 +145,9 @@ public class ObsRelationshipMapperTest {
         providers.add(provider);
 
         List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", providers);
+=======
+        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", new Date());
+>>>>>>> Sravanthi, Shruthi | #887 | Added conceptSortWeight, encounterDateTime to BahmniObservation. Extracted bahmniObservationMapper.
 
         verify(obsrelationService).getRelationsWhereSourceObsInEncounter("encounter-uuid");
         verify(observationMapper, times(2)).map(any(Obs.class));

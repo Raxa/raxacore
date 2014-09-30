@@ -8,8 +8,6 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Person;
 import org.openmrs.Visit;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.builder.ConceptBuilder;
 import org.openmrs.module.bahmniemrapi.builder.EncounterBuilder;
 import org.openmrs.module.bahmniemrapi.builder.ObsBuilder;
@@ -17,14 +15,12 @@ import org.openmrs.module.bahmniemrapi.builder.PersonBuilder;
 import org.openmrs.module.bahmniemrapi.builder.VisitBuilder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.util.LocaleUtility;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -54,9 +50,9 @@ public class BahmniObservationMapperTest {
         Encounter encounter = new EncounterBuilder().withVisit(visit).withPerson(person).withUUID("euuid").withDatetime(date).build();
 
         Concept parentConcept = new ConceptBuilder().withName("parentConcept").withDataType("N/A").build();
-        Concept conceptDetailsConceptSet = new ConceptBuilder().withName("conceptDetailsConceptSet").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid").withClass(BahmniObservation.CONCEPT_DETAILS_CONCEPT_CLASS).build();
-        Concept abnormalConcept = new ConceptBuilder().withName("abnormalConcept").withCodedDataType().withUUID("cuuid1").withClass(BahmniObservation.ABNORMAL_CONCEPT_CLASS).build();
-        Concept durationConcept = new ConceptBuilder().withName("durationConcept").withDataTypeNumeric().withUUID("cuuid2").withClass(BahmniObservation.DURATION_CONCEPT_CLASS).build();
+        Concept conceptDetailsConceptSet = new ConceptBuilder().withName("conceptDetailsConceptSet").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid").withClass(BahmniObservationMapper.CONCEPT_DETAILS_CONCEPT_CLASS).build();
+        Concept abnormalConcept = new ConceptBuilder().withName("abnormalConcept").withCodedDataType().withUUID("cuuid1").withClass(BahmniObservationMapper.ABNORMAL_CONCEPT_CLASS).build();
+        Concept durationConcept = new ConceptBuilder().withName("durationConcept").withDataTypeNumeric().withUUID("cuuid2").withClass(BahmniObservationMapper.DURATION_CONCEPT_CLASS).build();
         Concept trueConcept = new ConceptBuilder().withName("True").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid11").withClass("").build();
         Concept valueConcept = new ConceptBuilder().withName("valueConcept").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid2").withClass("").build();
 
@@ -66,7 +62,7 @@ public class BahmniObservationMapperTest {
         Obs obs = new ObsBuilder().withConcept(conceptDetailsConceptSet).withGroupMembers(valueObs, abnormalObs, durationObs).build();
         Obs parentObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(parentConcept).withDatetime(date).withGroupMembers(obs).build();
         
-        List<BahmniObservation> parentsObservations = BahmniObservationMapper.map(asList(parentObs));
+        List<BahmniObservation> parentsObservations = BahmniObservationMapper.map(asList(parentObs), Arrays.asList(parentConcept));
         assertEquals(1, parentsObservations.size());
         BahmniObservation parentObservation = parentsObservations.get(0);
         assertEquals("parentConcept", parentObservation.getConcept().getName());

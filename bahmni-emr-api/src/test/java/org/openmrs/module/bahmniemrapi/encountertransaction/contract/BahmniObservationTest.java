@@ -3,11 +3,10 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.contract;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,7 +26,7 @@ public class BahmniObservationTest {
         eTObservation = createETObservation("obs-uuid", "obs-value", concept, obsDate);
         eTObservation.addGroupMember(createETObservation("child-uuid", "child-value", concept, obsDate));
 
-        BahmniObservation observation = new BahmniObservation(eTObservation);
+        BahmniObservation observation = BahmniObservationMapper.map(eTObservation, new Date());
         assertEquals("comment", observation.getComment());
         assertEquals("obs-uuid", observation.getUuid());
         assertEquals("concept-uuid",observation.getConceptUuid());

@@ -9,7 +9,6 @@ import org.openmrs.Patient;
 import org.openmrs.api.EncounterService;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
-import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
@@ -50,7 +49,7 @@ public class BahmniEncounterTransactionImportService {
             BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
             bahmniEncounterTransaction.setPatientUuid(patient.getUuid());
             bahmniEncounterTransaction.setBahmniDiagnoses(allDiagnosis);
-            bahmniEncounterTransaction.setObservations(BahmniObservationMapper.toBahmniObsFromETObs(allObservations));
+            bahmniEncounterTransaction.setObservations(BahmniObservationMapper.toBahmniObsFromETObs(allObservations, encounterRow.getEncounterDate()));
 
             bahmniEncounterTransaction.setEncounterDateTime(encounterRow.getEncounterDate());
             bahmniEncounterTransaction.setEncounterType(encounterType);

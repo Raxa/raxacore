@@ -67,6 +67,7 @@ public class BahmniEncounterTransaction{
 
 
     public void addObservation(BahmniObservation observation) {
+        observation.setEncounterDateTime(getEncounterDateTime());
         observations.add(observation);
     }
 
@@ -141,6 +142,9 @@ public class BahmniEncounterTransaction{
     }
 
     public void setObservations(List<BahmniObservation> observations){
+        for (BahmniObservation observation : observations) {
+            observation.setEncounterDateTime(getEncounterDateTime());
+        }
         this.observations = observations;
     }
 

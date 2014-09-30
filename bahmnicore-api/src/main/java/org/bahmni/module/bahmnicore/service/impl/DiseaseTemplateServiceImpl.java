@@ -35,7 +35,6 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
     @Autowired
     private org.bahmni.module.bahmnicore.service.ConceptService bahmniConceptService;
 
-
     @Override
     @Transactional(readOnly = true)
     public List<DiseaseTemplate> allDiseaseTemplatesFor(String patientUuid) {

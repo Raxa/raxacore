@@ -1,15 +1,13 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
+import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
-import org.bahmni.module.bahmnicore.service.ConceptService;
+import org.openmrs.Concept;
 import org.openmrs.Obs;
+import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
-import org.openmrs.module.emrapi.encounter.ObservationMapper;
-import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +26,9 @@ public class BahmniObservationsController extends BaseRestController {
     @Autowired
     private BahmniObsService personObsService;
 
+    @Autowired
+    private ConceptService conceptService;
+
     public BahmniObservationsController() {
     }
 
@@ -44,7 +45,11 @@ public class BahmniObservationsController extends BaseRestController {
         } else {
             observations = personObsService.observationsFor(patientUUID, rootConceptNames, numberOfVisits);
         }
-        
-        return BahmniObservationMapper.map(observations);
+
+        List<Concept> rootConcepts = new ArrayList<>();
+        for (String rootConceptName : rootConceptNames) {
+            rootConcepts.add(conceptService.getConceptByName(rootConceptName));
+        }
+        return BahmniObservationMapper.map(observations, rootConcepts);
     }
 }
