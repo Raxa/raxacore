@@ -351,24 +351,17 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                                <configuration>
-                                    <forkCount>3</forkCount>
-                                    <reuseForks>false</reuseForks>
-                                    <parallel>classes</parallel>
-                                    <useUnlimitedThreads>true</useUnlimitedThreads>
-                                    <includes>
-                                        <include>**/*IT.java</include>
-                                        <include>**/*Test.java</include>
-                                    </includes>
-                                </configuration>
-                            </execution>
-                        </executions>
+                        <version>2.17</version>
+                        <configuration>
+                            <forkCount>5</forkCount>
+                            <reuseForks>false</reuseForks>
+                            <parallel>classes</parallel>
+                            <useUnlimitedThreads>true</useUnlimitedThreads>
+                            <includes>
+                                <include>**/*IT.java</include>
+                                <include>**/*Test.java</include>
+                            </includes>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
