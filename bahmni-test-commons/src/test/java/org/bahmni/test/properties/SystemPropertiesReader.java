@@ -1,4 +1,4 @@
-package org.bahmni.module.referencedata.properties;
+package org.bahmni.test.properties;
 
 public class SystemPropertiesReader implements PropertiesReader {
     @Override

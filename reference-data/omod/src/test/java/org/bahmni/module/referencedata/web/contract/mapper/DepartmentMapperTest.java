@@ -1,9 +1,9 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
-import org.bahmni.module.referencedata.builder.ConceptBuilder;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.mapper.DepartmentMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.ResourceMapper;
+import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

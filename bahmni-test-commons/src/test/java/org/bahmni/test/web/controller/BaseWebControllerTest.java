@@ -1,8 +1,8 @@
-package org.bahmni.module.referencedata.web.controller;
+package org.bahmni.test.web.controller;
 
+import junit.framework.Assert;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class BaseWebControllerTest extends BaseModuleWebContextSensitiveTest {
 
     /**
      * Creates a request from the given parameters.
-     * <p>
+     * <p/>
      * The requestURI is automatically preceded with "/rest/" + RestConstants.VERSION_1.
      *
      * @param method
@@ -76,8 +76,7 @@ public class BaseWebControllerTest extends BaseModuleWebContextSensitiveTest {
         try {
             String json = new ObjectMapper().writeValueAsString(content);
             request.setContent(json.getBytes("UTF-8"));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return request;
@@ -87,8 +86,7 @@ public class BaseWebControllerTest extends BaseModuleWebContextSensitiveTest {
         MockHttpServletRequest request = request(RequestMethod.POST, requestURI);
         try {
             request.setContent(content.getBytes("UTF-8"));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         return request;

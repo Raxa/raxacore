@@ -4,6 +4,7 @@ package org.bahmni.module.referencedata.web.controller;
 
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
+import org.bahmni.test.web.controller.BaseWebControllerTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;

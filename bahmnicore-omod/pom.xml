@@ -169,6 +169,13 @@
             <version>${project.parent.version}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.bahmni.test</groupId>
+            <artifactId>bahmni-test-commons</artifactId>
+            <version>5.1-SNAPSHOT</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

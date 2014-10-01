@@ -1,4 +1,4 @@
-package org.bahmni.module.referencedata.builder;
+package org.bahmni.test.builder;
 
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class ConceptBuilder {
-    private final Concept concept;
+    private final org.openmrs.Concept concept;
 
     public ConceptBuilder() {
         concept = new Concept();

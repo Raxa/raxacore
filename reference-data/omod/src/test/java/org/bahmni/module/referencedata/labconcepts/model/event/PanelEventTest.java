@@ -1,7 +1,7 @@
 package org.bahmni.module.referencedata.labconcepts.model.event;
 
-import org.bahmni.module.referencedata.builder.ConceptBuilder;
 import org.bahmni.module.referencedata.labconcepts.model.Operation;
+import org.bahmni.test.builder.ConceptBuilder;
 import org.ict4h.atomfeed.server.service.Event;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,7 +40,7 @@ public class PanelEventTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.initMocks    (this);
 
         concept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).withUUID(PANEL_CONCEPT_UUID).build();
 

@@ -1,9 +1,8 @@
 package org.bahmni.module.referencedata.labconcepts.advice;
 
-import org.bahmni.module.referencedata.builder.ConceptBuilder;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
-import org.bahmni.module.referencedata.labconcepts.model.event.SampleEvent;
 import org.bahmni.module.referencedata.labconcepts.model.event.SampleEventTest;
+import org.bahmni.test.builder.ConceptBuilder;
 import org.ict4h.atomfeed.server.service.EventService;
 import org.ict4h.atomfeed.transaction.AFTransactionWork;
 import org.ict4h.atomfeed.transaction.AFTransactionWorkWithoutResult;

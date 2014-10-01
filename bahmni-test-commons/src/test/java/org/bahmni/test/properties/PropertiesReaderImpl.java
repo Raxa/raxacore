@@ -1,4 +1,4 @@
-package org.bahmni.module.referencedata.properties;
+package org.bahmni.test.properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
