@@ -11,7 +11,7 @@
     <name>BahmniEMR Core API</name>
 
     <properties>
-        <emrapi-omod.version>1.4-SNAPSHOT</emrapi-omod.version>
+        <emrapi-omod.version>1.5-SNAPSHOT</emrapi-omod.version>
     </properties>
 
     <dependencies>

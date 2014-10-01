@@ -15,7 +15,7 @@
         <MODULE_NAME>${project.name}</MODULE_NAME>
         <MODULE_VERSION>${project.version}</MODULE_VERSION>
         <MODULE_PACKAGE>${project.groupId}.${MODULE_ID}</MODULE_PACKAGE>
-        <emrapi-omod.version>1.4-SNAPSHOT</emrapi-omod.version>
+        <emrapi-omod.version>1.5-SNAPSHOT</emrapi-omod.version>
     </properties>
 
     <build>
