@@ -175,10 +175,12 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         assertEquals(1, savedVisit.getEncounters().size());
         List<Order> orders = getOrders(savedVisit);
         assertEquals(2, orders.size());
-        Order voidedOrder = getFirstVoidedOrder(orders);
-        Order nonVoidedOrder = getFirstNonVoidedOrder(orders);
+        DrugOrder voidedOrder = (DrugOrder)getFirstVoidedOrder(orders);
+        DrugOrder nonVoidedOrder = (DrugOrder)getFirstNonVoidedOrder(orders);
         assertEquals(createDate("01-01-2014"), nonVoidedOrder.getDateActivated());
         assertEquals(dateOnly.format(createDate("31-01-2014")), dateOnly.format(nonVoidedOrder.getAutoExpireDate()));
+        assertEquals((Integer)30, nonVoidedOrder.getDuration());
+        assertEquals("Days", nonVoidedOrder.getDurationUnits().getName().getName());
         assertNotNull(voidedOrder);
     }
 

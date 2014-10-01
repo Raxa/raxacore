@@ -155,10 +155,9 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
                     Encounter encounter = activeDrugOrder.getEncounter();
                     newDrugOrder.setEncounter(encounter);
                     encounter.addOrder(newDrugOrder);
-                    int numberOfDaysBetweenDrugs = Days.daysBetween(new DateTime(activeDrugOrder.getDateActivated()), new DateTime(newDrugOrder.getDateActivated())).getDays();
-                    int activeDrugOrderNumberOfDays = Days.daysBetween(new DateTime(activeDrugOrder.getDateActivated()), new DateTime(activeDrugOrder.getAutoExpireDate())).getDays();
-                    newDrugOrder.setAutoExpireDate(DateUtils.addDays(newDrugOrder.getAutoExpireDate(), (activeDrugOrderNumberOfDays - numberOfDaysBetweenDrugs)));
+                    int totalNumberOfDays = getNumberOfDays(activeDrugOrder) + getNumberOfDays(newDrugOrder);
                     newDrugOrder.setDateActivated(activeDrugOrder.getDateActivated());
+                    setDuration(newDrugOrder, totalNumberOfDays);
                     newDrugOrder.setQuantity(activeDrugOrder.getQuantity() + newDrugOrder.getQuantity());
                     activeDrugOrder.setVoided(true);
                     activeDrugOrder.setVoidReason("To create a new drug order of same concept");
@@ -168,6 +167,10 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             }
         }
         return newDrugOrders;
+    }
+
+    private int getNumberOfDays(DrugOrder activeDrugOrder) {
+        return Days.daysBetween(new DateTime(activeDrugOrder.getDateActivated()), new DateTime(activeDrugOrder.getAutoExpireDate())).getDays();
     }
 
     private Encounter createNewSystemConsultationEncounter(Date orderDate, Patient patient) {
@@ -215,7 +218,6 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             drugOrder.setDrug(drug);
             drugOrder.setConcept(drug.getConcept());
             drugOrder.setDateActivated(orderDate);
-            drugOrder.setAutoExpireDate(DateUtils.addDays(orderDate, bahmniDrugOrder.getNumberOfDays()));
             drugOrder.setPatient(patient);
             drugOrder.setAsNeeded(false);
             drugOrder.setOrderType(getDrugOrderType());
@@ -226,11 +228,16 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             drugOrder.setQuantity(bahmniDrugOrder.getQuantity());
             drugOrder.setQuantityUnits(drug.getDosageForm());
             drugOrder.setNumRefills(0);
-            drugOrder.setDuration(bahmniDrugOrder.getNumberOfDays());
-            drugOrder.setDurationUnits(conceptService.getConceptByName("Days"));
+            setDuration(drugOrder, bahmniDrugOrder.getNumberOfDays());
             orders.add(drugOrder);
         }
         return orders;
+    }
+
+    private void setDuration(DrugOrder drugOrder, int numberOfDays) {
+        drugOrder.setAutoExpireDate(DateUtils.addDays(drugOrder.getDateActivated(), numberOfDays));
+        drugOrder.setDuration(numberOfDays);
+        drugOrder.setDurationUnits(conceptService.getConceptByMapping(Duration.SNOMED_CT_DAYS_CODE, Duration.SNOMED_CT_CONCEPT_SOURCE_HL7_CODE));
     }
 
     private String createInstructions(BahmniFeedDrugOrder bahmniDrugOrder, DrugOrder drugOrder) {
