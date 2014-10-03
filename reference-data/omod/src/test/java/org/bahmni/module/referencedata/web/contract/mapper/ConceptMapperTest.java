@@ -2,6 +2,7 @@ package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptMapper;
+import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -131,5 +132,35 @@ public class ConceptMapperTest {
         assertEquals(concept.getClassName(), mappedConcept.getConceptClass().getName());
         assertEquals(concept.getDataType(), mappedConcept.getDatatype().getName());
         assertEquals(concept.getAnswers().iterator().next(), mappedConcept.getAnswers().iterator().next().getAnswerConcept().getName(Context.getLocale()).getName());
+    }
+
+    @Test
+    public void shouldAllowToMapExistingConcepts() throws Exception {
+        Concept concept = new Concept();
+        concept.setUniqueName("uniqueName");
+        concept.setDisplayName("displayName");
+        concept.setDescription("description");
+        concept.setClassName("Finding");
+        concept.setDataType("N/A");
+        ArrayList<String> synonyms = new ArrayList<>();
+        synonyms.add("1");
+        synonyms.add("2");
+        concept.setSynonyms(synonyms);
+        org.openmrs.Concept existingConcept = new ConceptBuilder().withName("uniqueName").withShortName("displayName").build();
+        ConceptClass conceptClassName = new ConceptClass();
+        conceptClassName.setName("Finding");
+        ConceptDatatype conceptDatatype = new ConceptDatatype();
+        conceptDatatype.setName("N/A");
+        org.openmrs.Concept mappedConcept = conceptMapper.map(concept, conceptClassName, conceptDatatype, new HashSet<ConceptAnswer>(), existingConcept);
+
+        assertEquals(concept.getUniqueName(), mappedConcept.getFullySpecifiedName(Context.getLocale()).getName());
+        assertEquals(concept.getDisplayName(), mappedConcept.getShortNames().iterator().next().getName());
+        assertEquals(concept.getDescription(), mappedConcept.getDescription().getDescription());
+        assertEquals(concept.getClassName(), mappedConcept.getConceptClass().getName());
+        assertEquals(concept.getDataType(), mappedConcept.getDatatype().getName());
+        assertEquals(2, mappedConcept.getSynonyms().size());
+        for (ConceptName conceptName : mappedConcept.getSynonyms()) {
+            assertTrue(conceptName.getName().equals("1") || conceptName.getName().equals("2"));
+        }
     }
 }

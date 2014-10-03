@@ -116,7 +116,7 @@ public class AdminImportController extends BaseRestController {
             String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
             String username = Context.getUserContext().getAuthenticatedUser().getUsername();
 
-            boolean skipValidation = true;
+            boolean skipValidation = false;
             return new FileImporter<ConceptRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
                     conceptPersister, ConceptRow.class, new NewMRSConnectionProvider(), username, skipValidation);
         } catch (Exception e) {

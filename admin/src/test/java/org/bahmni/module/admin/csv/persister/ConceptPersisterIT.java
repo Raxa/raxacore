@@ -218,7 +218,6 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         Context.authenticate("admin", "test");
         Concept persistedConcept = conceptService.getConceptByName(conceptRow.name);
         assertNotNull(persistedConcept);
-        assertEquals(conceptRow.name, persistedConcept.getName(Context.getLocale()).getName());
         assertEquals(conceptRow.description, persistedConcept.getDescription(Context.getLocale()).getDescription());
         assertEquals(conceptRow.conceptClass, persistedConcept.getConceptClass().getName());
         assertEquals(conceptRow.shortName, persistedConcept.getShortestName(Context.getLocale(), false).getName());
@@ -252,7 +251,6 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         Context.authenticate("admin", "test");
         Concept persistedConcept = conceptService.getConceptByName(conceptRow.name);
         assertNotNull(persistedConcept);
-        assertEquals(conceptRow.name, persistedConcept.getName(Context.getLocale()).getName());
         assertEquals(conceptRow.description, persistedConcept.getDescription(Context.getLocale()).getDescription());
         assertEquals(conceptRow.conceptClass, persistedConcept.getConceptClass().getName());
         assertEquals(conceptRow.shortName, persistedConcept.getShortestName(Context.getLocale(), false).getName());
