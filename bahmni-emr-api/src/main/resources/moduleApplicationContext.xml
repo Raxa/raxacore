@@ -10,10 +10,6 @@
 
     <context:component-scan base-package="org.openmrs.module.bahmniemrapi"/>
 
-    <bean id="bahmniEncounterSessionmatcher" class="org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterSessionMatcher">
-        <property name="administrationService" ref="adminService"/>
-    </bean>
-
     <bean parent="serviceContext">
         <property name="moduleService">
             <list merge="true">

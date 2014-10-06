@@ -18,6 +18,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.api.APIException;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmnimapping.services.BahmniLocationService;
+import org.openmrs.module.emrapi.encounter.ActiveEncounterParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,12 +38,9 @@ public class LocationBasedEncounterTypeIdentifier {
         if (StringUtils.isNotBlank(encounterTransaction.getEncounterTypeUuid()) || StringUtils.isNotBlank(encounterTransaction.getEncounterType())){
             return;
         }
-        List<EncounterType> encounterTypes = bahmniLocationService.getEncounterTypes(encounterTransaction.getLocationUuid());
-        if (encounterTypes.size() == 1) {
-            encounterTransaction.setEncounterTypeUuid(encounterTypes.get(0).getUuid());
-        }
-        else if (encounterTypes.size() > 1){
-            throw new APIException("The location is mapped to multiple encounter types. Please specify a encounter type for encounter");
+        EncounterType encounterType = bahmniLocationService.getEncounterType(encounterTransaction.getLocationUuid());
+        if (encounterType != null) {
+            encounterTransaction.setEncounterTypeUuid(encounterType.getUuid());
         }
     }
 }

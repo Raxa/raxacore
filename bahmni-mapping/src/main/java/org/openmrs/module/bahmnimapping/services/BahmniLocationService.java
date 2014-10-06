@@ -19,4 +19,5 @@ import java.util.List;
 
 public interface BahmniLocationService {
     List<EncounterType> getEncounterTypes(String locationUuid);
+    EncounterType getEncounterType(String locationUuid);
 }

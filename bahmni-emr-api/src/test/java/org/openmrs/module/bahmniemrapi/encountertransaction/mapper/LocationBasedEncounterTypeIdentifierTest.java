@@ -43,7 +43,7 @@ public class LocationBasedEncounterTypeIdentifierTest {
         encounterTransaction.setLocationUuid(locationUuid);
         EncounterType encounterTypeMappedToLocation = new EncounterType();
         encounterTypeMappedToLocation.setUuid(UUID.randomUUID().toString());
-        when(bahmniLocationService.getEncounterTypes(locationUuid)).thenReturn(Arrays.asList(encounterTypeMappedToLocation));
+        when(bahmniLocationService.getEncounterType(locationUuid)).thenReturn(encounterTypeMappedToLocation);
 
         identifier.populateEncounterType(encounterTransaction);
 
@@ -98,24 +98,10 @@ public class LocationBasedEncounterTypeIdentifierTest {
         encounterTransaction.setEncounterTypeUuid(null);
         encounterTransaction.setEncounterType(null);
         encounterTransaction.setLocationUuid(locationUuid);
-        when(bahmniLocationService.getEncounterTypes(locationUuid)).thenReturn(new ArrayList<EncounterType>());
+        when(bahmniLocationService.getEncounterType(locationUuid)).thenReturn(null);
 
         identifier.populateEncounterType(encounterTransaction);
 
         assertEquals(null, encounterTransaction.getEncounterTypeUuid());
-    }
-
-    @Test
-    public void shouldRaiseErrorWhenLocationIsMappedToMultipleEncounterTypes() throws Exception {
-        BahmniEncounterTransaction encounterTransaction = new BahmniEncounterTransaction();
-        String locationUuid = UUID.randomUUID().toString();
-        encounterTransaction.setEncounterTypeUuid(null);
-        encounterTransaction.setEncounterType(null);
-        encounterTransaction.setLocationUuid(locationUuid);
-        when(bahmniLocationService.getEncounterTypes(locationUuid)).thenReturn(Arrays.asList(new EncounterType(), new EncounterType()));
-
-        expectedException.expect(APIException.class);
-        expectedException.expectMessage("The location is mapped to multiple encounter types. Please specify a encounter type for encounter");
-        identifier.populateEncounterType(encounterTransaction);
     }
 }

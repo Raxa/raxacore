@@ -2,6 +2,7 @@ package org.openmrs.module.bahmniemrapi.builder;
 
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
+import org.openmrs.EncounterRole;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Patient;
@@ -21,31 +22,6 @@ public class EncounterBuilder {
 
     public EncounterBuilder() {
         encounter = new Encounter();
-    }
-
-    private Set<EncounterProvider> createEncounterProviders() {
-        EncounterProvider encounterprovider = new EncounterProvider();
-        Provider provider = new Provider(1234);
-
-        Person person = new Person(2345);
-        Set<PersonName> personNames = new HashSet<PersonName>();
-        PersonName name = new PersonName("Yogesh", "", "Jain");
-        name.setPreferred(true);
-        personNames.add(name);
-        person.setNames(personNames);
-
-        provider.setPerson(person);
-        encounterprovider.setProvider(provider);
-        Set<EncounterProvider> encounterProviders = new HashSet<EncounterProvider>();
-        encounterProviders.add(encounterprovider);
-        return encounterProviders;
-    }
-
-    public Encounter build() {
-        return encounter;
-    }
-
-    public EncounterBuilder withDefaults() {
         Visit visit = new Visit();
         VisitType visitType = new VisitType();
         visitType.setUuid(UUID.randomUUID().toString());
@@ -54,7 +30,7 @@ public class EncounterBuilder {
         encounter.setVisit(visit);
         encounter.setUuid(UUID.randomUUID().toString());
 
-        Patient patient = new Patient();
+        Patient patient = new Patient(123456);
         patient.setUuid(UUID.randomUUID().toString());
         encounter.setPatient(patient);
 
@@ -65,17 +41,19 @@ public class EncounterBuilder {
         Location location = new Location();
         location.setUuid(UUID.randomUUID().toString());
         encounter.setLocation(location);
-
-        encounter.setEncounterProviders(createEncounterProviders());
-        return this;
     }
+
+    public Encounter build() {
+        return encounter;
+    }
+
 
     public EncounterBuilder withVisit(Visit visit) {
         encounter.setVisit(visit);
         return this;
     }
 
-    public EncounterBuilder withPerson(Person person) {
+    public EncounterBuilder withPatient(Person person) {
         encounter.setPatient(new Patient(person));
         return this;
     }
@@ -85,8 +63,34 @@ public class EncounterBuilder {
         return this;
     }
 
-    public EncounterBuilder withDatetime(Date dateTime) {
-        encounter.setEncounterDatetime(dateTime);
+    public EncounterBuilder withDate(Date date) {
+        encounter.setEncounterDatetime(date);
+        return this;
+    }
+
+    public EncounterBuilder withDateCreated(Date date) {
+        encounter.setDateCreated(date);
+        return this;
+    }
+
+    public EncounterBuilder withLocation(Location location) {
+        encounter.setLocation(location);
+        return this;
+    }
+
+    public EncounterBuilder withProvider(Person person) {
+        Provider provider = new Provider();
+        provider.setPerson(person);
+        HashSet<EncounterProvider> encounterProviders = new HashSet<>();
+        EncounterProvider encounterProvider = new EncounterProvider();
+        encounterProvider.setProvider(provider);
+        encounterProviders.add(encounterProvider);
+        encounter.setEncounterProviders(encounterProviders);
+        return this;
+    }
+
+    public EncounterBuilder withEncounterType(EncounterType encounterType) {
+        encounter.setEncounterType(encounterType);
         return this;
     }
 }

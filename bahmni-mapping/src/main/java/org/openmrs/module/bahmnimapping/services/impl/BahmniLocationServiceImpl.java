@@ -15,6 +15,7 @@ package org.openmrs.module.bahmnimapping.services.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.EncounterType;
+import org.openmrs.api.APIException;
 import org.openmrs.module.bahmnimapping.dao.LocationEncounterTypeMapDao;
 import org.openmrs.module.bahmnimapping.services.BahmniLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,28 @@ import java.util.List;
 
 @Service
 public class BahmniLocationServiceImpl implements BahmniLocationService {
-    @Autowired
     private LocationEncounterTypeMapDao locationEncounterTypeMapDao;
+
+    @Autowired
+    public BahmniLocationServiceImpl(LocationEncounterTypeMapDao locationEncounterTypeMapDao) {
+        this.locationEncounterTypeMapDao = locationEncounterTypeMapDao;
+    }
 
     @Override
     public List<EncounterType> getEncounterTypes(String locationUuid) {
         if(StringUtils.isBlank(locationUuid)) return new ArrayList<>();
         return locationEncounterTypeMapDao.getEncounterTypes(locationUuid);
+    }
+
+    @Override
+    public EncounterType getEncounterType(String locationUuid) {
+        List<EncounterType> encounterTypes = getEncounterTypes(locationUuid);
+        if (encounterTypes.size() == 1) {
+            return encounterTypes.get(0);
+        }
+        if (encounterTypes.size() > 1){
+            throw new APIException("The location is mapped to multiple encounter types. Please specify a encounter type for encounter");
+        }
+        return null;
     }
 }
