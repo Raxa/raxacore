@@ -11,6 +11,8 @@
     <!--<bean id="orderDao" class="org.bahmni.module.bahmnicore.dao.impl.OrderDaoImpl" />-->
     <!--<bean id="propertiesReader" class="org.bahmni.module.bahmnicore.properties.SystemPropertiesReader" scope="singleton"/>-->
 
+    <bean id="propertiesReader" class="org.bahmni.test.properties.SystemPropertiesReader" scope="singleton"/>
+
     <bean id="sessionFactory" class="org.openmrs.api.db.hibernate.HibernateSessionFactoryBean">
         <property name="configLocations">
             <list>
