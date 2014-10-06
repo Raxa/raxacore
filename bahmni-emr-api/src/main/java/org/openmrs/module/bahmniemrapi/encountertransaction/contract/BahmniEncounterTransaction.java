@@ -24,6 +24,7 @@ public class BahmniEncounterTransaction{
     private List<AccessionNote> accessionNotes;
     private String encounterType;
     private String visitType;
+    private String patientId;
 
     public BahmniEncounterTransaction() {
         this(new EncounterTransaction());
@@ -211,6 +212,14 @@ public class BahmniEncounterTransaction{
     public EncounterTransaction toEncounterTransaction(){
         encounterTransaction.setObservations(BahmniObservation.toETObsFromBahmniObs(this.observations));
         return encounterTransaction;
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 }
 

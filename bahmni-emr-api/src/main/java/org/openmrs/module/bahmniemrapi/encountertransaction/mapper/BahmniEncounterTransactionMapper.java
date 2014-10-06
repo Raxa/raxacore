@@ -1,5 +1,10 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 
+import org.openmrs.EncounterType;
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.PatientService;
 import org.openmrs.module.bahmniemrapi.accessionnote.mapper.AccessionNotesMapper;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
@@ -16,13 +21,17 @@ public class BahmniEncounterTransactionMapper {
     private AccessionNotesMapper validationNotesMapper;
     private BahmniDiagnosisMapper bahmniDiagnosisMapper;
     private ObsRelationshipMapper obsRelationshipMapper;
+    private PatientService patientService;
+    private EncounterService encounterService;
 
     @Autowired
-    public BahmniEncounterTransactionMapper(AccessionNotesMapper validationNotesMapper, EncounterTransactionObsMapper encounterTransactionObsMapper, BahmniDiagnosisMapper bahmniDiagnosisMapper, ObsRelationshipMapper obsRelationshipMapper) {
+    public BahmniEncounterTransactionMapper(AccessionNotesMapper validationNotesMapper, EncounterTransactionObsMapper encounterTransactionObsMapper, BahmniDiagnosisMapper bahmniDiagnosisMapper, ObsRelationshipMapper obsRelationshipMapper, PatientService patientService, EncounterService encounterService) {
         this.encounterTransactionObsMapper = encounterTransactionObsMapper;
         this.validationNotesMapper = validationNotesMapper;
         this.bahmniDiagnosisMapper = bahmniDiagnosisMapper;
         this.obsRelationshipMapper = obsRelationshipMapper;
+        this.patientService = patientService;
+        this.encounterService = encounterService;
     }
 
     public BahmniEncounterTransaction map(EncounterTransaction encounterTransaction) {
@@ -33,6 +42,23 @@ public class BahmniEncounterTransactionMapper {
         List<EncounterTransaction.Observation> etObservations = encounterTransactionObsMapper.map(encounterTransaction);
         List<BahmniObservation> bahmniObservations = BahmniObservation.toBahmniObsFromETObs(etObservations);
         bahmniEncounterTransaction.setObservations(obsRelationshipMapper.map(bahmniObservations,encounterTransaction.getEncounterUuid(), encounterTransaction.getProviders()));
+        addPatientIdentifier(bahmniEncounterTransaction, encounterTransaction);
+        addEncounterType(encounterTransaction, bahmniEncounterTransaction);
         return bahmniEncounterTransaction;
+    }
+
+    private void addEncounterType(EncounterTransaction encounterTransaction, BahmniEncounterTransaction bahmniEncounterTransaction) {
+        EncounterType encounterType = encounterService.getEncounterTypeByUuid(encounterTransaction.getEncounterTypeUuid());
+        if(encounterType != null) {
+            bahmniEncounterTransaction.setEncounterType(encounterType.getName());
+        }
+    }
+
+    private void addPatientIdentifier(BahmniEncounterTransaction bahmniEncounterTransaction, EncounterTransaction encounterTransaction) {
+        Patient patient = patientService.getPatientByUuid(encounterTransaction.getPatientUuid());
+        PatientIdentifier patientIdentifier = patient.getPatientIdentifier();
+        if(patientIdentifier != null) {
+            bahmniEncounterTransaction.setPatientId(patientIdentifier.getIdentifier());
+        }
     }
 }
