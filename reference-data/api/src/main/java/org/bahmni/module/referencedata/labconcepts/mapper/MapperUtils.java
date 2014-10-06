@@ -19,12 +19,18 @@ public class MapperUtils {
         return null;
     }
 
-    public static Set<ConceptDescription> constructDescription(String description) {
+    public static Set<ConceptDescription> constructDescriptions(String description) {
         if (StringUtils.isBlank(description)) return null;
-        ConceptDescription conceptDescription = new ConceptDescription(description, Locale.ENGLISH);
+        ConceptDescription conceptDescription = new ConceptDescription(description, Context.getLocale());
         Set<ConceptDescription> descriptions = new HashSet<>();
         descriptions.add(conceptDescription);
         return descriptions;
+    }
+
+    public static ConceptDescription constructDescription(String description) {
+        if (StringUtils.isBlank(description)) return null;
+        ConceptDescription conceptDescription = new ConceptDescription(description, Context.getLocale());
+        return conceptDescription;
     }
 
     public static Department getDepartment(Concept concept) {

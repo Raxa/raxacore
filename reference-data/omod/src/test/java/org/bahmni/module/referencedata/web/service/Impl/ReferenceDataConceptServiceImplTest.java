@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.web.service.Impl;
 
+import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptMapper;

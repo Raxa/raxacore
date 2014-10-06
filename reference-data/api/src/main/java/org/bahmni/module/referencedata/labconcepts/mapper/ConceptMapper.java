@@ -10,6 +10,7 @@ import org.openmrs.api.ConceptNameType;
 
 import java.util.Set;
 
+import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.constructDescription;
 import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.getConceptName;
 
 public class ConceptMapper {
@@ -32,7 +33,11 @@ public class ConceptMapper {
         for (ConceptAnswer answer : answers) {
             concept.addAnswer(answer);
         }
-        concept.setDescriptions(MapperUtils.constructDescription(conceptData.getDescription()));
+        if (conceptData.getDescription() != null && concept.getDescription() != null) {
+            concept.getDescription().setDescription(conceptData.getDescription());
+        } else if (conceptData.getDescription() != null) {
+            concept.addDescription(constructDescription(conceptData.getDescription()));
+        }
         concept.setConceptClass(conceptClass);
         concept.setDatatype(conceptDatatype);
         return concept;

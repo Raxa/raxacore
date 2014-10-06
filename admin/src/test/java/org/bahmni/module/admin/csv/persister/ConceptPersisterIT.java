@@ -74,7 +74,7 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         assertNotNull(persistedConcept);
         assertEquals(conceptRow.name, persistedConcept.getName(Context.getLocale()).getName());
         assertEquals(conceptRow.conceptClass, persistedConcept.getConceptClass().getName());
-        assertNull(persistedConcept.getDescriptions());
+        assertNull(persistedConcept.getDescription());
         assertEquals(0, persistedConcept.getSynonyms().size());
         Context.flushSession();
         Context.closeSession();
