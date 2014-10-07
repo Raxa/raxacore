@@ -9,6 +9,8 @@
     </parent>
 
     <artifactId>admin</artifactId>
+    <name>Admin</name>
+
 
     <dependencies>
         <dependency>
@@ -174,20 +176,6 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <includes>
-                        <include>**/*IT.java</include>
-                    </includes>
-                    <classpathDependencyExcludes>
-                        <classpathDependencyExcludes>org.openmrs.module:emrapi-api-1.9</classpathDependencyExcludes>
-                    </classpathDependencyExcludes>
-                </configuration>
-            </plugin>
-        </plugins>
     </build>
 
 </project>

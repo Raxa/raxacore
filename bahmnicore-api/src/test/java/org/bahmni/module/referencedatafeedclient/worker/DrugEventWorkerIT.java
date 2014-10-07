@@ -20,6 +20,7 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.*;
 
+@Ignore
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"})
 public class DrugEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Rule

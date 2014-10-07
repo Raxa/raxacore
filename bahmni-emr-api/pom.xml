@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>bahmni-emr-api</artifactId>
+    <name>Bahmni EMR Api</name>
     <packaging>jar</packaging>
 
     <properties>

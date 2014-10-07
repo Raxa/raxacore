@@ -1,6 +1,7 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+@Ignore
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class ObsRelationshipControllerIT extends BaseModuleWebContextSensitiveTest {
 
@@ -21,7 +23,7 @@ public class ObsRelationshipControllerIT extends BaseModuleWebContextSensitiveTe
         executeDataSet("obsRelationshipDataset.xml");
     }
 
-    @Test
+    @Test @Ignore
     public void shouldReturnAllSourceObsByGivenTargetObsUuid(){
         List<BahmniObservation> bahmniObservations = obsRelationshipController.find("39fb7f47-e80a-4056-9285-bd798be13c63");
 

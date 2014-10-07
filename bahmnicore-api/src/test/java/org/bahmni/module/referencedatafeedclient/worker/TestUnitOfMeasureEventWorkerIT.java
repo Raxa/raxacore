@@ -14,7 +14,7 @@ import org.openmrs.web.test.*;
 import org.springframework.beans.factory.annotation.*;
 
 import static org.mockito.Mockito.*;
-
+@Ignore
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class TestUnitOfMeasureEventWorkerIT extends BaseModuleWebContextSensitiveTest {
     @Mock

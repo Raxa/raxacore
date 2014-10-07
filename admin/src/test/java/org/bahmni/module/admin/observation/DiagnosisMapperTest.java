@@ -2,6 +2,7 @@ package org.bahmni.module.admin.observation;
 
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.EncounterRow;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
@@ -22,7 +23,7 @@ public class DiagnosisMapperTest {
         DiagnosisMapper diagnosisMapper = new DiagnosisMapper(mockConceptService);
 
         EncounterRow encounterRow = new EncounterRow();
-        encounterRow.encounterDateTime = "1-1-2012";
+        encounterRow.encounterDateTime = "2012-01-01";
         encounterRow.diagnosesRows = diagnosesKeyValues;
         List<BahmniDiagnosisRequest> bahmniDiagnosis = diagnosisMapper.getBahmniDiagnosis(encounterRow);
 

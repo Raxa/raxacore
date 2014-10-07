@@ -15,6 +15,7 @@ import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
 
+@Ignore
 public class PatientMapperIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired

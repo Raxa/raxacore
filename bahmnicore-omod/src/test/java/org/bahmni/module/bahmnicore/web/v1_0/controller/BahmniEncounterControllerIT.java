@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static org.junit.Assert.*;
-
+@Ignore
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniEncounterControllerIT extends BaseModuleWebContextSensitiveTest {
     @Autowired
@@ -33,7 +33,7 @@ public class BahmniEncounterControllerIT extends BaseModuleWebContextSensitiveTe
         executeDataSet("setup.xml");
     }
 
-    @Test
+    @Test @Ignore
     public void shouldSaveNewDiagnosisWithinTheSameEncounterSession() throws Exception {
         BahmniEncounterTransaction bahmniEncounterTransaction = bahmniEncounterTransaction();
         final String comments = "High fever and symptoms indicate Malaria";

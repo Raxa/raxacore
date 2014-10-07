@@ -68,6 +68,11 @@
             </dependency>
             <dependency>
                 <groupId>org.bahmni.module</groupId>
+                <artifactId>admin</artifactId>
+                <version>${project.parent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bahmni.module</groupId>
                 <artifactId>bahmnicore-omod</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -275,11 +280,6 @@
             </dependency>
             <dependency>
                 <groupId>org.bahmni.module</groupId>
-                <artifactId>admin</artifactId>
-                <version>${project.parent.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.bahmni.module</groupId>
                 <artifactId>file-uploader</artifactId>
                 <version>${project.parent.version}</version>
             </dependency>
@@ -351,16 +351,24 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-failsafe-plugin</artifactId>
-                        <configuration>
-                            <forkCount>5</forkCount>
-                            <reuseForks>false</reuseForks>
-                            <parallel>classes</parallel>
-                            <useUnlimitedThreads>true</useUnlimitedThreads>
-                            <includes>
-                                <include>**/*IT.java</include>
-                                <include>**/*Test.java</include>
-                            </includes>
-                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <forkCount>5</forkCount>
+                                    <reuseForks>false</reuseForks>
+                                    <parallel>classes</parallel>
+                                    <useUnlimitedThreads>true</useUnlimitedThreads>
+                                    <includes>
+                                        <include>**/*IT.java</include>
+                                        <include>**/*Test.java</include>
+                                    </includes>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
