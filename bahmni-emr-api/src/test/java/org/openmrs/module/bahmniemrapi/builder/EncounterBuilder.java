@@ -2,19 +2,16 @@ package org.openmrs.module.bahmniemrapi.builder;
 
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
-import org.openmrs.EncounterRole;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Person;
-import org.openmrs.PersonName;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 public class EncounterBuilder {
@@ -63,11 +60,6 @@ public class EncounterBuilder {
         return this;
     }
 
-    public EncounterBuilder withDate(Date date) {
-        encounter.setEncounterDatetime(date);
-        return this;
-    }
-
     public EncounterBuilder withDateCreated(Date date) {
         encounter.setDateCreated(date);
         return this;
@@ -91,6 +83,11 @@ public class EncounterBuilder {
 
     public EncounterBuilder withEncounterType(EncounterType encounterType) {
         encounter.setEncounterType(encounterType);
+        return this;
+    }
+
+    public EncounterBuilder withDatetime(Date date) {
+        encounter.setEncounterDatetime(date);
         return this;
     }
 }

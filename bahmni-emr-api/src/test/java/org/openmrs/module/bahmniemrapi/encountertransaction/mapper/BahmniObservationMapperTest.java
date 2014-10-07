@@ -47,7 +47,7 @@ public class BahmniObservationMapperTest {
         Date date = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse("January 2, 2010");
         Person person = new PersonBuilder().withUUID("puuid").build();
         Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(date).build();
-        Encounter encounter = new EncounterBuilder().withVisit(visit).withPerson(person).withUUID("euuid").withDatetime(date).build();
+        Encounter encounter = new EncounterBuilder().withVisit(visit).withPatient(person).withUUID("euuid").withDatetime(date).build();
 
         Concept parentConcept = new ConceptBuilder().withName("parentConcept").withDataType("N/A").build();
         Concept conceptDetailsConceptSet = new ConceptBuilder().withName("conceptDetailsConceptSet").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid").withClass(BahmniObservationMapper.CONCEPT_DETAILS_CONCEPT_CLASS).build();

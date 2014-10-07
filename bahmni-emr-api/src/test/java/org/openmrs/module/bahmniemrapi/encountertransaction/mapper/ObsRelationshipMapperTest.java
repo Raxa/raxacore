@@ -7,21 +7,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.openmrs.*;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterProvider;
 import org.openmrs.Obs;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.module.emrapi.encounter.*;
+import org.openmrs.module.emrapi.encounter.EncounterProviderMapper;
+import org.openmrs.module.emrapi.encounter.ObservationMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction.Observation;
-
-import java.util.*;
 import org.openmrs.util.LocaleUtility;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +28,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -54,7 +54,7 @@ public class ObsRelationshipMapperTest {
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(LocaleUtility.class);
-        PowerMockito.when(LocaleUtility.getLocalesInOrder()).thenReturn(new HashSet<Locale>(Arrays.asList(Locale.getDefault())));
+        PowerMockito.when(LocaleUtility.getLocalesInOrder()).thenReturn(new HashSet<>(Arrays.asList(Locale.getDefault())));
 
         initMocks(this);
         obsRelationshipMapper = new ObsRelationshipMapper(obsrelationService, observationMapper, encounterProviderMapper);
@@ -89,8 +89,7 @@ public class ObsRelationshipMapperTest {
         provider.setName("superUuid");
         providers.add(provider);
 
-        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", providers);
-        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", new Date());
+        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", providers, new Date());
         
         verify(obsrelationService).getRelationsWhereSourceObsInEncounter("encounter-uuid");
         verify(observationMapper, times(1)).map(targetObs);
@@ -137,17 +136,13 @@ public class ObsRelationshipMapperTest {
         bahmniObservations.add(targetObservation1);
         bahmniObservations.add(targetObservation2);
 
-<<<<<<< HEAD
         HashSet<EncounterTransaction.Provider> providers = new HashSet<>();
         EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
         provider.setName("superman");
         provider.setName("superUuid");
         providers.add(provider);
 
-        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", providers);
-=======
-        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", new Date());
->>>>>>> Sravanthi, Shruthi | #887 | Added conceptSortWeight, encounterDateTime to BahmniObservation. Extracted bahmniObservationMapper.
+        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", providers, new Date());
 
         verify(obsrelationService).getRelationsWhereSourceObsInEncounter("encounter-uuid");
         verify(observationMapper, times(2)).map(any(Obs.class));
@@ -209,9 +204,9 @@ public class ObsRelationshipMapperTest {
         HashSet<EncounterProvider> encounterProviders = new HashSet<>();
         encounterProviders.add(encounterProvider);
 
-        Encounter encounter = new Encounter();
+        Encounter encounter = sourceObs.getEncounter();
         encounter.setEncounterProviders(encounterProviders);
-
+        
         sourceObs.setEncounter(encounter);
     }
 
@@ -224,12 +219,6 @@ public class ObsRelationshipMapperTest {
     }
 
     private Observation mapObs(Obs targetObs) {
-        EncounterTransaction.Observation mappedObs = new EncounterTransaction.Observation();
-        mappedObs.setUuid(targetObs.getUuid());
-        return mappedObs;
-    }
-
-    private Observation mapTargetObs(Obs targetObs) {
         EncounterTransaction.Observation mappedTargetObs = new EncounterTransaction.Observation();
         mappedTargetObs.setUuid(targetObs.getUuid());
         mappedTargetObs.setConcept(new EncounterTransaction.Concept(targetObs.getConcept().getUuid(), targetObs.getConcept().getName().getName()));
@@ -253,6 +242,9 @@ public class ObsRelationshipMapperTest {
         Concept concept = new Concept();
         concept.setFullySpecifiedName(new ConceptName("Random Concept", Locale.ENGLISH));
         sourceObs.setConcept(concept);
+        Encounter encounter = new Encounter();
+        encounter.setUuid("encounterUuid");
+        sourceObs.setEncounter(encounter);
         return sourceObs;
     }
 }
