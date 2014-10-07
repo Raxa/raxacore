@@ -26,7 +26,6 @@ import java.util.Locale;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -49,12 +48,13 @@ public class BahmniObservationMapperTest {
         Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(date).build();
         Encounter encounter = new EncounterBuilder().withVisit(visit).withPatient(person).withUUID("euuid").withDatetime(date).build();
 
-        Concept parentConcept = new ConceptBuilder().withName("parentConcept").withDataType("N/A").build();
         Concept conceptDetailsConceptSet = new ConceptBuilder().withName("conceptDetailsConceptSet").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid").withClass(BahmniObservationMapper.CONCEPT_DETAILS_CONCEPT_CLASS).build();
         Concept abnormalConcept = new ConceptBuilder().withName("abnormalConcept").withCodedDataType().withUUID("cuuid1").withClass(BahmniObservationMapper.ABNORMAL_CONCEPT_CLASS).build();
         Concept durationConcept = new ConceptBuilder().withName("durationConcept").withDataTypeNumeric().withUUID("cuuid2").withClass(BahmniObservationMapper.DURATION_CONCEPT_CLASS).build();
         Concept trueConcept = new ConceptBuilder().withName("True").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid11").withClass("").build();
         Concept valueConcept = new ConceptBuilder().withName("valueConcept").withDataType("cdatatype", "hl7abbrev").withUUID("cuuid2").withClass("").build();
+        Concept parentConcept = new ConceptBuilder().withName("parentConcept").withDataType("N/A").build();
+        parentConcept.addSetMember(conceptDetailsConceptSet);
 
         Obs abnormalObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(abnormalConcept).withValue(trueConcept).withDatetime(date).build();
         Obs durationObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(durationConcept).withValue(10.0).withDatetime(date).build();
@@ -67,12 +67,14 @@ public class BahmniObservationMapperTest {
         BahmniObservation parentObservation = parentsObservations.get(0);
         assertEquals("parentConcept", parentObservation.getConcept().getName());
         assertEquals(1, parentObservation.getGroupMembers().size());
+        assertEquals(1, parentObservation.getConceptSortWeight().intValue());
         
         List<BahmniObservation> childObservations = parentObservation.getGroupMembers();
         assertEquals(1, childObservations.size());
         BahmniObservation childObservation = childObservations.get(0);
         assertEquals("ovalue", childObservation.getValue());
         assertEquals("cdatatype", childObservation.getType());
+        assertEquals(2, childObservation.getConceptSortWeight().intValue());
         assertTrue(childObservation.isAbnormal());
         assertEquals(10L, childObservation.getDuration().longValue());
     }

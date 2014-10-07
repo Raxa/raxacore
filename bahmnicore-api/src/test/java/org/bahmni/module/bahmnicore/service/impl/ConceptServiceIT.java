@@ -27,31 +27,6 @@ public class ConceptServiceIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    public void getSortWeightFor_returns_sortweight_for_flattened_child_concept() throws Exception {
-        String conceptNameInAnyCase = "BLOOd Pressure";
-        ConceptDefinition conceptDefinition = conceptService.conceptsFor(Arrays.asList(conceptNameInAnyCase, "non_existent_concept"));
-        assertEquals(4, conceptDefinition.size());
-
-        Concept childConcept = new Concept();
-        childConcept.setPreferredName(new ConceptName("DIASTOLic", Context.getLocale()));
-
-        int childSortWeight = conceptDefinition.getSortWeightFor(childConcept);
-        assertEquals(3, childSortWeight);
-    }
-
-    @Test
-    public void return_negative_sortweight_for_concept_that_does_not_exist() {
-        String conceptNameInAnyCase = "BLOOd Pressure";
-        ConceptDefinition conceptDefinition = conceptService.conceptsFor(Arrays.asList(conceptNameInAnyCase));
-
-        Concept childConcept = new Concept();
-        childConcept.setPreferredName(new ConceptName("non_existent_concept", Context.getLocale()));
-
-        int childSortWeight = conceptDefinition.getSortWeightFor(childConcept);
-        assertEquals(-1, childSortWeight);
-    }
-
-    @Test
     public void do_not_fetch_voided_concepts() throws Exception {
         ConceptDefinition conceptDefinition = conceptService.conceptsFor(Arrays.asList("Blood Pressure voided node"));
         assertEquals(0, conceptDefinition.size());

@@ -41,7 +41,7 @@ public class BahmniObservationMapper {
         BahmniObservation bahmniObservation = new BahmniObservation();
         bahmniObservation.setEncounterTransactionObservation(encounterTransactionObservation);
         bahmniObservation.setEncounterDateTime(encounterDateTime);
-        bahmniObservation.setConceptSortWeight(getSortWeightFor(bahmniObservation.getConcept().getName(), rootConcepts));
+        bahmniObservation.setConceptSortWeight(ConceptSortWeightUtil.getSortWeightFor(bahmniObservation.getConcept().getName(), rootConcepts));
         if (CONCEPT_DETAILS_CONCEPT_CLASS.equals(encounterTransactionObservation.getConcept().getConceptClass()) && flatten) {
             for (EncounterTransaction.Observation member : encounterTransactionObservation.getGroupMembers()) {
                 if (member.getVoided()) {
@@ -71,25 +71,6 @@ public class BahmniObservationMapper {
             bahmniObservations.add(map(observation, encounterDateTime, new ArrayList<org.openmrs.Concept>()));
         }
         return bahmniObservations;
-    }
-
-    private static int getSortWeightFor(String conceptName, List<Concept> concepts) {
-        return getSortWeightFor(conceptName, concepts, 0);
-    }
-
-    private static int getSortWeightFor(String conceptName, List<Concept> concepts, int startSortWeight) {
-        for (Concept aConcept : concepts) {
-            if (aConcept.getName().getName().equalsIgnoreCase(conceptName)) {
-                return startSortWeight;
-            } else if (aConcept.getSetMembers().size() > 0) {
-                int sortWeight = getSortWeightFor(conceptName, aConcept.getSetMembers(), startSortWeight);
-                if (sortWeight >= 0) {
-                    return sortWeight;
-                }
-            }
-            startSortWeight++;
-        }
-        return -1;
     }
 
 }
