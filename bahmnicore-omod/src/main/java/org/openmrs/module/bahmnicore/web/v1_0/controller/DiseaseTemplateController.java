@@ -1,9 +1,6 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.contract.observation.DiseaseTemplate;
-import org.bahmni.module.bahmnicore.contract.observation.ObservationData;
-import org.bahmni.module.bahmnicore.dao.PersonObsDao;
-import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.service.DiseaseTemplateService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
