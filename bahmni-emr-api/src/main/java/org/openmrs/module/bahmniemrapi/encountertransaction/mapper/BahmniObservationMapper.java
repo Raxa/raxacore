@@ -20,6 +20,7 @@ public class BahmniObservationMapper {
         return map(obsList, new ArrayList<Concept>());
     }
 
+    // TODO : Shruthi : only this api should remain. The other map methods should go away. flatten option should be removed.
     public static List<BahmniObservation> map(List<Obs> obsList, List<Concept> rootConcepts) {
         List<BahmniObservation> bahmniObservations = new ArrayList<>();
         for (Obs obs : obsList) {
@@ -36,7 +37,7 @@ public class BahmniObservationMapper {
         return map(encounterTransactionObservation, encounterDateTime, rootConcepts, false);
     }
 
-    public static BahmniObservation map(EncounterTransaction.Observation encounterTransactionObservation, Date encounterDateTime, List<Concept> rootConcepts, boolean flatten) {
+    private static BahmniObservation map(EncounterTransaction.Observation encounterTransactionObservation, Date encounterDateTime, List<Concept> rootConcepts, boolean flatten) {
         BahmniObservation bahmniObservation = new BahmniObservation();
         bahmniObservation.setEncounterTransactionObservation(encounterTransactionObservation);
         bahmniObservation.setEncounterDateTime(encounterDateTime);

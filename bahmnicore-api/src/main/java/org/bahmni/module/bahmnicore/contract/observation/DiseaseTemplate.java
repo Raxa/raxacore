@@ -1,11 +1,13 @@
 package org.bahmni.module.bahmnicore.contract.observation;
 
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class DiseaseTemplate {
     private String name;
-    private List<List<ObservationData>> observations = new ArrayList<>();
+    private List<List<BahmniObservation>> bahmniObservations = new ArrayList<>();
 
     public DiseaseTemplate() {
     }
@@ -22,16 +24,16 @@ public class DiseaseTemplate {
         this.name = name;
     }
 
-    public List<List<ObservationData>> getObservations() {
-        return observations;
+    public List<List<BahmniObservation>> getBahmniObservations() {
+        return bahmniObservations;
     }
 
-    public void setObservations(List<List<ObservationData>> observations) {
-        this.observations = observations;
+    public void setBahmniObservations(List<List<BahmniObservation>> bahmniObservations) {
+        this.bahmniObservations = bahmniObservations;
     }
 
-    public void addObservationsList(List<ObservationData> observationDataList){
-        observations.add(observationDataList);
+    public void addBahmniObservationsList(List<BahmniObservation> bahmniObservations){
+        this.bahmniObservations.add(bahmniObservations);
     }
 
 }
