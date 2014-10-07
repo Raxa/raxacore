@@ -799,13 +799,17 @@
         <sqlFile splitStatements="false" path="V1_81__DeleteConcept.sql"/>
     </changeSet>
     <changeSet id="bahmni-core-201404301520" author="D3">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="2">select count(*) from global_property where property in ('emr.exitFromInpatientEncounterType', 'emr.admissionEncounterType')</sqlCheck>
-        </preConditions>
+        <validCheckSum>3:32a6fc34947fd6ad55898c0d3e600ac2</validCheckSum>
+        <validCheckSum>3:95dbc7a307cda404901615be33a3c95d</validCheckSum>
         <comment>Configure EMR API admit and discharge encounter type</comment>
         <sql>
-            UPDATE global_property SET property_value = (Select uuid from encounter_type where name = 'ADMISSION') where property = 'emr.admissionEncounterType';
-            UPDATE global_property SET property_value = (Select uuid from encounter_type where name = 'DISCHARGE') where property = 'emr.exitFromInpatientEncounterType';
+            INSERT INTO global_property(property, property_value, description, uuid)
+            VALUES('emr.admissionEncounterType', (Select uuid from encounter_type where name = 'ADMISSION'), 'UUID of the encounter type for admitting a patient', 'c4b94bb1-97a8-4252-bec3-c8b17d72b4b5')
+            ON DUPLICATE KEY UPDATE property_value = (Select uuid from encounter_type where name = 'ADMISSION');
+
+            INSERT INTO global_property(property, property_value, description, uuid)
+            VALUES('emr.exitFromInpatientEncounterType', (Select uuid from encounter_type where name = 'DISCHARGE'), 'UUID of the encounter type for exiting a patient from inpatient care', 'fdb6b9ea-db33-44cb-b946-cc9e02baf50f')
+            ON DUPLICATE KEY UPDATE property_value = (Select uuid from encounter_type where name = 'DISCHARGE');
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201405041511" author="Mujir">
@@ -893,11 +897,6 @@
     </changeSet>
 
     <changeSet id="bahmni-core-201405091936" author="rohan">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="2">
-                SELECT COUNT(*) FROM concept_name where name in ('Admit Patient');
-            </sqlCheck>
-        </preConditions>
         <comment>Change sort weight for Admit Patients.</comment>
         <sql>
             update concept_answer set sort_weight=10 where answer_concept=(select concept_id from concept_name where name='Admit Patient' limit 1);
@@ -905,11 +904,6 @@
     </changeSet>
 
     <changeSet id="bahmni-core-201405110939" author="rohan">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="2">
-                SELECT COUNT(*) FROM concept_name where name in ('Discharge Patient');
-            </sqlCheck>
-        </preConditions>
         <comment>Change sort weight for Discharge Patients.</comment>
         <sql>
             update concept_answer set sort_weight=100 where answer_concept=(select concept_id from concept_name where name='Discharge Patient' limit 1);
@@ -917,11 +911,6 @@
     </changeSet>
 
     <changeSet id="bahmni-core-201405110940" author="rohan">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="2">
-                SELECT COUNT(*) FROM concept_name where name in ('Transfer Patient');
-            </sqlCheck>
-        </preConditions>
         <comment>Change sort weight for Transfer Patients.</comment>
         <sql>
             update concept_answer set sort_weight=200 where answer_concept=(select concept_id from concept_name where name='Transfer Patient' limit 1);
@@ -938,12 +927,13 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201405161709" author="d3" context="rel4">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">select count(*) from global_property where property='webservices.rest.maxResultsAbsolute'</sqlCheck>
-        </preConditions>
+        <validCheckSum>3:955279b9326084c5c0ad3f2df90295e0</validCheckSum>
+        <validCheckSum>3:752289f5803016fad52abe864a8278c5</validCheckSum>
         <comment>Update webservices.rest.maxResultsAbsolute to 1000</comment>
         <sql>
-            update global_property set property_value='1000' where property='webservices.rest.maxResultsAbsolute';
+            INSERT INTO global_property(property, property_value, description, uuid)
+            VALUES('webservices.rest.maxResultsAbsolute', 1000, 'The absolute results limit. If the client requests a larger number of results, then will get an error', '829347ef-1e0d-4368-8681-56f9544a0adc')
+            ON DUPLICATE KEY UPDATE property_value = 1000;
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201405211239" author="d3" context="rel4">
