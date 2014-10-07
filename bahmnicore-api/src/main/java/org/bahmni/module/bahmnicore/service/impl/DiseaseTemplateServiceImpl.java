@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-import org.bahmni.module.bahmnicore.contract.observation.ConceptDefinition;
 import org.bahmni.module.bahmnicore.contract.observation.DiseaseTemplate;
 import org.bahmni.module.bahmnicore.dao.PersonObsDao;
 import org.bahmni.module.bahmnicore.service.DiseaseTemplateService;
@@ -13,7 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
