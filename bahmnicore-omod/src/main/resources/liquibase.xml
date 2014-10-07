@@ -2281,4 +2281,10 @@
             UPDATE concept_set, concept_name SET concept_set.sort_weight = 9 where concept_set.concept_id = concept_name.concept_id and concept_name.name = 'Unit(s)' and concept_set.concept_set = @dosing_units_concept_id;
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201410071237" author="D3,Arun">
+        <comment>Add index for orders date_activated</comment>
+        <sql>
+            CREATE INDEX bahmni_orders_date_activated ON orders(date_activated);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
