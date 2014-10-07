@@ -2287,4 +2287,14 @@
             CREATE INDEX bahmni_orders_date_activated ON orders(date_activated);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201410061440" author="Chethan, Banka">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="1">select count(*) from global_property where property = 'encounter.feed.publish.url'</sqlCheck>
+        </preConditions>
+        <comment>Updating GP encounter feed publish url to publish BahmniEncounterTransaction</comment>
+        <update tableName="global_property">
+            <column name="property_value" value="/openmrs/ws/rest/v1/bahmnicore/bahmniencounter/%s?includeAll=true"/>
+            <where>property='encounter.feed.publish.url'</where>
+        </update>
+    </changeSet>
 </databaseChangeLog>
