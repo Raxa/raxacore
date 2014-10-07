@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.contract.drugorder.*;
 import org.bahmni.module.bahmnicore.contract.observation.*;
-import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
+import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
@@ -28,7 +28,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private EncounterService encounterService;
     private ProviderService providerService;
     private UserService userService;
-    private BahmniPatientDao bahmniPatientDao;
+    private PatientDao patientDao;
     private PatientService openmrsPatientService;
     private OrderDao orderDao;
     private OrderType drugOrderType;
@@ -42,7 +42,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     @Autowired
     public BahmniDrugOrderServiceImpl(VisitService visitService, ConceptService conceptService, OrderService orderService,
                                       ProviderService providerService, EncounterService encounterService,
-                                      UserService userService, BahmniPatientDao bahmniPatientDao,
+                                      UserService userService, PatientDao patientDao,
                                       PatientService patientService, OrderDao orderDao) {
         this.visitService = visitService;
         this.conceptService = conceptService;
@@ -50,7 +50,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         this.providerService = providerService;
         this.encounterService = encounterService;
         this.userService = userService;
-        this.bahmniPatientDao = bahmniPatientDao;
+        this.patientDao = patientDao;
         this.openmrsPatientService = patientService;
         this.orderDao = orderDao;
     }
@@ -60,7 +60,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         if (StringUtils.isEmpty(patientId))
             throwPatientNotFoundException(patientId);
 
-        Patient patient = bahmniPatientDao.getPatient(patientId);
+        Patient patient = patientDao.getPatient(patientId);
         if (patient == null)
             throwPatientNotFoundException(patientId);
 

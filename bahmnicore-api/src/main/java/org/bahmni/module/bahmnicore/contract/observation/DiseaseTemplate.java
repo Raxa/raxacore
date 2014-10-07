@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DiseaseTemplate {
+    
     private String name;
+    
     private List<List<BahmniObservation>> bahmniObservations = new ArrayList<>();
 
     public DiseaseTemplate() {

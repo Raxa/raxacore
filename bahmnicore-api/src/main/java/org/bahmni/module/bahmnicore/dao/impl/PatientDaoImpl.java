@@ -2,7 +2,7 @@ package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
-import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
+import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.bahmni.module.bahmnicore.model.NameSearchParameter;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -23,7 +23,7 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 @Repository
-public class BahmniPatientDaoImpl implements BahmniPatientDao {
+public class PatientDaoImpl implements PatientDao {
     private static final String PATIENT_IDENTIFIER_PARAM = "patientIdentifier";
     private static final String LIMIT_PARAM = "limit";
     private static final String OFFSET_PARAM = "offset";
@@ -49,7 +49,7 @@ public class BahmniPatientDaoImpl implements BahmniPatientDao {
     private SessionFactory sessionFactory;
 
     @Autowired
-    public BahmniPatientDaoImpl(SessionFactory sessionFactory) {
+    public PatientDaoImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 

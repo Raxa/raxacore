@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.contract.observation.DiseaseTemplate;
-import org.bahmni.module.bahmnicore.dao.PersonObsDao;
+import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.service.DiseaseTemplateService;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
@@ -23,7 +23,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
     private static final String PROGRESS_CONCEPT_CLASS = "Disease Progress";
 
     @Autowired
-    private PersonObsDao personObsDao;
+    private ObsDao obsDao;
     
     @Autowired
     private ConceptService conceptService;
@@ -51,7 +51,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
     }
 
     private List<BahmniObservation> getLatestObsFor(String patientUuid, String conceptName, List<Concept> rootConcepts) {
-        List<Obs> latestObsForConceptSet = personObsDao.getLatestObsForConceptSetByVisit(patientUuid, conceptName);
+        List<Obs> latestObsForConceptSet = obsDao.getLatestObsForConceptSetByVisit(patientUuid, conceptName);
         return BahmniObservationMapper.map(latestObsForConceptSet, rootConcepts);
     }
 

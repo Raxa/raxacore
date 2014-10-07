@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientConfigResponse;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
-import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
+import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.bahmni.module.bahmnicore.contract.patient.PatientSearchParameters;
 import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;
 import org.bahmni.module.bahmnicore.mapper.PatientMapper;
@@ -34,19 +34,19 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     private static Logger logger = Logger.getLogger(BahmniPatientServiceImpl.class);
     private PersonService personService;
     private ConceptService conceptService;
-    private BahmniPatientDao bahmniPatientDao;
+    private PatientDao patientDao;
 
     @Autowired
     public BahmniPatientServiceImpl(PatientImageService patientImageService,
                                     PatientService patientService, PersonService personService, ConceptService conceptService,
-                                    BahmniCoreApiProperties bahmniCoreApiProperties, PatientMapper patientMapper, BahmniPatientDao bahmniPatientDao) {
+                                    BahmniCoreApiProperties bahmniCoreApiProperties, PatientMapper patientMapper, PatientDao patientDao) {
         this.patientImageService = patientImageService;
         this.patientService = patientService;
         this.bahmniCoreApiProperties = bahmniCoreApiProperties;
         this.personService = personService;
         this.conceptService = conceptService;
         this.patientMapper = patientMapper;
-        this.bahmniPatientDao = bahmniPatientDao;
+        this.patientDao = patientDao;
     }
 
     @Override
@@ -89,12 +89,12 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
 
     @Override
     public List<PatientResponse> search(PatientSearchParameters searchParameters) {
-        return bahmniPatientDao.getPatients(searchParameters.getIdentifier(), searchParameters.getName(), searchParameters.getLocalName(), searchParameters.getCityVillage(), searchParameters.getLength(), searchParameters.getStart(), searchParameters.getPatientAttributes());
+        return patientDao.getPatients(searchParameters.getIdentifier(), searchParameters.getName(), searchParameters.getLocalName(), searchParameters.getCityVillage(), searchParameters.getLength(), searchParameters.getStart(), searchParameters.getPatientAttributes());
     }
 
     @Override
     public List<Patient> get(String partialIdentifier) {
-        return bahmniPatientDao.getPatients(partialIdentifier);
+        return patientDao.getPatients(partialIdentifier);
     }
 
     private Patient getPatientByUuid(String uuid) {

@@ -2,7 +2,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientConfigResponse;
-import org.bahmni.module.bahmnicore.dao.BahmniPatientDao;
+import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.bahmni.module.bahmnicore.datamigration.ExecutionMode;
 import org.bahmni.module.bahmnicore.mapper.PatientMapper;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
@@ -47,7 +47,7 @@ public class BahmniPatientServiceImplTest {
     @Mock
     private ConceptService conceptService;
     @Mock
-    private BahmniPatientDao bahmniPatientDao;
+    private PatientDao patientDao;
 
     private BahmniPatientServiceImpl bahmniPatientService;
 
@@ -55,7 +55,7 @@ public class BahmniPatientServiceImplTest {
     public void setup() {
         initMocks(this);
         when(bahmniCoreApiProperties.getExecutionMode()).thenReturn(new ExecutionMode("false"));
-        bahmniPatientService = new BahmniPatientServiceImpl(patientImageService, patientService, personService, conceptService, bahmniCoreApiProperties, patientMapper, bahmniPatientDao);
+        bahmniPatientService = new BahmniPatientServiceImpl(patientImageService, patientService, personService, conceptService, bahmniCoreApiProperties, patientMapper, patientDao);
     }
 
     @Test
@@ -136,6 +136,6 @@ public class BahmniPatientServiceImplTest {
     @Test
     public void shouldGetPatientByPartialIdentifier() throws Exception {
         bahmniPatientService.get("partial_identifier");
-        verify(bahmniPatientDao).getPatients("partial_identifier");
+        verify(patientDao).getPatients("partial_identifier");
     }
 }

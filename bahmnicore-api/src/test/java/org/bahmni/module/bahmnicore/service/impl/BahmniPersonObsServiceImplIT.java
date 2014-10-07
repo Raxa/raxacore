@@ -1,6 +1,6 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-import org.bahmni.module.bahmnicore.dao.PersonObsDao;
+import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.junit.Before;
@@ -21,11 +21,11 @@ public class BahmniPersonObsServiceImplIT extends BaseModuleWebContextSensitiveT
     BahmniObsService personObsService;
     
     @Autowired
-    PersonObsDao personObsDao;
+    ObsDao obsDao;
 
     @Before
     public void setUp() throws Exception {
-        personObsService = new BahmniObsServiceImpl(personObsDao);
+        personObsService = new BahmniObsServiceImpl(obsDao);
         executeDataSet("observationsTestData.xml");
     }
 

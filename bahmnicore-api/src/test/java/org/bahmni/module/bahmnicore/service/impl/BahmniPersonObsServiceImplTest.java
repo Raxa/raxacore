@@ -1,6 +1,6 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-import org.bahmni.module.bahmnicore.dao.PersonObsDao;
+import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.junit.Before;
@@ -26,7 +26,7 @@ public class BahmniPersonObsServiceImplTest {
 
     BahmniObsService personObsService;
     @Mock
-    PersonObsDao personObsDao;
+    ObsDao obsDao;
 
     private String personUUID = "12345";
 
@@ -36,19 +36,19 @@ public class BahmniPersonObsServiceImplTest {
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
 
         initMocks(this);
-        personObsService = new BahmniObsServiceImpl(personObsDao);
+        personObsService = new BahmniObsServiceImpl(obsDao);
     }
 
     @Test
     public void shouldGetPersonObs() throws Exception {
         personObsService.getObsForPerson(personUUID);
-        verify(personObsDao).getNumericObsByPerson(personUUID);
+        verify(obsDao).getNumericObsByPerson(personUUID);
     }
 
     @Test
     public void shouldGetNumericConcepts() throws Exception {
         personObsService.getNumericConceptsForPerson(personUUID);
-        verify(personObsDao).getNumericConceptsForPerson(personUUID);
+        verify(obsDao).getNumericConceptsForPerson(personUUID);
     }
 
     @Test
@@ -56,6 +56,6 @@ public class BahmniPersonObsServiceImplTest {
         Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
         Integer numberOfVisits = 3;
         personObsService.observationsFor(personUUID, Arrays.asList(bloodPressureConcept), numberOfVisits);
-        verify(personObsDao).getObsFor(personUUID,  Arrays.asList("Blood Pressure"), numberOfVisits, true);
+        verify(obsDao).getObsFor(personUUID,  Arrays.asList("Blood Pressure"), numberOfVisits, true);
     }
 }

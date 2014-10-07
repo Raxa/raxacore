@@ -1,11 +1,10 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import org.bahmni.module.bahmnicore.dao.PersonObsDao;
+import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Obs;
 import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
@@ -17,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml", "classpath:webModuleApplicationContext.xml"}, inheritLocations = true)
 public class PersonObsDaoImplIT extends BaseContextSensitiveTest {
     @Autowired
-    PersonObsDao personObsDao;
+    ObsDao obsDao;
 
     Map<Integer,Integer> conceptToObsMap = new HashMap<>();
 
@@ -32,7 +31,7 @@ public class PersonObsDaoImplIT extends BaseContextSensitiveTest {
 
     @Test
     public void shouldGetLatestObsForConceptSetByVisit(){
-        List<Obs> obsList = personObsDao.getLatestObsForConceptSetByVisit("86526ed5-3c11-11de-a0ba-001e378eb67a", "Breast Cancer Intake");
+        List<Obs> obsList = obsDao.getLatestObsForConceptSetByVisit("86526ed5-3c11-11de-a0ba-001e378eb67a", "Breast Cancer Intake");
         assertEquals(4, obsList.size());
         for (Obs obs : obsList) {
             assertEquals("for concept : "+obs.getConcept().getName().getName(),latestObsForConcept(obs.getConcept().getId()),obs.getId());

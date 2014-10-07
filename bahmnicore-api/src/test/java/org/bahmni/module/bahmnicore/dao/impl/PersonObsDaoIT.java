@@ -1,6 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import org.bahmni.module.bahmnicore.dao.PersonObsDao;
+import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Obs;
@@ -15,7 +15,7 @@ import static junit.framework.Assert.assertEquals;
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class PersonObsDaoIT extends BaseModuleWebContextSensitiveTest {
 	@Autowired
-    PersonObsDao personObsDao;
+    ObsDao obsDao;
 
     @Before
     public void setUp() throws Exception {
@@ -24,13 +24,13 @@ public class PersonObsDaoIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
 	public void shouldRetrievePatientObs() throws Exception {
-        List<Obs> obsByPerson = personObsDao.getNumericObsByPerson("86526ed5-3c11-11de-a0ba-001e378eb67a");
+        List<Obs> obsByPerson = obsDao.getNumericObsByPerson("86526ed5-3c11-11de-a0ba-001e378eb67a");
         assertEquals(5, obsByPerson.size());
 	}
 
     @Test
     public void retrieve_all_observations_when_no_visit_ids_are_specified() throws Exception {
-        List<Obs> allObs = personObsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), null);
+        List<Obs> allObs = obsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), null);
 
         assertEquals(1, allObs.size());
 
@@ -61,7 +61,7 @@ public class PersonObsDaoIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void retrieve_only_orphaned_observation() throws Exception {
-        List<Obs> allObs = personObsDao.getObsFor("341b4e41-790c-484f-b6ed-71dc8da222db", Arrays.asList("Diastolic"), null, true);
+        List<Obs> allObs = obsDao.getObsFor("341b4e41-790c-484f-b6ed-71dc8da222db", Arrays.asList("Diastolic"), null, true);
 
         assertEquals(1, allObs.size());
         assertEquals("Diastolic", allObs.get(0).getConcept().getName().getName());
@@ -70,12 +70,12 @@ public class PersonObsDaoIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
 	public void shouldRetrieveNumericalConceptsForPatient() throws Exception {
-		assertEquals(5, personObsDao.getNumericConceptsForPerson("86526ed5-3c11-11de-a0ba-001e378eb67a").size());
+		assertEquals(5, obsDao.getNumericConceptsForPerson("86526ed5-3c11-11de-a0ba-001e378eb67a").size());
 	}
 
     @Test
     public void do_not_fetch_voided_observations() throws Exception {
-        List<Obs> allObs = personObsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), null);
+        List<Obs> allObs = obsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), null);
         assertEquals(1, allObs.size());
     }
 }

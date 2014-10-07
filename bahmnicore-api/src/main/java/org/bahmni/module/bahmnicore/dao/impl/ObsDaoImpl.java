@@ -1,6 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import org.bahmni.module.bahmnicore.dao.PersonObsDao;
+import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.Concept;
@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class PersonObsDaoImpl implements PersonObsDao {
+public class ObsDaoImpl implements ObsDao {
     @Autowired
     private SessionFactory sessionFactory;
 

@@ -5,7 +5,7 @@ import org.openmrs.Obs;
 
 import java.util.List;
 
-public interface PersonObsDao {
+public interface ObsDao {
     List<Obs> getNumericObsByPerson(String personUUID);
 
     List<Concept> getNumericConceptsForPerson(String personUUID);
