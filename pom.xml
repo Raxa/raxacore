@@ -29,7 +29,7 @@
         <openMRSWebServicesVersion>2.6</openMRSWebServicesVersion>
         <openMRSRuntimeVersion>1.10.0</openMRSRuntimeVersion>
         <springVersion>3.0.5.RELEASE</springVersion>
-        <atomfeed.version>1.0-SNAPSHOT</atomfeed.version>
+        <atomfeed.version>1.2</atomfeed.version>
         <reportingModuleVersion>0.9.1</reportingModuleVersion>
         <calculationModuleVersion>1.1</calculationModuleVersion>
         <serializationXstreamModuleVersion>0.2.7</serializationXstreamModuleVersion>
@@ -387,6 +387,17 @@
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>interval:10080</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>sonatype-nexus-releases</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
         <repository>

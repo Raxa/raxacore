@@ -135,7 +135,7 @@
         <dependency>
             <groupId>org.ict4h.openmrs</groupId>
             <artifactId>openmrs-atomfeed-common</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>2.0</version>
         </dependency>
 
         <dependency>
