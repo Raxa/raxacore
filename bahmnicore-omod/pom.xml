@@ -35,6 +35,12 @@
             <groupId>org.bahmni.module</groupId>
             <artifactId>bahmnicore-api</artifactId>
             <version>${project.parent.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.persistence</groupId>
+                    <artifactId>persistence-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.bahmni.module</groupId>
@@ -130,18 +136,6 @@
             <groupId>org.openmrs.module</groupId>
             <artifactId>webservices.rest-omod-common</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <!-- external libraries -->
-        <!--  Gson: Java to Json conversion -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.2.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>10.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
