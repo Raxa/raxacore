@@ -152,15 +152,6 @@ public class ConceptControllerIT extends BaseWebControllerTest {
         assertEquals(className, concept.getConceptClass().getName());
         assertEquals(description, concept.getDescription(Context.getLocale()).getDescription());
         assertEquals(dataType, concept.getDatatype().getName());
-        for (ConceptAnswer conceptAnswer : concept.getAnswers()) {
-            String answerConceptName = conceptAnswer.getAnswerConcept().getName(Context.getLocale()).getName();
-            if (answerConceptName.equals(answerConceptName1)) {
-                assertEquals(1, conceptAnswer.getSortWeight(), 0);
-            }
-            if (answerConceptName.equals(answerConceptName2)) {
-                assertEquals(2, conceptAnswer.getSortWeight(), 0);
-            }
-        }
     }
 
     @Test
@@ -327,14 +318,4 @@ public class ConceptControllerIT extends BaseWebControllerTest {
         assertEquals(response.getStatus(), HttpStatus.BAD_REQUEST.value());
     }
 
-    @Test
-    public void shouldCreateConceptSet() {
-        String uniqueName = "uniqueName";
-        String displayName = "uniqueName";
-        String description = "Sample basic concept being created";
-        String dataType = "N/A";
-        boolean isSet = true;
-
-
-    }
 }
