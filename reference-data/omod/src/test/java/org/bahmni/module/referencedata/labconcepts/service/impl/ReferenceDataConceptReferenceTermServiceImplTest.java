@@ -12,6 +12,8 @@ import org.openmrs.ConceptSource;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 
+import java.util.HashSet;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;

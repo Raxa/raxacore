@@ -37,7 +37,7 @@ public class ConceptSetMapperTest {
     public void map_concept_set_name_to_openmrs_conceptname() throws Exception {
         ConceptSet conceptSet = new ConceptSet();
         conceptSet.setUniqueName("Some");
-        org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, null, new ArrayList<Concept>());
+        org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, new ArrayList<Concept>(), null, null, null);
         assertEquals("Some", mappedConcept.getFullySpecifiedName(Context.getLocale()).getName());
     }
 
@@ -45,7 +45,7 @@ public class ConceptSetMapperTest {
     public void map_short_name() throws Exception {
         ConceptSet conceptSet = new ConceptSet();
         conceptSet.setDisplayName("ShortName");
-        org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, null, new ArrayList<Concept>());
+        org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, new ArrayList<Concept>(), null, null, null);
         assertEquals("ShortName", mappedConcept.getShortestName(Context.getLocale(), false).getName());
     }
 
@@ -53,7 +53,7 @@ public class ConceptSetMapperTest {
     public void map_description() throws Exception {
         ConceptSet conceptSet = new ConceptSet();
         conceptSet.setDescription("Description");
-        org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, null, new ArrayList<Concept>());
+        org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, new ArrayList<Concept>(), null, null, null);
         assertEquals("Description", mappedConcept.getDescription(Context.getLocale()).getDescription());
     }
 
@@ -63,7 +63,7 @@ public class ConceptSetMapperTest {
         conceptSet.setClassName("ClassName");
         ConceptClass conceptClass = new ConceptClass();
         conceptClass.setName("ClassName");
-        org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, conceptClass, new ArrayList<Concept>());
+        org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, new ArrayList<Concept>(), conceptClass, null, null);
         assertEquals("ClassName", mappedConcept.getConceptClass().getName());
     }
 
@@ -79,7 +79,7 @@ public class ConceptSetMapperTest {
         ArrayList<Concept> childConcepts = new ArrayList<>();
         childConcepts.add(child1);
         childConcepts.add(child2);
-        org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, null, childConcepts);
+        org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, childConcepts, null, null, null);
         List<org.openmrs.Concept> setMembers = mappedConcept.getSetMembers();
         assertEquals(2, setMembers.size());
         assertEquals("1", setMembers.get(0).getName(Context.getLocale()).getName());
@@ -92,7 +92,7 @@ public class ConceptSetMapperTest {
         conceptSet.setDisplayName(null);
         conceptSet.setUniqueName("uniqueName");
         conceptSet.setClassName("conceptClass");
-        org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, null, new ArrayList<Concept>());
+        org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, new ArrayList<Concept>(), null, null, null);
         assertEquals(0, mappedConcept.getShortNames().size());
     }
 }

@@ -17,7 +17,7 @@ public class ConceptSetMapper {
         conceptSet.setClassName(conceptSetRow.conceptClass);
         conceptSet.setDescription(conceptSetRow.description);
         List<String> children = new ArrayList<>();
-        for (KeyValue child : conceptSetRow.children) {
+        for (KeyValue child : conceptSetRow.getChildren()) {
             children.add(child.getValue());
         }
         conceptSet.setChildren(children);

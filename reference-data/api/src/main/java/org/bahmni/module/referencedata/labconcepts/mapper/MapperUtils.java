@@ -1,6 +1,7 @@
 package org.bahmni.module.referencedata.labconcepts.mapper;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bahmni.module.referencedata.labconcepts.contract.ConceptCommon;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.module.referencedata.labconcepts.contract.Test;
@@ -8,7 +9,10 @@ import org.openmrs.*;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class MapperUtils {
     public static String getDescription(Concept concept) {
@@ -71,18 +75,39 @@ public class MapperUtils {
         return tests;
     }
 
-    public static ConceptName getConceptName(String name){
+    public static ConceptName getConceptName(String name) {
         ConceptName conceptName = new ConceptName();
         conceptName.setName(name);
         conceptName.setLocale(Context.getLocale());
         return conceptName;
     }
 
-    public static ConceptName getConceptName(String name, ConceptNameType conceptNameType){
+    public static ConceptName getConceptName(String name, ConceptNameType conceptNameType) {
         ConceptName conceptName = getConceptName(name);
         conceptName.setConceptNameType(conceptNameType);
         return conceptName;
     }
+
+    public static org.openmrs.Concept mapConcept(ConceptCommon conceptCommon, ConceptClass conceptClass, org.openmrs.Concept existingConcept) {
+        org.openmrs.Concept concept = new org.openmrs.Concept();
+        if (existingConcept != null) {
+            concept = existingConcept;
+        }
+        String displayName = conceptCommon.getDisplayName();
+        concept = addConceptName(concept, getConceptName(conceptCommon.getUniqueName(), ConceptNameType.FULLY_SPECIFIED));
+        if (displayName != null) {
+            concept = addConceptName(concept, getConceptName(conceptCommon.getDisplayName(), ConceptNameType.SHORT));
+        }
+
+        if (conceptCommon.getDescription() != null && concept.getDescription() != null) {
+            concept.getDescription().setDescription(conceptCommon.getDescription());
+        } else if (conceptCommon.getDescription() != null) {
+            concept.addDescription(constructDescription(conceptCommon.getDescription()));
+        }
+        concept.setConceptClass(conceptClass);
+        return concept;
+    }
+
 
     public static ConceptDatatype getDataTypeByUuid(String dataTypeUuid) {
         ConceptDatatype conceptDatatype = Context.getConceptService().getConceptDatatypeByUuid(dataTypeUuid);
@@ -94,7 +119,7 @@ public class MapperUtils {
         return conceptDatatype;
     }
 
-    public static ConceptClass getConceptClass(String className){
+    public static ConceptClass getConceptClass(String className) {
         ConceptClass conceptClass = Context.getConceptService().getConceptClassByName(className);
         return conceptClass;
     }
@@ -107,6 +132,17 @@ public class MapperUtils {
     private static boolean isTestConcept(Concept concept) {
         return concept.getConceptClass() != null &&
                 concept.getConceptClass().getUuid().equals(ConceptClass.TEST_UUID);
+    }
+
+    public static org.openmrs.Concept addConceptName(org.openmrs.Concept concept, ConceptName conceptName) {
+        if (conceptName.getName() == null) return concept;
+        for (ConceptName name : concept.getNames()) {
+            if (name.getName().equals(conceptName.getName())) {
+                return concept;
+            }
+        }
+        concept.addName(conceptName);
+        return concept;
     }
 
     public static boolean isSampleConcept(Concept concept) {

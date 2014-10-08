@@ -15,7 +15,7 @@ import java.util.List;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-public class ObsRelationshipDaoImplTest extends BaseModuleContextSensitiveTest {
+public class ObsRelationshipDaoImplIT extends BaseModuleContextSensitiveTest {
 
     @Autowired
     ObsRelationshipDao obsRelationshipDao;

@@ -5,52 +5,37 @@ import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.openmrs.ConceptAnswer;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptDatatype;
-import org.openmrs.ConceptName;
-import org.openmrs.api.ConceptNameType;
+import org.openmrs.api.context.Context;
 
 import java.util.Set;
 
-import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.constructDescription;
-import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.getConceptName;
+import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.*;
 
 public class ConceptMapper {
     public ConceptMapper() {
     }
 
     public org.openmrs.Concept map(Concept conceptData, ConceptClass conceptClass, ConceptDatatype conceptDatatype, Set<ConceptAnswer> answers, org.openmrs.Concept existingConcept) {
-        org.openmrs.Concept concept = new org.openmrs.Concept();
-        if (existingConcept != null) {
-            concept = existingConcept;
-        }
-        String displayName = conceptData.getDisplayName();
-        concept = addConceptName(concept, getConceptName(conceptData.getUniqueName(), ConceptNameType.FULLY_SPECIFIED));
-        if (displayName != null) {
-            concept = addConceptName(concept, getConceptName(conceptData.getDisplayName(), ConceptNameType.SHORT));
-        }
+        org.openmrs.Concept concept = mapConcept(conceptData, conceptClass, existingConcept);
         for (String conceptName : conceptData.getSynonyms()) {
             concept = addConceptName(concept, getConceptName(conceptName));
         }
-        for (ConceptAnswer answer : answers) {
-            concept.addAnswer(answer);
-        }
-        if (conceptData.getDescription() != null && concept.getDescription() != null) {
-            concept.getDescription().setDescription(conceptData.getDescription());
-        } else if (conceptData.getDescription() != null) {
-            concept.addDescription(constructDescription(conceptData.getDescription()));
-        }
-        concept.setConceptClass(conceptClass);
         concept.setDatatype(conceptDatatype);
+        for (ConceptAnswer answer : answers) {
+            addAnswer(concept, answer);
+        }
         return concept;
     }
 
-    private org.openmrs.Concept addConceptName(org.openmrs.Concept concept, ConceptName conceptName) {
-        for (ConceptName name : concept.getNames()) {
-            if (name.getName().equals(conceptName.getName())) {
+    private org.openmrs.Concept addAnswer(org.openmrs.Concept concept, ConceptAnswer answer) {
+        for (ConceptAnswer conceptAnswer : concept.getAnswers()) {
+            if (conceptAnswer.getAnswerConcept().getName(Context.getLocale()).getName().equals(answer.getAnswerConcept().getName(Context.getLocale()).getName())) {
                 return concept;
             }
         }
-        concept.addName(conceptName);
+        concept.addAnswer(answer);
         return concept;
     }
+
 
 }

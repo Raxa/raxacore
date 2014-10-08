@@ -1,12 +1,11 @@
 package org.bahmni.module.referencedata.web.service.Impl;
 
-import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
-import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptMapper;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptReferenceTermService;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptService;
 import org.bahmni.module.referencedata.labconcepts.service.impl.ReferenceDataConceptServiceImpl;
+import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -112,7 +111,7 @@ public class ReferenceDataConceptServiceImplTest {
         org.openmrs.Concept savedConcept = referenceDataConceptService.saveConcept(concept);
 
         verify(conceptMapper).map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), anySet(), any(org.openmrs.Concept.class));
-        verify(conceptService).getConcept(answerConceptName);
+        verify(conceptService).getConceptByName(answerConceptName);
         verify(conceptService).saveConcept(openmrsConcept);
         verify(conceptService).getConceptClassByName(concept.getClassName());
         verify(conceptService).getConceptDatatypeByName(concept.getDataType());
@@ -142,8 +141,8 @@ public class ReferenceDataConceptServiceImplTest {
         org.openmrs.Concept savedConcept = referenceDataConceptService.saveConcept(concept);
 
         verify(conceptMapper).map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), anySet(), any(org.openmrs.Concept.class));
-        verify(conceptService).getConcept(answerConceptName1);
-        verify(conceptService).getConcept(answerConceptName2);
+        verify(conceptService).getConceptByName(answerConceptName1);
+        verify(conceptService).getConceptByName(answerConceptName2);
         verify(conceptService).saveConcept(openmrsConcept);
         verify(conceptService).getConceptClassByName(concept.getClassName());
         verify(conceptService).getConceptDatatypeByName(concept.getDataType());

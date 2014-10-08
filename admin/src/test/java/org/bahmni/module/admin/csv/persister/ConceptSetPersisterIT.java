@@ -60,7 +60,7 @@ public class ConceptSetPersisterIT extends BaseModuleWebContextSensitiveTest {
         assertTrue(conceptRowResult.getErrorMessage().isEmpty());
     }
 
-    @Test @Ignore
+    @Test
     public void should_persist_new_concept_set_with_name_and_class_input_only() throws Exception {
         ConceptSetRow conceptRow = new ConceptSetRow();
         conceptRow.name = "New concept";
@@ -73,7 +73,7 @@ public class ConceptSetPersisterIT extends BaseModuleWebContextSensitiveTest {
         assertNotNull(persistedConcept);
         assertEquals(conceptRow.name, persistedConcept.getName(Context.getLocale()).getName());
         assertEquals(conceptRow.conceptClass, persistedConcept.getConceptClass().getName());
-        assertNull(persistedConcept.getDescriptions());
+        assertNull(persistedConcept.getDescription());
         assertEquals(0, persistedConcept.getSynonyms().size());
         assertTrue(persistedConcept.isSet());
         Context.flushSession();

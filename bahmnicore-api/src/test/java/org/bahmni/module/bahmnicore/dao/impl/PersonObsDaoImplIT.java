@@ -15,7 +15,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml", "classpath:webModuleApplicationContext.xml"}, inheritLocations = true)
-public class PersonObsDaoImplTest extends BaseContextSensitiveTest {
+public class PersonObsDaoImplIT extends BaseContextSensitiveTest {
     @Autowired
     PersonObsDao personObsDao;
 
