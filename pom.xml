@@ -358,7 +358,7 @@
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
-                                    <forkCount>5</forkCount>
+                                    <forkCount>3</forkCount>
                                     <reuseForks>false</reuseForks>
                                     <parallel>classes</parallel>
                                     <useUnlimitedThreads>true</useUnlimitedThreads>
