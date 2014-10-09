@@ -40,6 +40,23 @@ public class ConceptSetMapperTest {
     }
 
     @Test
+    public void shouldNotMapEmptyChildren() throws Exception {
+        ConceptSetRow conceptSetRow = new ConceptSetRow();
+        conceptSetRow.name = "UniqueName";
+        conceptSetRow.shortName = "shortName";
+        conceptSetRow.conceptClass = "ConvSet";
+        conceptSetRow.children = children;
+        conceptSetRow.children.add(new KeyValue("3", ""));
+
+        ConceptSet conceptSet = conceptSetMapper.map(conceptSetRow);
+        assertEquals(2, conceptSet.getChildren().size());
+        assertEquals(conceptSetRow.name, conceptSet.getUniqueName());
+        assertEquals(conceptSetRow.shortName, conceptSet.getDisplayName());
+        assertEquals(conceptSetRow.conceptClass, conceptSet.getClassName());
+
+    }
+
+    @Test
     public void map_concept_reference_term_to_concept_set_dto() throws Exception {
         ConceptSetRow conceptSetRow = new ConceptSetRow();
         conceptSetRow.name = "UniqueName";

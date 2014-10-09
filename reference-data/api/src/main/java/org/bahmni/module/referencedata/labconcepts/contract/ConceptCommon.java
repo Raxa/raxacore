@@ -1,5 +1,7 @@
 package org.bahmni.module.referencedata.labconcepts.contract;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.validation.constraints.NotNull;
 
 public class ConceptCommon {
@@ -7,6 +9,7 @@ public class ConceptCommon {
     private String displayName;
     private String description;
     private String className;
+    private String dataType;
     private ConceptReferenceTerm conceptReferenceTerm;
 
     public ConceptReferenceTerm getConceptReferenceTerm() {
@@ -51,5 +54,12 @@ public class ConceptCommon {
         this.className = className;
     }
 
+    public String getDataType() {
+        return StringUtils.isEmpty(dataType) ? "N/A" : dataType;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
 
 }

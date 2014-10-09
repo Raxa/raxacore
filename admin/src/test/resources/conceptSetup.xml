@@ -32,6 +32,18 @@
                   concept_name_id="1099" voided="false" uuid="5d2d4cb7-955b-4837-mmm7-0ecc9415555"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
+    <concept concept_id="8088" retired="0" datatype_id="5" class_id="1" is_set="1" creator="1"
+             date_created="2013-12-04 11:36:42" uuid="5d2d4cb7-955b-4837-80f7-0ccciji01111"/>
+    <concept_name concept_id="8088" name="Child1" locale="en" creator="1" date_created="2014-01-01 00:00:00.0"
+                  concept_name_id="1499" voided="false" uuid="5d2d4cb7-955b-4837-ctc7-0ecc9415555"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="8988" retired="0" datatype_id="5" class_id="1" is_set="1" creator="1"
+             date_created="2013-12-04 11:36:42" uuid="5d2d4tb7-9s5b-4837-80f7-0ccciji01111"/>
+    <concept_name concept_id="8988" name="Child2" locale="en" creator="1" date_created="2014-01-01 00:00:00.0"
+                  concept_name_id="1999" voided="false" uuid="1d2d4fb7-955b-4837-ctc7-0ecc9415555"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
     <!--New Concept-->
 
     <concept concept_id="666" retired="0" datatype_id="5" class_id="21" is_set="1" creator="1"

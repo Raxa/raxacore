@@ -45,7 +45,7 @@ public class ConceptSetPersister implements EntityPersister<ConceptSetRow> {
             Context.openSession();
             Context.setUserContext(userContext);
             ConceptSet concept = new ConceptSetMapper().map(conceptSetRow);
-            referenceDataConceptService.saveConceptSet(concept);
+            referenceDataConceptService.saveConcept(concept);
             return new RowResult<>(conceptSetRow);
         } catch (Throwable e) {
             log.error(e);

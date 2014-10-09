@@ -106,7 +106,7 @@ public class ReferenceDataConceptServiceImplTest {
         Set<ConceptAnswer> openMRSAnswers = new HashSet<>();
         openMRSAnswers.add(answerConcept);
 
-        when(conceptService.getConcept(answerConceptName)).thenReturn(answer);
+        when(conceptService.getConceptByName(answerConceptName)).thenReturn(answer);
 
         org.openmrs.Concept savedConcept = referenceDataConceptService.saveConcept(concept);
 
@@ -135,8 +135,8 @@ public class ReferenceDataConceptServiceImplTest {
         openMRSAnswers.add(answerConcept);
 
 
-        when(conceptService.getConcept(answerConceptName1)).thenReturn(openmrsConcept);
-        when(conceptService.getConcept(answerConceptName2)).thenReturn(openmrsConcept);
+        when(conceptService.getConceptByName(answerConceptName1)).thenReturn(openmrsConcept);
+        when(conceptService.getConceptByName(answerConceptName2)).thenReturn(openmrsConcept);
 
         org.openmrs.Concept savedConcept = referenceDataConceptService.saveConcept(concept);
 

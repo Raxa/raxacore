@@ -53,7 +53,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
         conceptReferenceTerm.setReferenceTermSource("org.openmrs.module.emrapi");
         conceptSet.setConceptReferenceTerm(conceptReferenceTerm);
 
-        Concept concept = referenceDataConceptService.saveConceptSet(conceptSet);
+        Concept concept = referenceDataConceptService.saveConcept(conceptSet);
 
         assertTrue(concept.isSet());
         assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
@@ -80,7 +80,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
         exception.expect(APIException.class);
         exception.expectMessage("Concept Class Illegal not found");
 
-        referenceDataConceptService.saveConceptSet(conceptSet);
+        referenceDataConceptService.saveConcept(conceptSet);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
         children.add("Child1");
         children.add("Child2");
         conceptSet.setChildren(children);
-        Concept concept = referenceDataConceptService.saveConceptSet(conceptSet);
+        Concept concept = referenceDataConceptService.saveConcept(conceptSet);
         List<Concept> setMembers = concept.getSetMembers();
         assertEquals(2, setMembers.size());
         assertEquals("Child1", setMembers.get(0).getName(Context.getLocale()).getName());
@@ -114,12 +114,13 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
         List<String> children = new ArrayList<>();
         children.add("Child1");
         children.add("Child3");
+        children.add("Child4");
         conceptSet.setChildren(children);
 
         exception.expect(APIException.class);
-        exception.expectMessage("Some Child concepts do not exist");
+        exception.expectMessage("Child3 Concept/ConceptAnswer not found\nChild4 Concept/ConceptAnswer not found");
 
-        referenceDataConceptService.saveConceptSet(conceptSet);
+        referenceDataConceptService.saveConcept(conceptSet);
     }
 
 
@@ -138,7 +139,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
         children.add("Child1");
         children.add("Child2");
         conceptSet.setChildren(children);
-        Concept concept = referenceDataConceptService.saveConceptSet(conceptSet);
+        Concept concept = referenceDataConceptService.saveConcept(conceptSet);
 
         assertTrue(concept.isSet());
         assertEquals(uniqueName, concept.getName(Context.getLocale()).getName());

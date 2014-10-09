@@ -24,7 +24,7 @@ public class ConceptSetController extends BaseRestController {
     @ResponseBody
     public ResponseEntity<String> create(@RequestBody ConceptSet concept) {
         try {
-            org.openmrs.Concept savedConcept = referenceDataConceptService.saveConceptSet(concept);
+            org.openmrs.Concept savedConcept = referenceDataConceptService.saveConcept(concept);
             return new ResponseEntity<>(String.valueOf(savedConcept.getId()), HttpStatus.CREATED);
         } catch (Throwable error) {
             return new ResponseEntity<>(error.getMessage(), HttpStatus.BAD_REQUEST);

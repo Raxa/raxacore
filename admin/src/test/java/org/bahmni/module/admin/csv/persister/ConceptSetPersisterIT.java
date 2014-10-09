@@ -1,5 +1,6 @@
 package org.bahmni.module.admin.csv.persister;
 
+import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.bahmni.module.admin.csv.models.ConceptSetRow;
@@ -12,6 +13,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -73,6 +77,32 @@ public class ConceptSetPersisterIT extends BaseModuleWebContextSensitiveTest {
         assertNotNull(persistedConcept);
         assertEquals(conceptRow.name, persistedConcept.getName(Context.getLocale()).getName());
         assertEquals(conceptRow.conceptClass, persistedConcept.getConceptClass().getName());
+        assertNull(persistedConcept.getDescription());
+        assertEquals(0, persistedConcept.getSynonyms().size());
+        assertTrue(persistedConcept.isSet());
+        Context.flushSession();
+        Context.closeSession();
+    }
+
+
+    @Test
+    public void add_set_members() throws Exception {
+        ConceptSetRow conceptRow = new ConceptSetRow();
+        conceptRow.name = "New concept";
+        conceptRow.conceptClass = "New Class";
+        List<KeyValue> children = new ArrayList<>();
+        children.add(new KeyValue("1", "Child1"));
+        children.add(new KeyValue("2", "Child2"));
+        conceptRow.children = children;
+        RowResult<ConceptSetRow> conceptRowResult = conceptSetPersister.persist(conceptRow);
+        assertNull(conceptRowResult.getErrorMessage());
+        Context.openSession();
+        Context.authenticate("admin", "test");
+        Concept persistedConcept = conceptService.getConceptByName(conceptRow.name);
+        assertNotNull(persistedConcept);
+        assertEquals(conceptRow.name, persistedConcept.getName(Context.getLocale()).getName());
+        assertEquals(conceptRow.conceptClass, persistedConcept.getConceptClass().getName());
+        assertEquals(2, persistedConcept.getSetMembers().size());
         assertNull(persistedConcept.getDescription());
         assertEquals(0, persistedConcept.getSynonyms().size());
         assertTrue(persistedConcept.isSet());

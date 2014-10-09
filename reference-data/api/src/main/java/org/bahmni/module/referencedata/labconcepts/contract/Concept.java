@@ -9,21 +9,12 @@ import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Concept extends ConceptCommon{
-    private String dataType;
     private List<String> answers;
     private List<String> synonyms;
 
     public Concept() {
     }
 
-    @NotNull
-    public String getDataType() {
-        return dataType;
-    }
-
-    public void setDataType(String dataType) {
-        this.dataType = dataType;
-    }
 
     public List<String> getAnswers() {
         return answers;
