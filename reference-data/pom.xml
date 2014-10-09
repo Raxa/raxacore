@@ -30,7 +30,7 @@
     </organization>
 
     <properties>
-        <openmrsAtomfeedVersion>2.0-SNAPSHOT</openmrsAtomfeedVersion>
+        <openmrsAtomfeedVersion>2.0</openmrsAtomfeedVersion>
     </properties>
 
     <dependencyManagement>
