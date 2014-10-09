@@ -125,7 +125,7 @@ public class AdminImportController extends BaseRestController {
 
             boolean skipValidation = false;
             return new FileImporter<ConceptRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
-                    conceptPersister, ConceptRow.class, new NewMRSConnectionProvider(), username, skipValidation);
+                    conceptPersister, ConceptRow.class, new NewMRSConnectionProvider(), username, skipValidation, 1);
         } catch (Exception e) {
             logger.error("Could not upload file", e);
             return false;
@@ -144,7 +144,7 @@ public class AdminImportController extends BaseRestController {
 
             boolean skipValidation = false;
             return new FileImporter<ConceptSetRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
-                    conceptSetPersister, ConceptSetRow.class, new NewMRSConnectionProvider(), username, skipValidation);
+                    conceptSetPersister, ConceptSetRow.class, new NewMRSConnectionProvider(), username, skipValidation, 1);
         } catch (Exception e) {
             logger.error("Could not upload file", e);
             return false;
