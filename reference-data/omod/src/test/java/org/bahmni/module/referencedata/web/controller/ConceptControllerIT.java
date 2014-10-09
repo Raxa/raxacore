@@ -11,8 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import java.util.Collection;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class ConceptControllerIT extends BaseWebControllerTest {
@@ -152,6 +155,15 @@ public class ConceptControllerIT extends BaseWebControllerTest {
         assertEquals(className, concept.getConceptClass().getName());
         assertEquals(description, concept.getDescription(Context.getLocale()).getDescription());
         assertEquals(dataType, concept.getDatatype().getName());
+        Collection<ConceptAnswer> answers = concept.getAnswers();
+        for (ConceptAnswer answer : answers) {
+            if(answer.getAnswerConcept().getName(Context.getLocale()).getName().equals("HIV PROGRAM")){
+                assertTrue(answer.getSortWeight().equals(1.0));
+            }
+            if(answer.getAnswerConcept().getName(Context.getLocale()).getName().equals("ASPIRIN")){
+                assertTrue(answer.getSortWeight().equals(2.0));
+            }
+        }
     }
 
     @Test

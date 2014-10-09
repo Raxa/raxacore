@@ -4,11 +4,8 @@ import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptDatatype;
-import org.openmrs.ConceptName;
-import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.*;
@@ -25,7 +22,7 @@ public class ConceptSetMapper {
         return concept;
     }
 
-    private org.openmrs.Concept addSetMember(org.openmrs.Concept concept, Concept childConcept) {
+    private org.openmrs.Concept addSetMember(Concept concept, Concept childConcept) {
         for (Concept child  : concept.getSetMembers()) {
             if (child.getName(Context.getLocale()).getName().equals(childConcept.getName(Context.getLocale()).getName())) {
                 return concept;

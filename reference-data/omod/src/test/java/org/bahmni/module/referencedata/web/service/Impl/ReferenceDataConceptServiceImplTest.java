@@ -70,7 +70,7 @@ public class ReferenceDataConceptServiceImplTest {
         answer = new ConceptBuilder().build();
         answerConcept = new ConceptAnswer();
 
-        PowerMockito.when(this.conceptMapper.map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), any(HashSet.class), any(org.openmrs.Concept.class))).thenReturn(openmrsConcept);
+        PowerMockito.when(this.conceptMapper.map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), anyList(), any(org.openmrs.Concept.class))).thenReturn(openmrsConcept);
         PowerMockito.whenNew(ConceptMapper.class).withAnyArguments().thenReturn(conceptMapper);
 
         referenceDataConceptService = new ReferenceDataConceptServiceImpl(conceptService, referenceDataConceptReferenceTermService);
@@ -87,7 +87,7 @@ public class ReferenceDataConceptServiceImplTest {
 
         org.openmrs.Concept savedConcept = referenceDataConceptService.saveConcept(concept);
 
-        verify(conceptMapper).map(concept, conceptClass, conceptDatatype, new HashSet<ConceptAnswer>(), null);
+        verify(conceptMapper).map(concept, conceptClass, conceptDatatype, new ArrayList<ConceptAnswer>(), null);
         verify(conceptService).saveConcept(openmrsConcept);
         verify(conceptService).getConceptClassByName(concept.getClassName());
         verify(conceptService).getConceptDatatypeByName(concept.getDataType());
@@ -110,7 +110,7 @@ public class ReferenceDataConceptServiceImplTest {
 
         org.openmrs.Concept savedConcept = referenceDataConceptService.saveConcept(concept);
 
-        verify(conceptMapper).map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), anySet(), any(org.openmrs.Concept.class));
+        verify(conceptMapper).map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), anyList(), any(org.openmrs.Concept.class));
         verify(conceptService).getConceptByName(answerConceptName);
         verify(conceptService).saveConcept(openmrsConcept);
         verify(conceptService).getConceptClassByName(concept.getClassName());
@@ -140,7 +140,7 @@ public class ReferenceDataConceptServiceImplTest {
 
         org.openmrs.Concept savedConcept = referenceDataConceptService.saveConcept(concept);
 
-        verify(conceptMapper).map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), anySet(), any(org.openmrs.Concept.class));
+        verify(conceptMapper).map(any(Concept.class), any(ConceptClass.class), any(ConceptDatatype.class), anyList(), any(org.openmrs.Concept.class));
         verify(conceptService).getConceptByName(answerConceptName1);
         verify(conceptService).getConceptByName(answerConceptName2);
         verify(conceptService).saveConcept(openmrsConcept);

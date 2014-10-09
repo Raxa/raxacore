@@ -62,7 +62,7 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
     }
 
     private org.openmrs.Concept getConcept(Concept conceptData, ConceptClass conceptClass, ConceptDatatype conceptDatatype, org.openmrs.Concept existingConcept) {
-        HashSet<ConceptAnswer> conceptAnswers = getConceptAnswers(conceptData.getAnswers());
+        List<ConceptAnswer> conceptAnswers = getConceptAnswers(conceptData.getAnswers());
         validate(conceptData, conceptClass, conceptDatatype);
         ConceptMap conceptMap = mapToReferenceTerm(conceptData);
         org.openmrs.Concept mappedConcept = conceptMapper.map(conceptData, conceptClass, conceptDatatype, conceptAnswers, existingConcept);
@@ -70,8 +70,8 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
         return mappedConcept;
     }
 
-    private HashSet<ConceptAnswer> getConceptAnswers(List<String> answers) {
-        HashSet<ConceptAnswer> conceptAnswers = new HashSet<>();
+    private List<ConceptAnswer> getConceptAnswers(List<String> answers) {
+        List<ConceptAnswer> conceptAnswers = new ArrayList<>();
         notFound = new ArrayList<>();
         if (answers == null) return conceptAnswers;
         for (String answer : answers) {
