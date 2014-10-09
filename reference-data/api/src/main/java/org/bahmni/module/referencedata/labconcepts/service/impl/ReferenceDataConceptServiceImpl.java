@@ -124,7 +124,7 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
             errors.append("Cannot create answers for concept " + conceptData.getUniqueName() + " having datatype " + conceptData.getDataType() + "\n");
         }
         for (org.openmrs.ConceptAnswer conceptAnswer : conceptAnswers) {
-            if (conceptAnswer == null) {
+            if (conceptAnswer.getAnswerConcept() == null) {
                 errors.append("Some Answer concepts do not exist\n");
             }
         }
