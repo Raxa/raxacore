@@ -16,5 +16,5 @@ public interface ObsDao {
 
     List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer limit);
 
-    List<Obs> getLatestObsForConceptSetByVisit(String patientUuid, String conceptNames);
+    List<Obs> getLatestObsForConceptSetByVisit(String patientUuid, String conceptNames, Integer visitId);
 }
