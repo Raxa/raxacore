@@ -2313,4 +2313,72 @@
             delete from markers WHERE feed_uri = 'http://localhost:8080/reference-data/ws/feed/reference_data/recent';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201410101436" author="banka">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Clinical:ReadOnly'</sqlCheck>
+        </preConditions>
+        <comment>Add role for clinical read only access</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Clinical:ReadOnly', 'Will have read only access to clinical app');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201410101440" author="banka">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Clinical:FullAccess'</sqlCheck>
+        </preConditions>
+        <comment>Add role for clinical full access</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Clinical:FullAccess', 'Will have full access to clinical app');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201410101446" author="banka">
+        <comment>Add privileges for clinical read only</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'app:clinical');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'app:clinical:consultationTab');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'app:clinical:diagnosisTab');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'app:clinical:dispositionTab');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'app:clinical:history');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'app:clinical:observationTab');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Get Care Settings');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Get Order Frequencies');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Demographics Section');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Encounters Section');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Forms Section');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Graphs Section');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Overview Section');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Patient Summary');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Regimen Section');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Visits Section');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Concepts');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Encounters');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Locations');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Observations');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Order Types');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Orders');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Patient Programs');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Patients');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Privileges');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Providers');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Users');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Visit Types');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Visits');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201410101530" author="banka">
+        <comment>Add privileges for clinical full access</comment>
+        <sql>
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Clinical:ReadOnly', 'Clinical:FullAccess');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Add Encounters');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Add Observations');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Add Orders');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Add Visits');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Edit Encounters');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Edit Orders');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Edit Visits');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Get Care Settings');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Manage Encounter Roles');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'View Visit Attribute Types');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
