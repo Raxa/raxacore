@@ -3,7 +3,6 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.contract.drugorder.*;
-import org.bahmni.module.bahmnicore.contract.observation.*;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrder;

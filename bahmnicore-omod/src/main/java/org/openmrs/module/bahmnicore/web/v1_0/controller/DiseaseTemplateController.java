@@ -1,6 +1,6 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.contract.observation.DiseaseTemplate;
+import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplate;
 import org.bahmni.module.bahmnicore.service.DiseaseTemplateService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;

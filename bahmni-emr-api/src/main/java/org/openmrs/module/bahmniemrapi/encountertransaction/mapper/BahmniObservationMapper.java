@@ -37,13 +37,13 @@ public class BahmniObservationMapper {
         return map(encounterTransactionObservation, encounterDateTime, rootConcepts, false);
     }
 
-    private static BahmniObservation map(EncounterTransaction.Observation encounterTransactionObservation, Date encounterDateTime, List<Concept> rootConcepts, boolean flatten) {
+    private static BahmniObservation map(EncounterTransaction.Observation eTObservation, Date encounterDateTime, List<Concept> rootConcepts, boolean flatten) {
         BahmniObservation bahmniObservation = new BahmniObservation();
-        bahmniObservation.setEncounterTransactionObservation(encounterTransactionObservation);
+        bahmniObservation.setEncounterTransactionObservation(eTObservation);
         bahmniObservation.setEncounterDateTime(encounterDateTime);
         bahmniObservation.setConceptSortWeight(ConceptSortWeightUtil.getSortWeightFor(bahmniObservation.getConcept().getName(), rootConcepts));
-        if (CONCEPT_DETAILS_CONCEPT_CLASS.equals(encounterTransactionObservation.getConcept().getConceptClass()) && flatten) {
-            for (EncounterTransaction.Observation member : encounterTransactionObservation.getGroupMembers()) {
+        if (CONCEPT_DETAILS_CONCEPT_CLASS.equals(eTObservation.getConcept().getConceptClass()) && flatten) {
+            for (EncounterTransaction.Observation member : eTObservation.getGroupMembers()) {
                 if (member.getVoided()) {
                     continue;
                 }
@@ -56,10 +56,13 @@ public class BahmniObservationMapper {
                     bahmniObservation.setType(member.getConcept().getDataType());
                 }
             }
-        } else {
-            for (EncounterTransaction.Observation groupMember : encounterTransactionObservation.getGroupMembers()) {
+        } else if (eTObservation.getGroupMembers().size() > 0) {
+            for (EncounterTransaction.Observation groupMember : eTObservation.getGroupMembers()) {
                 bahmniObservation.addGroupMember(map(groupMember, encounterDateTime, rootConcepts, flatten));
             }
+        } else {
+            bahmniObservation.setValue(eTObservation.getValue());
+            bahmniObservation.setType(eTObservation.getConcept().getDataType());
         }
         return bahmniObservation;
     }

@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-import org.bahmni.module.bahmnicore.contract.observation.DiseaseTemplate;
+import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplate;
+import org.bahmni.module.bahmnicore.contract.diseasetemplate.ObservationTemplate;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.service.DiseaseTemplateService;
 import org.openmrs.Concept;
@@ -8,19 +9,19 @@ import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
+import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
 
     private static final String ALL_DISEASE_TEMPLATES = "All Disease Templates";
-    private static final String INTAKE_CONCEPT_CLASS = "Disease Intake";
-    private static final String PROGRESS_CONCEPT_CLASS = "Disease Progress";
 
     @Autowired
     private ObsDao obsDao;
@@ -36,16 +37,18 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         
         for (Concept diseaseTemplateConcept : diseaseTemplateConcepts) {
             DiseaseTemplate diseaseTemplate = new DiseaseTemplate(diseaseTemplateConcept.getName().getName());
-            diseaseTemplates.add(diseaseTemplate);
 
-            List<Concept> conceptSetsInDiseaseTemplates = diseaseTemplateConcept.getSetMembers();
-            for (Concept conceptSet : conceptSetsInDiseaseTemplates) {
-                List<Concept> rootConcepts = new ArrayList<>();
-                rootConcepts.add(conceptService.getConceptByName(conceptSet.getName().getName()));
-
-                List<BahmniObservation> observations = getLatestObsFor(patientUuid, conceptSet.getName().getName(), rootConcepts);
-                diseaseTemplate.addBahmniObservationsList(observations);
+            for (Concept concept : diseaseTemplateConcept.getSetMembers()) {
+                List<Concept> concepts = Arrays.asList(conceptService.getConceptByName(concept.getName().getName()));
+                List<BahmniObservation> observations = getLatestObsFor(patientUuid, concept.getName().getName(), concepts);
+                
+                ObservationTemplate observationTemplate = new ObservationTemplate();
+                observationTemplate.setConcept(new ConceptMapper().map(concept));
+                observationTemplate.setBahmniObservations(observations);
+                
+                diseaseTemplate.addObservationTemplate(observationTemplate);
             }
+            diseaseTemplates.add(diseaseTemplate);
         }
         return diseaseTemplates;
     }

@@ -21,7 +21,7 @@ public class BahmniObservation {
     private EncounterTransaction.Observation encounterTransactionObservation;
     private List<BahmniObservation> groupMembers = new ArrayList<>();
     public Set<EncounterTransaction.Provider> providers;
-    private boolean isAbnormal;
+    private Boolean isAbnormal;
     private Long duration;
     private String type;
     
@@ -165,11 +165,11 @@ public class BahmniObservation {
         this.providers = providers;
     }
     
-    public boolean getIsAbnormal() {
+    public Boolean getIsAbnormal() {
         return isAbnormal;
     }
 
-    public boolean isAbnormal() {
+    public Boolean isAbnormal() {
         return isAbnormal;
     }
 

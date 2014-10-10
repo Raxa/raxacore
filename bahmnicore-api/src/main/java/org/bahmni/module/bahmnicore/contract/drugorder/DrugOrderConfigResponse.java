@@ -1,8 +1,6 @@
 package org.bahmni.module.bahmnicore.contract.drugorder;
 
 
-import org.bahmni.module.bahmnicore.contract.observation.*;
-
 import java.util.*;
 
 public class DrugOrderConfigResponse {

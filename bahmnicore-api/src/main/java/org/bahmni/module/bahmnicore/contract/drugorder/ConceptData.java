@@ -1,9 +1,8 @@
-package org.bahmni.module.bahmnicore.contract.observation;
+package org.bahmni.module.bahmnicore.contract.drugorder;
 
 
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
-import org.openmrs.util.LocaleUtility;
 
 public class ConceptData {
     private String name;

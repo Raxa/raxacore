@@ -1,6 +1,6 @@
 package org.bahmni.module.bahmnicore.service;
 
-import org.bahmni.module.bahmnicore.contract.observation.DiseaseTemplate;
+import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplate;
 
 import java.util.List;
 
