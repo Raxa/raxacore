@@ -2297,4 +2297,20 @@
             <where>property='encounter.feed.publish.url'</where>
         </update>
     </changeSet>
+    <changeSet id="bahmni-core-201410101048" author="Rohan, Chethan">
+        <comment>Remove class name of reference data feed task and failed event task.</comment>
+        <sql>
+            delete from scheduler_task_config WHERE name = 'Reference Data Task';
+            delete from scheduler_task_config WHERE name = 'Reference Data Failed Event Task';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201410101132" author="Rohan, Chethan">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from markers where feed_uri = 'http://localhost:8080/reference-data/ws/feed/reference_data/recent'</sqlCheck>
+        </preConditions>
+        <comment>Remove reference data from markers.</comment>
+        <sql>
+            delete from markers WHERE feed_uri = 'http://localhost:8080/reference-data/ws/feed/reference_data/recent';
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -18,23 +18,6 @@
 
     <bean id="orderDao" class="org.bahmni.module.bahmnicore.dao.impl.OrderDaoImpl" />
 
-    <util:properties id="referenceDataAtomFeedProperties" location="classpath:referenceData-atomfeed.properties"/>
-    <bean id="referenceDataFeedProperties" class="org.bahmni.module.referencedatafeedclient.ReferenceDataFeedProperties"/>
-    <bean id="referenceDataHttpClient" class="org.bahmni.module.referencedatafeedclient.domain.WebClientFactory" factory-method="createReferenceDataClient">
-        <constructor-arg name="referenceDataFeedProperties" ref="referenceDataFeedProperties"/>
-    </bean>
-    <bean id="referenceDataFeedClientFactory" class="org.bahmni.module.referencedatafeedclient.client.ReferenceDataFeedClientFactory" scope="prototype">
-        <constructor-arg name="referenceDataEventWorker" ref="referenceDataEventWorker"/>
-        <constructor-arg name="referenceDataFeedProperties" ref="referenceDataFeedProperties"/>
-        <constructor-arg name="transactionManager" ref="transactionManager"/>
-    </bean>
-    <bean id="referenceDataFeedProcessor" class="org.bahmni.module.referencedatafeedclient.client.AtomFeedProcessor">
-        <constructor-arg name="atomFeedClientFactory" ref="referenceDataFeedClientFactory"/>
-    </bean>
-    <bean id="referenceDataFailedEventProcessor" class="org.bahmni.module.referencedatafeedclient.client.FailedEventProcessor">
-        <constructor-arg name="atomFeedClientFactory" ref="referenceDataFeedClientFactory"/>
-    </bean>
-
     <bean parent="obsServiceTarget" >
         <property name="handlers">
             <map>
