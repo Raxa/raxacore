@@ -13,7 +13,7 @@ public class LabOrderResultsTest {
     @Test
     public void shouldCreateSparseMatrixForLabOrderResultAndDates() throws Exception {
         List<LabOrderResult> results = Arrays.asList(
-                new LabOrderResult("uuid1", new DateTime(2014, 2, 10, 0, 0).toDate(), "Haemoglobin", "ppm", 15.0, 20.0, "17.0", false, false, null),
+                new LabOrderResult("uuid1", new DateTime(2014, 2, 10, 0, 0).toDate(), "Haemoglobin", "ppm", 15.0, 20.0, "17.0", false, false, "uploadedFile"),
                 new LabOrderResult("uuid1", new DateTime(2014, 2, 12, 0, 0).toDate(), "Haemoglobin", "ppm", 15.0, 20.0, "19.0", false, false, null),
                 new LabOrderResult("uuid1", new DateTime(2014, 1, 14, 0, 0, 1, 0).toDate(), "Haemoglobin", "ppm", 15.0, 20.0, "9.0", true, false, null),
                 new LabOrderResult("uuid1", new DateTime(2014, 1, 14, 1, 0, 0, 0).toDate(), "Haemoglobin", "ppm", 15.0, 20.0, "9.2", true, false, null),
@@ -29,5 +29,6 @@ public class LabOrderResultsTest {
         assertEquals(7, table.getDates().size());
         assertEquals(2, table.getOrders().size());
         assertEquals(7, table.getValues().size());
+        assertEquals("uploadedFile", table.getValues().get(0).getUploadedFileName());
     }
 }

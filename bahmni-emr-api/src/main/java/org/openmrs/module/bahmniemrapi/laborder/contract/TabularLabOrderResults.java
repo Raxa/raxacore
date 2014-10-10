@@ -53,5 +53,6 @@ public class TabularLabOrderResults {
         private String result;
         private Boolean abnormal;
         private Boolean referredOut;
+        private String uploadedFileName;
     }
 }
