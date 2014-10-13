@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.web.controller;
 
+import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.test.web.controller.BaseWebControllerTest;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -12,6 +13,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.Collection;
+import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

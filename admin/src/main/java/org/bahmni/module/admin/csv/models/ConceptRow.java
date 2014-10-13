@@ -1,13 +1,18 @@
 package org.bahmni.module.admin.csv.models;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.csv.CSVEntity;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.annotation.CSVHeader;
 import org.bahmni.csv.annotation.CSVRegexHeader;
+import org.bahmni.module.admin.csv.utils.CSVUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.bahmni.module.admin.csv.utils.CSVUtils.getStringArray;
 
 public class ConceptRow extends CSVEntity {
     @CSVHeader(name = "name")
@@ -39,6 +44,31 @@ public class ConceptRow extends CSVEntity {
 
     @CSVRegexHeader(pattern = "answer.*")
     public List<KeyValue> answers;
+
+    public ConceptRow(String name, String description, String conceptClass, String shortName, String referenceTermCode, String referenceTermRelationship, String referenceTermSource, String dataType, List<KeyValue> synonyms, List<KeyValue> answers) {
+        this.name = name;
+        this.description = description;
+        this.conceptClass = conceptClass;
+        this.shortName = shortName;
+        this.referenceTermCode = referenceTermCode;
+        this.referenceTermRelationship = referenceTermRelationship;
+        this.referenceTermSource = referenceTermSource;
+        this.dataType = dataType;
+        this.synonyms = synonyms;
+        this.answers = answers;
+        String[] aRow = {name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource, dataType};
+        String[] synonymsRow = getStringArray(synonyms);
+        String[] answersRow = getStringArray(answers);
+        aRow = ArrayUtils.addAll(aRow, ArrayUtils.addAll(synonymsRow, answersRow));
+        originalRow(aRow);
+    }
+
+    public static ConceptRow getHeaders(){
+        return new ConceptRow("name", "description", "class", "shortname", "reference-term-code", "reference-term-relationship", "reference-term-source", "datatype", null, null);
+    }
+
+    public ConceptRow() {
+    }
 
     public List<KeyValue> getSynonyms() {
         return synonyms == null ? new ArrayList<KeyValue>() : synonyms;

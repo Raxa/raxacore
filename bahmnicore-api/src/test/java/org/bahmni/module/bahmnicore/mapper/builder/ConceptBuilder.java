@@ -113,4 +113,10 @@ public class ConceptBuilder {
         concept.setDescriptions(Arrays.asList(conceptDescription));
         return this;
     }
+
+    public ConceptBuilder withAnswer(Concept answerConcept){
+        ConceptAnswer conceptAnswer = new ConceptAnswer(answerConcept);
+        concept.addAnswer(conceptAnswer);
+        return this;
+    }
 }
