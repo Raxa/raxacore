@@ -27,32 +27,33 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
 
     @Autowired
     private ObsDao obsDao;
-    
+
     @Autowired
     private ConceptService conceptService;
-    
+
     @Autowired
     private VisitDao visitDao;
 
     @Override
     @Transactional(readOnly = true)
     public List<DiseaseTemplate> allDiseaseTemplatesFor(String patientUuid) {
-        List<Concept> diseaseTemplateConcepts= getDiseaseTemplateConcepts();
+        List<Concept> diseaseTemplateConcepts = getDiseaseTemplateConcepts();
         List<DiseaseTemplate> diseaseTemplates = new ArrayList<>();
-        
+
         for (Concept diseaseTemplateConcept : diseaseTemplateConcepts) {
             DiseaseTemplate diseaseTemplate = new DiseaseTemplate(diseaseTemplateConcept.getName().getName());
 
             for (Concept concept : diseaseTemplateConcept.getSetMembers()) {
                 Visit latestVisit = visitDao.getLatestVisit(patientUuid, concept.getName().getName());
-                List<Concept> concepts = Arrays.asList(conceptService.getConceptByName(concept.getName().getName()));
-                List<BahmniObservation> observations = getLatestObsFor(patientUuid, concept.getName().getName(), concepts, latestVisit.getVisitId());
-                ObservationTemplate observationTemplate = new ObservationTemplate();
-                observationTemplate.setVisitStartDate(latestVisit.getStartDatetime());
-                observationTemplate.setConcept(new ConceptMapper().map(concept));
-                observationTemplate.setBahmniObservations(observations);
-                
-                diseaseTemplate.addObservationTemplate(observationTemplate);
+                if (latestVisit != null) {
+                    List<BahmniObservation> observations = getLatestObsFor(patientUuid, concept.getName().getName(), Arrays.asList(concept), latestVisit.getVisitId());
+                    ObservationTemplate observationTemplate = new ObservationTemplate();
+                    observationTemplate.setVisitStartDate(latestVisit.getStartDatetime());
+                    observationTemplate.setConcept(new ConceptMapper().map(concept));
+                    observationTemplate.setBahmniObservations(observations);
+
+                    diseaseTemplate.addObservationTemplate(observationTemplate);
+                }
             }
             diseaseTemplates.add(diseaseTemplate);
         }

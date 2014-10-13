@@ -48,7 +48,11 @@ public class BahmniObservationMapper {
                     continue;
                 }
                 if (member.getConcept().getConceptClass().equals(ABNORMAL_CONCEPT_CLASS)) {
-                    bahmniObservation.setAbnormal(Boolean.parseBoolean(((EncounterTransaction.Concept) member.getValue()).getName()));
+                    if (member.getValue() instanceof Boolean) {
+                        bahmniObservation.setAbnormal((Boolean) member.getValue());
+                    } else {
+                        bahmniObservation.setAbnormal(Boolean.parseBoolean(((EncounterTransaction.Concept) member.getValue()).getName()));
+                    }
                 } else if (member.getConcept().getConceptClass().equals(DURATION_CONCEPT_CLASS)) {
                     bahmniObservation.setDuration(new Double(member.getValue().toString()).longValue());
                 } else {

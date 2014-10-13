@@ -173,7 +173,7 @@ public class BahmniObservation {
         return isAbnormal;
     }
 
-    public void setAbnormal(boolean abnormal) {
+    public void setAbnormal(Boolean abnormal) {
         isAbnormal = abnormal;
     }
 

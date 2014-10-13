@@ -13,7 +13,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class PersonObsDaoIT extends BaseModuleWebContextSensitiveTest {
+public class ObsDaoIT extends BaseModuleWebContextSensitiveTest {
 	@Autowired
     ObsDao obsDao;
 
@@ -61,7 +61,7 @@ public class PersonObsDaoIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void retrieve_only_orphaned_observation() throws Exception {
-        List<Obs> allObs = obsDao.getObsFor("341b4e41-790c-484f-b6ed-71dc8da222db", Arrays.asList("Diastolic"), null, true);
+        List<Obs> allObs = obsDao.getObsFor("341b4e41-790c-484f-b6ed-71dc8da222db", Arrays.asList("Diastolic"), null);
 
         assertEquals(1, allObs.size());
         assertEquals("Diastolic", allObs.get(0).getConcept().getName().getName());

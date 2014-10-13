@@ -53,13 +53,7 @@ public class ObsDaoImpl implements ObsDao {
 
     }
 
-    @Override
-    public List<Obs> getObsFor(String patientUuid, List<String> rootConceptNames, Integer numberOfVisits) {
-        return getObsFor(patientUuid, rootConceptNames, numberOfVisits, false);
-    }
-
-    @Override
-    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, boolean getOrphanedObservations) {
+    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits) {
         List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
         if (listOfVisitIds == null || listOfVisitIds.isEmpty())
             return new ArrayList<>();
@@ -74,7 +68,6 @@ public class ObsDaoImpl implements ObsDao {
                         " and cn.conceptNameType = :conceptNameType " +
                         " and cn.voided = false " +
                         " and obs.voided = false " +
-                        (getOrphanedObservations ? " and obs.obsGroup is null " : "") +
                         " order by obs.obsDatetime desc ");
         queryToGetObservations.setString("patientUuid", patientUuid);
         queryToGetObservations.setParameterList("conceptNames", conceptNames);

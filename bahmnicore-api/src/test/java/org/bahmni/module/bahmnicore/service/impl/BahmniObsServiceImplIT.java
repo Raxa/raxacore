@@ -16,7 +16,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class BahmniPersonObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
+public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
     BahmniObsService personObsService;
     
@@ -40,6 +40,16 @@ public class BahmniPersonObsServiceImplIT extends BaseModuleWebContextSensitiveT
 
     @Test
     public void return_orphaned_obs_for_patient() throws Exception {
+        Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
+        List<Obs> obsForConceptSet = personObsService.observationsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(bloodPressureConcept), null);
+        assertEquals(2, obsForConceptSet.size());
+
+        assertEquals("Systolic", obsForConceptSet.get(1).getConcept().getName().getName());
+        assertEquals((Double) 110.0, obsForConceptSet.get(1).getValueNumeric());
+    }
+
+    @Test
+    public void returnNotReturnObsForSetMembersInConceptDetailsConcept() throws Exception {
         Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
         List<Obs> obsForConceptSet = personObsService.observationsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(bloodPressureConcept), null);
         assertEquals(2, obsForConceptSet.size());

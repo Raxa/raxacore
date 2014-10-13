@@ -22,9 +22,10 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(LocaleUtility.class)
-public class BahmniPersonObsServiceImplTest {
+public class BahmniObsServiceImplTest {
 
-    BahmniObsService personObsService;
+    BahmniObsService bahmniObsService;
+    
     @Mock
     ObsDao obsDao;
 
@@ -36,18 +37,18 @@ public class BahmniPersonObsServiceImplTest {
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
 
         initMocks(this);
-        personObsService = new BahmniObsServiceImpl(obsDao);
+        bahmniObsService = new BahmniObsServiceImpl(obsDao);
     }
 
     @Test
     public void shouldGetPersonObs() throws Exception {
-        personObsService.getObsForPerson(personUUID);
+        bahmniObsService.getObsForPerson(personUUID);
         verify(obsDao).getNumericObsByPerson(personUUID);
     }
 
     @Test
     public void shouldGetNumericConcepts() throws Exception {
-        personObsService.getNumericConceptsForPerson(personUUID);
+        bahmniObsService.getNumericConceptsForPerson(personUUID);
         verify(obsDao).getNumericConceptsForPerson(personUUID);
     }
 
@@ -55,7 +56,7 @@ public class BahmniPersonObsServiceImplTest {
     public void shouldGetObsByPatientUuidConceptNameAndNumberOfVisits() throws Exception {
         Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
         Integer numberOfVisits = 3;
-        personObsService.observationsFor(personUUID, Arrays.asList(bloodPressureConcept), numberOfVisits);
-        verify(obsDao).getObsFor(personUUID,  Arrays.asList("Blood Pressure"), numberOfVisits, true);
+        bahmniObsService.observationsFor(personUUID, Arrays.asList(bloodPressureConcept), numberOfVisits);
+        verify(obsDao).getObsFor(personUUID,  Arrays.asList("Blood Pressure"), numberOfVisits);
     }
 }

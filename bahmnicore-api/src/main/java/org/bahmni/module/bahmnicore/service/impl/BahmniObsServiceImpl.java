@@ -12,6 +12,7 @@ import java.util.List;
 
 @Service
 public class BahmniObsServiceImpl implements BahmniObsService {
+
     private ObsDao obsDao;
 
     @Autowired
@@ -26,7 +27,11 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
     @Override
     public List<Obs> observationsFor(String patientUuid, List<Concept> concepts, Integer numberOfVisits) {
-        return obsDao.getObsFor(patientUuid, getAllConceptNames(concepts), numberOfVisits, true);
+        List<String> conceptNames = new ArrayList<>();
+        for (Concept concept : concepts) {
+            conceptNames.add(concept.getName().getName());
+        }
+        return obsDao.getObsFor(patientUuid, conceptNames, numberOfVisits);
     }
 
     @Override
@@ -43,14 +48,4 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         return obsDao.getNumericConceptsForPerson(personUUID);
     }
 
-    private List<String> getAllConceptNames(List<Concept> concepts) {
-        List<String> conceptNames = new ArrayList<>();
-        for (Concept concept: concepts) {
-            conceptNames.add(concept.getName().getName());
-            if(concept.isSet()) {
-                conceptNames.addAll(getAllConceptNames(concept.getSetMembers()));
-            }
-        }
-        return conceptNames;
-    }
 }
