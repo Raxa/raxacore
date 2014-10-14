@@ -13,7 +13,6 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.VisitService;
-import org.openmrs.api.context.*;
 import org.openmrs.module.bahmnicore.web.v1_0.InvalidInputException;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
@@ -27,7 +26,6 @@ import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
-import org.openmrs.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -143,9 +141,6 @@ public class BahmniEncounterController extends BaseRestController {
     @ResponseBody
     @Transactional
     public BahmniEncounterTransaction update(@RequestBody BahmniEncounterTransaction bahmniEncounterTransaction) {
-        // Mujir/Vinay/Hemanth - Needed for OrderService save. It uses AdminService.executeSql. Do away wih this.
-        Context.addProxyPrivilege(PrivilegeConstants.SQL_LEVEL_ACCESS);
-
         setUuidsForObservations(bahmniEncounterTransaction.getObservations());
         return bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
     }
