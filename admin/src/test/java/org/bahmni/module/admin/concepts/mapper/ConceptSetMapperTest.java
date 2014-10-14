@@ -43,6 +43,16 @@ public class ConceptSetMapperTest {
     }
 
     @Test
+    public void null_if_no_shortName() throws Exception {
+        ConceptSetRow conceptSetRow = new ConceptSetRow();
+        conceptSetRow.name = "Some";
+        conceptSetRow.shortName = " ";
+        ConceptSet map = conceptSetMapper.map(conceptSetRow);
+        assertNull(map.getDisplayName());
+        assertEquals(conceptSetRow.name, map.getUniqueName());
+    }
+
+    @Test
     public void shouldNotMapEmptyChildren() throws Exception {
         ConceptSetRow conceptSetRow = new ConceptSetRow();
         conceptSetRow.name = "UniqueName";

@@ -1,6 +1,7 @@
 package org.bahmni.module.admin.csv.models;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bahmni.csv.CSVEntity;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.annotation.CSVHeader;
@@ -40,6 +41,20 @@ public class ConceptSetRow extends CSVEntity {
         return children == null ? new ArrayList<KeyValue>() : children;
     }
 
+    public String getShortName() {
+        return (shortName != null && StringUtils.isEmpty(shortName.trim())) ? null : shortName;
+    }
+
+    public ConceptSetRow getHeaders(){
+        int childCount = 1;
+        List<KeyValue> childHeaders = new ArrayList<>();
+        for (KeyValue ignored : children) {
+            childHeaders.add(new KeyValue("childHeader", "child." + childCount));
+            childCount++;
+        }
+        return new ConceptSetRow("name", "description", "class", "shortname", "reference-term-code", "reference-term-relationship", "reference-term-source", childHeaders);
+    }
+
     public ConceptSetRow(String name, String description, String conceptClass, String shortName, String referenceTermCode, String referenceTermRelationship, String referenceTermSource, List<KeyValue> children) {
         this.name = name;
         this.description = description;
@@ -56,5 +71,22 @@ public class ConceptSetRow extends CSVEntity {
     }
 
     public ConceptSetRow() {
+    }
+
+    public void adjust(int maxSetMembers) {
+        addBlankChildren(maxSetMembers);
+        String[] aRow = {name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource};
+        String[] childrenRow = getStringArray(children);
+        aRow = ArrayUtils.addAll(aRow, childrenRow);
+        originalRow(aRow);
+    }
+
+    private void addBlankChildren(int maxSetMembers) {
+        int counter  = this.getChildren().size();
+        this.children = this.getChildren();
+        while (counter <= maxSetMembers){
+            this.children.add(new KeyValue("child", ""));
+            counter++;
+        }
     }
 }

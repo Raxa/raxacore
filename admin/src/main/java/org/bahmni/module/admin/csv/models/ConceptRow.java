@@ -63,8 +63,19 @@ public class ConceptRow extends CSVEntity {
         originalRow(aRow);
     }
 
-    public static ConceptRow getHeaders(){
-        return new ConceptRow("name", "description", "class", "shortname", "reference-term-code", "reference-term-relationship", "reference-term-source", "datatype", null, null);
+    public ConceptRow getHeaders(){
+        int synonymCount = 1, answerCount = 1;
+        List<KeyValue> synonymHeaders = new ArrayList<>();
+        List<KeyValue> answerHeaders = new ArrayList<>();
+        for (KeyValue ignored : synonyms) {
+            synonymHeaders.add(new KeyValue("synonymHeader", "synonym." + synonymCount));
+            synonymCount++;
+        }
+        for (KeyValue ignored : answers) {
+            answerHeaders.add(new KeyValue("answerHeader", "answer." + answerCount));
+            answerCount++;
+        }
+        return new ConceptRow("name", "description", "class", "shortname", "reference-term-code", "reference-term-relationship", "reference-term-source", "datatype", synonymHeaders, answerHeaders);
     }
 
     public ConceptRow() {
@@ -100,5 +111,33 @@ public class ConceptRow extends CSVEntity {
 
     public String getReferenceTermCode() {
         return referenceTermCode;
+    }
+
+    public void adjust(int maxSynonyms, int maxAnswers) {
+        addBlankSynonyms(maxSynonyms);
+        addBlankAnswers(maxAnswers);
+        String[] aRow = {name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource, dataType};
+        String[] synonymsRow = getStringArray(synonyms);
+        String[] answersRow = getStringArray(answers);
+        aRow = ArrayUtils.addAll(aRow, ArrayUtils.addAll(synonymsRow, answersRow));
+        originalRow(aRow);
+    }
+
+    private void addBlankAnswers(int maxAnswers) {
+        int counter  = this.getAnswers().size();
+        this.answers = this.getAnswers();
+        while (counter <= maxAnswers){
+            this.answers.add(new KeyValue("answer", ""));
+            counter++;
+        }
+    }
+
+    private void addBlankSynonyms(int maxSynonyms) {
+        int counter = this.getSynonyms().size();
+        this.synonyms = this.getSynonyms();
+        while (counter <= maxSynonyms){
+            this.synonyms.add(new KeyValue("synonym", ""));
+            counter++;
+        }
     }
 }

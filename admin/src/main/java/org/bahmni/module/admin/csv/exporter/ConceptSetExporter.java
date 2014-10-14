@@ -31,6 +31,8 @@ public class ConceptSetExporter {
         if(conceptSet == null){
             throw new APIException("Concept " + conceptName + " not found");
         }
-        return conceptSetMapper.mapAll(conceptSet);
+        ConceptRows conceptRows = conceptSetMapper.mapAll(conceptSet);
+        conceptRows.makeCSVReady();
+        return conceptRows;
     }
 }
