@@ -151,13 +151,18 @@ public class ConceptSetMapperTest {
         ConceptRow child2Row = conceptList.get(2);
         assertEquals(4, conceptList.size());
         assertEquals("Answer1", answer.name);
+        assertEquals("answer1", answer.uuid);
         assertEquals("Child1", child1Row.name);
+        assertEquals("child1", child1Row.uuid);
+        assertEquals("child2", child2Row.uuid);
         assertEquals("Child2", child2Row.name);
         assertEquals(2, conceptSetList.size());
         ConceptSetRow conceptSetRow1 = conceptSetList.get(0);
         ConceptSetRow conceptSetRow2 = conceptSetList.get(1);
         assertEquals("Parent Concept", conceptSetRow2.name);
+        assertEquals("Parent", conceptSetRow2.uuid);
         assertEquals("Sub Parent", conceptSetRow1.name);
+        assertEquals("subp", conceptSetRow1.uuid);
     }
 
     @Test

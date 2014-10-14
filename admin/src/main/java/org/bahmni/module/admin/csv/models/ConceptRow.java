@@ -49,7 +49,8 @@ public class ConceptRow extends CSVEntity {
     @CSVRegexHeader(pattern = "answer.*")
     public List<KeyValue> answers;
 
-    public ConceptRow(String name, String description, String conceptClass, String shortName, String referenceTermCode, String referenceTermRelationship, String referenceTermSource, String dataType, List<KeyValue> synonyms, List<KeyValue> answers) {
+    public ConceptRow(String uuid, String name, String description, String conceptClass, String shortName, String referenceTermCode, String referenceTermRelationship, String referenceTermSource, String dataType, List<KeyValue> synonyms, List<KeyValue> answers) {
+        this.uuid = uuid;
         this.name = name;
         this.description = description;
         this.conceptClass = conceptClass;
@@ -60,7 +61,7 @@ public class ConceptRow extends CSVEntity {
         this.dataType = dataType;
         this.synonyms = synonyms;
         this.answers = answers;
-        String[] aRow = {name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource, dataType};
+        String[] aRow = {uuid, name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource, dataType};
         String[] synonymsRow = getStringArray(synonyms);
         String[] answersRow = getStringArray(answers);
         aRow = ArrayUtils.addAll(aRow, ArrayUtils.addAll(synonymsRow, answersRow));
@@ -79,7 +80,7 @@ public class ConceptRow extends CSVEntity {
             answerHeaders.add(new KeyValue("answerHeader", "answer." + answerCount));
             answerCount++;
         }
-        return new ConceptRow("name", "description", "class", "shortname", "reference-term-code", "reference-term-relationship", "reference-term-source", "datatype", synonymHeaders, answerHeaders);
+        return new ConceptRow("uuid", "name", "description", "class", "shortname", "reference-term-code", "reference-term-relationship", "reference-term-source", "datatype", synonymHeaders, answerHeaders);
     }
 
     public ConceptRow() {
@@ -129,7 +130,7 @@ public class ConceptRow extends CSVEntity {
     public void adjust(int maxSynonyms, int maxAnswers) {
         addBlankSynonyms(maxSynonyms);
         addBlankAnswers(maxAnswers);
-        String[] aRow = {name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource, dataType};
+        String[] aRow = {uuid, name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource, dataType};
         String[] synonymsRow = getStringArray(synonyms);
         String[] answersRow = getStringArray(answers);
         aRow = ArrayUtils.addAll(aRow, ArrayUtils.addAll(synonymsRow, answersRow));

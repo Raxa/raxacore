@@ -77,7 +77,8 @@ public class ConceptSetMapper {
             conceptReferenceTermSource = conceptMap.getConceptReferenceTerm().getConceptSource().getName();
             conceptReferenceTermRelationship = conceptMap.getConceptMapType().getName();
         }
-        ConceptSetRow conceptSetRow = new ConceptSetRow(name, conceptDescription, conceptClass, conceptShortname, conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource, children);
+        String uuid = concept.getUuid();
+        ConceptSetRow conceptSetRow = new ConceptSetRow(uuid, name, conceptDescription, conceptClass, conceptShortname, conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource, children);
         return conceptSetRow;
     }
 

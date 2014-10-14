@@ -86,7 +86,8 @@ public class ConceptMapper {
             conceptReferenceTermSource = conceptMap.getConceptReferenceTerm().getConceptSource().getName();
             conceptReferenceTermRelationship = conceptMap.getConceptMapType().getName();
         }
-        ConceptRow conceptRow = new ConceptRow(name, conceptDescription, conceptClass, conceptShortname,
+        String uuid = concept.getUuid();
+        ConceptRow conceptRow = new ConceptRow(uuid, name, conceptDescription, conceptClass, conceptShortname,
                 conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource,
                 conceptDatatype, conceptSynonyms, conceptAnswers);
         return conceptRow;

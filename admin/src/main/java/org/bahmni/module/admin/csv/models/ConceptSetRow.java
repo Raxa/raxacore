@@ -65,10 +65,11 @@ public class ConceptSetRow extends CSVEntity {
             childHeaders.add(new KeyValue("childHeader", "child." + childCount));
             childCount++;
         }
-        return new ConceptSetRow("name", "description", "class", "shortname", "reference-term-code", "reference-term-relationship", "reference-term-source", childHeaders);
+        return new ConceptSetRow("uuid", "name", "description", "class", "shortname", "reference-term-code", "reference-term-relationship", "reference-term-source", childHeaders);
     }
 
-    public ConceptSetRow(String name, String description, String conceptClass, String shortName, String referenceTermCode, String referenceTermRelationship, String referenceTermSource, List<KeyValue> children) {
+    public ConceptSetRow(String uuid, String name, String description, String conceptClass, String shortName, String referenceTermCode, String referenceTermRelationship, String referenceTermSource, List<KeyValue> children) {
+        this.uuid = uuid;
         this.name = name;
         this.description = description;
         this.conceptClass = conceptClass;
@@ -77,7 +78,7 @@ public class ConceptSetRow extends CSVEntity {
         this.referenceTermRelationship = referenceTermRelationship;
         this.referenceTermSource = referenceTermSource;
         this.children = children;
-        String[] aRow = {name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource};
+        String[] aRow = {uuid, name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource};
         String[] childrenRow = getStringArray(children);
         aRow = ArrayUtils.addAll(aRow, childrenRow);
         originalRow(aRow);
@@ -88,7 +89,7 @@ public class ConceptSetRow extends CSVEntity {
 
     public void adjust(int maxSetMembers) {
         addBlankChildren(maxSetMembers);
-        String[] aRow = {name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource};
+        String[] aRow = {uuid, name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource};
         String[] childrenRow = getStringArray(children);
         aRow = ArrayUtils.addAll(aRow, childrenRow);
         originalRow(aRow);

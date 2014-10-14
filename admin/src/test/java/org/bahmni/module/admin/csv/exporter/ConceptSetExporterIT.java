@@ -56,6 +56,7 @@ public class ConceptSetExporterIT extends BaseModuleWebContextSensitiveTest {
         assertEquals("Answer2", answer12.name);
         assertEquals("Answer3", answer21.name);
         assertEquals("Child1", child1.name);
+        assertEquals("d670df13-7fef-44af-aade-8db46f245522", child1.uuid);
         assertEquals("Child2", child2.name);
         assertEquals("Child3", child3.name);
         assertEquals("Child4", child4.name);
@@ -81,7 +82,9 @@ public class ConceptSetExporterIT extends BaseModuleWebContextSensitiveTest {
         ConceptSetRow small = conceptSetRows.get(1);
         ConceptSetRow big = conceptSetRows.get(2);
         assertEquals("Small Concept", small.name);
+        assertEquals("68637e4e-c8a9-4831-93b4-2ef2d987105d", small.uuid);
         assertEquals("Big Concept", big.name);
+        assertEquals("39854ddf-b950-4c20-91d9-475729ca0ec6", big.uuid);
         assertEquals(2, conceptRows.get(0).getAnswers().size());
         assertEquals(2, conceptRows.get(0).getSynonyms().size());
         assertEquals(5, conceptSetRows.get(0).getChildren().size());
