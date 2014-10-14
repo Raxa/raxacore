@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.model.event;
 
+import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.model.Operation;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.ict4h.atomfeed.server.service.Event;
@@ -29,7 +30,7 @@ import static org.mockito.Mockito.when;
 
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
-public class TestEventTest {
+public class LabTestEventTest {
     public static final String TEST_CONCEPT_UUID = "aebc57b7-0683-464e-ac48-48b8838abdfc";
 
     private Concept concept;
@@ -44,7 +45,7 @@ public class TestEventTest {
 
         concept = new ConceptBuilder().withClassUUID(ConceptClass.TEST_UUID).withUUID(TEST_CONCEPT_UUID).build();
 
-        parentConcept = new ConceptBuilder().withName(org.bahmni.module.referencedata.labconcepts.contract.Test.TEST_PARENT_CONCEPT_NAME).withSetMember(concept).build();
+        parentConcept = new ConceptBuilder().withName(LabTest.TEST_PARENT_CONCEPT_NAME).withSetMember(concept).build();
 
         List<ConceptSet> conceptSets = getConceptSets(parentConcept, concept);
 

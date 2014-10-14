@@ -1,6 +1,7 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
+import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Panel;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.module.referencedata.labconcepts.mapper.PanelMapper;
@@ -72,7 +73,7 @@ public class PanelMapperTest {
         panelConcept = new ConceptBuilder().withUUID("Panel UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).withDescription("SomeDescription")
                 .withSetMember(testConcept).withDateChanged(dateChanged).withShortName("ShortName").withName("Panel Name Here").withDataType(ConceptDatatype.NUMERIC).build();
         testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID)
-                .withDateChanged(dateChanged).withShortName("ShortName").withName(org.bahmni.module.referencedata.labconcepts.contract.Test.TEST_PARENT_CONCEPT_NAME).withSetMember(panelConcept).build();
+                .withDateChanged(dateChanged).withShortName("ShortName").withName(LabTest.TEST_PARENT_CONCEPT_NAME).withSetMember(panelConcept).build();
         sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClass(Sample.SAMPLE_CONCEPT_CLASS).
                 withDateChanged(dateChanged).withSetMember(panelConcept).withShortName("ShortName").withName("SampleName").build();
         laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
@@ -127,23 +128,11 @@ public class PanelMapperTest {
         Panel panelData = panelMapper.map(panelConcept);
         assertEquals("Panel UUID", panelData.getId());
         assertEquals("Panel Name Here", panelData.getName());
-        assertNull(panelData.getSalePrice());
         assertEquals(dateCreated, panelData.getDateCreated());
         assertEquals(dateChanged, panelData.getLastUpdated());
-        assertEquals("ShortName", panelData.getShortName());
-        assertEquals("Sample UUID", panelData.getSample().getId());
-        assertEquals("SampleName", panelData.getSample().getName());
+        assertEquals("Sample UUID", panelData.getSampleUuid());
         assertEquals(1, panelData.getTests().size());
         assertEquals("Test UUID", panelData.getTests().get(0).getId());
-    }
-
-    @Test
-    public void send_default_for_no_short_name() throws Exception {
-        panelConcept = new ConceptBuilder().withUUID("Panel UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).withDescription("SomeDescription")
-                .withDateChanged(dateChanged).withName("Panel Name Here").withDataType(ConceptDatatype.NUMERIC).build();
-        Panel panelData = panelMapper.map(panelConcept);
-        assertEquals("Panel UUID", panelData.getId());
-        assertEquals("Panel Name Here", panelData.getShortName());
     }
 
     @Test
@@ -156,6 +145,6 @@ public class PanelMapperTest {
     public void null_if_sample_not_specified() throws Exception {
         panelConceptSets.remove(panelSampleConceptSet);
         Panel panelData = panelMapper.map(panelConcept);
-        assertNull(panelData.getSample());
+        assertNull(panelData.getSampleUuid());
     }
 }

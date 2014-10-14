@@ -24,7 +24,6 @@ public abstract class ResourceMapper {
         resource.setId(concept.getUuid());
         resource.setDateCreated(concept.getDateCreated());
         resource.setLastUpdated(concept.getDateChanged());
-        resource.setSortOrder(getSortWeight(concept));
         return (T) resource;
     }
 

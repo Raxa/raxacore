@@ -4,8 +4,8 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptCommon;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
+import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
-import org.bahmni.module.referencedata.labconcepts.contract.Test;
 import org.openmrs.*;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
@@ -63,9 +63,9 @@ public class MapperUtils {
     }
 
 
-    public static List<Test> getTests(Concept concept) {
-        List<Test> tests = new ArrayList<>();
-        TestMapper testMapper = new TestMapper();
+    public static List<LabTest> getTests(Concept concept) {
+        List<LabTest> tests = new ArrayList<>();
+        LabTestMapper testMapper = new LabTestMapper();
         List<Concept> setMembers = concept.getSetMembers();
         if (setMembers == null) return tests;
         for (Concept setMember : setMembers) {
@@ -130,7 +130,7 @@ public class MapperUtils {
         return conceptNumeric == null ? null : conceptNumeric.getUnits();
     }
 
-    private static boolean isTestConcept(Concept concept) {
+    public static boolean isTestConcept(Concept concept) {
         return concept.getConceptClass() != null &&
                 concept.getConceptClass().getUuid().equals(ConceptClass.TEST_UUID);
     }
@@ -158,7 +158,19 @@ public class MapperUtils {
         return concept.getConceptClass() != null && concept.getConceptClass().getName() != null && concept.getConceptClass().getName().equals(Sample.SAMPLE_CONCEPT_CLASS);
     }
 
+    public static boolean isPanelConcept(Concept concept) {
+        return concept.getConceptClass() != null && concept.getConceptClass().getUuid().equals(ConceptClass.LABSET_UUID) && !concept.getName(Context.getLocale()).getName().equals(Sample.SAMPLE_PARENT_CONCEPT_NAME);
+    }
+
     public static boolean isDepartmentConcept(Concept concept) {
         return concept.getConceptClass() != null && concept.getConceptClass().getName() != null && concept.getConceptClass().getName().equals(Department.DEPARTMENT_CONCEPT_CLASS);
+    }
+
+    public static String getSampleUuid(Concept concept) {
+        Sample sampleConcept = getSample(concept);
+        if(sampleConcept == null){
+            return null;
+        }
+        return sampleConcept.getId();
     }
 }

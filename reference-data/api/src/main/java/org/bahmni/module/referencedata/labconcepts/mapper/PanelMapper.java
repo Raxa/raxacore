@@ -1,13 +1,12 @@
 package org.bahmni.module.referencedata.labconcepts.mapper;
 
+import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Panel;
-import org.bahmni.module.referencedata.labconcepts.contract.Test;
 import org.openmrs.Concept;
-import org.openmrs.api.context.Context;
 
 public class PanelMapper extends ResourceMapper {
     public PanelMapper() {
-        super(Test.TEST_PARENT_CONCEPT_NAME);
+        super(LabTest.TEST_PARENT_CONCEPT_NAME);
     }
 
     @Override
@@ -15,9 +14,9 @@ public class PanelMapper extends ResourceMapper {
         Panel panel = new Panel();
         panel = mapResource(panel, panelConcept);
         panel.setDescription(MapperUtils.getDescription(panelConcept));
-        panel.setShortName(panelConcept.getShortestName(Context.getLocale(), false).getName());
-        panel.setSample(MapperUtils.getSample(panelConcept));
+        panel.setSampleUuid(MapperUtils.getSampleUuid(panelConcept));
         panel.setTests(MapperUtils.getTests(panelConcept));
+        panel.setSortOrder(getSortWeight(panelConcept));
         return panel;
     }
 }

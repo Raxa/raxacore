@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.model.event;
 
+import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.model.Operation;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.ict4h.atomfeed.server.service.Event;
@@ -42,9 +43,9 @@ public class PanelEventTest {
     public void setup() {
         MockitoAnnotations.initMocks    (this);
 
-        concept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).withUUID(PANEL_CONCEPT_UUID).build();
+        concept = new ConceptBuilder().withName("abc").withClassUUID(ConceptClass.LABSET_UUID).withUUID(PANEL_CONCEPT_UUID).build();
 
-        parentConcept = new ConceptBuilder().withName(org.bahmni.module.referencedata.labconcepts.contract.Test.TEST_PARENT_CONCEPT_NAME).withSetMember(concept).build();
+        parentConcept = new ConceptBuilder().withName(LabTest.TEST_PARENT_CONCEPT_NAME).withSetMember(concept).build();
 
         List<ConceptSet> conceptSets = getConceptSets(parentConcept, concept);
 

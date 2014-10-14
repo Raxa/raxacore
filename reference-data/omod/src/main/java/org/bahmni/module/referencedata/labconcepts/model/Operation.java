@@ -19,7 +19,8 @@ public class Operation {
             departmentEvent(),
             testEvent(),
             panelEvent(),
-            labConceptSetEvent()
+            labConceptSetEvent(),
+            allTestsAndPanelsConceptSetEvent()
     );
 
 

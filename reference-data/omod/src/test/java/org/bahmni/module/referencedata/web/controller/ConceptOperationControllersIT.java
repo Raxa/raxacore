@@ -3,6 +3,7 @@
 package org.bahmni.module.referencedata.web.controller;
 
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
+import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.test.web.controller.BaseWebControllerTest;
 import org.junit.Before;
@@ -59,16 +60,14 @@ public class ConceptOperationControllersIT extends BaseWebControllerTest {
     public void shouldPublishTest() throws Exception {
         MockHttpServletRequest request = newGetRequest("/rest/v1/reference-data/test/" + testConcept.getUuid());
         MockHttpServletResponse response = handle(request);
-        org.bahmni.module.referencedata.labconcepts.contract.Test testResponse = deserialize(response, org.bahmni.module.referencedata.labconcepts.contract.Test.class);
+        LabTest testResponse = deserialize(response, LabTest.class);
         assertEquals(testConcept.getUuid(), testResponse.getId());
         assertNull(testResponse.getDescription());
         assertEquals(testConcept.getName(Context.getLocale()).getName(), testResponse.getName());
-        assertEquals(testConcept.getName(Context.getLocale()).getName(), testResponse.getShortName());
         assertNotEquals(testConcept.isRetired(), testResponse.getIsActive());
         assertNull(testResponse.getDepartment());
-        assertNull(testResponse.getSample());
+        assertNull(testResponse.getSampleUuid());
         assertEquals("Numeric", testResponse.getResultType());
         assertNull(testResponse.getDescription());
-        assertNull(testResponse.getSalePrice());
     }
 }

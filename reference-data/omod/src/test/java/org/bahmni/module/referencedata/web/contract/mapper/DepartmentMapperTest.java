@@ -67,7 +67,6 @@ public class DepartmentMapperTest {
     public void map_all_sample_fields_from_concept() throws Exception {
         Department departmentData = departmentMapper.map(departmentConcept);
         assertEquals("Sample UUID", departmentData.getId());
-        assertEquals(sortWeight, departmentData.getSortOrder());
         assertEquals(dateCreated, departmentData.getDateCreated());
         assertEquals(dateChanged, departmentData.getLastUpdated());
         assertEquals("Some Description", departmentData.getDescription());
@@ -88,13 +87,4 @@ public class DepartmentMapperTest {
         assertTrue(departmentData.getIsActive());
     }
 
-    @Test
-    public void null_as_sort_order_when_sort_order_not_specified() throws Exception {
-        ConceptSet conceptSet = getConceptSet(labDepartmentConcept, departmentConcept);
-        List<ConceptSet> conceptSets = getConceptSets(conceptSet);
-        when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
-        when(Context.getConceptService()).thenReturn(conceptService);
-        Department departmentData = departmentMapper.map(departmentConcept);
-        assertTrue(departmentData.getSortOrder().equals(ResourceMapper.DEFAULT_SORT_ORDER));
-    }
 }

@@ -1,23 +1,14 @@
 package org.bahmni.module.referencedata.labconcepts.contract;
 
-public class Test extends Resource {
-    private String shortName;
+public class LabTest extends Resource {
     private String description;
     private Department department;
-    private Sample sample;
+    private String sampleUuid;
     private String resultType;
-    private Double salePrice;
     private String testUnitOfMeasure;
+    private Double sortOrder;
 
     public static final String TEST_PARENT_CONCEPT_NAME = "All_Tests_and_Panels";
-
-    public String getShortName() {
-        return shortName;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
 
     public String getDescription() {
         return description;
@@ -35,12 +26,12 @@ public class Test extends Resource {
         this.department = department;
     }
 
-    public Sample getSample() {
-        return sample;
+    public String getSampleUuid() {
+        return sampleUuid;
     }
 
-    public void setSample(Sample sample) {
-        this.sample = sample;
+    public void setSampleUuid(String sampleUuid) {
+        this.sampleUuid = sampleUuid;
     }
 
     public String getResultType() {
@@ -51,20 +42,16 @@ public class Test extends Resource {
         this.resultType = resultType;
     }
 
-    public Double getSalePrice() {
-        return salePrice;
-    }
-
-    public void setSalePrice(Double salePrice) {
-        this.salePrice = salePrice;
-    }
-
     public String getTestUnitOfMeasure() {
         return testUnitOfMeasure;
     }
 
     public void setTestUnitOfMeasure(String testUnitOfMeasure) {
         this.testUnitOfMeasure = testUnitOfMeasure;
+    }
+
+    public void setSortOrder(Double sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
 }

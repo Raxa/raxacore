@@ -14,6 +14,7 @@ public class SampleMapper extends ResourceMapper {
         Sample sample = new Sample();
         sample = mapResource(sample, sampleConcept);
         sample.setShortName(sampleConcept.getShortestName(Context.getLocale(), false).getName());
+        sample.setSortOrder(getSortWeight(sampleConcept));
         return sample;
     }
 }

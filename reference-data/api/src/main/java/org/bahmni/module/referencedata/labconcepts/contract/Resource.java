@@ -6,12 +6,11 @@ import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
 import java.util.Date;
 
 public class Resource {
-    String id;
-    Date dateCreated;
-    Date lastUpdated;
-    String name;
-    Boolean isActive;
-    Double sortOrder;
+    private String id;
+    private Date dateCreated;
+    private Date lastUpdated;
+    private String name;
+    private Boolean isActive;
 
     public String getName() {
         return name;
@@ -27,14 +26,6 @@ public class Resource {
 
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
-    }
-
-    public Double getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(Double sortOrder) {
-        this.sortOrder = sortOrder;
     }
 
     public String getId() {

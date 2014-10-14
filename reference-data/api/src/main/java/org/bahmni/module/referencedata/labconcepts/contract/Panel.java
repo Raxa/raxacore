@@ -3,28 +3,10 @@ package org.bahmni.module.referencedata.labconcepts.contract;
 import java.util.List;
 
 public class Panel extends Resource {
-    private String shortName;
     private String description;
-    private List<Test> tests;
-    private Sample sample;
-    private Double salePrice;
-
-    public Double getSalePrice() {
-        return salePrice;
-    }
-
-    public void setSalePrice(Double salePrice) {
-        this.salePrice = salePrice;
-    }
-
-    public String getShortName() {
-
-        return shortName;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
+    private List<LabTest> tests;
+    private String sampleUuid;
+    private Double sortOrder;
 
     public String getDescription() {
         return description;
@@ -34,19 +16,24 @@ public class Panel extends Resource {
         this.description = description;
     }
 
-    public List<Test> getTests() {
+    public List<LabTest> getTests() {
         return tests;
     }
 
-    public void setTests(List<Test> tests) {
+    public void setTests(List<LabTest> tests) {
         this.tests = tests;
     }
 
-    public Sample getSample() {
-        return sample;
+    public String getSampleUuid() {
+        return sampleUuid;
     }
 
-    public void setSample(Sample sample) {
-        this.sample = sample;
+    public void setSampleUuid(String sampleUuid) {
+        this.sampleUuid = sampleUuid;
     }
+
+    public void setSortOrder(Double sortOrder) {
+        this.sortOrder = sortOrder;
+    }
+
 }

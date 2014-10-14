@@ -1,8 +1,9 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
+import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
-import org.bahmni.module.referencedata.labconcepts.mapper.TestMapper;
+import org.bahmni.module.referencedata.labconcepts.mapper.LabTestMapper;
 import org.bahmni.test.builder.ConceptBuilder;
 
 import org.junit.Before;
@@ -38,8 +39,8 @@ import static org.mockito.Mockito.when;
 
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
-public class TestMapperTest {
-    private TestMapper testMapper;
+public class LabTestMapperTest {
+    private LabTestMapper testMapper;
     private Concept sampleConcept;
     private Date dateCreated;
     private Date dateChanged;
@@ -61,7 +62,7 @@ public class TestMapperTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        testMapper = new TestMapper();
+        testMapper = new LabTestMapper();
         dateCreated = new Date();
         dateChanged = new Date();
         Locale defaultLocale = new Locale("en", "GB");
@@ -70,7 +71,7 @@ public class TestMapperTest {
         testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.TEST_UUID).withDescription("SomeDescription")
                 .withDateChanged(dateChanged).withShortName("ShortName").withName("Test Name Here").withDataType(ConceptDatatype.NUMERIC).build();
         testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID)
-                .withDateChanged(dateChanged).withShortName("ShortName").withName(org.bahmni.module.referencedata.labconcepts.contract.Test.TEST_PARENT_CONCEPT_NAME).withSetMember(testConcept).build();
+                .withDateChanged(dateChanged).withShortName("ShortName").withName(LabTest.TEST_PARENT_CONCEPT_NAME).withSetMember(testConcept).build();
         sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClass(Sample.SAMPLE_CONCEPT_CLASS).
                 withDateChanged(dateChanged).withSetMember(testConcept).withShortName("ShortName").withName("SampleName").build();
         laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
@@ -115,55 +116,43 @@ public class TestMapperTest {
 
     @Test
     public void map_all_test_fields_from_concept() throws Exception {
-        org.bahmni.module.referencedata.labconcepts.contract.Test testData = testMapper.map(testConcept);
+        LabTest testData = testMapper.map(testConcept);
         assertEquals("Test UUID", testData.getId());
         assertEquals("Test Name Here", testData.getName());
         assertEquals(ConceptDatatype.NUMERIC, testData.getResultType());
-        assertNull(testData.getSalePrice());
         assertEquals(dateCreated, testData.getDateCreated());
         assertEquals(dateChanged, testData.getLastUpdated());
-        assertEquals("ShortName", testData.getShortName());
         assertEquals("Department UUID", testData.getDepartment().getId());
         assertEquals("Department Name", testData.getDepartment().getName());
         assertEquals("Some Description", testData.getDepartment().getDescription());
-        assertEquals("Sample UUID", testData.getSample().getId());
-        assertEquals("SampleName", testData.getSample().getName());
+        assertEquals("Sample UUID", testData.getSampleUuid());
         assertEquals("unit", testData.getTestUnitOfMeasure());
     }
 
     @Test
-    public void send_default_for_no_short_name() throws Exception {
-        testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.TEST_UUID).withDescription("SomeDescription")
-                .withDateChanged(dateChanged).withName("Test Name Here").withDataType(ConceptDatatype.NUMERIC).build();
-        org.bahmni.module.referencedata.labconcepts.contract.Test testData = testMapper.map(testConcept);
-        assertEquals("Test UUID", testData.getId());
-        assertEquals("Test Name Here", testData.getShortName());
-    }
-
-    @Test
     public void is_active_true_by_default() throws Exception {
-        org.bahmni.module.referencedata.labconcepts.contract.Test testData = testMapper.map(testConcept);
+        LabTest testData = testMapper.map(testConcept);
         assertTrue(testData.getIsActive());
     }
 
     @Test
     public void null_if_department_not_specified() throws Exception {
         testConceptSets.remove(testDepartmentConceptSet);
-        org.bahmni.module.referencedata.labconcepts.contract.Test testData = testMapper.map(testConcept);
+        LabTest testData = testMapper.map(testConcept);
         assertNull(testData.getDepartment());
     }
 
     @Test
     public void null_if_sample_not_specified() throws Exception {
         testConceptSets.remove(testSampleConceptSet);
-        org.bahmni.module.referencedata.labconcepts.contract.Test testData = testMapper.map(testConcept);
-        assertNull(testData.getSample());
+        LabTest testData = testMapper.map(testConcept);
+        assertNull(testData.getSampleUuid());
     }
 
     @Test
     public void testUnitOfMeasure_is_null_if_not_specified() throws Exception {
         when(conceptService.getConceptNumeric(anyInt())).thenReturn(null);
-        org.bahmni.module.referencedata.labconcepts.contract.Test testData = testMapper.map(testConcept);
+        LabTest testData = testMapper.map(testConcept);
         assertNull(testData.getTestUnitOfMeasure());
     }
 }
