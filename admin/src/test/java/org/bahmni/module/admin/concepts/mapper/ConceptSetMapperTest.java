@@ -5,12 +5,14 @@ import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.bahmni.module.admin.csv.models.ConceptRows;
 import org.bahmni.module.admin.csv.models.ConceptSetRow;
 import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
+import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -34,12 +36,14 @@ public class ConceptSetMapperTest {
         conceptSetRow.shortName = "shortName";
         conceptSetRow.conceptClass = "ConvSet";
         conceptSetRow.children = children;
+        conceptSetRow.uuid = UUID.randomUUID().toString();
 
         ConceptSet conceptSet = conceptSetMapper.map(conceptSetRow);
         assertEquals(2, conceptSet.getChildren().size());
         assertEquals(conceptSetRow.name, conceptSet.getUniqueName());
         assertEquals(conceptSetRow.shortName, conceptSet.getDisplayName());
         assertEquals(conceptSetRow.conceptClass, conceptSet.getClassName());
+        assertEquals(conceptSetRow.getUuid(), conceptSet.getUuid());
     }
 
     @Test
@@ -154,5 +158,21 @@ public class ConceptSetMapperTest {
         ConceptSetRow conceptSetRow2 = conceptSetList.get(1);
         assertEquals("Parent Concept", conceptSetRow2.name);
         assertEquals("Sub Parent", conceptSetRow1.name);
+    }
+
+    @Test
+    public void uuid_null_if_not_specified() throws Exception {
+        ConceptSetRow conceptRow = new ConceptSetRow();
+        conceptRow.uuid = null;
+        ConceptSet map = conceptSetMapper.map(conceptRow);
+        assertNull(map.getUuid());
+    }
+
+    @Test
+    public void uuid_null_if_not_valid() throws Exception {
+        ConceptSetRow conceptSetRow = new ConceptSetRow();
+        conceptSetRow.uuid = "invalid UUID";
+        ConceptSet map = conceptSetMapper.map(conceptSetRow);
+        assertNull(map.getUuid());
     }
 }

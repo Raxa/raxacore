@@ -6,13 +6,19 @@ import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openmrs.*;
+import org.openmrs.ConceptAnswer;
+import org.openmrs.ConceptClass;
+import org.openmrs.ConceptDatatype;
+import org.openmrs.ConceptName;
 import org.openmrs.api.context.Context;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
@@ -31,7 +37,7 @@ public class ConceptMapperTest {
     }
 
     @Test
-    public void shouldMapRequestConceptToOpenMRSConcept(){
+    public void shouldMapRequestConceptToOpenMRSConcept() {
         Concept concept = new Concept();
         concept.setUniqueName("uniqueName");
         concept.setDisplayName("displayName");
@@ -61,7 +67,7 @@ public class ConceptMapperTest {
     }
 
     @Test
-    public void shouldMapConceptIfDescriptionIsNull(){
+    public void shouldMapConceptIfDescriptionIsNull() {
         Concept concept = new Concept();
         concept.setUniqueName("uniqueName");
         concept.setDisplayName("displayName");
@@ -82,7 +88,7 @@ public class ConceptMapperTest {
     }
 
     @Test
-    public void shouldMapConceptIfDisplayNameAndDescriptionIsNull(){
+    public void shouldMapConceptIfDisplayNameAndDescriptionIsNull() {
         Concept concept = new Concept();
         concept.setUniqueName("uniqueName");
         concept.setClassName("Finding");
@@ -102,7 +108,7 @@ public class ConceptMapperTest {
     }
 
     @Test
-    public void shouldMapCodedConceptWithAnswer(){
+    public void shouldMapCodedConceptWithAnswer() {
         Concept concept = new Concept();
         concept.setUniqueName("uniqueName");
         concept.setClassName("Finding");

@@ -3,6 +3,7 @@ package org.bahmni.module.referencedata.labconcepts.contract;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 public class ConceptCommon {
     private String uniqueName;
@@ -11,6 +12,7 @@ public class ConceptCommon {
     private String className;
     private String dataType;
     private ConceptReferenceTerm conceptReferenceTerm;
+    private String uuid;
 
     public ConceptReferenceTerm getConceptReferenceTerm() {
         return conceptReferenceTerm;
@@ -62,4 +64,11 @@ public class ConceptCommon {
         this.dataType = dataType;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 }

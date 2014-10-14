@@ -27,6 +27,7 @@ public class ConceptSetMapper {
 
     public ConceptSet map(ConceptSetRow conceptSetRow) {
         ConceptSet conceptSet = new ConceptSet();
+        conceptSet.setUuid(conceptSetRow.getUuid());
         conceptSet.setUniqueName(conceptSetRow.name);
         conceptSet.setDisplayName(conceptSetRow.getShortName());
         conceptSet.setClassName(conceptSetRow.conceptClass);

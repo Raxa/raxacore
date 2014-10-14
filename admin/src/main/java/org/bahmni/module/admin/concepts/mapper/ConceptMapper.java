@@ -23,6 +23,7 @@ public class ConceptMapper {
 
     public Concept map(ConceptRow conceptRow) {
         Concept concept = new Concept();
+        concept.setUuid(conceptRow.getUuid());
         concept.setClassName(conceptRow.conceptClass);
         concept.setDataType(conceptRow.getDataType());
         concept.setDescription(conceptRow.getDescription());

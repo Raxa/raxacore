@@ -150,4 +150,34 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
         assertEquals(description, concept.getDescription(Context.getLocale()).getDescription());
         assertEquals(ConceptDatatype.N_A_UUID, concept.getDatatype().getUuid());
     }
+
+
+
+    @Test
+    public void updateExistingConceptSetWithUUID() throws Exception {
+        ConceptSet conceptSet = new ConceptSet();
+        conceptSet.setUuid("5d2d4cb7-mm3b-0037-70f7-0dmimmm22222");
+        String uniqueName = "Existing Concept New";
+        conceptSet.setUniqueName(uniqueName);
+        String displayName = "NewSName";
+        conceptSet.setDisplayName(displayName);
+        conceptSet.setClassName("Finding");
+        List<String> children = new ArrayList<>();
+        String description = "Description";
+        conceptSet.setDescription(description);
+
+        children.add("Child1");
+        children.add("Child2");
+        conceptSet.setChildren(children);
+        Concept concept = referenceDataConceptService.saveConcept(conceptSet);
+
+        assertTrue(concept.isSet());
+        assertEquals(uniqueName, concept.getName(Context.getLocale()).getName());
+        assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
+        assertEquals("Finding", concept.getConceptClass().getName());
+        assertEquals(2, concept.getSetMembers().size());
+        assertEquals("5d2d4cb7-mm3b-0037-70f7-0dmimmm22222", concept.getUuid());
+        assertEquals(description, concept.getDescription(Context.getLocale()).getDescription());
+        assertEquals(ConceptDatatype.N_A_UUID, concept.getDatatype().getUuid());
+    }
 }

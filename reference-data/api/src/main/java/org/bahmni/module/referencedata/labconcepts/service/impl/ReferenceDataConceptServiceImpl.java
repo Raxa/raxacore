@@ -37,16 +37,23 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
     @Override
     public org.openmrs.Concept saveConcept(Concept conceptData) {
         ConceptClass conceptClass = conceptService.getConceptClassByName(conceptData.getClassName());
-        org.openmrs.Concept existingConcept = conceptService.getConceptByName(conceptData.getUniqueName());
+        org.openmrs.Concept existingConcept = getExistingConcept(conceptData.getUniqueName(), conceptData.getUuid());
         ConceptDatatype conceptDatatype = conceptService.getConceptDatatypeByName(conceptData.getDataType());
         org.openmrs.Concept mappedConcept = getConcept(conceptData, conceptClass, conceptDatatype, existingConcept);
         return conceptService.saveConcept(mappedConcept);
     }
 
+    private org.openmrs.Concept getExistingConcept(String uniqueName, String uuid) {
+        if(uuid != null){
+            return conceptService.getConceptByUuid(uuid);
+        }
+        return conceptService.getConceptByName(uniqueName);
+    }
+
     @Override
     public org.openmrs.Concept saveConcept(ConceptSet conceptSet) {
         ConceptClass conceptClass = conceptService.getConceptClassByName(conceptSet.getClassName());
-        org.openmrs.Concept existingConcept = conceptService.getConceptByName(conceptSet.getUniqueName());
+        org.openmrs.Concept existingConcept = getExistingConcept(conceptSet.getUniqueName(), conceptSet.getUuid());
         ConceptDatatype conceptDatatype = conceptService.getConceptDatatypeByName(conceptSet.getDataType());
         org.openmrs.Concept mappedConceptSet = getConceptSet(conceptSet, conceptClass, existingConcept, conceptDatatype);
         return conceptService.saveConcept(mappedConceptSet);

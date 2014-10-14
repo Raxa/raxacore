@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -25,6 +26,7 @@ public class ConceptMapperTest {
     public void map_concept_row_to_concept_dto() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "UniqueName";
+        conceptRow.uuid = UUID.randomUUID().toString();
         conceptRow.shortName = "UName";
         conceptRow.conceptClass = "Finding";
         Concept mappedConcept = conceptMapper.map(conceptRow);
@@ -32,6 +34,7 @@ public class ConceptMapperTest {
         assertEquals(conceptRow.shortName, mappedConcept.getDisplayName());
         assertEquals(conceptRow.conceptClass, mappedConcept.getClassName());
         assertEquals(conceptRow.getDataType(), mappedConcept.getDataType());
+        assertEquals(conceptRow.getUuid(), mappedConcept.getUuid());
     }
 
     @Test
@@ -94,5 +97,21 @@ public class ConceptMapperTest {
         conceptRow.description = "";
         Concept mappedConcept = conceptMapper.map(conceptRow);
         assertNull(mappedConcept.getDescription());
+    }
+
+    @Test
+    public void uuid_null_if_not_specified() throws Exception {
+        ConceptRow conceptRow = new ConceptRow();
+        conceptRow.uuid = null;
+        Concept map = conceptMapper.map(conceptRow);
+        assertNull(map.getUuid());
+    }
+
+    @Test
+    public void uuid_null_if_not_valid() throws Exception {
+        ConceptRow conceptRow = new ConceptRow();
+        conceptRow.uuid = "invalid UUID";
+        Concept map = conceptMapper.map(conceptRow);
+        assertNull(map.getUuid());
     }
 }

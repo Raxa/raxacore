@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.mapper;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptCommon;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
@@ -137,13 +138,21 @@ public class MapperUtils {
     public static org.openmrs.Concept addConceptName(org.openmrs.Concept concept, ConceptName conceptName) {
         if (conceptName.getName() == null) return concept;
         for (ConceptName name : concept.getNames()) {
-            if (name.getName().equals(conceptName.getName())) {
+            if (isFullySpecifiedName(conceptName) && isFullySpecifiedName(name) && !name.getName().equals(conceptName.getName())) {
+                name.setName(conceptName.getName());
+            } else if (name.getName().equals(conceptName.getName())) {
                 return concept;
             }
         }
+
         concept.addName(conceptName);
         return concept;
     }
+
+    private static boolean isFullySpecifiedName(ConceptName conceptName) {
+        return ObjectUtils.equals(conceptName.getConceptNameType(), ConceptNameType.FULLY_SPECIFIED);
+    }
+
 
     public static boolean isSampleConcept(Concept concept) {
         return concept.getConceptClass() != null && concept.getConceptClass().getName() != null && concept.getConceptClass().getName().equals(Sample.SAMPLE_CONCEPT_CLASS);

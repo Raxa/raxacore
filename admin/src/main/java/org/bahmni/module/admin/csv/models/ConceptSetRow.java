@@ -9,10 +9,14 @@ import org.bahmni.csv.annotation.CSVRegexHeader;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.bahmni.module.admin.csv.utils.CSVUtils.getStringArray;
 
 public class ConceptSetRow extends CSVEntity {
+    @CSVHeader(name = "uuid")
+    public String uuid;
+
     @CSVHeader(name = "name")
     public String name;
 
@@ -43,6 +47,15 @@ public class ConceptSetRow extends CSVEntity {
 
     public String getShortName() {
         return (shortName != null && StringUtils.isEmpty(shortName.trim())) ? null : shortName;
+    }
+
+    public String getUuid() {
+        try{
+            UUID uuid = UUID.fromString(this.uuid.trim());
+            return uuid.toString();
+        } catch (Exception e){
+            return null;
+        }
     }
 
     public ConceptSetRow getHeaders(){

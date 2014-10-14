@@ -11,10 +11,14 @@ import org.bahmni.module.admin.csv.utils.CSVUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.bahmni.module.admin.csv.utils.CSVUtils.getStringArray;
 
 public class ConceptRow extends CSVEntity {
+    @CSVHeader(name = "uuid")
+    public String uuid;
+
     @CSVHeader(name = "name")
     public String name;
 
@@ -87,6 +91,15 @@ public class ConceptRow extends CSVEntity {
 
     public List<KeyValue> getAnswers() {
         return answers == null ? new ArrayList<KeyValue>() : answers;
+    }
+
+    public String getUuid() {
+        try{
+            UUID uuid = UUID.fromString(this.uuid.trim());
+            return uuid.toString();
+        } catch (Exception e){
+            return null;
+        }
     }
 
     public String getDataType() {
