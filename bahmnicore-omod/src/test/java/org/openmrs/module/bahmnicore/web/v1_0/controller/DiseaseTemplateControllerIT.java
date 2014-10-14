@@ -3,6 +3,7 @@ package org.openmrs.module.bahmnicore.web.v1_0.controller;
 import org.bahmni.test.web.controller.BaseWebControllerTest;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,6 +16,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+@Ignore
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class DiseaseTemplateControllerIT extends BaseWebControllerTest {
 
