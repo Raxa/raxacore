@@ -59,7 +59,7 @@ public class AllSamplesMapperTest {
                 withDateChanged(dateChanged).withSetMember(testConcept).withShortName("ShortName").withName("SampleName").build();
 
         labSampleConceptSet = new ConceptBuilder().withUUID("Lab Samples UUID").withDateCreated(dateCreated).withDateChanged(dateChanged)
-                .withName(Sample.SAMPLE_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.LABSET_UUID).withShortName("Lab samples short name").withDescription("Lab samples Description")
+                .withName(AllSamples.ALL_SAMPLES).withClassUUID(ConceptClass.LABSET_UUID).withShortName("Lab samples short name").withDescription("Lab samples Description")
                 .withSetMember(sampleConcept).build();
 
         when(Context.getConceptService()).thenReturn(conceptService);
@@ -78,7 +78,6 @@ public class AllSamplesMapperTest {
         List<Sample> samples = labSamplesData.getSamples();
         assertEquals(1, samples.size());
         assertEquals(sampleData.getId(), samples.get(0).getId());
-
     }
 
 }

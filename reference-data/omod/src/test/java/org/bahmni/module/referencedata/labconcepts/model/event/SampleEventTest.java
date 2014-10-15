@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.model.event;
 
+import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.module.referencedata.labconcepts.model.Operation;
 import org.bahmni.test.builder.ConceptBuilder;
@@ -44,7 +45,7 @@ public class SampleEventTest {
 
         concept = new ConceptBuilder().withClass("Sample").withUUID(SAMPLE_CONCEPT_UUID).build();
 
-        parentConcept = new ConceptBuilder().withName(Sample.SAMPLE_PARENT_CONCEPT_NAME).withSetMember(concept).build();
+        parentConcept = new ConceptBuilder().withName(AllSamples.ALL_SAMPLES).withSetMember(concept).build();
 
         List<ConceptSet> conceptSets = getConceptSets(parentConcept, concept);
 
@@ -92,6 +93,16 @@ public class SampleEventTest {
         assertNotNull(events.get(0));
         assertEquals(events.get(0).getTitle(), "sample");
         assertEquals(events.get(0).getCategory(), "lab");
+    }
+
+    @Test
+    public void create_event_for_sample_with_parent_concept_missing() throws Exception {
+        Concept sampleConcept = new ConceptBuilder().withClass("Sample").withUUID("SampleUUID").build();
+        List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{sampleConcept});
+        Event event = events.get(0);
+        assertNotNull(event);
+        assertEquals(event.getTitle(), ConceptEventFactory.SAMPLE);
+        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
     }
 
 }

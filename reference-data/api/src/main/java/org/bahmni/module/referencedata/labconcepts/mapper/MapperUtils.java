@@ -159,7 +159,7 @@ public class MapperUtils {
     }
 
     public static boolean isPanelConcept(Concept concept) {
-        return concept.getConceptClass() != null && concept.getConceptClass().getUuid().equals(ConceptClass.LABSET_UUID) && !concept.getName(Context.getLocale()).getName().equals(Sample.SAMPLE_PARENT_CONCEPT_NAME);
+        return concept.getConceptClass() != null && concept.getConceptClass().getUuid().equals(ConceptClass.LABSET_UUID);
     }
 
     public static boolean isDepartmentConcept(Concept concept) {

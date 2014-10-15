@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
+import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
 import org.bahmni.module.referencedata.labconcepts.mapper.ResourceMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.SampleMapper;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
@@ -40,7 +41,7 @@ public class SampleMapperTest {
     private Concept laboratoryConcept;
     @Mock
     private ConceptService conceptService;
-    private Double sortWeight;
+    private Double sortOrder;
 
     @Before
     public void setUp() throws Exception {
@@ -55,11 +56,11 @@ public class SampleMapperTest {
         sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withShortName("ShortName").withName("SampleName").build();
         laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
-                .withName(Sample.SAMPLE_PARENT_CONCEPT_NAME).withClass(Sample.SAMPLE_CONCEPT_CLASS)
+                .withName(AllSamples.ALL_SAMPLES).withClass(Sample.SAMPLE_CONCEPT_CLASS)
                 .withSetMember(sampleConcept).build();
         ConceptSet conceptSet = getConceptSet(laboratoryConcept, sampleConcept);
-        sortWeight = Double.valueOf(999);
-        conceptSet.setSortWeight(sortWeight);
+        sortOrder = Double.valueOf(22);
+        conceptSet.setSortWeight(sortOrder);
         List<ConceptSet> conceptSets = getConceptSets(conceptSet);
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
         when(Context.getConceptService()).thenReturn(conceptService);
@@ -69,7 +70,7 @@ public class SampleMapperTest {
     public void map_all_sample_fields_from_concept() throws Exception {
         Sample sampleData = sampleMapper.map(sampleConcept);
         assertEquals("Sample UUID", sampleData.getId());
-        assertEquals(sortWeight, sampleData.getSortOrder());
+        assertEquals(sortOrder, sampleData.getSortOrder());
         assertEquals(dateCreated, sampleData.getDateCreated());
         assertEquals(dateChanged, sampleData.getLastUpdated());
         assertEquals("ShortName", sampleData.getShortName());

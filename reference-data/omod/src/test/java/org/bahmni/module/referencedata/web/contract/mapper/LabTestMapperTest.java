@@ -1,5 +1,7 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
+import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
+import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
@@ -71,11 +73,11 @@ public class LabTestMapperTest {
         testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.TEST_UUID).withDescription("SomeDescription")
                 .withDateChanged(dateChanged).withShortName("ShortName").withName("Test Name Here").withDataType(ConceptDatatype.NUMERIC).build();
         testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID)
-                .withDateChanged(dateChanged).withShortName("ShortName").withName(LabTest.TEST_PARENT_CONCEPT_NAME).withSetMember(testConcept).build();
+                .withDateChanged(dateChanged).withShortName("ShortName").withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(testConcept).build();
         sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClass(Sample.SAMPLE_CONCEPT_CLASS).
                 withDateChanged(dateChanged).withSetMember(testConcept).withShortName("ShortName").withName("SampleName").build();
         laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
-                .withName(Sample.SAMPLE_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.LABSET_UUID)
+                .withName(AllSamples.ALL_SAMPLES).withClassUUID(ConceptClass.LABSET_UUID)
                 .withSetMember(sampleConcept).build();
         departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withClass(Department.DEPARTMENT_CONCEPT_CLASS).withSetMember(testConcept).withDescription("Some Description").withName("Department Name").build();
@@ -127,12 +129,6 @@ public class LabTestMapperTest {
         assertEquals("Some Description", testData.getDepartment().getDescription());
         assertEquals("Sample UUID", testData.getSampleUuid());
         assertEquals("unit", testData.getTestUnitOfMeasure());
-    }
-
-    @Test
-    public void is_active_true_by_default() throws Exception {
-        LabTest testData = testMapper.map(testConcept);
-        assertTrue(testData.getIsActive());
     }
 
     @Test

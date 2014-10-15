@@ -6,6 +6,7 @@ import java.util.List;
 public class AllSamples extends Resource {
     private String description;
     private List<Sample> samples= new ArrayList<>();
+    public static final String ALL_SAMPLES = "Lab Samples";
 
     public String getDescription() {
         return description;

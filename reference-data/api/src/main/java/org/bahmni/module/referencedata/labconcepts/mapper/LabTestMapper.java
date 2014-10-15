@@ -1,11 +1,12 @@
 package org.bahmni.module.referencedata.labconcepts.mapper;
 
+import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
 import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.openmrs.Concept;
 
 public class LabTestMapper extends ResourceMapper {
     public LabTestMapper() {
-        super(LabTest.TEST_PARENT_CONCEPT_NAME);
+        super(AllTestsAndPanels.ALL_TESTS_AND_PANELS);
     }
 
     @Override

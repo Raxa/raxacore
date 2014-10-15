@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.advice;
 
+import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.module.referencedata.labconcepts.model.event.SampleEventTest;
 import org.bahmni.test.builder.ConceptBuilder;
@@ -55,7 +56,7 @@ public class ConceptOperationEventInterceptorTest {
 
         concept = new ConceptBuilder().withClass(Sample.SAMPLE_CONCEPT_CLASS).withUUID(SampleEventTest.SAMPLE_CONCEPT_UUID).build();
 
-        parentConcept = new ConceptBuilder().withName(Sample.SAMPLE_PARENT_CONCEPT_NAME).withSetMember(concept).build();
+        parentConcept = new ConceptBuilder().withName(AllSamples.ALL_SAMPLES).withSetMember(concept).build();
 
         List<ConceptSet> conceptSets = getConceptSets(parentConcept, concept);
 

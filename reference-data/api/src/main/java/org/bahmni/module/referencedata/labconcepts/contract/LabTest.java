@@ -8,7 +8,7 @@ public class LabTest extends Resource {
     private String testUnitOfMeasure;
     private Double sortOrder;
 
-    public static final String TEST_PARENT_CONCEPT_NAME = "All_Tests_and_Panels";
+    
 
     public String getDescription() {
         return description;

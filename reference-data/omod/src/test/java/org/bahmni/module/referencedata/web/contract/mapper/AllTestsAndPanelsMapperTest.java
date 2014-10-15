@@ -22,6 +22,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import static org.junit.Assert.assertEquals;
 
 
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 
@@ -61,7 +62,7 @@ public class AllTestsAndPanelsMapperTest {
         panelConcept = new ConceptBuilder().withUUID("Panel UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).withDescription("SomeDescription")
                 .withSetMember(testConcept).withDateChanged(dateChanged).withShortName("ShortName").withName("Panel Name").withDataType(ConceptDatatype.NUMERIC).build();
         testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID).withDescription("Test and Panel Description")
-                .withDateChanged(dateChanged).withShortName("ShortName").withName(LabTest.TEST_PARENT_CONCEPT_NAME).withSetMember(testConcept).withSetMember(panelConcept).build();
+                .withDateChanged(dateChanged).withShortName("ShortName").withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(testConcept).withSetMember(panelConcept).build();
 
         when(Context.getConceptService()).thenReturn(conceptService);
     }

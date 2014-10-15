@@ -95,4 +95,14 @@ public class DepartmentEventTest {
         assertEquals(event.getTitle(), ConceptEventFactory.DEPARTMENT);
         assertEquals(event.getCategory(), ConceptEventFactory.LAB);
     }
+
+    @Test
+    public void create_event_for_department_with_parent_concept_missing() throws Exception {
+        Concept departmentConcept = new ConceptBuilder().withClass("Department").withUUID("departmentUUID").build();
+        List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{departmentConcept});
+        Event event = events.get(0);
+        assertNotNull(event);
+        assertEquals(event.getTitle(), ConceptEventFactory.DEPARTMENT);
+        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
+    }
 }

@@ -8,13 +8,13 @@ public class ConceptEventFactory {
     public static final String DEPARTMENT = "department";
     public static final String TEST = "test";
     public static final String PANEL = "panel";
-    private static final String TESTS_AND_PANEL = "all-tests-and-panels";
+    public static final String TESTS_AND_PANEL = "all-tests-and-panels";
 
     public static ConceptOperationEvent sampleEvent() {
         return new SampleEvent(CONCEPT_URL, LAB, SAMPLE);
     }
 
-    public static ConceptOperationEvent labConceptSetEvent() { return new LabConceptSetEvent(CONCEPT_URL, LAB, LAB_SAMPLE); }
+    public static ConceptOperationEvent labConceptSetEvent() { return new AllLabSamplesEvent(CONCEPT_URL, LAB, LAB_SAMPLE); }
 
     public static ConceptOperationEvent allTestsAndPanelsConceptSetEvent() { return new AllTestsPanelsConceptSetEvent(CONCEPT_URL, LAB, TESTS_AND_PANEL); }
 
@@ -27,6 +27,6 @@ public class ConceptEventFactory {
     }
 
     public static ConceptOperationEvent testEvent() {
-        return new TestEvent(CONCEPT_URL, LAB, TEST);
+        return new LabTestEvent(CONCEPT_URL, LAB, TEST);
     }
 }

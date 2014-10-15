@@ -8,6 +8,8 @@ public class AllTestsAndPanels extends Resource {
     private List<LabTest> tests= new ArrayList<>();
     private List<Panel> panels= new ArrayList<>();
 
+    public static final String ALL_TESTS_AND_PANELS = "All_Tests_and_Panels";
+
     public String getDescription() {
         return description;
     }

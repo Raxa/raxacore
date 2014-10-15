@@ -3,9 +3,9 @@ package org.bahmni.module.referencedata.labconcepts.model.event;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 
-public class TestEvent extends ConceptOperationEvent {
+public class LabTestEvent extends ConceptOperationEvent {
 
-    public TestEvent(String url, String category, String title) {
+    public LabTestEvent(String url, String category, String title) {
         super(url, category, title);
     }
 

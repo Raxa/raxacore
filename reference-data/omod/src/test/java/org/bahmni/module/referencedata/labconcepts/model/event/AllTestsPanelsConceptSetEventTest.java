@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.model.event;
 
+import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
 import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.model.Operation;
 import org.bahmni.test.builder.ConceptBuilder;
@@ -26,7 +27,7 @@ public class AllTestsPanelsConceptSetEventTest {
         testConcept = new ConceptBuilder().withClassUUID(ConceptClass.TEST_UUID).build();
         panelConcept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).build();
 
-        parentConcept = new ConceptBuilder().withName(LabTest.TEST_PARENT_CONCEPT_NAME).withSetMember(testConcept).withSetMember(panelConcept).build();
+        parentConcept = new ConceptBuilder().withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(testConcept).withSetMember(panelConcept).build();
 
     }
 
@@ -36,8 +37,7 @@ public class AllTestsPanelsConceptSetEventTest {
         assertEquals(events.size(),1);
         Event event = events.get(0);
         assertThat(event.getUri().toString(), containsString(parentConcept.getUuid()));
-        assertEquals("all-tests-and-panels", event.getTitle());
+        assertEquals(ConceptEventFactory.TESTS_AND_PANEL, event.getTitle());
         assertEquals("lab",event.getCategory());
-
     }
 }

@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.model.event;
 
+import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.module.referencedata.labconcepts.model.Operation;
 import org.bahmni.test.builder.ConceptBuilder;
@@ -16,7 +17,7 @@ import org.ict4h.atomfeed.server.service.Event;
 
 import java.util.List;
 
-public class LabConceptSetEventTest {
+public class AllLabSamplesEventTest {
 
     private Concept parentConcept;
     private Concept concept;
@@ -28,7 +29,7 @@ public class LabConceptSetEventTest {
         concept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).build();
         anotherConcept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).build();
 
-        parentConcept = new ConceptBuilder().withName(Sample.SAMPLE_PARENT_CONCEPT_NAME).withSetMember(concept).withSetMember(anotherConcept).build();
+        parentConcept = new ConceptBuilder().withName(AllSamples.ALL_SAMPLES).withSetMember(concept).withSetMember(anotherConcept).build();
 
     }
 
@@ -38,7 +39,7 @@ public class LabConceptSetEventTest {
         assertEquals(events.size(),1);
         Event event = events.get(0);
         assertThat(event.getUri().toString(), containsString(parentConcept.getUuid()));
-        assertEquals(event.getTitle(), "all-samples");
+        assertEquals(event.getTitle(), ConceptEventFactory.LAB_SAMPLE);
         assertEquals(event.getCategory(), "lab");
 
     }

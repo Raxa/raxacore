@@ -38,7 +38,6 @@ public class DepartmentMapperTest {
     private Concept labDepartmentConcept;
     @Mock
     private ConceptService conceptService;
-    private Double sortWeight;
 
     @Before
     public void setUp() throws Exception {
@@ -50,14 +49,12 @@ public class DepartmentMapperTest {
         Locale defaultLocale = new Locale("en", "GB");
         PowerMockito.mockStatic(Context.class);
         when(Context.getLocale()).thenReturn(defaultLocale);
-        departmentConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).
+        departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withDescription("Some Description").withName("SampleName").build();
         labDepartmentConcept = new ConceptBuilder().withUUID("Laboratory UUID")
                 .withName(Department.DEPARTMENT_PARENT_CONCEPT_NAME).withClass(Department.DEPARTMENT_CONCEPT_CLASS)
                 .withSetMember(departmentConcept).build();
         ConceptSet conceptSet = getConceptSet(labDepartmentConcept, departmentConcept);
-        sortWeight = Double.valueOf(999);
-        conceptSet.setSortWeight(sortWeight);
         List<ConceptSet> conceptSets = getConceptSets(conceptSet);
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
         when(Context.getConceptService()).thenReturn(conceptService);
@@ -66,7 +63,7 @@ public class DepartmentMapperTest {
     @Test
     public void map_all_sample_fields_from_concept() throws Exception {
         Department departmentData = departmentMapper.map(departmentConcept);
-        assertEquals("Sample UUID", departmentData.getId());
+        assertEquals("Department UUID", departmentData.getId());
         assertEquals(dateCreated, departmentData.getDateCreated());
         assertEquals(dateChanged, departmentData.getLastUpdated());
         assertEquals("Some Description", departmentData.getDescription());
@@ -74,10 +71,20 @@ public class DepartmentMapperTest {
 
     @Test
     public void send_null_for_no_description() throws Exception {
-        departmentConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).
+        departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withName("SampleName").build();
         Department departmentData = departmentMapper.map(departmentConcept);
-        assertEquals("Sample UUID", departmentData.getId());
+        assertEquals("Department UUID", departmentData.getId());
+        assertNull(departmentData.getDescription());
+    }
+
+
+    @Test
+    public void map_if_no_parent_concept() throws Exception {
+        Concept departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
+                withDateChanged(dateChanged).withName("DepartmentName").build();
+        Department departmentData = departmentMapper.map(departmentConcept);
+        assertEquals("Department UUID", departmentData.getId());
         assertNull(departmentData.getDescription());
     }
 

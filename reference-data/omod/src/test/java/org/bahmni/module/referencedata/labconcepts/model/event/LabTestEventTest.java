@@ -1,6 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.model.event;
 
-import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
+import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
 import org.bahmni.module.referencedata.labconcepts.model.Operation;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.ict4h.atomfeed.server.service.Event;
@@ -24,7 +24,6 @@ import java.util.Locale;
 
 import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +44,7 @@ public class LabTestEventTest {
 
         concept = new ConceptBuilder().withClassUUID(ConceptClass.TEST_UUID).withUUID(TEST_CONCEPT_UUID).build();
 
-        parentConcept = new ConceptBuilder().withName(LabTest.TEST_PARENT_CONCEPT_NAME).withSetMember(concept).build();
+        parentConcept = new ConceptBuilder().withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(concept).build();
 
         List<ConceptSet> conceptSets = getConceptSets(parentConcept, concept);
 
@@ -91,6 +90,17 @@ public class LabTestEventTest {
         parentConcept = new ConceptBuilder().withName("Some wrong name").withSetMember(concept).build();
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(getConceptSets(parentConcept, concept));
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
+        Event event = events.get(0);
+        assertNotNull(event);
+        assertEquals(event.getTitle(), ConceptEventFactory.TEST);
+        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
+    }
+
+
+    @Test
+    public void create_event_for_test_with_parent_concept_missing() throws Exception {
+        Concept testConcept = new ConceptBuilder().withClass("Test").withUUID("testUUID").withClassUUID(ConceptClass.TEST_UUID).build();
+        List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{testConcept});
         Event event = events.get(0);
         assertNotNull(event);
         assertEquals(event.getTitle(), ConceptEventFactory.TEST);

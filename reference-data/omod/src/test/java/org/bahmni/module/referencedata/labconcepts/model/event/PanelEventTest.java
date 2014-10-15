@@ -1,6 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.model.event;
 
-import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
+import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
 import org.bahmni.module.referencedata.labconcepts.model.Operation;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.ict4h.atomfeed.server.service.Event;
@@ -41,11 +41,11 @@ public class PanelEventTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks    (this);
+        MockitoAnnotations.initMocks(this);
 
         concept = new ConceptBuilder().withName("abc").withClassUUID(ConceptClass.LABSET_UUID).withUUID(PANEL_CONCEPT_UUID).build();
 
-        parentConcept = new ConceptBuilder().withName(LabTest.TEST_PARENT_CONCEPT_NAME).withSetMember(concept).build();
+        parentConcept = new ConceptBuilder().withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(concept).build();
 
         List<ConceptSet> conceptSets = getConceptSets(parentConcept, concept);
 
@@ -98,4 +98,13 @@ public class PanelEventTest {
     }
 
 
+    @Test
+    public void create_event_for_panel_with_parent_concept_missing() throws Exception {
+        Concept panelConcept = new ConceptBuilder().withClass("LabSet").withUUID("panelUUID").withClassUUID(ConceptClass.LABSET_UUID).build();
+        List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{panelConcept});
+        Event event = events.get(0);
+        assertNotNull(event);
+        assertEquals(event.getTitle(), ConceptEventFactory.PANEL);
+        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
+    }
 }

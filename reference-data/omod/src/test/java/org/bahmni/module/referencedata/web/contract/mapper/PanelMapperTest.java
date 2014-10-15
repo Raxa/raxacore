@@ -1,5 +1,7 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
+import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
+import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Panel;
@@ -73,27 +75,23 @@ public class PanelMapperTest {
         panelConcept = new ConceptBuilder().withUUID("Panel UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).withDescription("SomeDescription")
                 .withSetMember(testConcept).withDateChanged(dateChanged).withShortName("ShortName").withName("Panel Name Here").withDataType(ConceptDatatype.NUMERIC).build();
         testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID)
-                .withDateChanged(dateChanged).withShortName("ShortName").withName(LabTest.TEST_PARENT_CONCEPT_NAME).withSetMember(panelConcept).build();
+                .withDateChanged(dateChanged).withShortName("ShortName").withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(panelConcept).build();
         sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClass(Sample.SAMPLE_CONCEPT_CLASS).
                 withDateChanged(dateChanged).withSetMember(panelConcept).withShortName("ShortName").withName("SampleName").build();
         laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
-                .withName(Sample.SAMPLE_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.LABSET_UUID)
+                .withName(AllSamples.ALL_SAMPLES).withClassUUID(ConceptClass.LABSET_UUID)
                 .withSetMember(sampleConcept).build();
         departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
-                withDateChanged(dateChanged).withClassUUID(ConceptClass.CONVSET_UUID).withSetMember(panelConcept).withDescription("Some Description").withName("Department Name").build();
+                withDateChanged(dateChanged).withClass("Department").withClassUUID(ConceptClass.CONVSET_UUID).withSetMember(panelConcept).withDescription("Some Description").withName("Department Name").build();
         labDepartmentConcept = new ConceptBuilder().withUUID("Laboratory Department UUID")
                 .withName(Department.DEPARTMENT_PARENT_CONCEPT_NAME).withClass(Department.DEPARTMENT_CONCEPT_CLASS)
                 .withSetMember(departmentConcept).build();
-        ConceptSet sampleConceptSet = getConceptSet(laboratoryConcept, sampleConcept);
-        ConceptSet departmentConceptSet = getConceptSet(labDepartmentConcept, departmentConcept);
         ConceptSet panelConceptSet = getConceptSet(testAndPanelsConcept, panelConcept);
         ConceptSet testConceptSet = getConceptSet(testAndPanelsConcept, testConcept);
         testPanelConceptSet = getConceptSet(testConcept, panelConcept);
         panelSampleConceptSet = getConceptSet(sampleConcept, panelConcept);
         testSampleConceptSet = getConceptSet(sampleConcept, testConcept);
         testDepartmentConceptSet = getConceptSet(departmentConcept, testConcept);
-        departmentConceptSets = getConceptSets(departmentConceptSet);
-        sampleConceptSets = getConceptSets(sampleConceptSet);
 
         testConceptSets = getConceptSets(testConceptSet);
         testConceptSets.add(testSampleConceptSet);
@@ -110,13 +108,8 @@ public class PanelMapperTest {
                 Concept concept = (Concept) arguments[0];
                 if (concept.getUuid().equals("Test UUID"))
                     return testConceptSets;
-                else if (concept.getUuid().equals("Sample UUID"))
-                    return sampleConceptSets;
                 else if (concept.getUuid().equals("Panel UUID"))
                     return panelConceptSets;
-                else if (concept.getUuid().equals("Department UUID"))
-                    return departmentConceptSets;
-
                 return null;
             }
         });
@@ -132,6 +125,8 @@ public class PanelMapperTest {
         assertEquals(dateChanged, panelData.getLastUpdated());
         assertEquals("Sample UUID", panelData.getSampleUuid());
         assertEquals(1, panelData.getTests().size());
+        assertEquals("Sample UUID", panelData.getTests().get(0).getSampleUuid());
+        assertEquals("Department UUID", panelData.getTests().get(0).getDepartment().getId());
         assertEquals("Test UUID", panelData.getTests().get(0).getId());
     }
 

@@ -2381,4 +2381,23 @@
             INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'View Visit Attribute Types');
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201410151040" author="Mihir, Bharti">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM concept_name where name='Lab Samples' and concept_name_type='FULLY_SPECIFIED';
+            </sqlCheck>
+        </preConditions>
+        <comment>Rename Laboratory concept to Lab Samples</comment>
+        <sql>
+            UPDATE concept
+            SET class_id = (SELECT
+            concept_class_id
+            FROM concept_class
+            WHERE uuid = '8d492594-c2cc-11de-8d13-0010c6dffd0f')
+            WHERE concept_id = (SELECT
+            concept_id
+            FROM concept_name
+            WHERE name = 'Lab Samples' AND concept_name_type = 'FULLY_SPECIFIED');
+        </sql>
+    </changeSet>
 </databaseChangeLog>

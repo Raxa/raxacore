@@ -1,12 +1,13 @@
 package org.bahmni.module.referencedata.labconcepts.mapper;
 
+import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 
 public class SampleMapper extends ResourceMapper {
     public SampleMapper() {
-        super(Sample.SAMPLE_PARENT_CONCEPT_NAME);
+        super(AllSamples.ALL_SAMPLES);
     }
 
     @Override
