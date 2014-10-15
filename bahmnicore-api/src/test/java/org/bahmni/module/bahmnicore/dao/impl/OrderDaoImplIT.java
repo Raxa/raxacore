@@ -23,35 +23,19 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
     @Autowired
     private OrderDaoImpl orderDao;
 
-
-    @Test
-    public void shouldRetrieveActiveOrdersForAPatient() throws Exception {
-        executeDataSet("patientWithOrders.xml");
-        Patient patient = Context.getPatientService().getPatient(1);
-
-        List<DrugOrder> activeOrders = orderDao.getActiveDrugOrders(patient);
-
-        assertThat(activeOrders.size(), is(equalTo(4)));
-        List<String> instructions = getInstructions(activeOrders);
-        assertThat(instructions, hasItem("non-expiring"));
-        assertThat(instructions, hasItem("another-non-expiring"));
-        assertThat(instructions, hasItem("expire-date in future"));
-        assertThat(instructions, hasItem("drug in active visit"));
-    }
-
     @Test
     public void shouldFetchAllPrescribedDrugOrdersInPastVisits() throws Exception {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1);
 
         List<DrugOrder> drugOrdersInLastVisit = orderDao.getPrescribedDrugOrders(patient, false, 1);
-        assertThat(drugOrdersInLastVisit.size(), is(equalTo(2)));
+        assertThat(drugOrdersInLastVisit.size(), is(equalTo(1)));
 
         List<DrugOrder> drugOrdersInLastTwoVisit = orderDao.getPrescribedDrugOrders(patient, false, 2);
-        assertThat(drugOrdersInLastTwoVisit.size(), is(equalTo(3)));
+        assertThat(drugOrdersInLastTwoVisit.size(), is(equalTo(4)));
 
         List<DrugOrder> drugOrders = orderDao.getPrescribedDrugOrders(patient, false, null);
-        assertThat(drugOrders.size(), is(equalTo(3)));
+        assertThat(drugOrders.size(), is(equalTo(4)));
     }
 
     @Test
@@ -60,10 +44,10 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
         Patient patient = Context.getPatientService().getPatient(1);
 
         List<DrugOrder> drugOrders = orderDao.getPrescribedDrugOrders(patient, true, null);
-        assertThat(drugOrders.size(), is(equalTo(4)));
+        assertThat(drugOrders.size(), is(equalTo(5)));
 
         drugOrders = orderDao.getPrescribedDrugOrders(patient, null, null);
-        assertThat(drugOrders.size(), is(equalTo(3)));
+        assertThat(drugOrders.size(), is(equalTo(4)));
     }
 
     @Test
@@ -75,13 +59,5 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
 
         assertThat(visits.size(), is(equalTo(1)));
         assertThat(visits.get(0).getId(), is(equalTo(5)));
-    }
-
-    private List<String> getInstructions(List<DrugOrder> activeOrders) {
-        ArrayList<String> instructions = new ArrayList<String>();
-        for (Order order: activeOrders) {
-            instructions.add(order.getInstructions());
-        }
-        return instructions;
     }
 }

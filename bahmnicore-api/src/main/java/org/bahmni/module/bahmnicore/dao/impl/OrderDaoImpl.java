@@ -34,33 +34,15 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<DrugOrder> getActiveDrugOrders(Patient patient) {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DrugOrder.class);
-
-        Criterion notAutoExpired = Restrictions.or(Restrictions.ge("autoExpireDate", new Date()),
-                Restrictions.isNull("autoExpireDate"));
-        Criterion notDiscontinued = Restrictions.ne("action", Order.Action.DISCONTINUE);
-        Criterion notVoided = Restrictions.eq("voided", false);
-
-        Junction allConditions = Restrictions.conjunction()
-                .add(notAutoExpired)
-                .add(notDiscontinued)
-                .add(notVoided);
-        criteria.add(allConditions)
-                .createCriteria("encounter")
-                .add(Restrictions.eq("patient", patient));
-        return criteria.list();
-    }
-
-    @Override
     public List<DrugOrder> getPrescribedDrugOrders(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits) {
         Session currentSession = sessionFactory.getCurrentSession();
         List<Integer> visitWithDrugOrderIds = getVisitIds(getVisitsWithOrders(patient, "DrugOrder", includeActiveVisit, numberOfVisits));
         if(!visitWithDrugOrderIds.isEmpty()) {
-            Query query = currentSession.createQuery("select d from DrugOrder d, Encounter e, Visit v where d.encounter = e.encounterId and e.visit = v.visitId and v.visitId in (:visitIds) " +
-                    "and d.voided = false and d.action != :discontinued order by d.dateActivated desc");
+            Query query = currentSession.createQuery("select d1 from DrugOrder d1, Encounter e, Visit v where d1.encounter = e and e.visit = v and v.visitId in (:visitIds) " +
+                    "and d1.voided = false and " +
+                    "not exists (select d2 from DrugOrder d2 where d2.voided = false and d2.encounter = d1.encounter and d2.previousOrder = d1)" +
+                    "order by d1.dateActivated desc");
             query.setParameterList("visitIds", visitWithDrugOrderIds);
-            query.setParameter("discontinued", Order.Action.DISCONTINUE);
             return (List<DrugOrder>) query.list();
         }
         return new ArrayList<>();

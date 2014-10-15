@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface OrderDao {
     List<Order> getCompletedOrdersFrom(List<Order> orders);
-    List<DrugOrder> getActiveDrugOrders(Patient patient);
     List<DrugOrder> getPrescribedDrugOrders(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits);
     public List<Visit> getVisitsWithOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits);
 }
