@@ -2331,6 +2331,56 @@
             INSERT INTO role (role, description) VALUES ('Clinical:FullAccess', 'Will have full access to clinical app');
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201410151525" author="Rohan, Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege='app:clinical:history'</sqlCheck>
+        </preConditions>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            insert into privilege(privilege, description, uuid) values('app:clinical:history', 'Bahmni observation history view and edit', @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201410151526" author="Rohan, Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege='app:clinical:diagnosisTab'</sqlCheck>
+        </preConditions>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            insert into privilege(privilege, description, uuid) values('app:clinical:diagnosisTab', 'View and Edit Diagnosis tab', @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201410151527" author="Rohan, Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege='app:clinical:dispositionTab'</sqlCheck>
+        </preConditions>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            insert into privilege(privilege, description, uuid) values('app:clinical:dispositionTab', 'View Disposition tab', @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201410151528" author="Rohan, Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege='app:clinical:observationTab'</sqlCheck>
+        </preConditions>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            insert into privilege(privilege, description, uuid) values('app:clinical:observationTab', 'View Observation tab', @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201410151529" author="Rohan, Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege='app:clinical:consultationTab'</sqlCheck>
+        </preConditions>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            insert into privilege(privilege, description, uuid) values('app:clinical:consultationTab', 'View Consultation tab', @uuid);
+        </sql>
+    </changeSet>
     <changeSet id="bahmni-core-201410101446" author="banka">
         <comment>Add privileges for clinical read only</comment>
         <sql>
