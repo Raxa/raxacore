@@ -1,7 +1,9 @@
 package org.bahmni.module.bahmnicore.contract.diseasetemplate;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +33,7 @@ public class ObservationTemplate {
         this.bahmniObservations = bahmniObservations;
     }
 
+    @JsonSerialize(using = CustomJsonDateSerializer.class)
     public Date getVisitStartDate() {
         return visitStartDate;
     }

@@ -10,10 +10,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -28,9 +25,9 @@ public class AdminExportController extends BaseRestController {
     @Autowired
     private ConceptSetExporter conceptSetExporter;
 
-    @RequestMapping(value = baseUrl + "/conceptset/{conceptName}", method = RequestMethod.GET)
+    @RequestMapping(value = baseUrl + "/conceptset", method = RequestMethod.GET)
     @ResponseBody
-    public void export(HttpServletResponse response, @PathVariable String conceptName) {
+    public void export(HttpServletResponse response, @RequestParam(value = "conceptName", required = true) String conceptName) {
         try {
             ConceptRows conceptRows = conceptSetExporter.exportConcepts(conceptName);
             createZipFile(response, conceptRows);

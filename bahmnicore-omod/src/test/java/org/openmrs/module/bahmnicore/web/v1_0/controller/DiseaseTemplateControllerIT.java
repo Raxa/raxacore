@@ -17,9 +17,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class DiseaseTemplateControllerIT extends BaseWebControllerTest {
@@ -50,7 +48,10 @@ public class DiseaseTemplateControllerIT extends BaseWebControllerTest {
 
     @Test
     public void shouldReturnObsForADiseaseTemplateWithIntakeAndProgressAcrossAllVisits() throws Exception {
-        List<DiseaseTemplate> diseaseTemplates = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/diseaseTemplates", new Parameter("patientUuid", "86526ed5-3c11-11de-a0ba-001e378eb67a"))), new TypeReference<List<DiseaseTemplate>>() {});
-
+        DiseaseTemplate diseaseTemplates = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/diseaseTemplate", new Parameter("patientUuid", "86526ed5-3c11-11de-a0ba-001e378eb67a"), new Parameter("diseaseName", "Breast Cancer"))), new TypeReference<DiseaseTemplate>() {});
+        assertNotNull(diseaseTemplates);
+        assertEquals("Breast Cancer", diseaseTemplates.getName());
+        assertEquals(1, diseaseTemplates.getObservationTemplates().size());
+        assertEquals(5, diseaseTemplates.getObservationTemplates().get(0).getBahmniObservations().size());
     }
 }
