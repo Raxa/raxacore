@@ -24,7 +24,7 @@ public class BahmniObservationMapper {
     public static List<BahmniObservation> map(List<Obs> obsList, List<Concept> rootConcepts) {
         List<BahmniObservation> bahmniObservations = new ArrayList<>();
         for (Obs obs : obsList) {
-            bahmniObservations.add(map(new ObservationMapper().map(obs), obs.getEncounter().getEncounterDatetime(), rootConcepts, true));
+            bahmniObservations.add(map(new ObservationMapper().map(obs), obs.getEncounter().getEncounterDatetime(), obs.getEncounter().getVisit().getStartDatetime(), rootConcepts, true));
         }
         return bahmniObservations;
     }
@@ -34,13 +34,14 @@ public class BahmniObservationMapper {
     }
 
     public static BahmniObservation map(EncounterTransaction.Observation encounterTransactionObservation, Date encounterDateTime, List<Concept> rootConcepts) {
-        return map(encounterTransactionObservation, encounterDateTime, rootConcepts, false);
+        return map(encounterTransactionObservation, encounterDateTime, null, rootConcepts, false);
     }
 
-    private static BahmniObservation map(EncounterTransaction.Observation eTObservation, Date encounterDateTime, List<Concept> rootConcepts, boolean flatten) {
+    private static BahmniObservation map(EncounterTransaction.Observation eTObservation, Date encounterDateTime, Date visitStartDateTime, List<Concept> rootConcepts, boolean flatten) {
         BahmniObservation bahmniObservation = new BahmniObservation();
         bahmniObservation.setEncounterTransactionObservation(eTObservation);
         bahmniObservation.setEncounterDateTime(encounterDateTime);
+        bahmniObservation.setVisitStartDateTime(visitStartDateTime);
         bahmniObservation.setConceptSortWeight(ConceptSortWeightUtil.getSortWeightFor(bahmniObservation.getConcept().getName(), rootConcepts));
         if (CONCEPT_DETAILS_CONCEPT_CLASS.equals(eTObservation.getConcept().getConceptClass()) && flatten) {
             for (EncounterTransaction.Observation member : eTObservation.getGroupMembers()) {
@@ -62,7 +63,7 @@ public class BahmniObservationMapper {
             }
         } else if (eTObservation.getGroupMembers().size() > 0) {
             for (EncounterTransaction.Observation groupMember : eTObservation.getGroupMembers()) {
-                bahmniObservation.addGroupMember(map(groupMember, encounterDateTime, rootConcepts, flatten));
+                bahmniObservation.addGroupMember(map(groupMember, encounterDateTime, visitStartDateTime, rootConcepts, flatten));
             }
         } else {
             bahmniObservation.setValue(eTObservation.getValue());

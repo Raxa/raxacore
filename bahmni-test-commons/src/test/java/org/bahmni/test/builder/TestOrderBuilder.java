@@ -11,7 +11,7 @@
  *
  * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
  */
-package org.bahmni.module.bahmnicore.mapper.builder;
+package org.bahmni.test.builder;
 
 import org.openmrs.TestOrder;
 

@@ -34,4 +34,8 @@ public class DiseaseTemplate {
     public void addObservationTemplate(ObservationTemplate observationTemplate) {
         this.observationTemplates.add(observationTemplate);
     }
+
+    public void addObservationTemplates(List<ObservationTemplate> observationTemplates) {
+        this.observationTemplates.addAll(observationTemplates);
+    }
 }

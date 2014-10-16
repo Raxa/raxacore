@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 
+import org.bahmni.test.util.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,6 +93,9 @@ public class BahmniObservationMapperTest {
         assertEquals(6, childObservation2.getConceptSortWeight().intValue());
         assertNull(childObservation2.isAbnormal());
         assertNull(childObservation2.getDuration());
+        assertEquals(DateUtils.getDate("2010-01-02"), childObservation1.getVisitStartDateTime());
+        assertEquals(DateUtils.getDate("2010-01-02"), childObservation2.getVisitStartDateTime());
+        assertEquals(DateUtils.getDate("2010-01-02"), parentObservation.getVisitStartDateTime());
     }
 
     private BahmniObservation getObservation(String uuid, List<BahmniObservation> childObservations) {

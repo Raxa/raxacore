@@ -14,15 +14,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/diseaseTemplates")
 public class DiseaseTemplateController extends BaseRestController {
+
+    private final String baseUrl = "/rest/v1/bahmnicore/";
 
     @Autowired
     private DiseaseTemplateService diseaseTemplateService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = baseUrl + "diseaseTemplates")
     @ResponseBody
     public List<DiseaseTemplate> get(@RequestParam(value = "patientUuid", required = true) String patientUUID) {
         return diseaseTemplateService.allDiseaseTemplatesFor(patientUUID);
+    }
+
+    @RequestMapping(value = baseUrl + "diseaseTemplate")
+    @ResponseBody
+    public DiseaseTemplate getDiseaseTemplate(@RequestParam(value = "patientUuid", required = true) String patientUUID,
+                                              @RequestParam(value = "diseaseName", required = true) String diseaseName) {
+        return diseaseTemplateService.diseaseTemplateFor(patientUUID, diseaseName);
     }
 }

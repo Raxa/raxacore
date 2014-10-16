@@ -7,4 +7,6 @@ import java.util.List;
 public interface DiseaseTemplateService {
 
     List<DiseaseTemplate> allDiseaseTemplatesFor(String patientUuid);
+
+    DiseaseTemplate diseaseTemplateFor(String patientUUID, String diseaseName);
 }

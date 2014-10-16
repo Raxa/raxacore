@@ -138,14 +138,13 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>test</scope>
         </dependency>
-<!--
         <dependency>
-            <groupId>org.openmrs.web</groupId>
-            <artifactId>openmrs-web</artifactId>
+            <groupId>org.bahmni.test</groupId>
+            <artifactId>bahmni-test-commons</artifactId>
+            <version>${project.parent.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
--->
         <dependency>
             <groupId>org.openmrs.api</groupId>
             <artifactId>openmrs-api</artifactId>

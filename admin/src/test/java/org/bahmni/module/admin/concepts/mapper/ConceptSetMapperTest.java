@@ -4,9 +4,8 @@ import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.bahmni.module.admin.csv.models.ConceptRows;
 import org.bahmni.module.admin.csv.models.ConceptSetRow;
-import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
-import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
+import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ConceptSetMapperTest {
 
@@ -102,7 +102,7 @@ public class ConceptSetMapperTest {
         org.openmrs.Concept child3 = new ConceptBuilder().withName("Child3").withDescription("Description").withClass("Some").withDataType("N/A").withShortName("short").build();
         org.openmrs.Concept child4 = new ConceptBuilder().withName("Child4").withDescription("Description").withClass("Some").withDataType("N/A").withShortName("short").build();
         org.openmrs.Concept conceptSet = new ConceptBuilder().withName("Parent Concept").withClass("Misc").withDataType("N/A").withShortName("Shortn").withUUID("Parent").withSetMember(child1).withSetMember(child2).withSetMember(child3).withSetMember(child4).build();
-        List<ConceptRow> conceptRows =  conceptSetMapper.mapAll(conceptSet).getConceptRows();
+        List<ConceptRow> conceptRows = conceptSetMapper.mapAll(conceptSet).getConceptRows();
         assertEquals(4, conceptRows.size());
         assertEquals("Child1", conceptRows.get(0).name);
         assertEquals("Child2", conceptRows.get(1).name);
@@ -133,6 +133,7 @@ public class ConceptSetMapperTest {
         assertEquals("Child1", child1Row.name);
         assertEquals("Child2", child2Row.name);
     }
+
     @Test
     public void get_list_of_concept_with_concept_sets() throws Exception {
         org.openmrs.Concept answer1 = new ConceptBuilder().withName("Answer1").withDataType("N/A").withClass("Misc").withShortName("ShortName3").withUUID("answer1").build();

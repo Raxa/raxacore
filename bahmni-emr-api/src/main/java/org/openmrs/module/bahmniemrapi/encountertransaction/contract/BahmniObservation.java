@@ -16,7 +16,7 @@ import java.util.Set;
 public class BahmniObservation {
 
     private Date encounterDateTime;
-    
+    private Date visitStartDateTime;
     private ObsRelationship targetObsRelation;
     private EncounterTransaction.Observation encounterTransactionObservation;
     private List<BahmniObservation> groupMembers = new ArrayList<>();
@@ -211,5 +211,14 @@ public class BahmniObservation {
 
     public void setEncounterTransactionObservation(EncounterTransaction.Observation encounterTransactionObservation) {
         this.encounterTransactionObservation = encounterTransactionObservation;
+    }
+
+    @JsonSerialize(using = CustomJsonDateSerializer.class)
+    public Date getVisitStartDateTime() {
+        return visitStartDateTime;
+    }
+
+    public void setVisitStartDateTime(Date visitStartDateTime) {
+        this.visitStartDateTime = visitStartDateTime;
     }
 }

@@ -1,23 +1,18 @@
 package org.openmrs.module.bahmnicore.web.v1_0.mapper;
 
 import org.apache.commons.lang3.time.DateUtils;
-import org.bahmni.module.bahmnicore.mapper.builder.DrugOrderBuilder;
-import org.bahmni.module.bahmnicore.mapper.builder.EncounterBuilder;
-import org.bahmni.module.bahmnicore.mapper.builder.PersonBuilder;
-import org.bahmni.module.bahmnicore.mapper.builder.VisitBuilder;
-import org.bahmni.module.bahmnicore.util.CustomDateSerializer;
-import org.hamcrest.Matcher;
+import org.bahmni.test.builder.DrugOrderBuilder;
+import org.bahmni.test.builder.EncounterBuilder;
+import org.bahmni.test.builder.PersonBuilder;
+import org.bahmni.test.builder.VisitBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
-import org.openmrs.FreeTextDosingInstructions;
 import org.openmrs.Person;
-import org.openmrs.Provider;
 import org.openmrs.SimpleDosingInstructions;
 import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
@@ -38,7 +33,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
-import static org.hamcrest.Matchers.any;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;

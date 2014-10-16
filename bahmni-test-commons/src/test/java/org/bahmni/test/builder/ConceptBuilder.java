@@ -1,6 +1,7 @@
 package org.bahmni.test.builder;
 
 import org.openmrs.Concept;
+import org.openmrs.ConceptAnswer;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptDescription;
@@ -116,4 +117,11 @@ public class ConceptBuilder {
         concept.setDescriptions(Arrays.asList(conceptDescription));
         return this;
     }
+
+    public ConceptBuilder withAnswer(Concept answerConcept) {
+        ConceptAnswer conceptAnswer = new ConceptAnswer(answerConcept);
+        concept.addAnswer(conceptAnswer);
+        return this;
+    }
 }
+

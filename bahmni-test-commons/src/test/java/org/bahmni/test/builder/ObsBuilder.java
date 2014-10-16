@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.mapper.builder;
+package org.bahmni.test.builder;
 
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
@@ -29,6 +29,12 @@ public class ObsBuilder {
     }
 
     public ObsBuilder withConcept(Concept concept) {
+        obs.setConcept(concept);
+        return this;
+    }
+
+    public ObsBuilder withConcept(String conceptName) {
+        Concept concept = new ConceptBuilder().withName(conceptName).build();
         obs.setConcept(concept);
         return this;
     }

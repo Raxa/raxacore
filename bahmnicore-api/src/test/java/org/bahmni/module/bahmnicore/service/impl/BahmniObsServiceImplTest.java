@@ -1,8 +1,8 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.dao.ObsDao;
-import org.bahmni.module.bahmnicore.mapper.builder.ConceptBuilder;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
+import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,14 +25,14 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class BahmniObsServiceImplTest {
 
     BahmniObsService bahmniObsService;
-    
+
     @Mock
     ObsDao obsDao;
 
     private String personUUID = "12345";
 
     @Before
-    public void setUp(){
+    public void setUp() {
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
 
@@ -57,6 +57,6 @@ public class BahmniObsServiceImplTest {
         Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
         Integer numberOfVisits = 3;
         bahmniObsService.observationsFor(personUUID, Arrays.asList(bloodPressureConcept), numberOfVisits);
-        verify(obsDao).getObsFor(personUUID,  Arrays.asList("Blood Pressure"), numberOfVisits);
+        verify(obsDao).getObsFor(personUUID, Arrays.asList("Blood Pressure"), numberOfVisits);
     }
 }

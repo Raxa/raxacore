@@ -4,11 +4,14 @@ import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplate;
 import org.bahmni.module.bahmnicore.contract.diseasetemplate.ObservationTemplate;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
+import org.bahmni.module.bahmnicore.mapper.ObservationTemplateMapper;
+import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.service.DiseaseTemplateService;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
@@ -27,6 +30,9 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
 
     @Autowired
     private ObsDao obsDao;
+
+    @Autowired
+    private BahmniObsService bahmniObsService;
 
     @Autowired
     private ConceptService conceptService;
@@ -58,6 +64,21 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
             diseaseTemplates.add(diseaseTemplate);
         }
         return diseaseTemplates;
+    }
+
+    @Override
+    public DiseaseTemplate diseaseTemplateFor(String patientUUID, String diseaseName) {
+        Concept diseaseTemplateConcept = conceptService.getConceptByName(diseaseName);
+        DiseaseTemplate diseaseTemplate = new DiseaseTemplate(diseaseTemplateConcept.getName(Context.getLocale()).getName());
+        ObservationTemplateMapper observationTemplateMapper = new ObservationTemplateMapper(new ConceptMapper());
+        List<Concept> observationTemplates = diseaseTemplateConcept.getSetMembers();
+        for (Concept concept : observationTemplates) {
+            List<BahmniObservation> observations = bahmniObsService.observationsFor(patientUUID, concept.getSetMembers(), null);
+            List<ObservationTemplate> observationTemplateList = observationTemplateMapper.map(observations, concept);
+            diseaseTemplate.addObservationTemplates(observationTemplateList);
+        }
+
+        return diseaseTemplate;
     }
 
     private List<BahmniObservation> getLatestObsFor(String patientUuid, String conceptName, List<Concept> rootConcepts, Integer visitId) {

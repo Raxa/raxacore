@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.mapper.builder;
+package org.bahmni.test.builder;
 
 import org.openmrs.Encounter;
 import org.openmrs.Patient;

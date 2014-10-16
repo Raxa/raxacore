@@ -1,11 +1,10 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.openmrs.Concept;
-import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +20,10 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/observations")
 public class BahmniObservationsController extends BaseRestController {
-    
+
+    private static final String LATEST = "latest";
     @Autowired
-    private BahmniObsService personObsService;
+    private BahmniObsService bahmniObsService;
 
     @Autowired
     private ConceptService conceptService;
@@ -42,14 +42,14 @@ public class BahmniObservationsController extends BaseRestController {
         for (String rootConceptName : rootConceptNames) {
             rootConcepts.add(conceptService.getConceptByName(rootConceptName));
         }
-        
-        List<Obs> observations;
-        if ("latest".equals(scope)) {
-            observations = personObsService.getLatest(patientUUID, rootConceptNames);
+
+        List<BahmniObservation> observations;
+        if (ObjectUtils.equals(scope, LATEST)) {
+            observations = bahmniObsService.getLatest(patientUUID, rootConceptNames);
         } else {
-            observations = personObsService.observationsFor(patientUUID, rootConcepts, numberOfVisits);
+            observations = bahmniObsService.observationsFor(patientUUID, rootConcepts, numberOfVisits);
         }
-        
-        return BahmniObservationMapper.map(observations, rootConcepts);
+
+        return observations;
     }
 }

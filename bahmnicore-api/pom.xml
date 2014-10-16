@@ -149,6 +149,14 @@
             <artifactId>imgscalr-lib</artifactId>
             <version>4.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.bahmni.test</groupId>
+            <artifactId>bahmni-test-commons</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+            <type>test-jar</type>
+        </dependency>
+
     </dependencies>
     
     <build>

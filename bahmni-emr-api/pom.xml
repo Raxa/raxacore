@@ -141,6 +141,13 @@
             <artifactId>obs-relationship</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.bahmni.test</groupId>
+            <artifactId>bahmni-test-commons</artifactId>
+            <version>${project.parent.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
