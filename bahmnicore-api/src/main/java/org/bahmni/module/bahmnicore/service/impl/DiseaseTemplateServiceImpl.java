@@ -73,7 +73,13 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         ObservationTemplateMapper observationTemplateMapper = new ObservationTemplateMapper(new ConceptMapper());
         List<Concept> observationTemplates = diseaseTemplateConcept.getSetMembers();
         for (Concept concept : observationTemplates) {
-            List<BahmniObservation> observations = bahmniObsService.observationsFor(patientUUID, concept.getSetMembers(), null);
+            List<Concept> setMembers = new ArrayList<>();
+            if(concept.isSet()){
+                setMembers = concept.getSetMembers();
+            } else{
+                setMembers.add(concept);
+            }
+            List<BahmniObservation> observations = bahmniObsService.observationsFor(patientUUID, setMembers, null);
             List<ObservationTemplate> observationTemplateList = observationTemplateMapper.map(observations, concept);
             diseaseTemplate.addObservationTemplates(observationTemplateList);
         }
