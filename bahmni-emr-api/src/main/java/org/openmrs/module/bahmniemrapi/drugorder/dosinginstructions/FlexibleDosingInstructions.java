@@ -1,8 +1,10 @@
 package org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions;
 
+import static org.apache.commons.lang3.time.DateUtils.addMilliseconds;
 import org.openmrs.DosingInstructions;
 import org.openmrs.DrugOrder;
 import org.openmrs.Duration;
+import org.openmrs.SimpleDosingInstructions;
 import org.openmrs.api.APIException;
 import org.springframework.validation.Errors;
 
@@ -48,6 +50,10 @@ public class FlexibleDosingInstructions implements DosingInstructions {
             return null;
         }
         Duration duration = new Duration(drugOrder.getDuration(), durationCode);
-        return duration.addToDate(drugOrder.getEffectiveStartDate(), drugOrder.getFrequency());
+        return aMomentBefore(duration.addToDate(drugOrder.getEffectiveStartDate(), drugOrder.getFrequency()));
+    }
+
+    private Date aMomentBefore(Date date) {
+        return addMilliseconds(date, -1);
     }
 }
