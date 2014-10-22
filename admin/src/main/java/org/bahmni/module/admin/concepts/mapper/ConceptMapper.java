@@ -27,7 +27,7 @@ public class ConceptMapper {
         concept.setClassName(conceptRow.conceptClass);
         concept.setDataType(conceptRow.getDataType());
         concept.setDescription(conceptRow.getDescription());
-        concept.setUniqueName(conceptRow.name);
+        concept.setUniqueName(conceptRow.getName());
         concept.setDisplayName(conceptRow.getShortName());
         addSynonyms(conceptRow, concept);
         addAnswers(conceptRow, concept);

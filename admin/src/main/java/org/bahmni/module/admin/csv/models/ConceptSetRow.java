@@ -49,6 +49,14 @@ public class ConceptSetRow extends CSVEntity {
         return (shortName != null && StringUtils.isEmpty(shortName.trim())) ? null : shortName;
     }
 
+    public String getName() {
+        return name == null ? null : name.trim();
+    }
+
+    public String getConceptClass() {
+        return conceptClass == null ? null : conceptClass.trim();
+    }
+
     public String getUuid() {
         try{
             UUID uuid = UUID.fromString(this.uuid.trim());

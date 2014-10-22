@@ -94,6 +94,14 @@ public class ConceptRow extends CSVEntity {
         return answers == null ? new ArrayList<KeyValue>() : answers;
     }
 
+    public String getName() {
+        return name == null ? null : name.trim();
+    }
+
+    public String getConceptClass() {
+        return conceptClass == null ? null : conceptClass.trim();
+    }
+
     public String getUuid() {
         try{
             UUID uuid = UUID.fromString(this.uuid.trim());
