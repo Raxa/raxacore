@@ -40,6 +40,8 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
     @Autowired
     private VisitDao visitDao;
 
+    private ConceptMapper conceptMapper = new ConceptMapper();
+
     @Override
     @Transactional(readOnly = true)
     public List<DiseaseTemplate> allDiseaseTemplatesFor(String patientUuid) {
@@ -47,7 +49,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         List<DiseaseTemplate> diseaseTemplates = new ArrayList<>();
 
         for (Concept diseaseTemplateConcept : diseaseTemplateConcepts) {
-            DiseaseTemplate diseaseTemplate = new DiseaseTemplate(diseaseTemplateConcept.getName().getName());
+            DiseaseTemplate diseaseTemplate = new DiseaseTemplate(conceptMapper.map(diseaseTemplateConcept));
 
             for (Concept concept : diseaseTemplateConcept.getSetMembers()) {
                 Visit latestVisit = visitDao.getLatestVisit(patientUuid, concept.getName().getName());
@@ -55,7 +57,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
                     List<BahmniObservation> observations = getLatestObsFor(patientUuid, concept.getName().getName(), Arrays.asList(concept), latestVisit.getVisitId());
                     ObservationTemplate observationTemplate = new ObservationTemplate();
                     observationTemplate.setVisitStartDate(latestVisit.getStartDatetime());
-                    observationTemplate.setConcept(new ConceptMapper().map(concept));
+                    observationTemplate.setConcept(conceptMapper.map(concept));
                     observationTemplate.setBahmniObservations(observations);
 
                     diseaseTemplate.addObservationTemplate(observationTemplate);
@@ -69,7 +71,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
     @Override
     public DiseaseTemplate diseaseTemplateFor(String patientUUID, String diseaseName) {
         Concept diseaseTemplateConcept = conceptService.getConceptByName(diseaseName);
-        DiseaseTemplate diseaseTemplate = new DiseaseTemplate(diseaseTemplateConcept.getName(Context.getLocale()).getName());
+        DiseaseTemplate diseaseTemplate = new DiseaseTemplate(conceptMapper.map(diseaseTemplateConcept));
         ObservationTemplateMapper observationTemplateMapper = new ObservationTemplateMapper(new ConceptMapper());
         List<Concept> observationTemplates = diseaseTemplateConcept.getSetMembers();
         for (Concept concept : observationTemplates) {

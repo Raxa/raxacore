@@ -1,26 +1,21 @@
 package org.bahmni.module.bahmnicore.contract.diseasetemplate;
 
+
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class DiseaseTemplate {
     
-    private String name;
     private List<ObservationTemplate> observationTemplates = new ArrayList<>();
-    
+    private EncounterTransaction.Concept concept;
+
     public DiseaseTemplate() {
     }
 
-    public DiseaseTemplate(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public DiseaseTemplate(EncounterTransaction.Concept concept) {
+        this.concept = concept;
     }
 
     public List<ObservationTemplate> getObservationTemplates() {
@@ -37,5 +32,13 @@ public class DiseaseTemplate {
 
     public void addObservationTemplates(List<ObservationTemplate> observationTemplates) {
         this.observationTemplates.addAll(observationTemplates);
+    }
+
+    public EncounterTransaction.Concept getConcept() {
+        return concept;
+    }
+
+    public void setConcept(EncounterTransaction.Concept concept) {
+        this.concept = concept;
     }
 }

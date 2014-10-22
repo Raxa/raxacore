@@ -50,7 +50,7 @@ public class DiseaseTemplateControllerIT extends BaseWebControllerTest {
     public void shouldReturnObsForADiseaseTemplateWithIntakeAndProgressAcrossAllVisits() throws Exception {
         DiseaseTemplate diseaseTemplates = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/diseaseTemplate", new Parameter("patientUuid", "86526ed5-3c11-11de-a0ba-001e378eb67a"), new Parameter("diseaseName", "Breast Cancer"))), new TypeReference<DiseaseTemplate>() {});
         assertNotNull(diseaseTemplates);
-        assertEquals("Breast Cancer", diseaseTemplates.getName());
+        assertEquals("Breast Cancer", diseaseTemplates.getConcept().getName());
         assertEquals(1, diseaseTemplates.getObservationTemplates().size());
         assertEquals(5, diseaseTemplates.getObservationTemplates().get(0).getBahmniObservations().size());
     }
