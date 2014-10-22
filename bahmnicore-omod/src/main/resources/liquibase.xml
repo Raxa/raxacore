@@ -2450,4 +2450,12 @@
             WHERE name = 'Lab Samples' AND concept_name_type = 'FULLY_SPECIFIED');
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201410211423" author="d3, rohan">
+        <comment>Set global property default_locale to en</comment>
+        <sql>
+            INSERT INTO global_property(`property`, `property_value`, `description`, `uuid`)
+            VALUES ('default_locale', 'en', 'Specifies the default locale. You can specify both the language code(ISO-639) and the country code(ISO-3166), e.g. \'en_GB\' or just country: e.g. \'en\'', 'ffc74409-b8e1-48e7-a318-8810a2f452da')
+            ON DUPLICATE KEY UPDATE property_value = 'en';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
