@@ -1,2 +1,2 @@
 #!/bin/sh -x
-sudo service tomcat debug
+sudo service tomcat start

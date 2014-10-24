@@ -43,11 +43,11 @@ public class ConceptControllerIT extends BaseWebControllerTest {
         MockHttpServletRequest request = newPostRequest("/rest/v1/reference-data/concept", conceptDataJson);
         MockHttpServletResponse response = handle(request);
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-        String conceptId = deserialize(response, String.class);
+        org.bahmni.module.referencedata.labconcepts.contract.Concept createdConcept = deserialize(response, org.bahmni.module.referencedata.labconcepts.contract.Concept.class);
 
-        assertNotNull(conceptId);
+        assertNotNull(createdConcept);
 
-        Concept concept = conceptService.getConcept(conceptId);
+        Concept concept = conceptService.getConceptByUuid(createdConcept.getUuid());
 
         assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
         assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
@@ -77,11 +77,11 @@ public class ConceptControllerIT extends BaseWebControllerTest {
         MockHttpServletRequest request = newPostRequest("/rest/v1/reference-data/concept", conceptDataJson);
         MockHttpServletResponse response = handle(request);
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-        String conceptId = deserialize(response, String.class);
+        org.bahmni.module.referencedata.labconcepts.contract.Concept createdConcept = deserialize(response, org.bahmni.module.referencedata.labconcepts.contract.Concept.class);
 
-        assertNotNull(conceptId);
+        assertNotNull(createdConcept);
 
-        Concept concept = conceptService.getConcept(conceptId);
+        Concept concept = conceptService.getConceptByUuid(createdConcept.getUuid());
 
         assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
         assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
@@ -110,11 +110,11 @@ public class ConceptControllerIT extends BaseWebControllerTest {
         MockHttpServletRequest request = newPostRequest("/rest/v1/reference-data/concept", conceptDataJson);
         MockHttpServletResponse response = handle(request);
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-        String conceptId = deserialize(response, String.class);
+        org.bahmni.module.referencedata.labconcepts.contract.Concept createdConcept = deserialize(response, org.bahmni.module.referencedata.labconcepts.contract.Concept.class);
 
-        assertNotNull(conceptId);
+        assertNotNull(createdConcept);
 
-        Concept concept = conceptService.getConcept(conceptId);
+        Concept concept = conceptService.getConceptByUuid(createdConcept.getUuid());
 
         assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
         assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
@@ -146,11 +146,11 @@ public class ConceptControllerIT extends BaseWebControllerTest {
         MockHttpServletRequest request = newPostRequest("/rest/v1/reference-data/concept", conceptDataJson);
         MockHttpServletResponse response = handle(request);
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-        String conceptId = deserialize(response, String.class);
+        org.bahmni.module.referencedata.labconcepts.contract.Concept createdConcept = deserialize(response, org.bahmni.module.referencedata.labconcepts.contract.Concept.class);
 
-        assertNotNull(conceptId);
+        assertNotNull(createdConcept);
 
-        Concept concept = conceptService.getConcept(conceptId);
+        Concept concept = conceptService.getConceptByUuid(createdConcept.getUuid());
 
         assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
         assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
