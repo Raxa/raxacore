@@ -7,6 +7,15 @@ public class ConceptReferenceTerm {
     private String referenceTermRelationship;
     private String referenceTermSource;
 
+    public ConceptReferenceTerm() {
+    }
+
+    public ConceptReferenceTerm(String conceptReferenceTermCode, String conceptReferenceTermRelationship, String conceptReferenceTermSource) {
+        this.referenceTermCode = conceptReferenceTermCode;
+        this.referenceTermRelationship = conceptReferenceTermRelationship;
+        this.referenceTermSource = conceptReferenceTermSource;
+    }
+
     public String getReferenceTermName() {
         return referenceTermName;
     }

@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static org.bahmni.module.admin.csv.utils.CSVUtils.getKeyValueList;
+
 public class ConceptMapper {
 
 
@@ -63,61 +65,21 @@ public class ConceptMapper {
         concept.setConceptReferenceTerm(conceptReferenceTerm);
     }
 
-    public ConceptRow map(org.openmrs.Concept concept) {
-        String conceptReferenceTermCode = null, conceptReferenceTermSource = null,
-                conceptReferenceTermRelationship = null, conceptDescription = null, conceptShortname = null;
-        String name = concept.getName(Context.getLocale()).getName();
-        ConceptDescription description = concept.getDescription(Context.getLocale());
-        if (description != null) {
-            conceptDescription = description.getDescription();
-        }
-        ConceptName shortName = concept.getShortNameInLocale(Context.getLocale());
-        if (shortName != null) {
-            conceptShortname = shortName.getName();
-        }
-        String conceptClass = concept.getConceptClass().getName();
-        String conceptDatatype = concept.getDatatype().getName();
-        List<KeyValue> conceptSynonyms = getSynonyms(concept);
-        List<KeyValue> conceptAnswers = getAnswers(concept);
-        Collection<ConceptMap> conceptMappings = concept.getConceptMappings();
-        if (conceptMappings != null && conceptMappings.size() > 0) {
-            ConceptMap conceptMap = conceptMappings.iterator().next();
-            conceptReferenceTermCode = conceptMap.getConceptReferenceTerm().getCode();
-            conceptReferenceTermSource = conceptMap.getConceptReferenceTerm().getConceptSource().getName();
-            conceptReferenceTermRelationship = conceptMap.getConceptMapType().getName();
-        }
+    public ConceptRow map(Concept concept) {
+        String name = concept.getUniqueName();
+        String description = concept.getDescription();
+        String shortName = concept.getDisplayName();
+        String conceptClass = concept.getClassName();
+        String conceptDatatype = concept.getDataType();
+        List<KeyValue> conceptSynonyms = getKeyValueList("synonym", concept.getSynonyms());
+        List<KeyValue> conceptAnswers = getKeyValueList("answer", concept.getAnswers());
+        String conceptReferenceTermCode = concept.getConceptReferenceTerm().getReferenceTermCode();
+        String conceptReferenceTermSource = concept.getConceptReferenceTerm().getReferenceTermSource();
+        String conceptReferenceTermRelationship = concept.getConceptReferenceTerm().getReferenceTermRelationship();
         String uuid = concept.getUuid();
-        ConceptRow conceptRow = new ConceptRow(uuid, name, conceptDescription, conceptClass, conceptShortname,
+        ConceptRow conceptRow = new ConceptRow(uuid, name, description, conceptClass, shortName,
                 conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource,
                 conceptDatatype, conceptSynonyms, conceptAnswers);
         return conceptRow;
-    }
-
-    public List<ConceptRow> mapAll(org.openmrs.Concept concept) {
-        List<ConceptRow> conceptRows = new ArrayList<>();
-        for (ConceptAnswer conceptAnswer : concept.getAnswers()) {
-            conceptRows.addAll(mapAll(conceptAnswer.getAnswerConcept()));
-        }
-        conceptRows.add(map(concept));
-        return conceptRows;
-    }
-
-
-    private List<KeyValue> getAnswers(org.openmrs.Concept concept) {
-        Collection<ConceptAnswer> answersList = concept.getAnswers();
-        List<KeyValue> answers = new ArrayList<>();
-        for (ConceptAnswer answer : answersList) {
-            answers.add(new KeyValue("answer", answer.getAnswerConcept().getName(Context.getLocale()).getName()));
-        }
-        return answers;
-    }
-
-    private List<KeyValue> getSynonyms(org.openmrs.Concept concept) {
-        Collection<ConceptName> synonymsList = concept.getSynonyms();
-        List<KeyValue> synonyms = new ArrayList<>();
-        for (ConceptName synonym : synonymsList) {
-            synonyms.add(new KeyValue("synonym", synonym.getName()));
-        }
-        return synonyms;
     }
 }

@@ -8,4 +8,6 @@ public interface ReferenceDataConceptService {
     public org.openmrs.Concept saveConcept(Concept concept);
 
     public org.openmrs.Concept saveConcept(ConceptSet conceptSet);
+
+    public org.bahmni.module.referencedata.labconcepts.contract.Concepts getConcept(String conceptName);
 }

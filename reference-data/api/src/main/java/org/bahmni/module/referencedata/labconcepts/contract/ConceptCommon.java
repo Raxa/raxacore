@@ -14,6 +14,20 @@ public class ConceptCommon {
     private ConceptReferenceTerm conceptReferenceTerm;
     private String uuid;
 
+    public ConceptCommon(String uuid, String name, String conceptDescription, String conceptClass, String conceptShortname, String conceptReferenceTermCode, String conceptReferenceTermRelationship, String conceptReferenceTermSource, String dataType) {
+        this.uuid = uuid;
+        this.uniqueName = name;
+        this.description = conceptDescription;
+        this.className = conceptClass;
+        this.displayName = conceptShortname;
+        this.dataType = dataType;
+        this.conceptReferenceTerm = new ConceptReferenceTerm(conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource);
+    }
+
+    public ConceptCommon() {
+
+    }
+
     public ConceptReferenceTerm getConceptReferenceTerm() {
         return conceptReferenceTerm;
     }

@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptCommon;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
+import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptSetMapper;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptReferenceTermService;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -57,6 +57,16 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
         ConceptDatatype conceptDatatype = conceptService.getConceptDatatypeByName(conceptSet.getDataType());
         org.openmrs.Concept mappedConceptSet = getConceptSet(conceptSet, conceptClass, existingConcept, conceptDatatype);
         return conceptService.saveConcept(mappedConceptSet);
+    }
+
+    @Override
+    public Concepts getConcept(String conceptName) {
+        org.openmrs.Concept concept = conceptService.getConceptByName(conceptName);
+        if(concept == null){
+            return null;
+        }
+        Concepts concepts = conceptSetMapper.mapAll(concept);
+        return concepts;
     }
 
     private org.openmrs.Concept getConceptSet(ConceptSet conceptSet, ConceptClass conceptClass, org.openmrs.Concept existingConcept, ConceptDatatype conceptDatatype) {

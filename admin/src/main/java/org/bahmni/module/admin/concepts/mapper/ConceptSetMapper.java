@@ -7,15 +7,14 @@ import org.bahmni.module.admin.csv.models.ConceptRows;
 import org.bahmni.module.admin.csv.models.ConceptSetRow;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
+import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
 import org.openmrs.Concept;
-import org.openmrs.ConceptDescription;
-import org.openmrs.ConceptMap;
-import org.openmrs.ConceptName;
 import org.openmrs.api.context.Context;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+
+import static org.bahmni.module.admin.csv.utils.CSVUtils.getKeyValueList;
 
 public class ConceptSetMapper {
 
@@ -56,60 +55,33 @@ public class ConceptSetMapper {
         return conceptReferenceTerm;
     }
 
-    public ConceptSetRow map(Concept concept) {
-        String conceptReferenceTermCode = null, conceptReferenceTermSource = null,
-                conceptReferenceTermRelationship = null, conceptDescription = null, conceptShortname = null;
-        String name = concept.getName(Context.getLocale()).getName();
-        ConceptDescription description = concept.getDescription(Context.getLocale());
-        if (description != null) {
-            conceptDescription = description.getDescription();
-        }
-        ConceptName shortName = concept.getShortNameInLocale(Context.getLocale());
-        if (shortName != null) {
-            conceptShortname = shortName.getName();
-        }
-        String conceptClass = concept.getConceptClass().getName();
-        List<KeyValue> children = getSetMembers(concept);
-        Collection<ConceptMap> conceptMappings = concept.getConceptMappings();
-        if (conceptMappings != null && conceptMappings.size() > 0) {
-            ConceptMap conceptMap = conceptMappings.iterator().next();
-            conceptReferenceTermCode = conceptMap.getConceptReferenceTerm().getCode();
-            conceptReferenceTermSource = conceptMap.getConceptReferenceTerm().getConceptSource().getName();
-            conceptReferenceTermRelationship = conceptMap.getConceptMapType().getName();
-        }
-        String uuid = concept.getUuid();
-        ConceptSetRow conceptSetRow = new ConceptSetRow(uuid, name, conceptDescription, conceptClass, conceptShortname, conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource, children);
+    public ConceptSetRow map(ConceptSet conceptSet) {
+        String name = conceptSet.getUniqueName();
+        String description = conceptSet.getDescription();
+        String shortName = conceptSet.getDisplayName();
+        String conceptClass = conceptSet.getClassName();
+        List<KeyValue> children = getKeyValueList("child", conceptSet.getChildren());
+        String conceptReferenceTermCode = conceptSet.getConceptReferenceTerm().getReferenceTermCode();
+        String conceptReferenceTermSource = conceptSet.getConceptReferenceTerm().getReferenceTermSource();
+        String conceptReferenceTermRelationship = conceptSet.getConceptReferenceTerm().getReferenceTermRelationship();
+        String uuid = conceptSet.getUuid();
+        ConceptSetRow conceptSetRow = new ConceptSetRow(uuid, name, description, conceptClass, shortName, conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource, children);
         return conceptSetRow;
     }
 
-    public ConceptRows mapAll(Concept concept) {
-        List<ConceptSetRow> conceptSetRowsList = new ArrayList<>();
-        List<ConceptRow> conceptRowsList = new ArrayList<>();
-        for (Concept setMember : concept.getSetMembers()) {
-            if (setMember.isSet()) {
-                ConceptRows conceptRows = mapAll(setMember);
-                conceptSetRowsList.addAll(conceptRows.getConceptSetRows());
-                conceptRowsList.addAll(conceptRows.getConceptRows());
-            } else {
-                conceptRowsList.addAll(conceptMapper.mapAll(setMember));
-            }
 
-        }
-        conceptSetRowsList.add(map(concept));
+    public ConceptRows mapAll(Concepts concepts) {
         ConceptRows conceptRows = new ConceptRows();
-        conceptRows.setConceptRows(conceptRowsList);
-        conceptRows.setConceptSetRows(conceptSetRowsList);
+        List<ConceptRow> conceptRowList = new ArrayList<>();
+        List<ConceptSetRow> conceptSetRowList = new ArrayList<>();
+        for (org.bahmni.module.referencedata.labconcepts.contract.Concept concept : concepts.getConceptList()) {
+            conceptRowList.add(conceptMapper.map(concept));
+        }
+        for (ConceptSet conceptSet : concepts.getConceptSetList()) {
+            conceptSetRowList.add(map(conceptSet));
+        }
+        conceptRows.setConceptRows(conceptRowList);
+        conceptRows.setConceptSetRows(conceptSetRowList);
         return conceptRows;
     }
-
-    private List<KeyValue> getSetMembers(org.openmrs.Concept concept) {
-        List<Concept> setMembersList = concept.getSetMembers();
-        List<KeyValue> setMembers = new ArrayList<>();
-        for (Concept setMember : setMembersList) {
-            setMembers.add(new KeyValue("child", setMember.getName(Context.getLocale()).getName()));
-        }
-        return setMembers;
-    }
-
-
 }

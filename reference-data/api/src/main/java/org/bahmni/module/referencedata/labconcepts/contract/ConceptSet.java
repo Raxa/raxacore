@@ -7,6 +7,12 @@ public class ConceptSet extends ConceptCommon {
     private List<String> children;
 
     public ConceptSet() {
+        super();
+    }
+
+    public ConceptSet(String uuid, String name, String conceptDescription, String conceptClass, String conceptShortname, String conceptReferenceTermCode, String conceptReferenceTermRelationship, String conceptReferenceTermSource, List<String> children) {
+        super(uuid, name, conceptDescription, conceptClass, conceptShortname, conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource, "N/A");
+        this.children = children;
     }
 
     public List<String> getChildren() {

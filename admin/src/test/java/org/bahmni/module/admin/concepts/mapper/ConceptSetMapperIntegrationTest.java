@@ -16,14 +16,16 @@ import java.util.UUID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class ConceptSetMapperTest {
+public class ConceptSetMapperIntegrationTest {
 
     private ConceptSetMapper conceptSetMapper;
     private ArrayList<KeyValue> children;
+    private org.bahmni.module.referencedata.labconcepts.mapper.ConceptSetMapper referenceDataConceptSetMapper;
 
     @Before
     public void setUp() throws Exception {
         conceptSetMapper = new ConceptSetMapper();
+        referenceDataConceptSetMapper = new org.bahmni.module.referencedata.labconcepts.mapper.ConceptSetMapper();
         children = new ArrayList<>();
         children.add(new KeyValue("1", "child1"));
         children.add(new KeyValue("2", "child2"));
@@ -102,7 +104,7 @@ public class ConceptSetMapperTest {
         org.openmrs.Concept child3 = new ConceptBuilder().withName("Child3").withDescription("Description").withClass("Some").withDataType("N/A").withShortName("short").build();
         org.openmrs.Concept child4 = new ConceptBuilder().withName("Child4").withDescription("Description").withClass("Some").withDataType("N/A").withShortName("short").build();
         org.openmrs.Concept conceptSet = new ConceptBuilder().withName("Parent Concept").withClass("Misc").withDataType("N/A").withShortName("Shortn").withUUID("Parent").withSetMember(child1).withSetMember(child2).withSetMember(child3).withSetMember(child4).build();
-        List<ConceptRow> conceptRows = conceptSetMapper.mapAll(conceptSet).getConceptRows();
+        List<ConceptRow> conceptRows = conceptSetMapper.mapAll(referenceDataConceptSetMapper.mapAll(conceptSet)).getConceptRows();
         assertEquals(4, conceptRows.size());
         assertEquals("Child1", conceptRows.get(0).name);
         assertEquals("Child2", conceptRows.get(1).name);
@@ -123,7 +125,7 @@ public class ConceptSetMapperTest {
         org.openmrs.Concept child1 = new ConceptBuilder().withName("Child1").withDataType("N/A").withClass("Misc").withShortName("ShortName1").withUUID("child1").withAnswer(answer1).build();
         org.openmrs.Concept child2 = new ConceptBuilder().withName("Child2").withDataType("N/A").withClass("Misc").withShortName("ShortName2").withUUID("child2").build();
         org.openmrs.Concept conceptSet = new ConceptBuilder().withName("Parent Concept").withClass("Misc").withDataType("N/A").withShortName("Shortn").withUUID("Parent").withSetMember(child1).withSetMember(child2).build();
-        ConceptRows conceptRows = conceptSetMapper.mapAll(conceptSet);
+        ConceptRows conceptRows = conceptSetMapper.mapAll(referenceDataConceptSetMapper.mapAll(conceptSet));
         List<ConceptRow> conceptList = conceptRows.getConceptRows();
         ConceptRow answer = conceptList.get(0);
         ConceptRow child1Row = conceptList.get(1);
@@ -144,7 +146,7 @@ public class ConceptSetMapperTest {
         set1.setSet(true);
         org.openmrs.Concept conceptSet = new ConceptBuilder().withName("Parent Concept").withClass("Misc").withDataType("N/A").withShortName("Shortn").withUUID("Parent").withSetMember(child1).withSetMember(child2).withSetMember(set1).build();
         conceptSet.setSet(true);
-        ConceptRows conceptRows = conceptSetMapper.mapAll(conceptSet);
+        ConceptRows conceptRows = conceptSetMapper.mapAll(referenceDataConceptSetMapper.mapAll(conceptSet));
         List<ConceptRow> conceptList = conceptRows.getConceptRows();
         List<ConceptSetRow> conceptSetList = conceptRows.getConceptSetRows();
         ConceptRow answer = conceptList.get(0);

@@ -17,4 +17,12 @@ public class CSVUtils {
         return stringList.toArray(new String[]{});
     }
 
+    public static List<KeyValue> getKeyValueList(String key, List<String> stringList) {
+        List<KeyValue> keyValueList = new ArrayList<>();
+        for (String string : stringList) {
+            keyValueList.add(new KeyValue(key, string));
+        }
+        return keyValueList;
+    }
+
 }
