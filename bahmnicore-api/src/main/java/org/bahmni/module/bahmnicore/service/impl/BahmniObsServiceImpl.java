@@ -53,4 +53,8 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         return obsDao.getNumericConceptsForPerson(personUUID);
     }
 
+    @Override
+    public List<Obs> getLatestObsForConceptSetByVisit(String patientUuid, String conceptName, Integer visitId) {
+        return obsDao.getLatestObsForConceptSetByVisit(patientUuid, conceptName, visitId);
+    }
 }

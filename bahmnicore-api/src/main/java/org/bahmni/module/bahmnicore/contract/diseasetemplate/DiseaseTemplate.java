@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DiseaseTemplate {
-    
+
+    public static final String ALL_DISEASE_TEMPLATES = "All Disease Templates";
     private List<ObservationTemplate> observationTemplates = new ArrayList<>();
     private EncounterTransaction.Concept concept;
 

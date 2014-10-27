@@ -12,4 +12,5 @@ public interface BahmniObsService {
     public List<BahmniObservation> observationsFor(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits);
     public List<BahmniObservation> getLatest(String patientUuid, List<String> conceptNames);
     public List<Concept> getNumericConceptsForPerson(String personUUID);
+    public List<Obs> getLatestObsForConceptSetByVisit(String patientUuid, String conceptName, Integer visitId);
 }

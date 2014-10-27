@@ -6,6 +6,7 @@ import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.bahmni.module.bahmnicore.mapper.ObservationTemplateMapper;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
+import org.bahmni.module.bahmnicore.service.BahmniVisitService;
 import org.bahmni.module.bahmnicore.service.DiseaseTemplateService;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
@@ -26,21 +27,24 @@ import java.util.List;
 @Service
 public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
 
-    private static final String ALL_DISEASE_TEMPLATES = "All Disease Templates";
-
-    @Autowired
-    private ObsDao obsDao;
-
-    @Autowired
     private BahmniObsService bahmniObsService;
 
-    @Autowired
+    private BahmniVisitService bahmniVisitService;
+
     private ConceptService conceptService;
 
-    @Autowired
-    private VisitDao visitDao;
+    private ConceptMapper conceptMapper;
 
-    private ConceptMapper conceptMapper = new ConceptMapper();
+    private ObservationTemplateMapper observationTemplateMapper;
+
+    @Autowired
+    public DiseaseTemplateServiceImpl(BahmniObsService bahmniObsService, BahmniVisitService bahmniVisitService, ConceptService conceptService) {
+        this.bahmniObsService = bahmniObsService;
+        this.bahmniVisitService = bahmniVisitService;
+        this.conceptService = conceptService;
+        this.conceptMapper = new ConceptMapper();
+        this.observationTemplateMapper = new ObservationTemplateMapper(conceptMapper);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -49,53 +53,62 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         List<DiseaseTemplate> diseaseTemplates = new ArrayList<>();
 
         for (Concept diseaseTemplateConcept : diseaseTemplateConcepts) {
-            DiseaseTemplate diseaseTemplate = new DiseaseTemplate(conceptMapper.map(diseaseTemplateConcept));
-
-            for (Concept concept : diseaseTemplateConcept.getSetMembers()) {
-                Visit latestVisit = visitDao.getLatestVisit(patientUuid, concept.getName().getName());
-                if (latestVisit != null) {
-                    List<BahmniObservation> observations = getLatestObsFor(patientUuid, concept.getName().getName(), Arrays.asList(concept), latestVisit.getVisitId());
-                    ObservationTemplate observationTemplate = new ObservationTemplate();
-                    observationTemplate.setVisitStartDate(latestVisit.getStartDatetime());
-                    observationTemplate.setConcept(conceptMapper.map(concept));
-                    observationTemplate.setBahmniObservations(observations);
-
-                    diseaseTemplate.addObservationTemplate(observationTemplate);
-                }
-            }
-            diseaseTemplates.add(diseaseTemplate);
+            diseaseTemplates.add(getDiseaseTemplate(patientUuid, diseaseTemplateConcept));
         }
+
         return diseaseTemplates;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DiseaseTemplate diseaseTemplateFor(String patientUUID, String diseaseName) {
         Concept diseaseTemplateConcept = conceptService.getConceptByName(diseaseName);
         DiseaseTemplate diseaseTemplate = new DiseaseTemplate(conceptMapper.map(diseaseTemplateConcept));
-        ObservationTemplateMapper observationTemplateMapper = new ObservationTemplateMapper(new ConceptMapper());
-        List<Concept> observationTemplates = diseaseTemplateConcept.getSetMembers();
-        for (Concept concept : observationTemplates) {
+        List<Concept> observationTemplateConcepts = diseaseTemplateConcept.getSetMembers();
+        for (Concept concept : observationTemplateConcepts) {
             List<Concept> setMembers = new ArrayList<>();
-            if(concept.isSet()){
+            if (concept.isSet()) {
                 setMembers = concept.getSetMembers();
-            } else{
+            } else {
                 setMembers.add(concept);
             }
             List<BahmniObservation> observations = bahmniObsService.observationsFor(patientUUID, setMembers, null);
-            List<ObservationTemplate> observationTemplateList = observationTemplateMapper.map(observations, concept);
-            diseaseTemplate.addObservationTemplates(observationTemplateList);
+            List<ObservationTemplate> observationTemplates = observationTemplateMapper.map(observations, concept);
+            diseaseTemplate.addObservationTemplates(observationTemplates);
         }
 
         return diseaseTemplate;
     }
 
+    private DiseaseTemplate getDiseaseTemplate(String patientUuid, Concept diseaseTemplateConcept) {
+        DiseaseTemplate diseaseTemplate = new DiseaseTemplate(conceptMapper.map(diseaseTemplateConcept));
+
+        for (Concept concept : diseaseTemplateConcept.getSetMembers()) {
+            Visit latestVisit = bahmniVisitService.getLatestVisit(patientUuid, concept.getName().getName());
+            if (latestVisit != null) {
+                diseaseTemplate.addObservationTemplate(getObservationTemplate(patientUuid, concept, latestVisit));
+            }
+        }
+
+        return diseaseTemplate;
+    }
+
+    private ObservationTemplate getObservationTemplate(String patientUuid, Concept concept, Visit latestVisit) {
+        List<BahmniObservation> observations = getLatestObsFor(patientUuid, concept.getName().getName(), Arrays.asList(concept), latestVisit.getVisitId());
+        ObservationTemplate observationTemplate = new ObservationTemplate();
+        observationTemplate.setVisitStartDate(latestVisit.getStartDatetime());
+        observationTemplate.setConcept(conceptMapper.map(concept));
+        observationTemplate.setBahmniObservations(observations);
+        return observationTemplate;
+    }
+
     private List<BahmniObservation> getLatestObsFor(String patientUuid, String conceptName, List<Concept> rootConcepts, Integer visitId) {
-        List<Obs> latestObsForConceptSet = obsDao.getLatestObsForConceptSetByVisit(patientUuid, conceptName, visitId);
+        List<Obs> latestObsForConceptSet = bahmniObsService.getLatestObsForConceptSetByVisit(patientUuid, conceptName, visitId);
         return BahmniObservationMapper.map(latestObsForConceptSet, rootConcepts);
     }
 
     private List<Concept> getDiseaseTemplateConcepts() {
-        Concept concept = conceptService.getConceptByName(ALL_DISEASE_TEMPLATES);
+        Concept concept = conceptService.getConceptByName(DiseaseTemplate.ALL_DISEASE_TEMPLATES);
         return concept.getSetMembers();
     }
 }
