@@ -1,7 +1,20 @@
 package org.openmrs.module.bahmniemrapi.document.service.impl;
 
-import org.openmrs.*;
-import org.openmrs.api.AdministrationService;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterRole;
+import org.openmrs.EncounterType;
+import org.openmrs.Location;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.Provider;
+import org.openmrs.Visit;
+import org.openmrs.VisitType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
@@ -12,14 +25,11 @@ import org.openmrs.module.bahmniemrapi.document.service.VisitDocumentService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterProviderMatcher;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service
 public class VisitDocumentServiceImpl implements VisitDocumentService {
-    
+
     public static final String DOCUMENT_OBS_GROUP_CONCEPT_NAME = "Document";
 
     private VisitService visitService;
@@ -27,7 +37,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
     private EncounterService encounterService;
 
     @Autowired
-	public VisitDocumentServiceImpl(VisitService visitService, ConceptService conceptService, EncounterService encounterService,@Qualifier("adminService")AdministrationService administrationService) {
+    public VisitDocumentServiceImpl(VisitService visitService, ConceptService conceptService, EncounterService encounterService) {
         this.visitService = visitService;
         this.conceptService = conceptService;
         this.encounterService = encounterService;
@@ -49,54 +59,40 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         return Context.getVisitService().saveVisit(visit);
     }
 
-    private void updateEncounter(Encounter encounter, Date encounterDateTime, List<Document> documents){
-        LinkedHashSet<Obs> observations = new LinkedHashSet<>(encounter.getAllObs());
+    private void updateEncounter(Encounter encounter, Date encounterDateTime, List<Document> documents) {
         Concept imageConcept = conceptService.getConceptByName(DOCUMENT_OBS_GROUP_CONCEPT_NAME);
 
         for (Document document : documents) {
             Concept testConcept = conceptService.getConceptByUuid(document.getTestUuid());
-
             Obs parentObservation = findOrCreateParentObs(encounter, encounterDateTime, testConcept, document.getObsUuid());
+            String url = document.getImage();
 
-            if(!document.isVoided()){
-                if(documentConceptChanged(parentObservation,document.getTestUuid())) {
-                    parentObservation = voidExistingAndCreateNewObs(testConcept, parentObservation);
-                }
-                else{
-                    parentObservation.setConcept(testConcept);
-                }
-
-                String url = document.getImage();
-                parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), encounter, imageConcept, url));
-                observations.add(parentObservation);
+            if (document.isNew()) {
+                parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), imageConcept, url, null));
             }
-            else{
+            if (document.shouldVoidDocument()) {
                 voidDocumentObservationTree(parentObservation);
+                return;
             }
+
+            if (document.hasConceptChanged(parentObservation.getConcept().getUuid())) {
+                voidDocumentObservationTree(parentObservation);
+                parentObservation = newObs(parentObservation.getObsDatetime(), testConcept, null, parentObservation.getLocation());
+                parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), imageConcept, url, null));
+            }
+            encounter.addObs(parentObservation);
         }
-        encounter.setObs(observations);
-    }
-
-    private Obs voidExistingAndCreateNewObs(Concept testConcept, Obs parentObservation) {
-        voidDocumentObservationTree(parentObservation);
-        Obs newObs = new Obs(parentObservation.getPerson(),testConcept,parentObservation.getObsDatetime(),parentObservation.getLocation());
-        newObs.setEncounter(parentObservation.getEncounter());
-        return newObs;
-    }
-
-    private boolean documentConceptChanged(Obs parentObservation, String testUuid) {
-        return !parentObservation.getConcept().getUuid().equals(testUuid);
     }
 
     private Obs findOrCreateParentObs(Encounter encounter, Date observationDateTime, Concept testConcept, String obsUuid) {
         Obs observation = findObservation(encounter.getAllObs(), obsUuid);
-        return observation != null ? observation : newObs(observationDateTime, encounter, testConcept, null) ;
+        return observation != null ? observation : newObs(observationDateTime, testConcept, null, null);
     }
 
     private void voidDocumentObservationTree(Obs obs) {
         obs.setVoided(true);
         Set<Obs> groupMembers = obs.getGroupMembers();
-        if(groupMembers != null){
+        if (groupMembers != null) {
             for (Obs groupMember : groupMembers) {
                 groupMember.setVoided(true);
             }
@@ -112,20 +108,19 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         return null;
     }
 
-    private Obs newObs(Date obsDate, Encounter encounter, Concept concept, String value) {
+    private Obs newObs(Date obsDate, Concept concept, String value, Location location) {
         Obs observation = new Obs();
-        observation.setPerson(encounter.getPatient());
-        observation.setEncounter(encounter);
         observation.setConcept(concept);
         observation.setObsDatetime(obsDate);
         if (value != null) {
             observation.setValueText(value);
         }
+        observation.setLocation(location);
         return observation;
     }
 
     private Encounter findOrCreateEncounter(Visit visit, String encounterTypeUUID, Date encounterDateTime, Patient patient, String providerUuid, String locationUuid) {
-		EncounterType encounterType = encounterService.getEncounterTypeByUuid(encounterTypeUUID);
+        EncounterType encounterType = encounterService.getEncounterTypeByUuid(encounterTypeUUID);
         Location location = Context.getLocationService().getLocationByUuid(locationUuid);
         Provider provider = Context.getProviderService().getProviderByUuid(providerUuid);
 
@@ -133,16 +128,16 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         encounterParameters.setEncounterType(encounterType).setProviders(new HashSet<>(Arrays.asList(provider))).setLocation(location);
 
         Encounter existingEncounter = new EncounterProviderMatcher().findEncounter(visit, encounterParameters);
-		if (existingEncounter != null) {
-			return existingEncounter;
-		}
+        if (existingEncounter != null) {
+            return existingEncounter;
+        }
 
-		Encounter encounter = new Encounter();
-		encounter.setPatient(patient);
-		encounter.setEncounterType(encounterType);
-		encounter.setEncounterDatetime(encounterDateTime);
+        Encounter encounter = new Encounter();
+        encounter.setPatient(patient);
+        encounter.setEncounterType(encounterType);
+        encounter.setEncounterDatetime(encounterDateTime);
         encounter.setLocation(location);
-		EncounterRole encounterRoleByUuid = Context.getEncounterService().getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
+        EncounterRole encounterRoleByUuid = Context.getEncounterService().getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
         encounter.addProvider(encounterRoleByUuid, provider);
         return encounter;
     }
@@ -164,5 +159,4 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         }
         return createVisit(request.getVisitTypeUuid(), request.getVisitStartDate(), request.getVisitEndDate(), patient);
     }
-
 }

@@ -1,12 +1,15 @@
 package org.openmrs.module.bahmniemrapi.document.service.impl;
 
+import static org.hamcrest.Matchers.equalTo;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.ObsService;
 import org.openmrs.api.VisitService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.document.contract.Document;
 import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentRequest;
 import org.openmrs.module.bahmniemrapi.document.service.VisitDocumentService;
@@ -31,6 +34,8 @@ public class VisitDocumentServiceImplIT extends BaseModuleContextSensitiveTest {
     VisitDocumentService visitDocumentService;
     @Autowired
     EncounterService encounterService;
+    @Autowired
+    ObsService obsService;
     @Autowired
     VisitService visitService;
 
@@ -69,6 +74,68 @@ public class VisitDocumentServiceImplIT extends BaseModuleContextSensitiveTest {
 
 
     @Test
+    public void shouldNotChangeObservationsIfSameDetailsProvidedOnceAgain() throws Exception {
+        Date visitStartDate = getDateFromString("2014-06-22 00:00:00");
+        Date encounterDate = getDateFromString("2014-06-23 00:00:00");
+
+        List<Document> documents = new ArrayList<>();
+        documents.add(new Document("/radiology/foo.jpg", null, "4f596de5-5caa-11e3-a4c0-0800271c1b75", "6d0ae386-707a-4629-9850-f15206e63kj0", encounterDate, false));
+
+
+        VisitDocumentRequest visitDocumentRequest = new VisitDocumentRequest("86526ed5-3c11-11de-a0ba-001e378eb67a",
+                "ad41fb41-a41a-4ad6-8835-2f59099acf5a",
+                "f01c54cb-2225-471a-9cd5-d348552c337c",
+                visitStartDate,
+                null,
+                "4ee21921-01cc-4720-a6bf-a61a17c4d05b",
+                encounterDate,
+                documents,
+                "331c6bf8-7846-11e3-a96a-0800271c1333", "899c993e-c2cc-11de-8d13-0040c6dffd0f");
+        visitDocumentService.upload(visitDocumentRequest);
+
+        Encounter encounter = encounterService.getEncounterByUuid("6d0ae386-707a-4629-9850-f15206e63222");
+
+        Obs savedDoc = getSavedDocument(encounter.getAllObs(), "4f596de5-5caa-11e3-a4c0-0800271c1b75");
+
+        assertNotNull(savedDoc);
+        Set<Obs> groupMembers = savedDoc.getGroupMembers();
+        assertThat(groupMembers.size(), is(equalTo(1)));
+        assertThat(groupMembers.iterator().next().getValueText(), is("/radiology/foo.jpg"));
+        assertThat(groupMembers.iterator().next().getUuid(), is("6d0ae386-707a-4629-9850-f15606e63666"));
+    }
+
+    @Test
+    public void shouldPreferVoidOverUpdateWhenEditingADocument() throws Exception {
+        Date visitStartDate = getDateFromString("2014-06-22 00:00:00");
+        Date encounterDate = getDateFromString("2014-06-23 00:00:00");
+
+        List<Document> documents = new ArrayList<>();
+        documents.add(new Document("/radiology/foo.jpg", null, "3f596de5-5caa-11e3-a4c0-0800271c1b75", "6d0ae386-707a-4629-9850-f15206e63kj0", encounterDate, true));
+
+
+        VisitDocumentRequest visitDocumentRequest = new VisitDocumentRequest("86526ed5-3c11-11de-a0ba-001e378eb67a",
+                "ad41fb41-a41a-4ad6-8835-2f59099acf5a",
+                "f01c54cb-2225-471a-9cd5-d348552c337c",
+                visitStartDate,
+                null,
+                "4ee21921-01cc-4720-a6bf-a61a17c4d05b",
+                encounterDate,
+                documents,
+                "331c6bf8-7846-11e3-a96a-0800271c1333", "899c993e-c2cc-11de-8d13-0040c6dffd0f");
+        visitDocumentService.upload(visitDocumentRequest);
+
+        Encounter encounter = encounterService.getEncounterByUuid("6d0ae386-707a-4629-9850-f15206e63222");
+
+        Boolean isObservationVoided = obsService.getObsByUuid("6d0ae386-707a-4629-9850-f15206e63kj0").isVoided();
+        assertTrue("Observation is not voided", isObservationVoided);
+
+
+        Obs savedDoc = getSavedDocument(encounter.getAllObs(), "3f596de5-5caa-11e3-a4c0-0800271c1b75");
+
+        assertNull(savedDoc);
+    }
+
+    @Test
     public void shouldChangeObservationsOfPreviousEncounters() throws Exception {
         Date visitStartDate = getDateFromString("2014-06-22 00:00:00");
         Date encounterDate = getDateFromString("2014-06-23 00:00:00");
@@ -103,6 +170,7 @@ public class VisitDocumentServiceImplIT extends BaseModuleContextSensitiveTest {
         assertThat(savedDoc.getGroupMembers().iterator().next().getValueText(),is("/radiology/foo.jpg"));
         assertEquals(LOCATION_UUID, encounter.getLocation().getUuid());
     }
+
 
     @Test
     public void shouldCreateObservations() throws Exception {
