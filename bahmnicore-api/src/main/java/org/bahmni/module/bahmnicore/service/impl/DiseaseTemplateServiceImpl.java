@@ -94,7 +94,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
     }
 
     private ObservationTemplate getObservationTemplate(String patientUuid, Concept concept, Visit latestVisit) {
-        List<BahmniObservation> observations = getLatestObsFor(patientUuid, concept.getName().getName(), Arrays.asList(concept), latestVisit.getVisitId());
+        List<BahmniObservation> observations = getLatestObsFor(patientUuid, concept.getName(Context.getLocale()).getName(), Arrays.asList(concept), latestVisit.getVisitId());
         ObservationTemplate observationTemplate = new ObservationTemplate();
         observationTemplate.setVisitStartDate(latestVisit.getStartDatetime());
         observationTemplate.setConcept(conceptMapper.map(concept));

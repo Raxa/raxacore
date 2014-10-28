@@ -107,7 +107,7 @@ public class ObsDaoImpl implements ObsDao {
                         "   ( select cs.concept.conceptId\n" +
                         "     from ConceptName cn, ConceptSet cs\n" +
                         "     where cs.conceptSet.conceptId = cn.concept.conceptId and cn.conceptNameType='FULLY_SPECIFIED' and cn.name=:conceptName)\n" +
-                        "   and obs.person.uuid=:patientUuid and v.visitId =:visitId order by enc.encounterId";
+                        "   and obs.person.uuid=:patientUuid and v.visitId =:visitId order by enc.encounterId desc";
         Query queryToGetObs = sessionFactory.getCurrentSession().createQuery(queryString);
         queryToGetObs.setString("conceptName", conceptName);
         queryToGetObs.setString("patientUuid", patientUuid);
@@ -116,14 +116,21 @@ public class ObsDaoImpl implements ObsDao {
         return withUniqueConcepts(queryToGetObs.list());
     }
 
-    private List<Obs> withUniqueConcepts(List<Obs> obslist) {
-        Map<Integer, Obs> conceptToObsMap = new HashMap<>();
-        for (Obs obs : obslist) {
-            conceptToObsMap.put(obs.getConcept().getId(), obs);
+    private List<Obs> withUniqueConcepts(List<Obs> observations) {
+        Map<Integer, Integer> conceptToEncounterMap = new HashMap<>();
+        List<Obs> filteredObservations = new ArrayList<>();
+        for (Obs obs : observations) {
+            Integer encounterId = conceptToEncounterMap.get(obs.getConcept().getId());
+            if(encounterId == null) {
+                conceptToEncounterMap.put(obs.getConcept().getId(), obs.getEncounter().getId());
+                filteredObservations.add(obs);
+            }
+            else if (obs.getEncounter().getId().intValue() == encounterId.intValue()) {
+                filteredObservations.add(obs);
+            }
         }
-        return new ArrayList<>(conceptToObsMap.values());
+        return filteredObservations;
     }
-
 
     private List<Integer> getVisitIdsFor(String patientUuid, Integer numberOfVisits) {
         Query queryToGetVisitIds = sessionFactory.getCurrentSession().createQuery(
