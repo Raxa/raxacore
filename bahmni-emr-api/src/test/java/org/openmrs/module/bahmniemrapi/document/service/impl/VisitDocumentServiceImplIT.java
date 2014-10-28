@@ -1,7 +1,6 @@
 package org.openmrs.module.bahmniemrapi.document.service.impl;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -48,7 +47,7 @@ public class VisitDocumentServiceImplIT extends BaseModuleContextSensitiveTest {
         Date encounterDate = getDateFromString("2014-06-23 00:00:00");
 
         List<Document> documents = new ArrayList<>();
-        documents.add(createNewDocument("/patient_file", "6d0ae386-707a-4629-9850-f15206e63j8s", true, "3f596de5-5caa-11e3-a4c0-0800271c1b75", encounterDate));
+        documents.add(new Document("/patient_file", null, "3f596de5-5caa-11e3-a4c0-0800271c1b75", "6d0ae386-707a-4629-9850-f15206e63j8s", encounterDate, true));
 
         visitDocumentRequest = new VisitDocumentRequest("86526ed5-3c11-11de-a0ba-001e378eb67a",
                 "d794516f-210d-4c4e-8978-467d97969f31",
@@ -75,7 +74,7 @@ public class VisitDocumentServiceImplIT extends BaseModuleContextSensitiveTest {
         Date encounterDate = getDateFromString("2014-06-23 00:00:00");
 
         List<Document> documents = new ArrayList<>();
-        documents.add(createNewDocument("/radiology/foo.jpg", "6d0ae386-707a-4629-9850-f15206e63kj0", false, "5f596de5-5caa-11e3-a4c0-0800271c1b75", encounterDate));
+        documents.add(new Document("/radiology/foo.jpg", null, "5f596de5-5caa-11e3-a4c0-0800271c1b75", "6d0ae386-707a-4629-9850-f15206e63kj0", encounterDate, false));
 
 
         VisitDocumentRequest visitDocumentRequest = new VisitDocumentRequest("86526ed5-3c11-11de-a0ba-001e378eb67a",
@@ -112,7 +111,7 @@ public class VisitDocumentServiceImplIT extends BaseModuleContextSensitiveTest {
         Date obsDate = getDateFromString("2014-06-24 00:10:00");
 
         List<Document> documents = new ArrayList<>();
-        documents.add(createNewDocument("/radiology/fooo-bar.jpg", null, false, "4f596de5-5caa-11e3-a4c0-0800271c1b75", obsDate));
+        documents.add(new Document("/radiology/fooo-bar.jpg", null, "4f596de5-5caa-11e3-a4c0-0800271c1b75", null, obsDate, false));
 
         visitDocumentRequest = new VisitDocumentRequest("86526ed5-3c11-11de-a0ba-001e378eb67a",
                 "d794516f-210d-4c4e-8978-467d97969f31",
@@ -141,7 +140,7 @@ public class VisitDocumentServiceImplIT extends BaseModuleContextSensitiveTest {
         Date visitStartDate = getDateFromString("2010-09-22 00:00:00");
 
         List<Document> documents = new ArrayList<>();
-        documents.add(createNewDocument("/radiology/foo-lalala.jpg", null, false, "3f596de5-5caa-11e3-a4c0-0800271c1b75", null));
+        documents.add(new Document("/radiology/foo-lalala.jpg", null, "3f596de5-5caa-11e3-a4c0-0800271c1b75", null, null, false));
 
 
         VisitDocumentRequest visitDocumentRequest = new VisitDocumentRequest("86526ed5-3c11-11de-a0ba-001e378eb67a",
@@ -175,7 +174,7 @@ public class VisitDocumentServiceImplIT extends BaseModuleContextSensitiveTest {
         Date obsDate = getDateFromString("2014-06-24 00:10:00");
 
         List<Document> documents = new ArrayList<>();
-        documents.add(createNewDocument("/radiology/fooo-bar.jpg", null, false, "4f596de5-5caa-11e3-a4c0-0800271c1b75", obsDate));
+        documents.add(new Document("/radiology/fooo-bar.jpg", null, "4f596de5-5caa-11e3-a4c0-0800271c1b75", null, obsDate, false));
 
         visitDocumentRequest = new VisitDocumentRequest("86526ed5-3c11-11de-a0ba-001e378eb67a",
                 "d794516f-210d-4c4e-8978-467d97969f31",
@@ -222,16 +221,4 @@ public class VisitDocumentServiceImplIT extends BaseModuleContextSensitiveTest {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         return simpleDateFormat.parse(date);
     }
-
-    private Document createNewDocument(String image, String obsUuid, boolean voided, String testUuid, Date obsDateTime) {
-        Document doc = new Document();
-        doc.setImage(image);
-        if(obsUuid != null)
-            doc.setObsUuid(obsUuid);
-        doc.setVoided(voided);
-        doc.setTestUuid(testUuid);
-        doc.setObsDateTime(obsDateTime);
-        return doc;
-    }
-
 }
