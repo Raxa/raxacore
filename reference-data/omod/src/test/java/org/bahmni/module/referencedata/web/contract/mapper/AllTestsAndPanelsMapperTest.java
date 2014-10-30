@@ -88,4 +88,27 @@ public class AllTestsAndPanelsMapperTest {
         assertEquals(1, panels.size());
         assertEquals(panelData.getId(), panels.get(0).getId());
     }
+
+    @Test
+    public void should_not_map_the_test_or_panel_which_is_retired() throws Exception {
+        Concept testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.TEST_UUID).withDescription("SomeDescription")
+                .withDateChanged(dateChanged).withShortName("ShortName").withName("Test concept").withDataType(ConceptDatatype.NUMERIC).withRetired(true).build();
+        Concept panelConcept = new ConceptBuilder().withUUID("Panel UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).withDescription("SomeDescription")
+                .withSetMember(testConcept).withDateChanged(dateChanged).withShortName("ShortName").withName("Panel Name").withDataType(ConceptDatatype.NUMERIC).withRetired(true).build();
+        Concept testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID).withDescription("Test and Panel Description")
+                .withDateChanged(dateChanged).withShortName("ShortName").withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(testConcept).withSetMember(panelConcept).build();
+        AllTestsAndPanels testsAndPanels = allTestsAndPanelsMapper.map(testAndPanelsConcept);
+
+        assertEquals("Test and Panels UUID", testsAndPanels.getId());
+        assertEquals("All_Tests_and_Panels", testsAndPanels.getName());
+        assertEquals(dateCreated, testsAndPanels.getDateCreated());
+        assertEquals(dateChanged, testsAndPanels.getLastUpdated());
+        assertEquals("Test and Panel Description", testsAndPanels.getDescription());
+
+        List<LabTest> tests = testsAndPanels.getTests();
+        assertEquals(0, tests.size());
+
+        List<Panel> panels = testsAndPanels.getPanels();
+        assertEquals(0, panels.size());
+    }
 }

@@ -135,6 +135,10 @@ public class MapperUtils {
                 concept.getConceptClass().getUuid().equals(ConceptClass.TEST_UUID);
     }
 
+    public static boolean isActive(Concept setMember) {
+        return !setMember.isRetired();
+    }
+
     public static org.openmrs.Concept addConceptName(org.openmrs.Concept concept, ConceptName conceptName) {
         if (conceptName.getName() == null) return concept;
         for (ConceptName name : concept.getNames()) {

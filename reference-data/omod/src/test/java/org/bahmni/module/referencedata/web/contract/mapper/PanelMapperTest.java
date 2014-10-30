@@ -128,6 +128,7 @@ public class PanelMapperTest {
         assertEquals("Sample UUID", panelData.getTests().get(0).getSampleUuid());
         assertEquals("Department UUID", panelData.getTests().get(0).getDepartment().getId());
         assertEquals("Test UUID", panelData.getTests().get(0).getId());
+        assertTrue(panelData.getSortOrder().equals(999.0));
     }
 
     @Test

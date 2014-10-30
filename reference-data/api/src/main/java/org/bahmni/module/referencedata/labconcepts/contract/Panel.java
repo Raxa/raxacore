@@ -36,4 +36,7 @@ public class Panel extends Resource {
         this.sortOrder = sortOrder;
     }
 
+    public Double getSortOrder() {
+        return sortOrder;
+    }
 }

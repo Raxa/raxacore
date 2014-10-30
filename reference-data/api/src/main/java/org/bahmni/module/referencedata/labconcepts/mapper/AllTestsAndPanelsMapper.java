@@ -3,6 +3,8 @@ package org.bahmni.module.referencedata.labconcepts.mapper;
 import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
 import org.openmrs.Concept;
 
+import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.*;
+
 public class AllTestsAndPanelsMapper extends ResourceMapper {
     public AllTestsAndPanelsMapper() {
         super(null);
@@ -22,13 +24,13 @@ public class AllTestsAndPanelsMapper extends ResourceMapper {
         LabTestMapper testMapper = new LabTestMapper();
         PanelMapper panelMapper = new PanelMapper();
         for (Concept setMember : testsAndPanelsConcept.getSetMembers()) {
-            if(MapperUtils.isTestConcept(setMember)){
-                allTestsAndPanels.addTest(testMapper.map(setMember));
+            if (isActive(setMember)) {
+                if (isTestConcept(setMember)) {
+                    allTestsAndPanels.addTest(testMapper.map(setMember));
+                } else if (isPanelConcept(setMember)) {
+                    allTestsAndPanels.addPanel(panelMapper.map(setMember));
+                }
             }
-            else if(MapperUtils.isPanelConcept(setMember)){
-                allTestsAndPanels.addPanel(panelMapper.map(setMember));
-            }
-
         }
     }
 }
