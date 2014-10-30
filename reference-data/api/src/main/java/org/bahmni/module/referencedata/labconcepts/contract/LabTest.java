@@ -8,7 +8,6 @@ public class LabTest extends Resource {
     private String testUnitOfMeasure;
     private Double sortOrder;
 
-    
 
     public String getDescription() {
         return description;
@@ -54,4 +53,7 @@ public class LabTest extends Resource {
         this.sortOrder = sortOrder;
     }
 
+    public Double getSortOrder() {
+        return sortOrder;
+    }
 }
