@@ -2458,4 +2458,11 @@
             ON DUPLICATE KEY UPDATE property_value = 'en';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201410301713" author="Vinay">
+        <comment>Fix the new add_concept procedure</comment>
+        <sql>
+            DROP PROCEDURE IF EXISTS add_concept;
+        </sql>
+        <sqlFile splitStatements="false" path="V1_84__FixAddConceptProc.sql"/>
+    </changeSet>
 </databaseChangeLog>
