@@ -24,6 +24,7 @@
         <require_module>org.openmrs.module.emrapi</require_module>
         <require_module>org.ict4h.openmrs.openmrs-atomfeed</require_module>
         <require_module>org.bahmni.module.reference-data</require_module>
+        <require_module>org.openmrs.module.addresshierarchy</require_module>
     </require_modules>
     <!-- Extensions -->
 	

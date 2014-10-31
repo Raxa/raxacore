@@ -6,9 +6,11 @@ import org.bahmni.module.admin.csv.models.PatientRow;
 import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.addresshierarchy.AddressHierarchyLevel;
 import org.openmrs.module.addresshierarchy.service.AddressHierarchyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -17,24 +19,19 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-@Component
 public class CSVPatientService {
 
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-M-d");
     private static final String EMR_PRIMARY_IDENTIFIER_TYPE = "emr.primaryIdentifierType";
 
-
-    @Autowired
     private PatientService patientService;
-    @Autowired
     private AdministrationService administrationService;
+    private CSVAddressService csvAddressService;
 
-    public CSVPatientService(PatientService patientService, AdministrationService administrationService) {
+    public CSVPatientService(PatientService patientService, AdministrationService administrationService, CSVAddressService csvAddressService) {
         this.patientService = patientService;
         this.administrationService = administrationService;
-    }
-
-    public CSVPatientService() {
+        this.csvAddressService = csvAddressService;
     }
 
     public Patient save(PatientRow patientRow) throws ParseException {
@@ -50,9 +47,14 @@ public class CSVPatientService {
         patient.setGender(patientRow.getGender());
         patient.addIdentifier(new PatientIdentifier(patientRow.getRegistrationNumber(), getPatientIdentifierType(), null));
 
+        List<KeyValue> addressParts = patientRow.getAddressParts();
+        PersonAddress personAddress = csvAddressService.getPersonAddress(addressParts);
+        if(personAddress != null){
+            patient.addAddress(personAddress);
+        }
+
         return patientService.savePatient(patient);
     }
-
 
     private PatientIdentifierType getPatientIdentifierType() {
         String globalProperty = administrationService.getGlobalProperty(EMR_PRIMARY_IDENTIFIER_TYPE);
