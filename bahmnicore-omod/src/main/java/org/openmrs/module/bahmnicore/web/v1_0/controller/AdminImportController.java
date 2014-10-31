@@ -7,14 +7,8 @@ import org.bahmni.fileimport.FileImporter;
 import org.bahmni.fileimport.ImportStatus;
 import org.bahmni.fileimport.dao.ImportStatusDao;
 import org.bahmni.fileimport.dao.JDBCConnectionProvider;
-import org.bahmni.module.admin.csv.models.ConceptRow;
-import org.bahmni.module.admin.csv.models.ConceptSetRow;
-import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
-import org.bahmni.module.admin.csv.models.PatientProgramRow;
-import org.bahmni.module.admin.csv.persister.ConceptPersister;
-import org.bahmni.module.admin.csv.persister.ConceptSetPersister;
-import org.bahmni.module.admin.csv.persister.EncounterPersister;
-import org.bahmni.module.admin.csv.persister.PatientProgramPersister;
+import org.bahmni.module.admin.csv.models.*;
+import org.bahmni.module.admin.csv.persister.*;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -56,6 +50,7 @@ public class AdminImportController extends BaseRestController {
     private static final String PROGRAM_FILES_DIRECTORY = "program/";
     private static final String CONCEPT_FILES_DIRECTORY = "concept/";
     private static final String CONCEPT_SET_FILES_DIRECTORY = "conceptset/";
+    private static final String PATIENT_FILES_DIRECTORY = "patient/";
 
     @Autowired
     private EncounterPersister encounterPersister;
@@ -70,11 +65,33 @@ public class AdminImportController extends BaseRestController {
     private ConceptSetPersister conceptSetPersister;
 
     @Autowired
+    private PatientPersister patientPersister;
+
+    @Autowired
     private SessionFactory sessionFactory;
 
     @Autowired
     @Qualifier("adminService")
     private AdministrationService administrationService;
+
+    @RequestMapping(value = baseUrl + "/patient", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean upload(@RequestParam(value = "file") MultipartFile file) {
+        try {
+            CSVFile persistedUploadedFile = writeToLocalFile(file, PATIENT_FILES_DIRECTORY);
+
+            patientPersister.init(Context.getUserContext());
+            String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
+            String username = Context.getUserContext().getAuthenticatedUser().getUsername();
+
+            boolean skipValidation = true;
+            return new FileImporter<PatientRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
+                    patientPersister, PatientRow.class, new NewMRSConnectionProvider(), username, skipValidation);
+        } catch (Exception e) {
+            logger.error("Could not upload file", e);
+            return false;
+        }
+    }
 
     @RequestMapping(value = baseUrl + "/encounter", method = RequestMethod.POST)
     @ResponseBody
@@ -171,6 +188,7 @@ public class AdminImportController extends BaseRestController {
         });
         return importStatusDao.getImportStatusFromDate(DateUtils.addDays(new Date(), (numberOfDays * -1)));
     }
+
 
     private CSVFile writeToLocalFile(MultipartFile file, String filesDirectory) throws IOException {
         String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
