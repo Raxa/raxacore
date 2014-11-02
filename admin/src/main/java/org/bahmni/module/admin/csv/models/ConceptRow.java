@@ -16,13 +16,13 @@ import java.util.UUID;
 import static org.bahmni.module.admin.csv.utils.CSVUtils.getStringArray;
 
 public class ConceptRow extends CSVEntity {
-    @CSVHeader(name = "uuid")
+    @CSVHeader(name = "uuid", optional = true)
     public String uuid;
 
     @CSVHeader(name = "name")
     public String name;
 
-    @CSVHeader(name = "description")
+    @CSVHeader(name = "description", optional = true)
     public String description;
 
     @CSVHeader(name = "class")
@@ -31,13 +31,13 @@ public class ConceptRow extends CSVEntity {
     @CSVHeader(name = "shortname")
     public String shortName;
 
-    @CSVHeader(name = "reference-term-source")
+    @CSVHeader(name = "reference-term-source", optional = true)
     public String referenceTermSource;
 
-    @CSVHeader(name = "reference-term-code")
+    @CSVHeader(name = "reference-term-code", optional = true)
     public String referenceTermCode;
 
-    @CSVHeader(name = "reference-term-relationship")
+    @CSVHeader(name = "reference-term-relationship", optional = true)
     public String referenceTermRelationship;
 
     @CSVHeader(name = "datatype")
@@ -49,7 +49,16 @@ public class ConceptRow extends CSVEntity {
     @CSVRegexHeader(pattern = "answer.*")
     public List<KeyValue> answers;
 
-    public ConceptRow(String uuid, String name, String description, String conceptClass, String shortName, String referenceTermCode, String referenceTermRelationship, String referenceTermSource, String dataType, List<KeyValue> synonyms, List<KeyValue> answers) {
+    @CSVHeader(name = "units", optional = true)
+    public String units;
+
+    @CSVHeader(name = "High Normal", optional = true)
+    public String hiNormal;
+
+    @CSVHeader(name = "Low Normal", optional = true)
+    public String lowNormal;
+
+    public ConceptRow(String uuid, String name, String description, String conceptClass, String shortName, String referenceTermCode, String referenceTermRelationship, String referenceTermSource, String dataType, String units, String hiNormal, String lowNormal, List<KeyValue> synonyms, List<KeyValue> answers) {
         this.uuid = uuid;
         this.name = name;
         this.description = description;
@@ -61,7 +70,10 @@ public class ConceptRow extends CSVEntity {
         this.dataType = dataType;
         this.synonyms = synonyms;
         this.answers = answers;
-        String[] aRow = {uuid, name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource, dataType};
+        this.units = units;
+        this.hiNormal = hiNormal;
+        this.lowNormal = lowNormal;
+        String[] aRow = {uuid, name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource, dataType, units, hiNormal, lowNormal};
         String[] synonymsRow = getStringArray(synonyms);
         String[] answersRow = getStringArray(answers);
         aRow = ArrayUtils.addAll(aRow, ArrayUtils.addAll(synonymsRow, answersRow));
@@ -80,7 +92,7 @@ public class ConceptRow extends CSVEntity {
             answerHeaders.add(new KeyValue("answerHeader", "answer." + answerCount));
             answerCount++;
         }
-        return new ConceptRow("uuid", "name", "description", "class", "shortname", "reference-term-code", "reference-term-relationship", "reference-term-source", "datatype", synonymHeaders, answerHeaders);
+        return new ConceptRow("uuid", "name", "description", "class", "shortname", "reference-term-code", "reference-term-relationship", "reference-term-source", "datatype", "units", "High Normal", "Low Normal", synonymHeaders, answerHeaders);
     }
 
     public ConceptRow() {
@@ -129,6 +141,30 @@ public class ConceptRow extends CSVEntity {
 
     public String getReferenceTermRelationship() {
         return StringUtils.isEmpty(referenceTermRelationship) ? null : referenceTermRelationship;
+    }
+
+    public String getUnits() {
+        return units;
+    }
+
+    public void setUnits(String units) {
+        this.units = units;
+    }
+
+    public String getHiNormal() {
+        return hiNormal;
+    }
+
+    public void setHiNormal(String hiNormal) {
+        this.hiNormal = hiNormal;
+    }
+
+    public String getLowNormal() {
+        return lowNormal;
+    }
+
+    public void setLowNormal(String lowNormal) {
+        this.lowNormal = lowNormal;
     }
 
     public String getReferenceTermCode() {

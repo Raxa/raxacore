@@ -31,6 +31,9 @@ public class ConceptMapper {
         concept.setDescription(conceptRow.getDescription());
         concept.setUniqueName(conceptRow.getName());
         concept.setDisplayName(conceptRow.getShortName());
+        concept.setUnits(conceptRow.getUnits());
+        concept.setHiNormal(conceptRow.getHiNormal());
+        concept.setLowNormal(conceptRow.getLowNormal());
         addSynonyms(conceptRow, concept);
         addAnswers(conceptRow, concept);
         addConceptReferenceTerm(conceptRow, concept);
@@ -77,9 +80,12 @@ public class ConceptMapper {
         String conceptReferenceTermSource = concept.getConceptReferenceTerm().getReferenceTermSource();
         String conceptReferenceTermRelationship = concept.getConceptReferenceTerm().getReferenceTermRelationship();
         String uuid = concept.getUuid();
+        String units = concept.getUnits();
+        String hiNormal = concept.getHiNormal();
+        String lowNormal = concept.getLowNormal();
         ConceptRow conceptRow = new ConceptRow(uuid, name, description, conceptClass, shortName,
                 conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource,
-                conceptDatatype, conceptSynonyms, conceptAnswers);
+                conceptDatatype, units, hiNormal, lowNormal, conceptSynonyms, conceptAnswers);
         return conceptRow;
     }
 }

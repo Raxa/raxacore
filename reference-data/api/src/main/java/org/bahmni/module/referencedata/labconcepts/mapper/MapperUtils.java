@@ -100,9 +100,9 @@ public class MapperUtils {
             concept = addConceptName(concept, getConceptName(conceptCommon.getDisplayName(), ConceptNameType.SHORT));
         }
 
-        if (conceptCommon.getDescription() != null && concept.getDescription() != null) {
+        if (!StringUtils.isBlank(conceptCommon.getDescription()) && concept.getDescription() != null) {
             concept.getDescription().setDescription(conceptCommon.getDescription());
-        } else if (conceptCommon.getDescription() != null) {
+        } else if (!StringUtils.isBlank(conceptCommon.getDescription())) {
             concept.addDescription(constructDescription(conceptCommon.getDescription()));
         }
         concept.setConceptClass(conceptClass);
@@ -144,6 +144,10 @@ public class MapperUtils {
         for (ConceptName name : concept.getNames()) {
             if (isFullySpecifiedName(conceptName) && isFullySpecifiedName(name) && !name.getName().equals(conceptName.getName())) {
                 name.setName(conceptName.getName());
+                return concept;
+            } else if (isShortName(conceptName) && isShortName(name) && !name.getName().equals(conceptName.getName())) {
+                name.setName(conceptName.getName());
+                return concept;
             } else if (name.getName().equals(conceptName.getName())) {
                 return concept;
             }
@@ -151,6 +155,10 @@ public class MapperUtils {
 
         concept.addName(conceptName);
         return concept;
+    }
+
+    private static boolean isShortName(ConceptName conceptName) {
+        return ObjectUtils.equals(conceptName.getConceptNameType(), ConceptNameType.SHORT);
     }
 
     private static boolean isFullySpecifiedName(ConceptName conceptName) {

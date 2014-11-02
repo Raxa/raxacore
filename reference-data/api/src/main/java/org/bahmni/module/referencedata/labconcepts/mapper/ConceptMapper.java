@@ -1,6 +1,7 @@
 package org.bahmni.module.referencedata.labconcepts.mapper;
 
 
+import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
@@ -23,11 +24,43 @@ public class ConceptMapper {
             concept = addConceptName(concept, getConceptName(conceptName));
         }
         concept.setDatatype(conceptDatatype);
+        removeConceptAnswers(concept);
         for (ConceptAnswer answer : answers) {
             sortWeight++;
             addAnswer(concept, answer, sortWeight);
         }
+        if(conceptDatatype.isNumeric()){
+            concept = addConceptNumeric(concept, conceptData);
+        }
         return concept;
+    }
+
+    private void removeConceptAnswers(org.openmrs.Concept concept) {
+        Collection<ConceptAnswer> answers = concept.getAnswers();
+        answers.clear();
+        concept.setAnswers(answers);
+    }
+
+    private org.openmrs.Concept addConceptNumeric(org.openmrs.Concept concept, Concept conceptData) {
+        ConceptNumeric conceptNumeric = new ConceptNumeric(concept);
+        conceptNumeric.setUnits(conceptData.getUnits());
+        setHiNormal(conceptData, conceptNumeric);
+        setLowNormal(conceptData, conceptNumeric);
+        return conceptNumeric;
+    }
+
+    private void setLowNormal(Concept conceptData, ConceptNumeric conceptNumeric) {
+        String lowNormal = conceptData.getLowNormal();
+        if(!StringUtils.isBlank(lowNormal)){
+            conceptNumeric.setLowNormal(Double.valueOf(lowNormal));
+        }
+    }
+
+    private void setHiNormal(Concept conceptData, ConceptNumeric conceptNumeric) {
+        String hiNormal = conceptData.getHiNormal();
+        if(!StringUtils.isBlank(hiNormal)){
+            conceptNumeric.setHiNormal(Double.valueOf(hiNormal));
+        }
     }
 
     private org.openmrs.Concept addAnswer(org.openmrs.Concept concept, ConceptAnswer answer, double sortWeight) {

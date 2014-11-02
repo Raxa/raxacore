@@ -8,6 +8,7 @@ import org.openmrs.api.context.Context;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.*;
@@ -24,20 +25,32 @@ public class ConceptSetMapper {
         Concept concept = mapConcept(conceptSet, conceptClass, existingConcept);
         concept.setSet(true);
         concept.setDatatype(conceptDatatype);
+        removeAllSetMembers(concept);
         for (Concept childConcept : childConcepts) {
             addSetMember(concept, childConcept);
         }
         return concept;
     }
 
+    private void removeAllSetMembers(Concept concept) {
+        Collection<org.openmrs.ConceptSet> conceptSets = concept.getConceptSets();
+        conceptSets.clear();
+        concept.setConceptSets(conceptSets);
+    }
+
     private org.openmrs.Concept addSetMember(Concept concept, Concept childConcept) {
-        for (Concept child  : concept.getSetMembers()) {
-            if (child.getName(Context.getLocale()).getName().equals(childConcept.getName(Context.getLocale()).getName())) {
-                return concept;
-            }
-        }
+        if (ifChildExists(concept, childConcept)) return concept;
         concept.addSetMember(childConcept);
         return concept;
+    }
+
+    private boolean ifChildExists(Concept concept, Concept childConcept) {
+        for (Concept child  : concept.getSetMembers()) {
+            if (child.getName(Context.getLocale()).getName().equals(childConcept.getName(Context.getLocale()).getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public ConceptSet map(Concept concept) {

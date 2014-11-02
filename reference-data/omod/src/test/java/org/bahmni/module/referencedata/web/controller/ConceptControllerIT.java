@@ -1,6 +1,5 @@
 package org.bahmni.module.referencedata.web.controller;
 
-import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.test.web.controller.BaseWebControllerTest;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -13,11 +12,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.Collection;
-import java.util.Random;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class ConceptControllerIT extends BaseWebControllerTest {
@@ -159,10 +155,10 @@ public class ConceptControllerIT extends BaseWebControllerTest {
         assertEquals(dataType, concept.getDatatype().getName());
         Collection<ConceptAnswer> answers = concept.getAnswers();
         for (ConceptAnswer answer : answers) {
-            if(answer.getAnswerConcept().getName(Context.getLocale()).getName().equals("HIV PROGRAM")){
+            if (answer.getAnswerConcept().getName(Context.getLocale()).getName().equals("HIV PROGRAM")) {
                 assertTrue(answer.getSortWeight().equals(1.0));
             }
-            if(answer.getAnswerConcept().getName(Context.getLocale()).getName().equals("ASPIRIN")){
+            if (answer.getAnswerConcept().getName(Context.getLocale()).getName().equals("ASPIRIN")) {
                 assertTrue(answer.getSortWeight().equals(2.0));
             }
         }
@@ -195,7 +191,7 @@ public class ConceptControllerIT extends BaseWebControllerTest {
     public void shouldCreateConceptWithoutDescription() throws Exception {
         String uniqueName = "uniqueName";
         String displayName = "uniqueName";
-        String className = "Ramesh";
+        String className = "Misc";
         String dataType = "N/A";
 
         String conceptDataJson = "{" +
@@ -207,14 +203,14 @@ public class ConceptControllerIT extends BaseWebControllerTest {
 
         MockHttpServletRequest request = newPostRequest("/rest/v1/reference-data/concept", conceptDataJson);
         MockHttpServletResponse response = handle(request);
-        assertEquals(response.getStatus(), HttpStatus.BAD_REQUEST.value());
+        assertEquals(response.getStatus(), HttpStatus.CREATED.value());
     }
 
     @Test
     public void shouldCreateConceptWithoutShortName() throws Exception {
         String uniqueName = "uniqueName";
         String description = "Sample basic concept being created";
-        String className = "Ramesh";
+        String className = "Misc";
         String dataType = "N/A";
 
         String conceptDataJson = "{" +
@@ -226,7 +222,7 @@ public class ConceptControllerIT extends BaseWebControllerTest {
 
         MockHttpServletRequest request = newPostRequest("/rest/v1/reference-data/concept", conceptDataJson);
         MockHttpServletResponse response = handle(request);
-        assertEquals(response.getStatus(), HttpStatus.BAD_REQUEST.value());
+        assertEquals(response.getStatus(), HttpStatus.CREATED.value());
     }
 
     @Test

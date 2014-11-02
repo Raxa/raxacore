@@ -11,6 +11,9 @@ import java.util.Set;
 public class Concept extends ConceptCommon{
     private List<String> answers;
     private List<String> synonyms;
+    private String units;
+    private String hiNormal;
+    private String lowNormal;
 
     public Concept() {
     }
@@ -39,4 +42,27 @@ public class Concept extends ConceptCommon{
     }
 
 
+    public String getUnits() {
+        return units;
+    }
+
+    public void setUnits(String units) {
+        this.units = units;
+    }
+
+    public void setHiNormal(String hiNormal) {
+        this.hiNormal = hiNormal;
+    }
+
+    public String getHiNormal() {
+        return hiNormal;
+    }
+
+    public void setLowNormal(String lowNormal) {
+        this.lowNormal = lowNormal;
+    }
+
+    public String getLowNormal() {
+        return lowNormal;
+    }
 }

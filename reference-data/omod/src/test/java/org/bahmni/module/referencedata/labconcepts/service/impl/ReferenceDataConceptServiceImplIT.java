@@ -4,13 +4,14 @@ import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptService;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.openmrs.Concept;
-import org.openmrs.ConceptDatatype;
-import org.openmrs.ConceptMap;
+import org.openmrs.*;
 import org.openmrs.api.APIException;
+import org.openmrs.api.ConceptInUseException;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
     private ReferenceDataConceptService referenceDataConceptService;
+
+    @Autowired
+    private ConceptService conceptService;
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -179,5 +183,206 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
         assertEquals("5d2d4cb7-mm3b-0037-70f7-0dmimmm22222", concept.getUuid());
         assertEquals(description, concept.getDescription(Context.getLocale()).getDescription());
         assertEquals(ConceptDatatype.N_A_UUID, concept.getDatatype().getUuid());
+    }
+
+    @Test
+    public void create_concept_with_units() throws Exception {
+        org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
+        concept.setUuid("5d2d4cb7-mm3b-0037-70k7-0dmimtm22222");
+        String uniqueName = "Some Numeric Concept";
+        concept.setUniqueName(uniqueName);
+        String displayName = "NumericConcept";
+        concept.setDisplayName(displayName);
+        concept.setClassName("Finding");
+        String description = "Description";
+        concept.setDataType("Numeric");
+        concept.setDescription(description);
+        concept.setUnits("unit");
+        Concept savedConcept = referenceDataConceptService.saveConcept(concept);
+
+        assertEquals(uniqueName, savedConcept.getName(Context.getLocale()).getName());
+        assertEquals(displayName, savedConcept.getShortestName(Context.getLocale(), false).getName());
+        assertEquals("Finding", savedConcept.getConceptClass().getName());
+        assertEquals(0, savedConcept.getSetMembers().size());
+        assertEquals(description, savedConcept.getDescription(Context.getLocale()).getDescription());
+        assertEquals(ConceptDatatype.NUMERIC_UUID, savedConcept.getDatatype().getUuid());
+        ConceptNumeric conceptNumeric = conceptService.getConceptNumeric(savedConcept.getConceptId());
+        assertTrue(savedConcept.isNumeric());
+        assertEquals("unit", conceptNumeric.getUnits());
+    }
+
+    @Test
+    public void create_concept_with_high_normal_and_low_normal() throws Exception {
+        org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
+        concept.setUuid("5d2d4cb7-mm3b-0037-70k7-0dmimtm22222");
+        String uniqueName = "Some Numeric Concept";
+        concept.setUniqueName(uniqueName);
+        String displayName = "NumericConcept";
+        concept.setDisplayName(displayName);
+        concept.setClassName("Finding");
+        String description = "Description";
+        concept.setDataType("Numeric");
+        concept.setDescription(description);
+        concept.setUnits("unit");
+        concept.setHiNormal("99");
+        concept.setLowNormal("10");
+        Concept savedConcept = referenceDataConceptService.saveConcept(concept);
+
+        assertEquals(uniqueName, savedConcept.getName(Context.getLocale()).getName());
+        assertEquals(displayName, savedConcept.getShortestName(Context.getLocale(), false).getName());
+        assertEquals("Finding", savedConcept.getConceptClass().getName());
+        assertEquals(0, savedConcept.getSetMembers().size());
+        assertEquals(description, savedConcept.getDescription(Context.getLocale()).getDescription());
+        assertEquals(ConceptDatatype.NUMERIC_UUID, savedConcept.getDatatype().getUuid());
+        ConceptNumeric conceptNumeric = conceptService.getConceptNumeric(savedConcept.getConceptId());
+        assertTrue(savedConcept.isNumeric());
+        assertEquals("unit", conceptNumeric.getUnits());
+        assertTrue(conceptNumeric.getHiNormal().equals(99.0));
+        assertTrue(conceptNumeric.getLowNormal().equals(10.0));
+    }
+
+    @Test
+    public void update_existing_concept_shortname() throws Exception {
+        org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
+        concept.setUuid("5d2d4cb7-mm3b-0037-70f7-0dmimmm22222");
+        String uniqueName = "Existing Concept";
+        concept.setUniqueName(uniqueName);
+        String displayName = "NumericConcept";
+        concept.setDisplayName(displayName);
+        concept.setClassName("Finding");
+        concept.setDataType("Numeric");
+        concept.setUnits("unit");
+        assertEquals(2, conceptService.getConceptByUuid("5d2d4cb7-mm3b-0037-70f7-0dmimmm22222").getNames().size());
+        Concept savedConcept = referenceDataConceptService.saveConcept(concept);
+
+        assertEquals(2, savedConcept.getNames().size());
+        assertEquals(uniqueName, savedConcept.getName(Context.getLocale()).getName());
+        assertEquals(displayName, savedConcept.getShortNames().iterator().next().getName());
+        assertEquals("Finding", savedConcept.getConceptClass().getName());
+        assertEquals(0, savedConcept.getSetMembers().size());
+        assertEquals(ConceptDatatype.NUMERIC_UUID, savedConcept.getDatatype().getUuid());
+        ConceptNumeric conceptNumeric = conceptService.getConceptNumeric(savedConcept.getConceptId());
+        assertTrue(savedConcept.isNumeric());
+        assertEquals("unit", conceptNumeric.getUnits());
+    }
+
+    @Test
+    public void update_existing_concept_with_high_normal_and_low_normal() throws Exception {
+        org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
+        concept.setUuid("5d2d4cb7-mm3b-0037-70f7-0dmimmm22222");
+        String uniqueName = "New Numeric Concept";
+        concept.setUniqueName(uniqueName);
+        String displayName = "NumericConcept";
+        concept.setDisplayName(displayName);
+        concept.setClassName("Finding");
+        concept.setDataType("Numeric");
+        concept.setUnits("unit");
+        concept.setHiNormal("99");
+        concept.setLowNormal("10");
+        Concept existingConcept = conceptService.getConceptByUuid("5d2d4cb7-mm3b-0037-70f7-0dmimmm22222");
+        assertNotEquals(ConceptDatatype.NUMERIC_UUID, existingConcept.getDatatype().getUuid());
+        Concept savedConcept = referenceDataConceptService.saveConcept(concept);
+
+        assertEquals(uniqueName, savedConcept.getName(Context.getLocale()).getName());
+        assertEquals(displayName, savedConcept.getShortestName(Context.getLocale(), false).getName());
+        assertEquals("Finding", savedConcept.getConceptClass().getName());
+        assertEquals(0, savedConcept.getSetMembers().size());
+        assertEquals(ConceptDatatype.NUMERIC_UUID, savedConcept.getDatatype().getUuid());
+        ConceptNumeric conceptNumeric = conceptService.getConceptNumeric(savedConcept.getConceptId());
+        assertTrue(savedConcept.isNumeric());
+        assertEquals("unit", conceptNumeric.getUnits());
+        assertTrue(conceptNumeric.getHiNormal().equals(99.0));
+        assertTrue(conceptNumeric.getLowNormal().equals(10.0));
+    }
+
+    @Test
+    public void throwExceptionifConcept() throws Exception {
+        org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
+        concept.setUuid("5d2d4cb7-t3tb-0037-70f7-0dmimmm22222");
+        String uniqueName = "New Numeric Concept";
+        concept.setUniqueName(uniqueName);
+        concept.setClassName("Finding");
+        concept.setDataType("Numeric");
+        concept.setUnits("unit");
+        concept.setHiNormal("99");
+        concept.setLowNormal("10");
+        Concept existingConcept = conceptService.getConceptByUuid(concept.getUuid());
+        assertNotEquals(ConceptDatatype.NUMERIC_UUID, existingConcept.getDatatype().getUuid());
+
+        exception.expect(ConceptInUseException.class);
+        exception.expectMessage("The concepts datatype cannot be changed if it is already used/associated to an observation");
+        referenceDataConceptService.saveConcept(concept);
+    }
+
+    @Test
+    public void update_existing_concept_with_short_name() throws Exception {
+        org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
+        String uniqueName = "Existing Concept with obs";
+        concept.setUniqueName(uniqueName);
+        String displayName = "NewShortName";
+        concept.setDisplayName(displayName);
+        concept.setClassName("Finding");
+        concept.setDataType("Coded");
+        Concept existingConcept = conceptService.getConceptByName("Existing Concept with obs");
+        assertEquals(1, existingConcept.getNames().size());
+        Concept savedConcept = referenceDataConceptService.saveConcept(concept);
+
+        assertEquals(uniqueName, savedConcept.getName(Context.getLocale()).getName());
+        assertEquals(displayName, savedConcept.getShortNameInLocale(Context.getLocale()).getName());
+        assertEquals("Finding", savedConcept.getConceptClass().getName());
+        assertEquals(2, savedConcept.getNames().size());
+    }
+
+    @Test
+    public void update_existing_concept_set_with_child_members() throws Exception {
+        ConceptSet conceptSet = new ConceptSet();
+        String uniqueName = "Existing Concept With Children";
+        conceptSet.setUniqueName(uniqueName);
+        String displayName = "NewSName";
+        conceptSet.setDisplayName(displayName);
+        conceptSet.setClassName("Finding");
+        List<String> children = new ArrayList<>();
+
+        children.add("Child1");
+        children.add("Child2");
+        conceptSet.setChildren(children);
+        Concept existingConceptSet = conceptService.getConceptByName("Existing Concept With Children");
+        assertEquals(1, existingConceptSet.getSetMembers().size());
+        Concept concept = referenceDataConceptService.saveConcept(conceptSet);
+
+        assertTrue(concept.isSet());
+        assertEquals(uniqueName, concept.getName(Context.getLocale()).getName());
+        assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
+        assertEquals("Finding", concept.getConceptClass().getName());
+        assertEquals(2, concept.getSetMembers().size());
+        assertEquals("kf2d4cb7-t3tb-0037-70f7-0dmimmm22222", concept.getUuid());
+        assertEquals(ConceptDatatype.N_A_UUID, concept.getDatatype().getUuid());
+    }
+
+
+    @Test
+    public void update_existing_concept_with_answers() throws Exception {
+        org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
+        String uniqueName = "Existing Concept With Answer";
+        concept.setUniqueName(uniqueName);
+        String displayName = "NewSName";
+        concept.setDisplayName(displayName);
+        concept.setClassName("Finding");
+        concept.setDataType("Coded");
+        List<String> answers = new ArrayList<>();
+
+        answers.add("Answer1");
+        answers.add("Answer2");
+        concept.setAnswers(answers);
+        Concept existingConcept = conceptService.getConceptByName("Existing Concept With Answer");
+        assertEquals(1, existingConcept.getAnswers().size());
+        Concept savedConcept = referenceDataConceptService.saveConcept(concept);
+
+        assertEquals(2, savedConcept.getAnswers().size());
+        ArrayList<ConceptAnswer> conceptAnswers = new ArrayList<>(savedConcept.getAnswers());
+        ConceptAnswer answer1 = conceptAnswers.get(0);
+        ConceptAnswer answer2 = conceptAnswers.get(1);
+        assertEquals("Answer1", answer1.getAnswerConcept().getName(Context.getLocale()).getName());
+        assertEquals("Answer2", answer2.getAnswerConcept().getName(Context.getLocale()).getName());
     }
 }
