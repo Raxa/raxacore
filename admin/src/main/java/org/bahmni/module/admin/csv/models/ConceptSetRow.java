@@ -14,13 +14,13 @@ import java.util.UUID;
 import static org.bahmni.module.admin.csv.utils.CSVUtils.getStringArray;
 
 public class ConceptSetRow extends CSVEntity {
-    @CSVHeader(name = "uuid")
+    @CSVHeader(name = "uuid", optional = true)
     public String uuid;
 
     @CSVHeader(name = "name")
     public String name;
 
-    @CSVHeader(name = "description")
+    @CSVHeader(name = "description", optional = true)
     public String description;
 
     @CSVHeader(name = "class")
@@ -29,13 +29,13 @@ public class ConceptSetRow extends CSVEntity {
     @CSVHeader(name = "shortname")
     public String shortName;
 
-    @CSVHeader(name = "reference-term-source")
+    @CSVHeader(name = "reference-term-source", optional = true)
     public String referenceTermSource;
 
-    @CSVHeader(name = "reference-term-code")
+    @CSVHeader(name = "reference-term-code", optional = true)
     public String referenceTermCode;
 
-    @CSVHeader(name = "reference-term-relationship")
+    @CSVHeader(name = "reference-term-relationship", optional = true)
     public String referenceTermRelationship;
 
     @CSVRegexHeader(pattern = "child.*")
