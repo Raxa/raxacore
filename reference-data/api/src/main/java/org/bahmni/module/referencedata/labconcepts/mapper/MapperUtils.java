@@ -2,7 +2,6 @@ package org.bahmni.module.referencedata.labconcepts.mapper;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bahmni.module.referencedata.labconcepts.contract.ConceptCommon;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
@@ -89,27 +88,6 @@ public class MapperUtils {
         return conceptName;
     }
 
-    public static org.openmrs.Concept mapConcept(ConceptCommon conceptCommon, ConceptClass conceptClass, org.openmrs.Concept existingConcept) {
-        org.openmrs.Concept concept = new org.openmrs.Concept();
-        if (existingConcept != null) {
-            concept = existingConcept;
-        }
-        String displayName = conceptCommon.getDisplayName();
-        concept = addConceptName(concept, getConceptName(conceptCommon.getUniqueName(), ConceptNameType.FULLY_SPECIFIED));
-        if (displayName != null) {
-            concept = addConceptName(concept, getConceptName(conceptCommon.getDisplayName(), ConceptNameType.SHORT));
-        }
-
-        if (!StringUtils.isBlank(conceptCommon.getDescription()) && concept.getDescription() != null) {
-            concept.getDescription().setDescription(conceptCommon.getDescription());
-        } else if (!StringUtils.isBlank(conceptCommon.getDescription())) {
-            concept.addDescription(constructDescription(conceptCommon.getDescription()));
-        }
-        concept.setConceptClass(conceptClass);
-        return concept;
-    }
-
-
     public static ConceptDatatype getDataTypeByUuid(String dataTypeUuid) {
         ConceptDatatype conceptDatatype = Context.getConceptService().getConceptDatatypeByUuid(dataTypeUuid);
         return conceptDatatype;
@@ -180,7 +158,7 @@ public class MapperUtils {
 
     public static String getSampleUuid(Concept concept) {
         Sample sampleConcept = getSample(concept);
-        if(sampleConcept == null){
+        if (sampleConcept == null) {
             return null;
         }
         return sampleConcept.getId();

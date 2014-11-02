@@ -1,7 +1,10 @@
 package org.bahmni.module.referencedata.labconcepts.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bahmni.module.referencedata.labconcepts.contract.ConceptCommon;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptReferenceTermService;
+import org.openmrs.ConceptMap;
+import org.openmrs.ConceptMapType;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.ConceptSource;
 import org.openmrs.api.APIException;
@@ -21,6 +24,25 @@ public class ReferenceDataConceptReferenceTermServiceImpl implements ReferenceDa
         ConceptReferenceTerm conceptReferenceTerm = conceptService.getConceptReferenceTermByCode(referenceTermCode, conceptReferenceSource);
         validate(conceptReferenceSource, conceptReferenceTerm);
         return conceptReferenceTerm;
+    }
+
+    @Override
+    public ConceptMap getConceptMap(org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm conceptReferenceTermData) {
+        ConceptMap conceptMap = null;
+        if (conceptReferenceTermData != null && hasReferenceTermAndSource(conceptReferenceTermData)) {
+            ConceptReferenceTerm conceptReferenceTerm = getConceptReferenceTerm(conceptReferenceTermData.getReferenceTermCode(), conceptReferenceTermData.getReferenceTermSource());
+            String mapType = conceptReferenceTermData.getReferenceTermRelationship();
+            ConceptMapType conceptMapType = conceptService.getConceptMapTypeByName(mapType);
+            if (conceptMapType == null) {
+                conceptMapType = conceptService.getConceptMapTypeByUuid(ConceptMapType.SAME_AS_MAP_TYPE_UUID);
+            }
+            conceptMap = new ConceptMap(conceptReferenceTerm, conceptMapType);
+        }
+        return conceptMap;
+    }
+
+    private boolean hasReferenceTermAndSource(org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm conceptReferenceTerm) {
+        return !(StringUtils.isEmpty(conceptReferenceTerm.getReferenceTermCode()) || StringUtils.isEmpty(conceptReferenceTerm.getReferenceTermSource()));
     }
 
     private void validate(ConceptSource referenceTermSource, ConceptReferenceTerm referenceTerm) {

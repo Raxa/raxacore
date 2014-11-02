@@ -2,7 +2,6 @@ package org.bahmni.module.referencedata.labconcepts.mapper;
 
 import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
 import org.openmrs.Concept;
-import org.openmrs.api.context.Context;
 
 public class AllSamplesMapper extends ResourceMapper {
     public AllSamplesMapper() {
@@ -11,7 +10,7 @@ public class AllSamplesMapper extends ResourceMapper {
 
     @Override
     public AllSamples map(Concept allSamplesConcept) {
-        AllSamples allSamples= new AllSamples();
+        AllSamples allSamples = new AllSamples();
         allSamples = mapResource(allSamples, allSamplesConcept);
         allSamples.setDescription(MapperUtils.getDescription(allSamplesConcept));
 

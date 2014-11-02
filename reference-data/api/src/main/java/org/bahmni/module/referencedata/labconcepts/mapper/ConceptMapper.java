@@ -1,7 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.mapper;
 
 
-import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
@@ -9,69 +8,44 @@ import org.openmrs.api.context.Context;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
-import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.*;
+import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.addConceptName;
+import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.getConceptName;
 
 public class ConceptMapper {
+
+    private final ConceptAnswerMapper conceptAnswerMapper;
+    private final ConceptNumericMapper conceptNumericMapper;
+    private final ConceptCommonMapper conceptCommonMapper;
+
     public ConceptMapper() {
+        conceptAnswerMapper = new ConceptAnswerMapper();
+        conceptNumericMapper = new ConceptNumericMapper();
+        conceptCommonMapper = new ConceptCommonMapper();
     }
 
     public org.openmrs.Concept map(Concept conceptData, ConceptClass conceptClass, ConceptDatatype conceptDatatype, List<ConceptAnswer> answers, org.openmrs.Concept existingConcept) {
-        double sortWeight = 0.0;
-        org.openmrs.Concept concept = mapConcept(conceptData, conceptClass, existingConcept);
+        org.openmrs.Concept concept = conceptCommonMapper.map(conceptData, conceptClass, existingConcept);
         for (String conceptName : conceptData.getSynonyms()) {
             concept = addConceptName(concept, getConceptName(conceptName));
         }
         concept.setDatatype(conceptDatatype);
-        removeConceptAnswers(concept);
-        for (ConceptAnswer answer : answers) {
-            sortWeight++;
-            addAnswer(concept, answer, sortWeight);
-        }
-        if(conceptDatatype.isNumeric()){
-            concept = addConceptNumeric(concept, conceptData);
+        concept = conceptAnswerMapper.map(concept, answers);
+        if (conceptDatatype.isNumeric()) {
+            concept = conceptNumericMapper.map(concept, conceptData, existingConcept);
         }
         return concept;
     }
 
-    private void removeConceptAnswers(org.openmrs.Concept concept) {
-        Collection<ConceptAnswer> answers = concept.getAnswers();
-        answers.clear();
-        concept.setAnswers(answers);
-    }
-
-    private org.openmrs.Concept addConceptNumeric(org.openmrs.Concept concept, Concept conceptData) {
-        ConceptNumeric conceptNumeric = new ConceptNumeric(concept);
-        conceptNumeric.setUnits(conceptData.getUnits());
-        setHiNormal(conceptData, conceptNumeric);
-        setLowNormal(conceptData, conceptNumeric);
-        return conceptNumeric;
-    }
-
-    private void setLowNormal(Concept conceptData, ConceptNumeric conceptNumeric) {
-        String lowNormal = conceptData.getLowNormal();
-        if(!StringUtils.isBlank(lowNormal)){
-            conceptNumeric.setLowNormal(Double.valueOf(lowNormal));
-        }
-    }
-
-    private void setHiNormal(Concept conceptData, ConceptNumeric conceptNumeric) {
-        String hiNormal = conceptData.getHiNormal();
-        if(!StringUtils.isBlank(hiNormal)){
-            conceptNumeric.setHiNormal(Double.valueOf(hiNormal));
-        }
-    }
-
-    private org.openmrs.Concept addAnswer(org.openmrs.Concept concept, ConceptAnswer answer, double sortWeight) {
-        for (ConceptAnswer conceptAnswer : concept.getAnswers()) {
-            if (conceptAnswer.getAnswerConcept().getName(Context.getLocale()).getName().equals(answer.getAnswerConcept().getName(Context.getLocale()).getName())) {
-                return concept;
+    public org.openmrs.Concept addConceptMap(org.openmrs.Concept mappedConcept, ConceptMap conceptMap) {
+        if (conceptMap == null) return mappedConcept;
+        for (ConceptMap existingMap : mappedConcept.getConceptMappings()) {
+            if (existingMap.getConceptReferenceTerm().equals(conceptMap.getConceptReferenceTerm())) {
+                return mappedConcept;
             }
         }
-        answer.setSortWeight(sortWeight);
-        concept.addAnswer(answer);
-        return concept;
+        mappedConcept.addConceptMapping(conceptMap);
+        return mappedConcept;
     }
 
     public Concept map(org.openmrs.Concept concept) {

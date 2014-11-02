@@ -244,8 +244,8 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
     @Test
     public void update_existing_concept_shortname() throws Exception {
         org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
-        concept.setUuid("5d2d4cb7-mm3b-0037-70f7-0dmimmm22222");
-        String uniqueName = "Existing Concept";
+        concept.setUuid("5d2d4cb7-feet-0037-70f7-0dmimmm22222");
+        String uniqueName = "Existing Numeric Concept";
         concept.setUniqueName(uniqueName);
         String displayName = "NumericConcept";
         concept.setDisplayName(displayName);
@@ -267,10 +267,10 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
     }
 
     @Test
-    public void update_existing_concept_with_high_normal_and_low_normal() throws Exception {
+    public void update_existing_concept_numeric_with_high_normal_and_low_normal() throws Exception {
         org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
-        concept.setUuid("5d2d4cb7-mm3b-0037-70f7-0dmimmm22222");
-        String uniqueName = "New Numeric Concept";
+        concept.setUuid("5d2d4cb7-feet-0037-70f7-0dmimmm22222");
+        String uniqueName = "Existing Numeric Concept";
         concept.setUniqueName(uniqueName);
         String displayName = "NumericConcept";
         concept.setDisplayName(displayName);
@@ -279,8 +279,6 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
         concept.setUnits("unit");
         concept.setHiNormal("99");
         concept.setLowNormal("10");
-        Concept existingConcept = conceptService.getConceptByUuid("5d2d4cb7-mm3b-0037-70f7-0dmimmm22222");
-        assertNotEquals(ConceptDatatype.NUMERIC_UUID, existingConcept.getDatatype().getUuid());
         Concept savedConcept = referenceDataConceptService.saveConcept(concept);
 
         assertEquals(uniqueName, savedConcept.getName(Context.getLocale()).getName());
@@ -296,18 +294,18 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
     }
 
     @Test
-    public void throwExceptionifConcept() throws Exception {
+    public void throwExceptionifConceptHasObs() throws Exception {
         org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
         concept.setUuid("5d2d4cb7-t3tb-0037-70f7-0dmimmm22222");
         String uniqueName = "New Numeric Concept";
         concept.setUniqueName(uniqueName);
         concept.setClassName("Finding");
-        concept.setDataType("Numeric");
+        concept.setDataType("N/A");
         concept.setUnits("unit");
         concept.setHiNormal("99");
         concept.setLowNormal("10");
         Concept existingConcept = conceptService.getConceptByUuid(concept.getUuid());
-        assertNotEquals(ConceptDatatype.NUMERIC_UUID, existingConcept.getDatatype().getUuid());
+        assertNotEquals(ConceptDatatype.N_A_UUID, existingConcept.getDatatype().getUuid());
 
         exception.expect(ConceptInUseException.class);
         exception.expectMessage("The concepts datatype cannot be changed if it is already used/associated to an observation");

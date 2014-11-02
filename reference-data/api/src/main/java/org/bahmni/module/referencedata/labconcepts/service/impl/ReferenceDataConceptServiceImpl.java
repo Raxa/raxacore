@@ -1,16 +1,17 @@
 package org.bahmni.module.referencedata.labconcepts.service.impl;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
-import org.bahmni.module.referencedata.labconcepts.contract.ConceptCommon;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptSetMapper;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptReferenceTermService;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptService;
-import org.openmrs.*;
-import org.openmrs.api.APIException;
+import org.bahmni.module.referencedata.labconcepts.validator.ConceptValidator;
+import org.openmrs.ConceptAnswer;
+import org.openmrs.ConceptClass;
+import org.openmrs.ConceptDatatype;
+import org.openmrs.ConceptMap;
 import org.openmrs.api.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
     private ReferenceDataConceptReferenceTermService referenceDataConceptReferenceTermService;
     private ConceptMapper conceptMapper;
     private ConceptSetMapper conceptSetMapper;
+    private final ConceptValidator conceptValidator;
     private List<String> notFound;
 
     @Autowired
@@ -32,6 +34,7 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
         this.conceptSetMapper = new ConceptSetMapper();
         this.conceptService = conceptService;
         this.referenceDataConceptReferenceTermService = referenceDataConceptReferenceTermService;
+        conceptValidator = new ConceptValidator();
     }
 
     @Override
@@ -44,7 +47,7 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
     }
 
     private org.openmrs.Concept getExistingConcept(String uniqueName, String uuid) {
-        if(uuid != null){
+        if (uuid != null) {
             return conceptService.getConceptByUuid(uuid);
         }
         return conceptService.getConceptByName(uniqueName);
@@ -62,7 +65,7 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
     @Override
     public Concepts getConcept(String conceptName) {
         org.openmrs.Concept concept = conceptService.getConceptByName(conceptName);
-        if(concept == null){
+        if (concept == null) {
             return null;
         }
         Concepts concepts = conceptSetMapper.mapAll(concept);
@@ -71,19 +74,19 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
 
     private org.openmrs.Concept getConceptSet(ConceptSet conceptSet, ConceptClass conceptClass, org.openmrs.Concept existingConcept, ConceptDatatype conceptDatatype) {
         List<org.openmrs.Concept> setMembers = getSetMembers(conceptSet.getChildren());
-        validate(conceptSet, conceptClass, conceptDatatype);
-        ConceptMap conceptMap = mapToReferenceTerm(conceptSet);
+        conceptValidator.validate(conceptSet, conceptClass, conceptDatatype, notFound);
+        ConceptMap conceptMap = referenceDataConceptReferenceTermService.getConceptMap(conceptSet.getConceptReferenceTerm());
         org.openmrs.Concept mappedConceptSet = conceptSetMapper.map(conceptSet, setMembers, conceptClass, conceptDatatype, existingConcept);
-        mappedConceptSet = addConceptMap(mappedConceptSet, conceptMap);
+        mappedConceptSet = conceptMapper.addConceptMap(mappedConceptSet, conceptMap);
         return mappedConceptSet;
     }
 
     private org.openmrs.Concept getConcept(Concept conceptData, ConceptClass conceptClass, ConceptDatatype conceptDatatype, org.openmrs.Concept existingConcept) {
         List<ConceptAnswer> conceptAnswers = getConceptAnswers(conceptData.getAnswers());
-        validate(conceptData, conceptClass, conceptDatatype);
-        ConceptMap conceptMap = mapToReferenceTerm(conceptData);
+        conceptValidator.validate(conceptData, conceptClass, conceptDatatype, notFound);
+        ConceptMap conceptMap = referenceDataConceptReferenceTermService.getConceptMap(conceptData.getConceptReferenceTerm());
         org.openmrs.Concept mappedConcept = conceptMapper.map(conceptData, conceptClass, conceptDatatype, conceptAnswers, existingConcept);
-        mappedConcept = addConceptMap(mappedConcept, conceptMap);
+        mappedConcept = conceptMapper.addConceptMap(mappedConcept, conceptMap);
         return mappedConcept;
     }
 
@@ -115,77 +118,8 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
         return setMembers;
     }
 
-    private org.openmrs.Concept addConceptMap(org.openmrs.Concept mappedConcept, ConceptMap conceptMap) {
-        if (conceptMap == null) return mappedConcept;
-        for (ConceptMap existingMap : mappedConcept.getConceptMappings()) {
-            if (existingMap.getConceptReferenceTerm().equals(conceptMap.getConceptReferenceTerm())) {
-                return mappedConcept;
-            }
-        }
-        mappedConcept.addConceptMapping(conceptMap);
-        return mappedConcept;
-    }
-
-    private ConceptMap mapToReferenceTerm(ConceptCommon conceptCommon) {
-        ConceptMap conceptMap = null;
-        if (conceptCommon.getConceptReferenceTerm() != null && hasReferenceTermAndSource(conceptCommon)) {
-            ConceptReferenceTerm conceptReferenceTerm = referenceDataConceptReferenceTermService.getConceptReferenceTerm(conceptCommon.getConceptReferenceTerm().getReferenceTermCode(), conceptCommon.getConceptReferenceTerm().getReferenceTermSource());
-            String mapType = conceptCommon.getConceptReferenceTerm().getReferenceTermRelationship();
-            ConceptMapType conceptMapType = conceptService.getConceptMapTypeByName(mapType);
-            if (conceptMapType == null) {
-                conceptMapType = conceptService.getConceptMapTypeByUuid(ConceptMapType.SAME_AS_MAP_TYPE_UUID);
-            }
-            conceptMap = new ConceptMap(conceptReferenceTerm, conceptMapType);
-        }
-        return conceptMap;
-
-    }
-
-    private boolean hasReferenceTermAndSource(ConceptCommon conceptCommon) {
-        return !(StringUtils.isEmpty(conceptCommon.getConceptReferenceTerm().getReferenceTermCode()) || StringUtils.isEmpty(conceptCommon.getConceptReferenceTerm().getReferenceTermSource()));
-    }
-
     private ConceptAnswer constructConceptAnswer(org.openmrs.Concept answerConcept) {
         ConceptAnswer conceptAnswer = new ConceptAnswer(answerConcept);
         return conceptAnswer;
     }
-
-    private void validate(Concept conceptData, ConceptClass conceptClassName, ConceptDatatype conceptDatatype) {
-        StringBuilder errors = validateConceptCommon(conceptData, conceptClassName, conceptDatatype);
-        if (conceptDatatype != null && !conceptDatatype.isCoded() && hasAnswers(conceptData)) {
-            errors.append("Cannot create answers for concept " + conceptData.getUniqueName() + " having datatype " + conceptData.getDataType() + "\n");
-        }
-        throwExceptionIfExists(errors);
-    }
-
-    private void validate(ConceptSet conceptSet, ConceptClass conceptClass, ConceptDatatype conceptDatatype) {
-        StringBuilder errors = validateConceptCommon(conceptSet, conceptClass, conceptDatatype);
-        throwExceptionIfExists(errors);
-    }
-
-    private boolean hasAnswers(Concept conceptData) {
-        return conceptData.getAnswers() != null && conceptData.getAnswers().size() > 0;
-    }
-
-    private StringBuilder validateConceptCommon(ConceptCommon conceptData, ConceptClass conceptClassName, ConceptDatatype conceptDatatype) {
-        StringBuilder errors = new StringBuilder();
-        if (conceptClassName == null) {
-            errors.append("Concept Class " + conceptData.getClassName() + " not found\n");
-        }
-        if (conceptDatatype == null) {
-            errors.append("Concept Datatype " + conceptData.getDataType() + " not found\n");
-        }
-        for (String notFoundItem : notFound) {
-            errors.append(notFoundItem + " Concept/ConceptAnswer not found\n");
-        }
-        return errors;
-    }
-
-    private void throwExceptionIfExists(StringBuilder errors) {
-        String message = errors.toString();
-        if (!StringUtils.isBlank(message)) {
-            throw new APIException(message);
-        }
-    }
-
 }
