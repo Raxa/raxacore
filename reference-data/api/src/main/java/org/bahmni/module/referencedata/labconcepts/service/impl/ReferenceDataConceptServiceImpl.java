@@ -5,6 +5,8 @@ import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptSetMapper;
+import org.bahmni.module.referencedata.labconcepts.model.ConceptMetaData;
+import org.bahmni.module.referencedata.labconcepts.service.ConceptMetaDataService;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptReferenceTermService;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptService;
 import org.bahmni.module.referencedata.labconcepts.validator.ConceptValidator;
@@ -21,6 +23,7 @@ import java.util.List;
 
 @Service
 public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptService {
+    private final ConceptMetaDataService conceptMetaDataService;
     private ConceptService conceptService;
     private ReferenceDataConceptReferenceTermService referenceDataConceptReferenceTermService;
     private ConceptMapper conceptMapper;
@@ -29,38 +32,31 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
     private List<String> notFound;
 
     @Autowired
-    public ReferenceDataConceptServiceImpl(ConceptService conceptService, ReferenceDataConceptReferenceTermService referenceDataConceptReferenceTermService) {
+    public ReferenceDataConceptServiceImpl(ConceptService conceptService, ReferenceDataConceptReferenceTermService referenceDataConceptReferenceTermService, ConceptMetaDataService conceptMetaDataService) {
         this.conceptMapper = new ConceptMapper();
         this.conceptSetMapper = new ConceptSetMapper();
         this.conceptService = conceptService;
         this.referenceDataConceptReferenceTermService = referenceDataConceptReferenceTermService;
+        this.conceptMetaDataService = conceptMetaDataService;
         conceptValidator = new ConceptValidator();
+
     }
 
     @Override
     public org.openmrs.Concept saveConcept(Concept conceptData) {
-        ConceptClass conceptClass = conceptService.getConceptClassByName(conceptData.getClassName());
-        org.openmrs.Concept existingConcept = getExistingConcept(conceptData.getUniqueName(), conceptData.getUuid());
-        ConceptDatatype conceptDatatype = conceptService.getConceptDatatypeByName(conceptData.getDataType());
-        org.openmrs.Concept mappedConcept = getConcept(conceptData, conceptClass, conceptDatatype, existingConcept);
+        ConceptMetaData conceptMetaData = conceptMetaDataService.getConceptMetaData(conceptData.getUniqueName(), conceptData.getUuid(), conceptData.getClassName(), conceptData.getDataType());
+        org.openmrs.Concept mappedConcept = getConcept(conceptData, conceptMetaData.getConceptClass(), conceptMetaData.getConceptDatatype(), conceptMetaData.getExistingConcept());
         return conceptService.saveConcept(mappedConcept);
     }
 
-    private org.openmrs.Concept getExistingConcept(String uniqueName, String uuid) {
-        if (uuid != null) {
-            return conceptService.getConceptByUuid(uuid);
-        }
-        return conceptService.getConceptByName(uniqueName);
-    }
 
     @Override
     public org.openmrs.Concept saveConcept(ConceptSet conceptSet) {
-        ConceptClass conceptClass = conceptService.getConceptClassByName(conceptSet.getClassName());
-        org.openmrs.Concept existingConcept = getExistingConcept(conceptSet.getUniqueName(), conceptSet.getUuid());
-        ConceptDatatype conceptDatatype = conceptService.getConceptDatatypeByName(conceptSet.getDataType());
-        org.openmrs.Concept mappedConceptSet = getConceptSet(conceptSet, conceptClass, existingConcept, conceptDatatype);
+        ConceptMetaData conceptMetaData = conceptMetaDataService.getConceptMetaData(conceptSet.getUniqueName(), conceptSet.getUuid(), conceptSet.getClassName(), conceptSet.getDataType());
+        org.openmrs.Concept mappedConceptSet = getConceptSet(conceptSet, conceptMetaData.getConceptClass(), conceptMetaData.getExistingConcept(), conceptMetaData.getConceptDatatype());
         return conceptService.saveConcept(mappedConceptSet);
     }
+
 
     @Override
     public Concepts getConcept(String conceptName) {
