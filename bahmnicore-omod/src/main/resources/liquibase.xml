@@ -2465,4 +2465,50 @@
         </sql>
         <sqlFile splitStatements="false" path="V1_84__FixAddConceptProc.sql"/>
     </changeSet>
+    <changeSet id="bahmni-core-201411031108" author="Vinay, sravanthi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM concept_name where name='Tablet' and concept_name_type='FULLY_SPECIFIED';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding new concept for Tablet as drug form</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Tablet', 'tablet', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'tablet', '1');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201411031129" author="Vinay, sravanthi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM concept_name where name='Capsule' and concept_name_type='FULLY_SPECIFIED';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding new concept for Capsule as drug form</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Capsule', 'capsule', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'capsule', '1');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201411031131" author="Vinay, sravanthi">
+        <comment>Update drug table to use the new drug forms created</comment>
+        <sql>
+            select distinct concept_id from concept_name where name = 'Tablet(s)' and concept_name_type = 'FULLY_SPECIFIED' into @tablets_concept_id;
+            select distinct concept_id from concept_name where name = 'Tablet' and concept_name_type = 'FULLY_SPECIFIED'  into @tablet_concept_id;
+
+            update drug set dosage_form = @tablet_concept_id where dosage_form = @tablets_concept_id;
+
+            select distinct concept_id from concept_name where name = 'Capsule(s)' and concept_name_type = 'FULLY_SPECIFIED'  into @capsules_concept_id;
+            select distinct concept_id from concept_name where name = 'Capsule' and concept_name_type = 'FULLY_SPECIFIED'  into @capsule_concept_id;
+
+            update drug set dosage_form = @capsule_concept_id where dosage_form = @capsules_concept_id;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
