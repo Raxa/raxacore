@@ -29,11 +29,11 @@ public class ConceptMapper {
         for (String conceptName : conceptData.getSynonyms()) {
             concept = addConceptName(concept, getConceptName(conceptName));
         }
-        concept.setDatatype(conceptDatatype);
-        concept = conceptAnswerMapper.map(concept, answers);
         if (conceptDatatype.isNumeric()) {
             concept = conceptNumericMapper.map(concept, conceptData, existingConcept);
         }
+        concept.setDatatype(conceptDatatype);
+        concept = conceptAnswerMapper.map(concept, answers);
         return concept;
     }
 

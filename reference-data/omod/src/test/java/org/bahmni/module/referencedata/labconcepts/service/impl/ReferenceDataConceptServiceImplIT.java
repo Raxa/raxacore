@@ -383,4 +383,30 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
         assertEquals("Answer1", answer1.getAnswerConcept().getName(Context.getLocale()).getName());
         assertEquals("Answer2", answer2.getAnswerConcept().getName(Context.getLocale()).getName());
     }
+
+    @Test
+    public void migrate_concept_datatype_to_numeric() throws Exception {
+        org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
+        concept.setUuid("kf2d4cb7-t3tb-oo37-70f7-0dmimmm22222");
+        String uniqueName = "Updated Numeric Concept";
+        concept.setUniqueName(uniqueName);
+        concept.setClassName("Finding");
+        concept.setDataType("Numeric");
+        concept.setUnits("unit");
+        concept.setHiNormal("99");
+        concept.setLowNormal("10");
+        Concept existingConcept = conceptService.getConceptByUuid("kf2d4cb7-t3tb-oo37-70f7-0dmimmm22222");
+        assertNotEquals(ConceptDatatype.NUMERIC_UUID, existingConcept.getDatatype().getUuid());
+        Concept savedConcept = referenceDataConceptService.saveConcept(concept);
+
+        assertEquals(uniqueName, savedConcept.getName(Context.getLocale()).getName());
+        assertEquals("Finding", savedConcept.getConceptClass().getName());
+        assertEquals(0, savedConcept.getSetMembers().size());
+        assertEquals(ConceptDatatype.NUMERIC_UUID, savedConcept.getDatatype().getUuid());
+        ConceptNumeric conceptNumeric = conceptService.getConceptNumeric(savedConcept.getConceptId());
+        assertTrue(savedConcept.isNumeric());
+        assertEquals("unit", conceptNumeric.getUnits());
+        assertTrue(conceptNumeric.getHiNormal().equals(99.0));
+        assertTrue(conceptNumeric.getLowNormal().equals(10.0));
+    }
 }

@@ -9,12 +9,10 @@ public class ConceptNumericMapper {
 
     public Concept map(Concept concept, org.bahmni.module.referencedata.labconcepts.contract.Concept conceptData, Concept existingConcept) {
         ConceptNumeric conceptNumeric = null;
-        if (existingConcept == null) {
+        if (existingConcept == null || !existingConcept.getDatatype().getUuid().equals(ConceptDatatype.NUMERIC_UUID)) {
             conceptNumeric = new ConceptNumeric(concept);
         } else if (existingConcept.getDatatype().getUuid().equals(ConceptDatatype.NUMERIC_UUID)) {
             conceptNumeric = (ConceptNumeric) (concept);
-        } else {
-            return concept;
         }
         if (conceptNumeric != null) {
             conceptNumeric.setUnits(conceptData.getUnits());
