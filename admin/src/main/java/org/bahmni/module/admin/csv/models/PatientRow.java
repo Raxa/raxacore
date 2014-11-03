@@ -19,9 +19,9 @@ public class PatientRow extends CSVEntity {
     private String registrationNumber;
     @CSVHeader(name = "Gender")
     private String gender;
-    @CSVHeader(name = "Age")
+    @CSVHeader(name = "Age", optional = true)
     private String age;
-    @CSVHeader(name = "Birth Date")
+    @CSVHeader(name = "Birth Date", optional = true)
     private String birthdate;
 
     @CSVRegexHeader(pattern = "Address.*")
