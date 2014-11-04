@@ -51,9 +51,17 @@ public class VisitIdentificationHelper {
 
     private Visit getVisitMatchingOrderDate(Date orderDate, List<Visit> visits) {
         for (Visit visit : visits) {
-            if ( (orderDate.equals(visit.getStartDatetime()) || visit.getStartDatetime().before(orderDate)) &&
-                    (orderDate.equals(visit.getStopDatetime()) || visit.getStopDatetime().after(orderDate)) )
-                return visit;
+            Date visitStartDatetime = visit.getStartDatetime();
+            Date visitStopDatetime = visit.getStopDatetime();
+            if(visitStopDatetime!=null) {
+                if ((orderDate.equals(visitStartDatetime) || visitStartDatetime.before(orderDate)) &&
+                        (orderDate.equals(visitStopDatetime) || visitStopDatetime.after(orderDate)))
+                    return visit;
+            }
+            else {
+                if(orderDate.equals(visitStartDatetime) || visitStartDatetime.before(orderDate))
+                    return visit;
+            }
         }
         return visits.get(visits.size() - 1);
     }
