@@ -2511,4 +2511,12 @@
             update drug set dosage_form = @capsule_concept_id where dosage_form = @capsules_concept_id;
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201411041237" author="Vinay">
+        <comment>Ensure drug orders are always in units</comment>
+        <sql>
+            select distinct concept_id from concept_name where name = 'Unit(s)' and concept_name_type = 'FULLY_SPECIFIED'  into @units_concept_id;
+
+            update drug_order set quantity_units = @units_concept_id;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
