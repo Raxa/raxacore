@@ -2519,4 +2519,14 @@
             update drug_order set quantity_units = @units_concept_id;
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201411041711" author="Vinay">
+        <comment>Make sure doseUnits and dosingInstructions for reverse synced drug orders are sane</comment>
+        <sql>
+            update drug_order set dose = null where dose_units is null;
+
+            update drug_order set dosing_instructions = replace(dosing_instructions, 'Tablet', 'Tablet(s)') where dosing_instructions not like '%Tablet(s)%';
+
+            update drug_order set dosing_instructions = replace(dosing_instructions, 'Capsule', 'Capsule(s)') where dosing_instructions not like '%Capsule(s)%';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
