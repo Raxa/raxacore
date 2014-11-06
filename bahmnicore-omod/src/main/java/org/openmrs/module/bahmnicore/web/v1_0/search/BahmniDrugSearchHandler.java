@@ -38,10 +38,10 @@ public class BahmniDrugSearchHandler implements SearchHandler {
     }
 
     private List<Drug> findDrugsStartingWith(String searchPhrase, boolean includeRetired, RequestContext ctx) {
-        return Context.getConceptService().getDrugs(searchPhrase, null, false, false, includeRetired, ctx.getStartIndex(), ctx.getLimit());
+        return Context.getConceptService().getDrugs(searchPhrase, null, false, true, includeRetired, ctx.getStartIndex(), ctx.getLimit());
     }
 
     private List<Drug> findDrugsContaining(String searchPhrase, boolean includeRetired, RequestContext ctx) {
-        return Context.getConceptService().getDrugs(searchPhrase, null, true, false, includeRetired, ctx.getStartIndex(), ctx.getLimit());
+        return Context.getConceptService().getDrugs(searchPhrase, null, true, true, includeRetired, ctx.getStartIndex(), ctx.getLimit());
     }
 }
