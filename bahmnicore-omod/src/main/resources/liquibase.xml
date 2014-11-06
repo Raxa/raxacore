@@ -2563,4 +2563,14 @@
             values ('Radiology', 'Radiology Orders', 1, @date, 0, @uuid);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201411061606" author="Vinay, Mihir">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from chunking_history;</sqlCheck>
+        </preConditions>
+        <comment>Default chunking history entry if doesn't exist.</comment>
+        <insert tableName="chunking_history">
+            <column name="chunk_length" valueNumeric="5"/>
+            <column name="start" valueNumeric="1"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
