@@ -163,4 +163,8 @@ public class MapperUtils {
         }
         return sampleConcept.getId();
     }
+
+    public static boolean isLabTestConcept(Concept concept) {
+        return concept.getConceptClass() != null && concept.getConceptClass().getName() != null && concept.getConceptClass().getName().equals(LabTest.LAB_TEST_CONCEPT_CLASS);
+    }
 }

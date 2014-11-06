@@ -2529,4 +2529,38 @@
             update drug_order set dosing_instructions = replace(dosing_instructions, 'Capsule', 'Capsule(s)') where dosing_instructions not like '%Capsule(s)%';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201411051148" author="Rohan">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept_class where name = 'LabTest';
+            </sqlCheck>
+        </preConditions>
+        <comment>Add concept class LabTest</comment>
+        <sql>
+            set @uuid = '';
+            set @date = '';
+            select uuid() into @uuid;
+            select curdate() into @date;
+            select @uuid;
+            insert into concept_class (name, description, creator, date_created, retired, uuid)
+            values ('LabTest', 'Lab Tests', 1, @date, 0, @uuid);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201411051149" author="Rohan">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept_class where name = 'Radiology';
+            </sqlCheck>
+        </preConditions>
+        <comment>Add concept class Radiology</comment>
+        <sql>
+            set @uuid = '';
+            set @date = '';
+            select uuid() into @uuid;
+            select curdate() into @date;
+            select @uuid;
+            insert into concept_class (name, description, creator, date_created, retired, uuid)
+            values ('Radiology', 'Radiology Orders', 1, @date, 0, @uuid);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

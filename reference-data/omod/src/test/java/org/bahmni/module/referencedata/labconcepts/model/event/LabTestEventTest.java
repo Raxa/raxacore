@@ -42,7 +42,7 @@ public class LabTestEventTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        concept = new ConceptBuilder().withClassUUID(ConceptClass.TEST_UUID).withUUID(TEST_CONCEPT_UUID).build();
+        concept = new ConceptBuilder().withClass("LabTest").withUUID(TEST_CONCEPT_UUID).build();
 
         parentConcept = new ConceptBuilder().withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(concept).build();
 
@@ -99,7 +99,7 @@ public class LabTestEventTest {
 
     @Test
     public void create_event_for_test_with_parent_concept_missing() throws Exception {
-        Concept testConcept = new ConceptBuilder().withClass("Test").withUUID("testUUID").withClassUUID(ConceptClass.TEST_UUID).build();
+        Concept testConcept = new ConceptBuilder().withClass("LabTest").withUUID("testUUID").withClassUUID(ConceptClass.TEST_UUID).build();
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{testConcept});
         Event event = events.get(0);
         assertNotNull(event);

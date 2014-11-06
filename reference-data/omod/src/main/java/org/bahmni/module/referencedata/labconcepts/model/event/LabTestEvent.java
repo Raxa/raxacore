@@ -1,7 +1,7 @@
 package org.bahmni.module.referencedata.labconcepts.model.event;
 
 import org.openmrs.Concept;
-import org.openmrs.ConceptClass;
+import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.isLabTestConcept;
 
 public class LabTestEvent extends ConceptOperationEvent {
 
@@ -10,8 +10,7 @@ public class LabTestEvent extends ConceptOperationEvent {
     }
 
     public boolean isResourceConcept(Concept concept) {
-        return concept.getConceptClass() != null &&
-                concept.getConceptClass().getUuid().equals(ConceptClass.TEST_UUID);
+        return isLabTestConcept(concept);
     }
 
 }

@@ -7,6 +7,7 @@ public class LabTest extends Resource {
     private String resultType;
     private String testUnitOfMeasure;
     private Double sortOrder;
+    public static final String LAB_TEST_CONCEPT_CLASS = "LabTest";
 
 
     public String getDescription() {
