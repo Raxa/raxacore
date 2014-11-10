@@ -13,7 +13,7 @@ public class DepartmentMapper extends ResourceMapper {
     public Department map(Concept departmentConcept) {
         Department department = new Department();
         department = mapResource(department, departmentConcept);
-        department.setDescription(MapperUtils.getDescription(departmentConcept));
+        department.setDescription(MapperUtils.getDescriptionOrName(departmentConcept));
         return department;
     }
 

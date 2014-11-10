@@ -14,7 +14,7 @@ public class LabTestMapper extends ResourceMapper {
         LabTest test = new LabTest();
         test = mapResource(test, testConcept);
         test.setDepartment(MapperUtils.getDepartment(testConcept));
-        test.setDescription(MapperUtils.getDescription(testConcept));
+        test.setDescription(MapperUtils.getDescriptionOrName(testConcept));
         test.setSampleUuid(MapperUtils.getSampleUuid(testConcept));
         test.setResultType(testConcept.getDatatype().getName());
         test.setTestUnitOfMeasure(MapperUtils.getUnits(testConcept));

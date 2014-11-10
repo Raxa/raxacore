@@ -70,22 +70,11 @@ public class DepartmentMapperTest {
     }
 
     @Test
-    public void send_null_for_no_description() throws Exception {
-        departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
-                withDateChanged(dateChanged).withName("SampleName").build();
-        Department departmentData = departmentMapper.map(departmentConcept);
-        assertEquals("Department UUID", departmentData.getId());
-        assertNull(departmentData.getDescription());
-    }
-
-
-    @Test
     public void map_if_no_parent_concept() throws Exception {
         Concept departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withName("DepartmentName").build();
         Department departmentData = departmentMapper.map(departmentConcept);
         assertEquals("Department UUID", departmentData.getId());
-        assertNull(departmentData.getDescription());
     }
 
     @Test
@@ -94,4 +83,12 @@ public class DepartmentMapperTest {
         assertTrue(departmentData.getIsActive());
     }
 
+    @Test
+    public void should_set_name_if_description_is_null() throws Exception {
+
+        Concept departmentConceptWithOutDescription = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
+                withDateChanged(dateChanged).withName("DepartmentName").build();
+        Department departmentData = departmentMapper.map(departmentConceptWithOutDescription);
+        assertEquals("DepartmentName", departmentData.getDescription());
+    }
 }

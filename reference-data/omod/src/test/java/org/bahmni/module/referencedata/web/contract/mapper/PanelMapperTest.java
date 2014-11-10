@@ -143,4 +143,13 @@ public class PanelMapperTest {
         Panel panelData = panelMapper.map(panelConcept);
         assertNull(panelData.getSampleUuid());
     }
+
+    @Test
+    public void should_set_name_if_description_is_null() throws Exception {
+        Concept panelConceptWitoutDescription = new ConceptBuilder().withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID)
+                .withSetMember(testConcept).withDateChanged(dateChanged).withShortName("ShortName").withName("Panel Name Here").withDataType(ConceptDatatype.NUMERIC).build();
+
+        Panel panelData = panelMapper.map(panelConceptWitoutDescription);
+        assertEquals("Panel Name Here", panelData.getDescription());
+    }
 }

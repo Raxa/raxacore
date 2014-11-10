@@ -151,4 +151,15 @@ public class LabTestMapperTest {
         LabTest testData = testMapper.map(testConcept);
         assertNull(testData.getTestUnitOfMeasure());
     }
+
+    @Test
+    public void should_set_name_if_description_is_null() throws Exception {
+        Concept testConceptWithOutDescription = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.TEST_UUID)
+                .withDateChanged(dateChanged).withShortName("ShortName").withName("Test Name Here").withDataType(ConceptDatatype.NUMERIC).build();
+
+        LabTest testData = testMapper.map(testConceptWithOutDescription);
+        assertEquals("Test Name Here", testData.getDescription());
+
+    }
+
 }
