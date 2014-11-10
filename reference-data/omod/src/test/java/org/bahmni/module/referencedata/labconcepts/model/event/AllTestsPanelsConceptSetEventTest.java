@@ -24,7 +24,7 @@ public class AllTestsPanelsConceptSetEventTest {
     
     @Before
     public void setup() {
-        testConcept = new ConceptBuilder().withClassUUID(ConceptClass.TEST_UUID).build();
+        testConcept = new ConceptBuilder().withClass(LabTest.LAB_TEST_CONCEPT_CLASS).build();
         panelConcept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).build();
 
         parentConcept = new ConceptBuilder().withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(testConcept).withSetMember(panelConcept).build();

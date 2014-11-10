@@ -68,7 +68,7 @@ public class MapperUtils {
         List<Concept> setMembers = concept.getSetMembers();
         if (setMembers == null) return tests;
         for (Concept setMember : setMembers) {
-            if (isTestConcept(setMember)) {
+            if (isLabTestConcept(setMember)) {
                 tests.add(testMapper.map(setMember));
             }
         }
@@ -106,11 +106,6 @@ public class MapperUtils {
     public static String getUnits(Concept concept) {
         ConceptNumeric conceptNumeric = Context.getConceptService().getConceptNumeric(concept.getConceptId());
         return conceptNumeric == null ? null : conceptNumeric.getUnits();
-    }
-
-    public static boolean isTestConcept(Concept concept) {
-        return concept.getConceptClass() != null &&
-                concept.getConceptClass().getUuid().equals(ConceptClass.TEST_UUID);
     }
 
     public static boolean isActive(Concept setMember) {

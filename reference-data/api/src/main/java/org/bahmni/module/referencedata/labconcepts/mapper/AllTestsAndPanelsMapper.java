@@ -25,7 +25,7 @@ public class AllTestsAndPanelsMapper extends ResourceMapper {
         PanelMapper panelMapper = new PanelMapper();
         for (Concept setMember : testsAndPanelsConcept.getSetMembers()) {
             if (isActive(setMember)) {
-                if (isTestConcept(setMember)) {
+                if (isLabTestConcept(setMember)) {
                     allTestsAndPanels.addTest(testMapper.map(setMember));
                 } else if (isPanelConcept(setMember)) {
                     allTestsAndPanels.addPanel(panelMapper.map(setMember));

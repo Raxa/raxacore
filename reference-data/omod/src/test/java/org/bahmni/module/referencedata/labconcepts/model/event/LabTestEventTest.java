@@ -1,6 +1,7 @@
 package org.bahmni.module.referencedata.labconcepts.model.event;
 
 import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
+import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.model.Operation;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.ict4h.atomfeed.server.service.Event;
@@ -42,7 +43,7 @@ public class LabTestEventTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        concept = new ConceptBuilder().withClass("LabTest").withUUID(TEST_CONCEPT_UUID).build();
+        concept = new ConceptBuilder().withClass(LabTest.LAB_TEST_CONCEPT_CLASS).withUUID(TEST_CONCEPT_UUID).build();
 
         parentConcept = new ConceptBuilder().withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(concept).build();
 
@@ -99,7 +100,7 @@ public class LabTestEventTest {
 
     @Test
     public void create_event_for_test_with_parent_concept_missing() throws Exception {
-        Concept testConcept = new ConceptBuilder().withClass("LabTest").withUUID("testUUID").withClassUUID(ConceptClass.TEST_UUID).build();
+        Concept testConcept = new ConceptBuilder().withClass(LabTest.LAB_TEST_CONCEPT_CLASS).withUUID("testUUID").withClass("LabTest").build();
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{testConcept});
         Event event = events.get(0);
         assertNotNull(event);

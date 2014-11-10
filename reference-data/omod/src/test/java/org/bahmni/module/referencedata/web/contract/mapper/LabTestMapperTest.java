@@ -70,7 +70,7 @@ public class LabTestMapperTest {
         Locale defaultLocale = new Locale("en", "GB");
         PowerMockito.mockStatic(Context.class);
         when(Context.getLocale()).thenReturn(defaultLocale);
-        testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.TEST_UUID).withDescription("SomeDescription")
+        testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClass(LabTest.LAB_TEST_CONCEPT_CLASS).withDescription("SomeDescription")
                 .withDateChanged(dateChanged).withShortName("ShortName").withName("Test Name Here").withDataType(ConceptDatatype.NUMERIC).build();
         testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID)
                 .withDateChanged(dateChanged).withShortName("ShortName").withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(testConcept).build();

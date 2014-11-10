@@ -1,6 +1,7 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
+import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.module.referencedata.labconcepts.mapper.AllSamplesMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.SampleMapper;
@@ -52,7 +53,7 @@ public class AllSamplesMapperTest {
         Locale defaultLocale = new Locale("en", "GB");
         PowerMockito.mockStatic(Context.class);
         when(Context.getLocale()).thenReturn(defaultLocale);
-        testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.TEST_UUID).withDescription("SomeDescription")
+        testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClass(LabTest.LAB_TEST_CONCEPT_CLASS).withDescription("SomeDescription")
                 .withDateChanged(dateChanged).withShortName("ShortName").withName("Test concept").withDataType(ConceptDatatype.NUMERIC).build();
 
         sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClass(Sample.SAMPLE_CONCEPT_CLASS).

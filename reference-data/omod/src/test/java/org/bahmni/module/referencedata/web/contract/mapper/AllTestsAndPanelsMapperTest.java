@@ -56,7 +56,7 @@ public class AllTestsAndPanelsMapperTest {
         PowerMockito.mockStatic(Context.class);
         when(Context.getLocale()).thenReturn(defaultLocale);
 
-        testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.TEST_UUID).withDescription("SomeDescription")
+        testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClass(LabTest.LAB_TEST_CONCEPT_CLASS).withDescription("SomeDescription")
                 .withDateChanged(dateChanged).withShortName("ShortName").withName("Test concept").withDataType(ConceptDatatype.NUMERIC).build();
 
         panelConcept = new ConceptBuilder().withUUID("Panel UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).withDescription("SomeDescription")
@@ -91,7 +91,7 @@ public class AllTestsAndPanelsMapperTest {
 
     @Test
     public void should_not_map_the_test_or_panel_which_is_retired() throws Exception {
-        Concept testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.TEST_UUID).withDescription("SomeDescription")
+        Concept testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClass(LabTest.LAB_TEST_CONCEPT_CLASS).withDescription("SomeDescription")
                 .withDateChanged(dateChanged).withShortName("ShortName").withName("Test concept").withDataType(ConceptDatatype.NUMERIC).withRetired(true).build();
         Concept panelConcept = new ConceptBuilder().withUUID("Panel UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).withDescription("SomeDescription")
                 .withSetMember(testConcept).withDateChanged(dateChanged).withShortName("ShortName").withName("Panel Name").withDataType(ConceptDatatype.NUMERIC).withRetired(true).build();
