@@ -5,7 +5,7 @@ import java.util.List;
 
 public class AllSamples extends Resource {
     private String description;
-    private List<Sample> samples= new ArrayList<>();
+    private List<Sample> samples = new ArrayList<>();
     public static final String ALL_SAMPLES = "Lab Samples";
 
     public String getDescription() {
@@ -21,7 +21,7 @@ public class AllSamples extends Resource {
     }
 
     public void addSample(Sample sample) {
-        if(sample != null){
+        if (sample != null) {
             this.samples.add(sample);
         }
     }

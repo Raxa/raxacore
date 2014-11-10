@@ -1,16 +1,14 @@
 package org.bahmni.module.referencedata.labconcepts.validator;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptCommon;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptDatatype;
-import org.openmrs.api.APIException;
 
 import java.util.List;
 
-public class ConceptValidator {
+public class ConceptValidator extends Validator {
 
     public void validate(Concept conceptData, ConceptClass conceptClassName, ConceptDatatype conceptDatatype, List<String> notFound) {
         StringBuilder errors = validateConceptCommon(conceptData, conceptClassName, conceptDatatype, notFound);
@@ -39,13 +37,6 @@ public class ConceptValidator {
         return errors;
     }
 
-
-    private void throwExceptionIfExists(StringBuilder errors) {
-        String message = errors.toString();
-        if (!StringUtils.isBlank(message)) {
-            throw new APIException(message);
-        }
-    }
 
     private boolean hasAnswers(Concept conceptData) {
         return conceptData.getAnswers() != null && conceptData.getAnswers().size() > 0;

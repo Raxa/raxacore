@@ -38,7 +38,6 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
     @Before
     public void setUp() throws Exception {
         executeDataSet("labDataSetup.xml");
-
     }
 
     @Test
