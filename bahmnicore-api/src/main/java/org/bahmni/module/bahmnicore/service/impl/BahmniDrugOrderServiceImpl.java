@@ -227,6 +227,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             drugOrder.setQuantity(bahmniDrugOrder.getQuantity());
             drugOrder.setQuantityUnits(conceptService.getConceptByName("Unit(s)"));
             drugOrder.setNumRefills(0);
+            drugOrder.setUuid(bahmniDrugOrder.getOrderUuid());
             setDuration(drugOrder, bahmniDrugOrder.getNumberOfDays());
             orders.add(drugOrder);
         }

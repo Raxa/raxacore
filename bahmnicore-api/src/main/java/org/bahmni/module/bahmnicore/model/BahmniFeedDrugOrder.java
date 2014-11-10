@@ -6,16 +6,18 @@ public class BahmniFeedDrugOrder {
     private Double quantity;
     private Double dosage;
     private String unit;
+    private String orderUuid;
 
     public BahmniFeedDrugOrder() {
     }
 
-    public BahmniFeedDrugOrder(String productUuid, Double dosage, int numberOfDays, Double quantity, String unit) {
+    public BahmniFeedDrugOrder(String productUuid, Double dosage, int numberOfDays, Double quantity, String unit, String orderUuid) {
         this.numberOfDays = numberOfDays;
         this.productUuid = productUuid;
         this.quantity = quantity;
         this.dosage = dosage;
         this.unit = unit;
+        this.orderUuid = orderUuid;
     }
 
     public int getNumberOfDays() {
@@ -56,5 +58,13 @@ public class BahmniFeedDrugOrder {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public String getOrderUuid() {
+        return orderUuid;
+    }
+
+    public void setOrderUuid(String orderUuid) {
+        this.orderUuid = orderUuid;
     }
 }
