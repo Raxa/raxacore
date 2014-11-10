@@ -8,9 +8,6 @@ import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
-import org.openmrs.web.test.BaseWebContextSensitiveTest;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 public class PatientMatchService {
@@ -24,8 +26,11 @@ public class PatientMatchService {
     private static final String PATIENT_MATCHING_ALGORITHM_DIRECTORY = "/patientMatchingAlgorithm/";
     private static final Logger log = Logger.getLogger(PatientMatchService.class);
 
-    public Patient getPatient(String matchingAlgorithmClassName, List<KeyValue> patientAttributes, String patientIdentifier) throws IOException, IllegalAccessException, InstantiationException, CannotMatchPatientException {
-        List<Patient> matchingPatients = patientService.get(patientIdentifier);
+    // Mujir - an implementation could use multiple patient matching algorithms
+    protected Map<String, PatientMatchingAlgorithm> patientMatchingAlgorithms = new HashMap<>();
+
+    public Patient getPatient(String matchingAlgorithmClassName, List<KeyValue> patientAttributes, String patientIdentifier, boolean shouldMatchExactPatientId) throws IOException, IllegalAccessException, InstantiationException, CannotMatchPatientException {
+        List<Patient> matchingPatients = patientService.get(patientIdentifier, shouldMatchExactPatientId);
         return matchPatients(matchingPatients, patientAttributes, matchingAlgorithmClassName);
     }
 
@@ -34,10 +39,19 @@ public class PatientMatchService {
             Patient patient = new BahmniPatientMatchingAlgorithm().run(matchingPatients, patientAttributes);
             return patient;
         }
-        Class clazz = new GroovyClassLoader().parseClass(new File(getAlgorithmClassPath(matchingAlgorithmClassName)));
-        PatientMatchingAlgorithm patientMatchingAlgorithm = (PatientMatchingAlgorithm) clazz.newInstance();
+        PatientMatchingAlgorithm patientMatchingAlgorithm = getPatientMatchingAlgorithm(matchingAlgorithmClassName);
         log.debug("PatientMatching : Using Algorithm in " + patientMatchingAlgorithm.getClass().getName());
         return patientMatchingAlgorithm.run(matchingPatients, patientAttributes);
+    }
+
+    private PatientMatchingAlgorithm getPatientMatchingAlgorithm(String matchingAlgorithmClassName) throws IOException, InstantiationException, IllegalAccessException {
+        PatientMatchingAlgorithm patientMatchingAlgorithm = patientMatchingAlgorithms.get(matchingAlgorithmClassName);
+        if (patientMatchingAlgorithm == null) {
+            Class clazz = new GroovyClassLoader().parseClass(new File(getAlgorithmClassPath(matchingAlgorithmClassName)));
+            patientMatchingAlgorithms.put(matchingAlgorithmClassName, (PatientMatchingAlgorithm) clazz.newInstance());
+        }
+
+        return patientMatchingAlgorithms.get(matchingAlgorithmClassName);
     }
 
     private String getAlgorithmClassPath(String matchingAlgorithmClassName) {

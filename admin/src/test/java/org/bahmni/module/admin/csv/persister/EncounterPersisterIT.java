@@ -5,7 +5,6 @@ import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
-import org.bahmni.module.admin.csv.persister.EncounterPersister;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
@@ -16,8 +15,6 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -42,6 +39,7 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
 
     private String path;
     protected UserContext userContext;
+    private boolean shouldMatchExactPatientId = false;
 
     @Before
     public void setUp() throws Exception {
@@ -55,7 +53,8 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
 
         Context.authenticate("admin", "test");
         userContext = Context.getUserContext();
-        encounterPersister.init(userContext, null);
+        boolean shouldMatchExactPatientId = false;
+        encounterPersister.init(userContext, null, shouldMatchExactPatientId);
     }
 
     @Test
@@ -345,7 +344,7 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "GAN200001";
 
-        encounterPersister.init(userContext, "NoMatch.groovy");
+        encounterPersister.init(userContext, "NoMatch.groovy", shouldMatchExactPatientId);
 
         RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
         assertNotNull(persistenceResult.getErrorMessage());
@@ -359,7 +358,7 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "200000";
-        encounterPersister.init(userContext, "MultipleMatchPatient.groovy");
+        encounterPersister.init(userContext, "MultipleMatchPatient.groovy", shouldMatchExactPatientId);
 
         RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
 
@@ -374,7 +373,7 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = patientId;
-        encounterPersister.init(userContext, "GANIdentifier.groovy");
+        encounterPersister.init(userContext, "GANIdentifier.groovy", shouldMatchExactPatientId);
 
         EncounterRow anEncounter = new EncounterRow();
         anEncounter.obsRows = new ArrayList<>();
@@ -402,7 +401,7 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "GAN200000";
         multipleEncounterRow.patientAttributes = getPatientAttributes();
-        encounterPersister.init(userContext, "IdAndNameMatch.groovy");
+        encounterPersister.init(userContext, "IdAndNameMatch.groovy", shouldMatchExactPatientId);
 
         EncounterRow anEncounter = new EncounterRow();
         anEncounter.obsRows = new ArrayList<>();

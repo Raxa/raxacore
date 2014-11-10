@@ -19,23 +19,44 @@ public class BahmniDiagnosisHelper {
 
     private ConceptService conceptService;
 
+    protected Concept bahmniInitialDiagnosisConcept;
+    protected Concept bahmniDiagnosisStatusConcept;
+    protected Concept bahmniDiagnosisRevisedConcept;
+
     public BahmniDiagnosisHelper(ObsService obsService, ConceptService conceptService) {
         this.obsService = obsService;
         this.conceptService = conceptService;
     }
 
     public void updateDiagnosisMetaData(BahmniDiagnosisRequest bahmniDiagnosis, EncounterTransaction.Diagnosis diagnosis, Encounter encounter) {
-        Concept bahmniInitialDiagnosisConcept = conceptService.getConceptByName(BAHMNI_INITIAL_DIAGNOSIS);
         Obs matchingDiagnosisObs = findDiagnosisObsGroup(encounter, diagnosis.getExistingObs());
-        updateFirstDiagnosis(matchingDiagnosisObs, bahmniDiagnosis, bahmniInitialDiagnosisConcept);
 
-        Concept bahmniDiagnosisStatusConcept = conceptService.getConceptByName(BAHMNI_DIAGNOSIS_STATUS);
-        updateStatusConcept(matchingDiagnosisObs, bahmniDiagnosis, bahmniDiagnosisStatusConcept);
-
-        Concept bahmniDiagnosisRevisedConcept = conceptService.getConceptByName(BAHMNI_DIAGNOSIS_REVISED);
-        updateRevisedConcept(matchingDiagnosisObs, bahmniDiagnosisRevisedConcept);
+        updateFirstDiagnosis(matchingDiagnosisObs, bahmniDiagnosis, getBahmniInitialDiagnosisConcept());
+        updateStatusConcept(matchingDiagnosisObs, bahmniDiagnosis, getBahmniDiagnosisStatusConcept());
+        updateRevisedConcept(matchingDiagnosisObs, getBahmniDiagnosisRevisedConcept());
 
         matchingDiagnosisObs.setComment(bahmniDiagnosis.getComments());
+    }
+
+    private Concept getBahmniDiagnosisRevisedConcept() {
+        if (bahmniDiagnosisRevisedConcept == null)
+            bahmniDiagnosisRevisedConcept = conceptService.getConceptByName(BAHMNI_DIAGNOSIS_REVISED);
+
+        return bahmniDiagnosisRevisedConcept;
+    }
+
+    private Concept getBahmniDiagnosisStatusConcept() {
+        if (bahmniDiagnosisStatusConcept == null)
+            bahmniDiagnosisStatusConcept = conceptService.getConceptByName(BAHMNI_DIAGNOSIS_STATUS);
+
+        return bahmniDiagnosisStatusConcept;
+    }
+
+    private Concept getBahmniInitialDiagnosisConcept() {
+        if (bahmniInitialDiagnosisConcept == null)
+            bahmniInitialDiagnosisConcept = conceptService.getConceptByName(BAHMNI_INITIAL_DIAGNOSIS);
+
+        return bahmniInitialDiagnosisConcept = conceptService.getConceptByName(BAHMNI_INITIAL_DIAGNOSIS);
     }
 
     private void updateFirstDiagnosis(Obs diagnosisObs, BahmniDiagnosisRequest bahmniDiagnosis, Concept bahmniInitialDiagnosis) {

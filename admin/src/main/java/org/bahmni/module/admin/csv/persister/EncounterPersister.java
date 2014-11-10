@@ -38,16 +38,20 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
 
     private UserContext userContext;
     private String patientMatchingAlgorithmClassName;
+    private boolean shouldMatchExactPatientId;
     protected DiagnosisMapper diagnosisMapper;
+    private ObservationMapper observationMapper;
 
     private static final Logger log = Logger.getLogger(EncounterPersister.class);
 
-    public void init(UserContext userContext, String patientMatchingAlgorithmClassName) {
+    public void init(UserContext userContext, String patientMatchingAlgorithmClassName, boolean shouldMatchExactPatientId) {
         this.userContext = userContext;
         this.patientMatchingAlgorithmClassName = patientMatchingAlgorithmClassName;
+        this.shouldMatchExactPatientId = shouldMatchExactPatientId;
 
         // Diagnosis Service caches the diagnoses concept. Better if there is one instance of it for the one file import.
         diagnosisMapper = new DiagnosisMapper(conceptService);
+        observationMapper = new ObservationMapper(conceptService);
     }
 
     @Override
@@ -66,13 +70,13 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
             Context.openSession();
             Context.setUserContext(userContext);
 
-            Patient patient = patientMatchService.getPatient(patientMatchingAlgorithmClassName, multipleEncounterRow.patientAttributes, multipleEncounterRow.patientIdentifier);
+            Patient patient = patientMatchService.getPatient(patientMatchingAlgorithmClassName, multipleEncounterRow.patientAttributes, multipleEncounterRow.patientIdentifier, shouldMatchExactPatientId);
             if (patient == null) {
                 return noMatchingPatients(multipleEncounterRow);
             }
 
             BahmniEncounterTransactionImportService encounterTransactionImportService =
-                    new BahmniEncounterTransactionImportService(encounterService, new ObservationMapper(conceptService), diagnosisMapper);
+                    new BahmniEncounterTransactionImportService(encounterService, observationMapper, diagnosisMapper);
             List<BahmniEncounterTransaction> bahmniEncounterTransactions = encounterTransactionImportService.getBahmniEncounterTransaction(multipleEncounterRow, patient);
 
             RetrospectiveEncounterTransactionService retrospectiveEncounterTransactionService =

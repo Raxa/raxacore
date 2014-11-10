@@ -63,6 +63,6 @@ public class PatientPersister implements EntityPersister<PatientRow> {
 
     @Override
     public RowResult<PatientRow> validate(PatientRow csvEntity) {
-        return new RowResult<PatientRow>(csvEntity);
+        return new RowResult<>(csvEntity);
     }
 }

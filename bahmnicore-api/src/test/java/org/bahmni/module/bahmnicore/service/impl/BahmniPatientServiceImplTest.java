@@ -135,7 +135,8 @@ public class BahmniPatientServiceImplTest {
 
     @Test
     public void shouldGetPatientByPartialIdentifier() throws Exception {
-        bahmniPatientService.get("partial_identifier");
-        verify(patientDao).getPatients("partial_identifier");
+        boolean shouldMatchExactPatientId = false;
+        bahmniPatientService.get("partial_identifier", shouldMatchExactPatientId);
+        verify(patientDao).getPatients("partial_identifier", shouldMatchExactPatientId);
     }
 }

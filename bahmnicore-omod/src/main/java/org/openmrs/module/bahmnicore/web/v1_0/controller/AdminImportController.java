@@ -7,9 +7,16 @@ import org.bahmni.fileimport.FileImporter;
 import org.bahmni.fileimport.ImportStatus;
 import org.bahmni.fileimport.dao.ImportStatusDao;
 import org.bahmni.fileimport.dao.JDBCConnectionProvider;
-import org.bahmni.module.admin.csv.models.*;
-import org.bahmni.module.admin.csv.persister.*;
-import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
+import org.bahmni.module.admin.csv.models.ConceptRow;
+import org.bahmni.module.admin.csv.models.ConceptSetRow;
+import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
+import org.bahmni.module.admin.csv.models.PatientProgramRow;
+import org.bahmni.module.admin.csv.models.PatientRow;
+import org.bahmni.module.admin.csv.persister.ConceptPersister;
+import org.bahmni.module.admin.csv.persister.ConceptSetPersister;
+import org.bahmni.module.admin.csv.persister.EncounterPersister;
+import org.bahmni.module.admin.csv.persister.PatientPersister;
+import org.bahmni.module.admin.csv.persister.PatientProgramPersister;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.SessionImplementor;
@@ -46,6 +53,9 @@ public class AdminImportController extends BaseRestController {
     private static final int DEFAULT_NUMBER_OF_DAYS = 30;
 
     public static final String PARENT_DIRECTORY_UPLOADED_FILES_CONFIG = "uploaded.files.directory";
+    public static final String SHOULD_MATCH_EXACT_PATIENT_ID_CONFIG = "uploaded.should.matchExactPatientId";
+
+    private static final boolean DEFAULT_SHOULD_MATCH_EXACT_PATIENT_ID = false;
     public static final String ENCOUNTER_FILES_DIRECTORY = "encounter/";
     private static final String PROGRAM_FILES_DIRECTORY = "program/";
     private static final String CONCEPT_FILES_DIRECTORY = "concept/";
@@ -81,6 +91,7 @@ public class AdminImportController extends BaseRestController {
             CSVFile persistedUploadedFile = writeToLocalFile(file, PATIENT_FILES_DIRECTORY);
 
             patientPersister.init(Context.getUserContext());
+
             String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
             String username = Context.getUserContext().getAuthenticatedUser().getUsername();
 
@@ -99,7 +110,13 @@ public class AdminImportController extends BaseRestController {
         try {
             CSVFile persistedUploadedFile = writeToLocalFile(file, ENCOUNTER_FILES_DIRECTORY);
 
-            encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm);
+            String configuredExactPatientIdMatch = administrationService.getGlobalProperty(SHOULD_MATCH_EXACT_PATIENT_ID_CONFIG);
+            boolean shouldMatchExactPatientId = DEFAULT_SHOULD_MATCH_EXACT_PATIENT_ID;
+            if(configuredExactPatientIdMatch != null)
+                shouldMatchExactPatientId = Boolean.parseBoolean(configuredExactPatientIdMatch);
+
+            encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm, shouldMatchExactPatientId);
+
             String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
             String username = Context.getUserContext().getAuthenticatedUser().getUsername();
             boolean skipValidation = true;

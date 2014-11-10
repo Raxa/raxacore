@@ -9,5 +9,5 @@ public interface PatientDao {
 
     public List<PatientResponse> getPatients(String identifier, String name, String localName, String village, Integer length, Integer offset, String[] patientAttributes);
     public Patient getPatient(String identifier);
-    public List<Patient> getPatients(String partialIdentifier);
+    public List<Patient> getPatients(String partialIdentifier, boolean shouldMatchExactPatientId);
 }

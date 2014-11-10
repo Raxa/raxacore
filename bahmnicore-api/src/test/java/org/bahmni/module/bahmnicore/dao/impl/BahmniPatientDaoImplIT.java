@@ -146,7 +146,8 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldFetchPatientsWithPartialIdentifierMatch() throws Exception {
         String partialIdentifier = "300001";
-        List<Patient> patients = patientDao.getPatients(partialIdentifier);
+        boolean shouldMatchExactPatientId = false;
+        List<Patient> patients = patientDao.getPatients(partialIdentifier, shouldMatchExactPatientId);
         assertEquals(2, patients.size());
         List<Person> persons = new ArrayList<>();
         Person person1 = new Person();
@@ -162,7 +163,8 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldReturnEmptyListForNoIdentifierMatch() throws Exception {
         String partialIdentifier = "3000001";
-        List<Patient> patients = patientDao.getPatients(partialIdentifier);
+        boolean shouldMatchExactPatientId = false;
+        List<Patient> patients = patientDao.getPatients(partialIdentifier, shouldMatchExactPatientId);
         assertEquals(0, patients.size());
     }
 }

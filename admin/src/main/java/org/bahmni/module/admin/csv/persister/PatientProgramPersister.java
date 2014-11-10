@@ -51,7 +51,9 @@ public class PatientProgramPersister implements EntityPersister<PatientProgramRo
             Context.openSession();
             Context.setUserContext(userContext);
 
-            Patient patient = patientMatchService.getPatient(patientMatchingAlgorithmClassName, patientProgramRow.patientAttributes, patientProgramRow.patientIdentifier);
+            boolean shouldMatchExactPatientId = false; //Mujir - defaulting to false for now. Not sure if we have program data for migration that does not have exact patient identifiers.
+
+            Patient patient = patientMatchService.getPatient(patientMatchingAlgorithmClassName, patientProgramRow.patientAttributes, patientProgramRow.patientIdentifier, shouldMatchExactPatientId);
             if (patient == null) {
                 return noMatchingPatients(patientProgramRow);
             }

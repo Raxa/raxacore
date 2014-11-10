@@ -93,8 +93,8 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     }
 
     @Override
-    public List<Patient> get(String partialIdentifier) {
-        return patientDao.getPatients(partialIdentifier);
+    public List<Patient> get(String partialIdentifier, boolean shouldMatchExactPatientId) {
+        return patientDao.getPatients(partialIdentifier, shouldMatchExactPatientId);
     }
 
     private Patient getPatientByUuid(String uuid) {
