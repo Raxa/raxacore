@@ -6,33 +6,34 @@ import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptDatatype;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConceptValidator extends Validator {
 
     public void validate(Concept conceptData, ConceptClass conceptClassName, ConceptDatatype conceptDatatype, List<String> notFound) {
-        StringBuilder errors = validateConceptCommon(conceptData, conceptClassName, conceptDatatype, notFound);
+        List<String> errors = validateConceptCommon(conceptData, conceptClassName, conceptDatatype, notFound);
         if (conceptDatatype != null && !conceptDatatype.isCoded() && hasAnswers(conceptData)) {
-            errors.append("Cannot create answers for concept " + conceptData.getUniqueName() + " having datatype " + conceptData.getDataType() + "\n");
+            errors.add("Cannot create answers for concept " + conceptData.getUniqueName() + " having datatype " + conceptData.getDataType());
         }
         throwExceptionIfExists(errors);
     }
 
     public void validate(ConceptSet conceptSet, ConceptClass conceptClass, ConceptDatatype conceptDatatype, List<String> notFound) {
-        StringBuilder errors = validateConceptCommon(conceptSet, conceptClass, conceptDatatype, notFound);
+        List<String> errors = validateConceptCommon(conceptSet, conceptClass, conceptDatatype, notFound);
         throwExceptionIfExists(errors);
     }
 
-    private StringBuilder validateConceptCommon(ConceptCommon conceptData, ConceptClass conceptClassName, ConceptDatatype conceptDatatype, List<String> notFound) {
-        StringBuilder errors = new StringBuilder();
+    private List<String> validateConceptCommon(ConceptCommon conceptData, ConceptClass conceptClassName, ConceptDatatype conceptDatatype, List<String> notFound) {
+        List<String> errors = new ArrayList<>();
         if (conceptClassName == null) {
-            errors.append("Concept Class " + conceptData.getClassName() + " not found\n");
+            errors.add("Concept Class " + conceptData.getClassName() + " not found");
         }
         if (conceptDatatype == null) {
-            errors.append("Concept Datatype " + conceptData.getDataType() + " not found\n");
+            errors.add("Concept Datatype " + conceptData.getDataType() + " not found");
         }
         for (String notFoundItem : notFound) {
-            errors.append(notFoundItem + " Concept/ConceptAnswer not found\n");
+            errors.add(notFoundItem + " Concept/ConceptAnswer not found");
         }
         return errors;
     }

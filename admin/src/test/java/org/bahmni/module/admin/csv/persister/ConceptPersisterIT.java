@@ -25,14 +25,11 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
     private ConceptService conceptService;
-    private UserContext userContext;
 
     @Before
     public void setUp() throws Exception {
         Context.authenticate("admin", "test");
         executeDataSet("conceptSetup.xml");
-        userContext = Context.getUserContext();
-        conceptPersister.init(userContext);
     }
 
     @Test

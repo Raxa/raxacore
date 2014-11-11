@@ -1,19 +1,28 @@
-package org.bahmni.module.referencedata.labconcepts.contract;
+package org.bahmni.module.admin.csv.models;
 
-import org.apache.commons.lang3.StringUtils;
+import org.bahmni.csv.CSVEntity;
+import org.bahmni.csv.annotation.CSVHeader;
 
-import javax.validation.constraints.NotNull;
-
-public class Drug {
+public class DrugRow extends CSVEntity {
+    @CSVHeader(name = "uuid", optional = true)
     private String uuid;
-    @NotNull
+
+    @CSVHeader(name = "Name")
     private String name;
-    @NotNull
+
+    @CSVHeader(name = "Generic Name")
     private String genericName;
-    private boolean combination;
+
+    @CSVHeader(name = "Strength", optional = true)
     private String strength;
+
+    @CSVHeader(name = "Dosage Form", optional = true)
     private String dosageForm;
+
+    @CSVHeader(name = "Minimum Dose", optional = true)
     private String minimumDose;
+
+    @CSVHeader(name = "Maximum Dose", optional = true)
     private String maximumDose;
 
     public String getName() {
@@ -30,14 +39,6 @@ public class Drug {
 
     public void setGenericName(String genericName) {
         this.genericName = genericName;
-    }
-
-    public void setCombination(boolean combination) {
-        this.combination = combination;
-    }
-
-    public boolean isCombination() {
-        return combination;
     }
 
     public void setStrength(String strength) {
@@ -70,15 +71,6 @@ public class Drug {
 
     public String getMaximumDose() {
         return maximumDose;
-    }
-
-
-    public Double doubleMaximumDose() {
-        return StringUtils.isBlank(maximumDose) ? null : Double.valueOf(maximumDose);
-    }
-
-    public Double doubleMinimumDose() {
-        return StringUtils.isBlank(minimumDose) ? null : Double.valueOf(minimumDose);
     }
 
     public String getUuid() {

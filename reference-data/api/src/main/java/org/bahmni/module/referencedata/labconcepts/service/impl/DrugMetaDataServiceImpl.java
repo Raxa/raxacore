@@ -4,6 +4,7 @@ import org.bahmni.module.referencedata.labconcepts.model.DrugMetaData;
 import org.bahmni.module.referencedata.labconcepts.service.DrugMetaDataService;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
+import org.openmrs.ConceptDatatype;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,8 @@ public class DrugMetaDataServiceImpl implements DrugMetaDataService {
         Concept drugConcept = conceptService.getConceptByName(genericName);
         Concept dosageFormConcept = conceptService.getConceptByName(dosageForm);
         ConceptClass drugConceptClass = conceptService.getConceptClassByUuid(ConceptClass.DRUG_UUID);
-        return new DrugMetaData(existingDrug, drugConcept, dosageFormConcept, drugConceptClass);
+        ConceptDatatype naDataType = conceptService.getConceptDatatypeByUuid(ConceptDatatype.N_A_UUID);
+        return new DrugMetaData(existingDrug, drugConcept, dosageFormConcept, drugConceptClass, naDataType);
     }
 
     private Drug getExistingDrug(String drugName, String drugUuid) {

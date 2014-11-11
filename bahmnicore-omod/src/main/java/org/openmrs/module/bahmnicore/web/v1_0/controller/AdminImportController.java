@@ -3,20 +3,13 @@ package org.openmrs.module.bahmnicore.web.v1_0.controller;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.CSVFile;
+import org.bahmni.csv.EntityPersister;
 import org.bahmni.fileimport.FileImporter;
 import org.bahmni.fileimport.ImportStatus;
 import org.bahmni.fileimport.dao.ImportStatusDao;
 import org.bahmni.fileimport.dao.JDBCConnectionProvider;
-import org.bahmni.module.admin.csv.models.ConceptRow;
-import org.bahmni.module.admin.csv.models.ConceptSetRow;
-import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
-import org.bahmni.module.admin.csv.models.PatientProgramRow;
-import org.bahmni.module.admin.csv.models.PatientRow;
-import org.bahmni.module.admin.csv.persister.ConceptPersister;
-import org.bahmni.module.admin.csv.persister.ConceptSetPersister;
-import org.bahmni.module.admin.csv.persister.EncounterPersister;
-import org.bahmni.module.admin.csv.persister.PatientPersister;
-import org.bahmni.module.admin.csv.persister.PatientProgramPersister;
+import org.bahmni.module.admin.csv.models.*;
+import org.bahmni.module.admin.csv.persister.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.SessionImplementor;
@@ -59,6 +52,7 @@ public class AdminImportController extends BaseRestController {
     public static final String ENCOUNTER_FILES_DIRECTORY = "encounter/";
     private static final String PROGRAM_FILES_DIRECTORY = "program/";
     private static final String CONCEPT_FILES_DIRECTORY = "concept/";
+    private static final String DRUG_FILES_DIRECTORY = "drug/";
     private static final String CONCEPT_SET_FILES_DIRECTORY = "conceptset/";
     private static final String PATIENT_FILES_DIRECTORY = "patient/";
 
@@ -67,6 +61,9 @@ public class AdminImportController extends BaseRestController {
 
     @Autowired
     private PatientProgramPersister patientProgramPersister;
+
+    @Autowired
+    private DrugPersister drugPersister;
 
     @Autowired
     private ConceptPersister conceptPersister;
@@ -87,123 +84,66 @@ public class AdminImportController extends BaseRestController {
     @RequestMapping(value = baseUrl + "/patient", method = RequestMethod.POST)
     @ResponseBody
     public boolean upload(@RequestParam(value = "file") MultipartFile file) {
-        try {
-            CSVFile persistedUploadedFile = writeToLocalFile(file, PATIENT_FILES_DIRECTORY);
-
-            patientPersister.init(Context.getUserContext());
-
-            String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
-            String username = Context.getUserContext().getAuthenticatedUser().getUsername();
-
-            boolean skipValidation = true;
-            return new FileImporter<PatientRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
-                    patientPersister, PatientRow.class, new NewMRSConnectionProvider(), username, skipValidation);
-        } catch (Exception e) {
-            logger.error("Could not upload file", e);
-            return false;
-        }
+        patientPersister.init(Context.getUserContext());
+        return importCsv(PATIENT_FILES_DIRECTORY, file, patientPersister, 1, true, PatientRow.class);
     }
 
     @RequestMapping(value = baseUrl + "/encounter", method = RequestMethod.POST)
     @ResponseBody
     public boolean upload(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
-        try {
-            CSVFile persistedUploadedFile = writeToLocalFile(file, ENCOUNTER_FILES_DIRECTORY);
+        String configuredExactPatientIdMatch = administrationService.getGlobalProperty(SHOULD_MATCH_EXACT_PATIENT_ID_CONFIG);
+        boolean shouldMatchExactPatientId = DEFAULT_SHOULD_MATCH_EXACT_PATIENT_ID;
+        if (configuredExactPatientIdMatch != null)
+            shouldMatchExactPatientId = Boolean.parseBoolean(configuredExactPatientIdMatch);
 
-            String configuredExactPatientIdMatch = administrationService.getGlobalProperty(SHOULD_MATCH_EXACT_PATIENT_ID_CONFIG);
-            boolean shouldMatchExactPatientId = DEFAULT_SHOULD_MATCH_EXACT_PATIENT_ID;
-            if(configuredExactPatientIdMatch != null)
-                shouldMatchExactPatientId = Boolean.parseBoolean(configuredExactPatientIdMatch);
-
-            encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm, shouldMatchExactPatientId);
-
-            String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
-            String username = Context.getUserContext().getAuthenticatedUser().getUsername();
-            boolean skipValidation = true;
-            return new FileImporter<MultipleEncounterRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
-                    encounterPersister, MultipleEncounterRow.class, new NewMRSConnectionProvider(), username, skipValidation);
-        } catch (Exception e) {
-            logger.error("Could not upload file", e);
-            return false;
-        }
+        encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm, shouldMatchExactPatientId);
+        return importCsv(ENCOUNTER_FILES_DIRECTORY, file, encounterPersister, 1, true, MultipleEncounterRow.class);
     }
 
     @RequestMapping(value = baseUrl + "/program", method = RequestMethod.POST)
     @ResponseBody
     public boolean uploadProgram(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
-        try {
-            CSVFile persistedUploadedFile = writeToLocalFile(file, PROGRAM_FILES_DIRECTORY);
+        patientProgramPersister.init(Context.getUserContext(), patientMatchingAlgorithm);
+        return importCsv(PROGRAM_FILES_DIRECTORY, file, patientProgramPersister, 1, true, PatientProgramRow.class);
+    }
 
-            patientProgramPersister.init(Context.getUserContext(), patientMatchingAlgorithm);
-            String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
-            String username = Context.getUserContext().getAuthenticatedUser().getUsername();
-
-            boolean skipValidation = true;
-            return new FileImporter<PatientProgramRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
-                    patientProgramPersister, PatientProgramRow.class, new NewMRSConnectionProvider(), username, skipValidation);
-        } catch (Exception e) {
-            logger.error("Could not upload file", e);
-            return false;
-        }
+    @RequestMapping(value = baseUrl + "/drug", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean uploadDrug(@RequestParam(value = "file") MultipartFile file) {
+        return importCsv(DRUG_FILES_DIRECTORY, file, new DatabasePersister<>(drugPersister), 5, false, DrugRow.class);
     }
 
     @RequestMapping(value = baseUrl + "/concept", method = RequestMethod.POST)
     @ResponseBody
     public boolean uploadConcept(@RequestParam(value = "file") MultipartFile file) {
-        try {
-            CSVFile persistedUploadedFile = writeToLocalFile(file, CONCEPT_FILES_DIRECTORY);
-
-            conceptPersister.init(Context.getUserContext());
-            String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
-            String username = Context.getUserContext().getAuthenticatedUser().getUsername();
-
-            boolean skipValidation = false;
-            return new FileImporter<ConceptRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
-                    conceptPersister, ConceptRow.class, new NewMRSConnectionProvider(), username, skipValidation, 1);
-        } catch (Exception e) {
-            logger.error("Could not upload file", e);
-            return false;
-        }
+        return importCsv(CONCEPT_FILES_DIRECTORY, file, new DatabasePersister<>(conceptPersister), 1, false, ConceptRow.class);
     }
 
     @RequestMapping(value = baseUrl + "/conceptset", method = RequestMethod.POST)
     @ResponseBody
     public boolean uploadConceptSet(@RequestParam(value = "file") MultipartFile file) {
-        try {
-            CSVFile persistedUploadedFile = writeToLocalFile(file, CONCEPT_SET_FILES_DIRECTORY);
-
-            conceptSetPersister.init(Context.getUserContext());
-            String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
-            String username = Context.getUserContext().getAuthenticatedUser().getUsername();
-
-            boolean skipValidation = false;
-            return new FileImporter<ConceptSetRow>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
-                    conceptSetPersister, ConceptSetRow.class, new NewMRSConnectionProvider(), username, skipValidation, 1);
-        } catch (Exception e) {
-            logger.error("Could not upload file", e);
-            return false;
-        }
+        return importCsv(CONCEPT_SET_FILES_DIRECTORY, file, new DatabasePersister<>(conceptSetPersister), 1, false, ConceptSetRow.class);
     }
 
     @RequestMapping(value = baseUrl + "/status", method = RequestMethod.GET)
     @ResponseBody
     public List<ImportStatus> status(@RequestParam(required = false) Integer numberOfDays) throws SQLException {
         numberOfDays = numberOfDays == null ? DEFAULT_NUMBER_OF_DAYS : numberOfDays;
-
-        ImportStatusDao importStatusDao = new ImportStatusDao(new JDBCConnectionProvider() {
-            @Override
-            public Connection getConnection() {
-                //TODO: ensure that only connection associated with current thread current transaction is given
-                SessionImplementor session = (SessionImpl) sessionFactory.getCurrentSession();
-                return session.connection();
-            }
-
-            @Override
-            public void closeConnection() {
-
-            }
-        });
+        ImportStatusDao importStatusDao = new ImportStatusDao(new CurrentThreadConnectionProvider());
         return importStatusDao.getImportStatusFromDate(DateUtils.addDays(new Date(), (numberOfDays * -1)));
+    }
+
+    private <T extends org.bahmni.csv.CSVEntity> boolean importCsv(String filesDirectory, MultipartFile file, EntityPersister<T> persister, int numberOfThreads, boolean skipValidation, Class entityClass) {
+        try {
+            CSVFile persistedUploadedFile = writeToLocalFile(file, filesDirectory);
+            String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
+            String username = Context.getUserContext().getAuthenticatedUser().getUsername();
+            return new FileImporter<T>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
+                    persister, entityClass, new NewMRSConnectionProvider(), username, skipValidation, numberOfThreads);
+        } catch (Exception e) {
+            logger.error("Could not upload file", e);
+            return false;
+        }
     }
 
 
@@ -258,4 +198,17 @@ public class AdminImportController extends BaseRestController {
         }
     }
 
+    private class CurrentThreadConnectionProvider implements JDBCConnectionProvider {
+        @Override
+        public Connection getConnection() {
+            //TODO: ensure that only connection associated with current thread current transaction is given
+            SessionImplementor session = (SessionImpl) sessionFactory.getCurrentSession();
+            return session.connection();
+        }
+
+        @Override
+        public void closeConnection() {
+
+        }
+    }
 }

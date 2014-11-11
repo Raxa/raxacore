@@ -6,6 +6,9 @@ import org.bahmni.module.referencedata.labconcepts.model.DrugMetaData;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DrugValidator extends Validator{
 
     private final DrugMetaDataValidator drugMetaDataValidator;
@@ -16,11 +19,11 @@ public class DrugValidator extends Validator{
 
     public void validate(Drug drug, DrugMetaData drugMetaData) {
         drugMetaDataValidator.validate(drugMetaData);
-        StringBuilder errors = new StringBuilder();
+        List<String> errors = new ArrayList<>();
         if (StringUtils.isBlank(drug.getName())){
-            errors.append("Drug name is mandatory\n");
+            errors.add("Drug name is mandatory");
         } if (StringUtils.isBlank(drug.getGenericName())){
-            errors.append("Drug generic name is mandatory\n");
+            errors.add("Drug generic name is mandatory");
         }
         throwExceptionIfExists(errors);
     }

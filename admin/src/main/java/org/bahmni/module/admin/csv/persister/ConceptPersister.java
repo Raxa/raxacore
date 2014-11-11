@@ -8,23 +8,15 @@ import org.bahmni.module.admin.concepts.mapper.ConceptMapper;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptService;
-import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class ConceptPersister implements EntityPersister<ConceptRow> {
 
     @Autowired
     private ReferenceDataConceptService referenceDataConceptService;
-
-    private static final org.apache.log4j.Logger log = Logger.getLogger(ConceptPersister.class);
-    private UserContext userContext;
-
-    public void init(UserContext userContext) {
-        this.userContext = userContext;
-    }
 
     @Override
     public RowResult<ConceptRow> validate(ConceptRow conceptRow) {
@@ -40,20 +32,8 @@ public class ConceptPersister implements EntityPersister<ConceptRow> {
 
     @Override
     public RowResult<ConceptRow> persist(ConceptRow conceptRow) {
-        try {
-            Context.openSession();
-            Context.setUserContext(userContext);
-            Concept concept = new ConceptMapper().map(conceptRow);
-            referenceDataConceptService.saveConcept(concept);
-            return new RowResult<>(conceptRow);
-        } catch (Throwable e) {
-            log.error(e);
-            Context.clearSession();
-            return new RowResult<>(conceptRow, e);
-        } finally {
-            Context.flushSession();
-            Context.closeSession();
-        }
+        Concept concept = new ConceptMapper().map(conceptRow);
+        referenceDataConceptService.saveConcept(concept);
+        return new RowResult<>(conceptRow);
     }
-
 }

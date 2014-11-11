@@ -23,20 +23,16 @@ import static org.junit.Assert.assertNull;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class ConceptSetPersisterIT extends BaseModuleWebContextSensitiveTest {
-    public static final String SAME_AS = "SAME-AS";
     @Autowired
     private ConceptSetPersister conceptSetPersister;
 
     @Autowired
     private ConceptService conceptService;
-    private UserContext userContext;
 
     @Before
     public void setUp() throws Exception {
         Context.authenticate("admin", "test");
         executeDataSet("conceptSetup.xml");
-        userContext = Context.getUserContext();
-        conceptSetPersister.init(userContext);
     }
 
     @Test

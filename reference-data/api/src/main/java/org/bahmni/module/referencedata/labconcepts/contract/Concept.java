@@ -2,10 +2,8 @@ package org.bahmni.module.referencedata.labconcepts.contract;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Concept extends ConceptCommon{

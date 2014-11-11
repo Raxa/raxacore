@@ -2,22 +2,25 @@ package org.bahmni.module.referencedata.labconcepts.model;
 
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
+import org.openmrs.ConceptDatatype;
 import org.openmrs.Drug;
 
 public class DrugMetaData {
     private Concept drugConcept;
     private Concept dosageForm;
     private ConceptClass drugConceptClass;
+    private ConceptDatatype naDataType;
     private Drug existingDrug;
 
-    public DrugMetaData(Drug existingDrug, Concept drugConcept, Concept dosageFormConcept, ConceptClass drugConceptClass) {
-        this.drugConcept = drugConcept;
-        this.existingDrug = existingDrug;
-        this.drugConceptClass = drugConceptClass;
-        this.dosageForm = dosageFormConcept;
+    public DrugMetaData() {
     }
 
-    public DrugMetaData() {
+    public DrugMetaData(Drug existingDrug, Concept drugConcept, Concept dosageFormConcept, ConceptClass drugConceptClass, ConceptDatatype naDataType) {
+        this.existingDrug = existingDrug;
+        this.drugConcept = drugConcept;
+        this.dosageForm = dosageFormConcept;
+        this.drugConceptClass = drugConceptClass;
+        this.naDataType = naDataType;
     }
 
     public Concept getDrugConcept() {
@@ -27,10 +30,10 @@ public class DrugMetaData {
             } else {
                 Concept drugConcept = new Concept();
                 drugConcept.setConceptClass(drugConceptClass);
+                drugConcept.setDatatype(naDataType);
                 return drugConcept;
             }
         } else {
-            drugConcept.setConceptClass(drugConceptClass);
             return drugConcept;
         }
     }
