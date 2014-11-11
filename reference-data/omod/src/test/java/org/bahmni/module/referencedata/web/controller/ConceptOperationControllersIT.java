@@ -51,7 +51,7 @@ public class ConceptOperationControllersIT extends BaseWebControllerTest {
         MockHttpServletResponse response = handle(request);
         Department departmentResponse = deserialize(response, Department.class);
         assertEquals(departmentConcept.getUuid(), departmentResponse.getId());
-        assertNull(departmentResponse.getDescription());
+        assertEquals(departmentConcept.getName(Context.getLocale()).getName(), departmentResponse.getDescription());
         assertEquals(departmentConcept.getName(Context.getLocale()).getName(), departmentResponse.getName());
         assertNotEquals(departmentConcept.isRetired(), departmentResponse.getIsActive());
     }
@@ -62,12 +62,11 @@ public class ConceptOperationControllersIT extends BaseWebControllerTest {
         MockHttpServletResponse response = handle(request);
         LabTest testResponse = deserialize(response, LabTest.class);
         assertEquals(testConcept.getUuid(), testResponse.getId());
-        assertNull(testResponse.getDescription());
+        assertEquals(testConcept.getName(Context.getLocale()).getName(), testResponse.getDescription());
         assertEquals(testConcept.getName(Context.getLocale()).getName(), testResponse.getName());
         assertNotEquals(testConcept.isRetired(), testResponse.getIsActive());
         assertNull(testResponse.getDepartment());
         assertNull(testResponse.getSampleUuid());
         assertEquals("Numeric", testResponse.getResultType());
-        assertNull(testResponse.getDescription());
     }
 }
