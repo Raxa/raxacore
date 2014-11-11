@@ -17,7 +17,10 @@ import java.util.Set;
 public class MapperUtils {
     public static String getDescription(Concept concept) {
         ConceptDescription description = concept.getDescription();
+        if (description != null) {
             return description.getDescription();
+        }
+        return null;
     }
 
     public static String getDescriptionOrName(Concept concept) {
