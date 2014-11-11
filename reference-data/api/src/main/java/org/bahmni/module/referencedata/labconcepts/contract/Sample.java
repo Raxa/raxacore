@@ -4,6 +4,7 @@ public class Sample extends Resource {
     private String shortName;
     public static final String SAMPLE_CONCEPT_CLASS = "Sample";
     private Double sortOrder;
+    private TestsAndPanels testsAndPanels;
 
     public Sample() {
     }
@@ -24,4 +25,11 @@ public class Sample extends Resource {
         this.sortOrder = sortOrder;
     }
 
+    public TestsAndPanels getTestsAndPanels() {
+        return testsAndPanels;
+    }
+
+    public void setTestsAndPanels(TestsAndPanels testsAndPanels) {
+        this.testsAndPanels = testsAndPanels;
+    }
 }

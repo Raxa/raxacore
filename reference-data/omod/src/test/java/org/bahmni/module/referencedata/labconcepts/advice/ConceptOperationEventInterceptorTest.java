@@ -72,7 +72,7 @@ public class ConceptOperationEventInterceptorTest {
 
     public static List<ConceptSet> getConceptSets(Concept parentConcept, Concept conceptMember) {
         List<ConceptSet> conceptSets = new ArrayList<>();
-        ConceptSet conceptSet = getConceptSet(parentConcept, conceptMember);
+        ConceptSet conceptSet = createConceptSet(parentConcept, conceptMember);
         conceptSets.add(conceptSet);
         return conceptSets;
     }
@@ -83,7 +83,7 @@ public class ConceptOperationEventInterceptorTest {
         return conceptSets;
     }
 
-    public static ConceptSet getConceptSet(Concept parentConcept, Concept conceptMember) {
+    public static ConceptSet createConceptSet(Concept parentConcept, Concept conceptMember) {
         ConceptSet conceptSet = new ConceptSet();
         conceptSet.setConceptSet(parentConcept);
         conceptSet.setConcept(conceptMember);

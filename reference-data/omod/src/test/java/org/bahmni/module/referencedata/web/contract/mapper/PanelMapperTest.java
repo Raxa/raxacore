@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSet;
+import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.createConceptSet;
 import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -86,12 +86,12 @@ public class PanelMapperTest {
         labDepartmentConcept = new ConceptBuilder().withUUID("Laboratory Department UUID")
                 .withName(Department.DEPARTMENT_PARENT_CONCEPT_NAME).withClass(Department.DEPARTMENT_CONCEPT_CLASS)
                 .withSetMember(departmentConcept).build();
-        ConceptSet panelConceptSet = getConceptSet(testAndPanelsConcept, panelConcept);
-        ConceptSet testConceptSet = getConceptSet(testAndPanelsConcept, testConcept);
-        testPanelConceptSet = getConceptSet(testConcept, panelConcept);
-        panelSampleConceptSet = getConceptSet(sampleConcept, panelConcept);
-        testSampleConceptSet = getConceptSet(sampleConcept, testConcept);
-        testDepartmentConceptSet = getConceptSet(departmentConcept, testConcept);
+        ConceptSet panelConceptSet = createConceptSet(testAndPanelsConcept, panelConcept);
+        ConceptSet testConceptSet = createConceptSet(testAndPanelsConcept, testConcept);
+        testPanelConceptSet = createConceptSet(testConcept, panelConcept);
+        panelSampleConceptSet = createConceptSet(sampleConcept, panelConcept);
+        testSampleConceptSet = createConceptSet(sampleConcept, testConcept);
+        testDepartmentConceptSet = createConceptSet(departmentConcept, testConcept);
 
         testConceptSets = getConceptSets(testConceptSet);
         testConceptSets.add(testSampleConceptSet);

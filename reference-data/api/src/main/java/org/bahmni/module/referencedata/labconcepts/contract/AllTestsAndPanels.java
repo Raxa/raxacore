@@ -1,12 +1,17 @@
 package org.bahmni.module.referencedata.labconcepts.contract;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AllTestsAndPanels extends Resource {
     private String description;
-    private List<LabTest> tests= new ArrayList<>();
-    private List<Panel> panels= new ArrayList<>();
+
+    private TestsAndPanels testsAndPanels;
+
+    public TestsAndPanels getTestsAndPanels() {
+        return testsAndPanels;
+    }
+
+    public void setTestsAndPanels(TestsAndPanels testsAndPanels) {
+        this.testsAndPanels = testsAndPanels;
+    }
 
     public static final String ALL_TESTS_AND_PANELS = "All_Tests_and_Panels";
 
@@ -17,26 +22,4 @@ public class AllTestsAndPanels extends Resource {
     public void setDescription(String description) {
         this.description = description;
     }
-
-
-    public List<LabTest> getTests() {
-        return tests;
-    }
-
-    public List<Panel> getPanels() {
-        return panels;
-    }
-
-    public void addTest(LabTest test) {
-        if(test != null){
-            this.tests.add(test);
-        }
-    }
-
-    public void addPanel(Panel panel) {
-        if(panel != null){
-            this.panels.add(panel);
-        }
-    }
-
 }

@@ -18,13 +18,13 @@ public abstract class ResourceMapper {
     public abstract <T extends Resource> T map(Concept concept);
 
 
-    <T extends Resource> T mapResource(Resource resource, Concept concept) {
+    <R extends Resource> R mapResource(R resource, Concept concept) {
         resource.setName(concept.getName(Context.getLocale()).getName());
         resource.setIsActive(!concept.isRetired());
         resource.setId(concept.getUuid());
         resource.setDateCreated(concept.getDateCreated());
         resource.setLastUpdated(concept.getDateChanged());
-        return (T) resource;
+        return (R) resource;
     }
 
     Double getSortWeight(Concept concept) {

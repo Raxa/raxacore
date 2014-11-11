@@ -1,6 +1,8 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
+import org.bahmni.module.referencedata.labconcepts.contract.TestsAndPanels;
+import org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils;
 import org.bahmni.module.referencedata.labconcepts.mapper.ResourceMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.SampleMapper;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
@@ -18,14 +20,13 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSet;
+import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.createConceptSet;
 import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -36,29 +37,24 @@ public class SampleMapperTest {
 
     private SampleMapper sampleMapper;
     private Concept sampleConcept;
-    private Date dateCreated;
-    private Date dateChanged;
-    private Concept laboratoryConcept;
+    private Concept allSamplesConcept;
     @Mock
     private ConceptService conceptService;
     private Double sortOrder;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         sampleMapper = new SampleMapper();
-        dateCreated = new Date();
-        dateChanged = new Date();
         Locale defaultLocale = new Locale("en", "GB");
         PowerMockito.mockStatic(Context.class);
         when(Context.getLocale()).thenReturn(defaultLocale);
-        sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).
-                withDateChanged(dateChanged).withShortName("ShortName").withName("SampleName").build();
-        laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
+        sampleConcept = new ConceptBuilder().forSample().withShortName("ShortName").build();
+        allSamplesConcept = new ConceptBuilder().withUUID("Laboratory UUID")
                 .withName(AllSamples.ALL_SAMPLES).withClass(Sample.SAMPLE_CONCEPT_CLASS)
                 .withSetMember(sampleConcept).build();
-        ConceptSet conceptSet = getConceptSet(laboratoryConcept, sampleConcept);
+        ConceptSet conceptSet = createConceptSet(allSamplesConcept, sampleConcept);
         sortOrder = Double.valueOf(22);
         conceptSet.setSortWeight(sortOrder);
         List<ConceptSet> conceptSets = getConceptSets(conceptSet);
@@ -67,37 +63,60 @@ public class SampleMapperTest {
     }
 
     @Test
-    public void map_all_sample_fields_from_concept() throws Exception {
+    public void map_all_sample_fields_from_concept() {
         Sample sampleData = sampleMapper.map(sampleConcept);
         assertEquals("Sample UUID", sampleData.getId());
         assertEquals(sortOrder, sampleData.getSortOrder());
-        assertEquals(dateCreated, sampleData.getDateCreated());
-        assertEquals(dateChanged, sampleData.getLastUpdated());
+        assertEquals(sampleConcept.getDateCreated(), sampleData.getDateCreated());
+        assertEquals(sampleConcept.getDateChanged(), sampleData.getLastUpdated());
         assertEquals("ShortName", sampleData.getShortName());
     }
 
     @Test
-    public void send_default_for_no_short_name() throws Exception {
-        sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).
-                withDateChanged(dateChanged).withName("SampleName").build();
+    public void send_default_for_no_short_name() {
+        sampleConcept = new ConceptBuilder().forSample().build();
+        assertEquals(0, sampleConcept.getShortNames().size());
+
         Sample sampleData = sampleMapper.map(sampleConcept);
         assertEquals("Sample UUID", sampleData.getId());
         assertEquals("SampleName", sampleData.getShortName());
     }
 
     @Test
-    public void is_active_true_by_default() throws Exception {
+    public void is_active_true_by_default() {
         Sample sampleData = sampleMapper.map(sampleConcept);
         assertTrue(sampleData.getIsActive());
     }
 
     @Test
-    public void double_max_as_sort_order_when_sort_order_not_specified() throws Exception {
-        ConceptSet conceptSet = getConceptSet(laboratoryConcept, sampleConcept);
+    public void double_max_as_sort_order_when_sort_order_not_specified() {
+        ConceptSet conceptSet = createConceptSet(allSamplesConcept, sampleConcept);
         List<ConceptSet> conceptSets = getConceptSets(conceptSet);
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
         when(Context.getConceptService()).thenReturn(conceptService);
         Sample sampleData = sampleMapper.map(sampleConcept);
         assertTrue(sampleData.getSortOrder().equals(ResourceMapper.DEFAULT_SORT_ORDER));
+    }
+
+    @Test
+    public void map_tests_from_concept_set_members(){
+        Concept testConcept = new ConceptBuilder().forTest().withDataType("N/A").build();
+        Concept sampleConcept = new ConceptBuilder().forSample().withSetMember(testConcept).build();
+        Sample sample = sampleMapper.map(sampleConcept);
+        TestsAndPanels testsAndPanels = sample.getTestsAndPanels();
+        assertNotNull(testsAndPanels.getTests());
+        assertEquals(1, testsAndPanels.getTests().size());
+        assertEquals(MapperUtils.getDescriptionOrName(testConcept), testsAndPanels.getTests().iterator().next().getDescription());
+    }
+
+    @Test
+    public void map_panels_from_concept_set_members(){
+        Concept panelConcept = new ConceptBuilder().forPanel().build();
+        Concept sampleConcept = new ConceptBuilder().forSample().withSetMember(panelConcept).build();
+        Sample sample = sampleMapper.map(sampleConcept);
+        TestsAndPanels testsAndPanels = sample.getTestsAndPanels();
+        assertNotNull(testsAndPanels.getPanels());
+        assertEquals(1, testsAndPanels.getPanels().size());
+        assertEquals(MapperUtils.getDescriptionOrName(panelConcept), testsAndPanels.getPanels().iterator().next().getDescription());
     }
 }

@@ -14,8 +14,7 @@ public class DepartmentMapper extends ResourceMapper {
         Department department = new Department();
         department = mapResource(department, departmentConcept);
         department.setDescription(MapperUtils.getDescriptionOrName(departmentConcept));
+        department.setTestsAndPanels(new TestAndPanelMapper().map(departmentConcept));
         return department;
     }
-
-
 }

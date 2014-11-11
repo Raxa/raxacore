@@ -1,11 +1,6 @@
 package org.bahmni.test.builder;
 
-import org.openmrs.Concept;
-import org.openmrs.ConceptAnswer;
-import org.openmrs.ConceptClass;
-import org.openmrs.ConceptDatatype;
-import org.openmrs.ConceptDescription;
-import org.openmrs.ConceptName;
+import org.openmrs.*;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.LocaleUtility;
@@ -29,6 +24,29 @@ public class ConceptBuilder {
         name.setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
         concept.setPreferredName(name);
         return this;
+    }
+
+    public ConceptBuilder forSample() {
+        return withUUID("Sample UUID")
+                .withDateCreated(new Date())
+                .withDateChanged(new Date())
+                .withName("SampleName");
+    }
+
+    public ConceptBuilder forTest(){
+        return new ConceptBuilder().withClass("LabTest").withName("TestName");
+    }
+
+    public ConceptBuilder forPanel(){
+        return new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).withName("PanelName");
+    }
+
+    public ConceptBuilder forDepartment() {
+        return withUUID("Department UUID")
+                .withDateCreated(new Date())
+                .withDateChanged(new Date())
+                .withDescription("Some Description")
+                .withName("SampleName");
     }
 
     public ConceptBuilder withDataType(String name) {
@@ -98,8 +116,7 @@ public class ConceptBuilder {
     }
 
     public ConceptBuilder withShortName(String name) {
-        ConceptName conceptName = new ConceptName(name, Context.getLocale());
-        concept.setShortName(conceptName);
+        concept.setShortName(name != null ? new ConceptName(name, Context.getLocale()) : null);
         return this;
     }
 
@@ -124,4 +141,3 @@ public class ConceptBuilder {
         return this;
     }
 }
-

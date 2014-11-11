@@ -3,6 +3,7 @@ package org.bahmni.module.referencedata.web.contract.mapper;
 import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
 import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Panel;
+import org.bahmni.module.referencedata.labconcepts.contract.TestsAndPanels;
 import org.bahmni.module.referencedata.labconcepts.mapper.AllTestsAndPanelsMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.LabTestMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.PanelMapper;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 import java.util.Date;
+import java.util.Set;
 
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
@@ -70,23 +72,24 @@ public class AllTestsAndPanelsMapperTest {
     @Test
     public void map_all_Tests_And_Panels_fields_from_concept() throws Exception {
 
-        AllTestsAndPanels testsAndPanels = allTestsAndPanelsMapper.map(testAndPanelsConcept);
+        AllTestsAndPanels allTestsAndPanels = allTestsAndPanelsMapper.map(testAndPanelsConcept);
         LabTest testData = testMapper.map(testConcept);
         Panel panelData = panelMapper.map(panelConcept);
 
-        assertEquals("Test and Panels UUID", testsAndPanels.getId());
-        assertEquals("All_Tests_and_Panels", testsAndPanels.getName());
-        assertEquals(dateCreated, testsAndPanels.getDateCreated());
-        assertEquals(dateChanged, testsAndPanels.getLastUpdated());
-        assertEquals("Test and Panel Description", testsAndPanels.getDescription());
+        assertEquals("Test and Panels UUID", allTestsAndPanels.getId());
+        assertEquals("All_Tests_and_Panels", allTestsAndPanels.getName());
+        assertEquals(dateCreated, allTestsAndPanels.getDateCreated());
+        assertEquals(dateChanged, allTestsAndPanels.getLastUpdated());
+        assertEquals("Test and Panel Description", allTestsAndPanels.getDescription());
 
-        List<LabTest> tests = testsAndPanels.getTests();
+        TestsAndPanels testsAndPanels = allTestsAndPanels.getTestsAndPanels();
+        Set<LabTest> tests = testsAndPanels.getTests();
         assertEquals(1, tests.size());
-        assertEquals(testData.getId(), tests.get(0).getId());
+        assertEquals(testData.getId(), tests.iterator().next().getId());
 
-        List<Panel> panels = testsAndPanels.getPanels();
+        Set<Panel> panels = testsAndPanels.getPanels();
         assertEquals(1, panels.size());
-        assertEquals(panelData.getId(), panels.get(0).getId());
+        assertEquals(panelData.getId(), panels.iterator().next().getId());
     }
 
     @Test
@@ -97,18 +100,19 @@ public class AllTestsAndPanelsMapperTest {
                 .withSetMember(testConcept).withDateChanged(dateChanged).withShortName("ShortName").withName("Panel Name").withDataType(ConceptDatatype.NUMERIC).withRetired(true).build();
         Concept testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID).withDescription("Test and Panel Description")
                 .withDateChanged(dateChanged).withShortName("ShortName").withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(testConcept).withSetMember(panelConcept).build();
-        AllTestsAndPanels testsAndPanels = allTestsAndPanelsMapper.map(testAndPanelsConcept);
+        AllTestsAndPanels allTestsAndPanels = allTestsAndPanelsMapper.map(testAndPanelsConcept);
 
-        assertEquals("Test and Panels UUID", testsAndPanels.getId());
-        assertEquals("All_Tests_and_Panels", testsAndPanels.getName());
-        assertEquals(dateCreated, testsAndPanels.getDateCreated());
-        assertEquals(dateChanged, testsAndPanels.getLastUpdated());
-        assertEquals("Test and Panel Description", testsAndPanels.getDescription());
+        assertEquals("Test and Panels UUID", allTestsAndPanels.getId());
+        assertEquals("All_Tests_and_Panels", allTestsAndPanels.getName());
+        assertEquals(dateCreated, allTestsAndPanels.getDateCreated());
+        assertEquals(dateChanged, allTestsAndPanels.getLastUpdated());
+        assertEquals("Test and Panel Description", allTestsAndPanels.getDescription());
 
-        List<LabTest> tests = testsAndPanels.getTests();
+        TestsAndPanels testsAndPanels = allTestsAndPanels.getTestsAndPanels();
+        Set<LabTest> tests = testsAndPanels.getTests();
         assertEquals(0, tests.size());
 
-        List<Panel> panels = testsAndPanels.getPanels();
+        Set<Panel> panels = testsAndPanels.getPanels();
         assertEquals(0, panels.size());
     }
 }

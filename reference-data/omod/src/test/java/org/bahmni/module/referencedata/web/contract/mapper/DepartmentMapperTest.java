@@ -1,8 +1,9 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
+import org.bahmni.module.referencedata.labconcepts.contract.TestsAndPanels;
 import org.bahmni.module.referencedata.labconcepts.mapper.DepartmentMapper;
-import org.bahmni.module.referencedata.labconcepts.mapper.ResourceMapper;
+import org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSet;
+import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.createConceptSet;
 import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -35,7 +36,7 @@ public class DepartmentMapperTest {
     private Concept departmentConcept;
     private Date dateCreated;
     private Date dateChanged;
-    private Concept labDepartmentConcept;
+    private Concept allDepartmentsConcept;
     @Mock
     private ConceptService conceptService;
 
@@ -49,12 +50,11 @@ public class DepartmentMapperTest {
         Locale defaultLocale = new Locale("en", "GB");
         PowerMockito.mockStatic(Context.class);
         when(Context.getLocale()).thenReturn(defaultLocale);
-        departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
-                withDateChanged(dateChanged).withDescription("Some Description").withName("SampleName").build();
-        labDepartmentConcept = new ConceptBuilder().withUUID("Laboratory UUID")
+        departmentConcept = new ConceptBuilder().forDepartment().build();
+        allDepartmentsConcept = new ConceptBuilder().withUUID("Laboratory UUID")
                 .withName(Department.DEPARTMENT_PARENT_CONCEPT_NAME).withClass(Department.DEPARTMENT_CONCEPT_CLASS)
                 .withSetMember(departmentConcept).build();
-        ConceptSet conceptSet = getConceptSet(labDepartmentConcept, departmentConcept);
+        ConceptSet conceptSet = createConceptSet(allDepartmentsConcept, departmentConcept);
         List<ConceptSet> conceptSets = getConceptSets(conceptSet);
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
         when(Context.getConceptService()).thenReturn(conceptService);
@@ -64,8 +64,8 @@ public class DepartmentMapperTest {
     public void map_all_sample_fields_from_concept() throws Exception {
         Department departmentData = departmentMapper.map(departmentConcept);
         assertEquals("Department UUID", departmentData.getId());
-        assertEquals(dateCreated, departmentData.getDateCreated());
-        assertEquals(dateChanged, departmentData.getLastUpdated());
+        assertEquals(departmentData.getDateCreated(), departmentData.getDateCreated());
+        assertEquals(departmentData.getLastUpdated(), departmentData.getLastUpdated());
         assertEquals("Some Description", departmentData.getDescription());
     }
 
@@ -90,5 +90,21 @@ public class DepartmentMapperTest {
                 withDateChanged(dateChanged).withName("DepartmentName").build();
         Department departmentData = departmentMapper.map(departmentConceptWithOutDescription);
         assertEquals("DepartmentName", departmentData.getDescription());
+    }
+
+    @Test
+    public void should_map_tests_and_panels() throws Exception {
+        Concept testConcept = new ConceptBuilder().forTest().build();
+        departmentConcept.addSetMember(testConcept);
+        Concept panelConcept = new ConceptBuilder().forPanel().build();
+        departmentConcept.addSetMember(panelConcept);
+
+        Department departmentData = departmentMapper.map(departmentConcept);
+        TestsAndPanels testsAndPanels = departmentData.getTestsAndPanels();
+
+        assertEquals(1, testsAndPanels.getPanels().size());
+        assertEquals(1, testsAndPanels.getTests().size());
+        assertEquals(MapperUtils.getDescriptionOrName(testConcept), testsAndPanels.getTests().iterator().next().getDescription());
+        assertEquals(MapperUtils.getDescriptionOrName(panelConcept), testsAndPanels.getPanels().iterator().next().getDescription());
     }
 }

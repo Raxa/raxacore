@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSet;
+import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.createConceptSet;
 import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -84,11 +84,11 @@ public class LabTestMapperTest {
         labDepartmentConcept = new ConceptBuilder().withUUID("Laboratory Department UUID")
                 .withName(Department.DEPARTMENT_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.CONVSET_UUID)
                 .withSetMember(departmentConcept).build();
-        ConceptSet sampleConceptSet = getConceptSet(laboratoryConcept, sampleConcept);
-        ConceptSet departmentConceptSet = getConceptSet(labDepartmentConcept, departmentConcept);
-        ConceptSet testConceptSet = getConceptSet(testAndPanelsConcept, testConcept);
-        testSampleConceptSet = getConceptSet(sampleConcept, testConcept);
-        testDepartmentConceptSet = getConceptSet(departmentConcept, testConcept);
+        ConceptSet sampleConceptSet = createConceptSet(laboratoryConcept, sampleConcept);
+        ConceptSet departmentConceptSet = createConceptSet(labDepartmentConcept, departmentConcept);
+        ConceptSet testConceptSet = createConceptSet(testAndPanelsConcept, testConcept);
+        testSampleConceptSet = createConceptSet(sampleConcept, testConcept);
+        testDepartmentConceptSet = createConceptSet(departmentConcept, testConcept);
         departmentConceptSets = getConceptSets(departmentConceptSet);
         sampleConceptSets = getConceptSets(sampleConceptSet);
         testConceptSets = getConceptSets(testConceptSet);

@@ -3,7 +3,6 @@ package org.bahmni.module.referencedata.labconcepts.mapper;
 import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
 import org.bahmni.module.referencedata.labconcepts.contract.Panel;
 import org.openmrs.Concept;
-import org.openmrs.api.context.Context;
 
 public class PanelMapper extends ResourceMapper {
     public PanelMapper() {
@@ -12,7 +11,6 @@ public class PanelMapper extends ResourceMapper {
 
     @Override
     public Panel map(Concept panelConcept) {
-        String description;
         Panel panel = new Panel();
         panel = mapResource(panel, panelConcept);
         panel.setSampleUuid(MapperUtils.getSampleUuid(panelConcept));
