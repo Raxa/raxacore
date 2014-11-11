@@ -1,6 +1,6 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.dao.OrderDao;
+import org.bahmni.module.bahmnicore.dao.BahmniOrderDao;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
@@ -24,7 +24,7 @@ public class BahmniLabOrderResultController {
     private PatientService patientService;
 
     @Autowired
-    private OrderDao orderDao;
+    private BahmniOrderDao bahmniOrderDao;
 
     @Autowired
     private LabOrderResultsService labOrderResultsService;
@@ -38,7 +38,7 @@ public class BahmniLabOrderResultController {
         Patient patient = patientService.getPatientByUuid(patientUuid);
         List<Visit> visits = null;
         if(numberOfVisits != null) {
-            visits = orderDao.getVisitsWithOrders(patient, "TestOrder", true, numberOfVisits);
+            visits = bahmniOrderDao.getVisitsWithOrders(patient, "TestOrder", true, numberOfVisits);
         }
         return labOrderResultsService.getAll(patient, visits);
     }

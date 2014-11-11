@@ -16,7 +16,7 @@
 
     <bean id="propertiesReader" class="org.bahmni.module.bahmnicore.properties.PropertiesReaderImpl" factory-method="load" scope="singleton"/>
 
-    <bean id="orderDao" class="org.bahmni.module.bahmnicore.dao.impl.OrderDaoImpl" />
+    <bean id="orderDao" class="org.bahmni.module.bahmnicore.dao.impl.BahmniOrderDaoImpl" />
 
     <bean parent="obsServiceTarget" >
         <property name="handlers">

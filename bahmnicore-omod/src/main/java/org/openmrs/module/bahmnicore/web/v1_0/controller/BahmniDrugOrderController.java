@@ -50,6 +50,21 @@ public class BahmniDrugOrderController {
         }
     }
 
+    @RequestMapping(value = baseUrl + "/scheduled", method = RequestMethod.GET)
+    @ResponseBody
+    public List<BahmniDrugOrder> getScheduledDrugOrders(@RequestParam(value = "patientUuid") String patientUuid){
+        logger.info("Retrieving scheduled drug orders for patient with uuid " + patientUuid);
+        List<DrugOrder> scheduledDrugOrders = drugOrderService.getScheduledDrugOrders(patientUuid);
+        logger.info(scheduledDrugOrders.size() + " scheduled drug orders found");
+
+        try {
+            return new BahmniDrugOrderMapper(new BahmniProviderMapper()).mapToResponse(scheduledDrugOrders);
+        } catch (IOException e) {
+            logger.error("Could not parse dosing instructions",e);
+            throw new RuntimeException("Could not parse dosing instructions",e);
+        }
+    }
+
 
     @RequestMapping(value = baseUrl, method = RequestMethod.GET)
     @ResponseBody

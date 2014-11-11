@@ -30,7 +30,7 @@ public class BahmniFeedDrugOrderServiceImplTest {
         BahmniFeedDrugOrder calpol = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, 10, 20.0, "mg", "order-uuid");
         List<BahmniFeedDrugOrder> drugOrders = Arrays.asList(calpol);
 
-        BahmniDrugOrderService bahmniDrugOrderService = new BahmniDrugOrderServiceImpl(null, null, null, null, null, null, new PatientDaoImpl(null), null, null);
+        BahmniDrugOrderService bahmniDrugOrderService = new BahmniDrugOrderServiceImpl(null, null, null, null, null, null, new PatientDaoImpl(null), null, null, null);
         bahmniDrugOrderService.add("", orderDate, drugOrders, "System", TEST_VISIT_TYPE);
     }
 
@@ -43,7 +43,7 @@ public class BahmniFeedDrugOrderServiceImplTest {
         BahmniFeedDrugOrder calpol = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, 10, 20.0, "mg", "order-uuid");
         List<BahmniFeedDrugOrder> drugOrders = Arrays.asList(calpol);
 
-        BahmniDrugOrderService bahmniDrugOrderService = new BahmniDrugOrderServiceImpl(null, null, null, null, null, null, new PatientDaoImpl(null), null, null);
+        BahmniDrugOrderService bahmniDrugOrderService = new BahmniDrugOrderServiceImpl(null, null, null, null, null, null, new PatientDaoImpl(null), null, null, null);
         bahmniDrugOrderService.add(null, orderDate, drugOrders, "System", TEST_VISIT_TYPE);
     }
 
@@ -61,7 +61,7 @@ public class BahmniFeedDrugOrderServiceImplTest {
         PatientDao patientDao = mock(PatientDao.class);
         when(patientDao.getPatient(patientId)).thenReturn(null);
 
-        BahmniDrugOrderServiceImpl bahmniDrugOrderService = new BahmniDrugOrderServiceImpl(null, null, null, null, null, null, patientDao, null, null);
+        BahmniDrugOrderServiceImpl bahmniDrugOrderService = new BahmniDrugOrderServiceImpl(null, null, null, null, null, null, patientDao, null, null, null);
         bahmniDrugOrderService.add(patientId, orderDate, drugOrders, "System", TEST_VISIT_TYPE);
     }
 
