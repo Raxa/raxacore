@@ -8,6 +8,6 @@
   		    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
     <context:component-scan base-package="org.bahmni.module.bahmnicore.web"/>
 
-    <bean id="orderDao" class="org.bahmni.module.bahmnicore.dao.impl.BahmniOrderDaoImpl" />
+    <bean id="orderDao" class="org.bahmni.module.bahmnicore.dao.impl.OrderDaoImpl" />
     <bean id="propertiesReader" class="org.bahmni.module.bahmnicore.properties.SystemPropertiesReader" scope="singleton"/>
 </beans>

@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
+import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
@@ -8,7 +9,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -19,7 +22,7 @@ import static org.junit.Assert.assertThat;
 public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
-    private BahmniOrderDaoImpl orderDao;
+    private OrderDaoImpl orderDao;
 
     @Test
     public void getPrescribedDrugOrders_ShouldNotGetDiscontinueOrders() throws Exception {

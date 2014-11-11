@@ -4,10 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.contract.drugorder.*;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
-import org.bahmni.module.bahmnicore.dao.BahmniOrderDao;
+import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
-import org.bahmni.module.bahmnicore.service.BahmniOrderService;
 import org.bahmni.module.bahmnicore.util.VisitIdentificationHelper;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -30,8 +29,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private UserService userService;
     private PatientDao patientDao;
     private PatientService openmrsPatientService;
-    private BahmniOrderDao bahmniOrderDao;
-    private BahmniOrderService bahmniOrderService;
+    private OrderDao orderDao;
     private OrderType drugOrderType;
     private Provider systemProvider;
     private EncounterRole unknownEncounterRole;
@@ -44,7 +42,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     public BahmniDrugOrderServiceImpl(VisitService visitService, ConceptService conceptService, OrderService orderService,
                                       ProviderService providerService, EncounterService encounterService,
                                       UserService userService, PatientDao patientDao,
-                                      PatientService patientService, BahmniOrderDao bahmniOrderDao, BahmniOrderService bahmniOrderService) {
+                                      PatientService patientService, OrderDao orderDao) {
         this.visitService = visitService;
         this.conceptService = conceptService;
         this.orderService = orderService;
@@ -53,8 +51,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         this.userService = userService;
         this.patientDao = patientDao;
         this.openmrsPatientService = patientService;
-        this.bahmniOrderDao = bahmniOrderDao;
-        this.bahmniOrderService = bahmniOrderService;
+        this.orderDao = orderDao;
     }
 
     @Override
@@ -85,7 +82,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     @Override
     public List<DrugOrder> getPrescribedDrugOrders(String patientUuid, Boolean includeActiveVisit, Integer numberOfVisits) {
         Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
-        return bahmniOrderDao.getPrescribedDrugOrders(patient, includeActiveVisit, numberOfVisits);
+        return orderDao.getPrescribedDrugOrders(patient, includeActiveVisit, numberOfVisits);
     }
 
     @Override
@@ -98,11 +95,6 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         response.setDispensingUnits(mapConcepts(orderService.getDrugDispensingUnits()));
         response.setDosingInstructions(mapConcepts(getSetMembersOfConceptSetFromGP(GP_DOSING_INSTRUCTIONS_CONCEPT_UUID)));
         return response;
-    }
-
-    @Override
-    public List<DrugOrder> getScheduledDrugOrders(String patientUuid) {
-        return bahmniOrderService.getScheduledDrugOrders(patientUuid);
     }
 
     private List<Concept> getSetMembersOfConceptSetFromGP(String globalProperty) {

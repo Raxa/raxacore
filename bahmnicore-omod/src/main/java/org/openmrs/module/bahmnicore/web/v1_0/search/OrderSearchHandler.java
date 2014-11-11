@@ -1,6 +1,6 @@
 package org.openmrs.module.bahmnicore.web.v1_0.search;
 
-import org.bahmni.module.bahmnicore.service.BahmniOrderService;
+import org.bahmni.module.bahmnicore.service.OrderService;
 import org.openmrs.Order;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -19,10 +19,10 @@ import java.util.List;
 @Component
 public class OrderSearchHandler implements SearchHandler{
 
-    private BahmniOrderService bahmniOrderService;
+    private OrderService bahmniOrderService;
 
     @Autowired
-    public OrderSearchHandler(BahmniOrderService bahmniOrderService) {
+    public OrderSearchHandler(OrderService bahmniOrderService) {
         this.bahmniOrderService = bahmniOrderService;
     }
 

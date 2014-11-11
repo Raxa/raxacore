@@ -15,6 +15,4 @@ public interface BahmniDrugOrderService {
     List<DrugOrder> getPrescribedDrugOrders(String patientUuid, Boolean includeActiveVisit, Integer numberOfVisit);
 
     DrugOrderConfigResponse getConfig();
-
-    List<DrugOrder> getScheduledDrugOrders(String patientUuid);
 }

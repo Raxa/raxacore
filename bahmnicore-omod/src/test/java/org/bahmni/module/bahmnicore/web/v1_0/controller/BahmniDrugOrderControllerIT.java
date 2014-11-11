@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTest {
@@ -36,8 +35,8 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
         assertEquals("{\"dose\": \"1.5\", \"doseUnits\": \"Tablet\"}", dosingInstructions1.getAdministrationInstructions());
         assertEquals(15, drugOrder1.getDuration(), 0);
         assertEquals("Triomune-30", drugOrder1.getDrug().getName());
-        assertEquals("2999-10-24 00:00:00.0", drugOrder1.getEffectiveStartDate().toString());
-        assertEquals("2999-11-08 00:00:00.0", drugOrder1.getEffectiveStopDate().toString());
+        assertEquals("2011-10-24 00:00:00.0", drugOrder1.getEffectiveStartDate().toString());
+        assertEquals("2011-11-08 00:00:00.0", drugOrder1.getEffectiveStopDate().toString());
 
         BahmniDrugOrder drugOrder2 = prescribedDrugOrders.get(1);
         assertEquals("d798916f-210d-4c4e-8978-467d1a969f31", drugOrder2.getVisit().getUuid());
@@ -49,8 +48,8 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
         assertEquals("UNKNOWN", dosingInstructions2.getRoute());
         assertEquals(6, drugOrder2.getDuration(), 0);
         assertEquals("Paracetamol 250 mg", drugOrder2.getDrug().getName());
-        assertEquals("2999-10-22 00:00:00.0", drugOrder2.getEffectiveStartDate().toString());
-        assertEquals("2999-10-28 00:00:00.0", drugOrder2.getEffectiveStopDate().toString());
+        assertEquals("2011-10-22 00:00:00.0", drugOrder2.getEffectiveStartDate().toString());
+        assertEquals("2011-10-30 00:00:00.0", drugOrder2.getEffectiveStopDate().toString());
 
         BahmniDrugOrder drugOrder3 = prescribedDrugOrders.get(2);
         assertEquals("adf4fb41-a41a-4ad6-8835-2f59889acf5a", drugOrder3.getVisit().getUuid());
@@ -72,34 +71,4 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
         assertEquals("2005-09-29 00:00:00.0", drugOrder4.getEffectiveStopDate().toString());
     }
 
-    @Test
-    public void shouldReturnAllScheduledDrugOrders() throws Exception {
-        List<BahmniDrugOrder> scheduledDrugOrders = bahmniDrugOrderController.getScheduledDrugOrders("86526ed5-3c11-11de-a0ba-001ed98eb67a");
-
-        assertNotNull("ScheduledDrugOrders is null", scheduledDrugOrders);
-        assertEquals(2, scheduledDrugOrders.size());
-
-        BahmniDrugOrder triomuneDrugOrder = scheduledDrugOrders.get(0);
-        assertEquals("d798916f-210d-4c4e-8978-467d1a969f31", triomuneDrugOrder.getVisit().getUuid());
-        EncounterTransaction.DosingInstructions dosingInstructions3 = triomuneDrugOrder.getDosingInstructions();
-        assertEquals("{\"dose\": \"1.5\", \"doseUnits\": \"Tablet\"}", dosingInstructions3.getAdministrationInstructions());
-        assertEquals("tab (s)", triomuneDrugOrder.getDrug().getForm());
-        assertEquals(15, triomuneDrugOrder.getDuration(), 0);
-        assertEquals("Triomune-30", triomuneDrugOrder.getDrug().getName());
-        assertEquals("2999-10-24 00:00:00.0", triomuneDrugOrder.getEffectiveStartDate().toString());
-        assertEquals("2999-11-08 00:00:00.0", triomuneDrugOrder.getEffectiveStopDate().toString());
-
-        BahmniDrugOrder paracetamolDrugOrder = scheduledDrugOrders.get(1);
-        assertEquals("d798916f-210d-4c4e-8978-467d1a969f31", paracetamolDrugOrder.getVisit().getUuid());
-        EncounterTransaction.DosingInstructions dosingInstructions2 = paracetamolDrugOrder.getDosingInstructions();
-        assertEquals("Paracetamol 250 mg", paracetamolDrugOrder.getDrug().getName());
-        assertEquals(4.5, dosingInstructions2.getDose(), 0);
-        assertEquals("Before meals", paracetamolDrugOrder.getInstructions());
-        assertEquals("Take while sleeping", paracetamolDrugOrder.getCommentToFulfiller());
-        assertEquals("1/day x 7 days/week", dosingInstructions2.getFrequency());
-        assertEquals("UNKNOWN", dosingInstructions2.getRoute());
-        assertEquals(6, paracetamolDrugOrder.getDuration(), 0);
-        assertEquals("2999-10-22 00:00:00.0", paracetamolDrugOrder.getEffectiveStartDate().toString());
-        assertEquals("2999-10-28 00:00:00.0", paracetamolDrugOrder.getEffectiveStopDate().toString());
-    }
 }

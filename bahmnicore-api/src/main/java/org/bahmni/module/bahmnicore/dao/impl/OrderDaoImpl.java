@@ -1,6 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import org.bahmni.module.bahmnicore.dao.BahmniOrderDao;
+import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class BahmniOrderDaoImpl implements BahmniOrderDao {
+public class OrderDaoImpl implements OrderDao {
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -64,22 +64,6 @@ public class BahmniOrderDaoImpl implements BahmniOrderDao {
             queryVisitsWithDrugOrders.setMaxResults(numberOfVisits);
         }
         return (List<Visit>) queryVisitsWithDrugOrders.list();
-    }
-
-    @Override
-    public List<DrugOrder> getScheduledDrugOrders(Patient patient) {
-        Session currentSession = sessionFactory.getCurrentSession();
-
-        Query query = currentSession.createQuery("select d1 from DrugOrder d1 " +
-                    "where d1.voided = false and d1.action != :discontinued and d1.action != :revised " +
-                    "and d1.scheduledDate > :now and d1.patient = :patient "+
-                    "order by d1.scheduledDate desc");
-            query.setParameter("discontinued", Order.Action.DISCONTINUE);
-            query.setParameter("revised", Order.Action.REVISE);
-            query.setParameter("now", new Date());
-            query.setParameter("patient", patient);
-
-        return (List<DrugOrder>) query.list();
     }
 
     private List<Integer> getVisitIds(List<Visit> visits) {

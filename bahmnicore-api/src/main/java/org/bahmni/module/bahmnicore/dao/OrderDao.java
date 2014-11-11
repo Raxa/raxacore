@@ -7,10 +7,8 @@ import org.openmrs.Visit;
 
 import java.util.List;
 
-public interface BahmniOrderDao {
+public interface OrderDao {
     List<Order> getCompletedOrdersFrom(List<Order> orders);
     List<DrugOrder> getPrescribedDrugOrders(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits);
     public List<Visit> getVisitsWithOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits);
-
-    List<DrugOrder> getScheduledDrugOrders(Patient patient);
 }

@@ -1,7 +1,8 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-import org.bahmni.module.bahmnicore.service.BahmniOrderService;
+import org.bahmni.module.bahmnicore.service.OrderService;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
@@ -14,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class BahmniOrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
+public class OrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
-    private BahmniOrderService bahmniOrderService;
+    private OrderService bahmniOrderService;
 
     @Autowired
     private org.openmrs.api.OrderService orderService;
