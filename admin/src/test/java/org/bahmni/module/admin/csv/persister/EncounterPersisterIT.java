@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
@@ -177,6 +178,49 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
 
         Date encounterDatetime = encounter.getEncounterDatetime();
         assertEquals("1111-11-11", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(encounterDatetime));
+    }
+
+    @Test
+    public void create_visit_as_per_dates_in_file() throws Exception {
+        String registrationNumber = "GAN200000";
+        String visitStartDate = "2011-11-11";
+        String visitEndDate = "2011-12-11";
+
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "Consultation";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = registrationNumber;
+        multipleEncounterRow.visitStartDate = visitStartDate;
+        multipleEncounterRow.visitEndDate = visitEndDate;
+
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
+        anEncounter.encounterDateTime = "2011-12-1";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounter row." + persistenceResult.getErrorMessage(), StringUtils.isEmpty(persistenceResult.getErrorMessage()));
+
+        Context.openSession();
+        Context.authenticate("admin", "test");
+
+        Patient patient = new Patient();
+        PatientIdentifier patientIdentifier = new PatientIdentifier();
+        patientIdentifier.setIdentifier(registrationNumber);
+        patient.addIdentifier(patientIdentifier);
+
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
+        Context.flushSession();
+        Context.closeSession();
+
+        assertEquals(1, encounters.size());
+        Visit newlyCreatedVisit = encounters.get(0).getVisit();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN);
+        assertEquals(visitStartDate, simpleDateFormat.format(newlyCreatedVisit.getStartDatetime()));
+        assertEquals(visitEndDate, simpleDateFormat.format(newlyCreatedVisit.getStopDatetime()));
     }
 
     @Test

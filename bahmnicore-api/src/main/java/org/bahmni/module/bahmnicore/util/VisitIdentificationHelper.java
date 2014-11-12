@@ -8,7 +8,11 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 public class VisitIdentificationHelper {
     private VisitService visitService;
@@ -17,14 +21,19 @@ public class VisitIdentificationHelper {
         this.visitService = visitService;
     }
 
-    public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate) {
+
+    public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate, Date visitStartDate, Date visitEndDate) {
         Date nextDate = getNextDate(orderDate);
         List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, nextDate, orderDate, null, null, true, false);
         if (matchingVisitsFound(visits)) {
             Visit matchingVisit = getVisit(orderDate, visits);
             return stretchVisits(orderDate, matchingVisit);
         }
-        return createNewVisit(patient, orderDate, visitTypeForNewVisit);
+        return createNewVisit(patient, orderDate, visitTypeForNewVisit, visitStartDate, visitEndDate);
+    }
+
+    public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate) {
+        return getVisitFor(patient, visitTypeForNewVisit, orderDate, null, null);
     }
 
     private boolean matchingVisitsFound(List<Visit> visits) {
@@ -66,7 +75,7 @@ public class VisitIdentificationHelper {
         return visits.get(visits.size() - 1);
     }
 
-    private Visit createNewVisit(Patient patient, Date date, String visitTypeForNewVisit) {
+    private Visit createNewVisit(Patient patient, Date date, String visitTypeForNewVisit, Date visitStartDate, Date visitEndDate) {
         VisitType visitTypeByName = getVisitTypeByName(visitTypeForNewVisit);
         if (visitTypeByName == null) {
             throw new RuntimeException("Visit type:'" + visitTypeForNewVisit + "' not found.");
@@ -75,9 +84,12 @@ public class VisitIdentificationHelper {
         Visit visit = new Visit();
         visit.setPatient(patient);
         visit.setVisitType(visitTypeByName);
-        visit.setStartDatetime(date);
+        visit.setStartDatetime(visitStartDate == null ? date : visitStartDate);
         if (!DateUtils.isSameDay(date, new Date())) {
-            visit.setStopDatetime(new DateTime(date).toDateMidnight().toDateTime().plusDays(1).minusSeconds(1).toDate());
+            if (visitEndDate == null)
+                visit.setStopDatetime(new DateTime(date).toDateMidnight().toDateTime().plusDays(1).minusSeconds(1).toDate());
+            else
+                visit.setStopDatetime(new DateTime(visitEndDate).toDateMidnight().toDateTime().plusDays(1).minusSeconds(1).toDate());
         }
         visit.setEncounters(new HashSet<Encounter>());
         return visitService.saveVisit(visit);

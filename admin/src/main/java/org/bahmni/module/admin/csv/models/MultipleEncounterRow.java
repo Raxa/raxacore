@@ -6,7 +6,10 @@ import org.bahmni.csv.annotation.CSVRegexHeader;
 import org.bahmni.csv.annotation.CSVRepeatingRegexHeaders;
 import org.bahmni.csv.KeyValue;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MultipleEncounterRow extends CSVEntity {
@@ -19,6 +22,12 @@ public class MultipleEncounterRow extends CSVEntity {
 
     @CSVHeader(name = "visitType")
     public String visitType;
+
+    @CSVHeader(name = "Visit Start Date", optional = true)
+    public String visitStartDate;
+
+    @CSVHeader(name = "Visit End Date", optional = true)
+    public String visitEndDate;
 
     @CSVRegexHeader(pattern = "Patient.*")
     public List<KeyValue> patientAttributes;
@@ -37,6 +46,22 @@ public class MultipleEncounterRow extends CSVEntity {
             }
         }
         return nonEmptyEncounters;
+    }
+
+    public Date getVisitStartDate() throws ParseException {
+        if (visitStartDate == null)
+            return null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN);
+        simpleDateFormat.setLenient(false);
+        return simpleDateFormat.parse(visitStartDate);
+    }
+
+    public Date getVisitEndDate() throws ParseException {
+        if (visitEndDate == null)
+            return null;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN);
+        simpleDateFormat.setLenient(false);
+        return simpleDateFormat.parse(visitEndDate);
     }
 }
 

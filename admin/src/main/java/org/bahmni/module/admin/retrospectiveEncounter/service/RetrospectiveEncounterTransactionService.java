@@ -9,8 +9,8 @@ import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
-import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
+import java.util.Date;
 import java.util.List;
 
 public class RetrospectiveEncounterTransactionService {
@@ -22,9 +22,9 @@ public class RetrospectiveEncounterTransactionService {
         visitIdentificationHelper = new VisitIdentificationHelper(visitService);
     }
 
-    public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient) {
+    public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
         Visit matchingVisit = visitIdentificationHelper.getVisitFor(patient, bahmniEncounterTransaction.getVisitType(),
-                bahmniEncounterTransaction.getEncounterDateTime());
+                bahmniEncounterTransaction.getEncounterDateTime(), visitStartDate, visitEndDate);
 
         DuplicateObservationsMatcher duplicateObservationsMatcher = new DuplicateObservationsMatcher(matchingVisit, bahmniEncounterTransaction.getEncounterType());
         List<BahmniObservation> uniqueObservations = duplicateObservationsMatcher.getUniqueBahmniObservations(bahmniEncounterTransaction.getObservations());
