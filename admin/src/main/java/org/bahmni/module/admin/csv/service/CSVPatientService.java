@@ -18,7 +18,6 @@ import java.util.List;
 
 public class CSVPatientService {
 
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-M-d");
     private static final String EMR_PRIMARY_IDENTIFIER_TYPE = "emr.primaryIdentifierType";
 
     private PatientService patientService;
@@ -38,6 +37,7 @@ public class CSVPatientService {
         patient.addName(personName);
 
         if (!StringUtils.isBlank(patientRow.getBirthdate())) {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-M-d");
             patient.setBirthdate(simpleDateFormat.parse(patientRow.getBirthdate()));
         } else if (!StringUtils.isBlank(patientRow.getAge())) {
             patient.setBirthdateFromAge(Integer.parseInt(patientRow.getAge()), new Date());

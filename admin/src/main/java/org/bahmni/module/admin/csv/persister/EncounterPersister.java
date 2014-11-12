@@ -70,7 +70,8 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
             Context.openSession();
             Context.setUserContext(userContext);
 
-            Patient patient = patientMatchService.getPatient(patientMatchingAlgorithmClassName, multipleEncounterRow.patientAttributes, multipleEncounterRow.patientIdentifier, shouldMatchExactPatientId);
+            Patient patient = patientMatchService.getPatient(patientMatchingAlgorithmClassName, multipleEncounterRow.patientAttributes,
+                    multipleEncounterRow.patientIdentifier, shouldMatchExactPatientId);
             if (patient == null) {
                 return noMatchingPatients(multipleEncounterRow);
             }
