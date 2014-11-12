@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -45,9 +44,9 @@ public class CSVPatientServiceTest {
     @Test
     public void save_patient_name() throws ParseException {
         PatientRow patientRow = new PatientRow();
-        patientRow.setFirstName("Romesh");
-        patientRow.setMiddleName("Sharad");
-        patientRow.setLastName("Powar");
+        patientRow.firstName = "Romesh";
+        patientRow.middleName = "Sharad";
+        patientRow.lastName = "Powar";
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         CSVPatientService csvPatientService = new CSVPatientService(mockPatientService,mockAdminService, csvAddressService);
@@ -67,11 +66,10 @@ public class CSVPatientServiceTest {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-M-d");
 
         PatientRow patientRow = new PatientRow();
-        patientRow.setAge("34");
-        patientRow.setGender("Male");
-        patientRow.setRegistrationNumber("reg-no");
-        patientRow.setBirthdate("1998-07-07");
-
+        patientRow.age = "34";
+        patientRow.gender = "Male";
+        patientRow.registrationNumber = "reg-no";
+        patientRow.birthdate = "1998-07-07";
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         CSVPatientService csvPatientService = new CSVPatientService(mockPatientService,mockAdminService, csvAddressService);
@@ -92,9 +90,9 @@ public class CSVPatientServiceTest {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-M-d");
 
         PatientRow patientRow = new PatientRow();
-        patientRow.setAge("34");
-        patientRow.setGender("Male");
-        patientRow.setRegistrationNumber("reg-no");
+        patientRow.age = "34";
+        patientRow.gender = "Male";
+        patientRow.registrationNumber = "reg-no";
 
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
@@ -121,7 +119,7 @@ public class CSVPatientServiceTest {
             add(new KeyValue("Countries", "Bharat"));
             add(new KeyValue("ZipCode", "555555"));
         }};
-        patientRow.setAddressParts(addressParts);
+        patientRow.addressParts = addressParts;
 
         AddressHierarchyLevel cityLevel = new AddressHierarchyLevel();
         cityLevel.setName("Cities");
@@ -146,7 +144,6 @@ public class CSVPatientServiceTest {
         addressHierarchyLevels.add(postalCodeLevel);
 
         when(addressHierarchyService.getAddressHierarchyLevels()).thenReturn(addressHierarchyLevels);
-
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         CSVPatientService csvPatientService = new CSVPatientService(mockPatientService,mockAdminService, new CSVAddressService(addressHierarchyService));

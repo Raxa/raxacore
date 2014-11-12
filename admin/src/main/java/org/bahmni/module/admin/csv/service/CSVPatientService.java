@@ -2,6 +2,7 @@ package org.bahmni.module.admin.csv.service;
 
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
+import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.csv.models.PatientRow;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
@@ -32,24 +33,29 @@ public class CSVPatientService {
 
     public Patient save(PatientRow patientRow) throws ParseException {
         Patient patient = new Patient();
-        PersonName personName = new PersonName(patientRow.getFirstName(), patientRow.getMiddleName(), patientRow.getLastName());
+        PersonName personName = new PersonName(patientRow.firstName, patientRow.middleName, patientRow.lastName);
         personName.setPreferred(true);
         patient.addName(personName);
 
-        if (!StringUtils.isBlank(patientRow.getBirthdate())) {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-M-d");
-            patient.setBirthdate(simpleDateFormat.parse(patientRow.getBirthdate()));
-        } else if (!StringUtils.isBlank(patientRow.getAge())) {
-            patient.setBirthdateFromAge(Integer.parseInt(patientRow.getAge()), new Date());
-        }
-        patient.setGender(patientRow.getGender());
-        patient.addIdentifier(new PatientIdentifier(patientRow.getRegistrationNumber(), getPatientIdentifierType(), null));
+        if (!StringUtils.isBlank(patientRow.birthdate)) {
+            // All csv imports use the same date format
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN);
+            simpleDateFormat.setLenient(false);
 
-        List<KeyValue> addressParts = patientRow.getAddressParts();
+            patient.setBirthdate(simpleDateFormat.parse(patientRow.birthdate));
+        } else if (!StringUtils.isBlank(patientRow.age)) {
+            patient.setBirthdateFromAge(Integer.parseInt(patientRow.age), new Date());
+        }
+        patient.setGender(patientRow.gender);
+        patient.addIdentifier(new PatientIdentifier(patientRow.registrationNumber, getPatientIdentifierType(), null));
+
+        List<KeyValue> addressParts = patientRow.addressParts;
         PersonAddress personAddress = csvAddressService.getPersonAddress(addressParts);
-        if(personAddress != null){
+        if (personAddress != null) {
             patient.addAddress(personAddress);
         }
+
+        patient.setDateCreated(patientRow.getRegistrationDate());
 
         return patientService.savePatient(patient);
     }

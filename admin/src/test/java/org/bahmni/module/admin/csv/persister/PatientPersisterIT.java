@@ -40,13 +40,13 @@ public class PatientPersisterIT extends BaseContextSensitiveTest {
 
     private PatientRow patientRow(String firstName, String middleName, String lastName, String birthdate, String gender, String registrationNumber, List<KeyValue> addressParts) {
         PatientRow patientRow = new PatientRow();
-        patientRow.setFirstName(firstName);
-        patientRow.setMiddleName(middleName);
-        patientRow.setLastName(lastName);
-        patientRow.setBirthdate(birthdate);
-        patientRow.setGender(gender);
-        patientRow.setRegistrationNumber(registrationNumber);
-        patientRow.setAddressParts(addressParts);
+        patientRow.firstName = firstName;
+        patientRow.middleName = middleName;
+        patientRow.lastName = lastName;
+        patientRow.birthdate = birthdate;
+        patientRow.gender = gender;
+        patientRow.registrationNumber = registrationNumber;
+        patientRow.addressParts = addressParts;
         return patientRow;
     }
 
