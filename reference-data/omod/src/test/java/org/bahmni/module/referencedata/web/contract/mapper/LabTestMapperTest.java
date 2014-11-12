@@ -7,7 +7,6 @@ import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.module.referencedata.labconcepts.mapper.LabTestMapper;
 import org.bahmni.test.builder.ConceptBuilder;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +33,6 @@ import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperatio
 import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -124,25 +122,7 @@ public class LabTestMapperTest {
         assertEquals(ConceptDatatype.NUMERIC, testData.getResultType());
         assertEquals(dateCreated, testData.getDateCreated());
         assertEquals(dateChanged, testData.getLastUpdated());
-        assertEquals("Department UUID", testData.getDepartment().getId());
-        assertEquals("Department Name", testData.getDepartment().getName());
-        assertEquals("Some Description", testData.getDepartment().getDescription());
-        assertEquals("Sample UUID", testData.getSampleUuid());
         assertEquals("unit", testData.getTestUnitOfMeasure());
-    }
-
-    @Test
-    public void null_if_department_not_specified() throws Exception {
-        testConceptSets.remove(testDepartmentConceptSet);
-        LabTest testData = testMapper.map(testConcept);
-        assertNull(testData.getDepartment());
-    }
-
-    @Test
-    public void null_if_sample_not_specified() throws Exception {
-        testConceptSets.remove(testSampleConceptSet);
-        LabTest testData = testMapper.map(testConcept);
-        assertNull(testData.getSampleUuid());
     }
 
     @Test
