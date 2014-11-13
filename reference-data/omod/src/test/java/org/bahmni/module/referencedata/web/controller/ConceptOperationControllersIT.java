@@ -65,8 +65,6 @@ public class ConceptOperationControllersIT extends BaseWebControllerTest {
         assertEquals(testConcept.getName(Context.getLocale()).getName(), testResponse.getDescription());
         assertEquals(testConcept.getName(Context.getLocale()).getName(), testResponse.getName());
         assertNotEquals(testConcept.isRetired(), testResponse.getIsActive());
-        assertNull(testResponse.getDepartment());
-        assertNull(testResponse.getSampleUuid());
         assertEquals("Numeric", testResponse.getResultType());
     }
 }

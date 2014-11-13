@@ -13,7 +13,6 @@ public class PanelMapper extends ResourceMapper {
     public Panel map(Concept panelConcept) {
         Panel panel = new Panel();
         panel = mapResource(panel, panelConcept);
-        panel.setSampleUuid(MapperUtils.getSampleUuid(panelConcept));
         panel.setTests(MapperUtils.getTests(panelConcept));
         panel.setSortOrder(getSortWeight(panelConcept));
         panel.setDescription(MapperUtils.getDescriptionOrName(panelConcept));

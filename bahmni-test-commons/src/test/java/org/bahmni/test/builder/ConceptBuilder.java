@@ -34,7 +34,7 @@ public class ConceptBuilder {
     }
 
     public ConceptBuilder forTest(){
-        return new ConceptBuilder().withClass("LabTest").withName("TestName");
+        return new ConceptBuilder().withClass("LabTest").withName("TestName").withDataType("Text");
     }
 
     public ConceptBuilder forPanel(){

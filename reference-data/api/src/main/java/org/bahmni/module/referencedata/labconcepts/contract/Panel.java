@@ -5,7 +5,6 @@ import java.util.List;
 public class Panel extends Resource {
     private String description;
     private List<LabTest> tests;
-    private String sampleUuid;
     private Double sortOrder;
 
     public String getDescription() {
@@ -22,14 +21,6 @@ public class Panel extends Resource {
 
     public void setTests(List<LabTest> tests) {
         this.tests = tests;
-    }
-
-    public String getSampleUuid() {
-        return sampleUuid;
-    }
-
-    public void setSampleUuid(String sampleUuid) {
-        this.sampleUuid = sampleUuid;
     }
 
     public void setSortOrder(Double sortOrder) {

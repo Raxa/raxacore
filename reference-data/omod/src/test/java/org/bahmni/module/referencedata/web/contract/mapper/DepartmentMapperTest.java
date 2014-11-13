@@ -1,7 +1,7 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
-import org.bahmni.module.referencedata.labconcepts.contract.TestsAndPanels;
+import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.mapper.DepartmentMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils;
 import org.bahmni.test.builder.ConceptBuilder;
@@ -24,7 +24,8 @@ import java.util.Locale;
 
 import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.createConceptSet;
 import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
@@ -93,18 +94,14 @@ public class DepartmentMapperTest {
     }
 
     @Test
-    public void should_map_tests_and_panels() throws Exception {
+    public void should_map_tests() throws Exception {
         Concept testConcept = new ConceptBuilder().forTest().build();
         departmentConcept.addSetMember(testConcept);
-        Concept panelConcept = new ConceptBuilder().forPanel().build();
-        departmentConcept.addSetMember(panelConcept);
 
         Department departmentData = departmentMapper.map(departmentConcept);
-        TestsAndPanels testsAndPanels = departmentData.getTestsAndPanels();
+        List<LabTest> tests = departmentData.getTests();
 
-        assertEquals(1, testsAndPanels.getPanels().size());
-        assertEquals(1, testsAndPanels.getTests().size());
-        assertEquals(MapperUtils.getDescriptionOrName(testConcept), testsAndPanels.getTests().iterator().next().getDescription());
-        assertEquals(MapperUtils.getDescriptionOrName(panelConcept), testsAndPanels.getPanels().iterator().next().getDescription());
+        assertEquals(1, tests.size());
+        assertEquals(MapperUtils.getDescriptionOrName(testConcept), tests.get(0).getDescription());
     }
 }

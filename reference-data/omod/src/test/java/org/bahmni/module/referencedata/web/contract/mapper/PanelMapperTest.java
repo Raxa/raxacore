@@ -123,10 +123,7 @@ public class PanelMapperTest {
         assertEquals("Panel Name Here", panelData.getName());
         assertEquals(dateCreated, panelData.getDateCreated());
         assertEquals(dateChanged, panelData.getLastUpdated());
-        assertEquals("Sample UUID", panelData.getSampleUuid());
         assertEquals(1, panelData.getTests().size());
-        assertEquals("Sample UUID", panelData.getTests().get(0).getSampleUuid());
-        assertEquals("Department UUID", panelData.getTests().get(0).getDepartment().getId());
         assertEquals("Test UUID", panelData.getTests().get(0).getId());
         assertTrue(panelData.getSortOrder().equals(999.0));
     }
@@ -135,13 +132,6 @@ public class PanelMapperTest {
     public void is_active_true_by_default() throws Exception {
         Panel panelData = panelMapper.map(panelConcept);
         assertTrue(panelData.getIsActive());
-    }
-
-    @Test
-    public void null_if_sample_not_specified() throws Exception {
-        panelConceptSets.remove(panelSampleConceptSet);
-        Panel panelData = panelMapper.map(panelConcept);
-        assertNull(panelData.getSampleUuid());
     }
 
     @Test
