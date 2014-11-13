@@ -3,7 +3,6 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisAccessionBuilder;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisTestDetailBuilder;
-import org.bahmni.module.elisatomfeedclient.api.client.impl.HealthCenterFilterRule;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccessionNote;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
@@ -27,7 +26,6 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiveTest {
@@ -36,8 +34,6 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
     public static final String VALIDATION_NOTES = "VALIDATION NOTES";
     @Mock
     HttpClient httpClient;
-    @Mock
-    HealthCenterFilterRule healthCenterFilterRule;
     @Autowired
     private ElisAtomFeedProperties properties;
     private OpenElisAccessionEventWorker openElisAccessionEventWorker;
@@ -49,10 +45,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         MockitoAnnotations.initMocks(this);
         this.openElisAccessionEventWorker = new OpenElisAccessionEventWorker(properties, httpClient,
                 Context.getEncounterService(), Context.getConceptService(), new AccessionHelper(properties),
-                Context.getProviderService(),
-                healthCenterFilterRule);
-        when(healthCenterFilterRule.passesWith("GAN")).thenReturn(true);
-        when(healthCenterFilterRule.passesWith("ANC")).thenReturn(false);
+                Context.getProviderService()
+        );
     }
 
     @Test
