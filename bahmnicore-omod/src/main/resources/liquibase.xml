@@ -2573,4 +2573,29 @@
             <column name="start" valueNumeric="1"/>
         </insert>
     </changeSet>
+    <changeSet id="bahmni-core-201411131512" author="D3">
+        <comment>Add drug routes Topical, Nasal, Inhalation</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            select concept_id into @set_concept_id from concept_name where name = 'Drug Routes' and concept_name_type = 'FULLY_SPECIFIED';
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Topical', 'TOPIC', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'TOPICAL', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'TOPIC', '1');
+            call add_concept_set_members (@set_concept_id, @concept_id, 1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Nasal', 'NASAL', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'NASAL', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'NASAL', '1');
+            call add_concept_set_members (@set_concept_id, @concept_id, 1);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Inhalation', 'RESPIR', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'INHALATION', '1');
+            call add_concept_word(@concept_id, @concept_name_short_id, 'RESPIR', '1');
+            call add_concept_set_members (@set_concept_id, @concept_id, 1);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
