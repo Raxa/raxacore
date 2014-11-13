@@ -55,7 +55,7 @@ public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements
 
         OpenElisAccessionEventWorker accessionEventWorker = new OpenElisAccessionEventWorker(properties,
                 authenticatedWebClient, encounterService, conceptService, new AccessionHelper(properties),
-                providerService, new HealthCenterFilterRule());
+                providerService);
         OpenElisPatientEventWorker patientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, authenticatedWebClient, properties);
         return new OpenElisPatientFeedWorker(patientEventWorker, accessionEventWorker);
     }

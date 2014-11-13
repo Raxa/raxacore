@@ -3,19 +3,21 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisAccessionBuilder;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisTestDetailBuilder;
-import org.bahmni.module.elisatomfeedclient.api.client.impl.HealthCenterFilterRule;
 import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
 import org.bahmni.module.elisatomfeedclient.api.mapper.AccessionHelper;
 import org.bahmni.webclients.HttpClient;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.ict4h.atomfeed.client.domain.Event;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Patient;
+import org.openmrs.TestOrder;
+import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
@@ -32,7 +34,6 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class OpenElisAccessionEventWorkerTest {
-    private final ObjectMapper objectMapper = new ObjectMapper();
     @Mock
     private HttpClient httpClient;
     @Mock
@@ -46,9 +47,6 @@ public class OpenElisAccessionEventWorkerTest {
     @Mock
     private ProviderService providerService;
 
-    @Mock
-    private HealthCenterFilterRule healthCenterFilterRule;
-
     private OpenElisAccessionEventWorker accessionEventWorker;
     private String openElisUrl;
     private Event event;
@@ -61,12 +59,10 @@ public class OpenElisAccessionEventWorkerTest {
     public void setUp() {
         initMocks(this);
         accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService,
-                conceptService, accessionMapper, providerService, healthCenterFilterRule);
+                conceptService, accessionMapper, providerService);
         openElisUrl = "http://localhost:8080";
         event = new Event("id", "/openelis/accession/12-34-56-78", "title", "feedUri");
         when(feedProperties.getOpenElisUri()).thenReturn(openElisUrl);
-        when(healthCenterFilterRule.passesWith("GAN")).thenReturn(true);
-        when(healthCenterFilterRule.passesWith("ANC")).thenReturn(false);
     }
 
     @Test
@@ -158,47 +154,6 @@ public class OpenElisAccessionEventWorkerTest {
 
         verify(encounterService, times(2)).getEncounterByUuid(openElisAccession.getAccessionUuid());
         verify(encounterService, never()).saveEncounter(previousEncounter);
-    }
-
-
-    @Test
-    public void shouldNotProcessPatientsThatDoNotGoThroughTheFilter() throws Exception {
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withPatientIdentifier("ANC12345").build();
-        stubAccession(openElisAccession);
-
-        accessionEventWorker.process(event);
-    }
-
-    private Encounter createEncounterWithResults(Visit visit, EncounterType labEncounterType, EncounterRole encounterRole, OpenElisTestDetail test1) {
-        Encounter encounter = new Encounter();
-        Obs obs = createTestObs(test1);
-        encounter.addObs(obs);
-        encounter.setEncounterType(labEncounterType);
-        visit.addEncounter(encounter);
-        return encounter;
-    }
-
-    private Obs createTestObs(OpenElisTestDetail test1) {
-        Concept concept = new Concept();
-        concept.setUuid(test1.getTestUuid());
-        Obs obs = new Obs();
-        obs.setConcept(concept);
-        obs.setValueText(test1.getResult());
-        obs.setObsDatetime(DateTime.parse(test1.getDateTime()).toDate());
-        return obs;
-    }
-
-    private Obs createPanelObsGroup(String panelUuid, OpenElisTestDetail... test) {
-        Obs parentObs = new Obs();
-        Concept concept = new Concept();
-        concept.setUuid(panelUuid);
-        parentObs.setConcept(concept);
-
-        for (OpenElisTestDetail openElisTestDetail : test) {
-            Obs testObs = createTestObs(openElisTestDetail);
-            parentObs.addGroupMember(testObs);
-        }
-        return parentObs;
     }
 
     private Encounter getEncounterWithTests(String... testUuids) {
