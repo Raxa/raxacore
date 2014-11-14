@@ -2598,4 +2598,35 @@
             call add_concept_set_members (@set_concept_id, @concept_id, 1);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201411141310" author="D3">
+        <comment>Fix the new add_concept procedure</comment>
+        <sql>
+            DROP PROCEDURE IF EXISTS add_concept;
+        </sql>
+        <sqlFile splitStatements="false" path="V1_85__FixAddConceptProc.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-core-201411141315" author="D3">
+        <comment>Fix concepts created in liquibase without uuid</comment>
+        <sql>
+            select concept_id into @concept_id from concept_name where name = 'Tablet' and concept_name_type = 'FULLY_SPECIFIED';
+            SELECT uuid() into @uuid;
+            UPDATE concept set uuid = @uuid where concept_id = @concept_id;
+
+            select concept_id into @concept_id from concept_name where name = 'Capsule' and concept_name_type = 'FULLY_SPECIFIED';
+            SELECT uuid() into @uuid;
+            UPDATE concept set uuid = @uuid where concept_id = @concept_id;
+
+            select concept_id into @concept_id from concept_name where name = 'Topical' and concept_name_type = 'FULLY_SPECIFIED';
+            SELECT uuid() into @uuid;
+            UPDATE concept set uuid = @uuid where concept_id = @concept_id;
+
+            select concept_id into @concept_id from concept_name where name = 'Nasal' and concept_name_type = 'FULLY_SPECIFIED';
+            SELECT uuid() into @uuid;
+            UPDATE concept set uuid = @uuid where concept_id = @concept_id;
+
+            select concept_id into @concept_id from concept_name where name = 'Inhalation' and concept_name_type = 'FULLY_SPECIFIED';
+            SELECT uuid() into @uuid;
+            UPDATE concept set uuid = @uuid where concept_id = @concept_id;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
