@@ -41,7 +41,7 @@ public class DiseaseTemplateControllerIT extends BaseWebControllerTest {
         DiseaseTemplate breastCancer = diseaseTemplates.get(0);
         assertEquals(1, breastCancer.getObservationTemplates().size());
         ObservationTemplate breastCancerIntake = breastCancer.getObservationTemplates().get(0);
-        assertEquals(4, breastCancerIntake.getBahmniObservations().size());
+        assertEquals(3, breastCancerIntake.getBahmniObservations().size());
         assertEquals("Breast Cancer Intake", breastCancerIntake.getConcept().getName());
         assertEquals("BC_intake_concept_uuid", breastCancerIntake.getConcept().getUuid());
     }
@@ -52,6 +52,6 @@ public class DiseaseTemplateControllerIT extends BaseWebControllerTest {
         assertNotNull(diseaseTemplates);
         assertEquals("Breast Cancer", diseaseTemplates.getConcept().getName());
         assertEquals(1, diseaseTemplates.getObservationTemplates().size());
-        assertEquals(5, diseaseTemplates.getObservationTemplates().get(0).getBahmniObservations().size());
+        assertEquals(4, diseaseTemplates.getObservationTemplates().get(0).getBahmniObservations().size());
     }
 }
