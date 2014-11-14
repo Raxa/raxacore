@@ -103,7 +103,7 @@ public class ObsDaoImpl implements ObsDao {
         String queryString =
                 "select obs\n" +
                         "from Obs obs join obs.encounter enc join enc.visit v \n" +
-                        "where obs.concept.conceptId in " +
+                        "where obs.voided = false and obs.concept.conceptId in " +
                         "   ( select cs.concept.conceptId\n" +
                         "     from ConceptName cn, ConceptSet cs\n" +
                         "     where cs.conceptSet.conceptId = cn.concept.conceptId and cn.conceptNameType='FULLY_SPECIFIED' and cn.name=:conceptName)\n" +
