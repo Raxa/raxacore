@@ -18,6 +18,7 @@
         <MODULE_NAME>${project.name}</MODULE_NAME>
         <MODULE_VERSION>${project.version}</MODULE_VERSION>
         <MODULE_PACKAGE>${project.groupId}.${MODULE_ID}</MODULE_PACKAGE>
+        <openmrsAtomfeedVersion>2.1</openmrsAtomfeedVersion>
     </properties>
 
     <build>
@@ -297,7 +298,7 @@
         <dependency>
             <groupId>org.ict4h.openmrs</groupId>
             <artifactId>openmrs-atomfeed-common</artifactId>
-            <version>2.0</version>
+            <version>${openmrsAtomfeedVersion}</version>
         </dependency>
     </dependencies>
 

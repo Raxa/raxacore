@@ -30,7 +30,7 @@
     </organization>
 
     <properties>
-        <openmrsAtomfeedVersion>2.0</openmrsAtomfeedVersion>
+        <openmrsAtomfeedVersion>2.1</openmrsAtomfeedVersion>
     </properties>
 
     <dependencyManagement>
