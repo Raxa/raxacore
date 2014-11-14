@@ -96,7 +96,7 @@
     <obs obs_id="3" obs_group_id="2" concept_id="90" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9as" creator="1" voided="0" />
     <obs obs_id="4" obs_group_id="3" concept_id="9011" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9df" creator="1" voided="0" />
     <obs obs_id="5" obs_group_id="3" concept_id="9012" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9fg" creator="1" voided="0" />
-    <obs obs_id="6" obs_group_id="3" concept_id="9022" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9gh" creator="1" voided="0" />
+    <obs obs_id="6" obs_group_id="3" concept_id="9022" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9gh" creator="1" voided="1" />
 
     <encounter encounter_id="39" encounter_type="1" patient_id="1024" visit_id="901" location_id="1" encounter_datetime="2008-09-19 00:00:00.0" creator="1" date_created="2008-09-19 14:09:05.0" voided="false" uuid="f8ee31f6-1c8e-11e4-bb80-f18addb6f9bb"/>
 

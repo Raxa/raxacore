@@ -33,7 +33,7 @@ public class ObsDaoImplIT extends BaseContextSensitiveTest {
     @Test
     public void shouldGetLatestObsForConceptSetByVisit() {
         List<Obs> obsList = obsDao.getLatestObsForConceptSetByVisit("86526ed5-3c11-11de-a0ba-001e378eb67a", "Breast Cancer Intake", 901);
-        assertEquals(4, obsList.size());
+        assertEquals(3, obsList.size());
         for (Obs obs : obsList) {
             assertEquals("for concept : " + obs.getConcept().getName().getName(), latestObsForConcept(obs.getConcept().getId()), obs.getId());
         }
