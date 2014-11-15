@@ -55,7 +55,7 @@ public class CSVPatientService {
             patient.addAddress(personAddress);
         }
 
-        patient.setDateCreated(patientRow.getRegistrationDate());
+        patient.setPersonDateCreated(patientRow.getRegistrationDate());
 
         return patientService.savePatient(patient);
     }
