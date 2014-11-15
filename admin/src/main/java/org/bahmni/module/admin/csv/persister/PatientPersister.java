@@ -53,8 +53,8 @@ public class PatientPersister implements EntityPersister<PatientRow> {
         }
     }
 
-    private CSVAddressService getAddressHierarchyService(){
-        if(csvAddressService == null){
+    private CSVAddressService getAddressHierarchyService() {
+        if (csvAddressService == null) {
             AddressHierarchyService addressHierarchyService = Context.getService(AddressHierarchyService.class);
             this.csvAddressService = new CSVAddressService(addressHierarchyService);
         }
