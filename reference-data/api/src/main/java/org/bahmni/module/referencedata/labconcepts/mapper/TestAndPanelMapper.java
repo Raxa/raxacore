@@ -5,10 +5,15 @@ import org.bahmni.module.referencedata.labconcepts.contract.Panel;
 import org.bahmni.module.referencedata.labconcepts.contract.TestsAndPanels;
 import org.openmrs.Concept;
 
-public class TestAndPanelMapper extends ResourceMapper{
+public class TestAndPanelMapper extends ResourceMapper {
+
+    private final LabTestMapper labTestMapper;
+    private PanelMapper panelMapper;
 
     public TestAndPanelMapper() {
         super(null);
+        labTestMapper = new LabTestMapper();
+        panelMapper = new PanelMapper();
     }
 
     @Override
@@ -22,13 +27,11 @@ public class TestAndPanelMapper extends ResourceMapper{
 
     private void addConcept(TestsAndPanels testsAndPanels, Concept concept) {
         if (MapperUtils.isLabTestConcept(concept)) {
-            LabTest test = new LabTest();
-            testsAndPanels.addTest(mapResource(test, concept));
-            test.setDescription(MapperUtils.getDescriptionOrName(concept));
+            LabTest test = labTestMapper.map(concept);
+            testsAndPanels.addTest(test);
         } else if (MapperUtils.isPanelConcept(concept)) {
-            Panel panel = new Panel();
-            testsAndPanels.addPanel(mapResource(panel, concept));
-            panel.setDescription(MapperUtils.getDescriptionOrName(concept));
+            Panel panel = panelMapper.map(concept);
+            testsAndPanels.addPanel(panel);
         }
     }
 }

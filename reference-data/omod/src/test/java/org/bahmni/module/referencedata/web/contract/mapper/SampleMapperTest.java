@@ -103,10 +103,9 @@ public class SampleMapperTest {
         Concept testConcept = new ConceptBuilder().forTest().withDataType("N/A").build();
         Concept sampleConcept = new ConceptBuilder().forSample().withSetMember(testConcept).build();
         Sample sample = sampleMapper.map(sampleConcept);
-        TestsAndPanels testsAndPanels = sample.getTestsAndPanels();
-        assertNotNull(testsAndPanels.getTests());
-        assertEquals(1, testsAndPanels.getTests().size());
-        assertEquals(MapperUtils.getDescriptionOrName(testConcept), testsAndPanels.getTests().iterator().next().getDescription());
+        assertNotNull(sample.getTests());
+        assertEquals(1, sample.getTests().size());
+        assertEquals("TestName", sample.getTests().get(0).getName());
     }
 
     @Test
@@ -114,9 +113,8 @@ public class SampleMapperTest {
         Concept panelConcept = new ConceptBuilder().forPanel().build();
         Concept sampleConcept = new ConceptBuilder().forSample().withSetMember(panelConcept).build();
         Sample sample = sampleMapper.map(sampleConcept);
-        TestsAndPanels testsAndPanels = sample.getTestsAndPanels();
-        assertNotNull(testsAndPanels.getPanels());
-        assertEquals(1, testsAndPanels.getPanels().size());
-        assertEquals(MapperUtils.getDescriptionOrName(panelConcept), testsAndPanels.getPanels().iterator().next().getDescription());
+        assertNotNull(sample.getPanels());
+        assertEquals(1, sample.getPanels().size());
+        assertEquals("PanelName", sample.getPanels().get(0).getName());
     }
 }

@@ -38,7 +38,7 @@ public class ConceptBuilder {
     }
 
     public ConceptBuilder forPanel(){
-        return new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).withName("PanelName");
+        return new ConceptBuilder().withClass("LabSet").withClassUUID(ConceptClass.LABSET_UUID).withName("PanelName");
     }
 
     public ConceptBuilder forDepartment() {

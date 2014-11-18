@@ -4,8 +4,9 @@ import java.util.List;
 
 public class Panel extends Resource {
     private String description;
-    private List<LabTest> tests;
+    private List<MinimalResource> tests;
     private Double sortOrder;
+    public static final String LAB_SET_CONCEPT_CLASS = "LabSet";
 
     public String getDescription() {
         return description;
@@ -15,11 +16,11 @@ public class Panel extends Resource {
         this.description = description;
     }
 
-    public List<LabTest> getTests() {
+    public List<MinimalResource> getTests() {
         return tests;
     }
 
-    public void setTests(List<LabTest> tests) {
+    public void setTests(List<MinimalResource> tests) {
         this.tests = tests;
     }
 

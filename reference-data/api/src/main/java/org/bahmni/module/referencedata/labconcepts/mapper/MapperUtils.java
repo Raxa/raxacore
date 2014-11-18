@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
+import org.bahmni.module.referencedata.labconcepts.contract.MinimalResource;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.openmrs.*;
 import org.openmrs.api.ConceptNameType;
@@ -170,4 +171,20 @@ public class MapperUtils {
     public static boolean isLabTestConcept(Concept concept) {
         return concept.getConceptClass() != null && concept.getConceptClass().getName() != null && concept.getConceptClass().getName().equals(LabTest.LAB_TEST_CONCEPT_CLASS);
     }
+
+    public static boolean isOfConceptClass(Concept concept, String conceptClassName){
+        return concept.getConceptClass() != null && concept.getConceptClass().getName() != null && concept.getConceptClass().getName().equals(conceptClassName);
+    }
+
+    public static List<MinimalResource> getMinimalResources(List<Concept> setMembers, String conceptClass) {
+        MinimalResourceMapper minimalResourceMapper = new MinimalResourceMapper();
+        List<MinimalResource> minimalResources = new ArrayList<>();
+        for (Concept setMember : setMembers) {
+            if (isOfConceptClass(setMember, conceptClass)) {
+                minimalResources.add(minimalResourceMapper.map(setMember));
+            }
+        }
+        return minimalResources;
+    }
+
 }

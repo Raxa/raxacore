@@ -1,12 +1,31 @@
 package org.bahmni.module.referencedata.labconcepts.contract;
 
+import java.util.List;
+
 public class Sample extends Resource {
     private String shortName;
     public static final String SAMPLE_CONCEPT_CLASS = "Sample";
     private Double sortOrder;
-    private TestsAndPanels testsAndPanels;
+    private List<MinimalResource> tests;
+    private List<MinimalResource> panels;
 
     public Sample() {
+    }
+
+    public List<MinimalResource> getTests() {
+        return tests;
+    }
+
+    public void setTests(List<MinimalResource> tests) {
+        this.tests = tests;
+    }
+
+    public List<MinimalResource> getPanels() {
+        return panels;
+    }
+
+    public void setPanels(List<MinimalResource> panels) {
+        this.panels = panels;
     }
 
     public String getShortName() {
@@ -23,13 +42,5 @@ public class Sample extends Resource {
 
     public void setSortOrder(Double sortOrder) {
         this.sortOrder = sortOrder;
-    }
-
-    public TestsAndPanels getTestsAndPanels() {
-        return testsAndPanels;
-    }
-
-    public void setTestsAndPanels(TestsAndPanels testsAndPanels) {
-        this.testsAndPanels = testsAndPanels;
     }
 }

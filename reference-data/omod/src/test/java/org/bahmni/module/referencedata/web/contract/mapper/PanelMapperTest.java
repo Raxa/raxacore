@@ -124,7 +124,7 @@ public class PanelMapperTest {
         assertEquals(dateCreated, panelData.getDateCreated());
         assertEquals(dateChanged, panelData.getLastUpdated());
         assertEquals(1, panelData.getTests().size());
-        assertEquals("Test UUID", panelData.getTests().get(0).getId());
+        assertEquals("Test UUID", panelData.getTests().get(0).getUuid());
         assertTrue(panelData.getSortOrder().equals(999.0));
     }
 
