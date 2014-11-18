@@ -1,30 +1,24 @@
 package org.bahmni.module.elisatomfeedclient.api.worker;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
+import org.bahmni.module.elisatomfeedclient.api.mapper.OpenElisTestDetailMapper;
 import org.joda.time.DateTime;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Order;
 import org.openmrs.api.ConceptService;
+import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
+import org.openmrs.module.bahmniemrapi.laborder.mapper.LabOrderResultMapper;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 public class ResultObsHelper {
-    public static final String LAB_RESULT = "LAB_RESULT";
-    public static final String LAB_ABNORMAL = "LAB_ABNORMAL";
-    public static final String LAB_MINNORMAL = "LAB_MINNORMAL";
-    public static final String LAB_MAXNORMAL = "LAB_MAXNORMAL";
-    public static final String LAB_NOTES = "LAB_NOTES";
-    public static final String LABRESULTS_CONCEPT = "LABRESULTS_CONCEPT";
     public static final String VOID_REASON = "updated since by lab technician";
-    private static final String RESULT_TYPE_NUMERIC = "N";
-    private static final String REFERRED_OUT = "REFERRED_OUT";
-    public static final String LAB_REPORT = "LAB_REPORT";
 
     private final ConceptService conceptService;
-    private Concept labConcepts = null;
 
     public ResultObsHelper(ConceptService conceptService) {
         this.conceptService = conceptService;
@@ -35,10 +29,10 @@ public class ResultObsHelper {
         if(testDetail.getPanelUuid() != null) {
             Obs panelObs = createOrFindPanelObs(testDetail, testOrder, resultEncounter, obsDate);
             Concept testConcept = conceptService.getConceptByUuid(testDetail.getTestUuid());
-            panelObs.addGroupMember(createNewTestObsForOrder(testDetail, testOrder, testConcept, obsDate));
+            panelObs.addGroupMember(createObsForTest(testDetail, testOrder, testConcept));
             return panelObs;
         } else {
-            return createNewTestObsForOrder(testDetail, testOrder, testOrder.getConcept(), obsDate);
+            return createObsForTest(testDetail, testOrder, testOrder.getConcept());
         }
     }
 
@@ -54,35 +48,9 @@ public class ResultObsHelper {
         }
     }
 
-    private Obs createNewTestObsForOrder(OpenElisTestDetail testDetail, Order order, Concept concept, Date obsDate) throws ParseException {
-        Obs topLevelObs = newParentObs(order, concept, obsDate);
-        Obs labObs = newParentObs(order, concept, obsDate);
-        topLevelObs.addGroupMember(labObs);
-
-        if(StringUtils.isNotBlank(testDetail.getResult())) {
-            labObs.addGroupMember(newChildObs(order, obsDate, concept, testDetail.getResult()));
-            labObs.addGroupMember(newChildObs(order, obsDate, LAB_ABNORMAL, testDetail.getAbnormal().toString()));
-
-            if (testDetail.getResultType().equals(RESULT_TYPE_NUMERIC) && hasRange(testDetail)) {
-                labObs.addGroupMember(newChildObs(order, obsDate, LAB_MINNORMAL, testDetail.getMinNormal().toString()));
-                labObs.addGroupMember(newChildObs(order, obsDate, LAB_MAXNORMAL, testDetail.getMaxNormal().toString()));
-            }
-        }
-        if (testDetail.isReferredOut()) {
-            labObs.addGroupMember(newChildObs(order, obsDate, REFERRED_OUT, null ));
-        }
-        final String notes = testDetail.getNotes();
-        if (StringUtils.isNotBlank(notes)) {
-            labObs.addGroupMember(newChildObs(order, obsDate, LAB_NOTES, notes));
-        }
-        if(StringUtils.isNotBlank(testDetail.getUploadedFileName())) {
-            labObs.addGroupMember(newChildObs(order, obsDate, LAB_REPORT, testDetail.getUploadedFileName()));
-        }
-        return topLevelObs;
-    }
-
-    private boolean hasRange(OpenElisTestDetail testDetail) {
-        return testDetail.getMinNormal() != null && testDetail.getMaxNormal() != null;
+    private Obs createObsForTest(OpenElisTestDetail testDetail, Order order, Concept testConcept) {
+        LabOrderResult labOrderResult = new OpenElisTestDetailMapper().map(testDetail, testConcept);
+        return new LabOrderResultMapper(conceptService).map(labOrderResult, order, testConcept);
     }
 
     private Obs createOrFindPanelObs(OpenElisTestDetail testDetail, Order testOrder, Encounter resultEncounter, Date obsDate) {
@@ -93,23 +61,10 @@ public class ResultObsHelper {
                 break;
             }
         }
-        return panelObs != null ? panelObs : newParentObs(testOrder, testOrder.getConcept(), obsDate);
+        return panelObs != null ? panelObs : newObs(testOrder, testOrder.getConcept(), obsDate);
     }
 
-    private Concept getLabConceptByName(String name) {
-        if (this.labConcepts == null) {
-            this.labConcepts = conceptService.getConceptByName(LABRESULTS_CONCEPT);
-        }
-        final List<Concept> members = this.labConcepts.getSetMembers();
-        for (Concept concept : members) {
-            if (concept != null && concept.getName().getName().equalsIgnoreCase(name)) {
-                return concept;
-            }
-        }
-        return null;
-    }
-
-    private Obs newParentObs(Order order, Concept concept, Date obsDate) {
+    private Obs newObs(Order order, Concept concept, Date obsDate) {
         Obs labObs = new Obs();
         labObs.setConcept(concept);
         labObs.setOrder(order);
@@ -117,27 +72,4 @@ public class ResultObsHelper {
         return labObs;
     }
 
-    private Obs newChildObs(Order order, Date obsDate, String conceptName, String value) throws ParseException {
-        Concept concept = getLabConceptByName(conceptName);
-        Obs resultObs = newChildObs(order, obsDate, concept, value);
-        return resultObs;
-    }
-
-    private Obs newChildObs(Order order, Date obsDate, Concept concept, String value) throws ParseException {
-        Obs resultObs = new Obs();
-        resultObs.setConcept(concept);
-        setValue(value, resultObs);
-        resultObs.setObsDatetime(obsDate);
-        resultObs.setOrder(order);
-        return resultObs;
-    }
-
-    private void setValue(String value, Obs resultObs) throws ParseException {
-        if (value == null || value.isEmpty()) return;
-        try {
-            resultObs.setValueAsString(value);
-        } catch (NumberFormatException e) {
-            resultObs.setValueText(null);
-        }
-    }
 }

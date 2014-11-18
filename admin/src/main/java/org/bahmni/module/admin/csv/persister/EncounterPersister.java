@@ -89,7 +89,7 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
 
             return new RowResult<>(multipleEncounterRow);
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             Context.clearSession();
             return new RowResult<>(multipleEncounterRow, e);
         } finally {

@@ -2,8 +2,8 @@ package org.bahmni.module.admin.csv.service;
 
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
-import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.csv.models.PatientRow;
+import org.bahmni.module.admin.csv.utils.CSVUtils;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
@@ -39,7 +39,7 @@ public class CSVPatientService {
 
         if (!StringUtils.isBlank(patientRow.birthdate)) {
             // All csv imports use the same date format
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN);
             simpleDateFormat.setLenient(false);
 
             patient.setBirthdate(simpleDateFormat.parse(patientRow.birthdate));

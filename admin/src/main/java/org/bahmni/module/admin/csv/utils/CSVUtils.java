@@ -9,6 +9,8 @@ import java.util.List;
 
 public class CSVUtils {
 
+    public static final String ENCOUNTER_DATE_PATTERN = "yyyy-M-d";
+
     public static String[] getStringArray(List<KeyValue> keyValueList) {
         List<String> stringList = new ArrayList<>();
         for (KeyValue keyValue : keyValueList) {

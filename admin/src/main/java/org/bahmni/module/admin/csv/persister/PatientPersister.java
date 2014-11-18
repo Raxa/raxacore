@@ -44,7 +44,7 @@ public class PatientPersister implements EntityPersister<PatientRow> {
 
             return new RowResult<>(patientRow);
         } catch (Throwable e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             Context.clearSession();
             return new RowResult<>(patientRow, e);
         } finally {

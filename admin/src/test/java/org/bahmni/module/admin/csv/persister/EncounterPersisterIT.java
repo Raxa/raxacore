@@ -5,6 +5,7 @@ import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
+import org.bahmni.module.admin.csv.utils.CSVUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
@@ -177,8 +178,8 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         assertEquals("Consultation", encounter.getEncounterType().getName());
 
         Date encounterDatetime = encounter.getEncounterDatetime();
-        assertEquals("1111-11-11", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(encounterDatetime));
-    }
+        assertEquals("1111-11-11", new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN).format(encounterDatetime));
+        }
 
     @Test
     public void create_visit_as_per_dates_in_file() throws Exception {
@@ -218,7 +219,7 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
 
         assertEquals(1, encounters.size());
         Visit newlyCreatedVisit = encounters.get(0).getVisit();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN);
         assertEquals(visitStartDate, simpleDateFormat.format(newlyCreatedVisit.getStartDatetime()));
         assertEquals(visitEndDate, simpleDateFormat.format(newlyCreatedVisit.getStopDatetime()));
     }
@@ -288,7 +289,7 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(1, encounter.getAllObs().size());
         assertEquals("WEIGHT", encounter.getAllObs().iterator().next().getConcept().getName().getName());
         Date obsDatetime = encounter.getAllObs().iterator().next().getObsDatetime();
-        assertEquals("1111-11-11", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(obsDatetime));
+        assertEquals("1111-11-11", new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN).format(obsDatetime));
         assertEquals("150.0", encounter.getAllObs().iterator().next().getValueAsString(Context.getLocale()));
     }
 
@@ -340,7 +341,7 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         assertEquals("WEIGHT", weightObs.getConcept().getName().getName());
         assertEquals("150.0", weightObs.getValueAsString(Context.getLocale()));
         assertEquals("Diagnosis Concept Set", diagnosisObs.getConcept().getName().getName());
-        assertEquals("1111-11-11", new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN).format(diagnosisObs.getObsDatetime()));
+        assertEquals("1111-11-11", new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN).format(diagnosisObs.getObsDatetime()));
 
         List<String> obsConceptNames = new ArrayList<>();
         for (Obs obs : diagnosisObs.getGroupMembers()) {

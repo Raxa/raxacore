@@ -24,7 +24,7 @@ public class DatabasePersister<T extends CSVEntity> implements EntityPersister<T
             Context.setUserContext(userContext);
             return persister.persist(csvEntity);
         } catch (Throwable e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             Context.clearSession();
             return new RowResult<>(csvEntity, e);
         } finally {

@@ -2,6 +2,7 @@ package org.bahmni.module.admin.csv.service;
 
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.PatientRow;
+import org.bahmni.module.admin.csv.utils.CSVUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -63,7 +64,7 @@ public class CSVPatientServiceTest {
 
     @Test
     public void save_registrationNumber_birthdate_gender() throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-M-d");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN);
 
         PatientRow patientRow = new PatientRow();
         patientRow.age = "34";
@@ -87,7 +88,7 @@ public class CSVPatientServiceTest {
 
     @Test
     public void save_registrationNumber_age_gender() throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-M-d");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN);
 
         PatientRow patientRow = new PatientRow();
         patientRow.age = "34";

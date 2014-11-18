@@ -9,14 +9,18 @@ import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
 
+@Component
 public class RetrospectiveEncounterTransactionService {
     private BahmniEncounterTransactionService bahmniEncounterTransactionService;
     protected final VisitIdentificationHelper visitIdentificationHelper;
 
+    @Autowired
     public RetrospectiveEncounterTransactionService(BahmniEncounterTransactionService bahmniEncounterTransactionService, VisitService visitService) {
         this.bahmniEncounterTransactionService = bahmniEncounterTransactionService;
         visitIdentificationHelper = new VisitIdentificationHelper(visitService);

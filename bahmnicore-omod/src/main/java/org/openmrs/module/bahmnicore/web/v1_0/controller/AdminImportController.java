@@ -52,6 +52,7 @@ public class AdminImportController extends BaseRestController {
     public static final String ENCOUNTER_FILES_DIRECTORY = "encounter/";
     private static final String PROGRAM_FILES_DIRECTORY = "program/";
     private static final String CONCEPT_FILES_DIRECTORY = "concept/";
+    private static final String LAB_RESULTS_DIRECTORY = "labResults/";
     private static final String DRUG_FILES_DIRECTORY = "drug/";
     private static final String CONCEPT_SET_FILES_DIRECTORY = "conceptset/";
     private static final String PATIENT_FILES_DIRECTORY = "patient/";
@@ -67,6 +68,9 @@ public class AdminImportController extends BaseRestController {
 
     @Autowired
     private ConceptPersister conceptPersister;
+
+    @Autowired
+    private LabResultPersister labResultPersister;
 
     @Autowired
     private ConceptSetPersister conceptSetPersister;
@@ -117,6 +121,13 @@ public class AdminImportController extends BaseRestController {
     @ResponseBody
     public boolean uploadConcept(@RequestParam(value = "file") MultipartFile file) {
         return importCsv(CONCEPT_FILES_DIRECTORY, file, new DatabasePersister<>(conceptPersister), 1, false, ConceptRow.class);
+    }
+
+    @RequestMapping(value = baseUrl + "/labResults", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean uploadLabResults(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
+        labResultPersister.init(Context.getUserContext(), patientMatchingAlgorithm, true);
+        return importCsv(LAB_RESULTS_DIRECTORY, file, new DatabasePersister<>(labResultPersister), 1, false, LabResultsRow.class);
     }
 
     @RequestMapping(value = baseUrl + "/conceptset", method = RequestMethod.POST)

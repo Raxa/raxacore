@@ -83,21 +83,14 @@
               date_created="2005-01-01 00:00:00.0"
               retired="false" uuid="aa1c6bf8-7846-11e3-a96a-09xD371c1b75"/>
 
-    <concept_datatype concept_datatype_id="1" name="numeric" hl7_abbreviation="NM" description="numeric"
-                      date_created="2013-12-04 11:36:42" retired="0"/>
-    <concept_datatype concept_datatype_id="2" name="text" hl7_abbreviation="ST" description="text"
-                      date_created="2013-12-04 11:36:42" retired="0"/>
-    <concept_datatype concept_datatype_id="3" name="boolean" hl7_abbreviation="BIT" description="boolean"
-                      date_created="2013-12-04 11:36:42" retired="0"/>
-
     <!--concept set for lab_result_concept_set-->
-    <concept concept_id="101" retired="false" datatype_id="2" class_id="8" is_set="true" creator="1"
+    <concept concept_id="101" retired="false" datatype_id="3" class_id="8" is_set="true" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="dc8ac8c0-8716-11e3-baa7-0800200c9a66"/>
     <concept_name concept_name_id="2" concept_id="101" name="LABRESULTS_CONCEPT" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="ea291cc0-8716-11e3-baa7-0800200c9a66"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
-    <concept concept_id="102" retired="false" datatype_id="2" class_id="8" is_set="false" creator="1"
+    <concept concept_id="102" retired="false" datatype_id="3" class_id="8" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="4923d0e0-8734-11e3-baa7-0800200c9a66"/>
     <concept_name concept_name_id="3" concept_name_type="FULLY_SPECIFIED" concept_id="102" name="LAB_RESULT" locale="en"
                   creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
@@ -105,7 +98,7 @@
     <concept_set concept_id="102" concept_set="101" concept_set_id="201" creator="1" sort_weight="100"
                  date_created="2005-01-01 00:00:00.0"/>
 
-    <concept concept_id="103" retired="false" datatype_id="2" class_id="8" is_set="false" creator="1"
+    <concept concept_id="103" retired="false" datatype_id="3" class_id="8" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="5923d0e0-8734-11e3-baa7-0800200c9a66"/>
     <concept_name concept_name_id="5" concept_id="103" name="LAB_NOTES" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
@@ -115,6 +108,8 @@
 
     <concept concept_id="104" retired="false" datatype_id="1" class_id="8" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="6923d0e0-8734-11e3-baa7-0800200c9a66"/>
+    <concept_numeric concept_id="104" hi_normal="1497.0" low_critical="99.0" low_normal="445.0" hi_critical="1800.0"
+                     hi_absolute="2500.0" low_absolute="0.0" units="cells/mmL" precise="false"/>
     <concept_name concept_name_id="6" concept_id="104" name="LAB_MINNORMAL" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
                   uuid="152b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
@@ -123,13 +118,15 @@
 
     <concept concept_id="105" retired="false" datatype_id="1" class_id="8" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="6923d0e0-8734-11e3-baa7-0800200c9a76"/>
+    <concept_numeric concept_id="105" hi_normal="1497.0" low_critical="99.0" low_normal="445.0" hi_critical="1800.0"
+                     hi_absolute="2500.0" low_absolute="0.0" units="cells/mmL" precise="false"/>
     <concept_name concept_name_id="7" concept_id="105" name="LAB_MAXNORMAL" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
                   uuid="252b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
     <concept_set concept_id="105" concept_set="101" concept_set_id="204" creator="1" sort_weight="100"
                  date_created="2005-01-01 00:00:00.0"/>
 
-    <concept concept_id="106" retired="false" datatype_id="3" class_id="8" is_set="false" creator="1"
+    <concept concept_id="106" retired="false" datatype_id="10" class_id="8" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="6923d0e0-8734-11e3-baa7-0800200c9aef"/>
     <concept_name concept_name_id="8" concept_id="106" name="LAB_ABNORMAL" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
@@ -142,13 +139,15 @@
     <!--test Urea Nitorgen-->
     <concept concept_id="107" retired="false" datatype_id="1" class_id="8" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="7923d0e0-8734-11e3-baa7-0800200c9a66"/>
+    <concept_numeric concept_id="107" hi_normal="1497.0" low_critical="99.0" low_normal="445.0" hi_critical="1800.0"
+                     hi_absolute="2500.0" low_absolute="0.0" units="cells/mmL" precise="false"/>
     <concept_name concept_name_id="9" concept_id="107" name="Urea Nitorgen" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
                   uuid="252b58c0-872e-11f3-baa7-080X12Fc9a66" locale_preferred="0"/>
     <!--test Urea Nitorgen-->
 
 
-    <concept concept_id="108" retired="false" datatype_id="2" class_id="8" is_set="true" creator="1"
+    <concept concept_id="108" retired="false" datatype_id="3" class_id="8" is_set="true" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="dc8ac8c0-8716-11e3-baa7-0800f00c9a66"/>
     <concept_name concept_name_id="9" concept_id="108" name="REFERRED_OUT" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="ea291cc0-e716-11e3-baa7-0800200c9a66"
@@ -156,7 +155,7 @@
     <concept_set concept_set_id="206" concept_id="108" concept_set="101" creator="1" sort_weight="100"
                  date_created="2005-01-01 00:00:00.0"/>
 
-    <concept concept_id="109" retired="false" datatype_id="2" class_id="8" is_set="false" creator="1"
+    <concept concept_id="109" retired="false" datatype_id="3" class_id="8" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="a5909c8e-332e-464c-a0d7-ca36828672d6"/>
     <concept_name concept_name_id="10" concept_id="109" name="LAB_REPORT" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
@@ -165,7 +164,7 @@
                  date_created="2005-01-01 00:00:00.0"/>
 
     <!--blood panel-->
-    <concept concept_id="302" retired="false" datatype_id="1" class_id="1" is_set="true" creator="1"
+    <concept concept_id="302" retired="false" datatype_id="4" class_id="1" is_set="true" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="cfc5056c-3f8e-11e3-968c-0800271c1b75"/>
     <concept_name concept_name_id="302" concept_id="302" name="Blood Panel" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="d81ce11c-3f8e-11e3-968c-0800271c1b75"
@@ -173,6 +172,8 @@
 
     <concept concept_id="303" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="7f7379ba-3ca8-11e3-bf2b-0800271c1b75"/>
+    <concept_numeric concept_id="303" hi_normal="1497.0" low_critical="99.0" low_normal="445.0" hi_critical="1800.0"
+                     hi_absolute="2500.0" low_absolute="0.0" units="cells/mmL" precise="false"/>
     <concept_name concept_name_id="303" concept_id="303" name="Haemoglobin" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="637de959-e1c4-41d4-b2d6-bc4335835ea9"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
@@ -181,13 +182,15 @@
 
     <concept concept_id="304" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="a04c36be-3f90-11e3-968c-0800271c1b75"/>
+    <concept_numeric concept_id="304" hi_normal="1497.0" low_critical="99.0" low_normal="445.0" hi_critical="1800.0"
+                     hi_absolute="2500.0" low_absolute="0.0" units="cells/mmL" precise="false"/>
     <concept_name concept_name_id="304" concept_id="304" name="ESR" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="d5af5872-3f90-11e3-968c-0800271c1b75"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
     <concept_set concept_set_id="302" concept_id="304" concept_set="302" creator="1" sort_weight="100"
                  date_created="2005-01-01 00:00:00.0"/>
 
-    <concept concept_id="305" retired="false" datatype_id="2" class_id="1" is_set="false" creator="1"
+    <concept concept_id="305" retired="false" datatype_id="3" class_id="1" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="da4bf386-3fcc-11e3-968c-0800271c1b75"/>
     <concept_name concept_name_id="305" concept_id="305" name="Hb Electrophoresis" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="e019e8c2-3fcc-11e3-968c-0800271c1b75"
@@ -197,12 +200,12 @@
     <!--blood panel-->
 
     <!-- lab manger note concept-->
-    <concept concept_id="702" retired="false" datatype_id="2" class_id="1" is_set="false" creator="1"
+    <concept concept_id="702" retired="false" datatype_id="3" class_id="1" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="ffc5056c-3f8e-11e3-968c-0800271c1b75"/>
     <concept_name concept_name_id="702" concept_id="702" name="Lab Manager Notes" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="ff1ce11c-3f8e-11e3-968c-0800271c1b75"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <concept concept_id="703" retired="false" datatype_id="2" class_id="1" is_set="false" creator="1"
+    <concept concept_id="703" retired="false" datatype_id="3" class_id="1" is_set="false" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="ffc6006c-3f8e-11e3-968c-0800271c1b75"/>
     <concept_name concept_name_id="703" concept_id="703" name="Accession Uuid" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="lllce11c-3f8e-11e3-968c-0800271c1b75"

@@ -19,17 +19,13 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 @Component
 public class BahmniDiagnosisSaveCommandImpl implements EncounterDataSaveCommand {
-
-
-    private EncounterTransactionMapper encounterTransactionMapper;
     private ObsService obsService;
     private ConceptService conceptService;
     private EncounterService encounterService;
     protected BahmniDiagnosisHelper bahmniDiagnosisHelper;
 
     @Autowired
-    public BahmniDiagnosisSaveCommandImpl(EncounterTransactionMapper encounterTransactionMapper, ObsService obsService, ConceptService conceptService, EncounterService encounterService) {
-        this.encounterTransactionMapper = encounterTransactionMapper;
+    public BahmniDiagnosisSaveCommandImpl(ObsService obsService, ConceptService conceptService, EncounterService encounterService) {
         this.obsService = obsService;
         this.conceptService = conceptService;
         this.encounterService = encounterService;

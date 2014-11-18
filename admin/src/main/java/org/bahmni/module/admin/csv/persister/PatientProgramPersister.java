@@ -72,7 +72,7 @@ public class PatientProgramPersister implements EntityPersister<PatientProgramRo
             programWorkflowService.savePatientProgram(patientProgram);
 
         } catch (Exception e) {
-            log.error(e);
+            log.error(e.getMessage(), e);
             Context.clearSession();
             return new RowResult<>(patientProgramRow, e);
         } finally {

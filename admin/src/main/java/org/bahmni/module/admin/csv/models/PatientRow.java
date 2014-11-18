@@ -4,6 +4,7 @@ import org.bahmni.csv.CSVEntity;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.annotation.CSVHeader;
 import org.bahmni.csv.annotation.CSVRegexHeader;
+import org.bahmni.module.admin.csv.utils.CSVUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,7 +38,7 @@ public class PatientRow extends CSVEntity {
     public Date getRegistrationDate() throws ParseException {
         if (registrationDate == null)
             return null;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(EncounterRow.ENCOUNTER_DATE_PATTERN);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN);
         simpleDateFormat.setLenient(false);
         return simpleDateFormat.parse(registrationDate);
 

@@ -7,6 +7,8 @@ import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -14,9 +16,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+@Component
 public class VisitIdentificationHelper {
     private VisitService visitService;
 
+    @Autowired
     public VisitIdentificationHelper(VisitService visitService) {
         this.visitService = visitService;
     }
