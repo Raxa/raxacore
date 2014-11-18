@@ -1,6 +1,7 @@
 package org.bahmni.module.admin.csv.service;
 
 import groovy.lang.GroovyClassLoader;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.patientmatchingalgorithm.BahmniPatientMatchingAlgorithm;
@@ -35,7 +36,7 @@ public class PatientMatchService {
     }
 
     private Patient matchPatients(List<Patient> matchingPatients, List<KeyValue> patientAttributes, String matchingAlgorithmClassName) throws IOException, IllegalAccessException, InstantiationException, CannotMatchPatientException {
-        if (matchingAlgorithmClassName == null) {
+        if (StringUtils.isEmpty(matchingAlgorithmClassName)) {
             Patient patient = new BahmniPatientMatchingAlgorithm().run(matchingPatients, patientAttributes);
             return patient;
         }
