@@ -64,7 +64,7 @@ public class ConceptRows {
         int maxAnswers = 0;
         for (ConceptRow conceptRow : getConceptRows()) {
             if(conceptRow.getAnswers().size() > maxAnswers){
-                maxAnswers = conceptRow.getSynonyms().size();
+                maxAnswers = conceptRow.getAnswers().size();
             }
         }
         return maxAnswers;
