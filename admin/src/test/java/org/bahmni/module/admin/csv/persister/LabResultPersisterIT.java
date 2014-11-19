@@ -9,6 +9,7 @@ import org.openmrs.*;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,13 +29,15 @@ public class LabResultPersisterIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
     private LabResultPersister labResultPersister;
+    private UserContext userContext;
 
     @Before
     public void setUp() throws Exception {
         executeDataSet("labResultMetaData.xml");
         executeDataSet("labResult.xml");
         Context.authenticate("admin", "test");
-        labResultPersister.init(Context.getUserContext(), null, true);
+        userContext = Context.getUserContext();
+        labResultPersister.init(userContext, null, true);
     }
 
     @Test
@@ -59,6 +62,8 @@ public class LabResultPersisterIT extends BaseModuleWebContextSensitiveTest {
         Encounter encounter = visits.get(0).getEncounters().iterator().next();
         Set<Obs> obs = encounter.getObs();
         Set<Order> orders = encounter.getOrders();
+        assertEquals(1, encounter.getEncounterProviders().size());
+        assertEquals(userContext.getAuthenticatedUser().getId(), encounter.getProvider().getId());
         assertEquals(1, orders.size());
         assertEquals(1, obs.size());
     }

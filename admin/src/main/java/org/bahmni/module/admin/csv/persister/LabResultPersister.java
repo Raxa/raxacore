@@ -59,6 +59,7 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
             encounter.setPatient(patient);
             encounter.setEncounterDatetime(labResultsRow.getTestDate());
             encounter.setEncounterType(encounterService.getEncounterType(LAB_RESULT_ENCOUNTER_TYPE));
+            encounter.addProvider(encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID), getProvider());
             HashSet<Obs> resultObservations = new HashSet<>();
             for (LabResultRow labResultRow : labResultsRow.getTestResults()) {
                 TestOrder testOrder = getTestOrder(patient, labResultRow, labResultsRow.getTestDate());
