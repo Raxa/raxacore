@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.CSVFile;
@@ -181,7 +182,7 @@ public class AdminImportController extends BaseRestController {
         return uploadedFile;
     }
 
-    private CSVFile getFile(String fileName, String filesDirectory) {
+    private CSVFile getFile(String fileName, String filesDirectory) throws IOException {
         String fileNameWithoutExtension = fileName.substring(0, fileName.lastIndexOf("."));
         String fileExtension = fileName.substring(fileName.lastIndexOf("."));
 
@@ -189,6 +190,7 @@ public class AdminImportController extends BaseRestController {
 
         String uploadDirectory = administrationService.getGlobalProperty(PARENT_DIRECTORY_UPLOADED_FILES_CONFIG);
         String relativePath = filesDirectory + fileNameWithoutExtension + timestampForFile + fileExtension;
+        FileUtils.forceMkdir(new File(uploadDirectory, filesDirectory));
         return new CSVFile(uploadDirectory, relativePath);
     }
 
