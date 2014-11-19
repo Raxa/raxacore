@@ -107,7 +107,7 @@ public class ReferenceDataDrugServiceImplIT extends BaseModuleWebContextSensitiv
     }
 
     @Test
-    public void existing_drug_() throws Exception {
+    public void same_drug_multiple_times() throws Exception {
         Drug drug = new Drug();
         drug.setName("New Drug");
         drug.setGenericName("Old Drug Concept");
@@ -116,14 +116,14 @@ public class ReferenceDataDrugServiceImplIT extends BaseModuleWebContextSensitiv
         drug.setCombination(false);
         drug.setStrength("Very Strong");
         drug.setDosageForm("Capsule");
-        org.openmrs.Drug savedDrug = referenceDataDrugService.saveDrug(drug);
-        assertFalse(savedDrug.getCombination());
-        assertEquals("New Drug", savedDrug.getName());
-        assertEquals("Old Drug Concept", savedDrug.getConcept().getName(Context.getLocale()).getName());
-        assertEquals(ConceptClass.DRUG_UUID, savedDrug.getConcept().getConceptClass().getUuid());
-        assertEquals("Capsule", savedDrug.getDosageForm().getName(Context.getLocale()).getName());
-        assertEquals("Very Strong", savedDrug.getStrength());
-        assertTrue(savedDrug.getMaximumDailyDose().equals(drug.doubleMaximumDose()));
-        assertTrue(savedDrug.getMinimumDailyDose().equals(drug.doubleMinimumDose()));
+        org.openmrs.Drug savedDrug1 = referenceDataDrugService.saveDrug(drug);
+        org.openmrs.Drug savedDrug2 = referenceDataDrugService.saveDrug(drug);
+        assertEquals(savedDrug1.getUuid(), savedDrug2.getUuid());
+        drug.setDosageForm("Tablet");
+        savedDrug2 = referenceDataDrugService.saveDrug(drug);
+        assertEquals(savedDrug1.getUuid(), savedDrug2.getUuid());
+        drug.setGenericName("Random Drug Concept");
+        savedDrug2 = referenceDataDrugService.saveDrug(drug);
+        assertEquals(savedDrug1.getUuid(), savedDrug2.getUuid());
     }
 }

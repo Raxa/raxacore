@@ -11,6 +11,7 @@ public class DrugMetaData {
     private ConceptClass drugConceptClass;
     private ConceptDatatype naDataType;
     private Drug existingDrug;
+    private boolean conceptExists;
 
     public DrugMetaData() {
     }
@@ -21,6 +22,7 @@ public class DrugMetaData {
         this.dosageForm = dosageFormConcept;
         this.drugConceptClass = drugConceptClass;
         this.naDataType = naDataType;
+        this.conceptExists = (drugConcept != null);
     }
 
     public Concept getDrugConcept() {
@@ -68,5 +70,13 @@ public class DrugMetaData {
 
     public void setExistingDrug(Drug existingDrug) {
         this.existingDrug = existingDrug;
+    }
+
+    public boolean isConceptExists() {
+        return conceptExists;
+    }
+
+    public void setConceptExists(boolean conceptExists) {
+        this.conceptExists = conceptExists;
     }
 }

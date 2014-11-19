@@ -5,7 +5,6 @@ import org.bahmni.module.referencedata.labconcepts.model.DrugMetaData;
 import org.bahmni.module.referencedata.labconcepts.service.DrugMetaDataService;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataDrugService;
 import org.bahmni.module.referencedata.labconcepts.validator.DrugValidator;
-import org.openmrs.ConceptClass;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,9 @@ public class ReferenceDataDrugServiceImpl implements ReferenceDataDrugService {
         DrugMetaData drugMetaData = drugMetaDataService.getDrugMetaData(drug.getName(), drug.getUuid(), drug.getGenericName(), drug.getDosageForm());
         drugValidator.validate(drug, drugMetaData);
         Drug conceptDrug = drugMapper.map(drug, drugMetaData);
-        conceptService.saveConcept(conceptDrug.getConcept());
+        if (!drugMetaData.isConceptExists()) {
+            conceptService.saveConcept(conceptDrug.getConcept());
+        }
         return conceptService.saveDrug(conceptDrug);
     }
 }

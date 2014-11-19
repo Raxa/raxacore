@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.labconcepts.model.DrugMetaData;
 import org.bahmni.module.referencedata.labconcepts.service.DrugMetaDataService;
 import org.openmrs.Concept;
@@ -31,9 +32,9 @@ public class DrugMetaDataServiceImpl implements DrugMetaDataService {
     }
 
     private Drug getExistingDrug(String drugName, String drugUuid) {
-        if (drugUuid != null) {
+        if (!StringUtils.isBlank(drugUuid)) {
             return conceptService.getDrugByUuid(drugUuid);
         }
-        return conceptService.getDrug(drugName);
+        return conceptService.getDrugByNameOrId(drugName);
     }
 }
