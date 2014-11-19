@@ -1,9 +1,7 @@
 package org.bahmni.module.bahmnicore.mapper;
 
-import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplate;
 import org.bahmni.module.bahmnicore.contract.diseasetemplate.ObservationTemplate;
 import org.bahmni.test.builder.ConceptBuilder;
-import org.bahmni.test.util.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -12,6 +10,7 @@ import org.openmrs.Concept;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.test.TestUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,11 +51,11 @@ public class ObservationTemplateMapperTest {
 
     @Test
     public void map_obs_to_observation_templates_group_by_visit_date() throws Exception {
-        bahmniObservation1.setVisitStartDateTime(DateUtils.getDate("2012-01-01"));
-        bahmniObservation2.setVisitStartDateTime(DateUtils.getDate("2012-01-01"));
-        bahmniObservation3.setVisitStartDateTime(DateUtils.getDate("2012-03-01"));
-        bahmniObservation4.setVisitStartDateTime(DateUtils.getDate("2012-03-01"));
-        bahmniObservation5.setVisitStartDateTime(DateUtils.getDate("2012-05-01"));
+        bahmniObservation1.setVisitStartDateTime(TestUtil.createDateTime("2012-01-01"));
+        bahmniObservation2.setVisitStartDateTime(TestUtil.createDateTime("2012-01-01"));
+        bahmniObservation3.setVisitStartDateTime(TestUtil.createDateTime("2012-03-01"));
+        bahmniObservation4.setVisitStartDateTime(TestUtil.createDateTime("2012-03-01"));
+        bahmniObservation5.setVisitStartDateTime(TestUtil.createDateTime("2012-05-01"));
         List<BahmniObservation> bahmniObservations = new ArrayList<>();
         bahmniObservations.add(bahmniObservation1);
         bahmniObservations.add(bahmniObservation2);
@@ -70,13 +69,13 @@ public class ObservationTemplateMapperTest {
         ObservationTemplate observationTemplate3 = observationTemplates.get(2);
         assertEquals("Observation Template", observationTemplate1.getConcept().getName());
         assertEquals(2, observationTemplate1.getBahmniObservations().size());
-        assertEquals(DateUtils.getDate("2012-01-01"), observationTemplate1.getVisitStartDate());
+        assertEquals(TestUtil.createDateTime("2012-01-01"), observationTemplate1.getVisitStartDate());
         assertEquals(observationTemplate1.getVisitStartDate(), observationTemplate1.getBahmniObservations().get(0).getVisitStartDateTime());
         assertEquals(observationTemplate1.getVisitStartDate(), observationTemplate1.getBahmniObservations().get(1).getVisitStartDateTime());
-        assertEquals(DateUtils.getDate("2012-03-01"), observationTemplate2.getVisitStartDate());
+        assertEquals(TestUtil.createDateTime("2012-03-01"), observationTemplate2.getVisitStartDate());
         assertEquals(observationTemplate2.getVisitStartDate(), observationTemplate2.getBahmniObservations().get(0).getVisitStartDateTime());
         assertEquals(observationTemplate2.getVisitStartDate(), observationTemplate2.getBahmniObservations().get(1).getVisitStartDateTime());
-        assertEquals(DateUtils.getDate("2012-05-01"), observationTemplate3.getVisitStartDate());
+        assertEquals(TestUtil.createDateTime("2012-05-01"), observationTemplate3.getVisitStartDate());
         assertEquals(observationTemplate3.getVisitStartDate(), observationTemplate3.getBahmniObservations().get(0).getVisitStartDateTime());
         assertEquals("Observation Template", observationTemplate1.getConcept().getName());
         assertEquals("Observation Template", observationTemplate2.getConcept().getName());

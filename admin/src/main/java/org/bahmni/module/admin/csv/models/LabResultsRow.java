@@ -39,8 +39,9 @@ public class LabResultsRow extends CSVEntity {
         return labResultRows;
     }
 
-    public void setTestResults(List<LabResultRow> testResults) {
+    public LabResultsRow setTestResults(List<LabResultRow> testResults) {
         this.testResults = testResults;
+        return this;
     }
 
     public Date getTestDate() throws ParseException {
@@ -51,28 +52,32 @@ public class LabResultsRow extends CSVEntity {
         return patientAttributes;
     }
 
-    public void setPatientAttributes(List<KeyValue> patientAttributes) {
+    public LabResultsRow setPatientAttributes(List<KeyValue> patientAttributes) {
         this.patientAttributes = patientAttributes;
+        return this;
     }
 
     public String getPatientIdentifier() {
         return patientIdentifier;
     }
 
-    public void setPatientIdentifier(String patientIdentifier) {
+    public LabResultsRow setPatientIdentifier(String patientIdentifier) {
         this.patientIdentifier = patientIdentifier;
+        return this;
     }
 
-    public void setTestDateString(String testDateString) {
+    public LabResultsRow setTestDateString(String testDateString) {
         this.testDateString = testDateString;
+        return this;
     }
 
     public String getVisitType() {
         return visitType;
     }
 
-    public void setVisitType(String visitType) {
+    public LabResultsRow setVisitType(String visitType) {
         this.visitType = visitType;
+        return this;
     }
 }
 

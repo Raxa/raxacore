@@ -18,16 +18,18 @@ public class LabResultRow {
         return test;
     }
 
-    public void setTest(String test) {
+    public LabResultRow setTest(String test) {
         this.test = test;
+        return this;
     }
 
     public String getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public LabResultRow setResult(String result) {
         this.result = result;
+        return this;
     }
 
     public boolean isEmpty() {

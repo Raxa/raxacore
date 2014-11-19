@@ -1,6 +1,5 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 
-import org.bahmni.test.util.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +14,7 @@ import org.openmrs.module.bahmniemrapi.builder.ObsBuilder;
 import org.openmrs.module.bahmniemrapi.builder.PersonBuilder;
 import org.openmrs.module.bahmniemrapi.builder.VisitBuilder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.test.TestUtil;
 import org.openmrs.util.LocaleUtility;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -93,9 +93,9 @@ public class BahmniObservationMapperTest {
         assertEquals(6, childObservation2.getConceptSortWeight().intValue());
         assertNull(childObservation2.isAbnormal());
         assertNull(childObservation2.getDuration());
-        assertEquals(DateUtils.getDate("2010-01-02"), childObservation1.getVisitStartDateTime());
-        assertEquals(DateUtils.getDate("2010-01-02"), childObservation2.getVisitStartDateTime());
-        assertEquals(DateUtils.getDate("2010-01-02"), parentObservation.getVisitStartDateTime());
+        assertEquals(TestUtil.createDateTime("2010-01-02"), childObservation1.getVisitStartDateTime());
+        assertEquals(TestUtil.createDateTime("2010-01-02"), childObservation2.getVisitStartDateTime());
+        assertEquals(TestUtil.createDateTime("2010-01-02"), parentObservation.getVisitStartDateTime());
     }
 
     private BahmniObservation getObservation(String uuid, List<BahmniObservation> childObservations) {
