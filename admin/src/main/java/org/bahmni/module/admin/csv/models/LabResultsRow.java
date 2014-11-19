@@ -23,6 +23,9 @@ public class LabResultsRow extends CSVEntity {
     @CSVHeader(name = "Date")
     private String testDateString;
 
+    @CSVHeader(name = "Visit Type")
+    private String visitType;
+
     @CSVRepeatingHeaders(names = {"Test", "Result"}, type = LabResultRow.class)
     private List<LabResultRow> testResults;
 
@@ -62,6 +65,14 @@ public class LabResultsRow extends CSVEntity {
 
     public void setTestDateString(String testDateString) {
         this.testDateString = testDateString;
+    }
+
+    public String getVisitType() {
+        return visitType;
+    }
+
+    public void setVisitType(String visitType) {
+        this.visitType = visitType;
     }
 }
 

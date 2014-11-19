@@ -1,5 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
+    <visit_type visit_type_id="100" name="LAB RESULT IMPORT VISIT" creator="1" date_created="2012-10-23 18:04:14"
+                changed_by="1" date_changed="2012-10-23 18:04:14"
+                retired="0" uuid="ef4554cb-2225-471a-9cd5-1234552c337c"/>
     <!--patient who doesnot hav an order encounter-->
     <person person_id="22" gender="M" dead="false" creator="1" birthdate_estimated="0"
             date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""

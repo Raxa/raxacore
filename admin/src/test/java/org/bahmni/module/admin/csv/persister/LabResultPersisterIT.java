@@ -51,6 +51,8 @@ public class LabResultPersisterIT extends BaseModuleWebContextSensitiveTest {
         List<LabResultRow> labResultRows = new ArrayList<>();
         labResultRows.add(labResultRow);
         labResultsRow.setTestResults(labResultRows);
+        String visitType = "LAB RESULT IMPORT VISIT";
+        labResultsRow.setVisitType(visitType);
 
         RowResult<LabResultsRow> rowResult = labResultPersister.persist(labResultsRow);
 
@@ -58,6 +60,7 @@ public class LabResultPersisterIT extends BaseModuleWebContextSensitiveTest {
         List<Visit> visits = visitService.getVisitsByPatient(patient);
         assertTrue(rowResult.isSuccessful());
         assertEquals(1, visits.size());
+        assertEquals(visitType, visits.get(0).getVisitType().getName());
         assertEquals(1, visits.get(0).getEncounters().size());
         Encounter encounter = visits.get(0).getEncounters().iterator().next();
         Set<Obs> obs = encounter.getObs();
