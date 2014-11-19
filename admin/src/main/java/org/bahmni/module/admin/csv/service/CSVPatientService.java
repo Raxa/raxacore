@@ -4,13 +4,10 @@ import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.PatientRow;
 import org.bahmni.module.admin.csv.utils.CSVUtils;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.PatientIdentifierType;
-import org.openmrs.PersonAddress;
-import org.openmrs.PersonName;
+import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.PersonService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,11 +19,13 @@ public class CSVPatientService {
     private static final String EMR_PRIMARY_IDENTIFIER_TYPE = "emr.primaryIdentifierType";
 
     private PatientService patientService;
+    private PersonService personService;
     private AdministrationService administrationService;
     private CSVAddressService csvAddressService;
 
-    public CSVPatientService(PatientService patientService, AdministrationService administrationService, CSVAddressService csvAddressService) {
+    public CSVPatientService(PatientService patientService, PersonService personService, AdministrationService administrationService, CSVAddressService csvAddressService) {
         this.patientService = patientService;
+        this.personService = personService;
         this.administrationService = administrationService;
         this.csvAddressService = csvAddressService;
     }
@@ -36,6 +35,8 @@ public class CSVPatientService {
         PersonName personName = new PersonName(patientRow.firstName, patientRow.middleName, patientRow.lastName);
         personName.setPreferred(true);
         patient.addName(personName);
+
+        addPersonAttributes(patient, patientRow);
 
         if (!StringUtils.isBlank(patientRow.birthdate)) {
             // All csv imports use the same date format
@@ -58,6 +59,22 @@ public class CSVPatientService {
         patient.setPersonDateCreated(patientRow.getRegistrationDate());
 
         return patientService.savePatient(patient);
+    }
+
+    private void addPersonAttributes(Patient patient, PatientRow patientRow) {
+        for (KeyValue attribute : patientRow.attributes) {
+            patient.addAttribute(new PersonAttribute(findAttributeType(attribute.getKey()), attribute.getValue()));
+        }
+    }
+
+    private PersonAttributeType findAttributeType(String key) {
+        for (PersonAttributeType personAttributeType  : personService.getAllPersonAttributeTypes(false)) {
+            if(key.equalsIgnoreCase(personAttributeType.getName())) {
+                return personAttributeType;
+            }
+        }
+
+        throw new RuntimeException(String.format("Person Attribute %s not found", key));
     }
 
     private PatientIdentifierType getPatientIdentifierType() {

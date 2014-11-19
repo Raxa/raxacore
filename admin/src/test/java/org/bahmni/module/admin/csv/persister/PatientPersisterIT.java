@@ -32,13 +32,13 @@ public class PatientPersisterIT extends BaseContextSensitiveTest {
 
     @Test
     public void save_patient_row() {
-        PatientRow patientRow = patientRow("Ram", "Laxman", "Kumar", "1999-08-8", "Male", "reg-no", addressParts("galli", "shahar", "state", "desh", "100001"));
+        PatientRow patientRow = patientRow("Ram", "Laxman", "Kumar", "1999-08-8", "Male", "reg-no", addressParts("galli", "shahar", "state", "desh", "100001"), attibutesList("ram", "farmer"));
         RowResult<PatientRow> patientRowResult = patientPersister.persist(patientRow);
 
         assertTrue("should have persisted the patient row", patientRowResult.isSuccessful());
     }
 
-    private PatientRow patientRow(String firstName, String middleName, String lastName, String birthdate, String gender, String registrationNumber, List<KeyValue> addressParts) {
+    private PatientRow patientRow(String firstName, String middleName, String lastName, String birthdate, String gender, String registrationNumber, List<KeyValue> addressParts, List<KeyValue> attributes) {
         PatientRow patientRow = new PatientRow();
         patientRow.firstName = firstName;
         patientRow.middleName = middleName;
@@ -47,6 +47,7 @@ public class PatientPersisterIT extends BaseContextSensitiveTest {
         patientRow.gender = gender;
         patientRow.registrationNumber = registrationNumber;
         patientRow.addressParts = addressParts;
+        patientRow.attributes = attributes;
         return patientRow;
     }
 
@@ -60,4 +61,13 @@ public class PatientPersisterIT extends BaseContextSensitiveTest {
         }};
         return addressParts;
     }
+
+    private List<KeyValue> attibutesList(final String localName, final String occupation) {
+        List<KeyValue> attributes = new ArrayList<KeyValue>() {{
+            add(new KeyValue("familyNameLocal", localName));
+            add(new KeyValue("occupation", occupation));
+        }};
+        return attributes;
+    }
+
 }

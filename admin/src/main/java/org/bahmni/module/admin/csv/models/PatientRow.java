@@ -8,6 +8,7 @@ import org.bahmni.module.admin.csv.utils.CSVUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class PatientRow extends CSVEntity {
     public List<KeyValue> addressParts;
 
     @CSVRegexHeader(pattern = "Attribute.*")
-    public List<KeyValue> attributes;
+    public List<KeyValue> attributes = new ArrayList<>();
 
     public Date getRegistrationDate() throws ParseException {
         if (registrationDate == null)
