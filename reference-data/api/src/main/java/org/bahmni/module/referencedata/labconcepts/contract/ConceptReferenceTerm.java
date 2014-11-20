@@ -7,6 +7,9 @@ public class ConceptReferenceTerm {
     private String referenceTermRelationship;
     private String referenceTermSource;
 
+    private String referenceDescription;
+    private String referenceVersion;
+
     public ConceptReferenceTerm() {
     }
 
@@ -14,6 +17,15 @@ public class ConceptReferenceTerm {
         this.referenceTermCode = conceptReferenceTermCode;
         this.referenceTermRelationship = conceptReferenceTermRelationship;
         this.referenceTermSource = conceptReferenceTermSource;
+    }
+
+    public ConceptReferenceTerm(String conceptReferenceTermCode, String conceptReferenceTermName, String conceptReferenceTermRelationship, String conceptReferenceTermSource, String conceptReferenceDescription, String conceptReferenceVersion) {
+        this.referenceTermCode = conceptReferenceTermCode;
+        this.referenceTermName = conceptReferenceTermName;
+        this.referenceTermRelationship = conceptReferenceTermRelationship;
+        this.referenceTermSource = conceptReferenceTermSource;
+        this.referenceDescription = conceptReferenceDescription;
+        this.referenceVersion = conceptReferenceVersion;
     }
 
     public String getReferenceTermName() {
@@ -47,4 +59,21 @@ public class ConceptReferenceTerm {
     public void setReferenceTermSource(String referenceTermSource) {
         this.referenceTermSource = referenceTermSource;
     }
+
+    public String getReferenceDescription() {
+        return referenceDescription;
+    }
+
+    public void setReferenceDescription(String referenceDescription) {
+        this.referenceDescription = referenceDescription;
+    }
+
+    public String getReferenceVersion() {
+        return referenceVersion;
+    }
+
+    public void setReferenceVersion(String referenceVersion) {
+        this.referenceVersion = referenceVersion;
+    }
+
 }

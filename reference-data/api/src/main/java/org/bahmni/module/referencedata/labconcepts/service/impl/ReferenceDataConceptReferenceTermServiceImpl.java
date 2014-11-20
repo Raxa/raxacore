@@ -1,7 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bahmni.module.referencedata.labconcepts.contract.ConceptCommon;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptReferenceTermService;
 import org.openmrs.ConceptMap;
 import org.openmrs.ConceptMapType;
@@ -39,6 +38,29 @@ public class ReferenceDataConceptReferenceTermServiceImpl implements ReferenceDa
             conceptMap = new ConceptMap(conceptReferenceTerm, conceptMapType);
         }
         return conceptMap;
+    }
+
+    @Override
+    public ConceptReferenceTerm saveOrUpdate(org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm conceptReferenceTerm) {
+        ConceptReferenceTerm openmrsConceptReferenceTerm = fetchConceptReferenceTerm(conceptReferenceTerm.getReferenceTermSource(), conceptReferenceTerm.getReferenceTermCode());
+        if(openmrsConceptReferenceTerm == null) {
+            ConceptSource conceptSource = conceptService.getConceptSourceByName(conceptReferenceTerm.getReferenceTermSource());
+            openmrsConceptReferenceTerm = new ConceptReferenceTerm(conceptSource, conceptReferenceTerm.getReferenceTermCode(), conceptReferenceTerm.getReferenceTermName());
+        } else {
+            openmrsConceptReferenceTerm.setName(conceptReferenceTerm.getReferenceTermName());
+        }
+        openmrsConceptReferenceTerm.setVersion(conceptReferenceTerm.getReferenceVersion());
+        openmrsConceptReferenceTerm.setDescription(conceptReferenceTerm.getReferenceDescription());
+        return conceptService.saveConceptReferenceTerm(openmrsConceptReferenceTerm);
+    }
+
+
+    private ConceptReferenceTerm fetchConceptReferenceTerm(String referenceTermSource, String referenceTermCode) {
+        ConceptSource conceptReferenceSource = conceptService.getConceptSourceByName(referenceTermSource);
+        if(conceptReferenceSource == null) {
+            throw new APIException(String.format("Concept reference source %s does not exists.", referenceTermSource));
+        }
+        return conceptService.getConceptReferenceTermByCode(referenceTermCode, conceptReferenceSource);
     }
 
     private boolean hasReferenceTermAndSource(org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm conceptReferenceTerm) {

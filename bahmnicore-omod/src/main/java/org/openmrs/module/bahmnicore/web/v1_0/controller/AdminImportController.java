@@ -57,6 +57,7 @@ public class AdminImportController extends BaseRestController {
     private static final String DRUG_FILES_DIRECTORY = "drug/";
     private static final String CONCEPT_SET_FILES_DIRECTORY = "conceptset/";
     private static final String PATIENT_FILES_DIRECTORY = "patient/";
+    private static final String REFERENCETERM_FILES_DIRECTORY = "referenceterms/";
 
     @Autowired
     private EncounterPersister encounterPersister;
@@ -78,6 +79,9 @@ public class AdminImportController extends BaseRestController {
 
     @Autowired
     private PatientPersister patientPersister;
+
+    @Autowired
+    private ReferenceTermPersister referenceTermPersister;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -103,6 +107,13 @@ public class AdminImportController extends BaseRestController {
 
         encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm, shouldMatchExactPatientId);
         return importCsv(ENCOUNTER_FILES_DIRECTORY, file, encounterPersister, 1, true, MultipleEncounterRow.class);
+    }
+
+    @RequestMapping(value = baseUrl + "/referenceterms", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean uploadReferenceTerms(@RequestParam(value = "file") MultipartFile file) {
+        referenceTermPersister.init(Context.getUserContext());
+        return importCsv(REFERENCETERM_FILES_DIRECTORY, file, referenceTermPersister, 1, true, ReferenceTermRow.class);
     }
 
     @RequestMapping(value = baseUrl + "/program", method = RequestMethod.POST)
