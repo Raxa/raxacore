@@ -38,7 +38,7 @@ public class AllLabSamplesEventTest {
         assertEquals(events.size(), 1);
         Event event = events.get(0);
         assertThat(event.getUri().toString(), containsString(parentConcept.getUuid()));
-        assertEquals(event.getTitle(), ConceptEventFactory.LAB_SAMPLE);
+        assertEquals(event.getTitle(), ConceptServiceEventFactory.LAB_SAMPLE);
         assertEquals(event.getCategory(), "lab");
 
     }

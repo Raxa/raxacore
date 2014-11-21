@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import static java.util.Arrays.asList;
 
-public abstract class ConceptOperationEvent {
+public abstract class ConceptOperationEvent implements ConceptServiceOperationEvent {
     String url;
     String category;
     String title;
@@ -28,15 +28,17 @@ public abstract class ConceptOperationEvent {
 
     public abstract boolean isResourceConcept(Concept argument);
 
+    @Override
     public Boolean isApplicable(String operation, Object[] arguments) {
         return this.operations().contains(operation) && isResourceConcept((Concept) arguments[0]);
     }
 
 
-    List<String> operations() {
+    private List<String> operations() {
         return asList("saveConcept", "updateConcept", "retireConcept", "purgeConcept");
     }
 
+    @Override
     public Event asAtomFeedEvent(Object[] arguments) throws URISyntaxException {
         Concept concept = (Concept) arguments[0];
         String url = String.format(this.url, title, concept.getUuid());

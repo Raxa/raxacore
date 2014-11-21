@@ -1,7 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.model.event;
 
 import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
-import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.module.referencedata.labconcepts.model.Operation;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.ict4h.atomfeed.server.service.Event;
@@ -22,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
+import static org.bahmni.module.referencedata.labconcepts.advice.ConceptServiceEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -101,8 +100,8 @@ public class SampleEventTest {
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{sampleConcept});
         Event event = events.get(0);
         assertNotNull(event);
-        assertEquals(event.getTitle(), ConceptEventFactory.SAMPLE);
-        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
+        assertEquals(event.getTitle(), ConceptServiceEventFactory.SAMPLE);
+        assertEquals(event.getCategory(), ConceptServiceEventFactory.LAB);
     }
 
 }

@@ -1,20 +1,21 @@
 package org.bahmni.module.referencedata.labconcepts.model.event;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import java.util.List;
+
 import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
 import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.model.Operation;
 import org.bahmni.test.builder.ConceptBuilder;
+import org.ict4h.atomfeed.server.service.Event;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.*;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.api.ConceptService;
-import org.ict4h.atomfeed.server.service.Event;
-
-import java.util.List;
 
 
 public class AllTestsPanelsConceptSetEventTest {
@@ -37,7 +38,7 @@ public class AllTestsPanelsConceptSetEventTest {
         assertEquals(events.size(),1);
         Event event = events.get(0);
         assertThat(event.getUri().toString(), containsString(parentConcept.getUuid()));
-        assertEquals(ConceptEventFactory.TESTS_AND_PANEL, event.getTitle());
+        assertEquals(ConceptServiceEventFactory.TESTS_AND_PANEL, event.getTitle());
         assertEquals("lab",event.getCategory());
     }
 }

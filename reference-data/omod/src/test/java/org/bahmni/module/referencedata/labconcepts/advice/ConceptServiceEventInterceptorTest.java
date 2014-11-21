@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
-public class ConceptOperationEventInterceptorTest {
+public class ConceptServiceEventInterceptorTest {
     @Mock
     private AtomFeedSpringTransactionManager atomFeedSpringTransactionManager;
     @Mock
@@ -44,7 +44,7 @@ public class ConceptOperationEventInterceptorTest {
 
     private ArgumentCaptor<AFTransactionWorkWithoutResult> captor = ArgumentCaptor.forClass(AFTransactionWorkWithoutResult.class);
 
-    private ConceptOperationEventInterceptor publishedFeed;
+    private ConceptServiceEventInterceptor publishedFeed;
 
     private Concept concept;
     private Concept parentConcept;
@@ -67,7 +67,7 @@ public class ConceptOperationEventInterceptorTest {
         when(Context.getConceptService()).thenReturn(conceptService);
         PowerMockito.when(Context.getLocale()).thenReturn(defaultLocale);
 
-        publishedFeed = new ConceptOperationEventInterceptor(atomFeedSpringTransactionManager, eventService);
+        publishedFeed = new ConceptServiceEventInterceptor(atomFeedSpringTransactionManager, eventService);
     }
 
     public static List<ConceptSet> getConceptSets(Concept parentConcept, Concept conceptMember) {

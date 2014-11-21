@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
+import static org.bahmni.module.referencedata.labconcepts.advice.ConceptServiceEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -64,8 +64,8 @@ public class PanelEventTest {
         Event anotherEvent = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept}).get(0);
         assertNotNull(event);
         assertFalse(event.getUuid().equals(anotherEvent.getUuid()));
-        assertEquals(event.getTitle(), ConceptEventFactory.PANEL);
-        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
+        assertEquals(event.getTitle(), ConceptServiceEventFactory.PANEL);
+        assertEquals(event.getCategory(), ConceptServiceEventFactory.LAB);
     }
 
     @Test
@@ -81,8 +81,8 @@ public class PanelEventTest {
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         Event event = events.get(0);
         assertNotNull(event);
-        assertEquals(event.getTitle(), ConceptEventFactory.PANEL);
-        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
+        assertEquals(event.getTitle(), ConceptServiceEventFactory.PANEL);
+        assertEquals(event.getCategory(), ConceptServiceEventFactory.LAB);
     }
 
 
@@ -93,8 +93,8 @@ public class PanelEventTest {
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         Event event = events.get(0);
         assertNotNull(event);
-        assertEquals(event.getTitle(), ConceptEventFactory.PANEL);
-        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
+        assertEquals(event.getTitle(), ConceptServiceEventFactory.PANEL);
+        assertEquals(event.getCategory(), ConceptServiceEventFactory.LAB);
     }
 
 
@@ -104,7 +104,7 @@ public class PanelEventTest {
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{panelConcept});
         Event event = events.get(0);
         assertNotNull(event);
-        assertEquals(event.getTitle(), ConceptEventFactory.PANEL);
-        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
+        assertEquals(event.getTitle(), ConceptServiceEventFactory.PANEL);
+        assertEquals(event.getCategory(), ConceptServiceEventFactory.LAB);
     }
 }

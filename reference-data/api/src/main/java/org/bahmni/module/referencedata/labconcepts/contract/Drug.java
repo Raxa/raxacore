@@ -15,6 +15,9 @@ public class Drug {
     private String dosageForm;
     private String minimumDose;
     private String maximumDose;
+    private String form;
+    private String shortName;
+    private String route;
 
     public String getName() {
         return name;
@@ -42,6 +45,14 @@ public class Drug {
 
     public void setStrength(String strength) {
         this.strength = strength;
+    }
+    
+    public String getForm() {
+        return form;
+    }
+
+    public void setForm(String form) {
+        this.form = form;
     }
 
     public String getStrength() {
@@ -87,5 +98,21 @@ public class Drug {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
+    }
+
+    public String getRoute() {
+        return route;
+    }
+
+    public void setRoute(String route) {
+        this.route = route;
     }
 }

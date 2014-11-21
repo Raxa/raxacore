@@ -5,11 +5,11 @@ import org.bahmni.module.referencedata.labconcepts.contract.Drug;
 import org.bahmni.module.referencedata.labconcepts.model.DrugMetaData;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptNameType;
+import org.openmrs.api.context.Context;
 
 import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.getConceptName;
 
 public class DrugMapper {
-
 
     private final DrugMetaDataMapper drugMetaDataMapper;
 
@@ -31,5 +31,32 @@ public class DrugMapper {
         conceptDrug.setMaximumDailyDose(drug.doubleMaximumDose());
         conceptDrug.setMinimumDailyDose(drug.doubleMinimumDose());
         return conceptDrug;
+    }
+
+
+    public Drug map(org.openmrs.Drug conceptDrug) {
+        Drug drug = new Drug();
+        drug.setName(conceptDrug.getName());
+        drug.setGenericName(getNameFrom(conceptDrug.getConcept()));
+        drug.setForm(getNameFrom(conceptDrug.getDosageForm()));
+        drug.setShortName(getShortNameFrom(conceptDrug.getConcept()));
+        drug.setRoute(getNameFrom(conceptDrug.getRoute()));
+        drug.setStrength(conceptDrug.getStrength());
+        drug.setUuid(conceptDrug.getUuid());
+        return drug;
+    }
+
+    private String getShortNameFrom(Concept concept) {
+        if (concept != null && concept.getShortNameInLocale(Context.getLocale()) != null) {
+            return concept.getShortNameInLocale(Context.getLocale()).getName();
+        }
+        return null;
+    }
+
+    private String getNameFrom(Concept concept) {
+        if (concept != null && concept.getName(Context.getLocale()) != null) {
+            return concept.getName(Context.getLocale()).getName();
+        }
+        return null;
     }
 }

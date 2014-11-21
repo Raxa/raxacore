@@ -20,7 +20,7 @@
     <activator>feed.FeedActivator</activator>
     <advice>
         <point>org.openmrs.api.ConceptService</point>
-        <class>org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptor</class>
+        <class>org.bahmni.module.referencedata.labconcepts.advice.ConceptServiceEventInterceptor</class>
     </advice>
     <!-- Module Activator -->
     <!-- Internationalization -->

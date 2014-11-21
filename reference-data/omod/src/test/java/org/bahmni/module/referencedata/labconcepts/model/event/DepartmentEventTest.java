@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static org.bahmni.module.referencedata.labconcepts.advice.ConceptOperationEventInterceptorTest.getConceptSets;
+import static org.bahmni.module.referencedata.labconcepts.advice.ConceptServiceEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -63,8 +63,8 @@ public class DepartmentEventTest {
         Event anotherEvent = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept}).get(0);
         assertNotNull(event);
         assertFalse(event.getUuid().equals(anotherEvent.getUuid()));
-        assertEquals(event.getTitle(), ConceptEventFactory.DEPARTMENT);
-        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
+        assertEquals(event.getTitle(), ConceptServiceEventFactory.DEPARTMENT);
+        assertEquals(event.getCategory(), ConceptServiceEventFactory.LAB);
     }
 
     @Test
@@ -80,8 +80,8 @@ public class DepartmentEventTest {
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         Event event = events.get(0);
         assertNotNull(event);
-        assertEquals(event.getTitle(), ConceptEventFactory.DEPARTMENT);
-        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
+        assertEquals(event.getTitle(), ConceptServiceEventFactory.DEPARTMENT);
+        assertEquals(event.getCategory(), ConceptServiceEventFactory.LAB);
     }
 
 
@@ -92,8 +92,8 @@ public class DepartmentEventTest {
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         Event event = events.get(0);
         assertNotNull(event);
-        assertEquals(event.getTitle(), ConceptEventFactory.DEPARTMENT);
-        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
+        assertEquals(event.getTitle(), ConceptServiceEventFactory.DEPARTMENT);
+        assertEquals(event.getCategory(), ConceptServiceEventFactory.LAB);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class DepartmentEventTest {
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{departmentConcept});
         Event event = events.get(0);
         assertNotNull(event);
-        assertEquals(event.getTitle(), ConceptEventFactory.DEPARTMENT);
-        assertEquals(event.getCategory(), ConceptEventFactory.LAB);
+        assertEquals(event.getTitle(), ConceptServiceEventFactory.DEPARTMENT);
+        assertEquals(event.getCategory(), ConceptServiceEventFactory.LAB);
     }
 }
