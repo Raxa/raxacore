@@ -9,6 +9,7 @@ import org.bahmni.csv.annotation.CSVRepeatingHeaders;
 import org.bahmni.module.admin.csv.utils.CSVUtils;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,7 +46,9 @@ public class LabResultsRow extends CSVEntity {
     }
 
     public Date getTestDate() throws ParseException {
-        return DateUtils.parseDate(testDateString, CSVUtils.ENCOUNTER_DATE_PATTERN);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN);
+        simpleDateFormat.setLenient(false);
+        return simpleDateFormat.parse(this.testDateString);
     }
 
     public List<KeyValue> getPatientAttributes() {
