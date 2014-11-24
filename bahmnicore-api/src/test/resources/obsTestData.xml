@@ -60,11 +60,11 @@
     <concept_name concept_id="9022" name="Problem Index" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="7" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afh" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
     <concept_set concept_id="9022" concept_set="90" concept_set_id="6" creator="1" sort_weight="2" date_created="2005-01-01 00:00:00.0" />
 
-
-
     <concept concept_id="190" retired="0" datatype_id="5" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="BC_progress_concept_uuid" />
     <concept_name concept_id="190" name="Breast Cancer Progress" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="111" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092qqb" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
     <concept_set concept_id="190" concept_set="200" concept_set_id="16" creator="1" sort_weight="2" date_created="2005-01-01 00:00:00.0" />
+
+    <concept_set concept_id="9011" concept_set="190" concept_set_id="45" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
 
     <concept concept_id="19011" retired="0" datatype_id="5" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="5d2d4cb7-955b-4837-80f7-0ebb94011111" />
     <concept_name concept_id="19011" name="Vitals" locale="en" creator="1" date_created="2014-01-01 00:00:00.0" concept_name_id="113" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb9411111" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
@@ -82,7 +82,6 @@
     <concept_name concept_id="19031" name="RR" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="66" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94044455" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
     <concept_set concept_id="19031" concept_set="19011" concept_set_id="215" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
 
-
     <location location_id="1" name="OPD Room 1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
     <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14" changed_by="1" date_changed="2012-10-23 18:04:14" retired="0" uuid="f01c54cb-2225-471a-9cd5-d348552c337c"/>
     <visit visit_id="901" date_started="2008-08-18 00:00:00" date_created="2008-08-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-08-20 04:08:16" location_id="2" creator="1" changed_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5b" voided="0"/>
@@ -90,21 +89,38 @@
     <encounter_type encounter_type_id="1" name="Consultation" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
     <encounter encounter_id="38" encounter_type="1" patient_id="1024" visit_id="901" location_id="1" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63ab0"/>
 
-    <obs obs_id="1" concept_id="100" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bb" creator="1" voided="0" />
+    <obs obs_id="1" concept_id="90" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f508a-fb89-11e3-bb80-f18addb6f9bb" creator="1" voided="0" />
 
-    <obs obs_id="2" obs_group_id="1" concept_id="200" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bc" creator="1" voided="0" />
-    <obs obs_id="3" obs_group_id="2" concept_id="90" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9as" creator="1" voided="0" />
-    <obs obs_id="4" obs_group_id="3" concept_id="9011" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9df" creator="1" voided="0" />
-    <obs obs_id="5" obs_group_id="3" concept_id="9012" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9fg" creator="1" voided="0" />
-    <obs obs_id="6" obs_group_id="3" concept_id="9022" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9gh" creator="1" voided="1" />
+    <obs obs_id="4" obs_group_id="1" concept_id="9011" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f976" creator="1" voided="0" />
+    <obs obs_id="5" obs_group_id="1" concept_id="9012" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f967" creator="1" voided="0" />
+    <obs obs_id="6" obs_group_id="1" concept_id="9022" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f290" creator="1" voided="1" />
 
     <encounter encounter_id="39" encounter_type="1" patient_id="1024" visit_id="901" location_id="1" encounter_datetime="2008-09-19 00:00:00.0" creator="1" date_created="2008-09-19 14:09:05.0" voided="false" uuid="f8ee31f6-1c8e-11e4-bb80-f18addb6f9bb"/>
 
-    <obs obs_id="7" concept_id="100" person_id="1024" encounter_id="39" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9qw" creator="1" voided="0" />
+    <obs obs_id="7" concept_id="190" person_id="1024" encounter_id="39" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9ae" creator="1" voided="0" />
+    <obs obs_id="8" obs_group_id="7" concept_id="19011" person_id="1024" encounter_id="39" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e2-bb80-f18addb6f9c" creator="1" voided="0" />
+    <obs obs_id="10" obs_group_id="8" concept_id="19012" person_id="1024" encounter_id="39" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e4-bb80-f18addb6f90b" creator="1" voided="0" />
+    <obs obs_id="11" obs_group_id="8" concept_id="19021" person_id="1024" encounter_id="39" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e5-bb80-f18addb6f9a5" creator="1" voided="0" />
+    <obs obs_id="12" obs_group_id="8" concept_id="19031" person_id="1024" encounter_id="39" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e6-bb80-f18addb6f96d" creator="1" voided="0" />
 
-    <obs obs_id="8" obs_group_id="7" concept_id="200" person_id="1024" encounter_id="39" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9we" creator="1" voided="0" />
-    <obs obs_id="9" obs_group_id="8" concept_id="90" person_id="1024" encounter_id="39" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9er" creator="1" voided="0" />
-    <obs obs_id="10" obs_group_id="9" concept_id="9012" person_id="1024" encounter_id="39" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9rt" creator="1" voided="0" />
-    <obs obs_id="11" obs_group_id="9" concept_id="9021" person_id="1024" encounter_id="39" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9ty" creator="1" voided="0" />
+    <visit visit_id="902" date_started="2009-08-18 00:00:00" date_created="2009-08-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-08-20 04:08:16" location_id="2" creator="1" changed_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acddb" voided="0"/>
+
+    <encounter encounter_id="40" encounter_type="1" patient_id="1024" visit_id="902" location_id="1" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f1522fe63ab0"/>
+
+    <obs obs_id="21" concept_id="90" person_id="1024" encounter_id="40" obs_datetime="2009-08-18 15:09:05.0" date_created="2009-08-18 15:09:05.0" uuid="6d8f507a-fb89-11a5-bb80-f18addb6f9bb" creator="1" voided="0" />
+
+    <obs obs_id="23" obs_group_id="21" concept_id="90" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-11e3-bb80-f18addb6f9a4" creator="1" voided="0" />
+    <obs obs_id="24" obs_group_id="21" concept_id="9011" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-11e3-bb80-f18addb6f9df" creator="1" voided="0" />
+    <obs obs_id="25" obs_group_id="21" concept_id="9012" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-11e3-bb80-f18addb6f9f8" creator="1" voided="0" />
+    <obs obs_id="26" obs_group_id="21" concept_id="9022" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-11e3-bb80-f18addb6f9ab" creator="1" voided="1" />
+
+    <encounter encounter_id="41" encounter_type="1" patient_id="1024" visit_id="902" location_id="1" encounter_datetime="2008-09-19 00:00:00.0" creator="1" date_created="2008-09-19 14:09:05.0" voided="false" uuid="f8ee38f6-1c8e-11e4-bb80-f18addb6f9bb"/>
+
+    <obs obs_id="27" concept_id="190" person_id="1024" encounter_id="41" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f909" creator="1" voided="0" />
+    <obs obs_id="28" obs_group_id="27" concept_id="19011" person_id="1024" encounter_id="41" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9af" creator="1" voided="0" />
+
+    <obs obs_id="30" obs_group_id="28" concept_id="19012" person_id="1024" encounter_id="41" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f910" creator="1" voided="0" />
+    <obs obs_id="31" obs_group_id="28" concept_id="19021" person_id="1024" encounter_id="41" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f904" creator="1" voided="0" />
+    <obs obs_id="32" obs_group_id="28" concept_id="19031" person_id="1024" encounter_id="41" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9fb" creator="1" voided="0" />
 
 </dataset>

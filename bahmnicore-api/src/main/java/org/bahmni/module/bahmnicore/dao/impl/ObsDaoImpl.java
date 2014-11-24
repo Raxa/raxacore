@@ -113,8 +113,25 @@ public class ObsDaoImpl implements ObsDao {
         queryToGetObs.setString("patientUuid", patientUuid);
         queryToGetObs.setInteger("visitId", visitId);
 
-        return withUniqueConcepts(queryToGetObs.list());
+        return withUniqueConcepts(filterByRootConcept(queryToGetObs.list(), conceptName));
     }
+
+    private List<Obs> filterByRootConcept(List<Obs> obs, String parentConceptName) {
+        List<Obs> filteredList = new ArrayList<>();
+        for (Obs ob : obs) {
+            if (partOfParent(ob, parentConceptName)) {
+                filteredList.add(ob);
+            }
+        }
+        return filteredList;
+    }
+
+    private boolean partOfParent(Obs ob, String parentConceptName) {
+        if (ob == null) return false;
+        if (ob.getConcept().getName().getName().equals(parentConceptName)) return true;
+        return partOfParent(ob.getObsGroup(), parentConceptName);
+    }
+
 
     private List<Obs> withUniqueConcepts(List<Obs> observations) {
         Map<Integer, Integer> conceptToEncounterMap = new HashMap<>();
