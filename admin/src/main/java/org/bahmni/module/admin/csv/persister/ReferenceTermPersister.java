@@ -56,7 +56,6 @@ public class ReferenceTermPersister implements EntityPersister<ReferenceTermRow>
 
     @Override
     public RowResult<ReferenceTermRow> validate(ReferenceTermRow referenceTermRow) {
-
-        return null;
+        return new RowResult<>(referenceTermRow);
     }
 }

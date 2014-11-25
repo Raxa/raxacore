@@ -26,7 +26,7 @@ public class DrugPersister implements EntityPersister<DrugRow> {
         if (StringUtils.isEmpty(drugRow.getGenericName())) {
             error.append("Drug generic name not specified\n");
         }
-        return new RowResult<>(new DrugRow(), error.toString());
+        return new RowResult<>(drugRow, error.toString());
     }
 
     @Override

@@ -26,7 +26,7 @@ public class ConceptSetPersister implements EntityPersister<ConceptSetRow> {
         if (StringUtils.isEmpty(conceptSetRow.conceptClass)) {
             error.append("Concept Class not specified\n");
         }
-        return new RowResult<>(new ConceptSetRow(), error.toString());
+        return new RowResult<>(conceptSetRow, error.toString());
 
     }
 
