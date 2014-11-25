@@ -6,7 +6,9 @@ import org.bahmni.csv.CSVEntity;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.annotation.CSVHeader;
 import org.bahmni.csv.annotation.CSVRegexHeader;
+import org.bahmni.csv.annotation.CSVRepeatingHeaders;
 import org.bahmni.module.admin.csv.utils.CSVUtils;
+import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -31,14 +33,8 @@ public class ConceptRow extends CSVEntity {
     @CSVHeader(name = "shortname")
     public String shortName;
 
-    @CSVHeader(name = "reference-term-source", optional = true)
-    public String referenceTermSource;
-
-    @CSVHeader(name = "reference-term-code", optional = true)
-    public String referenceTermCode;
-
-    @CSVHeader(name = "reference-term-relationship", optional = true)
-    public String referenceTermRelationship;
+    @CSVRepeatingHeaders(names = {"referenceTermSource", "referenceTermCode", "referenceTermRelationship"}, type = ConceptReferenceTermRow.class)
+    public List<ConceptReferenceTermRow> referenceTerms = new ArrayList<>();
 
     @CSVHeader(name = "datatype")
     public String dataType;
@@ -58,25 +54,24 @@ public class ConceptRow extends CSVEntity {
     @CSVHeader(name = "Low Normal", optional = true)
     public String lowNormal;
 
-    public ConceptRow(String uuid, String name, String description, String conceptClass, String shortName, String referenceTermCode, String referenceTermRelationship, String referenceTermSource, String dataType, String units, String hiNormal, String lowNormal, List<KeyValue> synonyms, List<KeyValue> answers) {
+    public ConceptRow(String uuid, String name, String description, String conceptClass, String shortName, String dataType, String units, String hiNormal, String lowNormal, List<ConceptReferenceTermRow> referenceTermRows, List<KeyValue> synonyms, List<KeyValue> answers) {
         this.uuid = uuid;
         this.name = name;
         this.description = description;
         this.conceptClass = conceptClass;
         this.shortName = shortName;
-        this.referenceTermCode = referenceTermCode;
-        this.referenceTermRelationship = referenceTermRelationship;
-        this.referenceTermSource = referenceTermSource;
         this.dataType = dataType;
         this.synonyms = synonyms;
         this.answers = answers;
         this.units = units;
         this.hiNormal = hiNormal;
         this.lowNormal = lowNormal;
-        String[] aRow = {uuid, name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource, dataType, units, hiNormal, lowNormal};
+        this.referenceTerms = referenceTermRows;
+        String[] aRow = {uuid, name, description, conceptClass, shortName, dataType, units, hiNormal, lowNormal};
         String[] synonymsRow = getStringArray(synonyms);
         String[] answersRow = getStringArray(answers);
         aRow = ArrayUtils.addAll(aRow, ArrayUtils.addAll(synonymsRow, answersRow));
+        aRow = ArrayUtils.addAll(aRow, getReferenceTermRowValues());
         originalRow(aRow);
     }
 
@@ -84,6 +79,7 @@ public class ConceptRow extends CSVEntity {
         int synonymCount = 1, answerCount = 1;
         List<KeyValue> synonymHeaders = new ArrayList<>();
         List<KeyValue> answerHeaders = new ArrayList<>();
+        List<ConceptReferenceTermRow> referenceTermHeaders = new ArrayList<>();
         for (KeyValue ignored : synonyms) {
             synonymHeaders.add(new KeyValue("synonymHeader", "synonym." + synonymCount));
             synonymCount++;
@@ -92,7 +88,12 @@ public class ConceptRow extends CSVEntity {
             answerHeaders.add(new KeyValue("answerHeader", "answer." + answerCount));
             answerCount++;
         }
-        return new ConceptRow("uuid", "name", "description", "class", "shortname", "reference-term-code", "reference-term-relationship", "reference-term-source", "datatype", "units", "High Normal", "Low Normal", synonymHeaders, answerHeaders);
+        for (ConceptReferenceTermRow referenceTerm : referenceTerms) {
+            referenceTermHeaders.add(referenceTerm.getHeaders());
+        }
+
+        //TODO FIX reference terms
+        return new ConceptRow("uuid", "name", "description", "class", "shortname", "datatype", "units", "High Normal", "Low Normal", referenceTermHeaders, synonymHeaders, answerHeaders);
     }
 
     public ConceptRow() {
@@ -131,16 +132,16 @@ public class ConceptRow extends CSVEntity {
         return StringUtils.isEmpty(description) ? null : description;
     }
 
-    public String getReferenceTermSource() {
-        return StringUtils.isEmpty(referenceTermSource) ? null : referenceTermSource;
-    }
-
     public String getShortName() {
         return StringUtils.isEmpty(shortName) ? null : shortName;
     }
 
-    public String getReferenceTermRelationship() {
-        return StringUtils.isEmpty(referenceTermRelationship) ? null : referenceTermRelationship;
+    public List<ConceptReferenceTermRow> getReferenceTerms() {
+        return referenceTerms;
+    }
+
+    public void setReferenceTerms(List<ConceptReferenceTermRow> referenceTerms) {
+        this.referenceTerms = referenceTerms;
     }
 
     public String getUnits() {
@@ -167,18 +168,32 @@ public class ConceptRow extends CSVEntity {
         this.lowNormal = lowNormal;
     }
 
-    public String getReferenceTermCode() {
-        return referenceTermCode;
-    }
-
-    public void adjust(int maxSynonyms, int maxAnswers) {
+    public void adjust(int maxSynonyms, int maxAnswers, int maxReferenceTerms) {
         addBlankSynonyms(maxSynonyms);
         addBlankAnswers(maxAnswers);
-        String[] aRow = {uuid, name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource, dataType, units, hiNormal, lowNormal};
+        addBlankReferenceTerms(maxReferenceTerms);
+        String[] aRow = {uuid, name, description, conceptClass, shortName, dataType, units, hiNormal, lowNormal};
         String[] synonymsRow = getStringArray(synonyms);
         String[] answersRow = getStringArray(answers);
         aRow = ArrayUtils.addAll(aRow, ArrayUtils.addAll(synonymsRow, answersRow));
+        aRow = ArrayUtils.addAll(aRow, getReferenceTermRowValues());
         originalRow(aRow);
+    }
+
+    private String[] getReferenceTermRowValues() {
+        String[] aRow = new String[0];
+        for (ConceptReferenceTermRow referenceTerm : referenceTerms) {
+            aRow = ArrayUtils.addAll(aRow, referenceTerm.getRowValues());
+        }
+        return aRow;
+    }
+
+    private void addBlankReferenceTerms(int maxReferenceTerms) {
+        int counter  = this.getReferenceTerms().size();
+        while (counter <= maxReferenceTerms){
+            this.referenceTerms.add(new ConceptReferenceTermRow(null, null, null));
+            counter++;
+        }
     }
 
     private void addBlankAnswers(int maxAnswers) {

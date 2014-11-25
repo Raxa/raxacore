@@ -6,6 +6,7 @@ import org.bahmni.csv.CSVEntity;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.annotation.CSVHeader;
 import org.bahmni.csv.annotation.CSVRegexHeader;
+import org.bahmni.csv.annotation.CSVRepeatingHeaders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +30,8 @@ public class ConceptSetRow extends CSVEntity {
     @CSVHeader(name = "shortname")
     public String shortName;
 
-    @CSVHeader(name = "reference-term-source", optional = true)
-    public String referenceTermSource;
-
-    @CSVHeader(name = "reference-term-code", optional = true)
-    public String referenceTermCode;
-
-    @CSVHeader(name = "reference-term-relationship", optional = true)
-    public String referenceTermRelationship;
+    @CSVRepeatingHeaders(names = {"referenceTermSource", "referenceTermCode", "referenceTermRelationship"}, type = ConceptReferenceTermRow.class)
+    public List<ConceptReferenceTermRow> referenceTerms = new ArrayList<>();
 
     @CSVRegexHeader(pattern = "child.*")
     public List<KeyValue> children;
@@ -73,33 +68,39 @@ public class ConceptSetRow extends CSVEntity {
             childHeaders.add(new KeyValue("childHeader", "child." + childCount));
             childCount++;
         }
-        return new ConceptSetRow("uuid", "name", "description", "class", "shortname", "reference-term-code", "reference-term-relationship", "reference-term-source", childHeaders);
+
+        List<ConceptReferenceTermRow> referenceTermHeaders = new ArrayList<>();
+        for (ConceptReferenceTermRow referenceTerm : referenceTerms) {
+            referenceTermHeaders.add(referenceTerm.getHeaders());
+        }
+        return new ConceptSetRow("uuid", "name", "description", "class", "shortname", referenceTermHeaders, childHeaders);
     }
 
-    public ConceptSetRow(String uuid, String name, String description, String conceptClass, String shortName, String referenceTermCode, String referenceTermRelationship, String referenceTermSource, List<KeyValue> children) {
+    public ConceptSetRow(String uuid, String name, String description, String conceptClass, String shortName, List<ConceptReferenceTermRow> referenceTerms, List<KeyValue> children) {
         this.uuid = uuid;
         this.name = name;
         this.description = description;
         this.conceptClass = conceptClass;
         this.shortName = shortName;
-        this.referenceTermCode = referenceTermCode;
-        this.referenceTermRelationship = referenceTermRelationship;
-        this.referenceTermSource = referenceTermSource;
         this.children = children;
-        String[] aRow = {uuid, name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource};
+        this.referenceTerms = referenceTerms;
+        String[] aRow = {uuid, name, description, conceptClass, shortName};
         String[] childrenRow = getStringArray(children);
         aRow = ArrayUtils.addAll(aRow, childrenRow);
+        aRow = ArrayUtils.addAll(aRow, getReferenceTermRowValues());
         originalRow(aRow);
     }
 
     public ConceptSetRow() {
     }
 
-    public void adjust(int maxSetMembers) {
+    public void adjust(int maxSetMembers, int maxConceptSetReferenceTerms) {
         addBlankChildren(maxSetMembers);
-        String[] aRow = {uuid, name, description, conceptClass, shortName, referenceTermCode, referenceTermRelationship, referenceTermSource};
+        addBlankReferenceTerms(maxConceptSetReferenceTerms);
+        String[] aRow = {uuid, name, description, conceptClass, shortName};
         String[] childrenRow = getStringArray(children);
         aRow = ArrayUtils.addAll(aRow, childrenRow);
+        aRow = ArrayUtils.addAll(aRow, getReferenceTermRowValues());
         originalRow(aRow);
     }
 
@@ -110,5 +111,21 @@ public class ConceptSetRow extends CSVEntity {
             this.children.add(new KeyValue("child", ""));
             counter++;
         }
+    }
+
+    private void addBlankReferenceTerms(int maxReferenceTerms) {
+        int counter  = this.referenceTerms.size();
+        while (counter <= maxReferenceTerms){
+            this.referenceTerms.add(new ConceptReferenceTermRow(null, null, null));
+            counter++;
+        }
+    }
+
+    private String[] getReferenceTermRowValues() {
+        String[] aRow = new String[0];
+        for (ConceptReferenceTermRow referenceTerm : referenceTerms) {
+            aRow = ArrayUtils.addAll(aRow, referenceTerm.getRowValues());
+        }
+        return aRow;
     }
 }

@@ -1,6 +1,7 @@
 package org.bahmni.module.referencedata.labconcepts.service.impl;
 
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
+import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptMapper;
@@ -71,18 +72,23 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
     private org.openmrs.Concept getConceptSet(ConceptSet conceptSet, ConceptClass conceptClass, org.openmrs.Concept existingConcept, ConceptDatatype conceptDatatype) {
         List<org.openmrs.Concept> setMembers = getSetMembers(conceptSet.getChildren());
         conceptValidator.validate(conceptSet, conceptClass, conceptDatatype, notFound);
-        ConceptMap conceptMap = referenceDataConceptReferenceTermService.getConceptMap(conceptSet.getConceptReferenceTerm());
         org.openmrs.Concept mappedConceptSet = conceptSetMapper.map(conceptSet, setMembers, conceptClass, conceptDatatype, existingConcept);
-        mappedConceptSet = conceptMapper.addConceptMap(mappedConceptSet, conceptMap);
+
+        for(ConceptReferenceTerm conceptReferenceTerm : conceptSet.getConceptReferenceTermsList()) {
+            conceptMapper.addConceptMap(mappedConceptSet, referenceDataConceptReferenceTermService.getConceptMap(conceptReferenceTerm));
+        }
+
         return mappedConceptSet;
     }
 
     private org.openmrs.Concept getConcept(Concept conceptData, ConceptClass conceptClass, ConceptDatatype conceptDatatype, org.openmrs.Concept existingConcept) {
         List<ConceptAnswer> conceptAnswers = getConceptAnswers(conceptData.getAnswers());
         conceptValidator.validate(conceptData, conceptClass, conceptDatatype, notFound);
-        ConceptMap conceptMap = referenceDataConceptReferenceTermService.getConceptMap(conceptData.getConceptReferenceTerm());
         org.openmrs.Concept mappedConcept = conceptMapper.map(conceptData, conceptClass, conceptDatatype, conceptAnswers, existingConcept);
-        mappedConcept = conceptMapper.addConceptMap(mappedConcept, conceptMap);
+
+        for(ConceptReferenceTerm conceptReferenceTerm : conceptData.getConceptReferenceTermsList()) {
+            conceptMapper.addConceptMap(mappedConcept, referenceDataConceptReferenceTermService.getConceptMap(conceptReferenceTerm));
+        }
         return mappedConcept;
     }
 

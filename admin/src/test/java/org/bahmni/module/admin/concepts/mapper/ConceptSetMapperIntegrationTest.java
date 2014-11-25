@@ -1,6 +1,7 @@
 package org.bahmni.module.admin.concepts.mapper;
 
 import org.bahmni.csv.KeyValue;
+import org.bahmni.module.admin.csv.models.ConceptReferenceTermRow;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.bahmni.module.admin.csv.models.ConceptRows;
 import org.bahmni.module.admin.csv.models.ConceptSetRow;
@@ -10,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class ConceptSetMapperIntegrationTest {
-
+    public static final String SAME_AS = "SAME-AS";
     private ConceptSetMapper conceptSetMapper;
     private ArrayList<KeyValue> children;
     private org.bahmni.module.referencedata.labconcepts.mapper.ConceptSetMapper referenceDataConceptSetMapper;
@@ -82,19 +84,18 @@ public class ConceptSetMapperIntegrationTest {
         conceptSetRow.shortName = "shortName";
         conceptSetRow.conceptClass = "ConvSet";
         conceptSetRow.children = children;
-        conceptSetRow.referenceTermCode = "code";
-        conceptSetRow.referenceTermRelationship = "rel";
-        conceptSetRow.referenceTermSource = "source";
-
+        ConceptReferenceTermRow conceptReferenceTermRow = new ConceptReferenceTermRow( "org.openmrs.module.emrapi","New Code", SAME_AS);
+        List<ConceptReferenceTermRow> conceptReferenceTermsList = new ArrayList<>(Arrays.asList(conceptReferenceTermRow));
+        conceptSetRow.referenceTerms = conceptReferenceTermsList;
 
         ConceptSet conceptSet = conceptSetMapper.map(conceptSetRow);
         assertEquals(2, conceptSet.getChildren().size());
         assertEquals(conceptSetRow.name, conceptSet.getUniqueName());
         assertEquals(conceptSetRow.shortName, conceptSet.getDisplayName());
         assertEquals(conceptSetRow.conceptClass, conceptSet.getClassName());
-        assertEquals("code", conceptSet.getConceptReferenceTerm().getReferenceTermCode());
-        assertEquals("rel", conceptSet.getConceptReferenceTerm().getReferenceTermRelationship());
-        assertEquals("source", conceptSet.getConceptReferenceTerm().getReferenceTermSource());
+        assertEquals("New Code", conceptSet.getConceptReferenceTermsList().get(0).getReferenceTermCode());
+        assertEquals(SAME_AS, conceptSet.getConceptReferenceTermsList().get(0).getReferenceTermRelationship());
+        assertEquals("org.openmrs.module.emrapi", conceptSet.getConceptReferenceTermsList().get(0).getReferenceTermSource());
     }
 
     @Test

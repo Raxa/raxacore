@@ -10,8 +10,8 @@ public class ConceptSet extends ConceptCommon {
         super();
     }
 
-    public ConceptSet(String uuid, String name, String conceptDescription, String conceptClass, String conceptShortname, String conceptReferenceTermCode, String conceptReferenceTermRelationship, String conceptReferenceTermSource, List<String> children) {
-        super(uuid, name, conceptDescription, conceptClass, conceptShortname, conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource, "N/A");
+    public ConceptSet(String uuid, String name, String conceptDescription, String conceptClass, String conceptShortname, List<ConceptReferenceTerm> referenceTerms, List<String> children) {
+        super(uuid, name, conceptDescription, conceptClass, conceptShortname, referenceTerms, "N/A");
         this.children = children;
     }
 

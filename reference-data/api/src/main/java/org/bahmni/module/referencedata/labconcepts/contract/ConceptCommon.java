@@ -3,6 +3,8 @@ package org.bahmni.module.referencedata.labconcepts.contract;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class ConceptCommon {
@@ -11,29 +13,29 @@ public class ConceptCommon {
     private String description;
     private String className;
     private String dataType;
-    private ConceptReferenceTerm conceptReferenceTerm;
+    private List<ConceptReferenceTerm> conceptReferenceTermsList = new ArrayList<>();
     private String uuid;
 
-    public ConceptCommon(String uuid, String name, String conceptDescription, String conceptClass, String conceptShortname, String conceptReferenceTermCode, String conceptReferenceTermRelationship, String conceptReferenceTermSource, String dataType) {
+    public ConceptCommon(String uuid, String name, String conceptDescription, String conceptClass, String conceptShortname, List<ConceptReferenceTerm> conceptReferenceTermsList, String dataType) {
         this.uuid = uuid;
         this.uniqueName = name;
         this.description = conceptDescription;
         this.className = conceptClass;
         this.displayName = conceptShortname;
         this.dataType = dataType;
-        this.conceptReferenceTerm = new ConceptReferenceTerm(conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource);
+        this.conceptReferenceTermsList = conceptReferenceTermsList;
     }
 
     public ConceptCommon() {
 
     }
 
-    public ConceptReferenceTerm getConceptReferenceTerm() {
-        return conceptReferenceTerm;
+    public List<ConceptReferenceTerm> getConceptReferenceTermsList() {
+        return conceptReferenceTermsList;
     }
 
-    public void setConceptReferenceTerm(ConceptReferenceTerm conceptReferenceTerm) {
-        this.conceptReferenceTerm = conceptReferenceTerm;
+    public void setConceptReferenceTermsList(List<ConceptReferenceTerm> conceptReferenceTermsList) {
+        this.conceptReferenceTermsList = conceptReferenceTermsList;
     }
 
     @NotNull

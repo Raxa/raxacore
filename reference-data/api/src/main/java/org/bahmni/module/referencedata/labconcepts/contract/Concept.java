@@ -16,12 +16,11 @@ public class Concept extends ConceptCommon{
     public Concept() {
     }
 
-    public Concept(String uuid, String name, String conceptDescription, String conceptClass, String conceptShortname, String conceptReferenceTermCode, String conceptReferenceTermRelationship, String conceptReferenceTermSource, String conceptDatatype, List<String> conceptSynonyms, List<String> conceptAnswers, String datatype) {
-        super(uuid, name, conceptDescription, conceptClass, conceptShortname, conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource, datatype);
+    public Concept(String uuid, String name, String conceptDescription, String conceptClass, String conceptShortname, List<ConceptReferenceTerm> conceptReferenceTermList, List<String> conceptSynonyms, List<String> conceptAnswers, String datatype) {
+        super(uuid, name, conceptDescription, conceptClass, conceptShortname, conceptReferenceTermList, datatype);
         this.answers = conceptAnswers;
         this.synonyms = conceptSynonyms;
     }
-
 
     public List<String> getAnswers() {
         return answers;

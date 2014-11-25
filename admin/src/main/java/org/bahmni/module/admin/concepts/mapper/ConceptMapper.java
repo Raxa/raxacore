@@ -2,6 +2,7 @@ package org.bahmni.module.admin.concepts.mapper;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.csv.KeyValue;
+import org.bahmni.module.admin.csv.models.ConceptReferenceTermRow;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm;
@@ -36,7 +37,8 @@ public class ConceptMapper {
         concept.setLowNormal(conceptRow.getLowNormal());
         addSynonyms(conceptRow, concept);
         addAnswers(conceptRow, concept);
-        addConceptReferenceTerm(conceptRow, concept);
+        addConceptReferenceTerms(conceptRow, concept);
+
         return concept;
     }
 
@@ -60,14 +62,14 @@ public class ConceptMapper {
         concept.setAnswers(answers);
     }
 
-    private void addConceptReferenceTerm(ConceptRow conceptRow, Concept concept) {
-        ConceptReferenceTerm conceptReferenceTerm = new ConceptReferenceTerm();
-        conceptReferenceTerm.setReferenceTermCode(conceptRow.getReferenceTermCode());
-        conceptReferenceTerm.setReferenceTermRelationship(conceptRow.getReferenceTermRelationship());
-        conceptReferenceTerm.setReferenceTermSource(conceptRow.getReferenceTermSource());
-        concept.setConceptReferenceTerm(conceptReferenceTerm);
+    private void addConceptReferenceTerms(ConceptRow conceptRow, Concept concept) {
+        ConceptReferenceTerm conceptReferenceTerm;
+        for(ConceptReferenceTermRow referenceTerm : conceptRow.getReferenceTerms()) {
+            conceptReferenceTerm = new ConceptReferenceTerm(referenceTerm.getReferenceTermCode(), referenceTerm.getReferenceTermRelationship(), referenceTerm.getReferenceTermSource());
+            concept.getConceptReferenceTermsList().add(conceptReferenceTerm);
+        }
     }
-
+    //TODO need to change
     public ConceptRow map(Concept concept) {
         String name = concept.getUniqueName();
         String description = concept.getDescription();
@@ -76,16 +78,15 @@ public class ConceptMapper {
         String conceptDatatype = concept.getDataType();
         List<KeyValue> conceptSynonyms = getKeyValueList("synonym", concept.getSynonyms());
         List<KeyValue> conceptAnswers = getKeyValueList("answer", concept.getAnswers());
-        String conceptReferenceTermCode = concept.getConceptReferenceTerm().getReferenceTermCode();
-        String conceptReferenceTermSource = concept.getConceptReferenceTerm().getReferenceTermSource();
-        String conceptReferenceTermRelationship = concept.getConceptReferenceTerm().getReferenceTermRelationship();
+
+        List<ConceptReferenceTermRow> referenceTermRows = new ArrayList<>();
+        for (ConceptReferenceTerm term : concept.getConceptReferenceTermsList()) {
+            referenceTermRows.add(new ConceptReferenceTermRow(term.getReferenceTermSource(), term.getReferenceTermCode(), term.getReferenceTermRelationship()));
+        }
         String uuid = concept.getUuid();
         String units = concept.getUnits();
         String hiNormal = concept.getHiNormal();
         String lowNormal = concept.getLowNormal();
-        ConceptRow conceptRow = new ConceptRow(uuid, name, description, conceptClass, shortName,
-                conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource,
-                conceptDatatype, units, hiNormal, lowNormal, conceptSynonyms, conceptAnswers);
-        return conceptRow;
+        return new ConceptRow(uuid, name, description, conceptClass, shortName, conceptDatatype, units, hiNormal, lowNormal, referenceTermRows, conceptSynonyms, conceptAnswers);
     }
 }

@@ -1,8 +1,10 @@
 package org.bahmni.module.referencedata.labconcepts.mapper;
 
+import org.bahmni.module.referencedata.labconcepts.contract.*;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
-import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
 import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.api.context.Context;
 
 import java.util.ArrayList;
@@ -45,14 +47,16 @@ public class ConceptSetMapper {
         String conceptClass = concept.getConceptClass().getName();
         List<String> children = getSetMembers(concept);
         Collection<ConceptMap> conceptMappings = concept.getConceptMappings();
-        if (conceptMappings != null && conceptMappings.size() > 0) {
-            ConceptMap conceptMap = conceptMappings.iterator().next();
-            conceptReferenceTermCode = conceptMap.getConceptReferenceTerm().getCode();
-            conceptReferenceTermSource = conceptMap.getConceptReferenceTerm().getConceptSource().getName();
-            conceptReferenceTermRelationship = conceptMap.getConceptMapType().getName();
+
+
+        List<org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm> referenceTerms = new ArrayList<>();
+        for (ConceptMap conceptMapping : conceptMappings) {
+            org.openmrs.ConceptReferenceTerm term = conceptMapping.getConceptReferenceTerm();
+            referenceTerms.add(new org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm(term.getCode(), conceptMapping.getConceptMapType().getName(), term.getConceptSource().getName()));
         }
+
         String uuid = concept.getUuid();
-        ConceptSet conceptSet = new ConceptSet(uuid, name, conceptDescription, conceptClass, conceptShortname, conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource, children);
+        ConceptSet conceptSet = new ConceptSet(uuid, name, conceptDescription, conceptClass, conceptShortname, referenceTerms, children);
         return conceptSet;
     }
 

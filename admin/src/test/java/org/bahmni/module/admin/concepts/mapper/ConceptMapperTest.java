@@ -1,12 +1,15 @@
 package org.bahmni.module.admin.concepts.mapper;
 
 import org.bahmni.csv.KeyValue;
+import org.bahmni.module.admin.csv.models.ConceptReferenceTermRow;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
+import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,13 +61,14 @@ public class ConceptMapperTest {
     @Test
     public void map_concept_reference_term() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
-        conceptRow.referenceTermCode = "code";
-        conceptRow.referenceTermRelationship = "SAME-AS";
-        conceptRow.referenceTermSource = "source";
+        ConceptReferenceTermRow referenceTermRowOne = new ConceptReferenceTermRow("source", "codeOne", "SAME-AS");
+        ConceptReferenceTermRow referenceTermRowTwo = new ConceptReferenceTermRow("source", "codeTwo", "SAME-AS");
+        conceptRow.setReferenceTerms(Arrays.asList(referenceTermRowOne, referenceTermRowTwo));
         Concept mappedConcept = conceptMapper.map(conceptRow);
-        assertEquals(conceptRow.referenceTermCode, mappedConcept.getConceptReferenceTerm().getReferenceTermCode());
-        assertEquals(conceptRow.referenceTermSource, mappedConcept.getConceptReferenceTerm().getReferenceTermSource());
-        assertEquals(conceptRow.referenceTermRelationship, mappedConcept.getConceptReferenceTerm().getReferenceTermRelationship());
+
+        assertEquals(2, mappedConcept.getConceptReferenceTermsList().size());
+        assertEquals("codeOne", mappedConcept.getConceptReferenceTermsList().get(0).getReferenceTermCode());
+        assertEquals("codeTwo", mappedConcept.getConceptReferenceTermsList().get(1).getReferenceTermCode());
     }
 
     @Test

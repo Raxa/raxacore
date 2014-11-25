@@ -2,14 +2,13 @@ package org.bahmni.module.admin.concepts.mapper;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.csv.KeyValue;
+import org.bahmni.module.admin.csv.models.ConceptReferenceTermRow;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.bahmni.module.admin.csv.models.ConceptRows;
 import org.bahmni.module.admin.csv.models.ConceptSetRow;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
-import org.openmrs.Concept;
-import org.openmrs.api.context.Context;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,13 @@ public class ConceptSetMapper {
         conceptSet.setClassName(conceptSetRow.conceptClass);
         conceptSet.setDescription(conceptSetRow.description);
         conceptSet.setChildren(getChildren(conceptSetRow));
-        conceptSet.setConceptReferenceTerm(getConceptReferenceTerm(conceptSetRow));
+
+        List<ConceptReferenceTerm> conceptReferenceTerms = new ArrayList<>();
+        for (ConceptReferenceTermRow term : conceptSetRow.referenceTerms) {
+            conceptReferenceTerms.add(new ConceptReferenceTerm(term.getReferenceTermCode(), term.getReferenceTermRelationship(), term.getReferenceTermSource()));
+        }
+
+        conceptSet.setConceptReferenceTermsList(conceptReferenceTerms);
         return conceptSet;
     }
 
@@ -47,25 +52,27 @@ public class ConceptSetMapper {
     }
 
 
-    private ConceptReferenceTerm getConceptReferenceTerm(ConceptSetRow conceptSetRow) {
-        ConceptReferenceTerm conceptReferenceTerm = new ConceptReferenceTerm();
-        conceptReferenceTerm.setReferenceTermCode(conceptSetRow.referenceTermCode);
-        conceptReferenceTerm.setReferenceTermRelationship(conceptSetRow.referenceTermRelationship);
-        conceptReferenceTerm.setReferenceTermSource(conceptSetRow.referenceTermSource);
-        return conceptReferenceTerm;
-    }
-
+//    private ConceptReferenceTerm getConceptReferenceTerm(ConceptSetRow conceptSetRow) {
+//        ConceptReferenceTerm conceptReferenceTerm = new ConceptReferenceTerm();
+//        conceptReferenceTerm.setReferenceTermCode(conceptSetRow.referenceTermCode);
+//        conceptReferenceTerm.setReferenceTermRelationship(conceptSetRow.referenceTermRelationship);
+//        conceptReferenceTerm.setReferenceTermSource(conceptSetRow.referenceTermSource);
+//        return conceptReferenceTerm;
+//    }
+//
     public ConceptSetRow map(ConceptSet conceptSet) {
         String name = conceptSet.getUniqueName();
         String description = conceptSet.getDescription();
         String shortName = conceptSet.getDisplayName();
         String conceptClass = conceptSet.getClassName();
         List<KeyValue> children = getKeyValueList("child", conceptSet.getChildren());
-        String conceptReferenceTermCode = conceptSet.getConceptReferenceTerm().getReferenceTermCode();
-        String conceptReferenceTermSource = conceptSet.getConceptReferenceTerm().getReferenceTermSource();
-        String conceptReferenceTermRelationship = conceptSet.getConceptReferenceTerm().getReferenceTermRelationship();
+
+        List<ConceptReferenceTermRow> referenceTermRows = new ArrayList<>();
+        for (ConceptReferenceTerm term : conceptSet.getConceptReferenceTermsList()) {
+            referenceTermRows.add(new ConceptReferenceTermRow(term.getReferenceTermSource(), term.getReferenceTermCode(), term.getReferenceTermRelationship()));
+        }
         String uuid = conceptSet.getUuid();
-        ConceptSetRow conceptSetRow = new ConceptSetRow(uuid, name, description, conceptClass, shortName, conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource, children);
+        ConceptSetRow conceptSetRow = new ConceptSetRow(uuid, name, description, conceptClass, shortName, referenceTermRows, children);
         return conceptSetRow;
     }
 

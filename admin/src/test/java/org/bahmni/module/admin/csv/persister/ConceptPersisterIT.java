@@ -3,10 +3,12 @@ package org.bahmni.module.admin.csv.persister;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
+import org.bahmni.module.admin.csv.models.ConceptReferenceTermRow;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.*;
+import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
@@ -14,6 +16,7 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -156,9 +159,10 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         conceptRow.conceptClass = "New Class";
         conceptRow.dataType = "Coded";
         conceptRow.shortName = "NConcept";
-        conceptRow.referenceTermSource = "org.openmrs.module.emrapi";
-        conceptRow.referenceTermCode = "New Code";
-        conceptRow.referenceTermRelationship = SAME_AS;
+        ConceptReferenceTermRow conceptReferenceTermRow = new ConceptReferenceTermRow( "org.openmrs.module.emrapi","New Code", SAME_AS);
+        List<ConceptReferenceTermRow> conceptReferenceTermsList = new ArrayList<>(Arrays.asList(conceptReferenceTermRow));
+        conceptRow.referenceTerms = conceptReferenceTermsList;
+
         List<KeyValue> synonyms = new ArrayList<>();
         synonyms.add(new KeyValue("1", "Synonym1"));
         synonyms.add(new KeyValue("2", "Synonym2"));
@@ -190,9 +194,9 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         ArrayList<ConceptMap> conceptMaps = new ArrayList<>(persistedConcept.getConceptMappings());
         ConceptMap conceptMap = conceptMaps.get(0);
         assertEquals(persistedConcept, conceptMap.getConcept());
-        assertEquals(conceptRow.referenceTermCode, conceptMap.getConceptReferenceTerm().getCode());
-        assertEquals(conceptRow.referenceTermRelationship.toLowerCase(), conceptMap.getConceptMapType().toString());
-        assertEquals(conceptRow.referenceTermSource, conceptMap.getConceptReferenceTerm().getConceptSource().getName());
+        assertEquals(conceptReferenceTermRow.getReferenceTermCode(), conceptMap.getConceptReferenceTerm().getCode());
+        assertEquals(conceptReferenceTermRow.getReferenceTermRelationship().toLowerCase(), conceptMap.getConceptMapType().toString());
+        assertEquals(conceptReferenceTermRow.getReferenceTermSource(), conceptMap.getConceptReferenceTerm().getConceptSource().getName());
         Context.flushSession();
         Context.closeSession();
 
@@ -233,9 +237,9 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         conceptRow.name = "Existing Concept";
         conceptRow.conceptClass = "New Class";
         conceptRow.description = "Some Description";
-        conceptRow.referenceTermSource = "org.openmrs.module.emrapi";
-        conceptRow.referenceTermCode = "New Code";
-        conceptRow.referenceTermRelationship = SAME_AS;
+        ConceptReferenceTermRow conceptReferenceTermRow = new ConceptReferenceTermRow( "org.openmrs.module.emrapi","New Code", SAME_AS);
+        List<ConceptReferenceTermRow> conceptReferenceTermsList = new ArrayList<>(Arrays.asList(conceptReferenceTermRow));
+        conceptRow.referenceTerms = conceptReferenceTermsList;
 
         List<KeyValue> synonyms = new ArrayList<>();
         synonyms.add(new KeyValue("1", "Synonym1"));
@@ -256,9 +260,49 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         ArrayList<ConceptMap> conceptMaps = new ArrayList<>(persistedConcept.getConceptMappings());
         ConceptMap conceptMap = conceptMaps.get(0);
         assertEquals(persistedConcept, conceptMap.getConcept());
-        assertEquals(conceptRow.referenceTermCode, conceptMap.getConceptReferenceTerm().getCode());
-        assertEquals(conceptRow.referenceTermRelationship.toLowerCase(), conceptMap.getConceptMapType().toString());
-        assertEquals(conceptRow.referenceTermSource, conceptMap.getConceptReferenceTerm().getConceptSource().getName());
+        assertEquals(conceptReferenceTermRow.getReferenceTermCode(), conceptMap.getConceptReferenceTerm().getCode());
+        assertEquals(conceptReferenceTermRow.getReferenceTermRelationship().toLowerCase(), conceptMap.getConceptMapType().toString());
+        assertEquals(conceptReferenceTermRow.getReferenceTermSource(), conceptMap.getConceptReferenceTerm().getConceptSource().getName());
+
+        for (ConceptName conceptName : persistedConcept.getSynonyms(Context.getLocale())) {
+            assertTrue(conceptName.getName().equals("Synonym1") || conceptName.getName().equals("Synonym2"));
+        }
+        Context.flushSession();
+        Context.closeSession();
+    }
+
+    @Test
+    public void should_create_new_mappings_for_existing_concept() throws Exception {
+        ConceptRow conceptRow = new ConceptRow();
+        conceptRow.name = "Existing Concept";
+        conceptRow.conceptClass = "New Class";
+        conceptRow.description = "Some Description";
+        ConceptReferenceTermRow conceptReferenceTermRow = new ConceptReferenceTermRow( "org.openmrs.module.emrapi","New Code", SAME_AS);
+        List<ConceptReferenceTermRow> conceptReferenceTermsList = new ArrayList<>(Arrays.asList(conceptReferenceTermRow));
+        conceptRow.referenceTerms = conceptReferenceTermsList;
+
+        List<KeyValue> synonyms = new ArrayList<>();
+        synonyms.add(new KeyValue("1", "Synonym1"));
+        synonyms.add(new KeyValue("2", "Synonym2"));
+        conceptRow.synonyms = synonyms;
+        conceptRow.shortName = "NConcept";
+        Messages messages = conceptPersister.persist(conceptRow);
+        assertEquals(0, messages.size());
+        Context.openSession();
+        Context.authenticate("admin", "test");
+        Concept persistedConcept = conceptService.getConceptByName(conceptRow.name);
+        assertNotNull(persistedConcept);
+        assertEquals(conceptRow.description, persistedConcept.getDescription(Context.getLocale()).getDescription());
+        assertEquals(conceptRow.conceptClass, persistedConcept.getConceptClass().getName());
+        assertEquals(conceptRow.shortName, persistedConcept.getShortestName(Context.getLocale(), false).getName());
+        assertEquals(2, persistedConcept.getSynonyms().size());
+        assertEquals(0, persistedConcept.getAnswers().size());
+        ArrayList<ConceptMap> conceptMaps = new ArrayList<>(persistedConcept.getConceptMappings());
+        ConceptMap conceptMap = conceptMaps.get(0);
+        assertEquals(persistedConcept, conceptMap.getConcept());
+        assertEquals(conceptReferenceTermRow.getReferenceTermCode(), conceptMap.getConceptReferenceTerm().getCode());
+        assertEquals(conceptReferenceTermRow.getReferenceTermRelationship().toLowerCase(), conceptMap.getConceptMapType().toString());
+        assertEquals(conceptReferenceTermRow.getReferenceTermSource(), conceptMap.getConceptReferenceTerm().getConceptSource().getName());
 
         for (ConceptName conceptName : persistedConcept.getSynonyms(Context.getLocale())) {
             assertTrue(conceptName.getName().equals("Synonym1") || conceptName.getName().equals("Synonym2"));
@@ -273,10 +317,10 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         conceptRow.name = "New Concept";
         conceptRow.conceptClass = "New Class";
         conceptRow.description = "Some Description";
-        conceptRow.referenceTermSource = "org.openmrs.module.emrapi";
-        conceptRow.referenceTermCode = "New Code";
+        ConceptReferenceTermRow conceptReferenceTermRow = new ConceptReferenceTermRow( "org.openmrs.module.emrapi","New Code", SAME_AS);
+        List<ConceptReferenceTermRow> conceptReferenceTermsList = new ArrayList<>(Arrays.asList(conceptReferenceTermRow));
+        conceptRow.referenceTerms = conceptReferenceTermsList;
         conceptRow.dataType = "Numeric";
-        conceptRow.referenceTermRelationship = SAME_AS;
         conceptRow.units = "unit";
         conceptRow.hiNormal = "99";
         conceptRow.lowNormal = "10";
@@ -300,9 +344,9 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         ArrayList<ConceptMap> conceptMaps = new ArrayList<>(persistedConcept.getConceptMappings());
         ConceptMap conceptMap = conceptMaps.get(0);
         assertEquals(persistedConcept, conceptMap.getConcept());
-        assertEquals(conceptRow.referenceTermCode, conceptMap.getConceptReferenceTerm().getCode());
-        assertEquals(conceptRow.referenceTermRelationship.toLowerCase(), conceptMap.getConceptMapType().toString());
-        assertEquals(conceptRow.referenceTermSource, conceptMap.getConceptReferenceTerm().getConceptSource().getName());
+        assertEquals(conceptReferenceTermRow.getReferenceTermCode(), conceptMap.getConceptReferenceTerm().getCode());
+        assertEquals(conceptReferenceTermRow.getReferenceTermRelationship().toLowerCase(), conceptMap.getConceptMapType().toString());
+        assertEquals(conceptReferenceTermRow.getReferenceTermSource(), conceptMap.getConceptReferenceTerm().getConceptSource().getName());
         ConceptNumeric conceptNumeric = conceptService.getConceptNumeric(persistedConcept.getConceptId());
         assertTrue(conceptNumeric.getUnits().equals(conceptRow.units));
         assertTrue(conceptNumeric.getHiNormal().equals(99.0));

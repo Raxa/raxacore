@@ -75,9 +75,9 @@ public class ConceptSetExporterIT extends BaseModuleWebContextSensitiveTest {
         assertEquals("Concept1 Description", child1.getDescription());
         assertNull(child2.getDescription());
         assertNull(child3.getDescription());
-        assertEquals("New Code", child3.referenceTermCode);
-        assertEquals("SAME-AS".toLowerCase(), child3.referenceTermRelationship.toLowerCase());
-        assertEquals("org.openmrs.module.emrapi", child3.referenceTermSource);
+        assertEquals("New Code", child3.getReferenceTerms().get(0).getReferenceTermCode());
+        assertEquals("SAME-AS".toLowerCase(), child3.getReferenceTerms().get(0).getReferenceTermRelationship().toLowerCase());
+        assertEquals("org.openmrs.module.emrapi", child3.getReferenceTerms().get(0).getReferenceTermSource());
         assertEquals(3, conceptSetRows.size());
         ConceptSetRow small = conceptSetRows.get(1);
         ConceptSetRow big = conceptSetRows.get(2);

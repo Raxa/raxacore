@@ -2,6 +2,7 @@ package org.bahmni.module.referencedata.labconcepts.mapper;
 
 
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
+import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
 
@@ -49,8 +50,8 @@ public class ConceptMapper {
     }
 
     public Concept map(org.openmrs.Concept concept) {
-        String conceptReferenceTermCode = null, conceptReferenceTermSource = null,
-                conceptReferenceTermRelationship = null, conceptDescription = null, conceptShortname = null;
+        String conceptDescription = null;
+        String conceptShortname = null;
         String name = concept.getName(Context.getLocale()).getName();
         ConceptDescription description = concept.getDescription(Context.getLocale());
         if (description != null) {
@@ -65,16 +66,15 @@ public class ConceptMapper {
         List<String> conceptSynonyms = getSynonyms(concept);
         List<String> conceptAnswers = getAnswers(concept);
         Collection<ConceptMap> conceptMappings = concept.getConceptMappings();
-        if (conceptMappings != null && conceptMappings.size() > 0) {
-            ConceptMap conceptMap = conceptMappings.iterator().next();
-            conceptReferenceTermCode = conceptMap.getConceptReferenceTerm().getCode();
-            conceptReferenceTermSource = conceptMap.getConceptReferenceTerm().getConceptSource().getName();
-            conceptReferenceTermRelationship = conceptMap.getConceptMapType().getName();
+
+        List<org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm> referenceTerms = new ArrayList<>();
+        for (ConceptMap conceptMapping : conceptMappings) {
+            org.openmrs.ConceptReferenceTerm term = conceptMapping.getConceptReferenceTerm();
+            referenceTerms.add(new ConceptReferenceTerm(term.getCode(), conceptMapping.getConceptMapType().getName(), term.getConceptSource().getName()));
         }
+
         String uuid = concept.getUuid();
-        return new Concept(uuid, name, conceptDescription, conceptClass, conceptShortname,
-                conceptReferenceTermCode, conceptReferenceTermRelationship, conceptReferenceTermSource,
-                conceptDatatype, conceptSynonyms, conceptAnswers, conceptDatatype);
+        return new Concept(uuid, name, conceptDescription, conceptClass, conceptShortname, referenceTerms, conceptSynonyms, conceptAnswers, conceptDatatype);
     }
 
     private List<String> getAnswers(org.openmrs.Concept concept) {

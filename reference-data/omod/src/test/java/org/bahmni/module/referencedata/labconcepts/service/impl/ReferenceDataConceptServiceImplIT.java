@@ -4,7 +4,6 @@ import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -54,7 +53,9 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
         conceptReferenceTerm.setReferenceTermCode("New Code");
         conceptReferenceTerm.setReferenceTermRelationship("SAME-AS");
         conceptReferenceTerm.setReferenceTermSource("org.openmrs.module.emrapi");
-        conceptSet.setConceptReferenceTerm(conceptReferenceTerm);
+//        List<ConceptReferenceTerm> conceptReferenceTerms = new ArrayList<>();
+//        conceptReferenceTerms.add(conceptReferenceTerm);
+        conceptSet.getConceptReferenceTermsList().add(conceptReferenceTerm);
 
         Concept concept = referenceDataConceptService.saveConcept(conceptSet);
 
