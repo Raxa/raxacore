@@ -34,9 +34,9 @@ public class DiseaseTemplateControllerIT extends BaseWebControllerTest {
         assertNotNull(diseaseTemplates);
         assertEquals(1, diseaseTemplates.size());
         DiseaseTemplate breastCancer = diseaseTemplates.get(0);
-        assertEquals(1, breastCancer.getObservationTemplates().size());
+        assertEquals(2, breastCancer.getObservationTemplates().size());
         ObservationTemplate breastCancerIntake = breastCancer.getObservationTemplates().get(0);
-        assertEquals(3, breastCancerIntake.getBahmniObservations().size());
+        assertEquals(2, breastCancerIntake.getBahmniObservations().size());
         assertEquals("Breast Cancer Intake", breastCancerIntake.getConcept().getName());
         assertEquals("BC_intake_concept_uuid", breastCancerIntake.getConcept().getUuid());
     }
@@ -46,7 +46,6 @@ public class DiseaseTemplateControllerIT extends BaseWebControllerTest {
         DiseaseTemplate diseaseTemplates = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/diseaseTemplate", new Parameter("patientUuid", "86526ed5-3c11-11de-a0ba-001e378eb67a"), new Parameter("diseaseName", "Breast Cancer"))), new TypeReference<DiseaseTemplate>() {});
         assertNotNull(diseaseTemplates);
         assertEquals("Breast Cancer", diseaseTemplates.getConcept().getName());
-        assertEquals(1, diseaseTemplates.getObservationTemplates().size());
-        assertEquals(4, diseaseTemplates.getObservationTemplates().get(0).getBahmniObservations().size());
+        assertEquals(4, diseaseTemplates.getObservationTemplates().size());
     }
 }
