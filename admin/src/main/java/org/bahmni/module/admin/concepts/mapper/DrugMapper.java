@@ -13,6 +13,7 @@ public class DrugMapper {
         drug.setStrength(drugRow.getStrength());
         drug.setMinimumDose(drugRow.getMinimumDose());
         drug.setMaximumDose(drugRow.getMaximumDose());
+        drug.setCombination(drugRow.getCombination());
         return drug;
     }
 }

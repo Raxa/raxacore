@@ -37,12 +37,14 @@ public class DrugMapper {
     public Drug map(org.openmrs.Drug conceptDrug) {
         Drug drug = new Drug();
         drug.setName(conceptDrug.getName());
-        drug.setGenericName(getNameFrom(conceptDrug.getConcept()));
-        drug.setForm(getNameFrom(conceptDrug.getDosageForm()));
         drug.setShortName(getShortNameFrom(conceptDrug.getConcept()));
-        drug.setRoute(getNameFrom(conceptDrug.getRoute()));
+        drug.setGenericName(getNameFrom(conceptDrug.getConcept()));
+        drug.setDosageForm(getNameFrom(conceptDrug.getDosageForm()));
         drug.setStrength(conceptDrug.getStrength());
         drug.setUuid(conceptDrug.getUuid());
+        drug.setCombination(conceptDrug.getCombination());
+        drug.setMaximumDose(conceptDrug.getMaximumDailyDose()==null?"":conceptDrug.getMaximumDailyDose().toString());
+        drug.setMinimumDose(conceptDrug.getMinimumDailyDose()==null?"":conceptDrug.getMinimumDailyDose().toString());
         return drug;
     }
 

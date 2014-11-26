@@ -190,19 +190,13 @@ public class DrugMapperTest {
     @Test
     public void test_openmrs_drug_to_bahmni_drug(){
         Concept existingConcept = new ConceptBuilder().withClassUUID(ConceptClass.DRUG_UUID).withName("Existing Concept").withShortName("short").build();
-
-        Concept capsule = new ConceptBuilder().withName("Capsule").build();
-
         org.openmrs.Drug existingDrug = new DrugBuilder().withName("Existing Drug").withConcept(existingConcept).withDosageForm("Tablet").withStrength("Very Strong").build();
-        existingDrug.setRoute(capsule);
 
         Drug bahmniDrug = drugMapper.map(existingDrug);
         assertEquals("Existing Drug", bahmniDrug.getName());
         assertEquals("Existing Concept", bahmniDrug.getGenericName());
-        assertEquals("Tablet", bahmniDrug.getForm());
+        assertEquals("Tablet", bahmniDrug.getDosageForm());
         assertEquals("short", bahmniDrug.getShortName());
-        assertEquals("Capsule", bahmniDrug.getRoute());
         assertEquals("Very Strong", bahmniDrug.getStrength());
-
     }
 }

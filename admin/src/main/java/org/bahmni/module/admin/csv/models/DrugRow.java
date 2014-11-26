@@ -1,5 +1,6 @@
 package org.bahmni.module.admin.csv.models;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.bahmni.csv.CSVEntity;
 import org.bahmni.csv.annotation.CSVHeader;
 
@@ -12,6 +13,9 @@ public class DrugRow extends CSVEntity {
 
     @CSVHeader(name = "Generic Name")
     private String genericName;
+
+    @CSVHeader(name = "Combination", optional = true)
+    private String combination;
 
     @CSVHeader(name = "Strength", optional = true)
     private String strength;
@@ -79,5 +83,13 @@ public class DrugRow extends CSVEntity {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public Boolean getCombination() {
+        return BooleanUtils.toBooleanObject(this.combination);
+    }
+
+    public void setCombination(String combination) {
+        this.combination = combination;
     }
 }
