@@ -1,11 +1,19 @@
 package org.bahmni.module.admin.csv.persister;
 
-import org.bahmni.csv.RowResult;
+import java.util.Arrays;
+import java.util.List;
+import org.bahmni.csv.Messages;
 import org.bahmni.module.admin.csv.models.LabResultRow;
 import org.bahmni.module.admin.csv.models.LabResultsRow;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.*;
+import org.openmrs.CareSetting;
+import org.openmrs.Encounter;
+import org.openmrs.Order;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
@@ -15,10 +23,6 @@ import org.openmrs.module.bahmniemrapi.laborder.service.LabOrderResultsService;
 import org.openmrs.test.TestUtil;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.*;
-
-import static org.junit.Assert.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class LabResultPersisterIT extends BaseModuleWebContextSensitiveTest {
@@ -54,11 +58,11 @@ public class LabResultPersisterIT extends BaseModuleWebContextSensitiveTest {
         labResultsRow.setPatientIdentifier("GAN200001").setTestDateString("2014-10-11").setVisitType(visitType);
         labResultsRow.setTestResults(Arrays.asList(new LabResultRow().setTest("Urea Nitorgen").setResult("10")));
 
-        RowResult<LabResultsRow> rowResult = labResultPersister.persist(labResultsRow);
+        Messages errorMessages = labResultPersister.persist(labResultsRow);
 
         Patient patient = patientService.getPatientByUuid("75e04d42-3ca8-11e3-bf2b-ab87271c1b75");
         List<Visit> visits = visitService.getVisitsByPatient(patient);
-        assertTrue(rowResult.isSuccessful());
+        assertTrue(errorMessages.isEmpty());
         // Assert visit data
         assertEquals(1, visits.size());
         Visit visit = visits.get(0);

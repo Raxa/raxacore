@@ -1,6 +1,7 @@
 package org.bahmni.module.admin.csv.persister;
 
 import org.apache.commons.lang.StringUtils;
+import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.PatientProgramRow;
 import org.bahmni.module.admin.csv.persister.PatientProgramPersister;
@@ -51,8 +52,8 @@ public class PatientProgramPersisterIT extends BaseModuleWebContextSensitiveTest
         patientProgramRow.programName = "Diabetes Program";
         patientProgramRow.enrollmentDateTime = "1111-11-11";
 
-        RowResult<PatientProgramRow> persistenceResult = patientProgramPersister.persist(patientProgramRow);
-        assertTrue("Should have persisted the encounter row with the program. " + persistenceResult.getErrorMessage(), StringUtils.isEmpty(persistenceResult.getErrorMessage()));
+        Messages persistenceResult = patientProgramPersister.persist(patientProgramRow);
+        assertTrue("Should have persisted the encounter row with the program. ", persistenceResult.isEmpty());
 
         Context.openSession();
         Context.authenticate("admin", "test");
@@ -73,8 +74,8 @@ public class PatientProgramPersisterIT extends BaseModuleWebContextSensitiveTest
         patientProgramRow.enrollmentDateTime = "1111-11-11";
         patientProgramRow.programName = "DIABETES PROGRAM";
 
-        RowResult<PatientProgramRow> persistenceResult = patientProgramPersister.persist(patientProgramRow);
-        assertTrue(persistenceResult.getErrorMessage().contains("Patient already enrolled in Diabetes Program"));
+        Messages errorMessages = patientProgramPersister.persist(patientProgramRow);
+        assertTrue(errorMessages.toString().contains("Patient already enrolled in Diabetes Program"));
     }
     
 }

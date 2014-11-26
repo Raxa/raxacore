@@ -3,6 +3,7 @@ package org.bahmni.module.admin.csv.persister;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.EntityPersister;
+import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
 import org.bahmni.module.admin.csv.service.PatientMatchService;
@@ -55,12 +56,12 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
     }
 
     @Override
-    public RowResult<MultipleEncounterRow> validate(MultipleEncounterRow multipleEncounterRow) {
-        return new RowResult<>(multipleEncounterRow);
+    public Messages validate(MultipleEncounterRow multipleEncounterRow) {
+        return new Messages();
     }
 
     @Override
-    public RowResult<MultipleEncounterRow> persist(MultipleEncounterRow multipleEncounterRow) {
+    public Messages persist(MultipleEncounterRow multipleEncounterRow) {
         // This validation is needed as patientservice get returns all patients for empty patient identifier
         if (StringUtils.isEmpty(multipleEncounterRow.patientIdentifier)) {
             return noMatchingPatients(multipleEncounterRow);
@@ -87,18 +88,18 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
                 retrospectiveEncounterTransactionService.save(bahmniEncounterTransaction, patient, multipleEncounterRow.getVisitStartDate(), multipleEncounterRow.getVisitEndDate());
             }
 
-            return new RowResult<>(multipleEncounterRow);
+            return new Messages();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             Context.clearSession();
-            return new RowResult<>(multipleEncounterRow, e);
+            return new Messages(e);
         } finally {
             Context.flushSession();
             Context.closeSession();
         }
     }
 
-    private RowResult<MultipleEncounterRow> noMatchingPatients(MultipleEncounterRow multipleEncounterRow) {
-        return new RowResult<>(multipleEncounterRow, "No matching patients found with ID:'" + multipleEncounterRow.patientIdentifier + "'");
+    private Messages noMatchingPatients(MultipleEncounterRow multipleEncounterRow) {
+        return new Messages("No matching patients found with ID:'" + multipleEncounterRow.patientIdentifier + "'");
     }
 }

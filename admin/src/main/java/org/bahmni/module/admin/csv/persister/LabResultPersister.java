@@ -1,6 +1,7 @@
 package org.bahmni.module.admin.csv.persister;
 
 import org.bahmni.csv.EntityPersister;
+import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.LabResultRow;
 import org.bahmni.module.admin.csv.models.LabResultsRow;
@@ -49,7 +50,7 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
     }
 
     @Override
-    public RowResult<LabResultsRow> persist(LabResultsRow labResultsRow) {
+    public Messages persist(LabResultsRow labResultsRow) {
         try {
             Patient patient = patientMatchService.getPatient(patientMatchingAlgorithmClassName, labResultsRow.getPatientAttributes(), labResultsRow.getPatientIdentifier(), shouldMatchExactPatientId);
             Visit visit = visitIdentificationHelper.getVisitFor(patient, labResultsRow.getVisitType(), labResultsRow.getTestDate(), labResultsRow.getTestDate(), labResultsRow.getTestDate());
@@ -67,7 +68,7 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
             }
             encounterService.saveEncounter(encounter);
             saveResults(encounter, resultObservations);
-            return new RowResult<>(labResultsRow);
+            return new Messages();
         } catch (Exception e) {
             throw new APIException(e.getMessage(), e);
         }
@@ -108,7 +109,7 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
     }
 
     @Override
-    public RowResult<LabResultsRow> validate(LabResultsRow labResultsRow) {
-        return new RowResult<>(labResultsRow);
+    public Messages validate(LabResultsRow labResultsRow) {
+        return new Messages();
     }
 }

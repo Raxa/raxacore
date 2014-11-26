@@ -1,5 +1,6 @@
 package org.bahmni.module.admin.csv.persister;
 
+import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.PatientRow;
 import org.bahmni.module.admin.csv.models.ReferenceTermRow;
@@ -45,8 +46,8 @@ public class ReferenceTermPersisterIT extends BaseModuleWebContextSensitiveTest 
     @Test
     public void save_new_referenceTerm() {
         ReferenceTermRow referenceTermRow = new ReferenceTermRow("TB1001", "ICD-10", "Tuberclosis", null, null);
-        RowResult<ReferenceTermRow> referenceTermRowRowResult = referenceTermPersister.persist(referenceTermRow);
-        assertTrue("should have persisted the reference term row", referenceTermRowRowResult.isSuccessful());
+        Messages errorMessages = referenceTermPersister.persist(referenceTermRow);
+        assertTrue("should have persisted the reference term row", errorMessages.isEmpty());
 
         Context.openSession();
         Context.authenticate("admin", "test");
@@ -90,9 +91,9 @@ public class ReferenceTermPersisterIT extends BaseModuleWebContextSensitiveTest 
     @Test
     public void fails_save_when_invalid_conceptsource() {
         ReferenceTermRow referenceTermRow = new ReferenceTermRow("TB100", "ICG 10", "Tuberclosis", null, null);
-        RowResult<ReferenceTermRow> referenceTermRowRowResult = referenceTermPersister.persist(referenceTermRow);
+        Messages errorMessages = referenceTermPersister.persist(referenceTermRow);
 
-        assertFalse("should have persisted the reference term row", referenceTermRowRowResult.isSuccessful());
-        assertEquals("Concept reference source ICG 10 does not exists.", referenceTermRowRowResult.getErrorMessage());
+        assertFalse("should have persisted the reference term row", errorMessages.isEmpty());
+        assertTrue(errorMessages.toString().contains("Concept reference source ICG 10 does not exists."));
     }
 }

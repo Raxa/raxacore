@@ -1,11 +1,21 @@
 package org.bahmni.module.admin.csv.persister;
 
-import org.apache.commons.lang.StringUtils;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import org.bahmni.csv.KeyValue;
-import org.bahmni.csv.RowResult;
+import org.bahmni.csv.Messages;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
 import org.bahmni.module.admin.csv.utils.CSVUtils;
+import static org.hamcrest.CoreMatchers.is;
+import org.hamcrest.Matchers;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
@@ -19,14 +29,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import static org.junit.Assert.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
@@ -62,8 +64,8 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void fail_validation_for_empty_encounter_type() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-        RowResult<MultipleEncounterRow> rowResult = encounterPersister.persist(multipleEncounterRow);
-        assertTrue("No Encounter details. Should have failed", !rowResult.getErrorMessage().isEmpty());
+        Messages rowResult = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("No Encounter details. Should have failed", !rowResult.isEmpty());
     }
 
     @Test
@@ -79,9 +81,9 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
 
-        RowResult<MultipleEncounterRow> validationResult = encounterPersister.persist(multipleEncounterRow);
-        assertTrue("Invalid Encounter Type not found. Error Message:" + validationResult.getErrorMessage(),
-                validationResult.getErrorMessage().contains("Encounter type:'INVALID ENCOUNTER TYPE' not found"));
+        Messages validationErrors = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Invalid Encounter Type not found. Error Message:",
+                validationErrors.toString().contains("Encounter type:'INVALID ENCOUNTER TYPE' not found"));
     }
 
     @Test
@@ -99,9 +101,9 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
 
-        RowResult<MultipleEncounterRow> validationResult = encounterPersister.persist(multipleEncounterRow);
-        assertTrue("Invalid Visit Type not found. Error Message:" + validationResult.getErrorMessage(),
-                validationResult.getErrorMessage().contains("Visit type:'INVALID VISIT TYPE' not found"));
+        Messages validationErrors = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Invalid Visit Type not found. Error Message:" + validationErrors.toString(),
+                validationErrors.toString().contains("Visit type:'INVALID VISIT TYPE' not found"));
     }
 
     @Test
@@ -116,9 +118,9 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
 
-        RowResult<MultipleEncounterRow> validationResult = encounterPersister.persist(multipleEncounterRow);
-        assertTrue("Visit Type null not found. Error Message:" + validationResult.getErrorMessage(),
-                validationResult.getErrorMessage().contains("Visit type:'null' not found"));
+        Messages validationErrors = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Visit Type null not found. Error Message:" + validationErrors.toString(),
+                validationErrors.toString().contains("Visit type:'null' not found"));
     }
 
     @Test
@@ -134,15 +136,15 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
 
-        RowResult<MultipleEncounterRow> validationResult = encounterPersister.persist(multipleEncounterRow);
-        assertTrue("Encounter date time is required and should be 'dd/mm/yyyy' format.. Error Message:" + validationResult.getErrorMessage(),
-                validationResult.getErrorMessage().contains("Unparseable date: \"1977/08/23\""));
+        Messages validationErrors = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Encounter date time is required and should be 'dd/mm/yyyy' format.. Error Message:" + validationErrors.toString(),
+                validationErrors.toString().contains("Unparseable date: \"1977/08/23\""));
     }
 
     @Test
     public void no_validation_for_encounters() {
-        RowResult<MultipleEncounterRow> validationResult = encounterPersister.validate(new MultipleEncounterRow());
-        assertTrue("No Validation failure. Encounter Import does not run validation stage", StringUtils.isEmpty(validationResult.getErrorMessage()));
+        Messages validationErrors = encounterPersister.validate(new MultipleEncounterRow());
+        assertTrue("No Validation failure. Encounter Import does not run validation stage", validationErrors.isEmpty());
     }
 
     @Test
@@ -160,8 +162,8 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
 
-        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertTrue("Should have persisted the encounter row." + persistenceResult.getErrorMessage(), StringUtils.isEmpty(persistenceResult.getErrorMessage()));
+        Messages errorMessages = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounter row.", errorMessages.isEmpty());
 
         Context.openSession();
         Context.authenticate("admin", "test");
@@ -202,8 +204,8 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
 
-        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertTrue("Should have persisted the encounter row." + persistenceResult.getErrorMessage(), StringUtils.isEmpty(persistenceResult.getErrorMessage()));
+        Messages errorMessages = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounter row.", errorMessages.isEmpty());
 
         Context.openSession();
         Context.authenticate("admin", "test");
@@ -245,8 +247,8 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterRows.add(anEncounter);
         multipleEncounterRow.encounterRows.add(anotherEncounter);
 
-        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertTrue("Should have persisted the encounter row." + persistenceResult.getErrorMessage(), StringUtils.isEmpty(persistenceResult.getErrorMessage()));
+        Messages errorMessages = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounter row.", errorMessages.isEmpty());
 
         Context.openSession();
         Context.authenticate("admin", "test");
@@ -272,8 +274,8 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
 
-        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertTrue("Should have persisted the encounter row." + persistenceResult.getErrorMessage(), StringUtils.isEmpty(persistenceResult.getErrorMessage()));
+        Messages errorMessages = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounter row.", errorMessages.isEmpty());
 
         Context.openSession();
         Context.authenticate("admin", "test");
@@ -310,8 +312,8 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
 
-        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertNull("Should have persisted the encounters." + persistenceResult.getErrorMessage(), persistenceResult.getErrorMessage());
+        Messages errorMessages = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounters.", errorMessages.isEmpty());
 
         Context.openSession();
         Context.authenticate("admin", "test");
@@ -391,9 +393,9 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
 
         encounterPersister.init(userContext, "NoMatch.groovy", shouldMatchExactPatientId);
 
-        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertNotNull(persistenceResult.getErrorMessage());
-        assertEquals("No matching patients found with ID:'GAN200001'", persistenceResult.getErrorMessage());
+        Messages errorMessages = encounterPersister.persist(multipleEncounterRow);
+        assertThat(errorMessages.size(), is(Matchers.greaterThan(0)));
+        assertTrue(errorMessages.toString().contains("No matching patients found with ID:'GAN200001'"));
     }
 
     @Test
@@ -405,9 +407,9 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.patientIdentifier = "200000";
         encounterPersister.init(userContext, "MultipleMatchPatient.groovy", shouldMatchExactPatientId);
 
-        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
+        Messages errorMessages = encounterPersister.persist(multipleEncounterRow);
 
-        assertTrue(persistenceResult.getErrorMessage().contains("GAN200000, SEM200000"));
+        assertTrue(errorMessages.toString().contains("GAN200000, SEM200000"));
     }
 
     @Test
@@ -428,8 +430,9 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
 
-        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertNull("Should have persisted the encounters." + persistenceResult.getErrorMessage(), persistenceResult.getErrorMessage());
+        Messages errorMessages = encounterPersister.persist(multipleEncounterRow);
+
+        assertTrue("Should have persisted the encounters.", errorMessages.isEmpty());
         Context.openSession();
         Context.authenticate("admin", "test");
 
@@ -456,8 +459,8 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
 
-        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
-        assertNull("Should have persisted the encounters." + persistenceResult.getErrorMessage(), persistenceResult.getErrorMessage());
+        Messages errorMessages = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounters.", errorMessages.isEmpty());
         Context.openSession();
         Context.authenticate("admin", "test");
 
@@ -482,7 +485,7 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
 
-        RowResult<MultipleEncounterRow> persistenceResult = encounterPersister.persist(multipleEncounterRow);
+        encounterPersister.persist(multipleEncounterRow);
 
         Context.openSession();
         Context.authenticate("admin", "test");

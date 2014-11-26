@@ -3,6 +3,7 @@ package org.bahmni.module.admin.csv.persister;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.EntityPersister;
+import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.concepts.mapper.ConceptMapper;
 import org.bahmni.module.admin.csv.models.ConceptRow;
@@ -19,21 +20,21 @@ public class ConceptPersister implements EntityPersister<ConceptRow> {
     private ReferenceDataConceptService referenceDataConceptService;
 
     @Override
-    public RowResult<ConceptRow> validate(ConceptRow conceptRow) {
-        StringBuilder error = new StringBuilder();
+    public Messages validate(ConceptRow conceptRow) {
+        Messages messages = new Messages();
         if (StringUtils.isEmpty(conceptRow.name)) {
-            error.append("Concept Name not specified\n");
+            messages.add("Concept Name not specified\n");
         }
         if (StringUtils.isEmpty(conceptRow.conceptClass)) {
-            error.append("Concept Class not specified\n");
+            messages.add("Concept Class not specified\n");
         }
-        return new RowResult<>(conceptRow, error.toString());
+        return messages;
     }
 
     @Override
-    public RowResult<ConceptRow> persist(ConceptRow conceptRow) {
+    public Messages persist(ConceptRow conceptRow) {
         Concept concept = new ConceptMapper().map(conceptRow);
         referenceDataConceptService.saveConcept(concept);
-        return new RowResult<>(conceptRow);
+        return new Messages();
     }
 }

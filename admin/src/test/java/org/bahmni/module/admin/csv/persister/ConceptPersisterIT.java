@@ -1,6 +1,7 @@
 package org.bahmni.module.admin.csv.persister;
 
 import org.bahmni.csv.KeyValue;
+import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.junit.Before;
@@ -35,16 +36,16 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void should_fail_validation_for_no_concept_name() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
-        RowResult<ConceptRow> conceptRowResult = conceptPersister.validate(conceptRow);
-        assertFalse(conceptRowResult.getErrorMessage().isEmpty());
+        Messages errorMessages = conceptPersister.validate(conceptRow);
+        assertFalse(errorMessages.isEmpty());
     }
 
     @Test
     public void should_fail_validation_for_no_concept_class() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "Concept Name";
-        RowResult<ConceptRow> conceptRowResult = conceptPersister.validate(conceptRow);
-        assertFalse(conceptRowResult.getErrorMessage().isEmpty());
+        Messages errorMessages = conceptPersister.validate(conceptRow);
+        assertFalse(errorMessages.isEmpty());
     }
 
 
@@ -53,8 +54,8 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "concept Name";
         conceptRow.conceptClass = "concept Class";
-        RowResult<ConceptRow> conceptRowResult = conceptPersister.validate(conceptRow);
-        assertTrue(conceptRowResult.getErrorMessage().isEmpty());
+        Messages errorMessages = conceptPersister.validate(conceptRow);
+        assertTrue(errorMessages.isEmpty());
     }
 
     @Test
@@ -62,8 +63,8 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "New concept";
         conceptRow.conceptClass = "New Class";
-        RowResult<ConceptRow> conceptRowResult = conceptPersister.persist(conceptRow);
-        assertNull(conceptRowResult.getErrorMessage());
+        Messages errorMessages = conceptPersister.persist(conceptRow);
+        assertTrue(errorMessages.isEmpty());
         Context.openSession();
         Context.authenticate("admin", "test");
         Concept persistedConcept = conceptService.getConceptByName(conceptRow.name);
@@ -88,8 +89,8 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         synonyms.add(new KeyValue("1", "Synonym1"));
         synonyms.add(new KeyValue("2", "Synonym2"));
         conceptRow.synonyms = synonyms;
-        RowResult<ConceptRow> conceptRowResult = conceptPersister.persist(conceptRow);
-        assertNull(conceptRowResult.getErrorMessage());
+        Messages errorMessages = conceptPersister.persist(conceptRow);
+        assertTrue(errorMessages.isEmpty());
         Context.openSession();
         Context.authenticate("admin", "test");
         Concept persistedConcept = conceptService.getConceptByName(conceptRow.name);
@@ -123,8 +124,8 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         answers.add(new KeyValue("1", "Answer1"));
         answers.add(new KeyValue("2", "Answer2"));
         conceptRow.answers = answers;
-        RowResult<ConceptRow> conceptRowResult = conceptPersister.persist(conceptRow);
-        assertNull(conceptRowResult.getErrorMessage());
+        Messages errorMessages = conceptPersister.persist(conceptRow);
+        assertTrue(errorMessages.isEmpty());
         Context.openSession();
         Context.authenticate("admin", "test");
         Concept persistedConcept = conceptService.getConceptByName(conceptRow.name);
@@ -166,8 +167,8 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         answers.add(new KeyValue("1", "Answer1"));
         answers.add(new KeyValue("2", "Answer2"));
         conceptRow.answers = answers;
-        RowResult<ConceptRow> conceptRowResult = conceptPersister.persist(conceptRow);
-        assertNull(conceptRowResult.getErrorMessage());
+        Messages errorMessages = conceptPersister.persist(conceptRow);
+        assertTrue(errorMessages.isEmpty());
         Context.openSession();
         Context.authenticate("admin", "test");
         Concept persistedConcept = conceptService.getConceptByName(conceptRow.name);
@@ -208,8 +209,8 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         synonyms.add(new KeyValue("2", "Synonym2"));
         conceptRow.synonyms = synonyms;
         conceptRow.shortName = "NConcept";
-        RowResult<ConceptRow> conceptRowResult = conceptPersister.persist(conceptRow);
-        assertNull(conceptRowResult.getErrorMessage());
+        Messages errorMessages = conceptPersister.persist(conceptRow);
+        assertTrue(errorMessages.isEmpty());
         Context.openSession();
         Context.authenticate("admin", "test");
         Concept persistedConcept = conceptService.getConceptByName(conceptRow.name);
@@ -241,8 +242,8 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         synonyms.add(new KeyValue("2", "Synonym2"));
         conceptRow.synonyms = synonyms;
         conceptRow.shortName = "NConcept";
-        RowResult<ConceptRow> conceptRowResult = conceptPersister.persist(conceptRow);
-        assertNull(conceptRowResult.getErrorMessage());
+        Messages errorMessages = conceptPersister.persist(conceptRow);
+        assertTrue(errorMessages.isEmpty());
         Context.openSession();
         Context.authenticate("admin", "test");
         Concept persistedConcept = conceptService.getConceptByName(conceptRow.name);
@@ -285,8 +286,8 @@ public class ConceptPersisterIT extends BaseModuleWebContextSensitiveTest {
         synonyms.add(new KeyValue("2", "Synonym2"));
         conceptRow.synonyms = synonyms;
         conceptRow.shortName = "NConcept";
-        RowResult<ConceptRow> conceptRowResult = conceptPersister.persist(conceptRow);
-        assertNull(conceptRowResult.getErrorMessage());
+        Messages errorMessages = conceptPersister.persist(conceptRow);
+        assertTrue(errorMessages.isEmpty());
         Context.openSession();
         Context.authenticate("admin", "test");
         Concept persistedConcept = conceptService.getConceptByName(conceptRow.name);

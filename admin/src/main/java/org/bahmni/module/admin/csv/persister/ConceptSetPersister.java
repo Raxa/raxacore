@@ -3,6 +3,7 @@ package org.bahmni.module.admin.csv.persister;
 
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.EntityPersister;
+import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.concepts.mapper.ConceptSetMapper;
 import org.bahmni.module.admin.csv.models.ConceptSetRow;
@@ -18,22 +19,22 @@ public class ConceptSetPersister implements EntityPersister<ConceptSetRow> {
     private ReferenceDataConceptService referenceDataConceptService;
 
     @Override
-    public RowResult<ConceptSetRow> validate(ConceptSetRow conceptSetRow) {
-        StringBuilder error = new StringBuilder();
+    public Messages validate(ConceptSetRow conceptSetRow) {
+        Messages messages = new Messages();
         if (StringUtils.isEmpty(conceptSetRow.name)) {
-            error.append("Concept Name not specified\n");
+            messages.add("Concept Name not specified\n");
         }
         if (StringUtils.isEmpty(conceptSetRow.conceptClass)) {
-            error.append("Concept Class not specified\n");
+            messages.add("Concept Class not specified\n");
         }
-        return new RowResult<>(conceptSetRow, error.toString());
+        return messages;
 
     }
 
     @Override
-    public RowResult<ConceptSetRow> persist(ConceptSetRow conceptSetRow) {
+    public Messages persist(ConceptSetRow conceptSetRow) {
         ConceptSet concept = new ConceptSetMapper().map(conceptSetRow);
         referenceDataConceptService.saveConcept(concept);
-        return new RowResult<>(conceptSetRow);
+        return new Messages();
     }
 }

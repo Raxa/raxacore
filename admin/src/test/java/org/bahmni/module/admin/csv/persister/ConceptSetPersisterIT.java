@@ -1,6 +1,7 @@
 package org.bahmni.module.admin.csv.persister;
 
 import org.bahmni.csv.KeyValue;
+import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.bahmni.module.admin.csv.models.ConceptSetRow;
@@ -38,16 +39,16 @@ public class ConceptSetPersisterIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void should_fail_validation_for_no_concept_name() throws Exception {
         ConceptSetRow conceptRow = new ConceptSetRow();
-        RowResult<ConceptSetRow> conceptRowResult = conceptSetPersister.validate(conceptRow);
-        assertFalse(conceptRowResult.getErrorMessage().isEmpty());
+        Messages persistErrorMessages = conceptSetPersister.validate(conceptRow);
+        assertFalse(persistErrorMessages.isEmpty());
     }
 
     @Test
     public void should_fail_validation_for_no_concept_class() throws Exception {
         ConceptSetRow conceptRow = new ConceptSetRow();
         conceptRow.name = "Concept Name";
-        RowResult<ConceptSetRow> conceptRowResult = conceptSetPersister.validate(conceptRow);
-        assertFalse(conceptRowResult.getErrorMessage().isEmpty());
+        Messages persistErrorMessages = conceptSetPersister.validate(conceptRow);
+        assertFalse(persistErrorMessages.isEmpty());
     }
 
 
@@ -56,8 +57,8 @@ public class ConceptSetPersisterIT extends BaseModuleWebContextSensitiveTest {
         ConceptSetRow conceptRow = new ConceptSetRow();
         conceptRow.name = "concept Name";
         conceptRow.conceptClass = "concept Class";
-        RowResult<ConceptSetRow> conceptRowResult = conceptSetPersister.validate(conceptRow);
-        assertTrue(conceptRowResult.getErrorMessage().isEmpty());
+        Messages persistErrorMessages = conceptSetPersister.validate(conceptRow);
+        assertTrue(persistErrorMessages.isEmpty());
     }
 
     @Test
@@ -65,8 +66,8 @@ public class ConceptSetPersisterIT extends BaseModuleWebContextSensitiveTest {
         ConceptSetRow conceptRow = new ConceptSetRow();
         conceptRow.name = "New concept";
         conceptRow.conceptClass = "New Class";
-        RowResult<ConceptSetRow> conceptRowResult = conceptSetPersister.persist(conceptRow);
-        assertNull(conceptRowResult.getErrorMessage());
+        Messages persistErrorMessages = conceptSetPersister.persist(conceptRow);
+        assertTrue(persistErrorMessages.isEmpty());
         Context.openSession();
         Context.authenticate("admin", "test");
         Concept persistedConcept = conceptService.getConceptByName(conceptRow.name);
@@ -90,8 +91,8 @@ public class ConceptSetPersisterIT extends BaseModuleWebContextSensitiveTest {
         children.add(new KeyValue("1", "Child1"));
         children.add(new KeyValue("2", "Child2"));
         conceptRow.children = children;
-        RowResult<ConceptSetRow> conceptRowResult = conceptSetPersister.persist(conceptRow);
-        assertNull(conceptRowResult.getErrorMessage());
+        Messages persistErrorMessages = conceptSetPersister.persist(conceptRow);
+        assertTrue(persistErrorMessages.isEmpty());
         Context.openSession();
         Context.authenticate("admin", "test");
         Concept persistedConcept = conceptService.getConceptByName(conceptRow.name);

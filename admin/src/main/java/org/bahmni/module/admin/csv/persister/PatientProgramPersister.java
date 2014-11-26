@@ -3,6 +3,7 @@ package org.bahmni.module.admin.csv.persister;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.EntityPersister;
+import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.PatientProgramRow;
 import org.bahmni.module.admin.csv.service.PatientMatchService;
@@ -36,12 +37,12 @@ public class PatientProgramPersister implements EntityPersister<PatientProgramRo
     }
 
     @Override
-    public RowResult<PatientProgramRow> validate(PatientProgramRow patientProgramRow) {
-        return new RowResult<>(patientProgramRow);
+    public Messages validate(PatientProgramRow patientProgramRow) {
+        return new Messages();
     }
 
     @Override
-    public RowResult<PatientProgramRow> persist(PatientProgramRow patientProgramRow) {
+    public Messages persist(PatientProgramRow patientProgramRow) {
         // This validation is needed as patientservice get returns all patients for empty patient identifier
         if (StringUtils.isEmpty(patientProgramRow.patientIdentifier)) {
             return noMatchingPatients(patientProgramRow);
@@ -61,7 +62,7 @@ public class PatientProgramPersister implements EntityPersister<PatientProgramRo
             Program program = getProgramByName(patientProgramRow.programName);
             List<PatientProgram> existingEnrolledPrograms = programWorkflowService.getPatientPrograms(patient, program, null, null, null, null, false);
             if (existingEnrolledPrograms != null && !existingEnrolledPrograms.isEmpty()) {
-                return new RowResult<>(patientProgramRow, getErrorMessage(existingEnrolledPrograms));
+                return new Messages(getErrorMessage(existingEnrolledPrograms));
             }
 
             PatientProgram patientProgram = new PatientProgram();
@@ -74,12 +75,12 @@ public class PatientProgramPersister implements EntityPersister<PatientProgramRo
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             Context.clearSession();
-            return new RowResult<>(patientProgramRow, e);
+            return new Messages(e);
         } finally {
             Context.flushSession();
             Context.closeSession();
         }
-        return new RowResult<>(patientProgramRow);
+        return new Messages();
     }
 
     private String getErrorMessage(List<PatientProgram> patientPrograms) {
@@ -89,8 +90,8 @@ public class PatientProgramPersister implements EntityPersister<PatientProgramRo
         return errorMessage;
     }
 
-    private RowResult<PatientProgramRow> noMatchingPatients(PatientProgramRow patientProgramRow) {
-        return new RowResult<>(patientProgramRow, "No matching patients found with ID:'" + patientProgramRow.patientIdentifier + "'");
+    private Messages noMatchingPatients(PatientProgramRow patientProgramRow) {
+        return new Messages("No matching patients found with ID:'" + patientProgramRow.patientIdentifier + "'");
     }
 
     private Program getProgramByName(String programName) {

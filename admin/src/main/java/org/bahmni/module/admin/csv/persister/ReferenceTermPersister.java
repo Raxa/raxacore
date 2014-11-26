@@ -2,6 +2,7 @@ package org.bahmni.module.admin.csv.persister;
 
 import org.apache.log4j.Logger;
 import org.bahmni.csv.EntityPersister;
+import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.ReferenceTermRow;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptReferenceTermService;
@@ -26,7 +27,7 @@ public class ReferenceTermPersister implements EntityPersister<ReferenceTermRow>
     private ReferenceDataConceptReferenceTermService referenceDataConceptReferenceTermService;
 
     @Override
-    public RowResult<ReferenceTermRow> persist(ReferenceTermRow referenceTermRow) {
+    public Messages persist(ReferenceTermRow referenceTermRow) {
         try {
             Context.openSession();
             Context.setUserContext(userContext);
@@ -35,12 +36,12 @@ public class ReferenceTermPersister implements EntityPersister<ReferenceTermRow>
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
             Context.clearSession();
-            return new RowResult<>(referenceTermRow, e);
+            return new Messages(e);
         } finally {
             Context.flushSession();
             Context.closeSession();
         }
-        return new RowResult<>(referenceTermRow);
+        return new Messages();
     }
 
     private org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm getConceptReferenceTerm(ReferenceTermRow referenceTermRow) {
@@ -55,7 +56,7 @@ public class ReferenceTermPersister implements EntityPersister<ReferenceTermRow>
     }
 
     @Override
-    public RowResult<ReferenceTermRow> validate(ReferenceTermRow referenceTermRow) {
-        return new RowResult<>(referenceTermRow);
+    public Messages validate(ReferenceTermRow referenceTermRow) {
+        return new Messages();
     }
 }

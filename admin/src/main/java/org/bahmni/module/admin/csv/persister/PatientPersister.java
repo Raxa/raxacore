@@ -2,6 +2,7 @@ package org.bahmni.module.admin.csv.persister;
 
 import org.apache.log4j.Logger;
 import org.bahmni.csv.EntityPersister;
+import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.PatientRow;
 import org.bahmni.module.admin.csv.service.CSVAddressService;
@@ -39,18 +40,18 @@ public class PatientPersister implements EntityPersister<PatientRow> {
     }
 
     @Override
-    public RowResult<PatientRow> persist(PatientRow patientRow) {
+    public Messages persist(PatientRow patientRow) {
         try {
             Context.openSession();
             Context.setUserContext(userContext);
 
             new CSVPatientService(patientService, personService, administrationService, getAddressHierarchyService()).save(patientRow);
 
-            return new RowResult<>(patientRow);
+            return new Messages();
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
             Context.clearSession();
-            return new RowResult<>(patientRow, e);
+            return new Messages(e);
         } finally {
             Context.flushSession();
             Context.closeSession();
@@ -66,7 +67,7 @@ public class PatientPersister implements EntityPersister<PatientRow> {
     }
 
     @Override
-    public RowResult<PatientRow> validate(PatientRow csvEntity) {
-        return new RowResult<>(csvEntity);
+    public Messages validate(PatientRow csvEntity) {
+        return new Messages();
     }
 }

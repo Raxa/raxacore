@@ -3,6 +3,7 @@ package org.bahmni.module.admin.csv.persister;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.CSVEntity;
 import org.bahmni.csv.EntityPersister;
+import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
@@ -18,7 +19,7 @@ public class DatabasePersister<T extends CSVEntity> implements EntityPersister<T
     }
 
     @Override
-    public RowResult<T> persist(T csvEntity) {
+    public Messages persist(T csvEntity) {
         try {
             Context.openSession();
             Context.setUserContext(userContext);
@@ -26,7 +27,7 @@ public class DatabasePersister<T extends CSVEntity> implements EntityPersister<T
         } catch (Throwable e) {
             log.error(e.getMessage(), e);
             Context.clearSession();
-            return new RowResult<>(csvEntity, e);
+            return new Messages(e);
         } finally {
             Context.flushSession();
             Context.closeSession();
@@ -34,7 +35,7 @@ public class DatabasePersister<T extends CSVEntity> implements EntityPersister<T
     }
 
     @Override
-    public RowResult<T> validate(T csvEntity) {
+    public Messages validate(T csvEntity) {
         return persister.validate(csvEntity);
     }
 }
