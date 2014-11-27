@@ -1,9 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.service.impl;
 
-import org.bahmni.module.referencedata.labconcepts.contract.Concept;
-import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm;
-import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
-import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
+import org.bahmni.module.referencedata.labconcepts.contract.*;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptSetMapper;
 import org.bahmni.module.referencedata.labconcepts.model.ConceptMetaData;
@@ -20,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -73,11 +71,7 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
         List<org.openmrs.Concept> setMembers = getSetMembers(conceptSet.getChildren());
         conceptValidator.validate(conceptSet, conceptClass, conceptDatatype, notFound);
         org.openmrs.Concept mappedConceptSet = conceptSetMapper.map(conceptSet, setMembers, conceptClass, conceptDatatype, existingConcept);
-
-        for(ConceptReferenceTerm conceptReferenceTerm : conceptSet.getConceptReferenceTermsList()) {
-            conceptMapper.addConceptMap(mappedConceptSet, referenceDataConceptReferenceTermService.getConceptMap(conceptReferenceTerm));
-        }
-
+        clearAndAddConceptMappings(conceptSet, mappedConceptSet);
         return mappedConceptSet;
     }
 
@@ -85,11 +79,18 @@ public class ReferenceDataConceptServiceImpl implements ReferenceDataConceptServ
         List<ConceptAnswer> conceptAnswers = getConceptAnswers(conceptData.getAnswers());
         conceptValidator.validate(conceptData, conceptClass, conceptDatatype, notFound);
         org.openmrs.Concept mappedConcept = conceptMapper.map(conceptData, conceptClass, conceptDatatype, conceptAnswers, existingConcept);
+        clearAndAddConceptMappings(conceptData, mappedConcept);
+        return mappedConcept;
+    }
+
+    private void clearAndAddConceptMappings(ConceptCommon conceptData, org.openmrs.Concept mappedConcept) {
+        Collection<ConceptMap> conceptMappings = mappedConcept.getConceptMappings();
+        conceptMappings.clear();
+        mappedConcept.setConceptMappings(conceptMappings);
 
         for(ConceptReferenceTerm conceptReferenceTerm : conceptData.getConceptReferenceTermsList()) {
             conceptMapper.addConceptMap(mappedConcept, referenceDataConceptReferenceTermService.getConceptMap(conceptReferenceTerm));
         }
-        return mappedConcept;
     }
 
     private List<ConceptAnswer> getConceptAnswers(List<String> answers) {
