@@ -7,6 +7,7 @@ import org.bahmni.module.admin.csv.models.PatientRow;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.test.BaseContextSensitiveTest;
@@ -39,7 +40,7 @@ public class PatientPersisterIT extends BaseContextSensitiveTest {
     @Test
     @Ignore("Was never working. Injection needs to be fixed")
     public void save_patient_row() {
-        PatientRow patientRow = patientRow("Ram", "Laxman", "Kumar", "1999-08-8", "Male", "reg-no", addressParts("galli", "shahar", "state", "desh", "100001"), attibutesList("ram", "farmer"));
+        PatientRow patientRow = patientRow("Ram", "Laxman", "Kumar", "1999-08-8", "Male", "reg-no", addressParts("galli", "shahar", "state", "desh", "100001"), attibutesList("ram", "farmer", "10th pass"));
         Messages errorMessages = patientPersister.persist(patientRow);
 
         assertTrue("should have persisted the patient row", errorMessages.isEmpty());
@@ -69,10 +70,11 @@ public class PatientPersisterIT extends BaseContextSensitiveTest {
         return addressParts;
     }
 
-    private List<KeyValue> attibutesList(final String localName, final String occupation) {
+    private List<KeyValue> attibutesList(final String localName, final String occupation, final String education) {
         List<KeyValue> attributes = new ArrayList<KeyValue>() {{
             add(new KeyValue("familyNameLocal", localName));
             add(new KeyValue("occupation", occupation));
+            add(new KeyValue("education", education));
         }};
         return attributes;
     }

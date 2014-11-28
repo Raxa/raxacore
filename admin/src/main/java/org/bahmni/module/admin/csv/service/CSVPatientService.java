@@ -4,8 +4,11 @@ import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.PatientRow;
 import org.bahmni.module.admin.csv.utils.CSVUtils;
+import org.bahmni.module.referencedata.labconcepts.contract.*;
 import org.openmrs.*;
+import org.openmrs.Concept;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 
@@ -20,12 +23,14 @@ public class CSVPatientService {
 
     private PatientService patientService;
     private PersonService personService;
+    private ConceptService conceptService;
     private AdministrationService administrationService;
     private CSVAddressService csvAddressService;
 
-    public CSVPatientService(PatientService patientService, PersonService personService, AdministrationService administrationService, CSVAddressService csvAddressService) {
+    public CSVPatientService(PatientService patientService, PersonService personService, ConceptService conceptService, AdministrationService administrationService, CSVAddressService csvAddressService) {
         this.patientService = patientService;
         this.personService = personService;
+        this.conceptService = conceptService;
         this.administrationService = administrationService;
         this.csvAddressService = csvAddressService;
     }
@@ -63,7 +68,19 @@ public class CSVPatientService {
 
     private void addPersonAttributes(Patient patient, PatientRow patientRow) {
         for (KeyValue attribute : patientRow.attributes) {
-            patient.addAttribute(new PersonAttribute(findAttributeType(attribute.getKey()), attribute.getValue()));
+            PersonAttributeType personAttributeType = findAttributeType(attribute.getKey());
+            if(personAttributeType.getFormat().equalsIgnoreCase("org.openmrs.Concept")) {
+                Concept concept = conceptService.getConcept(attribute.getValue());
+                if(concept != null) {
+                    patient.addAttribute(new PersonAttribute(personAttributeType,concept.getId().toString()));
+                }
+                else {
+                    throw new RuntimeException("Invalid value for Attribute."+attribute.getKey());
+                }
+            }
+            else if(personAttributeType.getFormat().equalsIgnoreCase("java.lang.String")){
+                patient.addAttribute(new PersonAttribute(findAttributeType(attribute.getKey()), attribute.getValue()));
+            }
         }
     }
 

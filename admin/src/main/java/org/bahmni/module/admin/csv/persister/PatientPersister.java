@@ -8,6 +8,7 @@ import org.bahmni.module.admin.csv.models.PatientRow;
 import org.bahmni.module.admin.csv.service.CSVAddressService;
 import org.bahmni.module.admin.csv.service.CSVPatientService;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
@@ -28,6 +29,9 @@ public class PatientPersister implements EntityPersister<PatientRow> {
     private PersonService personService;
 
     @Autowired
+    private ConceptService conceptService;
+
+    @Autowired
     @Qualifier("adminService")
     private AdministrationService administrationService;
 
@@ -45,7 +49,7 @@ public class PatientPersister implements EntityPersister<PatientRow> {
             Context.openSession();
             Context.setUserContext(userContext);
 
-            new CSVPatientService(patientService, personService, administrationService, getAddressHierarchyService()).save(patientRow);
+            new CSVPatientService(patientService, personService, conceptService, administrationService, getAddressHierarchyService()).save(patientRow);
 
             return new Messages();
         } catch (Throwable e) {
