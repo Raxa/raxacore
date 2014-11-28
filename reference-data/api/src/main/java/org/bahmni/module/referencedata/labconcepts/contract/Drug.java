@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.contract;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotNull;
@@ -10,7 +11,7 @@ public class Drug {
     private String name;
     @NotNull
     private String genericName;
-    private boolean combination;
+    private Boolean combination;
     private String strength;
     private String dosageForm;
     private String minimumDose;
@@ -33,12 +34,12 @@ public class Drug {
         this.genericName = genericName;
     }
 
-    public void setCombination(boolean combination) {
+    public void setCombination(Boolean combination) {
         this.combination = combination;
     }
 
-    public boolean isCombination() {
-        return combination;
+    public Boolean isCombination() {
+        return BooleanUtils.toBoolean(combination);
     }
 
     public void setStrength(String strength) {

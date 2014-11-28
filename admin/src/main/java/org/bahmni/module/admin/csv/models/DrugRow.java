@@ -86,7 +86,7 @@ public class DrugRow extends CSVEntity {
     }
 
     public Boolean getCombination() {
-        return BooleanUtils.toBooleanObject(this.combination);
+        return BooleanUtils.toBoolean(combination);
     }
 
     public void setCombination(String combination) {
