@@ -116,4 +116,8 @@ public class BahmniDrugOrder {
     public EncounterTransaction.Provider getProvider() {
         return provider;
     }
+
+    public String getOrderNumber() {
+        return drugOrder.getOrderNumber();
+    }
 }
