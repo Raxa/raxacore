@@ -1,9 +1,9 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplate;
+import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplateConfig;
+import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplatesConfig;
 import org.bahmni.module.bahmnicore.contract.diseasetemplate.ObservationTemplate;
-import org.bahmni.module.bahmnicore.dao.ObsDao;
-import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.bahmni.module.bahmnicore.mapper.ObservationTemplateMapper;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.service.BahmniVisitService;
@@ -16,6 +16,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,15 +49,75 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DiseaseTemplate> allDiseaseTemplatesFor(String patientUuid) {
+    public List<DiseaseTemplate> allDiseaseTemplatesFor(DiseaseTemplatesConfig diseaseTemplatesConfig) {
         List<Concept> diseaseTemplateConcepts = getDiseaseTemplateConcepts();
         List<DiseaseTemplate> diseaseTemplates = new ArrayList<>();
 
         for (Concept diseaseTemplateConcept : diseaseTemplateConcepts) {
-            diseaseTemplates.add(getDiseaseTemplate(patientUuid, diseaseTemplateConcept));
+            DiseaseTemplate diseaseTemplate = getDiseaseTemplate(diseaseTemplatesConfig.getPatientUuid(), diseaseTemplateConcept);
+            List<String> showOnlyConceptsForTheDisease = getShowOnlyConceptsForTheDisease(diseaseTemplate, diseaseTemplatesConfig);
+            if (showOnlyConceptsForTheDisease.size() > 0) {
+                filterObs(diseaseTemplate, showOnlyConceptsForTheDisease);
+            }
+            diseaseTemplates.add(diseaseTemplate);
         }
 
         return diseaseTemplates;
+    }
+
+    private List<String> getShowOnlyConceptsForTheDisease(DiseaseTemplate diseaseTemplate, DiseaseTemplatesConfig diseaseTemplatesConfig) {
+        for (DiseaseTemplateConfig diseaseTemplateConfig : diseaseTemplatesConfig.getDiseaseTemplateConfigList()) {
+            if (diseaseTemplateConfig.getDiseaseName().equals(diseaseTemplate.getConcept().getName())
+                    || diseaseTemplateConfig.getDiseaseName().equals(diseaseTemplate.getConcept().getShortName())) {
+                return diseaseTemplateConfig.getShowOnly();
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    private List<String> getAllSetMemberNames(Concept concept) {
+        ArrayList<String> setMembers = new ArrayList<>();
+        for (Concept member : getSetMembers(concept)) {
+            setMembers.addAll(getAllSetMemberNames(member));
+            setMembers.add(member.getName(Context.getLocale()).getName());
+        }
+        return setMembers;
+    }
+
+    private List<Concept> getSetMembers(Concept concept) {
+        return concept.getSetMembers();
+    }
+
+    private void filterObs(DiseaseTemplate diseaseTemplate, List<String> showOnly) {
+        List<ObservationTemplate> removableObservationTemplate = new ArrayList<>();
+        for (ObservationTemplate observationTemplate : diseaseTemplate.getObservationTemplates()) {
+            if (!isExists(observationTemplate.getConcept(), showOnly)) {
+                filterObs(observationTemplate.getBahmniObservations(), showOnly);
+                if (observationTemplate.getBahmniObservations().size() == 0) {
+                    removableObservationTemplate.add(observationTemplate);
+                }
+            }
+        }
+        diseaseTemplate.getObservationTemplates().removeAll(removableObservationTemplate);
+    }
+
+    private void filterObs(List<BahmniObservation> bahmniObservations, List<String> conceptNames) {
+        List<BahmniObservation> removableObservation = new ArrayList<>();
+        for (BahmniObservation bahmniObservation : bahmniObservations) {
+            if (!isExists(bahmniObservation.getConcept(), conceptNames)) {
+                if (bahmniObservation.getGroupMembers().size() > 0) {
+                    filterObs(bahmniObservation.getGroupMembers(), conceptNames);
+                }
+                if (bahmniObservation.getGroupMembers().size() == 0) {
+                    removableObservation.add(bahmniObservation);
+                }
+            }
+        }
+        bahmniObservations.removeAll(removableObservation);
+    }
+
+    private boolean isExists(EncounterTransaction.Concept concept, List<String> conceptNames) {
+        return conceptNames.contains(concept.getName()) || conceptNames.contains(concept.getShortName());
     }
 
     @Override
