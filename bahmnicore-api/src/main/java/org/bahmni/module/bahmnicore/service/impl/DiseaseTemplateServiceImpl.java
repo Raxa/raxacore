@@ -67,25 +67,11 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
 
     private List<String> getShowOnlyConceptsForTheDisease(DiseaseTemplate diseaseTemplate, DiseaseTemplatesConfig diseaseTemplatesConfig) {
         for (DiseaseTemplateConfig diseaseTemplateConfig : diseaseTemplatesConfig.getDiseaseTemplateConfigList()) {
-            if (diseaseTemplateConfig.getDiseaseName().equals(diseaseTemplate.getConcept().getName())
-                    || diseaseTemplateConfig.getDiseaseName().equals(diseaseTemplate.getConcept().getShortName())) {
+            if (diseaseTemplateConfig.getTemplateName().equals(diseaseTemplate.getConcept().getName())) {
                 return diseaseTemplateConfig.getShowOnly();
             }
         }
         return new ArrayList<>();
-    }
-
-    private List<String> getAllSetMemberNames(Concept concept) {
-        ArrayList<String> setMembers = new ArrayList<>();
-        for (Concept member : getSetMembers(concept)) {
-            setMembers.addAll(getAllSetMemberNames(member));
-            setMembers.add(member.getName(Context.getLocale()).getName());
-        }
-        return setMembers;
-    }
-
-    private List<Concept> getSetMembers(Concept concept) {
-        return concept.getSetMembers();
     }
 
     private void filterObs(DiseaseTemplate diseaseTemplate, List<String> showOnly) {
@@ -117,7 +103,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
     }
 
     private boolean isExists(EncounterTransaction.Concept concept, List<String> conceptNames) {
-        return conceptNames.contains(concept.getName()) || conceptNames.contains(concept.getShortName());
+        return conceptNames.contains(concept.getName());
     }
 
     @Override

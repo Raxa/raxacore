@@ -44,7 +44,7 @@ public class DiseaseTemplateServiceImplIT extends BaseModuleWebContextSensitiveT
         showOnly.add("Breast Cancer Intake");
 
         DiseaseTemplateConfig diseaseTemplateConfig = new DiseaseTemplateConfig();
-        diseaseTemplateConfig.setDiseaseName("Breast Cancer");
+        diseaseTemplateConfig.setTemplateName("Breast Cancer");
         diseaseTemplateConfig.setShowOnly(showOnly);
 
         ArrayList<DiseaseTemplateConfig> diseaseTemplateConfigList = new ArrayList<>();
@@ -66,7 +66,7 @@ public class DiseaseTemplateServiceImplIT extends BaseModuleWebContextSensitiveT
         showOnly.add("Receptor Status");
 
         DiseaseTemplateConfig diseaseTemplateConfig = new DiseaseTemplateConfig();
-        diseaseTemplateConfig.setDiseaseName("Breast Cancer");
+        diseaseTemplateConfig.setTemplateName("Breast Cancer");
         diseaseTemplateConfig.setShowOnly(showOnly);
 
         ArrayList<DiseaseTemplateConfig> diseaseTemplateConfigList = new ArrayList<>();
@@ -91,7 +91,7 @@ public class DiseaseTemplateServiceImplIT extends BaseModuleWebContextSensitiveT
         showOnly.add("Histopathology");
 
         DiseaseTemplateConfig diseaseTemplateConfig = new DiseaseTemplateConfig();
-        diseaseTemplateConfig.setDiseaseName("Breast Cancer");
+        diseaseTemplateConfig.setTemplateName("Breast Cancer");
         diseaseTemplateConfig.setShowOnly(showOnly);
 
         ArrayList<DiseaseTemplateConfig> diseaseTemplateConfigList = new ArrayList<>();

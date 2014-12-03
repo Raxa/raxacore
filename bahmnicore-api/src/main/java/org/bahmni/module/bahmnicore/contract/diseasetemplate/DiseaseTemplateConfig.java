@@ -6,11 +6,11 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DiseaseTemplateConfig {
-    private String diseaseName;
+    private String templateName;
     private List<String> showOnly;
 
-    public DiseaseTemplateConfig(String diseaseName, List<String> showOnly) {
-        this.diseaseName = diseaseName;
+    public DiseaseTemplateConfig(String templateName, List<String> showOnly) {
+        this.templateName = templateName;
         this.showOnly = showOnly;
     }
 
@@ -18,12 +18,12 @@ public class DiseaseTemplateConfig {
     public DiseaseTemplateConfig() {
     }
 
-    public String getDiseaseName() {
-        return diseaseName;
+    public String getTemplateName() {
+        return templateName;
     }
 
-    public void setDiseaseName(String diseaseName) {
-        this.diseaseName = diseaseName;
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
     }
 
     public List<String> getShowOnly() {
