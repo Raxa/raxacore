@@ -20,6 +20,7 @@
         <module>bahmni-mapping</module>
         <module>obs-relation</module>
         <module>bahmni-test-commons</module>
+        <module>bahmnicore-ui</module>
     </modules>
 
     <properties>
