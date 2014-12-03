@@ -2576,4 +2576,40 @@
             UPDATE concept set uuid = @uuid where concept_id = @concept_id;
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201412031050" author="Swathi">
+        <comment></comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+            set @uuid = 0;
+            set @now = now();
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Five times a day', '', 'N/A', 'Frequency', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'FIVE', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'TIMES', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'DAY', '1');
+            select uuid() into @uuid;
+            insert into order_frequency(concept_id, frequency_per_day, creator, date_created, uuid) values(@concept_id, 5, 1, @now, @uuid);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Four days a week', '', 'N/A', 'Frequency', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'FOUR', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'WEEK', '1');
+            select uuid() into @uuid;
+            insert into order_frequency(concept_id, frequency_per_day, creator, date_created, uuid) values(@concept_id, 4/7, 1, @now, @uuid);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Five days a week', '', 'N/A', 'Frequency', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'FIVE', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'WEEK', '1');
+            select uuid() into @uuid;
+            insert into order_frequency(concept_id, frequency_per_day, creator, date_created, uuid) values(@concept_id, 5/7, 1, @now, @uuid);
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Six days a week', '', 'N/A', 'Frequency', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'SIX', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'WEEK', '1');
+            select uuid() into @uuid;
+            insert into order_frequency(concept_id, frequency_per_day, creator, date_created, uuid) values(@concept_id, 6/7, 1, @now, @uuid);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
