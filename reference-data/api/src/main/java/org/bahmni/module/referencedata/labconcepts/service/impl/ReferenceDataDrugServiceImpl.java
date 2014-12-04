@@ -29,12 +29,9 @@ public class ReferenceDataDrugServiceImpl implements ReferenceDataDrugService {
 
     @Override
     public Drug saveDrug(org.bahmni.module.referencedata.labconcepts.contract.Drug drug) {
-        DrugMetaData drugMetaData = drugMetaDataService.getDrugMetaData(drug.getName(), drug.getUuid(), drug.getGenericName(), drug.getDosageForm());
+        DrugMetaData drugMetaData = drugMetaDataService.getDrugMetaData(drug);
         drugValidator.validate(drug, drugMetaData);
         Drug conceptDrug = drugMapper.map(drug, drugMetaData);
-        if (!drugMetaData.isConceptExists()) {
-            conceptService.saveConcept(conceptDrug.getConcept());
-        }
         return conceptService.saveDrug(conceptDrug);
     }
 }

@@ -20,9 +20,13 @@ public class DrugValidator extends Validator{
     public void validate(Drug drug, DrugMetaData drugMetaData) {
         drugMetaDataValidator.validate(drugMetaData);
         List<String> errors = new ArrayList<>();
+        if(StringUtils.isNotBlank(drug.getUuid()) && drugMetaData.getExistingDrug() == null){
+            errors.add("Drug with provided Uuid does not exist");
+        }
         if (StringUtils.isBlank(drug.getName())){
             errors.add("Drug name is mandatory");
-        } if (StringUtils.isBlank(drug.getGenericName())){
+        }
+        if (StringUtils.isBlank(drug.getGenericName())){
             errors.add("Drug generic name is mandatory");
         }
         throwExceptionIfExists(errors);

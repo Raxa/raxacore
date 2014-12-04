@@ -1,6 +1,7 @@
 package org.bahmni.module.referencedata.labconcepts.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.bahmni.module.referencedata.labconcepts.model.DrugMetaData;
 import org.bahmni.module.referencedata.labconcepts.service.DrugMetaDataService;
 import org.openmrs.Concept;
@@ -11,8 +12,12 @@ import org.openmrs.api.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class DrugMetaDataServiceImpl implements DrugMetaDataService {
+
+    private static final org.apache.log4j.Logger log = Logger.getLogger(DrugMetaDataServiceImpl.class);
 
     private final ConceptService conceptService;
 
@@ -22,19 +27,33 @@ public class DrugMetaDataServiceImpl implements DrugMetaDataService {
     }
 
     @Override
-    public DrugMetaData getDrugMetaData(String drugName, String drugUuid, String genericName, String dosageForm) {
-        Drug existingDrug = getExistingDrug(drugName, drugUuid);
-        Concept drugConcept = conceptService.getConceptByName(genericName);
-        Concept dosageFormConcept = conceptService.getConceptByName(dosageForm);
+    public DrugMetaData getDrugMetaData(org.bahmni.module.referencedata.labconcepts.contract.Drug drug) {
+        Concept dosageFormConcept = conceptService.getConceptByName(drug.getDosageForm());
+        Drug existingDrug = getExistingDrug(drug, dosageFormConcept);
+
+        Concept drugConcept = conceptService.getConceptByName(drug.getGenericName());
         ConceptClass drugConceptClass = conceptService.getConceptClassByUuid(ConceptClass.DRUG_UUID);
         ConceptDatatype naDataType = conceptService.getConceptDatatypeByUuid(ConceptDatatype.N_A_UUID);
         return new DrugMetaData(existingDrug, drugConcept, dosageFormConcept, drugConceptClass, naDataType);
     }
 
-    private Drug getExistingDrug(String drugName, String drugUuid) {
-        if (!StringUtils.isBlank(drugUuid)) {
-            return conceptService.getDrugByUuid(drugUuid);
+    private Drug getExistingDrug(org.bahmni.module.referencedata.labconcepts.contract.Drug drug,Concept dosageFormConcept) {
+        if (!StringUtils.isBlank(drug.getUuid())) {
+            return conceptService.getDrugByUuid(drug.getUuid());
         }
-        return conceptService.getDrugByNameOrId(drugName);
+
+        if(dosageFormConcept == null){
+            return null;
+        }
+
+        List<Drug> drugs = conceptService.getDrugs(drug.getName());
+        for(Drug mrsDrug: drugs){
+            if(mrsDrug.getStrength().equals(drug.getStrength()) &&
+                    mrsDrug.getDosageForm().getConceptId().equals(dosageFormConcept.getConceptId()) &&
+                    mrsDrug.getName().equals(drug.getName())){
+                return mrsDrug;
+            }
+        }
+        return null;
     }
 }

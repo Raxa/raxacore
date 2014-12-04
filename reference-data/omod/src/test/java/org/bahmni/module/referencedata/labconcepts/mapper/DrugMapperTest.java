@@ -40,32 +40,23 @@ public class DrugMapperTest {
     }
 
     @Test
-    public void create_new_drug_with_only_name_and_generic_name() throws Exception {
-        Drug drug = new Drug();
-        drug.setName("Drug Name");
-        drug.setGenericName("Drug Concept name");
-        DrugMetaData drugMetaData = new DrugMetaData();
-        drugMetaData.setDrugConceptClass(drugConceptClass);
-        org.openmrs.Drug mappedDrug = drugMapper.map(drug, drugMetaData);
-        assertEquals("Drug Name", mappedDrug.getName());
-        assertEquals("Drug Concept name", mappedDrug.getConcept().getName(Context.getLocale()).getName());
-        assertNull(mappedDrug.getDosageForm());
-        assertFalse(mappedDrug.getCombination());
-        assertNull(mappedDrug.getMaximumDailyDose());
-        assertNull(mappedDrug.getMinimumDailyDose());
-    }
-
-    @Test
     public void create_new_drug_with_name_and_generic_name_and_dosage_form() throws Exception {
+        Concept tablet = new ConceptBuilder().withName("Tablet").build();
+        Concept existingConcept = new ConceptBuilder().withClassUUID(ConceptClass.DRUG_UUID).withName("Existing Concept").build();
+
+
         Drug drug = new Drug();
         drug.setName("Drug Name");
-        drug.setGenericName("Drug Concept name");
+        drug.setGenericName("Existing Concept");
         drug.setDosageForm("Tablet");
         DrugMetaData drugMetaData = new DrugMetaData();
         drugMetaData.setDrugConceptClass(drugConceptClass);
+        drugMetaData.setDosageForm(tablet);
+        drugMetaData.setDrugConcept(existingConcept);
+
         org.openmrs.Drug mappedDrug = drugMapper.map(drug, drugMetaData);
         assertEquals("Drug Name", mappedDrug.getName());
-        assertEquals("Drug Concept name", mappedDrug.getConcept().getName(Context.getLocale()).getName());
+        assertEquals("Existing Concept", mappedDrug.getConcept().getName(Context.getLocale()).getName());
         assertEquals("Tablet", mappedDrug.getDosageForm().getName(Context.getLocale()).getName());
         assertFalse(mappedDrug.getCombination());
         assertNull(mappedDrug.getMaximumDailyDose());
@@ -74,9 +65,11 @@ public class DrugMapperTest {
 
     @Test
     public void create_new_drug_with_all_fields() throws Exception {
+        Concept existingConcept = new ConceptBuilder().withClassUUID(ConceptClass.DRUG_UUID).withName("Existing Concept").build();
+
         Drug drug = new Drug();
         drug.setName("Drug Name");
-        drug.setGenericName("Drug Concept name");
+        drug.setGenericName("Existing Concept");
         drug.setDosageForm("Tablet");
         drug.setCombination(true);
         drug.setMaximumDose("99.0");
@@ -84,10 +77,11 @@ public class DrugMapperTest {
         drug.setStrength("Ok");
         DrugMetaData drugMetaData = new DrugMetaData();
         drugMetaData.setDrugConceptClass(drugConceptClass);
+        drugMetaData.setDosageForm(new Concept());
+        drugMetaData.setDrugConcept(existingConcept);
         org.openmrs.Drug mappedDrug = drugMapper.map(drug, drugMetaData);
         assertEquals("Drug Name", mappedDrug.getName());
-        assertEquals("Drug Concept name", mappedDrug.getConcept().getName(Context.getLocale()).getName());
-        assertEquals("Tablet", mappedDrug.getDosageForm().getName(Context.getLocale()).getName());
+        assertEquals("Existing Concept", mappedDrug.getConcept().getName(Context.getLocale()).getName());
         assertTrue(mappedDrug.getCombination());
         assertEquals("Ok", mappedDrug.getStrength());
         assertTrue(mappedDrug.getMaximumDailyDose().equals(99.0));
@@ -109,6 +103,7 @@ public class DrugMapperTest {
         drug.setStrength("Ok");
         DrugMetaData drugMetaData = new DrugMetaData();
         drugMetaData.setDrugConceptClass(drugConceptClass);
+        drugMetaData.setDrugConcept(existingConcept);
         drugMetaData.setExistingDrug(existingDrug);
         drugMetaData.setDosageForm(capsule);
         assertEquals("Tablet", existingDrug.getDosageForm().getName(Context.getLocale()).getName());

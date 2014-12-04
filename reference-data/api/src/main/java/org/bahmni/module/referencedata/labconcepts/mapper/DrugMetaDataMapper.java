@@ -10,7 +10,14 @@ public class DrugMetaDataMapper {
     }
 
     public org.openmrs.Drug map(DrugMetaData drugMetaData) {
-        Drug drug = drugMetaData.getExistingDrug();
+        Drug drug = null;
+
+        if (drugMetaData.getExistingDrug() != null) {
+            drug = drugMetaData.getExistingDrug();
+        } else {
+            drug = new Drug();
+        }
+
         drug.setDosageForm(drugMetaData.getDosageForm());
         drug.setConcept(drugMetaData.getDrugConcept());
         return drug;

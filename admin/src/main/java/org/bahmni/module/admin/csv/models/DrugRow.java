@@ -20,7 +20,7 @@ public class DrugRow extends CSVEntity {
     @CSVHeader(name = "Strength", optional = true)
     private String strength;
 
-    @CSVHeader(name = "Dosage Form", optional = true)
+    @CSVHeader(name = "Dosage Form")
     private String dosageForm;
 
     @CSVHeader(name = "Minimum Dose", optional = true)

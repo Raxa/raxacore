@@ -30,13 +30,11 @@ public class DrugMetaDataMapperTest {
 
     @Test
     public void create_new_drug_if_existing_drug_is_null() throws Exception {
-        DrugMetaData drugMetaData = new DrugMetaData(null, null, null, drugConceptClass, naDatatype);
+        DrugMetaData drugMetaData = new DrugMetaData(null, new Concept(), new Concept(), drugConceptClass, naDatatype);
         Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
         assertNotNull(conceptDrug);
         assertNotNull(conceptDrug.getConcept());
-        assertEquals(drugConceptClass, conceptDrug.getConcept().getConceptClass());
-        assertEquals(naDatatype, conceptDrug.getConcept().getDatatype());
-        assertNull(conceptDrug.getDosageForm());
+        assertNotNull(conceptDrug.getDosageForm());
     }
 
     @Test
@@ -54,7 +52,7 @@ public class DrugMetaDataMapperTest {
     @Test
     public void create_new_drug_with_dosage_form_concept() throws Exception {
         Concept tablet = new ConceptBuilder().withName("Tablet").build();
-        DrugMetaData drugMetaData = new DrugMetaData(null, null, tablet, drugConceptClass, naDatatype);
+        DrugMetaData drugMetaData = new DrugMetaData(null, new Concept(), tablet, drugConceptClass, naDatatype);
         Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
         assertNotNull(conceptDrug);
         assertNotNull(conceptDrug.getConcept());
@@ -76,17 +74,6 @@ public class DrugMetaDataMapperTest {
     }
 
     @Test
-    public void update_dosage_form_on_existing_drug() throws Exception {
-        Drug existingDrug = new DrugBuilder().withConcept("Drug Concept").withDosageForm("Tablet").build();
-        Concept capsule = new ConceptBuilder().withName("Capsule").build();
-        DrugMetaData drugMetaData = new DrugMetaData(existingDrug, null, capsule, drugConceptClass, naDatatype);
-        assertEquals("Tablet", existingDrug.getDosageForm().getName(Context.getLocale()).getName());
-        Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
-        assertEquals("Drug Concept", conceptDrug.getConcept().getName(Context.getLocale()).getName());
-        assertEquals("Capsule", conceptDrug.getDosageForm().getName(Context.getLocale()).getName());
-    }
-
-    @Test
     public void update_drug_concept_on_existing_drug() throws Exception {
         Drug existingDrug = new DrugBuilder().withConcept("Drug Concept").withDosageForm("Tablet").build();
         Concept drugConcept = new ConceptBuilder().withName("New Concept").withClassUUID(ConceptClass.DRUG_UUID).build();
@@ -95,7 +82,7 @@ public class DrugMetaDataMapperTest {
         assertEquals("Tablet", existingDrug.getDosageForm().getName(Context.getLocale()).getName());
         Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
         assertEquals("New Concept", conceptDrug.getConcept().getName(Context.getLocale()).getName());
-        assertEquals("Tablet", conceptDrug.getDosageForm().getName(Context.getLocale()).getName());
+        assertNull(conceptDrug.getDosageForm());
         assertEquals(ConceptClass.DRUG_UUID, conceptDrug.getConcept().getConceptClass().getUuid());
     }
 

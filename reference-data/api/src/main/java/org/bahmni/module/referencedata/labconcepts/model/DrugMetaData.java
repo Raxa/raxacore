@@ -22,22 +22,10 @@ public class DrugMetaData {
         this.dosageForm = dosageFormConcept;
         this.drugConceptClass = drugConceptClass;
         this.naDataType = naDataType;
-        this.conceptExists = (drugConcept != null);
     }
 
     public Concept getDrugConcept() {
-        if (drugConcept == null) {
-            if (existingDrug != null) {
-                return existingDrug.getConcept();
-            } else {
-                Concept drugConcept = new Concept();
-                drugConcept.setConceptClass(drugConceptClass);
-                drugConcept.setDatatype(naDataType);
-                return drugConcept;
-            }
-        } else {
-            return drugConcept;
-        }
+        return drugConcept;
     }
 
     public void setDrugConcept(Concept drugConcept) {
@@ -45,11 +33,7 @@ public class DrugMetaData {
     }
 
     public Concept getDosageForm() {
-        if (dosageForm == null && existingDrug != null && existingDrug.getDosageForm() != null) {
-            return existingDrug.getDosageForm();
-        } else {
-            return dosageForm;
-        }
+        return dosageForm;
     }
 
     public void setDosageForm(Concept dosageForm) {
@@ -65,18 +49,10 @@ public class DrugMetaData {
     }
 
     public Drug getExistingDrug() {
-        return existingDrug == null ? new Drug() : existingDrug;
+        return existingDrug;
     }
 
     public void setExistingDrug(Drug existingDrug) {
         this.existingDrug = existingDrug;
-    }
-
-    public boolean isConceptExists() {
-        return conceptExists;
-    }
-
-    public void setConceptExists(boolean conceptExists) {
-        this.conceptExists = conceptExists;
     }
 }

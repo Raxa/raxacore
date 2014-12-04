@@ -6,6 +6,7 @@ import org.bahmni.module.referencedata.labconcepts.model.DrugMetaData;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
+import org.springframework.util.Assert;
 
 import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.getConceptName;
 
@@ -18,14 +19,12 @@ public class DrugMapper {
     }
 
     public org.openmrs.Drug map(Drug drug, DrugMetaData drugMetaData) {
+        Assert.notNull(drugMetaData.getDosageForm(),"The dosage form should not be null");
+        Assert.notNull(drugMetaData.getDrugConcept(),"The drug concept should not be null");
+
         org.openmrs.Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
         conceptDrug.setName(drug.getName());
         MapperUtils.addConceptName(conceptDrug.getConcept(), getConceptName(drug.getGenericName(), ConceptNameType.FULLY_SPECIFIED));
-        if(conceptDrug.getDosageForm() == null && !StringUtils.isBlank(drug.getDosageForm())){
-            Concept dosageForm = new Concept();
-            dosageForm.addName(getConceptName(drug.getDosageForm(), ConceptNameType.FULLY_SPECIFIED));
-            conceptDrug.setDosageForm(dosageForm);
-        }
         conceptDrug.setCombination(drug.isCombination());
         conceptDrug.setStrength(drug.getStrength());
         conceptDrug.setMaximumDailyDose(drug.doubleMaximumDose());
