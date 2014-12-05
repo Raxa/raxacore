@@ -60,20 +60,26 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
         Set<String> leafConcepts = new HashSet<>();
         for (String conceptName : obsConcepts) {
             Concept concept = conceptService.getConceptByName(conceptName);
-            addLeafConcepts(concept,leafConcepts);
+            addLeafConcepts(concept, null, leafConcepts);
         }
         return leafConcepts;
     }
 
-    private void addLeafConcepts(Concept rootConcept, Collection<String> leafConcepts) {
+    private void addLeafConcepts(Concept rootConcept, Concept parentConcept, Collection<String> leafConcepts) {
         if(rootConcept.isSet()){
             for (Concept setMember : rootConcept.getSetMembers()) {
-                addLeafConcepts(setMember,leafConcepts);
+                addLeafConcepts(setMember,rootConcept,leafConcepts);
             };
         }
         else if(!shouldBeExcluded(rootConcept)){
-            String fullName = getConceptName(rootConcept, ConceptNameType.FULLY_SPECIFIED);
-            String shortName = getConceptName(rootConcept, ConceptNameType.SHORT);
+            Concept conceptToAdd = rootConcept;
+            if(parentConcept != null){
+                if(BahmniObservationMapper.CONCEPT_DETAILS_CONCEPT_CLASS.equals(parentConcept.getConceptClass().getName())){
+                    conceptToAdd = parentConcept;
+                }
+            }
+            String fullName = getConceptName(conceptToAdd, ConceptNameType.FULLY_SPECIFIED);
+            String shortName = getConceptName(conceptToAdd, ConceptNameType.SHORT);
             leafConcepts.add(shortName==null?fullName:shortName);
         }
     }
