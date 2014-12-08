@@ -94,7 +94,7 @@ public class ReferenceDataDrugServiceImplIT extends BaseModuleWebContextSensitiv
     @Test
     public void same_drug_multiple_times() throws Exception {
         Drug drug = new Drug();
-        drug.setName("New Drug");
+        drug.setName("NEW DRUG");
         drug.setGenericName("Old Drug Concept");
         drug.setMinimumDose("12");
         drug.setMaximumDose("15");
@@ -104,9 +104,12 @@ public class ReferenceDataDrugServiceImplIT extends BaseModuleWebContextSensitiv
         org.openmrs.Drug savedDrug1 = referenceDataDrugService.saveDrug(drug);
         org.openmrs.Drug savedDrug2 = referenceDataDrugService.saveDrug(drug);
         assertEquals(savedDrug1.getUuid(), savedDrug2.getUuid());
+
         drug.setDosageForm("Tablet");
         savedDrug2 = referenceDataDrugService.saveDrug(drug);
-        assertEquals(savedDrug1.getUuid(), savedDrug2.getUuid());
+        assertNotEquals(savedDrug1.getUuid(), savedDrug2.getUuid());
+
+        drug.setDosageForm("Capsule");
         drug.setGenericName("Random Drug Concept");
         savedDrug2 = referenceDataDrugService.saveDrug(drug);
         assertEquals(savedDrug1.getUuid(), savedDrug2.getUuid());
