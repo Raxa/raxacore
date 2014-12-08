@@ -36,17 +36,25 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
     public void setUp() throws Exception {
         bahmniDiseaseSummaryData = new BahmniDiseaseSummaryServiceImpl(patientService, bahmniObsService, labOrderResultsService, conceptService);
         executeDataSet("observationsTestData.xml");
+        executeDataSet("diagnosisMetadata.xml");
+        executeDataSet("dispositionMetadata.xml");
     }
 
     @Test
-    public void shouldReturnObsForGivenConceptsAndNoOfVisits(){
+    public void shouldReturnObsForGivenConceptsAndNoOfVisits() throws Exception {
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(3);
         ArrayList<String> obsConcepts = new ArrayList<String>(){{
             add("Blood Pressure");
             add("Weight");
         }};
+
+        ArrayList<String> labConcepts = new ArrayList<String>(){{
+            add("abc");
+        }};
+
         diseaseDataParams.setObsConcepts(obsConcepts);
+        diseaseDataParams.setLabConcepts(obsConcepts);
         DiseaseSummaryData diseaseSummary = bahmniDiseaseSummaryData.getDiseaseSummary("86526ed5-3c11-11de-a0ba-001e378eb67a", diseaseDataParams);
         Map<String, Map<String, ConceptValue>> obsTable = diseaseSummary.getTabularData();
 
@@ -85,6 +93,4 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertTrue(conceptNames.contains("Diastolic"));
 
     }
-
-
 }
