@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,21 +58,26 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
 
     @Override
     public List<LabOrderResult> getAllForConcepts(Patient patient, Collection<String> concepts, List<Visit> visits){
-        List<EncounterTransaction.TestOrder> testOrders = new ArrayList<>();
-        List<EncounterTransaction.Observation> observations = new ArrayList<>();
-        Map<String, Encounter> encounterTestOrderUuidMap = new HashMap<>();
-        Map<String, Encounter> encounterObservationMap = new HashMap<>();
+        if (concepts != null && !concepts.isEmpty()) {
 
-        List<Encounter> encounters = encounterService.getEncounters(patient, null, null, null, null, null, null, null, visits, false);
-        for (Encounter encounter : encounters) {
-            EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, false);
-            testOrders.addAll(getTestOrdersForConcepts(encounterTransaction, encounter, encounterTestOrderUuidMap, concepts));
-            List<EncounterTransaction.Observation> nonVoidedObservations = filterVoided(encounterTransaction.getObservations());
-            observations.addAll(nonVoidedObservations);
-            mapObservationsWithEncounter(nonVoidedObservations, encounter, encounterObservationMap);
+            List<EncounterTransaction.TestOrder> testOrders = new ArrayList<>();
+            List<EncounterTransaction.Observation> observations = new ArrayList<>();
+            Map<String, Encounter> encounterTestOrderUuidMap = new HashMap<>();
+            Map<String, Encounter> encounterObservationMap = new HashMap<>();
+
+            List<Encounter> encounters = encounterService.getEncounters(patient, null, null, null, null, null, null, null, visits, false);
+            for (Encounter encounter : encounters) {
+                EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, false);
+                testOrders.addAll(getTestOrdersForConcepts(encounterTransaction, encounter, encounterTestOrderUuidMap, concepts));
+                List<EncounterTransaction.Observation> nonVoidedObservations = filterVoided(encounterTransaction.getObservations());
+                observations.addAll(nonVoidedObservations);
+                mapObservationsWithEncounter(nonVoidedObservations, encounter, encounterObservationMap);
+            }
+
+            return mapOrdersWithObs(testOrders, observations, encounterTestOrderUuidMap, encounterObservationMap);
         }
 
-        return mapOrdersWithObs(testOrders, observations, encounterTestOrderUuidMap, encounterObservationMap);
+        return Collections.emptyList();
 
     }
 

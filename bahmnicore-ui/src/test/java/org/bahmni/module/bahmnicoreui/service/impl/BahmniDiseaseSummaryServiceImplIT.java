@@ -35,9 +35,9 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
     @org.junit.Before
     public void setUp() throws Exception {
         bahmniDiseaseSummaryData = new BahmniDiseaseSummaryServiceImpl(patientService, bahmniObsService, labOrderResultsService, conceptService);
-        executeDataSet("observationsTestData.xml");
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
+        executeDataSet("observationsTestData.xml");
     }
 
     @Test
@@ -49,12 +49,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
             add("Weight");
         }};
 
-        ArrayList<String> labConcepts = new ArrayList<String>(){{
-            add("abc");
-        }};
-
         diseaseDataParams.setObsConcepts(obsConcepts);
-        diseaseDataParams.setLabConcepts(obsConcepts);
         DiseaseSummaryData diseaseSummary = bahmniDiseaseSummaryData.getDiseaseSummary("86526ed5-3c11-11de-a0ba-001e378eb67a", diseaseDataParams);
         Map<String, Map<String, ConceptValue>> obsTable = diseaseSummary.getTabularData();
 

@@ -61,16 +61,11 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
         }
         List<BahmniObservation> bahmniObservations = bahmniObsService.observationsFor(patientUuid, concepts, queryParams.getNumberOfVisits());
 
-        if(queryParams.getLabConcepts() == null){
-            throw new RuntimeException("LabConcept list is null: atleast one concept name should be specified for getting observations of related concept");
-        }
-
         Patient patient = patientService.getPatientByUuid(patientUuid);
 //        List<Visit> visits = null;
 //        if(queryParams.getNumberOfVisits() != null) {
 //            visits = orderDao.getVisitsWithOrders(patient, "TestOrder", true, numberOfVisits);
 //        }
-
 
         List<LabOrderResult> labOrderResults = labOrderResultsService.getAllForConcepts(patient, queryParams.getLabConcepts(), null);
         diseaseSummaryData.setTabularData(diseaseSummaryMapper.mapObservations(bahmniObservations));
