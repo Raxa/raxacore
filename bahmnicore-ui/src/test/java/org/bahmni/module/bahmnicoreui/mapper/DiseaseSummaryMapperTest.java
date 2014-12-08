@@ -3,19 +3,26 @@ package org.bahmni.module.bahmnicoreui.mapper;
 import org.bahmni.module.bahmnicoreui.contract.ConceptValue;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openmrs.*;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.util.LocaleUtility;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(LocaleUtility.class)
 public class DiseaseSummaryMapperTest {
 
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DiseaseSummaryMapper.DATE_FORMAT);
@@ -28,6 +35,8 @@ public class DiseaseSummaryMapperTest {
         date1 = "2014-09-12";
         date2 = "2014-09-13";
         date3 = "2014-09-14";
+        mockStatic(LocaleUtility.class);
+        when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
     }
 
     @Test
@@ -69,6 +78,117 @@ public class DiseaseSummaryMapperTest {
 
     }
 
+
+    @Test
+    public void shouldMapCodedConceptValues() throws ParseException {
+        DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
+        List<BahmniObservation> bahmniObservations =  new ArrayList<>();
+
+        Date visit1 = simpleDateFormat.parse(date1);
+        bahmniObservations.add(createBahmniObservation(visit1,"Pulse",new EncounterTransaction.Concept("uuid-pulse","very high pulse")));
+
+        Map<String, Map<String, ConceptValue>> obsTable = diseaseSummaryMapper.mapObservations(bahmniObservations);
+
+        Map<String, ConceptValue> dayValue = obsTable.get(date1);
+        assertEquals(1, dayValue.size());
+        assertEquals("very high pulse", dayValue.get("Pulse").getValue());
+
+    }
+
+    @Test
+    public void shouldMapDrugOrders() throws ParseException {
+        DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
+        Map<String, Map<String, ConceptValue>> drugOrderData = diseaseSummaryMapper.mapDrugOrders(mockDrugOrders(new String[]{"paracetamol", "2014-08-15"}, new String[]{"penicillin", "2014-09-11"}));
+
+        assertNotNull(drugOrderData);
+        assertEquals(2, drugOrderData.size());
+
+        Map<String, ConceptValue> firstDayValue = drugOrderData.get("2014-08-15");
+        assertEquals(1, firstDayValue.size());
+        assertEquals("paracetamol-500mg", firstDayValue.get("paracetamol").getValue());
+
+        Map<String, ConceptValue> secondDayValue = drugOrderData.get("2014-09-11");
+        assertEquals(1, secondDayValue.size());
+        assertEquals("penicillin-500mg", secondDayValue.get("penicillin").getValue());
+
+    }
+
+    @Test
+    public void shouldMapLabOrders() throws ParseException {
+        DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
+        Map<String, Map<String, ConceptValue>> labOrderData = diseaseSummaryMapper.mapLabResults(mockLabOrders());
+
+        assertNotNull(labOrderData);
+        assertEquals(2, labOrderData.size());
+
+        Map<String, ConceptValue> firstDayValue = labOrderData.get("2014-07-22");
+        assertEquals(1, firstDayValue.size());
+        assertEquals("120", firstDayValue.get("Blood glucose").getValue());
+
+        Map<String, ConceptValue> secondDayValue = labOrderData.get("2014-07-23");
+        assertEquals(2, secondDayValue.size());
+        assertEquals("140", secondDayValue.get("Blood glucose").getValue());
+        assertEquals("3.0", secondDayValue.get("serum creatinine").getValue());
+
+    }
+
+    private List<LabOrderResult> mockLabOrders() throws ParseException {
+        List<LabOrderResult> labOrderResults = new ArrayList<>();
+        labOrderResults.add(createLabOrder("2014-07-22","Blood glucose","120"));
+        labOrderResults.add(createLabOrder("2014-07-23","Blood glucose","140"));
+        labOrderResults.add(createLabOrder("2014-07-23","serum creatinine","3.0"));
+        return labOrderResults;
+    }
+
+    private LabOrderResult createLabOrder(String visitDate, String conceptName, String value) throws ParseException {
+
+        LabOrderResult labOrderResult = new LabOrderResult();
+        Date date = simpleDateFormat.parse(visitDate);
+        labOrderResult.setVisitStartTime(date);
+        labOrderResult.setResult(value);
+        labOrderResult.setTestName(conceptName);
+        return labOrderResult;
+    }
+
+
+    private List<DrugOrder> mockDrugOrders(String[]... drugInfoList) throws ParseException {
+        List<DrugOrder> drugOrders = new ArrayList<>();
+        for (String[] drugInfo : drugInfoList) {
+            DrugOrder drugOrder = new DrugOrder();
+            drugOrder.setConcept(createMRSConcept(drugInfo[0]));
+            drugOrder.setEncounter(createEncounterWithVisitDateInfo(getDateFromString(drugInfo[1])));
+            drugOrder.setDrug(createDrugWithNameAndStrength(drugInfo[0], drugInfo[0] + "-500mg"));
+            drugOrders.add(drugOrder);
+        }
+        return drugOrders;
+    }
+
+    private Drug createDrugWithNameAndStrength(String drugName, String strength) {
+        Drug drug = new Drug();
+        drug.setName(drugName);
+        drug.setStrength(strength);
+        return drug;
+    }
+
+    private Encounter createEncounterWithVisitDateInfo(Date date) {
+        Encounter encounter = new Encounter();
+        Visit visit = new Visit();
+        visit.setStartDatetime(date);
+        encounter.setVisit(visit);
+        return encounter;
+    }
+
+    private Date getDateFromString(String dateString) throws ParseException {
+        return simpleDateFormat.parse(dateString);
+    }
+
+    private Concept createMRSConcept(String drugName) {
+        Concept concept =  new Concept();
+        concept.setFullySpecifiedName(new ConceptName(drugName, Locale.getDefault()));
+        return concept;
+    }
+
+
     private List<BahmniObservation> createBahmniObsList() throws ParseException {
         List<BahmniObservation> bahmniObservations =  new ArrayList<>();
         Date visit1 = simpleDateFormat.parse(date1);
@@ -82,7 +202,7 @@ public class DiseaseSummaryMapperTest {
         return bahmniObservations;
     }
 
-    private BahmniObservation createBahmniObservation(Date visitStartTime, String conceptName, String value) {
+    private BahmniObservation createBahmniObservation(Date visitStartTime, String conceptName, Object value) {
         BahmniObservation bahmniObservation = new BahmniObservation();
         bahmniObservation.setVisitStartDateTime(visitStartTime);
         bahmniObservation.setConcept(new EncounterTransaction.Concept("uuid-"+conceptName,conceptName));

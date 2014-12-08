@@ -8,6 +8,7 @@ import java.util.Date;
 public class LabOrderResult {
     private String accessionUuid;
     private Date accessionDateTime;
+    private Date visitStartTime;
     private String accessionNotes;
     private String testName;
     private String testUnitOfMeasurement;

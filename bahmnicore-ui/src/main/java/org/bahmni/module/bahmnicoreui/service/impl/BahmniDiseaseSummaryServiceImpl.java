@@ -8,7 +8,6 @@ import org.bahmni.module.bahmnicoreui.service.BahmniDiseaseSummaryService;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.Patient;
-import org.openmrs.Visit;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
@@ -21,11 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
@@ -59,17 +54,12 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
         for (String conceptName : queryParams.getObsConcepts()) {
             concepts.add(conceptService.getConceptByName(conceptName));
         }
+        Patient patient = patientService.getPatientByUuid(patientUuid);
         List<BahmniObservation> bahmniObservations = bahmniObsService.observationsFor(patientUuid, concepts, queryParams.getNumberOfVisits());
 
-        Patient patient = patientService.getPatientByUuid(patientUuid);
-//        List<Visit> visits = null;
-//        if(queryParams.getNumberOfVisits() != null) {
-//            visits = orderDao.getVisitsWithOrders(patient, "TestOrder", true, numberOfVisits);
-//        }
-
         List<LabOrderResult> labOrderResults = labOrderResultsService.getAllForConcepts(patient, queryParams.getLabConcepts(), null);
-        diseaseSummaryData.setTabularData(diseaseSummaryMapper.mapObservations(bahmniObservations));
-//        diseaseSummaryData.setTabularData(diseaseSummaryMapper.mapLabResults(labOrderResults));
+        diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapObservations(bahmniObservations));
+        diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapLabResults(labOrderResults));
         diseaseSummaryData.setConceptNames(getLeafConceptNames(queryParams.getObsConcepts()));
         return diseaseSummaryData;
     }
@@ -87,7 +77,7 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
         if(rootConcept.isSet()){
             for (Concept setMember : rootConcept.getSetMembers()) {
                 addLeafConcepts(setMember,rootConcept,leafConcepts);
-            };
+            }
         }
         else if(!shouldBeExcluded(rootConcept)){
             Concept conceptToAdd = rootConcept;
@@ -112,11 +102,8 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
     }
 
     private boolean shouldBeExcluded(Concept rootConcept) {
-        if(BahmniObservationMapper.ABNORMAL_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName()) ||
-                BahmniObservationMapper.DURATION_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName())){
-            return true;
-        }
-        return false;
+        return BahmniObservationMapper.ABNORMAL_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName()) ||
+                BahmniObservationMapper.DURATION_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName());
     }
 
 }

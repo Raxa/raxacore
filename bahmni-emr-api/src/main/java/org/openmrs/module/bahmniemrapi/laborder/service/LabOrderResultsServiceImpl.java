@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmniemrapi.laborder.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
@@ -73,12 +74,9 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
                 observations.addAll(nonVoidedObservations);
                 mapObservationsWithEncounter(nonVoidedObservations, encounter, encounterObservationMap);
             }
-
             return mapOrdersWithObs(testOrders, observations, encounterTestOrderUuidMap, encounterObservationMap);
         }
-
-        return Collections.emptyList();
-
+        return Collections.EMPTY_LIST;
     }
 
     private List<EncounterTransaction.TestOrder> getTestOrdersForConcepts(EncounterTransaction encounterTransaction, Encounter encounter, Map<String, Encounter> encounterTestOrderUuidMap, Collection<String> concepts) {
