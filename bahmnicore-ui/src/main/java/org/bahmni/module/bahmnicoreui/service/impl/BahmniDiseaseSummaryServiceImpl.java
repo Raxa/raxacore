@@ -7,11 +7,16 @@ import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryMapper;
 import org.bahmni.module.bahmnicoreui.service.BahmniDiseaseSummaryService;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
+import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
+import org.openmrs.module.bahmniemrapi.laborder.service.LabOrderResultsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,15 +31,19 @@ import java.util.Set;
 @Service
 public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryService {
 
+    private PatientService patientService;
     private BahmniObsService bahmniObsService;
+    private LabOrderResultsService labOrderResultsService;
 
     private ConceptService conceptService;
 
     private DiseaseSummaryMapper diseaseSummaryMapper;
 
     @Autowired
-    public BahmniDiseaseSummaryServiceImpl(BahmniObsService bahmniObsService, ConceptService conceptService) {
+    public BahmniDiseaseSummaryServiceImpl(PatientService patientService, BahmniObsService bahmniObsService, LabOrderResultsService labOrderResultsService, ConceptService conceptService) {
+        this.patientService = patientService;
         this.bahmniObsService = bahmniObsService;
+        this.labOrderResultsService = labOrderResultsService;
         this.conceptService = conceptService;
         this.diseaseSummaryMapper = new DiseaseSummaryMapper();
     }
@@ -51,7 +60,21 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
             concepts.add(conceptService.getConceptByName(conceptName));
         }
         List<BahmniObservation> bahmniObservations = bahmniObsService.observationsFor(patientUuid, concepts, queryParams.getNumberOfVisits());
+
+        if(queryParams.getLabConcepts() == null){
+            throw new RuntimeException("LabConcept list is null: atleast one concept name should be specified for getting observations of related concept");
+        }
+
+        Patient patient = patientService.getPatientByUuid(patientUuid);
+//        List<Visit> visits = null;
+//        if(queryParams.getNumberOfVisits() != null) {
+//            visits = orderDao.getVisitsWithOrders(patient, "TestOrder", true, numberOfVisits);
+//        }
+
+
+        List<LabOrderResult> labOrderResults = labOrderResultsService.getAllForConcepts(patient, queryParams.getLabConcepts(), null);
         diseaseSummaryData.setTabularData(diseaseSummaryMapper.mapObservations(bahmniObservations));
+//        diseaseSummaryData.setTabularData(diseaseSummaryMapper.mapLabResults(labOrderResults));
         diseaseSummaryData.setConceptNames(getLeafConceptNames(queryParams.getObsConcepts()));
         return diseaseSummaryData;
     }

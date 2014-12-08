@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmniemrapi.laborder.service;
 
+import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.Patient;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +52,40 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
             mapObservationsWithEncounter(nonVoidedObservations, encounter, encounterObservationMap);
         }
 
-        return mapOrdersWithObs(testOrders, observations, encounterTestOrderUuidMap, encounterObservationMap);
+        return new LabOrderResults(mapOrdersWithObs(testOrders, observations, encounterTestOrderUuidMap, encounterObservationMap));
     }
+
+    @Override
+    public List<LabOrderResult> getAllForConcepts(Patient patient, Collection<String> concepts, List<Visit> visits){
+        List<EncounterTransaction.TestOrder> testOrders = new ArrayList<>();
+        List<EncounterTransaction.Observation> observations = new ArrayList<>();
+        Map<String, Encounter> encounterTestOrderUuidMap = new HashMap<>();
+        Map<String, Encounter> encounterObservationMap = new HashMap<>();
+
+        List<Encounter> encounters = encounterService.getEncounters(patient, null, null, null, null, null, null, null, visits, false);
+        for (Encounter encounter : encounters) {
+            EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, false);
+            testOrders.addAll(getTestOrdersForConcepts(encounterTransaction, encounter, encounterTestOrderUuidMap, concepts));
+            List<EncounterTransaction.Observation> nonVoidedObservations = filterVoided(encounterTransaction.getObservations());
+            observations.addAll(nonVoidedObservations);
+            mapObservationsWithEncounter(nonVoidedObservations, encounter, encounterObservationMap);
+        }
+
+        return mapOrdersWithObs(testOrders, observations, encounterTestOrderUuidMap, encounterObservationMap);
+
+    }
+
+    private List<EncounterTransaction.TestOrder> getTestOrdersForConcepts(EncounterTransaction encounterTransaction, Encounter encounter, Map<String, Encounter> encounterTestOrderUuidMap, Collection<String> concepts) {
+        List<EncounterTransaction.TestOrder> orders = new ArrayList<>();
+        for (EncounterTransaction.TestOrder order : encounterTransaction.getTestOrders()) {
+            if(!order.isVoided() && concepts.contains(order.getConcept().getName())){
+                encounterTestOrderUuidMap.put(order.getUuid(), encounter);
+                orders.add(order);
+            }
+        }
+        return orders;
+    }
+
 
     private List<EncounterTransaction.Observation> filterVoided(List<EncounterTransaction.Observation> observations) {
         List<EncounterTransaction.Observation> nonVoidedObservations = new ArrayList<>();
@@ -83,7 +117,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         }
     }
 
-    private LabOrderResults mapOrdersWithObs(List<EncounterTransaction.TestOrder> testOrders, List<EncounterTransaction.Observation> observations, Map<String, Encounter> encounterTestOrderMap, Map<String, Encounter> encounterObservationMap) {
+    private List<LabOrderResult> mapOrdersWithObs(List<EncounterTransaction.TestOrder> testOrders, List<EncounterTransaction.Observation> observations, Map<String, Encounter> encounterTestOrderMap, Map<String, Encounter> encounterObservationMap) {
         List<LabOrderResult> labOrderResults = new ArrayList<>();
         for (EncounterTransaction.TestOrder testOrder : testOrders) {
             List<EncounterTransaction.Observation> obsGroups = findObsGroup(observations, testOrder);
@@ -97,7 +131,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
                 labOrderResults.add(new LabOrderResult(orderEncounter.getUuid(), orderEncounter.getEncounterDatetime(), orderConcept.getName(), orderConcept.getUnits(), null, null, null, null, false, null));
             }
         }
-        return new LabOrderResults(labOrderResults);
+        return labOrderResults;
     }
 
     private List<LabOrderResult> mapObs(EncounterTransaction.Observation obsGroup, Map<String, Encounter> encounterTestOrderMap, Map<String, Encounter> encounterObservationMap) {

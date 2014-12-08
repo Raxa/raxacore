@@ -3,6 +3,12 @@ package org.bahmni.module.bahmnicoreui.contract;
 import java.util.List;
 
 public class DiseaseDataParams {
+
+    private int numberOfVisits;
+    private List<String> obsConcepts;
+    private List<String> drugConcepts;
+    private List<String> labConcepts;
+
     public int getNumberOfVisits() {
         return numberOfVisits;
     }
@@ -10,8 +16,6 @@ public class DiseaseDataParams {
     public void setNumberOfVisits(int numberOfVisits) {
         this.numberOfVisits = numberOfVisits;
     }
-
-    private int numberOfVisits;
 
     public List<String> getObsConcepts() {
         return obsConcepts;
@@ -21,7 +25,13 @@ public class DiseaseDataParams {
         this.obsConcepts = obsConcepts;
     }
 
-    private List<String> obsConcepts;
-    private List<String> drugConcepts;
-    private List<String> labConcepts;
+    public List<String> getLabConcepts() {
+        return labConcepts;
+    }
+
+    public void setLabConcepts(List<String> labConcepts) {
+        this.labConcepts = labConcepts;
+    }
+
+
 }

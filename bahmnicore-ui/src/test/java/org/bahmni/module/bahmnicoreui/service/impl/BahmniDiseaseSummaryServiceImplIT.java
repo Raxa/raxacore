@@ -6,6 +6,8 @@ import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
 import org.junit.Test;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.PatientService;
+import org.openmrs.module.bahmniemrapi.laborder.service.LabOrderResultsService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,10 +27,14 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
     private BahmniObsService bahmniObsService;
 
     private BahmniDiseaseSummaryServiceImpl bahmniDiseaseSummaryData;
+    @Autowired
+    private PatientService patientService;
+    @Autowired
+    private LabOrderResultsService labOrderResultsService;
 
     @org.junit.Before
     public void setUp() throws Exception {
-        bahmniDiseaseSummaryData = new BahmniDiseaseSummaryServiceImpl(bahmniObsService, conceptService);
+        bahmniDiseaseSummaryData = new BahmniDiseaseSummaryServiceImpl(patientService, bahmniObsService, labOrderResultsService, conceptService);
         executeDataSet("observationsTestData.xml");
     }
 
