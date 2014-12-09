@@ -126,7 +126,7 @@ public class AdminImportController extends BaseRestController {
     @RequestMapping(value = baseUrl + "/drug", method = RequestMethod.POST)
     @ResponseBody
     public boolean uploadDrug(@RequestParam(value = "file") MultipartFile file) {
-        return importCsv(DRUG_FILES_DIRECTORY, file, new DatabasePersister<>(drugPersister), 5, false, DrugRow.class);
+        return importCsv(DRUG_FILES_DIRECTORY, file, new DatabasePersister<>(drugPersister), 1, false, DrugRow.class);
     }
 
     @RequestMapping(value = baseUrl + "/concept", method = RequestMethod.POST)
