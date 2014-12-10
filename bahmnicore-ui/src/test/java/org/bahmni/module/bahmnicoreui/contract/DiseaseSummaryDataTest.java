@@ -2,11 +2,11 @@ package org.bahmni.module.bahmnicoreui.contract;
 
 import org.junit.Test;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.AbstractMap.SimpleEntry;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DiseaseSummaryDataTest {
 
@@ -35,6 +35,22 @@ public class DiseaseSummaryDataTest {
         assertEquals("5", tabularData.get("13-12-2012").get("serum creatinine").getValue());
 
 
+    }
+
+    @Test
+    public void shouldAddConceptNamesToExistingSetOfConceptNames(){
+        DiseaseSummaryData diseaseSummaryData = new DiseaseSummaryData();
+        Set<String> existingConceptNames = new LinkedHashSet<>();
+        existingConceptNames.add("blood");
+        existingConceptNames.add("fluid");
+
+        Set<String> newConceptNames = new LinkedHashSet<>();
+        newConceptNames.add("temperature");
+        diseaseSummaryData.addConceptNames(existingConceptNames);
+        diseaseSummaryData.addConceptNames(newConceptNames);
+
+        assertEquals(diseaseSummaryData.getConceptNames().size(), 3);
+        assertTrue(diseaseSummaryData.getConceptNames().contains("temperature"));
     }
 
     private Map<String,ConceptValue> createConceptValueMap(Map.Entry<String,String>... values){

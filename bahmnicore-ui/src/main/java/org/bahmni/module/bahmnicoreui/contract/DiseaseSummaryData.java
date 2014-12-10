@@ -1,13 +1,14 @@
 package org.bahmni.module.bahmnicoreui.contract;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class DiseaseSummaryData {
 
     private Map<String,Map<String, ConceptValue>> tabularData = new LinkedHashMap<>();
-    private Set<String> conceptNames;
+    private Set<String> conceptNames = new LinkedHashSet<>();
 
     public Map<String, Map<String, ConceptValue>> getTabularData() {
         return tabularData;
@@ -39,5 +40,9 @@ public class DiseaseSummaryData {
 
     public Set<String> getConceptNames() {
         return conceptNames;
+    }
+
+    public void addConceptNames(Set<String> conceptNames) {
+        this.conceptNames.addAll(conceptNames);
     }
 }

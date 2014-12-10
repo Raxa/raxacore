@@ -132,7 +132,9 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
             } else {
                 EncounterTransaction.Concept orderConcept = testOrder.getConcept();
                 Encounter orderEncounter = encounterTestOrderMap.get(testOrder.getUuid());
-                labOrderResults.add(new LabOrderResult(orderEncounter.getUuid(), orderEncounter.getEncounterDatetime(), orderConcept.getName(), orderConcept.getUnits(), null, null, null, null, false, null));
+                LabOrderResult labOrderResult = new LabOrderResult(orderEncounter.getUuid(), orderEncounter.getEncounterDatetime(), orderConcept.getName(), orderConcept.getUnits(), null, null, null, null, false, null);
+                labOrderResult.setVisitStartTime(orderEncounter.getVisit().getStartDatetime());
+                labOrderResults.add(labOrderResult);
             }
         }
         return labOrderResults;
@@ -177,6 +179,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         labOrderResult.setReferredOut(getLeafObservation(observation, REFERRED_OUT) != null);
         labOrderResult.setTestUnitOfMeasurement(observation.getConcept().getUnits());
         labOrderResult.setUploadedFileName(uploadedFileName != null && uploadedFileName.trim().length() > 0 ? uploadedFileName.trim() : null);
+        labOrderResult.setVisitStartTime(orderEncounter.getVisit().getStartDatetime());
         return labOrderResult;
     }
 

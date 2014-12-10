@@ -40,13 +40,37 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         bahmniDiseaseSummaryData = new BahmniDiseaseSummaryServiceImpl(patientService, bahmniObsService, labOrderResultsService, conceptService, drugOrderService);
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
-        executeDataSet("observationsTestData.xml");
     }
 
     @Test
     public void shouldReturnObsForGivenConceptsAndNoOfVisits() throws Exception {
+        executeDataSet("observationsTestData.xml");
+
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
-        diseaseDataParams.setNumberOfVisits(3);
+        diseaseDataParams.setNumberOfVisits(1);
+        ArrayList<String> obsConcepts = new ArrayList<String>(){{
+            add("Blood Pressure");
+            add("Weight");
+        }};
+
+        diseaseDataParams.setObsConcepts(obsConcepts);
+        DiseaseSummaryData diseaseSummary = bahmniDiseaseSummaryData.getDiseaseSummary("86526ed5-3c11-11de-a0ba-001e378eb67a", diseaseDataParams);
+        Map<String, Map<String, ConceptValue>> obsTable = diseaseSummary.getTabularData();
+
+        assertNotNull(obsTable);
+        assertEquals(1, obsTable.size());
+
+        Map<String, ConceptValue> obsInVisit = obsTable.get("2008-09-18");
+        assertEquals(1, obsInVisit.size());
+        assertEquals("110.0", obsInVisit.get("Weight").getValue());
+
+    }
+
+    @Test
+    public void shouldReturnObsForGivenConceptsForAllVisitsWhenNoOfVisitsNotSpecifed() throws Exception {
+        executeDataSet("observationsTestData.xml");
+
+        DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         ArrayList<String> obsConcepts = new ArrayList<String>(){{
             add("Blood Pressure");
             add("Weight");
@@ -69,10 +93,74 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertTrue(obsForVisit.get("Systolic").getAbnormal());
         assertEquals("40.0", obsForVisit.get("Diastolic").getValue());
         assertTrue(obsForVisit.get("Diastolic").getAbnormal());
+    }
+
+    @Test
+    public void shouldReturnLabResultsForGivenConceptsAndNoOfVisits() throws Exception {
+        executeDataSet("labOrderTestData.xml");
+
+        DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
+        diseaseDataParams.setNumberOfVisits(1);
+        ArrayList<String> labConcepts = new ArrayList<String>(){{
+            add("Blood Panel");
+        }};
+
+        diseaseDataParams.setLabConcepts(labConcepts);
+        DiseaseSummaryData diseaseSummary = bahmniDiseaseSummaryData.getDiseaseSummary("75e04d42-3ca8-11e3-bf2b-0800271c1b75", diseaseDataParams);
+        Map<String, Map<String, ConceptValue>> labTable = diseaseSummary.getTabularData();
+
+        assertNotNull(labTable);
+        assertEquals(1, labTable.size());
+
+        Map<String, ConceptValue> labResultsInVisit = labTable.get("2005-09-26");
+        assertNotNull(labResultsInVisit);
+        assertEquals(2, labResultsInVisit.size());
+        assertEquals("99.0", labResultsInVisit.get("Haemoglobin").getValue());
+        assertEquals("10.0", labResultsInVisit.get("ESR").getValue());
+    }
+
+    @Test
+    public void shouldReturnLabResultsForGivenConceptsForAllVisits() throws Exception {
+        executeDataSet("labOrderTestData.xml");
+
+        DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
+        ArrayList<String> labConcepts = new ArrayList<String>(){{
+            add("PS for Malaria");
+        }};
+
+        diseaseDataParams.setLabConcepts(labConcepts);
+        DiseaseSummaryData diseaseSummary = bahmniDiseaseSummaryData.getDiseaseSummary("75e04d42-3ca8-11e3-bf2b-0800271c1b75", diseaseDataParams);
+        Map<String, Map<String, ConceptValue>> labTable = diseaseSummary.getTabularData();
+
+        assertNotNull(labTable);
+        assertEquals(2, labTable.size());
+
+        Map<String, ConceptValue> labResultsInVisit = labTable.get("2013-09-26");
+        assertNotNull(labResultsInVisit);
+        assertEquals(1, labResultsInVisit.size());
+        assertEquals("Result for PS Malaria", labResultsInVisit.get("PS for Malaria").getValue());
+
+        labResultsInVisit = labTable.get("2005-09-26");
+        assertNotNull(labResultsInVisit);
+        assertEquals(1, labResultsInVisit.size());
+        assertEquals("almost dead of PS Malaria", labResultsInVisit.get("PS for Malaria").getValue());
+    }
+
+    @Test
+    public void shouldReturnDrugOrdersForGivenConceptsAndNoOfVisits() throws Exception {
 
     }
+
+
     @Test
-    public void shouldReturnLeafConceptsNames(){
+    public void shouldReturnDrugOrdersForGivenConceptsForAllVisits() throws Exception {
+
+    }
+
+
+    @Test
+    public void shouldReturnLeafConceptsNames() throws Exception {
+        executeDataSet("observationsTestData.xml");
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(3);
         ArrayList<String> obsConcepts = new ArrayList<String>(){{

@@ -52,15 +52,9 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
     public DiseaseSummaryData getDiseaseSummary(String patientUuid, DiseaseDataParams queryParams) {
         DiseaseSummaryData diseaseSummaryData = new DiseaseSummaryData();
         Collection<Concept> concepts = new ArrayList<>();
-            if(queryParams.getObsConcepts() == null){
-            throw new RuntimeException("ObsConcept list is null: atleast one concept name should be specified for getting observations of related concept");
-        }
-        for (String conceptName : queryParams.getObsConcepts()) {
+        for (String conceptName : conceptNamesAsSet(queryParams.getObsConcepts())) {
             concepts.add(conceptService.getConceptByName(conceptName));
         }
-        Patient patient = patientService.getPatientByUuid(patientUuid);
-        List<BahmniObservation> bahmniObservations = bahmniObsService.observationsFor(patientUuid, concepts, queryParams.getNumberOfVisits());
-
         List<Concept> drugConcepts = new ArrayList<>();
         if(queryParams.getDrugConcepts() != null){
             for (String conceptName : queryParams.getDrugConcepts()) {
@@ -68,21 +62,42 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
             }
         }
 
+        Patient patient = patientService.getPatientByUuid(patientUuid);
+        Integer numberOfVisits = queryParams.getNumberOfVisits() == 0 ? null : queryParams.getNumberOfVisits();
+        List<BahmniObservation> bahmniObservations = null;
+        if(!concepts.isEmpty()){
+            bahmniObservations = bahmniObsService.observationsFor(patientUuid, concepts, numberOfVisits);
+        }
         List<LabOrderResult> labOrderResults = labOrderResultsService.getAllForConcepts(patient, queryParams.getLabConcepts(), null);
+        List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrdersForConcepts(patient, true, null, drugConcepts);
+
         diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapObservations(bahmniObservations));
         diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapLabResults(labOrderResults));
-        List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrdersForConcepts(patient, true, null, drugConcepts);
-        diseaseSummaryData.setConceptNames(getLeafConceptNames(queryParams.getObsConcepts()));
+        diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapDrugOrders(drugOrders));
+
+        diseaseSummaryData.addConceptNames(getLeafConceptNames(queryParams.getObsConcepts()));
+        diseaseSummaryData.addConceptNames(getLeafConceptNames(queryParams.getLabConcepts()));
+        diseaseSummaryData.addConceptNames(conceptNamesAsSet(queryParams.getDrugConcepts()));
         return diseaseSummaryData;
     }
 
-    private Set<String> getLeafConceptNames(List<String> obsConcepts) {
-        Set<String> leafConcepts = new HashSet<>();
-        for (String conceptName : obsConcepts) {
-            Concept concept = conceptService.getConceptByName(conceptName);
-            addLeafConcepts(concept, null, leafConcepts);
+    private Set<String> conceptNamesAsSet(List<String> conceptNames) {
+        if(conceptNames == null || conceptNames.isEmpty()) {
+            return Collections.EMPTY_SET;
         }
-        return leafConcepts;
+        return new LinkedHashSet<>(conceptNames);
+    }
+
+    private Set<String> getLeafConceptNames(List<String> obsConcepts) {
+        if(obsConcepts != null && !obsConcepts.isEmpty()){
+            Set<String> leafConcepts = new LinkedHashSet<>();
+            for (String conceptName : obsConcepts) {
+                Concept concept = conceptService.getConceptByName(conceptName);
+                addLeafConcepts(concept, null, leafConcepts);
+            }
+            return leafConcepts;
+        }
+        return Collections.EMPTY_SET;
     }
 
     private void addLeafConcepts(Concept rootConcept, Concept parentConcept, Collection<String> leafConcepts) {
