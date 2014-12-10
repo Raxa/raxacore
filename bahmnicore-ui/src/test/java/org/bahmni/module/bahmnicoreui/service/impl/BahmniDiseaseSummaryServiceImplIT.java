@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicoreui.service.impl;
 
+import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicoreui.contract.ConceptValue;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
@@ -31,10 +32,12 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
     private PatientService patientService;
     @Autowired
     private LabOrderResultsService labOrderResultsService;
+    @Autowired
+    private BahmniDrugOrderService drugOrderService;
 
     @org.junit.Before
     public void setUp() throws Exception {
-        bahmniDiseaseSummaryData = new BahmniDiseaseSummaryServiceImpl(patientService, bahmniObsService, labOrderResultsService, conceptService);
+        bahmniDiseaseSummaryData = new BahmniDiseaseSummaryServiceImpl(patientService, bahmniObsService, labOrderResultsService, conceptService, drugOrderService);
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("observationsTestData.xml");

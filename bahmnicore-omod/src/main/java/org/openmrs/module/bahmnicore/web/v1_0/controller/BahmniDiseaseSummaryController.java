@@ -34,6 +34,7 @@ public class BahmniDiseaseSummaryController extends BaseRestController {
         diseaseDataParams.setNumberOfVisits(numberOfVisits);
         diseaseDataParams.setObsConcepts(obsConcepts);
         diseaseDataParams.setLabConcepts(labConcepts);
+        diseaseDataParams.setDrugConcepts(drugConcepts);
         return bahmniDiseaseSummaryService.getDiseaseSummary(patientUuid,diseaseDataParams);
     }
 }

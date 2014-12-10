@@ -5,10 +5,9 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Junction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Obs;
 import org.openmrs.Order;
@@ -43,6 +42,24 @@ public class OrderDaoImpl implements OrderDao {
                     "not exists (select d2 from DrugOrder d2 where d2.voided = false and d2.action = :revised and d2.encounter = d1.encounter and d2.previousOrder = d1)" +
                     "order by d1.dateActivated desc");
             query.setParameterList("visitIds", visitWithDrugOrderIds);
+            query.setParameter("discontinued", Order.Action.DISCONTINUE);
+            query.setParameter("revised", Order.Action.REVISE);
+            return (List<DrugOrder>) query.list();
+        }
+        return new ArrayList<>();
+    }
+
+    public List<DrugOrder> getPrescribedDrugOrdersForConcepts(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits, List<Concept> concepts){
+        Session currentSession = sessionFactory.getCurrentSession();
+        List<Integer> visitWithDrugOrderIds = getVisitIds(getVisitsWithOrders(patient, "DrugOrder", includeActiveVisit, numberOfVisits));
+        if(!visitWithDrugOrderIds.isEmpty()) {
+
+            Query query = currentSession.createQuery("select d1 from DrugOrder d1, Encounter e, Visit v where d1.encounter = e and e.visit = v and v.visitId in (:visitIds) and d1.concept in (:concepts)" +
+                    "and d1.voided = false and d1.action != :discontinued and " +
+                    "not exists (select d2 from DrugOrder d2 where d2.voided = false and d2.action = :revised and d2.encounter = d1.encounter and d2.previousOrder = d1)" +
+                    "order by d1.dateActivated desc");
+            query.setParameterList("visitIds", visitWithDrugOrderIds);
+            query.setParameterList("concepts", concepts);
             query.setParameter("discontinued", Order.Action.DISCONTINUE);
             query.setParameter("revised", Order.Action.REVISE);
             return (List<DrugOrder>) query.list();

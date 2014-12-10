@@ -2,9 +2,12 @@ package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.hamcrest.Matcher;
 import org.junit.Test;
+import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +17,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -23,6 +28,11 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
     private OrderDaoImpl orderDao;
+    @Autowired
+    private ConceptService conceptService;
+    @Autowired
+    private PatientService patientService;
+
 
     @Test
     public void getPrescribedDrugOrders_ShouldNotGetDiscontinueOrders() throws Exception {
@@ -99,6 +109,34 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
 
         assertThat(visits.size(), is(equalTo(1)));
         assertThat(visits.get(0).getId(), is(equalTo(5)));
+    }
+
+    @Test
+    public void getPrescribedDrugOrdersForConcepts_shouldFetchAllPrescribedDrugOrdersForGivenConceptsForAllVisits() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Patient patient = patientService.getPatient(2);
+
+        List<Concept> concepts = new ArrayList<>();
+        concepts.add(conceptService.getConcept(24));
+        concepts.add(conceptService.getConcept(27));
+        List<DrugOrder> result = orderDao.getPrescribedDrugOrdersForConcepts(patient, true, null, concepts);
+        assertEquals(3, result.size());
+        assertThat(getOrderIds(result), hasItems(55, 56, 59));
+    }
+
+    @Test
+    public void getPrescribedDrugOrdersForConcepts_shouldFetchAllPrescribedDrugOrdersForGivenConceptsForGivenNoOfVisits() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Patient patient = patientService.getPatient(2);
+
+        List<Concept> concepts = new ArrayList<>();
+        concepts.add(conceptService.getConcept(24));
+        concepts.add(conceptService.getConcept(27));
+
+        List<DrugOrder> result = orderDao.getPrescribedDrugOrdersForConcepts(patient, true, 1, concepts);
+        assertEquals(2, result.size());
+        assertThat(getOrderIds(result), hasItems(55, 59));
+
     }
 
     private List<Integer> getOrderIds(List<DrugOrder> drugOrders) {

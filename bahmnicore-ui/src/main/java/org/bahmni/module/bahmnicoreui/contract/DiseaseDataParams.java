@@ -33,5 +33,13 @@ public class DiseaseDataParams {
         this.labConcepts = labConcepts;
     }
 
+    public List<String> getDrugConcepts() {
+        return drugConcepts;
+    }
+
+    public void setDrugConcepts(List<String> drugConcepts) {
+        this.drugConcepts = drugConcepts;
+    }
+
 
 }

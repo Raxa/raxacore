@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicoreui.service.impl;
 
+import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
@@ -7,6 +8,7 @@ import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryMapper;
 import org.bahmni.module.bahmnicoreui.service.BahmniDiseaseSummaryService;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
+import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
@@ -33,13 +35,15 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
     private ConceptService conceptService;
 
     private DiseaseSummaryMapper diseaseSummaryMapper;
+    private BahmniDrugOrderService drugOrderService;
 
     @Autowired
-    public BahmniDiseaseSummaryServiceImpl(PatientService patientService, BahmniObsService bahmniObsService, LabOrderResultsService labOrderResultsService, ConceptService conceptService) {
+    public BahmniDiseaseSummaryServiceImpl(PatientService patientService, BahmniObsService bahmniObsService, LabOrderResultsService labOrderResultsService, ConceptService conceptService, BahmniDrugOrderService drugOrderService) {
         this.patientService = patientService;
         this.bahmniObsService = bahmniObsService;
         this.labOrderResultsService = labOrderResultsService;
         this.conceptService = conceptService;
+        this.drugOrderService = drugOrderService;
         this.diseaseSummaryMapper = new DiseaseSummaryMapper();
     }
 
@@ -57,9 +61,17 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
         Patient patient = patientService.getPatientByUuid(patientUuid);
         List<BahmniObservation> bahmniObservations = bahmniObsService.observationsFor(patientUuid, concepts, queryParams.getNumberOfVisits());
 
+        List<Concept> drugConcepts = new ArrayList<>();
+        if(queryParams.getDrugConcepts() != null){
+            for (String conceptName : queryParams.getDrugConcepts()) {
+                drugConcepts.add(conceptService.getConceptByName(conceptName));
+            }
+        }
+
         List<LabOrderResult> labOrderResults = labOrderResultsService.getAllForConcepts(patient, queryParams.getLabConcepts(), null);
         diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapObservations(bahmniObservations));
         diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapLabResults(labOrderResults));
+        List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrdersForConcepts(patient, true, null, drugConcepts);
         diseaseSummaryData.setConceptNames(getLeafConceptNames(queryParams.getObsConcepts()));
         return diseaseSummaryData;
     }
