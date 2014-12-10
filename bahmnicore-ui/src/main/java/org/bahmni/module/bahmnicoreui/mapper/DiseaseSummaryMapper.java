@@ -17,13 +17,15 @@ public class DiseaseSummaryMapper {
 
     public Map<String, Map<String, ConceptValue>> mapObservations(List<BahmniObservation> bahmniObservations) {
         Map<String, Map<String, ConceptValue>> result = new LinkedHashMap<>();
-        for (BahmniObservation bahmniObservation : bahmniObservations) {
-            List<BahmniObservation> observationsfromConceptSet = new ArrayList<>();
-            getLeafObservationsfromConceptSet(bahmniObservation,observationsfromConceptSet);
-            for (BahmniObservation observation : observationsfromConceptSet) {
-                String visitStartDateTime = getDateAsString(observation.getVisitStartDateTime());
-                String conceptName = observation.getConcept().getShortName()==null ?  observation.getConcept().getName(): observation.getConcept().getShortName();
-                addToResultTable(result, visitStartDateTime, conceptName,observation.getValue(),observation.isAbnormal());
+        if(bahmniObservations != null){
+            for (BahmniObservation bahmniObservation : bahmniObservations) {
+                List<BahmniObservation> observationsfromConceptSet = new ArrayList<>();
+                getLeafObservationsfromConceptSet(bahmniObservation,observationsfromConceptSet);
+                for (BahmniObservation observation : observationsfromConceptSet) {
+                    String visitStartDateTime = getDateAsString(observation.getVisitStartDateTime());
+                    String conceptName = observation.getConcept().getShortName()==null ?  observation.getConcept().getName(): observation.getConcept().getShortName();
+                    addToResultTable(result, visitStartDateTime, conceptName,observation.getValue(),observation.isAbnormal());
+                }
             }
         }
         return result;
@@ -43,8 +45,10 @@ public class DiseaseSummaryMapper {
         Map<String, Map<String, ConceptValue>> result = new LinkedHashMap<>();
         for (LabOrderResult labOrderResult : labOrderResults) {
             String visitStartDateTime = getDateAsString(labOrderResult.getVisitStartTime());
-            String conceptName = labOrderResult.getPanelName() == null ? labOrderResult.getTestName():labOrderResult.getPanelName();
-            addToResultTable(result,visitStartDateTime,conceptName,labOrderResult.getResult(),labOrderResult.getAbnormal());
+            String conceptName = labOrderResult.getTestName();
+            if(conceptName != null){
+                addToResultTable(result,visitStartDateTime,conceptName,labOrderResult.getResult(),labOrderResult.getAbnormal());
+            }
         }
         return result;
     }
@@ -69,7 +73,7 @@ public class DiseaseSummaryMapper {
         if(value instanceof EncounterTransaction.Concept){
             return ((EncounterTransaction.Concept) value).getName();
         }
-        return value.toString();
+        return value == null ? "" : String.valueOf(value);
     }
 
     private void getLeafObservationsfromConceptSet(BahmniObservation bahmniObservation, List<BahmniObservation> observationsfromConceptSet) {

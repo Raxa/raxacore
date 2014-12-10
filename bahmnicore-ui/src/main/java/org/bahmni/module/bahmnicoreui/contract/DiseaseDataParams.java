@@ -4,16 +4,16 @@ import java.util.List;
 
 public class DiseaseDataParams {
 
-    private int numberOfVisits;
+    private Integer numberOfVisits;
     private List<String> obsConcepts;
     private List<String> drugConcepts;
     private List<String> labConcepts;
 
-    public int getNumberOfVisits() {
+    public Integer getNumberOfVisits() {
         return numberOfVisits;
     }
 
-    public void setNumberOfVisits(int numberOfVisits) {
+    public void setNumberOfVisits(Integer numberOfVisits) {
         this.numberOfVisits = numberOfVisits;
     }
 

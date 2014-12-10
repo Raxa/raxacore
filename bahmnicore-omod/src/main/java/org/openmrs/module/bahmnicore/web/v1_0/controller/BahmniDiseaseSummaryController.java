@@ -25,10 +25,10 @@ public class BahmniDiseaseSummaryController extends BaseRestController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public DiseaseSummaryData getDiseaseSummaryData(@RequestParam(value = "patientUuid") String patientUuid,
-                                                    @RequestParam(value = "numberOfVisits") Integer numberOfVisits,
-                                                    @RequestParam(value = "obsConcepts") List<String> obsConcepts,
-                                                    @RequestParam(value = "drugConcepts") List<String> drugConcepts,
-                                                    @RequestParam(value = "labConcepts") List<String> labConcepts ){
+                                                    @RequestParam(value = "numberOfVisits",required = false) Integer numberOfVisits,
+                                                    @RequestParam(value = "obsConcepts",required = false) List<String> obsConcepts,
+                                                    @RequestParam(value = "drugConcepts",required = false) List<String> drugConcepts,
+                                                    @RequestParam(value = "labConcepts",required = false) List<String> labConcepts ){
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(numberOfVisits);
