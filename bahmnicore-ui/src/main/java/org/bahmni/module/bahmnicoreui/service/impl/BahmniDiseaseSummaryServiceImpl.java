@@ -64,7 +64,7 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
         List<Concept> drugConcepts = new ArrayList<>();
         if(queryParams.getDrugConcepts() != null){
             for (String conceptName : queryParams.getDrugConcepts()) {
-                drugConcepts.add(conceptService.getConceptByName(conceptName));
+                drugConcepts.add(conceptService.getConceptByName(conceptName.replaceAll("%20", " ")));
             }
         }
 
