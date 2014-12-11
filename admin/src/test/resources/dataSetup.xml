@@ -35,17 +35,17 @@
                  sort_weight="1"/>
     <concept_numeric concept_id="1" precise="0"/>
 
-    <concept concept_id="2" retired="false" datatype_id="1" class_id="5" is_set="false" creator="1"
+    <concept concept_id="3901" retired="false" datatype_id="1" class_id="5" is_set="false" creator="1"
              date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0"
              uuid="d102c80e-1yz9-4da3-bb88-8122ce8868dh"/>
-    <concept_name concept_id="2" name="WEIGHT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0"
+    <concept_name concept_id="3901" name="WEIGHT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0"
                   concept_name_id="1440" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false"
                   uuid="d102c80a-1yz9-4da3-bb88-8187ce8868dh"/>
 
-    <concept concept_id="3" retired="false" datatype_id="1" class_id="5" is_set="false" creator="1"
+    <concept concept_id="3902" retired="false" datatype_id="1" class_id="5" is_set="false" creator="1"
              date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0"
              uuid="d102c80f-9zz9-4da3-bb88-8122ce8868dh"/>
-    <concept_name concept_id="3" name="HEIGHT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0"
+    <concept_name concept_id="3902" name="HEIGHT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0"
                   concept_name_id="1441" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false"
                   uuid="d102c8hh-1aa9-4ty3-bb88-8122ce8868dh"/>
     <encounter_type encounter_type_id="1" name="Consultation" description="Some desc" creator="1"
@@ -61,6 +61,23 @@
     <program program_id="1" concept_id="9" creator="1" date_created="2008-08-15 16:07:11.0" changed_by="1" date_changed="2008-08-15 17:04:50.0" retired="false" name="Diabetes Program" description="Diabetes program" uuid="da4a0391-ba62-4fad-ad66-1e3722d16380"/>
 
     <patient_program patient_program_id="1" patient_id="2" program_id="1" date_enrolled="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 11:40:48.0" changed_by="1" date_changed="2008-08-18 12:29:29.0" voided="false" uuid="b75462a0-4c92-451e-b8bc-e98b38b76534"/>
+      <concept concept_id="3900" retired="false" datatype_id="4" class_id="11" is_set="true" creator="1" date_created="2008-08-15 13:57:57.0" version="" uuid="0a9afe04-088b-44ca-9291-af69c5b3c8a0"/>
+      <concept_name concept_name_id="9001" concept_id="3900" name="Vitals" locale="en" creator="1" date_created="2008-08-15 13:57:57.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="dcf41b94-f1af-45fd-8cb9-73bab51c8fe5"/>
 
+      <concept concept_id="3903" retired="false" datatype_id="4" class_id="11" is_set="true" creator="1" date_created="2008-08-15 13:57:57.0" version="" uuid="0a9afe04-088b-44ca-9291-af69c5b3c0a8"/>
+      <concept_name concept_name_id="9002" concept_id="3903" name="Height Data" locale="en" creator="1" date_created="2008-08-15 13:57:57.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="dcf41b94-f1af-45fd-8cb9-73bab51c85ef"/>
 
+      <concept concept_id="3904" retired="false" datatype_id="10" class_id="11" is_set="true" creator="1" date_created="2008-08-15 13:57:57.0" version="" uuid="9a0afe04-088b-44ca-9291-af69c5b3c0a8"/>
+      <concept_name concept_name_id="9003" concept_id="3904" name="Height Abnormal" locale="en" creator="1" date_created="2008-08-15 13:57:57.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="fcd41b94-f1af-45fd-8cb9-73bab51c85ef"/>
+
+      <concept_set concept_set_id="3900" concept_id="3901" concept_set="3900" creator="1" date_created="2004-08-12 00:00:00.0"
+                   sort_weight="2"/>
+      <concept_set concept_set_id="3901" concept_id="3902" concept_set="3900" creator="1" date_created="2004-08-12 00:00:00.0"
+                   sort_weight="1"/>
+      <concept_set concept_set_id="3902" concept_id="3903" concept_set="3900" creator="1" date_created="2004-08-12 00:00:00.0"
+                   sort_weight="2"/>
+      <concept_set concept_set_id="3903" concept_id="3901" concept_set="3903" creator="1" date_created="2004-08-12 00:00:00.0"
+                   sort_weight="2"/>
+      <concept_set concept_set_id="3904" concept_id="3904" concept_set="3903" creator="1" date_created="2004-08-12 00:00:00.0"
+                   sort_weight="2"/>
 </dataset>

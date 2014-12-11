@@ -1,34 +1,27 @@
 package org.bahmni.module.admin.csv.persister;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.Messages;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
 import org.bahmni.module.admin.csv.utils.CSVUtils;
-import static org.hamcrest.CoreMatchers.is;
 import org.hamcrest.Matchers;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
@@ -181,13 +174,14 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
 
         Date encounterDatetime = encounter.getEncounterDatetime();
         assertEquals("1111-11-11", new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN).format(encounterDatetime));
-        }
+    }
 
     @Test
     public void create_visit_as_per_dates_in_file() throws Exception {
         String registrationNumber = "GAN200000";
         String visitStartDate = "2011-11-11";
-        String visitEndDate = "2011-12-11";
+        String visitEndDate = "2011-12-13";
+        String encounterDateTime = "2011-12-12";
 
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
@@ -199,7 +193,7 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         EncounterRow anEncounter = new EncounterRow();
         anEncounter.obsRows = new ArrayList<>();
         anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
-        anEncounter.encounterDateTime = "2011-12-1";
+        anEncounter.encounterDateTime = encounterDateTime;
 
         multipleEncounterRow.encounterRows = new ArrayList<>();
         multipleEncounterRow.encounterRows.add(anEncounter);
@@ -219,12 +213,215 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         Context.flushSession();
         Context.closeSession();
 
-        assertEquals(1, encounters.size());
         Visit newlyCreatedVisit = encounters.get(0).getVisit();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN);
         assertEquals(visitStartDate, simpleDateFormat.format(newlyCreatedVisit.getStartDatetime()));
         assertEquals(visitEndDate, simpleDateFormat.format(newlyCreatedVisit.getStopDatetime()));
+        assertEquals(encounterDateTime, simpleDateFormat.format(newlyCreatedVisit.getEncounters().iterator().next().getEncounterDatetime()));
     }
+
+
+    @Test
+    public void persist_encounter_with_observation_hierarchy_for_patient() throws Exception {
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "Consultation";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("Vitals.WEIGHT", "150"));
+        anEncounter.encounterDateTime = "1111-11-11";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        Messages persistenceResult = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounter row." + persistenceResult.asString(), StringUtils.isEmpty(persistenceResult.asString()));
+
+        Context.openSession();
+        Context.authenticate("admin", "test");
+
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
+        Context.flushSession();
+        Context.closeSession();
+
+        assertEquals(1, encounters.size());
+
+        Encounter encounter = encounters.get(0);
+        assertEquals("Anad", encounter.getPatient().getGivenName());
+        assertEquals("Kewat", encounter.getPatient().getFamilyName());
+        assertEquals("OPD", encounter.getVisit().getVisitType().getName());
+        assertEquals("Consultation", encounter.getEncounterType().getName());
+
+        assertEquals(1, encounter.getAllObs().size());
+
+        Obs vitals = encounter.getAllObs().iterator().next();
+        assertEquals("Vitals", vitals.getConcept().getName().getName());
+        assertEquals(1, vitals.getGroupMembers().size());
+
+        Obs weight = vitals.getGroupMembers().iterator().next();
+        assertEquals("WEIGHT", weight.getConcept().getName().getName());
+        assertEquals(Double.valueOf(150), weight.getValueNumeric());
+
+        Date encounterDatetime = encounter.getEncounterDatetime();
+        assertEquals("1111-11-11", new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN).format(encounterDatetime));
+    }
+
+    @Test
+    public void persist_encounters_with_same_date_which_has_same_root_observations_in_it() throws Exception {
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "Consultation";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+
+        EncounterRow weightEncounter = new EncounterRow();
+        weightEncounter.obsRows = new ArrayList<>();
+        weightEncounter.obsRows.add(new KeyValue("Vitals.WEIGHT", "150"));
+        weightEncounter.encounterDateTime = "1111-11-11";
+
+        EncounterRow heightEncounter = new EncounterRow();
+        heightEncounter.obsRows = new ArrayList<>();
+        heightEncounter.obsRows.add(new KeyValue("Vitals.HEIGHT", "150"));
+        heightEncounter.encounterDateTime = "1111-11-11";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(weightEncounter);
+        multipleEncounterRow.encounterRows.add(heightEncounter);
+
+        Messages persistenceResult = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounter row." + persistenceResult.asString(), StringUtils.isEmpty(persistenceResult.asString()));
+
+
+        Context.openSession();
+        Context.authenticate("admin", "test");
+
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
+        Context.flushSession();
+        Context.closeSession();
+
+        assertEquals(1, encounters.size());
+
+        Encounter savedEncounter = encounters.get(0);
+        assertEquals("Anad", savedEncounter.getPatient().getGivenName());
+        assertEquals("Kewat", savedEncounter.getPatient().getFamilyName());
+        assertEquals("OPD", savedEncounter.getVisit().getVisitType().getName());
+        assertEquals("Consultation", savedEncounter.getEncounterType().getName());
+
+        assertEquals(2, savedEncounter.getAllObs().size());
+
+        Iterator<Obs> allObs = savedEncounter.getAllObs().iterator();
+        Obs vitals1 = allObs.next();
+        assertEquals("Vitals", vitals1.getConcept().getName().getName());
+        Set<Obs> groupMembers = vitals1.getGroupMembers();
+        assertEquals(1, groupMembers.size());
+
+        Obs vitals2 = allObs.next();
+        assertEquals("Vitals", vitals2.getConcept().getName().getName());
+        assertEquals(1, vitals2.getGroupMembers().size());
+
+        Date encounterDatetime = savedEncounter.getEncounterDatetime();
+        assertEquals("1111-11-11", new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN).format(encounterDatetime));
+    }
+
+    @Test
+    public void persist_encounter_with_observation_hierarchy_with_multiple_group_members() throws Exception {
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "Consultation";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("Vitals.HEIGHT", "30"));
+        anEncounter.obsRows.add(new KeyValue("Vitals.WEIGHT", "150"));
+        anEncounter.encounterDateTime = "1111-11-11";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        Messages persistenceResult = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounter row." + persistenceResult.asString(), StringUtils.isEmpty(persistenceResult.asString()));
+
+        Context.openSession();
+        Context.authenticate("admin", "test");
+
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
+        Context.flushSession();
+        Context.closeSession();
+
+        assertEquals(1, encounters.size());
+
+        Encounter encounter = encounters.get(0);
+        assertEquals("Anad", encounter.getPatient().getGivenName());
+        assertEquals("Kewat", encounter.getPatient().getFamilyName());
+        assertEquals("OPD", encounter.getVisit().getVisitType().getName());
+        assertEquals("Consultation", encounter.getEncounterType().getName());
+
+        assertEquals(1, encounter.getAllObs().size());
+        Obs vitals = encounter.getAllObs().iterator().next();
+        assertEquals("Vitals", vitals.getConcept().getName().getName());
+        Set<Obs> groupMembers = vitals.getGroupMembers();
+        assertEquals(2, groupMembers.size());
+        assertEquals(Double.valueOf(150), findObs(groupMembers, "WEIGHT").getValueNumeric());
+        assertEquals(Double.valueOf(30), findObs(groupMembers, "HEIGHT").getValueNumeric());
+        Date encounterDatetime = encounter.getEncounterDatetime();
+        assertEquals("1111-11-11", new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN).format(encounterDatetime));
+    }
+
+    @Test
+    public void persist_encounter_with_abnormal_observation() throws Exception {
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "Consultation";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("Vitals.Height Data.HEIGHT", "30"));
+        anEncounter.obsRows.add(new KeyValue("Vitals.Height Data.Height Abnormal", "true"));
+        anEncounter.encounterDateTime = "1111-11-11";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        Messages persistenceResult = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounter row." + persistenceResult.asString(), StringUtils.isEmpty(persistenceResult.asString()));
+
+        Context.openSession();
+        Context.authenticate("admin", "test");
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
+        Context.flushSession();
+        Context.closeSession();
+
+        assertEquals(1, encounters.size());
+
+        Encounter encounter = encounters.get(0);
+        assertEquals("Anad", encounter.getPatient().getGivenName());
+        assertEquals("Kewat", encounter.getPatient().getFamilyName());
+        assertEquals("OPD", encounter.getVisit().getVisitType().getName());
+        assertEquals("Consultation", encounter.getEncounterType().getName());
+
+        assertEquals(1, encounter.getAllObs().size());
+
+        Obs vitals = encounter.getAllObs().iterator().next();
+        assertEquals("Vitals", vitals.getConcept().getName().getName());
+
+        assertEquals(1, vitals.getGroupMembers().size());
+        Obs heightData = vitals.getGroupMembers().iterator().next();
+        assertEquals("Height Data", heightData.getConcept().getName().getName());
+
+        assertEquals(2, heightData.getGroupMembers().size());
+        Obs heightValue = findObs(heightData.getGroupMembers(), "HEIGHT");
+        assertEquals(Double.valueOf(30), heightValue.getValueNumeric());
+
+        Obs heightAbnormal = findObs(heightData.getGroupMembers(), "Height Abnormal");
+        assertEquals("YES", heightAbnormal.getValueCoded().getName().getName());
+
+        Date encounterDatetime = encounter.getEncounterDatetime();
+        assertEquals("1111-11-11", new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN).format(encounterDatetime));
+    }
+
 
     @Test
     public void persist_multiple_encounters_for_patient() throws Exception {
@@ -501,4 +698,13 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         patientAttributes.add(new KeyValue("given_name", "Anad"));
         return patientAttributes;
     }
+
+    private Obs findObs(Set<Obs> groupMembers, String conceptName) {
+          for (Obs groupMember : groupMembers) {
+                  if (conceptName.equals(groupMember.getConcept().getName().getName())){
+                        return groupMember;
+                    }
+              }
+               return null;
+           }
 }

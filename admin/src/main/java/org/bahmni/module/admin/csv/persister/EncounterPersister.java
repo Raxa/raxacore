@@ -85,8 +85,13 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
                     new RetrospectiveEncounterTransactionService(bahmniEncounterTransactionService, visitService);
 
             for (BahmniEncounterTransaction bahmniEncounterTransaction : bahmniEncounterTransactions) {
-                retrospectiveEncounterTransactionService.save(bahmniEncounterTransaction, patient, multipleEncounterRow.getVisitStartDate(), multipleEncounterRow.getVisitEndDate());
+//                retrospectiveEncounterTransactionService.save(bahmniEncounterTransaction, patient, multipleEncounterRow.getVisitStartDate(), multipleEncounterRow.getVisitEndDate());
+                retrospectiveEncounterTransactionService.filterExistingObservationsAndDiagnosis(bahmniEncounterTransaction, patient, multipleEncounterRow.getVisitStartDate(), multipleEncounterRow.getVisitEndDate());
             }
+            for (BahmniEncounterTransaction bahmniEncounterTransaction : bahmniEncounterTransactions) {
+                retrospectiveEncounterTransactionService.save(bahmniEncounterTransaction);
+            }
+
 
             return new Messages();
         } catch (Exception e) {

@@ -26,29 +26,39 @@ public class RetrospectiveEncounterTransactionService {
         visitIdentificationHelper = new VisitIdentificationHelper(visitService);
     }
 
-    public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
-        Visit matchingVisit = visitIdentificationHelper.getVisitFor(patient, bahmniEncounterTransaction.getVisitType(),
-                bahmniEncounterTransaction.getEncounterDateTime(), visitStartDate, visitEndDate);
+//    public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
+//        Visit matchingVisit = visitIdentificationHelper.getVisitFor(patient, bahmniEncounterTransaction.getVisitType(),
+//                bahmniEncounterTransaction.getEncounterDateTime(), visitStartDate, visitEndDate);
+//
+//        DuplicateObservationsMatcher duplicateObservationsMatcher = new DuplicateObservationsMatcher(matchingVisit, bahmniEncounterTransaction.getEncounterType());
+//        List<BahmniObservation> uniqueObservations = duplicateObservationsMatcher.getUniqueBahmniObservations(bahmniEncounterTransaction.getObservations());
+//        List<BahmniDiagnosisRequest> uniqueDiagnoses = duplicateObservationsMatcher.getUniqueDiagnoses(bahmniEncounterTransaction.getBahmniDiagnoses());
+//
+//        bahmniEncounterTransaction = updateBahmniEncounterTransaction(bahmniEncounterTransaction, matchingVisit, uniqueObservations, uniqueDiagnoses);
 
-        DuplicateObservationsMatcher duplicateObservationsMatcher = new DuplicateObservationsMatcher(matchingVisit, bahmniEncounterTransaction.getEncounterType());
-        List<BahmniObservation> uniqueObservations = duplicateObservationsMatcher.getUniqueBahmniObservations(bahmniEncounterTransaction.getObservations());
-        List<BahmniDiagnosisRequest> uniqueDiagnoses = duplicateObservationsMatcher.getUniqueDiagnoses(bahmniEncounterTransaction.getBahmniDiagnoses());
-
-        bahmniEncounterTransaction = updateBahmniEncounterTransaction(bahmniEncounterTransaction, matchingVisit, uniqueObservations, uniqueDiagnoses);
-
+    public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction) {
         return bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
     }
 
-    private BahmniEncounterTransaction updateBahmniEncounterTransaction(BahmniEncounterTransaction bahmniEncounterTransaction,
-                    Visit visit, List<BahmniObservation> uniqueObservations, List<BahmniDiagnosisRequest> uniqueDiagnoses) {
+
+    private void updateBahmniEncounterTransaction(BahmniEncounterTransaction bahmniEncounterTransaction,
+                                                  Visit visit, List<BahmniObservation> uniqueObservations, List<BahmniDiagnosisRequest> uniqueDiagnoses) {
         bahmniEncounterTransaction.setObservations(uniqueObservations);
-        bahmniEncounterTransaction.setBahmniDiagnoses(uniqueDiagnoses);
-        bahmniEncounterTransaction.setEncounterDateTime(visit.getStartDatetime());
         bahmniEncounterTransaction.setVisitUuid(visit.getUuid());
 
         // TODO : Mujir - this should not happen here. Just set the visitType. BahmniEncounterTransaction should handle string visitTypes.
         bahmniEncounterTransaction.setVisitTypeUuid(visit.getVisitType().getUuid());
 
-        return bahmniEncounterTransaction;
+    }
+
+    public void filterExistingObservationsAndDiagnosis(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
+        Visit matchingVisit = visitIdentificationHelper.getVisitFor(patient, bahmniEncounterTransaction.getVisitType(),
+                bahmniEncounterTransaction.getEncounterDateTime(), visitStartDate, visitEndDate);
+
+        DuplicateObservationsMatcher duplicateObservationsMatcher = new DuplicateObservationsMatcher(matchingVisit, bahmniEncounterTransaction.getEncounterType());
+        List<BahmniObservation> uniqueObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniEncounterTransaction.getObservations(), bahmniEncounterTransaction.getEncounterDateTime());
+        List<BahmniDiagnosisRequest> uniqueDiagnoses = duplicateObservationsMatcher.getUniqueDiagnoses(bahmniEncounterTransaction.getBahmniDiagnoses());
+
+        updateBahmniEncounterTransaction(bahmniEncounterTransaction, matchingVisit, uniqueObservations, uniqueDiagnoses);
     }
 }

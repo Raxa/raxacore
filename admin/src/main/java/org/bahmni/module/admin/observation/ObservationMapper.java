@@ -11,11 +11,7 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ObservationMapper {
     private Map<String, Concept> cachedConcepts = new HashMap<>();
@@ -32,12 +28,21 @@ public class ObservationMapper {
             Date encounterDate = encounterRow.getEncounterDate();
             for (KeyValue obsRow : encounterRow.obsRows) {
                 if (obsRow.getValue() != null && !StringUtils.isEmpty(obsRow.getValue().trim())) {
-                    EncounterTransaction.Observation observation = createObservation(encounterDate, obsRow);
-                    observations.add(observation);
+//                    EncounterTransaction.Observation observation = createObservation(encounterDate, obsRow);
+//                    observations.add(observation);
+                    List<String> conceptNames = new ArrayList<>(Arrays.asList(obsRow.getKey().split("\\.")));
+                    EncounterTransaction.Observation existingObservation = getRootObservationIfExists(observations, conceptNames, null);
+                    if (existingObservation == null) {
+                        observations.add(createObservation(conceptNames, encounterDate, obsRow));
+                    } else {
+                        updateObservation(conceptNames, existingObservation, encounterDate, obsRow);
+
+                    }
                 }
             }
         }
         return observations;
+
     }
 
     protected Concept getConcept(String conceptName) {
@@ -47,14 +52,33 @@ public class ObservationMapper {
         return cachedConcepts.get(conceptName);
     }
 
-    private EncounterTransaction.Observation createObservation(Date encounterDate, KeyValue obsRow) throws ParseException {
-        Concept obsConcept = getConcept(obsRow.getKey());
+    private void updateObservation(List<String> conceptNames, EncounterTransaction.Observation existingObservation, Date encounterDate, KeyValue obsRow) throws ParseException {
+        existingObservation.addGroupMember(createObservation(conceptNames, encounterDate, obsRow));
+    }
+    private EncounterTransaction.Observation getRootObservationIfExists(List<EncounterTransaction.Observation> observations, List<String> conceptNames, EncounterTransaction.Observation existingObservation) {
+             for (EncounterTransaction.Observation observation : observations) {
+                        if (observation.getConcept().getName().equals(conceptNames.get(0))) {
+                                existingObservation = observation;
+                                conceptNames.remove(0);
+                                return getRootObservationIfExists(observation.getGroupMembers(), conceptNames, existingObservation);
+                            }
+                    }
+                return existingObservation;
+            }
+    private EncounterTransaction.Observation createObservation(List<String> conceptNames, Date encounterDate, KeyValue obsRow) throws ParseException {
+              Concept obsConcept = getConcept(conceptNames.get(0));
         EncounterTransaction.Concept concept = new EncounterTransaction.Concept(obsConcept.getUuid(), obsConcept.getName().getName());
 
         EncounterTransaction.Observation observation = new EncounterTransaction.Observation();
         observation.setConcept(concept);
-        observation.setValue(getValue(obsRow, obsConcept));
+//        observation.setValue(getValue(obsRow, obsConcept));
         observation.setObservationDateTime(encounterDate);
+        if (conceptNames.size() == 1) {
+                        observation.setValue(getValue(obsRow, obsConcept));
+                    } else {
+                        conceptNames.remove(0);
+                        observation.addGroupMember(createObservation(conceptNames, encounterDate, obsRow));
+                    }
         return observation;
     }
 
