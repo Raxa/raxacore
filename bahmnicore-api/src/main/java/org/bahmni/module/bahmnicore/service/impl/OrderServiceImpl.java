@@ -5,6 +5,7 @@ import org.bahmni.module.bahmnicore.service.OrderService;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
 import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,4 +37,11 @@ public class OrderServiceImpl implements OrderService {
         allOrders.removeAll(completedOrders);
         return allOrders;
     }
+
+    @Override
+    public List<Visit> getVisitsWithOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits){
+        return orderDao.getVisitsWithOrders(patient,orderType,includeActiveVisit,numberOfVisits);
+    };
+
+
 }

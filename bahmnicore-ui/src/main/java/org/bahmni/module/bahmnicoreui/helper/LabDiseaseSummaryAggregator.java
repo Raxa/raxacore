@@ -1,8 +1,7 @@
 package org.bahmni.module.bahmnicoreui.helper;
 
-import org.bahmni.module.bahmnicore.dao.OrderDao;
+import org.bahmni.module.bahmnicore.service.OrderService;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
-import org.bahmni.module.bahmnicoreui.helper.ConceptHelper;
 import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryMapper;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
@@ -20,14 +19,14 @@ public class LabDiseaseSummaryAggregator {
 
     private final ConceptHelper conceptHelper;
     private LabOrderResultsService labOrderResultsService;
-    private OrderDao orderDao;
+    private OrderService orderService;
     private final DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
 
 
     @Autowired
-    public LabDiseaseSummaryAggregator(ConceptService conceptService, LabOrderResultsService labOrderResultsService, OrderDao orderDao) {
+    public LabDiseaseSummaryAggregator(ConceptService conceptService, LabOrderResultsService labOrderResultsService, OrderService orderService) {
         this.labOrderResultsService = labOrderResultsService;
-        this.orderDao = orderDao;
+        this.orderService = orderService;
         this.conceptHelper = new ConceptHelper(conceptService);
 
     }
@@ -36,14 +35,14 @@ public class LabDiseaseSummaryAggregator {
         DiseaseSummaryData diseaseSummaryData =  new DiseaseSummaryData();
         List<Concept> concepts = conceptHelper.getConceptsForNames(conceptNames);
         if(!concepts.isEmpty()){
-            List<LabOrderResult> labOrderResults = labOrderResultsService.getAllForConcepts(patient, conceptNames, getVisitsWithLabOrdersFor(patient,numberOfVisits,concepts));
+            List<LabOrderResult> labOrderResults = labOrderResultsService.getAllForConcepts(patient, conceptNames, getVisitsWithLabOrdersFor(patient,numberOfVisits));
             diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapLabResults(labOrderResults));
             diseaseSummaryData.addConceptNames(conceptHelper.getLeafConceptNames(conceptNames));
         }
         return diseaseSummaryData;
     }
 
-    private List<Visit> getVisitsWithLabOrdersFor(Patient patient, Integer numberOfVisits, List<Concept> concepts) {
-        return orderDao.getVisitsWithOrdersForConcepts(patient, "TestOrder", true, numberOfVisits, concepts);
+    private List<Visit> getVisitsWithLabOrdersFor(Patient patient, Integer numberOfVisits) {
+        return orderService.getVisitsWithOrders(patient, "TestOrder", true, numberOfVisits);
     }
 }
