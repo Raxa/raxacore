@@ -45,4 +45,9 @@ public class DiseaseSummaryData {
     public void addConceptNames(Set<String> conceptNames) {
         this.conceptNames.addAll(conceptNames);
     }
+
+    public void concat(DiseaseSummaryData diseaseSummaryData){
+        addTabularData(diseaseSummaryData.getTabularData());
+        addConceptNames(diseaseSummaryData.getConceptNames());
+    }
 }

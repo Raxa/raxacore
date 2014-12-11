@@ -15,9 +15,9 @@
 
     <drug_order order_id="15" drug_inventory_id="1" dose="125.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
     <drug_order order_id="16" drug_inventory_id="1" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
-    <drug_order order_id="17" drug_inventory_id="1" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
-    <drug_order order_id="18" drug_inventory_id="1" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
-    <drug_order order_id="19" drug_inventory_id="1" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="17" drug_inventory_id="3" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="18" drug_inventory_id="2" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="19" drug_inventory_id="3" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
 
 
     <concept concept_id="1" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e060cf44-3d3d-11e3-bf2b-0800271c1b75"/>
