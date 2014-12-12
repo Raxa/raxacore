@@ -26,8 +26,8 @@
 
     <location location_id="1" name="OPD Room 1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
     <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14" changed_by="1" date_changed="2012-10-23 18:04:14" retired="0" uuid="f01c54cb-2225-471a-9cd5-d348552c337c"/>
-    <visit visit_id="901" date_started="2008-08-16 00:00:00" date_created="2008-08-16 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-08-17 04:08:16" location_id="1" creator="1" changed_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5t" voided="0"/>
-    <visit visit_id="902" date_started="2008-08-18 00:00:00" date_created="2008-08-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-08-22 04:08:16" location_id="1" creator="1" changed_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5b" voided="0"/>
+    <visit visit_id="901" date_started="2008-08-17 00:00:00" date_created="2008-08-16 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-08-17 04:08:16" location_id="1" creator="1" changed_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5t" voided="0"/>
+    <visit visit_id="902" date_started="2008-08-16 00:00:00" date_created="2008-08-17 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-08-22 04:08:16" location_id="1" creator="1" changed_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5b" voided="0"/>
 
     <encounter_type encounter_type_id="1" name="Consultation" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
     

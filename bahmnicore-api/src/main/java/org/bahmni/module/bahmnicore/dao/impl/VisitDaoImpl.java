@@ -18,7 +18,7 @@ public class VisitDaoImpl implements VisitDao {
         String queryString = "select v\n" +
                 "from Obs obs join obs.encounter enc join enc.visit v, ConceptName cn \n" +
                 "where cn.concept.conceptId = obs.concept.conceptId and cn.name=:conceptName and cn.conceptNameType='FULLY_SPECIFIED' and obs.person.uuid=:patientUuid\n" +
-                "order by v.visitId desc";
+                "order by v.startDatetime desc";
         Query queryToGetVisitId = sessionFactory.getCurrentSession().createQuery(queryString);
         queryToGetVisitId.setString("conceptName", conceptName);
         queryToGetVisitId.setString("patientUuid", patientUuid);

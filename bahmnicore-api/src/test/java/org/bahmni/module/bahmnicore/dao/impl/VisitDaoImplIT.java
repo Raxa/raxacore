@@ -29,7 +29,7 @@ public class VisitDaoImplIT extends BaseContextSensitiveTest {
     @Test
     public void shouldGetLatestObsForConceptSetByVisit() {
         Visit latestVisit = visitDao.getLatestVisit("86526ed5-3c11-11de-a0ba-001e378eb67a", "Weight");
-        assertEquals(902, latestVisit.getVisitId().intValue());
+        assertEquals(901, latestVisit.getVisitId().intValue());
     }
 
 }
