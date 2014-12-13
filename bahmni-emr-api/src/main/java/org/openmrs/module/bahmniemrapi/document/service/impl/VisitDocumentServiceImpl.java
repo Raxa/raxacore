@@ -1,20 +1,6 @@
 package org.openmrs.module.bahmniemrapi.document.service.impl;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterRole;
-import org.openmrs.EncounterType;
-import org.openmrs.Location;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.Provider;
-import org.openmrs.Visit;
-import org.openmrs.VisitType;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
@@ -26,6 +12,8 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterPro
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
 
 @Service
 public class VisitDocumentServiceImpl implements VisitDocumentService {
@@ -72,10 +60,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
             }
             if (document.shouldVoidDocument()) {
                 voidDocumentObservationTree(parentObservation);
-                return;
-            }
-
-            if (document.hasConceptChanged(parentObservation.getConcept().getUuid())) {
+            } else if (document.hasConceptChanged(parentObservation.getConcept().getUuid())) {
                 voidDocumentObservationTree(parentObservation);
                 parentObservation = newObs(parentObservation.getObsDatetime(), testConcept, null, parentObservation.getLocation());
                 parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), imageConcept, url, null));
