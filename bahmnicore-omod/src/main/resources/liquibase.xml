@@ -2611,5 +2611,15 @@
             insert into order_frequency(concept_id, frequency_per_day, creator, date_created, uuid) values(@concept_id, 6/7, 1, @now, @uuid);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201412132014" author="Mihir">
+        <comment>Adding Immediately as Order Frequency</comment>
+        <sql>
+            set @concept_id = 0;
+            set @uuid = 0;
+            set @now = now();
+            select concept_id from concept_name where name='Immediately' and concept_name_type='FULLY_SPECIFIED' into @concept_id;
+            insert into order_frequency(concept_id, frequency_per_day, creator, date_created, uuid) values(@concept_id, 1, 1, @now, @uuid);
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
