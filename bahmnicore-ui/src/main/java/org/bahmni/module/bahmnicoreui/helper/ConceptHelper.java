@@ -1,9 +1,7 @@
 package org.bahmni.module.bahmnicoreui.helper;
 
-import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryMapper;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
-import org.openmrs.Patient;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -44,21 +42,23 @@ public  class ConceptHelper {
     }
 
     protected void addLeafConcepts(Concept rootConcept, Concept parentConcept, Collection<String> leafConcepts) {
-        if(rootConcept.isSet()){
-            for (Concept setMember : rootConcept.getSetMembers()) {
-                addLeafConcepts(setMember,rootConcept,leafConcepts);
-            }
-        }
-        else if(!shouldBeExcluded(rootConcept)){
-            Concept conceptToAdd = rootConcept;
-            if(parentConcept != null){
-                if(BahmniObservationMapper.CONCEPT_DETAILS_CONCEPT_CLASS.equals(parentConcept.getConceptClass().getName())){
-                    conceptToAdd = parentConcept;
+        if(rootConcept != null){
+            if(rootConcept.isSet()){
+                for (Concept setMember : rootConcept.getSetMembers()) {
+                    addLeafConcepts(setMember,rootConcept,leafConcepts);
                 }
             }
-            String fullName = getConceptName(conceptToAdd, ConceptNameType.FULLY_SPECIFIED);
-            String shortName = getConceptName(conceptToAdd, ConceptNameType.SHORT);
-            leafConcepts.add(shortName==null?fullName:shortName);
+            else if(!shouldBeExcluded(rootConcept)){
+                Concept conceptToAdd = rootConcept;
+                if(parentConcept != null){
+                    if(BahmniObservationMapper.CONCEPT_DETAILS_CONCEPT_CLASS.equals(parentConcept.getConceptClass().getName())){
+                        conceptToAdd = parentConcept;
+                    }
+                }
+                String fullName = getConceptName(conceptToAdd, ConceptNameType.FULLY_SPECIFIED);
+                String shortName = getConceptName(conceptToAdd, ConceptNameType.SHORT);
+                leafConcepts.add(shortName==null?fullName:shortName);
+            }
         }
     }
 
