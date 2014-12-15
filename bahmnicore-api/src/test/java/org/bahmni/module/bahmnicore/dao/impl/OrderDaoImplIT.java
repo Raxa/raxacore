@@ -1,6 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import org.hamcrest.Matcher;
+import static junit.framework.Assert.assertTrue;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
@@ -12,9 +12,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
@@ -137,6 +135,28 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
         assertEquals(2, result.size());
         assertThat(getOrderIds(result), hasItems(55, 59));
 
+    }
+
+    @Test
+    public void shouldRetrieveAllVisitsRequested() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        String visitUuid1 = "1e5d5d48-6b78-11e0-93c3-18a97ba044dc";
+        String visitUuid2 = "1e5d5d48-6b78-11e0-93c3-18a97b8ca4dc";
+        String[] visitUuids = {visitUuid1, visitUuid2};
+
+        List<Visit> visits = orderDao.getVisitsForUUids(visitUuids);
+
+        assertThat(visits.size(), is(equalTo(visitUuids.length)));
+        assertTrue(visitWithUuidExists(visitUuid1, visits));
+        assertTrue(visitWithUuidExists(visitUuid2, visits));
+    }
+
+    private boolean visitWithUuidExists(String uuid, List<Visit> visits) {
+        boolean exists = false;
+        for (Visit visit : visits) {
+            exists |= visit.getUuid().equals(uuid);
+        }
+        return exists;
     }
 
     private List<Integer> getOrderIds(List<DrugOrder> drugOrders) {

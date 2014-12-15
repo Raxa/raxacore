@@ -1,6 +1,8 @@
 package org.openmrs.module.bahmniemrapi.laborder.contract;
 
 import lombok.Data;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.joda.time.LocalDate;
 
 import java.util.ArrayList;
@@ -13,7 +15,8 @@ public class LabOrderResults {
     private List<LabOrderResult> results = new ArrayList<>();
     private TabularLabOrderResults tabularResult;
 
-    public LabOrderResults(List<LabOrderResult> results) {
+    @JsonCreator
+    public LabOrderResults(@JsonProperty("results")List<LabOrderResult> results) {
         this.results = results;
         this.tabularResult = this.tabulate();
     }
@@ -48,5 +51,9 @@ public class LabOrderResults {
         }
 
         return new TabularLabOrderResults(new ArrayList<>(dateMap.values()), new ArrayList<>(orderMap.values()), coordinateValues);
+    }
+
+    public void setTabularResult(TabularLabOrderResults tabularResult) {
+        this.tabularResult = tabularResult;
     }
 }
