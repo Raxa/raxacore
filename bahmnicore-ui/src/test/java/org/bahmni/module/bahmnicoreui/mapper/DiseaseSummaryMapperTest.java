@@ -105,12 +105,11 @@ public class DiseaseSummaryMapperTest {
 
         Map<String, ConceptValue> firstDayValue = drugOrderData.get("2014-08-15");
         assertEquals(1, firstDayValue.size());
-        assertEquals("paracetamol-500mg", firstDayValue.get("paracetamol").getValue());
+        assertEquals("paracetamol-500mg,10.0 mg,daily,SOS", firstDayValue.get("paracetamol").getValue());
 
         Map<String, ConceptValue> secondDayValue = drugOrderData.get("2014-09-11");
         assertEquals(1, secondDayValue.size());
-        assertEquals("penicillin-500mg", secondDayValue.get("penicillin").getValue());
-
+        assertEquals("penicillin-500mg,10.0 mg,daily,SOS", secondDayValue.get("penicillin").getValue());
     }
 
     @Test
@@ -158,6 +157,14 @@ public class DiseaseSummaryMapperTest {
             drugOrder.setConcept(createMRSConcept(drugInfo[0]));
             drugOrder.setEncounter(createEncounterWithVisitDateInfo(getDateFromString(drugInfo[1])));
             drugOrder.setDrug(createDrugWithNameAndStrength(drugInfo[0], drugInfo[0] + "-500mg"));
+            drugOrder.setDose(10.0);
+            Concept doseUnits = new Concept();
+            doseUnits.setFullySpecifiedName(new ConceptName("mg",Locale.getDefault()));
+            drugOrder.setDoseUnits(doseUnits);
+            drugOrder.setAsNeeded(true);
+            OrderFrequency frequency = new OrderFrequency();
+            frequency.setConcept(createMRSConcept("daily"));
+            drugOrder.setFrequency(frequency);
             drugOrders.add(drugOrder);
         }
         return drugOrders;

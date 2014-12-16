@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicoreui.mapper;
 
 import org.bahmni.module.bahmnicoreui.contract.ConceptValue;
+import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
@@ -36,9 +37,30 @@ public class DiseaseSummaryMapper {
         for (DrugOrder drugOrder : drugOrders) {
             String visitStartDateTime = getDateAsString(drugOrder.getEncounter().getVisit().getStartDatetime());
             String conceptName = drugOrder.getConcept().getName().getName();
-            addToResultTable(result,visitStartDateTime,conceptName,drugOrder.getDrug().getStrength(),null);
+            String drugOrderValue = formattedDrugOrderValue(drugOrder);
+            addToResultTable(result,visitStartDateTime,conceptName, drugOrderValue,null);
         }
         return result;
+    }
+
+    private String formattedDrugOrderValue(DrugOrder drugOrder) {
+        String strength = drugOrder.getDrug().getStrength();
+        Concept doseUnitsConcept = drugOrder.getDoseUnits();
+        String doseUnit = doseUnitsConcept == null ? "" : " "+doseUnitsConcept.getName().getName();
+        String dose = drugOrder.getDose() + doseUnit;
+        String frequency = drugOrder.getFrequency().getName();
+        String asNeeded = drugOrder.getAsNeeded()?"SOS":null;
+        return concat(strength,dose,frequency,asNeeded);
+    }
+
+    private String concat(String... values) {
+        StringBuffer stringBuffer = new StringBuffer();
+        for (String value : values) {
+            if (value != null && !value.isEmpty()) {
+                stringBuffer.append(",").append(value);
+            }
+        }
+        return stringBuffer.substring(1).toString();
     }
 
     public Map<String, Map<String, ConceptValue>> mapLabResults(List<LabOrderResult> labOrderResults) {
