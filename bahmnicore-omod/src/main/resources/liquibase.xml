@@ -2660,4 +2660,66 @@
             @concept_reference_term_id , @concept_map_type_id, @concept_id, now(),1);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201412171832" author="Mujir, Mihir">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from concept_name where name='Admission' and concept_name_type='FULLY_SPECIFIED';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding Admission Decision concept reference term and mapping for close visit task</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_map_type_id = 0;
+            set @concept_reference_term_id = 0;
+
+            set @uuid = 0;
+            set @emr_source_id = 0;
+            set @current_date = 0;
+
+            select uuid() into @uuid;
+            select now() into @current_date;
+            select concept_source_id from concept_reference_source where name='org.openmrs.module.emrapi' into @emr_source_id;
+
+            insert into concept_reference_term(concept_source_id, name, code, description, creator, date_created, uuid)
+            values(@emr_source_id, 'Admission Decision', 'Admission Decision', '', 1, @current_date, @uuid);
+
+            select concept_reference_term_id from concept_reference_term where name='Admission Decision' into @concept_reference_term_id;
+            select concept_map_type_id from concept_map_type where name='SAME-AS' into @concept_map_type_id;
+            select concept_id from concept_name where name='Admission' and concept_name_type='FULLY_SPECIFIED' into @concept_id;
+
+            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator) values (
+            @concept_reference_term_id , @concept_map_type_id, @concept_id, @current_date, 1);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201412171835" author="Mujir, Mihir">
+        <comment>Adding Deny Admission concept reference term and mapping for close visit task</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_map_type_id = 0;
+            set @concept_reference_term_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            set @uuid = 0;
+            set @emr_source_id = 0;
+            set @current_date = 0;
+
+            select uuid() into @uuid;
+            select now() into @current_date;
+            select concept_source_id from concept_reference_source where name='org.openmrs.module.emrapi' into @emr_source_id;
+
+            insert into concept_reference_term(concept_source_id, name, code, description, creator, date_created, uuid)
+            values(@emr_source_id, 'Deny Admission', 'Deny Admission', 'Deny Admission', 1, @current_date, @uuid);
+
+            select concept_reference_term_id from concept_reference_term where name='Deny Admission' into @concept_reference_term_id;
+            select concept_map_type_id from concept_map_type where name='SAME-AS' into @concept_map_type_id;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Deny Admission','Deny Admission', 'N/A', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Deny', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Admission', 1);
+
+            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator) values (
+            @concept_reference_term_id , @concept_map_type_id, @concept_id, @current_date, 1);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
