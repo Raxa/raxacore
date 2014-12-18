@@ -64,24 +64,6 @@ public class DiseaseSummaryMapperTest {
     }
 
     @Test
-    public void shouldMapOnlyLatestObservationIfMultipleObservationForSameConceptExistInOneVisit() throws ParseException {
-        DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
-        List<BahmniObservation> bahmniObservations =  new ArrayList<>();
-
-        Date visit1 = simpleDateFormat.parse(date1);
-        bahmniObservations.add(createBahmniObservation(visit1,"Pulse","90"));
-        bahmniObservations.add(createBahmniObservation(visit1,"Pulse","100"));
-
-        Map<String, Map<String, ConceptValue>> obsTable = diseaseSummaryMapper.mapObservations(bahmniObservations);
-
-        Map<String, ConceptValue> dayValue = obsTable.get(date1);
-        assertEquals(1, dayValue.size());
-        assertEquals("100", dayValue.get("Pulse").getValue());    //should write latest observation if multiple observation for same concept exist in one visit.
-
-    }
-
-
-    @Test
     public void shouldMapCodedConceptValues() throws ParseException {
         DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
         List<BahmniObservation> bahmniObservations =  new ArrayList<>();

@@ -59,7 +59,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
         Map<String, ConceptValue> obsInVisit = obsTable.get("2008-09-18");
         assertEquals(1, obsInVisit.size());
-        assertEquals("110.0", obsInVisit.get("Weight").getValue());
+        assertEquals("120.0", obsInVisit.get("Weight").getValue());
 
     }
 
@@ -82,7 +82,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
         Map<String, ConceptValue> obsForVisit = obsTable.get("2008-09-18");
         assertEquals(1, obsForVisit.size());
-        assertEquals("110.0", obsForVisit.get("Weight").getValue());
+        assertEquals("120.0", obsForVisit.get("Weight").getValue());
 
         obsForVisit = obsTable.get("2008-08-18");
         assertEquals(2, obsForVisit.size());
@@ -112,7 +112,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         Map<String, ConceptValue> labResultsInVisit = labTable.get("2013-09-26");
         assertNotNull(labResultsInVisit);
         assertEquals(1, labResultsInVisit.size());
-        assertEquals("Result for PS Malaria", labResultsInVisit.get("PS for Malaria").getValue());
+        assertEquals("new Result for PS Malaria", labResultsInVisit.get("PS for Malaria").getValue());
 
     }
 
@@ -135,7 +135,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         Map<String, ConceptValue> labResultsInVisit = labTable.get("2013-09-26");
         assertNotNull(labResultsInVisit);
         assertEquals(1, labResultsInVisit.size());
-        assertEquals("Result for PS Malaria", labResultsInVisit.get("PS for Malaria").getValue());
+        assertEquals("new Result for PS Malaria", labResultsInVisit.get("PS for Malaria").getValue());
 
         labResultsInVisit = labTable.get("2005-09-26");
         assertNotNull(labResultsInVisit);
@@ -163,7 +163,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         Map<String, ConceptValue> durgOrdersInVisit = drugTable.get("2012-12-12");
         assertNotNull(durgOrdersInVisit);
         assertEquals(1, durgOrdersInVisit.size());
-        assertEquals("250mg,225.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
+        assertEquals("250mg,325.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
     }
 
 
@@ -188,7 +188,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertNotNull(durgOrdersInVisit);
         assertEquals(2, durgOrdersInVisit.size());
         assertEquals("100mg,225.0,1/day x 7 days/week", durgOrdersInVisit.get("cetirizine 100mg").getValue());
-        assertEquals("250mg,225.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
+        assertEquals("250mg,325.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
 
 
         durgOrdersInVisit = drugTable.get("2001-09-22");
