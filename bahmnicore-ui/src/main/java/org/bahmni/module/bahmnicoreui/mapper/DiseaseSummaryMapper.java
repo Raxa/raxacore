@@ -1,6 +1,9 @@
 package org.bahmni.module.bahmnicoreui.mapper;
 
 import org.bahmni.module.bahmnicoreui.contract.ConceptValue;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
@@ -8,6 +11,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObserva
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -32,7 +36,7 @@ public class DiseaseSummaryMapper {
         return result;
     }
 
-    public Map<String, Map<String, ConceptValue>> mapDrugOrders(List<DrugOrder> drugOrders) {
+    public Map<String, Map<String, ConceptValue>> mapDrugOrders(List<DrugOrder> drugOrders) throws IOException {
         Map<String, Map<String, ConceptValue>> result = new LinkedHashMap<>();
         for (DrugOrder drugOrder : drugOrders) {
             String visitStartDateTime = getDateAsString(drugOrder.getEncounter().getVisit().getStartDatetime());
@@ -43,21 +47,33 @@ public class DiseaseSummaryMapper {
         return result;
     }
 
-    private String formattedDrugOrderValue(DrugOrder drugOrder) {
+    private String formattedDrugOrderValue(DrugOrder drugOrder) throws IOException {
         String strength = drugOrder.getDrug().getStrength();
         Concept doseUnitsConcept = drugOrder.getDoseUnits();
         String doseUnit = doseUnitsConcept == null ? "" : " "+doseUnitsConcept.getName().getName();
         String dose = drugOrder.getDose() + doseUnit;
-        String frequency = drugOrder.getFrequency().getName();
+        String frequency = getFrequency(drugOrder);
         String asNeeded = drugOrder.getAsNeeded()?"SOS":null;
-        return concat(strength,dose,frequency,asNeeded);
+        return concat(",",strength,dose,frequency,asNeeded);
     }
 
-    private String concat(String... values) {
+    private String getFrequency(DrugOrder drugOrder) throws IOException {
+        if(drugOrder.getFrequency() == null){
+            String dosingInstructions = drugOrder.getDosingInstructions();
+            ObjectMapper objectMapper = new ObjectMapper(new JsonFactory());
+            TypeReference<HashMap<String,Object>> typeRef
+                    = new TypeReference<HashMap<String,Object>>() {};
+            Map<String,Object> instructions = objectMapper.readValue(dosingInstructions, typeRef);
+            return concat("-",instructions.get("morningDose").toString(),instructions.get("afternoonDose").toString(),instructions.get("eveningDose").toString());
+        }
+        return drugOrder.getFrequency().getName();
+    }
+
+    private String concat(String separator,String... values) {
         StringBuffer stringBuffer = new StringBuffer();
         for (String value : values) {
             if (value != null && !value.isEmpty()) {
-                stringBuffer.append(",").append(value);
+                stringBuffer.append(separator).append(value);
             }
         }
         return stringBuffer.substring(1).toString();

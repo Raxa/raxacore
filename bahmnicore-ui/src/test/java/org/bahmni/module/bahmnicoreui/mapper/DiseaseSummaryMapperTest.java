@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openmrs.*;
+import org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
@@ -12,6 +13,7 @@ import org.openmrs.util.LocaleUtility;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -96,7 +98,7 @@ public class DiseaseSummaryMapperTest {
     }
 
     @Test
-    public void shouldMapDrugOrders() throws ParseException {
+    public void shouldMapDrugOrders() throws ParseException, IOException {
         DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
         Map<String, Map<String, ConceptValue>> drugOrderData = diseaseSummaryMapper.mapDrugOrders(mockDrugOrders(new String[]{"paracetamol", "2014-08-15"}, new String[]{"penicillin", "2014-09-11"}));
 
@@ -110,6 +112,42 @@ public class DiseaseSummaryMapperTest {
         Map<String, ConceptValue> secondDayValue = drugOrderData.get("2014-09-11");
         assertEquals(1, secondDayValue.size());
         assertEquals("penicillin-500mg,10.0 mg,daily,SOS", secondDayValue.get("penicillin").getValue());
+    }
+
+    @Test
+    public void shouldMapDrugOrdersWithFlexibleDosing() throws ParseException, IOException {
+        DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
+        Map<String, Map<String, ConceptValue>> drugOrderData = diseaseSummaryMapper.mapDrugOrders(mockDrugOrdersWithFlexibleDosing(new String[]{"paracetamol", "2014-08-15"}, new String[]{"penicillin", "2014-09-11"}));
+
+        assertNotNull(drugOrderData);
+        assertEquals(2, drugOrderData.size());
+
+        Map<String, ConceptValue> firstDayValue = drugOrderData.get("2014-08-15");
+        assertEquals(1, firstDayValue.size());
+        assertEquals("paracetamol-500mg,10.0 mg,1-0-1,SOS", firstDayValue.get("paracetamol").getValue());
+
+        Map<String, ConceptValue> secondDayValue = drugOrderData.get("2014-09-11");
+        assertEquals(1, secondDayValue.size());
+        assertEquals("penicillin-500mg,10.0 mg,1-0-1,SOS", secondDayValue.get("penicillin").getValue());
+    }
+
+    private List<DrugOrder> mockDrugOrdersWithFlexibleDosing(String[]... drugInfoList) throws ParseException {
+        List<DrugOrder> drugOrders = new ArrayList<>();
+        for (String[] drugInfo : drugInfoList) {
+            DrugOrder drugOrder = new DrugOrder();
+            drugOrder.setConcept(createMRSConcept(drugInfo[0]));
+            drugOrder.setEncounter(createEncounterWithVisitDateInfo(getDateFromString(drugInfo[1])));
+            drugOrder.setDrug(createDrugWithNameAndStrength(drugInfo[0], drugInfo[0] + "-500mg"));
+            drugOrder.setDose(10.0);
+            Concept doseUnits = new Concept();
+            doseUnits.setFullySpecifiedName(new ConceptName("mg",Locale.getDefault()));
+            drugOrder.setDoseUnits(doseUnits);
+            drugOrder.setAsNeeded(true);
+            drugOrder.setDosingInstructions("{\"instructions\":\"Before meals\",\"morningDose\":1,\"afternoonDose\":0,\"eveningDose\":1}");
+            drugOrder.setDosingType(FlexibleDosingInstructions.class);
+            drugOrders.add(drugOrder);
+        }
+        return drugOrders;
     }
 
     @Test
