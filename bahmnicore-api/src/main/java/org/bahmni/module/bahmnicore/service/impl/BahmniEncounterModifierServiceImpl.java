@@ -7,6 +7,7 @@ import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
 import org.bahmni.module.bahmnicore.encounterModifier.EncounterModifier;
 import org.bahmni.module.bahmnicore.encounterModifier.exception.CannotModifyEncounterException;
 import org.bahmni.module.bahmnicore.service.BahmniEncounterModifierService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.util.Map;
 public class BahmniEncounterModifierServiceImpl implements BahmniEncounterModifierService {
 
     public static final String ENCOUNTER_MODIFIER_ALGORITHM_DIRECTORY = "/encounterModifier/";
+    public static final String ENCOUNTER_MODIFIER_GROOVY_ALLOW_CACHING = "encounterModifier.groovy.allowCaching";
     protected Map<String, EncounterModifier> encounterModifiers = new HashMap<>();
 
     private static final Logger log = Logger.getLogger(BahmniEncounterModifierServiceImpl.class);
@@ -40,15 +42,27 @@ public class BahmniEncounterModifierServiceImpl implements BahmniEncounterModifi
     }
 
     private EncounterModifier getEncounterModifierAlgorithm(String encounterModifierClassName) throws IOException, InstantiationException, IllegalAccessException {
-        EncounterModifier encounterModifier = encounterModifiers.get(encounterModifierClassName);
-        if (encounterModifier == null) {
-            Class clazz = new GroovyClassLoader().parseClass(new File(getEncounterModifierClassPath(encounterModifierClassName)));
-            encounterModifiers.put(encounterModifierClassName, (EncounterModifier) clazz.newInstance());
+        if(isGroovyCachingAllowed()){
+            EncounterModifier encounterModifier = encounterModifiers.get(encounterModifierClassName);
+            if (encounterModifier == null) {
+                encounterModifiers.put(encounterModifierClassName, loadGroovyClass(encounterModifierClassName));
+            }
+            return encounterModifiers.get(encounterModifierClassName);
         }
-        return encounterModifiers.get(encounterModifierClassName);
+        return loadGroovyClass(encounterModifierClassName);
+    }
+
+    private EncounterModifier loadGroovyClass(String encounterModifierClassName) throws IOException, InstantiationException, IllegalAccessException {
+        Class clazz = new GroovyClassLoader().parseClass(new File(getEncounterModifierClassPath(encounterModifierClassName)));
+        return (EncounterModifier) clazz.newInstance();
     }
 
     private String getEncounterModifierClassPath(String encounterModifierClassName) {
         return OpenmrsUtil.getApplicationDataDirectory() + ENCOUNTER_MODIFIER_ALGORITHM_DIRECTORY + encounterModifierClassName ;
+    }
+
+    private boolean isGroovyCachingAllowed(){
+        String globalProperty = Context.getAdministrationService().getGlobalProperty(ENCOUNTER_MODIFIER_GROOVY_ALLOW_CACHING);
+        return Boolean.valueOf(globalProperty);
     }
 }

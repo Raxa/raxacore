@@ -2722,4 +2722,11 @@
             @concept_reference_term_id , @concept_map_type_id, @concept_id, @current_date, 1);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201410211423" author="Rohan">
+        <comment>Set global property allow_groovy_caching to true</comment>
+        <sql>
+            INSERT INTO global_property(`property`, `property_value`, `description`, `uuid`)
+            VALUES ('encounterModifier.groovy.allowCaching', 'true', 'Allow Groovy Caching', 'ffc74409-b8e1-48e7-a318-8810a2f452da');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
