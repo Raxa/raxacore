@@ -2726,7 +2726,7 @@
         <comment>Set global property allow_groovy_caching to true</comment>
         <sql>
             INSERT INTO global_property(`property`, `property_value`, `description`, `uuid`)
-            VALUES ('encounterModifier.groovy.allowCaching', 'true', 'Allow Groovy Caching', 'ffc74409-b8e1-48e7-a318-8810a2f452da');
+            VALUES ('encounterModifier.groovy.allowCaching', 'true', 'Allow Groovy Caching', 'e16605a1-266a-47cb-8385-d07742646640');
         </sql>
     </changeSet>
 </databaseChangeLog>
