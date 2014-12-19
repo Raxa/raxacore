@@ -114,12 +114,17 @@ public class DiseaseSummaryMapper {
         result.put(visitStartDateTime, cellValue);
     }
 
-
     private String getObsValue(Object value) {
-        if(value instanceof EncounterTransaction.Concept){
-            return ((EncounterTransaction.Concept) value).getName();
+        if(value != null){
+            if(value instanceof EncounterTransaction.Concept){
+                return ((EncounterTransaction.Concept) value).getName();
+            }
+            else if(value instanceof Boolean){
+                return (Boolean)value?"Yes":"No";
+            }
+            return String.valueOf(value);
         }
-        return value == null ? "" : String.valueOf(value);
+        return "";
     }
 
     private void getLeafObservationsfromConceptSet(BahmniObservation bahmniObservation, List<BahmniObservation> observationsfromConceptSet) {
