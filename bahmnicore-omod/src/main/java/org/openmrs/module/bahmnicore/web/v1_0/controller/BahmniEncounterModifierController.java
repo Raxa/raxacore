@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
+import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.contract.encounter.data.EncounterModifierData;
 import org.bahmni.module.bahmnicore.service.BahmniEncounterModifierService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/bahmniencountermodifier")
 public class BahmniEncounterModifierController extends BaseRestController {
 
+    private static final Logger log = Logger.getLogger(BahmniEncounterModifierController.class);
+
+
     @Autowired
     private BahmniEncounterModifierService bahmniEncounterModifierService;
 
@@ -26,7 +30,13 @@ public class BahmniEncounterModifierController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public BahmniEncounterTransaction get(@RequestBody EncounterModifierData encounterModifierData) throws Throwable {
-        return bahmniEncounterModifierService.getModifiedEncounter(encounterModifierData.getBahmniEncounterTransaction(), encounterModifierData.getConceptSetData());
+    public BahmniEncounterTransaction get(@RequestBody EncounterModifierData encounterModifierData) {
+        BahmniEncounterTransaction encounterTransaction = encounterModifierData.getBahmniEncounterTransaction();
+        try {
+            encounterTransaction = bahmniEncounterModifierService.getModifiedEncounter(encounterModifierData.getBahmniEncounterTransaction(), encounterModifierData.getConceptSetData());
+        } catch (Exception e) {
+            log.error("Error in running groovy script: " + e.getMessage(), e);
+        }
+        return encounterTransaction;
     }
 }
