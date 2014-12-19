@@ -30,12 +30,13 @@ public class BahmniEncounterModifierController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public BahmniEncounterTransaction get(@RequestBody EncounterModifierData encounterModifierData) {
+    public BahmniEncounterTransaction get(@RequestBody EncounterModifierData encounterModifierData) throws Exception {
         BahmniEncounterTransaction encounterTransaction = encounterModifierData.getBahmniEncounterTransaction();
         try {
             encounterTransaction = bahmniEncounterModifierService.getModifiedEncounter(encounterModifierData.getBahmniEncounterTransaction(), encounterModifierData.getConceptSetData());
         } catch (Exception e) {
             log.error("Error in running groovy script: " + e.getMessage(), e);
+            throw e;
         }
         return encounterTransaction;
     }
