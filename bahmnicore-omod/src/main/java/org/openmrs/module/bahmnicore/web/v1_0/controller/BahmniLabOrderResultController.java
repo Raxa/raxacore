@@ -39,11 +39,11 @@ public class BahmniLabOrderResultController {
         return labOrderResultsService.getAll(patientFrom(visits), visits);
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"patientUuid", "numberOfVisits"})
+    @RequestMapping(method = RequestMethod.GET, params = {"patientUuid"})
     @ResponseBody
     public LabOrderResults getForPatient(
             @RequestParam(value = "patientUuid", required = true) String patientUuid,
-            @RequestParam(value = "numberOfVisits", required = true) Integer numberOfVisits) {
+            @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits) {
         Patient patient = patientService.getPatientByUuid(patientUuid);
         List<Visit> visits = null;
         if (numberOfVisits != null) {

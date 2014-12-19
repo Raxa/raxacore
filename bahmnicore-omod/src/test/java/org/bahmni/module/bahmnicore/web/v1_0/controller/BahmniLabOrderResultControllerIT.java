@@ -35,7 +35,6 @@ public class BahmniLabOrderResultControllerIT extends BaseWebControllerTest {
     //todo: add more good assert statements
     public void shouldFindLabOrderResultsForMultipleVisitUuids() throws Exception {
         MockHttpServletRequest mockHttpServletRequest = newGetRequest(LAB_ORDER_URL,
-                new Parameter("patientUuid", PERSON_UUID),
                 new Parameter("visitUuids", "ad41ef34-a41a-4ad6-8835-2f59099acf5a"),
                 new Parameter("visitUuids", "9d705396-0c0c-11e4-bb80-f18addb6f9bb"));
         MockHttpServletResponse response = handle(mockHttpServletRequest);
@@ -54,4 +53,15 @@ public class BahmniLabOrderResultControllerIT extends BaseWebControllerTest {
         assertEquals(labOrderResults.getResults().size(), 1);
         assertEquals(labOrderResults.getResults().get(0).getTestName(),"PS for Malaria");
     }
+
+    @Test
+    public void shouldReturnForAllVisitsIfNoneSpecified() throws Exception {
+        MockHttpServletRequest mockHttpServletRequest = newGetRequest(LAB_ORDER_URL,
+                new Parameter("patientUuid", PERSON_UUID));
+        MockHttpServletResponse response = handle(mockHttpServletRequest);
+        LabOrderResults labOrderResults = deserialize(response, LabOrderResults.class);
+        assertNotNull(labOrderResults);
+        assertEquals(labOrderResults.getResults().size(), 6);
+    }
+
 }
