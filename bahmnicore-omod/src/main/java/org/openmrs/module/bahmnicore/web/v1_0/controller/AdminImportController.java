@@ -9,8 +9,23 @@ import org.bahmni.fileimport.FileImporter;
 import org.bahmni.fileimport.ImportStatus;
 import org.bahmni.fileimport.dao.ImportStatusDao;
 import org.bahmni.fileimport.dao.JDBCConnectionProvider;
-import org.bahmni.module.admin.csv.models.*;
-import org.bahmni.module.admin.csv.persister.*;
+import org.bahmni.module.admin.csv.models.ConceptRow;
+import org.bahmni.module.admin.csv.models.ConceptSetRow;
+import org.bahmni.module.admin.csv.models.DrugRow;
+import org.bahmni.module.admin.csv.models.LabResultsRow;
+import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
+import org.bahmni.module.admin.csv.models.PatientProgramRow;
+import org.bahmni.module.admin.csv.models.PatientRow;
+import org.bahmni.module.admin.csv.models.ReferenceTermRow;
+import org.bahmni.module.admin.csv.persister.ConceptPersister;
+import org.bahmni.module.admin.csv.persister.ConceptSetPersister;
+import org.bahmni.module.admin.csv.persister.DatabasePersister;
+import org.bahmni.module.admin.csv.persister.DrugPersister;
+import org.bahmni.module.admin.csv.persister.EncounterPersister;
+import org.bahmni.module.admin.csv.persister.LabResultPersister;
+import org.bahmni.module.admin.csv.persister.PatientPersister;
+import org.bahmni.module.admin.csv.persister.PatientProgramPersister;
+import org.bahmni.module.admin.csv.persister.ReferenceTermPersister;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.SessionImplementor;
@@ -93,59 +108,100 @@ public class AdminImportController extends BaseRestController {
     @RequestMapping(value = baseUrl + "/patient", method = RequestMethod.POST)
     @ResponseBody
     public boolean upload(@RequestParam(value = "file") MultipartFile file) {
-        patientPersister.init(Context.getUserContext());
-        return importCsv(PATIENT_FILES_DIRECTORY, file, patientPersister, 1, true, PatientRow.class);
+        try {
+            patientPersister.init(Context.getUserContext());
+            return importCsv(PATIENT_FILES_DIRECTORY, file, patientPersister, 1, true, PatientRow.class);
+        } catch (Throwable e) {
+            logger.error("Could not upload file", e);
+            return false;
+        }
     }
 
     @RequestMapping(value = baseUrl + "/encounter", method = RequestMethod.POST)
     @ResponseBody
     public boolean upload(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
-        String configuredExactPatientIdMatch = administrationService.getGlobalProperty(SHOULD_MATCH_EXACT_PATIENT_ID_CONFIG);
-        boolean shouldMatchExactPatientId = DEFAULT_SHOULD_MATCH_EXACT_PATIENT_ID;
-        if (configuredExactPatientIdMatch != null)
-            shouldMatchExactPatientId = Boolean.parseBoolean(configuredExactPatientIdMatch);
+        try {
+            String configuredExactPatientIdMatch = administrationService.getGlobalProperty(SHOULD_MATCH_EXACT_PATIENT_ID_CONFIG);
+            boolean shouldMatchExactPatientId = DEFAULT_SHOULD_MATCH_EXACT_PATIENT_ID;
+            if (configuredExactPatientIdMatch != null)
+                shouldMatchExactPatientId = Boolean.parseBoolean(configuredExactPatientIdMatch);
 
-        encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm, shouldMatchExactPatientId);
-        return importCsv(ENCOUNTER_FILES_DIRECTORY, file, encounterPersister, 1, true, MultipleEncounterRow.class);
+            encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm, shouldMatchExactPatientId);
+            return importCsv(ENCOUNTER_FILES_DIRECTORY, file, encounterPersister, 1, true, MultipleEncounterRow.class);
+        } catch (Throwable e) {
+            logger.error("Could not upload file", e);
+            return false;
+        }
     }
 
     @RequestMapping(value = baseUrl + "/referenceterms", method = RequestMethod.POST)
     @ResponseBody
     public boolean uploadReferenceTerms(@RequestParam(value = "file") MultipartFile file) {
-        referenceTermPersister.init(Context.getUserContext());
-        return importCsv(REFERENCETERM_FILES_DIRECTORY, file, referenceTermPersister, 1, true, ReferenceTermRow.class);
+        try {
+            referenceTermPersister.init(Context.getUserContext());
+            return importCsv(REFERENCETERM_FILES_DIRECTORY, file, referenceTermPersister, 1, true, ReferenceTermRow.class);
+        } catch (Throwable e) {
+            logger.error("Could not upload file", e);
+            return false;
+        }
+
     }
 
     @RequestMapping(value = baseUrl + "/program", method = RequestMethod.POST)
     @ResponseBody
     public boolean uploadProgram(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
-        patientProgramPersister.init(Context.getUserContext(), patientMatchingAlgorithm);
-        return importCsv(PROGRAM_FILES_DIRECTORY, file, patientProgramPersister, 1, true, PatientProgramRow.class);
+        try {
+            patientProgramPersister.init(Context.getUserContext(), patientMatchingAlgorithm);
+            return importCsv(PROGRAM_FILES_DIRECTORY, file, patientProgramPersister, 1, true, PatientProgramRow.class);
+        } catch (Throwable e) {
+            logger.error("Could not upload file", e);
+            return false;
+        }
     }
 
     @RequestMapping(value = baseUrl + "/drug", method = RequestMethod.POST)
     @ResponseBody
     public boolean uploadDrug(@RequestParam(value = "file") MultipartFile file) {
-        return importCsv(DRUG_FILES_DIRECTORY, file, new DatabasePersister<>(drugPersister), 1, false, DrugRow.class);
+        try {
+            return importCsv(DRUG_FILES_DIRECTORY, file, new DatabasePersister<>(drugPersister), 1, false, DrugRow.class);
+        } catch (Throwable e) {
+            logger.error("Could not upload file", e);
+            return false;
+        }
     }
 
     @RequestMapping(value = baseUrl + "/concept", method = RequestMethod.POST)
     @ResponseBody
     public boolean uploadConcept(@RequestParam(value = "file") MultipartFile file) {
-        return importCsv(CONCEPT_FILES_DIRECTORY, file, new DatabasePersister<>(conceptPersister), 1, false, ConceptRow.class);
+        try {
+            return importCsv(CONCEPT_FILES_DIRECTORY, file, new DatabasePersister<>(conceptPersister), 1, false, ConceptRow.class);
+        } catch (Throwable e) {
+            logger.error("Could not upload file", e);
+            return false;
+        }
     }
 
     @RequestMapping(value = baseUrl + "/labResults", method = RequestMethod.POST)
     @ResponseBody
     public boolean uploadLabResults(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
-        labResultPersister.init(Context.getUserContext(), patientMatchingAlgorithm, true);
-        return importCsv(LAB_RESULTS_DIRECTORY, file, new DatabasePersister<>(labResultPersister), 1, false, LabResultsRow.class);
+        try {
+            labResultPersister.init(Context.getUserContext(), patientMatchingAlgorithm, true);
+            return importCsv(LAB_RESULTS_DIRECTORY, file, new DatabasePersister<>(labResultPersister), 1, false, LabResultsRow.class);
+        } catch (Throwable e) {
+            logger.error("Could not upload file", e);
+            return false;
+        }
     }
 
     @RequestMapping(value = baseUrl + "/conceptset", method = RequestMethod.POST)
     @ResponseBody
     public boolean uploadConceptSet(@RequestParam(value = "file") MultipartFile file) {
-        return importCsv(CONCEPT_SET_FILES_DIRECTORY, file, new DatabasePersister<>(conceptSetPersister), 1, false, ConceptSetRow.class);
+        try {
+            return importCsv(CONCEPT_SET_FILES_DIRECTORY, file, new DatabasePersister<>(conceptSetPersister), 1, false, ConceptSetRow.class);
+        } catch (Throwable e) {
+            logger.error("Could not upload file", e);
+            return false;
+        }
     }
 
     @RequestMapping(value = baseUrl + "/status", method = RequestMethod.GET)
@@ -156,17 +212,13 @@ public class AdminImportController extends BaseRestController {
         return importStatusDao.getImportStatusFromDate(DateUtils.addDays(new Date(), (numberOfDays * -1)));
     }
 
-    private <T extends org.bahmni.csv.CSVEntity> boolean importCsv(String filesDirectory, MultipartFile file, EntityPersister<T> persister, int numberOfThreads, boolean skipValidation, Class entityClass) {
-        try {
-            CSVFile persistedUploadedFile = writeToLocalFile(file, filesDirectory);
-            String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
-            String username = Context.getUserContext().getAuthenticatedUser().getUsername();
-            return new FileImporter<T>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
-                    persister, entityClass, new NewMRSConnectionProvider(), username, skipValidation, numberOfThreads);
-        } catch (Exception e) {
-            logger.error("Could not upload file", e);
-            return false;
-        }
+    private <T extends org.bahmni.csv.CSVEntity> boolean importCsv(String filesDirectory, MultipartFile file, EntityPersister<T> persister,
+                                                                   int numberOfThreads, boolean skipValidation, Class entityClass) throws IOException {
+        String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
+        String username = Context.getUserContext().getAuthenticatedUser().getUsername();
+        CSVFile persistedUploadedFile = writeToLocalFile(file, filesDirectory);
+        return new FileImporter<T>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
+                persister, entityClass, new NewMRSConnectionProvider(), username, skipValidation, numberOfThreads);
     }
 
 
@@ -179,18 +231,19 @@ public class AdminImportController extends BaseRestController {
             uploadedFileStream = new FileOutputStream(new File(uploadedFile.getAbsolutePath()));
             uploadedFileStream.write(fileBytes);
             uploadedFileStream.flush();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error(e);
             // TODO : handle errors for end users. Give some good message back to users.
         } finally {
-            if (uploadedFileStream != null)
+            if (uploadedFileStream != null) {
                 try {
                     uploadedFileStream.close();
                 } catch (IOException e) {
                     logger.error(e);
                 }
+            }
+            return uploadedFile;
         }
-        return uploadedFile;
     }
 
     private CSVFile getFile(String fileName, String filesDirectory) throws IOException {
