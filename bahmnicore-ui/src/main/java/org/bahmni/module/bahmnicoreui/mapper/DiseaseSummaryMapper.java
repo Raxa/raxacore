@@ -72,13 +72,21 @@ public class DiseaseSummaryMapper {
     private String getFrequency(DrugOrder drugOrder) throws IOException {
         if(drugOrder.getFrequency() == null){
             String dosingInstructions = drugOrder.getDosingInstructions();
-            ObjectMapper objectMapper = new ObjectMapper(new JsonFactory());
-            TypeReference<HashMap<String,Object>> typeRef
-                    = new TypeReference<HashMap<String,Object>>() {};
-            Map<String,Object> instructions = objectMapper.readValue(dosingInstructions, typeRef);
-            return concat("-",instructions.get("morningDose").toString(),instructions.get("afternoonDose").toString(),instructions.get("eveningDose").toString());
+            Map<String, Object> instructions = hashMapForJson(dosingInstructions);
+            return concat("-", getEmptyIfNull(instructions.get("morningDose")),getEmptyIfNull(instructions.get("afternoonDose")),getEmptyIfNull(instructions.get("eveningDose")));
         }
         return drugOrder.getFrequency().getName();
+    }
+
+    private Map<String, Object> hashMapForJson(String dosingInstructions) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper(new JsonFactory());
+        TypeReference<HashMap<String,Object>> typeRef
+                = new TypeReference<HashMap<String,Object>>() {};
+        return objectMapper.readValue(dosingInstructions, typeRef);
+    }
+
+    private String getEmptyIfNull(Object text) {
+        return text == null? "":text.toString();
     }
 
     private String concat(String separator,String... values) {
