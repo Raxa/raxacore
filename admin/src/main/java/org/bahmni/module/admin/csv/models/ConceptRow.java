@@ -7,10 +7,7 @@ import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.annotation.CSVHeader;
 import org.bahmni.csv.annotation.CSVRegexHeader;
 import org.bahmni.csv.annotation.CSVRepeatingHeaders;
-import org.bahmni.module.admin.csv.utils.CSVUtils;
-import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,7 +30,7 @@ public class ConceptRow extends CSVEntity {
     @CSVHeader(name = "shortname")
     public String shortName;
 
-    @CSVRepeatingHeaders(names = {"referenceTermSource", "referenceTermCode", "referenceTermRelationship"}, type = ConceptReferenceTermRow.class)
+    @CSVRepeatingHeaders(names = {"reference-term-source", "reference-term-code", "reference-term-relationship"}, type = ConceptReferenceTermRow.class)
     public List<ConceptReferenceTermRow> referenceTerms = new ArrayList<>();
 
     @CSVHeader(name = "datatype")

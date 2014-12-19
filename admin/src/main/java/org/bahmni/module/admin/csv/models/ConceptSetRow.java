@@ -30,7 +30,7 @@ public class ConceptSetRow extends CSVEntity {
     @CSVHeader(name = "shortname")
     public String shortName;
 
-    @CSVRepeatingHeaders(names = {"referenceTermSource", "referenceTermCode", "referenceTermRelationship"}, type = ConceptReferenceTermRow.class)
+    @CSVRepeatingHeaders(names = {"reference-term-source", "reference-term-code", "reference-term-relationship"}, type = ConceptReferenceTermRow.class)
     public List<ConceptReferenceTermRow> referenceTerms = new ArrayList<>();
 
     @CSVRegexHeader(pattern = "child.*")

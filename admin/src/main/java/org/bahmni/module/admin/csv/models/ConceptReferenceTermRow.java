@@ -1,10 +1,16 @@
 package org.bahmni.module.admin.csv.models;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bahmni.csv.annotation.CSVHeader;
 
 public class ConceptReferenceTermRow {
+    @CSVHeader(name = "reference-term-source")
     private String referenceTermSource;
+
+    @CSVHeader(name = "reference-term-code")
     private String referenceTermCode;
+
+    @CSVHeader(name = "reference-term-relationship")
     private String referenceTermRelationship;
 
     public String getReferenceTermSource() {
@@ -50,6 +56,6 @@ public class ConceptReferenceTermRow {
     }
 
     public ConceptReferenceTermRow getHeaders() {
-        return new ConceptReferenceTermRow("referenceTermSource", "referenceTermCode", "referenceTermRelationship");
+        return new ConceptReferenceTermRow("reference-term-source", "reference-term-code", "reference-term-relationship");
     }
 }
