@@ -63,7 +63,7 @@ public class DiseaseSummaryMapper {
         String strength = drugOrder.getDrug().getStrength();
         Concept doseUnitsConcept = drugOrder.getDoseUnits();
         String doseUnit = doseUnitsConcept == null ? "" : " "+doseUnitsConcept.getName().getName();
-        String dose = drugOrder.getDose() + doseUnit;
+        String dose = drugOrder.getDose()==null?"":drugOrder.getDose() + doseUnit;
         String frequency = getFrequency(drugOrder);
         String asNeeded = drugOrder.getAsNeeded()?"SOS":null;
         return concat(",",strength,dose,frequency,asNeeded);
@@ -79,6 +79,9 @@ public class DiseaseSummaryMapper {
     }
 
     private Map<String, Object> hashMapForJson(String dosingInstructions) throws IOException {
+        if(dosingInstructions == null || dosingInstructions.isEmpty()){
+            return Collections.EMPTY_MAP;
+        }
         ObjectMapper objectMapper = new ObjectMapper(new JsonFactory());
         TypeReference<HashMap<String,Object>> typeRef
                 = new TypeReference<HashMap<String,Object>>() {};
@@ -90,13 +93,13 @@ public class DiseaseSummaryMapper {
     }
 
     private String concat(String separator,String... values) {
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
         for (String value : values) {
             if (value != null && !value.isEmpty()) {
-                stringBuffer.append(separator).append(value);
+                stringBuilder.append(separator).append(value);
             }
         }
-        return stringBuffer.substring(1).toString();
+        return stringBuilder.length() > 1 ? stringBuilder.substring(1) :"";
     }
 
     private String getDateAsString(Date startDatetime) {

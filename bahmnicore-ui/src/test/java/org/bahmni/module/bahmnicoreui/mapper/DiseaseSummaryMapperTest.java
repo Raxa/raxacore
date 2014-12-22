@@ -113,6 +113,28 @@ public class DiseaseSummaryMapperTest {
         assertEquals("penicillin-500mg,10.0 mg,1-0-1,SOS", secondDayValue.get("penicillin").getValue());
     }
 
+    @Test
+    public void shouldMapDrugOrdersWithoutAnyExceptionsWhenThereIsNoData() throws ParseException, IOException {
+        try{
+            DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
+            Map<String, Map<String, ConceptValue>> drugOrderData = diseaseSummaryMapper.mapDrugOrders(mockDrugOrdersWithoutAnyData(new String[]{"paracetamol", "2014-08-15"}, new String[]{"penicillin", "2014-09-11"}));
+
+            assertNotNull(drugOrderData);
+            assertEquals(2, drugOrderData.size());
+
+            Map<String, ConceptValue> firstDayValue = drugOrderData.get("2014-08-15");
+            assertEquals(1, firstDayValue.size());
+            assertEquals("", firstDayValue.get("paracetamol").getValue());
+
+            Map<String, ConceptValue> secondDayValue = drugOrderData.get("2014-09-11");
+            assertEquals(1, secondDayValue.size());
+            assertEquals("", secondDayValue.get("penicillin").getValue());
+        }catch (Exception e){
+            throw new RuntimeException("Should not throw any exception when drug orders dont have strength,dosage and freequency",e);
+        }
+
+    }
+
     private List<DrugOrder> mockDrugOrdersWithFlexibleDosing(String[]... drugInfoList) throws ParseException {
         List<DrugOrder> drugOrders = new ArrayList<>();
         for (String[] drugInfo : drugInfoList) {
@@ -127,6 +149,18 @@ public class DiseaseSummaryMapperTest {
             drugOrder.setAsNeeded(true);
             drugOrder.setDosingInstructions("{\"instructions\":\"Before meals\",\"morningDose\":1,\"afternoonDose\":0,\"eveningDose\":1}");
             drugOrder.setDosingType(FlexibleDosingInstructions.class);
+            drugOrders.add(drugOrder);
+        }
+        return drugOrders;
+    }
+
+    private List<DrugOrder> mockDrugOrdersWithoutAnyData(String[]... drugInfoList) throws ParseException {
+        List<DrugOrder> drugOrders = new ArrayList<>();
+        for (String[] drugInfo : drugInfoList) {
+            DrugOrder drugOrder = new DrugOrder();
+            drugOrder.setConcept(createMRSConcept(drugInfo[0]));
+            drugOrder.setEncounter(createEncounterWithVisitDateInfo(getDateFromString(drugInfo[1])));
+            drugOrder.setDrug(createDrugWithNameAndStrength(drugInfo[0], ""));
             drugOrders.add(drugOrder);
         }
         return drugOrders;
