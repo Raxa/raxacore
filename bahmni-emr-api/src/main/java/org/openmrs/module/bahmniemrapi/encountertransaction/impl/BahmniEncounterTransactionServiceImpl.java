@@ -8,7 +8,8 @@ import org.openmrs.Patient;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
-import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataSaveCommand;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPreSaveCommand;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPostSaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.LocationBasedEncounterTypeIdentifier;
@@ -29,19 +30,22 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     private EmrEncounterService emrEncounterService;
     private EncounterTransactionMapper encounterTransactionMapper;
     private LocationBasedEncounterTypeIdentifier locationBasedEncounterTypeIdentifier;
-    private List<EncounterDataSaveCommand> encounterDataSaveCommands;
+    private EncounterDataPreSaveCommand encounterDataPreSaveCommand;
+    private List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands;
     private BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper;
     private VisitService visitService;
     private PatientService patientService;
 
     public BahmniEncounterTransactionServiceImpl(EncounterService encounterService, EmrEncounterService emrEncounterService, EncounterTransactionMapper encounterTransactionMapper,
-                                                 LocationBasedEncounterTypeIdentifier locationBasedEncounterTypeIdentifier, List<EncounterDataSaveCommand> encounterDataSaveCommands,
+                                                 LocationBasedEncounterTypeIdentifier locationBasedEncounterTypeIdentifier, EncounterDataPreSaveCommand encounterDataPreSaveCommand, List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands,
                                                  BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper, VisitService visitService, PatientService patientService) {
+
         this.encounterService = encounterService;
         this.emrEncounterService = emrEncounterService;
         this.encounterTransactionMapper = encounterTransactionMapper;
         this.locationBasedEncounterTypeIdentifier = locationBasedEncounterTypeIdentifier;
-        this.encounterDataSaveCommands = encounterDataSaveCommands;
+        this.encounterDataPreSaveCommand = encounterDataPreSaveCommand;
+        this.encounterDataPostSaveCommands = encounterDataPostSaveCommands;
         this.bahmniEncounterTransactionMapper = bahmniEncounterTransactionMapper;
         this.visitService = visitService;
         this.patientService = patientService;
@@ -51,7 +55,7 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
         // TODO : Mujir - map string VisitType to the uuids and set on bahmniEncounterTransaction object
         setEncounterType(bahmniEncounterTransaction);
-
+        encounterDataPreSaveCommand.update(bahmniEncounterTransaction);
         VisitIdentificationHelper visitIdentificationHelper = new VisitIdentificationHelper(visitService);
         bahmniEncounterTransaction = new RetrospectiveEncounterTransactionService(visitIdentificationHelper).updatePastEncounters(bahmniEncounterTransaction, patient, visitStartDate, visitEndDate);
 
@@ -61,7 +65,7 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         Encounter currentEncounter = encounterService.getEncounterByUuid(encounterUuid);
 
         EncounterTransaction updatedEncounterTransaction = encounterTransactionMapper.map(currentEncounter, true);
-        for (EncounterDataSaveCommand saveCommand : encounterDataSaveCommands) {
+        for (EncounterDataPostSaveCommand saveCommand : encounterDataPostSaveCommands) {
             updatedEncounterTransaction = saveCommand.save(bahmniEncounterTransaction,currentEncounter, updatedEncounterTransaction);
         }
         return bahmniEncounterTransactionMapper.map(updatedEncounterTransaction);
