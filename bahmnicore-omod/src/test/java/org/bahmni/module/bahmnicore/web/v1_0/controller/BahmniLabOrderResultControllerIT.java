@@ -4,6 +4,7 @@ import org.bahmni.test.web.controller.BaseWebControllerTest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.api.PatientService;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+@Ignore
 public class BahmniLabOrderResultControllerIT extends BaseWebControllerTest {
 
     @Autowired
