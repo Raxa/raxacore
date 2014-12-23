@@ -4,6 +4,8 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 @Data
 public class TabularLabOrderResults {
@@ -11,7 +13,10 @@ public class TabularLabOrderResults {
     private List<TestOrderLabel> orders = new ArrayList<>();
     private List<CoordinateValue> values = new ArrayList<>();
 
-    public TabularLabOrderResults(List<DateLabel> dates, List<TestOrderLabel> orders, List<CoordinateValue> values) {
+    @JsonCreator
+    public TabularLabOrderResults(@JsonProperty("dates")List<DateLabel> dates,
+                                  @JsonProperty("orders")List<TestOrderLabel> orders,
+                                  @JsonProperty("values")List<CoordinateValue> values) {
         this.dates = dates;
         this.orders = orders;
         this.values = values;
@@ -22,7 +27,9 @@ public class TabularLabOrderResults {
         private Integer index;
         private String date;
 
-        public DateLabel(Integer index, String date) {
+        @JsonCreator
+        public DateLabel(@JsonProperty("index")Integer index,
+                         @JsonProperty("date")String date) {
             this.index = index;
             this.date = date;
         }
@@ -36,7 +43,12 @@ public class TabularLabOrderResults {
         private Double maxNormal;
         private String testUnitOfMeasurement;
 
-        public TestOrderLabel(Integer index, String testName, Double minNormal, Double maxNormal, String testUnitOfMeasurement) {
+        @JsonCreator
+        public TestOrderLabel(@JsonProperty("index")Integer index,
+                              @JsonProperty("testName")String testName,
+                              @JsonProperty("minNormal")Double minNormal,
+                              @JsonProperty("maxNormal")Double maxNormal,
+                              @JsonProperty("testUnitOfMeasurement")String testUnitOfMeasurement) {
             this.index = index;
             this.testName = testName;
             this.minNormal = minNormal;

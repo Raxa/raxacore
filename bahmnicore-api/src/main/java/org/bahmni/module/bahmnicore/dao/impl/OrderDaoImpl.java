@@ -25,7 +25,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public List<Order> getCompletedOrdersFrom(List<Order> allOrders) {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Obs.class);
+        Criteria criteria = getCurrentSession().createCriteria(Obs.class);
         criteria.setProjection(Projections.groupProperty("order"));
 
         criteria.add(Restrictions.in("order", allOrders));
@@ -34,7 +34,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public List<DrugOrder> getPrescribedDrugOrders(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits) {
-        Session currentSession = sessionFactory.getCurrentSession();
+        Session currentSession = getCurrentSession();
         List<Integer> visitWithDrugOrderIds = getVisitIds(getVisitsWithOrders(patient, "DrugOrder", includeActiveVisit, numberOfVisits));
         if(!visitWithDrugOrderIds.isEmpty()) {
             Query query = currentSession.createQuery("select d1 from DrugOrder d1, Encounter e, Visit v where d1.encounter = e and e.visit = v and v.visitId in (:visitIds) " +
@@ -50,7 +50,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     public List<DrugOrder> getPrescribedDrugOrdersForConcepts(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits, List<Concept> concepts){
-        Session currentSession = sessionFactory.getCurrentSession();
+        Session currentSession = getCurrentSession();
         List<Integer> visitWithDrugOrderIds = getVisitIds(getVisitsWithOrders(patient, "DrugOrder", includeActiveVisit, numberOfVisits));
         if(!visitWithDrugOrderIds.isEmpty()) {
 
@@ -68,7 +68,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     public List<Visit> getVisitsWithOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits) {
-        Session currentSession = sessionFactory.getCurrentSession();
+        Session currentSession = getCurrentSession();
         String includevisit = includeActiveVisit == null || includeActiveVisit == false ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
         Query queryVisitsWithDrugOrders = currentSession.createQuery("select v from "  + orderType + " o, Encounter e, Visit v where o.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
                 "and o.voided = false and o.action != :discontinued " +  includevisit + " group by v.visitId order by v.startDatetime desc");
@@ -81,6 +81,18 @@ public class OrderDaoImpl implements OrderDao {
             queryVisitsWithDrugOrders.setMaxResults(numberOfVisits);
         }
         return (List<Visit>) queryVisitsWithDrugOrders.list();
+    }
+
+    @Override
+    public List<Visit> getVisitsForUUids(String[] visitUuids) {
+        return getCurrentSession()
+                .createQuery("from Visit v where v.uuid in (:visitUuids)")
+                .setParameterList("visitUuids", visitUuids)
+                .list();
+    }
+
+    private Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
     }
 
     private List<Integer> getVisitIds(List<Visit> visits) {
