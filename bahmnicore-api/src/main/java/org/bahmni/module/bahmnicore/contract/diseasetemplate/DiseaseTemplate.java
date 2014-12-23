@@ -35,6 +35,10 @@ public class DiseaseTemplate {
         this.observationTemplates.addAll(observationTemplates);
     }
 
+    public void removeObservationTemplate(ObservationTemplate observationTemplate) {
+        this.observationTemplates.remove(observationTemplate);
+    }
+
     public EncounterTransaction.Concept getConcept() {
         return concept;
     }

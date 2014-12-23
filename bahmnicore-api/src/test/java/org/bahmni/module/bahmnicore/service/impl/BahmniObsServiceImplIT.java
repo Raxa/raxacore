@@ -13,6 +13,8 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -34,11 +36,12 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
     public void shouldReturnLatestObsForEachConcept() {
         List<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Vitals"));
         BahmniObservation vitalObservation = bahmniObservations.get(0);
-        List<BahmniObservation> vitalsGroupMembers = vitalObservation.getGroupMembers();
+        Collection<BahmniObservation> vitalsGroupMembers = vitalObservation.getGroupMembers();
         assertEquals(2, vitalsGroupMembers.size());
+        Iterator<BahmniObservation> observationIterator = vitalsGroupMembers.iterator();
 
-        BahmniObservation weight = vitalsGroupMembers.get(0);
-        BahmniObservation pulse = vitalsGroupMembers.get(1);
+        BahmniObservation pulse = observationIterator.next();
+        BahmniObservation weight = observationIterator.next();
         assertEquals("Weight", weight.getConcept().getName());
         assertEquals("Pulse", pulse.getConcept().getName());
     }
@@ -48,10 +51,11 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
         Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
         List<BahmniObservation> obsForConceptSet = personObsService.observationsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(bloodPressureConcept), null);
         assertEquals(1, obsForConceptSet.size());
-        List<BahmniObservation> bloodPressureMembers = obsForConceptSet.get(0).getGroupMembers();
+        Collection<BahmniObservation> bloodPressureMembers = obsForConceptSet.get(0).getGroupMembers();
+        Iterator<BahmniObservation> bloodPressureMembersIterator = bloodPressureMembers.iterator();
         assertEquals(2, bloodPressureMembers.size());
-        List<BahmniObservation> systolicMembers = bloodPressureMembers.get(0).getGroupMembers();
-        List<BahmniObservation> diastolicMembers = bloodPressureMembers.get(1).getGroupMembers();
+        Collection<BahmniObservation> systolicMembers = bloodPressureMembersIterator.next().getGroupMembers();
+        Collection<BahmniObservation> diastolicMembers = bloodPressureMembersIterator.next().getGroupMembers();
         assertEquals(2, systolicMembers.size());
         assertEquals(2, diastolicMembers.size());
     }

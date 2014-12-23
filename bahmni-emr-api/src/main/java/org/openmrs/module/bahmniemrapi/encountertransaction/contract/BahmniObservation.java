@@ -7,19 +7,16 @@ import org.openmrs.module.bahmniemrapi.obsrelation.contract.ObsRelationship;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BahmniObservation {
+public class BahmniObservation implements Comparable<BahmniObservation>{
 
     private Date encounterDateTime;
     private Date visitStartDateTime;
     private ObsRelationship targetObsRelation;
     private EncounterTransaction.Observation encounterTransactionObservation;
-    private List<BahmniObservation> groupMembers = new ArrayList<>();
+    private Collection<BahmniObservation> groupMembers = new ArrayList<>();
     public Set<EncounterTransaction.Provider> providers;
     private Boolean isAbnormal;
     private Long duration;
@@ -76,16 +73,20 @@ public class BahmniObservation {
         return this;
     }
 
-    public List<BahmniObservation> getGroupMembers() {
-        return this.groupMembers;
+    public Collection<BahmniObservation> getGroupMembers() {
+        return Collections.unmodifiableCollection(new TreeSet<>(this.groupMembers));
     }
 
-    public void setGroupMembers(List<BahmniObservation> groupMembers) {
+    public void setGroupMembers(Collection<BahmniObservation> groupMembers) {
         this.groupMembers = groupMembers;
     }
 
     public void addGroupMember(BahmniObservation observation) {
         groupMembers.add(observation);
+    }
+
+    public void removeGroupMembers(List<BahmniObservation> observations) {
+        groupMembers.removeAll(observations);
     }
 
     public String getOrderUuid() {
@@ -220,5 +221,51 @@ public class BahmniObservation {
 
     public void setVisitStartDateTime(Date visitStartDateTime) {
         this.visitStartDateTime = visitStartDateTime;
+    }
+
+    @Override
+    public int compareTo(BahmniObservation o) {
+        //ensure you dont give a zero, as TreeSets delete them if there is no sort weight
+        return getConceptSortWeight() > o.getConceptSortWeight() ? 1 : -1;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BahmniObservation that = (BahmniObservation) o;
+
+        if (conceptSortWeight != that.conceptSortWeight) return false;
+        if (duration != null ? !duration.equals(that.duration) : that.duration != null) return false;
+        if (encounterDateTime != null ? !encounterDateTime.equals(that.encounterDateTime) : that.encounterDateTime != null)
+            return false;
+        if (encounterTransactionObservation != null ? !encounterTransactionObservation.equals(that.encounterTransactionObservation) : that.encounterTransactionObservation != null)
+            return false;
+        if (groupMembers != null ? !groupMembers.equals(that.groupMembers) : that.groupMembers != null) return false;
+        if (isAbnormal != null ? !isAbnormal.equals(that.isAbnormal) : that.isAbnormal != null) return false;
+        if (providers != null ? !providers.equals(that.providers) : that.providers != null) return false;
+        if (targetObsRelation != null ? !targetObsRelation.equals(that.targetObsRelation) : that.targetObsRelation != null)
+            return false;
+        if (type != null ? !type.equals(that.type) : that.type != null) return false;
+        if (visitStartDateTime != null ? !visitStartDateTime.equals(that.visitStartDateTime) : that.visitStartDateTime != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = encounterDateTime != null ? encounterDateTime.hashCode() : 0;
+        result = 31 * result + (visitStartDateTime != null ? visitStartDateTime.hashCode() : 0);
+        result = 31 * result + (targetObsRelation != null ? targetObsRelation.hashCode() : 0);
+        result = 31 * result + (encounterTransactionObservation != null ? encounterTransactionObservation.hashCode() : 0);
+        result = 31 * result + (groupMembers != null ? groupMembers.hashCode() : 0);
+        result = 31 * result + (providers != null ? providers.hashCode() : 0);
+        result = 31 * result + (isAbnormal != null ? isAbnormal.hashCode() : 0);
+        result = 31 * result + (duration != null ? duration.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + conceptSortWeight;
+        return result;
     }
 }

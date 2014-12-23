@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
+import java.util.Collection;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
@@ -32,12 +33,15 @@ public class BahmniObservationTest {
         assertEquals("concept-uuid",observation.getConceptUuid());
         assertEquals("order-uuid", observation.getOrderUuid());
         assertEquals(obsDate,observation.getObservationDateTime());
-        assertEquals(1, observation.getGroupMembers().size());
+        Collection<BahmniObservation> groupMembers = observation.getGroupMembers();
+        assertEquals(1, groupMembers.size());
         assertEquals("obs-value",observation.getValue());
         assertEquals(true, observation.getVoided());
         assertEquals("chumma", observation.getVoidReason());
-        assertEquals("child-uuid", observation.getGroupMembers().get(0).getUuid());
-        assertEquals("child-value", observation.getGroupMembers().get(0).getValue());
+
+        BahmniObservation child = groupMembers.iterator().next();
+        assertEquals("child-uuid", child.getUuid());
+        assertEquals("child-value", child.getValue());
     }
 
     @Test

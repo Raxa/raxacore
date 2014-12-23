@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -78,7 +79,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         List<ObservationTemplate> removableObservationTemplate = new ArrayList<>();
         for (ObservationTemplate observationTemplate : diseaseTemplate.getObservationTemplates()) {
             if (!isExists(observationTemplate.getConcept(), showOnly)) {
-                filterObs(observationTemplate.getBahmniObservations(), showOnly);
+                filterObs(observationTemplate, showOnly);
                 if (observationTemplate.getBahmniObservations().size() == 0) {
                     removableObservationTemplate.add(observationTemplate);
                 }
@@ -87,19 +88,35 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         diseaseTemplate.getObservationTemplates().removeAll(removableObservationTemplate);
     }
 
-    private void filterObs(List<BahmniObservation> bahmniObservations, List<String> conceptNames) {
+    private void filterObs(ObservationTemplate observationTemplate, List<String> conceptNames) {
         List<BahmniObservation> removableObservation = new ArrayList<>();
-        for (BahmniObservation bahmniObservation : bahmniObservations) {
+        for (BahmniObservation bahmniObservation : observationTemplate.getBahmniObservations()) {
             if (!isExists(bahmniObservation.getConcept(), conceptNames)) {
                 if (bahmniObservation.getGroupMembers().size() > 0) {
-                    filterObs(bahmniObservation.getGroupMembers(), conceptNames);
+                    filterObsGroupMembers(bahmniObservation, conceptNames);
                 }
                 if (bahmniObservation.getGroupMembers().size() == 0) {
                     removableObservation.add(bahmniObservation);
                 }
             }
         }
-        bahmniObservations.removeAll(removableObservation);
+        observationTemplate.removeBahmniObservations(removableObservation);
+    }
+
+    private void filterObsGroupMembers(BahmniObservation parent, List<String> conceptNames) {
+        List<BahmniObservation> removableObservation = new ArrayList<>();
+        for (BahmniObservation bahmniObservation : parent.getGroupMembers()) {
+            if (!isExists(bahmniObservation.getConcept(), conceptNames)) {
+                if (bahmniObservation.getGroupMembers().size() > 0) {
+                    filterObsGroupMembers(bahmniObservation, conceptNames);
+                }
+                if (bahmniObservation.getGroupMembers().size() == 0) {
+                    removableObservation.add(bahmniObservation);
+                }
+            }
+        }
+
+        parent.removeGroupMembers(removableObservation);
     }
 
     private boolean isExists(EncounterTransaction.Concept concept, List<String> conceptNames) {

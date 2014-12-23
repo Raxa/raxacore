@@ -20,10 +20,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -76,10 +73,10 @@ public class BahmniObservationMapperTest {
         assertEquals(1, parentsObservations.size());
         BahmniObservation parentObservation = parentsObservations.get(0);
         assertEquals("parentConcept", parentObservation.getConcept().getName());
-        assertEquals(2, parentObservation.getGroupMembers().size());
+        Collection<BahmniObservation> childObservations = parentObservation.getGroupMembers();
+        assertEquals(2, childObservations.size());
         assertEquals(1, parentObservation.getConceptSortWeight().intValue());
 
-        List<BahmniObservation> childObservations = parentObservation.getGroupMembers();
         BahmniObservation childObservation1 = getObservation(obs1.getUuid(), childObservations);
         assertEquals("ovalue", childObservation1.getValue());
         assertEquals("cdatatype", childObservation1.getType());
@@ -98,7 +95,7 @@ public class BahmniObservationMapperTest {
         assertEquals(TestUtil.createDateTime("2010-01-02"), parentObservation.getVisitStartDateTime());
     }
 
-    private BahmniObservation getObservation(String uuid, List<BahmniObservation> childObservations) {
+    private BahmniObservation getObservation(String uuid, Collection<BahmniObservation> childObservations) {
         for (BahmniObservation o : childObservations) {
             if (o.getUuid().equals(uuid)) {
                 return o;

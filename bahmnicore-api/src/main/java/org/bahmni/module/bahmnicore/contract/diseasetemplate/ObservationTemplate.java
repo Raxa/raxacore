@@ -6,6 +6,7 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -26,11 +27,22 @@ public class ObservationTemplate {
     }
 
     public List<BahmniObservation> getBahmniObservations() {
-        return bahmniObservations == null ? new ArrayList<BahmniObservation>(): bahmniObservations;
+        if(bahmniObservations == null){
+            bahmniObservations = new ArrayList<>();
+        }
+        return Collections.unmodifiableList(bahmniObservations);
     }
 
     public void setBahmniObservations(List<BahmniObservation> bahmniObservations) {
         this.bahmniObservations = bahmniObservations;
+    }
+
+    public void removeBahmniObservation(BahmniObservation bahmniObservation) {
+        this.bahmniObservations.remove(bahmniObservation);
+    }
+
+    public void removeBahmniObservations(List<BahmniObservation> bahmniObservations) {
+        this.bahmniObservations.removeAll(bahmniObservations);
     }
 
     @JsonSerialize(using = CustomJsonDateSerializer.class)
@@ -43,7 +55,9 @@ public class ObservationTemplate {
     }
 
     public void addBahmniObservation(BahmniObservation bahmniObservation){
-        bahmniObservations = this.getBahmniObservations();
+        if(bahmniObservations == null){
+            bahmniObservations = new ArrayList<BahmniObservation>();
+        }
         bahmniObservations.add(bahmniObservation);
     }
 }
