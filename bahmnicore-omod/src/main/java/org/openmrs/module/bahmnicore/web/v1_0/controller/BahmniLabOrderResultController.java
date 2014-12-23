@@ -30,7 +30,7 @@ public class BahmniLabOrderResultController {
     private LabOrderResultsService labOrderResultsService;
 
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, params = {"patientUuid"})
     @ResponseBody
     public LabOrderResults getForPatient(
             @RequestParam(value = "patientUuid", required = true) String patientUuid,
