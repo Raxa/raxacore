@@ -1,8 +1,10 @@
 package org.openmrs.module.bahmniemrapi.accessionnote.contract;
 
-import java.util.Date;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
+
+import java.util.Date;
 
 public class AccessionNote {
     private String text;

@@ -1,6 +1,5 @@
 package org.openmrs.module.bahmniemrapi.diagnosis.helper;
 
-import com.sun.org.apache.bcel.internal.generic.GOTO;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
