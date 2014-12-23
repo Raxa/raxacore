@@ -115,6 +115,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
             List<EncounterTransaction.Observation> observations = new ArrayList<>();
             Map<String, Encounter> encounterTestOrderUuidMap = new HashMap<>();
             Map<String, Encounter> encounterObservationMap = new HashMap<>();
+            Map<String, List<AccessionNote>> encounterToAccessionNotesMap = new HashMap<>();
 
             List<Encounter> encounters = encounterService.getEncounters(patient, null, null, null, null, null, null, null, visits, false);
             for (Encounter encounter : encounters) {
@@ -122,9 +123,10 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
                 testOrders.addAll(getTestOrdersForConcepts(encounterTransaction, encounter, encounterTestOrderUuidMap, concepts));
                 List<EncounterTransaction.Observation> nonVoidedObservations = filterVoided(encounterTransaction.getObservations());
                 observations.addAll(nonVoidedObservations);
+                createAccessionNotesByEncounter(encounterToAccessionNotesMap, encounters, encounter);
                 mapObservationsWithEncounter(nonVoidedObservations, encounter, encounterObservationMap);
             }
-            return mapOrdersWithObs(testOrders, observations, encounterTestOrderUuidMap, encounterObservationMap, null);
+            return mapOrdersWithObs(testOrders, observations, encounterTestOrderUuidMap, encounterObservationMap, encounterToAccessionNotesMap);
         }
         return Collections.EMPTY_LIST;
     }
