@@ -90,7 +90,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
         BahmniEncounterTransaction updatedEncounter = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, null, null, null);
 
         assertEquals(jan1_2011, updatedEncounter.getObservations().get(0).getObservationDateTime());
-        assertEquals(jan1_2011, updatedEncounter.getObservations().get(0).getGroupMembers().get(0).getObservationDateTime());
+        assertEquals(jan1_2011, updatedEncounter.getObservations().get(0).getGroupMembers().iterator().next().getObservationDateTime());
     }
 
     @Test
@@ -114,7 +114,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
         BahmniEncounterTransaction updatedEncounter = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, null, null, null);
 
         assertEquals(jan1_2011, updatedEncounter.getObservations().get(0).getObservationDateTime());
-        assertEquals(now, updatedEncounter.getObservations().get(0).getGroupMembers().get(0).getObservationDateTime());
+        assertEquals(now, updatedEncounter.getObservations().get(0).getGroupMembers().iterator().next().getObservationDateTime());
     }
 
     @Test
