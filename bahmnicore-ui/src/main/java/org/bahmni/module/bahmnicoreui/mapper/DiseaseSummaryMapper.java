@@ -7,7 +7,7 @@ import org.codehaus.jackson.type.TypeReference;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
@@ -135,7 +135,7 @@ public class DiseaseSummaryMapper {
             for (BahmniObservation groupMember : bahmniObservation.getGroupMembers())
                 getLeafObservationsfromConceptSet(groupMember, observationsfromConceptSet);
         } else {
-            if (!BahmniObservationMapper.ABNORMAL_CONCEPT_CLASS.equals(bahmniObservation.getConcept().getConceptClass())){
+            if (!ETObsToBahmniObsMapper.ABNORMAL_CONCEPT_CLASS.equals(bahmniObservation.getConcept().getConceptClass())){
                 observationsfromConceptSet.add(bahmniObservation);
             }
         }

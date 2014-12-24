@@ -10,13 +10,11 @@ import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.Encounter;
-import org.openmrs.EncounterProvider;
 import org.openmrs.Obs;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.encounter.EncounterProviderMapper;
 import org.openmrs.module.emrapi.encounter.ObservationMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction.Observation;
 import org.openmrs.util.LocaleUtility;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -24,11 +22,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -51,13 +47,16 @@ public class ObsRelationshipMapperTest {
 
     private ObsRelationshipMapper obsRelationshipMapper;
 
+    @Mock
+    OMRSObsToBahmniObsMapper OMRSObsToBahmniObsMapper;
+
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(LocaleUtility.class);
         PowerMockito.when(LocaleUtility.getLocalesInOrder()).thenReturn(new HashSet<>(Arrays.asList(Locale.getDefault())));
 
         initMocks(this);
-        obsRelationshipMapper = new ObsRelationshipMapper(obsrelationService, observationMapper, encounterProviderMapper);
+        obsRelationshipMapper = new ObsRelationshipMapper(obsrelationService, encounterProviderMapper, OMRSObsToBahmniObsMapper);
     }
 
     @Test
@@ -71,13 +70,13 @@ public class ObsRelationshipMapperTest {
         List<ObsRelationship> obsRelationShips = new ArrayList<>();
         obsRelationShips.add(createObsRelationship(sourceObs, targetObs));
 
-        EncounterTransaction.Observation mappedTargetObs = mapObs(targetObs);
 
         when(obsrelationService.getRelationsWhereSourceObsInEncounter("encounter-uuid")).thenReturn(obsRelationShips);
-        when(observationMapper.map(targetObs)).thenReturn(mappedTargetObs);
 
         BahmniObservation sourceObservation = getBahmniObservation(sourceObsUuid);
         BahmniObservation targetObservation = getBahmniObservation(targetObsUuid);
+
+        when(OMRSObsToBahmniObsMapper.map(targetObs)).thenReturn(targetObservation);
 
         ArrayList<BahmniObservation> bahmniObservations = new ArrayList<>();
         bahmniObservations.add(sourceObservation);
@@ -89,10 +88,10 @@ public class ObsRelationshipMapperTest {
         provider.setName("superUuid");
         providers.add(provider);
 
-        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", providers, new Date());
+        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", providers);
         
         verify(obsrelationService).getRelationsWhereSourceObsInEncounter("encounter-uuid");
-        verify(observationMapper, times(1)).map(targetObs);
+        verify(OMRSObsToBahmniObsMapper, times(1)).map(targetObs);
         assertEquals(2, mappedBahmniObservations.size());
         assertEquals(sourceObsUuid, mappedBahmniObservations.get(0).getUuid());
         assertEquals(targetObsUuid, mappedBahmniObservations.get(0).getTargetObsRelation().getTargetObs().getUuid());
@@ -118,17 +117,15 @@ public class ObsRelationshipMapperTest {
         obsRelationShips.add(createObsRelationship(sourceObs1, targetObs1));
         obsRelationShips.add(createObsRelationship(sourceObs2, targetObs2));
 
-        EncounterTransaction.Observation mappedTargetObs1 = mapObs(targetObs1);
-        EncounterTransaction.Observation mappedTargetObs2 = mapObs(targetObs2);
-
         when(obsrelationService.getRelationsWhereSourceObsInEncounter("encounter-uuid")).thenReturn(obsRelationShips);
-        when(observationMapper.map(targetObs1)).thenReturn(mappedTargetObs1);
-        when(observationMapper.map(targetObs2)).thenReturn(mappedTargetObs2);
 
         BahmniObservation sourceObservation1 = getBahmniObservation(sourceObs1Uuid);
         BahmniObservation sourceObservation2 = getBahmniObservation(sourceObs2Uuid);
         BahmniObservation targetObservation1 = getBahmniObservation(targetObs1Uuid);
         BahmniObservation targetObservation2 = getBahmniObservation(targetObs2Uuid);
+
+        when(OMRSObsToBahmniObsMapper.map(targetObs1)).thenReturn(targetObservation1);
+        when(OMRSObsToBahmniObsMapper.map(targetObs2)).thenReturn(targetObservation2);
 
         ArrayList<BahmniObservation> bahmniObservations = new ArrayList<>();
         bahmniObservations.add(sourceObservation1);
@@ -142,10 +139,10 @@ public class ObsRelationshipMapperTest {
         provider.setName("superUuid");
         providers.add(provider);
 
-        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", providers, new Date());
+        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", providers);
 
         verify(obsrelationService).getRelationsWhereSourceObsInEncounter("encounter-uuid");
-        verify(observationMapper, times(2)).map(any(Obs.class));
+        verify(OMRSObsToBahmniObsMapper, times(2)).map(any(Obs.class));
         assertEquals(4, mappedBahmniObservations.size());
         assertEquals(sourceObs1Uuid, mappedBahmniObservations.get(0).getUuid());
         assertEquals(targetObs1Uuid, mappedBahmniObservations.get(0).getTargetObsRelation().getTargetObs().getUuid());
@@ -159,70 +156,12 @@ public class ObsRelationshipMapperTest {
         assertEquals(provider.getUuid(), mappedBahmniObservations.get(1).getProviders().iterator().next().getUuid());
     }
 
-    @Test
-    public void shouldMapObsRelationshipsToBahmniObservations(){
-        List<ObsRelationship> obsRelationships = new ArrayList<>();
-        Obs sourceObs = createObs("sourceObsUuid");
-        addEncounterProviders(sourceObs);
-
-        Obs targetObs = createObs("targetObsUuid");
-
-        ObsRelationship obsRelationship = createObsRelationship(sourceObs, targetObs);
-        obsRelationships.add(obsRelationship);
-
-        Observation mappedSourceObs = mapObs(sourceObs);
-        Observation mappedTargetObs = mapObs(targetObs);
-        Set<EncounterTransaction.Provider> providers = mapEncounterProviders(sourceObs.getEncounter().getEncounterProviders());
-
-        when(observationMapper.map(sourceObs)).thenReturn(mappedSourceObs);
-        when(observationMapper.map(targetObs)).thenReturn(mappedTargetObs);
-        when(encounterProviderMapper.convert(sourceObs.getEncounter().getEncounterProviders())).thenReturn(providers);
-
-        List<BahmniObservation> mappedObservations = obsRelationshipMapper.map(obsRelationships);
-
-        BahmniObservation mappedObservation = mappedObservations.get(0);
-
-        assertEquals("sourceObsUuid", mappedObservation.getUuid());
-        assertNotNull("There are no providers.", mappedObservation.getProviders());
-        assertEquals(sourceObs.getEncounter().getEncounterProviders().iterator().next().getUuid(), mappedObservation.getProviders().iterator().next().getUuid());
-    }
-
-    private Set<EncounterTransaction.Provider> mapEncounterProviders(Set<EncounterProvider> encounterProviders) {
-        Set<EncounterTransaction.Provider> providers = new HashSet<>();
-        for (EncounterProvider encounterProvider : encounterProviders) {
-            EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
-            provider.setUuid(encounterProvider.getUuid());
-            providers.add(provider);
-        }
-        return providers;
-    }
-
-    private void addEncounterProviders(Obs sourceObs) {
-        EncounterProvider encounterProvider = new EncounterProvider();
-        encounterProvider.setUuid("encounter-provider-uuid");
-
-        HashSet<EncounterProvider> encounterProviders = new HashSet<>();
-        encounterProviders.add(encounterProvider);
-
-        Encounter encounter = sourceObs.getEncounter();
-        encounter.setEncounterProviders(encounterProviders);
-        
-        sourceObs.setEncounter(encounter);
-    }
-
     private BahmniObservation getBahmniObservation(String sourceObsUuid) {
         BahmniObservation sourceObservation = new BahmniObservation();
         sourceObservation.setUuid(sourceObsUuid);
         EncounterTransaction.Concept concept = new EncounterTransaction.Concept("random-uuid", "Random Concept");
         sourceObservation.setConcept(concept);
         return sourceObservation;
-    }
-
-    private Observation mapObs(Obs targetObs) {
-        EncounterTransaction.Observation mappedTargetObs = new EncounterTransaction.Observation();
-        mappedTargetObs.setUuid(targetObs.getUuid());
-        mappedTargetObs.setConcept(new EncounterTransaction.Concept(targetObs.getConcept().getUuid(), targetObs.getConcept().getName().getName()));
-        return mappedTargetObs;
     }
 
     private ObsRelationship createObsRelationship(Obs sourceObs, Obs targetObs) {

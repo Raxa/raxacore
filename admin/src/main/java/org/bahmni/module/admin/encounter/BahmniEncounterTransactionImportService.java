@@ -9,24 +9,31 @@ import org.openmrs.Patient;
 import org.openmrs.api.EncounterService;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BahmniEncounterTransactionImportService {
 
     private EncounterService encounterService;
-    private final ObservationMapper observationService;
-    private final DiagnosisMapper diagnosisService;
+    private ObservationMapper observationMapper;
+    private DiagnosisMapper diagnosisMapper;
+    private ETObsToBahmniObsMapper fromETObsToBahmniObs;
 
+    @Autowired
     public BahmniEncounterTransactionImportService(EncounterService encounterService,
-                                                   ObservationMapper observationService, DiagnosisMapper diagnosisService) {
+                                                   ObservationMapper observationMapper, DiagnosisMapper diagnosisMapper,
+                                                   ETObsToBahmniObsMapper fromETObsToBahmniObs) {
         this.encounterService = encounterService;
-        this.observationService = observationService;
-        this.diagnosisService = diagnosisService;
+        this.observationMapper = observationMapper;
+        this.diagnosisMapper = diagnosisMapper;
+        this.fromETObsToBahmniObs = fromETObsToBahmniObs;
     }
 
     public List<BahmniEncounterTransaction> getBahmniEncounterTransaction(MultipleEncounterRow multipleEncounterRow, Patient patient) throws ParseException {
@@ -43,13 +50,13 @@ public class BahmniEncounterTransactionImportService {
         String visitType = multipleEncounterRow.visitType;
 
         for (EncounterRow encounterRow : multipleEncounterRow.getNonEmptyEncounterRows()) {
-            List<EncounterTransaction.Observation> allObservations = observationService.getObservations(encounterRow);
-            List<BahmniDiagnosisRequest> allDiagnosis = diagnosisService.getBahmniDiagnosis(encounterRow);
+            List<EncounterTransaction.Observation> allObservations = observationMapper.getObservations(encounterRow);
+            List<BahmniDiagnosisRequest> allDiagnosis = diagnosisMapper.getBahmniDiagnosis(encounterRow);
 
             BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
             bahmniEncounterTransaction.setPatientUuid(patient.getUuid());
             bahmniEncounterTransaction.setBahmniDiagnoses(allDiagnosis);
-            bahmniEncounterTransaction.setObservations(BahmniObservationMapper.toBahmniObsFromETObs(allObservations, encounterRow.getEncounterDate()));
+            bahmniEncounterTransaction.setObservations(fromETObsToBahmniObs.create(allObservations, encounterRow.getEncounterDate()));
 
             bahmniEncounterTransaction.setEncounterDateTime(encounterRow.getEncounterDate());
             bahmniEncounterTransaction.setEncounterType(encounterType);

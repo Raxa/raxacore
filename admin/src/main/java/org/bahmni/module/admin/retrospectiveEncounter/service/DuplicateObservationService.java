@@ -1,5 +1,6 @@
 package org.bahmni.module.admin.retrospectiveEncounter.service;
 
+import java.util.Collection;
 import org.bahmni.module.admin.retrospectiveEncounter.domain.DuplicateObservationsMatcher;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -28,7 +29,7 @@ public class DuplicateObservationService {
                 bahmniEncounterTransaction.getEncounterDateTime(), visitStartDate, visitEndDate);
 
         DuplicateObservationsMatcher duplicateObservationsMatcher = new DuplicateObservationsMatcher(matchingVisit, bahmniEncounterTransaction.getEncounterType());
-        List<BahmniObservation> uniqueObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniEncounterTransaction.getObservations(), bahmniEncounterTransaction.getEncounterDateTime());
+        Collection<BahmniObservation> uniqueObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniEncounterTransaction.getObservations(), bahmniEncounterTransaction.getEncounterDateTime());
         List<BahmniDiagnosisRequest> uniqueDiagnoses = duplicateObservationsMatcher.getUniqueDiagnoses(bahmniEncounterTransaction.getBahmniDiagnoses());
 
         bahmniEncounterTransaction.setObservations(uniqueObservations);

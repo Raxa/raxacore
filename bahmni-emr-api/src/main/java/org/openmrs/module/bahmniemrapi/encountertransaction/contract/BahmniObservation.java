@@ -146,7 +146,7 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
         return this.getUuid().equals(obs.getUuid());
     }
 
-    public static List<EncounterTransaction.Observation> toETObsFromBahmniObs(List<BahmniObservation> bahmniObservations) {
+    public static List<EncounterTransaction.Observation> toETObsFromBahmniObs(Collection<BahmniObservation> bahmniObservations) {
         List<EncounterTransaction.Observation> etObservations = new ArrayList<>();
         for (BahmniObservation bahmniObservation : bahmniObservations) {
             etObservations.add(bahmniObservation.toETObservation());

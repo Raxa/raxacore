@@ -1,5 +1,9 @@
 package org.bahmni.module.admin.observation;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.EncounterRow;
@@ -8,15 +12,17 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+@Component(value = "adminDiagnosisMapper")
+public class DiagnosisMapper {
 
-public class DiagnosisMapper extends ObservationMapper {
+    private final ConceptCache conceptCache;
+
+    @Autowired
     public DiagnosisMapper(ConceptService conceptService) {
-        super(conceptService);
+        this.conceptCache = new ConceptCache(conceptService);
     }
 
     public List<BahmniDiagnosisRequest> getBahmniDiagnosis(EncounterRow encounterRow) throws ParseException {
@@ -35,7 +41,7 @@ public class DiagnosisMapper extends ObservationMapper {
     }
 
     private BahmniDiagnosisRequest createDiagnosis(Date encounterDate, String diagnosis) throws ParseException {
-        Concept obsConcept = getConcept(diagnosis);
+        Concept obsConcept = conceptCache.getConcept(diagnosis);
         EncounterTransaction.Concept diagnosisConcept = new EncounterTransaction.Concept(obsConcept.getUuid(), obsConcept.getName().getName());
 
         BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();

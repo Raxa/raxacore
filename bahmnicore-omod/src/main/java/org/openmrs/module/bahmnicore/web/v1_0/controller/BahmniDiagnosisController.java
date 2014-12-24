@@ -1,17 +1,15 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import org.openmrs.Patient;
-import org.openmrs.api.ObsService;
 import org.openmrs.api.PatientService;
-import org.openmrs.module.bahmniemrapi.accessionnote.mapper.AccessionNotesMapper;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniDiagnosisMapper;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTransactionObsMapper;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniDiagnosisMapper;
 import org.openmrs.module.emrapi.diagnosis.DiagnosisService;
 import org.openmrs.module.emrapi.encounter.DateMapper;
 import org.openmrs.module.emrapi.encounter.DiagnosisMapper;
-import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
@@ -21,10 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/diagnosis")
@@ -36,14 +30,6 @@ public class BahmniDiagnosisController extends BaseRestController {
     private DiagnosisService diagnosisService;
     @Autowired
     private DiagnosisMapper diagnosisMapper;
-    @Autowired
-    private ObsService obsService;
-    @Autowired
-    private EncounterTransactionMapper encounterTransactionMapper;
-    @Autowired
-    private AccessionNotesMapper accessionNotesMapper;
-    @Autowired
-    private EncounterTransactionObsMapper encounterTransactionObsMapper;
     @Autowired
     private BahmniDiagnosisMapper bahmniDiagnosisMapper;
 

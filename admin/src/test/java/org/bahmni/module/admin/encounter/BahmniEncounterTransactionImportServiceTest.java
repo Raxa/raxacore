@@ -20,7 +20,7 @@ public class BahmniEncounterTransactionImportServiceTest {
         EncounterService mockEncounterService = mock(EncounterService.class);
         when(mockEncounterService.getEncounterType("Consultation")).thenReturn(new EncounterType());
 
-        BahmniEncounterTransactionImportService bahmniEncounterTransactionImportService = new BahmniEncounterTransactionImportService(mockEncounterService, null, null);
+        BahmniEncounterTransactionImportService bahmniEncounterTransactionImportService = new BahmniEncounterTransactionImportService(mockEncounterService, null, null, null);
         MultipleEncounterRow emptyEncounterRow = new MultipleEncounterRowBuilder().getEmptyMultipleEncounterRow("GAN12345");
         emptyEncounterRow.encounterType = "Consultation";
         List<BahmniEncounterTransaction> bahmniEncounterTransaction = bahmniEncounterTransactionImportService.getBahmniEncounterTransaction(emptyEncounterRow, null);

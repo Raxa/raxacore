@@ -14,7 +14,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahmniObsMapper;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,27 +23,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 @Service
 public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
 
     private BahmniObsService bahmniObsService;
-
     private BahmniVisitService bahmniVisitService;
-
     private ConceptService conceptService;
-
     private ConceptMapper conceptMapper;
-
     private ObservationTemplateMapper observationTemplateMapper;
+    private OMRSObsToBahmniObsMapper OMRSObsToBahmniObsMapper;
 
     @Autowired
-    public DiseaseTemplateServiceImpl(BahmniObsService bahmniObsService, BahmniVisitService bahmniVisitService, ConceptService conceptService) {
+    public DiseaseTemplateServiceImpl(BahmniObsService bahmniObsService, BahmniVisitService bahmniVisitService,
+                                      ConceptService conceptService,
+                                      OMRSObsToBahmniObsMapper OMRSObsToBahmniObsMapper) {
         this.bahmniObsService = bahmniObsService;
         this.bahmniVisitService = bahmniVisitService;
         this.conceptService = conceptService;
+        this.OMRSObsToBahmniObsMapper = OMRSObsToBahmniObsMapper;
         this.conceptMapper = new ConceptMapper();
         this.observationTemplateMapper = new ObservationTemplateMapper(conceptMapper);
     }
@@ -152,7 +151,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
     }
 
     private ObservationTemplate getObservationTemplate(String patientUuid, Concept concept, Visit latestVisit) {
-        List<BahmniObservation> observations = getLatestObsFor(patientUuid, concept.getName(Context.getLocale()).getName(), Arrays.asList(concept), latestVisit.getVisitId());
+        List<BahmniObservation> observations = getLatestObsFor(patientUuid, concept.getName(Context.getLocale()).getName(), latestVisit.getVisitId());
         ObservationTemplate observationTemplate = new ObservationTemplate();
         observationTemplate.setVisitStartDate(latestVisit.getStartDatetime());
         observationTemplate.setConcept(conceptMapper.map(concept));
@@ -160,9 +159,9 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         return observationTemplate;
     }
 
-    private List<BahmniObservation> getLatestObsFor(String patientUuid, String conceptName, List<Concept> rootConcepts, Integer visitId) {
+    private List<BahmniObservation> getLatestObsFor(String patientUuid, String conceptName, Integer visitId) {
         List<Obs> latestObsForConceptSet = bahmniObsService.getLatestObsForConceptSetByVisit(patientUuid, conceptName, visitId);
-        return BahmniObservationMapper.map(latestObsForConceptSet, rootConcepts);
+        return OMRSObsToBahmniObsMapper.map(latestObsForConceptSet);
     }
 
     private List<Concept> getDiseaseTemplateConcepts() {

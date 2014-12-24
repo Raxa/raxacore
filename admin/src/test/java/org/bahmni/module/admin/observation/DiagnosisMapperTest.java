@@ -2,7 +2,6 @@ package org.bahmni.module.admin.observation;
 
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.EncounterRow;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;

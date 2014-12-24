@@ -1,5 +1,7 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.service;
 
+import java.util.Collection;
+import java.util.Iterator;
 import org.bahmni.test.builder.VisitBuilder;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -89,8 +91,8 @@ public class RetrospectiveEncounterTransactionServiceTest {
 
         BahmniEncounterTransaction updatedEncounter = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, null, null, null);
 
-        assertEquals(jan1_2011, updatedEncounter.getObservations().get(0).getObservationDateTime());
-        assertEquals(jan1_2011, updatedEncounter.getObservations().get(0).getGroupMembers().iterator().next().getObservationDateTime());
+        assertEquals(jan1_2011, updatedEncounter.getObservations().iterator().next().getObservationDateTime());
+        assertEquals(jan1_2011, (updatedEncounter.getObservations().iterator().next()).getGroupMembers().iterator().next().getObservationDateTime());
     }
 
     @Test
@@ -113,8 +115,8 @@ public class RetrospectiveEncounterTransactionServiceTest {
 
         BahmniEncounterTransaction updatedEncounter = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, null, null, null);
 
-        assertEquals(jan1_2011, updatedEncounter.getObservations().get(0).getObservationDateTime());
-        assertEquals(now, updatedEncounter.getObservations().get(0).getGroupMembers().iterator().next().getObservationDateTime());
+        assertEquals(jan1_2011, updatedEncounter.getObservations().iterator().next().getObservationDateTime());
+        assertEquals(now, updatedEncounter.getObservations().iterator().next().getGroupMembers().iterator().next().getObservationDateTime());
     }
 
     @Test

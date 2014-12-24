@@ -4,10 +4,8 @@ import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
-import org.openmrs.Obs;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
+    @Autowired
     BahmniObsService personObsService;
     
     @Autowired
@@ -28,7 +27,6 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Before
     public void setUp() throws Exception {
-        personObsService = new BahmniObsServiceImpl(obsDao);
         executeDataSet("observationsTestData.xml");
     }
 
@@ -40,10 +38,10 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(2, vitalsGroupMembers.size());
         Iterator<BahmniObservation> observationIterator = vitalsGroupMembers.iterator();
 
-        BahmniObservation pulse = observationIterator.next();
         BahmniObservation weight = observationIterator.next();
-        assertEquals("Weight", weight.getConcept().getName());
+        BahmniObservation pulse = observationIterator.next();
         assertEquals("Pulse", pulse.getConcept().getName());
+        assertEquals("Weight", weight.getConcept().getName());
     }
 
     @Test

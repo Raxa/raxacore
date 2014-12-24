@@ -12,13 +12,18 @@ import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 
 import java.text.ParseException;
 import java.util.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component(value = "adminObservationMapper")
 public class ObservationMapper {
-    private Map<String, Concept> cachedConcepts = new HashMap<>();
+    private final ConceptCache conceptCache;
 
     private ConceptService conceptService;
 
+    @Autowired
     public ObservationMapper(ConceptService conceptService) {
+        this.conceptCache = new ConceptCache(conceptService);
         this.conceptService = conceptService;
     }
 
@@ -28,8 +33,6 @@ public class ObservationMapper {
             Date encounterDate = encounterRow.getEncounterDate();
             for (KeyValue obsRow : encounterRow.obsRows) {
                 if (obsRow.getValue() != null && !StringUtils.isEmpty(obsRow.getValue().trim())) {
-//                    EncounterTransaction.Observation observation = createObservation(encounterDate, obsRow);
-//                    observations.add(observation);
                     List<String> conceptNames = new ArrayList<>(Arrays.asList(obsRow.getKey().split("\\.")));
                     EncounterTransaction.Observation existingObservation = getRootObservationIfExists(observations, conceptNames, null);
                     if (existingObservation == null) {
@@ -46,10 +49,7 @@ public class ObservationMapper {
     }
 
     protected Concept getConcept(String conceptName) {
-        if (!cachedConcepts.containsKey(conceptName)) {
-            cachedConcepts.put(conceptName, fetchConcept(conceptName));
-        }
-        return cachedConcepts.get(conceptName);
+        return conceptCache.getConcept(conceptName);
     }
 
     private void updateObservation(List<String> conceptNames, EncounterTransaction.Observation existingObservation, Date encounterDate, KeyValue obsRow) throws ParseException {
@@ -66,12 +66,11 @@ public class ObservationMapper {
                 return existingObservation;
             }
     private EncounterTransaction.Observation createObservation(List<String> conceptNames, Date encounterDate, KeyValue obsRow) throws ParseException {
-              Concept obsConcept = getConcept(conceptNames.get(0));
+              Concept obsConcept = conceptCache.getConcept(conceptNames.get(0));
         EncounterTransaction.Concept concept = new EncounterTransaction.Concept(obsConcept.getUuid(), obsConcept.getName().getName());
 
         EncounterTransaction.Observation observation = new EncounterTransaction.Observation();
         observation.setConcept(concept);
-//        observation.setValue(getValue(obsRow, obsConcept));
         observation.setObservationDateTime(encounterDate);
         if (conceptNames.size() == 1) {
                         observation.setValue(getValue(obsRow, obsConcept));
@@ -98,14 +97,6 @@ public class ObservationMapper {
             return valueConcept.getUuid();
         }
         return obsRow.getValue();
-    }
-
-    private Concept fetchConcept(String conceptName) {
-        Concept obsConcept = conceptService.getConceptByName(conceptName);
-        if (obsConcept == null)
-            throw new ConceptNotFoundException("Concept '" + conceptName + "' not found");
-
-        return obsConcept;
     }
 
 }

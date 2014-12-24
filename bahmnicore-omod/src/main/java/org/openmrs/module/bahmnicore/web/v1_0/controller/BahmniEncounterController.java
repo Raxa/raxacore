@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
+import java.util.Collection;
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterConfigResponse;
@@ -148,7 +149,7 @@ public class BahmniEncounterController extends BaseRestController {
         return bahmniEncounterTransactionMapper.map(encounterTransaction);
     }
 
-    private void setUuidsForObservations(List<BahmniObservation> bahmniObservations) {
+    private void setUuidsForObservations(Collection<BahmniObservation> bahmniObservations) {
         for (BahmniObservation bahmniObservation : bahmniObservations) {
             if (org.apache.commons.lang3.StringUtils.isBlank(bahmniObservation.getUuid())){
                 bahmniObservation.setUuid(UUID.randomUUID().toString());

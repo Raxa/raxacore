@@ -1,5 +1,11 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.contract;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openmrs.module.bahmniemrapi.accessionnote.contract.AccessionNote;
@@ -8,18 +14,13 @@ import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BahmniEncounterTransaction{
 
     private EncounterTransaction encounterTransaction = new EncounterTransaction();
 
     private List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
-    private List<BahmniObservation> observations = new ArrayList<>();
+    private Collection<BahmniObservation> observations = new TreeSet<>();
     private List<AccessionNote> accessionNotes;
     private String encounterType;
     private String visitType;
@@ -136,11 +137,11 @@ public class BahmniEncounterTransaction{
         return encounterTransaction.setEncounterTypeUuid(encounterTypeUuid);
     }
 
-    public List<BahmniObservation> getObservations() {
-        return this.observations;
+    public Collection<BahmniObservation> getObservations() {
+        return new TreeSet<>(observations);
     }
 
-    public void setObservations(List<BahmniObservation> observations){
+    public void setObservations(Collection<BahmniObservation> observations){
         for (BahmniObservation observation : observations) {
             observation.setEncounterDateTime(getEncounterDateTime());
         }

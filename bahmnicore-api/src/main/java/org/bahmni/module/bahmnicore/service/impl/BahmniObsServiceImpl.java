@@ -5,7 +5,7 @@ import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahmniObsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +17,12 @@ import java.util.List;
 public class BahmniObsServiceImpl implements BahmniObsService {
 
     private ObsDao obsDao;
+    private OMRSObsToBahmniObsMapper OMRSObsToBahmniObsMapper;
 
     @Autowired
-    public BahmniObsServiceImpl(ObsDao obsDao) {
+    public BahmniObsServiceImpl(ObsDao obsDao, OMRSObsToBahmniObsMapper OMRSObsToBahmniObsMapper) {
         this.obsDao = obsDao;
+        this.OMRSObsToBahmniObsMapper = OMRSObsToBahmniObsMapper;
     }
 
     @Override
@@ -34,8 +36,8 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         for (Concept concept : concepts) {
             conceptNames.add(concept.getName().getName());
         }
-        List<Obs> obsFor = obsDao.getObsFor(patientUuid, conceptNames, numberOfVisits);
-        return BahmniObservationMapper.map(obsFor);
+        List<Obs> observations = obsDao.getObsFor(patientUuid, conceptNames, numberOfVisits);
+        return OMRSObsToBahmniObsMapper.map(observations);
     }
 
     @Override
@@ -45,7 +47,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
             latestObs.addAll(obsDao.getLatestObsFor(patientUuid, conceptName, 1));
         }
 
-        return BahmniObservationMapper.map(latestObs);
+        return OMRSObsToBahmniObsMapper.map(latestObs);
     }
 
     @Override

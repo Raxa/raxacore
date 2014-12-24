@@ -3,31 +3,50 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.contract;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
+import org.mockito.Mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
+import org.openmrs.api.ConceptService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.util.Collection;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
+import org.powermock.api.mockito.PowerMockito;
 
 public class BahmniObservationTest {
     private EncounterTransaction.Observation eTObservation;
 
+    @Mock
+    private ConceptService conceptService;
+
     @Before
     public void setUp() throws Exception {
         eTObservation = new EncounterTransaction.Observation();
+        initMocks(this);
     }
 
     @Test
     public void shouldCreateBahmniObservationFromETObservation(){
         Date obsDate = new Date();
         EncounterTransaction.Concept concept = createConcept("concept-uuid", "concept-name");
+        Concept conceptFromService = PowerMockito.mock(Concept.class);
+        conceptFromService.setUuid("concept-uuid");
+        ConceptName conceptNameFromService = new ConceptName();
+        conceptNameFromService.setName("concept-name");
+
+        when(conceptFromService.getName()).thenReturn(conceptNameFromService);
+        when(conceptService.getConceptByUuid("concept-uuid")).thenReturn(conceptFromService);
 
         eTObservation = createETObservation("obs-uuid", "obs-value", concept, obsDate);
+
         eTObservation.addGroupMember(createETObservation("child-uuid", "child-value", concept, obsDate));
 
-        BahmniObservation observation = BahmniObservationMapper.map(eTObservation, new Date());
+        BahmniObservation observation =  new ETObsToBahmniObsMapper(conceptService).create(eTObservation, new Date());
         assertEquals("comment", observation.getComment());
         assertEquals("obs-uuid", observation.getUuid());
         assertEquals("concept-uuid",observation.getConceptUuid());

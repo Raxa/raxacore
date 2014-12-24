@@ -5,9 +5,9 @@ import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniObservationMapper;
 
 import java.util.*;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
 
 public  class ConceptHelper {
 
@@ -51,7 +51,7 @@ public  class ConceptHelper {
             else if(!shouldBeExcluded(rootConcept)){
                 Concept conceptToAdd = rootConcept;
                 if(parentConcept != null){
-                    if(BahmniObservationMapper.CONCEPT_DETAILS_CONCEPT_CLASS.equals(parentConcept.getConceptClass().getName())){
+                    if(ETObsToBahmniObsMapper.CONCEPT_DETAILS_CONCEPT_CLASS.equals(parentConcept.getConceptClass().getName())){
                         conceptToAdd = parentConcept;
                     }
                 }
@@ -72,7 +72,7 @@ public  class ConceptHelper {
     }
 
     protected boolean shouldBeExcluded(Concept rootConcept) {
-        return BahmniObservationMapper.ABNORMAL_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName()) ||
-                BahmniObservationMapper.DURATION_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName());
+        return ETObsToBahmniObsMapper.ABNORMAL_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName()) ||
+                ETObsToBahmniObsMapper.DURATION_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName());
     }
 }

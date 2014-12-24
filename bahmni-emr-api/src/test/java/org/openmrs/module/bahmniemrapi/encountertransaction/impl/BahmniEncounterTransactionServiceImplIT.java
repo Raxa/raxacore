@@ -1,5 +1,7 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 
+import java.util.Collection;
+import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
@@ -51,8 +53,8 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContex
 
         assertNotNull(encounterTransaction);
         assertEquals(1, encounterTransaction.getObservations().size());
-        assertEquals(bahmniObservation.getValue(),encounterTransaction.getObservations().get(0).getValue());
-        assertEquals(obsUuid, encounterTransaction.getObservations().get(0).getUuid());
+        assertEquals(bahmniObservation.getValue(), encounterTransaction.getObservations().iterator().next().getValue());
+        assertEquals(obsUuid, encounterTransaction.getObservations().iterator().next().getUuid());
 
     }
 
@@ -115,7 +117,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContex
         BahmniEncounterTransaction mappedBahmniEncounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
 
         assertEquals(1, mappedBahmniEncounterTransaction.getObservations().size());
-        BahmniObservation savedSrcObs = mappedBahmniEncounterTransaction.getObservations().get(0);
+        BahmniObservation savedSrcObs = mappedBahmniEncounterTransaction.getObservations().iterator().next();
         assertEquals(srcObs.getValue(), savedSrcObs.getValue());
         assertEquals(srcObsUuid, savedSrcObs.getUuid());
         assertEquals(srcObs.getConcept().getUuid(), savedSrcObs.getConceptUuid());
@@ -125,7 +127,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContex
         assertEquals(targetObs.getObservationDateTime(), savedSrcObs.getTargetObsRelation().getTargetObs().getObservationDateTime());
     }
 
-    private BahmniObservation getObservationByConceptUuid(List<BahmniObservation> bahmniObservations, String conceptUuid) {
+    private BahmniObservation getObservationByConceptUuid(Collection<BahmniObservation> bahmniObservations, String conceptUuid) {
         for (BahmniObservation bahmniObservation : bahmniObservations) {
             if (conceptUuid.equals(bahmniObservation.getConceptUuid())){
                 return  bahmniObservation;

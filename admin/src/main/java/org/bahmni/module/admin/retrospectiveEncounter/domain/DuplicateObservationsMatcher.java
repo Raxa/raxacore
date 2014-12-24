@@ -1,5 +1,6 @@
 package org.bahmni.module.admin.retrospectiveEncounter.domain;
 
+import java.util.Collection;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Visit;
@@ -40,25 +41,12 @@ public class DuplicateObservationsMatcher {
         return uniqueObservations;
     }
 
-//    public List<BahmniObservation> getUniqueBahmniObservations(List<BahmniObservation> observations) {
-//        List<Obs> allObs = getObservationsForVisit();
-//        List<BahmniObservation> uniqueObservations = new ArrayList<>();
-//        for (BahmniObservation anObservation : observations) {
-//            String anObservationValue = (String) anObservation.getValue();
-//            String observationConceptName = anObservation.getConcept().getName();
-//            if (isUnique(allObs, anObservationValue, observationConceptName)) {
-//                uniqueObservations.add(anObservation);
-//            }
-//        }
-//        return uniqueObservations;
-//    }
-
-    public List<BahmniObservation> getNewlyAddedBahmniObservations(List<BahmniObservation> observations, Date encounterDateTime) {
+    public Collection<BahmniObservation> getNewlyAddedBahmniObservations(Collection<BahmniObservation> observations, Date encounterDateTime) {
         List<Encounter> matchedEncounters = getAllEncountersByDate(encounterDateTime);
         return filterObsIfItIsExists(observations, matchedEncounters);
     }
 
-    private List<BahmniObservation> filterObsIfItIsExists(List<BahmniObservation> observations, List<Encounter> matchedEncounters) {
+    private Collection<BahmniObservation> filterObsIfItIsExists(Collection<BahmniObservation> observations, List<Encounter> matchedEncounters) {
         List<BahmniObservation> existingObs = new ArrayList<>();
         for (Encounter matchedEncounter : matchedEncounters) {
             for (BahmniObservation observation : observations) {

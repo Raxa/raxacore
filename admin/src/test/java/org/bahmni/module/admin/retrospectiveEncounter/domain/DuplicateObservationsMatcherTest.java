@@ -66,7 +66,7 @@ public class DuplicateObservationsMatcherTest {
         when(bahmniVisit.obsFor("OPD")).thenReturn(obsList);
         whenNew(BahmniVisit.class).withArguments(existingVisit).thenReturn(bahmniVisit);
         duplicateObservationsMatcher = new DuplicateObservationsMatcher(existingVisit, "OPD");
-        List<BahmniObservation> newlyAddedBahmniObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniObservations, ENCOUNTER_DATE);
+        Collection<BahmniObservation> newlyAddedBahmniObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniObservations, ENCOUNTER_DATE);
         assertEquals(0, newlyAddedBahmniObservations.size());
     }
 
@@ -93,7 +93,7 @@ public class DuplicateObservationsMatcherTest {
         whenNew(BahmniVisit.class).withArguments(existingVisit).thenReturn(bahmniVisit);
 
         duplicateObservationsMatcher = new DuplicateObservationsMatcher(existingVisit, "OPD");
-        List<BahmniObservation> newlyAddedBahmniObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniObservations, ENCOUNTER_DATE);
+        Collection<BahmniObservation> newlyAddedBahmniObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniObservations, ENCOUNTER_DATE);
 
         assertEquals(1, newlyAddedBahmniObservations.size());
     }
@@ -122,7 +122,7 @@ public class DuplicateObservationsMatcherTest {
         whenNew(BahmniVisit.class).withArguments(existingVisit).thenReturn(bahmniVisit);
 
         duplicateObservationsMatcher = new DuplicateObservationsMatcher(existingVisit, "OPD");
-        List<BahmniObservation> newlyAddedBahmniObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniObservations, newEncounterDate);
+        Collection<BahmniObservation> newlyAddedBahmniObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniObservations, newEncounterDate);
 
         assertEquals(1, newlyAddedBahmniObservations.size());
     }
@@ -151,7 +151,7 @@ public class DuplicateObservationsMatcherTest {
         whenNew(BahmniVisit.class).withArguments(existingVisit).thenReturn(bahmniVisit);
 
         duplicateObservationsMatcher = new DuplicateObservationsMatcher(existingVisit, "OPD");
-        List<BahmniObservation> newlyAddedBahmniObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniObservations, newEncounterDate);
+        Collection<BahmniObservation> newlyAddedBahmniObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniObservations, newEncounterDate);
 
         assertEquals(1, newlyAddedBahmniObservations.size());
     }
@@ -183,7 +183,7 @@ public class DuplicateObservationsMatcherTest {
         whenNew(BahmniVisit.class).withArguments(existingVisit).thenReturn(bahmniVisit);
 
         duplicateObservationsMatcher = new DuplicateObservationsMatcher(existingVisit, "OPD");
-        List<BahmniObservation> newlyAddedBahmniObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniObservations, ENCOUNTER_DATE);
+        Collection<BahmniObservation> newlyAddedBahmniObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniObservations, ENCOUNTER_DATE);
 
         assertEquals(0, newlyAddedBahmniObservations.size());
     }
