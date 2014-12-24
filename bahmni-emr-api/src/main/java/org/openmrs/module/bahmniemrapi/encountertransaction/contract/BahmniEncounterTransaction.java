@@ -1,11 +1,10 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.contract;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openmrs.module.bahmniemrapi.accessionnote.contract.AccessionNote;
+import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
-import org.openmrs.module.emrapi.diagnosis.Diagnosis;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
 
@@ -225,5 +224,55 @@ public class BahmniEncounterTransaction{
     public void setPatientId(String patientId) {
         this.patientId = patientId;
     }
+
+    public BahmniEncounterTransaction updateForRetrospectiveEntry(Date encounterDate) {
+        this.setEncounterDateTime(encounterDate);
+
+        updateObservationDates(encounterDate);
+        updateDiagnosisDates(encounterDate);
+        updateDrugOrderDates(encounterDate);
+        updateDisposition(encounterDate);
+        return this;
+    }
+
+    public BahmniEncounterTransaction updateDisposition(Date encounterDate) {
+        if (getDisposition() != null && getDisposition().getDispositionDateTime() == null) {
+            getDisposition().setDispositionDateTime(encounterDate);
+        }
+        return this;
+    }
+
+    public BahmniEncounterTransaction updateDrugOrderDates(Date encounterDate) {
+        for (EncounterTransaction.DrugOrder drugOrder : getDrugOrders()) {
+            if (drugOrder.getDateActivated() == null)
+                drugOrder.setDateActivated(encounterDate);
+        }
+        return this;
+    }
+
+    public BahmniEncounterTransaction updateDiagnosisDates(Date encounterDate) {
+        for (BahmniDiagnosis diagnosis : getBahmniDiagnoses()) {
+            if (diagnosis.getDiagnosisDateTime() == null)
+                diagnosis.setDiagnosisDateTime(encounterDate);
+        }
+        return this;
+    }
+
+    public BahmniEncounterTransaction updateObservationDates(Date encounterDate) {
+        for (BahmniObservation observation : getObservations()) {
+            setObsDate(observation, encounterDate);
+        }
+        return this;
+    }
+
+    private void setObsDate(BahmniObservation observation, Date encounterDate) {
+        if (observation.getObservationDateTime() == null)
+            observation.setObservationDateTime(encounterDate);
+
+        for (BahmniObservation childObservation : observation.getGroupMembers()) {
+            setObsDate(childObservation, encounterDate);
+        }
+    }
+
 }
 
