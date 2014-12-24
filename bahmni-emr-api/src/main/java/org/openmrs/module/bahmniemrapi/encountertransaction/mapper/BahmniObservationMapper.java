@@ -1,5 +1,7 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 
+import java.util.Arrays;
+import javax.naming.Context;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
@@ -76,7 +78,7 @@ public class BahmniObservationMapper {
     public static List<BahmniObservation> toBahmniObsFromETObs(List<EncounterTransaction.Observation> allObservations, Date encounterDateTime) {
         List<BahmniObservation> bahmniObservations = new ArrayList<>();
         for (EncounterTransaction.Observation observation : allObservations) {
-            bahmniObservations.add(map(observation, encounterDateTime, new ArrayList<org.openmrs.Concept>()));
+            bahmniObservations.add(map(observation, encounterDateTime, Arrays.asList(org.openmrs.api.context.Context.getConceptService().getConceptByUuid(observation.getConceptUuid()))));
         }
         return bahmniObservations;
     }
