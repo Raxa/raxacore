@@ -9,6 +9,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniProviderMapper;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-public class BahmniDrugOrderController {
+public class BahmniDrugOrderController extends BaseRestController{
 
     private final String baseUrl = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/drugOrders";
     @Autowired
