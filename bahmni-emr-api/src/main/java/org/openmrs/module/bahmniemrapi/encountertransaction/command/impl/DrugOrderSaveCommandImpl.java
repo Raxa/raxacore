@@ -71,10 +71,11 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
     private void checkAndFixChainOverlapsWithCurrentDateOrder(Collection<EncounterTransaction.DrugOrder> orders) {
 //        Refactor using Lambda expressions after updating to Java 8
         EncounterTransaction.DrugOrder currentDateOrder = getCurrentOrderFromOrderList(orders);
-        Date expectedStartDateForCurrentOrder = setExpectedStartDateForOrder(currentDateOrder);
-        Date expectedStopDateForCurrentOrder = setExpectedStopDateForOrder(currentDateOrder, expectedStartDateForCurrentOrder);
 
         if(currentDateOrder != null){
+            Date expectedStartDateForCurrentOrder = setExpectedStartDateForOrder(currentDateOrder);
+            Date expectedStopDateForCurrentOrder = setExpectedStopDateForOrder(currentDateOrder, expectedStartDateForCurrentOrder);
+
             for (EncounterTransaction.DrugOrder order : orders) {
                 if(order!=currentDateOrder && order.getScheduledDate()!=null && order.getAction() != "DISCONTINUE" && DateUtils.isSameDay(order.getScheduledDate(), expectedStopDateForCurrentOrder)){
                     currentDateOrder.setScheduledDate(expectedStartDateForCurrentOrder);
