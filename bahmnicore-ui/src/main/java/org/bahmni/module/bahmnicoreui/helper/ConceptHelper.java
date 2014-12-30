@@ -7,10 +7,10 @@ import org.openmrs.ConceptNumeric;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
-
-import java.util.*;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
 import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
+
+import java.util.*;
 
 public  class ConceptHelper {
 
@@ -88,7 +88,7 @@ public  class ConceptHelper {
         return conceptName;
     }
 
-    protected boolean shouldBeExcluded(Concept rootConcept) {
+    private boolean shouldBeExcluded(Concept rootConcept) {
         return ETObsToBahmniObsMapper.ABNORMAL_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName()) ||
                 ETObsToBahmniObsMapper.DURATION_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName());
     }
