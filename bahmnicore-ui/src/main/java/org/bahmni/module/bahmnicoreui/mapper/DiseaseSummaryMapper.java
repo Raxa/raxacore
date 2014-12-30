@@ -40,7 +40,7 @@ public class DiseaseSummaryMapper {
         Map<String, Map<String, ConceptValue>> result = new LinkedHashMap<>();
         for (DrugOrder drugOrder : drugOrders) {
             String visitStartDateTime = getDateAsString(drugOrder.getEncounter().getVisit().getStartDatetime());
-            String conceptName = drugOrder.getConcept().getName().getName();
+            String conceptName = drugOrder.getDrug().getConcept().getName().getName();
             String drugOrderValue = formattedDrugOrderValue(drugOrder);
             addToResultTable(result,visitStartDateTime,conceptName, drugOrderValue,null,false);
         }

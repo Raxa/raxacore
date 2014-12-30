@@ -228,6 +228,7 @@ public class DiseaseSummaryMapperTest {
         Drug drug = new Drug();
         drug.setName(drugName);
         drug.setStrength(strength);
+        drug.setConcept(createMRSConcept(drugName));
         return drug;
     }
 
