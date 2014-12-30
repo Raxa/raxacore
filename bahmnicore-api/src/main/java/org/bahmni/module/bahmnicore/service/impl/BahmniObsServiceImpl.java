@@ -17,12 +17,12 @@ import java.util.List;
 public class BahmniObsServiceImpl implements BahmniObsService {
 
     private ObsDao obsDao;
-    private OMRSObsToBahmniObsMapper OMRSObsToBahmniObsMapper;
+    private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
 
     @Autowired
-    public BahmniObsServiceImpl(ObsDao obsDao, OMRSObsToBahmniObsMapper OMRSObsToBahmniObsMapper) {
+    public BahmniObsServiceImpl(ObsDao obsDao, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper) {
         this.obsDao = obsDao;
-        this.OMRSObsToBahmniObsMapper = OMRSObsToBahmniObsMapper;
+        this.omrsObsToBahmniObsMapper = omrsObsToBahmniObsMapper;
     }
 
     @Override
@@ -31,23 +31,23 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public List<BahmniObservation> observationsFor(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits) {
+    public Collection<BahmniObservation> observationsFor(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits) {
         List<String> conceptNames = new ArrayList<>();
         for (Concept concept : concepts) {
             conceptNames.add(concept.getName().getName());
         }
         List<Obs> observations = obsDao.getObsFor(patientUuid, conceptNames, numberOfVisits);
-        return OMRSObsToBahmniObsMapper.map(observations);
+        return omrsObsToBahmniObsMapper.map(observations, concepts);
     }
 
     @Override
-    public List<BahmniObservation> getLatest(String patientUuid, List<String> conceptNames) {
+    public Collection<BahmniObservation> getLatest(String patientUuid, Collection<Concept> concepts) {
         List<Obs> latestObs = new ArrayList<>();
-        for (String conceptName : conceptNames) {
-            latestObs.addAll(obsDao.getLatestObsFor(patientUuid, conceptName, 1));
+        for (Concept concept : concepts) {
+            latestObs.addAll(obsDao.getLatestObsFor(patientUuid, concept.getName().getName(), 1));
         }
 
-        return OMRSObsToBahmniObsMapper.map(latestObs);
+        return omrsObsToBahmniObsMapper.map(latestObs, concepts);
     }
 
     @Override

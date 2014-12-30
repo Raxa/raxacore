@@ -69,9 +69,9 @@ public class OMRSObsToBahmniObsMapperTest {
         Obs obs2 = new ObsBuilder().withConcept(valueConcept2).withValue("ovalue2").build();
         Obs parentObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(parentConcept).withDatetime(date).withGroupMembers(obs1, obs2).build();
 
-        List<BahmniObservation> parentsObservations = new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null)).map(asList(parentObs));
+        Collection<BahmniObservation> parentsObservations = new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null)).map(asList(parentObs), Arrays.asList(parentConcept));
         assertEquals(1, parentsObservations.size());
-        BahmniObservation parentObservation = parentsObservations.get(0);
+        BahmniObservation parentObservation = parentsObservations.iterator().next();
         assertEquals("parentConcept", parentObservation.getConcept().getName());
         Collection<BahmniObservation> childObservations = parentObservation.getGroupMembers();
         assertEquals(2, childObservations.size());

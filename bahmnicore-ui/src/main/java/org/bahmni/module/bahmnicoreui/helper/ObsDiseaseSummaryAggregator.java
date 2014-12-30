@@ -11,6 +11,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObser
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -30,7 +31,7 @@ public class ObsDiseaseSummaryAggregator {
         DiseaseSummaryData diseaseSummaryData =  new DiseaseSummaryData();
         List<Concept> concepts = conceptHelper.getConceptsForNames(conceptNames);
         if(!concepts.isEmpty()){
-            List<BahmniObservation> bahmniObservations = bahmniObsService.observationsFor(patient.getUuid(), concepts, numberOfVisits);
+            Collection<BahmniObservation> bahmniObservations = bahmniObsService.observationsFor(patient.getUuid(), concepts, numberOfVisits);
             diseaseSummaryData.setTabularData(diseaseSummaryMapper.mapObservations(bahmniObservations));
             diseaseSummaryData.addConceptNames(conceptHelper.getLeafConceptNames(conceptNames));
         }

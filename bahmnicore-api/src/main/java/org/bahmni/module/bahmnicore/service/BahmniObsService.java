@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface BahmniObsService {
     public List<Obs> getObsForPerson(String identifier);
-    public List<BahmniObservation> observationsFor(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits);
-    public List<BahmniObservation> getLatest(String patientUuid, List<String> conceptNames);
+    public Collection<BahmniObservation> observationsFor(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits);
+    public Collection<BahmniObservation> getLatest(String patientUuid, Collection<Concept> conceptNames);
     public List<Concept> getNumericConceptsForPerson(String personUUID);
     public List<Obs> getLatestObsForConceptSetByVisit(String patientUuid, String conceptName, Integer visitId);
 }

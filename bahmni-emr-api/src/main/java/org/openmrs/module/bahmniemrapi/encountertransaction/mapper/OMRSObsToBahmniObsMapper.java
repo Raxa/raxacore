@@ -2,8 +2,14 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.openmrs.Concept;
 import org.openmrs.Obs;
+import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.encounter.ObservationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +24,14 @@ public class OMRSObsToBahmniObsMapper {
         this.etObsToBahmniObsMapper = etObsToBahmniObsMapper;
     }
 
-    public List<BahmniObservation> map(List<Obs> obsList) {
-        List<BahmniObservation> bahmniObservations = new ArrayList<>();
+    public Collection<BahmniObservation> map(List<Obs> obsList, Collection<Concept> rootConcepts) {
+        Collection<BahmniObservation> bahmniObservations = new ArrayList<>();
         for (Obs obs : obsList) {
-            bahmniObservations.add(map(obs));
+            BahmniObservation bahmniObservation = map(obs);
+            bahmniObservation.setConceptSortWeight(ConceptSortWeightUtil.getSortWeightFor(bahmniObservation.getConcept().getName(), rootConcepts));
+            bahmniObservations.add(bahmniObservation);
         }
+
         return bahmniObservations;
     }
 

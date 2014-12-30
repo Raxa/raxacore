@@ -6,6 +6,7 @@ import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,9 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
     BahmniObsService personObsService;
-    
+    @Autowired
+    private ConceptService conceptService;
+
     @Autowired
     ObsDao obsDao;
 
@@ -32,8 +35,9 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldReturnLatestObsForEachConcept() {
-        List<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Vitals"));
-        BahmniObservation vitalObservation = bahmniObservations.get(0);
+        Concept vitalsConcept = conceptService.getConceptByName("Vitals");
+        Collection<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(vitalsConcept));
+        BahmniObservation vitalObservation = bahmniObservations.iterator().next();
         Collection<BahmniObservation> vitalsGroupMembers = vitalObservation.getGroupMembers();
         assertEquals(2, vitalsGroupMembers.size());
         Iterator<BahmniObservation> observationIterator = vitalsGroupMembers.iterator();
@@ -47,9 +51,9 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void return_orphaned_obs_for_patient() throws Exception {
         Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
-        List<BahmniObservation> obsForConceptSet = personObsService.observationsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(bloodPressureConcept), null);
+        Collection<BahmniObservation> obsForConceptSet = personObsService.observationsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(bloodPressureConcept), null);
         assertEquals(1, obsForConceptSet.size());
-        Collection<BahmniObservation> bloodPressureMembers = obsForConceptSet.get(0).getGroupMembers();
+        Collection<BahmniObservation> bloodPressureMembers = obsForConceptSet.iterator().next().getGroupMembers();
         Iterator<BahmniObservation> bloodPressureMembersIterator = bloodPressureMembers.iterator();
         assertEquals(2, bloodPressureMembers.size());
         Collection<BahmniObservation> systolicMembers = bloodPressureMembersIterator.next().getGroupMembers();

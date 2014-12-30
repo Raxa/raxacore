@@ -34,7 +34,7 @@ public class DiseaseTemplateServiceImplIT extends BaseModuleWebContextSensitiveT
         assertEquals(1, diseaseTemplate.getObservationTemplates().size());
         ObservationTemplate observationTemplate = diseaseTemplate.getObservationTemplates().get(0);
         assertEquals(1, observationTemplate.getBahmniObservations().size());
-        BahmniObservation obs = observationTemplate.getBahmniObservations().get(0);
+        BahmniObservation obs = observationTemplate.getBahmniObservations().iterator().next();
         assertTrue(obs.getValue().equals(100.0));
     }
 
@@ -82,7 +82,7 @@ public class DiseaseTemplateServiceImplIT extends BaseModuleWebContextSensitiveT
 
         assertEquals("Breast Cancer Intake", diseaseTemplates.get(0).getObservationTemplates().get(0).getConcept().getName());
         assertEquals(1, diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().size());
-        assertEquals("Receptor Status", diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().get(0).getConcept().getName());
+        assertEquals("Receptor Status", diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().iterator().next().getConcept().getName());
     }
 
     @Test
@@ -107,10 +107,10 @@ public class DiseaseTemplateServiceImplIT extends BaseModuleWebContextSensitiveT
 
         assertEquals("Breast Cancer Intake", diseaseTemplates.get(0).getObservationTemplates().get(0).getConcept().getName());
         assertEquals(1, diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().size());
-        assertEquals("Histopathology", diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().get(0).getConcept().getName());
+        assertEquals("Histopathology", diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().iterator().next().getConcept().getName());
 
         assertEquals("Breast Cancer Progress", diseaseTemplates.get(0).getObservationTemplates().get(1).getConcept().getName());
         assertEquals(1, diseaseTemplates.get(0).getObservationTemplates().get(1).getBahmniObservations().size());
-        assertEquals("Histopathology", diseaseTemplates.get(0).getObservationTemplates().get(1).getBahmniObservations().get(0).getConcept().getName());
+        assertEquals("Histopathology", diseaseTemplates.get(0).getObservationTemplates().get(1).getBahmniObservations().iterator().next().getConcept().getName());
     }
 }

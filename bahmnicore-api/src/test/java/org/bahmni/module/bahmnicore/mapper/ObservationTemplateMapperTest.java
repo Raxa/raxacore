@@ -13,6 +13,7 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.test.TestUtil;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -70,13 +71,16 @@ public class ObservationTemplateMapperTest {
         assertEquals("Observation Template", observationTemplate1.getConcept().getName());
         assertEquals(2, observationTemplate1.getBahmniObservations().size());
         assertEquals(TestUtil.createDateTime("2012-01-01"), observationTemplate1.getVisitStartDate());
-        assertEquals(observationTemplate1.getVisitStartDate(), observationTemplate1.getBahmniObservations().get(0).getVisitStartDateTime());
-        assertEquals(observationTemplate1.getVisitStartDate(), observationTemplate1.getBahmniObservations().get(1).getVisitStartDateTime());
+        Iterator<BahmniObservation> observationTemplate1Iterator = observationTemplate1.getBahmniObservations().iterator();
+        assertEquals(observationTemplate1.getVisitStartDate(), observationTemplate1Iterator.next().getVisitStartDateTime());
+        assertEquals(observationTemplate1.getVisitStartDate(), observationTemplate1Iterator.next().getVisitStartDateTime());
         assertEquals(TestUtil.createDateTime("2012-03-01"), observationTemplate2.getVisitStartDate());
-        assertEquals(observationTemplate2.getVisitStartDate(), observationTemplate2.getBahmniObservations().get(0).getVisitStartDateTime());
-        assertEquals(observationTemplate2.getVisitStartDate(), observationTemplate2.getBahmniObservations().get(1).getVisitStartDateTime());
+        Iterator<BahmniObservation> observationTemplate2Iterator = observationTemplate2.getBahmniObservations().iterator();
+        assertEquals(observationTemplate2.getVisitStartDate(), observationTemplate2Iterator.next().getVisitStartDateTime());
+        assertEquals(observationTemplate2.getVisitStartDate(), observationTemplate2Iterator.next().getVisitStartDateTime());
         assertEquals(TestUtil.createDateTime("2012-05-01"), observationTemplate3.getVisitStartDate());
-        assertEquals(observationTemplate3.getVisitStartDate(), observationTemplate3.getBahmniObservations().get(0).getVisitStartDateTime());
+        Iterator<BahmniObservation> observationTemplate3Iterator = observationTemplate3.getBahmniObservations().iterator();
+        assertEquals(observationTemplate3.getVisitStartDate(), observationTemplate3Iterator.next().getVisitStartDateTime());
         assertEquals("Observation Template", observationTemplate1.getConcept().getName());
         assertEquals("Observation Template", observationTemplate2.getConcept().getName());
         assertEquals("Observation Template", observationTemplate3.getConcept().getName());

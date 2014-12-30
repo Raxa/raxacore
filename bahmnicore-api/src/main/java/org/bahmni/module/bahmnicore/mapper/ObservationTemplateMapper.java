@@ -8,6 +8,7 @@ import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ObservationTemplateMapper {
@@ -18,7 +19,7 @@ public class ObservationTemplateMapper {
         this.conceptMapper = conceptMapper;
     }
 
-    public List<ObservationTemplate> map(List<BahmniObservation> observations, Concept concept) {
+    public List<ObservationTemplate> map(Collection<BahmniObservation> observations, Concept concept) {
         List<ObservationTemplate> observationTemplates = new ArrayList<>();
         for (BahmniObservation observation : observations) {
             ObservationTemplate matchingObservationTemplate = getMatchingObservationTemplate(observation, observationTemplates);

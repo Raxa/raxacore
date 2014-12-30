@@ -20,7 +20,7 @@ public class DiseaseSummaryMapper {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
 
-    public Map<String, Map<String, ConceptValue>> mapObservations(List<BahmniObservation> bahmniObservations) {
+    public Map<String, Map<String, ConceptValue>> mapObservations(Collection<BahmniObservation> bahmniObservations) {
         Map<String, Map<String, ConceptValue>> result = new LinkedHashMap<>();
         if(bahmniObservations != null){
             for (BahmniObservation bahmniObservation : bahmniObservations) {

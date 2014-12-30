@@ -74,7 +74,7 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
     }
 
     public Collection<BahmniObservation> getGroupMembers() {
-        return Collections.unmodifiableCollection(new TreeSet<>(this.groupMembers));
+        return new TreeSet<>(this.groupMembers);
     }
 
     public void setGroupMembers(Collection<BahmniObservation> groupMembers) {
@@ -85,7 +85,7 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
         groupMembers.add(observation);
     }
 
-    public void removeGroupMembers(List<BahmniObservation> observations) {
+    public void removeGroupMembers(Collection<BahmniObservation> observations) {
         groupMembers.removeAll(observations);
     }
 

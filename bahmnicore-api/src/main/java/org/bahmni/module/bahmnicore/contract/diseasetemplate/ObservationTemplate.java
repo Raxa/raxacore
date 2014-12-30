@@ -6,9 +6,11 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeSet;
 
 public class ObservationTemplate {
     
@@ -16,7 +18,7 @@ public class ObservationTemplate {
     
     private Date visitStartDate;
 
-    private List<BahmniObservation> bahmniObservations;
+    private Collection<BahmniObservation> bahmniObservations;
 
     public EncounterTransaction.Concept getConcept() {
         return concept;
@@ -26,14 +28,11 @@ public class ObservationTemplate {
         this.concept = concept;
     }
 
-    public List<BahmniObservation> getBahmniObservations() {
-        if(bahmniObservations == null){
-            bahmniObservations = new ArrayList<>();
-        }
-        return Collections.unmodifiableList(bahmniObservations);
+    public Collection<BahmniObservation> getBahmniObservations() {
+        return bahmniObservations == null ? new TreeSet<BahmniObservation>() : new TreeSet<>(bahmniObservations);
     }
 
-    public void setBahmniObservations(List<BahmniObservation> bahmniObservations) {
+    public void setBahmniObservations(Collection<BahmniObservation> bahmniObservations) {
         this.bahmniObservations = bahmniObservations;
     }
 
@@ -41,7 +40,7 @@ public class ObservationTemplate {
         this.bahmniObservations.remove(bahmniObservation);
     }
 
-    public void removeBahmniObservations(List<BahmniObservation> bahmniObservations) {
+    public void removeBahmniObservations(Collection<BahmniObservation> bahmniObservations) {
         this.bahmniObservations.removeAll(bahmniObservations);
     }
 
@@ -56,7 +55,7 @@ public class ObservationTemplate {
 
     public void addBahmniObservation(BahmniObservation bahmniObservation){
         if(bahmniObservations == null){
-            bahmniObservations = new ArrayList<BahmniObservation>();
+            bahmniObservations = new ArrayList<>();
         }
         bahmniObservations.add(bahmniObservation);
     }
