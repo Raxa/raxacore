@@ -46,11 +46,16 @@
     <orders order_id="58" order_type_id="15" patient_id="2" encounter_id="33" urgency="ROUTINE" concept_id="26" orderer="1" care_setting="1" order_action="NEW" order_number="4" instructions="another expire-date in future" date_activated="2013-08-08 00:00:00.0" auto_expire_date="2099-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false"  uuid="bda9c148-f22a-11e3-b47b-c6959a4485cd"/>
     <orders order_id="59" order_type_id="15" patient_id="2" encounter_id="33" urgency="ROUTINE" concept_id="27" orderer="1" care_setting="1" order_action="NEW" order_number="5" instructions="drug in active visit" date_activated="2014-02-01 00:00:00.0" creator="1" date_created="2014-02-01 00:00:00.0" voided="false" uuid="0246222e-f5f5-11e3-b47b-c8b69a4485cd"/>
 
-    <drug_order order_id="55" drug_inventory_id="3" dose="125.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
-    <drug_order order_id="56" drug_inventory_id="3" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
-    <drug_order order_id="57" drug_inventory_id="3" dose="515.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
-    <drug_order order_id="58" drug_inventory_id="3" dose="615.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
-    <drug_order order_id="59" drug_inventory_id="3" dose="715.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="55" drug_inventory_id="1113" dose="125.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="56" drug_inventory_id="1113" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="57" drug_inventory_id="1114" dose="515.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="58" drug_inventory_id="1115" dose="615.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="59" drug_inventory_id="1116" dose="715.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+
+    <drug drug_id="1113" concept_id="24" name="Paracetamol" combination="false" strength="325.0mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="0000820a-d297-44e3-be6e-698531d9dd3f"/>
+    <drug drug_id="1114" concept_id="25" name="Aspirin" combination="false" strength="325.0mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="1111820a-d297-44e3-be6e-698531d9dd3f"/>
+    <drug drug_id="1115" concept_id="26" name="diazepam" combination="false" strength="325.0mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="2222820a-d297-44e3-be6e-698531d9dd3f"/>
+    <drug drug_id="1116" concept_id="27" name="cetrizine" combination="false" strength="325.0mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="3333820a-d297-44e3-be6e-698531d9dd3f"/>
 
 
     <encounter encounter_id="33" encounter_type="2" patient_id="7" visit_id="50" location_id="2" form_id="1" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 12:34:40.0" voided="false" uuid="e403fafb-e5e4-42d0-9d11-4f52e86fa48c"/>
