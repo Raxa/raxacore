@@ -55,6 +55,9 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     }
 
     private boolean areSameEncounterDates(Encounter encounter, EncounterParameters encounterParameters) {
+        if (encounter.getEncounterDatetime() == null) {
+            return true;
+        }
         return encounter.getEncounterDatetime() != null && DateUtils.isSameDay(encounter.getEncounterDatetime(), encounterParameters.getEncounterDateTime());
     }
 

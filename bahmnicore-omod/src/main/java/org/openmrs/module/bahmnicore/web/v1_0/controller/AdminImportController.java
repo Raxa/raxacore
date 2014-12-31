@@ -107,19 +107,19 @@ public class AdminImportController extends BaseRestController {
 
     @RequestMapping(value = baseUrl + "/patient", method = RequestMethod.POST)
     @ResponseBody
-    public boolean upload(@RequestParam(value = "file") MultipartFile file) {
+    public boolean upload(@RequestParam(value = "file") MultipartFile file) throws IOException {
         try {
             patientPersister.init(Context.getUserContext());
             return importCsv(PATIENT_FILES_DIRECTORY, file, patientPersister, 1, true, PatientRow.class);
         } catch (Throwable e) {
             logger.error("Could not upload file", e);
-            return false;
+            throw e;
         }
     }
 
     @RequestMapping(value = baseUrl + "/encounter", method = RequestMethod.POST)
     @ResponseBody
-    public boolean upload(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
+    public boolean upload(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) throws IOException {
         try {
             String configuredExactPatientIdMatch = administrationService.getGlobalProperty(SHOULD_MATCH_EXACT_PATIENT_ID_CONFIG);
             boolean shouldMatchExactPatientId = DEFAULT_SHOULD_MATCH_EXACT_PATIENT_ID;
@@ -130,77 +130,77 @@ public class AdminImportController extends BaseRestController {
             return importCsv(ENCOUNTER_FILES_DIRECTORY, file, encounterPersister, 1, true, MultipleEncounterRow.class);
         } catch (Throwable e) {
             logger.error("Could not upload file", e);
-            return false;
+            throw e;
         }
     }
 
     @RequestMapping(value = baseUrl + "/referenceterms", method = RequestMethod.POST)
     @ResponseBody
-    public boolean uploadReferenceTerms(@RequestParam(value = "file") MultipartFile file) {
+    public boolean uploadReferenceTerms(@RequestParam(value = "file") MultipartFile file) throws IOException {
         try {
             referenceTermPersister.init(Context.getUserContext());
             return importCsv(REFERENCETERM_FILES_DIRECTORY, file, referenceTermPersister, 1, true, ReferenceTermRow.class);
         } catch (Throwable e) {
             logger.error("Could not upload file", e);
-            return false;
+            throw e;
         }
 
     }
 
     @RequestMapping(value = baseUrl + "/program", method = RequestMethod.POST)
     @ResponseBody
-    public boolean uploadProgram(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
+    public boolean uploadProgram(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) throws IOException {
         try {
             patientProgramPersister.init(Context.getUserContext(), patientMatchingAlgorithm);
             return importCsv(PROGRAM_FILES_DIRECTORY, file, patientProgramPersister, 1, true, PatientProgramRow.class);
         } catch (Throwable e) {
             logger.error("Could not upload file", e);
-            return false;
+            throw e;
         }
     }
 
     @RequestMapping(value = baseUrl + "/drug", method = RequestMethod.POST)
     @ResponseBody
-    public boolean uploadDrug(@RequestParam(value = "file") MultipartFile file) {
+    public boolean uploadDrug(@RequestParam(value = "file") MultipartFile file) throws IOException {
         try {
             return importCsv(DRUG_FILES_DIRECTORY, file, new DatabasePersister<>(drugPersister), 1, false, DrugRow.class);
         } catch (Throwable e) {
             logger.error("Could not upload file", e);
-            return false;
+            throw e;
         }
     }
 
     @RequestMapping(value = baseUrl + "/concept", method = RequestMethod.POST)
     @ResponseBody
-    public boolean uploadConcept(@RequestParam(value = "file") MultipartFile file) {
+    public boolean uploadConcept(@RequestParam(value = "file") MultipartFile file) throws IOException {
         try {
             return importCsv(CONCEPT_FILES_DIRECTORY, file, new DatabasePersister<>(conceptPersister), 1, false, ConceptRow.class);
         } catch (Throwable e) {
             logger.error("Could not upload file", e);
-            return false;
+            throw e;
         }
     }
 
     @RequestMapping(value = baseUrl + "/labResults", method = RequestMethod.POST)
     @ResponseBody
-    public boolean uploadLabResults(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) {
+    public boolean uploadLabResults(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) throws IOException {
         try {
             labResultPersister.init(Context.getUserContext(), patientMatchingAlgorithm, true);
             return importCsv(LAB_RESULTS_DIRECTORY, file, new DatabasePersister<>(labResultPersister), 1, false, LabResultsRow.class);
         } catch (Throwable e) {
             logger.error("Could not upload file", e);
-            return false;
+            throw e;
         }
     }
 
     @RequestMapping(value = baseUrl + "/conceptset", method = RequestMethod.POST)
     @ResponseBody
-    public boolean uploadConceptSet(@RequestParam(value = "file") MultipartFile file) {
+    public boolean uploadConceptSet(@RequestParam(value = "file") MultipartFile file) throws IOException {
         try {
             return importCsv(CONCEPT_SET_FILES_DIRECTORY, file, new DatabasePersister<>(conceptSetPersister), 1, false, ConceptSetRow.class);
         } catch (Throwable e) {
             logger.error("Could not upload file", e);
-            return false;
+            throw e;
         }
     }
 
@@ -233,6 +233,7 @@ public class AdminImportController extends BaseRestController {
             uploadedFileStream.flush();
         } catch (Throwable e) {
             logger.error(e);
+            throw e;
             // TODO : handle errors for end users. Give some good message back to users.
         } finally {
             if (uploadedFileStream != null) {
