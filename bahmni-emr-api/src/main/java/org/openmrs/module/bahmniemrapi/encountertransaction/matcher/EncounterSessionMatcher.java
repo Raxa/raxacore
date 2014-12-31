@@ -45,13 +45,17 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
             for (Encounter encounter : visit.getEncounters()) {
                 if (encounterType == null || encounterType.equals(encounter.getEncounterType())) {
                     Date encounterDateChanged = encounter.getDateChanged() == null ? encounter.getDateCreated() : encounter.getDateChanged();
-                    if(!isCurrentSessionTimeExpired(encounterDateChanged) && isSameProvider(provider, encounter))
+                    if (!isCurrentSessionTimeExpired(encounterDateChanged) && isSameProvider(provider, encounter) && areSameEncounterDates(encounter, encounterParameters))
                         if (locationNotDefined(encounterParameters, encounter) || isSameLocation(encounterParameters, encounter))
                             return encounter;
                 }
             }
         }
         return null;
+    }
+
+    private boolean areSameEncounterDates(Encounter encounter, EncounterParameters encounterParameters) {
+        return encounter.getEncounterDatetime() != null && DateUtils.isSameDay(encounter.getEncounterDatetime(), encounterParameters.getEncounterDateTime());
     }
 
     private boolean isSameLocation(EncounterParameters encounterParameters, Encounter encounter) {
@@ -75,8 +79,8 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         int sessionDurationInMinutes = DEFAULT_SESSION_DURATION_IN_MINUTES;
         if(configuredSessionDuration != null)
             sessionDurationInMinutes = Integer.parseInt(configuredSessionDuration);
-        Date allowedEncounterTIme = DateUtils.addMinutes(encounterCreatedDate, sessionDurationInMinutes);
+        Date allowedEncounterTime = DateUtils.addMinutes(encounterCreatedDate, sessionDurationInMinutes);
 
-        return DateUtils.truncatedCompareTo(allowedEncounterTIme, new Date(), Calendar.MILLISECOND) <= 0;
+        return DateUtils.truncatedCompareTo(allowedEncounterTime, new Date(), Calendar.MILLISECOND) <= 0;
     }
 }
