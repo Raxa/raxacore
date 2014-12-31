@@ -2734,4 +2734,23 @@
             VALUES ('encounterModifier.groovy.allowCaching', 'true', 'Allow Groovy Caching', 'e16605a1-266a-47cb-8385-d07742646640');
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201412311031" author="Mihir">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM location_tag where name='Login Location';
+            </sqlCheck>
+        </preConditions>
+        <comment>Add Login Location Tag if not already added.</comment>
+        <sql>
+            set @current_date = 0;
+            select now() into @current_date;
+
+            INSERT INTO location_tag (name, description, creator, date_created, uuid) VALUES
+            ('Login Location',
+            'When a user logs in and chooses a session location, they may only choose one with this tag',
+            1,
+            @current_date,
+            'b8bbf83e-645f-451f-8efe-a0db56f09676');
+        </sql>
+    </changeSet>
 </databaseChangeLog>

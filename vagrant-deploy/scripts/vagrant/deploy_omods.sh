@@ -1,8 +1,8 @@
 #!/bin/sh -x
 
 TEMP_LOCATION=/tmp/deploy_bahmni_core
-#USER=bahmni
-USER=jss
+USER=bahmni
+#USER=jss
 OMOD_LOCATION=/home/$USER/.OpenMRS/modules
 
 sudo rm -f $OMOD_LOCATION/bahmnicore*.omod
