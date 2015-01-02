@@ -1,11 +1,5 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.contract;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openmrs.module.bahmniemrapi.accessionnote.contract.AccessionNote;
@@ -13,6 +7,8 @@ import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
+
+import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BahmniEncounterTransaction{

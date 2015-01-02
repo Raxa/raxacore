@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.bahmni.module.bahmnicore.contract.drugorder.DrugOrderConfigResponse;
 import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrder;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +10,7 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.VisitService;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -182,6 +184,16 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
         assertEquals((Integer)30, nonVoidedOrder.getDuration());
         assertEquals("Days", nonVoidedOrder.getDurationUnits().getName().getName());
         assertNotNull(voidedOrder);
+    }
+
+    @Test
+    public void shouldReturnOrderAttributeConceptNamesWithGetConfig() throws ParseException {
+        DrugOrderConfigResponse config = bahmniDrugOrderService.getConfig();
+        List<EncounterTransaction.Concept> orderAttributes = config.getOrderAttributes();
+
+        assertEquals(2,orderAttributes.size());
+        assertEquals("dispensed",orderAttributes.get(0).getName());
+        assertEquals("administered",orderAttributes.get(1).getName());
     }
 
     private Order getFirstVoidedOrder(List<Order> orders) {

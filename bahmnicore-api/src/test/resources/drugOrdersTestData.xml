@@ -10,12 +10,22 @@
     <concept_name concept_id="101" name="DispensingUnitsConcept" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="90c9daee-3d3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
     <concept concept_id="100" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e060cf44-3d3d-11e3-bf2b-9800271c1b75"/>
-    <concept_name concept_id="100" name="Pessary" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="90c9daee-3d3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_name concept_id="100" name="Pessary" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1111" voided="false" uuid="90c9daee-3333-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
     <concept_name concept_id="1" name="Tablet" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="15c9daee-3d3e-11e3-bf2b-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
     <concept concept_id="397" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="e060cf44-3d3d-11e3-bf2b-9800271c1e75"/>
     <concept_name concept_id="397" name="Unit(s)" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="902" voided="false" uuid="a0c9daee-3d3e-11e3-bf2b-080f271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
+    <concept concept_id="2005" retired="false" datatype_id="4" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-eeee-4326-bb05-c6e11fe3d9ba"/>
+    <concept_name concept_id="2005" name="Order Attributes" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="25" voided="false" uuid="49310077-e601-4326-bb05-c6e11fe3dddd" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="2006" retired="false" datatype_id="10" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-1111-4326-bb05-c6e11fe3d9ba"/>
+    <concept_name concept_id="2006" name="dispensed" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="26" voided="false" uuid="11110077-e601-4326-bb05-c6e11fe3d9ba" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set="2005" concept_id="2006" concept_set_id="2001" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-eeee-4326-bb05-c6e11fe3d9ba" />
+
+    <concept concept_id="2007" retired="false" datatype_id="10" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-1111-4444-bb05-c6e11fe3d9ba"/>
+    <concept_name concept_id="2007" name="administered" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="27" voided="false" uuid="11110077-eeee-4326-bb05-c6e11fe3d9ba" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set="2005" concept_id="2007" concept_set_id="2002" sort_weight="2" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-eeee-4326-bbbb-c6e11fe3d9ba" />
 
     <concept_set concept_set_id="124" concept_id="397" concept_set="101" sort_weight="0.0" creator="1" date_created="2008-08-18 12:38:58.0" uuid="1a211827-639f-4cb4-961f-1e025bf88f90"/>
     <concept_set concept_set_id="123" concept_id="100" concept_set="101" sort_weight="0.0" creator="1" date_created="2008-08-18 12:38:58.0" uuid="1a211827-639f-4cb4-961f-1e025bf48d90"/>

@@ -12,7 +12,9 @@ public class ConceptData {
     }
 
     public ConceptData(Concept concept) {
-        this.name = concept.getName(Context.getLocale()).getName();
+        if(concept != null){
+            this.name = concept.getName(Context.getLocale()).getName();
+        }
     }
 
     public String getName() {

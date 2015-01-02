@@ -24,7 +24,7 @@ public class OrderAttributesMapperTest {
         List<BahmniObservation> bahmniObservationList = new ArrayList<>();
         EncounterTransaction.Concept concept = new EncounterTransaction.Concept("Concept_uuid", "dispensed", true, "Concept_dataType", "Concept_units", "Concept_conceptClass", null);
 
-        BahmniObservation  dispensedObservation =new BahmniObservationBuilder().withConcept(concept).withOrderUuid("Order_uuid").withValue("true").build();
+        BahmniObservation  dispensedObservation =new BahmniObservationBuilder().withUuid("obs-uuid").withConcept(concept).withOrderUuid("Order_uuid").withValue("true").build();
 
         bahmniObservationList.add(dispensedObservation);
 
@@ -39,5 +39,6 @@ public class OrderAttributesMapperTest {
 
         assertEquals(1,bahmniDrugOrderList.get(0).getOrderAttributes().size());
         assertEquals("dispensed", bahmniDrugOrderList.get(0).getOrderAttributes().get(0).getName());
+        assertEquals("obs-uuid", bahmniDrugOrderList.get(0).getOrderAttributes().get(0).getUuid());
     }
 }

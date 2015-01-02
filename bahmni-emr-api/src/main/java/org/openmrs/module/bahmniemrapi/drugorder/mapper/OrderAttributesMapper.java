@@ -10,13 +10,13 @@ import java.util.*;
 
 public class OrderAttributesMapper {
 
-    public List<BahmniDrugOrder> map(List<BahmniDrugOrder> drugOrders, List<BahmniObservation> observations){
+    public List<BahmniDrugOrder> map(List<BahmniDrugOrder> drugOrders, Collection<BahmniObservation> observations){
         Map<String, BahmniDrugOrder> bahmniDrugOrderMap = createOrderUuidToDrugOrderMap(drugOrders);
         if(CollectionUtils.isNotEmpty(observations) && MapUtils.isNotEmpty(bahmniDrugOrderMap)){
             for(BahmniObservation bahmniObservation : observations){
                 if(bahmniDrugOrderMap.containsKey(bahmniObservation.getOrderUuid())){
                     BahmniDrugOrder bahmniDrugOrder = bahmniDrugOrderMap.get(bahmniObservation.getOrderUuid());
-                    BahmniOrderAttribute bahmniOrderAttribute = new BahmniOrderAttribute(bahmniObservation.getConcept().getName(),"true");
+                    BahmniOrderAttribute bahmniOrderAttribute = new BahmniOrderAttribute(bahmniObservation.getConcept().getName(),"true",bahmniObservation.getUuid());
                     addOrderAttributes(bahmniDrugOrder, bahmniOrderAttribute);
                 }
             }

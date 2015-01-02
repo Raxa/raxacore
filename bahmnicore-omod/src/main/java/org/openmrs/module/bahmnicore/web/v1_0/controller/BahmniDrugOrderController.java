@@ -2,17 +2,16 @@ package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
 
 import org.apache.log4j.Logger;
-import org.bahmni.module.bahmnicore.contract.drugorder.*;
+import org.bahmni.module.bahmnicore.contract.drugorder.DrugOrderConfigResponse;
+import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
-import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
-import org.openmrs.DrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniOrderAttribute;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniProviderMapper;
-import org.openmrs.module.bahmniemrapi.drugorder.mapper.OrderAttributesMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
@@ -24,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 public class BahmniDrugOrderController extends BaseRestController{
@@ -40,7 +41,6 @@ public class BahmniDrugOrderController extends BaseRestController{
     private ConceptService conceptService;
 
     private static Logger logger = Logger.getLogger(BahmniDrugOrderController.class);
-    private OrderAttributesMapper orderAttributesMapper = new OrderAttributesMapper();
 
     public BahmniDrugOrderController(BahmniDrugOrderService drugOrderService) {
         this.drugOrderService = drugOrderService;
@@ -57,9 +57,8 @@ public class BahmniDrugOrderController extends BaseRestController{
         List<DrugOrder> activeDrugOrders = drugOrderService.getActiveDrugOrders(patientUuid);
         logger.info(activeDrugOrders.size() + " active drug orders found");
         try {
-            List<BahmniObservation> orderAttributeObs = bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null);
-            List<BahmniDrugOrder> bahmniDrugOrders = new BahmniDrugOrderMapper(new BahmniProviderMapper()).mapToResponse(activeDrugOrders);
-            return orderAttributesMapper.map(bahmniDrugOrders,orderAttributeObs);
+            Collection<BahmniObservation> orderAttributeObs = bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null);
+            return new BahmniDrugOrderMapper(new BahmniProviderMapper()).mapToResponse(activeDrugOrders,orderAttributeObs);
         } catch (IOException e) {
             logger.error("Could not parse dosing instructions",e);
             throw new RuntimeException("Could not parse dosing instructions",e);
@@ -73,9 +72,8 @@ public class BahmniDrugOrderController extends BaseRestController{
                                                          @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits){
         List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrders(patientUuid, includeActiveVisit, numberOfVisits);
         try {
-            List<BahmniObservation> orderAttributeObs =  bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null);
-            List<BahmniDrugOrder> bahmniDrugOrders = new BahmniDrugOrderMapper(new BahmniProviderMapper()).mapToResponse(drugOrders);
-            return orderAttributesMapper.map(bahmniDrugOrders,orderAttributeObs);
+            Collection<BahmniObservation> orderAttributeObs =  bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null);
+            return new BahmniDrugOrderMapper(new BahmniProviderMapper()).mapToResponse(drugOrders, orderAttributeObs);
         } catch (IOException e) {
             logger.error("Could not parse drug order",e);
              throw new RuntimeException("Could not parse drug order",e);

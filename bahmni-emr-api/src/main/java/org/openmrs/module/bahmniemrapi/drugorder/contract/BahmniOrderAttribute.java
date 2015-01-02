@@ -4,10 +4,15 @@ public class BahmniOrderAttribute {
     public static final String ORDER_ATTRIBUTES_CONCEPT_NAME= "Order Attributes";
     private String name;
     private String value;
+    private String uuid;
 
-    public BahmniOrderAttribute(String name, String value) {
+    public BahmniOrderAttribute() {
+    }
+
+    public BahmniOrderAttribute(String name, String value, String uuid) {
         this.name = name;
         this.value = value;
+        this.uuid = uuid;
     }
 
     public void setName(String name) {
@@ -24,5 +29,13 @@ public class BahmniOrderAttribute {
 
     public String getValue() {
         return value;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

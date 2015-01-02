@@ -21,6 +21,11 @@ public class BahmniObservationBuilder {
         return this;
     }
 
+    public BahmniObservationBuilder withUuid(String uuid){
+        bahmniObservation.setUuid(uuid);
+        return this;
+    }
+
     public BahmniObservation build(){
         return bahmniObservation;
     }

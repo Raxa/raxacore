@@ -7,6 +7,7 @@ import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
+import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniOrderAttribute;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -14,6 +15,8 @@ import org.openmrs.*;
 import org.openmrs.api.*;
 import org.openmrs.api.context.*;
 import org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions;
+import org.openmrs.module.emrapi.encounter.ConceptMapper;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +38,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private EncounterRole unknownEncounterRole;
     private EncounterType consultationEncounterType;
     private String systemUserName;
+    private ConceptMapper conceptMapper = new ConceptMapper();
 
     private static final String GP_DOSING_INSTRUCTIONS_CONCEPT_UUID = "order.dosingInstructionsConceptUuid";
 
@@ -102,7 +106,21 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         response.setDurationUnits(mapConcepts(orderService.getDurationUnits()));
         response.setDispensingUnits(mapConcepts(orderService.getDrugDispensingUnits()));
         response.setDosingInstructions(mapConcepts(getSetMembersOfConceptSetFromGP(GP_DOSING_INSTRUCTIONS_CONCEPT_UUID)));
+        response.setOrderAttributes(fetchOrderAttributeConcepts());
         return response;
+    }
+
+    private List<EncounterTransaction.Concept> fetchOrderAttributeConcepts() {
+        Concept orderAttributesConceptSet = conceptService.getConceptByName(BahmniOrderAttribute.ORDER_ATTRIBUTES_CONCEPT_NAME);
+        if(orderAttributesConceptSet != null){
+            List<EncounterTransaction.Concept> etOrderAttributeConcepts = new ArrayList<>();
+            List<Concept> orderAttributes = orderAttributesConceptSet.getSetMembers();
+            for (Concept orderAttribute : orderAttributes) {
+                etOrderAttributeConcepts.add(conceptMapper.map(orderAttribute));
+            }
+            return etOrderAttributeConcepts;
+        }
+        return Collections.EMPTY_LIST;
     }
 
     private List<Concept> getSetMembersOfConceptSetFromGP(String globalProperty) {

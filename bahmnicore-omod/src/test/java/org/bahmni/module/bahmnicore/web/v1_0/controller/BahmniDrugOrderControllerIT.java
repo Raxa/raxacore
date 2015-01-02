@@ -63,6 +63,7 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
         assertEquals(1, drugOrder3.getOrderAttributes().size());
         assertEquals("dispensed", drugOrder3.getOrderAttributes().get(0).getName());
         assertEquals("true", drugOrder3.getOrderAttributes().get(0).getValue());
+        assertEquals("be48cdcb-6666-47e3-9f2e-2635032f3a9a", drugOrder3.getOrderAttributes().get(0).getUuid());
 
 
         BahmniDrugOrder drugOrder4 = prescribedDrugOrders.get(3);

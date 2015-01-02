@@ -1,6 +1,8 @@
 package org.bahmni.module.bahmnicore.contract.drugorder;
 
 
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+
 import java.util.*;
 
 public class DrugOrderConfigResponse {
@@ -9,6 +11,9 @@ public class DrugOrderConfigResponse {
     private List<ConceptData> durationUnits;
     private List<ConceptData> dispensingUnits;
     private List<ConceptData> dosingInstructions;
+    private List<EncounterTransaction.Concept> orderAttributes;
+    private List<OrderFrequencyData> frequencies = new ArrayList<>();
+
     public List<OrderFrequencyData> getFrequencies() {
         return frequencies;
     }
@@ -16,8 +21,6 @@ public class DrugOrderConfigResponse {
     public void setFrequencies(List<OrderFrequencyData> frequencies) {
         this.frequencies = frequencies;
     }
-
-    private List<OrderFrequencyData> frequencies = new ArrayList<>();
 
     public void setDoseUnits(List<ConceptData> doseUnits) {
         this.doseUnits = doseUnits;
@@ -57,5 +60,13 @@ public class DrugOrderConfigResponse {
 
     public List<ConceptData> getDosingInstructions() {
         return dosingInstructions;
+    }
+
+    public List<EncounterTransaction.Concept> getOrderAttributes() {
+        return orderAttributes;
+    }
+
+    public void setOrderAttributes(List<EncounterTransaction.Concept> orderAttributes) {
+        this.orderAttributes = orderAttributes;
     }
 }
