@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.openmrs.Concept;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -32,12 +34,15 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
     @Override
     public Collection<BahmniObservation> observationsFor(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits) {
-        List<String> conceptNames = new ArrayList<>();
-        for (Concept concept : concepts) {
-            conceptNames.add(concept.getName().getName());
+        if(CollectionUtils.isNotEmpty(concepts)){
+            List<String> conceptNames = new ArrayList<>();
+            for (Concept concept : concepts) {
+                conceptNames.add(concept.getName().getName());
+            }
+            List<Obs> observations = obsDao.getObsFor(patientUuid, conceptNames, numberOfVisits);
+            return omrsObsToBahmniObsMapper.map(observations,concepts);
         }
-        List<Obs> observations = obsDao.getObsFor(patientUuid, conceptNames, numberOfVisits);
-        return omrsObsToBahmniObsMapper.map(observations, concepts);
+        return Collections.EMPTY_LIST;
     }
 
     @Override

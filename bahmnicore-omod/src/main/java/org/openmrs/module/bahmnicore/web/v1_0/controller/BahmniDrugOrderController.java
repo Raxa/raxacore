@@ -3,11 +3,17 @@ package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.contract.drugorder.*;
+import org.bahmni.module.bahmnicore.service.BahmniObsService;
+import org.openmrs.Concept;
+import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.openmrs.DrugOrder;
+import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniOrderAttribute;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniProviderMapper;
+import org.openmrs.module.bahmniemrapi.drugorder.mapper.OrderAttributesMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class BahmniDrugOrderController extends BaseRestController{
@@ -26,7 +32,15 @@ public class BahmniDrugOrderController extends BaseRestController{
     private final String baseUrl = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/drugOrders";
     @Autowired
     private BahmniDrugOrderService drugOrderService;
+
+    @Autowired
+    private BahmniObsService bahmniObsService;
+
+    @Autowired
+    private ConceptService conceptService;
+
     private static Logger logger = Logger.getLogger(BahmniDrugOrderController.class);
+    private OrderAttributesMapper orderAttributesMapper = new OrderAttributesMapper();
 
     public BahmniDrugOrderController(BahmniDrugOrderService drugOrderService) {
         this.drugOrderService = drugOrderService;
@@ -42,15 +56,15 @@ public class BahmniDrugOrderController extends BaseRestController{
         logger.info("Retrieving active drug orders for patient with uuid " + patientUuid);
         List<DrugOrder> activeDrugOrders = drugOrderService.getActiveDrugOrders(patientUuid);
         logger.info(activeDrugOrders.size() + " active drug orders found");
-
         try {
-            return new BahmniDrugOrderMapper(new BahmniProviderMapper()).mapToResponse(activeDrugOrders);
+            List<BahmniObservation> orderAttributeObs = bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null);
+            List<BahmniDrugOrder> bahmniDrugOrders = new BahmniDrugOrderMapper(new BahmniProviderMapper()).mapToResponse(activeDrugOrders);
+            return orderAttributesMapper.map(bahmniDrugOrders,orderAttributeObs);
         } catch (IOException e) {
             logger.error("Could not parse dosing instructions",e);
             throw new RuntimeException("Could not parse dosing instructions",e);
         }
     }
-
 
     @RequestMapping(value = baseUrl, method = RequestMethod.GET)
     @ResponseBody
@@ -59,7 +73,9 @@ public class BahmniDrugOrderController extends BaseRestController{
                                                          @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits){
         List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrders(patientUuid, includeActiveVisit, numberOfVisits);
         try {
-            return new BahmniDrugOrderMapper(new BahmniProviderMapper()).mapToResponse(drugOrders);
+            List<BahmniObservation> orderAttributeObs =  bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null);
+            List<BahmniDrugOrder> bahmniDrugOrders = new BahmniDrugOrderMapper(new BahmniProviderMapper()).mapToResponse(drugOrders);
+            return orderAttributesMapper.map(bahmniDrugOrders,orderAttributeObs);
         } catch (IOException e) {
             logger.error("Could not parse drug order",e);
              throw new RuntimeException("Could not parse drug order",e);
@@ -70,6 +86,11 @@ public class BahmniDrugOrderController extends BaseRestController{
     @ResponseBody
     public DrugOrderConfigResponse getConfig() {
         return drugOrderService.getConfig();
+    }
+
+    private Collection<Concept> getOrdAttributeConcepts() {
+        Concept orderAttribute = conceptService.getConceptByName(BahmniOrderAttribute.ORDER_ATTRIBUTES_CONCEPT_NAME);
+        return orderAttribute== null? Collections.EMPTY_LIST :orderAttribute.getSetMembers();
     }
 
 }

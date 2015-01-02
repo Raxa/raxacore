@@ -60,6 +60,10 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
         assertEquals("Triomune-30", drugOrder3.getDrug().getName());
         assertEquals("2005-09-23 08:00:00.0", drugOrder3.getEffectiveStartDate().toString());
         assertEquals("2005-09-30 00:00:00.0", drugOrder3.getEffectiveStopDate().toString());
+        assertEquals(1, drugOrder3.getOrderAttributes().size());
+        assertEquals("dispensed", drugOrder3.getOrderAttributes().get(0).getName());
+        assertEquals("true", drugOrder3.getOrderAttributes().get(0).getValue());
+
 
         BahmniDrugOrder drugOrder4 = prescribedDrugOrders.get(3);
         assertEquals("adf4fb41-a41a-4ad6-8835-2f59889acf5a", drugOrder4.getVisit().getUuid());

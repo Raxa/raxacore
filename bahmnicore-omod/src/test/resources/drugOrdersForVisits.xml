@@ -26,6 +26,13 @@
     <concept concept_id="2004" retired="false" datatype_id="4" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-e601-4326-bb05-c6e11fe3d9ba"/>
     <concept_name concept_id="2004" name="Paracetamol" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="24" voided="false" uuid="49310077-e601-4326-bb05-c6e11fe3d9ba" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
+    <concept concept_id="2005" retired="false" datatype_id="4" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-eeee-4326-bb05-c6e11fe3d9ba"/>
+    <concept_name concept_id="2005" name="Order Attributes" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="25" voided="false" uuid="49310077-e601-4326-bb05-c6e11fe3dddd" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="2006" retired="false" datatype_id="10" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-1111-4326-bb05-c6e11fe3d9ba"/>
+    <concept_name concept_id="2006" name="dispensed" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="26" voided="false" uuid="11110077-e601-4326-bb05-c6e11fe3d9ba" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set="2005" concept_id="2006" concept_set_id="2001" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-eeee-4326-bb05-c6e11fe3d9ba" ></concept_set>
+
     <orders order_id="1005" order_type_id="1" encounter_id="1001" urgency="ROUTINE" concept_id="2004" orderer="1" care_setting="1" order_action="NEW" order_number="1" date_activated="2005-09-23 08:00:00.0" auto_expire_date="2005-09-30 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1024" uuid="6d0ae116-707a-4629-9850-f15206e63ab0"/>
     <orders order_id="1006" order_type_id="1" encounter_id="2001" urgency="ROUTINE" concept_id="792" orderer="1" care_setting="1" order_action="NEW" order_number="2" date_activated="2005-09-23 00:00:00.0" auto_expire_date="2005-09-29 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1024" uuid="92c1bdef-72d4-49d9-8a1f-804892f66acf"/>
 
@@ -44,5 +51,10 @@
                 dosing_instructions="{&quot;dose&quot;: &quot;2.5&quot;, &quot;doseUnits&quot;: &quot;Tablet&quot;}" duration="6" dispense_as_written="true" as_needed="false" frequency="2"/>
     <drug_order order_id="1007" drug_inventory_id="4001" dose="4.5" dose_units="51" dosing_type="org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions" route="22" frequency="1" duration="6" duration_units="27" dispense_as_written="true" as_needed="false"/>
     <drug_order order_id="1008" drug_inventory_id="2001" dosing_type="org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions" dosing_instructions="{&quot;dose&quot;: &quot;1.5&quot;, &quot;doseUnits&quot;: &quot;Tablet&quot;}" duration="15" dispense_as_written="true" as_needed="false" frequency="2"/>
+
+    <!--order attributes-->
+
+    <!--<obs obs_id="2001" person_id="1024" concept_id="2005" encounter_id="1001" obs_datetime="2008-08-01 00:00:00.0" location_id="1"  creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9a"/>-->
+    <obs obs_id="2002" person_id="1024" concept_id="2006" encounter_id="1001" obs_datetime="2008-08-01 00:00:00.0" order_id="1005" location_id="1" value_coded="7" comments="" creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="be48cdcb-6666-47e3-9f2e-2635032f3a9a"/>
 
 </dataset>
