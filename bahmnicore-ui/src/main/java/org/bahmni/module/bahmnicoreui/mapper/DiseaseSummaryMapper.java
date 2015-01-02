@@ -29,7 +29,7 @@ public class DiseaseSummaryMapper {
                 for (BahmniObservation observation : observationsfromConceptSet) {
                     String visitStartDateTime = getDateAsString(observation.getVisitStartDateTime());
                     String conceptName = observation.getConcept().getShortName()==null ?  observation.getConcept().getName(): observation.getConcept().getShortName();
-                    addToResultTable(result, visitStartDateTime, conceptName,observation.getValue(),observation.isAbnormal(),false);
+                    addToResultTable(result, visitStartDateTime, conceptName, observation.getValue(), observation.isAbnormal(), false);
                 }
             }
         }
@@ -120,7 +120,8 @@ public class DiseaseSummaryMapper {
     private String getObsValue(Object value) {
         if(value != null){
             if(value instanceof EncounterTransaction.Concept){
-                return ((EncounterTransaction.Concept) value).getName();
+                EncounterTransaction.Concept concept = (EncounterTransaction.Concept) value;
+                return (concept.getShortName() == null ? concept.getName() : concept.getShortName());
             }
             else if(value instanceof Boolean){
                 return (Boolean)value?"Yes":"No";

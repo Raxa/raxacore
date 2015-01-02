@@ -217,6 +217,18 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertTrue(conceptNames.contains("Weight"));
         assertTrue(conceptNames.contains("Systolic"));
         assertTrue(conceptNames.contains("Diastolic"));
+    }
 
+    @Test
+    public void shouldReturnShortNamesForCodedConceptObservations() throws Exception {
+        executeDataSet("observationsTestData.xml");
+        DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
+        diseaseDataParams.setNumberOfVisits(3);
+        ArrayList<String> obsConcepts = new ArrayList<String>(){{
+            add("CodedConcept");
+        }};
+        diseaseDataParams.setObsConcepts(obsConcepts);
+        DiseaseSummaryData diseaseSummary = bahmniDiseaseSummaryData.getDiseaseSummary("86526ed5-3c11-11de-a0ba-001e378eb67a", diseaseDataParams);
+        assertEquals("CCAnswer1", diseaseSummary.getTabularData().get("2008-09-18").get("CodedConcept").getValue());
     }
 }

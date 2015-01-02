@@ -28,7 +28,7 @@
     <concept_datatype concept_datatype_id="1" name="numeric" hl7_abbreviation="NM" description="numeric concept" date_created="2013-12-04 11:36:42" retired="0"/>
     <concept_datatype concept_datatype_id="2" name="text" hl7_abbreviation="ST" description="text concept" date_created="2013-12-04 11:36:42" retired="0"/>
     <concept_datatype concept_datatype_id="3" name="Boolean" hl7_abbreviation="BIT" description="boolean concept" date_created="2013-12-04 11:36:42" retired="0"/>
-    <concept_datatype concept_datatype_id="4" name="Coded" hl7_abbreviation="CWE" description="coded concept" date_created="2013-12-04 11:36:42" retired="0"/>
+    <concept_datatype concept_datatype_id="4" name="Coded" hl7_abbreviation="CWE" description="coded concept" date_created="2013-12-04 11:36:42" retired="0" uuid="8d4a48b6-c2cc-11de-8d13-0010c6dffd0f"/>
     <concept_datatype concept_datatype_id="5" name="N/A" hl7_abbreviation="ZZ" description="not associated" date_created="2013-12-04 11:36:42" retired="0"/>
 
     <concept concept_id="7" retired="false" datatype_id="4" class_id="11" is_set="false" creator="1" date_created="2008-08-15 13:52:53.0" version="" uuid="b055abd8-a420-4a11-8b98-02ee170a7b54"/>
@@ -99,6 +99,14 @@
     <concept_set concept_id="19021" concept_set="19011" concept_set_id="115" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
 
 
+    <concept concept_id="31041" retired="0" datatype_id="4" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="555d4557-885b-4837-98f7-0ebb94044498" />
+    <concept_name concept_id="31041" name="CodedConcept" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="921302" voided="false" uuid="dd2dkkb7-955b-4837-80f7-0ejj94044444" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="310411" retired="0" datatype_id="5" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="5d2d4cmt-9ccb-4837-98f7-0ebb94044498" />
+    <concept_name concept_id="310411" name="CodedConceptAnswer1" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="8182" voided="false" uuid="kd2dkff7-955b-4837-80f7-0ebb94044444" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_name concept_id="310411" name="CCAnswer1" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="81890" voided="false" uuid="kd2dcat7-955b-4837-8nn7-oopof94044444" concept_name_type="SHORT" locale_preferred="0"/>
+    <concept_answer concept_answer_id="5000" concept_id="31041" answer_concept="310411" creator="1" date_created="2004-08-12 00:00:00.0"/>
+
     <location location_id="1" name="OPD Room 1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
     <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14" changed_by="1" date_changed="2012-10-23 18:04:14" retired="0" uuid="f01c54cb-2225-471a-9cd5-d348552c337c"/>
     <visit visit_id="901" date_started="2008-08-18 00:00:00" date_created="2008-08-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-08-20 04:08:16" location_id="2" creator="1" changed_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5b" voided="0"/>
@@ -133,4 +141,6 @@
     <obs obs_id="111111" concept_id="19021" person_id="1024" value_numeric="110" encounter_id="39" obs_datetime="2008-09-18 15:09:05.0" date_created="2008-09-18 15:09:05.0" uuid="633dc076-1c8f-11e4-bb80-f18addmujir" creator="1" voided="0" />
   <!--enc 40-->
     <obs obs_id="211111" concept_id="19021" person_id="1024" value_numeric="120" encounter_id="40" obs_datetime="2008-09-18 16:09:05.0" date_created="2008-09-18 15:09:05.0" uuid="633dc076-1c8f-11e4-bb80-f18addkakak" creator="1" voided="0" />
+
+    <obs obs_id="3104111" concept_id="31041" person_id="1024" value_coded="310411" encounter_id="40" obs_datetime="2008-09-18 16:09:05.0" date_created="2008-09-18 15:09:05.0" uuid="63nnc076-cats-11e4-bb80-f18addkakak" creator="1" voided="0" />
 </dataset>
