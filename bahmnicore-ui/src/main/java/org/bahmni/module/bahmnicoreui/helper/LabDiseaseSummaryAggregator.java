@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicoreui.helper;
 
 import org.bahmni.module.bahmnicore.service.OrderService;
+import org.bahmni.module.bahmnicoreui.contract.ConceptDetails;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
 import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryMapper;
 import org.openmrs.Concept;
@@ -37,9 +38,31 @@ public class LabDiseaseSummaryAggregator {
         if(!concepts.isEmpty()){
             List<LabOrderResult> labOrderResults = labOrderResultsService.getAllForConcepts(patient, conceptNames, getVisitsWithLabOrdersFor(patient,numberOfVisits));
             diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapLabResults(labOrderResults));
-            diseaseSummaryData.addConceptNames(conceptHelper.getLeafConceptNames(conceptNames));
+            diseaseSummaryData.addConceptDetails(conceptHelper.getLeafConceptDetails(conceptNames));
+            mapLowNormalAndHiNormal(diseaseSummaryData, labOrderResults);
         }
         return diseaseSummaryData;
+    }
+
+    private void mapLowNormalAndHiNormal(DiseaseSummaryData diseaseSummaryData, List<LabOrderResult> labOrderResults) {
+        for (ConceptDetails conceptDetails : diseaseSummaryData.getConceptDetails()) {
+            LabOrderResult labOrderResult = findLabOrder(conceptDetails.getName(), labOrderResults);
+            if (labOrderResult!= null){
+                conceptDetails.setHiNormal(labOrderResult.getMaxNormal());
+                conceptDetails.setLowNormal(labOrderResult.getMinNormal());
+                conceptDetails.setUnits(labOrderResult.getTestUnitOfMeasurement() != null ? labOrderResult.getTestUnitOfMeasurement() : conceptDetails.getUnits());
+            }
+        }
+
+    }
+
+    private LabOrderResult findLabOrder(String name, List<LabOrderResult> labOrderResults) {
+        for (LabOrderResult labOrderResult : labOrderResults) {
+            if(labOrderResult.getTestName().equals(name)){
+                return labOrderResult;
+            };
+        }
+        return null;
     }
 
     private List<Visit> getVisitsWithLabOrdersFor(Patient patient, Integer numberOfVisits) {

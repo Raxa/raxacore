@@ -40,17 +40,24 @@ public class DiseaseSummaryDataTest {
     @Test
     public void shouldAddConceptNamesToExistingSetOfConceptNames(){
         DiseaseSummaryData diseaseSummaryData = new DiseaseSummaryData();
-        Set<String> existingConceptNames = new LinkedHashSet<>();
-        existingConceptNames.add("blood");
-        existingConceptNames.add("fluid");
+        Set<ConceptDetails> existingConceptNames = new LinkedHashSet<>();
+        ConceptDetails bloodConceptDetails = new ConceptDetails();
+        bloodConceptDetails.setName("blood");
+        ConceptDetails fluidConceptDetails = new ConceptDetails();
+        fluidConceptDetails.setName("fluid");
+        existingConceptNames.add(bloodConceptDetails);
+        existingConceptNames.add(fluidConceptDetails);
 
-        Set<String> newConceptNames = new LinkedHashSet<>();
-        newConceptNames.add("temperature");
-        diseaseSummaryData.addConceptNames(existingConceptNames);
-        diseaseSummaryData.addConceptNames(newConceptNames);
+        Set<ConceptDetails> newConceptNames = new LinkedHashSet<>();
+        ConceptDetails temperatureConceptDetails = new ConceptDetails();
+        temperatureConceptDetails.setName("temperature");
+        newConceptNames.add(temperatureConceptDetails);
+        diseaseSummaryData.addConceptDetails(existingConceptNames);
+        diseaseSummaryData.addConceptDetails(newConceptNames);
 
-        assertEquals(diseaseSummaryData.getConceptNames().size(), 3);
-        assertTrue(diseaseSummaryData.getConceptNames().contains("temperature"));
+        Set<ConceptDetails> conceptDetails = diseaseSummaryData.getConceptDetails();
+        assertEquals(conceptDetails.size(), 3);
+        assertTrue(conceptDetails.contains(temperatureConceptDetails));
     }
 
     private Map<String,ConceptValue> createConceptValueMap(Map.Entry<String,String>... values){

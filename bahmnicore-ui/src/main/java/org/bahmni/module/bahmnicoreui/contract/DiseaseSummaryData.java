@@ -8,7 +8,7 @@ import java.util.Set;
 public class DiseaseSummaryData {
 
     private Map<String,Map<String, ConceptValue>> tabularData = new LinkedHashMap<>();
-    private Set<String> conceptNames = new LinkedHashSet<>();
+    private Set<ConceptDetails> conceptDetails = new LinkedHashSet<>();
 
     public Map<String, Map<String, ConceptValue>> getTabularData() {
         return tabularData;
@@ -34,20 +34,20 @@ public class DiseaseSummaryData {
         return valuesForVisit;
     }
 
-    public void setConceptNames(Set<String> conceptNames) {
-        this.conceptNames = conceptNames;
+    public void setConceptDetails(Set<ConceptDetails> conceptNames) {
+        this.conceptDetails = conceptNames;
     }
 
-    public Set<String> getConceptNames() {
-        return conceptNames;
+    public Set<ConceptDetails> getConceptDetails() {
+        return conceptDetails;
     }
 
-    public void addConceptNames(Set<String> conceptNames) {
-        this.conceptNames.addAll(conceptNames);
+    public void addConceptDetails(Set<ConceptDetails> conceptDetails) {
+        this.conceptDetails.addAll(conceptDetails);
     }
 
     public void concat(DiseaseSummaryData diseaseSummaryData){
         addTabularData(diseaseSummaryData.getTabularData());
-        addConceptNames(diseaseSummaryData.getConceptNames());
+        addConceptDetails(diseaseSummaryData.getConceptDetails());
     }
 }

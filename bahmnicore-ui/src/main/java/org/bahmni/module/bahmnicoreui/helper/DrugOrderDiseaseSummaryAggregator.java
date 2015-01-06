@@ -3,7 +3,6 @@ package org.bahmni.module.bahmnicoreui.helper;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
-import org.bahmni.module.bahmnicoreui.helper.ConceptHelper;
 import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryMapper;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
@@ -13,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class DrugOrderDiseaseSummaryAggregator {
@@ -43,15 +39,8 @@ public class DrugOrderDiseaseSummaryAggregator {
                 logger.error("Could not parse dosing instructions",e);
                 throw new RuntimeException("Could not parse dosing instructions",e);
             }
-            diseaseSummaryData.addConceptNames(conceptNamesAsSet(conceptNames));
+            diseaseSummaryData.addConceptDetails(conceptHelper.getConceptDetails(conceptNames));
         }
         return diseaseSummaryData;
-    }
-
-    private Set<String> conceptNamesAsSet(List<String> conceptNames) {
-        if(conceptNames == null || conceptNames.isEmpty()) {
-            return Collections.EMPTY_SET;
-        }
-        return new LinkedHashSet<>(conceptNames);
     }
 }

@@ -1,13 +1,16 @@
 package org.bahmni.module.bahmnicoreui.helper;
 
+import org.bahmni.module.bahmnicoreui.contract.ConceptDetails;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
+import org.openmrs.ConceptNumeric;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 
 import java.util.*;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
+import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
 
 public  class ConceptHelper {
 
@@ -29,9 +32,9 @@ public  class ConceptHelper {
         return concepts;
     }
 
-    public Set<String> getLeafConceptNames(List<String> obsConcepts) {
+    public Set<ConceptDetails> getLeafConceptDetails(List<String> obsConcepts) {
         if(obsConcepts != null && !obsConcepts.isEmpty()){
-            Set<String> leafConcepts = new LinkedHashSet<>();
+            Set<ConceptDetails> leafConcepts = new LinkedHashSet<>();
             for (String conceptName : obsConcepts) {
                 Concept concept = conceptService.getConceptByName(conceptName);
                 addLeafConcepts(concept, null, leafConcepts);
@@ -41,7 +44,7 @@ public  class ConceptHelper {
         return Collections.EMPTY_SET;
     }
 
-    protected void addLeafConcepts(Concept rootConcept, Concept parentConcept, Collection<String> leafConcepts) {
+    protected void addLeafConcepts(Concept rootConcept, Concept parentConcept, Set<ConceptDetails> leafConcepts) {
         if(rootConcept != null){
             if(rootConcept.isSet()){
                 for (Concept setMember : rootConcept.getSetMembers()) {
@@ -55,11 +58,25 @@ public  class ConceptHelper {
                         conceptToAdd = parentConcept;
                     }
                 }
-                String fullName = getConceptName(conceptToAdd, ConceptNameType.FULLY_SPECIFIED);
-                String shortName = getConceptName(conceptToAdd, ConceptNameType.SHORT);
-                leafConcepts.add(shortName==null?fullName:shortName);
+                leafConcepts.add(createConceptDetails(conceptToAdd));
             }
         }
+    }
+
+    private ConceptDetails createConceptDetails(Concept conceptToAdd) {
+        Concept concept = new HibernateLazyLoader().load(conceptToAdd);
+
+        String fullName = getConceptName(concept, ConceptNameType.FULLY_SPECIFIED);
+        String shortName = getConceptName(concept, ConceptNameType.SHORT);
+        ConceptDetails conceptDetails = new ConceptDetails();
+        conceptDetails.setName(shortName == null ? fullName : shortName);
+        if (concept.isNumeric()){
+            ConceptNumeric numericConcept = (ConceptNumeric) concept;
+            conceptDetails.setUnits(numericConcept.getUnits());
+            conceptDetails.setHiNormal(numericConcept.getHiNormal());
+            conceptDetails.setLowNormal(numericConcept.getLowNormal());
+        }
+        return conceptDetails;
     }
 
     protected String getConceptName(Concept rootConcept, ConceptNameType conceptNameType) {
@@ -74,5 +91,16 @@ public  class ConceptHelper {
     protected boolean shouldBeExcluded(Concept rootConcept) {
         return ETObsToBahmniObsMapper.ABNORMAL_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName()) ||
                 ETObsToBahmniObsMapper.DURATION_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName());
+    }
+
+    public Set<ConceptDetails> getConceptDetails(List<String> conceptNames) {
+        LinkedHashSet<ConceptDetails> conceptDetails = new LinkedHashSet<>();
+        for (String conceptName : conceptNames) {
+            Concept conceptByName = conceptService.getConceptByName(conceptName);
+            if (conceptByName != null){
+                conceptDetails.add(createConceptDetails(conceptByName));
+            }
+        }
+        return conceptDetails;
     }
 }

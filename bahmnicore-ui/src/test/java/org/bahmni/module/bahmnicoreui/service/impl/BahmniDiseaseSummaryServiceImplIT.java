@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicoreui.service.impl;
 
+import org.bahmni.module.bahmnicoreui.contract.ConceptDetails;
 import org.bahmni.module.bahmnicoreui.contract.ConceptValue;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
@@ -12,6 +13,8 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -203,20 +206,21 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         executeDataSet("observationsTestData.xml");
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(3);
-        ArrayList<String> obsConcepts = new ArrayList<String>(){{
+        List<String> obsConcepts = new ArrayList<String>(){{
             add("Blood Pressure");
             add("Weight");
         }};
         diseaseDataParams.setObsConcepts(obsConcepts);
         DiseaseSummaryData diseaseSummary = bahmniDiseaseSummaryData.getDiseaseSummary("86526ed5-3c11-11de-a0ba-001e378eb67a", diseaseDataParams);
-        Set<String> conceptNames = diseaseSummary.getConceptNames();
+        Set<ConceptDetails> conceptNames = diseaseSummary.getConceptDetails();
 
 
         assertNotNull(conceptNames);
         assertEquals(3, conceptNames.size());
-        assertTrue(conceptNames.contains("Weight"));
-        assertTrue(conceptNames.contains("Systolic"));
-        assertTrue(conceptNames.contains("Diastolic"));
+        Iterator<ConceptDetails> conceptDetailsIterator = conceptNames.iterator();
+        assertEquals("Systolic", conceptDetailsIterator.next().getName());
+        assertEquals("Diastolic", conceptDetailsIterator.next().getName());
+        assertEquals("Weight", conceptDetailsIterator.next().getName());
     }
 
     @Test

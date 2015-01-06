@@ -2,7 +2,6 @@ package org.bahmni.module.bahmnicoreui.helper;
 
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
-import org.bahmni.module.bahmnicoreui.helper.ConceptHelper;
 import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryMapper;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
@@ -33,7 +32,7 @@ public class ObsDiseaseSummaryAggregator {
         if(!concepts.isEmpty()){
             Collection<BahmniObservation> bahmniObservations = bahmniObsService.observationsFor(patient.getUuid(), concepts, numberOfVisits);
             diseaseSummaryData.setTabularData(diseaseSummaryMapper.mapObservations(bahmniObservations));
-            diseaseSummaryData.addConceptNames(conceptHelper.getLeafConceptNames(conceptNames));
+            diseaseSummaryData.addConceptDetails(conceptHelper.getLeafConceptDetails(conceptNames));
         }
         return diseaseSummaryData;
     }
