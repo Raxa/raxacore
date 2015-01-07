@@ -2753,4 +2753,21 @@
             'b8bbf83e-645f-451f-8efe-a0db56f09676');
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201501071717" author="Vikash,Indraneel">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept_name where name='Order Attributes' and concept_name_type='FULLY_SPECIFIED' and voided=0;
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding Order Attributes concept set</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id,'Order Attributes','Order Attributes', 'N/A', 'Misc', true);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Order', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Attributes', 1);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

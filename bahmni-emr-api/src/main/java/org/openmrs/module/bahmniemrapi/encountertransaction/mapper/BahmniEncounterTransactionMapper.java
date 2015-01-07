@@ -44,7 +44,7 @@ public class BahmniEncounterTransactionMapper {
         List<BahmniDiagnosisRequest> bahmniDiagnoses = bahmniDiagnosisMapper.map(encounterTransaction.getDiagnoses());
         bahmniEncounterTransaction.setBahmniDiagnoses(bahmniDiagnoses);
         bahmniEncounterTransaction.setAccessionNotes(accessionNotesMapper.map(encounterTransaction));
-        List<BahmniObservation> bahmniObservations = fromETObsToBahmniObs.create(encounterTransaction.getObservations(), encounterTransaction.getEncounterDateTime());
+        List<BahmniObservation> bahmniObservations = fromETObsToBahmniObs.create(encounterTransaction.getObservations(), encounterTransaction.getEncounterDateTime(), encounterTransaction.getEncounterUuid());
         bahmniEncounterTransaction.setObservations(obsRelationshipMapper.map(bahmniObservations, encounterTransaction.getEncounterUuid(), encounterTransaction.getProviders()));
         addPatientIdentifier(bahmniEncounterTransaction, encounterTransaction);
         addEncounterType(encounterTransaction, bahmniEncounterTransaction);

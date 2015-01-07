@@ -4,19 +4,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.powermock.api.mockito.PowerMockito;
 
 import java.util.Collection;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
-import org.powermock.api.mockito.PowerMockito;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class BahmniObservationTest {
     private EncounterTransaction.Observation eTObservation;
@@ -46,7 +46,7 @@ public class BahmniObservationTest {
 
         eTObservation.addGroupMember(createETObservation("child-uuid", "child-value", concept, obsDate));
 
-        BahmniObservation observation =  new ETObsToBahmniObsMapper(conceptService).create(eTObservation, new Date());
+        BahmniObservation observation =  new ETObsToBahmniObsMapper(conceptService).create(eTObservation, new Date(), "encounter-uuid");
         assertEquals("comment", observation.getComment());
         assertEquals("obs-uuid", observation.getUuid());
         assertEquals("concept-uuid",observation.getConceptUuid());
@@ -57,10 +57,12 @@ public class BahmniObservationTest {
         assertEquals("obs-value",observation.getValue());
         assertEquals(true, observation.getVoided());
         assertEquals("chumma", observation.getVoidReason());
+        assertEquals("encounter-uuid",observation.getEncounterUuid());
 
         BahmniObservation child = groupMembers.iterator().next();
         assertEquals("child-uuid", child.getUuid());
         assertEquals("child-value", child.getValue());
+        assertEquals("encounter-uuid",child.getEncounterUuid());
     }
 
     @Test

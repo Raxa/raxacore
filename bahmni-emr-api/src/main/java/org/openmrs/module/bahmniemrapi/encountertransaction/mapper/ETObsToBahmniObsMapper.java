@@ -24,27 +24,28 @@ public class ETObsToBahmniObsMapper {
         this.conceptService = conceptService;
     }
 
-    public List<BahmniObservation> create(List<EncounterTransaction.Observation> allObservations, Date encounterDateTime) {
+    public List<BahmniObservation> create(List<EncounterTransaction.Observation> allObservations, Date encounterDateTime, String encounterUuid) {
         List<BahmniObservation> bahmniObservations = new ArrayList<>();
         for (EncounterTransaction.Observation observation : allObservations) {
-            bahmniObservations.add(create(observation, encounterDateTime));
+            bahmniObservations.add(create(observation, encounterDateTime, encounterUuid));
         }
         return bahmniObservations;
     }
 
-    public BahmniObservation create(EncounterTransaction.Observation observation, Date encounterDateTime) {
-        return map(observation, encounterDateTime, null,
+    public BahmniObservation create(EncounterTransaction.Observation observation, Date encounterDateTime, String encounterUuid) {
+        return map(observation, encounterDateTime,encounterUuid , null,
                 Arrays.asList(conceptService.getConceptByUuid(observation.getConceptUuid())),
                 false);
     }
 
     BahmniObservation map(EncounterTransaction.Observation observation, Date encounterDateTime,
-                          Date visitStartDateTime, List<Concept> rootConcepts, boolean flatten) {
+                          String encounterUuid, Date visitStartDateTime, List<Concept> rootConcepts, boolean flatten) {
         BahmniObservation bahmniObservation = new BahmniObservation();
         bahmniObservation.setEncounterTransactionObservation(observation);
         bahmniObservation.setEncounterDateTime(encounterDateTime);
         bahmniObservation.setVisitStartDateTime(visitStartDateTime);
         bahmniObservation.setConceptSortWeight(ConceptSortWeightUtil.getSortWeightFor(bahmniObservation.getConcept().getName(), rootConcepts));
+        bahmniObservation.setEncounterUuid(encounterUuid);
         if (CONCEPT_DETAILS_CONCEPT_CLASS.equals(observation.getConcept().getConceptClass()) && flatten) {
             for (EncounterTransaction.Observation member : observation.getGroupMembers()) {
                 if (member.getVoided()) {
@@ -65,7 +66,7 @@ public class ETObsToBahmniObsMapper {
             }
         } else if (observation.getGroupMembers().size() > 0) {
             for (EncounterTransaction.Observation groupMember : observation.getGroupMembers()) {
-                bahmniObservation.addGroupMember(map(groupMember, encounterDateTime, visitStartDateTime, rootConcepts, flatten));
+                bahmniObservation.addGroupMember(map(groupMember, encounterDateTime,encounterUuid , visitStartDateTime, rootConcepts, flatten));
             }
         } else {
             bahmniObservation.setValue(observation.getValue());

@@ -6,15 +6,17 @@ public class BahmniOrderAttribute {
     private String value;
     private String obsUuid;
     private String conceptUuid;
+    private String encounterUuid;
 
     public BahmniOrderAttribute() {
     }
 
-    public BahmniOrderAttribute(String name, String value, String obsUuid, String conceptUuid) {
+    public BahmniOrderAttribute(String name, String value, String obsUuid, String conceptUuid, String encounterUuid) {
         this.name = name;
         this.value = value;
         this.obsUuid = obsUuid;
         this.conceptUuid = conceptUuid;
+        this.encounterUuid = encounterUuid;
     }
 
     public void setName(String name) {
@@ -49,4 +51,11 @@ public class BahmniOrderAttribute {
         this.conceptUuid = conceptUuid;
     }
 
+    public String getEncounterUuid() {
+        return encounterUuid;
+    }
+
+    public void setEncounterUuid(String encounterUuid) {
+        this.encounterUuid = encounterUuid;
+    }
 }

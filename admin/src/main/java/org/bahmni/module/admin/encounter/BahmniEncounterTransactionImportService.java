@@ -56,7 +56,7 @@ public class BahmniEncounterTransactionImportService {
             BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
             bahmniEncounterTransaction.setPatientUuid(patient.getUuid());
             bahmniEncounterTransaction.setBahmniDiagnoses(allDiagnosis);
-            bahmniEncounterTransaction.setObservations(fromETObsToBahmniObs.create(allObservations, encounterRow.getEncounterDate()));
+            bahmniEncounterTransaction.setObservations(fromETObsToBahmniObs.create(allObservations, encounterRow.getEncounterDate(), null));
 
             bahmniEncounterTransaction.setEncounterDateTime(encounterRow.getEncounterDate());
             bahmniEncounterTransaction.setEncounterType(encounterType);

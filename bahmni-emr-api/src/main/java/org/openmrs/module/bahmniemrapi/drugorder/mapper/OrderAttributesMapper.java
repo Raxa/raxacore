@@ -18,7 +18,13 @@ public class OrderAttributesMapper {
             for(BahmniObservation bahmniObservation : observations){
                 if(bahmniDrugOrderMap.containsKey(bahmniObservation.getOrderUuid())){
                     BahmniDrugOrder bahmniDrugOrder = bahmniDrugOrderMap.get(bahmniObservation.getOrderUuid());
-                    BahmniOrderAttribute bahmniOrderAttribute = new BahmniOrderAttribute(bahmniObservation.getConcept().getName(),bahmniObservation.getValue().toString(),bahmniObservation.getUuid(), bahmniObservation.getConceptUuid());
+                    BahmniOrderAttribute bahmniOrderAttribute =
+                            new BahmniOrderAttribute(
+                                    bahmniObservation.getConcept().getName(),
+                                    bahmniObservation.getValue().toString(),
+                                    bahmniObservation.getUuid(),
+                                    bahmniObservation.getConceptUuid(),
+                                    bahmniObservation.getEncounterUuid());
                     addOrderAttributes(bahmniDrugOrder, bahmniOrderAttribute);
                 }
             }

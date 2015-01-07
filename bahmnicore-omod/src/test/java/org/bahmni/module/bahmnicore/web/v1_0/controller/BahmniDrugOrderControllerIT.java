@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTest {
@@ -64,7 +65,7 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
         assertEquals("dispensed", drugOrder3.getOrderAttributes().get(0).getName());
         assertEquals("true", drugOrder3.getOrderAttributes().get(0).getValue());
         assertEquals("be48cdcb-6666-47e3-9f2e-2635032f3a9a", drugOrder3.getOrderAttributes().get(0).getObsUuid());
-
+        assertNotNull(drugOrder3.getOrderAttributes().get(0).getEncounterUuid());
 
         BahmniDrugOrder drugOrder4 = prescribedDrugOrders.get(3);
         assertEquals("adf4fb41-a41a-4ad6-8835-2f59889acf5a", drugOrder4.getVisit().getUuid());
