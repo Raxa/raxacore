@@ -15,10 +15,11 @@ import java.util.List;
 public class BahmniDrugOrderMapper {
 
     private BahmniProviderMapper providerMapper;
-    private OrderAttributesMapper orderAttributesMapper = new OrderAttributesMapper();
+    private OrderAttributesMapper orderAttributesMapper;
 
-    public BahmniDrugOrderMapper(BahmniProviderMapper providerMapper) {
+    public BahmniDrugOrderMapper(BahmniProviderMapper providerMapper, OrderAttributesMapper orderAttributesMapper) {
         this.providerMapper = providerMapper;
+        this.orderAttributesMapper = orderAttributesMapper;
     }
 
     public List<BahmniDrugOrder> mapToResponse(List<DrugOrder> activeDrugOrders, Collection<BahmniObservation> orderAttributeObs) throws IOException {

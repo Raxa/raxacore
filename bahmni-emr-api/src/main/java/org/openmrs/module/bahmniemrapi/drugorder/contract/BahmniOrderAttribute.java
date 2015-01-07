@@ -1,18 +1,20 @@
 package org.openmrs.module.bahmniemrapi.drugorder.contract;
 
 public class BahmniOrderAttribute {
-    public static final String ORDER_ATTRIBUTES_CONCEPT_NAME= "Order Attributes";
+    public static final String ORDER_ATTRIBUTES_CONCEPT_SET_NAME = "Order Attributes";
     private String name;
     private String value;
-    private String uuid;
+    private String obsUuid;
+    private String conceptUuid;
 
     public BahmniOrderAttribute() {
     }
 
-    public BahmniOrderAttribute(String name, String value, String uuid) {
+    public BahmniOrderAttribute(String name, String value, String obsUuid, String conceptUuid) {
         this.name = name;
         this.value = value;
-        this.uuid = uuid;
+        this.obsUuid = obsUuid;
+        this.conceptUuid = conceptUuid;
     }
 
     public void setName(String name) {
@@ -31,11 +33,20 @@ public class BahmniOrderAttribute {
         return value;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getObsUuid() {
+        return obsUuid;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setObsUuid(String obsUuid) {
+        this.obsUuid = obsUuid;
     }
+
+    public String getConceptUuid() {
+        return conceptUuid;
+    }
+
+    public void setConceptUuid(String conceptUuid) {
+        this.conceptUuid = conceptUuid;
+    }
+
 }

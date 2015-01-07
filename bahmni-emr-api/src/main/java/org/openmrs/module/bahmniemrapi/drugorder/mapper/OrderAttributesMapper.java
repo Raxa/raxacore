@@ -5,9 +5,11 @@ import org.apache.commons.collections.MapUtils;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniOrderAttribute;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+@Component
 public class OrderAttributesMapper {
 
     public List<BahmniDrugOrder> map(List<BahmniDrugOrder> drugOrders, Collection<BahmniObservation> observations){
@@ -16,7 +18,7 @@ public class OrderAttributesMapper {
             for(BahmniObservation bahmniObservation : observations){
                 if(bahmniDrugOrderMap.containsKey(bahmniObservation.getOrderUuid())){
                     BahmniDrugOrder bahmniDrugOrder = bahmniDrugOrderMap.get(bahmniObservation.getOrderUuid());
-                    BahmniOrderAttribute bahmniOrderAttribute = new BahmniOrderAttribute(bahmniObservation.getConcept().getName(),"true",bahmniObservation.getUuid());
+                    BahmniOrderAttribute bahmniOrderAttribute = new BahmniOrderAttribute(bahmniObservation.getConcept().getName(),bahmniObservation.getValue().toString(),bahmniObservation.getUuid(), bahmniObservation.getConceptUuid());
                     addOrderAttributes(bahmniDrugOrder, bahmniOrderAttribute);
                 }
             }

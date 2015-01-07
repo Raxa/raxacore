@@ -21,7 +21,8 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
     private Boolean isAbnormal;
     private Long duration;
     private String type;
-    
+    private String encounterUuid;
+
     private int conceptSortWeight;
 
     public BahmniObservation() {
@@ -267,5 +268,13 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + conceptSortWeight;
         return result;
+    }
+
+    public String getEncounterUuid() {
+        return encounterUuid;
+    }
+
+    public void setEncounterUuid(String encounterUuid) {
+        this.encounterUuid = encounterUuid;
     }
 }

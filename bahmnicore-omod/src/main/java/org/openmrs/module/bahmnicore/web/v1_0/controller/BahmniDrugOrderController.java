@@ -7,15 +7,20 @@ import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniOrderAttribute;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniProviderMapper;
+import org.openmrs.module.bahmniemrapi.drugorder.mapper.OrderAttributesMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,6 +47,8 @@ public class BahmniDrugOrderController extends BaseRestController{
 
     private static Logger logger = Logger.getLogger(BahmniDrugOrderController.class);
 
+    private OrderAttributesMapper orderAttributesMapper;
+
     public BahmniDrugOrderController(BahmniDrugOrderService drugOrderService) {
         this.drugOrderService = drugOrderService;
     }
@@ -58,7 +65,7 @@ public class BahmniDrugOrderController extends BaseRestController{
         logger.info(activeDrugOrders.size() + " active drug orders found");
         try {
             Collection<BahmniObservation> orderAttributeObs = bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null);
-            return new BahmniDrugOrderMapper(new BahmniProviderMapper()).mapToResponse(activeDrugOrders,orderAttributeObs);
+            return new BahmniDrugOrderMapper(new BahmniProviderMapper(), getOrderAttributesMapper()).mapToResponse(activeDrugOrders, orderAttributeObs);
         } catch (IOException e) {
             logger.error("Could not parse dosing instructions",e);
             throw new RuntimeException("Could not parse dosing instructions",e);
@@ -73,7 +80,7 @@ public class BahmniDrugOrderController extends BaseRestController{
         List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrders(patientUuid, includeActiveVisit, numberOfVisits);
         try {
             Collection<BahmniObservation> orderAttributeObs =  bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null);
-            return new BahmniDrugOrderMapper(new BahmniProviderMapper()).mapToResponse(drugOrders, orderAttributeObs);
+            return new BahmniDrugOrderMapper(new BahmniProviderMapper(), getOrderAttributesMapper()).mapToResponse(drugOrders, orderAttributeObs);
         } catch (IOException e) {
             logger.error("Could not parse drug order",e);
              throw new RuntimeException("Could not parse drug order",e);
@@ -87,8 +94,15 @@ public class BahmniDrugOrderController extends BaseRestController{
     }
 
     private Collection<Concept> getOrdAttributeConcepts() {
-        Concept orderAttribute = conceptService.getConceptByName(BahmniOrderAttribute.ORDER_ATTRIBUTES_CONCEPT_NAME);
+        Concept orderAttribute = conceptService.getConceptByName(BahmniOrderAttribute.ORDER_ATTRIBUTES_CONCEPT_SET_NAME);
         return orderAttribute== null? Collections.EMPTY_LIST :orderAttribute.getSetMembers();
+    }
+
+    private OrderAttributesMapper getOrderAttributesMapper(){
+        if(orderAttributesMapper == null){
+            orderAttributesMapper = new OrderAttributesMapper();
+        }
+        return orderAttributesMapper;
     }
 
 }

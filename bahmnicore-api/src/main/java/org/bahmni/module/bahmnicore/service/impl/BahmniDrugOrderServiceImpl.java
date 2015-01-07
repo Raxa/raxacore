@@ -111,7 +111,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     private List<EncounterTransaction.Concept> fetchOrderAttributeConcepts() {
-        Concept orderAttributesConceptSet = conceptService.getConceptByName(BahmniOrderAttribute.ORDER_ATTRIBUTES_CONCEPT_NAME);
+        Concept orderAttributesConceptSet = conceptService.getConceptByName(BahmniOrderAttribute.ORDER_ATTRIBUTES_CONCEPT_SET_NAME);
         if(orderAttributesConceptSet != null){
             List<EncounterTransaction.Concept> etOrderAttributeConcepts = new ArrayList<>();
             List<Concept> orderAttributes = orderAttributesConceptSet.getSetMembers();

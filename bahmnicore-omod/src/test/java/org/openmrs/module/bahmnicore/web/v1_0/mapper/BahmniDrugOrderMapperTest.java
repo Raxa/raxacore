@@ -10,28 +10,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.openmrs.DrugOrder;
-import org.openmrs.Encounter;
-import org.openmrs.Person;
-import org.openmrs.SimpleDosingInstructions;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniProviderMapper;
+import org.openmrs.module.bahmniemrapi.drugorder.mapper.OrderAttributesMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.util.LocaleUtility;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -83,7 +75,7 @@ public class BahmniDrugOrderMapperTest {
         List<DrugOrder> drugOrderList = new ArrayList<>();
         drugOrderList.add(drugOrder1);
 
-        List<BahmniDrugOrder> mappedDrugOrders = new BahmniDrugOrderMapper(providerMapper).mapToResponse(drugOrderList, null);
+        List<BahmniDrugOrder> mappedDrugOrders = new BahmniDrugOrderMapper(providerMapper, new OrderAttributesMapper()).mapToResponse(drugOrderList, null);
         assertEquals(1, mappedDrugOrders.size());
         BahmniDrugOrder mappedOrder = mappedDrugOrders.get(0);
         EncounterTransaction.DosingInstructions dosingInstructions = mappedOrder.getDosingInstructions();
@@ -131,7 +123,7 @@ public class BahmniDrugOrderMapperTest {
         List<DrugOrder> drugOrderList = new ArrayList<>();
         drugOrderList.add(drugOrder1);
 
-        List<BahmniDrugOrder> mappedDrugOrders = new BahmniDrugOrderMapper(providerMapper).mapToResponse(drugOrderList, null);
+        List<BahmniDrugOrder> mappedDrugOrders = new BahmniDrugOrderMapper(providerMapper, new OrderAttributesMapper()).mapToResponse(drugOrderList, null);
         assertEquals(1, mappedDrugOrders.size());
         BahmniDrugOrder mappedOrder = mappedDrugOrders.get(0);
 

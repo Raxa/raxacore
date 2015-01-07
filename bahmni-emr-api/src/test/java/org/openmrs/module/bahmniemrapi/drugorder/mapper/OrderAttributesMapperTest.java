@@ -39,6 +39,6 @@ public class OrderAttributesMapperTest {
 
         assertEquals(1,bahmniDrugOrderList.get(0).getOrderAttributes().size());
         assertEquals("dispensed", bahmniDrugOrderList.get(0).getOrderAttributes().get(0).getName());
-        assertEquals("obs-uuid", bahmniDrugOrderList.get(0).getOrderAttributes().get(0).getUuid());
+        assertEquals("obs-uuid", bahmniDrugOrderList.get(0).getOrderAttributes().get(0).getObsUuid());
     }
 }
