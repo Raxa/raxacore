@@ -55,16 +55,21 @@ public class ObservationMapper {
     private void updateObservation(List<String> conceptNames, EncounterTransaction.Observation existingObservation, Date encounterDate, KeyValue obsRow) throws ParseException {
         existingObservation.addGroupMember(createObservation(conceptNames, encounterDate, obsRow));
     }
+
     private EncounterTransaction.Observation getRootObservationIfExists(List<EncounterTransaction.Observation> observations, List<String> conceptNames, EncounterTransaction.Observation existingObservation) {
-             for (EncounterTransaction.Observation observation : observations) {
-                        if (observation.getConcept().getName().equals(conceptNames.get(0))) {
-                                existingObservation = observation;
-                                conceptNames.remove(0);
-                                return getRootObservationIfExists(observation.getGroupMembers(), conceptNames, existingObservation);
-                            }
-                    }
-                return existingObservation;
+        for (EncounterTransaction.Observation observation : observations) {
+            if (observation.getConcept().getName().equals(conceptNames.get(0))) {
+                conceptNames.remove(0);
+                if(conceptNames.size() == 0){
+                    conceptNames.add(observation.getConcept().getName());
+                    return existingObservation;
+                }
+                existingObservation = observation;
+                return getRootObservationIfExists(observation.getGroupMembers(), conceptNames, existingObservation);
             }
+        }
+        return existingObservation;
+    }
     private EncounterTransaction.Observation createObservation(List<String> conceptNames, Date encounterDate, KeyValue obsRow) throws ParseException {
               Concept obsConcept = conceptCache.getConcept(conceptNames.get(0));
         EncounterTransaction.Concept concept = new EncounterTransaction.Concept(obsConcept.getUuid(), obsConcept.getName().getName());
