@@ -693,6 +693,70 @@ public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(407, allObs.iterator().next().getValueCoded().getId().intValue());
     }
 
+    @Test
+    public void persist_multiple_observation_for_same_concepts() throws Exception {
+        MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
+        multipleEncounterRow.encounterType = "Consultation";
+        multipleEncounterRow.visitType = "OPD";
+        multipleEncounterRow.patientIdentifier = "GAN200000";
+
+        EncounterRow anEncounter = new EncounterRow();
+        anEncounter.obsRows = new ArrayList<>();
+        anEncounter.obsRows.add(new KeyValue("WEIGHT", "150"));
+        anEncounter.obsRows.add(new KeyValue("HEIGHT", "70"));
+        anEncounter.obsRows.add(new KeyValue("HEIGHT", "200"));
+        anEncounter.obsRows.add(new KeyValue("Vitals.Height Data.HEIGHT", "10"));
+        anEncounter.obsRows.add(new KeyValue("Vitals.Height Data.WEIGHT", "20"));
+        anEncounter.encounterDateTime = "1111-11-11";
+
+        multipleEncounterRow.encounterRows = new ArrayList<>();
+        multipleEncounterRow.encounterRows.add(anEncounter);
+
+        Messages errorMessages = encounterPersister.persist(multipleEncounterRow);
+        assertTrue("Should have persisted the encounter row.", errorMessages.isEmpty());
+
+        Context.openSession();
+        Context.authenticate("admin", "test");
+        List<Encounter> encounters = encounterService.getEncountersByPatientIdentifier(multipleEncounterRow.patientIdentifier);
+        Context.closeSession();
+
+        Encounter encounter = encounters.get(0);
+        assertEquals(1, encounters.size());
+        assertEquals("Anad", encounter.getPatient().getGivenName());
+        assertEquals("Kewat", encounter.getPatient().getFamilyName());
+        assertEquals("OPD", encounter.getVisit().getVisitType().getName());
+        assertEquals("Consultation", encounter.getEncounterType().getName());
+        Set<Obs> allObs = encounter.getAllObs();
+        assertEquals(4, allObs.size());
+        assertTrue(isObsPresentInEncounter(allObs, "WEIGHT", "150.0"));
+        assertTrue(isObsPresentInEncounter(allObs, "HEIGHT", "70.0"));
+        assertTrue(isObsPresentInEncounter(allObs, "HEIGHT", "200.0"));
+        Obs vitals = findObsFromAllObs(allObs, "Vitals");
+        Set<Obs> heightDataObs = vitals.getGroupMembers().iterator().next().getGroupMembers();
+        assertEquals(1, vitals.getGroupMembers().size());
+        assertEquals(2, heightDataObs.size());
+        assertTrue(isObsPresentInEncounter(heightDataObs, "HEIGHT", "10.0"));
+        assertTrue(isObsPresentInEncounter(heightDataObs, "WEIGHT", "20.0"));
+        Date obsDatetime = allObs.iterator().next().getObsDatetime();
+        assertEquals("1111-11-11", new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN).format(obsDatetime));
+    }
+
+    private Obs findObsFromAllObs(Set<Obs> allObs, String concept) {
+        for (Obs obs : allObs) {
+            if(obs.getConcept().getName().getName().equals(concept))
+                return obs;
+        }
+        return null;
+    }
+
+    private boolean isObsPresentInEncounter(Set<Obs> allObs, String concept, String value) {
+        for (Obs obs : allObs) {
+            if(obs.getConcept().getName().getName().equals(concept) && obs.getValueAsString(Context.getLocale()).equals(value))
+                return true;
+        }
+        return false;
+    }
+
     private List<KeyValue> getPatientAttributes() {
         List<KeyValue> patientAttributes = new ArrayList<>();
         patientAttributes.add(new KeyValue("given_name", "Anad"));
