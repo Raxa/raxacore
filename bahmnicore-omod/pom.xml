@@ -49,6 +49,11 @@
         </dependency>
         <dependency>
             <groupId>org.bahmni.module</groupId>
+            <artifactId>common</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
             <artifactId>file-uploader</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
