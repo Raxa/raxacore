@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 @Controller
 public class BahmniDrugOrderController extends BaseRestController{
@@ -67,22 +68,21 @@ public class BahmniDrugOrderController extends BaseRestController{
         return getActiveOrders(patientUuid);
     }
 
-    @RequestMapping(value = baseUrl + "/ordersForDisplay", method = RequestMethod.GET)
+    @RequestMapping(value = baseUrl + "/prescribedAndActive", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String, List<BahmniDrugOrder>> getVisitWisePrescribedAndOtherActiveOrders(@RequestParam(value = "patientUuid") String patientUuid,
-                                                                                         @RequestParam(value = "includeActiveVisit", required = false) Boolean includeActiveVisit,
-                                                                                         @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
-                                                                                         @RequestParam(value = "getOtherActive", required = false) Boolean getOtherActive){
+    public Map<String, Collection<BahmniDrugOrder>> getVisitWisePrescribedAndOtherActiveOrders(@RequestParam(value = "patientUuid") String patientUuid,
+                                                                                               @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
+                                                                                               @RequestParam(value = "getOtherActive", required = false) Boolean getOtherActive){
 
-        Map<String, List<BahmniDrugOrder>> visitWiseOrders = new HashMap<>();
+        Map<String, Collection<BahmniDrugOrder>> visitWiseOrders = new HashMap<>();
 
 
-        List<BahmniDrugOrder> prescribedOrders = getPrescribedOrders(patientUuid, includeActiveVisit, numberOfVisits);
+        List<BahmniDrugOrder> prescribedOrders = getPrescribedOrders(patientUuid, true, numberOfVisits);
 
         for (BahmniDrugOrder prescribedOrder : prescribedOrders) {
             String visitUuid = prescribedOrder.getVisit().getUuid();
             if(visitWiseOrders.get(visitUuid) == null){
-                visitWiseOrders.put(visitUuid, new ArrayList<BahmniDrugOrder>());
+                visitWiseOrders.put(visitUuid, new TreeSet<BahmniDrugOrder>());
             }
             visitWiseOrders.get(visitUuid).add(prescribedOrder);
         }

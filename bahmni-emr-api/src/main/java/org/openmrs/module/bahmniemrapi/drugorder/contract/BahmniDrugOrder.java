@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class BahmniDrugOrder {
+public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
 
     private VisitData visit;
     private EncounterTransaction.DrugOrder drugOrder;
@@ -127,6 +127,7 @@ public class BahmniDrugOrder {
         this.orderAttributes = orderAttributes;
     }
 
+    @Override
     public boolean equals(Object otherOrder){
         if(otherOrder == null)                return false;
         if(!(otherOrder instanceof BahmniDrugOrder)) return false;
@@ -135,4 +136,8 @@ public class BahmniDrugOrder {
         return this.getUuid().equals(other.getUuid());
     }
 
+    @Override
+    public int compareTo(BahmniDrugOrder otherOrder) {
+        return otherOrder.getEffectiveStartDate().compareTo(this.getEffectiveStartDate());
+    }
 }
