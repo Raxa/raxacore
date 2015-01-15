@@ -27,11 +27,11 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
         Map<String, Collection<BahmniDrugOrder>> drugOrders = bahmniDrugOrderController.getVisitWisePrescribedAndOtherActiveOrders("1a246ed5-3c11-11de-a0ba-001ed98eb67a", 1, true);
         assertEquals(2, drugOrders.keySet().size());
 
-        assertEquals(1, drugOrders.get("c809162f-dc55-4814-be3f-33d23c8abc1d").size());
-        assertEquals("92c1bdef-72d4-49d9-8a1f-804892f44acf", drugOrders.get("c809162f-dc55-4814-be3f-33d23c8abc1d").iterator().next().getUuid());
+        assertEquals(1, drugOrders.get("2015-01-10 00:00:00.0").size());
+        assertEquals("92c1bdef-72d4-49d9-8a1f-804892f44acf", drugOrders.get("2015-01-10 00:00:00.0").iterator().next().getUuid());
 
-        assertEquals(1, drugOrders.get("otherActiveOrders").size());
-        assertEquals("92c1bdef-72d4-77d9-8a1f-80411ac77abe", drugOrders.get("otherActiveOrders").iterator().next().getUuid());
+        assertEquals(1, drugOrders.get("Other Active DrugOrders").size());
+        assertEquals("92c1bdef-72d4-77d9-8a1f-80411ac77abe", drugOrders.get("Other Active DrugOrders").iterator().next().getUuid());
     }
 
     @Test
@@ -40,21 +40,21 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
         Map<String, Collection<BahmniDrugOrder>> drugOrders = bahmniDrugOrderController.getVisitWisePrescribedAndOtherActiveOrders("1a246ed5-3c11-11de-a0ba-001ed98eb67a", 2, true);
         assertEquals(3, drugOrders.keySet().size());
 
-        assertEquals(1, drugOrders.get("c809162f-dc55-4814-be3f-33d23c8abc1d").size());
-        Collection<BahmniDrugOrder> bahmniDrugOrders1 = drugOrders.get("c809162f-dc55-4814-be3f-33d23c8abc1d");
+        assertEquals(1, drugOrders.get("2015-01-10 00:00:00.0").size());
+        Collection<BahmniDrugOrder> bahmniDrugOrders1 = drugOrders.get("2015-01-10 00:00:00.0");
         assertEquals("92c1bdef-72d4-49d9-8a1f-804892f44acf", bahmniDrugOrders1.iterator().next().getUuid());
 
-        assertEquals(3, drugOrders.get("d798916f-210d-4c4e-8978-67dd1a969f31").size());
-        Iterator<BahmniDrugOrder> drugOrderIterator = drugOrders.get("d798916f-210d-4c4e-8978-67dd1a969f31").iterator();
+        assertEquals(3, drugOrders.get("2015-01-02 00:00:00.0").size());
+        Iterator<BahmniDrugOrder> drugOrderIterator = drugOrders.get("2015-01-02 00:00:00.0").iterator();
         assertEquals("92c1bdef-72d4-77d9-8a1f-80411ac77abe", drugOrderIterator.next().getUuid());
         assertEquals("92c1bdef-72d4-88d9-8a1f-804892f66abf", drugOrderIterator.next().getUuid());
         assertEquals("92c1bdef-72d4-77d9-8a1f-80411ac66abe", drugOrderIterator.next().getUuid());
 
-        assertEquals(0, drugOrders.get("otherActiveOrders").size());
+        assertEquals(0, drugOrders.get("Other Active DrugOrders").size());
 
         drugOrders = bahmniDrugOrderController.getVisitWisePrescribedAndOtherActiveOrders("1a246ed5-3c11-11de-a0ba-001ed98eb67a", 2, false);
         assertEquals(2, drugOrders.keySet().size());
-        assertNull(drugOrders.get("otherActiveOrders"));
+        assertNull(drugOrders.get("Other Active DrugOrders"));
 
     }
 

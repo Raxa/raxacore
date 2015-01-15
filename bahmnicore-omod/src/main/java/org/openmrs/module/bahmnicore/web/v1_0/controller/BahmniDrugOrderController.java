@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,16 +81,16 @@ public class BahmniDrugOrderController extends BaseRestController{
         List<BahmniDrugOrder> prescribedOrders = getPrescribedOrders(patientUuid, true, numberOfVisits);
 
         for (BahmniDrugOrder prescribedOrder : prescribedOrders) {
-            String visitUuid = prescribedOrder.getVisit().getUuid();
-            if(visitWiseOrders.get(visitUuid) == null){
-                visitWiseOrders.put(visitUuid, new TreeSet<BahmniDrugOrder>());
+            String visitDateTime = prescribedOrder.getVisit().getStartDateTime().toString();
+            if(visitWiseOrders.get(visitDateTime) == null){
+                visitWiseOrders.put(visitDateTime, new TreeSet<BahmniDrugOrder>());
             }
-            visitWiseOrders.get(visitUuid).add(prescribedOrder);
+            visitWiseOrders.get(visitDateTime).add(prescribedOrder);
         }
         if(getOtherActive == true){
             List<BahmniDrugOrder> activeDrugOrders = getActiveOrders(patientUuid);
             activeDrugOrders.removeAll(prescribedOrders);
-            visitWiseOrders.put("otherActiveOrders", activeDrugOrders);
+            visitWiseOrders.put("Other Active DrugOrders", activeDrugOrders);
         }
 
         return visitWiseOrders;
