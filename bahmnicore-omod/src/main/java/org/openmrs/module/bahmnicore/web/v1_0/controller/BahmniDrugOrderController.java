@@ -28,9 +28,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class BahmniDrugOrderController extends BaseRestController{
@@ -61,15 +64,35 @@ public class BahmniDrugOrderController extends BaseRestController{
     @ResponseBody
     public List<BahmniDrugOrder> getActiveDrugOrders(@RequestParam(value = "patientUuid") String patientUuid){
         logger.info("Retrieving active drug orders for patient with uuid " + patientUuid);
-        List<DrugOrder> activeDrugOrders = drugOrderService.getActiveDrugOrders(patientUuid);
-        logger.info(activeDrugOrders.size() + " active drug orders found");
-        try {
-            Collection<BahmniObservation> orderAttributeObs = bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null);
-            return new BahmniDrugOrderMapper(new BahmniProviderMapper(), getOrderAttributesMapper()).mapToResponse(activeDrugOrders, orderAttributeObs);
-        } catch (IOException e) {
-            logger.error("Could not parse dosing instructions",e);
-            throw new RuntimeException("Could not parse dosing instructions",e);
+        return getActiveOrders(patientUuid);
+    }
+
+    @RequestMapping(value = baseUrl + "/ordersForDisplay", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, List<BahmniDrugOrder>> getVisitWisePrescribedAndOtherActiveOrders(@RequestParam(value = "patientUuid") String patientUuid,
+                                                                                         @RequestParam(value = "includeActiveVisit", required = false) Boolean includeActiveVisit,
+                                                                                         @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
+                                                                                         @RequestParam(value = "getOtherActive", required = false) Boolean getOtherActive){
+
+        Map<String, List<BahmniDrugOrder>> visitWiseOrders = new HashMap<>();
+
+
+        List<BahmniDrugOrder> prescribedOrders = getPrescribedOrders(patientUuid, includeActiveVisit, numberOfVisits);
+
+        for (BahmniDrugOrder prescribedOrder : prescribedOrders) {
+            String visitUuid = prescribedOrder.getVisit().getUuid();
+            if(visitWiseOrders.get(visitUuid) == null){
+                visitWiseOrders.put(visitUuid, new ArrayList<BahmniDrugOrder>());
+            }
+            visitWiseOrders.get(visitUuid).add(prescribedOrder);
         }
+        if(getOtherActive == true){
+            List<BahmniDrugOrder> activeDrugOrders = getActiveOrders(patientUuid);
+            activeDrugOrders.removeAll(prescribedOrders);
+            visitWiseOrders.put("otherActiveOrders", activeDrugOrders);
+        }
+
+        return visitWiseOrders;
     }
 
     @RequestMapping(value = baseUrl, method = RequestMethod.GET)
@@ -77,14 +100,7 @@ public class BahmniDrugOrderController extends BaseRestController{
     public List<BahmniDrugOrder> getPrescribedDrugOrders(@RequestParam(value = "patientUuid") String patientUuid,
                                                          @RequestParam(value = "includeActiveVisit", required = false) Boolean includeActiveVisit,
                                                          @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits){
-        List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrders(patientUuid, includeActiveVisit, numberOfVisits);
-        try {
-            Collection<BahmniObservation> orderAttributeObs =  bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null);
-            return new BahmniDrugOrderMapper(new BahmniProviderMapper(), getOrderAttributesMapper()).mapToResponse(drugOrders, orderAttributeObs);
-        } catch (IOException e) {
-            logger.error("Could not parse drug order",e);
-             throw new RuntimeException("Could not parse drug order",e);
-        }
+        return getPrescribedOrders(patientUuid, includeActiveVisit, numberOfVisits);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = baseUrl + "/config")
@@ -103,6 +119,30 @@ public class BahmniDrugOrderController extends BaseRestController{
             orderAttributesMapper = new OrderAttributesMapper();
         }
         return orderAttributesMapper;
+    }
+
+    private List<BahmniDrugOrder> getActiveOrders(String patientUuid) {
+        List<DrugOrder> activeDrugOrders = drugOrderService.getActiveDrugOrders(patientUuid);
+        logger.info(activeDrugOrders.size() + " active drug orders found");
+        try {
+            Collection<BahmniObservation> orderAttributeObs = bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null);
+            return new BahmniDrugOrderMapper(new BahmniProviderMapper(), getOrderAttributesMapper()).mapToResponse(activeDrugOrders, orderAttributeObs);
+        } catch (IOException e) {
+            logger.error("Could not parse dosing instructions",e);
+            throw new RuntimeException("Could not parse dosing instructions",e);
+        }
+    }
+    private List<BahmniDrugOrder> getPrescribedOrders(String patientUuid, Boolean includeActiveVisit, Integer numberOfVisits) {
+        List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrders(patientUuid, includeActiveVisit, numberOfVisits);
+        logger.info(drugOrders.size() + " prescribed drug orders found");
+
+        try {
+            Collection<BahmniObservation> orderAttributeObs =  bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null);
+            return new BahmniDrugOrderMapper(new BahmniProviderMapper(), getOrderAttributesMapper()).mapToResponse(drugOrders, orderAttributeObs);
+        } catch (IOException e) {
+            logger.error("Could not parse drug order",e);
+            throw new RuntimeException("Could not parse drug order",e);
+        }
     }
 
 }

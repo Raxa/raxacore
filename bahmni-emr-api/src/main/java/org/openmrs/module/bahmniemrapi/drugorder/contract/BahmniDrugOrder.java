@@ -126,4 +126,13 @@ public class BahmniDrugOrder {
     public void setOrderAttributes(List<BahmniOrderAttribute> orderAttributes) {
         this.orderAttributes = orderAttributes;
     }
+
+    public boolean equals(Object otherOrder){
+        if(otherOrder == null)                return false;
+        if(!(otherOrder instanceof BahmniDrugOrder)) return false;
+
+        BahmniDrugOrder other = (BahmniDrugOrder) otherOrder;
+        return this.getUuid().equals(other.getUuid());
+    }
+
 }
