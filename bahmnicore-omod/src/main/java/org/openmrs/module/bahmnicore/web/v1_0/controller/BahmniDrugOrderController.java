@@ -87,7 +87,7 @@ public class BahmniDrugOrderController extends BaseRestController{
             }
             visitWiseOrders.get(visitDateTime).add(prescribedOrder);
         }
-        if(getOtherActive == true){
+        if(Boolean.TRUE.equals(getOtherActive)){
             List<BahmniDrugOrder> activeDrugOrders = getActiveOrders(patientUuid);
             activeDrugOrders.removeAll(prescribedOrders);
             visitWiseOrders.put("Other Active DrugOrders", activeDrugOrders);
