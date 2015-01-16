@@ -1,6 +1,12 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import org.apache.log4j.Logger;
+import org.bahmni.module.bahmnicore.contract.orderTemplate.OrderTemplateJson;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
@@ -13,6 +19,7 @@ import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -20,8 +27,21 @@ import java.util.Date;
 import java.util.List;
 
 public class OrderDaoImpl implements OrderDao {
-    @Autowired
+    private static final String ORDER_TEMPLATES_DIRECTORY = "ordertemplates";
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final Logger log = Logger.getLogger(OrderDaoImpl.class);
+
     private SessionFactory sessionFactory;
+    private ApplicationDataDirectory applicationDataDirectory;
+    private String TEMPLATES_JSON_FILE = "templates.json";
+    private String FILE_SEPARATOR = "/";
+
+
+    @Autowired
+    public OrderDaoImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+        this.applicationDataDirectory = new ApplicationDataDirectoryImpl();
+    }
 
     @Override
     public List<Order> getCompletedOrdersFrom(List<Order> allOrders) {
@@ -85,6 +105,39 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
+    public Collection<EncounterTransaction.DrugOrder> getDrugOrderForRegimen(String regimenName) {
+        File file = getTemplates();
+        OrderTemplateJson orderTemplates = null;
+        try {
+            orderTemplates = OBJECT_MAPPER.readValue(file, OrderTemplateJson.class);
+            setDefaultFields(orderTemplates);
+        } catch (IOException e) {
+            log.error("Could not deserialize file " + file.getAbsolutePath());
+            throw new RuntimeException(e);
+        }
+        for (OrderTemplateJson.OrderTemplate orderTemplate : orderTemplates.getOrderTemplates()) {
+            if (orderTemplate.getName().equals(regimenName)) {
+                return orderTemplate.getDrugOrders();
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    private void setDefaultFields(OrderTemplateJson orderTemplateJson) {
+        for (OrderTemplateJson.OrderTemplate orderTemplate : orderTemplateJson.getOrderTemplates()) {
+            for (EncounterTransaction.DrugOrder drugOrder : orderTemplate.getDrugOrders()) {
+                drugOrder.setCareSetting("Outpatient");
+                drugOrder.setOrderType("Drug Order");
+                drugOrder.setDosingInstructionType("org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions");
+                drugOrder.getDosingInstructions().setAsNeeded(false);
+            }
+        }
+    }
+
+    private File getTemplates() {
+        return applicationDataDirectory.getFile(ORDER_TEMPLATES_DIRECTORY + FILE_SEPARATOR + TEMPLATES_JSON_FILE);
+    }
+
     public List<Visit> getVisitsWithOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits) {
         Session currentSession = getCurrentSession();
         String includevisit = includeActiveVisit == null || includeActiveVisit == false ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
@@ -99,6 +152,10 @@ public class OrderDaoImpl implements OrderDao {
             queryVisitsWithDrugOrders.setMaxResults(numberOfVisits);
         }
         return (List<Visit>) queryVisitsWithDrugOrders.list();
+    }
+
+    void setApplicationDataDirectory(ApplicationDataDirectory applicationDataDirectory) {
+        this.applicationDataDirectory = applicationDataDirectory;
     }
 
     @Override
