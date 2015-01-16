@@ -26,7 +26,10 @@ public  class ConceptHelper {
         List<Concept> concepts = new ArrayList<>();
         if(conceptNames!= null){
             for (String conceptName : conceptNames) {
-                concepts.add(conceptService.getConceptByName(conceptName.replaceAll("%20", " ")));
+                Concept concept = conceptService.getConceptByName(conceptName.replaceAll("%20", " "));
+                if(concept != null) {
+                    concepts.add(concept);
+                }
             }
         }
         return concepts;
