@@ -21,6 +21,12 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
     @Autowired
     private BahmniDrugOrderController bahmniDrugOrderController;
 
+    @Before
+    public void setUp() throws Exception {
+        executeDataSet("diagnosisMetadata.xml");
+        executeDataSet("dispositionMetadata.xml");
+        executeDataSet("drugOrdersForVisits.xml");
+    }
     @Test
     public void shouldReturnVisitWisePrescribedAndOtherActiveOrdersInOrderOfStartDate() throws Exception {
         executeDataSet("prescribedAndActiveDrugOrdersForVisits.xml");
@@ -32,6 +38,7 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
 
         assertEquals(1, drugOrders.get("Other Active DrugOrders").size());
         assertEquals("92c1bdef-72d4-77d9-8a1f-80411ac77abe", drugOrders.get("Other Active DrugOrders").iterator().next().getUuid());
+
     }
 
     @Test

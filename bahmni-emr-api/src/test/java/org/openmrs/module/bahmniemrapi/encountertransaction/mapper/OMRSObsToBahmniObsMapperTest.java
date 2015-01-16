@@ -3,6 +3,7 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -14,6 +15,7 @@ import org.openmrs.module.bahmniemrapi.builder.ObsBuilder;
 import org.openmrs.module.bahmniemrapi.builder.PersonBuilder;
 import org.openmrs.module.bahmniemrapi.builder.VisitBuilder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 import org.openmrs.test.TestUtil;
 import org.openmrs.util.LocaleUtility;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -26,6 +28,8 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -34,10 +38,15 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest(LocaleUtility.class)
 public class OMRSObsToBahmniObsMapperTest {
 
+    @Mock
+    private ObservationTypeMatcher observationTypeMatcher;
+
     @Before
     public void setUp() throws Exception {
+        initMocks(this);
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
+        when(observationTypeMatcher.getObservationType(any(Obs.class))).thenReturn(ObservationTypeMatcher.ObservationType.OBSERVATION);
     }
 
     @Test
@@ -69,7 +78,7 @@ public class OMRSObsToBahmniObsMapperTest {
         Obs obs2 = new ObsBuilder().withConcept(valueConcept2).withValue("ovalue2").build();
         Obs parentObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(parentConcept).withDatetime(date).withGroupMembers(obs1, obs2).build();
 
-        Collection<BahmniObservation> parentsObservations = new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null)).map(asList(parentObs), Arrays.asList(parentConcept));
+        Collection<BahmniObservation> parentsObservations = new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null), observationTypeMatcher).map(asList(parentObs), Arrays.asList(parentConcept));
         assertEquals(1, parentsObservations.size());
         BahmniObservation parentObservation = parentsObservations.iterator().next();
         assertEquals("parentConcept", parentObservation.getConcept().getName());

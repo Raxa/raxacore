@@ -13,7 +13,6 @@ import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -28,9 +27,11 @@ public class VisitDocumentControllerIT extends BaseWebControllerTest {
     public static final String IMAGE_CONCEPT_UUID = "e060cf44-3d3d-11e3-bf2b-0800271c1b75";
 
     @Before
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         FileUtils.deleteDirectory(new File(TMP_DOCUMENT_IMAGES));
         System.setProperty("bahmnicore.documents.baseDirectory", TMP_DOCUMENT_IMAGES);
+        executeDataSet("diagnosisMetadata.xml");
+        executeDataSet("dispositionMetadata.xml");
     }
 
     @Test

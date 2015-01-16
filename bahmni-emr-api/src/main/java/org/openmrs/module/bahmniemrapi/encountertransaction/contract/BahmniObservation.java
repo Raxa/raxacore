@@ -17,7 +17,7 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
     private ObsRelationship targetObsRelation;
     private EncounterTransaction.Observation encounterTransactionObservation;
     private Collection<BahmniObservation> groupMembers = new ArrayList<>();
-    public Set<EncounterTransaction.Provider> providers;
+    public Set<EncounterTransaction.Provider> providers = new HashSet<>();
     private Boolean isAbnormal;
     private Long duration;
     private String type;
@@ -166,7 +166,10 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
     public void setProviders(Set<EncounterTransaction.Provider> providers) {
         this.providers = providers;
     }
-    
+
+    public void addProvider(EncounterTransaction.Provider provider){
+        this.providers.add(provider);
+    }
     public Boolean getIsAbnormal() {
         return isAbnormal;
     }

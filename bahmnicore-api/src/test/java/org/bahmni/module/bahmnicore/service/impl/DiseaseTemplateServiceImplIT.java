@@ -21,7 +21,9 @@ import static org.junit.Assert.assertTrue;
 public class DiseaseTemplateServiceImplIT extends BaseModuleWebContextSensitiveTest {
     @Before
     public void setUp() throws Exception {
+        executeDataSet("dispositionMetadata.xml");
         executeDataSet("obsTestData.xml");
+        executeDataSet("diagnosisMetadata.xml");
         executeDataSet("diseaseTemplate.xml");
     }
 

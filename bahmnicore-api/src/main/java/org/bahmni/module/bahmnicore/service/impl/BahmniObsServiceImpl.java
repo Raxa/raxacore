@@ -3,28 +3,34 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
-import org.openmrs.Concept;
-import org.openmrs.Obs;
+import org.openmrs.*;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.ObsService;
+import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahmniObsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BahmniObsServiceImpl implements BahmniObsService {
 
     private ObsDao obsDao;
     private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
+    private static final String[] NOT_STANDARD_OBS_CLASSES={"Diagnosis","LabSet","LabTest","Finding"};
+    private VisitService visitService;
+    private ObsService obsService;
+    private ConceptService conceptService;
 
     @Autowired
-    public BahmniObsServiceImpl(ObsDao obsDao, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper) {
+    public BahmniObsServiceImpl(ObsDao obsDao, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper, VisitService visitService, ObsService obsService, ConceptService conceptService) {
         this.obsDao = obsDao;
         this.omrsObsToBahmniObsMapper = omrsObsToBahmniObsMapper;
+        this.visitService = visitService;
+        this.obsService = obsService;
+        this.conceptService = conceptService;
     }
 
     @Override
@@ -63,5 +69,35 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     @Override
     public List<Obs> getLatestObsForConceptSetByVisit(String patientUuid, String conceptName, Integer visitId) {
         return obsDao.getLatestObsForConceptSetByVisit(patientUuid, conceptName, visitId);
+    }
+
+    @Override
+    public Collection<BahmniObservation> getObservationForVisit(String visitUuid, List<String> conceptNames){
+        Visit visit = visitService.getVisitByUuid(visitUuid);
+        List<Person> persons = new ArrayList<>();
+        persons.add(visit.getPatient());
+        List<Obs> observations = obsService.getObservations(persons, new ArrayList<Encounter>(visit.getEncounters()),getConceptsForNames(conceptNames), null, null, null, null, null, null, null, null, false);
+        observations = new ArrayList<Obs>(getObsAtTopLevel(observations,conceptNames));
+        return omrsObsToBahmniObsMapper.map(observations, null);
+    }
+
+    private List<Concept> getConceptsForNames(Collection<String> conceptNames){
+        List<Concept> concepts = new ArrayList<>();
+        if(conceptNames!= null){
+            for (String conceptName : conceptNames) {
+                concepts.add(conceptService.getConceptByName(conceptName));
+            }
+        }
+        return concepts;
+    }
+
+    private Set<Obs> getObsAtTopLevel(List<Obs> observations, List<String> topLevelconceptNames) {
+        if(topLevelconceptNames == null) topLevelconceptNames = new ArrayList<>();
+        Set<Obs> ret = new HashSet<Obs>();
+        for (Obs o : observations) {
+            if (o.getObsGroup() == null || topLevelconceptNames.contains(o.getConcept().getName().getName()))
+                ret.add(o);
+        }
+        return ret;
     }
 }

@@ -40,25 +40,25 @@
     <concept_name concept_id="200" name="Breast Cancer" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="11" voided="false" uuid="6d2d4cb7-955b-4837-80f7-0ebb94092afi" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
     <concept_set concept_id="200" concept_set="100" concept_set_id="12" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
 
-    <concept concept_id="90" retired="0" datatype_id="5" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="BC_intake_concept_uuid" />
-    <concept_name concept_id="90" name="Breast Cancer Intake" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <concept_set concept_id="90" concept_set="200" concept_set_id="21" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
+    <concept concept_id="790" retired="0" datatype_id="5" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="BC_intake_concept_uuid" />
+    <concept_name concept_id="790" name="Breast Cancer Intake" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="790" concept_set="200" concept_set_id="121" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
 
     <concept concept_id="9011" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="histopathology_value_uuid" />
     <concept_name concept_id="9011" name="Histopathology" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="3" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afd" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <concept_set concept_id="9011" concept_set="90" concept_set_id="2" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
+    <concept_set concept_id="9011" concept_set="790" concept_set_id="77772" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
 
     <concept concept_id="9012" retired="0" datatype_id="2" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="receptor_status_concept_uuid" />
     <concept_name concept_id="9012" name="Receptor Status" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="4" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afe" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <concept_set concept_id="9012" concept_set="90" concept_set_id="3" creator="1" sort_weight="2" date_created="2005-01-01 00:00:00.0" />
+    <concept_set concept_id="9012" concept_set="790" concept_set_id="77773" creator="1" sort_weight="2" date_created="2005-01-01 00:00:00.0" />
 
     <concept concept_id="9021" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="temperature_value_uuid" />
     <concept_name concept_id="9021" name="Temperature" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="699" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb84093afg" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <concept_set concept_id="9021" concept_set="90" concept_set_id="5" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
+    <concept_set concept_id="9021" concept_set="790" concept_set_id="5" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
 
     <concept concept_id="9022" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="problem_index_concept_uuid" />
     <concept_name concept_id="9022" name="Problem Index" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="7" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afh" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
-    <concept_set concept_id="9022" concept_set="90" concept_set_id="6" creator="1" sort_weight="2" date_created="2005-01-01 00:00:00.0" />
+    <concept_set concept_id="9022" concept_set="790" concept_set_id="6" creator="1" sort_weight="2" date_created="2005-01-01 00:00:00.0" />
 
     <concept concept_id="190" retired="0" datatype_id="5" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="BC_progress_concept_uuid" />
     <concept_name concept_id="190" name="Breast Cancer Progress" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="111" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092qqb" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
@@ -89,7 +89,7 @@
     <encounter_type encounter_type_id="1" name="Consultation" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
     <encounter encounter_id="38" encounter_type="1" patient_id="1024" visit_id="901" location_id="1" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63ab0"/>
 
-    <obs obs_id="1" concept_id="90" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f508a-fb89-11e3-bb80-f18addb6f9bb" creator="1" voided="0" />
+    <obs obs_id="1" concept_id="790" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f508a-fb89-11e3-bb80-f18addb6f9bb" creator="1" voided="0" />
 
     <obs obs_id="4" obs_group_id="1" concept_id="9011" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f976" creator="1" voided="0" />
     <obs obs_id="5" obs_group_id="1" concept_id="9012" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f967" creator="1" voided="0" />
@@ -107,12 +107,12 @@
 
     <encounter encounter_id="40" encounter_type="1" patient_id="1024" visit_id="902" location_id="1" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f1522fe63ab0"/>
 
-    <obs obs_id="21" concept_id="90" person_id="1024" encounter_id="40" obs_datetime="2009-08-18 15:09:05.0" date_created="2009-08-18 15:09:05.0" uuid="6d8f507a-fb89-11a5-bb80-f18addb6f9bb" creator="1" voided="0" />
+    <!--<obs obs_id="21" concept_id="790" person_id="1024" encounter_id="40" obs_datetime="2009-08-18 15:09:05.0" date_created="2009-08-18 15:09:05.0" uuid="6d8f507a-fb89-11a5-bb80-f18addb6f9bb" creator="1" voided="0" />-->
 
-    <obs obs_id="23" obs_group_id="21" concept_id="90" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-11e3-bb80-f18addb6f9a4" creator="1" voided="0" />
-    <obs obs_id="24" obs_group_id="21" concept_id="9011" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-11e3-bb80-f18addb6f9df" creator="1" voided="0" />
-    <obs obs_id="25" obs_group_id="21" concept_id="9012" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-11e3-bb80-f18addb6f9f8" creator="1" voided="0" />
-    <obs obs_id="26" obs_group_id="21" concept_id="9022" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-11e3-bb80-f18addb6f9ab" creator="1" voided="1" />
+    <obs obs_id="23" concept_id="790" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-11e3-bb80-f18addb6f9a4" creator="1" voided="0" />
+    <obs obs_id="24" obs_group_id="23" concept_id="9011" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-11e3-bb80-f18addb6f9df" creator="1" voided="0" />
+    <obs obs_id="25" obs_group_id="23" concept_id="9012" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-11e3-bb80-f18addb6f9f8" creator="1" voided="0" />
+    <obs obs_id="26" obs_group_id="23" concept_id="9022" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-11e3-bb80-f18addb6f9ab" creator="1" voided="1" />
 
     <encounter encounter_id="41" encounter_type="1" patient_id="1024" visit_id="902" location_id="1" encounter_datetime="2008-09-19 00:00:00.0" creator="1" date_created="2008-09-19 14:09:05.0" voided="false" uuid="f8ee38f6-1c8e-11e4-bb80-f18addb6f9bb"/>
 

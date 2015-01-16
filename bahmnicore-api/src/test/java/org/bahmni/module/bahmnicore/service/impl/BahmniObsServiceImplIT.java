@@ -30,6 +30,8 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Before
     public void setUp() throws Exception {
+        executeDataSet("diagnosisMetadata.xml");
+        executeDataSet("dispositionMetadata.xml");
         executeDataSet("observationsTestData.xml");
     }
 
@@ -60,5 +62,19 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
         Collection<BahmniObservation> diastolicMembers = bloodPressureMembersIterator.next().getGroupMembers();
         assertEquals(2, systolicMembers.size());
         assertEquals(2, diastolicMembers.size());
+    }
+
+    @Test
+    public void shouldReturnObsForAllConceptForGivenVisit() {
+        List<BahmniObservation> bahmniObservations = (List<BahmniObservation>) personObsService.getObservationForVisit("ad41fb41-a41a-4ad6-8835-2f59099acf5b", null);
+        assertEquals(2, bahmniObservations.size());
+        assertEquals(1, bahmniObservations.get(0).getGroupMembers().size());
+        assertEquals(2, bahmniObservations.get(1).getGroupMembers().size());
+    }
+
+    @Test
+    public void shouldReturnObsForGivenConceptForGivenVisit() {
+        Collection<BahmniObservation> bahmniObservations = personObsService.getObservationForVisit("ad41fb41-a41a-4ad6-8835-2f59099acf5b", Arrays.asList("Systolic", "Diastolic"));
+        assertEquals(2, bahmniObservations.size());
     }
 }

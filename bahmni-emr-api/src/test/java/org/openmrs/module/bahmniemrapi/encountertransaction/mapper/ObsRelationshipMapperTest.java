@@ -20,18 +20,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @PrepareForTest(LocaleUtility.class)
@@ -82,13 +75,7 @@ public class ObsRelationshipMapperTest {
         bahmniObservations.add(sourceObservation);
         bahmniObservations.add(targetObservation);
 
-        HashSet<EncounterTransaction.Provider> providers = new HashSet<>();
-        EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
-        provider.setName("superman");
-        provider.setName("superUuid");
-        providers.add(provider);
-
-        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", providers);
+        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid");
         
         verify(obsrelationService).getRelationsWhereSourceObsInEncounter("encounter-uuid");
         verify(OMRSObsToBahmniObsMapper, times(1)).map(targetObs);
@@ -96,8 +83,6 @@ public class ObsRelationshipMapperTest {
         assertEquals(sourceObsUuid, mappedBahmniObservations.get(0).getUuid());
         assertEquals(targetObsUuid, mappedBahmniObservations.get(0).getTargetObsRelation().getTargetObs().getUuid());
         assertEquals("obsRelationType", mappedBahmniObservations.get(0).getTargetObsRelation().getRelationshipType());
-        assertEquals(provider.getName(), mappedBahmniObservations.get(0).getProviders().iterator().next().getName());
-        assertEquals(provider.getUuid(), mappedBahmniObservations.get(0).getProviders().iterator().next().getUuid());
     }
 
     @Test
@@ -133,13 +118,7 @@ public class ObsRelationshipMapperTest {
         bahmniObservations.add(targetObservation1);
         bahmniObservations.add(targetObservation2);
 
-        HashSet<EncounterTransaction.Provider> providers = new HashSet<>();
-        EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
-        provider.setName("superman");
-        provider.setName("superUuid");
-        providers.add(provider);
-
-        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid", providers);
+        List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid");
 
         verify(obsrelationService).getRelationsWhereSourceObsInEncounter("encounter-uuid");
         verify(OMRSObsToBahmniObsMapper, times(2)).map(any(Obs.class));
@@ -150,10 +129,6 @@ public class ObsRelationshipMapperTest {
         assertEquals(targetObs2Uuid, mappedBahmniObservations.get(1).getTargetObsRelation().getTargetObs().getUuid());
         assertEquals("obsRelationType", mappedBahmniObservations.get(0).getTargetObsRelation().getRelationshipType());
         assertEquals("obsRelationType", mappedBahmniObservations.get(1).getTargetObsRelation().getRelationshipType());
-        assertEquals(provider.getName(), mappedBahmniObservations.get(0).getProviders().iterator().next().getName());
-        assertEquals(provider.getUuid(), mappedBahmniObservations.get(0).getProviders().iterator().next().getUuid());
-        assertEquals(provider.getName(), mappedBahmniObservations.get(1).getProviders().iterator().next().getName());
-        assertEquals(provider.getUuid(), mappedBahmniObservations.get(1).getProviders().iterator().next().getUuid());
     }
 
     private BahmniObservation getBahmniObservation(String sourceObsUuid) {

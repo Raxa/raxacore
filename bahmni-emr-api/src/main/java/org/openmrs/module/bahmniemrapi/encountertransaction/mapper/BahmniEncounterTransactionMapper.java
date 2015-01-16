@@ -9,6 +9,7 @@ import org.openmrs.module.bahmniemrapi.accessionnote.mapper.AccessionNotesMapper
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.EncounterDetails;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -44,8 +45,10 @@ public class BahmniEncounterTransactionMapper {
         List<BahmniDiagnosisRequest> bahmniDiagnoses = bahmniDiagnosisMapper.map(encounterTransaction.getDiagnoses());
         bahmniEncounterTransaction.setBahmniDiagnoses(bahmniDiagnoses);
         bahmniEncounterTransaction.setAccessionNotes(accessionNotesMapper.map(encounterTransaction));
-        List<BahmniObservation> bahmniObservations = fromETObsToBahmniObs.create(encounterTransaction.getObservations(), encounterTransaction.getEncounterDateTime(), encounterTransaction.getEncounterUuid());
-        bahmniEncounterTransaction.setObservations(obsRelationshipMapper.map(bahmniObservations, encounterTransaction.getEncounterUuid(), encounterTransaction.getProviders()));
+        EncounterDetails encounterDetails = new EncounterDetails(encounterTransaction.getEncounterUuid(), encounterTransaction.getEncounterDateTime(), null);
+        encounterDetails.setProviders(encounterTransaction.getProviders());
+        List<BahmniObservation> bahmniObservations = fromETObsToBahmniObs.create(encounterTransaction.getObservations(), encounterDetails);
+        bahmniEncounterTransaction.setObservations(obsRelationshipMapper.map(bahmniObservations, encounterTransaction.getEncounterUuid()));
         addPatientIdentifier(bahmniEncounterTransaction, encounterTransaction);
         addEncounterType(encounterTransaction, bahmniEncounterTransaction);
         return bahmniEncounterTransaction;

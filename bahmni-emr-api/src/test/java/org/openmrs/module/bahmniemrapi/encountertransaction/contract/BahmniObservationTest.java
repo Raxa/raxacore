@@ -8,6 +8,7 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.EncounterDetails;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -46,7 +47,7 @@ public class BahmniObservationTest {
 
         eTObservation.addGroupMember(createETObservation("child-uuid", "child-value", concept, obsDate));
 
-        BahmniObservation observation =  new ETObsToBahmniObsMapper(conceptService).create(eTObservation, new Date(), "encounter-uuid");
+        BahmniObservation observation =  new ETObsToBahmniObsMapper(conceptService).create(eTObservation, new EncounterDetails("encounter-uuid",new Date(),null));
         assertEquals("comment", observation.getComment());
         assertEquals("obs-uuid", observation.getUuid());
         assertEquals("concept-uuid",observation.getConceptUuid());

@@ -27,7 +27,7 @@ public class ObsRelationshipMapper {
         this.OMRSObsToBahmniObsMapper = OMRSObsToBahmniObsMapper;
     }
 
-    public List<BahmniObservation> map(List<BahmniObservation> bahmniObservations, String encounterUuid, Set<EncounterTransaction.Provider> providers) {
+    public List<BahmniObservation> map(List<BahmniObservation> bahmniObservations, String encounterUuid) {
         List<ObsRelationship> obsRelationshipsInEncounter = obsRelationService.getRelationsWhereSourceObsInEncounter(encounterUuid);
         for (BahmniObservation bahmniObservation : bahmniObservations) {
             for (ObsRelationship obsRelationship : obsRelationshipsInEncounter) {
@@ -38,7 +38,7 @@ public class ObsRelationshipMapper {
                     targetObsRelation.setUuid(obsRelationship.getUuid());
                     targetObsRelation.setTargetObs(OMRSObsToBahmniObsMapper.map(obsRelationship.getTargetObs()));
                     bahmniObservation.setTargetObsRelation(targetObsRelation);
-                    bahmniObservation.setProviders(providers);
+//                    bahmniObservation.setProviders(providers);
                 }
             }
         }

@@ -8,9 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.ObsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.List;
 
@@ -28,6 +25,8 @@ public class DiseaseTemplateControllerIT extends BaseWebControllerTest {
 
     @Before
     public void setUp() throws Exception {
+        executeDataSet("diagnosisMetadata.xml");
+        executeDataSet("dispositionMetadata.xml");
         executeDataSet("obsTestData.xml");
     }
 
