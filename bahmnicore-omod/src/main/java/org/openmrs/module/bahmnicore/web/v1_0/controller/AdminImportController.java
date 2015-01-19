@@ -8,23 +8,8 @@ import org.bahmni.csv.EntityPersister;
 import org.bahmni.fileimport.FileImporter;
 import org.bahmni.fileimport.ImportStatus;
 import org.bahmni.fileimport.dao.ImportStatusDao;
-import org.bahmni.module.admin.csv.models.ConceptRow;
-import org.bahmni.module.admin.csv.models.ConceptSetRow;
-import org.bahmni.module.admin.csv.models.DrugRow;
-import org.bahmni.module.admin.csv.models.LabResultsRow;
-import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
-import org.bahmni.module.admin.csv.models.PatientProgramRow;
-import org.bahmni.module.admin.csv.models.PatientRow;
-import org.bahmni.module.admin.csv.models.ReferenceTermRow;
-import org.bahmni.module.admin.csv.persister.ConceptPersister;
-import org.bahmni.module.admin.csv.persister.ConceptSetPersister;
-import org.bahmni.module.admin.csv.persister.DatabasePersister;
-import org.bahmni.module.admin.csv.persister.DrugPersister;
-import org.bahmni.module.admin.csv.persister.EncounterPersister;
-import org.bahmni.module.admin.csv.persister.LabResultPersister;
-import org.bahmni.module.admin.csv.persister.PatientPersister;
-import org.bahmni.module.admin.csv.persister.PatientProgramPersister;
-import org.bahmni.module.admin.csv.persister.ReferenceTermPersister;
+import org.bahmni.module.admin.csv.models.*;
+import org.bahmni.module.admin.csv.persister.*;
 import org.bahmni.module.common.db.JDBCConnectionProvider;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -215,10 +200,10 @@ public class AdminImportController extends BaseRestController {
     private <T extends org.bahmni.csv.CSVEntity> boolean importCsv(String filesDirectory, MultipartFile file, EntityPersister<T> persister,
                                                                    int numberOfThreads, boolean skipValidation, Class entityClass) throws IOException {
         String uploadedOriginalFileName = ((CommonsMultipartFile) file).getFileItem().getName();
-        String username = Context.getUserContext().getAuthenticatedUser().getUsername();
+        String systemId = Context.getUserContext().getAuthenticatedUser().getSystemId();
         CSVFile persistedUploadedFile = writeToLocalFile(file, filesDirectory);
         return new FileImporter<T>().importCSV(uploadedOriginalFileName, persistedUploadedFile,
-                persister, entityClass, new NewMRSConnectionProvider(), username, skipValidation, numberOfThreads);
+                persister, entityClass, new NewMRSConnectionProvider(), systemId, skipValidation, numberOfThreads);
     }
 
 
