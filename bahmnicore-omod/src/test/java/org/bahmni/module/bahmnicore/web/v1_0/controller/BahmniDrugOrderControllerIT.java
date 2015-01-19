@@ -8,6 +8,8 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -27,14 +29,15 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("drugOrdersForVisits.xml");
     }
+
     @Test
     public void shouldReturnVisitWisePrescribedAndOtherActiveOrdersInOrderOfStartDate() throws Exception {
         executeDataSet("prescribedAndActiveDrugOrdersForVisits.xml");
-        Map<String, Collection<BahmniDrugOrder>> drugOrders = bahmniDrugOrderController.getVisitWisePrescribedAndOtherActiveOrders("1a246ed5-3c11-11de-a0ba-001ed98eb67a", 1, true);
+        Map<String, Collection<BahmniDrugOrder>> drugOrders = bahmniDrugOrderController.getVisitWisePrescribedAndOtherActiveOrders("1a246ed5-3c11-11de-a0ba-001ed98eb67a", 1, true, new ArrayList());
         assertEquals(2, drugOrders.keySet().size());
 
-        assertEquals(1, drugOrders.get("2015-01-10 00:00:00.0").size());
-        assertEquals("92c1bdef-72d4-49d9-8a1f-804892f44acf", drugOrders.get("2015-01-10 00:00:00.0").iterator().next().getUuid());
+        assertEquals(1, drugOrders.get("visitDrugOrders").size());
+        assertEquals("92c1bdef-72d4-49d9-8a1f-804892f44acf", drugOrders.get("visitDrugOrders").iterator().next().getUuid());
 
         assertEquals(1, drugOrders.get("Other Active DrugOrders").size());
         assertEquals("92c1bdef-72d4-77d9-8a1f-80411ac77abe", drugOrders.get("Other Active DrugOrders").iterator().next().getUuid());
@@ -42,25 +45,35 @@ public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTe
     }
 
     @Test
+    public void shouldReturnVisitWisePrescribedAndOtherActiveOrdersByVisitUuid() throws Exception {
+        executeDataSet("prescribedAndActiveDrugOrdersForVisits.xml");
+        Map<String, Collection<BahmniDrugOrder>> drugOrders = bahmniDrugOrderController.getVisitWisePrescribedAndOtherActiveOrders("1a246ed5-3c11-11de-a0ba-001ed98eb67a", 1, true, Arrays.asList("c809162f-dc55-4814-be3f-33d23c8abc1d"));
+        assertEquals(2, drugOrders.keySet().size());
+
+        assertEquals(1, drugOrders.get("visitDrugOrders").size());
+        assertEquals("92c1bdef-72d4-49d9-8a1f-804892f44acf", drugOrders.get("visitDrugOrders").iterator().next().getUuid());
+
+        assertEquals(1, drugOrders.get("Other Active DrugOrders").size());
+        assertEquals("92c1bdef-72d4-77d9-8a1f-80411ac77abe", drugOrders.get("Other Active DrugOrders").iterator().next().getUuid());
+    }
+
+    @Test
     public void shouldReturnVisitWisePrescribedWithoutOtherActiveOrdersInOrderOfStartDate() throws Exception {
         executeDataSet("prescribedAndActiveDrugOrdersForVisits.xml");
-        Map<String, Collection<BahmniDrugOrder>> drugOrders = bahmniDrugOrderController.getVisitWisePrescribedAndOtherActiveOrders("1a246ed5-3c11-11de-a0ba-001ed98eb67a", 2, true);
-        assertEquals(3, drugOrders.keySet().size());
+        Map<String, Collection<BahmniDrugOrder>> drugOrders = bahmniDrugOrderController.getVisitWisePrescribedAndOtherActiveOrders("1a246ed5-3c11-11de-a0ba-001ed98eb67a", 2, true, new ArrayList());
+        assertEquals(2, drugOrders.keySet().size());
 
-        assertEquals(1, drugOrders.get("2015-01-10 00:00:00.0").size());
-        Collection<BahmniDrugOrder> bahmniDrugOrders1 = drugOrders.get("2015-01-10 00:00:00.0");
-        assertEquals("92c1bdef-72d4-49d9-8a1f-804892f44acf", bahmniDrugOrders1.iterator().next().getUuid());
-
-        assertEquals(3, drugOrders.get("2015-01-02 00:00:00.0").size());
-        Iterator<BahmniDrugOrder> drugOrderIterator = drugOrders.get("2015-01-02 00:00:00.0").iterator();
+        assertEquals(4, drugOrders.get("visitDrugOrders").size());
+        Iterator<BahmniDrugOrder> drugOrderIterator = drugOrders.get("visitDrugOrders").iterator();
         assertEquals("92c1bdef-72d4-77d9-8a1f-80411ac77abe", drugOrderIterator.next().getUuid());
-        assertEquals("92c1bdef-72d4-88d9-8a1f-804892f66abf", drugOrderIterator.next().getUuid());
         assertEquals("92c1bdef-72d4-77d9-8a1f-80411ac66abe", drugOrderIterator.next().getUuid());
+        assertEquals("92c1bdef-72d4-88d9-8a1f-804892f66abf", drugOrderIterator.next().getUuid());
+        assertEquals("92c1bdef-72d4-49d9-8a1f-804892f44acf", drugOrderIterator.next().getUuid());
 
         assertEquals(0, drugOrders.get("Other Active DrugOrders").size());
 
-        drugOrders = bahmniDrugOrderController.getVisitWisePrescribedAndOtherActiveOrders("1a246ed5-3c11-11de-a0ba-001ed98eb67a", 2, false);
-        assertEquals(2, drugOrders.keySet().size());
+        drugOrders = bahmniDrugOrderController.getVisitWisePrescribedAndOtherActiveOrders("1a246ed5-3c11-11de-a0ba-001ed98eb67a", 2, false, new ArrayList());
+        assertEquals(1, drugOrders.keySet().size());
         assertNull(drugOrders.get("Other Active DrugOrders"));
 
     }

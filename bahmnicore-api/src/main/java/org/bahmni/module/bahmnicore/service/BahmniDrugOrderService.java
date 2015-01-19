@@ -16,6 +16,8 @@ public interface BahmniDrugOrderService {
 
     List<DrugOrder> getPrescribedDrugOrders(String patientUuid, Boolean includeActiveVisit, Integer numberOfVisit);
 
+    List<DrugOrder> getPrescribedDrugOrders(List<String> visitUuids);
+
     List<DrugOrder> getPrescribedDrugOrdersForConcepts(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits, List<Concept> concepts);
 
     DrugOrderConfigResponse getConfig();

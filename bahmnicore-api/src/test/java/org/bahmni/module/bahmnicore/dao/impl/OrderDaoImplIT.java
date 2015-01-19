@@ -13,6 +13,7 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
@@ -149,6 +150,17 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
         assertThat(visits.size(), is(equalTo(visitUuids.length)));
         assertTrue(visitWithUuidExists(visitUuid1, visits));
         assertTrue(visitWithUuidExists(visitUuid2, visits));
+    }
+
+    @Test
+    public void shouldGetDrugOrdersByVisitUuid() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        String visitUuid1 = "1e5d5d48-6b78-11e0-93c3-18a97ba044dc";
+        String visitUuid2 = "1e5d5d48-6b78-11e0-93c3-18a97b8ca4dc";
+
+        List<DrugOrder> prescribedDrugOrders = orderDao.getPrescribedDrugOrders(Arrays.asList(visitUuid1, visitUuid2));
+
+        assertEquals(6, prescribedDrugOrders.size());
     }
 
     private boolean visitWithUuidExists(String uuid, List<Visit> visits) {

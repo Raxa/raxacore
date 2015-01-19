@@ -49,6 +49,22 @@ public class OrderDaoImpl implements OrderDao {
         return new ArrayList<>();
     }
 
+    @Override
+    public List<DrugOrder> getPrescribedDrugOrders(List<String> visitUuids) {
+        if(visitUuids != null && visitUuids.size() != 0) {
+            Session currentSession = getCurrentSession();
+            Query query = currentSession.createQuery("select d1 from DrugOrder d1, Encounter e, Visit v where d1.encounter = e and e.visit = v and v.uuid in (:visitUuids) " +
+                    "and d1.voided = false and d1.action != :discontinued and " +
+                    "not exists (select d2 from DrugOrder d2 where d2.voided = false and d2.action = :revised and d2.encounter = d1.encounter and d2.previousOrder = d1)" +
+                    "order by d1.dateActivated desc");
+            query.setParameterList("visitUuids", visitUuids);
+            query.setParameter("discontinued", Order.Action.DISCONTINUE);
+            query.setParameter("revised", Order.Action.REVISE);
+            return (List<DrugOrder>) query.list();
+        }
+        return new ArrayList<>();
+    }
+
     public List<DrugOrder> getPrescribedDrugOrdersForConcepts(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits, List<Concept> concepts){
         Session currentSession = getCurrentSession();
         List<Integer> visitWithDrugOrderIds = getVisitIds(getVisitsWithOrders(patient, "DrugOrder", includeActiveVisit, numberOfVisits));

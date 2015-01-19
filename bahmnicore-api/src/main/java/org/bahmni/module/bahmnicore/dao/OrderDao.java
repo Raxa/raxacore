@@ -13,5 +13,8 @@ public interface OrderDao {
     List<DrugOrder> getPrescribedDrugOrders(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits);
     List<Visit> getVisitsWithOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits);
     List<Visit> getVisitsForUUids(String[] visitUuids);
+
+    List<DrugOrder> getPrescribedDrugOrders(List<String> visitUuids);
+
     List<DrugOrder> getPrescribedDrugOrdersForConcepts(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits, List<Concept> conceptIds);
 }

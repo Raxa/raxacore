@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -73,20 +74,20 @@ public class BahmniDrugOrderController extends BaseRestController{
     @ResponseBody
     public Map<String, Collection<BahmniDrugOrder>> getVisitWisePrescribedAndOtherActiveOrders(@RequestParam(value = "patientUuid") String patientUuid,
                                                                                                @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
-                                                                                               @RequestParam(value = "getOtherActive", required = false) Boolean getOtherActive){
+                                                                                               @RequestParam(value = "getOtherActive", required = false) Boolean getOtherActive,
+                                                                                               @RequestParam(value = "visitUuids", required = false) List visitUuids) {
 
         Map<String, Collection<BahmniDrugOrder>> visitWiseOrders = new HashMap<>();
 
 
-        List<BahmniDrugOrder> prescribedOrders = getPrescribedOrders(patientUuid, true, numberOfVisits);
-
-        for (BahmniDrugOrder prescribedOrder : prescribedOrders) {
-            String visitDateTime = prescribedOrder.getVisit().getStartDateTime().toString();
-            if(visitWiseOrders.get(visitDateTime) == null){
-                visitWiseOrders.put(visitDateTime, new TreeSet<BahmniDrugOrder>());
-            }
-            visitWiseOrders.get(visitDateTime).add(prescribedOrder);
+        List<BahmniDrugOrder> prescribedOrders;
+        if (visitUuids != null && visitUuids.size() != 0) {
+            prescribedOrders = getPrescribedDrugOrders(patientUuid, visitUuids);
+        } else {
+            prescribedOrders = getPrescribedOrders(patientUuid, true, numberOfVisits);
         }
+        visitWiseOrders.put("visitDrugOrders", prescribedOrders);
+
         if(Boolean.TRUE.equals(getOtherActive)){
             List<BahmniDrugOrder> activeDrugOrders = getActiveOrders(patientUuid);
             activeDrugOrders.removeAll(prescribedOrders);
@@ -133,6 +134,7 @@ public class BahmniDrugOrderController extends BaseRestController{
             throw new RuntimeException("Could not parse dosing instructions",e);
         }
     }
+
     private List<BahmniDrugOrder> getPrescribedOrders(String patientUuid, Boolean includeActiveVisit, Integer numberOfVisits) {
         List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrders(patientUuid, includeActiveVisit, numberOfVisits);
         logger.info(drugOrders.size() + " prescribed drug orders found");
@@ -146,4 +148,16 @@ public class BahmniDrugOrderController extends BaseRestController{
         }
     }
 
+    private List<BahmniDrugOrder> getPrescribedDrugOrders(String patientUuid, List visitUuids) {
+        List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrders(visitUuids);
+        logger.info(drugOrders.size() + " prescribed drug orders found");
+
+        try {
+            Collection<BahmniObservation> orderAttributeObs =  bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null);
+            return new BahmniDrugOrderMapper(new BahmniProviderMapper(), getOrderAttributesMapper()).mapToResponse(drugOrders, orderAttributeObs);
+        } catch (IOException e) {
+            logger.error("Could not parse drug order",e);
+            throw new RuntimeException("Could not parse drug order",e);
+        }
+    }
 }
