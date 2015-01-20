@@ -64,6 +64,7 @@ public class ETObsToBahmniObsMapper {
                 } else {
                     bahmniObservation.setValue(member.getValue());
                     bahmniObservation.setType(member.getConcept().getDataType());
+                    bahmniObservation.getConcept().setUnits(member.getConcept().getUnits());
                 }
             }
         } else if (observation.getGroupMembers().size() > 0) {
@@ -80,14 +81,5 @@ public class ETObsToBahmniObsMapper {
         }
         return bahmniObservation;
     }
-
-//    BahmniObservation map(EncounterTransaction.Observation observation, Encounter encounter, List<Concept> rootConcepts, boolean flatten) {
-//        BahmniObservation bahmniObservation = map(observation, encounter.getEncounterDatetime(), encounter.getUuid(), encounter.getVisit().getStartDatetime(), rootConcepts, flatten);
-//        BahmniProviderMapper bahmniProviderMapper = new BahmniProviderMapper();
-//        for (EncounterProvider encounterProvider : encounter.getEncounterProviders()) {
-//            bahmniObservation.addProvider(bahmniProviderMapper.map(encounterProvider.getProvider()));
-//        }
-//        return bahmniObservation;
-//    }
 
 }
