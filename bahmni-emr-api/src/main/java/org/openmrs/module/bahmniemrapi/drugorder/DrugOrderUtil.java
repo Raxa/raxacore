@@ -6,7 +6,7 @@ import org.openmrs.OrderFrequency;
 
 import java.util.Date;
 
-import static org.apache.commons.lang3.time.DateUtils.addMilliseconds;
+import static org.apache.commons.lang3.time.DateUtils.addSeconds;
 
 public class DrugOrderUtil {
     public static Date calculateAutoExpireDate(Integer orderDuration, Concept durationUnits, Integer numRefills, Date effectiveStartDate, OrderFrequency frequency) {
@@ -21,14 +21,14 @@ public class DrugOrderUtil {
             return null;
         }
         Duration duration = new Duration(orderDuration, durationCode);
-        return aMomentBefore(duration.addToDate(effectiveStartDate, frequency));
+        return aSecondBefore(duration.addToDate(effectiveStartDate, frequency));
     }
 
-    public static Date aMomentBefore(Date date) {
-        return addMilliseconds(date, -1);
+    public static Date aSecondBefore(Date date) {
+        return addSeconds(date, -1);
     }
-    public static Date aMomentAfter(Date date) {
-        return addMilliseconds(date, 1);
+    public static Date aSecondAfter(Date date) {
+        return addSeconds(date, 1);
     }
 
 }

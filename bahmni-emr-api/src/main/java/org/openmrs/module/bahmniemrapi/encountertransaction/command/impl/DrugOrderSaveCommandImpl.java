@@ -81,7 +81,7 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
                     currentDateOrder.setScheduledDate(expectedStartDateForCurrentOrder);
                     currentDateOrder.setAutoExpireDate(expectedStopDateForCurrentOrder);
 
-                    order.setScheduledDate(DrugOrderUtil.aMomentAfter(expectedStopDateForCurrentOrder));
+                    order.setScheduledDate(DrugOrderUtil.aSecondAfter(expectedStopDateForCurrentOrder));
 
                     currentDateOrder = order;
                     expectedStartDateForCurrentOrder = setExpectedStartDateForOrder(order);
