@@ -115,4 +115,35 @@ public class DiseaseTemplateServiceImplIT extends BaseModuleWebContextSensitiveT
         assertEquals(1, diseaseTemplates.get(0).getObservationTemplates().get(1).getBahmniObservations().size());
         assertEquals("Histopathology", diseaseTemplates.get(0).getObservationTemplates().get(1).getBahmniObservations().iterator().next().getConcept().getName());
     }
+
+    @Test
+    public void get_all_disease_template_should_get_latest_across_all_visits_for_class_case_intake() throws Exception {
+        executeDataSet("scopeLatest.xml");
+        ArrayList<String> showOnly = new ArrayList<>();
+
+        DiseaseTemplateConfig diseaseTemplateConfig = new DiseaseTemplateConfig();
+        diseaseTemplateConfig.setTemplateName("Anaemia");
+        diseaseTemplateConfig.setShowOnly(showOnly);
+
+        ArrayList<DiseaseTemplateConfig> diseaseTemplateConfigList = new ArrayList<>();
+        diseaseTemplateConfigList.add(diseaseTemplateConfig);
+
+        DiseaseTemplatesConfig diseaseTemplatesConfig = new DiseaseTemplatesConfig();
+        diseaseTemplatesConfig.setPatientUuid("86526ed5-3c11-11de-a0ba-001e378eb67a");
+        diseaseTemplatesConfig.setDiseaseTemplateConfigList(diseaseTemplateConfigList);
+
+        List<DiseaseTemplate> diseaseTemplates = diseaseTemplateService.allDiseaseTemplatesFor(diseaseTemplatesConfig);
+        assertEquals(1, diseaseTemplates.size());
+        assertEquals(2, diseaseTemplates.get(0).getObservationTemplates().size());
+
+        assertEquals("Anaemia Intake", diseaseTemplates.get(0).getObservationTemplates().get(0).getConcept().getName());
+        assertEquals(1, diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().size());
+        assertEquals("Diastolic", diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().iterator().next().getConcept().getName());
+
+        assertEquals(1, diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().iterator().next().getGroupMembers().size());
+        assertEquals("Diastolic value", diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().iterator().next().getGroupMembers().iterator().next().getConcept().getName());
+
+        assertEquals(1, diseaseTemplates.get(0).getObservationTemplates().get(1).getBahmniObservations().size());
+        assertEquals("Anaemia value", diseaseTemplates.get(0).getObservationTemplates().get(1).getBahmniObservations().iterator().next().getConcept().getName());
+    }
 }

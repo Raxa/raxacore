@@ -32,6 +32,7 @@
     <concept_datatype concept_datatype_id="5" name="N/A" hl7_abbreviation="ZZ" description="not associated" date_created="2013-12-04 11:36:42" retired="0"/>
 
     <concept_class concept_class_id="11" name="Concept Details" description="Concept Details" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="bc980fba-7798-11e3-a96a-080027111111"/>
+    <concept_class concept_class_id="584" name="Case Intake" description="Case Intake" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="ac9s0fba-7e98-11e3-i96a-080t27k1111e"/>
 
     <concept concept_id="100" retired="0" datatype_id="5" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="dis_templ_concept_uuid" />
     <concept_name concept_id="100" name="All Disease Templates" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="10" voided="false" uuid="6d2d4cb7-955b-4837-80f7-0ebb94092afh" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>

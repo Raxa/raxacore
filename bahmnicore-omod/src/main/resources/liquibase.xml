@@ -2770,4 +2770,20 @@
             call add_concept_word(@concept_id, @concept_name_short_id, 'Attributes', 1);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201501192149" author="Sravanthi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept_class where name = 'Case Intake';
+            </sqlCheck>
+        </preConditions>
+        <comment>add concept class Case Intake</comment>
+        <insert tableName="concept_class">
+            <column name="name" value="Case Intake"/>
+            <column name="description" value="Case Intake class"/>
+            <column name="creator" value="1"/>
+            <column name="date_created" valueComputed="curdate()"/>
+            <column name="retired" value="0"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
