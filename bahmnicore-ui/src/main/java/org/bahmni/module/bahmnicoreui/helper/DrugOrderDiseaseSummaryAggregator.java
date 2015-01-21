@@ -28,13 +28,13 @@ public class DrugOrderDiseaseSummaryAggregator {
         this.conceptHelper = new ConceptHelper(conceptService);
     }
 
-    public DiseaseSummaryData aggregate(Patient patient, List<String> conceptNames, Integer numberOfVisits) {
+    public DiseaseSummaryData aggregate(Patient patient, List<String> conceptNames, Integer numberOfVisits, String groupBy) {
         DiseaseSummaryData diseaseSummaryData =  new DiseaseSummaryData();
         List<Concept> concepts = conceptHelper.getConceptsForNames(conceptNames);
         if(!concepts.isEmpty()){
             List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrdersForConcepts(patient, true, numberOfVisits, concepts);
             try {
-                diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapDrugOrders(drugOrders));
+                diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapDrugOrders(drugOrders, groupBy));
             } catch (IOException e) {
                 logger.error("Could not parse dosing instructions",e);
                 throw new RuntimeException("Could not parse dosing instructions",e);

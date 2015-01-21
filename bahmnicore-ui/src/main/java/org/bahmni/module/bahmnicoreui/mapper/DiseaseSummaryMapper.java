@@ -18,42 +18,51 @@ import java.util.*;
 public class DiseaseSummaryMapper {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
+    public static final String RESULT_TABLE_GROUP_BY_ENCOUNTER = "encounters";
+    public static final String RESULT_TABLE_GROUP_BY_VISITS = "visits";
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
+    private SimpleDateFormat simpleDateTimeFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
 
-    public Map<String, Map<String, ConceptValue>> mapObservations(Collection<BahmniObservation> bahmniObservations) {
+    public Map<String, Map<String, ConceptValue>> mapObservations(Collection<BahmniObservation> bahmniObservations, String groupBy) {
         Map<String, Map<String, ConceptValue>> result = new LinkedHashMap<>();
         if(bahmniObservations != null){
             for (BahmniObservation bahmniObservation : bahmniObservations) {
-                List<BahmniObservation> observationsfromConceptSet = new ArrayList<>();
-                getLeafObservationsfromConceptSet(bahmniObservation,observationsfromConceptSet);
-                for (BahmniObservation observation : observationsfromConceptSet) {
-                    String visitStartDateTime = getDateAsString(observation.getVisitStartDateTime());
+                List<BahmniObservation> observationsFromConceptSet = new ArrayList<>();
+                getLeafObservationsfromConceptSet(bahmniObservation,observationsFromConceptSet);
+                for (BahmniObservation observation : observationsFromConceptSet) {
+                    String startDateTime = (RESULT_TABLE_GROUP_BY_ENCOUNTER.equals(groupBy) ?
+                            getDateTimeAsString(observation.getEncounterDateTime()) : getDateAsString(observation.getVisitStartDateTime()));
                     String conceptName = observation.getConcept().getShortName()==null ?  observation.getConcept().getName(): observation.getConcept().getShortName();
-                    addToResultTable(result, visitStartDateTime, conceptName, observation.getValue(), observation.isAbnormal(), false);
+                    addToResultTable(result, startDateTime, conceptName, observation.getValue(), observation.isAbnormal(), false);
                 }
             }
         }
         return result;
     }
 
-    public Map<String, Map<String, ConceptValue>> mapDrugOrders(List<DrugOrder> drugOrders) throws IOException {
+
+
+    public Map<String, Map<String, ConceptValue>> mapDrugOrders(List<DrugOrder> drugOrders, String groupBy) throws IOException {
         Map<String, Map<String, ConceptValue>> result = new LinkedHashMap<>();
         for (DrugOrder drugOrder : drugOrders) {
-            String visitStartDateTime = getDateAsString(drugOrder.getEncounter().getVisit().getStartDatetime());
+            String startDateTime = (RESULT_TABLE_GROUP_BY_ENCOUNTER.equals(groupBy)) ?
+                    getDateTimeAsString(drugOrder.getEncounter().getEncounterDatetime()) : getDateAsString(drugOrder.getEncounter().getVisit().getStartDatetime());
             String conceptName = drugOrder.getDrug().getConcept().getName().getName();
             String drugOrderValue = formattedDrugOrderValue(drugOrder);
-            addToResultTable(result,visitStartDateTime,conceptName, drugOrderValue,null,false);
+            addToResultTable(result,startDateTime,conceptName, drugOrderValue,null,false);
         }
         return result;
     }
 
-    public Map<String, Map<String, ConceptValue>> mapLabResults(List<LabOrderResult> labOrderResults) {
+    public Map<String, Map<String, ConceptValue>> mapLabResults(List<LabOrderResult> labOrderResults, String groupBy) {
         Map<String, Map<String, ConceptValue>> result = new LinkedHashMap<>();
         for (LabOrderResult labOrderResult : labOrderResults) {
-            String visitStartDateTime = getDateAsString(labOrderResult.getVisitStartTime());
+            String startDateTime = (RESULT_TABLE_GROUP_BY_ENCOUNTER.equals(groupBy)) ?
+                    getDateTimeAsString(labOrderResult.getAccessionDateTime()) : getDateAsString(labOrderResult.getVisitStartTime());
             String conceptName = labOrderResult.getTestName();
             if(conceptName != null){
-                addToResultTable(result,visitStartDateTime,conceptName,labOrderResult.getResult(),labOrderResult.getAbnormal(),true);
+                addToResultTable(result,startDateTime,conceptName,labOrderResult.getResult(),labOrderResult.getAbnormal(),true);
             }
         }
         return result;
@@ -106,15 +115,19 @@ public class DiseaseSummaryMapper {
         return simpleDateFormat.format(startDatetime);
     }
 
-    private void addToResultTable(Map<String, Map<String, ConceptValue>> result, String visitStartDateTime, String conceptName, Object value, Boolean abnormal,boolean replaceExisting) {
-        Map<String, ConceptValue> cellValue = getMapForKey(visitStartDateTime, result);
+    private String getDateTimeAsString(Date startDatetime) {
+        return simpleDateTimeFormat.format(startDatetime);
+    }
+
+    private void addToResultTable(Map<String, Map<String, ConceptValue>> result, String startDateTime, String conceptName, Object value, Boolean abnormal,boolean replaceExisting) {
+        Map<String, ConceptValue> cellValue = getMapForKey(startDateTime, result);
         if(cellValue.containsKey(conceptName) && !replaceExisting) return;
 
         ConceptValue conceptValue = new ConceptValue();
         conceptValue.setValue(getObsValue(value));
         conceptValue.setAbnormal(abnormal);
         cellValue.put(conceptName, conceptValue);
-        result.put(visitStartDateTime, cellValue);
+        result.put(startDateTime, cellValue);
     }
 
     private String getObsValue(Object value) {

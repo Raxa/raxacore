@@ -26,12 +26,12 @@ public class ObsDiseaseSummaryAggregator {
         this.conceptHelper = new ConceptHelper(conceptService);
     }
 
-    public DiseaseSummaryData aggregate(Patient patient, List<String> conceptNames, Integer numberOfVisits) {
+    public DiseaseSummaryData aggregate(Patient patient, List<String> conceptNames, Integer numberOfVisits, String groupBy) {
         DiseaseSummaryData diseaseSummaryData =  new DiseaseSummaryData();
         List<Concept> concepts = conceptHelper.getConceptsForNames(conceptNames);
         if(!concepts.isEmpty()){
             Collection<BahmniObservation> bahmniObservations = bahmniObsService.observationsFor(patient.getUuid(), concepts, numberOfVisits);
-            diseaseSummaryData.setTabularData(diseaseSummaryMapper.mapObservations(bahmniObservations));
+            diseaseSummaryData.setTabularData(diseaseSummaryMapper.mapObservations(bahmniObservations, groupBy));
             diseaseSummaryData.addConceptDetails(conceptHelper.getLeafConceptDetails(conceptNames));
         }
         return diseaseSummaryData;

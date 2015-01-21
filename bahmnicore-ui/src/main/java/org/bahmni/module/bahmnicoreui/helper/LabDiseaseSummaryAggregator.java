@@ -32,12 +32,12 @@ public class LabDiseaseSummaryAggregator {
 
     }
 
-    public DiseaseSummaryData aggregate(Patient patient, List<String> conceptNames, Integer numberOfVisits) {
+    public DiseaseSummaryData aggregate(Patient patient, List<String> conceptNames, Integer numberOfVisits, String groupBy) {
         DiseaseSummaryData diseaseSummaryData =  new DiseaseSummaryData();
         List<Concept> concepts = conceptHelper.getConceptsForNames(conceptNames);
         if(!concepts.isEmpty()){
             List<LabOrderResult> labOrderResults = labOrderResultsService.getAllForConcepts(patient, conceptNames, getVisitsWithLabOrdersFor(patient,numberOfVisits));
-            diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapLabResults(labOrderResults));
+            diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapLabResults(labOrderResults, groupBy));
             diseaseSummaryData.addConceptDetails(conceptHelper.getLeafConceptDetails(conceptNames));
             mapLowNormalAndHiNormal(diseaseSummaryData, labOrderResults);
         }

@@ -8,6 +8,7 @@ public class DiseaseDataParams {
     private List<String> obsConcepts;
     private List<String> drugConcepts;
     private List<String> labConcepts;
+    private  String groupBy;
 
     public Integer getNumberOfVisits() {
         return numberOfVisits;
@@ -41,5 +42,11 @@ public class DiseaseDataParams {
         this.drugConcepts = drugConcepts;
     }
 
+    public String getGroupBy() {
+        return groupBy;
+    }
 
+    public void setGroupBy(String groupBy) {
+        this.groupBy = groupBy;
+    }
 }
