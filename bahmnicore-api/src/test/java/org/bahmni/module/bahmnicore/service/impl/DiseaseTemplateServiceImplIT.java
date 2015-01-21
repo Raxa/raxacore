@@ -118,7 +118,7 @@ public class DiseaseTemplateServiceImplIT extends BaseModuleWebContextSensitiveT
 
     @Test
     public void get_all_disease_template_should_get_latest_across_all_visits_for_class_case_intake() throws Exception {
-        executeDataSet("scopeLatest.xml");
+        executeDataSet("diseaseTemplateScopeLatest.xml");
         ArrayList<String> showOnly = new ArrayList<>();
 
         DiseaseTemplateConfig diseaseTemplateConfig = new DiseaseTemplateConfig();
