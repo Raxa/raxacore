@@ -33,7 +33,8 @@ public class DiseaseTemplateControllerIT extends BaseWebControllerTest {
     @Test
     public void shouldReturnObsForAllDiseaseTemplatesWithIntakeAndProgressFromTheLatestVisit() throws Exception {
         String dataJson = "{\n" +
-                "  \"diseaseTemplateConfigList\" : [],\n" +
+                "  \"diseaseTemplateConfigList\" : [{" +
+                                                    "\"templateName\": \"Breast Cancer\"" + "}],\n" +
                 "  \"patientUuid\": \"86526ed5-3c11-11de-a0ba-001e378eb67a\"\n" +
                 "}";
         List<DiseaseTemplate> diseaseTemplates = deserialize(handle(newPostRequest("/rest/v1/bahmnicore/diseaseTemplates", dataJson)), new TypeReference<List<DiseaseTemplate>>() {});

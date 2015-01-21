@@ -67,7 +67,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
             Concept diseaseTemplateConcept = conceptService.getConceptByName(diseaseTemplateConfig.getTemplateName());
             DiseaseTemplate diseaseTemplate = getDiseaseTemplate(diseaseTemplatesConfig.getPatientUuid(), diseaseTemplateConcept);
             List<String> showOnlyConceptsForTheDisease = getShowOnlyConceptsForTheDisease(diseaseTemplate, diseaseTemplatesConfig);
-            if (showOnlyConceptsForTheDisease.size() > 0) {
+            if (CollectionUtils.isNotEmpty(showOnlyConceptsForTheDisease)) {
                 filterObs(diseaseTemplate, showOnlyConceptsForTheDisease);
             }
             diseaseTemplates.add(diseaseTemplate);
