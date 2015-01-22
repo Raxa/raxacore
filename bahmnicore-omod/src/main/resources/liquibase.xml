@@ -2786,4 +2786,14 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
+    <changeSet id="bahmni-clinical-retrospective-201501221417" author="Vikash, Sravanthi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege = 'app:clinical:retrospective'</sqlCheck>
+        </preConditions>
+        <insert tableName="privilege">
+            <column name="privilege" value="app:clinical:retrospective"/>
+            <column name="description" value="Bahmni clinical app retrospective access privilege"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
