@@ -21,12 +21,12 @@ import java.util.Arrays;
 import java.util.List;
 
 @Component
-public class LocationSearchHandler  implements SearchHandler{
+public class BahmniLocationSearchHandler implements SearchHandler{
 
     private LocationService locationService;
 
     @Autowired
-    public LocationSearchHandler(LocationService locationService) {
+    public BahmniLocationSearchHandler(LocationService locationService) {
         this.locationService = locationService;
     }
 

@@ -5,6 +5,7 @@ import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplateConf
 import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplatesConfig;
 import org.bahmni.module.bahmnicore.contract.diseasetemplate.ObservationTemplate;
 import org.bahmni.module.bahmnicore.service.DiseaseTemplateService;
+import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
@@ -38,6 +39,13 @@ public class DiseaseTemplateServiceImplIT extends BaseModuleWebContextSensitiveT
         assertEquals(1, observationTemplate.getBahmniObservations().size());
         BahmniObservation obs = observationTemplate.getBahmniObservations().iterator().next();
         assertTrue(obs.getValue().equals(100.0));
+    }
+
+    @Test
+    public void get_disease_template_ignores_invalid_template_name() throws Exception {
+        DiseaseTemplate diseaseTemplate = diseaseTemplateService.diseaseTemplateFor("b2a59310-58e8-11e4-8ed6-0800200c9a66", "Non existing Concept");
+        assertEquals("Non existing Concept", diseaseTemplate.getConcept().getName());
+        assertEquals(0, diseaseTemplate.getObservationTemplates().size());
     }
 
     @Test
@@ -145,5 +153,28 @@ public class DiseaseTemplateServiceImplIT extends BaseModuleWebContextSensitiveT
 
         assertEquals(1, diseaseTemplates.get(0).getObservationTemplates().get(1).getBahmniObservations().size());
         assertEquals("Anaemia value", diseaseTemplates.get(0).getObservationTemplates().get(1).getBahmniObservations().iterator().next().getConcept().getName());
+    }
+
+    @Test
+    public void get_all_disease_template_should_not_fail_when_invalid_showonly_provided() throws Exception {
+        ArrayList<String> showOnly = new ArrayList<>();
+        showOnly.add("Breast Cancer Intake");
+        showOnly.add("Non existing concept");
+
+        DiseaseTemplateConfig diseaseTemplateConfig = new DiseaseTemplateConfig();
+        diseaseTemplateConfig.setTemplateName("Breast Cancer");
+        diseaseTemplateConfig.setShowOnly(showOnly);
+
+        ArrayList<DiseaseTemplateConfig> diseaseTemplateConfigList = new ArrayList<>();
+        diseaseTemplateConfigList.add(diseaseTemplateConfig);
+
+        DiseaseTemplatesConfig diseaseTemplatesConfig = new DiseaseTemplatesConfig();
+        diseaseTemplatesConfig.setPatientUuid("86526ed5-3c11-11de-a0ba-001e378eb67a");
+        diseaseTemplatesConfig.setDiseaseTemplateConfigList(diseaseTemplateConfigList);
+
+        List<DiseaseTemplate> diseaseTemplates = diseaseTemplateService.allDiseaseTemplatesFor(diseaseTemplatesConfig);
+        assertEquals(1, diseaseTemplates.size());
+        assertEquals(1, diseaseTemplates.get(0).getObservationTemplates().size());
+        assertEquals("Breast Cancer Intake", diseaseTemplates.get(0).getObservationTemplates().get(0).getConcept().getName());
     }
 }

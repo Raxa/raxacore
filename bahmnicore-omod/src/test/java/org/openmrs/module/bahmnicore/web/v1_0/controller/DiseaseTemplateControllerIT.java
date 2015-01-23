@@ -49,7 +49,28 @@ public class DiseaseTemplateControllerIT extends BaseWebControllerTest {
     }
 
     @Test
-    public void shouldReturnObsForADiseaseTemplateWithIntakeAndProgressAcrossAllVisits() throws Exception {
+    public void get_shouldReturnEmptyObservationTemplatesForIncorrectTemplateName() throws Exception {
+        String dataJson = "{\n" +
+                "  \"diseaseTemplateConfigList\" : [{" +
+                                                    "\"templateName\": \"Does not exist\"" + "}],\n" +
+                "  \"patientUuid\": \"86526ed5-3c11-11de-a0ba-001e378eb67a\"\n" +
+                "}";
+        List<DiseaseTemplate> diseaseTemplates = deserialize(handle(newPostRequest("/rest/v1/bahmnicore/diseaseTemplates", dataJson)), new TypeReference<List<DiseaseTemplate>>() {});
+        assertEquals(1, diseaseTemplates.size());
+        assertEquals(0, diseaseTemplates.get(0).getObservationTemplates().size());
+    }
+
+    @Test
+    public void getDiseaseTemplate_shouldReturnEmptyObservationTemplatesForIncorrectTemplateName() throws Exception {
+        DiseaseTemplate diseaseTemplate = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/diseaseTemplate",
+                new Parameter("patientUuid", "86526ed5-3c11-11de-a0ba-001e378eb67a"),
+                new Parameter("diseaseName", "Non Existing Concept"))),
+                new TypeReference<DiseaseTemplate>() {});
+        assertEquals(0, diseaseTemplate.getObservationTemplates().size());
+    }
+
+    @Test
+    public void getDiseaseTemplate_shouldReturnObsForADiseaseTemplateWithIntakeAndProgressAcrossAllVisits() throws Exception {
         DiseaseTemplate diseaseTemplates = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/diseaseTemplate", new Parameter("patientUuid", "86526ed5-3c11-11de-a0ba-001e378eb67a"), new Parameter("diseaseName", "Breast Cancer"))), new TypeReference<DiseaseTemplate>() {});
         assertNotNull(diseaseTemplates);
         assertEquals("Breast Cancer", diseaseTemplates.getConcept().getName());

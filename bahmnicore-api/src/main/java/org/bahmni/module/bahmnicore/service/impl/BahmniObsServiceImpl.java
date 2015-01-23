@@ -67,8 +67,9 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public List<Obs> getLatestObsForConceptSetByVisit(String patientUuid, String conceptName, Integer visitId) {
-        return obsDao.getLatestObsForConceptSetByVisit(patientUuid, conceptName, visitId);
+    public Collection<BahmniObservation> getLatestObsForConceptSetByVisit(String patientUuid, String conceptName, Integer visitId) {
+        List<Obs> obs = obsDao.getLatestObsForConceptSetByVisit(patientUuid, conceptName, visitId);
+        return omrsObsToBahmniObsMapper.map(obs, Arrays.asList(getConceptByName(conceptName)));
     }
 
     @Override
@@ -76,8 +77,8 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         Visit visit = visitService.getVisitByUuid(visitUuid);
         List<Person> persons = new ArrayList<>();
         persons.add(visit.getPatient());
-        List<Obs> observations = obsService.getObservations(persons, new ArrayList<Encounter>(visit.getEncounters()),getConceptsForNames(conceptNames), null, null, null, null, null, null, null, null, false);
-        observations = new ArrayList<Obs>(getObsAtTopLevel(observations,conceptNames));
+        List<Obs> observations = obsService.getObservations(persons, new ArrayList<>(visit.getEncounters()),getConceptsForNames(conceptNames), null, null, null, null, null, null, null, null, false);
+        observations = new ArrayList<>(getObsAtTopLevel(observations,conceptNames));
         return omrsObsToBahmniObsMapper.map(observations, null);
     }
 
@@ -85,10 +86,14 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         List<Concept> concepts = new ArrayList<>();
         if(conceptNames!= null){
             for (String conceptName : conceptNames) {
-                concepts.add(conceptService.getConceptByName(conceptName));
+                concepts.add(getConceptByName(conceptName));
             }
         }
         return concepts;
+    }
+
+    private Concept getConceptByName(String conceptName) {
+        return conceptService.getConceptByName(conceptName);
     }
 
     private Set<Obs> getObsAtTopLevel(List<Obs> observations, List<String> topLevelconceptNames) {
