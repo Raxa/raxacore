@@ -49,6 +49,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
 
     private void updateEncounter(Encounter encounter, Date encounterDateTime, List<Document> documents) {
         Concept imageConcept = conceptService.getConceptByName(DOCUMENT_OBS_GROUP_CONCEPT_NAME);
+        List<Obs> obsList = new ArrayList<>();
 
         for (Document document : documents) {
             Concept testConcept = conceptService.getConceptByUuid(document.getTestUuid());
@@ -66,7 +67,11 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
                 parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), imageConcept, url, null));
             }
             encounter.addObs(parentObservation);
+//            obsList.add(parentObservation);
         }
+
+//        for (Obs obs : obsList)
+//            encounter.addObs(obs);
     }
 
     private Obs findOrCreateParentObs(Encounter encounter, Date observationDateTime, Concept testConcept, String obsUuid) {
