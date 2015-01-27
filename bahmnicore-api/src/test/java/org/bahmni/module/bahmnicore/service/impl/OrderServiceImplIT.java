@@ -2,12 +2,8 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.CareSetting;
-import org.openmrs.Order;
-import org.openmrs.OrderType;
-import org.openmrs.Patient;
+import org.openmrs.*;
 import org.openmrs.api.PatientService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +15,6 @@ public class OrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Autowired
     private OrderService bahmniOrderService;
-
     @Autowired
     private org.openmrs.api.OrderService orderService;
     @Autowired
@@ -44,11 +39,23 @@ public class OrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
         Assert.assertEquals("Radiology Order", pendingOrder.getOrderType().getName());
     }
 
+    @Test
+    public void shouldGetAllVisitsWhenNumberOfVisitsIsNull() throws Exception{
+        executeDataSet("drugOrdersForVisits.xml");
+        String patientUuid = "86526ed5-3c11-11de-a0ba-001ed98eb67a";
+        Patient patient = patientService.getPatientByUuid(patientUuid);
+        List<Visit> visitsWithOrders = bahmniOrderService.getVisitsWithOrders(patient, "DrugOrder", true, null);
+        Assert.assertFalse(visitsWithOrders.isEmpty());
+        Assert.assertEquals(2, visitsWithOrders.size());
+        Assert.assertNotEquals((Integer)3001, visitsWithOrders.get(0).getId());
+        Assert.assertNotEquals((Integer)3001, visitsWithOrders.get(1).getId());
+    }
+
     private void ensureCorrectDataSetup(String patientUuid, String radiologyOrderTypeUuid) {
         Patient patient = patientService.getPatientByUuid(patientUuid);
         OrderType orderType = orderService.getOrderTypeByUuid(radiologyOrderTypeUuid);
         CareSetting careSetting = orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString());
-        List<Order> allRadiologyOrdersForPatient  = orderService.getOrders(patient, careSetting, orderType, true);
+        List<Order> allRadiologyOrdersForPatient = orderService.getOrders(patient, careSetting, orderType, true);
         Assert.assertTrue("More than 1 radiology orders are setup for the patient", allRadiologyOrdersForPatient.size() > 1);
     }
 

@@ -65,9 +65,10 @@ public class OrderDaoImpl implements OrderDao {
         return new ArrayList<>();
     }
 
-    public List<DrugOrder> getPrescribedDrugOrdersForConcepts(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits, List<Concept> concepts){
+    @Override
+    public List<DrugOrder> getPrescribedDrugOrdersForConcepts(Patient patient, Boolean includeActiveVisit, List<Visit> visits, List<Concept> concepts){
         Session currentSession = getCurrentSession();
-        List<Integer> visitWithDrugOrderIds = getVisitIds(getVisitsWithOrders(patient, "DrugOrder", includeActiveVisit, numberOfVisits));
+        List<Integer> visitWithDrugOrderIds = getVisitIds(visits);
         if(!visitWithDrugOrderIds.isEmpty()) {
 
             Query query = currentSession.createQuery("select d1 from DrugOrder d1, Encounter e, Visit v where d1.encounter = e and e.visit = v and v.visitId in (:visitIds) and d1.drug.concept in (:concepts)" +
@@ -83,6 +84,7 @@ public class OrderDaoImpl implements OrderDao {
         return new ArrayList<>();
     }
 
+    @Override
     public List<Visit> getVisitsWithOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits) {
         Session currentSession = getCurrentSession();
         String includevisit = includeActiveVisit == null || includeActiveVisit == false ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";

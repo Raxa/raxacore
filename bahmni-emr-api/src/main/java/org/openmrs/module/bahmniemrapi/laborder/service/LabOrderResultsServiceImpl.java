@@ -60,7 +60,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         return new LabOrderResults(mapOrdersWithObs(testOrders, observations, encounterTestOrderUuidMap, encounterObservationMap,encounterToAccessionNotesMap));
     }
 
-    private void createAccessionNotesByEncounter(Map<String, List<AccessionNote>> encounterToAccessionNotesMap, List<Encounter> encounters, Encounter encounter) {
+    private void  createAccessionNotesByEncounter(Map<String, List<AccessionNote>> encounterToAccessionNotesMap, List<Encounter> encounters, Encounter encounter) {
         List<AccessionNote> accessionNotes = getAccessionNotesFor(encounter, encounters);
         if(accessionNotes.size() != 0){
             List<AccessionNote> existingAccessionNotes = encounterToAccessionNotesMap.get(encounter.getUuid());

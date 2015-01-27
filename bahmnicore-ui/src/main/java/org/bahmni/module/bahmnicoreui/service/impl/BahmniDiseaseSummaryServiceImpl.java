@@ -36,9 +36,9 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
 
         Patient patient = patientService.getPatientByUuid(patientUuid);
 
-        diseaseSummaryData.concat(obsDiseaseSummaryAggregator.aggregate(patient, queryParams.getObsConcepts(), queryParams.getNumberOfVisits(), queryParams.getGroupBy()));
-        diseaseSummaryData.concat(labDiseaseSummaryAggregator.aggregate(patient, queryParams.getLabConcepts(), queryParams.getNumberOfVisits(), queryParams.getGroupBy()));
-        diseaseSummaryData.concat(drugOrderDiseaseSummaryAggregator.aggregate(patient, queryParams.getDrugConcepts(), queryParams.getNumberOfVisits(), queryParams.getGroupBy()));
+        diseaseSummaryData.concat(obsDiseaseSummaryAggregator.aggregate(patient, queryParams));
+        diseaseSummaryData.concat(labDiseaseSummaryAggregator.aggregate(patient, queryParams));
+        diseaseSummaryData.concat(drugOrderDiseaseSummaryAggregator.aggregate(patient, queryParams));
         return diseaseSummaryData;
     }
 

@@ -1,18 +1,22 @@
 package org.bahmni.module.bahmnicoreui.helper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.bahmni.module.bahmnicoreui.contract.ConceptDetails;
+import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
 import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryMapper;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
 import org.openmrs.module.bahmniemrapi.laborder.service.LabOrderResultsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -21,24 +25,25 @@ public class LabDiseaseSummaryAggregator {
     private final ConceptHelper conceptHelper;
     private LabOrderResultsService labOrderResultsService;
     private OrderService orderService;
+    private VisitService visitService;
     private final DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
 
 
     @Autowired
-    public LabDiseaseSummaryAggregator(ConceptService conceptService, LabOrderResultsService labOrderResultsService, OrderService orderService) {
+    public LabDiseaseSummaryAggregator(ConceptService conceptService, LabOrderResultsService labOrderResultsService, OrderService orderService, VisitService visitService) {
         this.labOrderResultsService = labOrderResultsService;
         this.orderService = orderService;
+        this.visitService = visitService;
         this.conceptHelper = new ConceptHelper(conceptService);
-
     }
 
-    public DiseaseSummaryData aggregate(Patient patient, List<String> conceptNames, Integer numberOfVisits, String groupBy) {
+    public DiseaseSummaryData aggregate(Patient patient, DiseaseDataParams diseaseDataParams) {
         DiseaseSummaryData diseaseSummaryData =  new DiseaseSummaryData();
-        List<Concept> concepts = conceptHelper.getConceptsForNames(conceptNames);
+        List<Concept> concepts = conceptHelper.getConceptsForNames(diseaseDataParams.getLabConcepts());
         if(!concepts.isEmpty()){
-            List<LabOrderResult> labOrderResults = labOrderResultsService.getAllForConcepts(patient, conceptNames, getVisitsWithLabOrdersFor(patient,numberOfVisits));
-            diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapLabResults(labOrderResults, groupBy));
-            diseaseSummaryData.addConceptDetails(conceptHelper.getLeafConceptDetails(conceptNames));
+            List<LabOrderResult> labOrderResults = labOrderResultsService.getAllForConcepts(patient, diseaseDataParams.getLabConcepts(), getVisits(patient, diseaseDataParams));
+            diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapLabResults(labOrderResults, diseaseDataParams.getGroupBy()));
+            diseaseSummaryData.addConceptDetails(conceptHelper.getLeafConceptDetails(diseaseDataParams.getLabConcepts()));
             mapLowNormalAndHiNormal(diseaseSummaryData, labOrderResults);
         }
         return diseaseSummaryData;
@@ -65,7 +70,12 @@ public class LabDiseaseSummaryAggregator {
         return null;
     }
 
-    private List<Visit> getVisitsWithLabOrdersFor(Patient patient, Integer numberOfVisits) {
-        return orderService.getVisitsWithOrders(patient, "TestOrder", true, numberOfVisits);
+    private List<Visit> getVisits(Patient patient, final DiseaseDataParams diseaseDataParams) {
+        if(StringUtils.isBlank(diseaseDataParams.getVisitUuid())){
+            return orderService.getVisitsWithOrders(patient, "TestOrder", true, diseaseDataParams.getNumberOfVisits());
+        }
+        return new ArrayList(){{
+            add(visitService.getVisitByUuid(diseaseDataParams.getVisitUuid()))  ;
+        }};
     }
 }

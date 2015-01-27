@@ -1,6 +1,10 @@
 package org.bahmni.module.bahmnicoreui.helper;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
+import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
 import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryMapper;
 import org.openmrs.Concept;
@@ -11,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -26,15 +31,37 @@ public class ObsDiseaseSummaryAggregator {
         this.conceptHelper = new ConceptHelper(conceptService);
     }
 
-    public DiseaseSummaryData aggregate(Patient patient, List<String> conceptNames, Integer numberOfVisits, String groupBy) {
-        DiseaseSummaryData diseaseSummaryData =  new DiseaseSummaryData();
-        List<Concept> concepts = conceptHelper.getConceptsForNames(conceptNames);
-        if(!concepts.isEmpty()){
-            Collection<BahmniObservation> bahmniObservations = bahmniObsService.observationsFor(patient.getUuid(), concepts, numberOfVisits);
-            diseaseSummaryData.setTabularData(diseaseSummaryMapper.mapObservations(bahmniObservations, groupBy));
-            diseaseSummaryData.addConceptDetails(conceptHelper.getLeafConceptDetails(conceptNames));
-        }
+    public DiseaseSummaryData aggregate(Patient patient, DiseaseDataParams queryParams) {
+        DiseaseSummaryData diseaseSummaryData = new DiseaseSummaryData();
+        Collection<BahmniObservation> bahmniObservations = fetchBahmniObservations(patient, queryParams);
+        constructDiseaseSummaryData(bahmniObservations, queryParams.getObsConcepts(), queryParams.getGroupBy(), diseaseSummaryData);
         return diseaseSummaryData;
+    }
+
+    private Collection<BahmniObservation> fetchBahmniObservations(Patient patient, DiseaseDataParams queryParams) {
+        if (StringUtils.isBlank(queryParams.getVisitUuid())) {
+            List<Concept> concepts = conceptHelper.getConceptsForNames(queryParams.getObsConcepts());
+            if (!concepts.isEmpty()) {
+                return bahmniObsService.observationsFor(patient.getUuid(), concepts, queryParams.getNumberOfVisits());
+            }
+            return Collections.EMPTY_LIST;
+        }
+        return filterObservationsLinkedWithOrders(bahmniObsService.getObservationForVisit(queryParams.getVisitUuid(), queryParams.getObsConcepts()));
+    }
+
+    private Collection<BahmniObservation> filterObservationsLinkedWithOrders(Collection<BahmniObservation> bahmniObservations) {
+        CollectionUtils.filter(bahmniObservations,new Predicate() {
+            @Override
+            public boolean evaluate(Object bahmniObservation) {
+                return ((BahmniObservation)bahmniObservation).getOrderUuid() == null;
+            }
+        });
+        return bahmniObservations;
+    }
+
+    private void constructDiseaseSummaryData(Collection<BahmniObservation> bahmniObservations, List<String> conceptNames, String groupBy, DiseaseSummaryData diseaseSummaryData) {
+        diseaseSummaryData.setTabularData(diseaseSummaryMapper.mapObservations(bahmniObservations, groupBy));
+        diseaseSummaryData.addConceptDetails(conceptHelper.getLeafConceptDetails(conceptNames));
     }
 
 

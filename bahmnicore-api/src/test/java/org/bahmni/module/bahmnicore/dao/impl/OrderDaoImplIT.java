@@ -1,6 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import static junit.framework.Assert.assertTrue;
+import org.bahmni.module.bahmnicore.service.OrderService;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
@@ -17,9 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -29,6 +28,8 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
     private OrderDaoImpl orderDao;
     @Autowired
     private ConceptService conceptService;
+    @Autowired
+    private OrderService orderService;
     @Autowired
     private PatientService patientService;
 
@@ -111,19 +112,6 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    public void getPrescribedDrugOrdersForConcepts_shouldFetchAllPrescribedDrugOrdersForGivenConceptsForAllVisits() throws Exception {
-        executeDataSet("patientWithOrders.xml");
-        Patient patient = patientService.getPatient(2);
-
-        List<Concept> concepts = new ArrayList<>();
-        concepts.add(conceptService.getConcept(24));
-        concepts.add(conceptService.getConcept(27));
-        List<DrugOrder> result = orderDao.getPrescribedDrugOrdersForConcepts(patient, true, null, concepts);
-        assertEquals(3, result.size());
-        assertThat(getOrderIds(result), hasItems(55, 56, 59));
-    }
-
-    @Test
     public void getPrescribedDrugOrdersForConcepts_shouldFetchAllPrescribedDrugOrdersForGivenConceptsForGivenNoOfVisits() throws Exception {
         executeDataSet("patientWithOrders.xml");
         Patient patient = patientService.getPatient(2);
@@ -132,7 +120,10 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
         concepts.add(conceptService.getConcept(24));
         concepts.add(conceptService.getConcept(27));
 
-        List<DrugOrder> result = orderDao.getPrescribedDrugOrdersForConcepts(patient, true, 1, concepts);
+        List<Visit> visits = orderService.getVisitsWithOrders(patient, "DrugOrder", true, 1);
+        assertEquals(1, visits.size());
+
+        List<DrugOrder> result = orderDao.getPrescribedDrugOrdersForConcepts(patient, true, visits, concepts);
         assertEquals(2, result.size());
         assertThat(getOrderIds(result), hasItems(55, 59));
 
