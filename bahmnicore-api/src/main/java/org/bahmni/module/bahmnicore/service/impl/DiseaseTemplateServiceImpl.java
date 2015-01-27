@@ -167,15 +167,12 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
             for (Concept concept : diseaseTemplateConcept.getSetMembers()) {
                 if (concept.getConceptClass().getName().equals(CASE_INTAKE_CONCEPT_CLASS) && CollectionUtils.isNotEmpty(visits)) {
                     for (Visit visit : visits) {
-                        ObservationTemplate observationTemplate = getObservationTemplate(patientUuid, concept, visit);
-                        if (observationTemplate != null) {
-                            observationTemplates.add(observationTemplate);
-                        }
+                        getObservationTemplate(observationTemplates,patientUuid, concept, visit);
                     }
                 } else {
                     Visit latestVisit = bahmniVisitService.getLatestVisit(patientUuid, concept.getName().getName());
                     if (latestVisit != null) {
-                        observationTemplates.add(getObservationTemplate(patientUuid, concept, latestVisit));
+                        getObservationTemplate(observationTemplates,patientUuid, concept, latestVisit);
                     }
                 }
             }
@@ -183,12 +180,10 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         return observationTemplates;
     }
 
-    private ObservationTemplate getObservationTemplate(String patientUuid, Concept concept, Visit latestVisit) {
+    private void getObservationTemplate(List<ObservationTemplate> observationTemplates,String patientUuid, Concept concept, Visit latestVisit) {
         Collection<BahmniObservation> observations = getLatestObsFor(patientUuid, concept, latestVisit.getVisitId());
         if (CollectionUtils.isNotEmpty(observations))
-            return createObservationTemplate(concept, latestVisit, observations);
-        else
-            return null;
+            observationTemplates.add(createObservationTemplate(concept, latestVisit, observations));
     }
 
     private ObservationTemplate createObservationTemplate(Concept concept, Visit visit, Collection<BahmniObservation> observations) {
