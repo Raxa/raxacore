@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <visit visit_id="1" patient_id="2" visit_type_id="1" date_started="2005-01-01 00:00:00.0" date_stopped="2005-01-05 00:00:00.0" location_id="1" indication_concept_id="5497" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="1e5d5d48-6b78-11e0-93c3-18a905e044dc" />
+
+    <encounter_type encounter_type_id="10000" name="ADMISSION" description="Some desc" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="2b377dba-62c3-4e53-91ef-b51c68899890"/>
+    <encounter_type encounter_type_id="20000" name="DISCHARGE" description="Some desc" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="2b377dba-62c3-4e53-91ef-b51c68899809"/>
+
+    <encounter encounter_id="10001" encounter_type="10000" patient_id="2" visit_id="1" location_id="1" encounter_datetime="2005-01-01 00:00:00.0" creator="1" date_created="2005-09-23 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63ab0"/>
+    <encounter encounter_id="10002" encounter_type="20000" patient_id="2" visit_id="1" location_id="1" encounter_datetime="2005-01-04 00:00:00.0" creator="1" date_created="2005-09-23 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63a0b"/>
+</dataset>

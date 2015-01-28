@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.bahmni.module.bahmnicore.service.BahmniVisitService;
 import org.openmrs.Visit;
@@ -20,5 +19,15 @@ public class BahmniVisitServiceImpl implements BahmniVisitService {
     @Override
     public Visit getLatestVisit(String patientUuid, String conceptName) {
         return visitDao.getLatestVisit(patientUuid, conceptName);
+    }
+
+    @Override
+    public Visit getVisitSummary(String visitUuid) {
+        return visitDao.getVisitSummary(visitUuid);
+    }
+
+    @Override
+    public boolean hasAdmissionEncounter(String visitUuid) {
+        return visitDao.hasAdmissionEncounter(visitUuid);
     }
 }
