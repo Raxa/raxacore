@@ -8,6 +8,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.VisitService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.document.contract.Document;
 import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentRequest;
 import org.openmrs.module.bahmniemrapi.document.service.VisitDocumentService;
@@ -232,6 +233,9 @@ public class VisitDocumentServiceImplIT extends BaseModuleContextSensitiveTest {
                 documents,
                 firstProviderUuid, FIRST_LOCATION_UUID);
         visitDocumentService.upload(visitDocumentRequest);
+
+        Context.flushSession();
+        Context.clearSession();
 
         Encounter encounter = encounterService.getEncounterByUuid(firstEncounterUuid);
         List<Obs> savedDocuments = getSavedDocuments(encounter.getAllObs(), conceptUuid);

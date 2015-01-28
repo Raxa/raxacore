@@ -49,7 +49,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
 
     private void updateEncounter(Encounter encounter, Date encounterDateTime, List<Document> documents) {
         Concept imageConcept = conceptService.getConceptByName(DOCUMENT_OBS_GROUP_CONCEPT_NAME);
-        List<Obs> tempList_Created_To_Maintain_The_Order_Of_Observations_Important_Since_They_Are_Page_Numbers = new ArrayList<>();
+        LinkedHashSet<Obs> observations = new LinkedHashSet<>(encounter.getAllObs());
 
         for (Document document : documents) {
             Concept testConcept = conceptService.getConceptByUuid(document.getTestUuid());
@@ -57,25 +57,24 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
             String url = document.getImage();
 
             if (document.isNew()) {
-                parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), imageConcept, url, null));
+                parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), imageConcept, url, null, encounter));
             }
             if (document.shouldVoidDocument()) {
                 voidDocumentObservationTree(parentObservation);
             } else if (document.hasConceptChanged(parentObservation.getConcept().getUuid())) {
                 voidDocumentObservationTree(parentObservation);
-                parentObservation = newObs(parentObservation.getObsDatetime(), testConcept, null, parentObservation.getLocation());
-                parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), imageConcept, url, null));
+                parentObservation = newObs(parentObservation.getObsDatetime(), testConcept, null, parentObservation.getLocation(), encounter);
+                parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), imageConcept, url, null, encounter));
             }
-            tempList_Created_To_Maintain_The_Order_Of_Observations_Important_Since_They_Are_Page_Numbers.add(parentObservation);
+            observations.add(parentObservation);
         }
 
-        for (Obs obs : tempList_Created_To_Maintain_The_Order_Of_Observations_Important_Since_They_Are_Page_Numbers)
-            encounter.addObs(obs);
+        encounter.setObs(observations);
     }
 
     private Obs findOrCreateParentObs(Encounter encounter, Date observationDateTime, Concept testConcept, String obsUuid) {
         Obs observation = findObservation(encounter.getAllObs(), obsUuid);
-        return observation != null ? observation : newObs(observationDateTime, testConcept, null, null);
+        return observation != null ? observation : newObs(observationDateTime, testConcept, null, null, encounter);
     }
 
     private void voidDocumentObservationTree(Obs obs) {
@@ -97,10 +96,12 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         return null;
     }
 
-    private Obs newObs(Date obsDate, Concept concept, String value, Location location) {
+    private Obs newObs(Date obsDate, Concept concept, String value, Location location, Encounter encounter) {
         Obs observation = new Obs();
         observation.setConcept(concept);
         observation.setObsDatetime(obsDate);
+        observation.setPerson(encounter.getPatient());
+        observation.setEncounter(encounter);
         if (value != null) {
             observation.setValueText(value);
         }
