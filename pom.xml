@@ -361,11 +361,11 @@
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
-                                    <!--<argLine>-Duser.language=en -Duser.region=US -Xmx512m -XX:MaxPermSize=512m</argLine>-->
+                                    <argLine>-Duser.language=en -Duser.region=US -Xmx512m -XX:MaxPermSize=512m</argLine>
                                     <forkCount>3</forkCount>
                                     <reuseForks>true</reuseForks>
-                                    <!--<parallel>classes</parallel>-->
-                                    <!--<useUnlimitedThreads>true</useUnlimitedThreads>-->
+                                    <parallel>classes</parallel>
+                                    <useUnlimitedThreads>true</useUnlimitedThreads>
                                     <includes>
                                         <include>**/*IT.java</include>
                                     </includes>
