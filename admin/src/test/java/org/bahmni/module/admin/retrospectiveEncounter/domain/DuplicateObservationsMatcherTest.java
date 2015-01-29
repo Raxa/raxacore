@@ -13,6 +13,7 @@ import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Visit;
+import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.util.LocaleUtility;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -36,6 +37,9 @@ public class DuplicateObservationsMatcherTest {
 
     @Mock
     private BahmniVisit bahmniVisit;
+
+    @Mock
+    private Visit visit;
 
     @Before
     public void setUp() throws Exception {
@@ -186,5 +190,23 @@ public class DuplicateObservationsMatcherTest {
         Collection<BahmniObservation> newlyAddedBahmniObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniObservations, ENCOUNTER_DATE);
 
         assertEquals(0, newlyAddedBahmniObservations.size());
+    }
+
+    @Test
+    public void shouldIgnoreDuplicateObservationMatchingForFreeTextDiagnosisRequest() throws Exception {
+
+        whenNew(BahmniVisit.class).withArguments(visit).thenReturn(bahmniVisit);
+        when(bahmniVisit.obsFor("OPD")).thenReturn(new ArrayList<Obs>());
+        List<BahmniDiagnosisRequest> requests = new ArrayList<>();
+        BahmniDiagnosisRequest request = new BahmniDiagnosisRequest();
+        request.setCodedAnswer(null);
+        request.setFreeTextAnswer("Some Non-coded concept");
+        requests.add(request);
+
+        duplicateObservationsMatcher = new DuplicateObservationsMatcher(visit, "OPD");
+        requests = duplicateObservationsMatcher.getUniqueDiagnoses(requests);
+
+        assertEquals(1,requests.size());
+
     }
 }

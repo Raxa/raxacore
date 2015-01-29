@@ -11,7 +11,9 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class DiagnosisMapperTest {
     @Test
@@ -27,5 +29,22 @@ public class DiagnosisMapperTest {
         List<BahmniDiagnosisRequest> bahmniDiagnosis = diagnosisMapper.getBahmniDiagnosis(encounterRow);
 
         Assert.isTrue(bahmniDiagnosis.isEmpty(), "Should ignore empty diagnoses");
+    }
+
+    @Test
+    public void diagnosis_with_unknown_concepts() throws ParseException {
+        List<KeyValue> diagnosesKeyValues = Arrays.asList(new KeyValue("diagnosis", "ABCD"));
+
+        ConceptService mockConceptService = mock(ConceptService.class);
+        when(mockConceptService.getConceptByName("diagnosis")).thenReturn(null);
+        DiagnosisMapper diagnosisMapper = new DiagnosisMapper(mockConceptService);
+
+        EncounterRow encounterRow = new EncounterRow();
+        encounterRow.encounterDateTime = "2012-01-01";
+        encounterRow.diagnosesRows = diagnosesKeyValues;
+        List<BahmniDiagnosisRequest> bahmniDiagnosis = diagnosisMapper.getBahmniDiagnosis(encounterRow);
+
+        assertEquals(bahmniDiagnosis.size(), 1);
+        assertEquals(bahmniDiagnosis.get(0).getFreeTextAnswer(),"ABCD");
     }
 }
