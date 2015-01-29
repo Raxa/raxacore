@@ -6,7 +6,7 @@ import org.openmrs.EncounterProvider;
 import org.openmrs.Obs;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniProviderMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.EncounterDetails;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.AdditionalBahmniObservationFields;
 import org.openmrs.module.emrapi.encounter.ObservationMapper;
 import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +45,16 @@ public class OMRSObsToBahmniObsMapper {
     }
 
     public BahmniObservation map(Obs obs) {
-        EncounterDetails encounterDetails = new EncounterDetails(obs.getEncounter().getUuid(),obs.getEncounter().getEncounterDatetime(),obs.getEncounter().getVisit().getStartDatetime());
+        String obsGroupUuid = obs.getObsGroup() == null? null : obs.getObsGroup().getUuid();
+        AdditionalBahmniObservationFields additionalBahmniObservationFields =
+                new AdditionalBahmniObservationFields(
+                        obs.getEncounter().getUuid(),
+                        obs.getEncounter().getEncounterDatetime(),
+                        obs.getEncounter().getVisit().getStartDatetime(),
+                        obsGroupUuid);
         for (EncounterProvider encounterProvider : obs.getEncounter().getEncounterProviders()) {
-            encounterDetails.addProvider(bahmniProviderMapper.map(encounterProvider.getProvider()));
+            additionalBahmniObservationFields.addProvider(bahmniProviderMapper.map(encounterProvider.getProvider()));
         }
-        return etObsToBahmniObsMapper.map(observationMapper.map(obs), encounterDetails, Arrays.asList(obs.getConcept()), true);
+        return etObsToBahmniObsMapper.map(observationMapper.map(obs), additionalBahmniObservationFields, Arrays.asList(obs.getConcept()), true);
     }
 }

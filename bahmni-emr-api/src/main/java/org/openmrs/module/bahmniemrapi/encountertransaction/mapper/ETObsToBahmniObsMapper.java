@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.Concept;
-import org.openmrs.Provider;
 import org.openmrs.api.ConceptService;
-import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniProviderMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.EncounterDetails;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.AdditionalBahmniObservationFields;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,28 +24,29 @@ public class ETObsToBahmniObsMapper {
         this.conceptService = conceptService;
     }
 
-    public List<BahmniObservation> create(List<EncounterTransaction.Observation> allObservations, EncounterDetails encounterDetails) {
+    public List<BahmniObservation> create(List<EncounterTransaction.Observation> allObservations, AdditionalBahmniObservationFields additionalBahmniObservationFields) {
         List<BahmniObservation> bahmniObservations = new ArrayList<>();
         for (EncounterTransaction.Observation observation : allObservations) {
-            bahmniObservations.add(create(observation, encounterDetails));
+            bahmniObservations.add(create(observation, additionalBahmniObservationFields));
         }
         return bahmniObservations;
     }
 
-    public BahmniObservation create(EncounterTransaction.Observation observation, EncounterDetails encounterDetails) {
-        return map(observation,encounterDetails,
+    public BahmniObservation create(EncounterTransaction.Observation observation, AdditionalBahmniObservationFields additionalBahmniObservationFields) {
+        return map(observation, additionalBahmniObservationFields,
                 Arrays.asList(conceptService.getConceptByUuid(observation.getConceptUuid())),
                 false);
     }
 
-    BahmniObservation map(EncounterTransaction.Observation observation, EncounterDetails encounterDetails, List<Concept> rootConcepts, boolean flatten) {
+    BahmniObservation map(EncounterTransaction.Observation observation, AdditionalBahmniObservationFields additionalBahmniObservationFields, List<Concept> rootConcepts, boolean flatten) {
 
         BahmniObservation bahmniObservation = new BahmniObservation();
         bahmniObservation.setEncounterTransactionObservation(observation);
-        bahmniObservation.setEncounterDateTime(encounterDetails.getEncounterDateTime());
-        bahmniObservation.setVisitStartDateTime(encounterDetails.getVisitDateTime());
+        bahmniObservation.setEncounterDateTime(additionalBahmniObservationFields.getEncounterDateTime());
+        bahmniObservation.setVisitStartDateTime(additionalBahmniObservationFields.getVisitDateTime());
         bahmniObservation.setConceptSortWeight(ConceptSortWeightUtil.getSortWeightFor(bahmniObservation.getConcept().getName(), rootConcepts));
-        bahmniObservation.setEncounterUuid(encounterDetails.getEncounterUuid());
+        bahmniObservation.setEncounterUuid(additionalBahmniObservationFields.getEncounterUuid());
+        bahmniObservation.setObsGroupUuid(additionalBahmniObservationFields.getObsGroupUuid());
         if (CONCEPT_DETAILS_CONCEPT_CLASS.equals(observation.getConcept().getConceptClass()) && flatten) {
             for (EncounterTransaction.Observation member : observation.getGroupMembers()) {
                 if (member.getVoided()) {
@@ -69,14 +68,16 @@ public class ETObsToBahmniObsMapper {
             }
         } else if (observation.getGroupMembers().size() > 0) {
             for (EncounterTransaction.Observation groupMember : observation.getGroupMembers()) {
-                bahmniObservation.addGroupMember(map(groupMember, encounterDetails, rootConcepts, flatten));
+                AdditionalBahmniObservationFields additionalFields = (AdditionalBahmniObservationFields) additionalBahmniObservationFields.clone();
+                additionalFields.setObsGroupUuid(observation.getUuid());
+                bahmniObservation.addGroupMember(map(groupMember, additionalFields, rootConcepts, flatten));
             }
         } else {
             bahmniObservation.setValue(observation.getValue());
             bahmniObservation.setType(observation.getConcept().getDataType());
         }
 
-        for (EncounterTransaction.Provider provider : encounterDetails.getProviders()) {
+        for (EncounterTransaction.Provider provider : additionalBahmniObservationFields.getProviders()) {
             bahmniObservation.addProvider(provider);
         }
         return bahmniObservation;

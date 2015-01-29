@@ -6,7 +6,7 @@ import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
-import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryMapper;
+import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryDrugOrderMapper;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
@@ -27,8 +27,7 @@ public class DrugOrderDiseaseSummaryAggregator {
     private BahmniDrugOrderService drugOrderService;
     private ConceptHelper conceptHelper;
     private OrderService orderService;
-    private final DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
-    private Logger logger = Logger.getLogger(DrugOrderDiseaseSummaryAggregator.class);
+    private final DiseaseSummaryDrugOrderMapper diseaseSummaryDrugOrderMapper = new DiseaseSummaryDrugOrderMapper();
 
     @Autowired
     public DrugOrderDiseaseSummaryAggregator(ConceptService conceptService, VisitService visitService, BahmniDrugOrderService drugOrderService, OrderService orderService) {
@@ -39,27 +38,22 @@ public class DrugOrderDiseaseSummaryAggregator {
     }
 
     public DiseaseSummaryData aggregate(Patient patient, DiseaseDataParams diseaseDataParams) {
-        DiseaseSummaryData diseaseSummaryData =  new DiseaseSummaryData();
+        DiseaseSummaryData diseaseSummaryData = new DiseaseSummaryData();
         List<Concept> concepts = conceptHelper.getConceptsForNames(diseaseDataParams.getDrugConcepts());
-        if(!concepts.isEmpty()){
+        if (!concepts.isEmpty()) {
             List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrdersForConcepts(patient, true, getVisits(patient, diseaseDataParams), concepts);
-            try {
-                diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapDrugOrders(drugOrders, diseaseDataParams.getGroupBy()));
-            } catch (IOException e) {
-                logger.error("Could not parse dosing instructions",e);
-                throw new RuntimeException("Could not parse dosing instructions",e);
-            }
+            diseaseSummaryData.addTabularData(diseaseSummaryDrugOrderMapper.map(drugOrders, diseaseDataParams.getGroupBy()));
             diseaseSummaryData.addConceptDetails(conceptHelper.getConceptDetails(diseaseDataParams.getDrugConcepts()));
         }
         return diseaseSummaryData;
     }
 
     private List<Visit> getVisits(Patient patient, final DiseaseDataParams diseaseDataParams) {
-        if(StringUtils.isBlank(diseaseDataParams.getVisitUuid())){
+        if (StringUtils.isBlank(diseaseDataParams.getVisitUuid())) {
             return orderService.getVisitsWithOrders(patient, "DrugOrder", true, diseaseDataParams.getNumberOfVisits());
         }
-        return new ArrayList(){{
-            add(visitService.getVisitByUuid(diseaseDataParams.getVisitUuid()))  ;
+        return new ArrayList() {{
+            add(visitService.getVisitByUuid(diseaseDataParams.getVisitUuid()));
         }};
     }
 }

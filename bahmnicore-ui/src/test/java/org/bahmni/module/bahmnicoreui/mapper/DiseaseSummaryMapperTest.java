@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicoreui.mapper;
 
+import junit.framework.Assert;
 import org.bahmni.module.bahmnicoreui.contract.ConceptValue;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,8 +53,8 @@ public class DiseaseSummaryMapperTest {
     @Test
     public void shouldMapObservationsToResponseFormat() throws ParseException {
 
-        DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
-        Map<String, Map<String, ConceptValue>> obsTable = diseaseSummaryMapper.mapObservations(createBahmniObsList(), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_VISITS);
+        DiseaseSummaryObsMapper diseaseSummaryObsMapper = new DiseaseSummaryObsMapper();
+        Map<String, Map<String, ConceptValue>> obsTable = diseaseSummaryObsMapper.map(createBahmniObsList(), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_VISITS);
         assertNotNull(obsTable);
         assertEquals(3, obsTable.size());
         Map<String, ConceptValue> firstDayValue = obsTable.get(date1);
@@ -72,8 +73,8 @@ public class DiseaseSummaryMapperTest {
 
     @Test
     public void shouldMapObservationsAndGroupByEncounters() throws ParseException {
-        DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
-        Map<String, Map<String, ConceptValue>> obsTable = diseaseSummaryMapper.mapObservations(createBahmniObsList(), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_ENCOUNTER);
+        DiseaseSummaryObsMapper diseaseSummaryObsMapper = new DiseaseSummaryObsMapper();
+        Map<String, Map<String, ConceptValue>> obsTable = diseaseSummaryObsMapper.map(createBahmniObsList(), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_ENCOUNTER);
         assertNotNull(obsTable);
         assertEquals(5,obsTable.size());
         assertTrue(obsTable.containsKey(visit1Encounter1Date));
@@ -94,14 +95,47 @@ public class DiseaseSummaryMapperTest {
     }
 
     @Test
+    public void shouldMapMultiselectObservations() throws ParseException {
+        DiseaseSummaryObsMapper diseaseSummaryObsMapper = new DiseaseSummaryObsMapper();
+        Collection<BahmniObservation> bahmniObsListWithMultiselectObs = createBahmniObsListWithMultiselectObs();
+        Map<String, Map<String, ConceptValue>> obsTable = diseaseSummaryObsMapper.map(bahmniObsListWithMultiselectObs, null);
+        Assert.assertEquals("2-3days,5-6days", obsTable.get("2014-09-12").get("M/C days").getValue());
+        Assert.assertEquals("102", obsTable.get("2014-09-12").get("Temperature").getValue());
+        Assert.assertEquals("90", obsTable.get("2014-09-12").get("Pulse").getValue());
+        Assert.assertEquals("100", obsTable.get("2014-09-13").get("Pulse").getValue());
+
+    }
+
+    private Collection<BahmniObservation> createBahmniObsListWithMultiselectObs() throws ParseException {
+        List<BahmniObservation> bahmniObservations =  new ArrayList<>();
+        Date visit1 = simpleDateFormat.parse(date1);
+        Date visit2 = simpleDateFormat.parse(date2);
+
+        Date encounter1 = simpleDateTimeFormat.parse(visit1Encounter1Date);
+        Date encounter2 = simpleDateTimeFormat.parse(visit1Encounter2Date);
+        Date encounter3 = simpleDateTimeFormat.parse(visit1Encounter3Date);
+
+        bahmniObservations.add(createBahmniObservation(visit1,encounter1, "M/C days","2-3days"));
+        bahmniObservations.add(createBahmniObservation(visit1,encounter1, "M/C days","5-6days"));
+        bahmniObservations.add(createBahmniObservation(visit1,encounter1, "Temperature","102"));
+        bahmniObservations.add(createBahmniObservation(visit1,encounter1, "Pulse","90"));
+
+        bahmniObservations.add(createBahmniObservation(visit1,encounter2, "Temperature","102"));
+        bahmniObservations.add(createBahmniObservation(visit1,encounter3, "Temperature","103"));
+
+        bahmniObservations.add(createBahmniObservation(visit2,simpleDateTimeFormat.parse(date2 +" 12:30"),"Pulse","100"));
+        return bahmniObservations;
+    }
+
+    @Test
     public void shouldMapCodedConceptValues() throws ParseException {
-        DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
+        DiseaseSummaryObsMapper diseaseSummaryObsMapper = new DiseaseSummaryObsMapper();
         List<BahmniObservation> bahmniObservations =  new ArrayList<>();
 
         Date visit1 = simpleDateFormat.parse(date1);
         bahmniObservations.add(createBahmniObservation(visit1,simpleDateTimeFormat.parse(date1 +" 12:30"),"Pulse",new EncounterTransaction.Concept("uuid-pulse","very high pulse")));
 
-        Map<String, Map<String, ConceptValue>> obsTable = diseaseSummaryMapper.mapObservations(bahmniObservations, DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_VISITS);
+        Map<String, Map<String, ConceptValue>> obsTable = diseaseSummaryObsMapper.map(bahmniObservations, DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_VISITS);
 
         Map<String, ConceptValue> dayValue = obsTable.get(date1);
         assertEquals(1, dayValue.size());
@@ -111,8 +145,8 @@ public class DiseaseSummaryMapperTest {
 
     @Test
     public void shouldMapDrugOrders() throws ParseException, IOException {
-        DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
-        Map<String, Map<String, ConceptValue>> drugOrderData = diseaseSummaryMapper.mapDrugOrders(mockDrugOrders(new String[]{"paracetamol", "2014-08-15","2014-08-15 05:30"}, new String[]{"paracetamol1", "2014-08-15","2014-08-15 06:30"},new String[]{"penicillin", "2014-09-11","2014-09-11 06:30"}), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_VISITS);
+        DiseaseSummaryDrugOrderMapper diseaseSummaryDrugOrderMapper = new DiseaseSummaryDrugOrderMapper();
+        Map<String, Map<String, ConceptValue>> drugOrderData = diseaseSummaryDrugOrderMapper.map(mockDrugOrders(new String[]{"paracetamol", "2014-08-15","2014-08-15 05:30"}, new String[]{"paracetamol1", "2014-08-15","2014-08-15 06:30"},new String[]{"penicillin", "2014-09-11","2014-09-11 06:30"}), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_VISITS);
 
         assertNotNull(drugOrderData);
         assertEquals(2, drugOrderData.size());
@@ -128,8 +162,8 @@ public class DiseaseSummaryMapperTest {
 
     @Test
     public void shouldMapDrugOrdersForEncounters() throws ParseException, IOException {
-        DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
-        Map<String, Map<String, ConceptValue>> drugOrderData = diseaseSummaryMapper.mapDrugOrders(mockDrugOrders(new String[]{"paracetamol", "2014-08-15","2014-08-15 05:30"}, new String[]{"paracetamol1", "2014-08-15","2014-08-15 06:30"},new String[]{"penicillin", "2014-09-11","2014-09-11 06:30"}), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_ENCOUNTER);
+        DiseaseSummaryDrugOrderMapper diseaseSummaryDrugOrderMapper = new DiseaseSummaryDrugOrderMapper();
+        Map<String, Map<String, ConceptValue>> drugOrderData = diseaseSummaryDrugOrderMapper.map(mockDrugOrders(new String[]{"paracetamol", "2014-08-15","2014-08-15 05:30"}, new String[]{"paracetamol1", "2014-08-15","2014-08-15 06:30"},new String[]{"penicillin", "2014-09-11","2014-09-11 06:30"}), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_ENCOUNTER);
         assertNotNull(drugOrderData);
         assertEquals(3, drugOrderData.size());
         Map<String, ConceptValue> firstEncounterValue = drugOrderData.get("2014-08-15 05:30");
@@ -147,8 +181,8 @@ public class DiseaseSummaryMapperTest {
 
     @Test
     public void shouldMapDrugOrdersWithFlexibleDosing() throws ParseException, IOException {
-        DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
-        Map<String, Map<String, ConceptValue>> drugOrderData = diseaseSummaryMapper.mapDrugOrders(mockDrugOrdersWithFlexibleDosing(new String[]{"paracetamol", "2014-08-15", "2014-08-15 05:30"}, new String[]{"penicillin", "2014-09-11", "2014-09-11 05:30"}), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_VISITS);
+        DiseaseSummaryDrugOrderMapper diseaseSummaryDrugOrderMapper = new DiseaseSummaryDrugOrderMapper();
+        Map<String, Map<String, ConceptValue>> drugOrderData = diseaseSummaryDrugOrderMapper.map(mockDrugOrdersWithFlexibleDosing(new String[]{"paracetamol", "2014-08-15", "2014-08-15 05:30"}, new String[]{"penicillin", "2014-09-11", "2014-09-11 05:30"}), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_VISITS);
 
         assertNotNull(drugOrderData);
         assertEquals(2, drugOrderData.size());
@@ -165,8 +199,8 @@ public class DiseaseSummaryMapperTest {
     @Test
     public void shouldMapDrugOrdersWithoutAnyExceptionsWhenThereIsNoData() throws ParseException, IOException {
         try{
-            DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
-            Map<String, Map<String, ConceptValue>> drugOrderData = diseaseSummaryMapper.mapDrugOrders(mockDrugOrdersWithoutAnyData(new String[]{"paracetamol", "2014-08-15", "2014-08-15 05:30"}, new String[]{"penicillin", "2014-09-11", "2014-09-11 05:30"}), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_VISITS);
+            DiseaseSummaryDrugOrderMapper diseaseSummaryDrugOrderMapper = new DiseaseSummaryDrugOrderMapper();
+            Map<String, Map<String, ConceptValue>> drugOrderData = diseaseSummaryDrugOrderMapper.map(mockDrugOrdersWithoutAnyData(new String[]{"paracetamol", "2014-08-15", "2014-08-15 05:30"}, new String[]{"penicillin", "2014-09-11", "2014-09-11 05:30"}), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_VISITS);
 
             assertNotNull(drugOrderData);
             assertEquals(2, drugOrderData.size());
@@ -217,8 +251,8 @@ public class DiseaseSummaryMapperTest {
 
     @Test
     public void shouldMapLabOrders() throws ParseException {
-        DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
-        Map<String, Map<String, ConceptValue>> labOrderData = diseaseSummaryMapper.mapLabResults(mockLabOrders(), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_VISITS);
+        DiseaseSummaryLabMapper diseaseSummaryLabMapper = new DiseaseSummaryLabMapper();
+        Map<String, Map<String, ConceptValue>> labOrderData = diseaseSummaryLabMapper.map(mockLabOrders(), DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_VISITS);
 
         assertNotNull(labOrderData);
         assertEquals(2, labOrderData.size());
@@ -334,6 +368,8 @@ public class DiseaseSummaryMapperTest {
         bahmniObservation.setEncounterDateTime(encounterDateTime);
         bahmniObservation.setConcept(new EncounterTransaction.Concept("uuid-"+conceptName,conceptName));
         bahmniObservation.setValue(value);
+        bahmniObservation.setEncounterUuid("uuid-"+encounterDateTime);
+        bahmniObservation.setUuid("uuid-obs-"+conceptName+Math.random());
         return bahmniObservation;
     }
 }

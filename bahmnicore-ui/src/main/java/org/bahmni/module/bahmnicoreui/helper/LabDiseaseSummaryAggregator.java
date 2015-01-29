@@ -5,7 +5,7 @@ import org.bahmni.module.bahmnicore.service.OrderService;
 import org.bahmni.module.bahmnicoreui.contract.ConceptDetails;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
-import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryMapper;
+import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryLabMapper;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -26,7 +26,7 @@ public class LabDiseaseSummaryAggregator {
     private LabOrderResultsService labOrderResultsService;
     private OrderService orderService;
     private VisitService visitService;
-    private final DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
+    private final DiseaseSummaryLabMapper diseaseSummaryLabMapper = new DiseaseSummaryLabMapper();
 
 
     @Autowired
@@ -42,7 +42,7 @@ public class LabDiseaseSummaryAggregator {
         List<Concept> concepts = conceptHelper.getConceptsForNames(diseaseDataParams.getLabConcepts());
         if(!concepts.isEmpty()){
             List<LabOrderResult> labOrderResults = labOrderResultsService.getAllForConcepts(patient, diseaseDataParams.getLabConcepts(), getVisits(patient, diseaseDataParams));
-            diseaseSummaryData.addTabularData(diseaseSummaryMapper.mapLabResults(labOrderResults, diseaseDataParams.getGroupBy()));
+            diseaseSummaryData.addTabularData(diseaseSummaryLabMapper.map(labOrderResults, diseaseDataParams.getGroupBy()));
             diseaseSummaryData.addConceptDetails(conceptHelper.getLeafConceptDetails(diseaseDataParams.getLabConcepts()));
             mapLowNormalAndHiNormal(diseaseSummaryData, labOrderResults);
         }

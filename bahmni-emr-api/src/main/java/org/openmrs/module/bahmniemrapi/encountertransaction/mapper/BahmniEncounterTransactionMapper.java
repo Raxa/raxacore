@@ -9,7 +9,7 @@ import org.openmrs.module.bahmniemrapi.accessionnote.mapper.AccessionNotesMapper
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.EncounterDetails;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.AdditionalBahmniObservationFields;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,9 +45,9 @@ public class BahmniEncounterTransactionMapper {
         List<BahmniDiagnosisRequest> bahmniDiagnoses = bahmniDiagnosisMapper.map(encounterTransaction.getDiagnoses());
         bahmniEncounterTransaction.setBahmniDiagnoses(bahmniDiagnoses);
         bahmniEncounterTransaction.setAccessionNotes(accessionNotesMapper.map(encounterTransaction));
-        EncounterDetails encounterDetails = new EncounterDetails(encounterTransaction.getEncounterUuid(), encounterTransaction.getEncounterDateTime(), null);
-        encounterDetails.setProviders(encounterTransaction.getProviders());
-        List<BahmniObservation> bahmniObservations = fromETObsToBahmniObs.create(encounterTransaction.getObservations(), encounterDetails);
+        AdditionalBahmniObservationFields additionalBahmniObservationFields = new AdditionalBahmniObservationFields(encounterTransaction.getEncounterUuid(), encounterTransaction.getEncounterDateTime(), null,null);
+        additionalBahmniObservationFields.setProviders(encounterTransaction.getProviders());
+        List<BahmniObservation> bahmniObservations = fromETObsToBahmniObs.create(encounterTransaction.getObservations(), additionalBahmniObservationFields);
         bahmniEncounterTransaction.setObservations(obsRelationshipMapper.map(bahmniObservations, encounterTransaction.getEncounterUuid()));
         addPatientIdentifier(bahmniEncounterTransaction, encounterTransaction);
         addEncounterType(encounterTransaction, bahmniEncounterTransaction);

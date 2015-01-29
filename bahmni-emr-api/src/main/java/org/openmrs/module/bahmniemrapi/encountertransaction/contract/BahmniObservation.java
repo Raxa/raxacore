@@ -22,6 +22,7 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
     private Long duration;
     private String type;
     private String encounterUuid;
+    private String obsGroupUuid;
 
     private int conceptSortWeight;
 
@@ -279,5 +280,13 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
 
     public void setEncounterUuid(String encounterUuid) {
         this.encounterUuid = encounterUuid;
+    }
+
+    public String getObsGroupUuid() {
+        return obsGroupUuid;
+    }
+
+    public void setObsGroupUuid(String obsGroupUuid) {
+        this.obsGroupUuid = obsGroupUuid;
     }
 }

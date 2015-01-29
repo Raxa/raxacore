@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
-import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryMapper;
+import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryObsMapper;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.api.ConceptService;
@@ -23,7 +23,7 @@ public class ObsDiseaseSummaryAggregator {
 
     private final ConceptHelper conceptHelper;
     private BahmniObsService bahmniObsService;
-    private final DiseaseSummaryMapper diseaseSummaryMapper = new DiseaseSummaryMapper();
+    private final DiseaseSummaryObsMapper diseaseSummaryObsMapper = new DiseaseSummaryObsMapper();
 
     @Autowired
     public ObsDiseaseSummaryAggregator(ConceptService conceptService, BahmniObsService bahmniObsService) {
@@ -60,7 +60,7 @@ public class ObsDiseaseSummaryAggregator {
     }
 
     private void constructDiseaseSummaryData(Collection<BahmniObservation> bahmniObservations, List<String> conceptNames, String groupBy, DiseaseSummaryData diseaseSummaryData) {
-        diseaseSummaryData.setTabularData(diseaseSummaryMapper.mapObservations(bahmniObservations, groupBy));
+        diseaseSummaryData.setTabularData(diseaseSummaryObsMapper.map(bahmniObservations, groupBy));
         diseaseSummaryData.addConceptDetails(conceptHelper.getLeafConceptDetails(conceptNames));
     }
 

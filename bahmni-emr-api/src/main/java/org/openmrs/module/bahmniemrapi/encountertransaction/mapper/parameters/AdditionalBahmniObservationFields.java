@@ -6,16 +6,18 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-public class EncounterDetails {
+public class AdditionalBahmniObservationFields implements Cloneable {
     private String encounterUuid;
     private Date encounterDateTime;
     private Date visitDateTime;
     private Set<EncounterTransaction.Provider> providers = new HashSet<>();
+    private String obsGroupUuid;
 
-    public EncounterDetails(String encounterUuid, Date encounterDateTime, Date visitDateTime) {
+    public AdditionalBahmniObservationFields(String encounterUuid, Date encounterDateTime, Date visitDateTime,String obsGroupUuid) {
         this.encounterUuid = encounterUuid;
         this.encounterDateTime = encounterDateTime;
         this.visitDateTime = visitDateTime;
+        this.obsGroupUuid = obsGroupUuid;
     }
 
     public String getEncounterUuid() {
@@ -53,5 +55,23 @@ public class EncounterDetails {
 
     public void addProvider(EncounterTransaction.Provider provider) {
         this.providers.add(provider);
+    }
+
+    public String getObsGroupUuid() {
+        return obsGroupUuid;
+    }
+
+    public void setObsGroupUuid(String obsGroupUuid) {
+        this.obsGroupUuid = obsGroupUuid;
+    }
+
+    @Override
+    public Object clone() {
+        try {
+            AdditionalBahmniObservationFields additionalBahmniObservationFields = (AdditionalBahmniObservationFields) super.clone();
+            return additionalBahmniObservationFields;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("unable to clone "+this.getClass().getName(),e);
+        }
     }
 }
