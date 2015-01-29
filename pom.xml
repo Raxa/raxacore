@@ -363,7 +363,7 @@
                                 <configuration>
                                     <argLine>-Duser.language=en -Duser.region=US -Xmx512m -XX:MaxPermSize=512m</argLine>
                                     <forkCount>3</forkCount>
-                                    <reuseForks>true</reuseForks>
+                                    <reuseForks>false</reuseForks>
                                     <parallel>classes</parallel>
                                     <useUnlimitedThreads>true</useUnlimitedThreads>
                                     <includes>
