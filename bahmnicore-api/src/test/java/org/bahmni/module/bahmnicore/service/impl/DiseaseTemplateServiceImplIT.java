@@ -13,6 +13,7 @@ import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -142,17 +143,22 @@ public class DiseaseTemplateServiceImplIT extends BaseModuleWebContextSensitiveT
 
         List<DiseaseTemplate> diseaseTemplates = diseaseTemplateService.allDiseaseTemplatesFor(diseaseTemplatesConfig);
         assertEquals(1, diseaseTemplates.size());
-        assertEquals(2, diseaseTemplates.get(0).getObservationTemplates().size());
+        assertEquals("Anaemia", diseaseTemplates.get(0).getConcept().getName());
 
         assertEquals("Anaemia Intake", diseaseTemplates.get(0).getObservationTemplates().get(0).getConcept().getName());
         assertEquals(1, diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().size());
-        assertEquals("Diastolic", diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().iterator().next().getConcept().getName());
+        BahmniObservation bahmniObservations = diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().iterator().next();
+        assertEquals("Anaemia Intake", bahmniObservations.getConcept().getName());
 
-        assertEquals(1, diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().iterator().next().getGroupMembers().size());
-        assertEquals("Diastolic value", diseaseTemplates.get(0).getObservationTemplates().get(0).getBahmniObservations().iterator().next().getGroupMembers().iterator().next().getConcept().getName());
+        assertEquals(2, bahmniObservations.getGroupMembers().size());
+        Iterator<BahmniObservation> groupMembersIterator = bahmniObservations.getGroupMembers().iterator();
+        BahmniObservation diastolicConceptSet = groupMembersIterator.next();
+        assertEquals("Diastolic", diastolicConceptSet.getConcept().getName());
 
-        assertEquals(1, diseaseTemplates.get(0).getObservationTemplates().get(1).getBahmniObservations().size());
-        assertEquals("Anaemia value", diseaseTemplates.get(0).getObservationTemplates().get(1).getBahmniObservations().iterator().next().getConcept().getName());
+        assertEquals(1, diastolicConceptSet.getGroupMembers().size());
+        assertEquals("Diastolic value", diastolicConceptSet.getGroupMembers().iterator().next().getConcept().getName());
+
+        assertEquals("Anaemia value", groupMembersIterator.next().getConcept().getName());
     }
 
     @Test
