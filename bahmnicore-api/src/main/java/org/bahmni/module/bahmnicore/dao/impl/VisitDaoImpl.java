@@ -2,11 +2,18 @@ package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.bahmni.module.bahmnicore.contract.visit.EncounterType;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class VisitDaoImpl implements VisitDao {
@@ -45,5 +52,22 @@ public class VisitDaoImpl implements VisitDao {
         queryToGetVisitInfo.setString("encounterTypeName", EncounterType.ADMISSION.getName());
         Long noOfAdmitEncounters = (Long) queryToGetVisitInfo.uniqueResult();
         return noOfAdmitEncounters > 0;
+    }
+
+    @Override
+    public List<Visit> getVisitsByPatient(Patient patient, int numberOfVisits){
+        if(patient == null || numberOfVisits<=0){
+            return new ArrayList<>();
+        }
+
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Visit.class);
+        criteria.add(Restrictions.eq("patient", patient));
+        criteria.add(Restrictions.eq("voided", false));
+        criteria.addOrder(Order.desc("startDatetime"));
+        criteria.addOrder(Order.desc("visitId"));
+        criteria.setMaxResults(numberOfVisits);
+        List<Visit> visits = criteria.list();
+
+        return visits;
     }
 }
