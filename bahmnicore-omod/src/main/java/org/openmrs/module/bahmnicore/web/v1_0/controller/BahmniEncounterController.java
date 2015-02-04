@@ -18,6 +18,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncou
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
+import org.openmrs.module.emrapi.encounter.ActiveEncounterParameters;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
 import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
 import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
@@ -96,6 +97,13 @@ public class BahmniEncounterController extends BaseRestController {
         return bahmniEncounterTransactionMapper.map(encounterTransaction);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/active")
+    @ResponseBody
+    public BahmniEncounterTransaction getActive(ActiveEncounterParameters activeEncounterParameters) {
+        EncounterTransaction activeEncounter = emrEncounterService.getActiveEncounter(activeEncounterParameters);
+        return bahmniEncounterTransactionMapper.map(activeEncounter);
+    }
+    
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public List<BahmniEncounterTransaction> find(@RequestParam(value = "visitUuids", required = true) String[] visitUuids,
