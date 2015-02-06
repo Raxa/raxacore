@@ -12,8 +12,12 @@ public class DiseaseSummaryObsMapper extends DiseaseSummaryMapper<Collection<Bah
 
     public Map<String, Map<String, ConceptValue>> map(Collection<BahmniObservation> bahmniObservations, String groupBy) {
         Map<String, Map<String, ConceptValue>> result = new LinkedHashMap<>();
+        List<BahmniObservation> finalObservations = new ArrayList<>();
+        for (BahmniObservation myObservation : bahmniObservations) {
+            constructLeafObservationsFromConceptSet(myObservation, finalObservations);
+        }
         if (bahmniObservations != null) {
-            Map<String, List<BahmniObservation>> observationsByEncounter = groupObsByEncounterUuid(bahmniObservations);
+            Map<String, List<BahmniObservation>> observationsByEncounter = groupObsByEncounterUuid(finalObservations);
             for (BahmniObservation bahmniObservation : bahmniObservations) {
                 List<BahmniObservation> observationsFromConceptSet = new ArrayList<>();
                 constructLeafObservationsFromConceptSet(bahmniObservation, observationsFromConceptSet);
