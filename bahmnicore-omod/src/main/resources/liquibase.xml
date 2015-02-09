@@ -2796,4 +2796,43 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
+    <changeSet id="bahmni-clinical-201502051605" author="Soumya, Banka">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from global_property where property = 'emrapi.sqlSearch.admittedPatients'</sqlCheck>
+        </preConditions>
+        <comment>update sql for admitted patient</comment>
+        <sql>
+            update global_property set
+            property_value = 'select distinct concat(pn.given_name,\' \', pn.family_name) as name, pi.identifier as identifier, concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid from encounter e join visit v on e.visit_id = v.visit_id join person_name pn on v.patient_id = pn.person_id and pn.voided = 0 join patient_identifier pi on v.patient_id = pi.patient_id join person p on v.patient_id = p.person_id join encounter_type et on et.encounter_type_id = e.encounter_type where v.date_stopped is null and et.name = \'ADMISSION\' and e.voided=false and e.patient_id not in (select distinct enc.patient_id from encounter enc join encounter_type ent on enc.encounter_type = ent.encounter_type_id where ent.name = \'DISCHARGE\' and enc.voided = false and enc.patient_id = v.patient_id and v.visit_id=enc.visit_id)'
+            where property = 'emrapi.sqlSearch.admittedPatients';
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-clinical-201502091501" author="Charles, Banka">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_name where name = 'Undo Discharge'  and concept_name_type='FULLY_SPECIFIED'</sqlCheck>
+        </preConditions>
+        <comment>Adding Undo Discharge disposition</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+            set @concept_source_id = 0;
+            set @concept_map_type_id = 0;
+            set @disposition_concept_id = 0;
+
+            SELECT concept_source_id INTO @concept_source_id FROM concept_reference_source where name = 'org.openmrs.module.emrapi';
+            SELECT concept_id INTO @disposition_concept_id FROM concept_name where name = 'Disposition' and concept_name_type='FULLY_SPECIFIED';
+            SELECT concept_map_type_id INTO @concept_map_type_id FROM concept_map_type where name = 'SAME-AS';
+
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Undo Discharge', 'Undo Discharge', 'N/A', 'misc', false);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Undo', 1);
+            call add_concept_word(@concept_id, @concept_name_short_id, 'Discharge', 1);
+            call add_concept_reference_map (@concept_id, @concept_source_id, 'UNDO_DISCHARGE',@concept_map_type_id);
+            set @child1_concept_id = @concept_id;
+
+            call add_concept_answer(@disposition_concept_id, @child1_concept_id, 3);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
