@@ -63,6 +63,4 @@ public class ObsDiseaseSummaryAggregator {
         diseaseSummaryData.setTabularData(diseaseSummaryObsMapper.map(bahmniObservations, groupBy));
         diseaseSummaryData.addConceptDetails(conceptHelper.getLeafConceptDetails(conceptNames));
     }
-
-
 }

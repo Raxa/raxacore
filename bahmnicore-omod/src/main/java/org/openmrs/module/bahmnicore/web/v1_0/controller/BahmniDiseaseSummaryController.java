@@ -1,8 +1,8 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
+import org.bahmni.module.bahmnicoreui.constant.DiseaseSummaryConstants;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
-import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryMapper;
 import org.bahmni.module.bahmnicoreui.service.BahmniDiseaseSummaryService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
@@ -30,7 +30,7 @@ public class BahmniDiseaseSummaryController extends BaseRestController {
                                                     @RequestParam(value = "obsConcepts",required = false) List<String> obsConcepts,
                                                     @RequestParam(value = "drugConcepts",required = false) List<String> drugConcepts,
                                                     @RequestParam(value = "labConcepts",required = false) List<String> labConcepts,
-                                                    @RequestParam(value = "groupBy", defaultValue = DiseaseSummaryMapper.RESULT_TABLE_GROUP_BY_VISITS, required = false) String groupBy){
+                                                    @RequestParam(value = "groupBy", defaultValue = DiseaseSummaryConstants.RESULT_TABLE_GROUP_BY_VISITS, required = false) String groupBy){
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(numberOfVisits);

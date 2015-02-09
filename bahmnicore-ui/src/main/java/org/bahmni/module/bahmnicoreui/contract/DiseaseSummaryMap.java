@@ -1,0 +1,28 @@
+package org.bahmni.module.bahmnicoreui.contract;
+
+import org.apache.commons.collections.MapUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class DiseaseSummaryMap extends HashMap<String, Map<String, ConceptValue>>{
+
+    public Map<String, ConceptValue> get(String visitStartDateTime) {
+        Map<String, ConceptValue> mapValue = super.get(visitStartDateTime);
+        if(MapUtils.isEmpty(mapValue)){
+            put(visitStartDateTime, new HashMap<String, ConceptValue>());
+        }
+        return super.get(visitStartDateTime);
+    }
+
+    public void put(String startDateTime, String conceptName, String value, Boolean abnormal, boolean replaceExisting) {
+        Map<String, ConceptValue> cellValue = this.get(startDateTime);
+        if (cellValue.containsKey(conceptName) && !replaceExisting) return;
+
+        ConceptValue conceptValue = new ConceptValue();
+        conceptValue.setValue(value);
+        conceptValue.setAbnormal(abnormal);
+        cellValue.put(conceptName, conceptValue);
+        super.put(startDateTime, cellValue);
+    }
+}

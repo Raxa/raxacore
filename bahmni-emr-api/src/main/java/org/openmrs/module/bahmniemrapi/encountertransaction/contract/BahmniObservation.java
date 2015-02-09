@@ -43,6 +43,21 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
         return encounterTransactionObservation.getValue();
     }
 
+    public String getValueAsString() {
+        Object value = encounterTransactionObservation.getValue();
+        if (value != null) {
+            if (value instanceof EncounterTransaction.Concept) {
+                EncounterTransaction.Concept concept = (EncounterTransaction.Concept) value;
+                return (concept.getShortName() == null ? concept.getName() : concept.getShortName());
+            } else if (value instanceof Boolean) {
+                return (Boolean) value ? "Yes" : "No";
+            }
+            return String.valueOf(value);
+        }
+        return "";
+    }
+
+
     public BahmniObservation setValue(Object value) {
         encounterTransactionObservation.setValue(value);
         return this;
@@ -288,5 +303,9 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
 
     public void setObsGroupUuid(String obsGroupUuid) {
         this.obsGroupUuid = obsGroupUuid;
+    }
+
+    public String getConceptNameToDisplay() {
+        return getConcept().getShortName() == null ? getConcept().getName() : getConcept().getShortName();
     }
 }

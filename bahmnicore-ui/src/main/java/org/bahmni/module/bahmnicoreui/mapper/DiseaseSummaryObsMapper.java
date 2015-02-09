@@ -1,35 +1,48 @@
 package org.bahmni.module.bahmnicoreui.mapper;
 
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bahmni.module.bahmnicoreui.contract.ConceptValue;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.bahmni.module.bahmnicoreui.constant.DiseaseSummaryConstants;
+import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryMap;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
 
 import java.util.*;
 
-public class DiseaseSummaryObsMapper extends DiseaseSummaryMapper<Collection<BahmniObservation>> {
+public class DiseaseSummaryObsMapper {
 
-    public Map<String, Map<String, ConceptValue>> map(Collection<BahmniObservation> bahmniObservations, String groupBy) {
-        Map<String, Map<String, ConceptValue>> result = new LinkedHashMap<>();
-        List<BahmniObservation> finalObservations = new ArrayList<>();
-        for (BahmniObservation myObservation : bahmniObservations) {
-            constructLeafObservationsFromConceptSet(myObservation, finalObservations);
-        }
-        if (bahmniObservations != null) {
-            Map<String, List<BahmniObservation>> observationsByEncounter = groupObsByEncounterUuid(finalObservations);
+    public DiseaseSummaryMap map(Collection<BahmniObservation> bahmniObservations, String groupBy) {
+        DiseaseSummaryMap diseaseSummaryMap = new DiseaseSummaryMap();
+        bahmniObservations = extractGroupObservationFromParent(bahmniObservations);
+        if (CollectionUtils.isNotEmpty(bahmniObservations)) {
+            Map<String, List<BahmniObservation>> observationsByEncounter = groupObsByEncounterUuid(bahmniObservations);
             for (BahmniObservation bahmniObservation : bahmniObservations) {
                 List<BahmniObservation> observationsFromConceptSet = new ArrayList<>();
                 constructLeafObservationsFromConceptSet(bahmniObservation, observationsFromConceptSet);
                 for (BahmniObservation leafObservation : observationsFromConceptSet) {
                     String startDateTime = getGroupByDate(leafObservation, groupBy);
-                    String conceptName = getConceptNameToDisplay(leafObservation);
-                    String observationValue = computeValueForLeafObservation(leafObservation, observationsByEncounter);
-                    addToResultTable(result, startDateTime, conceptName, observationValue, leafObservation.isAbnormal(), false);
+                    String conceptName = leafObservation.getConceptNameToDisplay();
+                    String observationValue = computeValueForLeafObservation(leafObservation, observationsByEncounter, diseaseSummaryMap);
+                    diseaseSummaryMap.put(startDateTime, conceptName, observationValue, leafObservation.isAbnormal(), false);
                 }
             }
         }
-        return result;
+        return diseaseSummaryMap;
+    }
+
+    private String getGroupByDate(BahmniObservation observation, String groupBy) {
+        return (DiseaseSummaryConstants.RESULT_TABLE_GROUP_BY_ENCOUNTER.equals(groupBy) ?
+                DateFormatUtils.format(observation.getEncounterDateTime(), DiseaseSummaryConstants.DATE_TIME_FORMAT) : DateFormatUtils.format(observation.getVisitStartDateTime(), DiseaseSummaryConstants.DATE_FORMAT));
+    }
+
+    private List<BahmniObservation> extractGroupObservationFromParent(Collection<BahmniObservation> bahmniObservations){
+        List<BahmniObservation> finalObservations = new ArrayList<>();
+        for (BahmniObservation bahmniObservation : bahmniObservations) {
+            constructLeafObservationsFromConceptSet(bahmniObservation, finalObservations);
+        }
+        return finalObservations;
     }
 
     private Map<String, List<BahmniObservation>> groupObsByEncounterUuid(Collection<BahmniObservation> bahmniObservations) {
@@ -53,17 +66,17 @@ public class DiseaseSummaryObsMapper extends DiseaseSummaryMapper<Collection<Bah
         }
     }
 
-    private String computeValueForLeafObservation(BahmniObservation observation, Map<String, List<BahmniObservation>> observationsByEncounter) {
+    private String computeValueForLeafObservation(BahmniObservation observation, Map<String, List<BahmniObservation>> observationsByEncounter, DiseaseSummaryMap diseaseSummaryMap) {
         String observationValue = null;
         if (observationsByEncounter.containsKey(observation.getEncounterUuid())) {
             List<BahmniObservation> observationsInEncounter = observationsByEncounter.get(observation.getEncounterUuid());
             String multiSelectObsValue = "";
             for (BahmniObservation bahmniObservationInEncounter : observationsInEncounter) {
                 if (arePartOfMultiSelectObservation(observation,bahmniObservationInEncounter)) {
-                    multiSelectObsValue = multiSelectObsValue + "," + getObsValueAsString(bahmniObservationInEncounter.getValue());
+                    multiSelectObsValue = multiSelectObsValue + "," + bahmniObservationInEncounter.getValueAsString();
                 }
             }
-            observationValue = StringUtils.isBlank(multiSelectObsValue)?getObsValueAsString(observation.getValue()):getObsValueAsString(observation.getValue())+multiSelectObsValue;
+            observationValue = StringUtils.isBlank(multiSelectObsValue)? observation.getValueAsString(): observation.getValueAsString() + multiSelectObsValue;
         }
         return observationValue;
     }

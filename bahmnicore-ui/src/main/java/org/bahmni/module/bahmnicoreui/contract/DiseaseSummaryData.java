@@ -7,14 +7,14 @@ import java.util.Set;
 
 public class DiseaseSummaryData {
 
-    private Map<String,Map<String, ConceptValue>> tabularData = new LinkedHashMap<>();
+    private DiseaseSummaryMap tabularData = new DiseaseSummaryMap();
     private Set<ConceptDetails> conceptDetails = new LinkedHashSet<>();
 
-    public Map<String, Map<String, ConceptValue>> getTabularData() {
+    public DiseaseSummaryMap getTabularData() {
         return tabularData;
     }
 
-    public void setTabularData(Map<String, Map<String, ConceptValue>> tabularData) {
+    public void setTabularData(DiseaseSummaryMap tabularData) {
         this.tabularData = tabularData;
     }
 
@@ -32,10 +32,6 @@ public class DiseaseSummaryData {
             tabularData.put(visitDate,valuesForVisit);
         }
         return valuesForVisit;
-    }
-
-    public void setConceptDetails(Set<ConceptDetails> conceptNames) {
-        this.conceptDetails = conceptNames;
     }
 
     public Set<ConceptDetails> getConceptDetails() {

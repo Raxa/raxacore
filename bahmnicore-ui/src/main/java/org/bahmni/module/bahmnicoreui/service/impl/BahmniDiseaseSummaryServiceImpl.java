@@ -41,9 +41,4 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
         diseaseSummaryData.concat(drugOrderDiseaseSummaryAggregator.aggregate(patient, queryParams));
         return diseaseSummaryData;
     }
-
-
-
-
-
 }

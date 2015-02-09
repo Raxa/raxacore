@@ -2,7 +2,8 @@ package org.bahmni.module.bahmnicoreui.mapper;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.log4j.Logger;
-import org.bahmni.module.bahmnicoreui.contract.ConceptValue;
+import org.bahmni.module.bahmnicoreui.constant.DiseaseSummaryConstants;
+import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryMap;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -12,24 +13,28 @@ import org.openmrs.DrugOrder;
 import java.io.IOException;
 import java.util.*;
 
-public class DiseaseSummaryDrugOrderMapper extends DiseaseSummaryMapper<List<DrugOrder>> {
+public class DiseaseSummaryDrugOrderMapper{
 
     private Logger logger = Logger.getLogger(this.getClass());
 
-    public Map<String, Map<String, ConceptValue>> map(List<DrugOrder> drugOrders, String groupBy)  {
-        Map<String, Map<String, ConceptValue>> result = new LinkedHashMap<>();
+    public static String getEmptyIfNull(Object text) {
+        return text == null ? "" : text.toString();
+    }
+
+    public DiseaseSummaryMap map(List<DrugOrder> drugOrders, String groupBy)  {
+        DiseaseSummaryMap diseaseSummaryMap = new DiseaseSummaryMap();
         for (DrugOrder drugOrder : drugOrders) {
-            String startDateTime = (RESULT_TABLE_GROUP_BY_ENCOUNTER.equals(groupBy)) ?
-                    DateFormatUtils.format(drugOrder.getEncounter().getEncounterDatetime(), DATE_TIME_FORMAT) : DateFormatUtils.format(drugOrder.getEncounter().getVisit().getStartDatetime(), DATE_FORMAT);
+            String startDateTime = (DiseaseSummaryConstants.RESULT_TABLE_GROUP_BY_ENCOUNTER.equals(groupBy)) ?
+                    DateFormatUtils.format(drugOrder.getEncounter().getEncounterDatetime(), DiseaseSummaryConstants.DATE_TIME_FORMAT) : DateFormatUtils.format(drugOrder.getEncounter().getVisit().getStartDatetime(), DiseaseSummaryConstants.DATE_FORMAT);
             String conceptName = drugOrder.getDrug().getConcept().getName().getName();
             try {
-                addToResultTable(result, startDateTime, conceptName, formattedDrugOrderValue(drugOrder), null, false);
+                diseaseSummaryMap.put(startDateTime, conceptName, formattedDrugOrderValue(drugOrder), null, false);
             } catch (IOException e) {
                 logger.error("Could not parse dosing instructions",e);
                 throw new RuntimeException("Could not parse dosing instructions",e);
             }
         }
-        return result;
+        return diseaseSummaryMap;
     }
 
     private String formattedDrugOrderValue(DrugOrder drugOrder) throws IOException {
