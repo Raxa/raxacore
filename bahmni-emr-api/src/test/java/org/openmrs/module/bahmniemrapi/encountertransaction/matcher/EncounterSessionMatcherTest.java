@@ -207,6 +207,24 @@ public class EncounterSessionMatcherTest {
         assertEquals(encounter2, encounterReturned);
     }
 
+    @Test
+    public void shouldNotReturnVoidedEncounter(){
+        Encounter encounter1 = new EncounterBuilder().withEncounterType(new EncounterType()).withLocation(location).withProvider(person).withDateCreated(new Date()).build();
+
+        Encounter encounter2 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).build();
+        encounter2.setVoided(true);
+
+        Encounter encounter3 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).build();
+
+        visit.setEncounters(new LinkedHashSet<>(Arrays.asList(encounter1, encounter2, encounter3)));
+        EncounterParameters encounterParameters = getEncounterParameters(providers, location, null);
+        when(bahmniLocationService.getEncounterType(location.getUuid())).thenReturn(encounterType);
+
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
+
+        assertEquals(encounter3, encounterReturned);
+    }
+
     private EncounterParameters getEncounterParameters(Set<Provider> providers, Location location) {
         return getEncounterParameters(providers, location, this.encounterType);
     }

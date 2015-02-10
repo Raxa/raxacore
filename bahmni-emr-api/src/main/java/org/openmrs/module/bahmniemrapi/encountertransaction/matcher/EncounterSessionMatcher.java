@@ -43,7 +43,7 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
 
         if (visit.getEncounters() != null) {
             for (Encounter encounter : visit.getEncounters()) {
-                if (encounterType == null || encounterType.equals(encounter.getEncounterType())) {
+                if (!encounter.isVoided() &&  (encounterType == null || encounterType.equals(encounter.getEncounterType()))) {
                     Date encounterDateChanged = encounter.getDateChanged() == null ? encounter.getDateCreated() : encounter.getDateChanged();
                     if (!isCurrentSessionTimeExpired(encounterDateChanged) && isSameProvider(provider, encounter) && areSameEncounterDates(encounter, encounterParameters))
                         if (locationNotDefined(encounterParameters, encounter) || isSameLocation(encounterParameters, encounter))
