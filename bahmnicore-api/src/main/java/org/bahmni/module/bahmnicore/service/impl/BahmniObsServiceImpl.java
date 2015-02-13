@@ -96,12 +96,16 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         return conceptService.getConceptByName(conceptName);
     }
 
-    private Set<Obs> getObsAtTopLevel(List<Obs> observations, List<String> topLevelconceptNames) {
+    private List<Obs> getObsAtTopLevel(List<Obs> observations, List<String> topLevelconceptNames) {
         if(topLevelconceptNames == null) topLevelconceptNames = new ArrayList<>();
-        Set<Obs> ret = new HashSet<Obs>();
+        List<Obs> ret = new ArrayList<>();
+
         for (Obs o : observations) {
-            if (o.getObsGroup() == null || topLevelconceptNames.contains(o.getConcept().getName().getName()))
-                ret.add(o);
+            if (o.getObsGroup() == null || topLevelconceptNames.contains(o.getConcept().getName().getName())) {
+                if (!ret.contains(o)) {
+                    ret.add(o);
+                }
+            }
         }
         return ret;
     }
