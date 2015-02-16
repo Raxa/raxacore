@@ -6,7 +6,8 @@ public class VisitSummary {
     private String uuid;
     private Date startDateTime;
     private Date stopDateTime;
-    private Boolean isIPD;
+    private Boolean hasBeenAdmitted;
+    private String visitType;
 
     public Date getStartDateTime() {
         return startDateTime;
@@ -32,11 +33,19 @@ public class VisitSummary {
         this.uuid = uuid;
     }
 
-    public Boolean getIsIPD() {
-        return isIPD;
+    public Boolean getHasBeenAdmitted() {
+        return hasBeenAdmitted;
     }
 
-    public void setIsIPD(Boolean isIPD) {
-        this.isIPD = isIPD;
+    public void setHasBeenAdmitted(Boolean hasAdmitted) {
+        this.hasBeenAdmitted = hasAdmitted;
+    }
+
+    public String getVisitType() {
+        return visitType;
+    }
+
+    public void setVisitType(String visitType) {
+        this.visitType = visitType;
     }
 }

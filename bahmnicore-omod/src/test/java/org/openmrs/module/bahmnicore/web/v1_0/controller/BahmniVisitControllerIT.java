@@ -27,7 +27,7 @@ public class BahmniVisitControllerIT extends BaseWebControllerTest{
         assertEquals("1e5d5d48-6b78-11e0-93c3-18a905e044dc", visitSummary.getUuid());
         assertEquals("2005-01-01 00:00:00.0", visitSummary.getStartDateTime().toString());
         assertEquals("2005-01-05 00:00:00.0", visitSummary.getStopDateTime().toString());
-        assertTrue(visitSummary.getIsIPD());
+        assertTrue(visitSummary.getHasBeenAdmitted());
     }
 
     @Test
