@@ -3,7 +3,6 @@ package org.openmrs.module.bahmnicore.web.v1_0.controller;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.contract.encounter.data.EncounterModifierData;
 import org.bahmni.module.bahmnicore.service.BahmniEncounterModifierService;
-import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +29,10 @@ public class BahmniEncounterModifierController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public BahmniEncounterTransaction get(@RequestBody EncounterModifierData encounterModifierData) throws Exception {
-        BahmniEncounterTransaction encounterTransaction;
+    public EncounterModifierData get(@RequestBody EncounterModifierData encounterModifierData) throws Exception {
+        EncounterModifierData encounterTransaction;
         try {
-            encounterTransaction = bahmniEncounterModifierService.getModifiedEncounter(encounterModifierData.getBahmniEncounterTransaction(), encounterModifierData.getConceptSetData());
+            encounterTransaction = bahmniEncounterModifierService.getModifiedEncounter(encounterModifierData);
         } catch (Throwable e) {
             log.error("Error in running groovy script: " + e.getMessage(), e);
             throw e;
