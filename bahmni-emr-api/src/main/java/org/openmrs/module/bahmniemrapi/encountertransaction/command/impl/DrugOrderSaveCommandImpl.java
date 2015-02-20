@@ -51,16 +51,16 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
     @Override
     public BahmniEncounterTransaction update(BahmniEncounterTransaction bahmniEncounterTransaction) {
         List<EncounterTransaction.DrugOrder> drugOrders = bahmniEncounterTransaction.getDrugOrders();
-        Map<String,List<EncounterTransaction.DrugOrder>> sameDrugUuidOrderLists = new HashMap<>();
+        Map<String,List<EncounterTransaction.DrugOrder>> sameDrugNameOrderLists = new HashMap<>();
         for (EncounterTransaction.DrugOrder drugOrder : drugOrders) {
-            String uuid = drugOrder.getDrug().getUuid();
-            if(sameDrugUuidOrderLists.get(uuid) == null){
-                sameDrugUuidOrderLists.put(uuid, new ArrayList<EncounterTransaction.DrugOrder>());
+            String name = drugOrder.getDrug().getName();
+            if(sameDrugNameOrderLists.get(name) == null){
+                sameDrugNameOrderLists.put(name, new ArrayList<EncounterTransaction.DrugOrder>());
             }
-            sameDrugUuidOrderLists.get(uuid).add(drugOrder);
+            sameDrugNameOrderLists.get(name).add(drugOrder);
         }
 
-        for (List<EncounterTransaction.DrugOrder> orders : sameDrugUuidOrderLists.values()) {
+        for (List<EncounterTransaction.DrugOrder> orders : sameDrugNameOrderLists.values()) {
             Collections.sort(orders, drugOrderStartDateComparator);
             checkAndFixChainOverlapsWithCurrentDateOrder(orders);
         }
