@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmniemrapi.diagnosis.contract;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
@@ -39,6 +40,13 @@ public class BahmniDiagnosis extends EncounterTransaction.Diagnosis {
             return isSameFreeTextAnswer(diagnosis);
         }
         return isSameCodedAnswer(diagnosis);
+    }
+
+    public boolean isDiagnosisWithSameExistingObs(EncounterTransaction.Diagnosis diagnosis) {
+        if (StringUtils.isEmpty(getExistingObs())) {
+            return false;
+        }
+        return getExistingObs().equals(diagnosis.getExistingObs()) ;
     }
 
     public boolean isSameFreeTextAnswer(EncounterTransaction.Diagnosis diagnosis) {

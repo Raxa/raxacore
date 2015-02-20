@@ -70,7 +70,10 @@ public class BahmniDiagnosisSaveCommandImpl implements EncounterDataPostSaveComm
 
     private EncounterTransaction.Diagnosis getMatchingEncounterTransactionDiagnosis(BahmniDiagnosis bahmniDiagnosis, List<EncounterTransaction.Diagnosis> encounterTransactionDiagnoses) {
         for (EncounterTransaction.Diagnosis diagnosis : encounterTransactionDiagnoses) {
-            if (bahmniDiagnosis.isSame(diagnosis)) {
+            boolean isMatching = bahmniDiagnosis.getExistingObs() != null ?
+                    bahmniDiagnosis.isDiagnosisWithSameExistingObs(diagnosis) : bahmniDiagnosis.isSame(diagnosis);
+
+            if (isMatching) {
                 return diagnosis;
             }
         }
