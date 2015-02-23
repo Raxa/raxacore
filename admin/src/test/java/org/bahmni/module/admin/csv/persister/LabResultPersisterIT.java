@@ -1,12 +1,8 @@
 package org.bahmni.module.admin.csv.persister;
 
-import java.util.Arrays;
-import java.util.List;
 import org.bahmni.csv.Messages;
 import org.bahmni.module.admin.csv.models.LabResultRow;
 import org.bahmni.module.admin.csv.models.LabResultsRow;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.CareSetting;
@@ -23,6 +19,12 @@ import org.openmrs.module.bahmniemrapi.laborder.service.LabOrderResultsService;
 import org.openmrs.test.TestUtil;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class LabResultPersisterIT extends BaseModuleWebContextSensitiveTest {
@@ -86,7 +88,7 @@ public class LabResultPersisterIT extends BaseModuleWebContextSensitiveTest {
         assertEquals(LabResultPersister.LAB_ORDER_TYPE, order.getOrderType().getName());
         assertEquals(CareSetting.CareSettingType.OUTPATIENT.name(), order.getCareSetting().getName());
         // Assert results data
-        List<LabOrderResult> labOrderResults = labOrderResultsService.getAll(patient, visits).getResults();
+        List<LabOrderResult> labOrderResults = labOrderResultsService.getAll(patient, visits, Integer.MAX_VALUE).getResults();
         assertEquals(1, labOrderResults.size());
         LabOrderResult labOrderResult = labOrderResults.get(0);
         assertEquals("Urea Nitorgen", labOrderResult.getTestName());

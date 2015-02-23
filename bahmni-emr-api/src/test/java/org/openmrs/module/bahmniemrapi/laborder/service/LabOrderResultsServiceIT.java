@@ -1,16 +1,9 @@
 package org.openmrs.module.bahmniemrapi.laborder.service;
 
-import java.text.SimpleDateFormat;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
-import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.accessionnote.contract.AccessionNote;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
@@ -18,14 +11,15 @@ import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResults;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.*;
 
 public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
     
@@ -39,7 +33,7 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
         executeDataSet("labOrderTestData.xml");
         Patient patient = Context.getPatientService().getPatient(1);
 
-        LabOrderResults results = labOrderResultsService.getAll(patient, null);
+        LabOrderResults results = labOrderResultsService.getAll(patient, null, Integer.MAX_VALUE);
         List<LabOrderResult> labOrderResults = results.getResults();
 
         assertNotNull(labOrderResults);
@@ -61,7 +55,7 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
         Patient patient = Context.getPatientService().getPatient(1);
         Visit visit = Context.getVisitService().getVisit(4);
 
-        LabOrderResults results = labOrderResultsService.getAll(patient, Arrays.asList(visit));
+        LabOrderResults results = labOrderResultsService.getAll(patient, Arrays.asList(visit), Integer.MAX_VALUE);
         List<LabOrderResult> labOrderResults = results.getResults();
 
         assertNotNull(labOrderResults);
@@ -81,7 +75,7 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
         Patient patient = Context.getPatientService().getPatient(1);
         Visit visit = Context.getVisitService().getVisit(4);
 
-        LabOrderResults results = labOrderResultsService.getAll(patient, Arrays.asList(visit));
+        LabOrderResults results = labOrderResultsService.getAll(patient, Arrays.asList(visit), Integer.MAX_VALUE);
         List<LabOrderResult> labOrderResults = results.getResults();
 
         assertEquals(1, labOrderResults.size());

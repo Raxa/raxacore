@@ -1,17 +1,9 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -19,6 +11,16 @@ import org.openmrs.module.bahmnicore.web.v1_0.controller.BahmniLabOrderResultCon
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResults;
 import org.openmrs.module.bahmniemrapi.laborder.service.LabOrderResultsService;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class BahmniLabOrderResultControllerTest {
     
@@ -42,12 +44,12 @@ public class BahmniLabOrderResultControllerTest {
 
         when(orderDao.getVisitsForUUids(new String[]{"visitUuid1", "visitUuid2"})).thenReturn(expectedVisits);
         LabOrderResults expectedLabOrderResults = new LabOrderResults(new ArrayList<LabOrderResult>());
-        when(labOrderResultsService.getAll(patient, expectedVisits)).thenReturn(expectedLabOrderResults);
+        when(labOrderResultsService.getAll(patient, expectedVisits, Integer.MAX_VALUE)).thenReturn(expectedLabOrderResults);
 
         LabOrderResults actualLabOrderResults = controller.getForVisitUuids(new String[]{"visitUuid1", "visitUuid2"});
 
         assertThat(actualLabOrderResults, is(equalTo(expectedLabOrderResults)));
         verify(orderDao).getVisitsForUUids(new String[]{"visitUuid1", "visitUuid2"});
-        verify(labOrderResultsService).getAll(patient,expectedVisits);
+        verify(labOrderResultsService).getAll(patient,expectedVisits, Integer.MAX_VALUE);
     }
 }

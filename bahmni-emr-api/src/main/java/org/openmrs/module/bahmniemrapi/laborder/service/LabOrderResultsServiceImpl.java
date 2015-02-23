@@ -1,12 +1,5 @@
 package org.openmrs.module.bahmniemrapi.laborder.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.Obs;
@@ -21,6 +14,14 @@ import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 @Service
@@ -40,7 +41,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private EncounterService encounterService;
 
     @Override
-    public LabOrderResults getAll(Patient patient, List<Visit> visits) {
+    public LabOrderResults getAll(Patient patient, List<Visit> visits, int numberOfAccessions) {
         List<EncounterTransaction.TestOrder> testOrders = new ArrayList<>();
         List<EncounterTransaction.Observation> observations = new ArrayList<>();
         Map<String, Encounter> encounterTestOrderUuidMap = new HashMap<>();
@@ -48,9 +49,21 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         Map<String, List<AccessionNote>> encounterToAccessionNotesMap = new HashMap<>();
 
         List<Encounter> encounters = encounterService.getEncounters(patient, null, null, null, null, null, null, null, visits, false);
-        for (Encounter encounter : encounters) {
+
+        int totalEncounters = encounters.size();
+        int currentAccession = 0;
+        for (int i=totalEncounters -1; i == 0; i--) {
+            Encounter encounter = encounters.get(i);
+            if (currentAccession >= numberOfAccessions) {
+                break;
+            }
+
             EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, false);
-            testOrders.addAll(getTestOrders(encounterTransaction, encounter, encounterTestOrderUuidMap));
+            List<EncounterTransaction.TestOrder> existingTestOrders = getTestOrders(encounterTransaction, encounter, encounterTestOrderUuidMap);
+            if (existingTestOrders.size() > 0)
+                currentAccession ++;
+
+            testOrders.addAll(existingTestOrders);
             List<EncounterTransaction.Observation> nonVoidedObservations = filterVoided(encounterTransaction.getObservations());
             observations.addAll(nonVoidedObservations);
             createAccessionNotesByEncounter(encounterToAccessionNotesMap, encounters, encounter);
