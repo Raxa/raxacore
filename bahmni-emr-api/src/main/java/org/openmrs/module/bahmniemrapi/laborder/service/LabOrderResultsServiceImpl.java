@@ -52,7 +52,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
 
         int totalEncounters = encounters.size();
         int currentAccession = 0;
-        for (int i=totalEncounters -1; i == 0; i--) {
+        for (int i=totalEncounters -1; i >= 0; i--) {
             Encounter encounter = encounters.get(i);
             if (currentAccession >= numberOfAccessions) {
                 break;
