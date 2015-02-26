@@ -8,17 +8,13 @@ import org.bahmni.module.elisatomfeedclient.api.client.OpenElisFeedClient;
 import org.bahmni.module.elisatomfeedclient.api.client.OpenElisPatientFeedClient;
 import org.bahmni.module.elisatomfeedclient.api.mapper.AccessionHelper;
 import org.bahmni.module.elisatomfeedclient.api.worker.OpenElisAccessionEventWorker;
-import org.bahmni.module.elisatomfeedclient.api.worker.OpenElisPatientEventWorker;
 import org.bahmni.module.elisatomfeedclient.api.worker.OpenElisPatientFeedWorker;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.joda.time.DateTime;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
-import org.openmrs.api.OrderService;
-import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
-import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,17 +43,12 @@ public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements
     protected EventWorker createWorker(HttpClient authenticatedWebClient, ElisAtomFeedProperties properties) {
         EncounterService encounterService = Context.getService(EncounterService.class);
         ConceptService conceptService = Context.getService(ConceptService.class);
-        PersonService personService = Context.getPersonService();
         ProviderService providerService = Context.getProviderService();
-        OrderService orderService = Context.getOrderService();
-        VisitService visitService = Context.getVisitService();
-
 
         OpenElisAccessionEventWorker accessionEventWorker = new OpenElisAccessionEventWorker(properties,
                 authenticatedWebClient, encounterService, conceptService, new AccessionHelper(properties),
                 providerService);
-        OpenElisPatientEventWorker patientEventWorker = new OpenElisPatientEventWorker(bahmniPatientService, personService, authenticatedWebClient, properties);
-        return new OpenElisPatientFeedWorker(patientEventWorker, accessionEventWorker);
+        return new OpenElisPatientFeedWorker(accessionEventWorker);
     }
 
     @Override
