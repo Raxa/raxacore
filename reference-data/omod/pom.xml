@@ -5,7 +5,7 @@
     <parent>
         <artifactId>reference-data</artifactId>
         <groupId>org.bahmni.module</groupId>
-        <version>5.3-SNAPSHOT</version>
+        <version>5.4-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
-            <version>1.5.3</version>
+            <version>1.5.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -121,7 +121,7 @@
         <dependency>
             <groupId>org.bahmni.test</groupId>
             <artifactId>bahmni-test-commons</artifactId>
-            <version>5.3-SNAPSHOT</version>
+            <version>5.4-SNAPSHOT</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
