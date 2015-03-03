@@ -2251,15 +2251,6 @@
             delete from scheduler_task_config WHERE name = 'Reference Data Failed Event Task';
         </sql>
     </changeSet>
-    <changeSet id="bahmni-core-201410101132" author="Rohan, Chethan">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">select count(*) from markers where feed_uri = 'http://localhost:8080/reference-data/ws/feed/reference_data/recent'</sqlCheck>
-        </preConditions>
-        <comment>Remove reference data from markers.</comment>
-        <sql>
-            delete from markers WHERE feed_uri = 'http://localhost:8080/reference-data/ws/feed/reference_data/recent';
-        </sql>
-    </changeSet>
     <changeSet id="bahmni-core-201410101436" author="banka">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Clinical:ReadOnly'</sqlCheck>
