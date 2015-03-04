@@ -26,11 +26,13 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
 
         // void initial diagnosis and its children
         String initialVisitDiagnosisUuid = null;
-        for (Obs aLeafObs : encounterByUuid.getObs()) {
-            if (aLeafObs.getConcept().getName().getName().equals(BahmniDiagnosisHelper.BAHMNI_INITIAL_DIAGNOSIS)) {
-                initialVisitDiagnosisUuid = aLeafObs.getValueText();
+        Obs visitDiagnosisObs = obsService.getObsByUuid(visitDiagnosesObservationUuid);
+        for (Obs obs : visitDiagnosisObs.getGroupMembers()) {
+            if (obs.getConcept().getName().getName().equals(BahmniDiagnosisHelper.BAHMNI_INITIAL_DIAGNOSIS)) {
+                initialVisitDiagnosisUuid = obs.getValueText();
             }
         }
+
         // get encounter for this obs initialVisitDiagnosisUuid
         if (initialVisitDiagnosisUuid != null && !initialVisitDiagnosisUuid.equals(visitDiagnosesObservationUuid)) {
             Obs obsByUuid = obsService.getObsByUuid(initialVisitDiagnosisUuid);
