@@ -64,11 +64,12 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         String encounterUuid = encounterTransaction.getEncounterUuid();
         Encounter currentEncounter = encounterService.getEncounterByUuid(encounterUuid);
 
-        EncounterTransaction updatedEncounterTransaction = encounterTransactionMapper.map(currentEncounter, true);
+        boolean includeAll = false;
+        EncounterTransaction updatedEncounterTransaction = encounterTransactionMapper.map(currentEncounter, includeAll);
         for (EncounterDataPostSaveCommand saveCommand : encounterDataPostSaveCommands) {
             updatedEncounterTransaction = saveCommand.save(bahmniEncounterTransaction,currentEncounter, updatedEncounterTransaction);
         }
-        return bahmniEncounterTransactionMapper.map(updatedEncounterTransaction);
+        return bahmniEncounterTransactionMapper.map(updatedEncounterTransaction, includeAll);
     }
 
     @Override

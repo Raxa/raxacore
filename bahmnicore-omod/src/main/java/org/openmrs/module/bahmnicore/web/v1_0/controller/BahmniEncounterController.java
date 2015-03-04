@@ -1,6 +1,5 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
-import java.util.Collection;
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterConfigResponse;
@@ -16,8 +15,8 @@ import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmnicore.web.v1_0.InvalidInputException;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.emrapi.encounter.ActiveEncounterParameters;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
 import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
@@ -38,6 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -94,14 +94,14 @@ public class BahmniEncounterController extends BaseRestController {
     @ResponseBody
     public BahmniEncounterTransaction get(@PathVariable("uuid") String uuid, Boolean includeAll) {
         EncounterTransaction encounterTransaction = emrEncounterService.getEncounterTransaction(uuid, includeAll);
-        return bahmniEncounterTransactionMapper.map(encounterTransaction);
+        return bahmniEncounterTransactionMapper.map(encounterTransaction, includeAll);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/active")
     @ResponseBody
     public BahmniEncounterTransaction getActive(ActiveEncounterParameters activeEncounterParameters) {
         EncounterTransaction activeEncounter = emrEncounterService.getActiveEncounter(activeEncounterParameters);
-        return bahmniEncounterTransactionMapper.map(activeEncounter);
+        return bahmniEncounterTransactionMapper.map(activeEncounter, activeEncounterParameters.getIncludeAll());
     }
     
     @RequestMapping(method = RequestMethod.GET)
@@ -120,7 +120,7 @@ public class BahmniEncounterController extends BaseRestController {
             checkForValidInput(encounterSearchParameters);
             List<EncounterTransaction> encounterTransactions = emrEncounterService.find(encounterSearchParameters);
             for (EncounterTransaction encounterTransaction : encounterTransactions) {
-                bahmniEncounterTransactions.add(bahmniEncounterTransactionMapper.map(encounterTransaction));
+                bahmniEncounterTransactions.add(bahmniEncounterTransactionMapper.map(encounterTransaction, includeAll));
             }
         }
 
@@ -153,8 +153,9 @@ public class BahmniEncounterController extends BaseRestController {
 
     public BahmniEncounterTransaction get(String encounterUuid) {
         Encounter encounter = encounterService.getEncounterByUuid(encounterUuid);
-        EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, true);
-        return bahmniEncounterTransactionMapper.map(encounterTransaction);
+        boolean includeAll = false;
+        EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, includeAll);
+        return bahmniEncounterTransactionMapper.map(encounterTransaction, includeAll);
     }
 
     private void setUuidsForObservations(Collection<BahmniObservation> bahmniObservations) {

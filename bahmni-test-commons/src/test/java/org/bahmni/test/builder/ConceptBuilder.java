@@ -1,12 +1,18 @@
 package org.bahmni.test.builder;
 
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.ConceptAnswer;
+import org.openmrs.ConceptClass;
+import org.openmrs.ConceptDatatype;
+import org.openmrs.ConceptDescription;
+import org.openmrs.ConceptName;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 import org.openmrs.util.LocaleUtility;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 
 public class ConceptBuilder {
     private final org.openmrs.Concept concept;
@@ -21,6 +27,15 @@ public class ConceptBuilder {
 
     public ConceptBuilder withName(String conceptName) {
         ConceptName name = new ConceptName(conceptName, LocaleUtility.getDefaultLocale());
+        return withName(name);
+    }
+
+    public ConceptBuilder withName(String conceptName, Locale locale) {
+        ConceptName name = new ConceptName(conceptName, locale);
+        return withName(name);
+    }
+
+    public ConceptBuilder withName(ConceptName name) {
         name.setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
         concept.setPreferredName(name);
         return this;
@@ -140,4 +155,5 @@ public class ConceptBuilder {
         concept.addAnswer(conceptAnswer);
         return this;
     }
+
 }

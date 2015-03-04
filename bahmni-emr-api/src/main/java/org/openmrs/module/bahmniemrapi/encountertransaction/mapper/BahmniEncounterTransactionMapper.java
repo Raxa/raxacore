@@ -40,9 +40,9 @@ public class BahmniEncounterTransactionMapper {
         this.fromETObsToBahmniObs = fromETObsToBahmniObs;
     }
 
-    public BahmniEncounterTransaction map(EncounterTransaction encounterTransaction) {
+    public BahmniEncounterTransaction map(EncounterTransaction encounterTransaction, boolean includeAll) {
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction(encounterTransaction);
-        List<BahmniDiagnosisRequest> bahmniDiagnoses = bahmniDiagnosisMapper.map(encounterTransaction.getDiagnoses());
+        List<BahmniDiagnosisRequest> bahmniDiagnoses = bahmniDiagnosisMapper.map(encounterTransaction.getDiagnoses(), includeAll);
         bahmniEncounterTransaction.setBahmniDiagnoses(bahmniDiagnoses);
         bahmniEncounterTransaction.setAccessionNotes(accessionNotesMapper.map(encounterTransaction));
         AdditionalBahmniObservationFields additionalBahmniObservationFields = new AdditionalBahmniObservationFields(encounterTransaction.getEncounterUuid(), encounterTransaction.getEncounterDateTime(), null,null);

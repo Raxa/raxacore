@@ -1,6 +1,7 @@
 package org.bahmni.test.builder;
 
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Person;
@@ -9,6 +10,7 @@ import org.openmrs.util.LocaleUtility;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 
 public class ObsBuilder {
 
@@ -39,6 +41,18 @@ public class ObsBuilder {
         return this;
     }
 
+    public ObsBuilder withConcept(ConceptName conceptName) {
+        Concept concept = new ConceptBuilder().withName(conceptName).build();
+        obs.setConcept(concept);
+        return this;
+    }
+
+    public ObsBuilder withConcept(String conceptName, Locale locale) {
+        Concept concept = new ConceptBuilder().withName(conceptName, locale).build();
+        obs.setConcept(concept);
+        return this;
+    }
+
     public ObsBuilder withValue(String value) {
         obs.setValueText(value);
         return this;
@@ -52,6 +66,11 @@ public class ObsBuilder {
     public ObsBuilder withValue(Concept value) {
         obs.setValueCoded(value);
         setValueCodedName(obs);
+        return this;
+    }
+
+    public ObsBuilder withUUID(String obsUuid) {
+        obs.setUuid(obsUuid);
         return this;
     }
 

@@ -3,7 +3,6 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 import org.openmrs.Concept;
 import org.openmrs.Obs;
 import org.openmrs.api.ObsService;
-import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisHelper;
 import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
@@ -25,15 +24,15 @@ public class BahmniDiagnosisMapper {
         this.encounterTransactionMapper = encounterTransactionMapper;
     }
 
-    public List<BahmniDiagnosisRequest> map(List<EncounterTransaction.Diagnosis> diagnoses) {
+    public List<BahmniDiagnosisRequest> map(List<EncounterTransaction.Diagnosis> diagnoses, boolean includeAll) {
         List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
         for (EncounterTransaction.Diagnosis diagnosis : diagnoses) {
-            bahmniDiagnoses.add(mapBahmniDiagnosis(diagnosis, true));
+            bahmniDiagnoses.add(mapBahmniDiagnosis(diagnosis, true, includeAll));
         }
         return bahmniDiagnoses;
     }
 
-    private BahmniDiagnosisRequest mapBahmniDiagnosis(EncounterTransaction.Diagnosis diagnosis, boolean mapFirstDiagnosis) {
+    private BahmniDiagnosisRequest mapBahmniDiagnosis(EncounterTransaction.Diagnosis diagnosis, boolean mapFirstDiagnosis, boolean includeAll) {
         BahmniDiagnosisRequest bahmniDiagnosis = mapBasicDiagnosis(diagnosis);
         bahmniDiagnosis.setExistingObs(diagnosis.getExistingObs());
 
@@ -46,9 +45,9 @@ public class BahmniDiagnosisMapper {
 
         if (mapFirstDiagnosis) {
             Obs initialDiagnosisObsGroup = obsService.getObsByUuid(findObs(diagnosisObsGroup, BahmniDiagnosisHelper.BAHMNI_INITIAL_DIAGNOSIS).getValueText());
-            EncounterTransaction encounterTransactionWithInitialDiagnosis = encounterTransactionMapper.map(initialDiagnosisObsGroup.getEncounter(), true);
+            EncounterTransaction encounterTransactionWithInitialDiagnosis = encounterTransactionMapper.map(initialDiagnosisObsGroup.getEncounter(), includeAll);
             EncounterTransaction.Diagnosis initialDiagnosis = findInitialDiagnosis(encounterTransactionWithInitialDiagnosis, initialDiagnosisObsGroup);
-            bahmniDiagnosis.setFirstDiagnosis(mapBahmniDiagnosis(initialDiagnosis, false));
+            bahmniDiagnosis.setFirstDiagnosis(mapBahmniDiagnosis(initialDiagnosis, false, includeAll));
         }
 
         Obs revisedObs = findObs(diagnosisObsGroup, BahmniDiagnosisHelper.BAHMNI_DIAGNOSIS_REVISED);

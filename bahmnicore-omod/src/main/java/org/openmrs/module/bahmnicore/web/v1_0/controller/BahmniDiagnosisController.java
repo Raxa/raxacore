@@ -1,10 +1,14 @@
 package org.openmrs.module.bahmnicore.web.v1_0.controller;
 
-import java.util.*;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openmrs.*;
+import org.bahmni.module.bahmnicore.service.BahmniDiagnosisService;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.Visit;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
@@ -26,10 +30,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/diagnosis")
 public class BahmniDiagnosisController extends BaseRestController {
-
     @Autowired
     private PatientService patientService;
     @Autowired
@@ -44,6 +55,9 @@ public class BahmniDiagnosisController extends BaseRestController {
     private ObsService obsService;
     @Autowired
     private VisitService visitService;
+    @Autowired
+    private BahmniDiagnosisService bahmniDiagnosisService;
+
     private static final Log log = LogFactory.getLog(DiagnosisService.class);
 
 
@@ -61,7 +75,8 @@ public class BahmniDiagnosisController extends BaseRestController {
         }
 
         List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
-        List<BahmniDiagnosisRequest> mappedBahmniDiagnoses = bahmniDiagnosisMapper.map(pastDiagnoses);
+        boolean includeAll = false;
+        List<BahmniDiagnosisRequest> mappedBahmniDiagnoses = bahmniDiagnosisMapper.map(pastDiagnoses, includeAll);
         for (BahmniDiagnosisRequest mappedBahmniDiagnose : mappedBahmniDiagnoses) {
             if (!mappedBahmniDiagnose.isRevised()) {
                 bahmniDiagnoses.add(mappedBahmniDiagnose);
@@ -70,7 +85,14 @@ public class BahmniDiagnosisController extends BaseRestController {
         return bahmniDiagnoses;
     }
 
-//    TODO : This fix was added 3 hours before finalizing candidate build for the release.
+    @RequestMapping(method = RequestMethod.GET, value = "delete")
+    @ResponseBody
+    public boolean delete(@RequestParam(value = "encounterUuid", required = true) String encounterUuid, @RequestParam(value = "obsUuid", required = true) String obsUuid) throws Exception {
+        bahmniDiagnosisService.delete(encounterUuid, obsUuid);
+        return true;
+    }
+
+    //    TODO : This fix was added 3 hours before finalizing candidate build for the release.
 //    TODO : This is copy/pasted code from emrapi and needs to be pushed there at some future point in time
     public List<Diagnosis> getDiagnoses(Patient patient, String visitUuid) {
         List<Diagnosis> diagnoses = new ArrayList<Diagnosis>();
