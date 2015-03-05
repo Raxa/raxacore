@@ -37,8 +37,7 @@ public class DiagnosisBuilder {
         Obs codedDiagnosisObs = new ObsBuilder().withConcept(codedDiagnosisConcept).withValue(malariaConcept).build();
         Obs certaintyObs = new ObsBuilder().withConcept(certaintyConcept).withValue(confirmedConcept).build();
 
-        visitDiagnosesObs = new ObsBuilder().withValue("").withUUID(diagnosisObsUUID).withConcept(visitDiagnosesConcept).withPerson(new PersonBuilder().withUUID("personId").build())
-        .withGroupMembers(codedDiagnosisObs, certaintyObs).build();
+        visitDiagnosesObs = new ObsBuilder().withValue("").withUUID(diagnosisObsUUID).withConcept(visitDiagnosesConcept).withGroupMembers(codedDiagnosisObs, certaintyObs).build();
 
         return this;
     }
