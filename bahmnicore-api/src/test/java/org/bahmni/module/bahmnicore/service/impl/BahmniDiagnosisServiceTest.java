@@ -40,7 +40,6 @@ public class BahmniDiagnosisServiceTest {
     private String initialDiagnosisObsUUID = "initialDiagnosisObsUUID";
     private String modifiedDiagnosisObsUUID = "modifiedDiagnosisObsUUID";
     private String initialEncounterUUID = "initialEncounterUUID";
-    private String modifiedEncounterUUID = "modifiedEncounterUUID";
     private Obs initialVisitDiagnosesObs;
     private Obs modifiedVisitDiagnosis;
     private Encounter initialEncounter;
@@ -56,7 +55,6 @@ public class BahmniDiagnosisServiceTest {
 
     @Test
     public void deleteADiagnosis() throws Exception {
-        String diagnosisEncounterUUID = "diagnosisEncounterUUID";
         String diagnosisObsUUID = "diagnosisObsUUID";
 
         Obs visitDiagnosisObs = new DiagnosisBuilder().withUuid(diagnosisObsUUID).withDefaults().withFirstObs(diagnosisObsUUID).build();
@@ -74,7 +72,7 @@ public class BahmniDiagnosisServiceTest {
         when(encounterService.saveEncounter(diagnosisEncounter)).thenReturn(diagnosisEncounter);
 
         BahmniDiagnosisService bahmniDiagnosisService = new BahmniDiagnosisServiceImpl(encounterService, obsService);
-        bahmniDiagnosisService.delete(diagnosisEncounterUUID, diagnosisObsUUID);
+        bahmniDiagnosisService.delete(diagnosisObsUUID);
 
         ArgumentCaptor<Encounter> argToCapture = ArgumentCaptor.forClass(Encounter.class);
         verify(encounterService).saveEncounter(argToCapture.capture());
@@ -93,13 +91,13 @@ public class BahmniDiagnosisServiceTest {
         when(encounterService.saveEncounter(modifiedEncounter)).thenReturn(modifiedEncounter);
 
         BahmniDiagnosisServiceImpl bahmniDiagnosisService = new BahmniDiagnosisServiceImpl(encounterService, obsService);
-        bahmniDiagnosisService.delete(modifiedEncounterUUID, modifiedDiagnosisObsUUID);
+        bahmniDiagnosisService.delete(modifiedDiagnosisObsUUID);
 
         ArgumentCaptor<Encounter> argToCapture = ArgumentCaptor.forClass(Encounter.class);
         verify(encounterService, times(2)).saveEncounter(argToCapture.capture());
 
-        assertVoided(argToCapture.getAllValues().get(0), modifiedDiagnosisObsUUID );
-        assertVoided(argToCapture.getAllValues().get(1), initialDiagnosisObsUUID );
+        assertVoided(argToCapture.getAllValues().get(0), modifiedDiagnosisObsUUID);
+        assertVoided(argToCapture.getAllValues().get(1), initialDiagnosisObsUUID);
     }
 
     @Test
@@ -121,19 +119,19 @@ public class BahmniDiagnosisServiceTest {
         when(encounterService.saveEncounter(modifiedEncounter)).thenReturn(modifiedEncounter);
 
         BahmniDiagnosisService bahmniDiagnosisService = new BahmniDiagnosisServiceImpl(encounterService, obsService);
-        bahmniDiagnosisService.delete(modifiedEncounterUUID, modifiedDiagnosisObsUUID);
+        bahmniDiagnosisService.delete(modifiedDiagnosisObsUUID);
 
         ArgumentCaptor<Encounter> argToCapture = ArgumentCaptor.forClass(Encounter.class);
         verify(encounterService, times(3)).saveEncounter(argToCapture.capture());
 
-        assertVoided(argToCapture.getAllValues().get(0), modifiedDiagnosisObsUUID );
-        assertVoided(argToCapture.getAllValues().get(1), initialDiagnosisObsUUID );
-        assertVoided(argToCapture.getAllValues().get(2), anotherDiagnosisUuid );
+        assertVoided(argToCapture.getAllValues().get(0), modifiedDiagnosisObsUUID);
+        assertVoided(argToCapture.getAllValues().get(1), initialDiagnosisObsUUID);
+        assertVoided(argToCapture.getAllValues().get(2), anotherDiagnosisUuid);
     }
 
     private void setUpModifiedVisitDiagnosis() {
         modifiedVisitDiagnosis = new DiagnosisBuilder().withUuid(modifiedDiagnosisObsUUID).withDefaults().withFirstObs(initialDiagnosisObsUUID).build();
-        modifiedEncounter = new EncounterBuilder().withDatetime(new Date()).withUUID(modifiedEncounterUUID).build();
+        modifiedEncounter = new EncounterBuilder().withDatetime(new Date()).withUUID("modifiedEncounterUUID").build();
         modifiedEncounter.addObs(modifiedVisitDiagnosis);
         modifiedVisitDiagnosis.setEncounter(modifiedEncounter);
     }

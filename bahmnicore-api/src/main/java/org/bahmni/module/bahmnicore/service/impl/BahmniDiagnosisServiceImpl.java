@@ -24,7 +24,7 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
     }
 
     @Override
-    public void delete(String diagnosisEncounterUuid, String visitDiagnosesObservationUuid) {
+    public void delete(String visitDiagnosesObservationUuid) {
         Obs visitDiagnosisObs = obsService.getObsByUuid(visitDiagnosesObservationUuid);
         String initialVisitDiagnosisUuid = findInitialDiagnosisUuid(visitDiagnosisObs);
         voidAllDiagnosisWithSameInitialDiagnosis(initialVisitDiagnosisUuid, visitDiagnosisObs);

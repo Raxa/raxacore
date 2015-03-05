@@ -87,8 +87,8 @@ public class BahmniDiagnosisController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET, value = "delete")
     @ResponseBody
-    public boolean delete(@RequestParam(value = "encounterUuid", required = true) String encounterUuid, @RequestParam(value = "obsUuid", required = true) String obsUuid) throws Exception {
-        bahmniDiagnosisService.delete(encounterUuid, obsUuid);
+    public boolean delete(@RequestParam(value = "obsUuid", required = true) String obsUuid) throws Exception {
+        bahmniDiagnosisService.delete(obsUuid);
         return true;
     }
 
