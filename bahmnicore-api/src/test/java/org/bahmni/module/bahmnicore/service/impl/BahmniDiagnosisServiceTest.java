@@ -37,6 +37,15 @@ public class BahmniDiagnosisServiceTest {
     @Mock
     private ObsService obsService;
 
+    private String initialDiagnosisObsUUID = "initialDiagnosisObsUUID";
+    private String modifiedDiagnosisObsUUID = "modifiedDiagnosisObsUUID";
+    private String initialEncounterUUID = "initialEncounterUUID";
+    private String modifiedEncounterUUID = "modifiedEncounterUUID";
+    private Obs initialVisitDiagnosesObs;
+    private Obs modifiedVisitDiagnosis;
+    private Encounter initialEncounter;
+    private Encounter modifiedEncounter;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
@@ -50,21 +59,18 @@ public class BahmniDiagnosisServiceTest {
         String diagnosisEncounterUUID = "diagnosisEncounterUUID";
         String diagnosisObsUUID = "diagnosisObsUUID";
 
-        Obs initialDiagnosisForOther = new DiagnosisBuilder().withUuid("initialDiagnosisObsUUID").withDefaults().build();
-        Encounter initialOtherEncounter = new EncounterBuilder().withDatetime(new Date()).withUUID("initialEncounterUUID").build();
-        initialOtherEncounter.addObs(initialDiagnosisForOther);
-
-        Obs visitDiagnosisObs = new DiagnosisBuilder().withUuid(diagnosisObsUUID).withDefaults().build();
+        Obs visitDiagnosisObs = new DiagnosisBuilder().withUuid(diagnosisObsUUID).withDefaults().withFirstObs(diagnosisObsUUID).build();
         Set<Obs> allObsForDiagnosisEncounter = new HashSet<>();
-        allObsForDiagnosisEncounter.add(new DiagnosisBuilder().withUuid("someOtherDiagnosisUUID").withDefaults().withFirstObs(initialDiagnosisForOther).build());
+        allObsForDiagnosisEncounter.add(new DiagnosisBuilder().withUuid("someOtherDiagnosisUUID").withDefaults().withFirstObs("initialDiagnosisObsUUID").build());
         allObsForDiagnosisEncounter.add(visitDiagnosisObs);
         allObsForDiagnosisEncounter.add(new ObsBuilder().withUUID("nonDiagnosisUuid").withConcept("Some Concept", Locale.getDefault()).build());
 
-        when(obsService.getObsByUuid(diagnosisObsUUID)).thenReturn(visitDiagnosisObs);
-
         Encounter diagnosisEncounter = new EncounterBuilder().withDatetime(new Date()).build();
+        visitDiagnosisObs.setEncounter(diagnosisEncounter);
         diagnosisEncounter.setObs(allObsForDiagnosisEncounter);
-        when(encounterService.getEncounterByUuid(diagnosisEncounterUUID)).thenReturn(diagnosisEncounter);
+
+        when(obsService.getObsByUuid(diagnosisObsUUID)).thenReturn(visitDiagnosisObs);
+        when(obsService.getObservationsByPersonAndConcept(visitDiagnosisObs.getPerson(), visitDiagnosisObs.getConcept())).thenReturn(Arrays.asList(visitDiagnosisObs));
         when(encounterService.saveEncounter(diagnosisEncounter)).thenReturn(diagnosisEncounter);
 
         BahmniDiagnosisService bahmniDiagnosisService = new BahmniDiagnosisServiceImpl(encounterService, obsService);
@@ -72,60 +78,78 @@ public class BahmniDiagnosisServiceTest {
 
         ArgumentCaptor<Encounter> argToCapture = ArgumentCaptor.forClass(Encounter.class);
         verify(encounterService).saveEncounter(argToCapture.capture());
-        Encounter encounterToSave = argToCapture.getValue();
-
-        Obs visitDiagnosesObsToSave = getAllObsFor(encounterToSave, diagnosisObsUUID);
-        assertTrue("Parent Diagnosis Obs should be voided", visitDiagnosesObsToSave.isVoided());
-        assertFalse("Non Diagnosis Obs should not be voided", getAllObsFor(encounterToSave, "nonDiagnosisUuid").isVoided());
-        for (Obs childObs : visitDiagnosesObsToSave.getGroupMembers(true)) {
-            assertTrue("Child Diagnosis Obs should be voided", childObs.isVoided());
-        }
+        assertVoided(argToCapture.getValue(), diagnosisObsUUID);
     }
 
     @Test
     public void initialDiagnosisIsDeletedOnDeletingADiagnosis() throws Exception {
-        String initialDiagnosisObsUUID = "initialDiagnosisObsUUID";
-        String modifiedDiagnosisObsUUID = "modifiedDiagnosisObsUUID";
-        String modifiedEncounterUUID = "modifiedEncounterUUID";
-        String initialEncounterUUID = "initialEncounterUUID";
+        setUpInitialVisitDiagnosis();
+        setUpModifiedVisitDiagnosis();
 
-        Obs initialVisitDiagnosesObs = new DiagnosisBuilder().withUuid(initialDiagnosisObsUUID).withDefaults().build();
-        Encounter initialEncounter = new EncounterBuilder().withDatetime(new Date()).withUUID(initialEncounterUUID).build();
-        initialEncounter.addObs(initialVisitDiagnosesObs);
-
-        when(obsService.getObsByUuid(initialDiagnosisObsUUID)).thenReturn(initialVisitDiagnosesObs);
-        when(encounterService.saveEncounter(initialEncounter)).thenReturn(initialEncounter);
-
-
-        Set<Obs> modifiedObs = new HashSet<>();
-        Obs modifiedVisitDiagnosis = new DiagnosisBuilder().withUuid(modifiedDiagnosisObsUUID).withDefaults().withFirstObs(initialVisitDiagnosesObs).build();
-        modifiedObs.add(modifiedVisitDiagnosis);
-        Encounter modifiedEncounter = new EncounterBuilder().withDatetime(new Date()).withUUID(modifiedEncounterUUID).build();
-        modifiedEncounter.setObs(modifiedObs);
         when(obsService.getObsByUuid(modifiedDiagnosisObsUUID)).thenReturn(modifiedVisitDiagnosis);
-
-        when(encounterService.getEncounterByUuid(modifiedEncounterUUID)).thenReturn(modifiedEncounter);
+        when(obsService.getObservationsByPersonAndConcept(modifiedVisitDiagnosis.getPerson(), modifiedVisitDiagnosis.getConcept())).
+                thenReturn(Arrays.asList(modifiedVisitDiagnosis, initialVisitDiagnosesObs));
+        when(encounterService.saveEncounter(initialEncounter)).thenReturn(initialEncounter);
         when(encounterService.saveEncounter(modifiedEncounter)).thenReturn(modifiedEncounter);
 
         BahmniDiagnosisServiceImpl bahmniDiagnosisService = new BahmniDiagnosisServiceImpl(encounterService, obsService);
         bahmniDiagnosisService.delete(modifiedEncounterUUID, modifiedDiagnosisObsUUID);
 
-
         ArgumentCaptor<Encounter> argToCapture = ArgumentCaptor.forClass(Encounter.class);
         verify(encounterService, times(2)).saveEncounter(argToCapture.capture());
-        Encounter initialEncounterToSave = argToCapture.getAllValues().get(0);
 
-        Obs modifiedVisitDiagnosesObsToSave = getAllObsFor(initialEncounterToSave, initialDiagnosisObsUUID);
-        assertTrue("Parent Diagnosis Obs should be voided", modifiedVisitDiagnosesObsToSave.isVoided());
-        for (Obs childObs : modifiedVisitDiagnosesObsToSave.getGroupMembers(true)) {
-            assertTrue("Child Diagnosis Obs should be voided", childObs.isVoided());
-        }
+        assertVoided(argToCapture.getAllValues().get(0), modifiedDiagnosisObsUUID );
+        assertVoided(argToCapture.getAllValues().get(1), initialDiagnosisObsUUID );
+    }
 
-        Encounter modifiedEncounterToSave = argToCapture.getAllValues().get(1);
+    @Test
+    public void otherDiagnosisWithSameInitialDiagnosisIsDeletedOnDeletingADiagnosis() throws Exception {
+        setUpInitialVisitDiagnosis();
+        setUpModifiedVisitDiagnosis();
+        String anotherDiagnosisUuid = "anotherDiagnosisUuid";
 
-        Obs initialVisitDiagnosesObsToSave = getAllObsFor(modifiedEncounterToSave, modifiedDiagnosisObsUUID);
-        assertTrue("Parent Diagnosis Obs should be voided", initialVisitDiagnosesObsToSave.isVoided());
-        for (Obs childObs : initialVisitDiagnosesObsToSave.getGroupMembers(true)) {
+
+        Obs anotherVisitDiagnosis = new DiagnosisBuilder().withUuid(anotherDiagnosisUuid).withDefaults().withFirstObs(initialDiagnosisObsUUID).build();
+        Encounter anotherEncounter = new EncounterBuilder().withDatetime(new Date()).withUUID("anotherEncounterUuid").build();
+        anotherEncounter.addObs(anotherVisitDiagnosis);
+        anotherVisitDiagnosis.setEncounter(anotherEncounter);
+
+        when(obsService.getObsByUuid(modifiedDiagnosisObsUUID)).thenReturn(modifiedVisitDiagnosis);
+        when(obsService.getObservationsByPersonAndConcept(modifiedVisitDiagnosis.getPerson(), modifiedVisitDiagnosis.getConcept())).
+                thenReturn(Arrays.asList(modifiedVisitDiagnosis, initialVisitDiagnosesObs, anotherVisitDiagnosis));
+        when(encounterService.saveEncounter(initialEncounter)).thenReturn(initialEncounter);
+        when(encounterService.saveEncounter(modifiedEncounter)).thenReturn(modifiedEncounter);
+
+        BahmniDiagnosisService bahmniDiagnosisService = new BahmniDiagnosisServiceImpl(encounterService, obsService);
+        bahmniDiagnosisService.delete(modifiedEncounterUUID, modifiedDiagnosisObsUUID);
+
+        ArgumentCaptor<Encounter> argToCapture = ArgumentCaptor.forClass(Encounter.class);
+        verify(encounterService, times(3)).saveEncounter(argToCapture.capture());
+
+        assertVoided(argToCapture.getAllValues().get(0), modifiedDiagnosisObsUUID );
+        assertVoided(argToCapture.getAllValues().get(1), initialDiagnosisObsUUID );
+        assertVoided(argToCapture.getAllValues().get(2), anotherDiagnosisUuid );
+    }
+
+    private void setUpModifiedVisitDiagnosis() {
+        modifiedVisitDiagnosis = new DiagnosisBuilder().withUuid(modifiedDiagnosisObsUUID).withDefaults().withFirstObs(initialDiagnosisObsUUID).build();
+        modifiedEncounter = new EncounterBuilder().withDatetime(new Date()).withUUID(modifiedEncounterUUID).build();
+        modifiedEncounter.addObs(modifiedVisitDiagnosis);
+        modifiedVisitDiagnosis.setEncounter(modifiedEncounter);
+    }
+
+    private void setUpInitialVisitDiagnosis() {
+        initialVisitDiagnosesObs = new DiagnosisBuilder().withUuid(initialDiagnosisObsUUID).withDefaults().withFirstObs(initialDiagnosisObsUUID).build();
+        initialEncounter = new EncounterBuilder().withDatetime(new Date()).withUUID(initialEncounterUUID).build();
+        initialEncounter.addObs(initialVisitDiagnosesObs);
+        initialVisitDiagnosesObs.setEncounter(initialEncounter);
+    }
+
+
+    private void assertVoided(Encounter encounter, String observationUuid) {
+        Obs visitDiagnosesObsToSave = getAllObsFor(encounter, observationUuid);
+        assertTrue("Parent Diagnosis Obs should be voided", visitDiagnosesObsToSave.isVoided());
+        for (Obs childObs : visitDiagnosesObsToSave.getGroupMembers(true)) {
             assertTrue("Child Diagnosis Obs should be voided", childObs.isVoided());
         }
     }

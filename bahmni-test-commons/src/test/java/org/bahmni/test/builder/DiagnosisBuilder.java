@@ -42,8 +42,9 @@ public class DiagnosisBuilder {
         return this;
     }
 
-    public DiagnosisBuilder withFirstObs(Obs firstVisitDiagnosisObs) {
-        Obs bahmniInitialObs = new ObsBuilder().withConcept(BAHMNI_INITIAL_DIAGNOSIS, Locale.getDefault()).withValue(firstVisitDiagnosisObs.getUuid()).build();
+
+    public DiagnosisBuilder withFirstObs(String firstVisitDiagnosisObsUuid) {
+        Obs bahmniInitialObs = new ObsBuilder().withConcept(BAHMNI_INITIAL_DIAGNOSIS, Locale.getDefault()).withValue(firstVisitDiagnosisObsUuid).build();
 
         addChildObs(bahmniInitialObs, visitDiagnosesObs);
         return this;
