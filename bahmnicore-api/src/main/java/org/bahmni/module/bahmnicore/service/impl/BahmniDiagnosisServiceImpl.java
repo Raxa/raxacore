@@ -9,6 +9,9 @@ import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Component
 public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
     private EncounterService encounterService;
@@ -30,32 +33,46 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
         for (Obs obs : visitDiagnosisObs.getGroupMembers()) {
             if (obs.getConcept().getName().getName().equals(BahmniDiagnosisHelper.BAHMNI_INITIAL_DIAGNOSIS)) {
                 initialVisitDiagnosisUuid = obs.getValueText();
+                break;
             }
         }
 
         // get encounter for this obs initialVisitDiagnosisUuid
-        if (initialVisitDiagnosisUuid != null && !initialVisitDiagnosisUuid.equals(visitDiagnosesObservationUuid)) {
-            Obs obsByUuid = obsService.getObsByUuid(initialVisitDiagnosisUuid);
-            Encounter initialEncounter = obsByUuid.getEncounter();
-            voidDiagnosis(initialVisitDiagnosisUuid, initialEncounter);
-        }
+            voidOtherDiagnosisWithSameInitialDiagnosis(initialVisitDiagnosisUuid, visitDiagnosisObs);
+
+//        }
 
         // void modified diagnosis obs and its children
-        voidDiagnosis(visitDiagnosesObservationUuid, encounterByUuid);
+//        voidDiagnosis(visitDiagnosesObservationUuid);
     }
 
-    private void voidDiagnosis(String visitDiagnosesObservationUuid, Encounter encounterByUuid) {
-        for (Obs obs : encounterByUuid.getAllObs()) {
-            if (obs.getUuid().equals(visitDiagnosesObservationUuid)) {
-                voidObsAndItsChildren(obs);
+    private void voidOtherDiagnosisWithSameInitialDiagnosis(String initialVisitDiagnosisUuid, Obs visitDiagnosisObs) {
+        //find observations for this patient and concept
+        List<Obs> observations = obsService.getObservationsByPersonAndConcept(visitDiagnosisObs.getPerson(), visitDiagnosisObs.getConcept());
+
+        for (Obs observation : observations) {
+            for (Obs obs : observation.getGroupMembers()) {
+                if (obs.getConcept().getName().getName().equals(BahmniDiagnosisHelper.BAHMNI_INITIAL_DIAGNOSIS)) {
+                    if (initialVisitDiagnosisUuid.equals(obs.getValueText())) {
+                        voidDiagnosis(obs.getUuid(), obs.getEncounter());
+                        break;
+                    }
+                }
             }
         }
+    }
 
-        encounterService.saveEncounter(encounterByUuid);
+    private void voidDiagnosis(String visitDiagnosesObservationUuid, Encounter encounter) {
+        Obs obsByUuid = obsService.getObsByUuid(visitDiagnosesObservationUuid);
+        voidObsAndItsChildren(obsByUuid);
+//        obsService.saveObs(obsByUuid, "freason");
+        encounterService.saveEncounter(encounter);
+
     }
 
     private void voidObsAndItsChildren(Obs obs) {
         obs.setVoided(true);
+
         if (obs.getGroupMembers() == null)
             return;
 
