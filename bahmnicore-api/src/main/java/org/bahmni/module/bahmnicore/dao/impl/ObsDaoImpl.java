@@ -1,19 +1,19 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.bahmni.module.bahmnicore.dao.ObsDao;
+import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.Concept;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.Obs;
+import org.openmrs.Visit;
 import org.openmrs.api.ConceptNameType;
+import org.openmrs.api.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class ObsDaoImpl implements ObsDao {
@@ -53,11 +53,15 @@ public class ObsDaoImpl implements ObsDao {
 
     }
 
-    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits) {
+    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, Integer limit) {
         List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
         if (listOfVisitIds == null || listOfVisitIds.isEmpty())
             return new ArrayList<>();
 
+        return getObsByPatientAndVisit(patientUuid, conceptNames, listOfVisitIds,limit);
+    }
+
+    private List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit) {
         Query queryToGetObservations = sessionFactory.getCurrentSession().createQuery(
                 "select obs " +
                         " from Obs as obs, ConceptName as cn " +
@@ -69,11 +73,25 @@ public class ObsDaoImpl implements ObsDao {
                         " and cn.voided = false " +
                         " and obs.voided = false " +
                         " order by obs.obsDatetime desc ");
+
+        queryToGetObservations.setMaxResults(limit);
         queryToGetObservations.setString("patientUuid", patientUuid);
         queryToGetObservations.setParameterList("conceptNames", conceptNames);
         queryToGetObservations.setParameterList("listOfVisitIds", listOfVisitIds);
         queryToGetObservations.setParameter("conceptNameType", ConceptNameType.FULLY_SPECIFIED);
         return queryToGetObservations.list();
+    }
+
+    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits) {
+        return getObsFor(patientUuid,conceptNames,numberOfVisits,-1);
+    }
+
+    public List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit) {
+        return getObsFor(patientUuid,Arrays.asList(conceptName),numberOfVisits, limit);
+    }
+
+    public List<Obs> getLatestObsByVisit(Visit visit, String conceptName, Integer limit){
+        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit);
     }
 
     @Override

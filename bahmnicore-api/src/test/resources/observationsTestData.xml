@@ -13,8 +13,6 @@
 
     <person_attribute person_attribute_id="1" person_id="1024" value="caste1" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:46:47.0" voided="false" uuid="0768f3da-b692-44b7-a33f-abf2c450474a"/>
 
-
-
     <location location_id="1" name="Unknown_Location" description=" 0" creator="1" retired="0" retired_by=" 0" parent_location=" 0" uuid="8d6c993e-c2cc-11de-8d13-0010c6dffd0f" date_created="2005-09-22 00:00:00"/>
     <location location_id="2" name="Ganiyari" description="Ganiyari hospital" creator="1" retired="0" retired_by=" 0" parent_location=" 0" uuid="8d6c993e-c2cc-11de-8d13-0040c6dffd0f" date_created="2005-09-22 00:00:00" />
     <location location_id="3" name="Semariya" description="Semariya subcentre" creator="1" retired="0" retired_by=" 0" parent_location=" 0" uuid="8d6c993e-c2cc-11de-8d13-0010c6dfed0f" date_created="2005-09-22 00:00:00" />
@@ -31,8 +29,12 @@
     <concept_datatype concept_datatype_id="4" name="Coded" hl7_abbreviation="CWE" description="coded concept" date_created="2013-12-04 11:36:42" retired="0"/>
     <concept_datatype concept_datatype_id="5" name="N/A" hl7_abbreviation="ZZ" description="not associated" date_created="2013-12-04 11:36:42" retired="0"/>
 
-    <concept concept_id="111" retired="0" datatype_id="1" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="3f596de5-5caa-11e3-a4c0-0800271c1b75" />
-    <concept concept_id="222" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="4f596de5-5caa-11e3-a4c0-0800271c1b75" />
+    <concept concept_id="111" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="sitting_uuid" />
+    <concept_name concept_id="111" name="Sitting" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="8" voided="false" uuid="sitting_concept_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="100" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="4f596de5-5caa-11e3-a4c0-0800271c1b75" />
+    <concept_name concept_id="100" name="Sitting2" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="9" voided="false" uuid="sitting2_concept_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
     <concept concept_id="333" retired="0" datatype_id="1" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="5f596de5-5caa-11e3-a4c0-0800271c1b75" />
     <concept concept_id="444" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="6f596de5-5caa-11e3-a4c0-0800271c1b75" />
     <concept concept_id="555" retired="0" datatype_id="1" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="7f596de5-5caa-11e3-a4c0-0800271c1b75" />
@@ -44,7 +46,7 @@
     <concept concept_id="200" retired="0" datatype_id="5" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="False_concept_uuid" />
     <concept_name concept_id="200" name="False" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="11" voided="false" uuid="6d2d4cb7-955b-4837-80f7-0ebb94092afi" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
-    <concept concept_id="90" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="blood_pressure_concept_uuid" />
+    <concept concept_id="90" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="Sitt_pressure_concept_uuid" />
     <concept_name concept_id="90" name="Blood Pressure" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
     <concept concept_id="9011" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="systolic_value_uuid" />
@@ -101,12 +103,17 @@
 
     <location location_id="1" name="OPD Room 1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
     <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14" changed_by="1" date_changed="2012-10-23 18:04:14" retired="0" uuid="f01c54cb-2225-471a-9cd5-d348552c337c"/>
+
     <visit visit_id="901" date_started="2008-08-18 00:00:00" date_created="2008-08-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-08-20 04:08:16" location_id="2" creator="1" changed_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5b" voided="0"/>
     <visit visit_id="902" date_started="2008-09-18 00:00:00" date_created="2008-09-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-09-20 04:08:16" location_id="2" creator="1" changed_by="1" uuid="e10186d8-1c8e-11e4-bb80-f18addb6f9bb" voided="0"/>
+    <visit visit_id="903" date_started="2008-10-18 00:00:00" date_created="2008-09-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-09-20 04:08:16" location_id="2" creator="1" changed_by="1" uuid="e10186d8-1c8e-11e4-bb80-f18add123456" voided="0"/>
 
     <encounter_type encounter_type_id="1" name="Consultation" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
     <encounter encounter_id="38" encounter_type="1" patient_id="1024" visit_id="901" location_id="1" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63ab0"/>
     <encounter encounter_id="39" encounter_type="1" patient_id="1024" visit_id="902" location_id="1" encounter_datetime="2008-09-19 00:00:00.0" creator="1" date_created="2008-09-19 14:09:05.0" voided="false" uuid="f8ee31f6-1c8e-11e4-bb80-f18addb6f9bb"/>
+
+    <encounter encounter_id="40" encounter_type="1" patient_id="1024" visit_id="903" location_id="1" encounter_datetime="2008-10-19 00:00:00.0" creator="1" date_created="2008-09-19 14:09:05.0" voided="false" uuid="f8ee31f6-1c8e-11e4-bb80-f18add123456"/>
+    <encounter encounter_id="41" encounter_type="1" patient_id="1024" visit_id="903" location_id="1" encounter_datetime="2008-11-19 00:00:00.0" creator="1" date_created="2008-09-19 14:09:05.0" voided="false" uuid="f8ee31f6-1c8e-11e4-bb80-f18add123457"/>
 
     <obs obs_id="1" concept_id="90" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bb" creator="1" voided="0" />
     <obs voided="1" obs_id="1098798" concept_id="90" person_id="1024" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-11e3-bb80-f18addb6f8cc" creator="1" />
@@ -120,7 +127,10 @@
     <obs obs_id="7" obs_group_id="5" concept_id="9022" person_id="1024" value_coded="100" encounter_id="38" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bh" creator="1" voided="0" />
 
 
-    <obs obs_id="1024" person_id="1024" concept_id="111" value_numeric="1.1" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
+    <obs obs_id="1024" person_id="1024" concept_id="111" value_numeric="1.1" encounter_id="40" obs_datetime="2008-10-19 15:00:00.0" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
+    <obs obs_id="1050" person_id="1024" concept_id="111" value_numeric="1.5" encounter_id="41" obs_datetime="2008-11-19 15:00:00.0" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
+    <obs obs_id="1051" person_id="1024" concept_id="100" value_numeric="100" encounter_id="40" obs_datetime="2008-10-19 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
+
     <obs obs_id="1025" person_id="1024" concept_id="222" value_text="foo" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
     <obs obs_id="1026" person_id="1024" concept_id="333" value_numeric="2.1" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />
     <obs obs_id="1027" person_id="1024" concept_id="444" value_text="foo" obs_datetime="2013-12-04 11:36:42" creator="1" voided="0" date_created="2013-12-04 11:36:42" />

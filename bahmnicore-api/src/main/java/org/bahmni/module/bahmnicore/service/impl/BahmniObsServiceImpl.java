@@ -52,10 +52,20 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public Collection<BahmniObservation> getLatest(String patientUuid, Collection<Concept> concepts) {
+    public Collection<BahmniObservation> getLatest(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits) {
         List<Obs> latestObs = new ArrayList<>();
         for (Concept concept : concepts) {
-            latestObs.addAll(obsDao.getLatestObsFor(patientUuid, concept.getName().getName(), 1));
+            latestObs.addAll(obsDao.getLatestObsFor(patientUuid, concept.getName().getName(), numberOfVisits, 1));
+        }
+
+        return omrsObsToBahmniObsMapper.map(latestObs, concepts);
+    }
+
+    @Override
+    public Collection<BahmniObservation> getLatestObsByVisit(Visit visit, Collection<Concept> concepts){
+        List<Obs> latestObs = new ArrayList<>();
+        for (Concept concept : concepts) {
+            latestObs.addAll(obsDao.getLatestObsByVisit(visit, concept.getName().getName(), 1));
         }
 
         return omrsObsToBahmniObsMapper.map(latestObs, concepts);

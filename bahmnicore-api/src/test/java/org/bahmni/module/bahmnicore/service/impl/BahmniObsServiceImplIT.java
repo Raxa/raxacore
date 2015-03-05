@@ -6,7 +6,9 @@ import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
     BahmniObsService personObsService;
     @Autowired
     private ConceptService conceptService;
+    @Autowired
+    private VisitService visitService;
 
     @Autowired
     ObsDao obsDao;
@@ -38,7 +42,7 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldReturnLatestObsForEachConcept() {
         Concept vitalsConcept = conceptService.getConceptByName("Vitals");
-        Collection<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(vitalsConcept));
+        Collection<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(vitalsConcept),3);
         BahmniObservation vitalObservation = bahmniObservations.iterator().next();
         Collection<BahmniObservation> vitalsGroupMembers = vitalObservation.getGroupMembers();
         assertEquals(2, vitalsGroupMembers.size());
@@ -48,6 +52,42 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
         BahmniObservation pulse = observationIterator.next();
         assertEquals("Pulse", pulse.getConcept().getName());
         assertEquals("Weight", weight.getConcept().getName());
+    }
+
+    @Test
+    public void shouldReturnLatestObsForEachConceptForSpecifiedNumberOfVisits() {
+        Concept sittingConcept = conceptService.getConceptByName("Vitals");
+        //Latest limited by last two visits.
+        Collection<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(sittingConcept),1);
+        assertEquals(0, bahmniObservations.size());
+        bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(sittingConcept),2);
+        assertEquals(1, bahmniObservations.size());
+
+        BahmniObservation sittingObservation = bahmniObservations.iterator().next();
+        assertEquals("Vitals",sittingObservation.getConcept().getName());
+    }
+
+    @Test
+    public void shouldReturnLatestObsForEachConceptForSpecifiedVisitUuid() {
+        Concept sittingConcept = conceptService.getConceptByName("Sitting");
+        Visit visit = visitService.getVisitByUuid("e10186d8-1c8e-11e4-bb80-f18add123456");
+
+        Collection<BahmniObservation> latestObsByVisit = personObsService.getLatestObsByVisit(visit, Arrays.asList(sittingConcept));
+        assertEquals(1, latestObsByVisit.size());
+        BahmniObservation sittingObservation = latestObsByVisit.iterator().next();
+        assertEquals("1.5", sittingObservation.getValueAsString());
+    }
+
+    @Test
+    public void shouldReturnLatestObsFromAllEncountersInVisit(){
+        Concept concept = conceptService.getConcept("100");
+        Visit visit = visitService.getVisitByUuid("e10186d8-1c8e-11e4-bb80-f18add123456");
+        Collection<BahmniObservation> latestObsByVisit = personObsService.getLatestObsByVisit(visit, Arrays.asList(concept));
+
+        assertEquals(1, latestObsByVisit.size());
+        BahmniObservation obs = latestObsByVisit.iterator().next();
+        assertEquals("100.0", obs.getValueAsString());
+
     }
 
     @Test
