@@ -1,6 +1,5 @@
 package org.bahmni.module.admin.csv.persister;
 
-import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.EntityPersister;
@@ -17,8 +16,11 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncoun
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class EncounterPersister implements EntityPersister<MultipleEncounterRow> {
+    public static final String IMPORT_ID = "IMPORT_ID_";
     @Autowired
     private PatientMatchService patientMatchService;
     @Autowired
@@ -51,35 +53,36 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
         if (StringUtils.isEmpty(multipleEncounterRow.patientIdentifier)) {
             return noMatchingPatients(multipleEncounterRow);
         }
+        synchronized ((IMPORT_ID + multipleEncounterRow.patientIdentifier).intern()) {
+            try {
+                Context.openSession();
+                Context.setUserContext(userContext);
 
-        try {
-            Context.openSession();
-            Context.setUserContext(userContext);
+                Patient patient = patientMatchService.getPatient(patientMatchingAlgorithmClassName, multipleEncounterRow.patientAttributes,
+                        multipleEncounterRow.patientIdentifier, shouldMatchExactPatientId);
+                if (patient == null) {
+                    return noMatchingPatients(multipleEncounterRow);
+                }
 
-            Patient patient = patientMatchService.getPatient(patientMatchingAlgorithmClassName, multipleEncounterRow.patientAttributes,
-                    multipleEncounterRow.patientIdentifier, shouldMatchExactPatientId);
-            if (patient == null) {
-                return noMatchingPatients(multipleEncounterRow);
+                List<BahmniEncounterTransaction> bahmniEncounterTransactions = bahmniEncounterTransactionImportService.getBahmniEncounterTransaction(multipleEncounterRow, patient);
+
+                for (BahmniEncounterTransaction bahmniEncounterTransaction : bahmniEncounterTransactions) {
+                    duplicateObservationService.filter(bahmniEncounterTransaction, patient, multipleEncounterRow.getVisitStartDate(), multipleEncounterRow.getVisitEndDate());
+                }
+
+                for (BahmniEncounterTransaction bahmniEncounterTransaction : bahmniEncounterTransactions) {
+                    bahmniEncounterTransactionService.save(bahmniEncounterTransaction, patient, multipleEncounterRow.getVisitStartDate(), multipleEncounterRow.getVisitEndDate());
+                }
+
+                return new Messages();
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+                Context.clearSession();
+                return new Messages(e);
+            } finally {
+                Context.flushSession();
+                Context.closeSession();
             }
-
-            List<BahmniEncounterTransaction> bahmniEncounterTransactions = bahmniEncounterTransactionImportService.getBahmniEncounterTransaction(multipleEncounterRow, patient);
-
-            for (BahmniEncounterTransaction bahmniEncounterTransaction : bahmniEncounterTransactions) {
-                duplicateObservationService.filter(bahmniEncounterTransaction, patient, multipleEncounterRow.getVisitStartDate(), multipleEncounterRow.getVisitEndDate());
-            }
-
-            for (BahmniEncounterTransaction bahmniEncounterTransaction : bahmniEncounterTransactions) {
-                bahmniEncounterTransactionService.save(bahmniEncounterTransaction, patient, multipleEncounterRow.getVisitStartDate(), multipleEncounterRow.getVisitEndDate());
-            }
-
-            return new Messages();
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            Context.clearSession();
-            return new Messages(e);
-        } finally {
-            Context.flushSession();
-            Context.closeSession();
         }
     }
 

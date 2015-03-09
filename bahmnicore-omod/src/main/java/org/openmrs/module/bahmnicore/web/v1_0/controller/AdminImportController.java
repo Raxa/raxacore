@@ -112,7 +112,7 @@ public class AdminImportController extends BaseRestController {
                 shouldMatchExactPatientId = Boolean.parseBoolean(configuredExactPatientIdMatch);
 
             encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm, shouldMatchExactPatientId);
-            return importCsv(ENCOUNTER_FILES_DIRECTORY, file, encounterPersister, 1, true, MultipleEncounterRow.class);
+            return importCsv(ENCOUNTER_FILES_DIRECTORY, file, encounterPersister, 5, true, MultipleEncounterRow.class);
         } catch (Throwable e) {
             logger.error("Could not upload file", e);
             throw e;
