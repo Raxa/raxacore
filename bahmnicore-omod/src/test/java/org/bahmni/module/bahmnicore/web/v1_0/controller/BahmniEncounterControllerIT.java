@@ -26,6 +26,7 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
+@Ignore
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniEncounterControllerIT extends BaseWebControllerTest {
     @Autowired
