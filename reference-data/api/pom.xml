@@ -43,7 +43,7 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>emrapi-api-1.10</artifactId>
-            <version>1.5-SNAPSHOT</version>
+            <version>${emrapi-omod.version}</version>
         </dependency>
     </dependencies>
 

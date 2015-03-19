@@ -13,10 +13,6 @@
     <name>Bahmni EMR Api</name>
     <packaging>jar</packaging>
 
-    <properties>
-        <emrapi-omod.version>1.5-SNAPSHOT</emrapi-omod.version>
-    </properties>
-    
     <dependencies>
         <dependency>
             <groupId>org.openmrs.module</groupId>

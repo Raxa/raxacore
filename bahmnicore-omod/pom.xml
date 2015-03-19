@@ -17,7 +17,6 @@
         <MODULE_PACKAGE>${project.groupId}.${MODULE_ID}</MODULE_PACKAGE>
 
         <reportingModuleVersion>0.9.1</reportingModuleVersion>
-        <emrapi-omod.version>1.5-SNAPSHOT</emrapi-omod.version>
     </properties>
 
     <dependencies>

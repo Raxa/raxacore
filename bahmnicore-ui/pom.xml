@@ -10,11 +10,6 @@
     <packaging>jar</packaging>
     <name>Bahmnicore-ui</name>
     <url>http://maven.apache.org</url>
-    <properties>
-        <emrapi-omod.version>1.5-SNAPSHOT</emrapi-omod.version>
-    </properties>
-
-
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
