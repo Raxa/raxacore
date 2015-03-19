@@ -12,12 +12,12 @@ VALUES ('emrapi.sqlGet.wardsListDetails',
   pa.city_village                   AS 'Village',
   pa.state_province                 AS 'State',
   admission_provider_name.given_name           AS 'Admission By',
-  cast(ev.encounter_datetime AS CHAR)             AS 'Admission Time',
+  cast(DATE_FORMAT(ev.encounter_datetime , '%d-%m-%Y %H:%i') AS CHAR)  AS 'Admission Time',
   diagnosis.diagnosisConcept AS 'Diagnosis',
   diagnosis.providerName AS 'Diagnosis By',
-  cast(diagnosis.providerDate AS CHAR)  AS 'Diagnosis Time',
+  cast(DATE_FORMAT(diagnosis.providerDate, '%d-%m-%Y %H:%i') AS CHAR)  AS 'Diagnosis Time',
   disposition.providerName AS 'Disposition By',
-  cast(disposition.providerDate AS CHAR)  AS 'Disposition Time'
+  cast(DATE_FORMAT(disposition.providerDate, '%d-%m-%Y %H:%i') AS CHAR)  AS 'Disposition Time'
 FROM bed_location_map blm
   INNER JOIN bed b ON blm.bed_id = b.bed_id
   INNER JOIN bed_patient_assignment_map bpam ON b.bed_id = bpam.bed_id AND date_stopped is NULL
