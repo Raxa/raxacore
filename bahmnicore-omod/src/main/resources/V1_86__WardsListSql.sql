@@ -62,7 +62,7 @@ FROM bed_location_map blm
                                      INNER JOIN concept_name admitConcept ON obs.value_coded = admitConcept.concept_id
                                                                              AND admitConcept.concept_name_type =
                                                                                  'FULLY_SPECIFIED' AND
-                                                                             admitConcept.name = 'Admit Patient'
+                                                                             admitConcept.name = 'Admit Patient' WHERE obs.voided = FALSE 
                                    GROUP BY p.person_id
                                  ) latestDiagnosis
                         ON obs.obs_id = latestDiagnosis.latestObsId AND obs.person_id = latestDiagnosis.person_id
@@ -89,7 +89,7 @@ FROM bed_location_map blm
                                      INNER JOIN concept_reference_map crm ON crm.concept_id = cn.concept_id
                                      INNER JOIN concept_reference_term crt
                                        ON crt.concept_reference_term_id = crm.concept_reference_term_id
-                                   WHERE crt.code IN ('Coded Diagnosis', 'Non-Coded Diagnosis')
+                                   WHERE crt.code IN ('Coded Diagnosis', 'Non-Coded Diagnosis') AND obs.voided = FALSE
                                    GROUP BY p.person_id
                                  ) latestDiagnosis
                         ON obs.obs_id = latestDiagnosis.latestObsId AND obs.person_id = latestDiagnosis.person_id
