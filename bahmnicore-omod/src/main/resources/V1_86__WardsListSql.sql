@@ -19,7 +19,8 @@ VALUES ('emrapi.sqlGet.wardsListDetails',
     diagnosis.diagnosis_provider                                                  AS 'Diagnosis Provider',
     cast(DATE_FORMAT(diagnosis.diagnosis_datetime, '%d %b %y %h:%i %p') AS CHAR)  AS 'Diagnosis Datetime',
     dispositionInfo.providerName                                                  AS 'Disposition By',
-    cast(DATE_FORMAT(dispositionInfo.providerDate, '%d %b %y %h:%i %p') AS CHAR)  AS 'Disposition Time'
+    cast(DATE_FORMAT(dispositionInfo.providerDate, '%d %b %y %h:%i %p') AS CHAR)  AS 'Disposition Time',
+    adtNotes.value_text                                                           AS 'ADT Notes'
 FROM bed_location_map blm
     INNER JOIN bed b ON blm.bed_id = b.bed_id
     INNER JOIN bed_patient_assignment_map bpam ON b.bed_id = bpam.bed_id AND date_stopped IS NULL
@@ -28,6 +29,7 @@ FROM bed_location_map blm
     INNER JOIN person_address pa ON pa.person_id = pv.patient_id
     INNER JOIN (SELECT patient_id, max(encounter_datetime) AS max_encounter_datetime FROM encounter_view WHERE encounter_type_name = 'Admission' GROUP BY patient_id) latestAdmissionEncounter ON pv.patient_id = latestAdmissionEncounter.patient_id
     INNER JOIN encounter_view ev on ev.patient_id = latestAdmissionEncounter.patient_id and ev.encounter_datetime = latestAdmissionEncounter.max_encounter_datetime
+    LEFT OUTER JOIN obs adtNotes on adtNotes.encounter_id = ev.encounter_id and adtNotes.concept_id = (SELECT concept_id from concept_name where name = 'Adt Notes' and concept_name_type = 'FULLY_SPECIFIED')
     LEFT OUTER JOIN encounter_provider ep ON ep.encounter_id = ev.encounter_id
     LEFT OUTER JOIN provider admission_provider ON admission_provider.provider_id = ep.provider_id
     LEFT OUTER JOIN person_name admission_provider_name ON admission_provider_name.person_id = admission_provider.person_id
