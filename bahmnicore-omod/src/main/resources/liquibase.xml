@@ -2825,7 +2825,8 @@
             call add_concept_answer(@disposition_concept_id, @child1_concept_id, 3);
         </sql>
     </changeSet>
-    <changeSet id="bahmni-core-201503101702" author="Sravanthi, Charles" context="rel3">
+    <changeSet id="bahmni-core-201503101702" author="Sravanthi, Charles" context="rel3" runOnChange="true">
+        <validCheckSum>3:266fe2be318d78c143208aef394074bd</validCheckSum>
         <comment>Sql file for getting all wards, beds and related patients info</comment>
         <sqlFile path="V1_86__WardsListSql.sql"/>
     </changeSet>
