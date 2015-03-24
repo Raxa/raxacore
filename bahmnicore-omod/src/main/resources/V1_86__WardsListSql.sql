@@ -13,7 +13,7 @@ VALUES ('emrapi.sqlGet.wardsListDetails',
     admission_provider_name.given_name                                            AS 'Admission By',
     cast(DATE_FORMAT(ev.encounter_datetime, '%d %b %y %h:%i %p') AS CHAR)         AS 'Admission Time',
     diagnosis.diagnosisConcept                                                    AS 'Diagnosis',
-    diagnosis.certainity                                                          AS 'Diagnosis Certainty',
+    diagnosis.certainty                                                          AS 'Diagnosis Certainty',
     diagnosis.diagnosisOrder                                                      AS 'Diagnosis Order',
     diagnosis.status                                                              AS 'Diagnosis Status',
     diagnosis.diagnosis_provider                                                  AS 'Diagnosis Provider',
@@ -54,7 +54,7 @@ FROM bed_location_map blm
             diagnosis.obs_id as obs_id,
             diagnosis.obs_datetime as diagnosis_datetime,
             if(diagnosisConceptName.name is not null, diagnosisConceptName.name, diagnosis.value_text) as diagnosisConcept,
-            certainityConceptName.name as certainity,
+            certaintyConceptName.name as certainty,
             diagnosisOrderConceptName.name as diagnosisOrder,
             diagnosisStatusConceptName.name as status,
             person_name.given_name as diagnosis_provider
@@ -67,8 +67,8 @@ FROM bed_location_map blm
                 LEFT OUTER JOIN encounter_provider ep ON diagnosis.encounter_id = ep.encounter_id
                 LEFT OUTER JOIN provider diagnosis_provider ON diagnosis_provider.provider_id = ep.provider_id
                 LEFT OUTER JOIN person_name ON person_name.person_id = diagnosis_provider.person_id
-            INNER JOIN obs certainity on diagnosis.obs_group_id = certainity.obs_group_id and certainity.concept_id = (select concept_id from concept_name where name = 'Diagnosis Certainty' and concept_name_type='FULLY_SPECIFIED')
-                LEFT OUTER JOIN concept_name certainityConceptName on certainity.value_coded is not null and certainity.value_coded = certainityConceptName.concept_id and certainityConceptName.concept_name_type='FULLY_SPECIFIED'
+            INNER JOIN obs certainty on diagnosis.obs_group_id = certainty.obs_group_id and certainty.concept_id = (select concept_id from concept_name where name = 'Diagnosis Certainty' and concept_name_type='FULLY_SPECIFIED')
+                LEFT OUTER JOIN concept_name certaintyConceptName on certainty.value_coded is not null and certainty.value_coded = certaintyConceptName.concept_id and certaintyConceptName.concept_name_type='FULLY_SPECIFIED'
             INNER JOIN obs diagnosisOrder on diagnosis.obs_group_id = diagnosisOrder.obs_group_id and diagnosisOrder.concept_id = (select concept_id from concept_name where name = 'Diagnosis order' and concept_name_type='FULLY_SPECIFIED')
                 LEFT OUTER JOIN concept_name diagnosisOrderConceptName on diagnosisOrder.value_coded is not null and diagnosisOrder.value_coded = diagnosisOrderConceptName.concept_id and diagnosisOrderConceptName.concept_name_type='FULLY_SPECIFIED'
             INNER JOIN obs diagnosisStatus on diagnosis.obs_group_id = diagnosisStatus.obs_group_id and diagnosisStatus.concept_id = (select concept_id from concept_name where name = 'Bahmni Diagnosis Status' and concept_name_type='FULLY_SPECIFIED')
