@@ -82,8 +82,8 @@ public class ConceptSetMapperTest {
         org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, childConcepts, null, null, null);
         List<org.openmrs.Concept> setMembers = mappedConcept.getSetMembers();
         assertEquals(2, setMembers.size());
-        assertEquals("1", setMembers.get(0).getName(Context.getLocale()).getName());
-        assertEquals("2", setMembers.get(1).getName(Context.getLocale()).getName());
+        assertEquals("2", setMembers.get(0).getName(Context.getLocale()).getName());
+        assertEquals("1", setMembers.get(1).getName(Context.getLocale()).getName());
     }
 
     @Test

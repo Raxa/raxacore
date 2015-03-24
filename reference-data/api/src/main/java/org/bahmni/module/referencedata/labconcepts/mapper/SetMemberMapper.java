@@ -5,14 +5,16 @@ import org.openmrs.ConceptSet;
 import org.openmrs.api.context.Context;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class SetMemberMapper {
 
     public Concept map(Concept concept, List<Concept> childConcepts) {
         removeAllSetMembers(concept);
-        for (Concept childConcept : childConcepts) {
-            addSetMember(concept, childConcept);
+        Collections.reverse(childConcepts);
+        for (int i = 0; i < childConcepts.size(); i++) {
+            addSetMember(concept, childConcepts.get(i), i);
         }
         return concept;
     }
@@ -23,9 +25,9 @@ public class SetMemberMapper {
         concept.setConceptSets(conceptSets);
     }
 
-    private org.openmrs.Concept addSetMember(Concept concept, Concept childConcept) {
+    private org.openmrs.Concept addSetMember(Concept concept, Concept childConcept, Integer sortWeight) {
         if (ifChildExists(concept, childConcept)) return concept;
-        concept.addSetMember(childConcept);
+        concept.addSetMember(childConcept, sortWeight);
         return concept;
     }
 
