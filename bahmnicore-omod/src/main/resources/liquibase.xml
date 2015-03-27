@@ -2829,5 +2829,28 @@
         <comment>Sql file for getting all wards, beds and related patients info</comment>
         <sqlFile path="V1_86__WardsListSql.sql"/>
     </changeSet>
+    <changeSet id="bahmni-core-201503270552" author="Sandeep, Hemanth">
+        <comment>Adding privilege for dispensing drug orders.</comment>
+        <insert tableName="privilege">
+            <column name="privilege" value="bahmni:clinical:dispense"/>
+            <column name="description" value="Bahmni drug order dispensing privilege"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+    <changeSet id="bahmni-core-201503270603" author="Sandeep, Hemanth">
+        <comment>Adding dispensed drug order attribute</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+            set @set_concept_id = 0;
 
+            select concept_id from concept_name where name = 'Order Attributes' and concept_name_type = 'FULLY_SPECIFIED' into @set_concept_id;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Dispensed', 'D', 'Boolean', 'Misc', false);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'Dispensed', '1');
+
+            call add_concept_set_members(@set_concept_id,@concept_id,1);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
