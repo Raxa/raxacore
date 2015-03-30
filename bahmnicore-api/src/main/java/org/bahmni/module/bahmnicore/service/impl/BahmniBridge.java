@@ -1,16 +1,21 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
+import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
+import org.openmrs.DrugOrder;
 import org.openmrs.Obs;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.emrapi.encounter.OrderMapper;
+import org.openmrs.module.emrapi.encounter.mapper.OrderMapper1_10;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -28,7 +33,9 @@ public class BahmniBridge {
     private ObsDao obsDao;
     private PatientService patientService;
     private OrderDao orderDao;
+    private BahmniDrugOrderService bahmniDrugOrderService;
 
+    OrderMapper drugOrderMapper = new OrderMapper1_10();
     /**
      * Factory method to construct objects of <code>BahmniBridge</code>.
      *
@@ -42,10 +49,11 @@ public class BahmniBridge {
     }
 
     @Autowired
-    public BahmniBridge(ObsDao obsDao, PatientService patientService, OrderDao orderDao) {
+    public BahmniBridge(ObsDao obsDao, PatientService patientService, OrderDao orderDao, BahmniDrugOrderService bahmniDrugOrderService) {
         this.obsDao = obsDao;
         this.patientService = patientService;
         this.orderDao = orderDao;
+        this.bahmniDrugOrderService = bahmniDrugOrderService;
     }
 
     /**
@@ -107,5 +115,21 @@ public class BahmniBridge {
      */
     public Collection<EncounterTransaction.DrugOrder> drugOrdersForRegimen(String regimenName) {
         return orderDao.getDrugOrderForRegimen(regimenName);
+    }
+
+    /**
+     * Retrieve active Drug orders for <code>patientUuid<code/>
+     * @return
+     */
+    public List<EncounterTransaction.DrugOrder> activeDrugOrdersForPatient() {
+        List<DrugOrder> activeOpenMRSDrugOrders = bahmniDrugOrderService.getActiveDrugOrders(patientUuid);
+        List<EncounterTransaction.DrugOrder> drugOrders = new ArrayList<>();
+        for(DrugOrder activeOpenMRSDrugOrder : activeOpenMRSDrugOrders){
+            EncounterTransaction.DrugOrder drugOrder = drugOrderMapper.mapDrugOrder(activeOpenMRSDrugOrder);
+            if(drugOrder.getScheduledDate() == null && (drugOrder.getEffectiveStopDate() == null || drugOrder.getEffectiveStopDate().after(new Date()))){
+                drugOrders.add(drugOrder);
+            }
+        }
+        return drugOrders;
     }
 }
