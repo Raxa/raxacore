@@ -12,7 +12,6 @@ public class SetMemberMapper {
 
     public Concept map(Concept concept, List<Concept> childConcepts) {
         removeAllSetMembers(concept);
-        Collections.reverse(childConcepts);
         for (int i = 0; i < childConcepts.size(); i++) {
             addSetMember(concept, childConcepts.get(i), i);
         }
