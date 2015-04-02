@@ -3,6 +3,7 @@ package org.openmrs.module.bahmniemrapi.laborder.contract;
 import lombok.Data;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -60,6 +61,7 @@ public class TabularLabOrderResults {
 
     @Data
     public static class CoordinateValue {
+        private Date accessionDateTime;
         private Integer dateIndex;
         private Integer testOrderIndex;
         private String result;

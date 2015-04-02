@@ -46,6 +46,7 @@ public class LabOrderResults {
                 coordinateValue.setAbnormal(result.getAbnormal());
                 coordinateValue.setReferredOut(result.getReferredOut());
                 coordinateValue.setUploadedFileName(result.getUploadedFileName());
+                coordinateValue.setAccessionDateTime(result.getAccessionDateTime());
                 coordinateValues.add(coordinateValue);
             }
         }
