@@ -3,32 +3,36 @@ DELETE FROM global_property where property = 'emrapi.sqlGet.wardsListDetails';
 INSERT INTO global_property (`property`, `property_value`, `description`, `uuid`)
 VALUES ('emrapi.sqlGet.wardsListDetails',
 "SELECT
-    b.bed_number                                                                  AS 'Bed',
-    pv.name                                                                       AS 'Name',
-    pi.identifier                                                                 AS 'Id',
-    pv.gender                                                                     AS 'Gender',
-    TIMESTAMPDIFF(YEAR, pv.birthdate, CURDATE())                                  AS 'Age',
-    pa.county_district                                                            AS 'County District',
-    pa.city_village                                                               AS 'Village',
-    admission_provider_name.given_name                                            AS 'Admission By',
-    cast(DATE_FORMAT(ev.encounter_datetime, '%d %b %y %h:%i %p') AS CHAR)         AS 'Admission Time',
-    diagnosis.diagnosisConcept                                                    AS 'Diagnosis',
-    diagnosis.certainty                                                          AS 'Diagnosis Certainty',
-    diagnosis.diagnosisOrder                                                      AS 'Diagnosis Order',
-    diagnosis.status                                                              AS 'Diagnosis Status',
-    diagnosis.diagnosis_provider                                                  AS 'Diagnosis Provider',
-    cast(DATE_FORMAT(diagnosis.diagnosis_datetime, '%d %b %y %h:%i %p') AS CHAR)  AS 'Diagnosis Datetime',
-    dispositionInfo.providerName                                                  AS 'Disposition By',
-    cast(DATE_FORMAT(dispositionInfo.providerDate, '%d %b %y %h:%i %p') AS CHAR)  AS 'Disposition Time',
-    adtNotes.value_text                                                           AS 'ADT Notes'
+  b.bed_number                                                                  AS 'Bed',
+  concat(pn.given_name,' ',pn.family_name)                                      AS 'Name',
+  pv.uuid                                                                       AS 'Patient Uuid',
+  pi.identifier                                                                 AS 'Id',
+  pv.gender                                                                     AS 'Gender',
+  TIMESTAMPDIFF(YEAR, pv.birthdate, CURDATE())                                  AS 'Age',
+  pa.county_district                                                            AS 'District',
+  pa.city_village                                                               AS 'Village',
+  admission_provider_name.given_name                                            AS 'Admission By',
+  cast(DATE_FORMAT(ev.encounter_datetime, '%d %b %y %h:%i %p') AS CHAR)         AS 'Admission Time',
+  diagnosis.diagnosisConcept                                                    AS 'Diagnosis',
+  diagnosis.certainty                                                          AS 'Diagnosis Certainty',
+  diagnosis.diagnosisOrder                                                      AS 'Diagnosis Order',
+  diagnosis.status                                                              AS 'Diagnosis Status',
+  diagnosis.diagnosis_provider                                                  AS 'Diagnosis Provider',
+  cast(DATE_FORMAT(diagnosis.diagnosis_datetime, '%d %b %y %h:%i %p') AS CHAR)  AS 'Diagnosis Datetime',
+  dispositionInfo.providerName                                                  AS 'Disposition By',
+  cast(DATE_FORMAT(dispositionInfo.providerDate, '%d %b %y %h:%i %p') AS CHAR)  AS 'Disposition Time',
+  adtNotes.value_text                                                           AS 'ADT Notes',
+  v.uuid                                                                        AS 'Visit Uuid'
 FROM bed_location_map blm
     INNER JOIN bed b ON blm.bed_id = b.bed_id
     INNER JOIN bed_patient_assignment_map bpam ON b.bed_id = bpam.bed_id AND date_stopped IS NULL
-    INNER JOIN patient_view pv ON pv.patient_id = bpam.patient_id
-    INNER JOIN patient_identifier pi ON pv.patient_id = pi.patient_id
-    INNER JOIN person_address pa ON pa.person_id = pv.patient_id
-    INNER JOIN (SELECT patient_id, max(encounter_datetime) AS max_encounter_datetime FROM encounter_view WHERE encounter_type_name = 'Admission' GROUP BY patient_id) latestAdmissionEncounter ON pv.patient_id = latestAdmissionEncounter.patient_id
+    INNER JOIN person pv ON pv.person_id = bpam.patient_id
+    INNER JOIN person_name pn on pn.person_id = pv.person_id
+    INNER JOIN patient_identifier pi ON pv.person_id = pi.patient_id
+    INNER JOIN person_address pa ON pa.person_id = pv.person_id
+    INNER JOIN (SELECT patient_id, max(encounter_datetime) AS max_encounter_datetime FROM encounter_view WHERE encounter_type_name = 'Admission' GROUP BY patient_id) latestAdmissionEncounter ON pv.person_id = latestAdmissionEncounter.patient_id
     INNER JOIN encounter_view ev on ev.patient_id = latestAdmissionEncounter.patient_id and ev.encounter_datetime = latestAdmissionEncounter.max_encounter_datetime
+    INNER JOIN visit v on ev.visit_id = v.visit_id
     LEFT OUTER JOIN obs adtNotes on adtNotes.encounter_id = ev.encounter_id and adtNotes.voided = 0 and adtNotes.concept_id = (SELECT concept_id from concept_name where name = 'Adt Notes' and concept_name_type = 'FULLY_SPECIFIED')
     LEFT OUTER JOIN encounter_provider ep ON ep.encounter_id = ev.encounter_id
     LEFT OUTER JOIN provider admission_provider ON admission_provider.provider_id = ep.provider_id
@@ -47,7 +51,7 @@ FROM bed_location_map blm
             LEFT OUTER JOIN provider disp_provider ON disp_provider.provider_id = ep.provider_id
             LEFT OUTER JOIN person_name ON person_name.person_id = disp_provider.person_id
         where bpam.date_stopped is null
-    ) dispositionInfo on pv.patient_id = dispositionInfo.person_id
+    ) dispositionInfo on pv.person_id = dispositionInfo.person_id
     LEFT OUTER JOIN (
         select
             diagnosis.person_id as person_id,
@@ -74,7 +78,7 @@ FROM bed_location_map blm
             INNER JOIN obs diagnosisStatus on diagnosis.obs_group_id = diagnosisStatus.obs_group_id and diagnosisStatus.voided = 0 and diagnosisStatus.concept_id = (select concept_id from concept_name where name = 'Bahmni Diagnosis Status' and concept_name_type='FULLY_SPECIFIED')
                 LEFT OUTER JOIN concept_name diagnosisStatusConceptName on diagnosisStatus.value_coded is not null and diagnosisStatus.value_coded = diagnosisStatusConceptName.concept_id and diagnosisStatusConceptName.concept_name_type='FULLY_SPECIFIED'
         where bpam.date_stopped is null and diagnosis.concept_id in (select concept_id from concept_name where name in ('Coded Diagnosis', 'Non-Coded Diagnosis') and concept_name_type='FULLY_SPECIFIED')
-    ) diagnosis ON diagnosis.person_id = pv.patient_id
+    ) diagnosis ON diagnosis.person_id = pv.person_id
 WHERE b.status = 'OCCUPIED' AND ev.encounter_type_name = 'ADMISSION' AND blm.location_id = (SELECT location_id FROM location WHERE name =${location_name})",
 'Sql query to get list of wards',
 uuid()
