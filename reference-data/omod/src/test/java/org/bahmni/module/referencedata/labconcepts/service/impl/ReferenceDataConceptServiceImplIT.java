@@ -102,8 +102,8 @@ public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensi
         Concept concept = referenceDataConceptService.saveConcept(conceptSet);
         List<Concept> setMembers = concept.getSetMembers();
         assertEquals(2, setMembers.size());
-        assertEquals("Child1", setMembers.get(1).getName(Context.getLocale()).getName());
-        assertEquals("Child2", setMembers.get(0).getName(Context.getLocale()).getName());
+        assertEquals("Child1", setMembers.get(0).getName(Context.getLocale()).getName());
+        assertEquals("Child2", setMembers.get(1).getName(Context.getLocale()).getName());
         assertEquals(ConceptDatatype.N_A_UUID, concept.getDatatype().getUuid());
     }
 
