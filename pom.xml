@@ -34,7 +34,7 @@
         <reportingModuleVersion>0.9.1</reportingModuleVersion>
         <calculationModuleVersion>1.1</calculationModuleVersion>
         <serializationXstreamModuleVersion>0.2.7</serializationXstreamModuleVersion>
-        <emrapi-omod.version>1.6-SNAPSHOT</emrapi-omod.version>
+        <emrapi-omod.version>1.7-SNAPSHOT</emrapi-omod.version>
     </properties>
 
     <distributionManagement>
