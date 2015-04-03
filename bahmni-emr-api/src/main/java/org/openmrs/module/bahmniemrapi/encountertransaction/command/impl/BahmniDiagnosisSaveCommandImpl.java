@@ -24,10 +24,11 @@ public class BahmniDiagnosisSaveCommandImpl implements EncounterDataPostSaveComm
     protected BahmniDiagnosisHelper bahmniDiagnosisHelper;
 
     @Autowired
-    public BahmniDiagnosisSaveCommandImpl(ObsService obsService, ConceptService conceptService, EncounterService encounterService) {
+    public BahmniDiagnosisSaveCommandImpl(ObsService obsService, ConceptService conceptService, EncounterService encounterService,BahmniDiagnosisHelper bahmniDiagnosisHelper) {
         this.obsService = obsService;
         this.conceptService = conceptService;
         this.encounterService = encounterService;
+        this.bahmniDiagnosisHelper = bahmniDiagnosisHelper;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class BahmniDiagnosisSaveCommandImpl implements EncounterDataPostSaveComm
         //Update the diagnosis information with Meta Data managed by Bahmni
         for (BahmniDiagnosisRequest bahmniDiagnosis : bahmniEncounterTransaction.getBahmniDiagnoses()) {
             EncounterTransaction.Diagnosis diagnosis = getMatchingEncounterTransactionDiagnosis(bahmniDiagnosis, updatedEncounterTransaction.getDiagnoses());
-            getBahmniDiagnosisHelper().updateDiagnosisMetaData(bahmniDiagnosis, diagnosis, currentEncounter);
+            bahmniDiagnosisHelper.updateDiagnosisMetaData(bahmniDiagnosis, diagnosis, currentEncounter);
         }
         encounterService.saveEncounter(currentEncounter);
 
@@ -54,18 +55,11 @@ public class BahmniDiagnosisSaveCommandImpl implements EncounterDataPostSaveComm
             Obs diagnosisObs = obsService.getObsByUuid(previousDiagnosisObs);
             Encounter encounterForDiagnosis = encounterService.getEncounterByUuid(diagnosisObs.getEncounter().getUuid());
             if (!encounterForDiagnosis.equals(currentEncounter)) {
-                getBahmniDiagnosisHelper().markAsRevised(encounterForDiagnosis, diagnosisObs.getUuid());
+                bahmniDiagnosisHelper.markAsRevised(encounterForDiagnosis, diagnosisObs.getUuid());
                 encounterService.saveEncounter(encounterForDiagnosis);
             }
         }
         return updatedEncounterTransaction;
-    }
-
-    private BahmniDiagnosisHelper getBahmniDiagnosisHelper() {
-        if (bahmniDiagnosisHelper == null)
-            bahmniDiagnosisHelper = new BahmniDiagnosisHelper(obsService, conceptService);
-
-        return bahmniDiagnosisHelper;
     }
 
     private EncounterTransaction.Diagnosis getMatchingEncounterTransactionDiagnosis(BahmniDiagnosis bahmniDiagnosis, List<EncounterTransaction.Diagnosis> encounterTransactionDiagnoses) {

@@ -11,6 +11,7 @@ import java.util.UUID;
 public class DiagnosisBuilder {
     public static final String VISIT_DIAGNOSES = "Visit Diagnoses";
     public static final String BAHMNI_INITIAL_DIAGNOSIS = "Bahmni Initial Diagnosis";
+    public static final String BAHMNI_DIAGNOSIS_REVISED = "Bahmni Diagnosis Revised";
 
     private Concept confirmedConcept = new ConceptBuilder().withName("Confirmed", Locale.getDefault()).withClass("Misc").withDataType("N/A").build();
 
@@ -47,6 +48,11 @@ public class DiagnosisBuilder {
         Obs bahmniInitialObs = new ObsBuilder().withConcept(BAHMNI_INITIAL_DIAGNOSIS, Locale.getDefault()).withValue(firstVisitDiagnosisObsUuid).build();
 
         addChildObs(bahmniInitialObs, visitDiagnosesObs);
+        return this;
+    }
+
+    public DiagnosisBuilder withChildObs(Obs childObs){
+        addChildObs(childObs,visitDiagnosesObs);
         return this;
     }
 

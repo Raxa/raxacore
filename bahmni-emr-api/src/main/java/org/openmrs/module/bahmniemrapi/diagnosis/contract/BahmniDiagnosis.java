@@ -8,6 +8,7 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 public class BahmniDiagnosis extends EncounterTransaction.Diagnosis {
     private EncounterTransaction.Concept diagnosisStatusConcept;
     private BahmniDiagnosis firstDiagnosis;
+    private BahmniDiagnosis latestDiagnosis;
     private boolean revised;
     private String comments;
 
@@ -69,5 +70,13 @@ public class BahmniDiagnosis extends EncounterTransaction.Diagnosis {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public BahmniDiagnosis getLatestDiagnosis() {
+        return latestDiagnosis;
+    }
+
+    public void setLatestDiagnosis(BahmniDiagnosis latestDiagnosis) {
+        this.latestDiagnosis = latestDiagnosis;
     }
 }

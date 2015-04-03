@@ -1,30 +1,36 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.service.BahmniDiagnosisService;
+import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.test.builder.DiagnosisBuilder;
 import org.bahmni.test.builder.EncounterBuilder;
 import org.bahmni.test.builder.ObsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
+import org.mockito.*;
+import org.openmrs.*;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ObsService;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.VisitService;
+import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
+import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisHelper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniDiagnosisMapper;
+import org.openmrs.module.emrapi.EmrApiProperties;
+import org.openmrs.module.emrapi.diagnosis.CodedOrFreeTextAnswer;
+import org.openmrs.module.emrapi.diagnosis.Diagnosis;
+import org.openmrs.module.emrapi.diagnosis.DiagnosisMetadata;
+import org.openmrs.module.emrapi.encounter.DiagnosisMapper;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.util.LocaleUtility;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
@@ -36,6 +42,9 @@ public class BahmniDiagnosisServiceTest {
     private EncounterService encounterService;
     @Mock
     private ObsService obsService;
+
+    @Mock
+    private PatientService patientService;
 
     private String initialDiagnosisObsUUID = "initialDiagnosisObsUUID";
     private String modifiedDiagnosisObsUUID = "modifiedDiagnosisObsUUID";
@@ -127,6 +136,61 @@ public class BahmniDiagnosisServiceTest {
         assertVoided(argToCapture.getAllValues().get(0), modifiedDiagnosisObsUUID);
         assertVoided(argToCapture.getAllValues().get(1), initialDiagnosisObsUUID);
         assertVoided(argToCapture.getAllValues().get(2), anotherDiagnosisUuid);
+    }
+
+    @Test
+    public void shouldGetBahmniDiagnosisByPatientAndVisit(){
+
+        Patient patient = mock(Patient.class);
+        VisitService visitService = mock(VisitService.class);
+        Visit visit = mock(Visit.class);
+        BahmniDiagnosisHelper bahmniDiagnosisHelper = mock(BahmniDiagnosisHelper.class);
+        Concept diagnosisSetConcept = new ConceptBuilder().withUUID("uuid").build();
+        Diagnosis mockDiagnosis = mock(Diagnosis.class);
+        BahmniDiagnosisMapper bahmniDiagnosisMapper = mock(BahmniDiagnosisMapper.class);
+        DiagnosisMapper diagnosisMapper = mock(DiagnosisMapper.class);
+
+        EmrApiProperties properties = mock(EmrApiProperties.class, RETURNS_DEEP_STUBS);
+        when(properties.getDiagnosisMetadata().getDiagnosisSetConcept()).thenReturn(diagnosisSetConcept);
+
+
+        when(visitService.getVisitByUuid("visitId")).thenReturn(visit);
+        when(visit.getEncounters()).thenReturn(new HashSet<Encounter>());
+        when(patientService.getPatientByUuid("patientId")).thenReturn(patient);
+
+        Obs diagnosisObs = new DiagnosisBuilder()
+                .withDefaults()
+                .withFirstObs("firstDiagnosisObsId")
+                .withUuid("firstDiagnosisObsId")
+                .build();
+
+
+        when(obsService.getObservations(eq(Arrays.asList((Person) patient)), anyList(), eq(Arrays.asList(diagnosisSetConcept)), anyListOf(Concept.class), anyList(), anyList(), anyList(),
+                anyInt(), anyInt(), Matchers.any(java.util.Date.class), Matchers.any(java.util.Date.class), eq(false)))
+                .thenReturn(Arrays.asList(diagnosisObs));
+        when(bahmniDiagnosisHelper.buildDiagnosisFromObsGroup(diagnosisObs)).thenReturn(mockDiagnosis);
+        EncounterTransaction.Diagnosis etDiagnosis = mock(EncounterTransaction.Diagnosis.class);
+
+        Diagnosis latestDiagnosis = mock(Diagnosis.class);
+        EncounterTransaction.Diagnosis etLatestDiagnosis = mock(EncounterTransaction.Diagnosis.class);
+        when(diagnosisMapper.convert(mockDiagnosis)).thenReturn(etDiagnosis);
+        when(bahmniDiagnosisHelper.getLatestBasedOnAnyDiagnosis(mockDiagnosis)).thenReturn(latestDiagnosis);
+        when(diagnosisMapper.convert(latestDiagnosis)).thenReturn(etLatestDiagnosis);
+
+        BahmniDiagnosisRequest bahmniDiagnosisRequest = mock(BahmniDiagnosisRequest.class);
+        when(bahmniDiagnosisMapper.mapBahmniDiagnosis(etDiagnosis,etLatestDiagnosis,true,false)).thenReturn(bahmniDiagnosisRequest);
+
+        BahmniDiagnosisServiceImpl bahmniDiagnosisService = new BahmniDiagnosisServiceImpl(encounterService, obsService);
+        bahmniDiagnosisService.setEmrApiProperties(properties);
+        bahmniDiagnosisService.setPatientService(patientService);
+        bahmniDiagnosisService.setVisitService(visitService);
+        bahmniDiagnosisService.setBahmniDiagnosisHelper(bahmniDiagnosisHelper);
+        bahmniDiagnosisService.setDiagnosisMapper(diagnosisMapper);
+        bahmniDiagnosisService.setBahmniDiagnosisMapper(bahmniDiagnosisMapper);
+
+        List<BahmniDiagnosisRequest> bahmniDiagnosisRequests = bahmniDiagnosisService.getBahmniDiagnosisByPatientAndVisit("patientId", "visitId");
+        assertEquals(1,bahmniDiagnosisRequests.size());
+        assertEquals(bahmniDiagnosisRequest,bahmniDiagnosisRequests.get(0));
     }
 
     private void setUpModifiedVisitDiagnosis() {

@@ -1,21 +1,57 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.service.BahmniDiagnosisService;
-import org.openmrs.Obs;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.ObsService;
+import org.openmrs.*;
+import org.openmrs.api.*;
+import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
+import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
+import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisHelper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniDiagnosisMapper;
+import org.openmrs.module.emrapi.EmrApiProperties;
+import org.openmrs.module.emrapi.diagnosis.Diagnosis;
+import org.openmrs.module.emrapi.diagnosis.DiagnosisMetadata;
+import org.openmrs.module.emrapi.diagnosis.DiagnosisService;
+import org.openmrs.module.emrapi.encounter.DateMapper;
+import org.openmrs.module.emrapi.encounter.DiagnosisMapper;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 
-import java.util.List;
+import java.util.*;
 
 import static org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisHelper.BAHMNI_INITIAL_DIAGNOSIS;
 
 @Component
 public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
     private EncounterService encounterService;
+
     private ObsService obsService;
+
+    @Autowired
+    private EmrApiProperties emrApiProperties;
+
+    @Autowired
+    private VisitService visitService;
+
+    @Autowired
+    private PatientService patientService;
+
+    @Autowired
+    private DiagnosisMapper diagnosisMapper;
+
+    @Autowired
+    private BahmniDiagnosisMapper bahmniDiagnosisMapper;
+
+    @Autowired
+    private DiagnosisService diagnosisService;
+
+    @Autowired
+    private ConceptService conceptService;
+
+    @Autowired
+    private BahmniDiagnosisHelper bahmniDiagnosisHelper;
 
     @Autowired
     public BahmniDiagnosisServiceImpl(EncounterService encounterService, ObsService obsService) {
@@ -52,6 +88,64 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
         }
     }
 
+
+    private List<Diagnosis> getDiagnosisByPatient(Patient patient, Visit visit){
+        List<Diagnosis> diagnoses = new ArrayList<Diagnosis>();
+
+        List<Obs> observations = obsService.getObservations(Arrays.asList((Person) patient), new ArrayList<Encounter>(visit.getEncounters()), Arrays.asList(emrApiProperties.getDiagnosisMetadata().getDiagnosisSetConcept()),
+                null, null, null, Arrays.asList("obsDatetime"),
+                null, null, null, null, false);
+
+        for (Obs obs : observations) {
+            Diagnosis diagnosis = bahmniDiagnosisHelper.buildDiagnosisFromObsGroup(obs);
+            if(diagnosis != null) {
+                diagnoses.add(diagnosis);
+            }
+        }
+        return diagnoses;
+    }
+
+    public List<BahmniDiagnosisRequest> getBahmniDiagnosisByPatientAndVisit(String patientUuid,String visitUuid){
+        Assert.notNull(visitUuid,"VisitUuid should not be null");
+        Patient patient = patientService.getPatientByUuid(patientUuid);
+        Visit visit = visitService.getVisitByUuid(visitUuid);
+
+        List<Diagnosis> diagnosisByVisit = getDiagnosisByPatient(patient,visit);
+
+        List<BahmniDiagnosisRequest> bahmniDiagnosisRequests = new ArrayList<>();
+
+        for(Diagnosis diagnosis: diagnosisByVisit){
+            EncounterTransaction.Diagnosis etDiagnosis = diagnosisMapper.convert(diagnosis);
+            Diagnosis latestDiagnosis = bahmniDiagnosisHelper.getLatestBasedOnAnyDiagnosis(diagnosis); //buildDiagnosisFromObsGroup(getBahmniDiagnosisHelper().getLatestBasedOnAnyDiagnosis(diagnosis));
+            EncounterTransaction.Diagnosis etLatestDiagnosis = diagnosisMapper.convert(latestDiagnosis);
+
+            BahmniDiagnosisRequest bahmniDiagnosisRequest = bahmniDiagnosisMapper.mapBahmniDiagnosis(etDiagnosis, etLatestDiagnosis, true, false);
+            bahmniDiagnosisRequests.add(bahmniDiagnosisRequest);
+        }
+
+        return bahmniDiagnosisRequests;
+    }
+
+    public List<BahmniDiagnosisRequest> getBahmniDiagnosisByPatientAndDate(String patientUuid, String date){
+        Patient patient = patientService.getPatientByUuid(patientUuid);
+        Date fromDate = new DateMapper().toDate(date);
+
+        List<Diagnosis> diagnosisByPatientAndDate = diagnosisService.getDiagnoses(patient, fromDate);
+
+        List<BahmniDiagnosisRequest> bahmniDiagnosisRequests = new ArrayList<>();
+
+        for(Diagnosis diagnosis: diagnosisByPatientAndDate){
+            EncounterTransaction.Diagnosis etDiagnosis = diagnosisMapper.convert(diagnosis);
+            BahmniDiagnosisRequest bahmniDiagnosisRequest = bahmniDiagnosisMapper.mapBahmniDiagnosis(etDiagnosis, null, true, false);
+
+            if(!bahmniDiagnosisRequest.isRevised()){
+                bahmniDiagnosisRequests.add(bahmniDiagnosisRequest);
+            }
+        }
+
+        return bahmniDiagnosisRequests;
+    }
+
     private void voidDiagnosis(Obs observation) {
         voidObsAndItsChildren(observation);
         encounterService.saveEncounter(observation.getEncounter());
@@ -65,4 +159,33 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
             voidObsAndItsChildren(childObs);
         }
     }
+
+
+    public void setEmrApiProperties(EmrApiProperties emrApiProperties) {
+        this.emrApiProperties = emrApiProperties;
+    }
+
+    public void setVisitService(VisitService visitService) {
+        this.visitService = visitService;
+    }
+
+    public void setPatientService(PatientService patientService) {
+        this.patientService = patientService;
+    }
+
+    public void setBahmniDiagnosisHelper(BahmniDiagnosisHelper bahmniDiagnosisHelper) {
+        this.bahmniDiagnosisHelper = bahmniDiagnosisHelper;
+    }
+
+    public void setDiagnosisMapper(DiagnosisMapper diagnosisMapper) {
+        this.diagnosisMapper = diagnosisMapper;
+    }
+
+    public void setBahmniDiagnosisMapper(BahmniDiagnosisMapper bahmniDiagnosisMapper) {
+        this.bahmniDiagnosisMapper = bahmniDiagnosisMapper;
+    }
+
+
+
+
 }

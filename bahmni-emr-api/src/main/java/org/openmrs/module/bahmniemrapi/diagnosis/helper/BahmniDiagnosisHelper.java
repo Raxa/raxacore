@@ -1,6 +1,5 @@
 package org.openmrs.module.bahmniemrapi.diagnosis.helper;
 
-import com.sun.org.apache.bcel.internal.generic.GOTO;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -8,8 +7,15 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
+import org.openmrs.module.emrapi.EmrApiProperties;
+import org.openmrs.module.emrapi.diagnosis.Diagnosis;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import java.util.*;
+
+@Component
 public class BahmniDiagnosisHelper {
 
     public static final String BAHMNI_DIAGNOSIS_STATUS = "Bahmni Diagnosis Status";
@@ -20,13 +26,17 @@ public class BahmniDiagnosisHelper {
 
     private ConceptService conceptService;
 
+    private EmrApiProperties emrApiProperties;
+
     protected Concept bahmniInitialDiagnosisConcept;
     protected Concept bahmniDiagnosisStatusConcept;
     protected Concept bahmniDiagnosisRevisedConcept;
 
-    public BahmniDiagnosisHelper(ObsService obsService, ConceptService conceptService) {
+    @Autowired
+    public BahmniDiagnosisHelper(ObsService obsService, ConceptService conceptService,EmrApiProperties emrApiProperties) {
         this.obsService = obsService;
         this.conceptService = conceptService;
+        this.emrApiProperties = emrApiProperties;
     }
 
     public void updateDiagnosisMetaData(BahmniDiagnosisRequest bahmniDiagnosis, EncounterTransaction.Diagnosis diagnosis, Encounter encounter) {
@@ -137,4 +147,54 @@ public class BahmniDiagnosisHelper {
         member.setEncounter(obsGroup.getEncounter());
         obsGroup.addGroupMember(member);
     }
+
+    public Diagnosis getLatestBasedOnAnyDiagnosis(Diagnosis diagnosis){
+        Obs obs = getLatestObsGroupBasedOnAnyDiagnosis(diagnosis);
+        if(obs!=null){
+            return buildDiagnosisFromObsGroup(obs);
+        }
+        return null;
+    }
+
+    private Obs getLatestObsGroupBasedOnAnyDiagnosis(Diagnosis diagnosis){
+        String initialDiagnosisUuid = findObs(diagnosis.getExistingObs(),BAHMNI_INITIAL_DIAGNOSIS).getValueText();
+
+        List<Obs> observations = obsService.getObservations(Arrays.asList(diagnosis.getExistingObs().getPerson()), null,
+                Arrays.asList(getBahmniDiagnosisRevisedConcept()),
+                Arrays.asList(conceptService.getFalseConcept()), null, null, null,
+                null, null, null, null, false);
+
+        for(Obs obs: observations){
+            Obs diagnosisObsGroup = obs.getObsGroup();
+            //This is main diagosis group. Now, find the initialDiagnosis.  Also ensure that this is visitDiagnosis??
+            Obs bahmniInitialDiagnosis = findObs(diagnosisObsGroup,BAHMNI_INITIAL_DIAGNOSIS);
+            if(initialDiagnosisUuid.equals(bahmniInitialDiagnosis.getValueText())){
+                return diagnosisObsGroup;
+            }
+        }
+
+        return null;
+    }
+
+    public Diagnosis buildDiagnosisFromObsGroup(Obs diagnosisObsGroup){
+        if(diagnosisObsGroup == null)
+            return null;
+
+        Diagnosis diagnosis = emrApiProperties.getDiagnosisMetadata().toDiagnosis(diagnosisObsGroup);
+
+        Collection<Concept> nonDiagnosisConcepts = emrApiProperties.getSuppressedDiagnosisConcepts();
+        Collection<Concept> nonDiagnosisConceptSets = emrApiProperties.getNonDiagnosisConceptSets();
+
+        Set<Concept> filter = new HashSet<Concept>();
+        filter.addAll(nonDiagnosisConcepts);
+        for (Concept conceptSet : nonDiagnosisConceptSets) {
+            filter.addAll(conceptSet.getSetMembers());
+        }
+
+        if (!filter.contains(diagnosis.getDiagnosis().getCodedAnswer())) {
+            return diagnosis;
+        }
+        return null;
+    }
+
 }

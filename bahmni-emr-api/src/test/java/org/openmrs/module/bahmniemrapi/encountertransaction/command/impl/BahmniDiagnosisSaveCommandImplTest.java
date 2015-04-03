@@ -13,6 +13,7 @@ import org.openmrs.api.ObsService;
 import org.openmrs.module.bahmniemrapi.BahmniEmrAPIException;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
+import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisHelper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
@@ -35,12 +36,15 @@ public class BahmniDiagnosisSaveCommandImplTest {
 
     @Mock
     private EncounterService encounterService;
+
+    @Mock
+    private BahmniDiagnosisHelper bahmniDiagnosisHelper;
     private BahmniDiagnosisSaveCommandImpl bahmniDiagnosisSaveCommand;
 
     @Before
     public void before() {
         initMocks(this);
-        bahmniDiagnosisSaveCommand = new BahmniDiagnosisSaveCommandImpl(obsService, conceptService, encounterService);
+        bahmniDiagnosisSaveCommand = new BahmniDiagnosisSaveCommandImpl(obsService, conceptService, encounterService,bahmniDiagnosisHelper);
 
     }
 

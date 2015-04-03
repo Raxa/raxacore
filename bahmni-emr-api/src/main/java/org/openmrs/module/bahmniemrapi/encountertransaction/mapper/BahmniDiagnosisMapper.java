@@ -27,12 +27,13 @@ public class BahmniDiagnosisMapper {
     public List<BahmniDiagnosisRequest> map(List<EncounterTransaction.Diagnosis> diagnoses, boolean includeAll) {
         List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
         for (EncounterTransaction.Diagnosis diagnosis : diagnoses) {
-            bahmniDiagnoses.add(mapBahmniDiagnosis(diagnosis, true, includeAll));
+            bahmniDiagnoses.add(mapBahmniDiagnosis(diagnosis,null, true, includeAll));
         }
         return bahmniDiagnoses;
     }
 
-    private BahmniDiagnosisRequest mapBahmniDiagnosis(EncounterTransaction.Diagnosis diagnosis, boolean mapFirstDiagnosis, boolean includeAll) {
+    public BahmniDiagnosisRequest mapBahmniDiagnosis(EncounterTransaction.Diagnosis diagnosis, EncounterTransaction.Diagnosis latestDiagnosis,
+                                                     boolean mapFirstDiagnosis, boolean includeAll) {
         BahmniDiagnosisRequest bahmniDiagnosis = mapBasicDiagnosis(diagnosis);
         bahmniDiagnosis.setExistingObs(diagnosis.getExistingObs());
 
@@ -47,12 +48,15 @@ public class BahmniDiagnosisMapper {
             Obs initialDiagnosisObsGroup = obsService.getObsByUuid(findObs(diagnosisObsGroup, BahmniDiagnosisHelper.BAHMNI_INITIAL_DIAGNOSIS).getValueText());
             EncounterTransaction encounterTransactionWithInitialDiagnosis = encounterTransactionMapper.map(initialDiagnosisObsGroup.getEncounter(), includeAll);
             EncounterTransaction.Diagnosis initialDiagnosis = findInitialDiagnosis(encounterTransactionWithInitialDiagnosis, initialDiagnosisObsGroup);
-            bahmniDiagnosis.setFirstDiagnosis(mapBahmniDiagnosis(initialDiagnosis, false, includeAll));
+            bahmniDiagnosis.setFirstDiagnosis(mapBahmniDiagnosis(initialDiagnosis, null, false, includeAll));
+        }
+
+        if(latestDiagnosis!=null){
+            bahmniDiagnosis.setLatestDiagnosis(mapBahmniDiagnosis(latestDiagnosis,null,false,includeAll));
         }
 
         Obs revisedObs = findObs(diagnosisObsGroup, BahmniDiagnosisHelper.BAHMNI_DIAGNOSIS_REVISED);
         bahmniDiagnosis.setRevised(revisedObs.getValueAsBoolean());
-
         bahmniDiagnosis.setComments(diagnosisObsGroup.getComment());
 
         bahmniDiagnosis.setEncounterUuid(diagnosisObsGroup.getEncounter().getUuid());
