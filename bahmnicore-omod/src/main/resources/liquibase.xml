@@ -2853,4 +2853,10 @@
             call add_concept_set_members(@set_concept_id,@concept_id,1);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201504031424" author="Banka, Preethi">
+        <comment>Chaning colume type of property_value in user_property to text</comment>
+        <sql>
+            alter table user_property modify property_value text
+        </sql>
+    </changeSet>
 </databaseChangeLog>
