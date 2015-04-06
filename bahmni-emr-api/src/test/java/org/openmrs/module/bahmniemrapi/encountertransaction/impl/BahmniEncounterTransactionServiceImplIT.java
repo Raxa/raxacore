@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Visit;
+import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
@@ -26,12 +28,15 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContex
 
     @Autowired
     BahmniEncounterTransactionService bahmniEncounterTransactionService;
+    @Autowired
+    VisitService visitService;
 
     @Before
     public void setUp() throws Exception {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("obsRelationshipDataset.xml");
+        executeDataSet("visitAttributeDataSet.xml");
     }
 
     @Test
@@ -55,7 +60,51 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContex
         assertEquals(1, encounterTransaction.getObservations().size());
         assertEquals(bahmniObservation.getValue(), encounterTransaction.getObservations().iterator().next().getValue());
         assertEquals(obsUuid, encounterTransaction.getObservations().iterator().next().getUuid());
+    }
 
+    @Test
+    public void shouldCreateVisitAttributeOfVisitStatusAsEmergencyIfTheVisitTypeIsEmergency(){
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
+        bahmniEncounterTransaction.setEncounterTypeUuid("07000be2-26b6-4cce-8b40-866d8435b613");
+        bahmniEncounterTransaction.setPatientUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+        bahmniEncounterTransaction.setVisitUuid("1e5d5d48-6b78-11e0-93c3-18a905e044cd");
+
+        BahmniEncounterTransaction savedEncounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
+
+        Visit visit = visitService.getVisitByUuid(savedEncounterTransaction.getVisitUuid());
+        assertNotNull(visit);
+        assertEquals(1, visit.getAttributes().size());
+        assertEquals("Emergency", visit.getAttributes().iterator().next().getValue());
+    }
+
+    @Test
+    public void shouldCreateVisitAttributeOfVisitStatusAsOpdIfTheVisitTypeIsOtherThanEmergency(){
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
+        bahmniEncounterTransaction.setEncounterTypeUuid("07000be2-26b6-4cce-8b40-866d8435b613");
+        bahmniEncounterTransaction.setPatientUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+        bahmniEncounterTransaction.setVisitUuid("1e5d5d48-6b78-11e0-93c3-18a905e044ce");
+
+        BahmniEncounterTransaction savedEncounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
+
+        Visit visit = visitService.getVisitByUuid(savedEncounterTransaction.getVisitUuid());
+        assertNotNull(visit);
+        assertEquals(1, visit.getAttributes().size());
+        assertEquals("OPD", visit.getAttributes().iterator().next().getValue());
+    }
+
+    @Test
+    public void shouldCreateVisitAttributeOfVisitStatusAsIpdIfTheEncounterIsOfAdmissionType(){
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
+        bahmniEncounterTransaction.setEncounterTypeUuid("02c533ab-b74b-4ee4-b6e5-ffb6d09a0ad9");
+        bahmniEncounterTransaction.setPatientUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+        bahmniEncounterTransaction.setVisitUuid("1e5d5d48-6b78-11e0-93c3-18a905e044ce");
+
+        BahmniEncounterTransaction savedEncounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
+
+        Visit visit = visitService.getVisitByUuid(savedEncounterTransaction.getVisitUuid());
+        assertNotNull(visit);
+        assertEquals(1, visit.getAttributes().size());
+        assertEquals("IPD", visit.getAttributes().iterator().next().getValue());
     }
 
     @Test
