@@ -2859,4 +2859,12 @@
             alter table user_property modify property_value text
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201504061124" author="Charles, Swathi">
+        <comment>Adding privilege for bi-directional navigation between registration and consultation.</comment>
+        <insert tableName="privilege">
+            <column name="privilege" value="app:common:registration_consultation_link"/>
+            <column name="description" value="Adding Registration to/from Consultation Link"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
