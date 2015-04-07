@@ -5,9 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
-import org.openmrs.Visit;
-import org.openmrs.VisitAttribute;
-import org.openmrs.VisitAttributeType;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
@@ -29,11 +26,6 @@ import java.util.List;
 
 @Transactional
 public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTransactionService {
-    public static final String VISIT_STATUS_ATTRIBUTE_TYPE = "Visit Status";
-    public static final String EMERGENCY_VISIT_TYPE = "Emergency";
-    public static final String OPD_VISIT_TYPE = "OPD";
-    public static final String ADMISSION_ENCOUNTER_TYPE = "ADMISSION";
-    public static final String IPD_VISIT_TYPE = "IPD";
     private EncounterService encounterService;
     private EmrEncounterService emrEncounterService;
     private EncounterTransactionMapper encounterTransactionMapper;
@@ -72,60 +64,12 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         String encounterUuid = encounterTransaction.getEncounterUuid();
         Encounter currentEncounter = encounterService.getEncounterByUuid(encounterUuid);
 
-        Visit updatedVisit = createOrUpdateVisitAttribute(currentEncounter);
-        currentEncounter.setVisit(updatedVisit);
         boolean includeAll = false;
         EncounterTransaction updatedEncounterTransaction = encounterTransactionMapper.map(currentEncounter, includeAll);
         for (EncounterDataPostSaveCommand saveCommand : encounterDataPostSaveCommands) {
             updatedEncounterTransaction = saveCommand.save(bahmniEncounterTransaction,currentEncounter, updatedEncounterTransaction);
         }
         return bahmniEncounterTransactionMapper.map(updatedEncounterTransaction, includeAll);
-    }
-
-    private Visit createOrUpdateVisitAttribute(Encounter currentEncounter) {
-        Visit visit = currentEncounter.getVisit();
-        VisitAttribute visitStatus = findVisitAttribute(visit, VISIT_STATUS_ATTRIBUTE_TYPE);
-
-        if (visitStatus == null) {
-            String value;
-            if (visit.getVisitType().getName().equalsIgnoreCase(EMERGENCY_VISIT_TYPE)) {
-                value = visit.getVisitType().getName();
-            } else {
-                value = OPD_VISIT_TYPE;
-            }
-            visitStatus = createVisitAttribute(visit, value, VISIT_STATUS_ATTRIBUTE_TYPE);
-        }
-        if (currentEncounter.getEncounterType().getName().equalsIgnoreCase(ADMISSION_ENCOUNTER_TYPE)) {
-            visitStatus.setValueReferenceInternal(IPD_VISIT_TYPE);
-        }
-        visit.setAttribute(visitStatus);
-        return visitService.saveVisit(visit);
-    }
-
-    private VisitAttribute createVisitAttribute(Visit visit, String value, String visitAttributeTypeName) {
-        VisitAttribute visitStatus = new VisitAttribute();
-        visitStatus.setVisit(visit);
-        visitStatus.setAttributeType(getVisitAttributeType(visitAttributeTypeName));
-        visitStatus.setValueReferenceInternal(value);
-        return visitStatus;
-    }
-
-    private VisitAttributeType getVisitAttributeType(String visitAttributeTypeName) {
-        for (VisitAttributeType visitAttributeType : visitService.getAllVisitAttributeTypes()) {
-            if (visitAttributeType.getName().equalsIgnoreCase(visitAttributeTypeName)) {
-                return visitAttributeType;
-            }
-        }
-        return null;
-    }
-
-    private VisitAttribute findVisitAttribute(Visit visit, String visitAttributeTypeName) {
-        for (VisitAttribute visitAttribute : visit.getAttributes()) {
-            if (visitAttribute.getAttributeType().getName().equalsIgnoreCase(visitAttributeTypeName)) {
-                return visitAttribute;
-            }
-        }
-        return null;
     }
 
     @Override

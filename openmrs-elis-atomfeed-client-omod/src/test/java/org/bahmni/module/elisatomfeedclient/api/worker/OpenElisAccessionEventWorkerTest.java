@@ -23,6 +23,7 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.VisitService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -46,6 +47,8 @@ public class OpenElisAccessionEventWorkerTest {
     private ConceptService conceptService;
     @Mock
     private ProviderService providerService;
+    @Mock
+    private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
 
     private OpenElisAccessionEventWorker accessionEventWorker;
     private String openElisUrl;
@@ -59,7 +62,7 @@ public class OpenElisAccessionEventWorkerTest {
     public void setUp() {
         initMocks(this);
         accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService,
-                conceptService, accessionMapper, providerService);
+                conceptService, accessionMapper, providerService, bahmniVisitAttributeSaveCommand);
         openElisUrl = "http://localhost:8080";
         event = new Event("id", "/openelis/accession/12-34-56-78", "title", "feedUri");
         when(feedProperties.getOpenElisUri()).thenReturn(openElisUrl);
@@ -79,10 +82,11 @@ public class OpenElisAccessionEventWorkerTest {
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(null).thenReturn(encounter);
         when(accessionMapper.mapToNewEncounter(any(OpenElisAccession.class), any(String.class))).thenReturn(encounter);
         when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class), any(String.class))).thenReturn(visit);
-
+        when(encounterService.saveEncounter(encounter)).thenReturn(encounter);
         accessionEventWorker.process(event);
 
         verify(encounterService).saveEncounter(encounter);
+        verify(bahmniVisitAttributeSaveCommand).save(encounter);
     }
 
     @Test
@@ -100,11 +104,12 @@ public class OpenElisAccessionEventWorkerTest {
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
         when(accessionMapper.addOrVoidOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
         when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class), any(String.class))).thenReturn(visit);
-
+        when(encounterService.saveEncounter(previousEncounter)).thenReturn(previousEncounter);
         accessionEventWorker.process(event);
 
         verify(encounterService, times(2)).getEncounterByUuid(openElisAccession.getAccessionUuid());
         verify(encounterService).saveEncounter(previousEncounter);
+        verify(bahmniVisitAttributeSaveCommand).save(previousEncounter);
     }
 
     @Test
@@ -126,6 +131,7 @@ public class OpenElisAccessionEventWorkerTest {
         previousEncounter.setVisit(visit);
         visit.setEncounters(new HashSet<>(Arrays.asList(previousEncounter)));
         when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class), any(String.class))).thenReturn(visit);
+        when(encounterService.saveEncounter(previousEncounter)).thenReturn(previousEncounter);
 
         accessionEventWorker.process(event);
 
@@ -133,6 +139,7 @@ public class OpenElisAccessionEventWorkerTest {
         verify(accessionMapper, never()).mapToNewEncounter(any(OpenElisAccession.class), any(String.class));
         verify(accessionMapper).addOrVoidOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class));
         verify(encounterService).saveEncounter(previousEncounter);
+        verify(bahmniVisitAttributeSaveCommand).save(previousEncounter);
     }
 
     @Test

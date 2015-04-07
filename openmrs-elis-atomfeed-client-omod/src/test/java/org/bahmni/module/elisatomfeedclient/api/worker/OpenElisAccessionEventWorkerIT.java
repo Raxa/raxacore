@@ -19,6 +19,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,23 +37,25 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
     HttpClient httpClient;
     @Autowired
     private ElisAtomFeedProperties properties;
+    @Autowired
+    private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
     private OpenElisAccessionEventWorker openElisAccessionEventWorker;
     private String openElisUrl = "http://localhost:8080/";
     private Event event = new Event("id", "openelis/accession/12-34-56-78", "title", "feedUri");
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        executeDataSet("labResult.xml");
+        executeDataSet("visitAttributeDataSet.xml");
         MockitoAnnotations.initMocks(this);
         this.openElisAccessionEventWorker = new OpenElisAccessionEventWorker(properties, httpClient,
                 Context.getEncounterService(), Context.getConceptService(), new AccessionHelper(properties),
-                Context.getProviderService()
-        );
+                Context.getProviderService(),
+                bahmniVisitAttributeSaveCommand);
     }
 
     @Test
     public void shouldCreateResultEncounterAndObsForTestWithResultAndOtherValues() throws Exception {
-        executeDataSet("labResult.xml");
-
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
                 .withTestUuid("7923d0e0-8734-11e3-baa7-0800200c9a66")
                 .withResult("10.5")
@@ -92,8 +95,6 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldCreateResultObsWhenTestIsReferredOut() throws Exception {
-        executeDataSet("labResult.xml");
-
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
                 .withTestUuid("7923d0e0-8734-11e3-baa7-0800200c9a66")
                 .withStatus("referred out")
@@ -129,8 +130,6 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldCreateResultEncounterWithSystemProvider() throws Exception {
-        executeDataSet("labResult.xml");
-
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
                 .withTestUuid("7923d0e0-8734-11e3-baa7-0800200c9a66")
                 .withResult("10.5")
@@ -170,8 +169,6 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldCreateResultEncounterAndObsForPanelWithOnetestWithResultAndOtherValues() throws Exception {
-        executeDataSet("labResult.xml");
-
         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
         String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
 
@@ -229,8 +226,6 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldCreateResultEncounterAndObsForPanelWithOnetestWithOnlyUploadedFileName() throws Exception {
-        executeDataSet("labResult.xml");
-
         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
         String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
         final String documentConceptUuid = "a5909c8e-332e-464c-a0d7-ca36828672d6";
@@ -292,9 +287,6 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldCreateResultEncounterAndObsForPanelWithMoreThanOnetestWithResultAndOtherValues() throws Exception {
-        //same provider for both tests in panel
-        executeDataSet("labResult.xml");
-
         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
         String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
         String providerUuid = "331c6bf8-7846-11e3-a96a-09xD371c1b75";
@@ -366,8 +358,6 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldCreateResultEncounterForPanelAndTest() throws Exception {
-        executeDataSet("labResult.xml");
-
         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
         String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
         String providerUuid = "331c6bf8-7846-11e3-a96a-09xD371c1b75";
@@ -437,8 +427,6 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldUpdateValueAndUploadedFileNameForAlreadyExistingTestResult() throws Exception {
-        executeDataSet("labResult.xml");
-
         final String nitroUreaConceptUuid = "7923d0e0-8734-11e3-baa7-0800200c9a66";
         final String accessionUuid = "6d0af4567-707a-4629-9850-f15206e63ab0";
         final String documentConceptUuid = "a5909c8e-332e-464c-a0d7-ca36828672d6";
@@ -517,8 +505,6 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldUpdateResultForPanelWithMultipleTests() throws Exception {
-        //same provider updates all results
-        executeDataSet("labResult.xml");
 
         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
         String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
@@ -622,8 +608,6 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldUpdateResultForPanelWithMultipleTestsWithDiffProviders() throws Exception {
-        executeDataSet("labResult.xml");
-
         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
         String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
         String labTechProviderUuid = "331c6bf8-7846-11e3-a96a-09xD371c1b75";
@@ -741,7 +725,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldNotVoidObsIfTimeDidntChange() throws Exception {
-        executeDataSet("labResult.xml");
+
 
         OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
                 .withTestUuid("7923d0e0-8734-11e3-baa7-0800200c9a66")
@@ -793,7 +777,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldCreateOrderEncounterAndAssociateResultsAndLabNotesForNewAccession() throws Exception {
-        executeDataSet("labResult.xml");
+
+
         EncounterService encounterService = Context.getEncounterService();
 
         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
@@ -885,7 +870,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldUpdateLabNotesForAccession() throws Exception {
-        executeDataSet("labResult.xml");
+
+
         EncounterService encounterService = Context.getEncounterService();
 
         String accessionUuid = "6g0bf6767-707a-4329-9850-f15206e63ab0";
@@ -929,7 +915,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldMatchLabNotesForAccessionWithDefaultProvider() throws Exception {
-        executeDataSet("labResult.xml");
+
+
         EncounterService encounterService = Context.getEncounterService();
 
         String accessionUuid = "6g0bf6767-707a-4329-9850-f15206e63ab0";
@@ -980,7 +967,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldCreateNewLabNotesEncounterForAccessionWithExistingProvider() throws Exception {
-        executeDataSet("labResult.xml");
+
+
         EncounterService encounterService = Context.getEncounterService();
         VisitService visitService = Context.getVisitService();
 
@@ -1029,7 +1017,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldCreateOrderEncounterAndAssociateResultsForNewAccessionWhenTheVisitToOrderEncounterIsClosed() throws Exception {
-        executeDataSet("labResult.xml");
+
+
         EncounterService encounterService = Context.getEncounterService();
 
         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";

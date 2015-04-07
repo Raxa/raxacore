@@ -16,6 +16,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -23,15 +24,17 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Component("openElisPatientFeedClient")
 public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements OpenElisPatientFeedClient {
     private BahmniPatientService bahmniPatientService;
+    private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
     private Logger logger = Logger.getLogger(OpenElisPatientFeedClientImpl.class);
 
 
     @Autowired
     public OpenElisPatientFeedClientImpl(ElisAtomFeedProperties properties,
                                          BahmniPatientService bahmniPatientService,
-                                         PlatformTransactionManager transactionManager) {
+                                         PlatformTransactionManager transactionManager, BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand) {
         super(properties, transactionManager);
         this.bahmniPatientService = bahmniPatientService;
+        this.bahmniVisitAttributeSaveCommand = bahmniVisitAttributeSaveCommand;
     }
 
     @Override
@@ -47,7 +50,7 @@ public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements
 
         OpenElisAccessionEventWorker accessionEventWorker = new OpenElisAccessionEventWorker(properties,
                 authenticatedWebClient, encounterService, conceptService, new AccessionHelper(properties),
-                providerService);
+                providerService, bahmniVisitAttributeSaveCommand);
         return new OpenElisPatientFeedWorker(accessionEventWorker);
     }
 

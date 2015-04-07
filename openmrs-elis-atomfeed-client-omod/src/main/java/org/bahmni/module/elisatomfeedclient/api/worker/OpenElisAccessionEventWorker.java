@@ -23,6 +23,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -48,6 +49,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     private ConceptService conceptService;
     private AccessionHelper accessionMapper;
     private ProviderService providerService;
+    private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
 
     //TODO : add the new service classes to bean initialization
     public OpenElisAccessionEventWorker(ElisAtomFeedProperties atomFeedProperties,
@@ -55,7 +57,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                                         EncounterService encounterService,
                                         ConceptService conceptService,
                                         AccessionHelper accessionMapper,
-                                        ProviderService providerService) {
+                                        ProviderService providerService, BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand) {
 
         this.atomFeedProperties = atomFeedProperties;
         this.httpClient = httpClient;
@@ -63,6 +65,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         this.conceptService = conceptService;
         this.accessionMapper = accessionMapper;
         this.providerService = providerService;
+        this.bahmniVisitAttributeSaveCommand = bahmniVisitAttributeSaveCommand;
         this.encounterHelper = new EncounterHelper(encounterService);
         this.providerHelper = new ProviderHelper(providerService);
     }
@@ -92,7 +95,9 @@ public class OpenElisAccessionEventWorker implements EventWorker {
 
             if (shouldSaveOrderEncounter) {
                 //will save new visit as well
-                encounterService.saveEncounter(orderEncounter);
+                Encounter encounter = encounterService.saveEncounter(orderEncounter);
+                bahmniVisitAttributeSaveCommand.save(encounter);
+
             }
             if (openElisAccession.getAccessionNotes() != null && !openElisAccession.getAccessionNotes().isEmpty()) {
                 processAccessionNotes(openElisAccession, orderEncounter);
