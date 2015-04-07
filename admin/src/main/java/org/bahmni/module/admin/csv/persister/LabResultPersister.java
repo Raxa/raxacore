@@ -5,6 +5,7 @@ import org.bahmni.csv.Messages;
 import org.bahmni.module.admin.csv.models.LabResultRow;
 import org.bahmni.module.admin.csv.models.LabResultsRow;
 import org.bahmni.module.admin.csv.service.PatientMatchService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.openmrs.*;
 import org.openmrs.api.*;
@@ -40,6 +41,8 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
     private VisitIdentificationHelper visitIdentificationHelper;
     @Autowired
     private LabOrderResultMapper labOrderResultMapper;
+    @Autowired
+    private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
     private UserContext userContext;
 
     public void init(UserContext userContext, String patientMatchingAlgorithmClassName, boolean shouldMatchExactPatientId) {
@@ -65,7 +68,8 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
                 encounter.addOrder(testOrder);
                 resultObservations.add(getResultObs(labResultRow, testOrder));
             }
-            encounterService.saveEncounter(encounter);
+            Encounter savedEncounter = encounterService.saveEncounter(encounter);
+            bahmniVisitAttributeSaveCommand.save(savedEncounter);
             saveResults(encounter, resultObservations);
             return new Messages();
         } catch (Exception e) {

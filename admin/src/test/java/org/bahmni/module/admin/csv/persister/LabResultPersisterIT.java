@@ -48,6 +48,7 @@ public class LabResultPersisterIT extends BaseModuleWebContextSensitiveTest {
         executeDataSet("dispositionMetaData.xml");
         executeDataSet("labResultMetaData.xml");
         executeDataSet("labResult.xml");
+        executeDataSet("visitAttributeDataSet.xml");
         Context.authenticate("admin", "test");
         userContext = Context.getUserContext();
         labResultPersister.init(userContext, null, true);
