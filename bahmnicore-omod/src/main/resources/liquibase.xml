@@ -2867,4 +2867,8 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
+    <changeSet id="bahmni-33_update" author="Vikash, Abishek" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_71_PatientSearchSqlUpdate.sql"/>
+    </changeSet>
 </databaseChangeLog>
