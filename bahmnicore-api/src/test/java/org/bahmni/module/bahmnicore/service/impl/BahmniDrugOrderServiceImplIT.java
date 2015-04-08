@@ -41,6 +41,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseModuleWebContextSensitiveT
     public void setUp() throws Exception {
         dateOnly = new SimpleDateFormat("dd.MM.yyyy");
         executeDataSet("drugOrdersTestData.xml");
+        executeDataSet("visitAttributeDataSet.xml");
     }
 
     @Test

@@ -36,6 +36,7 @@ import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniOrderAttribute;
 import org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
@@ -65,6 +66,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private EncounterType consultationEncounterType;
     private String systemUserName;
     private ConceptMapper conceptMapper = new ConceptMapper();
+    private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
 
     private static final String GP_DOSING_INSTRUCTIONS_CONCEPT_UUID = "order.dosingInstructionsConceptUuid";
 
@@ -72,7 +74,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     public BahmniDrugOrderServiceImpl(VisitService visitService, ConceptService conceptService, OrderService orderService,
                                       ProviderService providerService, EncounterService encounterService,
                                       UserService userService, PatientDao patientDao,
-                                      PatientService patientService, OrderDao orderDao) {
+                                      PatientService patientService, OrderDao orderDao, BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand) {
         this.visitService = visitService;
         this.conceptService = conceptService;
         this.orderService = orderService;
@@ -82,6 +84,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         this.patientDao = patientDao;
         this.openmrsPatientService = patientService;
         this.orderDao = orderDao;
+        this.bahmniVisitAttributeSaveCommand = bahmniVisitAttributeSaveCommand;
     }
 
     @Override
@@ -194,10 +197,8 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             systemConsultationEncounter.addOrder(drugOrder);
         }
         visit.addEncounter(systemConsultationEncounter);
-        visitService.saveVisit(visit);
-        for (Encounter encounter : visit.getEncounters()) {
-            encounterService.saveEncounter(encounter);
-        }
+        Encounter savedEncounter = encounterService.saveEncounter(systemConsultationEncounter);
+        bahmniVisitAttributeSaveCommand.save(savedEncounter);
     }
 
     private List<DrugOrder> checkOverlappingOrderAndUpdate(List<DrugOrder> newDrugOrders, String patientUuid, Date orderDate) {
