@@ -25,9 +25,4 @@ public class BahmniVisitServiceImpl implements BahmniVisitService {
     public Visit getVisitSummary(String visitUuid) {
         return visitDao.getVisitSummary(visitUuid);
     }
-
-    @Override
-    public boolean hasAdmissionEncounter(String visitUuid) {
-        return visitDao.hasAdmissionEncounter(visitUuid);
-    }
 }

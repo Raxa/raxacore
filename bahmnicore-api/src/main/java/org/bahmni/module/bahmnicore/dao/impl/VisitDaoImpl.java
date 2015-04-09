@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import org.bahmni.module.bahmnicore.contract.visit.EncounterType;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -41,17 +40,6 @@ public class VisitDaoImpl implements VisitDao {
         Query queryToGetVisitInfo = sessionFactory.getCurrentSession().createQuery(queryString);
         queryToGetVisitInfo.setString("visitUuid", visitUuid);
         return (Visit) queryToGetVisitInfo.uniqueResult();
-    }
-
-    @Override
-    public boolean hasAdmissionEncounter(String visitUuid) {
-        String queryString = "select count(e) from Encounter e, Visit v where e.visit.visitId=v.visitId and v.uuid=:visitUuid " +
-                "and e.encounterType.name=:encounterTypeName";
-        Query queryToGetVisitInfo = sessionFactory.getCurrentSession().createQuery(queryString);
-        queryToGetVisitInfo.setString("visitUuid", visitUuid);
-        queryToGetVisitInfo.setString("encounterTypeName", EncounterType.ADMISSION.getName());
-        Long noOfAdmitEncounters = (Long) queryToGetVisitInfo.uniqueResult();
-        return noOfAdmitEncounters > 0;
     }
 
     @Override

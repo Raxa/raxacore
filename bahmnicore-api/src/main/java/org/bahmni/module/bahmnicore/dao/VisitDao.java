@@ -10,7 +10,5 @@ public interface VisitDao {
 
     Visit getVisitSummary(String visitUuid);
 
-    boolean hasAdmissionEncounter(String visitUuid);
-
     List<Visit> getVisitsByPatient(Patient patient, int numberOfVisits);
 }

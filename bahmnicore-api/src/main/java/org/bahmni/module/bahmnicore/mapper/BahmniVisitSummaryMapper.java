@@ -4,7 +4,7 @@ import org.bahmni.module.bahmnicore.contract.visit.EncounterType;
 import org.bahmni.module.bahmnicore.contract.visit.VisitSummary;
 import org.openmrs.Visit;
 
-public class BahmniVisitInfoMapper {
+public class BahmniVisitSummaryMapper {
     public VisitSummary map(Visit visit, Boolean hasAdmissionEncounter) {
         VisitSummary visitSummary = new VisitSummary();
         visitSummary.setUuid(visit.getUuid());

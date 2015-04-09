@@ -6,6 +6,4 @@ public interface BahmniVisitService {
     public Visit getLatestVisit(String patientUuid, String conceptName);
 
     Visit getVisitSummary(String visitUuid);
-
-    boolean hasAdmissionEncounter(String visitUuid);
 }
