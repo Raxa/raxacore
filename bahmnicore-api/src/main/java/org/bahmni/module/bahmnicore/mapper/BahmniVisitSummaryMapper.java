@@ -30,8 +30,9 @@ public class BahmniVisitSummaryMapper {
                 details.setUuid(encounter.getUuid());
                 details.setDate(encounter.getEncounterDatetime());
                 details.setProvider(encounter.getEncounterProviders().iterator().next().getProvider().getName());
-                details.setNotes(encounter.getAllObs().iterator().next().getValueText());
-
+                if (CollectionUtils.isNotEmpty(encounter.getAllObs())){
+                    details.setNotes(encounter.getAllObs().iterator().next().getValueText());
+                }
                 if (encounter.getEncounterType().getName().equalsIgnoreCase("ADMISSION")) {
                     visitSummary.setAdmissionDetails(details);
                 } else {
