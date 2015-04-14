@@ -2878,4 +2878,13 @@
             VALUES ('Visit Status', 'org.openmrs.customdatatype.datatype.FreeTextDatatype', 1, now(), uuid(), 0);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201504131627" author="Soumya, Charles">
+        <comment>Adding Close Visit Privilege</comment>
+        <insert tableName="privilege">
+            <column name="privilege" value="app:common:closeVisit"/>
+            <column name="description" value="Adding close visit privilege"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>
