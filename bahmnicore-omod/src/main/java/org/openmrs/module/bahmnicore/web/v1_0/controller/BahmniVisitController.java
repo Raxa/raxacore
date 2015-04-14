@@ -3,6 +3,7 @@ package org.openmrs.module.bahmnicore.web.v1_0.controller;
 import org.bahmni.module.bahmnicore.contract.visit.VisitSummary;
 import org.bahmni.module.bahmnicore.mapper.BahmniVisitSummaryMapper;
 import org.bahmni.module.bahmnicore.service.BahmniVisitService;
+import org.openmrs.Encounter;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.VisitService;
@@ -12,6 +13,9 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestControlle
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/visit")
@@ -32,8 +36,8 @@ public class BahmniVisitController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.POST, value = "endVisit")
     @ResponseBody
-    public Visit endVisitNow(@RequestParam(value = "visitId") Integer visitId) {
-        Visit visit = Context.getVisitService().getVisit(visitId);
+    public Visit endVisitNow(@RequestParam(value = "visitUuid") String visitUuid) {
+        Visit visit = Context.getVisitService().getVisitByUuid(visitUuid);
         return visitService.endVisit(visit, null);
     }
 
@@ -42,13 +46,13 @@ public class BahmniVisitController extends BaseRestController {
     public VisitSummary getVisitInfo(@RequestParam(value = "visitUuid") String visitUuid) {
         Visit visit = bahmniVisitService.getVisitSummary(visitUuid);
         if (visit != null) {
-            boolean hasAdmissionEncounter = false;
+            List<Encounter> admitAndDischargeEncounters = null;
             for (VisitAttribute visitAttribute : visit.getAttributes()) {
                 if (VISIT_STATUS_ATTRIBUTE_TYPE.equalsIgnoreCase(visitAttribute.getAttributeType().getName()) && IPD_VISIT_STATUS.equalsIgnoreCase(visitAttribute.getValueReference())) {
-                    hasAdmissionEncounter = true;
+                    admitAndDischargeEncounters = bahmniVisitService.getAdmitAndDischargeEncounters(visit.getId());
                 }
             }
-            return bahmniVisitSummaryMapper.map(visit, hasAdmissionEncounter);
+            return bahmniVisitSummaryMapper.map(visit, admitAndDischargeEncounters);
         }
         return null;
     }

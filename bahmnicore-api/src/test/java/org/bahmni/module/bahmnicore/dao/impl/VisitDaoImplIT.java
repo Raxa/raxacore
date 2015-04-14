@@ -5,6 +5,7 @@ import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -46,4 +47,9 @@ public class VisitDaoImplIT extends BaseContextSensitiveTest {
         assertEquals(901, visits.get(0).getVisitId().intValue());
     }
 
+    @Test
+    public void shouldNotGetVoidedEncounter() throws Exception {
+        List<Encounter> admitAndDischargeEncounters = visitDao.getAdmitAndDischargeEncounters(902);
+        assertEquals(1, admitAndDischargeEncounters.size());
+    }
 }

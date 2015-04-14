@@ -37,26 +37,34 @@ public class BahmniVisitControllerIT extends BaseWebControllerTest {
     }
 
     @Test
-    public void hasBeenAdmittedShouldBeTrueIfTheVisitStatusIsIPD() throws Exception {
+    public void shouldGetAdmissionDetailsAndDischargeDetailsIfVisitStatusIsIPD() throws Exception {
         VisitSummary visitSummary = bahmniVisitController.getVisitInfo("1e5d5d48-6b78-11e0-933c-18a905e044cd");
 
         assertNotNull(visitSummary);
-        assertTrue("hasBeenAdmitted should be true", visitSummary.getHasBeenAdmitted());
+        assertNotNull(visitSummary.getAdmissionDetails());
+        assertEquals("bb0af6767-707a-4629-9850-f15206e63ab0", visitSummary.getAdmissionDetails().getUuid());
+        assertEquals("2005-01-01 00:00:00.0", visitSummary.getAdmissionDetails().getDate().toString());
+
+        assertNotNull(visitSummary.getDischargeDetails());
+        assertEquals("bb0af6767-707a-4629-9850-f15206e63a0b", visitSummary.getDischargeDetails().getUuid());
+        assertEquals("2005-01-04 00:00:00.0", visitSummary.getDischargeDetails().getDate().toString());
     }
 
     @Test
-    public void hasBeenAdmittedShouldBeFalseIfTheVisitStatusIsOPD() throws Exception {
+    public void shouldNotGetAdmissionDetailsOrDischargeDetailsIfTheVisitStatusIsOPD() throws Exception {
         VisitSummary visitSummary = bahmniVisitController.getVisitInfo("1e5d5d48-6b78-11e0-988c-18a905e044cd");
 
         assertNotNull(visitSummary);
-        assertFalse("hasBeenAdmitted should be false", visitSummary.getHasBeenAdmitted());
+        assertNull(visitSummary.getAdmissionDetails());
+        assertNull(visitSummary.getDischargeDetails());
     }
 
     @Test
-    public void hasBeenAdmittedShouldBeFalseIfTheVisitStatusIsEmergency() throws Exception {
+    public void shouldNotGetAdmissionDetailsOrDischargeDetailsIfTheVisitStatusIsEmergency() throws Exception {
         VisitSummary visitSummary = bahmniVisitController.getVisitInfo("1e5d5d48-6b78-11e0-988c-18a905e033cd");
 
         assertNotNull(visitSummary);
-        assertFalse("hasBeenAdmitted should be false", visitSummary.getHasBeenAdmitted());
+        assertNull(visitSummary.getAdmissionDetails());
+        assertNull(visitSummary.getDischargeDetails());
     }
 }

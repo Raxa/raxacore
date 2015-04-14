@@ -6,6 +6,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +43,18 @@ public class VisitDaoImpl implements VisitDao {
         return (Visit) queryToGetVisitInfo.uniqueResult();
     }
 
+
     @Override
-    public List<Visit> getVisitsByPatient(Patient patient, int numberOfVisits){
-        if(patient == null || numberOfVisits<=0){
+    public List<Encounter> getAdmitAndDischargeEncounters(Integer visitId) {
+        String queryString = "select e from Encounter e where e.visit.id = :visitId and e.voided=false and e.encounterType.name in ('ADMISSION', 'DISCHARGE')";
+        Query queryToGetVisitInfo = sessionFactory.getCurrentSession().createQuery(queryString);
+        queryToGetVisitInfo.setInteger("visitId", visitId);
+        return (List<Encounter>) queryToGetVisitInfo.list();
+    }
+
+    @Override
+    public List<Visit> getVisitsByPatient(Patient patient, int numberOfVisits) {
+        if (patient == null || numberOfVisits <= 0) {
             return new ArrayList<>();
         }
 

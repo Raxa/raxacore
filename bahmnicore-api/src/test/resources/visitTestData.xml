@@ -39,4 +39,7 @@
     <encounter encounter_id="40" encounter_type="1" patient_id="1024" visit_id="902" location_id="1" encounter_datetime="2008-08-16 00:00:00.0" creator="1" date_created="2008-08-16 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63ab1"/>
     <obs obs_id="1" concept_id="19021" person_id="1024" encounter_id="40" obs_datetime="2008-08-16 15:09:05.0" date_created="2008-08-16 15:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9be" creator="1" voided="0" />
 
+    <encounter_type encounter_type_id="2" name="ADMISSION" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-78873ada74e4"/>
+    <encounter encounter_id="41" encounter_type="2" patient_id="1024" visit_id="902" location_id="1" encounter_datetime="2008-08-16 00:00:00.0" creator="1" date_created="2008-08-16 14:09:05.0" voided="true" uuid="bb0af6767-707a-4629-9850-f15207863ab1"/>
+    <encounter encounter_id="42" encounter_type="2" patient_id="1024" visit_id="902" location_id="1" encounter_datetime="2008-08-16 00:00:00.0" creator="1" date_created="2008-08-16 14:09:05.0" voided="false" uuid="bb0af6767-777a-4629-9850-f15207863ab1"/>
 </dataset>
