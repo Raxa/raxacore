@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicoreui.helper;
 
-import org.bahmni.module.bahmnicoreui.contract.ConceptDetails;
+import org.bahmni.module.bahmnimetadata.contract.ConceptDetails;
+import org.bahmni.module.bahmnimetadata.helper.ConceptHelper;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.test.builder.ConceptNumericBuilder;
 import org.junit.Before;

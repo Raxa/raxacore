@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicoreui.contract;
 
 import org.apache.commons.collections.MapUtils;
+import org.bahmni.module.bahmnimetadata.contract.ConceptValue;
 
 import java.util.HashMap;
 import java.util.Map;

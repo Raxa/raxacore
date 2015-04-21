@@ -1,5 +1,8 @@
 package org.bahmni.module.bahmnicoreui.contract;
 
+import org.bahmni.module.bahmnimetadata.contract.ConceptDetails;
+import org.bahmni.module.bahmnimetadata.contract.ConceptValue;
+
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;

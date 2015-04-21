@@ -1,6 +1,6 @@
-package org.bahmni.module.bahmnicoreui.helper;
+package org.bahmni.module.bahmnimetadata.helper;
 
-import org.bahmni.module.bahmnicoreui.contract.ConceptDetails;
+import org.bahmni.module.bahmnimetadata.contract.ConceptDetails;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptNumeric;

@@ -1,5 +1,7 @@
 package org.bahmni.module.bahmnicoreui.contract;
 
+import org.bahmni.module.bahmnimetadata.contract.ConceptDetails;
+import org.bahmni.module.bahmnimetadata.contract.ConceptValue;
 import org.junit.Test;
 
 import java.util.*;

@@ -7,6 +7,7 @@ import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
 import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryObsMapper;
+import org.bahmni.module.bahmnimetadata.helper.ConceptHelper;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.api.ConceptService;

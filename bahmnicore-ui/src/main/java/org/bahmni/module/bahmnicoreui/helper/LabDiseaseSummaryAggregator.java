@@ -2,10 +2,11 @@ package org.bahmni.module.bahmnicoreui.helper;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.service.OrderService;
-import org.bahmni.module.bahmnicoreui.contract.ConceptDetails;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
 import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryLabMapper;
+import org.bahmni.module.bahmnimetadata.contract.ConceptDetails;
+import org.bahmni.module.bahmnimetadata.helper.ConceptHelper;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.Visit;

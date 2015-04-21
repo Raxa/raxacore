@@ -21,6 +21,7 @@
         <module>obs-relation</module>
         <module>bahmni-test-commons</module>
         <module>bahmnicore-ui</module>
+        <module>bahmni-metadata</module>
     </modules>
 
     <properties>
