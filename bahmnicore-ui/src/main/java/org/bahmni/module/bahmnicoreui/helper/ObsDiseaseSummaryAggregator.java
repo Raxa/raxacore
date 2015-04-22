@@ -10,7 +10,6 @@ import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryObsMapper;
 import org.bahmni.module.bahmnimetadata.helper.ConceptHelper;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
-import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,9 +26,9 @@ public class ObsDiseaseSummaryAggregator {
     private final DiseaseSummaryObsMapper diseaseSummaryObsMapper = new DiseaseSummaryObsMapper();
 
     @Autowired
-    public ObsDiseaseSummaryAggregator(ConceptService conceptService, BahmniObsService bahmniObsService) {
+    public ObsDiseaseSummaryAggregator(ConceptHelper conceptHelper, BahmniObsService bahmniObsService) {
         this.bahmniObsService = bahmniObsService;
-        this.conceptHelper = new ConceptHelper(conceptService);
+        this.conceptHelper = conceptHelper;
     }
 
     public DiseaseSummaryData aggregate(Patient patient, DiseaseDataParams queryParams) {

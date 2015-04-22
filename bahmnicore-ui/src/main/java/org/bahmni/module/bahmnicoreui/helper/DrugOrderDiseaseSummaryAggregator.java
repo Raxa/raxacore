@@ -1,7 +1,6 @@
 package org.bahmni.module.bahmnicoreui.helper;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
@@ -12,12 +11,10 @@ import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
-import org.openmrs.api.ConceptService;
 import org.openmrs.api.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,11 +28,11 @@ public class DrugOrderDiseaseSummaryAggregator {
     private final DiseaseSummaryDrugOrderMapper diseaseSummaryDrugOrderMapper = new DiseaseSummaryDrugOrderMapper();
 
     @Autowired
-    public DrugOrderDiseaseSummaryAggregator(ConceptService conceptService, VisitService visitService, BahmniDrugOrderService drugOrderService, OrderService orderService) {
+    public DrugOrderDiseaseSummaryAggregator(ConceptHelper conceptHelper, VisitService visitService, BahmniDrugOrderService drugOrderService, OrderService orderService) {
         this.visitService = visitService;
         this.drugOrderService = drugOrderService;
         this.orderService = orderService;
-        this.conceptHelper = new ConceptHelper(conceptService);
+        this.conceptHelper = conceptHelper;
     }
 
     public DiseaseSummaryData aggregate(Patient patient, DiseaseDataParams diseaseDataParams) {

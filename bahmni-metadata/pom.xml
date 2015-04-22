@@ -26,6 +26,19 @@
             <artifactId>bahmni-emr-api</artifactId>
             <version>5.5-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.openmrs.test</groupId>
+            <artifactId>openmrs-test</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bahmni.test</groupId>
+            <artifactId>bahmni-test-commons</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+            <type>test-jar</type>
+        </dependency>
     </dependencies>
 
 </project>

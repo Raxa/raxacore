@@ -10,7 +10,6 @@ import org.bahmni.module.bahmnimetadata.helper.ConceptHelper;
 import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
-import org.openmrs.api.ConceptService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
 import org.openmrs.module.bahmniemrapi.laborder.service.LabOrderResultsService;
@@ -31,11 +30,11 @@ public class LabDiseaseSummaryAggregator {
 
 
     @Autowired
-    public LabDiseaseSummaryAggregator(ConceptService conceptService, LabOrderResultsService labOrderResultsService, OrderService orderService, VisitService visitService) {
+    public LabDiseaseSummaryAggregator(ConceptHelper conceptHelper, LabOrderResultsService labOrderResultsService, OrderService orderService, VisitService visitService) {
         this.labOrderResultsService = labOrderResultsService;
         this.orderService = orderService;
         this.visitService = visitService;
-        this.conceptHelper = new ConceptHelper(conceptService);
+        this.conceptHelper = conceptHelper;
     }
 
     public DiseaseSummaryData aggregate(Patient patient, DiseaseDataParams diseaseDataParams) {

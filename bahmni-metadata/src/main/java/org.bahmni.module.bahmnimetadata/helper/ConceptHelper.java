@@ -9,14 +9,17 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
 import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
-
+@Component
 public  class ConceptHelper {
 
 
     private ConceptService conceptService;
 
+    @Autowired
     public ConceptHelper(ConceptService conceptService) {
         this.conceptService = conceptService;
     }
