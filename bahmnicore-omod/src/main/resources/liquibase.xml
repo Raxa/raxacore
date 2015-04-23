@@ -2886,5 +2886,14 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
-
+    <changeSet id="bahmni-core-201504231857" author="Charles, JP">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege = 'app:orders'</sqlCheck>
+        </preConditions>
+        <insert tableName="privilege">
+            <column name="privilege" value="app:orders"/>
+            <column name="description" value="Bahmni Orders App Access Privilege"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
