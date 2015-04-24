@@ -45,6 +45,11 @@
             <artifactId>emrapi-api-1.10</artifactId>
             <version>${emrapi-omod.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
+            <artifactId>bahmni-emr-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

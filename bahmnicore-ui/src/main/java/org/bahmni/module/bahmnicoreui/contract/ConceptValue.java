@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnimetadata.contract;
+package org.bahmni.module.bahmnicoreui.contract;
 
 public class ConceptValue {
     private String value;

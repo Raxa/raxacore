@@ -1,10 +1,12 @@
 package org.bahmni.module.bahmnicoreui.contract;
 
-import org.bahmni.module.bahmnimetadata.contract.ConceptDetails;
-import org.bahmni.module.bahmnimetadata.contract.ConceptValue;
+import org.bahmni.module.referencedata.contract.ConceptDetails;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 import static java.util.AbstractMap.SimpleEntry;
 import static org.junit.Assert.assertEquals;

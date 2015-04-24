@@ -2,7 +2,7 @@ package org.bahmni.module.bahmnicoreui.mapper;
 
 import junit.framework.Assert;
 import org.bahmni.module.bahmnicoreui.constant.DiseaseSummaryConstants;
-import org.bahmni.module.bahmnimetadata.contract.ConceptValue;
+import org.bahmni.module.bahmnicoreui.contract.ConceptValue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

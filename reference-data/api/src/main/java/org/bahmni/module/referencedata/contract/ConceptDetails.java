@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnimetadata.contract;
+package org.bahmni.module.referencedata.contract;
 
 public class ConceptDetails {
     private String name;

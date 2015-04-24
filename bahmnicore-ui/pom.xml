@@ -78,7 +78,7 @@
         </dependency>
         <dependency>
             <groupId>org.bahmni.module</groupId>
-            <artifactId>bahmni-metadata</artifactId>
+            <artifactId>reference-data-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

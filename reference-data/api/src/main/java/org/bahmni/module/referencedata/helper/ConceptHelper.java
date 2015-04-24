@@ -1,7 +1,7 @@
-package org.bahmni.module.bahmnimetadata.helper;
+package org.bahmni.module.referencedata.helper;
 
-import org.bahmni.module.bahmnimetadata.contract.ConceptDetails;
 import org.openmrs.Concept;
+import org.bahmni.module.referencedata.contract.ConceptDetails;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.api.ConceptNameType;
@@ -13,10 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+
 @Component
 public  class ConceptHelper {
-
-
     private ConceptService conceptService;
 
     @Autowired

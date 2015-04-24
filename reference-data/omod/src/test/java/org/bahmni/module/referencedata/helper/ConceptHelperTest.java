@@ -1,6 +1,7 @@
-package org.bahmni.module.bahmnimetadata.helper;
+package org.bahmni.module.referencedata.helper;
 
-import org.bahmni.module.bahmnimetadata.contract.ConceptDetails;
+
+import org.bahmni.module.referencedata.contract.ConceptDetails;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.test.builder.ConceptNumericBuilder;
 import org.junit.Before;
@@ -14,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -91,7 +92,6 @@ public class ConceptHelperTest {
     }
 
 
-
     @Test
     public void shouldGetConceptDetailsFromConceptList() {
         List<String> conceptNames = Arrays.asList("Height", "Weight");
@@ -104,8 +104,8 @@ public class ConceptHelperTest {
         Set<ConceptDetails> conceptDetailsList = conceptHelper.getConceptDetails(conceptNames);
 
 
-        assertEquals(2,conceptDetailsList.size());
-        Iterator<ConceptDetails> iterator =  conceptDetailsList.iterator();
+        assertEquals(2, conceptDetailsList.size());
+        Iterator<ConceptDetails> iterator = conceptDetailsList.iterator();
         ConceptDetails heightConceptDetails = iterator.next();
         assertEquals("Height", heightConceptDetails.getName());
         assertEquals("Cms", heightConceptDetails.getUnits());

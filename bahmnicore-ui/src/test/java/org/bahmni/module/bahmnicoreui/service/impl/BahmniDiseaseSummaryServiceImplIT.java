@@ -1,25 +1,20 @@
 package org.bahmni.module.bahmnicoreui.service.impl;
 
+import org.bahmni.module.bahmnicoreui.contract.ConceptValue;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
 import org.bahmni.module.bahmnicoreui.helper.DrugOrderDiseaseSummaryAggregator;
 import org.bahmni.module.bahmnicoreui.helper.LabDiseaseSummaryAggregator;
 import org.bahmni.module.bahmnicoreui.helper.ObsDiseaseSummaryAggregator;
-import org.bahmni.module.bahmnimetadata.contract.ConceptDetails;
-import org.bahmni.module.bahmnimetadata.contract.ConceptValue;
+import org.bahmni.module.referencedata.contract.ConceptDetails;
 import org.junit.Test;
 import org.openmrs.api.PatientService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
-
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiveTest {
 
