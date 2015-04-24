@@ -14,6 +14,7 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
+import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisHelper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniDiagnosisMapper;
@@ -177,8 +178,11 @@ public class BahmniDiagnosisServiceTest {
         when(bahmniDiagnosisHelper.getLatestBasedOnAnyDiagnosis(mockDiagnosis)).thenReturn(latestDiagnosis);
         when(diagnosisMapper.convert(latestDiagnosis)).thenReturn(etLatestDiagnosis);
 
-        BahmniDiagnosisRequest bahmniDiagnosisRequest = mock(BahmniDiagnosisRequest.class);
-        when(bahmniDiagnosisMapper.mapBahmniDiagnosis(etDiagnosis,etLatestDiagnosis,true,false)).thenReturn(bahmniDiagnosisRequest);
+        BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
+        BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
+        bahmniDiagnosis.setExistingObs("existing");
+        bahmniDiagnosisRequest.setFirstDiagnosis(bahmniDiagnosis);
+        when(bahmniDiagnosisMapper.mapBahmniDiagnosis(etDiagnosis, etLatestDiagnosis, true, false)).thenReturn(bahmniDiagnosisRequest);
 
         BahmniDiagnosisServiceImpl bahmniDiagnosisService = new BahmniDiagnosisServiceImpl(encounterService, obsService);
         bahmniDiagnosisService.setEmrApiProperties(properties);

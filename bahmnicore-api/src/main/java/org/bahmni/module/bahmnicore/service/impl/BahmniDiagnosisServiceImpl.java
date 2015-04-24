@@ -3,13 +3,11 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.bahmni.module.bahmnicore.service.BahmniDiagnosisService;
 import org.openmrs.*;
 import org.openmrs.api.*;
-import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisHelper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniDiagnosisMapper;
 import org.openmrs.module.emrapi.EmrApiProperties;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
-import org.openmrs.module.emrapi.diagnosis.DiagnosisMetadata;
 import org.openmrs.module.emrapi.diagnosis.DiagnosisService;
 import org.openmrs.module.emrapi.encounter.DateMapper;
 import org.openmrs.module.emrapi.encounter.DiagnosisMapper;
@@ -92,7 +90,8 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
     private List<Diagnosis> getDiagnosisByPatient(Patient patient, Visit visit){
         List<Diagnosis> diagnoses = new ArrayList<Diagnosis>();
 
-        List<Obs> observations = obsService.getObservations(Arrays.asList((Person) patient), new ArrayList<Encounter>(visit.getEncounters()), Arrays.asList(emrApiProperties.getDiagnosisMetadata().getDiagnosisSetConcept()),
+        List<Obs> observations = obsService.getObservations(Arrays.asList((Person) patient), new ArrayList<Encounter>(visit.getEncounters()),
+                Arrays.asList(emrApiProperties.getDiagnosisMetadata().getDiagnosisSetConcept()),
                 null, null, null, Arrays.asList("obsDatetime"),
                 null, null, null, null, false);
 
@@ -105,6 +104,28 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
         return diagnoses;
     }
 
+    private void addDiagnosisToCollectionIfRecent(List<BahmniDiagnosisRequest> bahmniDiagnosisRequests, BahmniDiagnosisRequest bahmniDiagnosisRequestNew){
+        String existingObsForNewDiag = bahmniDiagnosisRequestNew.getFirstDiagnosis().getExistingObs();
+        Iterator<BahmniDiagnosisRequest> bahmniIterator = bahmniDiagnosisRequests.iterator();
+        boolean addFlag = true;
+        while (bahmniIterator.hasNext()) {
+            BahmniDiagnosisRequest bahmniDiagnosisRequestFromList = bahmniIterator.next();
+            String existingObsOfDiagFromList = bahmniDiagnosisRequestFromList.getFirstDiagnosis().getExistingObs();
+            if(existingObsOfDiagFromList.equals(existingObsForNewDiag)) {
+                if (bahmniDiagnosisRequestFromList.getDiagnosisDateTime().getTime() > bahmniDiagnosisRequestFromList.getDiagnosisDateTime().getTime()) {
+                    bahmniIterator.remove();
+                    break;
+                } else {
+                    addFlag = false;
+                    break;
+                }
+            }
+        }
+        if(addFlag){
+            bahmniDiagnosisRequests.add(bahmniDiagnosisRequestNew);
+        }
+    }
+
     public List<BahmniDiagnosisRequest> getBahmniDiagnosisByPatientAndVisit(String patientUuid,String visitUuid){
         Assert.notNull(visitUuid,"VisitUuid should not be null");
         Patient patient = patientService.getPatientByUuid(patientUuid);
@@ -115,12 +136,11 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
         List<BahmniDiagnosisRequest> bahmniDiagnosisRequests = new ArrayList<>();
 
         for(Diagnosis diagnosis: diagnosisByVisit){
+
             EncounterTransaction.Diagnosis etDiagnosis = diagnosisMapper.convert(diagnosis);
             Diagnosis latestDiagnosis = bahmniDiagnosisHelper.getLatestBasedOnAnyDiagnosis(diagnosis); //buildDiagnosisFromObsGroup(getBahmniDiagnosisHelper().getLatestBasedOnAnyDiagnosis(diagnosis));
             EncounterTransaction.Diagnosis etLatestDiagnosis = diagnosisMapper.convert(latestDiagnosis);
-
-            BahmniDiagnosisRequest bahmniDiagnosisRequest = bahmniDiagnosisMapper.mapBahmniDiagnosis(etDiagnosis, etLatestDiagnosis, true, false);
-            bahmniDiagnosisRequests.add(bahmniDiagnosisRequest);
+            addDiagnosisToCollectionIfRecent(bahmniDiagnosisRequests, bahmniDiagnosisMapper.mapBahmniDiagnosis(etDiagnosis, etLatestDiagnosis, true, false));
         }
 
         return bahmniDiagnosisRequests;
