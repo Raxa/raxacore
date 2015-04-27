@@ -42,7 +42,7 @@ public class ConceptsController extends BaseRestController {
     @RequestMapping(value = "/leafConcepts", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<Set<ConceptDetails>> getLeafConcepts(@RequestParam(value = "conceptName", required = true) String conceptName) {
-        Set<ConceptDetails> leafConceptDetails = conceptHelper.getLeafConceptDetails(Arrays.asList(conceptName));
+        Set<ConceptDetails> leafConceptDetails = conceptHelper.getLeafConceptDetails(Arrays.asList(conceptName), true);
         return  new ResponseEntity<>(leafConceptDetails, HttpStatus.OK);
     }
 }

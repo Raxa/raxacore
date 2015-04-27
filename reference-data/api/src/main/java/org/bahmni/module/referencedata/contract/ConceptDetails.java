@@ -2,6 +2,7 @@ package org.bahmni.module.referencedata.contract;
 
 public class ConceptDetails {
     private String name;
+    private String fullName;
     private String units;
     private Double hiNormal;
     private Double lowNormal;
@@ -56,5 +57,13 @@ public class ConceptDetails {
 
     public void setLowNormal(Double lowNormal) {
         this.lowNormal = lowNormal;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }

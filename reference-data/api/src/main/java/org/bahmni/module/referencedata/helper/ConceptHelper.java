@@ -37,28 +37,28 @@ public  class ConceptHelper {
         return concepts;
     }
 
-    public Set<ConceptDetails> getLeafConceptDetails(List<String> obsConcepts) {
+    public Set<ConceptDetails> getLeafConceptDetails(List<String> obsConcepts, boolean withoutAttributes) {
         if(obsConcepts != null && !obsConcepts.isEmpty()){
             Set<ConceptDetails> leafConcepts = new LinkedHashSet<>();
             for (String conceptName : obsConcepts) {
                 Concept concept = conceptService.getConceptByName(conceptName);
-                addLeafConcepts(concept, null, leafConcepts);
+                addLeafConcepts(concept, null, leafConcepts, withoutAttributes);
             }
             return leafConcepts;
         }
         return Collections.EMPTY_SET;
     }
 
-    protected void addLeafConcepts(Concept rootConcept, Concept parentConcept, Set<ConceptDetails> leafConcepts) {
+    protected void addLeafConcepts(Concept rootConcept, Concept parentConcept, Set<ConceptDetails> leafConcepts, boolean withoutAttributes) {
         if(rootConcept != null){
             if(rootConcept.isSet()){
                 for (Concept setMember : rootConcept.getSetMembers()) {
-                    addLeafConcepts(setMember,rootConcept,leafConcepts);
+                    addLeafConcepts(setMember,rootConcept,leafConcepts, withoutAttributes);
                 }
             }
             else if(!shouldBeExcluded(rootConcept)){
                 Concept conceptToAdd = rootConcept;
-                if(parentConcept != null){
+                if(parentConcept != null && ! withoutAttributes){
                     if(ETObsToBahmniObsMapper.CONCEPT_DETAILS_CONCEPT_CLASS.equals(parentConcept.getConceptClass().getName())){
                         conceptToAdd = parentConcept;
                     }
@@ -75,6 +75,7 @@ public  class ConceptHelper {
         String shortName = getConceptName(concept, ConceptNameType.SHORT);
         ConceptDetails conceptDetails = new ConceptDetails();
         conceptDetails.setName(shortName == null ? fullName : shortName);
+        conceptDetails.setFullName(fullName);
         if (concept.isNumeric()){
             ConceptNumeric numericConcept = (ConceptNumeric) concept;
             conceptDetails.setUnits(numericConcept.getUnits());

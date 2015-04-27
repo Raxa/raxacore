@@ -25,6 +25,9 @@ public class ConceptHelperTest {
 
     private ConceptHelper conceptHelper;
 
+    private boolean withoutAttributes = false;
+
+
     @Before
     public void setUp() throws Exception {
         initMocks(this);
@@ -40,7 +43,7 @@ public class ConceptHelperTest {
         vitalsConcept.setSet(true);
         when(conceptService.getConceptByName("Vitals")).thenReturn(vitalsConcept);
 
-        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(obsConcepts);
+        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(obsConcepts, withoutAttributes);
 
         assertEquals(2, leafConceptNames.size());
         Iterator<ConceptDetails> leafConceptIterator = leafConceptNames.iterator();
@@ -57,7 +60,7 @@ public class ConceptHelperTest {
         vitalsConcept.setSet(true);
         when(conceptService.getConceptByName("Vitals")).thenReturn(vitalsConcept);
 
-        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(obsConcepts);
+        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(obsConcepts, withoutAttributes);
 
         assertEquals(2, leafConceptNames.size());
         Iterator<ConceptDetails> leafConceptIterator = leafConceptNames.iterator();
@@ -76,7 +79,7 @@ public class ConceptHelperTest {
         vitalsConcept.setSet(true);
         when(conceptService.getConceptByName("Vitals")).thenReturn(vitalsConcept);
 
-        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(obsConcepts);
+        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(obsConcepts, withoutAttributes);
 
         assertEquals(2, leafConceptNames.size());
         Iterator<ConceptDetails> leafConceptIterator = leafConceptNames.iterator();
