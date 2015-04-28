@@ -10,6 +10,7 @@ import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest
 import org.openmrs.module.emrapi.EmrApiProperties;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -50,24 +51,30 @@ public class BahmniDiagnosisHelper {
     }
 
     private Concept getBahmniDiagnosisRevisedConcept() {
-        if (bahmniDiagnosisRevisedConcept == null)
+        if (bahmniDiagnosisRevisedConcept == null) {
             bahmniDiagnosisRevisedConcept = conceptService.getConceptByName(BAHMNI_DIAGNOSIS_REVISED);
+            bahmniDiagnosisRevisedConcept = new HibernateLazyLoader().load(bahmniDiagnosisRevisedConcept);
+        }
 
         return bahmniDiagnosisRevisedConcept;
     }
 
     private Concept getBahmniDiagnosisStatusConcept() {
-        if (bahmniDiagnosisStatusConcept == null)
+        if (bahmniDiagnosisStatusConcept == null) {
             bahmniDiagnosisStatusConcept = conceptService.getConceptByName(BAHMNI_DIAGNOSIS_STATUS);
+            bahmniDiagnosisStatusConcept = new HibernateLazyLoader().load(bahmniDiagnosisStatusConcept);
+        }
 
         return bahmniDiagnosisStatusConcept;
     }
 
     private Concept getBahmniInitialDiagnosisConcept() {
-        if (bahmniInitialDiagnosisConcept == null)
+        if (bahmniInitialDiagnosisConcept == null) {
             bahmniInitialDiagnosisConcept = conceptService.getConceptByName(BAHMNI_INITIAL_DIAGNOSIS);
+            bahmniInitialDiagnosisConcept = new HibernateLazyLoader().load(bahmniInitialDiagnosisConcept);
+        }
 
-        return bahmniInitialDiagnosisConcept = conceptService.getConceptByName(BAHMNI_INITIAL_DIAGNOSIS);
+        return bahmniInitialDiagnosisConcept;
     }
 
     private void updateFirstDiagnosis(Obs diagnosisObs, BahmniDiagnosisRequest bahmniDiagnosis, Concept bahmniInitialDiagnosis) {
