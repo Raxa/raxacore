@@ -31,23 +31,13 @@ public class DrugEvent implements ConceptServiceOperationEvent {
         return asList("saveDrug", "purgeDrug");
     }
 
-    private boolean isDrug(Object argument) {
-        try{
-            Drug drug = (Drug) argument;
-            Concept drugConcept = drug.getConcept();
-            return drugConcept.getConceptClass().getUuid().equals(ConceptClass.DRUG_UUID);
-        } catch (Exception e){
-            return false;
-        }
-    }
-
     private boolean isValid(Object[] arguments) {
         return arguments != null && arguments.length > 0;
     }
 
     @Override
     public Boolean isApplicable(String operation, Object[] arguments) {
-        return this.operations().contains(operation) && isValid(arguments) && isDrug(arguments[0]);
+        return this.operations().contains(operation) && isValid(arguments) && arguments[0] instanceof Drug;
     }
 
     @Override
