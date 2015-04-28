@@ -49,6 +49,7 @@
             <groupId>org.bahmni.module</groupId>
             <artifactId>bahmni-emr-api</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
