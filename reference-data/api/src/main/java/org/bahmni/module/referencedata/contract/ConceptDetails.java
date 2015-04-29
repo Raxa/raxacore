@@ -33,7 +33,7 @@ public class ConceptDetails {
 
         ConceptDetails that = (ConceptDetails) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (fullName != null ? !fullName.equals(that.fullName) : that.fullName != null) return false;
 
         return true;
     }
