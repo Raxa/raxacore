@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class BahmniVisitAttributeSaveCommandImpl implements EncounterDataPostSaveCommand {
     public static final String VISIT_STATUS_ATTRIBUTE_TYPE = "Visit Status";
-    public static final String EMERGENCY_VISIT_TYPE = "Emergency";
     public static final String OPD_VISIT_TYPE = "OPD";
     public static final String ADMISSION_ENCOUNTER_TYPE = "ADMISSION";
     public static final String IPD_VISIT_TYPE = "IPD";
@@ -41,13 +40,7 @@ public class BahmniVisitAttributeSaveCommandImpl implements EncounterDataPostSav
         VisitAttribute visitStatus = findVisitAttribute(visit, VISIT_STATUS_ATTRIBUTE_TYPE);
 
         if (visitStatus == null) {
-            String value;
-            if (visit.getVisitType().getName().equalsIgnoreCase(EMERGENCY_VISIT_TYPE)) {
-                value = visit.getVisitType().getName();
-            } else {
-                value = OPD_VISIT_TYPE;
-            }
-            visitStatus = createVisitAttribute(visit, value, VISIT_STATUS_ATTRIBUTE_TYPE);
+            visitStatus = createVisitAttribute(visit, OPD_VISIT_TYPE, VISIT_STATUS_ATTRIBUTE_TYPE);
         }
         if (currentEncounter.getEncounterType().getName().equalsIgnoreCase(ADMISSION_ENCOUNTER_TYPE)) {
             visitStatus.setValueReferenceInternal(IPD_VISIT_TYPE);
