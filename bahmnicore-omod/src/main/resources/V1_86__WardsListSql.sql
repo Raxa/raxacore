@@ -79,7 +79,7 @@ FROM bed_location_map blm
                 LEFT OUTER JOIN concept_name diagnosisStatusConceptName on diagnosisStatus.value_coded is not null and diagnosisStatus.value_coded = diagnosisStatusConceptName.concept_id and diagnosisStatusConceptName.concept_name_type='FULLY_SPECIFIED'
         where bpam.date_stopped is null and diagnosis.concept_id in (select concept_id from concept_name where name in ('Coded Diagnosis', 'Non-Coded Diagnosis') and concept_name_type='FULLY_SPECIFIED')
     ) diagnosis ON diagnosis.person_id = pv.person_id
-WHERE b.status = 'OCCUPIED' AND ev.encounter_type_name = 'ADMISSION' AND blm.location_id = (SELECT location_id FROM location WHERE name =${location_name})",
+WHERE b.status = 'OCCUPIED' AND ev.encounter_type_name = 'ADMISSION' AND blm.location_id in (SELECT child_location.location_id FROM location child_location join location parent_location on parent_location.location_id = child_location.parent_location WHERE parent_location.name =${location_name})",
 'Sql query to get list of wards',
 uuid()
 );

@@ -63,22 +63,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContex
     }
 
     @Test
-    public void shouldCreateVisitAttributeOfVisitStatusAsEmergencyIfTheVisitTypeIsEmergency(){
-        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-        bahmniEncounterTransaction.setEncounterTypeUuid("07000be2-26b6-4cce-8b40-866d8435b613");
-        bahmniEncounterTransaction.setPatientUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
-        bahmniEncounterTransaction.setVisitUuid("1e5d5d48-6b78-11e0-93c3-18a905e044cd");
-
-        BahmniEncounterTransaction savedEncounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
-
-        Visit visit = visitService.getVisitByUuid(savedEncounterTransaction.getVisitUuid());
-        assertNotNull(visit);
-        assertEquals(1, visit.getAttributes().size());
-        assertEquals("Emergency", visit.getAttributes().iterator().next().getValue());
-    }
-
-    @Test
-    public void shouldCreateVisitAttributeOfVisitStatusAsOpdIfTheVisitTypeIsOtherThanEmergency(){
+    public void shouldCreateVisitAttributeOfVisitStatusAsOpdIfTheIrrespectiveOfVisitType(){
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         bahmniEncounterTransaction.setEncounterTypeUuid("07000be2-26b6-4cce-8b40-866d8435b613");
         bahmniEncounterTransaction.setPatientUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
