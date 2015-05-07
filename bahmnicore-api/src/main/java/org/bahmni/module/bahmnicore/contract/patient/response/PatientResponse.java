@@ -14,7 +14,7 @@ public class PatientResponse {
     private Date birthDate;
     private Date deathDate;
     private String identifier;
-    private String cityVillage;
+    private String addressFieldValue;
     private String givenName;
     private String middleName;
     private String familyName;

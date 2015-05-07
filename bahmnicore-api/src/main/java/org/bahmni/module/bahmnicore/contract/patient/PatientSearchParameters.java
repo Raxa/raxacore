@@ -9,7 +9,8 @@ import java.util.Map;
 public class PatientSearchParameters {
     private String identifier;
     private String name;
-    private String cityVillage;
+    private String addressFieldName;
+    private String addressFieldValue;
     private Integer start;
     private Integer length;
     private String localName;
@@ -25,7 +26,8 @@ public class PatientSearchParameters {
         this.setStart(context.getStartIndex());
         this.setLength(context.getLimit());
         this.setLocalName(context.getParameter("local_name"));
-        this.setCityVillage(context.getParameter("city_village"));
+        this.setAddressFieldName(context.getParameter("address_field_name"));
+        this.setAddressFieldValue(context.getParameter("address_field_value"));
         Map parameterMap = context.getRequest().getParameterMap();
         this.patientAttributes = (String[]) parameterMap.get("patientAttributes");
     }

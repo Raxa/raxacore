@@ -28,9 +28,8 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    @Ignore
     public void shouldSearchByPatientIdentifier() {
-        List<PatientResponse> patients = patientDao.getPatients("GAN200001", "", null, "", 100, 0, null);
+        List<PatientResponse> patients = patientDao.getPatients("GAN200001", "", null, "city_village", "", 100, 0, null);
         assertEquals(1, patients.size());
         PatientResponse patient = patients.get(0);
         assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
@@ -39,16 +38,15 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
         assertEquals("Sinha", patient.getFamilyName());
         assertEquals("M", patient.getGender());
         assertEquals("1983-01-30", patient.getBirthDate().toString());
-        assertEquals("Ramgarh", patient.getCityVillage());
+        assertEquals("Ramgarh", patient.getAddressFieldValue());
         assertEquals("2008-08-15 15:57:09.0", patient.getDateCreated().toString());
         assertEquals(null, patient.getDeathDate());
     }
 
     @Test
-    @Ignore
     public void shouldSearchByName() {
 
-        List<PatientResponse> patients = patientDao.getPatients("", "Horatio", null, "", 100, 0, null);
+        List<PatientResponse> patients = patientDao.getPatients("", "Horatio", null, "city_village", "", 100, 0, null);
 
         assertEquals(2, patients.size());
         PatientResponse patient1 = patients.get(0);
@@ -63,9 +61,8 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    @Ignore
     public void shouldSearchAcrossFirstNameAndLastName() {
-        List<PatientResponse> patients = patientDao.getPatients("", "Horati Sinha", null, "", 100, 0, null);
+        List<PatientResponse> patients = patientDao.getPatients("", "Horati Sinha", null, "city_village", "", 100, 0, null);
 
         assertEquals(1, patients.size());
         PatientResponse patient1 = patients.get(0);
@@ -75,9 +72,8 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    @Ignore
     public void shouldSearchByVillage() {
-        List<PatientResponse> patients = patientDao.getPatients("", "", null, "Ramgarh", 100, 0, null);
+        List<PatientResponse> patients = patientDao.getPatients("", "", null, "city_village", "Ramgarh", 100, 0, null);
         assertEquals(1, patients.size());
         PatientResponse patient = patients.get(0);
         assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
@@ -86,15 +82,14 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
         assertEquals("Sinha", patient.getFamilyName());
         assertEquals("M", patient.getGender());
         assertEquals("1983-01-30", patient.getBirthDate().toString());
-        assertEquals("Ramgarh", patient.getCityVillage());
+        assertEquals("Ramgarh", patient.getAddressFieldValue());
         assertEquals("2008-08-15 15:57:09.0", patient.getDateCreated().toString());
         assertEquals(null, patient.getDeathDate());
     }
 
     @Test
-    @Ignore
     public void shouldSearchByNameAndVillage() {
-        List<PatientResponse> patients = patientDao.getPatients("", "Sin", null, "Ramgarh", 100, 0, null);
+        List<PatientResponse> patients = patientDao.getPatients("", "Sin", null, "city_village", "Ramgarh", 100, 0, null);
         assertEquals(1, patients.size());
         PatientResponse patient = patients.get(0);
         assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
@@ -102,35 +97,32 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
         assertEquals("Horatio", patient.getGivenName());
         assertEquals("Sinha", patient.getFamilyName());
         assertEquals("M", patient.getGender());
-        assertEquals("1983-01-30", patient.getBirthDate().toString());
-        assertEquals("Ramgarh", patient.getCityVillage());
+
+        assertEquals("Ramgarh", patient.getAddressFieldValue());
         assertEquals("2008-08-15 15:57:09.0", patient.getDateCreated().toString());
         assertEquals(null, patient.getDeathDate());
     }
 
     @Test
-    @Ignore
     public void shouldSortResultsByCreationDate() {
-        List<PatientResponse> patients = patientDao.getPatients("", "Sinha", null, "", 100, 0, null);
+        List<PatientResponse> patients = patientDao.getPatients("", "Sinha", null, "city_village", "", 100, 0, null);
         assertEquals(2, patients.size());
         assertEquals("Sinha", patients.get(0).getFamilyName());
         assertEquals("Sinha", patients.get(0).getFamilyName());
     }
 
     @Test
-    @Ignore
     public void shouldReturnResultAfterGivenOffset() throws Exception {
-        List<PatientResponse> patients = patientDao.getPatients("", "Sinha", null, "", 100, 1, null);
+        List<PatientResponse> patients = patientDao.getPatients("", "Sinha", null, "city_village", "", 100, 1, null);
         assertEquals(1, patients.size());
 
-        patients = patientDao.getPatients("", "Sinha", null, "", 100, 2, null);
+        patients = patientDao.getPatients("", "Sinha", null, "city_village", "", 100, 2, null);
         assertEquals(0, patients.size());
     }
 
     @Test
-    @Ignore
     public void shouldFetchBasedOnLocalName() throws Exception {
-        List<PatientResponse> patients = patientDao.getPatients("", "", "testCaste1", null, 100, 0, null);
+        List<PatientResponse> patients = patientDao.getPatients("", "", "testCaste1", "city_village", null, 100, 0, null);
         assertEquals(1, patients.size());
     }
 
@@ -138,7 +130,8 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     @Ignore
     public void shouldFetchBasedOnPatientAttributeTypes() throws Exception {
         String[] patientAttributes = { "caste"};
-        List<PatientResponse> patients = patientDao.getPatients("", "", "testCaste1", null, 100, 0, patientAttributes);
+        List<PatientResponse> patients = patientDao.getPatients("", "", "Chethan", "city_village", null, 100, 0, patientAttributes);
+
         assertEquals(1, patients.size());
         assertEquals("", patients.get(0).getLocalName());
     }
