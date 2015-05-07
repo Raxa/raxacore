@@ -7,11 +7,12 @@ import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
+import org.openmrs.module.bahmniemrapi.encountertransaction.utils.DateUtil;
 
 import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BahmniEncounterTransaction{
+public class BahmniEncounterTransaction {
 
     private EncounterTransaction encounterTransaction = new EncounterTransaction();
 
@@ -137,7 +138,7 @@ public class BahmniEncounterTransaction{
         return new TreeSet<>(observations);
     }
 
-    public void setObservations(Collection<BahmniObservation> observations){
+    public void setObservations(Collection<BahmniObservation> observations) {
         for (BahmniObservation observation : observations) {
             observation.setEncounterDateTime(getEncounterDateTime());
         }
@@ -209,7 +210,7 @@ public class BahmniEncounterTransaction{
         return visitType;
     }
 
-    public EncounterTransaction toEncounterTransaction(){
+    public EncounterTransaction toEncounterTransaction() {
         encounterTransaction.setObservations(BahmniObservation.toETObsFromBahmniObs(this.observations));
         return encounterTransaction;
     }
@@ -271,5 +272,8 @@ public class BahmniEncounterTransaction{
         }
     }
 
+    public static boolean isRetrospectiveEntry(Date encounterDateTime) {
+        return encounterDateTime != null && DateUtil.isBefore(encounterDateTime, new Date());
+    }
 }
 

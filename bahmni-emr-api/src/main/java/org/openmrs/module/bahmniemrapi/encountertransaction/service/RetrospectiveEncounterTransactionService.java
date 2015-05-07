@@ -21,7 +21,7 @@ public class RetrospectiveEncounterTransactionService {
     }
 
     public BahmniEncounterTransaction updatePastEncounters(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
-        if (bahmniEncounterTransaction.getEncounterDateTime() == null || !isBefore(bahmniEncounterTransaction.getEncounterDateTime(), new Date())) {
+        if (!BahmniEncounterTransaction.isRetrospectiveEntry(bahmniEncounterTransaction.getEncounterDateTime())) {
             return bahmniEncounterTransaction;
         }
 

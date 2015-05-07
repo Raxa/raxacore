@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.module.bahmniemrapi.builder.EncounterBuilder;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmnimapping.services.BahmniLocationService;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 
@@ -19,9 +20,11 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 public class EncounterSessionMatcherTest {
     @Mock
@@ -223,6 +226,21 @@ public class EncounterSessionMatcherTest {
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
 
         assertEquals(encounter3, encounterReturned);
+    }
+
+    @Test
+    public void shouldNotCareForSessionIfTheDataIsRetrospective(){
+        when(encounter.getProvider()).thenReturn(person);
+        when(encounter.getEncounterType()).thenReturn(encounterType);
+        when(encounter.getLocation()).thenReturn(location);
+        when(encounter.getEncounterDatetime()).thenReturn(DateUtils.addDays(new Date(), -10));
+        visit.addEncounter(encounter);
+
+        EncounterParameters encounterParameters = getEncounterParameters(providers, location);
+        encounterParameters.setEncounterDateTime(DateUtils.addDays(new Date(), -10));
+
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
+        assertNotNull(encounterReturned);
     }
 
     private EncounterParameters getEncounterParameters(Set<Provider> providers, Location location) {

@@ -1,11 +1,13 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.matcher;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.joda.time.DateTime;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmnimapping.services.BahmniLocationService;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 import java.util.Date;
-
 
 @Component
 public class EncounterSessionMatcher implements BaseEncounterMatcher {
@@ -43,11 +44,18 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
 
         if (visit.getEncounters() != null) {
             for (Encounter encounter : visit.getEncounters()) {
-                if (!encounter.isVoided() &&  (encounterType == null || encounterType.equals(encounter.getEncounterType()))) {
-                    Date encounterDateChanged = encounter.getDateChanged() == null ? encounter.getDateCreated() : encounter.getDateChanged();
-                    if (!isCurrentSessionTimeExpired(encounterDateChanged) && isSameProvider(provider, encounter) && areSameEncounterDates(encounter, encounterParameters))
-                        if (locationNotDefined(encounterParameters, encounter) || isSameLocation(encounterParameters, encounter))
-                            return encounter;
+                if (!encounter.isVoided() && (encounterType == null || encounterType.equals(encounter.getEncounterType()))) {
+                    if (BahmniEncounterTransaction.isRetrospectiveEntry(encounterParameters.getEncounterDateTime())) {
+                        if (isSameProvider(provider, encounter) && areSameEncounterDates(encounter, encounterParameters)) {
+                            if (locationNotDefined(encounterParameters, encounter) || isSameLocation(encounterParameters, encounter))
+                                return encounter;
+                        }
+                    } else {
+                        Date encounterDateChanged = encounter.getDateChanged() == null ? encounter.getDateCreated() : encounter.getDateChanged();
+                        if (!isCurrentSessionTimeExpired(encounterDateChanged) && isSameProvider(provider, encounter) && areSameEncounterDates(encounter, encounterParameters))
+                            if (locationNotDefined(encounterParameters, encounter) || isSameLocation(encounterParameters, encounter))
+                                return encounter;
+                    }
                 }
             }
         }
