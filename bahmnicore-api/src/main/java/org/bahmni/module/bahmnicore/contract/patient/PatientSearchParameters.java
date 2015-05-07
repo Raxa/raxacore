@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.contract.patient;
 
 import lombok.Data;
+import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 
 import java.util.Map;
@@ -26,7 +27,12 @@ public class PatientSearchParameters {
         this.setStart(context.getStartIndex());
         this.setLength(context.getLimit());
         this.setLocalName(context.getParameter("local_name"));
-        this.setAddressFieldName(context.getParameter("address_field_name"));
+        String addressFieldNameFromRequest = context.getParameter("address_field_name");
+        if  (StringUtils.isNotEmpty(addressFieldNameFromRequest)){
+            this.setAddressFieldName(addressFieldNameFromRequest);
+        } else {
+            this.setAddressFieldName("city_village");
+        }
         this.setAddressFieldValue(context.getParameter("address_field_value"));
         Map parameterMap = context.getRequest().getParameterMap();
         this.patientAttributes = (String[]) parameterMap.get("patientAttributes");

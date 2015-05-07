@@ -130,7 +130,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
     @Ignore
     public void shouldFetchBasedOnPatientAttributeTypes() throws Exception {
         String[] patientAttributes = { "caste"};
-        List<PatientResponse> patients = patientDao.getPatients("", "", "Chethan", "city_village", null, 100, 0, patientAttributes);
+        List<PatientResponse> patients = patientDao.getPatients("", "", "testCaste1", "city_village", null, 100, 0, patientAttributes);
 
         assertEquals(1, patients.size());
         assertEquals("", patients.get(0).getLocalName());
