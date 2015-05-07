@@ -34,10 +34,19 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
 
     @Override
     public Encounter findEncounter(Visit visit, EncounterParameters encounterParameters) {
-        EncounterType encounterType = encounterParameters.getEncounterType();
         Provider provider = null;
         if (encounterParameters.getProviders() != null && !encounterParameters.getProviders().isEmpty())
             provider = encounterParameters.getProviders().iterator().next();
+
+        if (BahmniEncounterTransaction.isRetrospectiveEntry(encounterParameters.getEncounterDateTime())) {
+            return findRetrospectiveEncounter(visit, encounterParameters, provider);
+        } else {
+            return findRegularEncounter(visit, encounterParameters, provider);
+        }
+    }
+
+    private Encounter findRegularEncounter(Visit visit, EncounterParameters encounterParameters, Provider provider) {
+        EncounterType encounterType = encounterParameters.getEncounterType();
         if (encounterType == null && encounterParameters.getLocation() != null) {
             encounterType = bahmniLocationService.getEncounterType(encounterParameters.getLocation().getUuid());
         }
@@ -45,16 +54,22 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         if (visit.getEncounters() != null) {
             for (Encounter encounter : visit.getEncounters()) {
                 if (!encounter.isVoided() && (encounterType == null || encounterType.equals(encounter.getEncounterType()))) {
-                    if (BahmniEncounterTransaction.isRetrospectiveEntry(encounterParameters.getEncounterDateTime())) {
-                        if (isSameProvider(provider, encounter) && areSameEncounterDates(encounter, encounterParameters)) {
-                            if (locationNotDefined(encounterParameters, encounter) || isSameLocation(encounterParameters, encounter))
-                                return encounter;
-                        }
-                    } else {
-                        Date encounterDateChanged = encounter.getDateChanged() == null ? encounter.getDateCreated() : encounter.getDateChanged();
-                        if (!isCurrentSessionTimeExpired(encounterDateChanged) && isSameProvider(provider, encounter) && areSameEncounterDates(encounter, encounterParameters))
-                            if (locationNotDefined(encounterParameters, encounter) || isSameLocation(encounterParameters, encounter))
-                                return encounter;
+                    Date encounterDateChanged = encounter.getDateChanged() == null ? encounter.getDateCreated() : encounter.getDateChanged();
+                    if (!isCurrentSessionTimeExpired(encounterDateChanged) && isSameProvider(provider, encounter) && areSameEncounterDates(encounter, encounterParameters))
+                        if (locationNotDefined(encounterParameters, encounter) || isSameLocation(encounterParameters, encounter))
+                            return encounter;
+                }
+            }
+        }
+        return null;
+    }
+
+    private Encounter findRetrospectiveEncounter(Visit visit, EncounterParameters encounterParameters, Provider provider) {
+        if (visit.getEncounters() != null) {
+            for (Encounter encounter : visit.getEncounters()) {
+                if (!encounter.isVoided() && (encounterParameters.getEncounterType() == null || encounterParameters.getEncounterType().equals(encounter.getEncounterType()))) {
+                    if (isSameProvider(provider, encounter) && areSameEncounterDates(encounter, encounterParameters)) {
+                        return encounter;
                     }
                 }
             }
