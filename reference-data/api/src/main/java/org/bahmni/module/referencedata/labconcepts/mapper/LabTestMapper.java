@@ -17,6 +17,7 @@ public class LabTestMapper extends ResourceMapper {
         test.setResultType(testConcept.getDatatype().getName());
         test.setTestUnitOfMeasure(MapperUtils.getUnits(testConcept));
         test.setSortOrder(getSortWeight(testConcept));
+        test.setCodedTestAnswer(testConcept.getAnswers());
         return test;
     }
 

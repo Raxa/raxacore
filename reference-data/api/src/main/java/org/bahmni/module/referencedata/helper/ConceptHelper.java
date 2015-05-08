@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.helper;
 
+import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
 import org.openmrs.Concept;
 import org.bahmni.module.referencedata.contract.ConceptDetails;
 import org.openmrs.ConceptName;
@@ -108,5 +109,9 @@ public  class ConceptHelper {
             }
         }
         return conceptDetails;
+    }
+
+    public List<Concept> getParentConcepts(Concept concept) {
+        return conceptService.getConceptsByAnswer(concept);
     }
 }

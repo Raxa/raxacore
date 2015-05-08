@@ -1,11 +1,17 @@
 package org.bahmni.module.referencedata.labconcepts.contract;
 
+import org.openmrs.ConceptAnswer;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class LabTest extends Resource {
     private String description;
     private String resultType;
     private String testUnitOfMeasure;
     private Double sortOrder;
     public static final String LAB_TEST_CONCEPT_CLASS = "LabTest";
+    private Collection<CodedTestAnswer> codedTestAnswer;
 
 
     public String getDescription() {
@@ -38,5 +44,19 @@ public class LabTest extends Resource {
 
     public Double getSortOrder() {
         return sortOrder;
+    }
+
+    public void setCodedTestAnswer(Collection<ConceptAnswer> conceptAnswers) {
+        codedTestAnswer = new ArrayList<>();
+        for (ConceptAnswer conceptAnswer : conceptAnswers) {
+            CodedTestAnswer ans = new CodedTestAnswer();
+            ans.setName(conceptAnswer.getAnswerConcept().getName().getName());
+            ans.setUuid(conceptAnswer.getAnswerConcept().getUuid());
+            codedTestAnswer.add(ans);
+        }
+    }
+
+    public Collection<CodedTestAnswer> getCodedTestAnswer() {
+        return codedTestAnswer;
     }
 }

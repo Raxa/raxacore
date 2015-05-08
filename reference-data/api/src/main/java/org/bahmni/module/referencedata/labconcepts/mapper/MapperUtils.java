@@ -2,6 +2,7 @@ package org.bahmni.module.referencedata.labconcepts.mapper;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bahmni.module.referencedata.helper.ConceptHelper;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.MinimalResource;
@@ -169,7 +170,9 @@ public class MapperUtils {
     }
 
     public static boolean isLabTestConcept(Concept concept) {
-        return concept.getConceptClass() != null && concept.getConceptClass().getName() != null && concept.getConceptClass().getName().equals(LabTest.LAB_TEST_CONCEPT_CLASS);
+        return (concept.getConceptClass() != null && concept.getConceptClass().getName() != null &&
+                concept.getConceptClass().getName().equals(LabTest.LAB_TEST_CONCEPT_CLASS));
+
     }
 
     public static boolean isOfConceptClass(Concept concept, String conceptClassName){
