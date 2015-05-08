@@ -6,42 +6,55 @@ import org.bahmni.test.builder.ConceptBuilder;
 import org.ict4h.atomfeed.server.service.Event;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.api.ConceptService;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
+import org.openmrs.api.context.Context;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.List;
+import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
+@PrepareForTest(Context.class)
+@RunWith(PowerMockRunner.class)
 public class AllLabSamplesEventTest {
 
     private Concept parentConcept;
     private Concept concept;
     private Concept anotherConcept;
-
+    @Mock
+    private ConceptService conceptService;
 
     @Before
     public void setup() {
+        Locale defaultLocale = new Locale("en", "GB");
+        PowerMockito.mockStatic(Context.class);
+        when(Context.getLocale()).thenReturn(defaultLocale);
+        when(Context.getConceptService()).thenReturn(conceptService);
         concept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).build();
         anotherConcept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).build();
-
         parentConcept = new ConceptBuilder().withName(AllSamples.ALL_SAMPLES).withSetMember(concept).withSetMember(anotherConcept).build();
 
     }
 
     @Test
     public void should_create_one_event_for_All_Lab_Samples_and_set_members() throws Exception {
-//        List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{parentConcept});
-//        assertEquals(events.size(), 1);
-//        Event event = events.get(0);
-//        assertThat(event.getUri().toString(), containsString(parentConcept.getUuid()));
-//        assertEquals(event.getTitle(), ConceptServiceEventFactory.LAB_SAMPLE);
-//        assertEquals(event.getCategory(), "lab");
+
+        List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{parentConcept});
+        assertEquals(events.size(), 1);
+        Event event = events.get(0);
+        assertThat(event.getUri().toString(), containsString(parentConcept.getUuid()));
+        assertEquals(event.getTitle(), ConceptServiceEventFactory.LAB_SAMPLE);
+        assertEquals(event.getCategory(), "lab");
 
     }
 }
