@@ -51,14 +51,15 @@ values ('emrapi.sqlSearch.highRiskPatients',
           INNER JOIN person_name pn ON o.person_id = pn.person_id
           INNER JOIN visit v ON v.patient_id=pn.person_id AND v.date_stopped IS NULL
           INNER JOIN patient_identifier pi ON v.patient_id = pi.patient_id
-          INNER JOIN person p ON v.patient_id = p.person_id WHERE',
+          INNER JOIN person p ON v.patient_id = p.person_id
+          LEFT OUTER JOIN concept_name cn2 on o.value_coded = cn2.concept_id and cn.concept_name_type="FULLY_SPECIFIED" WHERE',
         'Sql query to get list of admitted patients',
         uuid()
 );
 
 insert into global_property (`property`, `property_value`, `description`, `uuid`)
 values ('emrapi.sqlSearch.additionalSearchHandler',
-        ' (cn.name = ${testName} AND (o.value_numeric=${value} OR o.value_text=${value})) ',
+        ' (cn.name = ${testName} AND (o.value_numeric=${value} OR o.value_text=${value} OR cn2.name=${value})) ',
         'Sql query to get list of admitted patients',
         uuid()
 );
