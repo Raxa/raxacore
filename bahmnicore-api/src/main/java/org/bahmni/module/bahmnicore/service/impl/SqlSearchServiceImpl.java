@@ -30,7 +30,7 @@ public class SqlSearchServiceImpl implements SqlSearchService {
         SqlQueryHelper sqlQueryHelper = new SqlQueryHelper();
         String query = getSql(queryId);
         try( Connection conn = DatabaseUpdater.getConnection();
-             PreparedStatement statement = sqlQueryHelper.constructPreparedStatement(query,params,conn);
+             PreparedStatement statement = sqlQueryHelper.constructPreparedStatement(query,params,conn, administrationService);
              ResultSet resultSet = statement.executeQuery()) {
 
             RowMapper rowMapper = new RowMapper();
