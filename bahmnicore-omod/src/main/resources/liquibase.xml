@@ -2855,4 +2855,11 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
+    <changeSet id="bahmni-core-201505080200" author="Hemanth">
+        <comment>Creating Admission Status as visit attribute</comment>
+        <sql>
+            INSERT INTO visit_attribute_type (name, datatype, creator, date_created, uuid, min_occurs)
+            VALUES ('Admission Status', 'org.openmrs.customdatatype.datatype.FreeTextDatatype', 1, now(), uuid(), 0);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
