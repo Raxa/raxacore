@@ -2884,4 +2884,14 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
+    <changeSet id="bahmni-core-201505081250" author="JP">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege = 'app:clinical:deleteDiagnosis'</sqlCheck>
+        </preConditions>
+        <insert tableName="privilege">
+                <column name="privilege" value="app:clinical:deleteDiagnosis"/>
+            <column name="description" value="Bahmni delete diagnosis privilege"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
