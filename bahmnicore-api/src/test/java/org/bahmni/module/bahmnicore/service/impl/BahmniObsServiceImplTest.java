@@ -3,12 +3,12 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.test.builder.ConceptBuilder;
+import org.bahmni.test.builder.VisitBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.openmrs.Concept;
-import org.openmrs.Obs;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.VisitService;
@@ -75,5 +75,15 @@ public class BahmniObsServiceImplTest {
         Integer numberOfVisits = 3;
         bahmniObsService.observationsFor(personUUID, Arrays.asList(bloodPressureConcept), numberOfVisits);
         verify(obsDao).getObsFor(personUUID, Arrays.asList("Blood Pressure"), numberOfVisits);
+    }
+
+    @Test
+    public void shouldGetInitialObservations() throws Exception {
+        Concept weightConcept = new ConceptBuilder().withName("Weight").build();
+        Integer limit = 1;
+        VisitBuilder visitBuilder = new VisitBuilder();
+        Visit visit = visitBuilder.withUUID("visitId").withEncounter(new Encounter(1)).withPerson(new Person()).build();
+        bahmniObsService.getInitialObsByVisit(visit, Arrays.asList(weightConcept));
+        verify(obsDao).getInitialObsByVisit(visit, "Weight", limit);
     }
 }

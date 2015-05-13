@@ -62,6 +62,16 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
+    public Collection<BahmniObservation> getInitial(String patientUuid, Collection<Concept> conceptNames, Integer numberOfVisits) {
+        List<Obs> latestObs = new ArrayList<>();
+        for (Concept concept : conceptNames) {
+            latestObs.addAll(obsDao.getInitialObsFor(patientUuid, concept.getName().getName(), numberOfVisits, 1));
+        }
+
+        return omrsObsToBahmniObsMapper.map(latestObs, conceptNames);
+    }
+
+    @Override
     public Collection<BahmniObservation> getLatestObsByVisit(Visit visit, Collection<Concept> concepts){
         List<Obs> latestObs = new ArrayList<>();
         for (Concept concept : concepts) {
@@ -69,6 +79,17 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         }
 
         return omrsObsToBahmniObsMapper.map(latestObs, concepts);
+    }
+
+    @Override
+    public Collection<BahmniObservation> getInitialObsByVisit(Visit visit, List<Concept> concepts) {
+        List<Obs> latestObs = new ArrayList<>();
+        for (Concept concept : concepts) {
+            latestObs.addAll(obsDao.getInitialObsByVisit(visit, concept.getName().getName(), 1));
+        }
+
+        Collection<BahmniObservation> map = omrsObsToBahmniObsMapper.map(latestObs, concepts);
+        return map;
     }
 
     @Override

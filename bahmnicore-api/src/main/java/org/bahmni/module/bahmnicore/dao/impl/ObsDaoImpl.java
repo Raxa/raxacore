@@ -1,7 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.bahmni.module.bahmnicore.dao.ObsDao;
-import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.openmrs.Concept;
@@ -9,7 +8,6 @@ import org.openmrs.ConceptDatatype;
 import org.openmrs.Obs;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptNameType;
-import org.openmrs.api.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +17,8 @@ import java.util.*;
 public class ObsDaoImpl implements ObsDao {
     @Autowired
     private SessionFactory sessionFactory;
+    private static final String DESC = "desc";
+    private static final String ASC = "asc";
 
     @Override
     public List<Obs> getNumericObsByPerson(String personUUID) {
@@ -53,15 +53,15 @@ public class ObsDaoImpl implements ObsDao {
 
     }
 
-    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, Integer limit) {
+    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, Integer limit, String order) {
         List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
         if (listOfVisitIds == null || listOfVisitIds.isEmpty())
             return new ArrayList<>();
 
-        return getObsByPatientAndVisit(patientUuid, conceptNames, listOfVisitIds,limit);
+        return getObsByPatientAndVisit(patientUuid, conceptNames, listOfVisitIds, limit, order);
     }
 
-    private List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit) {
+    private List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit, String order) {
         Query queryToGetObservations = sessionFactory.getCurrentSession().createQuery(
                 "select obs " +
                         " from Obs as obs, ConceptName as cn " +
@@ -72,7 +72,7 @@ public class ObsDaoImpl implements ObsDao {
                         " and cn.conceptNameType = :conceptNameType " +
                         " and cn.voided = false " +
                         " and obs.voided = false " +
-                        " order by obs.obsDatetime desc ");
+                        " order by obs.obsDatetime " + order);
 
         queryToGetObservations.setMaxResults(limit);
         queryToGetObservations.setString("patientUuid", patientUuid);
@@ -83,15 +83,24 @@ public class ObsDaoImpl implements ObsDao {
     }
 
     public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits) {
-        return getObsFor(patientUuid,conceptNames,numberOfVisits,-1);
+        return getObsFor(patientUuid,conceptNames,numberOfVisits,-1, DESC);
     }
 
     public List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit) {
-        return getObsFor(patientUuid,Arrays.asList(conceptName),numberOfVisits, limit);
+        return getObsFor(patientUuid, Arrays.asList(conceptName), numberOfVisits, limit, DESC);
+    }
+
+    public List<Obs> getInitialObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit) {
+        return getObsFor(patientUuid, Arrays.asList(conceptName), numberOfVisits, limit, ASC);
     }
 
     public List<Obs> getLatestObsByVisit(Visit visit, String conceptName, Integer limit){
-        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit);
+        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, DESC);
+    }
+
+    @Override
+    public List<Obs> getInitialObsByVisit(Visit visit, String conceptName, Integer limit) {
+        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, ASC);
     }
 
     @Override
