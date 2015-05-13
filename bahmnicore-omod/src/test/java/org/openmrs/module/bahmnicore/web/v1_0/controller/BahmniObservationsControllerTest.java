@@ -51,10 +51,17 @@ public class BahmniObservationsControllerTest {
 
     @Test
     public void returnInitialAndLatestObservations() throws Exception {
+        EncounterTransaction.Concept cpt = new EncounterTransaction.Concept();
+        cpt.setShortName("Concept1");
+
         BahmniObservation latestObs = new BahmniObservation();
         latestObs.setUuid("latestId");
+        latestObs.setConcept(cpt);
+
         BahmniObservation initialObs = new BahmniObservation();
         initialObs.setUuid("initialId");
+        initialObs.setConcept(cpt);
+
         when(bahmniObsService.getLatestObsByVisit(visit, Arrays.asList(concept))).thenReturn(Arrays.asList(latestObs));
         when(bahmniObsService.getInitialObsByVisit(visit, Arrays.asList(concept))).thenReturn(Arrays.asList(initialObs));
 
@@ -79,12 +86,19 @@ public class BahmniObservationsControllerTest {
 
     @Test
     public void returnOnlyUniqueObservation() throws Exception {
+        EncounterTransaction.Concept cpt = new EncounterTransaction.Concept();
+        cpt.setShortName("Concept1");
+
         BahmniObservation latestObs = new BahmniObservation();
         latestObs.setUuid("initialId");
+        latestObs.setConcept(cpt);
+
         BahmniObservation initialObs = new BahmniObservation();
         initialObs.setUuid("initialId");
-        when(bahmniObsService.getLatestObsByVisit(visit, Arrays.asList(concept))).thenReturn(Arrays.asList(latestObs));
-        when(bahmniObsService.getInitialObsByVisit(visit, Arrays.asList(concept))).thenReturn(Arrays.asList(initialObs));
+        initialObs.setConcept(cpt);
+
+        when(bahmniObsService.getLatestObsByVisit(visit, Arrays.asList(this.concept))).thenReturn(Arrays.asList(latestObs));
+        when(bahmniObsService.getInitialObsByVisit(visit, Arrays.asList(this.concept))).thenReturn(Arrays.asList(initialObs));
 
         BahmniObservationsController bahmniObservationsController = new BahmniObservationsController(bahmniObsService, conceptService, visitService);
         Collection<BahmniObservation> bahmniObservations = bahmniObservationsController.get("visitId", "initiallatest", Arrays.asList("Weight"));
