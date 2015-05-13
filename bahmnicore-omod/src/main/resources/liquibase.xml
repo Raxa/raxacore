@@ -126,6 +126,7 @@
     </changeSet>
     <changeSet id="bahmni-33" author="tw" context="rel3" runOnChange="true">
         <validCheckSum>3:9265b4028eba323f1fe9752430c96b92</validCheckSum>
+        <validCheckSum>3:8303f4f9d1ac7eb2de6c4d2b2466d873</validCheckSum>
         <comment>rel3</comment>
         <sqlFile path="V1_71__PatientSearchSql.sql"/>
     </changeSet>
