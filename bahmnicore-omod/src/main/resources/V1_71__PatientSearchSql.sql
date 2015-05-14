@@ -61,19 +61,20 @@ INSERT INTO global_property (`property`, `property_value`, `description`, `uuid`
 VALUES ('emrapi.sqlSearch.highRiskPatients',
         'select distinct concat(pn.given_name,\' \', pn.family_name) as name, pi.identifier as identifier, concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid
           FROM obs o
-          INNER JOIN concept_name cn ON o.concept_id = cn.concept_id AND cn.concept_name_type="FULLY_SPECIFIED"
+          INNER JOIN concept_name cn ON o.concept_id = cn.concept_id AND cn.concept_name_type=\'FULLY_SPECIFIED\' AND o.voided = 0
           INNER JOIN person_name pn ON o.person_id = pn.person_id
           INNER JOIN visit v ON v.patient_id=pn.person_id AND v.date_stopped IS NULL
           INNER JOIN patient_identifier pi ON v.patient_id = pi.patient_id
           INNER JOIN person p ON v.patient_id = p.person_id
-          LEFT OUTER JOIN concept_name cn2 on o.value_coded = cn2.concept_id and cn.concept_name_type="FULLY_SPECIFIED" WHERE',
+          inner join obs o1 on o.obs_group_id = o1.obs_group_id and o1.voided=0
+          inner join concept_name cn1 on o1.concept_id = cn1.concept_id and cn1.name=\'LAB_ABNORMAL\' and  cn1.concept_name_type=\'FULLY_SPECIFIED\' and o1.value_coded=1 WHERE ',
         'Sql query to get list of admitted patients',
         uuid()
 );
 
 INSERT INTO global_property (`property`, `property_value`, `description`, `uuid`)
 VALUES ('emrapi.sqlSearch.additionalSearchHandler',
-        ' (cn.name = ${testName} AND (o.value_numeric=${value} OR o.value_text=${value} OR cn2.name=${value})) ',
+        ' cn.name = \'${testName}\'',
         'Sql query to get list of admitted patients',
         uuid()
 );

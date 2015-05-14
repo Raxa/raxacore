@@ -59,18 +59,17 @@ public class SqlQueryHelper {
         return preparedStatement;
     }
 
-    private String parseAdditionalParams(String additionalParams, String queryString, AdministrationService administrationService) {
+    String parseAdditionalParams(String additionalParams, String queryString, AdministrationService administrationService) {
         try {
             boolean hasReadAtLeastOneAdditionalParam = false;
             AdditionalSearchParam additionalSearchParams = new ObjectMapper().readValue(additionalParams, AdditionalSearchParam.class);
             String additionalQueryString = administrationService.getGlobalProperty(additionalSearchParams.getAdditionalSearchHandler());
-            for (AdditionalSearchParam.Test test : additionalSearchParams.getTests()) {
+            for (String test : additionalSearchParams.getTests()) {
                 if (hasReadAtLeastOneAdditionalParam) {
-                    queryString += " OR";
+                    queryString += " OR ";
                 }
                 String additionalQuery = "";
-                additionalQuery = additionalQueryString.replaceAll("\\$\\{testName\\}", test.getTestName());
-                additionalQuery = additionalQuery.replaceAll("\\$\\{value\\}", test.getValue());
+                additionalQuery = additionalQueryString.replaceAll("\\$\\{testName\\}", test);
                 queryString += additionalQuery;
                 hasReadAtLeastOneAdditionalParam = true;
             }

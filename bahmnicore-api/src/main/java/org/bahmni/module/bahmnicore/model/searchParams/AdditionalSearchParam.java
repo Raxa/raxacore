@@ -4,40 +4,10 @@ import java.util.List;
 
 public class AdditionalSearchParam {
 
-    public static class Test{
-        private String testName;
-        private String value;
-
-        public Test(String testName, String value) {
-            this.testName = testName;
-            this.value = value;
-        }
-
-        public Test() {
-        }
-
-        public String getTestName() {
-            return '"' + testName + '"';
-        }
-
-        public void setTestName(String testName)
-        {
-            this.testName = testName;
-        }
-
-        public String getValue() {
-            return '"' + value + '"';
-        }
-
-        public void setValue(String value) {
-            this.value = value;
-        }
-    }
-
     private String additionalSearchHandler;
-    private List<Test> tests;
+    private List<String> tests;
 
-    public AdditionalSearchParam(String additionalSearchHandler, List<Test> tests) {
+    public AdditionalSearchParam(String additionalSearchHandler, List<String> tests) {
         this.additionalSearchHandler = additionalSearchHandler;
         this.tests = tests;
     }
@@ -53,11 +23,11 @@ public class AdditionalSearchParam {
         this.additionalSearchHandler = additionalSearchHandler;
     }
 
-    public List<Test> getTests(){
+    public List<String> getTests(){
         return tests;
     }
 
-    public void setTests(List<Test> tests){
+    public void setTests(List<String> tests){
         this.tests = tests;
     }
 }
