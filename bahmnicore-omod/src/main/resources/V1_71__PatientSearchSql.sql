@@ -70,14 +70,43 @@ VALUES ('emrapi.sqlSearch.patientsToDischarge',
 
 INSERT INTO global_property (`property`, `property_value`, `description`, `uuid`)
 VALUES ('emrapi.sqlSearch.patientsHasPendingOrders',
-        'select distinct concat(pn.given_name, \' \', pn.family_name) as name, pi.identifier as identifier, concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid from visit v join person_name pn on v.patient_id = pn.person_id and pn.voided = 0 join patient_identifier pi on v.patient_id = pi.patient_id join person p on p.person_id = v.patient_id join orders on orders.patient_id = v.patient_id join order_type on orders.order_type_id = order_type.order_type_id and order_type.name != \'Lab Order\' and order_type.name != \'Drug Order\' where v.date_stopped is null AND v.voided = 0 and order_id not in(select obs.order_id from obs where person_id = pn.person_id and order_id = orders.order_id)',
+        'select distinct
+          concat(pn.given_name, " ", pn.family_name) as name,
+          pi.identifier as identifier,
+          concat("",p.uuid) as uuid,
+          concat("",v.uuid) as activeVisitUuid,
+          IF(va.value_reference = "Admitted", "true", "false") as hasBeenAdmitted
+        from visit v
+        join person_name pn on v.patient_id = pn.person_id and pn.voided = 0
+        join patient_identifier pi on v.patient_id = pi.patient_id
+        join person p on p.person_id = v.patient_id
+        join orders on orders.patient_id = v.patient_id
+        join order_type on orders.order_type_id = order_type.order_type_id and order_type.name != "Lab Order" and order_type.name != "Drug Order"
+        left outer join visit_attribute va on va.visit_id = v.visit_id and va.visit_attribute_id =
+          (select visit_attribute_type_id from visit_attribute_type where name="Admission Status")
+        where v.date_stopped is null AND v.voided = 0 and order_id not in
+          (select obs.order_id
+            from obs
+          where person_id = pn.person_id and order_id = orders.order_id)',
         'Sql query to get list of patients who has pending orders',
         uuid()
 );
 
 INSERT INTO global_property (`property`, `property_value`, `description`, `uuid`)
 VALUES ('emrapi.sqlSearch.admittedPatients',
-        'select distinct concat(pn.given_name,\' \', pn.family_name) as name, pi.identifier as identifier, concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid from encounter e join visit v on e.visit_id = v.visit_id join person_name pn on v.patient_id = pn.person_id and pn.voided = 0 join patient_identifier pi on v.patient_id = pi.patient_id join person p on v.patient_id = p.person_id join encounter_type et on et.encounter_type_id = e.encounter_type where v.date_stopped is null AND v.voided = 0 and et.name = \'ADMISSION\' AND e.voided = FALSE AND e.patient_id not in (select distinct enc.patient_id from encounter enc join encounter_type ent on enc.encounter_type = ent.encounter_type_id where ent.name = \'DISCHARGE\'  AND enc.voided = FALSE AND enc.patient_id = v.patient_id AND v.visit_id = enc.visit_id)',
+        'select distinct
+          concat(pn.given_name," ", pn.family_name) as name,
+          pi.identifier as identifier,
+          concat("",p.uuid) as uuid,
+          concat("",v.uuid) as activeVisitUuid,
+          IF(va.value_reference = "Admitted", "true", "false") as hasBeenAdmitted
+        from visit v
+        join person_name pn on v.patient_id = pn.person_id and pn.voided = 0
+        join patient_identifier pi on v.patient_id = pi.patient_id
+        join person p on v.patient_id = p.person_id
+        join visit_attribute va on v.visit_id = va.visit_id and va.value_reference = "Admitted"
+        join visit_attribute_type vat on vat.visit_attribute_type_id = va.attribute_type_id and vat.name = "Admission Status"
+        where v.date_stopped is null AND v.voided = 0',
         'Sql query to get list of admitted patients',
         uuid()
 );
@@ -88,13 +117,16 @@ VALUES ('emrapi.sqlSearch.highRiskPatients',
          concat(pn.given_name, \' \', pn.family_name) AS name,
          pi.identifier                              AS identifier,
          concat("", p.uuid)                         AS uuid,
-         concat("", v.uuid)                         AS activeVisitUuid
+         concat("", v.uuid)                         AS activeVisitUuid,
+         IF(va.value_reference = "Admitted", "true", "false") as hasBeenAdmitted
          from person p
          inner join person_name pn on pn.person_id = p.person_id
          inner join patient_identifier pi ON pn.person_id = pi.patient_id
          inner join visit v on v.patient_id = p.person_id and v.date_stopped IS NULL and v.voided=0
          inner join concept_name cn on cn.name = \'LAB_ABNORMAL\' AND cn.concept_name_type = \'FULLY_SPECIFIED\'
          inner join obs o on o.voided=0 and o.value_coded=1 and o.person_id = p.person_id and o.concept_id = cn.concept_id
+         left outer join visit_attribute va on va.visit_id = v.visit_id and va.attribute_type_id =
+            (select visit_attribute_type_id from visit_attribute_type where name="Admission Status")
          where o.obs_group_id in (select obs_id from obs where voided=0 and concept_id IN (SELECT concept_id FROM concept_name cn WHERE cn.concept_name_type = \'FULLY_SPECIFIED\' AND ',
         'Sql query to get list of admitted patients',
         uuid()
