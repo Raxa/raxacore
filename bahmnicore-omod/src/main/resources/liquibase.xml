@@ -2864,4 +2864,12 @@
             VALUES ('Admission Status', 'org.openmrs.customdatatype.datatype.FreeTextDatatype', 1, now(), uuid(), 0);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201505121055" author="Vikash, Achinta">
+        <comment>Adding privilege for provider.</comment>
+        <insert tableName="privilege">
+            <column name="privilege" value="app:clinical:grantProviderAccess"/>
+            <column name="description" value="Bahmni clinical app grant access for other Provider"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
