@@ -59,15 +59,22 @@ VALUES ('emrapi.sqlSearch.admittedPatients',
 
 INSERT INTO global_property (`property`, `property_value`, `description`, `uuid`)
 VALUES ('emrapi.sqlSearch.highRiskPatients',
-        'select distinct concat(pn.given_name,\' \', pn.family_name) as name, pi.identifier as identifier, concat("",p.uuid) as uuid, concat("",v.uuid) as activeVisitUuid
-          FROM obs o
-          INNER JOIN concept_name cn ON o.concept_id = cn.concept_id AND cn.concept_name_type=\'FULLY_SPECIFIED\' AND o.voided = 0
-          INNER JOIN person_name pn ON o.person_id = pn.person_id
-          INNER JOIN visit v ON v.patient_id=pn.person_id AND v.date_stopped IS NULL
-          INNER JOIN patient_identifier pi ON v.patient_id = pi.patient_id
-          INNER JOIN person p ON v.patient_id = p.person_id
-          inner join obs o1 on o.obs_group_id = o1.obs_group_id and o1.voided=0
-          inner join concept_name cn1 on o1.concept_id = cn1.concept_id and cn1.name=\'LAB_ABNORMAL\' and  cn1.concept_name_type=\'FULLY_SPECIFIED\' and o1.value_coded=1 WHERE ',
+        'SELECT DISTINCT
+         concat(pn.given_name, \' \', pn.family_name) AS name,
+         pi.identifier                              AS identifier,
+         concat("", p.uuid)                         AS uuid,
+         concat("", v.uuid)                         AS activeVisitUuid
+         FROM obs o
+         INNER JOIN person_name pn ON o.person_id = pn.person_id
+         INNER JOIN visit v ON v.patient_id = pn.person_id AND v.date_stopped IS NULL
+         INNER JOIN patient_identifier pi ON v.patient_id = pi.patient_id
+         INNER JOIN person p ON v.patient_id = p.person_id
+         INNER JOIN obs o1 ON o.obs_group_id = o1.obs_group_id AND o1.voided = 0
+         INNER JOIN concept_name cn1 ON o1.concept_id = cn1.concept_id AND cn1.name = \'LAB_ABNORMAL\' AND cn1.concept_name_type = \'FULLY_SPECIFIED\' AND o1.value_coded = 1
+         WHERE o.voided = 0 AND o.concept_id IN (SELECT concept_id
+                                        FROM concept_name cn
+                                        WHERE
+                                          cn.concept_name_type = \'FULLY_SPECIFIED\' AND ',
         'Sql query to get list of admitted patients',
         uuid()
 );
@@ -78,3 +85,4 @@ VALUES ('emrapi.sqlSearch.additionalSearchHandler',
         'Sql query to get list of admitted patients',
         uuid()
 );
+
