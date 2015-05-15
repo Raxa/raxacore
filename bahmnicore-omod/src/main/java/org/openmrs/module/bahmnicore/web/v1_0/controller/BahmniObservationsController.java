@@ -25,7 +25,7 @@ import java.util.List;
 public class BahmniObservationsController extends BaseRestController {
 
     private static final String LATEST = "latest";
-    private static final String INITIALLATEST = "initiallatest";
+    private static final String INITIAL = "initial";
     private BahmniObsService bahmniObsService;
     private ConceptService conceptService;
     private VisitService visitService;
@@ -49,17 +49,14 @@ public class BahmniObservationsController extends BaseRestController {
             rootConcepts.add(conceptService.getConceptByName(rootConceptName));
         }
 
-        if (ObjectUtils.notEqual(scope, LATEST) && ObjectUtils.notEqual(scope, INITIALLATEST) ) {
+        if (ObjectUtils.equals(scope, LATEST)) {
+            return bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits);
+        } else if (ObjectUtils.equals(scope, INITIAL)) {
+            return bahmniObsService.getInitial(patientUUID, rootConcepts, numberOfVisits);
+        } else {
             return bahmniObsService.observationsFor(patientUUID, rootConcepts, numberOfVisits);
         }
 
-        Collection<BahmniObservation> observations = bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits);
-        if (ObjectUtils.equals(scope, INITIALLATEST)) {
-            Collection<BahmniObservation> initialObsByVisit = bahmniObsService.getInitial(patientUUID, rootConcepts, numberOfVisits);
-            return getNonRedundantObs(observations, initialObsByVisit);
-        }
-
-        return observations;
     }
 
     @RequestMapping(method = RequestMethod.GET,params = {"visitUuid"})
@@ -68,7 +65,7 @@ public class BahmniObservationsController extends BaseRestController {
                                              @RequestParam(value = "scope", required = false) String scope,
                                              @RequestParam(value = "concept", required = false) List<String> conceptNames){
 
-        if (ObjectUtils.notEqual(scope, LATEST) && ObjectUtils.notEqual(scope, INITIALLATEST) ) {
+        if (ObjectUtils.notEqual(scope, LATEST) && ObjectUtils.notEqual(scope, INITIAL) ) {
             return bahmniObsService.getObservationForVisit(visitUuid, conceptNames);
         }
 
@@ -79,25 +76,10 @@ public class BahmniObservationsController extends BaseRestController {
             rootConcepts.add(conceptService.getConceptByName(rootConceptName));
         }
 
-        Collection<BahmniObservation> obsByVisit = bahmniObsService.getLatestObsByVisit(visit, rootConcepts);
-
-        if (ObjectUtils.equals(scope, INITIALLATEST)) {
-            Collection<BahmniObservation> initialObsByVisit = bahmniObsService.getInitialObsByVisit(visit, rootConcepts);
-            return getNonRedundantObs(obsByVisit, initialObsByVisit);
+        if (ObjectUtils.equals(scope, INITIAL)) {
+            return bahmniObsService.getInitialObsByVisit(visit, rootConcepts);
+        } else {
+            return bahmniObsService.getLatestObsByVisit(visit, rootConcepts);
         }
-        return obsByVisit;
-    }
-
-    private ArrayList<BahmniObservation> getNonRedundantObs(Collection<BahmniObservation> obsByVisit, Collection<BahmniObservation> initialObsByVisit) {
-        ArrayList<BahmniObservation> bahmniObservations = new ArrayList<>();
-        bahmniObservations.addAll(obsByVisit);
-        for (BahmniObservation observation : obsByVisit) {
-            for (BahmniObservation initialObs : initialObsByVisit) {
-                if(initialObs.getConceptNameToDisplay().equals(observation.getConceptNameToDisplay()) && (initialObs.getUuid() != observation.getUuid())) {
-                    bahmniObservations.add(initialObs);
-                }
-            }
-        }
-        return bahmniObservations;
     }
 }
