@@ -73,7 +73,7 @@ public class SqlQueryHelper {
                 queryString += additionalQuery;
                 hasReadAtLeastOneAdditionalParam = true;
             }
-            queryString += ')';
+            queryString += "))";
         } catch (IOException e) {
             log.error("Failed to parse Additional Search Parameters.");
             e.printStackTrace();

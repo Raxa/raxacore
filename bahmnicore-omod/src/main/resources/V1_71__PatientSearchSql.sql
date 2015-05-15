@@ -64,17 +64,13 @@ VALUES ('emrapi.sqlSearch.highRiskPatients',
          pi.identifier                              AS identifier,
          concat("", p.uuid)                         AS uuid,
          concat("", v.uuid)                         AS activeVisitUuid
-         FROM obs o
-         INNER JOIN person_name pn ON o.person_id = pn.person_id
-         INNER JOIN visit v ON v.patient_id = pn.person_id AND v.date_stopped IS NULL
-         INNER JOIN patient_identifier pi ON v.patient_id = pi.patient_id
-         INNER JOIN person p ON v.patient_id = p.person_id
-         INNER JOIN obs o1 ON o.obs_group_id = o1.obs_group_id AND o1.voided = 0
-         INNER JOIN concept_name cn1 ON o1.concept_id = cn1.concept_id AND cn1.name = \'LAB_ABNORMAL\' AND cn1.concept_name_type = \'FULLY_SPECIFIED\' AND o1.value_coded = 1
-         WHERE o.voided = 0 AND o.concept_id IN (SELECT concept_id
-                                        FROM concept_name cn
-                                        WHERE
-                                          cn.concept_name_type = \'FULLY_SPECIFIED\' AND ',
+         from person p
+         inner join person_name pn on pn.person_id = p.person_id
+         inner join patient_identifier pi ON pn.person_id = pi.patient_id
+         inner join visit v on v.patient_id = p.person_id and v.date_stopped IS NULL and v.voided=0
+         inner join concept_name cn on cn.name = \'LAB_ABNORMAL\' AND cn.concept_name_type = \'FULLY_SPECIFIED\'
+         inner join obs o on o.voided=0 and o.value_coded=1 and o.person_id = p.person_id and o.concept_id = cn.concept_id
+         where o.obs_group_id in (select obs_id from obs where voided=0 and concept_id IN (SELECT concept_id FROM concept_name cn WHERE cn.concept_name_type = \'FULLY_SPECIFIED\' AND ',
         'Sql query to get list of admitted patients',
         uuid()
 );
