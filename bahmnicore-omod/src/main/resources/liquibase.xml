@@ -2872,4 +2872,47 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
+    <changeSet id="bahmni-core-201505171743" author="Bharat">
+        <comment>Associating LabSet and LabTest concept classes to Lab Order order type</comment>
+        <sql>
+            set @order_type_id = '';
+            set @lab_set = '';
+            set @lab_test = '';
+
+            select order_type_id into @order_type_id from order_type where name = 'Lab Order';
+            select concept_class_id into @lab_set from concept_class where name = 'LabSet';
+            select concept_class_id into @lab_test from concept_class where name = 'LabTest';
+            insert into order_type_class_map(order_type_id, concept_class_id) values(@order_type_id,@lab_set);
+            insert into order_type_class_map(order_type_id, concept_class_id) values(@order_type_id,@lab_test);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201505171755" author="Bharat">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from concept_name where name='All Orderables' and concept_name_type='FULLY_SPECIFIED';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding 'All Orderables' concept set and associating Lab Samples to it.</comment>
+        <sql>
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'All Orderables', 'All Orderables', 'N/A', 'ConvSet', true);
+            call add_concept_word(@concept_id, @concept_name_full_id, 'ALL', '1');
+            call add_concept_word(@concept_id, @concept_name_full_id, 'ORDERABLES', '1');
+
+            select concept_id into @labsamples_concept_id from concept_name where name = 'Lab Samples' and concept_name_type = 'FULLY_SPECIFIED';
+            call add_concept_set_members (@concept_id,@labsamples_concept_id,1);
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201505171808" author="Bharat">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from concept_name where name='Lab Orders' and concept_name_type='SHORT' and voided=0;
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding a display name for Lab Samples concept on UI </comment>
+        <sql>
+            select concept_id into @labsamples_concept_id from concept_name where name like 'Lab Samples' and concept_name_type = 'FULLY_SPECIFIED';
+
+            insert into concept_name (concept_id, name, locale, locale_preferred, creator, date_created,concept_name_type, voided, uuid) values (@labsamples_concept_id,'Lab Orders', 'en', 0, 1, now(), 'SHORT', 0, uuid());
+        </sql>
+    </changeSet>
 </databaseChangeLog>
