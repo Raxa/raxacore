@@ -15,6 +15,7 @@ public class OpenElisTestDetail {
     private Double minNormal;
     private Double maxNormal;
     private String result;
+    private String resultUuid;
     private String notes;
     private String resultType;
     private String providerUuid;

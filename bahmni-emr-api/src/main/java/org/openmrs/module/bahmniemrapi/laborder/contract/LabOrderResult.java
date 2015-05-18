@@ -1,10 +1,10 @@
 package org.openmrs.module.bahmniemrapi.laborder.contract;
 
-import java.util.List;
 import lombok.Data;
+import org.openmrs.module.bahmniemrapi.accessionnote.contract.AccessionNote;
 
 import java.util.Date;
-import org.openmrs.module.bahmniemrapi.accessionnote.contract.AccessionNote;
+import java.util.List;
 
 @Data
 public class LabOrderResult {
@@ -19,6 +19,7 @@ public class LabOrderResult {
     private String panelName;
     private Double minNormal;
     private Double maxNormal;
+    private String resultUuid;
     private String result;
     private String notes;
     private Boolean abnormal;

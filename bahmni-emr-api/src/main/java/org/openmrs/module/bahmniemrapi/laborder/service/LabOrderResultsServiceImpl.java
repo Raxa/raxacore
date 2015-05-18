@@ -257,7 +257,15 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
 
     private Object getValue(EncounterTransaction.Observation observation, String conceptName) {
         EncounterTransaction.Observation leafObservation = getLeafObservation(observation, conceptName);
-        return leafObservation != null ? leafObservation.getValue() : null;
+        if (leafObservation != null) {
+            Object value = leafObservation.getValue();
+            if (value instanceof EncounterTransaction.Concept) {
+                return ((EncounterTransaction.Concept) value).getName();
+            } else {
+                return value;
+            }
+        }
+        return null;
     }
 
     private EncounterTransaction.Observation getLeafObservation(EncounterTransaction.Observation observation, String conceptName) {

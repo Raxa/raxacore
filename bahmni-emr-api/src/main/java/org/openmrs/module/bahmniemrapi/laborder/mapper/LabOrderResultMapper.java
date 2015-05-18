@@ -35,7 +35,7 @@ public class LabOrderResultMapper {
             Obs labObs = newObs(testOrder, obsDate, concept, null);
             topLevelObs.addGroupMember(labObs);
             if(StringUtils.isNotBlank(labOrderResult.getResult())) {
-                labObs.addGroupMember(newObs(testOrder, obsDate, concept, labOrderResult.getResult()));
+                labObs.addGroupMember(newResultObs(testOrder, obsDate, concept, labOrderResult));
                 if(labOrderResult.getAbnormal() != null) {
                     labObs.addGroupMember(newObs(testOrder, obsDate, getConceptByName(LAB_ABNORMAL), labOrderResult.getAbnormal().toString()));
                 }
@@ -57,6 +57,24 @@ public class LabOrderResultMapper {
         } catch (ParseException e) {
             throw new APIException(e);
         }
+    }
+
+    private Obs newResultObs(Order testOrder, Date obsDate, Concept concept, LabOrderResult labOrderResult) throws ParseException {
+        Obs obs = new Obs();
+        obs.setConcept(concept);
+        obs.setOrder(testOrder);
+        obs.setObsDatetime(obsDate);
+        if(concept.getDatatype().getHl7Abbreviation().equals("CWE"))  {
+            if (StringUtils.isNotBlank(labOrderResult.getResultUuid())) {
+                Concept conceptAnswer = conceptService.getConceptByUuid(labOrderResult.getResultUuid());
+                obs.setValueCoded(conceptAnswer);
+            } else {
+                throw new RuntimeException("Not A Valid Concept in OpenMRS");
+            }
+        } else if(StringUtils.isNotBlank(labOrderResult.getResult())) {
+            obs.setValueAsString(labOrderResult.getResult());
+        }
+        return obs;
     }
 
     private Concept getConceptByName(String conceptName) {

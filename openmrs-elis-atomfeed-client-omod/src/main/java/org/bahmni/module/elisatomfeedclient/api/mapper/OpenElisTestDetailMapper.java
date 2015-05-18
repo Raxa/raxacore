@@ -12,6 +12,7 @@ public class OpenElisTestDetailMapper {
         labOrderResult.setPanelUuid(testDetail.getPanelUuid());
         labOrderResult.setTestUuid(testDetail.getTestUuid());
         labOrderResult.setTestName(testDetail.getTestName());
+        labOrderResult.setResultUuid(testDetail.getResultUuid());
         labOrderResult.setResult(getValue(testDetail.getResult(), concept));
         labOrderResult.setResultDateTime(DateTime.parse(testDetail.getDateTime()).toDate());
         labOrderResult.setTestUnitOfMeasurement(testDetail.getTestUnitOfMeasurement());
