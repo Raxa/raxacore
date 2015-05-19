@@ -21,7 +21,7 @@ VALUES ('emrapi.sqlSearch.activePatients',
         join person_name pn on v.patient_id = pn.person_id and pn.voided = 0
         join patient_identifier pi on v.patient_id = pi.patient_id
         join person p on p.person_id = v.patient_id
-        left outer join visit_attribute va on va.visit_id = v.visit_id and va.visit_attribute_id = (
+        left outer join visit_attribute va on va.visit_id = v.visit_id and va.attribute_type_id = (
           select visit_attribute_type_id from visit_attribute_type where name="Admission Status"
         )
         where v.date_stopped is null AND v.voided = 0',
@@ -57,7 +57,7 @@ VALUES ('emrapi.sqlSearch.patientsToDischarge',
         INNER JOIN encounter e ON v.visit_id = e.visit_id
         INNER JOIN obs o ON e.encounter_id = o.encounter_id
         INNER JOIN concept_name cn ON o.value_coded = cn.concept_id AND cn.concept_name_type = "FULLY_SPECIFIED" AND cn.voided is FALSE
-        left outer join visit_attribute va on va.visit_id = v.visit_id and va.visit_attribute_id =
+        left outer join visit_attribute va on va.visit_id = v.visit_id and va.attribute_type_id =
           (select visit_attribute_type_id from visit_attribute_type where name="Admission Status")
         LEFT OUTER JOIN encounter e1 ON e1.visit_id = v.visit_id AND e1.encounter_type = (
           SELECT encounter_type_id
@@ -82,7 +82,7 @@ VALUES ('emrapi.sqlSearch.patientsHasPendingOrders',
         join person p on p.person_id = v.patient_id
         join orders on orders.patient_id = v.patient_id
         join order_type on orders.order_type_id = order_type.order_type_id and order_type.name != "Lab Order" and order_type.name != "Drug Order"
-        left outer join visit_attribute va on va.visit_id = v.visit_id and va.visit_attribute_id =
+        left outer join visit_attribute va on va.visit_id = v.visit_id and va.attribute_type_id =
           (select visit_attribute_type_id from visit_attribute_type where name="Admission Status")
         where v.date_stopped is null AND v.voided = 0 and order_id not in
           (select obs.order_id
