@@ -10,20 +10,14 @@ import org.openmrs.Concept;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.VisitService;
-import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
 
 public class BahmniObservationsControllerTest {
@@ -53,10 +47,10 @@ public class BahmniObservationsControllerTest {
     public void returnLatestObservations() throws Exception {
         BahmniObservation latestObs = new BahmniObservation();
         latestObs.setUuid("initialId");
-        when(bahmniObsService.getLatestObsByVisit(visit, Arrays.asList(concept))).thenReturn(Arrays.asList(latestObs));
+        when(bahmniObsService.getLatestObsByVisit(visit, Arrays.asList(concept), null, false)).thenReturn(Arrays.asList(latestObs));
 
         BahmniObservationsController bahmniObservationsController = new BahmniObservationsController(bahmniObsService, conceptService, visitService);
-        Collection<BahmniObservation> bahmniObservations = bahmniObservationsController.get("visitId", "latest", Arrays.asList("Weight"));
+        Collection<BahmniObservation> bahmniObservations = bahmniObservationsController.get("visitId", "latest", Arrays.asList("Weight"), null, false);
 
         verify(bahmniObsService, never()).getInitialObsByVisit(visit, Arrays.asList(concept));
         assertEquals(1, bahmniObservations.size());
@@ -74,7 +68,7 @@ public class BahmniObservationsControllerTest {
         when(bahmniObsService.getInitialObsByVisit(visit, Arrays.asList(this.concept))).thenReturn(Arrays.asList(initialObs));
 
         BahmniObservationsController bahmniObservationsController = new BahmniObservationsController(bahmniObsService, conceptService, visitService);
-        Collection<BahmniObservation> bahmniObservations = bahmniObservationsController.get("visitId", "initial", Arrays.asList("Weight"));
+        Collection<BahmniObservation> bahmniObservations = bahmniObservationsController.get("visitId", "initial", Arrays.asList("Weight"), null, false);
 
         assertEquals(1, bahmniObservations.size());
     }
@@ -85,9 +79,9 @@ public class BahmniObservationsControllerTest {
         when(bahmniObsService.getObservationForVisit("visitId", Arrays.asList("Weight"))).thenReturn(Arrays.asList(obs));
 
         BahmniObservationsController bahmniObservationsController = new BahmniObservationsController(bahmniObsService, conceptService, visitService);
-        Collection<BahmniObservation> bahmniObservations = bahmniObservationsController.get("visitId", null, Arrays.asList("Weight"));
+        Collection<BahmniObservation> bahmniObservations = bahmniObservationsController.get("visitId", null, Arrays.asList("Weight"), null, false);
 
-        verify(bahmniObsService, never()).getLatestObsByVisit(visit, Arrays.asList(concept));
+        verify(bahmniObsService, never()).getLatestObsByVisit(visit, Arrays.asList(concept), null, false);
         verify(bahmniObsService, never()).getInitialObsByVisit(visit, Arrays.asList(concept));
 
         assertEquals(1, bahmniObservations.size());

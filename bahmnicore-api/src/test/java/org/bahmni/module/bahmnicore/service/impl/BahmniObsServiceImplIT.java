@@ -42,7 +42,7 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldReturnLatestObsForEachConcept() {
         Concept vitalsConcept = conceptService.getConceptByName("Vitals");
-        Collection<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(vitalsConcept),3);
+        Collection<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(vitalsConcept),3, null, false);
         BahmniObservation vitalObservation = bahmniObservations.iterator().next();
         Collection<BahmniObservation> vitalsGroupMembers = vitalObservation.getGroupMembers();
         assertEquals(2, vitalsGroupMembers.size());
@@ -58,9 +58,9 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
     public void shouldReturnLatestObsForEachConceptForSpecifiedNumberOfVisits() {
         Concept sittingConcept = conceptService.getConceptByName("Vitals");
         //Latest limited by last two visits.
-        Collection<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(sittingConcept),1);
+        Collection<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(sittingConcept),1, null, false);
         assertEquals(0, bahmniObservations.size());
-        bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(sittingConcept),2);
+        bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(sittingConcept),2, null, false);
         assertEquals(1, bahmniObservations.size());
 
         BahmniObservation sittingObservation = bahmniObservations.iterator().next();
@@ -72,7 +72,7 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
         Concept sittingConcept = conceptService.getConceptByName("Sitting");
         Visit visit = visitService.getVisitByUuid("e10186d8-1c8e-11e4-bb80-f18add123456");
 
-        Collection<BahmniObservation> latestObsByVisit = personObsService.getLatestObsByVisit(visit, Arrays.asList(sittingConcept));
+        Collection<BahmniObservation> latestObsByVisit = personObsService.getLatestObsByVisit(visit, Arrays.asList(sittingConcept), null, false);
         assertEquals(1, latestObsByVisit.size());
         BahmniObservation sittingObservation = latestObsByVisit.iterator().next();
         assertEquals("1.5", sittingObservation.getValueAsString());
@@ -82,7 +82,7 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
     public void shouldReturnLatestObsFromAllEncountersInVisit(){
         Concept concept = conceptService.getConcept("100");
         Visit visit = visitService.getVisitByUuid("e10186d8-1c8e-11e4-bb80-f18add123456");
-        Collection<BahmniObservation> latestObsByVisit = personObsService.getLatestObsByVisit(visit, Arrays.asList(concept));
+        Collection<BahmniObservation> latestObsByVisit = personObsService.getLatestObsByVisit(visit, Arrays.asList(concept), null, false);
 
         assertEquals(1, latestObsByVisit.size());
         BahmniObservation obs = latestObsByVisit.iterator().next();
@@ -93,7 +93,7 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void return_orphaned_obs_for_patient() throws Exception {
         Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
-        Collection<BahmniObservation> obsForConceptSet = personObsService.observationsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(bloodPressureConcept), null);
+        Collection<BahmniObservation> obsForConceptSet = personObsService.observationsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(bloodPressureConcept), null, null, false);
         assertEquals(1, obsForConceptSet.size());
         Collection<BahmniObservation> bloodPressureMembers = obsForConceptSet.iterator().next().getGroupMembers();
         Iterator<BahmniObservation> bloodPressureMembersIterator = bloodPressureMembers.iterator();

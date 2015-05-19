@@ -73,8 +73,8 @@ public class BahmniObsServiceImplTest {
     public void shouldGetObsByPatientUuidConceptNameAndNumberOfVisits() throws Exception {
         Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
         Integer numberOfVisits = 3;
-        bahmniObsService.observationsFor(personUUID, Arrays.asList(bloodPressureConcept), numberOfVisits);
-        verify(obsDao).getObsFor(personUUID, Arrays.asList("Blood Pressure"), numberOfVisits);
+        bahmniObsService.observationsFor(personUUID, Arrays.asList(bloodPressureConcept), numberOfVisits, null, false);
+        verify(obsDao).getObsFor(personUUID, Arrays.asList("Blood Pressure"), numberOfVisits, null, false);
     }
 
     @Test

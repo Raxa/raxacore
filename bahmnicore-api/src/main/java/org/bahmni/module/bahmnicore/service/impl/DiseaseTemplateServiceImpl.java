@@ -88,7 +88,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         }
         List<Concept> observationTemplateConcepts = diseaseTemplateConcept.getSetMembers();
         for (Concept concept : observationTemplateConcepts) {
-            Collection<BahmniObservation> observations = bahmniObsService.observationsFor(patientUUID, Arrays.asList(concept), null);
+            Collection<BahmniObservation> observations = bahmniObsService.observationsFor(patientUUID, Arrays.asList(concept), null, null, false);
             List<ObservationTemplate> observationTemplates = observationTemplateMapper.map(observations, concept);
             diseaseTemplate.addObservationTemplates(observationTemplates);
         }
@@ -166,7 +166,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         if (null != diseaseTemplateConcept && CollectionUtils.isNotEmpty(diseaseTemplateConcept.getSetMembers())) {
             for (Concept concept : diseaseTemplateConcept.getSetMembers()) {
                 if (concept.getConceptClass().getName().equals(CASE_INTAKE_CONCEPT_CLASS) && CollectionUtils.isNotEmpty(visits)) {
-                    Collection<BahmniObservation> observations = bahmniObsService.observationsFor(patientUuid, Arrays.asList(concept), null);
+                    Collection<BahmniObservation> observations = bahmniObsService.observationsFor(patientUuid, Arrays.asList(concept), null, null, false);
                     observationTemplates.addAll(observationTemplateMapper.map(observations, concept));
                 } else {
                     Visit latestVisit = bahmniVisitService.getLatestVisit(patientUuid, concept.getName().getName());
