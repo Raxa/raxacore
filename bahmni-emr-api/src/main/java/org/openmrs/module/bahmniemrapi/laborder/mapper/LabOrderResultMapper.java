@@ -34,7 +34,7 @@ public class LabOrderResultMapper {
             Obs topLevelObs = newObs(testOrder, obsDate, concept, null);
             Obs labObs = newObs(testOrder, obsDate, concept, null);
             topLevelObs.addGroupMember(labObs);
-            if(StringUtils.isNotBlank(labOrderResult.getResult())) {
+            if(StringUtils.isNotBlank(labOrderResult.getResult())||StringUtils.isNotBlank(labOrderResult.getUploadedFileName())) {
                 labObs.addGroupMember(newResultObs(testOrder, obsDate, concept, labOrderResult));
                 if(labOrderResult.getAbnormal() != null) {
                     labObs.addGroupMember(newObs(testOrder, obsDate, getConceptByName(LAB_ABNORMAL), labOrderResult.getAbnormal().toString()));
