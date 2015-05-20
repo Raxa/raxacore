@@ -25,7 +25,7 @@ public class DiseaseSummaryDrugOrderMapper{
         DiseaseSummaryMap diseaseSummaryMap = new DiseaseSummaryMap();
         for (DrugOrder drugOrder : drugOrders) {
             String startDateTime = (DiseaseSummaryConstants.RESULT_TABLE_GROUP_BY_ENCOUNTER.equals(groupBy)) ?
-                    DateFormatUtils.format(drugOrder.getEncounter().getEncounterDatetime(), DiseaseSummaryConstants.DATE_TIME_FORMAT) : DateFormatUtils.format(drugOrder.getEncounter().getVisit().getStartDatetime(), DiseaseSummaryConstants.DATE_FORMAT);
+                    DateFormatUtils.format(drugOrder.getEncounter().getEncounterDatetime(), DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern()) : DateFormatUtils.format(drugOrder.getEncounter().getVisit().getStartDatetime(), DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
             String conceptName = drugOrder.getDrug().getConcept().getName().getName();
             try {
                 diseaseSummaryMap.put(startDateTime, conceptName, formattedDrugOrderValue(drugOrder), null, false);

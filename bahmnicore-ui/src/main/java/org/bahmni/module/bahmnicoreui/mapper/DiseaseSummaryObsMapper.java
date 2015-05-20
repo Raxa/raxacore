@@ -34,9 +34,9 @@ public class DiseaseSummaryObsMapper {
 
     private String getGroupByDate(BahmniObservation observation, String groupBy) {
         switch (StringUtils.defaultString(groupBy)) {
-            case DiseaseSummaryConstants.RESULT_TABLE_GROUP_BY_ENCOUNTER: return DateFormatUtils.format(observation.getEncounterDateTime(), DiseaseSummaryConstants.DATE_TIME_FORMAT);
-            case DiseaseSummaryConstants.RESULT_TABLE_GROUP_BY_OBS_DATETIME: return DateFormatUtils.format(observation.getObservationDateTime(), DiseaseSummaryConstants.DATE_TIME_FORMAT);
-            default: return DateFormatUtils.format(observation.getVisitStartDateTime(), DiseaseSummaryConstants.DATE_FORMAT);
+            case DiseaseSummaryConstants.RESULT_TABLE_GROUP_BY_ENCOUNTER: return DateFormatUtils.format(observation.getEncounterDateTime(), DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
+            case DiseaseSummaryConstants.RESULT_TABLE_GROUP_BY_OBS_DATETIME: return DateFormatUtils.format(observation.getObservationDateTime(), DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
+            default: return DateFormatUtils.format(observation.getVisitStartDateTime(), DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
         }
     }
 

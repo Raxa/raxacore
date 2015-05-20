@@ -13,7 +13,7 @@ public class DiseaseSummaryLabMapper {
         DiseaseSummaryMap diseaseSummaryMap = new DiseaseSummaryMap();
         for (LabOrderResult labOrderResult : labOrderResults) {
             String startDateTime = (DiseaseSummaryConstants.RESULT_TABLE_GROUP_BY_ENCOUNTER.equals(groupBy)) ?
-                    DateFormatUtils.format(labOrderResult.getAccessionDateTime(), DiseaseSummaryConstants.DATE_TIME_FORMAT) : DateFormatUtils.format(labOrderResult.getVisitStartTime(), DiseaseSummaryConstants.DATE_FORMAT);
+                    DateFormatUtils.format(labOrderResult.getAccessionDateTime(), DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern()) : DateFormatUtils.format(labOrderResult.getVisitStartTime(), DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
             String conceptName = labOrderResult.getTestName();
             if (conceptName != null) {
                 diseaseSummaryMap.put(startDateTime, conceptName, labOrderResult.getResult(), labOrderResult.getAbnormal(), true);
