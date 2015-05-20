@@ -19,7 +19,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
     private ObsDao obsDao;
     private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
-    private static final String[] NOT_STANDARD_OBS_CLASSES={"Diagnosis","LabSet","LabTest","Finding"};
+    private static final String[] NOT_STANDARD_OBS_CLASSES = {"Diagnosis", "LabSet", "LabTest", "Finding"};
     private VisitService visitService;
     private ObsService obsService;
     private ConceptService conceptService;
@@ -40,13 +40,13 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
     @Override
     public Collection<BahmniObservation> observationsFor(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits, List<String> unwantedObsConcepts, Boolean removeObsWithOrder) {
-        if(CollectionUtils.isNotEmpty(concepts)){
+        if (CollectionUtils.isNotEmpty(concepts)) {
             List<String> conceptNames = new ArrayList<>();
             for (Concept concept : concepts) {
                 conceptNames.add(concept.getName().getName());
             }
             List<Obs> observations = obsDao.getObsFor(patientUuid, conceptNames, numberOfVisits, unwantedObsConcepts, removeObsWithOrder);
-            return omrsObsToBahmniObsMapper.map(observations,concepts);
+            return omrsObsToBahmniObsMapper.map(observations, concepts);
         }
         return Collections.EMPTY_LIST;
     }
@@ -72,7 +72,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public Collection<BahmniObservation> getLatestObsByVisit(Visit visit, Collection<Concept> concepts, List<String> unwantedObsConcepts, Boolean removeObsWithOrder){
+    public Collection<BahmniObservation> getLatestObsByVisit(Visit visit, Collection<Concept> concepts, List<String> unwantedObsConcepts, Boolean removeObsWithOrder) {
         List<Obs> latestObs = new ArrayList<>();
         for (Concept concept : concepts) {
             latestObs.addAll(obsDao.getLatestObsByVisit(visit, concept.getName().getName(), 1, unwantedObsConcepts, removeObsWithOrder));
@@ -104,18 +104,18 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public Collection<BahmniObservation> getObservationForVisit(String visitUuid, List<String> conceptNames){
+    public Collection<BahmniObservation> getObservationForVisit(String visitUuid, List<String> conceptNames) {
         Visit visit = visitService.getVisitByUuid(visitUuid);
         List<Person> persons = new ArrayList<>();
         persons.add(visit.getPatient());
-        List<Obs> observations = obsService.getObservations(persons, new ArrayList<>(visit.getEncounters()),getConceptsForNames(conceptNames), null, null, null, null, null, null, null, null, false);
-        observations = new ArrayList<>(getObsAtTopLevel(observations,conceptNames));
+        List<Obs> observations = obsService.getObservations(persons, new ArrayList<>(visit.getEncounters()), getConceptsForNames(conceptNames), null, null, null, null, null, null, null, null, false);
+        observations = new ArrayList<>(getObsAtTopLevel(observations, conceptNames));
         return omrsObsToBahmniObsMapper.map(observations, null);
     }
 
-    private List<Concept> getConceptsForNames(Collection<String> conceptNames){
+    private List<Concept> getConceptsForNames(Collection<String> conceptNames) {
         List<Concept> concepts = new ArrayList<>();
-        if(conceptNames!= null){
+        if (conceptNames != null) {
             for (String conceptName : conceptNames) {
                 concepts.add(getConceptByName(conceptName));
             }
@@ -127,17 +127,20 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         return conceptService.getConceptByName(conceptName);
     }
 
-    private List<Obs> getObsAtTopLevel(List<Obs> observations, List<String> topLevelconceptNames) {
-        if(topLevelconceptNames == null) topLevelconceptNames = new ArrayList<>();
-        List<Obs> ret = new ArrayList<>();
+    private List<Obs> getObsAtTopLevel(List<Obs> observations, List<String> topLevelConceptNames) {
+        List<Obs> topLevelObservations = new ArrayList<>();
 
-        for (Obs o : observations) {
-            if (o.getObsGroup() == null || topLevelconceptNames.contains(o.getConcept().getName().getName())) {
-                if (!ret.contains(o)) {
-                    ret.add(o);
+        if (topLevelConceptNames != null) {
+            Set<String> topLevelConceptNamesWithoutCase = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+            topLevelConceptNamesWithoutCase.addAll(topLevelConceptNames);
+            for (Obs o : observations) {
+                if (o.getObsGroup() == null || topLevelConceptNamesWithoutCase.contains(o.getConcept().getName().getName().toLowerCase())) {
+                    if (!topLevelObservations.contains(o)) {
+                        topLevelObservations.add(o);
+                    }
                 }
             }
         }
-        return ret;
+        return topLevelObservations;
     }
 }

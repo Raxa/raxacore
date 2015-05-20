@@ -113,8 +113,8 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    public void shouldReturnObsForGivenConceptForGivenVisit() {
-        Collection<BahmniObservation> bahmniObservations = personObsService.getObservationForVisit("ad41fb41-a41a-4ad6-8835-2f59099acf5b", Arrays.asList("Systolic", "Diastolic"));
+    public void shouldReturnObsForGivenConceptForGivenVisitWithoutTakingObservationNamesCaseIntoAccount() {
+        Collection<BahmniObservation> bahmniObservations = personObsService.getObservationForVisit("ad41fb41-a41a-4ad6-8835-2f59099acf5b", Arrays.asList("SYSTOlic", "Diastolic"));
         assertEquals(2, bahmniObservations.size());
     }
 }
