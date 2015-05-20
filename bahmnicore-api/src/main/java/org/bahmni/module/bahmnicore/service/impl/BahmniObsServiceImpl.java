@@ -114,6 +114,12 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         return omrsObsToBahmniObsMapper.map(observations, null);
     }
 
+    @Override
+    public Collection<BahmniObservation> getObservationsForOrder(String orderUuid){
+        List<Obs> observations = obsDao.getObsForOrder(orderUuid);
+        return omrsObsToBahmniObsMapper.map(observations, null);
+    }
+
     private List<Concept> getConceptsForNames(Collection<String> conceptNames) {
         List<Concept> concepts = new ArrayList<>();
         if (conceptNames != null) {

@@ -88,4 +88,10 @@ public class BahmniObservationsController extends BaseRestController {
             return bahmniObsService.getLatestObsByVisit(visit, rootConcepts, obsIgnoreList, filterObsWithOrders);
         }
     }
+
+    @RequestMapping(method = RequestMethod.GET,params = {"orderUuid"})
+    @ResponseBody
+    public Collection<BahmniObservation> get(@RequestParam(value = "orderUuid", required = true) String orderUuid){
+        return bahmniObsService.getObservationsForOrder(orderUuid);
+    }
 }

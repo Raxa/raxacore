@@ -26,4 +26,5 @@ public interface ObsDao {
 
     List<Obs> getLatestObsByVisit(Visit visit, String conceptName, Integer limit, List<String> obsIgnoreList, Boolean filterObsWithOrders);
 
+    List<Obs> getObsForOrder(String orderUuid);
 }

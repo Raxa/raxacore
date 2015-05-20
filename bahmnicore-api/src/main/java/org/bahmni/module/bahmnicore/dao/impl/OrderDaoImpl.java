@@ -11,14 +11,10 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
-import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
-import org.openmrs.Obs;
+import org.hibernate.criterion.*;
+import org.openmrs.*;
 import org.openmrs.Order;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
+import org.openmrs.api.db.hibernate.HibernateOrderDAO;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -176,5 +172,21 @@ public class OrderDaoImpl implements OrderDao {
             visitIds.add(visit.getId());
         }
         return visitIds;
+    }
+
+    @Override
+    public List<Order> getAllOrders(Patient patient, List<OrderType> orderTypes) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Order.class);
+        criteria.add(Restrictions.eq("patient", patient));
+
+        if (orderTypes != null && orderTypes.size() > 0) {
+            criteria.add(Restrictions.in("orderType", orderTypes));
+        }
+
+        criteria.add(Restrictions.eq("voided", false));
+        criteria.add(Restrictions.ne("action", Order.Action.DISCONTINUE));
+        criteria.addOrder(org.hibernate.criterion.Order.desc("dateCreated"));
+
+        return criteria.list();
     }
 }

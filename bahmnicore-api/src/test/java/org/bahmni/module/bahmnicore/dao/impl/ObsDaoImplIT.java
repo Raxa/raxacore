@@ -43,6 +43,21 @@ public class ObsDaoImplIT extends BaseContextSensitiveTest {
         assertEquals(1, obsList.size());
     }
 
+    @Test
+    public void shouldRetrieveObservationsForAnOrder() throws Exception {
+        assertEquals(1, obsDao.getObsForOrder("5145792e-feb5-11e4-ae7f-080027b662ec").size());
+
+        List<Obs> obsForOrder = obsDao.getObsForOrder("129de0a3-05c4-444a-be03-e01b4c4b2419");
+        assertEquals(5, obsForOrder.size());
+        assertEquals((Integer)12, obsForOrder.get(0).getId());
+        assertEquals((Integer)11, obsForOrder.get(1).getId());
+        assertEquals((Integer)10, obsForOrder.get(2).getId());
+        assertEquals((Integer)8, obsForOrder.get(3).getId());
+        assertEquals((Integer)7, obsForOrder.get(4).getId());
+
+        assertEquals(0, obsDao.getObsForOrder("some-random-uuid").size());
+    }
+
     private Integer latestObsForConcept(Integer id) {
         return conceptToObsMap.get(id);
     }

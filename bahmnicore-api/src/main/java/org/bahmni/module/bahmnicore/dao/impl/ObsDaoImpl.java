@@ -168,6 +168,15 @@ public class ObsDaoImpl implements ObsDao {
         return withUniqueConcepts(filterByRootConcept(queryToGetObs.list(), conceptName));
     }
 
+    @Override
+    public List<Obs> getObsForOrder(String orderUuid) {
+        String queryString = "from Obs obs where obs.voided = false and obs.order.uuid = :orderUuid order by obs.obsDatetime desc" ;
+        Query queryToGetObs = sessionFactory.getCurrentSession().createQuery(queryString);
+        queryToGetObs.setString("orderUuid", orderUuid);
+
+        return queryToGetObs.list();
+    }
+
     private List<Obs> filterByRootConcept(List<Obs> obs, String parentConceptName) {
         List<Obs> filteredList = new ArrayList<>();
         for (Obs ob : obs) {

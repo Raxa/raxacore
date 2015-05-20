@@ -87,4 +87,14 @@ public class BahmniObservationsControllerTest {
         assertEquals(1, bahmniObservations.size());
     }
 
+    @Test
+    public void returnObservationsForOrder() throws Exception {
+        BahmniObservation obs = new BahmniObservation();
+        when(bahmniObsService.getObservationsForOrder("orderUuid")).thenReturn(Arrays.asList(obs));
+
+        BahmniObservationsController bahmniObservationsController = new BahmniObservationsController(bahmniObsService, conceptService, visitService);
+        Collection<BahmniObservation> bahmniObservations = bahmniObservationsController.get("orderUuid");
+
+        assertEquals(1, bahmniObservations.size());
+    }
 }

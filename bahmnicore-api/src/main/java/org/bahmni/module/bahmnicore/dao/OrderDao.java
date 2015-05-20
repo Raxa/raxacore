@@ -1,11 +1,8 @@
 package org.bahmni.module.bahmnicore.dao;
 
 import java.util.Collection;
-import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
-import org.openmrs.Order;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
+
+import org.openmrs.*;
 
 import java.util.List;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
@@ -24,4 +21,6 @@ public interface OrderDao {
     Collection<EncounterTransaction.DrugOrder> getDrugOrderForRegimen(String regimenName);
 
     List<Visit> getVisitsForUUids(String[] visitUuids);
+
+    List<Order> getAllOrders(Patient patient, List<OrderType> orderTypes);
 }

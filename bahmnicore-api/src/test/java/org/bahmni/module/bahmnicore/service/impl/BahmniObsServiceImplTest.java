@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -85,5 +86,11 @@ public class BahmniObsServiceImplTest {
         Visit visit = visitBuilder.withUUID("visitId").withEncounter(new Encounter(1)).withPerson(new Person()).build();
         bahmniObsService.getInitialObsByVisit(visit, Arrays.asList(weightConcept));
         verify(obsDao).getInitialObsByVisit(visit, "Weight", limit);
+    }
+
+    @Test
+    public void shouldGetAllObsForOrder() throws Exception {
+        bahmniObsService.getObservationsForOrder("orderUuid");
+        verify(obsDao, times(1)).getObsForOrder("orderUuid");
     }
 }

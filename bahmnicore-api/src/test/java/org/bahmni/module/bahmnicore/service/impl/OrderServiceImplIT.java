@@ -8,6 +8,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -49,6 +50,23 @@ public class OrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
         Assert.assertEquals(2, visitsWithOrders.size());
         Assert.assertNotEquals((Integer)3001, visitsWithOrders.get(0).getId());
         Assert.assertNotEquals((Integer)3001, visitsWithOrders.get(1).getId());
+    }
+
+
+    @Test
+    public void shouldGetOrdersForPatientAndOrderType() throws Exception{
+        executeDataSet("patientWithOrders.xml");
+        String orderTypeUuid = "bf7f3ab0-ae06-11e3-a5e2-0800200c9a66";
+        String patientUuid = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
+
+        List<Order> allOrders = bahmniOrderService.getAllOrders(patientUuid, orderTypeUuid);
+        Assert.assertEquals(5, allOrders.size());
+        Assert.assertEquals((Integer)20, allOrders.get(0).getId());
+        Assert.assertEquals((Integer)19, allOrders.get(1).getId());
+        Assert.assertEquals((Integer)15, allOrders.get(2).getId());
+        Assert.assertEquals((Integer)16, allOrders.get(3).getId());
+        Assert.assertEquals((Integer)17, allOrders.get(4).getId());
+
     }
 
     private void ensureCorrectDataSetup(String patientUuid, String radiologyOrderTypeUuid) {

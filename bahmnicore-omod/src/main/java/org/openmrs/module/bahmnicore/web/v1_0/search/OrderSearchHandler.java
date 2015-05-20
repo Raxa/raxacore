@@ -28,7 +28,7 @@ public class OrderSearchHandler implements SearchHandler{
 
     @Override
     public SearchConfig getSearchConfig() {
-        return new SearchConfig("pendingOrders", RestConstants.VERSION_1 + "/order", Arrays.asList("1.9.*"),
+        return new SearchConfig("byOrderType", RestConstants.VERSION_1 + "/order", Arrays.asList("1.9.*", "1.10.*"),
                 new SearchQuery.Builder("Allows you to find orders by orderType for a patient").withRequiredParameters("patientUuid", "orderTypeUuid").build());
     }
 
@@ -36,10 +36,7 @@ public class OrderSearchHandler implements SearchHandler{
     public PageableResult search(RequestContext requestContext) throws ResponseException {
         String patientUuid = requestContext.getParameter("patientUuid");
         String orderTypeUuid = requestContext.getParameter("orderTypeUuid");
-
-        List<Order> pendingOrders = bahmniOrderService.getPendingOrders(patientUuid, orderTypeUuid);
-        return new AlreadyPaged<>(requestContext, pendingOrders, false);
+        List<Order> allOrders = bahmniOrderService.getAllOrders(patientUuid, orderTypeUuid);
+        return new AlreadyPaged<>(requestContext, allOrders, false);
     }
 }
-
-

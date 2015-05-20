@@ -9,5 +9,7 @@ import java.util.List;
 public interface OrderService {
     List<Order> getPendingOrders(String patientUuid, String orderTypeUuid);
 
+    List<Order> getAllOrders(String patientUuid, String orderTypeUuid);
+
     List<Visit> getVisitsWithOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits);
 }
