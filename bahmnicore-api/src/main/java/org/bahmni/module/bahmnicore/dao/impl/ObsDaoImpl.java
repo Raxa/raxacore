@@ -53,15 +53,15 @@ public class ObsDaoImpl implements ObsDao {
 
     }
 
-    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, Integer limit, String order, List<String> unwantedObsConcepts, Boolean removeObsWithOrder) {
+    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, Integer limit, String order, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
         List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
         if (listOfVisitIds == null || listOfVisitIds.isEmpty())
             return new ArrayList<>();
 
-        return getObsByPatientAndVisit(patientUuid, conceptNames, listOfVisitIds, limit, order, unwantedObsConcepts, removeObsWithOrder);
+        return getObsByPatientAndVisit(patientUuid, conceptNames, listOfVisitIds, limit, order, obsIgnoreList, filterObsWithOrders);
     }
 
-    private List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit, String order, List<String> unwantedObsConcepts, Boolean removeObsWithOrder) {
+    private List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit, String order, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
         Query queryToGetObservations = sessionFactory.getCurrentSession().createQuery(
                 "select obs " +
                         " from Obs as obs, ConceptName as cn " +
@@ -73,10 +73,10 @@ public class ObsDaoImpl implements ObsDao {
                         " and cn.voided = false " +
                         " and obs.voided = false " +
                         " order by obs.obsDatetime " + order);
-        return getObsByPatientAndVisit(patientUuid, conceptNames, listOfVisitIds,limit, unwantedObsConcepts, removeObsWithOrder);
+        return getObsByPatientAndVisit(patientUuid, conceptNames, listOfVisitIds,limit, obsIgnoreList, filterObsWithOrders);
     }
 
-    private List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit, List<String> unwantedObsConcepts, Boolean removeObsWithOrder) {
+    private List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
 
         StringBuilder query = new StringBuilder("select obs from Obs as obs, ConceptName as cn " +
                 " where obs.person.uuid = :patientUuid " +
@@ -86,10 +86,10 @@ public class ObsDaoImpl implements ObsDao {
                 " and cn.conceptNameType = :conceptNameType " +
                 " and cn.voided = false and obs.voided = false ");
 
-        if(null != unwantedObsConcepts && unwantedObsConcepts.size() > 0) {
-            query.append(" and cn.name not in (:unwantedObsConcepts) ");
+        if(null != obsIgnoreList && obsIgnoreList.size() > 0) {
+            query.append(" and cn.name not in (:obsIgnoreList) ");
         }
-        if(removeObsWithOrder) {
+        if(filterObsWithOrders) {
             query.append( " and obs.order.orderId is not null ");
         }
         query.append(" order by obs.obsDatetime desc ");
@@ -100,8 +100,8 @@ public class ObsDaoImpl implements ObsDao {
         queryToGetObservations.setParameterList("conceptNames", conceptNames);
         queryToGetObservations.setParameterList("listOfVisitIds", listOfVisitIds);
         queryToGetObservations.setParameter("conceptNameType", ConceptNameType.FULLY_SPECIFIED);
-        if (null != unwantedObsConcepts && unwantedObsConcepts.size() > 0) {
-            queryToGetObservations.setParameterList("unwantedObsConcepts", unwantedObsConcepts);
+        if (null != obsIgnoreList && obsIgnoreList.size() > 0) {
+            queryToGetObservations.setParameterList("obsIgnoreList", obsIgnoreList);
         }
 
         return queryToGetObservations.list();
@@ -116,16 +116,16 @@ public class ObsDaoImpl implements ObsDao {
         return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, ASC, null, false);
     }
 
-    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, List<String> unwantedObsConcepts, Boolean removeObsWithOrder) {
-        return getObsFor(patientUuid,conceptNames,numberOfVisits,-1, DESC, unwantedObsConcepts, removeObsWithOrder);
+    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
+        return getObsFor(patientUuid,conceptNames,numberOfVisits,-1, DESC, obsIgnoreList, filterObsWithOrders);
     }
 
-    public List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit, List<String> unwantedObsConcepts, Boolean removeObsWithOrder) {
-        return getObsFor(patientUuid,Arrays.asList(conceptName),numberOfVisits, limit, DESC, unwantedObsConcepts, removeObsWithOrder);
+    public List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
+        return getObsFor(patientUuid,Arrays.asList(conceptName),numberOfVisits, limit, DESC, obsIgnoreList, filterObsWithOrders);
     }
 
-    public List<Obs> getLatestObsByVisit(Visit visit, String conceptName, Integer limit, List<String> unwantedObsConcepts, Boolean removeObsWithOrder){
-        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, DESC, unwantedObsConcepts, removeObsWithOrder);
+    public List<Obs> getLatestObsByVisit(Visit visit, String conceptName, Integer limit, List<String> obsIgnoreList, Boolean filterObsWithOrders){
+        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, DESC, obsIgnoreList, filterObsWithOrders);
     }
 
     @Override

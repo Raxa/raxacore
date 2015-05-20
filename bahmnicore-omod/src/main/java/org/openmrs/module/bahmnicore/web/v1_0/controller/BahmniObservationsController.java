@@ -43,20 +43,22 @@ public class BahmniObservationsController extends BaseRestController {
                                        @RequestParam(value = "concept", required = true) List<String> rootConceptNames,
                                        @RequestParam(value = "scope", required = false) String scope,
                                        @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
-                                       @RequestParam(value = "unwantedObsConcepts", required = false) List<String> unwantedObsConcepts,
-                                       @RequestParam(value = "removeObsWithOrder", required = false) Boolean removeObsWithOrder) {
+                                       @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
+                                       @RequestParam(value = "filterObsWithOrders", required = false, defaultValue="false") Boolean filterObsWithOrders) {
 
         List<Concept> rootConcepts = new ArrayList<>();
         for (String rootConceptName : rootConceptNames) {
             rootConcepts.add(conceptService.getConceptByName(rootConceptName));
         }
 
+        System.out.println("filterObsWithOrders - "+filterObsWithOrders);
+
         if (ObjectUtils.equals(scope, LATEST)) {
-            return bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits, unwantedObsConcepts, removeObsWithOrder);
+            return bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders);
         } else if (ObjectUtils.equals(scope, INITIAL)) {
             return bahmniObsService.getInitial(patientUUID, rootConcepts, numberOfVisits);
         } else {
-            return bahmniObsService.observationsFor(patientUUID, rootConcepts, numberOfVisits, unwantedObsConcepts, removeObsWithOrder);
+            return bahmniObsService.observationsFor(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders);
         }
 
     }
@@ -66,8 +68,8 @@ public class BahmniObservationsController extends BaseRestController {
     public Collection<BahmniObservation> get(@RequestParam(value = "visitUuid", required = true) String visitUuid,
                                              @RequestParam(value = "scope", required = false) String scope,
                                              @RequestParam(value = "concept", required = false) List<String> conceptNames,
-                                             @RequestParam(value = "unwantedObsConcepts", required = false) List<String> unwantedObsConcepts,
-                                             @RequestParam(value = "removeObsWithOrder", required = false) Boolean removeObsWithOrder){
+                                             @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
+                                             @RequestParam(value = "filterObsWithOrders", required = false, defaultValue="false") Boolean filterObsWithOrders){
 
         if (ObjectUtils.notEqual(scope, LATEST) && ObjectUtils.notEqual(scope, INITIAL) ) {
             return bahmniObsService.getObservationForVisit(visitUuid, conceptNames);
@@ -83,7 +85,7 @@ public class BahmniObservationsController extends BaseRestController {
         if (ObjectUtils.equals(scope, INITIAL)) {
             return bahmniObsService.getInitialObsByVisit(visit, rootConcepts);
         } else {
-            return bahmniObsService.getLatestObsByVisit(visit, rootConcepts, unwantedObsConcepts, removeObsWithOrder);
+            return bahmniObsService.getLatestObsByVisit(visit, rootConcepts, obsIgnoreList, filterObsWithOrders);
         }
     }
 }

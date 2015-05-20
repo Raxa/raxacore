@@ -12,7 +12,7 @@ public interface ObsDao {
 
     List<Concept> getNumericConceptsForPerson(String personUUID);
 
-    List<Obs> getObsFor(String patientUuid, List<String> conceptName, Integer numberOfVisits, List<String> unwantedObsConcepts, Boolean removeObsWithOrder);
+    List<Obs> getObsFor(String patientUuid, List<String> conceptName, Integer numberOfVisits, List<String> obsIgnoreList, Boolean filterObsWithOrders);
 
     List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer limit);
 
@@ -20,10 +20,10 @@ public interface ObsDao {
 
     List<Obs> getInitialObsByVisit(Visit visit, String conceptName, Integer limit);
 
-    List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit, List<String> unwantedObsConcepts, Boolean removeObsWithOrder);
+    List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit, List<String> obsIgnoreList, Boolean filterObsWithOrders);
 
     List<Obs> getLatestObsForConceptSetByVisit(String patientUuid, String conceptNames, Integer visitId);
 
-    List<Obs> getLatestObsByVisit(Visit visit, String conceptName, Integer limit, List<String> unwantedObsConcepts, Boolean removeObsWithOrder);
+    List<Obs> getLatestObsByVisit(Visit visit, String conceptName, Integer limit, List<String> obsIgnoreList, Boolean filterObsWithOrders);
 
 }
