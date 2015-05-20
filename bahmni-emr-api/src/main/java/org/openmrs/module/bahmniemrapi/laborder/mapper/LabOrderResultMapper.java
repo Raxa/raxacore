@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmniemrapi.laborder.mapper;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.*;
 import org.openmrs.api.APIException;
@@ -36,7 +37,7 @@ public class LabOrderResultMapper {
             topLevelObs.addGroupMember(labObs);
             if(StringUtils.isNotBlank(labOrderResult.getResult())||StringUtils.isNotBlank(labOrderResult.getUploadedFileName())) {
                 labObs.addGroupMember(newResultObs(testOrder, obsDate, concept, labOrderResult));
-                if(labOrderResult.getAbnormal() != null) {
+                if(BooleanUtils.isTrue(labOrderResult.getAbnormal())) {
                     labObs.addGroupMember(newObs(testOrder, obsDate, getConceptByName(LAB_ABNORMAL), labOrderResult.getAbnormal().toString()));
                 }
                 if (concept.isNumeric() && hasRange(labOrderResult)) {

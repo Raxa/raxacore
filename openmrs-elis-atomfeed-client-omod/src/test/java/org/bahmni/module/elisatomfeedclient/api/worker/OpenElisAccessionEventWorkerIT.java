@@ -90,7 +90,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
         final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(5, resultMembers.size());
+        assertEquals(4, resultMembers.size());
     }
 
     @Test
@@ -164,7 +164,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
         final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(4, resultMembers.size());
+        assertEquals(3, resultMembers.size());
     }
 
     @Test
@@ -216,11 +216,11 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
         final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(5, resultMembers.size());
+        assertEquals(4, resultMembers.size());
 
         Obs testResultObs = getObsByConceptUuid(testLevelObs, haemoglobinConceptUuid);
         assertNotNull(testResultObs);
-        assertEquals(5, testResultObs.getGroupMembers().size());
+        assertEquals(4, testResultObs.getGroupMembers().size());
 
     }
 
@@ -273,11 +273,11 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
         final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(1, resultMembers.size());
+        assertEquals(4, resultMembers.size());
 
         Obs testResultObs = getObsByConceptUuid(testLevelObs, haemoglobinConceptUuid);
         assertNotNull(testResultObs);
-        assertEquals(1, testResultObs.getGroupMembers().size());
+        assertEquals(4, testResultObs.getGroupMembers().size());
 
         Obs documentUploadedObs = getObsByConceptUuid(resultMembers, documentConceptUuid);
         assertNotNull(documentUploadedObs);
@@ -346,14 +346,14 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         Set<Obs> testLevelObs = haemoglobinTestResultObs.getGroupMembers();
         assertEquals(1, testLevelObs.size());
         Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(5, resultMembers.size());
+        assertEquals(4, resultMembers.size());
 
         Obs esrTestResultObs = getObsByConceptUuid(panel1ResultMembers, esrConceptUuid);
         assertNotNull(esrTestResultObs);
         testLevelObs = esrTestResultObs.getGroupMembers();
         assertEquals(1, testLevelObs.size());
         resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(4, resultMembers.size());
+        assertEquals(3, resultMembers.size());
     }
 
     @Test
@@ -415,14 +415,14 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         Set<Obs> testLevelObs = haemoglobinTestResultObs.getGroupMembers();
         assertEquals(1, testLevelObs.size());
         Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(4, resultMembers.size());
+        assertEquals(3, resultMembers.size());
 
         Obs nirtoTestResultObs = getObsByConceptUuid(obs, nitroUreaConceptUuid);
         assertNotNull(nitroUreaConceptUuid);
         testLevelObs = nirtoTestResultObs.getGroupMembers();
         assertEquals(1, testLevelObs.size());
         resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(4, resultMembers.size());
+        assertEquals(3, resultMembers.size());
     }
 
     @Test
@@ -495,7 +495,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         Set<Obs> testLevelObs = nitroTestResultObs.getGroupMembers();
         assertEquals(1, testLevelObs.size());
         Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(5, resultMembers.size());
+        assertEquals(4, resultMembers.size());
         Obs resultObs = getObsByConceptUuid(resultMembers, nitroUreaConceptUuid);
         assertEquals(new Double(20.0), resultObs.getValueNumeric());
 
@@ -842,11 +842,11 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
         final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(4, resultMembers.size());
+        assertEquals(3, resultMembers.size());
 
         Obs testResultObs = getObsByConceptUuid(testLevelObs, haemoglobinConceptUuid);
         assertNotNull(testResultObs);
-        assertEquals(4, testResultObs.getGroupMembers().size());
+        assertEquals(3, testResultObs.getGroupMembers().size());
         assertNotNull(notesEncounter);
         assertEquals("aa1c6bf8-7846-11e3-a96a-09xD371c1b75",ProviderHelper.getProviderFrom(notesEncounter).getUuid());
         Set<Obs> notesObservations = notesEncounter.getObs();
@@ -1105,11 +1105,11 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
         final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(4, resultMembers.size());
+        assertEquals(3, resultMembers.size());
 
         Obs testResultObs = getObsByConceptUuid(testLevelObs, haemoglobinConceptUuid);
         assertNotNull(testResultObs);
-        assertEquals(4, testResultObs.getGroupMembers().size());
+        assertEquals(3, testResultObs.getGroupMembers().size());
 
     }
 
