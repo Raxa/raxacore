@@ -1,5 +1,7 @@
 package org.bahmni.module.bahmnicoreui.service.impl;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.bahmni.module.bahmnicoreui.constant.DiseaseSummaryConstants;
 import org.bahmni.module.bahmnicoreui.contract.ConceptValue;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
@@ -12,12 +14,15 @@ import org.openmrs.api.PatientService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.junit.Assert.*;
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiveTest {
 
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DiseaseSummaryConstants.DATE_FORMAT);
+    SimpleDateFormat simpleDateTimeFormat = new SimpleDateFormat(DiseaseSummaryConstants.DATE_TIME_FORMAT);
 
     private BahmniDiseaseSummaryServiceImpl bahmniDiseaseSummaryData;
     @Autowired
@@ -55,7 +60,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertNotNull(obsTable);
         assertEquals(1, obsTable.size());
 
-        Map<String, ConceptValue> obsInVisit = obsTable.get("2008-09-18");
+        Map<String, ConceptValue> obsInVisit = obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2008-09-18")));
         assertEquals(1, obsInVisit.size());
         assertEquals("120.0", obsInVisit.get("Weight").getValue());
 
@@ -78,11 +83,11 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertNotNull(obsTable);
         assertEquals(2, obsTable.size());
 
-        Map<String, ConceptValue> obsForVisit = obsTable.get("2008-09-18");
+        Map<String, ConceptValue> obsForVisit = obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2008-09-18")));
         assertEquals(1, obsForVisit.size());
         assertEquals("120.0", obsForVisit.get("Weight").getValue());
 
-        obsForVisit = obsTable.get("2008-08-18");
+        obsForVisit = obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2008-08-18")));
         assertEquals(2, obsForVisit.size());
         assertEquals("120.0", obsForVisit.get("Systolic").getValue());
         assertTrue(obsForVisit.get("Systolic").getAbnormal());
@@ -107,7 +112,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertNotNull(labTable);
         assertEquals(1, labTable.size());
 
-        Map<String, ConceptValue> labResultsInVisit = labTable.get("2013-09-26");
+        Map<String, ConceptValue> labResultsInVisit = labTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2013-09-26")));
         assertNotNull(labResultsInVisit);
         assertEquals(1, labResultsInVisit.size());
         assertEquals("new Result for PS Malaria", labResultsInVisit.get("PS for Malaria").getValue());
@@ -130,12 +135,12 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertNotNull(labTable);
         assertEquals(2, labTable.size());
 
-        Map<String, ConceptValue> labResultsInVisit = labTable.get("2013-09-26");
+        Map<String, ConceptValue> labResultsInVisit = labTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2013-09-26")));
         assertNotNull(labResultsInVisit);
         assertEquals(1, labResultsInVisit.size());
         assertEquals("new Result for PS Malaria", labResultsInVisit.get("PS for Malaria").getValue());
 
-        labResultsInVisit = labTable.get("2005-09-26");
+        labResultsInVisit = labTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2005-09-26")));
         assertNotNull(labResultsInVisit);
         assertEquals(1, labResultsInVisit.size());
         assertEquals("almost dead of PS Malaria", labResultsInVisit.get("PS for Malaria").getValue());
@@ -158,7 +163,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertNotNull(drugTable);
         assertEquals(1, drugTable.size());
 
-        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get("2012-12-12");
+        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2012-12-12")));
         assertNotNull(durgOrdersInVisit);
         assertEquals(1, durgOrdersInVisit.size());
         assertEquals("250mg,325.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
@@ -182,14 +187,14 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertNotNull(drugTable);
         assertEquals(2, drugTable.size());
 
-        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get("2012-12-12");
+        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2012-12-12")));
         assertNotNull(durgOrdersInVisit);
         assertEquals(2, durgOrdersInVisit.size());
         assertEquals("100mg,225.0,1/day x 7 days/week", durgOrdersInVisit.get("cetirizine 100mg").getValue());
         assertEquals("250mg,325.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
 
 
-        durgOrdersInVisit = drugTable.get("2001-09-22");
+        durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2001-09-22")));
         assertNotNull(durgOrdersInVisit);
         assertEquals(1, durgOrdersInVisit.size());
         assertEquals("250mg,125.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
@@ -213,7 +218,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertNotNull(obsTable);
         assertEquals(1, obsTable.size());
 
-        Map<String, ConceptValue> obsForVisit = obsTable.get("2008-09-18");
+        Map<String, ConceptValue> obsForVisit = obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2008-09-18")));
         assertEquals(1, obsForVisit.size());
         assertEquals("120.0", obsForVisit.get("Weight").getValue());
 
@@ -236,7 +241,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertNotNull(labTable);
         assertEquals(1, labTable.size());
 
-        Map<String, ConceptValue> labResultsInVisit = labTable.get("2013-09-26");
+        Map<String, ConceptValue> labResultsInVisit = labTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2013-09-26")));
         assertNotNull(labResultsInVisit);
         assertEquals(1, labResultsInVisit.size());
         assertEquals("new Result for PS Malaria", labResultsInVisit.get("PS for Malaria").getValue());
@@ -260,7 +265,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertNotNull(drugTable);
         assertEquals(1, drugTable.size());
 
-        Map<String, ConceptValue> drugOrdersInVisit = drugTable.get("2001-09-22");
+        Map<String, ConceptValue> drugOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2001-09-22")));
         assertNotNull(drugOrdersInVisit);
         assertEquals(1, drugOrdersInVisit.size());
         assertEquals("250mg,125.0,1/day x 7 days/week", drugOrdersInVisit.get("Calpol 250mg").getValue());
@@ -298,6 +303,10 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         }};
         diseaseDataParams.setObsConcepts(obsConcepts);
         DiseaseSummaryData diseaseSummary = bahmniDiseaseSummaryData.getDiseaseSummary("86526ed5-3c11-11de-a0ba-001e378eb67a", diseaseDataParams);
-        assertEquals("CCAnswer1", diseaseSummary.getTabularData().get("2008-09-18").get("CodedConcept").getValue());
+        assertEquals("CCAnswer1", diseaseSummary.getTabularData().get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2008-09-18"))).get("CodedConcept").getValue());
+    }
+
+    private String frameDiseaseSummaryMapKey(Date date) {
+        return DateFormatUtils.format(date, DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
     }
 }
