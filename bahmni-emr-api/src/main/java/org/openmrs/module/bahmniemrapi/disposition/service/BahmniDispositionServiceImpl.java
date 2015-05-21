@@ -89,7 +89,7 @@ public class BahmniDispositionServiceImpl implements BahmniDispositionService {
     private void addBahmniDisposition(List<BahmniDisposition> dispositions, Set<EncounterTransaction.Provider> eTProvider, Obs observation) {
         EncounterTransaction.Disposition eTDisposition = dispositionMapper.getDisposition(observation);
         if(eTDisposition!=null){
-            dispositions.add(bahmniDispositionMapper.map(eTDisposition, eTProvider));
+            dispositions.add(bahmniDispositionMapper.map(eTDisposition, eTProvider, observation.getCreator()));
         }
     }
 }

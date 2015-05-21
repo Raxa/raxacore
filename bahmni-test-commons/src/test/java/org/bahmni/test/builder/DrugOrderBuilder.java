@@ -15,9 +15,7 @@ package org.bahmni.test.builder;
 
 import org.openmrs.*;
 
-import java.util.Date;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 public class DrugOrderBuilder {
     private DrugOrder order;
@@ -123,6 +121,18 @@ public class DrugOrderBuilder {
     public DrugOrderBuilder withVisit(Visit visit) {
         order.setEncounter(visit.getEncounters().iterator().next());
         order.getEncounter().setVisit(visit);
+        return this;
+    }
+
+    public DrugOrderBuilder withCreator(String personNameValue){
+        Person personObj = new Person();
+        PersonName personName = new PersonName();
+        personName.setGivenName(personNameValue);
+        Set<PersonName> personNames = new HashSet<>();
+        personNames.add(personName);
+        personObj.setNames(personNames);
+        User user = new User(personObj);
+        order.setCreator(user);
         return this;
     }
 }

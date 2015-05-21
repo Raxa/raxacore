@@ -3,6 +3,9 @@ package org.openmrs.module.bahmniemrapi.disposition.mapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Person;
+import org.openmrs.PersonName;
+import org.openmrs.User;
 import org.openmrs.module.bahmniemrapi.disposition.contract.BahmniDisposition;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
@@ -38,7 +41,17 @@ public class BahmniDispositionMapperTest {
         disposition.setConceptName("Absconding");
         disposition.setAdditionalObs(new ArrayList<EncounterTransaction.Observation>());
 
-        BahmniDisposition bahmniDisposition = bahmniDispositionMapper.map(disposition, providers);
+
+        Person person = new Person();
+        PersonName personName = new PersonName();
+        personName.setGivenName("testPersonName");
+        Set<PersonName> personNames = new HashSet<>();
+        personNames.add(personName);
+        person.setNames(personNames);
+        User user = new User(person);
+
+
+        BahmniDisposition bahmniDisposition = bahmniDispositionMapper.map(disposition, providers, user);
 
         Assert.assertEquals("1234",bahmniDisposition.getCode());
         Assert.assertEquals("a26a8c32-6fc1-4f5e-8a96-f5f5b05b87d",bahmniDisposition.getExistingObs());

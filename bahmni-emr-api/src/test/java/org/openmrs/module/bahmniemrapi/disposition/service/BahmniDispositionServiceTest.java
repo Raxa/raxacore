@@ -103,13 +103,11 @@ public class BahmniDispositionServiceTest {
         BahmniDisposition bahmniDisposition = new BahmniDisposition();
         bahmniDisposition.setCode("1234");
 
-
-
         when(visitService.getVisitByUuid("visitUuid")).thenReturn(visit);
         when(encounterProviderMapper.convert(new HashSet<EncounterProvider>())).thenReturn(eTProvider);
         when(observationTypeMatcher.getObservationType(height)).thenReturn(ObservationTypeMatcher.ObservationType.DISPOSITION);
         when(dispositionMapper.getDisposition(height)).thenReturn(eTDisposition);
-        when(bahmniDispositionMapper.map(eTDisposition, eTProvider)).thenReturn(bahmniDisposition);
+        when(bahmniDispositionMapper.map(eTDisposition, eTProvider, null)).thenReturn(bahmniDisposition);
 
         List<BahmniDisposition> actualDispositions = bahmniDispositionService.getDispositionByVisitUuid("visitUuid");
 
@@ -179,7 +177,7 @@ public class BahmniDispositionServiceTest {
         when(encounterProviderMapper.convert(new HashSet<EncounterProvider>())).thenReturn(eTProvider);
         when(observationTypeMatcher.getObservationType(height)).thenReturn(ObservationTypeMatcher.ObservationType.DISPOSITION);
         when(dispositionMapper.getDisposition(height)).thenReturn(eTDisposition);
-        when(bahmniDispositionMapper.map(eTDisposition, eTProvider)).thenReturn(bahmniDisposition);
+        when(bahmniDispositionMapper.map(eTDisposition, eTProvider, null)).thenReturn(bahmniDisposition);
 
         List<BahmniDisposition> actualDispositions = bahmniDispositionService.getDispositionByVisits(Arrays.asList(visit));
 

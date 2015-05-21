@@ -4,11 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
-import org.openmrs.Person;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.module.bahmniemrapi.builder.ConceptBuilder;
 import org.openmrs.module.bahmniemrapi.builder.EncounterBuilder;
 import org.openmrs.module.bahmniemrapi.builder.ObsBuilder;
@@ -52,7 +48,8 @@ public class OMRSObsToBahmniObsMapperTest {
     @Test
     public void return_mapped_observations_for_abnormal_observation_structure() throws Exception {
         Date date = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse("January 2, 2010");
-        Person person = new PersonBuilder().withUUID("puuid").build();
+        Person person = new PersonBuilder().withUUID("puuid").withPersonName("testPersonName").build();
+        User user = new User(person);
         Visit visit = new VisitBuilder().withPerson(person).withUUID("vuuid").withStartDatetime(date).build();
         Encounter encounter = new EncounterBuilder().withVisit(visit).withPatient(person).withUUID("euuid").withDatetime(date).build();
 
@@ -76,7 +73,7 @@ public class OMRSObsToBahmniObsMapperTest {
         Obs valueObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(valueConcept).withValue("ovalue").withDatetime(date).build();
         Obs obs1 = new ObsBuilder().withConcept(conceptDetailsConceptSet).withGroupMembers(valueObs, abnormalObs, durationObs).build();
         Obs obs2 = new ObsBuilder().withConcept(valueConcept2).withValue("ovalue2").build();
-        Obs parentObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(parentConcept).withDatetime(date).withGroupMembers(obs1, obs2).build();
+        Obs parentObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(parentConcept).withDatetime(date).withGroupMembers(obs1, obs2).withCreator(user).build();
 
         Collection<BahmniObservation> parentsObservations = new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null), observationTypeMatcher).map(asList(parentObs), Arrays.asList(parentConcept));
         assertEquals(1, parentsObservations.size());

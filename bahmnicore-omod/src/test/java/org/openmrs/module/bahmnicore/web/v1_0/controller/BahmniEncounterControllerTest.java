@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
 import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
@@ -23,6 +24,8 @@ public class BahmniEncounterControllerTest {
     private EmrEncounterService emrEncounterService;
     @Mock
     private BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper;
+    @Mock
+    private BahmniEncounterTransactionService bahmniEncounterTransactionService;
 
     private BahmniEncounterController bahmniEncounterController;
 
@@ -44,11 +47,11 @@ public class BahmniEncounterControllerTest {
         EncounterSearchParameters encounterSearchParameters = new EncounterSearchParameters();
         encounterSearchParameters.setIncludeAll(false);
 
-        when(emrEncounterService.find(encounterSearchParameters)).thenReturn(encounterTransactions);
+        when(bahmniEncounterTransactionService.find(encounterSearchParameters)).thenReturn(encounterTransactions);
         when(bahmniEncounterTransactionMapper.map(et1, false)).thenReturn(new BahmniEncounterTransaction(et1));
         when(bahmniEncounterTransactionMapper.map(et2, false)).thenReturn(new BahmniEncounterTransaction(et2));
 
-        bahmniEncounterController = new BahmniEncounterController(null, null, null, null, emrEncounterService, null, null, bahmniEncounterTransactionMapper);
+        bahmniEncounterController = new BahmniEncounterController(null, null, null, null, emrEncounterService, null, bahmniEncounterTransactionService, bahmniEncounterTransactionMapper);
 
         List<BahmniEncounterTransaction> bahmniEncounterTransactions = bahmniEncounterController.find(encounterSearchParameters);
 
