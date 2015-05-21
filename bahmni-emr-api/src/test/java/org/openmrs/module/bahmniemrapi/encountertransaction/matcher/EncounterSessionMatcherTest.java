@@ -2,14 +2,22 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.matcher;
 
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.BDDMockito;
 import org.mockito.Mock;
 import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.openmrs.module.bahmniemrapi.builder.EncounterBuilder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmnimapping.services.BahmniLocationService;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -26,12 +34,18 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Context.class)
 public class EncounterSessionMatcherTest {
     @Mock
     AdministrationService administrationService;
     @Mock
     BahmniLocationService bahmniLocationService;
     Set<Provider> providers;
+    Set<EncounterProvider> encounterProviders;
+    User creator;
+    @Mock
+    UserContext userContext;
     EncounterType encounterType;
     @Mock
     Encounter encounter;
@@ -49,7 +63,14 @@ public class EncounterSessionMatcherTest {
         providers = new HashSet<>();
         Provider provider = new Provider();
         provider.setId(1234);
+        provider.setProviderId(1234);
         providers.add(provider);
+
+        encounterProviders = new HashSet<>();
+        EncounterProvider encounterProvider = new EncounterProvider();
+        encounterProvider.setProvider(provider);
+        encounterProviders.add(encounterProvider);
+
         encounterType = new EncounterType("Test", "Test");
 
         encounter = mock(Encounter.class);
@@ -58,7 +79,18 @@ public class EncounterSessionMatcherTest {
         provider.setPerson(person);
         location = new Location();
         location.setUuid("location");
+
+        creator = new User(person);
+        creator.setId(1234);
+
+        userContext = mock(UserContext.class);
+
         when(administrationService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
+
+        PowerMockito.mockStatic(Context.class);
+        BDDMockito.given(Context.getUserContext()).willReturn(userContext);
+
+        when(userContext.getAuthenticatedUser()).thenReturn(creator);
     }
 
     @Test
@@ -68,6 +100,9 @@ public class EncounterSessionMatcherTest {
         when(encounter.getDateChanged()).thenReturn(new Date());
         when(encounter.getDateCreated()).thenReturn(DateUtils.addHours(new Date(), -2));
         when(encounter.getLocation()).thenReturn(location);
+        when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
+        when(encounter.getCreator()).thenReturn(creator);
+
         visit.addEncounter(encounter);
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers, location));
@@ -83,6 +118,8 @@ public class EncounterSessionMatcherTest {
         when(encounter.getDateChanged()).thenReturn(null);
         when(encounter.getDateCreated()).thenReturn(new Date());
         when(encounter.getLocation()).thenReturn(location);
+        when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
+        when(encounter.getCreator()).thenReturn(creator);
         visit.addEncounter(encounter);
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers, location));
@@ -166,6 +203,8 @@ public class EncounterSessionMatcherTest {
         when(encounter.getEncounterType()).thenReturn(encounterType);
         when(encounter.getDateChanged()).thenReturn(new Date());
         when(encounter.getLocation()).thenReturn(null);
+        when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
+        when(encounter.getCreator()).thenReturn(creator);
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers, null));
 
         assertNotNull(encounterReturned);
@@ -178,6 +217,8 @@ public class EncounterSessionMatcherTest {
         when(encounter.getEncounterType()).thenReturn(encounterType);
         when(encounter.getDateChanged()).thenReturn(new Date());
         when(encounter.getLocation()).thenReturn(location);
+        when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
+        when(encounter.getCreator()).thenReturn(creator);
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers, location, null));
 
@@ -199,8 +240,8 @@ public class EncounterSessionMatcherTest {
 
     @Test
     public void shouldReturnEncounterBasedOnEncounterTypeMappedToLocation(){
-        Encounter encounter1 = new EncounterBuilder().withEncounterType(new EncounterType()).withLocation(location).withProvider(person).withDateCreated(new Date()).build();
-        Encounter encounter2 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).build();
+        Encounter encounter1 = new EncounterBuilder().withEncounterType(new EncounterType()).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
+        Encounter encounter2 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
         visit.setEncounters(new LinkedHashSet<>(Arrays.asList(encounter1, encounter2)));
         EncounterParameters encounterParameters = getEncounterParameters(providers, location, null);
         when(bahmniLocationService.getEncounterType(location.getUuid())).thenReturn(encounterType);
@@ -212,12 +253,12 @@ public class EncounterSessionMatcherTest {
 
     @Test
     public void shouldNotReturnVoidedEncounter(){
-        Encounter encounter1 = new EncounterBuilder().withEncounterType(new EncounterType()).withLocation(location).withProvider(person).withDateCreated(new Date()).build();
+        Encounter encounter1 = new EncounterBuilder().withEncounterType(new EncounterType()).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
 
-        Encounter encounter2 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).build();
+        Encounter encounter2 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
         encounter2.setVoided(true);
 
-        Encounter encounter3 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).build();
+        Encounter encounter3 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
 
         visit.setEncounters(new LinkedHashSet<>(Arrays.asList(encounter1, encounter2, encounter3)));
         EncounterParameters encounterParameters = getEncounterParameters(providers, location, null);
@@ -234,6 +275,8 @@ public class EncounterSessionMatcherTest {
         when(encounter.getEncounterType()).thenReturn(encounterType);
         when(encounter.getLocation()).thenReturn(location);
         when(encounter.getEncounterDatetime()).thenReturn(DateUtils.addDays(new Date(), -10));
+        when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
+        when(encounter.getCreator()).thenReturn(creator);
         visit.addEncounter(encounter);
 
         EncounterParameters encounterParameters = getEncounterParameters(providers, location);
@@ -241,6 +284,30 @@ public class EncounterSessionMatcherTest {
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
         assertNotNull(encounterReturned);
+    }
+
+    @Test
+    @Ignore
+    public void shouldReturnNullIfDifferentUserTriesToAccessExistingProviderEncounter(){
+        Person person = new Person();
+        person.setId(12345);
+        User creator = new User(person);
+        creator.setId(12345);
+
+        Encounter encounter1 = new EncounterBuilder().withEncounterType(new EncounterType()).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
+
+        Encounter encounter2 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
+        encounter2.setVoided(true);
+
+        Encounter encounter3 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
+
+        visit.setEncounters(new LinkedHashSet<>(Arrays.asList(encounter1, encounter2, encounter3)));
+        EncounterParameters encounterParameters = getEncounterParameters(providers, location, null);
+        when(bahmniLocationService.getEncounterType(location.getUuid())).thenReturn(encounterType);
+
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
+
+        assertNull(encounterReturned);
     }
 
     private EncounterParameters getEncounterParameters(Set<Provider> providers, Location location) {

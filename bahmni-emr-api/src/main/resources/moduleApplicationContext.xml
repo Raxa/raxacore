@@ -48,5 +48,7 @@
         <constructor-arg ref="bahmniEncounterTransactionMapper" />
         <constructor-arg ref="visitService" />
         <constructor-arg ref="patientService" />
+        <constructor-arg ref="locationService" />
+        <constructor-arg ref="providerService" />
     </bean>
 </beans>

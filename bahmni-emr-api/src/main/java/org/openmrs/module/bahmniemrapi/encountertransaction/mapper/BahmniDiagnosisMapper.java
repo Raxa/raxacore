@@ -60,7 +60,7 @@ public class BahmniDiagnosisMapper {
         bahmniDiagnosis.setComments(diagnosisObsGroup.getComment());
 
         bahmniDiagnosis.setEncounterUuid(diagnosisObsGroup.getEncounter().getUuid());
-        bahmniDiagnosis.setPersonName(diagnosisObsGroup.getCreator().getPersonName().toString());
+        bahmniDiagnosis.setCreatorName(diagnosisObsGroup.getCreator().getPersonName().toString());
         return bahmniDiagnosis;
     }
 
