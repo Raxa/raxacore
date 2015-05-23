@@ -109,6 +109,7 @@
         ObsRelationship.hbm.xml
         ObsRelationshipType.hbm.xml
         LocationEncounterTypeMap.hbm.xml
+        BahmniConfig.hbm.xml
     </mappingFiles>
     <!-- Internationalization -->
     <!-- All message codes should start with moduleId.* -->
