@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="org.bahmni.module.admin.config.model">
+    <class name="BahmniConfig" table="bahmni_config"
+           batch-size="25">
+
+        <id name="configId" type="int" column="config_id">
+            <generator class="native"/>
+        </id>
+        <property name="uuid" type="java.lang.String" column="uuid"
+                  length="38" unique="true"/>
+        <property name="dateCreated" type="java.util.Date" column="date_created"
+                  not-null="true" length="19"/>
+        <property name="voided" type="java.lang.Boolean" column="voided"
+                  length="1" not-null="true"/>
+        <property name="dateVoided" type="java.util.Date" column="date_voided"
+                  length="19"/>
+        <property name="voidReason" type="java.lang.String" column="void_reason"
+                  length="255"/>
+        <property name="dateChanged" type="java.util.Date" column="date_changed"
+                  not-null="false" length="19"/>
+
+        <!-- Associations -->
+        <many-to-one name="changedBy" class="org.openmrs.User" column="changed_by"/>
+        <many-to-one name="creator" class="org.openmrs.User" not-null="true"/>
+        <many-to-one name="voidedBy" class="org.openmrs.User" column="voided_by"/>
+
+        <property name="appName" type="java.lang.String" column="app_name" not-null="true"/>
+        <property name="configName" type="java.lang.String" column="config_name" not-null="true"/>
+        <property name="config" type="java.lang.String" not-null="true">
+            <column name="config" sql-type="longtext"/>
+        </property>
+    </class>
+</hibernate-mapping>
