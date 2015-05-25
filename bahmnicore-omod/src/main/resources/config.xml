@@ -94,7 +94,7 @@
     <!-- Filters -->
     <filter>
         <filter-name>CacheHeaders</filter-name>
-        <filter-class>org.openmrs.module.bahmnicore.web.filter.CacheHeadersFilter</filter-class>
+        <filter-class>org.bahmni.module.bahmnicore.web.filter.CacheHeadersFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>shallowEtagHeaderFilter</filter-name>

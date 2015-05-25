@@ -27,7 +27,6 @@ public class BahmniConfigDaoImpl implements BahmniConfigDao {
                         " where config.appName = :appName and config.configName = :configName");
         query.setParameter("appName", appName);
         query.setParameter("configName", configName);
-        query.setMaxResults(1);
         appConfig.addAll(query.list());
         return CollectionUtils.isEmpty(appConfig) ? null : appConfig.get(0);
     }

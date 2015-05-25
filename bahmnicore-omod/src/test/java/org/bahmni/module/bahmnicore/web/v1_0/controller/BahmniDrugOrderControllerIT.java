@@ -2,7 +2,6 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.bahmnicore.web.v1_0.controller.BahmniDrugOrderController;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;

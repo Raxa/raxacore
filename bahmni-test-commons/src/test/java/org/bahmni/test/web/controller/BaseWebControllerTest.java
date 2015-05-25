@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMa
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Ignore
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -63,12 +64,24 @@ public class BaseWebControllerTest extends BaseModuleWebContextSensitiveTest {
         return request;
     }
 
+    public MockHttpServletRequest newRequest(RequestMethod method, String requestURI, Map<String, String> headers, Parameter... parameters) {
+        MockHttpServletRequest request = newRequest(method, requestURI, parameters);
+        for (String key : headers.keySet()) {
+            request.addHeader(key, headers.get(key));
+        }
+        return request;
+    }
+
     public MockHttpServletRequest newDeleteRequest(String requestURI, Parameter... parameters) {
         return newRequest(RequestMethod.DELETE, requestURI, parameters);
     }
 
     public MockHttpServletRequest newGetRequest(String requestURI, Parameter... parameters) {
         return newRequest(RequestMethod.GET, requestURI, parameters);
+    }
+
+    public MockHttpServletRequest newGetRequest(String requestURI, Map<String, String> headers, Parameter... parameters) {
+        return newRequest(RequestMethod.GET, requestURI, headers, parameters);
     }
 
     public MockHttpServletRequest newPostRequest(String requestURI, Object content) {

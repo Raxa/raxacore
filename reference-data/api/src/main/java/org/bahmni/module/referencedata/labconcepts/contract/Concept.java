@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Concept extends ConceptCommon{
+public class Concept extends ConceptCommon {
     private List<String> answers;
     private List<String> synonyms;
     private String units;
