@@ -8,11 +8,15 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class BahmniConfigServiceImpl implements BahmniConfigService {
+    private BahmniConfigDao bahmniConfigDao;
+
     @Autowired
-    private BahmniConfigDao configDao;
+    public BahmniConfigServiceImpl(BahmniConfigDao bahmniConfigDao) {
+        this.bahmniConfigDao = bahmniConfigDao;
+    }
 
     @Override
     public BahmniConfig get(String appName, String configName) {
-        return configDao.get(appName, configName);
+        return bahmniConfigDao.get(appName, configName);
     }
 }

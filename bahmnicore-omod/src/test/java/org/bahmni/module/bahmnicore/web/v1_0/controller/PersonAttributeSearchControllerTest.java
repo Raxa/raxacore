@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.bahmni.module.bahmnicore.dao.PersonAttributeDao;
 import org.bahmni.module.bahmnicore.model.ResultList;
-import org.openmrs.module.bahmnicore.web.v1_0.controller.PersonAttributeSearchController;
 
 import java.util.Arrays;
 
