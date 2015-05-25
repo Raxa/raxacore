@@ -2922,4 +2922,31 @@
             VALUES('mrs.genders', '{"M":"Male", "F":"Female","O":"Other"}', 'List of gender and gender codes used across MRS');
         </sql>
     </changeSet>
+    <changeSet id="bahmniconfig-201505252028" author="Mihir">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="bahmni_config"/></not>
+        </preConditions>
+        <createTable tableName="bahmni_config">
+            <column autoIncrement="true" name="config_id" type="int"> <constraints nullable="false" primaryKey="true"/> </column>
+            <column name="config_name" type="int"> <constraints nullable="false"/> </column>
+            <column name="app_name" type="int"> <constraints nullable="false"/> </column>
+            <column name="creator" type="int"> <constraints nullable="false"/> </column>
+            <column name="date_created" type="DATETIME"> <constraints nullable="false"/> </column>
+            <column name="changed_by" type="int"/>
+            <column name="date_changed" type="DATETIME"/>
+            <column name="uuid" type="char(38)" />
+        </createTable>
+        <addForeignKeyConstraint constraintName="bahmni_config_creator_fk"
+                                 baseTableName="bahmni_config" baseColumnNames="creator"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addForeignKeyConstraint constraintName="bahmni_config_changed_by_fk"
+                                 baseTableName="bahmni_config" baseColumnNames="changed_by"
+                                 referencedTableName="users" referencedColumnNames="user_id" />
+        <addUniqueConstraint columnNames="config_name, app_name"
+                             constraintName="bahmni_config_unique_app_config_name"
+                             tableName="bahmni_config"/>
+        <addUniqueConstraint columnNames="uuid"
+                             constraintName="bahmni_config_unique_uuid"
+                             tableName="bahmni_config"/>
+    </changeSet>
 </databaseChangeLog>
