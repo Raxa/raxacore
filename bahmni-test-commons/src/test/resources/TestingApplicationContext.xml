@@ -8,17 +8,4 @@
     <bean id="propertiesReader" class="org.bahmni.test.properties.SystemPropertiesReader"
           scope="singleton"/>
 
-    <bean id="sessionFactory" class="org.openmrs.api.db.hibernate.HibernateSessionFactoryBean">
-        <property name="configLocations">
-            <list>
-                <value>classpath:hibernate.cfg.xml</value>
-                <value>classpath:test-hibernate.cfg.xml</value>
-            </list>
-        </property>
-        <property name="mappingJarLocations">
-            <ref bean="mappingJarResources"/>
-        </property>
-        <!--  default properties must be set in the hibernate.default.properties -->
-    </bean>
-
 </beans>

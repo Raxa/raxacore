@@ -3,6 +3,7 @@ package org.bahmni.module.bahmnicore.dao.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.contract.orderTemplate.OrderTemplateJson;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
@@ -14,14 +15,15 @@ import org.hibernate.classic.Session;
 import org.hibernate.criterion.*;
 import org.openmrs.*;
 import org.openmrs.Order;
-import org.openmrs.api.db.hibernate.HibernateOrderDAO;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Component
 public class OrderDaoImpl implements OrderDao {
     private static final String ORDER_TEMPLATES_DIRECTORY = "ordertemplates";
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -52,7 +54,7 @@ public class OrderDaoImpl implements OrderDao {
     public List<DrugOrder> getPrescribedDrugOrders(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits) {
         Session currentSession = getCurrentSession();
         List<Integer> visitWithDrugOrderIds = getVisitIds(getVisitsWithOrders(patient, "DrugOrder", includeActiveVisit, numberOfVisits));
-        if(!visitWithDrugOrderIds.isEmpty()) {
+        if (!visitWithDrugOrderIds.isEmpty()) {
             Query query = currentSession.createQuery("select d1 from DrugOrder d1, Encounter e, Visit v where d1.encounter = e and e.visit = v and v.visitId in (:visitIds) " +
                     "and d1.voided = false and d1.action != :discontinued and " +
                     "not exists (select d2 from DrugOrder d2 where d2.voided = false and d2.action = :revised and d2.encounter = d1.encounter and d2.previousOrder = d1)" +
@@ -67,7 +69,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public List<DrugOrder> getPrescribedDrugOrders(List<String> visitUuids) {
-        if(visitUuids != null && visitUuids.size() != 0) {
+        if (visitUuids != null && visitUuids.size() != 0) {
             Session currentSession = getCurrentSession();
             Query query = currentSession.createQuery("select d1 from DrugOrder d1, Encounter e, Visit v where d1.encounter = e and e.visit = v and v.uuid in (:visitUuids) " +
                     "and d1.voided = false and d1.action != :discontinued and " +
@@ -82,10 +84,10 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<DrugOrder> getPrescribedDrugOrdersForConcepts(Patient patient, Boolean includeActiveVisit, List<Visit> visits, List<Concept> concepts){
+    public List<DrugOrder> getPrescribedDrugOrdersForConcepts(Patient patient, Boolean includeActiveVisit, List<Visit> visits, List<Concept> concepts) {
         Session currentSession = getCurrentSession();
         List<Integer> visitWithDrugOrderIds = getVisitIds(visits);
-        if(!visitWithDrugOrderIds.isEmpty()) {
+        if (!visitWithDrugOrderIds.isEmpty()) {
 
             Query query = currentSession.createQuery("select d1 from DrugOrder d1, Encounter e, Visit v where d1.encounter = e and e.visit = v and v.visitId in (:visitIds) and d1.drug.concept in (:concepts)" +
                     "and d1.voided = false and d1.action != :discontinued and " +
@@ -137,14 +139,14 @@ public class OrderDaoImpl implements OrderDao {
     public List<Visit> getVisitsWithOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits) {
         Session currentSession = getCurrentSession();
         String includevisit = includeActiveVisit == null || includeActiveVisit == false ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
-        Query queryVisitsWithDrugOrders = currentSession.createQuery("select v from "  + orderType + " o, Encounter e, Visit v where o.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
-                "and o.voided = false and o.action != :discontinued " +  includevisit + " group by v.visitId order by v.startDatetime desc");
+        Query queryVisitsWithDrugOrders = currentSession.createQuery("select v from " + orderType + " o, Encounter e, Visit v where o.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
+                "and o.voided = false and o.action != :discontinued " + includevisit + " group by v.visitId order by v.startDatetime desc");
         queryVisitsWithDrugOrders.setParameter("patientId", patient);
         queryVisitsWithDrugOrders.setParameter("discontinued", Order.Action.DISCONTINUE);
-        if(includeActiveVisit == null || includeActiveVisit == false) {
+        if (includeActiveVisit == null || includeActiveVisit == false) {
             queryVisitsWithDrugOrders.setParameter("now", new Date());
         }
-        if(numberOfVisits != null ) {
+        if (numberOfVisits != null) {
             queryVisitsWithDrugOrders.setMaxResults(numberOfVisits);
         }
         return (List<Visit>) queryVisitsWithDrugOrders.list();
