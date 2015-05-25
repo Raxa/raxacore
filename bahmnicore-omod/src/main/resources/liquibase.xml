@@ -2915,4 +2915,11 @@
             insert into concept_name (concept_id, name, locale, locale_preferred, creator, date_created,concept_name_type, voided, uuid) values (@labsamples_concept_id,'Lab Orders', 'en', 0, 1, now(), 'SHORT', 0, uuid());
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201505251642" author="Ranganathan">
+        <comment>Adding gender values and codes used across MRS</comment>
+        <sql>
+            INSERT INTO global_property(property, property_value, description)
+            VALUES('mrs.genders', '{"M":"Male", "F":"Female","O":"Other"}', 'List of gender and gender codes used across MRS');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
