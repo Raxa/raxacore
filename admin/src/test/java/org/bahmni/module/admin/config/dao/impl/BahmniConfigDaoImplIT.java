@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -34,5 +36,11 @@ public class BahmniConfigDaoImplIT extends BaseModuleWebContextSensitiveTest {
     public void return_null_if_config_not_available() throws Exception {
         BahmniConfig clinical = configDao.get("notclinical", "app.json");
         assertNull(clinical);
+    }
+
+    @Test
+    public void get_all_configs_for() throws Exception {
+        List<BahmniConfig> clinical = configDao.getAllFor("clinical");
+        assertEquals(2, clinical.size());
     }
 }

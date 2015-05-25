@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmni/config")
 public class BahmniConfigController extends BaseRestController {
@@ -18,10 +20,17 @@ public class BahmniConfigController extends BaseRestController {
     @Autowired
     private BahmniConfigService bahmniConfigService;
 
-    @RequestMapping(method = RequestMethod.GET, value = "get")
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public BahmniConfig get(@RequestParam("appName") String appName, @RequestParam("configName") String configName) {
-        BahmniConfig bahmniConfig = bahmniConfigService.get(appName, configName);
-        return bahmniConfig;
+    public BahmniConfig get(@RequestParam("appName") String appName, @RequestParam(value = "configName") String configName) {
+        return bahmniConfigService.get(appName, configName);
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "all")
+    @ResponseBody
+    public List<BahmniConfig> getAll(@RequestParam("appName") String appName) {
+        return bahmniConfigService.getAllFor(appName);
+    }
+
+
 }

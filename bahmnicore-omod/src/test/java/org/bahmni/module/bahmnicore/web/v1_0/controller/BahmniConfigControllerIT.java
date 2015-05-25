@@ -7,6 +7,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
+
+import static junit.framework.Assert.assertNull;
+import static junit.framework.TestCase.assertEquals;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniConfigControllerIT extends BaseWebControllerTest {
@@ -18,9 +22,19 @@ public class BahmniConfigControllerIT extends BaseWebControllerTest {
     @Test
     public void deserialization_to_json_of_config() throws Exception {
         HashMap<String, String> headers = new HashMap<>();
-//        headers.put("Accept", "application/json");
-        BahmniConfig bahmniConfig = deserialize(handle(newGetRequest("/rest/v1/bahmni/config/get", headers, new Parameter("appName", "clinical"), new Parameter("configName", "app.json"))), new TypeReference<BahmniConfig>() {
+        BahmniConfig bahmniConfig = deserialize(handle(newGetRequest("/rest/v1/bahmni/config", headers, new Parameter("appName", "clinical"), new Parameter("configName", "app.json"))), new TypeReference<BahmniConfig>() {
         });
-        System.out.println(bahmniConfig);
+        assertEquals("app.json", bahmniConfig.getAppName());
+        assertEquals("clinical", bahmniConfig.getConfigName());
+    }
+
+    @Test
+    public void stripped_down_json_of_all_configs_under_an_app() throws Exception {
+        HashMap<String, String> headers = new HashMap<>();
+        List<BahmniConfig> bahmniConfigs = deserialize(handle(newGetRequest("/rest/v1/bahmni/config/all", headers, new Parameter("appName", "clinical"))), new TypeReference<List<BahmniConfig>>() {
+        });
+        assertEquals(2, bahmniConfigs.size());
+        assertNull( bahmniConfigs.get(0).getConfig());
+        assertNull( bahmniConfigs.get(1).getConfig());
     }
 }
