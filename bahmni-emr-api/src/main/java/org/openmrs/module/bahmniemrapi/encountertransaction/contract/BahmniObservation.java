@@ -23,7 +23,7 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
     private String type;
     private String encounterUuid;
     private String obsGroupUuid;
-
+    private String creatorName;
     private int conceptSortWeight;
 
     public BahmniObservation() {
@@ -307,5 +307,13 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
 
     public String getConceptNameToDisplay() {
         return getConcept().getShortName() == null ? getConcept().getName() : getConcept().getShortName();
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 }

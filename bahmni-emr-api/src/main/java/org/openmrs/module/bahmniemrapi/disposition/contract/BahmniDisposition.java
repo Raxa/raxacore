@@ -13,6 +13,7 @@ public class BahmniDisposition {
     private String existingObs;
     private boolean voided;
     private String voidReason;
+    private String creatorName;
     private List<EncounterTransaction.Observation> additionalObs;
     private Date dispositionDateTime;
     private Set<EncounterTransaction.Provider> providers = new HashSet<>();
@@ -79,5 +80,13 @@ public class BahmniDisposition {
 
     public void setProviders(Set<EncounterTransaction.Provider> providers) {
         this.providers = providers;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 }

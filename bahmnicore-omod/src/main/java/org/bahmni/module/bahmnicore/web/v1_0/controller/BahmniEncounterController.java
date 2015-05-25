@@ -2,11 +2,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterConfigResponse;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.OrderType;
-import org.openmrs.VisitType;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
@@ -25,11 +21,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestControlle
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -117,7 +109,7 @@ public class BahmniEncounterController extends BaseRestController {
 
         List<EncounterTransaction> encounterTransactions = null;
         try {
-            encounterTransactions = emrEncounterService.find(encounterSearchParameters);
+            encounterTransactions = bahmniEncounterTransactionService.find(encounterSearchParameters);
         } catch (Exception e) {
             e.printStackTrace();
         }

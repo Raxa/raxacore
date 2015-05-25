@@ -1,6 +1,10 @@
 package org.openmrs.module.bahmniemrapi.builder;
 
 import org.openmrs.Person;
+import org.openmrs.PersonName;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class PersonBuilder {
 
@@ -12,6 +16,15 @@ public class PersonBuilder {
 
     public PersonBuilder withUUID(String patientUuid) {
         person.setUuid(patientUuid);
+        return this;
+    }
+
+    public PersonBuilder withPersonName(String personNameValue) {
+        PersonName personName = new PersonName();
+        personName.setGivenName(personNameValue);
+        Set<PersonName> personNames = new HashSet<>();
+        personNames.add(personName);
+        person.setNames(personNames);
         return this;
     }
 
