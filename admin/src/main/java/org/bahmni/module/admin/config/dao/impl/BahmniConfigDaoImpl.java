@@ -30,4 +30,19 @@ public class BahmniConfigDaoImpl implements BahmniConfigDao {
         appConfig.addAll(query.list());
         return CollectionUtils.isEmpty(appConfig) ? null : appConfig.get(0);
     }
+
+    @Override
+    public List<BahmniConfig> getAllFor(String appName) {
+        List<BahmniConfig> appConfigs = new ArrayList<>();
+        Session currentSession = sessionFactory.getCurrentSession();
+        Query query = currentSession.createQuery(
+                "select config from BahmniConfig config " +
+                        " where config.appName = :appName ");
+        query.setParameter("appName", appName);
+        appConfigs.addAll(query.list());
+        for (BahmniConfig bahmniConfig : appConfigs) {
+            bahmniConfig.setConfig(null);
+        }
+        return appConfigs;
+    }
 }
