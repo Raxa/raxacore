@@ -24,8 +24,8 @@ public class BahmniConfigControllerIT extends BaseWebControllerTest {
         HashMap<String, String> headers = new HashMap<>();
         BahmniConfig bahmniConfig = deserialize(handle(newGetRequest("/rest/v1/bahmni/config", headers, new Parameter("appName", "clinical"), new Parameter("configName", "app.json"))), new TypeReference<BahmniConfig>() {
         });
-        assertEquals("app.json", bahmniConfig.getAppName());
-        assertEquals("clinical", bahmniConfig.getConfigName());
+        assertEquals("app.json", bahmniConfig.getConfigName());
+        assertEquals("clinical", bahmniConfig.getAppName());
     }
 
     @Test
