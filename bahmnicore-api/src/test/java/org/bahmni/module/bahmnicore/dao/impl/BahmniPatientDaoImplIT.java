@@ -133,7 +133,7 @@ public class BahmniPatientDaoImplIT extends BaseModuleWebContextSensitiveTest {
         List<PatientResponse> patients = patientDao.getPatients("", "", "testCaste1", "city_village", null, 100, 0, patientAttributes);
 
         assertEquals(1, patients.size());
-        assertEquals("", patients.get(0).getLocalName());
+        assertEquals("", patients.get(0).getCustomAttribute());
     }
 
     @Test
