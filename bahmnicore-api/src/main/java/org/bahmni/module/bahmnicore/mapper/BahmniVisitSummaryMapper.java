@@ -3,11 +3,7 @@ package org.bahmni.module.bahmnicore.mapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.contract.visit.VisitSummary;
 import org.openmrs.Encounter;
-import org.openmrs.EncounterProvider;
-import org.openmrs.Obs;
 import org.openmrs.Visit;
-import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
-import org.openmrs.module.emrapi.encounter.ObservationMapper;
 
 import java.util.List;
 

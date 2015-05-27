@@ -49,7 +49,10 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
             if (value instanceof EncounterTransaction.Concept) {
                 EncounterTransaction.Concept concept = (EncounterTransaction.Concept) value;
                 return (concept.getShortName() == null ? concept.getName() : concept.getShortName());
-            } else if (value instanceof Boolean) {
+            } else if(value instanceof  EncounterTransaction.Drug){
+                EncounterTransaction.Drug drug = (EncounterTransaction.Drug) value;
+                return drug.getName();
+            }else if (value instanceof Boolean) {
                 return (Boolean) value ? "Yes" : "No";
             }
             return String.valueOf(value);
