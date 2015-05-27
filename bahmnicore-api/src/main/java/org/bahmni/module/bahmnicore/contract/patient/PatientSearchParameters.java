@@ -14,7 +14,7 @@ public class PatientSearchParameters {
     private String addressFieldValue;
     private Integer start;
     private Integer length;
-    private String localName;
+    private String customAttribute;
     private String[] patientAttributes;
 
     public PatientSearchParameters(RequestContext context) {
@@ -26,7 +26,7 @@ public class PatientSearchParameters {
         }
         this.setStart(context.getStartIndex());
         this.setLength(context.getLimit());
-        this.setLocalName(context.getParameter("local_name"));
+        this.setCustomAttribute(context.getParameter("custom_attribute"));
         String addressFieldNameFromRequest = context.getParameter("address_field_name");
         if  (StringUtils.isNotEmpty(addressFieldNameFromRequest)){
             this.setAddressFieldName(addressFieldNameFromRequest);
