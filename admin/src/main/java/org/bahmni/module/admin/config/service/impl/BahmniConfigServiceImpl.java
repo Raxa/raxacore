@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class BahmniConfigServiceImpl implements BahmniConfigService {
@@ -31,22 +32,27 @@ public class BahmniConfigServiceImpl implements BahmniConfigService {
 
     @Override
     public BahmniConfig save(BahmniConfig bahmniConfig) {
-        BahmniConfig existingConfig = null;
-        if (bahmniConfig.getUuid() != null && (existingConfig = bahmniConfigDao.get(bahmniConfig.getUuid())) != null) {
-            updateExistingConfig(bahmniConfig, existingConfig);
-        } else {
-            createNewConfig(bahmniConfig);
-        }
+        createNewConfig(bahmniConfig);
         return bahmniConfigDao.save(bahmniConfig);
+    }
+
+    @Override
+    public BahmniConfig update(BahmniConfig configUpdate) {
+        BahmniConfig existingConfig = bahmniConfigDao.get(configUpdate.getUuid());
+        updateExistingConfig(configUpdate, existingConfig);
+        BahmniConfig updatedConfig = bahmniConfigDao.update(existingConfig);
+        return bahmniConfigDao.get(updatedConfig.getUuid());
     }
 
     private void createNewConfig(BahmniConfig bahmniConfig) {
         bahmniConfig.setDateCreated(new Date());
         bahmniConfig.setCreator(Context.getAuthenticatedUser());
+        bahmniConfig.setUuid(UUID.randomUUID().toString());
+        bahmniConfig.setConfigId(null);
     }
 
-    private void updateExistingConfig(BahmniConfig bahmniConfig, BahmniConfig existingConfig) {
-        existingConfig.setConfig(bahmniConfig.getConfig());
+    private void updateExistingConfig(BahmniConfig updatedConfig, BahmniConfig existingConfig) {
+        existingConfig.setConfig(updatedConfig.getConfig());
         existingConfig.setChangedBy(Context.getAuthenticatedUser());
         existingConfig.setDateChanged(new Date());
     }

@@ -12,4 +12,6 @@ public interface BahmniConfigDao {
     List<BahmniConfig> getAllFor(String appName);
 
     BahmniConfig save(BahmniConfig bahmniConfig);
+
+    BahmniConfig update(BahmniConfig existingConfig);
 }

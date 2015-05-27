@@ -48,6 +48,15 @@ public class BahmniConfigServiceImplTest {
             @Override
             public BahmniConfig answer(InvocationOnMock invocationOnMock) throws Throwable {
                 Object[] arguments = invocationOnMock.getArguments();
+                BahmniConfig argument = (BahmniConfig) arguments[0];
+                argument.setUuid("new");
+                return argument;
+            }
+        });
+        when(bahmniConfigDao.update(any(BahmniConfig.class))).then(new Answer<BahmniConfig>() {
+            @Override
+            public BahmniConfig answer(InvocationOnMock invocationOnMock) throws Throwable {
+                Object[] arguments = invocationOnMock.getArguments();
                 return (BahmniConfig) arguments[0];
             }
         });
@@ -59,7 +68,7 @@ public class BahmniConfigServiceImplTest {
         existingConfig.setConfig("Modified Config");
         assertNull(existingConfig.getChangedBy());
         assertNull(existingConfig.getDateChanged());
-        BahmniConfig savedConfig = bahmniConfigService.save(existingConfig);
+        BahmniConfig savedConfig = bahmniConfigService.update(existingConfig);
         assertNotNull(savedConfig.getDateChanged());
         assertEquals(creator, savedConfig.getChangedBy());
         assertEquals("Modified Config", savedConfig.getConfig());

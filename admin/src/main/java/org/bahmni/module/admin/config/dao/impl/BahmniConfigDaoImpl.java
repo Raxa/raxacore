@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,10 +62,16 @@ public class BahmniConfigDaoImpl implements BahmniConfigDao {
     }
 
     @Override
+    @Transactional
     public BahmniConfig save(BahmniConfig bahmniConfig) {
-        sessionFactory.getCurrentSession().clear();
-        sessionFactory.getCurrentSession().saveOrUpdate(bahmniConfig);
-        sessionFactory.getCurrentSession().flush();
+        sessionFactory.getCurrentSession().save(bahmniConfig);
         return get(bahmniConfig.getAppName(), bahmniConfig.getConfigName());
+    }
+
+    @Override
+    @Transactional
+    public BahmniConfig update(BahmniConfig bahmniConfig) {
+        sessionFactory.getCurrentSession().update(bahmniConfig);
+        return bahmniConfig;
     }
 }

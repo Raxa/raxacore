@@ -70,10 +70,10 @@ public class BahmniConfigDaoImplIT extends BaseModuleWebContextSensitiveTest {
     }
 
     @Test
-    public void update_config_in_case_of_uuid_clash() throws Exception {
+    public void update_config() throws Exception {
         BahmniConfig clinical = configDao.get("clinical", "app.json");
         clinical.setConfig("Modified Config");
-        BahmniConfig add = configDao.save(clinical);
+        BahmniConfig add = configDao.update(clinical);
         BahmniConfig modifiedClinical = configDao.get("clinical", "app.json");
         assertEquals("clinical", modifiedClinical.getAppName());
         assertEquals("app.json", modifiedClinical.getConfigName());
