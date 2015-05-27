@@ -85,7 +85,15 @@ public class BaseWebControllerTest extends BaseModuleWebContextSensitiveTest {
     }
 
     public MockHttpServletRequest newPostRequest(String requestURI, Object content) {
-        MockHttpServletRequest request = request(RequestMethod.POST, requestURI);
+        return newWriteRequest(requestURI, content, RequestMethod.POST);
+    }
+
+    public MockHttpServletRequest newPutRequest(String requestURI, Object content) {
+        return newWriteRequest(requestURI, content, RequestMethod.PUT);
+    }
+
+    private MockHttpServletRequest newWriteRequest(String requestURI, Object content, RequestMethod requestMethod) {
+        MockHttpServletRequest request = request(requestMethod, requestURI);
         try {
             String json = new ObjectMapper().writeValueAsString(content);
             request.setContent(json.getBytes("UTF-8"));
