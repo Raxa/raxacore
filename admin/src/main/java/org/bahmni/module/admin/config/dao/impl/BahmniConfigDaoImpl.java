@@ -62,7 +62,8 @@ public class BahmniConfigDaoImpl implements BahmniConfigDao {
 
     @Override
     public BahmniConfig save(BahmniConfig bahmniConfig) {
-        sessionFactory.getCurrentSession().save(bahmniConfig);
+        sessionFactory.getCurrentSession().clear();
+        sessionFactory.getCurrentSession().saveOrUpdate(bahmniConfig);
         sessionFactory.getCurrentSession().flush();
         return get(bahmniConfig.getAppName(), bahmniConfig.getConfigName());
     }

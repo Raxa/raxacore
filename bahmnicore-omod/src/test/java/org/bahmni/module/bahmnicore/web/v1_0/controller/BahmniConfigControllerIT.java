@@ -9,9 +9,10 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.List;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniConfigControllerIT extends BaseWebControllerTest {
@@ -49,5 +50,17 @@ public class BahmniConfigControllerIT extends BaseWebControllerTest {
         BahmniConfig getConfig = deserialize(handle(newGetRequest("/rest/v1/bahmni/config", new Parameter("appName", "registration"), new Parameter("configName", "app.json"))), BahmniConfig.class);
         assertEquals(savedConfig, getConfig);
         assertNotNull(getConfig.getDateCreated());
+        assertEquals("New Config", getConfig.getConfig());
+    }
+
+    @Test
+    public void update_existing_config() throws Exception {
+        BahmniConfig getConfig = deserialize(handle(newGetRequest("/rest/v1/bahmni/config", new Parameter("appName", "clinical"), new Parameter("configName", "app.json"))), BahmniConfig.class);
+        getConfig.setConfig("Updated Config");
+        BahmniConfig savedConfig = deserialize(handle(newPutRequest("/rest/v1/bahmni/config", getConfig)), BahmniConfig.class);
+        getConfig = deserialize(handle(newGetRequest("/rest/v1/bahmni/config", new Parameter("appName", "clinical"), new Parameter("configName", "app.json"))), BahmniConfig.class);
+        assertEquals(savedConfig, getConfig);
+        assertNotNull(getConfig.getDateCreated());
+        assertEquals("Updated Config", getConfig.getConfig());
     }
 }
