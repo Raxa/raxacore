@@ -31,6 +31,18 @@ public class BahmniConfigDaoImpl implements BahmniConfigDao {
         return CollectionUtils.isEmpty(appConfig) ? null : appConfig.get(0);
     }
 
+    @Override
+    public BahmniConfig get(String uuid) {
+        List<BahmniConfig> appConfig = new ArrayList<>();
+        Session currentSession = sessionFactory.getCurrentSession();
+        Query query = currentSession.createQuery(
+                "select config from BahmniConfig config " +
+                        " where config.uuid = :uuid ");
+        query.setParameter("uuid", uuid);
+        appConfig.addAll(query.list());
+        return CollectionUtils.isEmpty(appConfig) ? null : appConfig.get(0);
+    }
+
     //Mihir: Don't try to the merge the top one and this method together, since we are using a CLOB in MYSQL
     //its a streaming Datatype, so best not to load things we don't require in the memory.
     @Override
