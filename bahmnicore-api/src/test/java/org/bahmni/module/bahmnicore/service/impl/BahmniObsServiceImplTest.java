@@ -14,6 +14,7 @@ import org.openmrs.api.ObsService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahmniObsMapper;
+import org.openmrs.module.emrapi.encounter.ObservationMapper;
 import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 import org.openmrs.util.LocaleUtility;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -42,6 +43,8 @@ public class BahmniObsServiceImplTest {
     @Mock
     private ObservationTypeMatcher observationTypeMatcher;
     @Mock
+    private ObservationMapper observationMapper;
+    @Mock
     private VisitService visitService;
     @Mock
     private ObsService obsService;
@@ -55,7 +58,7 @@ public class BahmniObsServiceImplTest {
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
         when(observationTypeMatcher.getObservationType(any(Obs.class))).thenReturn(ObservationTypeMatcher.ObservationType.OBSERVATION);
-        bahmniObsService = new BahmniObsServiceImpl(obsDao, new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null), observationTypeMatcher), visitService, obsService, conceptService);
+        bahmniObsService = new BahmniObsServiceImpl(obsDao, new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null), observationTypeMatcher, observationMapper), visitService, obsService, conceptService);
     }
 
     @Test

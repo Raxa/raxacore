@@ -1,8 +1,5 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.openmrs.Concept;
 import org.openmrs.User;
 import org.openmrs.api.ConceptService;
@@ -11,6 +8,10 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.Ad
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class ETObsToBahmniObsMapper {

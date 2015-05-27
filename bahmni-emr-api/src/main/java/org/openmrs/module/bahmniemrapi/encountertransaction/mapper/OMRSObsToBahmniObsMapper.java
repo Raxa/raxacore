@@ -22,12 +22,13 @@ public class OMRSObsToBahmniObsMapper {
     private ETObsToBahmniObsMapper etObsToBahmniObsMapper;
     private ObservationTypeMatcher observationTypeMatcher;
     private BahmniProviderMapper bahmniProviderMapper = new BahmniProviderMapper();
-    private ObservationMapper observationMapper = new ObservationMapper();
+    private ObservationMapper observationMapper;
 
     @Autowired
-    public OMRSObsToBahmniObsMapper(ETObsToBahmniObsMapper etObsToBahmniObsMapper, ObservationTypeMatcher observationTypeMatcher) {
+    public OMRSObsToBahmniObsMapper(ETObsToBahmniObsMapper etObsToBahmniObsMapper, ObservationTypeMatcher observationTypeMatcher, ObservationMapper observationMapper) {
         this.etObsToBahmniObsMapper = etObsToBahmniObsMapper;
         this.observationTypeMatcher = observationTypeMatcher;
+        this.observationMapper = observationMapper;
     }
 
     public Collection<BahmniObservation> map(List<Obs> obsList, Collection<Concept> rootConcepts) {

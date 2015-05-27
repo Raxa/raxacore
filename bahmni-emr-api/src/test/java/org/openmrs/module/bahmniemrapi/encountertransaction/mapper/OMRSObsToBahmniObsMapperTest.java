@@ -5,12 +5,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openmrs.*;
-import org.openmrs.module.bahmniemrapi.builder.ConceptBuilder;
-import org.openmrs.module.bahmniemrapi.builder.EncounterBuilder;
-import org.openmrs.module.bahmniemrapi.builder.ObsBuilder;
-import org.openmrs.module.bahmniemrapi.builder.PersonBuilder;
-import org.openmrs.module.bahmniemrapi.builder.VisitBuilder;
+import org.openmrs.module.bahmniemrapi.builder.*;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.module.emrapi.encounter.ConceptMapper;
+import org.openmrs.module.emrapi.encounter.ObservationMapper;
+import org.openmrs.module.emrapi.encounter.mapper.DrugMapper1_10;
 import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 import org.openmrs.test.TestUtil;
 import org.openmrs.util.LocaleUtility;
@@ -18,12 +17,13 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Locale;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -36,6 +36,7 @@ public class OMRSObsToBahmniObsMapperTest {
 
     @Mock
     private ObservationTypeMatcher observationTypeMatcher;
+    private ObservationMapper observationMapper;
 
     @Before
     public void setUp() throws Exception {
@@ -43,6 +44,7 @@ public class OMRSObsToBahmniObsMapperTest {
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
         when(observationTypeMatcher.getObservationType(any(Obs.class))).thenReturn(ObservationTypeMatcher.ObservationType.OBSERVATION);
+        observationMapper = new ObservationMapper(new ConceptMapper(), new DrugMapper1_10());
     }
 
     @Test
@@ -75,7 +77,7 @@ public class OMRSObsToBahmniObsMapperTest {
         Obs obs2 = new ObsBuilder().withConcept(valueConcept2).withValue("ovalue2").build();
         Obs parentObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(parentConcept).withDatetime(date).withGroupMembers(obs1, obs2).withCreator(user).build();
 
-        Collection<BahmniObservation> parentsObservations = new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null), observationTypeMatcher).map(asList(parentObs), Arrays.asList(parentConcept));
+        Collection<BahmniObservation> parentsObservations = new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null), observationTypeMatcher, observationMapper).map(asList(parentObs), Arrays.asList(parentConcept));
         assertEquals(1, parentsObservations.size());
         BahmniObservation parentObservation = parentsObservations.iterator().next();
         assertEquals("parentConcept", parentObservation.getConcept().getName());
