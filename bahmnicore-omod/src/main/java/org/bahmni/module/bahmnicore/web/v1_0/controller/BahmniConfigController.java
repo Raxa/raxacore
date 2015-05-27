@@ -6,10 +6,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +27,12 @@ public class BahmniConfigController extends BaseRestController {
     @ResponseBody
     public List<BahmniConfig> getAll(@RequestParam("appName") String appName) {
         return bahmniConfigService.getAllFor(appName);
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    @ResponseBody
+    public BahmniConfig insert(@RequestBody BahmniConfig bahmniConfig) {
+        return bahmniConfigService.save(bahmniConfig);
     }
 
 

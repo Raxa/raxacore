@@ -9,4 +9,6 @@ public interface BahmniConfigService {
 
 
     List<BahmniConfig> getAllFor(String appName);
+
+    BahmniConfig save(BahmniConfig bahmniConfig);
 }

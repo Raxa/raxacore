@@ -8,4 +8,6 @@ public interface BahmniConfigDao {
     BahmniConfig get(String appName, String configName);
 
     List<BahmniConfig> getAllFor(String appName);
+
+    BahmniConfig save(BahmniConfig bahmniConfig);
 }

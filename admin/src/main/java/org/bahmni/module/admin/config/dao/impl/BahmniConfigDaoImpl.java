@@ -31,6 +31,8 @@ public class BahmniConfigDaoImpl implements BahmniConfigDao {
         return CollectionUtils.isEmpty(appConfig) ? null : appConfig.get(0);
     }
 
+    //Mihir: Don't try to the merge the top one and this method together, since we are using a CLOB in MYSQL
+    //its a streaming Datatype, so best not to load things we don't require in the memory.
     @Override
     public List<BahmniConfig> getAllFor(String appName) {
         List<BahmniConfig> appConfigs = new ArrayList<>();
@@ -44,5 +46,12 @@ public class BahmniConfigDaoImpl implements BahmniConfigDao {
             bahmniConfig.setConfig(null);
         }
         return appConfigs;
+    }
+
+    @Override
+    public BahmniConfig save(BahmniConfig bahmniConfig) {
+        sessionFactory.getCurrentSession().save(bahmniConfig);
+        sessionFactory.getCurrentSession().flush();
+        return get(bahmniConfig.getAppName(), bahmniConfig.getConfigName());
     }
 }
