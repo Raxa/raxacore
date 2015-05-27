@@ -70,7 +70,9 @@ public class BahmniDrugOrderMapperTest {
                 .withDosingInstructions("{\"dose\": \"2.0\", \"doseUnits\": \"Tablet\"}")
                 .withVisit(visit)
                 .withDuration(18)
-                .withAutoExpireDate(expireDate).build();
+                .withAutoExpireDate(expireDate)
+                .withCreator("testPersonName")
+                .build();
 
         List<DrugOrder> drugOrderList = new ArrayList<>();
         drugOrderList.add(drugOrder1);
@@ -118,7 +120,10 @@ public class BahmniDrugOrderMapperTest {
                 .withFrequency("Once a day")
                 .withRoute("Orally")
                 .withAutoExpireDate(expireDate)
-                .withDoseUnits("Capsule").build();
+                .withDoseUnits("Capsule")
+                .withCreator("testPersonName")
+                .build();
+
 
         List<DrugOrder> drugOrderList = new ArrayList<>();
         drugOrderList.add(drugOrder1);

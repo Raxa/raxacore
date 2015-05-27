@@ -55,6 +55,6 @@ public class OMRSObsToBahmniObsMapper {
         for (EncounterProvider encounterProvider : obs.getEncounter().getEncounterProviders()) {
             additionalBahmniObservationFields.addProvider(bahmniProviderMapper.map(encounterProvider.getProvider()));
         }
-        return etObsToBahmniObsMapper.map(observationMapper.map(obs), additionalBahmniObservationFields, Arrays.asList(obs.getConcept()), true);
+        return etObsToBahmniObsMapper.map(observationMapper.map(obs), additionalBahmniObservationFields, Arrays.asList(obs.getConcept()), obs.getCreator(), true);
     }
 }

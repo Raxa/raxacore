@@ -1,12 +1,10 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.matcher;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.joda.time.DateTime;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Provider;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmnimapping.services.BahmniLocationService;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
@@ -90,11 +88,16 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     }
 
     private boolean isSameProvider(Provider provider, Encounter encounter) {
-        if (provider == null || encounter.getProvider() == null) {
+        if (provider == null || CollectionUtils.isEmpty(encounter.getEncounterProviders())
+                || (encounter.getCreator().getId() != Context.getUserContext().getAuthenticatedUser().getId())
+                ) {
             return false;
         }
-
-        return encounter.getProvider().getId().equals(provider.getPerson().getId());
+        for (EncounterProvider encounterProvider : encounter.getEncounterProviders()) {
+            if (encounterProvider.getProvider().getProviderId().equals(provider.getId()))
+                return true;
+        }
+        return false;
     }
 
     private boolean isCurrentSessionTimeExpired(Date encounterCreatedDate) {
