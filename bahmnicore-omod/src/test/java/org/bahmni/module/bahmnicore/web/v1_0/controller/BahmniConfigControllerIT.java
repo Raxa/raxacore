@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.List;
 
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.TestCase.assertEquals;
 
@@ -34,7 +35,20 @@ public class BahmniConfigControllerIT extends BaseWebControllerTest {
         List<BahmniConfig> bahmniConfigs = deserialize(handle(newGetRequest("/rest/v1/bahmni/config/all", headers, new Parameter("appName", "clinical"))), new TypeReference<List<BahmniConfig>>() {
         });
         assertEquals(2, bahmniConfigs.size());
-        assertNull( bahmniConfigs.get(0).getConfig());
-        assertNull( bahmniConfigs.get(1).getConfig());
+        assertNull(bahmniConfigs.get(0).getConfig());
+        assertNull(bahmniConfigs.get(1).getConfig());
+    }
+
+    @Test
+    public void create_new_config() throws Exception {
+        BahmniConfig bahmniConfig = new BahmniConfig();
+        bahmniConfig.setConfig("New Config");
+        bahmniConfig.setAppName("registration");
+        bahmniConfig.setConfigName("app.json");
+        BahmniConfig savedConfig = deserialize(handle(newPostRequest("/rest/v1/bahmni/config", bahmniConfig)), BahmniConfig.class);
+        BahmniConfig getConfig = deserialize(handle(newGetRequest("/rest/v1/bahmni/config", new Parameter("appName", "registration"), new Parameter("configName", "app.json"))), BahmniConfig.class);
+        assertEquals(savedConfig, getConfig);
+        assertNotNull(getConfig.getDateCreated());
+
     }
 }
