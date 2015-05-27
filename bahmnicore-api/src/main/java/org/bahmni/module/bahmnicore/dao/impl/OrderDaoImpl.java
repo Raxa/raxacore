@@ -177,7 +177,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> getAllOrders(Patient patient, List<OrderType> orderTypes) {
+    public List<Order> getAllOrders(Patient patient, List<OrderType> orderTypes, Integer offset, Integer limit) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Order.class);
         criteria.add(Restrictions.eq("patient", patient));
 
@@ -188,6 +188,13 @@ public class OrderDaoImpl implements OrderDao {
         criteria.add(Restrictions.eq("voided", false));
         criteria.add(Restrictions.ne("action", Order.Action.DISCONTINUE));
         criteria.addOrder(org.hibernate.criterion.Order.desc("dateCreated"));
+        if(offset != null) {
+            criteria.setFirstResult(offset);
+        }
+
+        if(limit != null && limit > 0) {
+            criteria.setMaxResults(limit);
+        }
 
         return criteria.list();
     }

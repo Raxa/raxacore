@@ -22,5 +22,5 @@ public interface OrderDao {
 
     List<Visit> getVisitsForUUids(String[] visitUuids);
 
-    List<Order> getAllOrders(Patient patient, List<OrderType> orderTypes);
+    List<Order> getAllOrders(Patient patient, List<OrderType> orderTypes, Integer offset, Integer limit);
 }

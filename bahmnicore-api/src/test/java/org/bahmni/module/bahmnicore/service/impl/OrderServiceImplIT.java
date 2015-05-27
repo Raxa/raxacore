@@ -59,7 +59,7 @@ public class OrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
         String orderTypeUuid = "bf7f3ab0-ae06-11e3-a5e2-0800200c9a66";
         String patientUuid = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
 
-        List<Order> allOrders = bahmniOrderService.getAllOrders(patientUuid, orderTypeUuid);
+        List<Order> allOrders = bahmniOrderService.getAllOrders(patientUuid, orderTypeUuid, null, null);
         Assert.assertEquals(5, allOrders.size());
         Assert.assertEquals((Integer)20, allOrders.get(0).getId());
         Assert.assertEquals((Integer)19, allOrders.get(1).getId());
@@ -67,6 +67,19 @@ public class OrderServiceImplIT extends BaseModuleWebContextSensitiveTest {
         Assert.assertEquals((Integer)16, allOrders.get(3).getId());
         Assert.assertEquals((Integer)17, allOrders.get(4).getId());
 
+    }
+
+    @Test
+    public void shouldGetPagedOrdersForPatientAndOrderType() throws Exception{
+        executeDataSet("patientWithOrders.xml");
+        String orderTypeUuid = "bf7f3ab0-ae06-11e3-a5e2-0800200c9a66";
+        String patientUuid = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
+
+        List<Order> allOrders = bahmniOrderService.getAllOrders(patientUuid, orderTypeUuid, 1, 3);
+        Assert.assertEquals(3, allOrders.size());
+        Assert.assertEquals((Integer)19, allOrders.get(0).getId());
+        Assert.assertEquals((Integer)15, allOrders.get(1).getId());
+        Assert.assertEquals((Integer)16, allOrders.get(2).getId());
     }
 
     private void ensureCorrectDataSetup(String patientUuid, String radiologyOrderTypeUuid) {

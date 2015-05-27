@@ -37,10 +37,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getAllOrders(String patientUuid, String orderTypeUuid) {
+    public List<Order> getAllOrders(String patientUuid, String orderTypeUuid, Integer offset, Integer limit) {
         Patient patient = patientService.getPatientByUuid(patientUuid);
         OrderType orderType = orderService.getOrderTypeByUuid(orderTypeUuid);
-        return orderDao.getAllOrders(patient, Arrays.asList(orderType));
+        return orderDao.getAllOrders(patient, Arrays.asList(orderType), offset, limit);
     }
 
     @Override
