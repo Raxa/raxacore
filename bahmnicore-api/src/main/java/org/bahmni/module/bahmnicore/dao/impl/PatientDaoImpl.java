@@ -111,7 +111,8 @@ public class PatientDaoImpl implements PatientDao {
 
     private String getSelectStatementWithCustomAttributes(String selectStatement, String[] customAttributeFields){
         if(customAttributeFields != null && customAttributeFields.length > 0){
-            return selectStatement + " ,group_concat(distinct(coalesce(concat(attrt.name, ':', pattrln.value))) SEPARATOR ' ') as customAttribute ";
+            return selectStatement + ", " +
+                    "concat('{',group_concat(DISTINCT (coalesce(concat('\"',attrt.name,'\":\"', pattrln.value,'\"'))) SEPARATOR ','),'}') AS customAttribute";
         }
         return selectStatement;
     }
