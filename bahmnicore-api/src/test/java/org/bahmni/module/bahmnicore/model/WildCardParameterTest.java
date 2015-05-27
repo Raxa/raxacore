@@ -5,17 +5,17 @@ import org.junit.Test;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-public class NameSearchParameterTest {
+public class WildCardParameterTest {
     @Test
     public void shouldReturnTrueWhenNoNameSearchParametersAreProvided() throws Exception {
-        NameSearchParameter nameSearchParameter = NameSearchParameter.create("");
-        assertTrue(nameSearchParameter.isEmpty());
+        WildCardParameter wildCardParameter = WildCardParameter.create("");
+        assertTrue(wildCardParameter.isEmpty());
     }
 
     @Test
     public void shouldReturnTrueWhenSearchParametersAreNull() throws Exception {
-        NameSearchParameter nameSearchParameter = NameSearchParameter.create(null);
-        assertTrue(nameSearchParameter.isEmpty());
+        WildCardParameter wildCardParameter = WildCardParameter.create(null);
+        assertTrue(wildCardParameter.isEmpty());
 
     }
 
@@ -23,11 +23,11 @@ public class NameSearchParameterTest {
     public void shouldReturnNameSearchParametersSplitBySpace() throws Exception {
         String searchParameter = "FirstName MiddleName LastName";
         String[] splitSearchParameters = searchParameter.split(" ");
-        NameSearchParameter nameSearchParameter = NameSearchParameter.create(searchParameter);
-        assertFalse(nameSearchParameter.isEmpty());
-        assertEquals(3, nameSearchParameter.getNameParts().length);
+        WildCardParameter wildCardParameter = WildCardParameter.create(searchParameter);
+        assertFalse(wildCardParameter.isEmpty());
+        assertEquals(3, wildCardParameter.getParts().length);
         for(int i=0;i<splitSearchParameters.length;i++){
-            nameSearchParameter.getNameParts()[i].contains(splitSearchParameters[i]);
+            wildCardParameter.getParts()[i].contains(splitSearchParameters[i]);
         }
     }
 }

@@ -15,7 +15,7 @@ public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
     private EncounterTransaction.Provider provider;
     private List<BahmniOrderAttribute> orderAttributes;
 
-    private String personName;
+    private String creatorName;
 
     public String getAction() {
         return drugOrder.getAction();
@@ -129,13 +129,13 @@ public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
         this.orderAttributes = orderAttributes;
     }
 
-    public String getPersonName()
+    public String getCreatorName()
     {
-        return personName;
+        return creatorName;
     }
 
-    public void setPersonName(String personName) {
-        this.personName = personName;
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
     }
 
     @Override

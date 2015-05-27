@@ -3,7 +3,7 @@ package org.bahmni.module.bahmnicore.dao.impl;
 import org.apache.commons.lang.ArrayUtils;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
-import org.bahmni.module.bahmnicore.model.NameSearchParameter;
+import org.bahmni.module.bahmnicore.model.WildCardParameter;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
@@ -27,7 +27,7 @@ public class PatientDaoImpl implements PatientDao {
     private static final String PATIENT_IDENTIFIER_PARAM = "patientIdentifier";
     private static final String LIMIT_PARAM = "limit";
     private static final String OFFSET_PARAM = "offset";
-    private static final String LOCAL_NAME_PARAM = "localName";
+    private static final String CUSTOM_ATTRIBUTE_PARAM = "customAttribute";
     private static final String PERSON_ATTRIBUTE_NAMES_PARAMETER = "personAttributeTypeNames";
     private static final String PERSON_ATTRIBUTE_IDS_PARAMETER = "personAttributeTypeIds";
 
@@ -53,18 +53,18 @@ public class PatientDaoImpl implements PatientDao {
     }
 
     @Override
-    public List<PatientResponse> getPatients(String identifier, String name, String localName, String addressFieldName, String addressFieldValue, Integer length, Integer offset, String[] patientAttributes) {
+    public List<PatientResponse> getPatients(String identifier, String name, String customAttribute, String addressFieldName, String addressFieldValue, Integer length, Integer offset, String[] customAttributeFields) {
         Session currentSession = sessionFactory.getCurrentSession();
-        NameSearchParameter nameSearchParameter = NameSearchParameter.create(name);
-        String nameSearchCondition = getNameSearchCondition(nameSearchParameter);
-        NameSearchParameter localNameParameters = NameSearchParameter.create(localName);
-        String localNameJoins = getLocalNameJoins(localNameParameters, patientAttributes);
-        String selectStatement = getSelectStatementWithLocalName(SELECT_STATEMENT, patientAttributes);
+        WildCardParameter nameParameter = WildCardParameter.create(name);
+        String nameSearchCondition = getNameSearchCondition(nameParameter);
+        WildCardParameter customAttributeParameter = WildCardParameter.create(customAttribute);
+        String customAttributeJoins = getCustomAttributeJoins(customAttributeParameter, customAttributeFields);
+        String selectStatement = getSelectStatementWithCustomAttributes(SELECT_STATEMENT, customAttributeFields);
 
         String group_by = " group by p.person_id, p.uuid , pi.identifier , pn.given_name , pn.middle_name , pn.family_name , \n" +
                 "p.gender , p.birthdate , p.death_date , pa.:addressFieldName, p.date_created , \n" +
                 "v.uuid  ";
-        String query = selectStatement + FROM_TABLE + JOIN_CLAUSE + localNameJoins + WHERE_CLAUSE;
+        String query = selectStatement + FROM_TABLE + JOIN_CLAUSE + customAttributeJoins + WHERE_CLAUSE;
 
         query = isEmpty(identifier) ? query : combine(query, "and", enclose(BY_ID));
         query = isEmpty(nameSearchCondition) ? query : combine(query, "and", enclose(nameSearchCondition));
@@ -74,7 +74,7 @@ public class PatientDaoImpl implements PatientDao {
             query = query.replaceAll(":addressFieldValue", "'%" + addressFieldValue + "%'");
         }
 
-        if(patientAttributes !=null && patientAttributes.length >0) {
+        if(customAttributeFields !=null && customAttributeFields.length >0) {
             query += group_by;
         }
         query += ORDER_BY;
@@ -95,23 +95,23 @@ public class PatientDaoImpl implements PatientDao {
 
         if (isNotEmpty(identifier))
             sqlQuery.setParameter(PATIENT_IDENTIFIER_PARAM, identifier);
-        if(patientAttributes !=null && patientAttributes.length >0){
-            sqlQuery.addScalar("localName", StandardBasicTypes.STRING);
-            sqlQuery.setParameterList(PERSON_ATTRIBUTE_NAMES_PARAMETER, Arrays.asList(patientAttributes));
+        if(customAttributeFields !=null && customAttributeFields.length >0){
+            sqlQuery.addScalar("customAttribute", StandardBasicTypes.STRING);
+            sqlQuery.setParameterList(PERSON_ATTRIBUTE_NAMES_PARAMETER, Arrays.asList(customAttributeFields));
         }
-        if(!localNameParameters.isEmpty()) {
-            sqlQuery = replacePatientAttributeTypeParameters(patientAttributes, sqlQuery, currentSession);
+        if(!customAttributeParameter.isEmpty()) {
+            sqlQuery = replacePatientAttributeTypeParameters(customAttributeFields, sqlQuery, currentSession);
         }
-        replaceLocalNamePartParameters(localNameParameters, sqlQuery);
+        replaceCustomAttributeParameters(customAttributeParameter, sqlQuery);
         sqlQuery.setParameter(LIMIT_PARAM, length);
         sqlQuery.setParameter(OFFSET_PARAM, offset);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(PatientResponse.class));
         return sqlQuery.list();
     }
 
-    private String getSelectStatementWithLocalName(String selectStatement, String[] patientAttributes){
-        if(patientAttributes!= null && patientAttributes.length > 0){
-            return selectStatement + " ,group_concat(distinct(coalesce(concat(attrt.name, ':', pattrln.value))) SEPARATOR ' ') as localName ";
+    private String getSelectStatementWithCustomAttributes(String selectStatement, String[] customAttributeFields){
+        if(customAttributeFields != null && customAttributeFields.length > 0){
+            return selectStatement + " ,group_concat(distinct(coalesce(concat(attrt.name, ':', pattrln.value))) SEPARATOR ' ') as customAttribute ";
         }
         return selectStatement;
     }
@@ -134,33 +134,33 @@ public class PatientDaoImpl implements PatientDao {
     }
 
 
-    private SQLQuery replaceLocalNamePartParameters(NameSearchParameter localNameParameters, SQLQuery sqlQuery) {
+    private SQLQuery replaceCustomAttributeParameters(WildCardParameter wildcardParameters, SQLQuery sqlQuery) {
         int index = 0;
-        for (String localNamePart : localNameParameters.getNameParts()) {
-            sqlQuery.setParameter(LOCAL_NAME_PARAM + index++, localNamePart);
+        for (String wildcardPart : wildcardParameters.getParts()) {
+            sqlQuery.setParameter(CUSTOM_ATTRIBUTE_PARAM + index++, wildcardPart);
         }
         return sqlQuery;
     }
 
-    private String getLocalNameJoins(NameSearchParameter localNameParameters, String[] patientAttributes) {
-        String localNameGetJoin = " left outer join person_attribute pattrln on pattrln.person_id = p.person_id " +
+    private String getCustomAttributeJoins(WildCardParameter wildcardParameters, String[] customAttributeFields) {
+        String customAttributeGetJoin = " left outer join person_attribute pattrln on pattrln.person_id = p.person_id " +
                 " left outer join person_attribute_type attrt on attrt.person_attribute_type_id = pattrln.person_attribute_type_id and attrt.name in (:" + PERSON_ATTRIBUTE_NAMES_PARAMETER + ") ";
         String joinStatement = "";
 
-        if (!localNameParameters.isEmpty()) {
-            for (int index = 0; index < localNameParameters.getNameParts().length; index++) {
+        if (!wildcardParameters.isEmpty()) {
+            for (int index = 0; index < wildcardParameters.getParts().length; index++) {
                 String indexString = String.valueOf(index);
                 joinStatement = joinStatement +
                         " inner join person_attribute pattr" + indexString +
                         " on pattr" + indexString + ".person_id=p.person_id" +
-                        " and pattr" + indexString + ".value like :" + LOCAL_NAME_PARAM + indexString;
-                if (patientAttributes != null && patientAttributes.length > 0) {
+                        " and pattr" + indexString + ".value like :" + CUSTOM_ATTRIBUTE_PARAM + indexString;
+                if (customAttributeFields != null && customAttributeFields.length > 0) {
                     joinStatement = joinStatement + " and pattr" + indexString + ".person_attribute_type_id in ( :" + PERSON_ATTRIBUTE_IDS_PARAMETER + " )";
                 }
             }
         }
-        if (patientAttributes != null && patientAttributes.length > 0) {
-            joinStatement = joinStatement + localNameGetJoin;
+        if (customAttributeFields != null && customAttributeFields.length > 0) {
+            joinStatement = joinStatement + customAttributeGetJoin;
         }
         return joinStatement;
     }
@@ -195,12 +195,12 @@ public class PatientDaoImpl implements PatientDao {
         return querytoGetPatients.list();
     }
 
-    private String getNameSearchCondition(NameSearchParameter nameSearchParameter) {
-        if (nameSearchParameter.isEmpty())
+    private String getNameSearchCondition(WildCardParameter wildCardParameter) {
+        if (wildCardParameter.isEmpty())
             return "";
         else {
             String query_by_name_parts = "";
-            for (String part : nameSearchParameter.getNameParts()) {
+            for (String part : wildCardParameter.getParts()) {
                 if (!query_by_name_parts.equals("")) {
                     query_by_name_parts += " and " + BY_NAME_PARTS + " '" + part + "'";
                 } else {
