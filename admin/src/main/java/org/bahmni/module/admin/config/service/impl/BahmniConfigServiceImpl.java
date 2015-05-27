@@ -31,8 +31,8 @@ public class BahmniConfigServiceImpl implements BahmniConfigService {
 
     @Override
     public BahmniConfig save(BahmniConfig bahmniConfig) {
-        BahmniConfig existingConfig = bahmniConfigDao.get(bahmniConfig.getUuid());
-        if (existingConfig != null) {
+        BahmniConfig existingConfig;
+        if (bahmniConfig.getUuid() != null && (existingConfig = bahmniConfigDao.get(bahmniConfig.getUuid())) != null) {
             updateExistingConfig(bahmniConfig, existingConfig);
         } else {
             createNewConfig(bahmniConfig);

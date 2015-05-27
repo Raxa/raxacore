@@ -35,5 +35,10 @@ public class BahmniConfigController extends BaseRestController {
         return bahmniConfigService.save(bahmniConfig);
     }
 
+    @RequestMapping(method = RequestMethod.PUT)
+    @ResponseBody
+    public BahmniConfig update(@RequestBody BahmniConfig bahmniConfig) {
+        return bahmniConfigService.save(bahmniConfig);
+    }
 
 }

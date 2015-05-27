@@ -42,7 +42,6 @@ public class BahmniConfigServiceImplTest {
         existingConfig = new BahmniConfig();
         existingConfig.setUuid("existing");
         newConfig = new BahmniConfig();
-        newConfig.setUuid("new");
         when(bahmniConfigDao.get("existing")).thenReturn(existingConfig);
         when(bahmniConfigDao.get("new")).thenReturn(null);
         when(bahmniConfigDao.save(any(BahmniConfig.class))).then(new Answer<BahmniConfig>() {
