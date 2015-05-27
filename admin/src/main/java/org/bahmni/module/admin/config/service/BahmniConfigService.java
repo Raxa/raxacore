@@ -7,7 +7,6 @@ import java.util.List;
 public interface BahmniConfigService {
     BahmniConfig get(String appName, String configName);
 
-
     List<BahmniConfig> getAllFor(String appName);
 
     BahmniConfig save(BahmniConfig bahmniConfig);

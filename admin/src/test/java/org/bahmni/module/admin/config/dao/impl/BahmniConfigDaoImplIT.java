@@ -33,6 +33,15 @@ public class BahmniConfigDaoImplIT extends BaseModuleWebContextSensitiveTest {
         assertFalse(StringUtil.isEmpty(clinical.getConfig()));
     }
 
+    @Test
+    public void get_config_from_by_uuid() throws Exception {
+        BahmniConfig clinical = configDao.get("0aa1efd4-6eeb-4cea-bd4b-94af86f24d97");
+        assertNotNull(clinical);
+        assertEquals("clinical", clinical.getAppName());
+        assertEquals("app.json", clinical.getConfigName());
+        assertEquals("0aa1efd4-6eeb-4cea-bd4b-94af86f24d97", clinical.getUuid());
+        assertFalse(StringUtil.isEmpty(clinical.getConfig()));
+    }
 
     @Test
     public void return_null_if_config_not_available() throws Exception {

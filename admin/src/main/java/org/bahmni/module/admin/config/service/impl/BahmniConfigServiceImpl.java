@@ -31,8 +31,23 @@ public class BahmniConfigServiceImpl implements BahmniConfigService {
 
     @Override
     public BahmniConfig save(BahmniConfig bahmniConfig) {
-        bahmniConfig.setCreator(Context.getAuthenticatedUser());
-        bahmniConfig.setDateCreated(new Date());
+        BahmniConfig existingConfig = bahmniConfigDao.get(bahmniConfig.getUuid());
+        if (existingConfig != null) {
+            updateExistingConfig(bahmniConfig, existingConfig);
+        } else {
+            createNewConfig(bahmniConfig);
+        }
         return bahmniConfigDao.save(bahmniConfig);
+    }
+
+    private void createNewConfig(BahmniConfig bahmniConfig) {
+        bahmniConfig.setDateCreated(new Date());
+        bahmniConfig.setCreator(Context.getAuthenticatedUser());
+    }
+
+    private void updateExistingConfig(BahmniConfig bahmniConfig, BahmniConfig existingConfig) {
+        existingConfig.setConfig(bahmniConfig.getConfig());
+        existingConfig.setChangedBy(Context.getAuthenticatedUser());
+        existingConfig.setDateChanged(new Date());
     }
 }
