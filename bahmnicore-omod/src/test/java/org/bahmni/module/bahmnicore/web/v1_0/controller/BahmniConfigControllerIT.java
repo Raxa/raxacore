@@ -49,6 +49,5 @@ public class BahmniConfigControllerIT extends BaseWebControllerTest {
         BahmniConfig getConfig = deserialize(handle(newGetRequest("/rest/v1/bahmni/config", new Parameter("appName", "registration"), new Parameter("configName", "app.json"))), BahmniConfig.class);
         assertEquals(savedConfig, getConfig);
         assertNotNull(getConfig.getDateCreated());
-
     }
 }
