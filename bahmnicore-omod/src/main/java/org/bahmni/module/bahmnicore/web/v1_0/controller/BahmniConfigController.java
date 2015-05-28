@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.bahmni.module.admin.config.model.BahmniConfig;
 import org.bahmni.module.admin.config.service.BahmniConfigService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -26,7 +27,7 @@ public class BahmniConfigController extends BaseRestController {
     @RequestMapping(method = RequestMethod.GET, value = "/{appName}/{configName:.+}")
     @ResponseBody
     public String getConfig(@PathVariable("appName") String appName, @PathVariable(value = "configName") String configName) {
-        return bahmniConfigService.get(appName, configName).getConfig();
+        return StringEscapeUtils.unescapeJava(bahmniConfigService.get(appName, configName).getConfig());
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "all")
