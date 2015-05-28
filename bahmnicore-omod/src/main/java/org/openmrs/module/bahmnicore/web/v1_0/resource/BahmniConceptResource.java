@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.web.v1_0.resource;
+package org.openmrs.module.bahmnicore.web.v1_0.resource;
 
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
