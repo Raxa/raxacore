@@ -23,6 +23,12 @@ public class BahmniConfigController extends BaseRestController {
         return bahmniConfigService.get(appName, configName);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/{appName}/{configName:.+}")
+    @ResponseBody
+    public String getConfig(@PathVariable("appName") String appName, @PathVariable(value = "configName") String configName) {
+        return bahmniConfigService.get(appName, configName).getConfig();
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "all")
     @ResponseBody
     public List<BahmniConfig> getAll(@RequestParam("appName") String appName) {

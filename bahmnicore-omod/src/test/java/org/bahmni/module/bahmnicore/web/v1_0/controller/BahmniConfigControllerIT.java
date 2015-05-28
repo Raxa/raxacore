@@ -9,9 +9,9 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.List;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertNull;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.TestCase.*;
 
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
@@ -28,6 +28,13 @@ public class BahmniConfigControllerIT extends BaseWebControllerTest {
         });
         assertEquals("app.json", bahmniConfig.getConfigName());
         assertEquals("clinical", bahmniConfig.getAppName());
+    }
+
+    @Test
+    public void get_config_by_path() throws Exception {
+        String bahmniConfig = handle(newGetRequest("/rest/v1/bahmni/config/clinical/app.json")).getContentAsString();
+        assertFalse(bahmniConfig.isEmpty());
+        assertTrue(bahmniConfig.contains("bahmni.registration"));
     }
 
     @Test

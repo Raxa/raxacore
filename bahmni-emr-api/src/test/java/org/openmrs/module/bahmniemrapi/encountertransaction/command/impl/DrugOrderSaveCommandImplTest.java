@@ -88,7 +88,7 @@ public class DrugOrderSaveCommandImplTest {
         drugOrders.add(drugOrder3);
         bahmniEncounterTransaction.setDrugOrders(drugOrders);
         BahmniEncounterTransaction updatedEncounterTransaction = drugOrderSaveCommand.update(bahmniEncounterTransaction);
-        assertEquals(updatedEncounterTransaction.getDrugOrders().size(),3);
+        assertEquals(updatedEncounterTransaction.getDrugOrders().size(), 3);
 
 
         EncounterTransaction.DrugOrder currentDrugOrder = updatedEncounterTransaction.getDrugOrders().get(0);
@@ -99,11 +99,12 @@ public class DrugOrderSaveCommandImplTest {
         assertTrue(currentDrugOrder.getAutoExpireDate().before(overlappingOrderWithCurrentDateOrder.getScheduledDate()));
 
     }
+
     @Test
     public void shouldSetDatesForDrugOrdersChainedConflictsWithCurrentDateOrders() {
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         Concept dayConcept = new Concept();
-        dayConcept.addConceptMapping(getConceptMap(Duration.SNOMED_CT_CONCEPT_SOURCE_HL7_CODE, Duration.SNOMED_CT_DAYS_CODE,"35543629-7d8c-11e1-909d-c80aa9edcf4e"));
+        dayConcept.addConceptMapping(getConceptMap(Duration.SNOMED_CT_CONCEPT_SOURCE_HL7_CODE, Duration.SNOMED_CT_DAYS_CODE, "35543629-7d8c-11e1-909d-c80aa9edcf4e"));
 
         when(conceptService.getConceptByName(DAY_DURATION_UNIT)).thenReturn(dayConcept);
         OrderFrequency orderFrequency = new OrderFrequency();
@@ -124,7 +125,7 @@ public class DrugOrderSaveCommandImplTest {
         drugOrders.add(drugOrder4);
         bahmniEncounterTransaction.setDrugOrders(drugOrders);
         BahmniEncounterTransaction updatedEncounterTransaction = drugOrderSaveCommand.update(bahmniEncounterTransaction);
-        assertEquals(updatedEncounterTransaction.getDrugOrders().size(),4);
+        assertEquals(updatedEncounterTransaction.getDrugOrders().size(), 4);
 
 
         EncounterTransaction.DrugOrder currentDrugOrder = updatedEncounterTransaction.getDrugOrders().get(0);
@@ -135,7 +136,7 @@ public class DrugOrderSaveCommandImplTest {
         Date expectedStopDateForOverlappingOrder = DrugOrderUtil.calculateAutoExpireDate(overlappingOrderWithCurrentDateOrder.getDuration(), dayConcept, null, overlappingOrderWithCurrentDateOrder.getScheduledDate(), orderMetadataService.getOrderFrequencyByName(overlappingOrderWithCurrentDateOrder.getDosingInstructions().getFrequency(), false));
 
         assertEquals(currentDrugOrder.getAutoExpireDate(), expectedStopDateForCurrentOrder);
-        assertEquals(overlappingOrderWithCurrentDateOrder.getAutoExpireDate(),expectedStopDateForOverlappingOrder);
+        assertEquals(overlappingOrderWithCurrentDateOrder.getAutoExpireDate(), expectedStopDateForOverlappingOrder);
         assertTrue(currentDrugOrder.getAutoExpireDate().before(overlappingOrderWithCurrentDateOrder.getScheduledDate()));
 
         assertTrue(overlappingOrderWithCurrentDateOrder.getAutoExpireDate().before(chainedOverlappingOrder.getScheduledDate()));
