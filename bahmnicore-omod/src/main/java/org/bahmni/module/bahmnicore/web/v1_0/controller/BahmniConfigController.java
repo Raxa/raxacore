@@ -36,6 +36,12 @@ public class BahmniConfigController extends BaseRestController {
         return bahmniConfigService.getAllFor(appName);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "allApps")
+    @ResponseBody
+    public List<String> getAll() {
+        return bahmniConfigService.getAll();
+    }
+
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public BahmniConfig insert(@RequestBody BahmniConfig bahmniConfig) {

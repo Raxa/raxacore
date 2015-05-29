@@ -12,4 +12,6 @@ public interface BahmniConfigService {
     BahmniConfig save(BahmniConfig bahmniConfig);
 
     BahmniConfig update(BahmniConfig bahmniConfig);
+
+    List<String> getAll();
 }

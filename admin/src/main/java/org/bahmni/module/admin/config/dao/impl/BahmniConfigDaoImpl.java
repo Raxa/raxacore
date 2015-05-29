@@ -62,6 +62,16 @@ public class BahmniConfigDaoImpl implements BahmniConfigDao {
     }
 
     @Override
+    public List<String> getAll() {
+        List<String> appConfigs = new ArrayList<>();
+        Session currentSession = sessionFactory.getCurrentSession();
+        Query query = currentSession.createQuery(
+                "select distinct config.appName from BahmniConfig config ");
+        appConfigs.addAll(query.list());
+        return appConfigs;
+    }
+
+    @Override
     @Transactional
     public BahmniConfig save(BahmniConfig bahmniConfig) {
         sessionFactory.getCurrentSession().save(bahmniConfig);

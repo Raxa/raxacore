@@ -44,6 +44,11 @@ public class BahmniConfigServiceImpl implements BahmniConfigService {
         return bahmniConfigDao.get(updatedConfig.getUuid());
     }
 
+    @Override
+    public List<String> getAll() {
+        return bahmniConfigDao.getAll();
+    }
+
     private void createNewConfig(BahmniConfig bahmniConfig) {
         bahmniConfig.setDateCreated(new Date());
         bahmniConfig.setCreator(Context.getAuthenticatedUser());

@@ -14,4 +14,6 @@ public interface BahmniConfigDao {
     BahmniConfig save(BahmniConfig bahmniConfig);
 
     BahmniConfig update(BahmniConfig existingConfig);
+
+    List<String> getAll();
 }
