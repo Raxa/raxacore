@@ -2972,4 +2972,13 @@
                              constraintName="bahmni_config_version_unique_uuid"
                              tableName="bahmni_config_version"/>
     </changeSet>
+    <changeSet id="bahmni-core-201506011729" author="Preethi, Gautam">
+        <comment>Changing short name for Lab Samples concept on UI </comment>
+        <sql>
+            select concept_id into @labsamples_concept_id from concept_name where name like 'Lab Samples' and concept_name_type = 'FULLY_SPECIFIED';
+
+            update concept_name set name = 'Laboratory' where concept_id = @labsamples_concept_id and concept_name_type = 'SHORT';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
