@@ -68,8 +68,8 @@ public class SqlQueryHelper {
                 if (hasReadAtLeastOneAdditionalParam) {
                     queryString += " OR ";
                 }
-                String additionalQuery = "";
-                additionalQuery = additionalQueryString.replaceAll("\\$\\{testName\\}", test);
+                String additionalQuery = " ";
+                additionalQuery += additionalQueryString.replaceAll("\\$\\{testName\\}", test);
                 queryString += additionalQuery;
                 hasReadAtLeastOneAdditionalParam = true;
             }
