@@ -1,12 +1,12 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.openmrs.Concept;
-import org.openmrs.ConceptDatatype;
-import org.openmrs.Obs;
-import org.openmrs.Visit;
+import org.hibernate.criterion.*;
+import org.openmrs.*;
 import org.openmrs.api.ConceptNameType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -17,8 +17,7 @@ import java.util.*;
 public class ObsDaoImpl implements ObsDao {
     @Autowired
     private SessionFactory sessionFactory;
-    private static final String DESC = "desc";
-    private static final String ASC = "asc";
+    private enum OrderBy {ASC,DESC};
 
     @Override
     public List<Obs> getNumericObsByPerson(String personUUID) {
@@ -53,7 +52,7 @@ public class ObsDaoImpl implements ObsDao {
 
     }
 
-    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, Integer limit, String order, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
+    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, Integer limit, OrderBy order, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
         List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
         if (listOfVisitIds == null || listOfVisitIds.isEmpty())
             return new ArrayList<>();
@@ -61,22 +60,7 @@ public class ObsDaoImpl implements ObsDao {
         return getObsByPatientAndVisit(patientUuid, conceptNames, listOfVisitIds, limit, order, obsIgnoreList, filterObsWithOrders);
     }
 
-    private List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit, String order, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
-        Query queryToGetObservations = sessionFactory.getCurrentSession().createQuery(
-                "select obs " +
-                        " from Obs as obs, ConceptName as cn " +
-                        " where obs.person.uuid = :patientUuid " +
-                        " and obs.encounter.visit.visitId in (:listOfVisitIds) " +
-                        " and cn.concept = obs.concept.conceptId " +
-                        " and cn.name in (:conceptNames) " +
-                        " and cn.conceptNameType = :conceptNameType " +
-                        " and cn.voided = false " +
-                        " and obs.voided = false " +
-                        " order by obs.obsDatetime " + order);
-        return getObsByPatientAndVisit(patientUuid, conceptNames, listOfVisitIds,limit, obsIgnoreList, filterObsWithOrders);
-    }
-
-    private List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
+    private List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit, OrderBy order, List<String> obsIgnoreList, Boolean filterOutOrderObs) {
 
         StringBuilder query = new StringBuilder("select obs from Obs as obs, ConceptName as cn " +
                 " where obs.person.uuid = :patientUuid " +
@@ -86,13 +70,18 @@ public class ObsDaoImpl implements ObsDao {
                 " and cn.conceptNameType = :conceptNameType " +
                 " and cn.voided = false and obs.voided = false ");
 
-        if(null != obsIgnoreList && obsIgnoreList.size() > 0) {
+        if(CollectionUtils.isNotEmpty(obsIgnoreList)) {
             query.append(" and cn.name not in (:obsIgnoreList) ");
         }
-        if(filterObsWithOrders) {
-            query.append( " and obs.order.orderId is not null ");
+        if(filterOutOrderObs) {
+            query.append( " and obs.order.orderId is null ");
         }
-        query.append(" order by obs.obsDatetime desc ");
+        if(order == OrderBy.ASC){
+            query.append(" order by obs.obsDatetime asc ");
+        }else{
+            query.append(" order by obs.obsDatetime desc ");
+        }
+
 
         Query queryToGetObservations = sessionFactory.getCurrentSession().createQuery(query.toString());
         queryToGetObservations.setMaxResults(limit);
@@ -107,25 +96,25 @@ public class ObsDaoImpl implements ObsDao {
         return queryToGetObservations.list();
     }
 
-    public List<Obs> getInitialObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit) {
-        return getObsFor(patientUuid, Arrays.asList(conceptName), numberOfVisits, limit, ASC, null, false);
+    public List<Obs> getInitialObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit,List<String> obsIgnoreList, Boolean filterOutOrderObs) {
+        return getObsFor(patientUuid, Arrays.asList(conceptName), numberOfVisits, limit, OrderBy.ASC, obsIgnoreList, filterOutOrderObs);
     }
 
     @Override
-    public List<Obs> getInitialObsByVisit(Visit visit, String conceptName, Integer limit) {
-        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, ASC, null, false);
+    public List<Obs> getInitialObsByVisit(Visit visit, String conceptName, Integer limit, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
+        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, OrderBy.ASC, obsIgnoreList, filterObsWithOrders);
     }
 
-    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
-        return getObsFor(patientUuid,conceptNames,numberOfVisits,-1, DESC, obsIgnoreList, filterObsWithOrders);
+    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, List<String> obsIgnoreList, Boolean filterOutOrderObs) {
+        return getObsFor(patientUuid,conceptNames,numberOfVisits,-1, OrderBy.DESC, obsIgnoreList, filterOutOrderObs);
     }
 
-    public List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
-        return getObsFor(patientUuid,Arrays.asList(conceptName),numberOfVisits, limit, DESC, obsIgnoreList, filterObsWithOrders);
+    public List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit, List<String> obsIgnoreList, Boolean filterOutOrderObs) {
+        return getObsFor(patientUuid,Arrays.asList(conceptName),numberOfVisits, limit, OrderBy.DESC, obsIgnoreList, filterOutOrderObs);
     }
 
-    public List<Obs> getLatestObsByVisit(Visit visit, String conceptName, Integer limit, List<String> obsIgnoreList, Boolean filterObsWithOrders){
-        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, DESC, obsIgnoreList, filterObsWithOrders);
+    public List<Obs> getLatestObsByVisit(Visit visit, String conceptName, Integer limit, List<String> obsIgnoreList, Boolean filterOutOrderObs){
+        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, OrderBy.DESC, obsIgnoreList, filterOutOrderObs);
     }
 
     @Override
@@ -175,6 +164,32 @@ public class ObsDaoImpl implements ObsDao {
         queryToGetObs.setString("orderUuid", orderUuid);
 
         return queryToGetObs.list();
+    }
+
+    @Override
+    public List<Obs> getObsForVisits(List<Person> persons, ArrayList<Encounter> encounters, List<Concept> conceptsForNames,  Collection<Concept> obsIgnoreList, boolean filterOutOrders) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Obs.class, "obs");
+        if(CollectionUtils.isNotEmpty(persons)) {
+            criteria.add(Restrictions.in("person", persons));
+        }
+
+        if(CollectionUtils.isNotEmpty(encounters)) {
+            criteria.add(Restrictions.in("encounter", encounters));
+        }
+        if(CollectionUtils.isNotEmpty(conceptsForNames)) {
+            criteria.add(Restrictions.in("concept", conceptsForNames));
+        }
+        if(CollectionUtils.isNotEmpty(obsIgnoreList)) {
+            criteria.add(Restrictions.not(Restrictions.in("concept", obsIgnoreList)));
+        }
+        if(filterOutOrders){
+            criteria.add(Restrictions.isNull("order"));
+        }
+        criteria.add(Restrictions.eq("voided", Boolean.valueOf(false)));
+
+        criteria.addOrder(org.hibernate.criterion.Order.desc("obsDatetime"));
+
+        return criteria.list();
     }
 
     private List<Obs> filterByRootConcept(List<Obs> obs, String parentConceptName) {

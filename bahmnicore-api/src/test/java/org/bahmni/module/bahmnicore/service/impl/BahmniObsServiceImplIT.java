@@ -106,7 +106,7 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldReturnObsForAllConceptForGivenVisit() {
-        List<BahmniObservation> bahmniObservations = (List<BahmniObservation>) personObsService.getObservationForVisit("ad41fb41-a41a-4ad6-8835-2f59099acf5b", null);
+        List<BahmniObservation> bahmniObservations = (List<BahmniObservation>) personObsService.getObservationForVisit("ad41fb41-a41a-4ad6-8835-2f59099acf5b",null, null, false);
         assertEquals(2, bahmniObservations.size());
         assertEquals(2, bahmniObservations.get(0).getGroupMembers().size());
         assertEquals(1, bahmniObservations.get(1).getGroupMembers().size());
@@ -114,7 +114,7 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void shouldReturnObsForGivenConceptForGivenVisitWithoutTakingObservationNamesCaseIntoAccount() {
-        Collection<BahmniObservation> bahmniObservations = personObsService.getObservationForVisit("ad41fb41-a41a-4ad6-8835-2f59099acf5b", Arrays.asList("SYSTOlic", "Diastolic"));
+        Collection<BahmniObservation> bahmniObservations = personObsService.getObservationForVisit("ad41fb41-a41a-4ad6-8835-2f59099acf5b", Arrays.asList("SYSTOlic", "Diastolic"),null, false);
         assertEquals(2, bahmniObservations.size());
     }
 }

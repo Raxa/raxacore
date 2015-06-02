@@ -46,7 +46,7 @@ public class ObsDiseaseSummaryAggregator {
             }
             return Collections.EMPTY_LIST;
         }
-        return filterObservationsLinkedWithOrders(bahmniObsService.getObservationForVisit(queryParams.getVisitUuid(), queryParams.getObsConcepts()));
+        return filterObservationsLinkedWithOrders(bahmniObsService.getObservationForVisit(queryParams.getVisitUuid(), queryParams.getObsConcepts(), null,  false));
     }
 
     private Collection<BahmniObservation> filterObservationsLinkedWithOrders(Collection<BahmniObservation> bahmniObservations) {

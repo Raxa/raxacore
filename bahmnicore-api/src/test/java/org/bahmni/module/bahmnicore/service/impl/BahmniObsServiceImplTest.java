@@ -20,7 +20,9 @@ import org.openmrs.util.LocaleUtility;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import static org.mockito.Matchers.any;
@@ -87,8 +89,9 @@ public class BahmniObsServiceImplTest {
         Integer limit = 1;
         VisitBuilder visitBuilder = new VisitBuilder();
         Visit visit = visitBuilder.withUUID("visitId").withEncounter(new Encounter(1)).withPerson(new Person()).build();
-        bahmniObsService.getInitialObsByVisit(visit, Arrays.asList(weightConcept));
-        verify(obsDao).getInitialObsByVisit(visit, "Weight", limit);
+        List<String> obsIgnoreList = new ArrayList<>();
+        bahmniObsService.getInitialObsByVisit(visit, Arrays.asList(weightConcept), obsIgnoreList, true);
+        verify(obsDao).getInitialObsByVisit(visit, "Weight", limit, obsIgnoreList, true);
     }
 
     @Test
