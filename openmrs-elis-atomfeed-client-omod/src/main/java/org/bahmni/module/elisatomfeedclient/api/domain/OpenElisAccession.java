@@ -40,7 +40,8 @@ public class OpenElisAccession {
                     accessionDiff.addRemovedTestDetails(testDetail);
                 }
             } else {
-                if (!hasOrderByUuid(previousEncounter.getOrders(), orderableUuid)) {
+                Order order = getOrderByTestUuid(previousEncounter.getOrders(),orderableUuid);
+                if (order==null) {
                     accessionDiff.addAddedTestDetail(testDetail);
                 }
             }
@@ -55,6 +56,14 @@ public class OpenElisAccession {
                 return true;
         }
         return false;
+    }
+
+    private Order getOrderByTestUuid(Set<Order> orders, String testUuid){
+        for (Order order : orders) {
+            if (order.getConcept() != null && order.getConcept().getUuid().equals(testUuid))
+                return order;
+        }
+        return null;
     }
 
     public Date fetchDate() {

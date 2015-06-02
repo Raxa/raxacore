@@ -3,6 +3,7 @@ package org.bahmni.module.elisatomfeedclient.api.domain;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisAccessionBuilder;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisTestDetailBuilder;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openmrs.Concept;
@@ -111,6 +112,10 @@ public class OpenElisAccessionTest {
     }
 
     @Test
+    @Ignore
+    //This testcase has other consequences. For example
+    // Doctor orders a test, it gets synced to elis. The sample is collected and now the doctor cancels it from MRS (voided=1).
+    // The cancel is dropped as the sample is already collected.  Now, when it syncs back, we do not want the original order to be un-voided. Refer #2341
     public void shouldGetDiffIfCancelledTestIsReordered() throws Exception {
         Encounter previousEncounter = getEncounterWithOrders("test1", "test2");
         getOrderByName(previousEncounter, "test1").setVoided(true);
@@ -174,6 +179,7 @@ public class OpenElisAccessionTest {
     }
 
     @Test
+    @Ignore
     public void shouldGetDiffIfCancelledPanelIsReordered() throws Exception {
         Encounter previousEncounter = getEncounterWithOrders("panel1", "test2");
         getOrderByName(previousEncounter, "panel1").setVoided(true);
