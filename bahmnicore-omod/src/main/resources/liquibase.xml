@@ -2981,4 +2981,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-201506011804" author="Preethi, Gautam">
+        <comment>Changing description for LabSet concept class to Panels</comment>
+        <sql>
+            update concept_class set description = 'Panels' where name = 'LabSet';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
