@@ -19,7 +19,7 @@ public interface ObsDao {
 
     List<Obs> getInitialObsByVisit(Visit visit, String conceptName, Integer limit, List<String> obsIgnoreList, Boolean filterObsWithOrders);
 
-    List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit, List<String> obsIgnoreList, Boolean filterOutOrderObs);
+    List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order);
 
     List<Obs> getLatestObsForConceptSetByVisit(String patientUuid, String conceptNames, Integer visitId);
 

@@ -54,11 +54,11 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public Collection<BahmniObservation> getLatest(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits, List<String> obsIgnoreList, Boolean filterOutOrderObs) {
+    public Collection<BahmniObservation> getLatest(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order) {
         List<Obs> latestObs = new ArrayList<>();
         for (Concept concept : concepts) {
             if(null != concept) {
-                latestObs.addAll(obsDao.getLatestObsFor(patientUuid, concept.getName().getName(), numberOfVisits, 1, obsIgnoreList, filterOutOrderObs));
+                latestObs.addAll(obsDao.getLatestObsFor(patientUuid, concept.getName().getName(), numberOfVisits, 1, obsIgnoreList, filterOutOrderObs, order));
             }
         }
 

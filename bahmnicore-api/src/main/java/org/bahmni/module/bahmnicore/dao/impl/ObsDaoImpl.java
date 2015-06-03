@@ -7,6 +7,7 @@ import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.*;
 import org.openmrs.*;
+import org.openmrs.Order;
 import org.openmrs.api.ConceptNameType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -52,15 +53,15 @@ public class ObsDaoImpl implements ObsDao {
 
     }
 
-    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, Integer limit, OrderBy order, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
+    public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, Integer limit, OrderBy sortOrder, List<String> obsIgnoreList, Boolean filterObsWithOrders, Order order) {
         List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
         if (listOfVisitIds == null || listOfVisitIds.isEmpty())
             return new ArrayList<>();
 
-        return getObsByPatientAndVisit(patientUuid, conceptNames, listOfVisitIds, limit, order, obsIgnoreList, filterObsWithOrders);
+        return getObsByPatientAndVisit(patientUuid, conceptNames, listOfVisitIds, limit, sortOrder, obsIgnoreList, filterObsWithOrders, order);
     }
 
-    private List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit, OrderBy order, List<String> obsIgnoreList, Boolean filterOutOrderObs) {
+    private List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit, OrderBy sortOrder, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order) {
 
         StringBuilder query = new StringBuilder("select obs from Obs as obs, ConceptName as cn " +
                 " where obs.person.uuid = :patientUuid " +
@@ -76,7 +77,10 @@ public class ObsDaoImpl implements ObsDao {
         if(filterOutOrderObs) {
             query.append( " and obs.order.orderId is null ");
         }
-        if(order == OrderBy.ASC){
+        if(null != order) {
+                    query.append( " and obs.order = (:order) ");
+                }
+        if(sortOrder == OrderBy.ASC){
             query.append(" order by obs.obsDatetime asc ");
         }else{
             query.append(" order by obs.obsDatetime desc ");
@@ -92,29 +96,32 @@ public class ObsDaoImpl implements ObsDao {
         if (null != obsIgnoreList && obsIgnoreList.size() > 0) {
             queryToGetObservations.setParameterList("obsIgnoreList", obsIgnoreList);
         }
-
+        if (null != order) {
+            queryToGetObservations.setParameter("order", order);
+        }
         return queryToGetObservations.list();
     }
 
     public List<Obs> getInitialObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit,List<String> obsIgnoreList, Boolean filterOutOrderObs) {
-        return getObsFor(patientUuid, Arrays.asList(conceptName), numberOfVisits, limit, OrderBy.ASC, obsIgnoreList, filterOutOrderObs);
+        return getObsFor(patientUuid, Arrays.asList(conceptName), numberOfVisits, limit, OrderBy.ASC, obsIgnoreList, filterOutOrderObs, null);
     }
 
     @Override
     public List<Obs> getInitialObsByVisit(Visit visit, String conceptName, Integer limit, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
-        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, OrderBy.ASC, obsIgnoreList, filterObsWithOrders);
+        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, OrderBy.ASC, obsIgnoreList, filterObsWithOrders, null);
     }
 
+    @Override
     public List<Obs> getObsFor(String patientUuid, List<String> conceptNames, Integer numberOfVisits, List<String> obsIgnoreList, Boolean filterOutOrderObs) {
-        return getObsFor(patientUuid,conceptNames,numberOfVisits,-1, OrderBy.DESC, obsIgnoreList, filterOutOrderObs);
+        return getObsFor(patientUuid,conceptNames,numberOfVisits,-1, OrderBy.DESC, obsIgnoreList, filterOutOrderObs, null);
     }
 
-    public List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit, List<String> obsIgnoreList, Boolean filterOutOrderObs) {
-        return getObsFor(patientUuid,Arrays.asList(conceptName),numberOfVisits, limit, OrderBy.DESC, obsIgnoreList, filterOutOrderObs);
+    public List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order) {
+        return getObsFor(patientUuid,Arrays.asList(conceptName),numberOfVisits, limit, OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order);
     }
 
     public List<Obs> getLatestObsByVisit(Visit visit, String conceptName, Integer limit, List<String> obsIgnoreList, Boolean filterOutOrderObs){
-        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, OrderBy.DESC, obsIgnoreList, filterOutOrderObs);
+        return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, OrderBy.DESC, obsIgnoreList, filterOutOrderObs, null);
     }
 
     @Override

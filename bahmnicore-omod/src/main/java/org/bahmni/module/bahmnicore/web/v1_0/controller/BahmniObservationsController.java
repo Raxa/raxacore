@@ -48,7 +48,7 @@ public class BahmniObservationsController extends BaseRestController {
 
         List<Concept> rootConcepts = MiscUtils.getConceptsForNames(rootConceptNames,conceptService);
         if (ObjectUtils.equals(scope, LATEST)) {
-            return bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, true);
+            return bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, true, null);
         } else if (ObjectUtils.equals(scope, INITIAL)) {
             return bahmniObsService.getInitial(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, true);
         } else {

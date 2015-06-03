@@ -12,4 +12,8 @@ public interface OrderService {
     List<Order> getAllOrders(String patientUuid, String orderTypeUuid, Integer offset, Integer limit);
 
     List<Visit> getVisitsWithOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits);
+
+    List<Order> getAllOrdersForVisits(String patientUuid, String orderType, Integer numberOfVisits);
+
+    Order getOrderByUuid(String orderUuid);
 }

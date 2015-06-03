@@ -1,9 +1,12 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.dao.OrderDao;
+import org.bahmni.module.bahmnicore.dao.VisitDao;
+import org.bahmni.module.bahmnicore.service.BahmniVisitService;
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.openmrs.*;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +20,14 @@ public class OrderServiceImpl implements OrderService {
 
     private org.openmrs.api.OrderService orderService;
     private PatientService patientService;
+    private VisitDao visitDao;
     private OrderDao orderDao;
 
     @Autowired
-    public OrderServiceImpl(org.openmrs.api.OrderService orderService, PatientService patientService, OrderDao orderDao) {
+    public OrderServiceImpl(org.openmrs.api.OrderService orderService, PatientService patientService, VisitDao visitDao, OrderDao orderDao) {
         this.orderService = orderService;
         this.patientService = patientService;
+        this.visitDao = visitDao;
         this.orderDao = orderDao;
     }
 
@@ -45,6 +50,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Visit> getVisitsWithOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits){
-        return orderDao.getVisitsWithOrders(patient,orderType,includeActiveVisit,numberOfVisits);
+        return orderDao.getVisitsWithOrders(patient, orderType, includeActiveVisit,numberOfVisits);
+    }
+
+    @Override
+    public List<Order> getAllOrdersForVisits(String patientUuid, String orderTypeUuid, Integer numberOfVisits) {
+        Patient patient = patientService.getPatientByUuid(patientUuid);
+        OrderType orderType = orderService.getOrderTypeByUuid(orderTypeUuid);
+        List<Visit> visits = visitDao.getVisitsByPatient(patient, numberOfVisits);
+        return orderDao.getAllOrdersForVisits(patient, orderType, visits);
+    }
+    @Override
+    public Order getOrderByUuid(String orderUuid){
+        return orderDao.getOrderByUuid(orderUuid);
     }
 }

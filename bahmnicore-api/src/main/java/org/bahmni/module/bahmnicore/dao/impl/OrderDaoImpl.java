@@ -188,14 +188,37 @@ public class OrderDaoImpl implements OrderDao {
         criteria.add(Restrictions.eq("voided", false));
         criteria.add(Restrictions.ne("action", Order.Action.DISCONTINUE));
         criteria.addOrder(org.hibernate.criterion.Order.desc("dateCreated"));
-        if(offset != null) {
+        if (offset != null) {
             criteria.setFirstResult(offset);
         }
 
-        if(limit != null && limit > 0) {
+        if (limit != null && limit > 0) {
             criteria.setMaxResults(limit);
         }
 
         return criteria.list();
+    }
+
+    @Override
+    public List<Order> getAllOrdersForVisits(Patient patient, OrderType orderType, List<Visit> visits) {
+
+        Session currentSession = getCurrentSession();
+        Query queryVisitsWithDrugOrders = currentSession.createQuery(" select o from Order o where o.encounter.encounterId in\n" +
+                "(select e.encounterId from Encounter e where e.visit in (:visits) group by e.visit.visitId )\n" +
+                "and o.voided = false and o.orderType = (:orderTypeId) and o.action != :discontinued and o.patient = (:patientId)");
+        queryVisitsWithDrugOrders.setParameter("patientId", patient);
+        queryVisitsWithDrugOrders.setParameter("discontinued", Order.Action.DISCONTINUE);
+        queryVisitsWithDrugOrders.setParameter("orderTypeId", orderType);
+        queryVisitsWithDrugOrders.setParameterList("visits", visits);
+        return (List<Order>) queryVisitsWithDrugOrders.list();
+    }
+
+    @Override
+    public Order getOrderByUuid(String uuid) {
+        String queryString = "select o from Order o where o.uuid = (:uuid)";
+        Query queryToGetVisitId = sessionFactory.getCurrentSession().createQuery(queryString);
+        queryToGetVisitId.setString("uuid", uuid);
+        queryToGetVisitId.setMaxResults(1);
+        return (Order) queryToGetVisitId.uniqueResult();
     }
 }

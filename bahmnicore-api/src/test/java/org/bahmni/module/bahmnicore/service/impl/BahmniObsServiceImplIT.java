@@ -42,7 +42,7 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void shouldReturnLatestObsForEachConcept() {
         Concept vitalsConcept = conceptService.getConceptByName("Vitals");
-        Collection<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(vitalsConcept),3, null, false);
+        Collection<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(vitalsConcept),3, null, false, null);
         BahmniObservation vitalObservation = bahmniObservations.iterator().next();
         Collection<BahmniObservation> vitalsGroupMembers = vitalObservation.getGroupMembers();
         assertEquals(2, vitalsGroupMembers.size());
@@ -58,9 +58,9 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
     public void shouldReturnLatestObsForEachConceptForSpecifiedNumberOfVisits() {
         Concept sittingConcept = conceptService.getConceptByName("Vitals");
         //Latest limited by last two visits.
-        Collection<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(sittingConcept),1, null, false);
+        Collection<BahmniObservation> bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(sittingConcept),1, null, false, null);
         assertEquals(0, bahmniObservations.size());
-        bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(sittingConcept),2, null, false);
+        bahmniObservations = personObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(sittingConcept),2, null, false, null);
         assertEquals(1, bahmniObservations.size());
 
         BahmniObservation sittingObservation = bahmniObservations.iterator().next();
