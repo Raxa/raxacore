@@ -57,8 +57,8 @@ public class SqlQueryHelperTest {
                 "FROM obs o\n" +
                 "INNER JOIN concept_name cn ON o.concept_id = cn.concept_id AND cn.concept_name_type='FULLY_SPECIFIED' AND o.voided = 0\n" +
                 "inner join obs o1 on o.obs_group_id = o1.obs_group_id and o1.voided=0\n" +
-                "inner join concept_name cn1 on o1.concept_id = cn1.concept_id and cn1.name='LAB_ABNORMAL' and  cn1.concept_name_type='FULLY_SPECIFIED' and o1.value_coded=1 WHERE " +
-                " cn.name = 'HIV (Blood)' OR  cn.name = 'Gram Stain (Sputum)'))";
+                "inner join concept_name cn1 on o1.concept_id = cn1.concept_id and cn1.name='LAB_ABNORMAL' and  cn1.concept_name_type='FULLY_SPECIFIED' and o1.value_coded=1 WHERE  " +
+                " cn.name = 'HIV (Blood)' OR   cn.name = 'Gram Stain (Sputum)'))";
 
         String result = sqlQueryHelper.parseAdditionalParams(additionalParams, queryString, administrationService);
 
