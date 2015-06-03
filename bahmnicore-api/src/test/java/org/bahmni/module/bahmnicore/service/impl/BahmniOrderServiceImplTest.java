@@ -84,7 +84,7 @@ public class BahmniOrderServiceImplTest {
         Order order = createOrder();
         when(orderService.getOrderByUuid("someOrderUuid")).thenReturn(order);
         bahmniOrderService.getLatestObservationsForOrder(personUUID, Arrays.asList(concept), null, "someOrderUuid");
-        verify(bahmniObsService).getLatest(personUUID, Arrays.asList(concept), null, null, true, order);
+        verify(bahmniObsService).getLatest(personUUID, Arrays.asList(concept), null, null, false, order);
     }
 
     private Order createOrder() {
