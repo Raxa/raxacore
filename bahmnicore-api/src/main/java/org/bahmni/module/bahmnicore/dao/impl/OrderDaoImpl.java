@@ -205,7 +205,7 @@ public class OrderDaoImpl implements OrderDao {
         Session currentSession = getCurrentSession();
         Query queryVisitsWithDrugOrders = currentSession.createQuery(" select o from Order o where o.encounter.encounterId in\n" +
                 "(select e.encounterId from Encounter e where e.visit in (:visits) group by e.visit.visitId )\n" +
-                "and o.voided = false and o.orderType = (:orderTypeId) and o.action != :discontinued and o.patient = (:patientId)");
+                "and o.voided = false and o.orderType = (:orderTypeId) and o.action != :discontinued and o.patient = (:patientId) order by o.dateActivated desc");
         queryVisitsWithDrugOrders.setParameter("patientId", patient);
         queryVisitsWithDrugOrders.setParameter("discontinued", Order.Action.DISCONTINUE);
         queryVisitsWithDrugOrders.setParameter("orderTypeId", orderType);

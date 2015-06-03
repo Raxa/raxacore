@@ -37,7 +37,7 @@ public class BahmniOrderServiceImpl implements BahmniOrderService {
             List<Order> orders = orderService.getAllOrdersForVisits(patientUuid, orderTypeUuid, numberOfVisits);
             for (Order order : orders) {
                 Collection<BahmniObservation> latestObs = bahmniObsService.getLatest(patientUuid, concepts, null,
-                        obsIgnoreList, true, order);
+                        obsIgnoreList, false, order);
                 BahmniOrder bahmniOrder = createBahmniOrder(order, latestObs);
 
                 bahmniOrders.add(bahmniOrder);
@@ -52,7 +52,7 @@ public class BahmniOrderServiceImpl implements BahmniOrderService {
     public List<BahmniOrder> getLatestObservationsForOrder(String patientUuid, List<Concept> concepts, List<String> obsIgnoreList, String orderUuid){
         List<BahmniOrder> bahmniOrders = new ArrayList<>();
         Order order = orderService.getOrderByUuid(orderUuid);
-        Collection<BahmniObservation> latestObs = bahmniObsService.getLatest(patientUuid, concepts, null, obsIgnoreList, true, order);
+        Collection<BahmniObservation> latestObs = bahmniObsService.getLatest(patientUuid, concepts, null, obsIgnoreList, false, order);
         BahmniOrder bahmniOrder = createBahmniOrder(order, latestObs);
         bahmniOrders.add(bahmniOrder);
         return bahmniOrders;
