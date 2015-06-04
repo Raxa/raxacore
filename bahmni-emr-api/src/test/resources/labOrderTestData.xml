@@ -1,9 +1,13 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
 
-    <order_type order_type_id="101" name="Bahmni Lab Order" java_class_name="org.openmrs.TestOrder"
-                description="Bahmni Lab Order" creator="1" date_created="2008-08-15 15:49:04.0" retired="1" retired_by="1"
-                retire_reason="None" date_retired="2008-08-15 00:00:00.0" uuid="dd3fb1d0-ae06-22e3-a5e2-0800211c9a66"/>
+<!--
+                The LabOrder Order_type_id is 16.  It already exists
+-->
+
+    <order_type order_type_id="102" name="Radiology Order" java_class_name="org.openmrs.TestOrder"
+                description="Radiology Order" creator="1" date_created="2008-08-15 15:49:04.0" retired="1" retired_by="1"
+                retire_reason="None" date_retired="2008-08-15 00:00:00.0" uuid="dd3fb1d0-ae06-22e3-a5e2-0800211c9a67"/> <!-- change retire flag and test -->
 
     <!--patient which has order encounter-->
     <person person_id="1" gender="M" dead="false" creator="1" birthdate_estimated="0"
@@ -222,6 +226,13 @@
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="lllce11c-3f8e-11e3-968c-0800271c1b75"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
+    <!-- concept for radiology -->
+    <concept concept_id="704" retired="false" datatype_id="3" class_id="1" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="ffc6006c-3f8e-11e3-968c-0800271c1b79"/>
+    <concept_name concept_name_id="704" concept_id="704" name="Chest X-Ray" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="lllce11c-3f8e-11e3-968c-0800271c1b79"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
     <!-- lab manger note concept-->
 
 
@@ -242,33 +253,41 @@
                encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0"
                voided="false" uuid="6d0af4567-707a-4629-9850-f15206e63ab0"/>
 
-    <orders order_id="16" order_type_id="101" encounter_id="16" urgency="ROUTINE" concept_id="302"
+    <orders order_id="16" order_type_id="16" encounter_id="16" urgency="ROUTINE" concept_id="302"
             instructions="Blood panel" date_activated="2008-08-08 00:00:00.0" creator="1"
             orderer="1" care_setting="1" order_action="NEW" order_number="1"
             date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1"
             uuid="6d0ae386-707a-f123-9850-f15206e63ab0"/>
 
-    <orders order_id="17" order_type_id="101" encounter_id="16" urgency="ROUTINE" concept_id="107"
+    <orders order_id="17" order_type_id="16" encounter_id="16" urgency="ROUTINE" concept_id="107"
             instructions="Regular Urea Nitrogen test" date_activated="2008-08-08 00:00:00.0"
             orderer="1" care_setting="1" order_action="NEW" order_number="1"
             creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1"
             uuid="6d0ae386-efab-4629-9850-f15206e63ab0"/>
 
-    <orders order_id="18" order_type_id="101" encounter_id="16" urgency="ROUTINE" concept_id="1007"
+    <orders order_id="18" order_type_id="16" encounter_id="16" urgency="ROUTINE" concept_id="1007"
             instructions="Regular HIV ESLIA test" date_activated="2008-08-08 00:00:00.0"
             orderer="1" care_setting="1" order_action="NEW" order_number="1"
             creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1"
             uuid="8b00acd6-00e7-11e4-bb80-f18addb6f9bb"/>
 
-    <orders order_id="19" order_type_id="101" encounter_id="16" urgency="ROUTINE" concept_id="1008"
+    <orders order_id="19" order_type_id="16" encounter_id="16" urgency="ROUTINE" concept_id="1008"
             instructions="Regular PS for Malaria test" date_activated="2008-08-08 00:00:00.0"
             orderer="1" care_setting="1" order_action="NEW" order_number="1"
             creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1"
             uuid="94fdefe2-01c1-11e4-aa39-0800271c1b75"/>
+
+    <orders order_id="20" order_type_id="102" encounter_id="16" urgency="ROUTINE" concept_id="704"
+            instructions="Regular PS for Malaria test" date_activated="2008-08-08 00:00:00.0"
+            orderer="1" care_setting="1" order_action="NEW" order_number="1"
+            creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1"
+            uuid="94fdefe2-01c1-11e4-aa39-0800271c1b77"/>
+
     <test_order order_id="16"></test_order>
     <test_order order_id="17"></test_order>
     <test_order order_id="18"></test_order>
     <test_order order_id="19"></test_order>
+    <test_order order_id="20"></test_order>
     <!--encounter for panel order-->
 
 
@@ -349,6 +368,14 @@
     <obs obs_id="102" obs_group_id="101" encounter_id="38" person_id="1" order_id="19" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-19 15:09:05.0"
          uuid="0c3b51f5-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="108" voided="0" />
 
+    <!-- Observations for Radiology Order -->
+    <obs obs_id="200" encounter_id="38" person_id="1" order_id="20" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-19 15:09:05.0"
+         uuid="536fba02-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="1008" voided="0" />
+    <obs obs_id="201" obs_group_id="200" encounter_id="38" person_id="1" order_id="20" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-19 15:09:05.0"
+         uuid="582ef57b-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="1008" voided="0" />
+    <obs obs_id="202" obs_group_id="201" encounter_id="38" person_id="1" order_id="20" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-19 15:09:05.0"
+         uuid="5c3b51f5-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="108" voided="0" />
+
 
     <!-- Another visit -->
     <visit visit_id="4" date_started="2013-09-26 00:00:00" date_created="2013-09-22 00:00:00" patient_id="1"
@@ -358,7 +385,7 @@
                encounter_datetime="2013-08-01 00:00:00.0" creator="1" date_created="2013-08-18 14:09:05.0"
                voided="false" uuid="b0a81566-0c0c-11e4-bb80-f18addb6f9bb"/>
 
-    <orders order_id="100" order_type_id="101" encounter_id="17" urgency="ROUTINE" concept_id="1008"
+    <orders order_id="100" order_type_id="16" encounter_id="17" urgency="ROUTINE" concept_id="1008"
             instructions="Regular PS for Malaria test" date_activated="2013-08-08 00:00:00.0"
             orderer="1" care_setting="1" order_action="NEW" order_number="1"
             creator="1" date_created="2013-08-19 12:20:22.0" voided="false" patient_id="1"

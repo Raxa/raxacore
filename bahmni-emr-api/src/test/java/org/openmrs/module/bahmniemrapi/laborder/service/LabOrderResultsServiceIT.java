@@ -2,6 +2,7 @@ package org.openmrs.module.bahmniemrapi.laborder.service;
 
 import org.junit.Test;
 import org.openmrs.Encounter;
+import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
@@ -45,6 +46,7 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
         assertOrderPresent(labOrderResults, "HIV ELISA", null, 16, null, null, null, null, null, null, false, null);
         assertOrderPresent(labOrderResults, "PS for Malaria", null, 16, "System OpenMRS", null, null, null, null, null, true, null);
         assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, null, false, null);
+        assertFalse(isOrderPresent(labOrderResults, "Chest X-Ray",16));
     }
 
     @Test
@@ -85,7 +87,7 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
         AccessionNote accessionNote = accessionNotes.get(0);
         assertThat(accessionNote.getAccessionUuid(), is(equalTo("b0a81566-0c0c-11e4-bb80-f18addb6f9bb")));
         assertThat(accessionNote.getProviderName(), is(equalTo("System OpenMRS")));
-        assertThat(accessionNote.getText(),is(equalTo("Notes from Lab Manager")));
+        assertThat(accessionNote.getText(), is(equalTo("Notes from Lab Manager")));
 
         assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, null, false, null);
     }
@@ -104,7 +106,7 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
 
         List<LabOrderResult> results = labOrderResultsService.getAllForConcepts(patient, concepts, null);
 
-        assertEquals(results.size(),2);
+        assertEquals(results.size(), 2);
         assertOrderPresent(results, "Haemoglobin", "Blood Panel", 16, "System OpenMRS", "99.0", 200.0, 300.0, true, null, true, null);
         assertOrderPresent(results, "ESR", "Blood Panel", 16, "System OpenMRS", "10.0", null, null, false, "Some Notes", false, null);
 
@@ -128,5 +130,15 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
             }
         }
         fail();
+    }
+
+    private boolean isOrderPresent(List<LabOrderResult> labOrderResults, String testName, Integer accessionEncounterId){
+        Encounter accessionEncounter = Context.getEncounterService().getEncounter(accessionEncounterId);
+        for (LabOrderResult labOrderResult : labOrderResults) {
+            if(labOrderResult.getTestName().equals(testName) && labOrderResult.getAccessionUuid().equals(accessionEncounter.getUuid())) {
+               return true;
+            }
+        }
+        return false;
     }
 }

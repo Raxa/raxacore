@@ -33,6 +33,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private static final String REFERRED_OUT = "REFERRED_OUT";
     public static final String LAB_REPORT = "LAB_REPORT";
     private static final String VALIDATION_NOTES_ENCOUNTER_TYPE = "VALIDATION NOTES";
+    public static final String LAB_ORDER_TYPE="Lab Order";
 
     @Autowired
     private EncounterTransactionMapper encounterTransactionMapper;
@@ -169,7 +170,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private List<EncounterTransaction.TestOrder> getTestOrders(EncounterTransaction encounterTransaction, Encounter encounter, Map<String, Encounter> encounterTestOrderUuidMap) {
         List<EncounterTransaction.TestOrder> orders = new ArrayList<>();
         for (EncounterTransaction.TestOrder order : encounterTransaction.getTestOrders()) {
-            if(!order.isVoided()){
+            if(!order.isVoided() && LAB_ORDER_TYPE.equals(order.getOrderType())){
                 encounterTestOrderUuidMap.put(order.getUuid(), encounter);
                 orders.add(order);
             }
