@@ -8,6 +8,7 @@ import java.util.List;
 public interface BahmniOrderService {
 
     List<BahmniOrder> getLatestObservationsAndOrdersForOrderType(String patientUuid, List<Concept> concepts,
-                                                                 Integer numberOfVisits, List<String> obsIgnoreList, String orderTypeUuid);
+                                                                 Integer numberOfVisits, List<String> obsIgnoreList, String orderTypeUuid, Boolean includeObs);
+
     List<BahmniOrder> getLatestObservationsForOrder(String patientUuid, List<Concept> concepts, List<String> obsIgnoreList, String orderUuid);
 }

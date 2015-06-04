@@ -1,7 +1,6 @@
 package org.openmrs.module.bahmniemrapi.order.contract;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.openmrs.Concept;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 
 import java.util.Collection;
@@ -14,10 +13,19 @@ public class BahmniOrder {
     private String provider;
     private Date orderDate;
     private String conceptName;
+    private Boolean hasObservations;
     private Collection<BahmniObservation> bahmniObservations;
 
     public BahmniOrder(){
 
+    }
+
+    public Boolean getHasObservations() {
+        return hasObservations;
+    }
+
+    public void setHasObservations(Boolean hasObservations) {
+        this.hasObservations = hasObservations;
     }
 
     public Collection<BahmniObservation> getBahmniObservations() {
