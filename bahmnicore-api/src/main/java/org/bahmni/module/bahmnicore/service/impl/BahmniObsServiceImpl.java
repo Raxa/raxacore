@@ -112,8 +112,8 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         Visit visit = visitService.getVisitByUuid(visitUuid);
         List<Person> persons = new ArrayList<>();
         persons.add(visit.getPatient());
-        List<Obs> observations = obsDao.getObsForVisits(persons, new ArrayList<>(visit.getEncounters()), MiscUtils.getConceptsForNames(conceptNames,conceptService), obsIgnoreList, filterOutOrders);
-        observations = new ArrayList<>(getObsAtTopLevel(observations, conceptNames));
+        List<Obs> observations = obsDao.getObsForVisits(persons, new ArrayList<>(visit.getEncounters()), MiscUtils.getConceptsForNames(conceptNames, conceptService), obsIgnoreList, filterOutOrders);
+        observations = new ArrayList<>(getObsAtTopLevelAndApplyIgnoreList(observations, conceptNames, obsIgnoreList));
         return omrsObsToBahmniObsMapper.map(observations, null);
     }
 
@@ -127,7 +127,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         return conceptService.getConceptByName(conceptName);
     }
 
-    private List<Obs> getObsAtTopLevel(List<Obs> observations, List<String> topLevelConceptNames) {
+    private List<Obs> getObsAtTopLevelAndApplyIgnoreList(List<Obs> observations, List<String> topLevelConceptNames, Collection<Concept> obsIgnoreList) {
         List<Obs> topLevelObservations = new ArrayList<>();
         if(topLevelConceptNames == null) topLevelConceptNames = new ArrayList<>();
 
@@ -135,7 +135,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         topLevelConceptNamesWithoutCase.addAll(topLevelConceptNames);
         for (Obs o : observations) {
             if (o.getObsGroup() == null || topLevelConceptNamesWithoutCase.contains(o.getConcept().getName().getName().toLowerCase())) {
-                if (!topLevelObservations.contains(o)) {
+                if (!removeIgnoredObsOrIgnoreParentItself(o, obsIgnoreList) && !topLevelObservations.contains(o)) {
                     topLevelObservations.add(o);
                 }
             }
@@ -143,4 +143,27 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
         return topLevelObservations;
     }
+
+    //Removes groupmembers who are ignored, and ignore a parent if all children are in ignore list
+    private boolean removeIgnoredObsOrIgnoreParentItself(Obs o, Collection<Concept> obsIgnoreList) {
+        if (CollectionUtils.isNotEmpty(o.getGroupMembers()) && CollectionUtils.isNotEmpty(obsIgnoreList)) {
+            int size = o.getGroupMembers().size();
+            int matchCount = 0;
+            Iterator<Obs> itr = o.getGroupMembers().iterator();
+            while (itr.hasNext()) {
+                Obs temp = itr.next();
+                for (Concept concept : obsIgnoreList) {
+                    if (temp.getConcept().getConceptId() == concept.getConceptId()) {
+                        itr.remove();
+                        matchCount++;
+                    }
+                }
+            }
+            if (matchCount == size) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
