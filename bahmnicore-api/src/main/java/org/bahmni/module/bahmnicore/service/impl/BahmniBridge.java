@@ -1,9 +1,5 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
@@ -13,12 +9,17 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Obs;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.OrderMapper;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.mapper.OrderMapper1_10;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Bridge between extension scripts of Bahmni and Bahmni core as well as OpenMRS core.
@@ -126,10 +127,22 @@ public class BahmniBridge {
         List<EncounterTransaction.DrugOrder> drugOrders = new ArrayList<>();
         for(DrugOrder activeOpenMRSDrugOrder : activeOpenMRSDrugOrders){
             EncounterTransaction.DrugOrder drugOrder = drugOrderMapper.mapDrugOrder(activeOpenMRSDrugOrder);
-            if(drugOrder.getScheduledDate() == null && (drugOrder.getEffectiveStopDate() == null || drugOrder.getEffectiveStopDate().after(new Date()))){
+            if((isNotScheduled(drugOrder) || hasScheduledOrderBecameActive(drugOrder)) && isNotStopped(drugOrder)){
                 drugOrders.add(drugOrder);
             }
         }
         return drugOrders;
+    }
+
+    private boolean isNotScheduled(EncounterTransaction.DrugOrder drugOrder) {
+        return drugOrder.getScheduledDate() == null;
+    }
+
+    private boolean isNotStopped(EncounterTransaction.DrugOrder drugOrder) {
+        return drugOrder.getEffectiveStopDate() == null || drugOrder.getEffectiveStopDate().after(new Date());
+    }
+
+    private boolean hasScheduledOrderBecameActive(EncounterTransaction.DrugOrder drugOrder) {
+        return drugOrder.getScheduledDate().before(new Date());
     }
 }
