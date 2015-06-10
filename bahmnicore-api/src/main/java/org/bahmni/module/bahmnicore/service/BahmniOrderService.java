@@ -11,4 +11,12 @@ public interface BahmniOrderService {
                                                                  Integer numberOfVisits, List<String> obsIgnoreList, String orderTypeUuid, Boolean includeObs);
 
     List<BahmniOrder> getLatestObservationsForOrder(String patientUuid, List<Concept> concepts, List<String> obsIgnoreList, String orderUuid);
+
+    List<BahmniOrder> getInitialObsAndOrdersForOrderType(String patientUuid, List<Concept> concepts, Integer numberOfVisits, List<String> obsIgnoreList, String orderTypeUuid, Boolean includeObs);
+
+    List<BahmniOrder> ordersForOrderType(String patientUuid, List<Concept> concepts, Integer numberOfVisits, List<String> obsIgnoreList, String orderTypeUuid, Boolean includeObs);
+
+    List<BahmniOrder> getInitialForOrder(String patientUuid, List<Concept> concepts, List<String> obsIgnoreList, String orderUuid);
+
+    List<BahmniOrder> ordersForOrder(String patientUuid, List<Concept> concepts, List<String> obsIgnoreList, String orderUuid);
 }

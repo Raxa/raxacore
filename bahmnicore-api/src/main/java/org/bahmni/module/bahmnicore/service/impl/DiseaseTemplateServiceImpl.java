@@ -23,7 +23,6 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahmniObsMapper;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,7 +87,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         }
         List<Concept> observationTemplateConcepts = diseaseTemplateConcept.getSetMembers();
         for (Concept concept : observationTemplateConcepts) {
-            Collection<BahmniObservation> observations = bahmniObsService.observationsFor(patientUUID, Arrays.asList(concept), null, null, false);
+            Collection<BahmniObservation> observations = bahmniObsService.observationsFor(patientUUID, Arrays.asList(concept), null, null, false, null);
             List<ObservationTemplate> observationTemplates = observationTemplateMapper.map(observations, concept);
             diseaseTemplate.addObservationTemplates(observationTemplates);
         }
@@ -166,7 +165,7 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         if (null != diseaseTemplateConcept && CollectionUtils.isNotEmpty(diseaseTemplateConcept.getSetMembers())) {
             for (Concept concept : diseaseTemplateConcept.getSetMembers()) {
                 if (concept.getConceptClass().getName().equals(CASE_INTAKE_CONCEPT_CLASS) && CollectionUtils.isNotEmpty(visits)) {
-                    Collection<BahmniObservation> observations = bahmniObsService.observationsFor(patientUuid, Arrays.asList(concept), null, null, false);
+                    Collection<BahmniObservation> observations = bahmniObsService.observationsFor(patientUuid, Arrays.asList(concept), null, null, false, null);
                     observationTemplates.addAll(observationTemplateMapper.map(observations, concept));
                 } else {
                     Visit latestVisit = bahmniVisitService.getLatestVisit(patientUuid, concept.getName().getName());

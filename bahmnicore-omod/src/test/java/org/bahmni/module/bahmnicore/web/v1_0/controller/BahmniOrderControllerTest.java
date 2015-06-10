@@ -47,7 +47,7 @@ public class BahmniOrderControllerTest {
         when(bahmniOrderService.getLatestObservationsAndOrdersForOrderType("patientUuid", Arrays.asList(concept), null, null, "OrderTypeUuid", true)).thenReturn(Arrays.asList(bahmniOrder));
 
         BahmniOrderController bahmniOrderController = new BahmniOrderController(conceptService, bahmniOrderService);
-        List<BahmniOrder> bahmniOrders = bahmniOrderController.get("patientUuid", Arrays.asList("Weight"),"OrderTypeUuid", null,null, true);
+        List<BahmniOrder> bahmniOrders = bahmniOrderController.get("patientUuid", Arrays.asList("Weight"),"OrderTypeUuid", null, "latest", null, true);
 
         verify(bahmniOrderService, never()).getLatestObservationsForOrder("patientUuid", Arrays.asList(concept), null, "someUuid");
         assertEquals(1, bahmniOrders.size());
@@ -63,7 +63,7 @@ public class BahmniOrderControllerTest {
         when(bahmniOrderService.getLatestObservationsForOrder("patientUuid", Arrays.asList(this.concept), null, "OrderUuid")).thenReturn(Arrays.asList(bahmniOrder));
 
         BahmniOrderController bahmniOrderController = new BahmniOrderController(conceptService, bahmniOrderService);
-        List<BahmniOrder> bahmniOrders = bahmniOrderController.get("patientUuid", Arrays.asList("Weight"), null, "OrderUuid");
+        List<BahmniOrder> bahmniOrders = bahmniOrderController.get("patientUuid", Arrays.asList("Weight"), "latest", null, "OrderUuid");
 
         verify(bahmniOrderService, never()).getLatestObservationsAndOrdersForOrderType("patientUuid", Arrays.asList(concept), null, null, "someUuid", true);
         assertEquals(1, bahmniOrders.size());

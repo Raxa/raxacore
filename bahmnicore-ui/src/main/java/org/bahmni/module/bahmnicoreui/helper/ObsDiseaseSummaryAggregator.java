@@ -42,7 +42,7 @@ public class ObsDiseaseSummaryAggregator {
         if (StringUtils.isBlank(queryParams.getVisitUuid())) {
             List<Concept> concepts = conceptHelper.getConceptsForNames(queryParams.getObsConcepts());
             if (!concepts.isEmpty()) {
-                return bahmniObsService.observationsFor(patient.getUuid(), concepts, queryParams.getNumberOfVisits(), null, false);
+                return bahmniObsService.observationsFor(patient.getUuid(), concepts, queryParams.getNumberOfVisits(), null, false, null);
             }
             return Collections.EMPTY_LIST;
         }

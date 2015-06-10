@@ -11,11 +11,11 @@ public interface ObsDao {
 
     List<Concept> getNumericConceptsForPerson(String personUUID);
 
-    List<Obs> getObsFor(String patientUuid, List<String> conceptName, Integer numberOfVisits, List<String> obsIgnoreList, Boolean filterOutOrderObs);
+    List<Obs> getObsFor(String patientUuid, List<String> conceptName, Integer numberOfVisits, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order);
 
     List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer limit);
 
-    List<Obs> getInitialObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit,List<String> obsIgnoreList, Boolean filterOutOrderObs);
+    List<Obs> getInitialObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order);
 
     List<Obs> getInitialObsByVisit(Visit visit, String conceptName, Integer limit, List<String> obsIgnoreList, Boolean filterObsWithOrders);
 

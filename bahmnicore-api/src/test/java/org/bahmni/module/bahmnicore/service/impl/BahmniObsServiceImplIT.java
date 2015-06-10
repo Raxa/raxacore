@@ -93,7 +93,7 @@ public class BahmniObsServiceImplIT extends BaseModuleWebContextSensitiveTest {
     @Test
     public void return_orphaned_obs_for_patient() throws Exception {
         Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
-        Collection<BahmniObservation> obsForConceptSet = personObsService.observationsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(bloodPressureConcept), null, null, false);
+        Collection<BahmniObservation> obsForConceptSet = personObsService.observationsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(bloodPressureConcept), null, null, false, null);
         assertEquals(1, obsForConceptSet.size());
         Collection<BahmniObservation> bloodPressureMembers = obsForConceptSet.iterator().next().getGroupMembers();
         Iterator<BahmniObservation> bloodPressureMembersIterator = bloodPressureMembers.iterator();

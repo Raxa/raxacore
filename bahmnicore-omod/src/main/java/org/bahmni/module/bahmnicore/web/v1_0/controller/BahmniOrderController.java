@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.bahmni.module.bahmnicore.service.BahmniOrderService;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
@@ -21,6 +22,8 @@ import java.util.List;
 public class BahmniOrderController extends BaseRestController {
     private ConceptService conceptService;
     private BahmniOrderService bahmniOrderService;
+    private static final String LATEST = "latest";
+    private static final String INITIAL = "initial";
 
     @Autowired
     public BahmniOrderController(ConceptService conceptService, BahmniOrderService bahmniOrderService) {
@@ -30,27 +33,44 @@ public class BahmniOrderController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public List<BahmniOrder> get(@RequestParam(value = "patientUuid", required = true) String patientUUID,
+    public List<BahmniOrder> get(@RequestParam(value = "patientUuid", required = true) String patientUuid,
                                  @RequestParam(value = "concept", required = true) List<String> rootConceptNames,
                                  @RequestParam(value = "orderTypeUuid", required = true) String orderTypeUuid,
                                  @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
+                                 @RequestParam(value = "scope", required = false) String scope,
                                  @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
                                  @RequestParam(value = "includeObs", required = false, defaultValue ="true") boolean includeObs) {
 
         List<Concept> rootConcepts = getConcepts(rootConceptNames);
-        return bahmniOrderService.getLatestObservationsAndOrdersForOrderType(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, orderTypeUuid, includeObs);
-    }
 
+        if (ObjectUtils.equals(scope, LATEST)) {
+            return bahmniOrderService.getLatestObservationsAndOrdersForOrderType(patientUuid, rootConcepts, numberOfVisits, obsIgnoreList, orderTypeUuid, includeObs);
+        } else if (ObjectUtils.equals(scope, INITIAL)) {
+            return bahmniOrderService.getInitialObsAndOrdersForOrderType(patientUuid, rootConcepts, numberOfVisits, obsIgnoreList, orderTypeUuid, includeObs);
+        } else {
+            return bahmniOrderService.ordersForOrderType(patientUuid, rootConcepts, numberOfVisits, obsIgnoreList, orderTypeUuid, includeObs);
+        }
+
+    }
 
     @RequestMapping(method = RequestMethod.GET, params = {"orderUuid"})
     @ResponseBody
-    public List<BahmniOrder> get(@RequestParam(value = "patientUuid", required = true) String patientUUID,
+    public List<BahmniOrder> get(@RequestParam(value = "patientUuid", required = true) String patientUuid,
                                  @RequestParam(value = "concept", required = true) List<String> rootConceptNames,
+                                 @RequestParam(value = "scope", required = false) String scope,
                                  @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
                                  @RequestParam(value = "orderUuid", required = true) String orderUuid) {
 
         List<Concept> rootConcepts = getConcepts(rootConceptNames);
-        return bahmniOrderService.getLatestObservationsForOrder(patientUUID, rootConcepts, obsIgnoreList, orderUuid);
+
+        if (ObjectUtils.equals(scope, LATEST)) {
+            return bahmniOrderService.getLatestObservationsForOrder(patientUuid, rootConcepts, obsIgnoreList, orderUuid);
+        } else if (ObjectUtils.equals(scope, INITIAL)) {
+            return bahmniOrderService.getInitialForOrder(patientUuid, rootConcepts, obsIgnoreList, orderUuid);
+        } else {
+            return bahmniOrderService.ordersForOrder(patientUuid, rootConcepts, obsIgnoreList, orderUuid);
+        }
+
     }
 
     private List<Concept> getConcepts(List<String> rootConceptNames) {

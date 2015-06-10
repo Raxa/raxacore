@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -50,9 +49,9 @@ public class BahmniObservationsController extends BaseRestController {
         if (ObjectUtils.equals(scope, LATEST)) {
             return bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, true, null);
         } else if (ObjectUtils.equals(scope, INITIAL)) {
-            return bahmniObsService.getInitial(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, true);
+            return bahmniObsService.getInitial(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, true, null);
         } else {
-            return bahmniObsService.observationsFor(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, true);
+            return bahmniObsService.observationsFor(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, true, null);
         }
 
     }

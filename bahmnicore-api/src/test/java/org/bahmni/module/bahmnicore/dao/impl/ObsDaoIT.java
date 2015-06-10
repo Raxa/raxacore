@@ -30,7 +30,7 @@ public class ObsDaoIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void retrieve_all_observations_when_no_visit_ids_are_specified() throws Exception {
-        List<Obs> allObs = obsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), null, null, false);
+        List<Obs> allObs = obsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), null, null, false, null);
 
         assertEquals(1, allObs.size());
 
@@ -61,7 +61,7 @@ public class ObsDaoIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void retrieve_only_orphaned_observation() throws Exception {
-        List<Obs> allObs = obsDao.getObsFor("341b4e41-790c-484f-b6ed-71dc8da222db", Arrays.asList("Diastolic"), null, null, false);
+        List<Obs> allObs = obsDao.getObsFor("341b4e41-790c-484f-b6ed-71dc8da222db", Arrays.asList("Diastolic"), null, null, false, null);
 
         assertEquals(1, allObs.size());
         assertEquals("Diastolic", allObs.get(0).getConcept().getName().getName());
@@ -75,7 +75,7 @@ public class ObsDaoIT extends BaseModuleWebContextSensitiveTest {
 
     @Test
     public void do_not_fetch_voided_observations() throws Exception {
-        List<Obs> allObs = obsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), null, null, false);
+        List<Obs> allObs = obsDao.getObsFor("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), null, null, false, null);
         assertEquals(1, allObs.size());
     }
 }
