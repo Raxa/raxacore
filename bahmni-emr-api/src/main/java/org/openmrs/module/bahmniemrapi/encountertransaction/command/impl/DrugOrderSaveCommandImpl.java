@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.command.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
@@ -11,14 +12,7 @@ import org.openmrs.module.emrapi.encounter.service.OrderMetadataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
@@ -51,7 +45,7 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
     @Override
     public BahmniEncounterTransaction update(BahmniEncounterTransaction bahmniEncounterTransaction) {
         List<EncounterTransaction.DrugOrder> drugOrders = bahmniEncounterTransaction.getDrugOrders();
-        Map<String,List<EncounterTransaction.DrugOrder>> sameDrugNameOrderLists = new HashMap<>();
+        Map<String,List<EncounterTransaction.DrugOrder>> sameDrugNameOrderLists = new LinkedHashMap<>();
         for (EncounterTransaction.DrugOrder drugOrder : drugOrders) {
             String name = drugOrder.getDrug().getName();
             if(sameDrugNameOrderLists.get(name) == null){
@@ -77,7 +71,7 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
             Date expectedStopDateForCurrentOrder = setExpectedStopDateForOrder(currentDateOrder, expectedStartDateForCurrentOrder);
 
             for (EncounterTransaction.DrugOrder order : orders) {
-                if(order!=currentDateOrder && order.getAction() != "DISCONTINUE" && DateUtils.isSameDay(setExpectedStartDateForOrder(order), expectedStopDateForCurrentOrder)){
+                if(order!=currentDateOrder && !"DISCONTINUE".equals(order.getAction()) && DateUtils.isSameDay(setExpectedStartDateForOrder(order), expectedStopDateForCurrentOrder)){
                     currentDateOrder.setScheduledDate(expectedStartDateForCurrentOrder);
                     currentDateOrder.setAutoExpireDate(expectedStopDateForCurrentOrder);
 
@@ -86,6 +80,8 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
                     currentDateOrder = order;
                     expectedStartDateForCurrentOrder = setExpectedStartDateForOrder(order);
                     expectedStopDateForCurrentOrder = setExpectedStopDateForOrder(currentDateOrder, expectedStartDateForCurrentOrder);
+                }else if(!"DISCONTINUE".equals(order.getAction()) && order.getScheduledDate() == null){
+                    order.setScheduledDate(expectedStartDateForCurrentOrder);
                 }
             }
         }
@@ -105,7 +101,7 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
 
     private EncounterTransaction.DrugOrder getCurrentOrderFromOrderList(Collection<EncounterTransaction.DrugOrder> orders) {
         for (EncounterTransaction.DrugOrder order : orders) {
-            if (order.getAction() != "DISCONTINUE") { // To detect orders with dateActivated = current date
+            if (!"DISCONTINUE".equals(order.getAction())) { // To detect orders with dateActivated = current date
                 return order;
             }
         }
