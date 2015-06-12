@@ -31,57 +31,6 @@ public class BahmniOrderServiceImpl implements BahmniOrderService {
     }
 
     @Override
-    public List<BahmniOrder> getLatestObservationsAndOrdersForOrderType(String patientUuid, List<Concept> concepts,
-                                                                        Integer numberOfVisits, List<String> obsIgnoreList, String orderTypeUuid, Boolean includeObs) {
-        List<BahmniOrder> bahmniOrders = new ArrayList<>();
-        List<Order> orders;
-        if(numberOfVisits == null || numberOfVisits ==0){
-            orders = orderService.getAllOrders(patientUuid, orderTypeUuid, null, null);
-        }else {
-        orders = orderService.getAllOrdersForVisits(patientUuid, orderTypeUuid, numberOfVisits);
-        }
-
-            for (Order order : orders) {
-                Collection<BahmniObservation> latestObs = bahmniObsService.getLatest(patientUuid, concepts, null,
-                        obsIgnoreList, false, order);
-                BahmniOrder bahmniOrder = createBahmniOrder(order, latestObs, includeObs);
-
-                bahmniOrders.add(bahmniOrder);
-            }
-        return bahmniOrders;
-    }
-
-    @Override
-    public List<BahmniOrder> getLatestObservationsForOrder(String patientUuid, List<Concept> concepts, List<String> obsIgnoreList, String orderUuid){
-        List<BahmniOrder> bahmniOrders = new ArrayList<>();
-        Order order = orderService.getOrderByUuid(orderUuid);
-        Collection<BahmniObservation> latestObs = bahmniObsService.getLatest(patientUuid, concepts, null, obsIgnoreList, false, order);
-        BahmniOrder bahmniOrder = createBahmniOrder(order, latestObs, true);
-        bahmniOrders.add(bahmniOrder);
-        return bahmniOrders;
-    }
-
-    @Override
-    public List<BahmniOrder> getInitialObsAndOrdersForOrderType(String patientUuid, List<Concept> concepts, Integer numberOfVisits, List<String> obsIgnoreList, String orderTypeUuid, Boolean includeObs) {
-        List<BahmniOrder> bahmniOrders = new ArrayList<>();
-        List<Order> orders;
-        if(numberOfVisits == null || numberOfVisits ==0){
-            orders = orderService.getAllOrders(patientUuid, orderTypeUuid, null, null);
-        }else {
-            orders = orderService.getAllOrdersForVisits(patientUuid, orderTypeUuid, numberOfVisits);
-        }
-
-        for (Order order : orders) {
-            Collection<BahmniObservation> initialObs = bahmniObsService.getInitial(patientUuid, concepts, null,
-                    obsIgnoreList, false, order);
-            BahmniOrder bahmniOrder = createBahmniOrder(order, initialObs, includeObs);
-
-            bahmniOrders.add(bahmniOrder);
-        }
-        return bahmniOrders;
-    }
-
-    @Override
     public List<BahmniOrder> ordersForOrderType(String patientUuid, List<Concept> concepts, Integer numberOfVisits, List<String> obsIgnoreList, String orderTypeUuid, Boolean includeObs) {
         List<BahmniOrder> bahmniOrders = new ArrayList<>();
         List<Order> orders;
@@ -97,16 +46,6 @@ public class BahmniOrderServiceImpl implements BahmniOrderService {
 
             bahmniOrders.add(bahmniOrder);
         }
-        return bahmniOrders;
-    }
-
-    @Override
-    public List<BahmniOrder> getInitialForOrder(String patientUuid, List<Concept> concepts, List<String> obsIgnoreList, String orderUuid) {
-        List<BahmniOrder> bahmniOrders = new ArrayList<>();
-        Order order = orderService.getOrderByUuid(orderUuid);
-        Collection<BahmniObservation> initialObs = bahmniObsService.getInitial(patientUuid, concepts, null, obsIgnoreList, false, order);
-        BahmniOrder bahmniOrder = createBahmniOrder(order, initialObs, true);
-        bahmniOrders.add(bahmniOrder);
         return bahmniOrders;
     }
 

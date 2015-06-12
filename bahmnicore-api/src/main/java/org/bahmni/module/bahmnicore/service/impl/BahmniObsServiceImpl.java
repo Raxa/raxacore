@@ -40,7 +40,8 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public Collection<BahmniObservation> observationsFor(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order) {
+    public Collection<BahmniObservation> observationsFor(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits,
+                                                         List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order) {
         if(CollectionUtils.isNotEmpty(concepts)){
             List<String> conceptNames = new ArrayList<>();
             for (Concept concept : concepts) {
