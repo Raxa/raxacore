@@ -1,6 +1,5 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.command.impl;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
@@ -56,43 +55,44 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
 
         for (List<EncounterTransaction.DrugOrder> orders : sameDrugNameOrderLists.values()) {
             Collections.sort(orders, drugOrderStartDateComparator);
-            checkAndFixChainOverlapsWithCurrentDateOrder(orders);
+            checkAndFixChainOverlapsWithCurrentDateOrder(orders, bahmniEncounterTransaction.getEncounterDateTime());
         }
 
         return bahmniEncounterTransaction;
     }
 
-    private void checkAndFixChainOverlapsWithCurrentDateOrder(Collection<EncounterTransaction.DrugOrder> orders) {
+    private void checkAndFixChainOverlapsWithCurrentDateOrder(Collection<EncounterTransaction.DrugOrder> orders, Date encounterDateTime) {
 //        Refactor using Lambda expressions after updating to Java 8
         EncounterTransaction.DrugOrder currentDateOrder = getCurrentOrderFromOrderList(orders);
 
         if(currentDateOrder != null){
-            Date expectedStartDateForCurrentOrder = setExpectedStartDateForOrder(currentDateOrder);
-            Date expectedStopDateForCurrentOrder = setExpectedStopDateForOrder(currentDateOrder, expectedStartDateForCurrentOrder);
+            Date expectedStartDateForCurrentOrder = getExpectedStartDateForOrder(currentDateOrder);
+            Date expectedStopDateForCurrentOrder = getExpectedStopDateForOrder(currentDateOrder, expectedStartDateForCurrentOrder);
 
             for (EncounterTransaction.DrugOrder order : orders) {
-                if(order!=currentDateOrder && !"DISCONTINUE".equals(order.getAction()) && DateUtils.isSameDay(setExpectedStartDateForOrder(order), expectedStopDateForCurrentOrder)){
+                if(order!=currentDateOrder && !"DISCONTINUE".equals(order.getAction()) && DateUtils.isSameDay(getExpectedStartDateForOrder(order), expectedStopDateForCurrentOrder)){
                     currentDateOrder.setScheduledDate(expectedStartDateForCurrentOrder);
                     currentDateOrder.setAutoExpireDate(expectedStopDateForCurrentOrder);
 
                     order.setScheduledDate(DrugOrderUtil.aSecondAfter(expectedStopDateForCurrentOrder));
 
                     currentDateOrder = order;
-                    expectedStartDateForCurrentOrder = setExpectedStartDateForOrder(order);
-                    expectedStopDateForCurrentOrder = setExpectedStopDateForOrder(currentDateOrder, expectedStartDateForCurrentOrder);
-                }else if(!"DISCONTINUE".equals(order.getAction()) && order.getScheduledDate() == null){
-                    order.setScheduledDate(expectedStartDateForCurrentOrder);
+                    expectedStartDateForCurrentOrder = getExpectedStartDateForOrder(order);
+                    expectedStopDateForCurrentOrder = getExpectedStopDateForOrder(currentDateOrder, expectedStartDateForCurrentOrder);
+                }else if(!"DISCONTINUE".equals(order.getAction()) && order.getScheduledDate() == null && !BahmniEncounterTransaction.isRetrospectiveEntry(encounterDateTime)){
+                    //In retro.. date will be put as encouter date/time
+                    order.setDateActivated(expectedStartDateForCurrentOrder);
                 }
             }
         }
     }
 
-    private Date setExpectedStopDateForOrder(EncounterTransaction.DrugOrder order, Date expectedStartDateForCurrentOrder) {
+    private Date getExpectedStopDateForOrder(EncounterTransaction.DrugOrder order, Date expectedStartDateForCurrentOrder) {
         Concept durationUnitConcept = conceptService.getConceptByName(order.getDurationUnits());
         return DrugOrderUtil.calculateAutoExpireDate(order.getDuration(), durationUnitConcept, null, expectedStartDateForCurrentOrder, orderMetadataService.getOrderFrequencyByName(order.getDosingInstructions().getFrequency(), false));
     }
 
-    private Date setExpectedStartDateForOrder(EncounterTransaction.DrugOrder order) {
+    private Date getExpectedStartDateForOrder(EncounterTransaction.DrugOrder order) {
         if( order.getScheduledDate() == null){
             return new Date();
         }
