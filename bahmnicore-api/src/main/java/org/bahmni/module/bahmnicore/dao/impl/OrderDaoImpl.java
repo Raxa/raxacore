@@ -221,4 +221,16 @@ public class OrderDaoImpl implements OrderDao {
         queryToGetVisitId.setMaxResults(1);
         return (Order) queryToGetVisitId.uniqueResult();
     }
+
+    @Override
+    public List<Order> getOrdersForVisitUuid(String visitUuid, String orderTypeUuid) {
+        Session currentSession = getCurrentSession();
+        Query queryVisitsWithDrugOrders = currentSession.createQuery(" select o from Order o where o.encounter.encounterId in\n" +
+                "(select e.encounterId from Encounter e where e.visit.uuid =:visitUuid)\n" +
+                "and o.voided = false and o.orderType.uuid = (:orderTypeUuid) and  o.action != :discontinued order by o.dateActivated desc");
+        queryVisitsWithDrugOrders.setParameter("orderTypeUuid", orderTypeUuid);
+        queryVisitsWithDrugOrders.setParameter("discontinued", Order.Action.DISCONTINUE);
+        queryVisitsWithDrugOrders.setParameter("visitUuid", visitUuid);
+        return (List<Order>) queryVisitsWithDrugOrders.list();
+    }
 }

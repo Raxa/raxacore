@@ -70,13 +70,7 @@ public class BahmniObservationsController extends BaseRestController {
             return bahmniObsService.getLatestObsByVisit(visit, MiscUtils.getConceptsForNames(conceptNames, conceptService), obsIgnoreList, true);
         } else {
             // Sending conceptName and obsIgnorelist, kinda contradicts, since we filter directly on concept names (not on root concept)
-            return bahmniObsService.getObservationForVisit(visitUuid, conceptNames, MiscUtils.getConceptsForNames(obsIgnoreList, conceptService), true);
+            return bahmniObsService.getObservationForVisit(visitUuid, conceptNames, MiscUtils.getConceptsForNames(obsIgnoreList, conceptService), true, null);
         }
-    }
-
-    @RequestMapping(method = RequestMethod.GET,params = {"orderUuid"})
-    @ResponseBody
-    public Collection<BahmniObservation> get(@RequestParam(value = "orderUuid", required = true) String orderUuid){
-        return bahmniObsService.getObservationsForOrder(orderUuid);
     }
 }

@@ -109,11 +109,11 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public Collection<BahmniObservation> getObservationForVisit(String visitUuid, List<String> conceptNames,  Collection<Concept> obsIgnoreList, boolean filterOutOrders) {
+    public Collection<BahmniObservation> getObservationForVisit(String visitUuid, List<String> conceptNames, Collection<Concept> obsIgnoreList, Boolean filterOutOrders, Order order) {
         Visit visit = visitService.getVisitByUuid(visitUuid);
         List<Person> persons = new ArrayList<>();
         persons.add(visit.getPatient());
-        List<Obs> observations = obsDao.getObsForVisits(persons, new ArrayList<>(visit.getEncounters()), MiscUtils.getConceptsForNames(conceptNames, conceptService), obsIgnoreList, filterOutOrders);
+        List<Obs> observations = obsDao.getObsForVisits(persons, new ArrayList<>(visit.getEncounters()), MiscUtils.getConceptsForNames(conceptNames, conceptService), obsIgnoreList, filterOutOrders, order);
         observations = new ArrayList<>(getObsAtTopLevelAndApplyIgnoreList(observations, conceptNames, obsIgnoreList));
         return omrsObsToBahmniObsMapper.map(observations, null);
     }

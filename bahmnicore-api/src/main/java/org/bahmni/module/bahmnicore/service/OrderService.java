@@ -16,4 +16,6 @@ public interface OrderService {
     List<Order> getAllOrdersForVisits(String patientUuid, String orderType, Integer numberOfVisits);
 
     Order getOrderByUuid(String orderUuid);
+
+    List<Order> getAllOrdersForVisitUuid(String visitUuid, String orderTypeUuid);
 }

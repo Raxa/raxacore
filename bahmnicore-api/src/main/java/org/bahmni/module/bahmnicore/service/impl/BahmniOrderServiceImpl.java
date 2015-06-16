@@ -59,6 +59,18 @@ public class BahmniOrderServiceImpl implements BahmniOrderService {
         return bahmniOrders;
     }
 
+    @Override
+    public List<BahmniOrder> ordersForVisit(String visitUuid, String orderTypeUuid, List<String> conceptNames, List<Concept> obsIgnoreList) {
+        List<Order> orders = orderService.getAllOrdersForVisitUuid(visitUuid, orderTypeUuid);
+        List<BahmniOrder> bahmniOrders = new ArrayList<>();
+        for (Order order : orders) {
+            Collection<BahmniObservation> observations = bahmniObsService.getObservationForVisit(visitUuid, conceptNames, obsIgnoreList, false, order);
+            BahmniOrder bahmniOrder = createBahmniOrder(order, observations, true);
+            bahmniOrders.add(bahmniOrder);
+        }
+        return bahmniOrders;
+    }
+
     private BahmniOrder createBahmniOrder(Order order, Collection<BahmniObservation> bahmniObservations, boolean includeObs){
         BahmniOrder bahmniOrder = new BahmniOrder();
 

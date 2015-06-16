@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.service.BahmniOrderService;
+import org.bahmni.module.bahmnicore.util.MiscUtils;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.order.contract.BahmniOrder;
@@ -28,29 +29,31 @@ public class BahmniOrderController extends BaseRestController {
         this.bahmniOrderService = bahmniOrderService;
     }
 
+
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public List<BahmniOrder> get(@RequestParam(value = "patientUuid", required = true) String patientUuid,
                                  @RequestParam(value = "concept", required = true) List<String> rootConceptNames,
-                                 @RequestParam(value = "orderTypeUuid", required = true) String orderTypeUuid,
+                                 @RequestParam(value = "orderTypeUuid", required = false) String orderTypeUuid,
+                                 @RequestParam(value = "visitUuid", required = false) String visitUuid,
+                                 @RequestParam(value = "orderUuid", required = false) String orderUuid,
                                  @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
                                  @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
                                  @RequestParam(value = "includeObs", required = false, defaultValue ="true") boolean includeObs) {
 
-        List<Concept> rootConcepts = getConcepts(rootConceptNames);
-        return bahmniOrderService.ordersForOrderType(patientUuid, rootConcepts, numberOfVisits, obsIgnoreList, orderTypeUuid, includeObs);
 
-    }
-
-    @RequestMapping(method = RequestMethod.GET, params = {"orderUuid"})
-    @ResponseBody
-    public List<BahmniOrder> get(@RequestParam(value = "patientUuid", required = true) String patientUuid,
-                                 @RequestParam(value = "concept", required = true) List<String> rootConceptNames,
-                                 @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
-                                 @RequestParam(value = "orderUuid", required = true) String orderUuid) {
+        if (visitUuid != null) {
+            return bahmniOrderService.ordersForVisit(visitUuid, orderTypeUuid, rootConceptNames, MiscUtils.getConceptsForNames(obsIgnoreList, conceptService));
+        }
 
         List<Concept> rootConcepts = getConcepts(rootConceptNames);
+        if (orderUuid != null) {
             return bahmniOrderService.ordersForOrder(patientUuid, rootConcepts, obsIgnoreList, orderUuid);
+        }
+        else {
+            return bahmniOrderService.ordersForOrderType(patientUuid, rootConcepts, numberOfVisits, obsIgnoreList, orderTypeUuid, includeObs);
+        }
+
     }
 
     private List<Concept> getConcepts(List<String> rootConceptNames) {

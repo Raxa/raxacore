@@ -27,5 +27,5 @@ public interface ObsDao {
 
     List<Obs> getObsForOrder(String orderUuid);
 
-    List<Obs> getObsForVisits(List<Person> persons, ArrayList<Encounter> visit, List<Concept> conceptsForNames,  Collection<Concept> obsIgnoreList, boolean filterOutOrders);
+    List<Obs> getObsForVisits(List<Person> persons, ArrayList<Encounter> visit, List<Concept> conceptsForNames, Collection<Concept> obsIgnoreList, Boolean filterOutOrders, Order order);
 }

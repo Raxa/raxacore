@@ -34,6 +34,7 @@ public class BahmniOrderServiceImplTest {
     BahmniOrderService bahmniOrderService;
 
     private String personUUID = "12345";
+    private String visitUUID = "54321";
     private Order order;
     private Concept concept;
     private ConceptName conceptName;
@@ -65,7 +66,7 @@ public class BahmniOrderServiceImplTest {
     }
 
     @Test
-    public void shouldGetLatestObservationsAndOrdersForOrderType() throws Exception {
+    public void shouldGetBahmniOrdersForOrderType() throws Exception {
         when(orderService.getAllOrdersForVisits(personUUID, "someOrderTypeUuid", 2)).thenReturn(Arrays.asList(createOrder(), createOrder(), createOrder()));
         List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForOrderType(personUUID, Arrays.asList(concept), 2, null, "someOrderTypeUuid", true);
         verify(orderService).getAllOrdersForVisits(personUUID, "someOrderTypeUuid", 2);
@@ -90,11 +91,20 @@ public class BahmniOrderServiceImplTest {
     }
 
     @Test
-    public void shouldGetLatestObservationsForOrder() throws Exception {
+    public void shouldGetBahmniOrdersForOrder() throws Exception {
         Order order = createOrder();
         when(orderService.getOrderByUuid("someOrderUuid")).thenReturn(order);
         bahmniOrderService.ordersForOrder(personUUID, Arrays.asList(concept), null, "someOrderUuid");
         verify(bahmniObsService).observationsFor(personUUID, Arrays.asList(concept), null, null, false, order);
+    }
+
+    @Test
+    public void shouldGetBahmniOrdersForVisit() throws Exception {
+        when(orderService.getAllOrdersForVisitUuid(visitUUID, "someOrderTypeUuid")).thenReturn(Arrays.asList(createOrder(), createOrder()));
+        List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForVisit(visitUUID, "someOrderTypeUuid", null, Arrays.asList(concept));
+        verify(bahmniObsService).getObservationForVisit(visitUUID, null, Arrays.asList(concept), false, order);
+        verify(orderService).getAllOrdersForVisitUuid(visitUUID, "someOrderTypeUuid");
+        Assert.assertEquals(2, bahmniOrders.size());
     }
 
     private Order createOrder() {

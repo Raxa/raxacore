@@ -61,7 +61,8 @@ public class ObsDaoImpl implements ObsDao {
         return getObsByPatientAndVisit(patientUuid, conceptNames, listOfVisitIds, limit, sortOrder, obsIgnoreList, filterObsWithOrders, order);
     }
 
-    private List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit, OrderBy sortOrder, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order) {
+    private List<Obs>
+    getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit, OrderBy sortOrder, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order) {
 
         StringBuilder query = new StringBuilder("select obs from Obs as obs, ConceptName as cn " +
                 " where obs.person.uuid = :patientUuid " +
@@ -174,7 +175,7 @@ public class ObsDaoImpl implements ObsDao {
     }
 
     @Override
-    public List<Obs> getObsForVisits(List<Person> persons, ArrayList<Encounter> encounters, List<Concept> conceptsForNames,  Collection<Concept> obsIgnoreList, boolean filterOutOrders) {
+    public List<Obs> getObsForVisits(List<Person> persons, ArrayList<Encounter> encounters, List<Concept> conceptsForNames, Collection<Concept> obsIgnoreList, Boolean filterOutOrders, Order order) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Obs.class, "obs");
         if(CollectionUtils.isNotEmpty(persons)) {
             criteria.add(Restrictions.in("person", persons));
@@ -191,6 +192,9 @@ public class ObsDaoImpl implements ObsDao {
         }
         if(filterOutOrders){
             criteria.add(Restrictions.isNull("order"));
+        }
+        if(order != null){
+            criteria.add(Restrictions.eq("order", order));
         }
         criteria.add(Restrictions.eq("voided", Boolean.valueOf(false)));
 

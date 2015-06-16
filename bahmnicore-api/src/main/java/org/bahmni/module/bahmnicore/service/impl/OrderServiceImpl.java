@@ -64,4 +64,9 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrderByUuid(String orderUuid){
         return orderDao.getOrderByUuid(orderUuid);
     }
+
+    @Override
+    public List<Order> getAllOrdersForVisitUuid(String visitUuid, String orderTypeUuid) {
+        return orderDao.getOrdersForVisitUuid(visitUuid, orderTypeUuid);
+    }
 }
