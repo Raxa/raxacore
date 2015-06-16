@@ -79,10 +79,25 @@ public class CSVPatientService {
         Patient patientB;
         for(RelationshipRow relationshipRow : patientRow.relationships) {
 
-            patientB = patientService.getPatient(Integer.parseInt(relationshipRow.getPersonB()));
             relationship = new Relationship();
+
+            try {
+                patientB = patientService.getPatient(Integer.parseInt(relationshipRow.getPersonB()));
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Invalid personB id.");
+            }
+
+            if(null == patientB) {
+                throw new RuntimeException("PersonB not found.");
+            }
+
+            try {
+                relationship.setRelationshipType(new RelationshipType(Integer.parseInt(relationshipRow.getRelationshipTypeId())));
+            } catch (NumberFormatException e) {
+                throw new RuntimeException("Invalid relationship type id.");
+            }
+
             relationship.setPersonA(patientA);
-            relationship.setRelationshipType(new RelationshipType(Integer.parseInt(relationshipRow.getRelationshipTypeId())));
             relationship.setPersonB(patientB);
 
             if (!StringUtils.isBlank(relationshipRow.getStartDate())) {
