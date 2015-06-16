@@ -1,15 +1,13 @@
 package org.bahmni.module.admin.csv.models;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.csv.CSVEntity;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.annotation.CSVHeader;
 import org.bahmni.csv.annotation.CSVRegexHeader;
 import org.bahmni.csv.annotation.CSVRepeatingHeaders;
-import org.bahmni.module.admin.csv.utils.CSVUtils;
+import static org.bahmni.module.admin.csv.utils.CSVUtils.getDateFromString;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,9 +44,7 @@ public class LabResultsRow extends CSVEntity {
     }
 
     public Date getTestDate() throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN);
-        simpleDateFormat.setLenient(false);
-        return simpleDateFormat.parse(this.testDateString);
+        return getDateFromString(this.testDateString);
     }
 
     public List<KeyValue> getPatientAttributes() {

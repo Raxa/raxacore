@@ -3,17 +3,17 @@ package org.bahmni.module.admin.csv.service;
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.PatientRow;
-import org.bahmni.module.admin.csv.utils.CSVUtils;
-import org.bahmni.module.referencedata.labconcepts.contract.*;
+import org.bahmni.module.admin.csv.models.RelationshipRow;
 import org.openmrs.*;
 import org.openmrs.Concept;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
+import static org.bahmni.module.admin.csv.utils.CSVUtils.*;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,11 +44,7 @@ public class CSVPatientService {
         addPersonAttributes(patient, patientRow);
 
         if (!StringUtils.isBlank(patientRow.birthdate)) {
-            // All csv imports use the same date format
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN);
-            simpleDateFormat.setLenient(false);
-
-            patient.setBirthdate(simpleDateFormat.parse(patientRow.birthdate));
+            patient.setBirthdate(getDateFromString(patientRow.birthdate));
         } else if (!StringUtils.isBlank(patientRow.age)) {
             patient.setBirthdateFromAge(Integer.parseInt(patientRow.age), new Date());
         }
@@ -63,7 +59,43 @@ public class CSVPatientService {
 
         patient.setPersonDateCreated(patientRow.getRegistrationDate());
 
-        return patientService.savePatient(patient);
+        patientService.savePatient(patient);
+        saveRelationships(patientRow, patient);
+
+        return patient;
+    }
+
+    private void saveRelationships(PatientRow patientRow, Patient patientA) throws ParseException {
+        List<Relationship> relationships = getRelationshipsFromPatientRow(patientRow, patientA);
+        for(Relationship relationship : relationships) {
+            personService.saveRelationship(relationship);
+        }
+    }
+
+    private List<Relationship> getRelationshipsFromPatientRow(PatientRow patientRow, Patient patientA)  throws ParseException {
+        List<Relationship> relationships = new ArrayList<>();
+
+        Relationship relationship;
+        Patient patientB;
+        for(RelationshipRow relationshipRow : patientRow.relationships) {
+
+            patientB = patientService.getPatient(Integer.parseInt(relationshipRow.getPersonB()));
+            relationship = new Relationship();
+            relationship.setPersonA(patientA);
+            relationship.setRelationshipType(new RelationshipType(Integer.parseInt(relationshipRow.getRelationshipTypeId())));
+            relationship.setPersonB(patientB);
+
+            if (!StringUtils.isBlank(relationshipRow.getStartDate())) {
+                relationship.setStartDate(getDateFromString(relationshipRow.getStartDate()));
+            }
+
+            if (!StringUtils.isBlank(relationshipRow.getEndDate())) {
+                relationship.setEndDate(getDateFromString(relationshipRow.getEndDate()));
+            }
+
+            relationships.add(relationship);
+        }
+        return relationships;
     }
 
     private void addPersonAttributes(Patient patient, PatientRow patientRow) {
@@ -99,4 +131,5 @@ public class CSVPatientService {
         PatientIdentifierType patientIdentifierByUuid = patientService.getPatientIdentifierTypeByUuid(globalProperty);
         return patientIdentifierByUuid;
     }
+
 }

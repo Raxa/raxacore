@@ -5,10 +5,9 @@ import org.bahmni.csv.annotation.CSVHeader;
 import org.bahmni.csv.annotation.CSVRegexHeader;
 import org.bahmni.csv.annotation.CSVRepeatingRegexHeaders;
 import org.bahmni.csv.KeyValue;
-import org.bahmni.module.admin.csv.utils.CSVUtils;
+import static org.bahmni.module.admin.csv.utils.CSVUtils.getDateFromString;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,17 +51,13 @@ public class MultipleEncounterRow extends CSVEntity {
     public Date getVisitStartDate() throws ParseException {
         if (visitStartDate == null)
             return null;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN);
-        simpleDateFormat.setLenient(false);
-        return simpleDateFormat.parse(visitStartDate);
+        return getDateFromString(visitStartDate);
     }
 
     public Date getVisitEndDate() throws ParseException {
         if (visitEndDate == null)
             return null;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN);
-        simpleDateFormat.setLenient(false);
-        return simpleDateFormat.parse(visitEndDate);
+        return getDateFromString(visitEndDate);
     }
 }
 

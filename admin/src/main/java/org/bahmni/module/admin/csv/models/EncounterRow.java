@@ -5,10 +5,9 @@ import org.bahmni.csv.CSVEntity;
 import org.bahmni.csv.annotation.CSVHeader;
 import org.bahmni.csv.annotation.CSVRegexHeader;
 import org.bahmni.csv.KeyValue;
-import org.bahmni.module.admin.csv.utils.CSVUtils;
+import static org.bahmni.module.admin.csv.utils.CSVUtils.getDateFromString;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -24,9 +23,7 @@ public class EncounterRow extends CSVEntity {
     public List<KeyValue> diagnosesRows;
 
     public Date getEncounterDate() throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN);
-        simpleDateFormat.setLenient(false);
-        return simpleDateFormat.parse(encounterDateTime);
+        return getDateFromString(encounterDateTime);
     }
 
     public boolean hasObservations() {

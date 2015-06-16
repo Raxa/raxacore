@@ -3,8 +3,11 @@ package org.bahmni.module.admin.csv.utils;
 import org.bahmni.csv.KeyValue;
 import org.openmrs.ConceptName;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 public class CSVUtils {
@@ -25,6 +28,13 @@ public class CSVUtils {
             keyValueList.add(new KeyValue(key, string));
         }
         return keyValueList;
+    }
+
+    public static Date getDateFromString(String dateString) throws ParseException {
+        // All csv imports use the same date format
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ENCOUNTER_DATE_PATTERN);
+        simpleDateFormat.setLenient(false);
+        return simpleDateFormat.parse(dateString);
     }
 
 }
