@@ -64,7 +64,7 @@ public class OpenElisAccessionEventWorkerTest {
         accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService,
                 conceptService, accessionMapper, providerService, bahmniVisitAttributeSaveCommand);
         openElisUrl = "http://localhost:8080";
-        event = new Event("id", "/openelis/accession/12-34-56-78", "title", "feedUri");
+        event = new Event("id", "/openelis/accession/12-34-56-78", "title", "feedUri", new Date());
         when(feedProperties.getOpenElisUri()).thenReturn(openElisUrl);
     }
 

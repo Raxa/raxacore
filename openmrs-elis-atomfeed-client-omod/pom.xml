@@ -15,7 +15,7 @@
         <MODULE_NAME>${project.name}</MODULE_NAME>
         <MODULE_VERSION>${project.version}</MODULE_VERSION>
         <MODULE_PACKAGE>${project.groupId}.${MODULE_ID}</MODULE_PACKAGE>
-        <openmrsAtomfeedVersion>2.2</openmrsAtomfeedVersion>
+        <openmrsAtomfeedVersion>2.3</openmrsAtomfeedVersion>
     </properties>
 
     <build>

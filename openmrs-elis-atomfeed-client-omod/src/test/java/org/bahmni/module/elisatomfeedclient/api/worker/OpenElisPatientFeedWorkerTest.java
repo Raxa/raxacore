@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.Date;
+
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -41,6 +43,6 @@ public class OpenElisPatientFeedWorkerTest {
     }
 
     private Event createEvent() {
-        return new Event("tag:atomfeed.ict4h.org:22617bda-71ac-45c0-832b-c945b4881334", "/openelis/ws/rest/accession/4e85095d-b08e-444b-8970-0d5c2210791b","patient", "http://localhost:8080/openelis/ws/feed/patient/recent");
+        return new Event("tag:atomfeed.ict4h.org:22617bda-71ac-45c0-832b-c945b4881334", "/openelis/ws/rest/accession/4e85095d-b08e-444b-8970-0d5c2210791b","patient", "http://localhost:8080/openelis/ws/feed/patient/recent",new Date());
     }
 }

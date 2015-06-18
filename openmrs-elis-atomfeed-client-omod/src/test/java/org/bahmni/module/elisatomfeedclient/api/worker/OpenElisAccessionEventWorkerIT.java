@@ -41,7 +41,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
     private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
     private OpenElisAccessionEventWorker openElisAccessionEventWorker;
     private String openElisUrl = "http://localhost:8080/";
-    private Event event = new Event("id", "openelis/accession/12-34-56-78", "title", "feedUri");
+    private Event event = new Event("id", "openelis/accession/12-34-56-78", "title", "feedUri", new Date());
 
     @Before
     public void setUp() throws Exception {
@@ -1124,7 +1124,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
     }
 
     private Event stubHttpClientToGetOpenElisAccession(String accessionUuid, OpenElisAccession openElisAccession) throws java.io.IOException {
-        Event firstEvent = new Event("id", "openelis/accession/" + accessionUuid, "title", "feedUri");
+        Event firstEvent = new Event("id", "openelis/accession/" + accessionUuid, "title", "feedUri", new Date());
         when(httpClient.get(properties.getOpenElisUri() + firstEvent.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
         return firstEvent;
     }
