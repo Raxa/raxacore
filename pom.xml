@@ -30,7 +30,7 @@
         <openMRSRuntimeVersion>1.10.0</openMRSRuntimeVersion>
         <springVersion>3.0.5.RELEASE</springVersion>
         <atomfeed.version>1.6</atomfeed.version>
-        <addressHierarchyVersion>2.4</addressHierarchyVersion>
+        <addressHierarchyVersion>2.7</addressHierarchyVersion>
         <reportingModuleVersion>0.9.1</reportingModuleVersion>
         <calculationModuleVersion>1.1</calculationModuleVersion>
         <serializationXstreamModuleVersion>0.2.7</serializationXstreamModuleVersion>
