@@ -43,15 +43,16 @@ public class BahmniObservationsController extends BaseRestController {
                                        @RequestParam(value = "concept", required = true) List<String> rootConceptNames,
                                        @RequestParam(value = "scope", required = false) String scope,
                                        @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
-                                       @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList) {
+                                       @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
+                                       @RequestParam(value = "filterObsWithOrders", required = false, defaultValue = "true") Boolean filterObsWithOrders) {
 
         List<Concept> rootConcepts = MiscUtils.getConceptsForNames(rootConceptNames,conceptService);
         if (ObjectUtils.equals(scope, LATEST)) {
-            return bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, true, null);
+            return bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders, null);
         } else if (ObjectUtils.equals(scope, INITIAL)) {
-            return bahmniObsService.getInitial(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, true, null);
+            return bahmniObsService.getInitial(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders, null);
         } else {
-            return bahmniObsService.observationsFor(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, true, null);
+            return bahmniObsService.observationsFor(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders, null);
         }
 
     }
@@ -61,16 +62,17 @@ public class BahmniObservationsController extends BaseRestController {
     public Collection<BahmniObservation> get(@RequestParam(value = "visitUuid", required = true) String visitUuid,
                                              @RequestParam(value = "scope", required = false) String scope,
                                              @RequestParam(value = "concept", required = false) List<String> conceptNames,
-                                             @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList) {
+                                             @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
+                                             @RequestParam(value = "filterObsWithOrders", required = false, defaultValue = "true") Boolean filterObsWithOrders) {
 
         Visit visit = visitService.getVisitByUuid(visitUuid);
         if (ObjectUtils.equals(scope, INITIAL)) {
-            return bahmniObsService.getInitialObsByVisit(visit,  MiscUtils.getConceptsForNames(conceptNames, conceptService), obsIgnoreList, true);
+            return bahmniObsService.getInitialObsByVisit(visit,  MiscUtils.getConceptsForNames(conceptNames, conceptService), obsIgnoreList, filterObsWithOrders);
         } else  if (ObjectUtils.equals(scope, LATEST)) {
-            return bahmniObsService.getLatestObsByVisit(visit, MiscUtils.getConceptsForNames(conceptNames, conceptService), obsIgnoreList, true);
+            return bahmniObsService.getLatestObsByVisit(visit, MiscUtils.getConceptsForNames(conceptNames, conceptService), obsIgnoreList, filterObsWithOrders);
         } else {
             // Sending conceptName and obsIgnorelist, kinda contradicts, since we filter directly on concept names (not on root concept)
-            return bahmniObsService.getObservationForVisit(visitUuid, conceptNames, MiscUtils.getConceptsForNames(obsIgnoreList, conceptService), true, null);
+            return bahmniObsService.getObservationForVisit(visitUuid, conceptNames, MiscUtils.getConceptsForNames(obsIgnoreList, conceptService), filterObsWithOrders, null);
         }
     }
 }
