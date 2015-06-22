@@ -2988,4 +2988,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-201506221230" author="Hemanth, Preethi">
+        <comment>Getting rid of the revese sync schedulers for Drug.</comment>
+        <sql>
+            delete from scheduler_task_config where name='OpenERP Feed Task';
+            delete from scheduler_task_config where name='OpenERP Failed Feed Task';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
