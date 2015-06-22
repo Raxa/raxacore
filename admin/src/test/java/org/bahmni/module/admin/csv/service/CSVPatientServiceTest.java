@@ -283,29 +283,6 @@ public class CSVPatientServiceTest {
     }
 
     @Test
-    public void fails_person_relationship_without_personB() throws ParseException {
-
-        addPatientServiceMockPatientData(getSamplePatientIds());
-
-        PatientRow patientRow = new PatientRow();
-
-        final RelationshipRow relationshipRow = new RelationshipRow();
-        relationshipRow.setRelationshipTypeId("3");
-
-        List<RelationshipRow> relationships = new ArrayList<RelationshipRow>() {{
-            add(relationshipRow);
-        }};
-        patientRow.relationships = relationships;
-
-        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
-
-        exception.expect(RuntimeException.class);
-        exception.expectMessage("Invalid personB id.");
-
-        csvPatientService.save(patientRow);
-    }
-
-    @Test
     public void fails_person_relationship_when_personB_not_found() throws ParseException {
 
         addPatientServiceMockPatientData(getSamplePatientIds());
