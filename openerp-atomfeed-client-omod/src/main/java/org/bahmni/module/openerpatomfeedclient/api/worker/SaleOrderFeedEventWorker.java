@@ -33,7 +33,7 @@ public class SaleOrderFeedEventWorker implements EventWorker{
             }
         } catch (Exception e) {
             logger.error("openERPatomfeedclient:error processing : " + saleOrderContent + e.getMessage(), e);
-            throw new OpenERPFeedException("could not read lab result data", e);
+            throw new OpenERPFeedException("could not read drug data", e);
         }
     }
 
