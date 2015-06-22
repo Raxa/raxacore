@@ -79,7 +79,9 @@ public class CSVPatientService {
         Patient patientB;
         for(RelationshipRow relationshipRow : patientRow.relationships) {
 
-            relationship = new Relationship();
+            if(StringUtils.isEmpty(relationshipRow.getPersonB())) {
+                continue;
+            }
 
             try {
                 patientB = patientService.getPatient(Integer.parseInt(relationshipRow.getPersonB()));
@@ -90,6 +92,8 @@ public class CSVPatientService {
             if(null == patientB) {
                 throw new RuntimeException("PersonB not found.");
             }
+
+            relationship = new Relationship();
 
             try {
                 relationship.setRelationshipType(new RelationshipType(Integer.parseInt(relationshipRow.getRelationshipTypeId())));
