@@ -6,7 +6,7 @@ import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
-import org.openmrs.module.bahmnimapping.services.BahmniLocationService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTypeIdentifier;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +21,12 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
 
     public static final int DEFAULT_SESSION_DURATION_IN_MINUTES = 60;
     private AdministrationService adminService;
-    private BahmniLocationService bahmniLocationService;
+    private EncounterTypeIdentifier encounterTypeIdentifier;
 
     @Autowired
-    public EncounterSessionMatcher(@Qualifier("adminService") AdministrationService administrationService, BahmniLocationService bahmniLocationService) {
+    public EncounterSessionMatcher(@Qualifier("adminService") AdministrationService administrationService, EncounterTypeIdentifier encounterTypeIdentifier) {
         this.adminService = administrationService;
-        this.bahmniLocationService = bahmniLocationService;
+        this.encounterTypeIdentifier = encounterTypeIdentifier;
     }
 
 
@@ -44,22 +44,33 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     }
 
     private Encounter findRegularEncounter(Visit visit, EncounterParameters encounterParameters, Provider provider) {
-        EncounterType encounterType = encounterParameters.getEncounterType();
-        if (encounterType == null && encounterParameters.getLocation() != null) {
-            encounterType = bahmniLocationService.getEncounterType(encounterParameters.getLocation().getUuid());
-        }
+        EncounterType encounterType = getEncounterType(encounterParameters);
 
         if (visit.getEncounters() != null) {
             for (Encounter encounter : visit.getEncounters()) {
-                if (!encounter.isVoided() && (encounterType == null || encounterType.equals(encounter.getEncounterType()))) {
+                if (!encounter.isVoided() && encounterType.equals(encounter.getEncounterType())) {
                     Date encounterDateChanged = encounter.getDateChanged() == null ? encounter.getDateCreated() : encounter.getDateChanged();
                     if (!isCurrentSessionTimeExpired(encounterDateChanged) && isSameProvider(provider, encounter) && areSameEncounterDates(encounter, encounterParameters))
-                        if (locationNotDefined(encounterParameters, encounter) || isSameLocation(encounterParameters, encounter))
+                        if (isLocationNotDefined(encounterParameters, encounter) || isSameLocation(encounterParameters, encounter))
                             return encounter;
                 }
             }
         }
         return null;
+    }
+
+    private EncounterType getEncounterType(EncounterParameters encounterParameters) {
+        EncounterType encounterType = encounterParameters.getEncounterType();
+
+        if (encounterType == null) {
+            Location location = encounterParameters.getLocation();
+            String locationUuid = null;
+            if(location != null){
+                locationUuid = location.getUuid();
+            }
+            encounterType = encounterTypeIdentifier.getEncounterTypeFor(locationUuid);
+        }
+        return encounterType;
     }
 
     private Encounter findRetrospectiveEncounter(Visit visit, EncounterParameters encounterParameters, Provider provider) {
@@ -83,7 +94,7 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         return ((encounter.getLocation() != null && encounter.getLocation().equals(encounterParameters.getLocation())));
     }
 
-    private boolean locationNotDefined(EncounterParameters encounterParameters, Encounter encounter) {
+    private boolean isLocationNotDefined(EncounterParameters encounterParameters, Encounter encounter) {
         return (encounterParameters.getLocation() == null && encounter.getLocation() == null);
     }
 

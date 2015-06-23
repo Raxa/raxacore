@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.openmrs.EncounterType;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.EncounterService;
-import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmnimapping.services.BahmniLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,18 +36,27 @@ public class EncounterTypeIdentifier {
         this.administrationService = administrationService;
     }
 
-    public EncounterType getEncounterType(BahmniEncounterTransaction encounterTransaction) {
-        String encounterTypeString = encounterTransaction.getEncounterType();
+    public EncounterType getEncounterTypeFor(String encounterTypeString, String locationUuid) {
 
         if (StringUtils.isNotEmpty(encounterTypeString)) {
             return encounterService.getEncounterType(encounterTypeString);
         } else {
-            EncounterType encounterType = bahmniLocationService.getEncounterType(encounterTransaction.getLocationUuid());
-            if (encounterType == null) {
-                String defaultEncounterType = administrationService.getGlobalProperty("bahmni.encounterType.default");
-                return encounterService.getEncounterType(defaultEncounterType);
-            }
-            return encounterType;
+            return getEncounterTypeFor(locationUuid);
         }
     }
+
+    public EncounterType getEncounterTypeFor(String locationUuid) {
+        EncounterType encounterType = bahmniLocationService.getEncounterType(locationUuid);
+        if (encounterType == null){
+            return getDefaultEncounterType();
+        }
+        return encounterType;
+    }
+
+    private EncounterType getDefaultEncounterType() {
+        String defaultEncounterType = administrationService.getGlobalProperty("bahmni.encounterType.default");
+        return encounterService.getEncounterType(defaultEncounterType);
+    }
+
+
 }

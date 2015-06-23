@@ -50,7 +50,7 @@ public class EncounterTypeIdentifierTest {
         encounterTypeMappedToLocation.setUuid(UUID.randomUUID().toString());
         when(bahmniLocationService.getEncounterType(locationUuid)).thenReturn(encounterTypeMappedToLocation);
 
-        EncounterType actualEncounterType = identifier.getEncounterType(encounterTransaction);
+        EncounterType actualEncounterType = identifier.getEncounterTypeFor(encounterTransaction.getEncounterType(), encounterTransaction.getLocationUuid());
 
         assertEquals(encounterTypeMappedToLocation, actualEncounterType);
     }
@@ -63,7 +63,7 @@ public class EncounterTypeIdentifierTest {
         encounterTransaction.setEncounterType("Consultation");
         encounterTransaction.setLocationUuid(locationUuid);
 
-        identifier.getEncounterType(encounterTransaction);
+        identifier.getEncounterTypeFor(encounterTransaction.getEncounterType(), encounterTransaction.getLocationUuid());
 
         assertEquals(null, encounterTransaction.getEncounterTypeUuid());
         verify(encounterService).getEncounterType("Consultation");
@@ -82,11 +82,12 @@ public class EncounterTypeIdentifierTest {
         when(administrationService.getGlobalProperty("bahmni.encounterType.default")).thenReturn("Field Consultation");
         when(encounterService.getEncounterType("Field Consultation")).thenReturn(defaultEncounterType);
 
-        EncounterType actualEncounterType = identifier.getEncounterType(encounterTransaction);
+        EncounterType actualEncounterType = identifier.getEncounterTypeFor(encounterTransaction.getEncounterType(), encounterTransaction.getLocationUuid());
 
         assertEquals(defaultEncounterType, actualEncounterType);
         verify(bahmniLocationService).getEncounterType(locationUuid);
         verify(administrationService).getGlobalProperty("bahmni.encounterType.default");
+        verify(encounterService).getEncounterType("Field Consultation");
     }
 
     @Test
@@ -100,7 +101,7 @@ public class EncounterTypeIdentifierTest {
         when(administrationService.getGlobalProperty("bahmni.encounterType.default")).thenReturn("Field Consultation");
         when(encounterService.getEncounterType("Field Consultation")).thenReturn(null);
 
-        EncounterType actualEncounterType = identifier.getEncounterType(encounterTransaction);
+        EncounterType actualEncounterType = identifier.getEncounterTypeFor(encounterTransaction.getEncounterType(), encounterTransaction.getLocationUuid());
 
         assertNull(actualEncounterType);
         verify(bahmniLocationService).getEncounterType(locationUuid);

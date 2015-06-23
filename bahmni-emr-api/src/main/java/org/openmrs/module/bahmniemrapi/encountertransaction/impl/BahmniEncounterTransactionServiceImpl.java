@@ -106,7 +106,7 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     }
 
     private void setEncounterType(BahmniEncounterTransaction bahmniEncounterTransaction) {
-        EncounterType encounterType = encounterTypeIdentifier.getEncounterType(bahmniEncounterTransaction);
+        EncounterType encounterType = encounterTypeIdentifier.getEncounterTypeFor(bahmniEncounterTransaction.getEncounterType(), bahmniEncounterTransaction.getLocationUuid());
         if (encounterType == null) {
             throw new RuntimeException("Encounter type not found.");
         }
