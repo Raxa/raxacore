@@ -13,7 +13,10 @@ public class MiscUtils {
         if (CollectionUtils.isNotEmpty(conceptNames)) {
             List<Concept> rootConcepts = new ArrayList<>();
             for (String rootConceptName : conceptNames) {
-                rootConcepts.add(conceptService.getConceptByName(rootConceptName));
+                Concept concept = conceptService.getConceptByName(rootConceptName);
+                if (concept != null) {
+                    rootConcepts.add(concept);
+                }
             }
             return rootConcepts;
         }
