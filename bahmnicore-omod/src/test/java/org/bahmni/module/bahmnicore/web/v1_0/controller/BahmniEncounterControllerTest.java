@@ -1,9 +1,11 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
@@ -12,16 +14,20 @@ import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class BahmniEncounterControllerTest {
     @Mock
     private EmrEncounterService emrEncounterService;
+    @Mock
+    private AdministrationService adminService;
     @Mock
     private BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper;
     @Mock
@@ -51,7 +57,7 @@ public class BahmniEncounterControllerTest {
         when(bahmniEncounterTransactionMapper.map(et1, false)).thenReturn(new BahmniEncounterTransaction(et1));
         when(bahmniEncounterTransactionMapper.map(et2, false)).thenReturn(new BahmniEncounterTransaction(et2));
 
-        bahmniEncounterController = new BahmniEncounterController(null, null, null, null, emrEncounterService, null, bahmniEncounterTransactionService, bahmniEncounterTransactionMapper);
+        bahmniEncounterController = new BahmniEncounterController(null, null, null, null, emrEncounterService, null, bahmniEncounterTransactionService, bahmniEncounterTransactionMapper, null);
 
         List<BahmniEncounterTransaction> bahmniEncounterTransactions = bahmniEncounterController.find(encounterSearchParameters);
 
@@ -68,11 +74,26 @@ public class BahmniEncounterControllerTest {
         when(emrEncounterService.find(encounterSearchParameters)).thenReturn(null);
         when(bahmniEncounterTransactionMapper.map(any(EncounterTransaction.class), anyBoolean())).thenReturn(new BahmniEncounterTransaction(new EncounterTransaction()));
 
-        bahmniEncounterController = new BahmniEncounterController(null, null, null, null, emrEncounterService, null, null, bahmniEncounterTransactionMapper);
+        bahmniEncounterController = new BahmniEncounterController(null, null, null, null, emrEncounterService, null, null, bahmniEncounterTransactionMapper, null);
         List<BahmniEncounterTransaction> bahmniEncounterTransactions = bahmniEncounterController.find(encounterSearchParameters);
 
         assertEquals(1, bahmniEncounterTransactions.size());
         assertNotNull(bahmniEncounterTransactions.get(0));
         assertNull(bahmniEncounterTransactions.get(0).getEncounterUuid());
+    }
+
+    @Test
+    public void ShouldSetAutoExpireDateForTestOrders(){
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
+        List<EncounterTransaction.TestOrder> testOrders = Arrays.asList(new EncounterTransaction.TestOrder());
+        bahmniEncounterTransaction.setTestOrders(testOrders);
+        when(adminService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
+        when(bahmniEncounterTransactionService.save(bahmniEncounterTransaction)).thenReturn(null);
+        bahmniEncounterController = new BahmniEncounterController(null, null, null, null, emrEncounterService, null, bahmniEncounterTransactionService, bahmniEncounterTransactionMapper, adminService);
+
+        bahmniEncounterController.update(bahmniEncounterTransaction);
+
+        assertEquals(DateTime.now().plusMinutes(60).toDate().toString(), bahmniEncounterTransaction.getTestOrders().get(0).getAutoExpireDate().toString());
+        verify(bahmniEncounterTransactionService).save(bahmniEncounterTransaction);
     }
 }

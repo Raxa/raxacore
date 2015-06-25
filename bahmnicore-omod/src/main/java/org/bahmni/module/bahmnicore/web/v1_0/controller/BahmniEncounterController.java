@@ -2,15 +2,14 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
 import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterConfigResponse;
+import org.joda.time.DateTime;
 import org.openmrs.*;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.OrderService;
-import org.openmrs.api.VisitService;
+import org.openmrs.api.*;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.utils.DateUtil;
 import org.openmrs.module.emrapi.encounter.ActiveEncounterParameters;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
 import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
@@ -19,18 +18,17 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/bahmniencounter")
 public class BahmniEncounterController extends BaseRestController {
+    private AdministrationService adminService;
     private VisitService visitService;
     private ConceptService conceptService;
     private EncounterService encounterService;
@@ -48,7 +46,7 @@ public class BahmniEncounterController extends BaseRestController {
                                      EncounterService encounterService, OrderService orderService,
                                      EmrEncounterService emrEncounterService, EncounterTransactionMapper encounterTransactionMapper,
                                      BahmniEncounterTransactionService bahmniEncounterTransactionService,
-                                     BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper) {
+                                     BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper, @Qualifier("adminService") AdministrationService administrationService) {
         this.visitService = visitService;
         this.conceptService = conceptService;
         this.encounterService = encounterService;
@@ -57,6 +55,8 @@ public class BahmniEncounterController extends BaseRestController {
         this.encounterTransactionMapper = encounterTransactionMapper;
         this.bahmniEncounterTransactionService = bahmniEncounterTransactionService;
         this.bahmniEncounterTransactionMapper = bahmniEncounterTransactionMapper;
+        this.adminService = administrationService;
+
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "config")
@@ -130,7 +130,17 @@ public class BahmniEncounterController extends BaseRestController {
     @Transactional
     public BahmniEncounterTransaction update(@RequestBody BahmniEncounterTransaction bahmniEncounterTransaction) {
         setUuidsForObservations(bahmniEncounterTransaction.getObservations());
+        setAutoExpireDateForTestOrders(bahmniEncounterTransaction.getTestOrders());
         return bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
+    }
+
+    private void setAutoExpireDateForTestOrders(List<EncounterTransaction.TestOrder> testOrders) {
+        String configuredSessionDuration = adminService.getGlobalProperty("bahmni.encountersession.duration");
+        int encounterSessionDuration = configuredSessionDuration != null ? Integer.parseInt(configuredSessionDuration) : 60;
+
+        for (EncounterTransaction.TestOrder testOrder : testOrders) {
+            testOrder.setAutoExpireDate(DateTime.now().plusMinutes(encounterSessionDuration).toDate());
+        }
     }
 
     public BahmniEncounterTransaction get(String encounterUuid) {
