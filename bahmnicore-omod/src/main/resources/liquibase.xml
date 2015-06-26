@@ -3012,4 +3012,13 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-201506251230" author="Ranganathan, Charles">
+        <comment>Cleaning up relationships types for the relationships.</comment>
+        <sql>
+            SET FOREIGN_KEY_CHECKS = 0;
+            truncate relationship_type;
+            SET FOREIGN_KEY_CHECKS = 1;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
