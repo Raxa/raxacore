@@ -65,6 +65,9 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         if (StringUtils.isBlank(bahmniEncounterTransaction.getEncounterTypeUuid())) {
             setEncounterType(bahmniEncounterTransaction);
         }
+        if(bahmniEncounterTransaction.getEncounterDateTime() == null){
+            bahmniEncounterTransaction.setEncounterDateTime(new Date());
+        }
         for (EncounterDataPreSaveCommand saveCommand : encounterDataPreSaveCommand) {
             saveCommand.update(bahmniEncounterTransaction);
         }
