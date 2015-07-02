@@ -8,6 +8,7 @@ import org.openmrs.api.*;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
+import org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterSessionMatcher;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.utils.DateUtil;
 import org.openmrs.module.emrapi.encounter.ActiveEncounterParameters;

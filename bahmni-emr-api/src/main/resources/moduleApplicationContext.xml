@@ -37,7 +37,12 @@
         <constructor-arg  ref="emrEncounterService"/>
         <constructor-arg  ref="encounterTransactionMapper"/>
         <constructor-arg  ref="encounterTypeIdentifier"/>
-        <constructor-arg ref="drugOrderSaveCommandImpl"/>
+        <constructor-arg>
+            <list>
+                <ref bean="drugOrderSaveCommandImpl"/>
+                <ref bean="testOrderSaveCommandImpl"/>
+            </list>
+        </constructor-arg>
         <constructor-arg>
             <list>
                 <ref bean="bahmniDiagnosisSaveCommandImpl"/>

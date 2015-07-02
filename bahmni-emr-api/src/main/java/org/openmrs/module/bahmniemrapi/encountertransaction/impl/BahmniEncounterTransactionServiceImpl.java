@@ -34,7 +34,7 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     private EmrEncounterService emrEncounterService;
     private EncounterTransactionMapper encounterTransactionMapper;
     private EncounterTypeIdentifier encounterTypeIdentifier;
-    private EncounterDataPreSaveCommand encounterDataPreSaveCommand;
+    private List<EncounterDataPreSaveCommand> encounterDataPreSaveCommand;
     private List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands;
     private BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper;
     private VisitService visitService;
@@ -43,7 +43,7 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     private ProviderService providerService;
 
     public BahmniEncounterTransactionServiceImpl(EncounterService encounterService, EmrEncounterService emrEncounterService, EncounterTransactionMapper encounterTransactionMapper,
-                                                 EncounterTypeIdentifier encounterTypeIdentifier, EncounterDataPreSaveCommand encounterDataPreSaveCommand, List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands,
+                                                 EncounterTypeIdentifier encounterTypeIdentifier, List<EncounterDataPreSaveCommand> encounterDataPreSaveCommand, List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands,
                                                  BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper, VisitService visitService, PatientService patientService, LocationService locationService, ProviderService providerService) {
 
         this.encounterService = encounterService;
@@ -65,7 +65,9 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         if (StringUtils.isBlank(bahmniEncounterTransaction.getEncounterTypeUuid())) {
             setEncounterType(bahmniEncounterTransaction);
         }
-        encounterDataPreSaveCommand.update(bahmniEncounterTransaction);
+        for (EncounterDataPreSaveCommand saveCommand : encounterDataPreSaveCommand) {
+            saveCommand.update(bahmniEncounterTransaction);
+        }
         VisitIdentificationHelper visitIdentificationHelper = new VisitIdentificationHelper(visitService);
         bahmniEncounterTransaction = new RetrospectiveEncounterTransactionService(visitIdentificationHelper).updatePastEncounters(bahmniEncounterTransaction, patient, visitStartDate, visitEndDate);
 
