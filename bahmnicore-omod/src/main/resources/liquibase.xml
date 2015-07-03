@@ -3021,4 +3021,9 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-PatientSearch-Update-201507031840" author="Vikash, Achinta" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_87_PatientSearchSql.sql"/>
+    </changeSet>
+
 </databaseChangeLog>
