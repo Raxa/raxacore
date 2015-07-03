@@ -15,6 +15,7 @@ public class BahmniOrder {
     private String conceptName;
     private Boolean hasObservations;
     private Collection<BahmniObservation> bahmniObservations;
+    private String commentToFulfiller;
 
     public BahmniOrder(){
 
@@ -74,5 +75,13 @@ public class BahmniOrder {
 
     public void setConceptName(String concept) {
         this.conceptName = concept;
+    }
+
+    public String getCommentToFulfiller() {
+        return commentToFulfiller;
+    }
+
+    public void setCommentToFulfiller(String commentToFulfiller) {
+        this.commentToFulfiller = commentToFulfiller;
     }
 }

@@ -80,6 +80,7 @@ public class BahmniOrderServiceImpl implements BahmniOrderService {
         bahmniOrder.setProvider(order.getOrderer().getName());
         bahmniOrder.setConceptName(order.getConcept().getName().getName());
         bahmniOrder.setHasObservations(CollectionUtils.isNotEmpty(bahmniObservations));
+        bahmniOrder.setCommentToFulfiller(order.getCommentToFulfiller());
         if(includeObs) {
             bahmniOrder.setBahmniObservations(bahmniObservations);
         }
