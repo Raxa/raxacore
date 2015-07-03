@@ -21,30 +21,10 @@ import static org.openmrs.module.bahmniemrapi.encountertransaction.matcher.Encou
 @Component
 public class TestOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
 
-    private OrderMetadataService orderMetadataService;
-    private ConceptService conceptService;
-
-    Comparator<EncounterTransaction.DrugOrder> drugOrderStartDateComparator = new Comparator<EncounterTransaction.DrugOrder>() {
-        @Override
-        public int compare(EncounterTransaction.DrugOrder o1, EncounterTransaction.DrugOrder o2) {
-            Date date1 = o1.getScheduledDate();
-            Date date2 = o2.getScheduledDate();
-            if(date1 == null){
-                date1 = new Date();
-            }
-            if(date2 == null){
-                date2 = new Date();
-            }
-            return date1.compareTo(date2);
-        }
-    };
     private AdministrationService adminService;
 
-
     @Autowired
-    public TestOrderSaveCommandImpl(OrderMetadataService orderMetadataService, ConceptService conceptService,@Qualifier("adminService") AdministrationService administrationService) {
-        this.orderMetadataService = orderMetadataService;
-        this.conceptService = conceptService;
+    public TestOrderSaveCommandImpl(@Qualifier("adminService") AdministrationService administrationService) {
         this.adminService = administrationService;
     }
 
