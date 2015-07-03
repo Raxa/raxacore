@@ -131,17 +131,7 @@ public class BahmniEncounterController extends BaseRestController {
     @Transactional
     public BahmniEncounterTransaction update(@RequestBody BahmniEncounterTransaction bahmniEncounterTransaction) {
         setUuidsForObservations(bahmniEncounterTransaction.getObservations());
-        setAutoExpireDateForTestOrders(bahmniEncounterTransaction.getTestOrders());
         return bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
-    }
-
-    private void setAutoExpireDateForTestOrders(List<EncounterTransaction.TestOrder> testOrders) {
-        String configuredSessionDuration = adminService.getGlobalProperty("bahmni.encountersession.duration");
-        int encounterSessionDuration = configuredSessionDuration != null ? Integer.parseInt(configuredSessionDuration) : 60;
-
-        for (EncounterTransaction.TestOrder testOrder : testOrders) {
-            testOrder.setAutoExpireDate(DateTime.now().plusMinutes(encounterSessionDuration).toDate());
-        }
     }
 
     public BahmniEncounterTransaction get(String encounterUuid) {
