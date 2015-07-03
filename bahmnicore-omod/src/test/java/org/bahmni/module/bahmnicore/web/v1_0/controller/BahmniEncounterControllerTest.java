@@ -82,18 +82,4 @@ public class BahmniEncounterControllerTest {
         assertNull(bahmniEncounterTransactions.get(0).getEncounterUuid());
     }
 
-    @Test
-    public void ShouldSetAutoExpireDateForTestOrders(){
-        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-        List<EncounterTransaction.TestOrder> testOrders = Arrays.asList(new EncounterTransaction.TestOrder());
-        bahmniEncounterTransaction.setTestOrders(testOrders);
-        when(adminService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
-        when(bahmniEncounterTransactionService.save(bahmniEncounterTransaction)).thenReturn(null);
-        bahmniEncounterController = new BahmniEncounterController(null, null, null, null, emrEncounterService, null, bahmniEncounterTransactionService, bahmniEncounterTransactionMapper, adminService);
-
-        bahmniEncounterController.update(bahmniEncounterTransaction);
-
-        assertEquals(DateTime.now().plusMinutes(60).toDate().toString(), bahmniEncounterTransaction.getTestOrders().get(0).getAutoExpireDate().toString());
-        verify(bahmniEncounterTransactionService).save(bahmniEncounterTransaction);
-    }
 }
