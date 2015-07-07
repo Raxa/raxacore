@@ -3026,4 +3026,9 @@
         <sqlFile path="V1_87_PatientSearchSql.sql"/>
     </changeSet>
 
+    <changeSet id="bahmni-PatientSearch-Update-201507071330" author="Vikash, Chethan" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_88_PatientSearchSql.sql"/>
+    </changeSet>
+
 </databaseChangeLog>
