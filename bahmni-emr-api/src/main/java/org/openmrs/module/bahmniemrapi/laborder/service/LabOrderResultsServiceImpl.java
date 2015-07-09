@@ -3,6 +3,7 @@ package org.openmrs.module.bahmniemrapi.laborder.service;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.Obs;
+import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
 import org.openmrs.Visit;
@@ -148,7 +149,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private List<EncounterTransaction.TestOrder> getTestOrdersForConcepts(EncounterTransaction encounterTransaction, Encounter encounter, Map<String, Encounter> encounterTestOrderUuidMap, Collection<String> concepts) {
         List<EncounterTransaction.TestOrder> orders = new ArrayList<>();
         for (EncounterTransaction.TestOrder order : encounterTransaction.getTestOrders()) {
-            if(!order.isVoided() && concepts.contains(order.getConcept().getName())){
+            if(order.getDateStopped() == null && concepts.contains(order.getConcept().getName()) && !Order.Action.DISCONTINUE.toString().equals(order.getAction())){
                 encounterTestOrderUuidMap.put(order.getUuid(), encounter);
                 orders.add(order);
             }
@@ -170,7 +171,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private List<EncounterTransaction.TestOrder> getTestOrders(EncounterTransaction encounterTransaction, Encounter encounter, Map<String, Encounter> encounterTestOrderUuidMap) {
         List<EncounterTransaction.TestOrder> orders = new ArrayList<>();
         for (EncounterTransaction.TestOrder order : encounterTransaction.getTestOrders()) {
-            if(!order.isVoided() && LAB_ORDER_TYPE.equals(order.getOrderType())){
+            if(order.getDateStopped() == null && LAB_ORDER_TYPE.equals(order.getOrderType()) && !Order.Action.DISCONTINUE.toString().equals(order.getAction())){
                 encounterTestOrderUuidMap.put(order.getUuid(), encounter);
                 orders.add(order);
             }

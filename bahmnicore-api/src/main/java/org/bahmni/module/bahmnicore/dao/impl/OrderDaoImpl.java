@@ -191,7 +191,7 @@ public class OrderDaoImpl implements OrderDao {
         }
 
         criteria.add(Restrictions.eq("voided", false));
-        criteria.add(Restrictions.eq("dateStopped", null));
+        criteria.add(Restrictions.isNull("dateStopped"));
         criteria.add(Restrictions.ne("action", Order.Action.DISCONTINUE));
         criteria.addOrder(org.hibernate.criterion.Order.desc("dateCreated"));
         if (offset != null) {
