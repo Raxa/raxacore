@@ -1,9 +1,5 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Collection;
-
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.contract.orderTemplate.OrderTemplateJson;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
@@ -12,14 +8,23 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
-import org.hibernate.criterion.*;
-import org.openmrs.*;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
+import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
+import org.openmrs.Obs;
 import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -140,7 +145,7 @@ public class OrderDaoImpl implements OrderDao {
         Session currentSession = getCurrentSession();
         String includevisit = includeActiveVisit == null || includeActiveVisit == false ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
         Query queryVisitsWithDrugOrders = currentSession.createQuery("select v from " + orderType + " o, Encounter e, Visit v where o.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
-                "and o.voided = false and o.action != :discontinued " + includevisit + " group by v.visitId order by v.startDatetime desc");
+                "and o.voided = false and o.dateStopped = null and o.action != :discontinued " + includevisit + " group by v.visitId order by v.startDatetime desc");
         queryVisitsWithDrugOrders.setParameter("patientId", patient);
         queryVisitsWithDrugOrders.setParameter("discontinued", Order.Action.DISCONTINUE);
         if (includeActiveVisit == null || includeActiveVisit == false) {
@@ -186,6 +191,7 @@ public class OrderDaoImpl implements OrderDao {
         }
 
         criteria.add(Restrictions.eq("voided", false));
+        criteria.add(Restrictions.eq("dateStopped", null));
         criteria.add(Restrictions.ne("action", Order.Action.DISCONTINUE));
         criteria.addOrder(org.hibernate.criterion.Order.desc("dateCreated"));
         if (offset != null) {
@@ -205,7 +211,7 @@ public class OrderDaoImpl implements OrderDao {
         Session currentSession = getCurrentSession();
         Query queryVisitsWithDrugOrders = currentSession.createQuery(" select o from Order o where o.encounter.encounterId in\n" +
                 "(select e.encounterId from Encounter e where e.visit in (:visits) group by e.visit.visitId )\n" +
-                "and o.voided = false and o.orderType = (:orderTypeId) and o.action != :discontinued and o.patient = (:patientId) order by o.dateActivated desc");
+                "and o.dateStopped = null and o.voided = false and o.orderType = (:orderTypeId) and o.action != :discontinued and o.patient = (:patientId) order by o.dateActivated desc");
         queryVisitsWithDrugOrders.setParameter("patientId", patient);
         queryVisitsWithDrugOrders.setParameter("discontinued", Order.Action.DISCONTINUE);
         queryVisitsWithDrugOrders.setParameter("orderTypeId", orderType);
@@ -227,7 +233,7 @@ public class OrderDaoImpl implements OrderDao {
         Session currentSession = getCurrentSession();
         Query queryVisitsWithDrugOrders = currentSession.createQuery(" select o from Order o where o.encounter.encounterId in\n" +
                 "(select e.encounterId from Encounter e where e.visit.uuid =:visitUuid)\n" +
-                "and o.voided = false and o.orderType.uuid = (:orderTypeUuid) and  o.action != :discontinued order by o.dateActivated desc");
+                "and o.voided = false and o.dateStopped = null and o.orderType.uuid = (:orderTypeUuid) and  o.action != :discontinued order by o.dateActivated desc");
         queryVisitsWithDrugOrders.setParameter("orderTypeUuid", orderTypeUuid);
         queryVisitsWithDrugOrders.setParameter("discontinued", Order.Action.DISCONTINUE);
         queryVisitsWithDrugOrders.setParameter("visitUuid", visitUuid);
