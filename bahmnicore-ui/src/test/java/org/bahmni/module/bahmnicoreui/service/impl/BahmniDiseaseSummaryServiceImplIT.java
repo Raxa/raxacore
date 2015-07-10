@@ -15,9 +15,16 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiveTest {
 
@@ -163,10 +170,10 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertNotNull(drugTable);
         assertEquals(1, drugTable.size());
 
-        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2012-12-12")));
+        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2001-09-22")));
         assertNotNull(durgOrdersInVisit);
         assertEquals(1, durgOrdersInVisit.size());
-        assertEquals("250mg,325.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
+        assertEquals("250mg,125.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
     }
 
 
@@ -185,19 +192,13 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         Map<String, Map<String, ConceptValue>> drugTable = diseaseSummary.getTabularData();
 
         assertNotNull(drugTable);
-        assertEquals(2, drugTable.size());
+        assertEquals(1, drugTable.size());
 
-        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2012-12-12")));
-        assertNotNull(durgOrdersInVisit);
-        assertEquals(2, durgOrdersInVisit.size());
-        assertEquals("100mg,225.0,1/day x 7 days/week", durgOrdersInVisit.get("cetirizine 100mg").getValue());
-        assertEquals("250mg,325.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
-
-
-        durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2001-09-22")));
+        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2001-09-22")));
         assertNotNull(durgOrdersInVisit);
         assertEquals(1, durgOrdersInVisit.size());
         assertEquals("250mg,125.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
+
     }
 
     @Test
