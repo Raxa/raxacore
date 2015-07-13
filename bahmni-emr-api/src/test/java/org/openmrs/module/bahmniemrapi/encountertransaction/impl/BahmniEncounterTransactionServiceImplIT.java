@@ -2,10 +2,14 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 
 import java.util.Collection;
 import java.util.Iterator;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Encounter;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
@@ -23,6 +27,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContextSensitiveTest {
@@ -31,6 +36,8 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContex
     BahmniEncounterTransactionService bahmniEncounterTransactionService;
     @Autowired
     VisitService visitService;
+    @Autowired
+    EncounterService encounterService;
 
     @Before
     public void setUp() throws Exception {
@@ -141,6 +148,37 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContex
         assertEquals(1, visit.getAttributes().size());
         Iterator<VisitAttribute> visitAttributeIterator = visit.getAttributes().iterator();
         assertEquals("OPD", visitAttributeIterator.next().getValue());
+    }
+
+    @Test
+    public void shouldCreateVisitAttributeWhenTheDischargeIsRolledBack(){
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
+        bahmniEncounterTransaction.setEncounterTypeUuid("02c533ab-b74b-4ee4-b6e5-ffb6d09a0ad0");//Encounter Type is discharge
+        bahmniEncounterTransaction.setPatientUuid("da7f524f-27ce-4bb2-86d6-6d1d05312bd5");
+        bahmniEncounterTransaction.setVisitUuid("1e5d5d48-6b78-11e0-93c3-18a905e044ce");
+        bahmniEncounterTransaction.setEncounterUuid("bb0af6767-707a-4629-9850-f1529a163ab0");
+        bahmniEncounterTransaction.setReason("Undo Discharge");
+
+        bahmniEncounterTransactionService.delete(bahmniEncounterTransaction);
+
+        Encounter encounter = encounterService.getEncounterByUuid("bb0af6767-707a-4629-9850-f1529a163ab0");
+        assertTrue(encounter.isVoided());
+
+        Visit visit = visitService.getVisitByUuid("1e5d5d48-6b78-11e0-93c3-18a905e044ce");
+        assertNotNull(visit);
+
+        VisitAttribute visitAttribute = getAdmittedVisitAttribute(visit);
+        assertNotNull(visitAttribute);
+        Assert.assertEquals("Admitted", visitAttribute.getValue());
+    }
+
+    private VisitAttribute getAdmittedVisitAttribute(Visit visit){
+        for(VisitAttribute visitAttribute: visit.getAttributes()){
+            if (visitAttribute.getAttributeType().getName().equalsIgnoreCase("Admission Status")) {
+                return visitAttribute;
+            }
+        }
+        return null;
     }
 
     @Test

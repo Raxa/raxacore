@@ -5,6 +5,7 @@ import org.bahmni.module.bahmnicore.contract.encounter.response.EncounterConfigR
 import org.joda.time.DateTime;
 import org.openmrs.*;
 import org.openmrs.api.*;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
@@ -124,6 +125,14 @@ public class BahmniEncounterController extends BaseRestController {
         }
 
         return bahmniEncounterTransactions;
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{uuid}")
+    @ResponseBody
+    public void delete(@PathVariable("uuid") String uuid, String reason){
+        BahmniEncounterTransaction bahmniEncounterTransaction = get(uuid,false);
+        bahmniEncounterTransaction.setReason(reason);
+        bahmniEncounterTransactionService.delete(bahmniEncounterTransaction);
     }
 
     @RequestMapping(method = RequestMethod.POST)

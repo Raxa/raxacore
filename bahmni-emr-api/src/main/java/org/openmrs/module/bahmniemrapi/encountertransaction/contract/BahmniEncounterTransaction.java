@@ -22,6 +22,7 @@ public class BahmniEncounterTransaction {
     private String encounterType;
     private String visitType;
     private String patientId;
+    private String reason;
 
     public BahmniEncounterTransaction() {
         this(new EncounterTransaction());
@@ -274,6 +275,14 @@ public class BahmniEncounterTransaction {
 
     public static boolean isRetrospectiveEntry(Date encounterDateTime) {
         return encounterDateTime != null && DateUtil.isBefore(encounterDateTime, new Date());
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }
 

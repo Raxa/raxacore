@@ -36,6 +36,7 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     private EncounterTypeIdentifier encounterTypeIdentifier;
     private List<EncounterDataPreSaveCommand> encounterDataPreSaveCommand;
     private List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands;
+    private List<EncounterDataPostSaveCommand> encounterDataPostDeleteCommands;
     private BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper;
     private VisitService visitService;
     private PatientService patientService;
@@ -44,6 +45,7 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
 
     public BahmniEncounterTransactionServiceImpl(EncounterService encounterService, EmrEncounterService emrEncounterService, EncounterTransactionMapper encounterTransactionMapper,
                                                  EncounterTypeIdentifier encounterTypeIdentifier, List<EncounterDataPreSaveCommand> encounterDataPreSaveCommand, List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands,
+                                                 List<EncounterDataPostSaveCommand> encounterDataPostDeleteCommands,
                                                  BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper, VisitService visitService, PatientService patientService, LocationService locationService, ProviderService providerService) {
 
         this.encounterService = encounterService;
@@ -52,6 +54,7 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         this.encounterTypeIdentifier = encounterTypeIdentifier;
         this.encounterDataPreSaveCommand = encounterDataPreSaveCommand;
         this.encounterDataPostSaveCommands = encounterDataPostSaveCommands;
+        this.encounterDataPostDeleteCommands = encounterDataPostDeleteCommands;
         this.bahmniEncounterTransactionMapper = bahmniEncounterTransactionMapper;
         this.visitService = visitService;
         this.patientService = patientService;
@@ -108,6 +111,15 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
             }
         }
         return this.getEncounterTransactions(loggedInUserEncounters, encounterSearchParameters.getIncludeAll().booleanValue());
+    }
+
+    @Override
+    public void delete(BahmniEncounterTransaction bahmniEncounterTransaction) {
+        Encounter encounter = encounterService.getEncounterByUuid(bahmniEncounterTransaction.getEncounterUuid());
+        encounterService.voidEncounter(encounter, bahmniEncounterTransaction.getReason());
+        for (EncounterDataPostSaveCommand saveCommand : encounterDataPostDeleteCommands) {
+            saveCommand.save(bahmniEncounterTransaction,encounter, null);
+        }
     }
 
     private void setEncounterType(BahmniEncounterTransaction bahmniEncounterTransaction) {

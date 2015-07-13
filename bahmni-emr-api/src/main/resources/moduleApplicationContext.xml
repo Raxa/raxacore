@@ -50,6 +50,11 @@
                 <ref bean="bahmniVisitAttributeSaveCommandImpl"/>
             </list>
         </constructor-arg>
+        <constructor-arg>
+            <list>
+                <ref bean="bahmniVisitAttributeSaveCommandImpl"/>
+            </list>
+        </constructor-arg>
         <constructor-arg ref="bahmniEncounterTransactionMapper" />
         <constructor-arg ref="visitService" />
         <constructor-arg ref="patientService" />

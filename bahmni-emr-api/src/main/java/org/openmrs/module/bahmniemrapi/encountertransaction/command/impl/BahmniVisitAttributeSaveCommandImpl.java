@@ -55,7 +55,11 @@ public class BahmniVisitAttributeSaveCommandImpl implements EncounterDataPostSav
             visit.setAttribute(admissionStatus);
         }
         if (currentEncounter.getEncounterType().getName().equalsIgnoreCase(DISCHARGE_ENCOUNTER_TYPE)) {
-            admissionStatus.setValueReferenceInternal("Discharged");
+            if(currentEncounter.isVoided()){
+                admissionStatus.setValueReferenceInternal("Admitted");
+            }else{
+                admissionStatus.setValueReferenceInternal("Discharged");
+            }
             visit.setAttribute(admissionStatus);
         }
     }
