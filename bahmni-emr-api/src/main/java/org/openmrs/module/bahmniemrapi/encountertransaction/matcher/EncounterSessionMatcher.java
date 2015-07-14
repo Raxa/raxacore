@@ -100,7 +100,7 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
 
     private boolean isSameProvider(Provider provider, Encounter encounter) {
         if (provider == null || CollectionUtils.isEmpty(encounter.getEncounterProviders())
-                || (encounter.getCreator().getId() != Context.getUserContext().getAuthenticatedUser().getId())
+                || (encounter.getCreator().getId().intValue() != Context.getUserContext().getAuthenticatedUser().getId().intValue())
                 ) {
             return false;
         }
