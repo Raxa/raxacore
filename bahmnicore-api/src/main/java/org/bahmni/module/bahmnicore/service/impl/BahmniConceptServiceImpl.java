@@ -24,7 +24,7 @@ public class BahmniConceptServiceImpl implements BahmniConceptService{
     public EncounterTransaction.Concept getConceptByName(String conceptName) {
         Concept concept = conceptService.getConceptByName(conceptName);
         if (concept == null) {
-            return new EncounterTransaction.Concept(null, conceptName, false, null, null, null, null);
+            return new EncounterTransaction.Concept(null, conceptName, false, null, null, null, null,null);
         }
         return conceptMapper.map(concept);
     }

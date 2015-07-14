@@ -22,7 +22,7 @@ public class OrderAttributesMapperTest {
     @Test
     public void shouldMapRelatedObservationsWithOrders(){
         List<BahmniObservation> bahmniObservationList = new ArrayList<>();
-        EncounterTransaction.Concept concept = new EncounterTransaction.Concept("Concept_uuid", "dispensed", true, "Concept_dataType", "Concept_units", "Concept_conceptClass", null);
+        EncounterTransaction.Concept concept = new EncounterTransaction.Concept("Concept_uuid", "dispensed", true, "Concept_dataType", "Concept_units", "Concept_conceptClass", null, null);
 
         BahmniObservation  dispensedObservation =new BahmniObservationBuilder().withUuid("obs-uuid").withConcept(concept).withOrderUuid("Order_uuid").withValue("true").build();
 
