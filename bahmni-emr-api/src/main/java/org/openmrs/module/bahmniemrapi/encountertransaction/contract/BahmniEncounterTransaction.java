@@ -70,8 +70,8 @@ public class BahmniEncounterTransaction {
     }
 
 
-    public void addTestOrder(EncounterTransaction.TestOrder testOrder) {
-        encounterTransaction.addTestOrder(testOrder);
+    public void addOrder(EncounterTransaction.Order order) {
+        encounterTransaction.addOrder(order);
     }
 
 
@@ -147,13 +147,13 @@ public class BahmniEncounterTransaction {
     }
 
 
-    public List<EncounterTransaction.TestOrder> getTestOrders() {
-        return encounterTransaction.getTestOrders();
+    public List<EncounterTransaction.Order> getOrders() {
+        return encounterTransaction.getOrders();
     }
 
 
-    public void setTestOrders(List<EncounterTransaction.TestOrder> testOrders) {
-        encounterTransaction.setTestOrders(testOrders);
+    public void setOrders(List<EncounterTransaction.Order> orders) {
+        encounterTransaction.setOrders(orders);
     }
 
 

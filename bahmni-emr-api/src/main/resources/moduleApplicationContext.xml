@@ -40,7 +40,7 @@
         <constructor-arg>
             <list>
                 <ref bean="drugOrderSaveCommandImpl"/>
-                <ref bean="testOrderSaveCommandImpl"/>
+                <ref bean="orderSaveCommandImpl"/>
             </list>
         </constructor-arg>
         <constructor-arg>

@@ -1,22 +1,14 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.command.impl;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
-import org.openmrs.api.ConceptService;
-import org.openmrs.module.bahmniemrapi.drugorder.DrugOrderUtil;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
-import org.openmrs.module.emrapi.encounter.builder.DrugOrderBuilder;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.openmrs.module.emrapi.encounter.service.OrderMetadataService;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -25,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class TestOrderSaveCommandImplTest {
+public class OrderSaveCommandImplTest {
     @Mock
     private AdministrationService adminService;
 
@@ -34,24 +26,24 @@ public class TestOrderSaveCommandImplTest {
     public static final String SNOMED_CT_DAYS_CODE = "258703001";
 
 
-    TestOrderSaveCommandImpl testOrderSaveCommand;
+    OrderSaveCommandImpl orderSaveCommand;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        testOrderSaveCommand = new TestOrderSaveCommandImpl(adminService);
+        orderSaveCommand = new OrderSaveCommandImpl(adminService);
     }
 
     @Test
     public void ShouldSetAutoExpireDateForTestOrders(){
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-        List<EncounterTransaction.TestOrder> testOrders = Arrays.asList(new EncounterTransaction.TestOrder());
-        bahmniEncounterTransaction.setTestOrders(testOrders);
+        List<EncounterTransaction.Order> testOrders = Arrays.asList(new EncounterTransaction.Order());
+        bahmniEncounterTransaction.setOrders(testOrders);
         when(adminService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
 
-        testOrderSaveCommand.update(bahmniEncounterTransaction);
+        orderSaveCommand.update(bahmniEncounterTransaction);
 
-        assertEquals(DateTime.now().plusMinutes(60).toDate().toString(), bahmniEncounterTransaction.getTestOrders().get(0).getAutoExpireDate().toString());
+        assertEquals(DateTime.now().plusMinutes(60).toDate().toString(), bahmniEncounterTransaction.getOrders().get(0).getAutoExpireDate().toString());
     }
 
 

@@ -17,6 +17,7 @@ import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
+import org.openmrs.module.emrapi.CareSettingType;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -129,7 +130,7 @@ public class OrderDaoImpl implements OrderDao {
     private void setDefaultFields(OrderTemplateJson orderTemplateJson) {
         for (OrderTemplateJson.OrderTemplate orderTemplate : orderTemplateJson.getOrderTemplates()) {
             for (EncounterTransaction.DrugOrder drugOrder : orderTemplate.getDrugOrders()) {
-                drugOrder.setCareSetting("Outpatient");
+                drugOrder.setCareSetting(CareSettingType.OUTPATIENT);
                 drugOrder.setOrderType("Drug Order");
                 drugOrder.setDosingInstructionType("org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions");
                 drugOrder.getDosingInstructions().setAsNeeded(false);
