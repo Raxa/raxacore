@@ -3031,4 +3031,14 @@
         <sqlFile path="V1_88_PatientSearchSql.sql"/>
     </changeSet>
 
+    <changeSet id="bahmni-core-201507151703" author="Abishek, Vikash">
+        <comment>Moving to order from test_order</comment>
+        <sql>
+            UPDATE `order_type` SET `java_class_name` = 'org.openmrs.Order' WHERE name ='Lab Order';
+            UPDATE `order_type` SET `java_class_name` = 'org.openmrs.Order' WHERE name ='Radiology Order';
+            UPDATE `order_type` SET `name` = 'Order' WHERE name ='Lab Order';
+            DELETE FROM `test_order`;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
