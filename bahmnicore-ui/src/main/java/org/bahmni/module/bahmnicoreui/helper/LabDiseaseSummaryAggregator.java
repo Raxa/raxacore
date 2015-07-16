@@ -72,7 +72,7 @@ public class LabDiseaseSummaryAggregator {
 
     private List<Visit> getVisits(Patient patient, final DiseaseDataParams diseaseDataParams) {
         if(StringUtils.isBlank(diseaseDataParams.getVisitUuid())){
-            return orderService.getVisitsWithOrders(patient, "TestOrder", true, diseaseDataParams.getNumberOfVisits());
+            return orderService.getVisitsWithOrders(patient, "Order", true, diseaseDataParams.getNumberOfVisits());
         }
         return new ArrayList(){{
             add(visitService.getVisitByUuid(diseaseDataParams.getVisitUuid()))  ;

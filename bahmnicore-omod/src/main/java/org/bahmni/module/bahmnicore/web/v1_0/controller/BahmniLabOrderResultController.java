@@ -50,7 +50,7 @@ public class BahmniLabOrderResultController extends BaseRestController{
         Patient patient = patientService.getPatientByUuid(patientUuid);
         List<Visit> visits = null;
         if (numberOfVisits != null) {
-            visits = orderDao.getVisitsWithOrders(patient, "TestOrder", true, numberOfVisits);
+            visits = orderDao.getVisitsWithOrders(patient, "Order", true, numberOfVisits);
         }
         if (numberOfAccessions == null)
             numberOfAccessions = Integer.MAX_VALUE;

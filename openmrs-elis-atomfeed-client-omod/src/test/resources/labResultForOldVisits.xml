@@ -88,7 +88,7 @@
     <concept_name concept_name_id="303" concept_id="303" name="Haemoglobin" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" uuid="637de959-e1c4-41d4-b2d6-bc4335835ea9" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
 
-    <order_type order_type_id="15" name="Lab Order" description="An order for tests" creator="1" date_created="2008-08-15 13:49:47.0" retired="false" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>
+    <order_type order_type_id="15" name="Order" description="An order for tests" creator="1" date_created="2008-08-15 13:49:47.0" retired="false" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>
 
     <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14"
                 changed_by="1" date_changed="2012-10-23 18:04:14"

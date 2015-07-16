@@ -12,7 +12,6 @@ import org.openmrs.EncounterRole;
 import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.Provider;
-import org.openmrs.TestOrder;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.powermock.api.mockito.PowerMockito;
@@ -277,7 +276,7 @@ public class OpenElisAccessionTest {
     private Encounter getEncounterWithOrders(String... testUuids) {
         Encounter encounter = new Encounter();
         for (String testUuid : testUuids) {
-            TestOrder order = new TestOrder();
+            Order order = new Order();
             Concept concept = new Concept();
             concept.setUuid(testUuid);
             order.setConcept(concept);

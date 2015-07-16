@@ -3031,13 +3031,35 @@
         <sqlFile path="V1_88_PatientSearchSql.sql"/>
     </changeSet>
 
-    <changeSet id="bahmni-core-201507151703" author="Abishek, Vikash">
+    <changeSet id="bahmni-core-201507161455" author="Abishek, Vikash">
         <comment>Moving to order from test_order</comment>
         <sql>
             UPDATE `order_type` SET `java_class_name` = 'org.openmrs.Order' WHERE name ='Lab Order';
             UPDATE `order_type` SET `java_class_name` = 'org.openmrs.Order' WHERE name ='Radiology Order';
             UPDATE `order_type` SET `name` = 'Order' WHERE name ='Lab Order';
             DELETE FROM `test_order`;
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="bahmni-PatientSearch-Update-201507161455" author="Abishek" context="rel3">
+        <comment>Updating sql to use order instead of lab order as order type name</comment>
+        <sqlFile path="V1_89_PatientSearchSql.sql"/>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201507161455" author="Abishek">
+        <comment>Associating LabSet and LabTest concept classes to Order order type</comment>
+        <sql>
+            set @order_type_id = '';
+            set @lab_set = '';
+            set @lab_test = '';
+
+            delete from order_type_class_map;
+            select order_type_id into @order_type_id from order_type where name = 'Order';
+            select concept_class_id into @lab_set from concept_class where name = 'LabSet';
+            select concept_class_id into @lab_test from concept_class where name = 'LabTest';
+            insert into order_type_class_map(order_type_id, concept_class_id) values(@order_type_id,@lab_set);
+            insert into order_type_class_map(order_type_id, concept_class_id) values(@order_type_id,@lab_test);
         </sql>
     </changeSet>
 

@@ -5,7 +5,7 @@
                 The LabOrder Order_type_id is 16.  It already exists
 -->
 
-    <order_type order_type_id="102" name="Radiology Order" java_class_name="org.openmrs.TestOrder"
+    <order_type order_type_id="102" name="Radiology Order" java_class_name="org.openmrs.Order"
                 description="Radiology Order" creator="1" date_created="2008-08-15 15:49:04.0" retired="1" retired_by="1"
                 retire_reason="None" date_retired="2008-08-15 00:00:00.0" uuid="dd3fb1d0-ae06-22e3-a5e2-0800211c9a67"/> <!-- change retire flag and test -->
 

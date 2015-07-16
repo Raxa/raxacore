@@ -108,7 +108,7 @@ public class AccessionHelper {
             labUser = userService.getUserByUsername(properties.getLabSystemUserName());
         }
         for (String orderConceptUuid : orderConceptUuids) {
-            TestOrder order = new TestOrder();
+            Order order = new Order();
             order.setConcept(conceptService.getConceptByUuid(orderConceptUuid));
             order.setAccessionNumber(openElisAccession.getAccessionUuid());
             order.setCreator(labUser);

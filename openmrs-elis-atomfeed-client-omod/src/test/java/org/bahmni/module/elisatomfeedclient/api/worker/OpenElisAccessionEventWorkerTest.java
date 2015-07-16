@@ -12,12 +12,7 @@ import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Patient;
-import org.openmrs.TestOrder;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
@@ -166,7 +161,7 @@ public class OpenElisAccessionEventWorkerTest {
     private Encounter getEncounterWithTests(String... testUuids) {
         Encounter encounter = new Encounter();
         for (String testUuid : testUuids) {
-            TestOrder order = new TestOrder();
+            Order order = new Order();
             Concept concept = new Concept();
             concept.setUuid(testUuid);
             order.setConcept(concept);

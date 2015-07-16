@@ -23,7 +23,7 @@ import java.util.HashSet;
 @Component
 public class LabResultPersister implements EntityPersister<LabResultsRow> {
     public static final String LAB_RESULT_ENCOUNTER_TYPE = "LAB_RESULT";
-    public static final String LAB_ORDER_TYPE = "Lab Order";
+    public static final String LAB_ORDER_TYPE = "Order";
     private String patientMatchingAlgorithmClassName;
     private boolean shouldMatchExactPatientId;
 
@@ -64,7 +64,7 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
             encounter.addProvider(encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID), getProvider());
             HashSet<Obs> resultObservations = new HashSet<>();
             for (LabResultRow labResultRow : labResultsRow.getTestResults()) {
-                TestOrder testOrder = getTestOrder(patient, labResultRow, labResultsRow.getTestDate());
+                Order testOrder = getTestOrder(patient, labResultRow, labResultsRow.getTestDate());
                 encounter.addOrder(testOrder);
                 resultObservations.add(getResultObs(labResultRow, testOrder));
             }
@@ -86,19 +86,19 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
         encounterService.saveEncounter(encounter);
     }
 
-    private TestOrder getTestOrder(Patient patient, LabResultRow labResultRow, Date testDate) throws ParseException {
-        TestOrder testOrder = new TestOrder();
-        testOrder.setConcept(conceptService.getConceptByName(labResultRow.getTest()));
-        testOrder.setDateActivated(testDate);
-        testOrder.setAutoExpireDate(testDate);
-        testOrder.setPatient(patient);
-        testOrder.setOrderType(orderService.getOrderTypeByName(LAB_ORDER_TYPE));
-        testOrder.setCareSetting(orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString()));
-        testOrder.setOrderer(getProvider());
-        return testOrder;
+    private Order getTestOrder(Patient patient, LabResultRow labResultRow, Date testDate) throws ParseException {
+        Order order = new Order();
+        order.setConcept(conceptService.getConceptByName(labResultRow.getTest()));
+        order.setDateActivated(testDate);
+        order.setAutoExpireDate(testDate);
+        order.setPatient(patient);
+        order.setOrderType(orderService.getOrderTypeByName(LAB_ORDER_TYPE));
+        order.setCareSetting(orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString()));
+        order.setOrderer(getProvider());
+        return order;
     }
 
-    private Obs getResultObs(LabResultRow labResultRow, TestOrder testOrder) {
+    private Obs getResultObs(LabResultRow labResultRow, Order testOrder) {
         LabOrderResult labOrderResult = new LabOrderResult();
         labOrderResult.setResult(labResultRow.getResult());
         labOrderResult.setResultDateTime(testOrder.getDateActivated());

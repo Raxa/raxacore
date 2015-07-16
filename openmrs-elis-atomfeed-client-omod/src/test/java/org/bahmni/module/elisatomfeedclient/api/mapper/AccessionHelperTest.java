@@ -214,7 +214,7 @@ public class AccessionHelperTest {
 
     private OrderType getOrderType() {
         OrderType orderType = new OrderType();
-        orderType.setName("Lab Order");
+        orderType.setName("Order");
         return orderType;
     }
 }
