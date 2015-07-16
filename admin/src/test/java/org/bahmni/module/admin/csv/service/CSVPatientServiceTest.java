@@ -10,7 +10,10 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.openmrs.*;
+import org.openmrs.Patient;
+import org.openmrs.PersonAddress;
+import org.openmrs.PersonAttributeType;
+import org.openmrs.Relationship;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
@@ -175,8 +178,8 @@ public class CSVPatientServiceTest {
     @Test
     public void save_person_attributes() throws ParseException {
         when(mockPersonService.getAllPersonAttributeTypes(false)).thenReturn(Arrays.asList(
-                createPersonAttributeType("familyNameLocal","java.lang.String"),
-                createPersonAttributeType("caste","java.lang.String")
+                createPersonAttributeType("familyNameLocal", "java.lang.String"),
+                createPersonAttributeType("caste", "java.lang.String")
         ));
         PatientRow patientRow = new PatientRow();
         patientRow.attributes = new ArrayList<KeyValue>() {{
@@ -332,11 +335,15 @@ public class CSVPatientServiceTest {
         }};
     }
 
+    private List<Patient> getSamplePatientList() {
+        return new ArrayList<Patient>() {{
+            add(new Patient());
+        }};
+    }
+
     private void addPatientServiceMockPatientData(List<Integer> patientIds) {
         for (Integer patientId : patientIds) {
-            when(mockPatientService.getPatient(patientId)).thenReturn(
-                    new Patient()
-            );
+            when(mockPatientService.getPatients(null, String.valueOf(patientId), null, true)).thenReturn(getSamplePatientList());
         }
     }
 

@@ -5,17 +5,17 @@ import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.PatientRow;
 import org.bahmni.module.admin.csv.models.RelationshipRow;
 import org.openmrs.*;
-import org.openmrs.Concept;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
-import static org.bahmni.module.admin.csv.utils.CSVUtils.*;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.bahmni.module.admin.csv.utils.CSVUtils.getDateFromString;
 
 public class CSVPatientService {
 
@@ -67,29 +67,31 @@ public class CSVPatientService {
 
     private void saveRelationships(PatientRow patientRow, Patient patientA) throws ParseException {
         List<Relationship> relationships = getRelationshipsFromPatientRow(patientRow, patientA);
-        for(Relationship relationship : relationships) {
+        for (Relationship relationship : relationships) {
             personService.saveRelationship(relationship);
         }
     }
 
-    private List<Relationship> getRelationshipsFromPatientRow(PatientRow patientRow, Patient patientA)  throws ParseException {
+    private List<Relationship> getRelationshipsFromPatientRow(PatientRow patientRow, Patient patientA) throws ParseException {
         List<Relationship> relationships = new ArrayList<>();
 
         Relationship relationship;
         Patient patientB;
-        for(RelationshipRow relationshipRow : patientRow.relationships) {
+        for (RelationshipRow relationshipRow : patientRow.relationships) {
 
-            if(StringUtils.isEmpty(relationshipRow.getPersonB())) {
+            if (StringUtils.isEmpty(relationshipRow.getPersonB())) {
                 continue;
             }
 
-            try {
-                patientB = patientService.getPatient(Integer.parseInt(relationshipRow.getPersonB()));
-            } catch (NumberFormatException e) {
-                throw new RuntimeException("Invalid personB id.");
+            List<Patient> patientsMatchedByIdentifier = patientService.getPatients(null, relationshipRow.getPersonB(), null, true);
+
+            if (null == patientsMatchedByIdentifier || patientsMatchedByIdentifier.size() == 0) {
+                throw new RuntimeException("PersonB not found.");
             }
 
-            if(null == patientB) {
+            patientB = patientsMatchedByIdentifier.get(0);
+
+            if (null == patientB) {
                 throw new RuntimeException("PersonB not found.");
             }
 
@@ -120,24 +122,22 @@ public class CSVPatientService {
     private void addPersonAttributes(Patient patient, PatientRow patientRow) {
         for (KeyValue attribute : patientRow.attributes) {
             PersonAttributeType personAttributeType = findAttributeType(attribute.getKey());
-            if(personAttributeType.getFormat().equalsIgnoreCase("org.openmrs.Concept")) {
+            if (personAttributeType.getFormat().equalsIgnoreCase("org.openmrs.Concept")) {
                 Concept concept = conceptService.getConcept(attribute.getValue());
-                if(concept != null) {
-                    patient.addAttribute(new PersonAttribute(personAttributeType,concept.getId().toString()));
+                if (concept != null) {
+                    patient.addAttribute(new PersonAttribute(personAttributeType, concept.getId().toString()));
+                } else {
+                    throw new RuntimeException("Invalid value for Attribute." + attribute.getKey());
                 }
-                else {
-                    throw new RuntimeException("Invalid value for Attribute."+attribute.getKey());
-                }
-            }
-            else if(personAttributeType.getFormat().equalsIgnoreCase("java.lang.String")){
+            } else if (personAttributeType.getFormat().equalsIgnoreCase("java.lang.String")) {
                 patient.addAttribute(new PersonAttribute(findAttributeType(attribute.getKey()), attribute.getValue()));
             }
         }
     }
 
     private PersonAttributeType findAttributeType(String key) {
-        for (PersonAttributeType personAttributeType  : personService.getAllPersonAttributeTypes(false)) {
-            if(key.equalsIgnoreCase(personAttributeType.getName())) {
+        for (PersonAttributeType personAttributeType : personService.getAllPersonAttributeTypes(false)) {
+            if (key.equalsIgnoreCase(personAttributeType.getName())) {
                 return personAttributeType;
             }
         }
