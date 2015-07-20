@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import liquibase.util.file.FilenameUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
@@ -86,11 +87,15 @@ public class PatientImageServiceImpl implements PatientImageService {
     private void saveImageInFile(String image, String format, File outputFile) throws IOException {
         log.info(String.format("Creating patient image at %s", outputFile));
         byte[] decodedBytes = DatatypeConverter.parseBase64Binary(image);
-        BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decodedBytes));
-        ImageIO.write(bufferedImage, format, outputFile);
-        createThumbnail(bufferedImage, outputFile);
-        bufferedImage.flush();
-        log.info(String.format("Successfully created patient image at %s", outputFile));
+        if (format.equals("pdf")) {
+            FileUtils.writeByteArrayToFile(outputFile, decodedBytes);
+        } else {
+            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decodedBytes));
+            ImageIO.write(bufferedImage, format, outputFile);
+            createThumbnail(bufferedImage, outputFile);
+            bufferedImage.flush();
+            log.info(String.format("Successfully created patient image at %s", outputFile));
+        }
     }
 
     private void createThumbnail(BufferedImage image, File outputFile) throws IOException {
