@@ -265,10 +265,6 @@
             orderer="1" care_setting="1" order_action="NEW" order_number="1"
             creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1"
             uuid="94fdefe2-01c1-11e4-aa39-0800271c1b75"/>
-    <test_order order_id="16"></test_order>
-    <test_order order_id="17"></test_order>
-    <test_order order_id="18"></test_order>
-    <test_order order_id="19"></test_order>
     <!--encounter for panel order-->
 
 
@@ -363,7 +359,6 @@
             orderer="1" care_setting="1" order_action="NEW" order_number="1"
             creator="1" date_created="2013-08-19 12:20:22.0" voided="false" patient_id="1"
             uuid="f31c360c-0c0c-11e4-bb80-f18addb6f9bb"/>
-    <test_order order_id="100"></test_order>
 
     <encounter encounter_id="50" encounter_type="3" patient_id="1" visit_id="4" location_id="2"
                encounter_datetime="2013-08-19 00:00:00.0" creator="1" date_created="2013-08-19 14:09:05.0"
