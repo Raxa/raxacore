@@ -19,10 +19,15 @@ public class PatientSearchParameters {
 
     public PatientSearchParameters(RequestContext context) {
         String query = context.getParameter("q");
-        if (query.matches(".*\\d+.*")) {
-            this.setIdentifier(query);
-        } else {
-            this.setName(query);
+        String identifier = context.getParameter("identifier");
+        if (identifier != null) {
+            this.setIdentifier(identifier);
+        } else if (query != null) {
+            if (query.matches(".*\\d+.*")) {
+                this.setIdentifier(query);
+            } else {
+                this.setName(query);
+            }
         }
         this.setStart(context.getStartIndex());
         this.setLength(context.getLimit());
