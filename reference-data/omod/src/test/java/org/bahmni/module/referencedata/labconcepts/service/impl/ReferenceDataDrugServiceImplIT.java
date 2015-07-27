@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.service.impl;
 
+import org.bahmni.module.referencedata.BaseIntegrationTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Drug;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataDrugService;
 import org.junit.Before;
@@ -7,13 +8,15 @@ import org.junit.Test;
 import org.openmrs.ConceptClass;
 import org.openmrs.api.APIException;
 import org.openmrs.api.context.Context;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class ReferenceDataDrugServiceImplIT extends BaseModuleWebContextSensitiveTest{
+public class ReferenceDataDrugServiceImplIT extends BaseIntegrationTest {
+    
     @Autowired
     private ReferenceDataDrugService referenceDataDrugService;
 

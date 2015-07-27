@@ -2,7 +2,6 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.admin.config.model.BahmniConfig;
 import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
-import org.bahmni.test.web.controller.BaseWebControllerTest;
 import org.codehaus.jackson.type.TypeReference;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +9,11 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.List;
 
-import static junit.framework.TestCase.*;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.assertTrue;
 
 
 public class BahmniConfigControllerIT extends BaseIntegrationTest {

@@ -1,6 +1,6 @@
 package org.bahmni.module.referencedata.web.controller;
 
-import org.bahmni.test.web.controller.BaseWebControllerTest;
+import org.bahmni.module.referencedata.BaseIntegrationTest;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
@@ -13,10 +13,12 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class ConceptControllerIT extends BaseWebControllerTest {
+public class ConceptControllerIT extends BaseIntegrationTest {
+    
     @Autowired
     private ConceptService conceptService;
 

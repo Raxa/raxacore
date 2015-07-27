@@ -1,9 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
-import org.bahmni.test.web.controller.BaseWebControllerTest;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -12,6 +9,9 @@ import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @Ignore
 public class BahmniLabOrderResultControllerIT extends BaseIntegrationTest {

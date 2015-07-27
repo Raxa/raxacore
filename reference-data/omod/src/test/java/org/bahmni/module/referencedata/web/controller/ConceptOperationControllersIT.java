@@ -2,10 +2,10 @@
 //TODO : MIHIR : Figure out a way to test the event interceptor.
 package org.bahmni.module.referencedata.web.controller;
 
+import org.bahmni.module.referencedata.BaseIntegrationTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
-import org.bahmni.test.web.controller.BaseWebControllerTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -15,10 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class ConceptOperationControllersIT extends BaseWebControllerTest {
+public class ConceptOperationControllersIT extends BaseIntegrationTest {
+    
     @Autowired
     private ConceptService conceptService;
     private Concept sampleConcept;

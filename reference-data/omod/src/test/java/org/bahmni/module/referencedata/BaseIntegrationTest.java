@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.web.v1_0;
+package org.bahmni.module.referencedata;
 
 import org.bahmni.test.web.controller.BaseWebControllerTest;
 

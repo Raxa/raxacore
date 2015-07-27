@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.service.impl;
 
+import org.bahmni.module.referencedata.BaseIntegrationTest;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptService;
@@ -7,23 +8,26 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.ConceptAnswer;
+import org.openmrs.ConceptDatatype;
+import org.openmrs.ConceptMap;
+import org.openmrs.ConceptNumeric;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptInUseException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class ReferenceDataConceptServiceImplIT extends BaseModuleWebContextSensitiveTest {
+public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
 
     @Autowired
     private ReferenceDataConceptService referenceDataConceptService;

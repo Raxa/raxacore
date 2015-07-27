@@ -1,20 +1,16 @@
 package org.bahmni.module.referencedata.labconcepts.service.impl;
 
+import org.bahmni.module.referencedata.BaseIntegrationTest;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptReferenceTermService;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.ConceptReferenceTerm;
-import org.openmrs.api.context.Context;
-import org.openmrs.api.context.UserContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class ReferenceDataConceptReferenceTermServiceImplIT extends BaseModuleWebContextSensitiveTest {
+public class ReferenceDataConceptReferenceTermServiceImplIT extends BaseIntegrationTest {
 
     @Autowired
     private ReferenceDataConceptReferenceTermService referenceDataConceptReferenceTermService;
