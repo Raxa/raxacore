@@ -1,5 +1,6 @@
 package org.bahmni.module.admin.csv.exporter;
 
+import org.bahmni.module.admin.BaseIntegrationTest;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.bahmni.module.admin.csv.models.ConceptRows;
 import org.bahmni.module.admin.csv.models.ConceptSetRow;
@@ -16,8 +17,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class ConceptSetExporterIT extends BaseModuleWebContextSensitiveTest {
+public class ConceptSetExporterIT extends BaseIntegrationTest {
 
     @Autowired
     private ConceptSetExporter conceptSetExporter;

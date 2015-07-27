@@ -1,6 +1,7 @@
 package org.bahmni.module.admin.csv.persister;
 
 import org.bahmni.csv.Messages;
+import org.bahmni.module.admin.BaseIntegrationTest;
 import org.bahmni.module.admin.csv.models.LabResultRow;
 import org.bahmni.module.admin.csv.models.LabResultsRow;
 import org.junit.Before;
@@ -26,8 +27,8 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class LabResultPersisterIT extends BaseModuleWebContextSensitiveTest {
+public class LabResultPersisterIT extends BaseIntegrationTest {
+    
     @Autowired
     private VisitService visitService;
 

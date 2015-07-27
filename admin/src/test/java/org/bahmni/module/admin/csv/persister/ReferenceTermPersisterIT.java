@@ -2,6 +2,7 @@ package org.bahmni.module.admin.csv.persister;
 
 import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
+import org.bahmni.module.admin.BaseIntegrationTest;
 import org.bahmni.module.admin.csv.models.PatientRow;
 import org.bahmni.module.admin.csv.models.ReferenceTermRow;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
@@ -22,8 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:webModuleApplicationContext.xml","classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class ReferenceTermPersisterIT extends BaseModuleWebContextSensitiveTest {
+public class ReferenceTermPersisterIT extends BaseIntegrationTest {
 
     private String path;
 

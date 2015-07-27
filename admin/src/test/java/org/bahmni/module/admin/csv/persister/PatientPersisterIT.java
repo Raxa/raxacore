@@ -3,6 +3,7 @@ package org.bahmni.module.admin.csv.persister;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
+import org.bahmni.module.admin.BaseIntegrationTest;
 import org.bahmni.module.admin.csv.models.PatientRow;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -19,8 +20,7 @@ import static org.junit.Assert.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Ignore("Was never working. Injection needs to be fixed")
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class PatientPersisterIT extends BaseContextSensitiveTest {
+public class PatientPersisterIT extends BaseIntegrationTest {
 
     private String path;
 

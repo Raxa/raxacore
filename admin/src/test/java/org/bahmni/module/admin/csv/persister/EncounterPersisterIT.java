@@ -3,6 +3,7 @@ package org.bahmni.module.admin.csv.persister;
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.Messages;
+import org.bahmni.module.admin.BaseIntegrationTest;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
 import org.bahmni.module.admin.csv.utils.CSVUtils;
@@ -23,8 +24,8 @@ import java.util.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class EncounterPersisterIT extends BaseModuleWebContextSensitiveTest {
+public class EncounterPersisterIT extends BaseIntegrationTest {
+    
     @Autowired
     private EncounterPersister encounterPersister;
 

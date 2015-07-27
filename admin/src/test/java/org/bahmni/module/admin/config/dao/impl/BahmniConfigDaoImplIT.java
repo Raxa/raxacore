@@ -1,5 +1,6 @@
 package org.bahmni.module.admin.config.dao.impl;
 
+import org.bahmni.module.admin.BaseIntegrationTest;
 import org.bahmni.module.admin.config.dao.BahmniConfigDao;
 import org.bahmni.module.admin.config.model.BahmniConfig;
 import org.databene.commons.StringUtil;
@@ -14,8 +15,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class BahmniConfigDaoImplIT extends BaseModuleWebContextSensitiveTest {
+public class BahmniConfigDaoImplIT extends BaseIntegrationTest {
+    
     @Autowired
     private BahmniConfigDao bahmniConfigDao;
 

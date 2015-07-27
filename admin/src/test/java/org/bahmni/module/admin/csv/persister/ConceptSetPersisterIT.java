@@ -3,6 +3,7 @@ package org.bahmni.module.admin.csv.persister;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.Messages;
 import org.bahmni.csv.RowResult;
+import org.bahmni.module.admin.BaseIntegrationTest;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.bahmni.module.admin.csv.models.ConceptSetRow;
 import org.junit.Before;
@@ -22,8 +23,8 @@ import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class ConceptSetPersisterIT extends BaseModuleWebContextSensitiveTest {
+public class ConceptSetPersisterIT extends BaseIntegrationTest {
+    
     @Autowired
     private ConceptSetPersister conceptSetPersister;
 
