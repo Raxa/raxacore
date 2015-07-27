@@ -11,11 +11,13 @@ import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
+import org.openmrs.module.bahmniemrapi.BaseIntegrationTest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.obsrelation.contract.ObsRelationship;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,8 +31,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class BahmniEncounterTransactionServiceImplIT extends BaseModuleWebContextSensitiveTest {
+public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest {
 
     @Autowired
     BahmniEncounterTransactionService bahmniEncounterTransactionService;

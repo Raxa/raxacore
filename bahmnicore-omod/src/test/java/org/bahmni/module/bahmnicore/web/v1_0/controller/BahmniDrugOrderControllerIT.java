@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
@@ -16,8 +17,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class BahmniDrugOrderControllerIT extends BaseModuleWebContextSensitiveTest {
+public class BahmniDrugOrderControllerIT extends BaseIntegrationTest {
 
     @Autowired
     private BahmniDrugOrderController bahmniDrugOrderController;

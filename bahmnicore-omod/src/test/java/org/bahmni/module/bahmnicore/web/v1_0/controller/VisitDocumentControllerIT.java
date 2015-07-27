@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
 import org.bahmni.test.web.controller.BaseWebControllerTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -18,7 +19,7 @@ import java.util.Date;
 
 import static org.junit.Assert.*;
 
-public class VisitDocumentControllerIT extends BaseWebControllerTest {
+public class VisitDocumentControllerIT extends BaseIntegrationTest {
 
     public static final String TMP_DOCUMENT_IMAGES = "/tmp/document_images";
     private final String image = "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";

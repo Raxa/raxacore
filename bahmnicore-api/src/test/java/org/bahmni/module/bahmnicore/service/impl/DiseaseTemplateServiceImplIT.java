@@ -1,15 +1,14 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplate;
 import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplateConfig;
 import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplatesConfig;
 import org.bahmni.module.bahmnicore.contract.diseasetemplate.ObservationTemplate;
 import org.bahmni.module.bahmnicore.service.DiseaseTemplateService;
-import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -19,8 +18,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class DiseaseTemplateServiceImplIT extends BaseModuleWebContextSensitiveTest {
+public class DiseaseTemplateServiceImplIT extends BaseIntegrationTest {
     @Before
     public void setUp() throws Exception {
         executeDataSet("dispositionMetadata.xml");

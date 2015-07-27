@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.contract.diseasetemplate.DiseaseTemplate;
 import org.bahmni.module.bahmnicore.contract.diseasetemplate.ObservationTemplate;
+import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
 import org.bahmni.test.web.controller.BaseWebControllerTest;
 import org.codehaus.jackson.type.TypeReference;
 import org.junit.Before;
@@ -14,8 +15,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class DiseaseTemplateControllerIT extends BaseWebControllerTest {
+public class DiseaseTemplateControllerIT extends BaseIntegrationTest {
 
     @Autowired
     DiseaseTemplateController diseaseTemplateController;

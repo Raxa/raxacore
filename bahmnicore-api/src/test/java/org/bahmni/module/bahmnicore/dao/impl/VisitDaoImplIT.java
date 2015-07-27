@@ -1,26 +1,20 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import org.bahmni.module.bahmnicore.dao.ObsDao;
+import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
-import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
-import org.openmrs.api.PatientService;
-import org.openmrs.test.BaseContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml", "classpath:webModuleApplicationContext.xml"}, inheritLocations = true)
-public class VisitDaoImplIT extends BaseContextSensitiveTest {
+public class VisitDaoImplIT extends BaseIntegrationTest {
     
     @Autowired
     VisitDao visitDao;

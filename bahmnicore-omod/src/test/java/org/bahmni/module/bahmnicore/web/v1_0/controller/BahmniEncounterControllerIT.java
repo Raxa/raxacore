@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
 import org.bahmni.test.web.controller.BaseWebControllerTest;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -20,8 +21,8 @@ import java.util.Date;
 import static org.junit.Assert.*;
 
 @Ignore
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class BahmniEncounterControllerIT extends BaseWebControllerTest {
+public class BahmniEncounterControllerIT extends BaseIntegrationTest {
+    
     @Autowired
     private VisitService visitService;
     @Autowired

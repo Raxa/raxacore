@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.admin.config.model.BahmniConfig;
+import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
 import org.bahmni.test.web.controller.BaseWebControllerTest;
 import org.codehaus.jackson.type.TypeReference;
 import org.junit.Before;
@@ -12,8 +13,7 @@ import java.util.List;
 import static junit.framework.TestCase.*;
 
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class BahmniConfigControllerIT extends BaseWebControllerTest {
+public class BahmniConfigControllerIT extends BaseIntegrationTest {
     @Before
     public void setUp() throws Exception {
         executeDataSet("configDataSetup.xml");

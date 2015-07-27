@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
+import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -10,7 +11,6 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
@@ -22,13 +22,14 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
+public class OrderDaoImplIT extends BaseIntegrationTest {
 
     @Autowired
     private OrderDaoImpl orderDao;
@@ -178,7 +179,7 @@ public class OrderDaoImplIT  extends BaseModuleWebContextSensitiveTest {
 
     }
 
-    @Test (expected = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void getDrugOrderForRegimen_shouldFailWhenFileDoesNotExist() {
         ApplicationDataDirectory applicationDataDirectory = mock(ApplicationDataDirectory.class);
         when(applicationDataDirectory.getFile("ordertemplates/templates.json")).thenThrow(NullPointerException.class);

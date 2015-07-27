@@ -1,10 +1,10 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
+import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Obs;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -12,8 +12,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-@org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
-public class ObsDaoIT extends BaseModuleWebContextSensitiveTest {
+
+
+public class ObsDaoIT extends BaseIntegrationTest {
+    
 	@Autowired
     ObsDao obsDao;
 

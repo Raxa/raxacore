@@ -9,6 +9,7 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.BaseIntegrationTest;
 import org.openmrs.module.bahmniemrapi.document.contract.Document;
 import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentRequest;
 import org.openmrs.module.bahmniemrapi.document.service.VisitDocumentService;
@@ -24,7 +25,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
-public class VisitDocumentServiceImplIT extends BaseModuleContextSensitiveTest {
+public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
 
     public static final String FIRST_LOCATION_UUID = "8d6c993e-c2cc-11de-8d13-0040c6dffd0f";
     private static final String patientUUID = "86526ed5-3c11-11de-a0ba-001e378eb67a";

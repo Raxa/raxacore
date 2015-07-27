@@ -6,6 +6,7 @@ import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.BaseIntegrationTest;
 import org.openmrs.module.bahmniemrapi.accessionnote.contract.AccessionNote;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResults;
@@ -22,7 +23,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
-public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
+public class LabOrderResultsServiceIT extends BaseIntegrationTest {
     
     @Autowired
     private LabOrderResultsService labOrderResultsService;
@@ -32,7 +33,7 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("labOrderTestData.xml");
-        Patient patient = Context.getPatientService().getPatient(1);
+        Patient patient = Context.getPatientService().getPatient(1000000);
 
         LabOrderResults results = labOrderResultsService.getAll(patient, null, Integer.MAX_VALUE);
         List<LabOrderResult> labOrderResults = results.getResults();
@@ -54,7 +55,7 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("labOrderTestData.xml");
-        Patient patient = Context.getPatientService().getPatient(1);
+        Patient patient = Context.getPatientService().getPatient(1000000);
         Visit visit = Context.getVisitService().getVisit(4);
 
         LabOrderResults results = labOrderResultsService.getAll(patient, Arrays.asList(visit), Integer.MAX_VALUE);
@@ -74,7 +75,7 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
         executeDataSet("labOrderTestData.xml");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        Patient patient = Context.getPatientService().getPatient(1);
+        Patient patient = Context.getPatientService().getPatient(1000000);
         Visit visit = Context.getVisitService().getVisit(4);
 
         LabOrderResults results = labOrderResultsService.getAll(patient, Arrays.asList(visit), Integer.MAX_VALUE);
@@ -99,7 +100,7 @@ public class LabOrderResultsServiceIT extends BaseModuleContextSensitiveTest {
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("labOrderTestData.xml");
 
-        Patient patient = Context.getPatientService().getPatient(1);
+        Patient patient = Context.getPatientService().getPatient(1000000);
 
         Collection<String> concepts = new ArrayList<>();
         concepts.add("Blood Panel");

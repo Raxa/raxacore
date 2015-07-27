@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
 import org.bahmni.test.web.controller.BaseWebControllerTest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -13,7 +14,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 @Ignore
-public class BahmniLabOrderResultControllerIT extends BaseWebControllerTest {
+public class BahmniLabOrderResultControllerIT extends BaseIntegrationTest {
 
     @Autowired
     private BahmniLabOrderResultController labResultController;
