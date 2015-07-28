@@ -1,13 +1,11 @@
 package org.bahmni.module.bahmnicore.model.searchParams;
 
-import java.util.List;
-
 public class AdditionalSearchParam {
 
     private String additionalSearchHandler;
-    private List<String> tests;
+    private String tests;
 
-    public AdditionalSearchParam(String additionalSearchHandler, List<String> tests) {
+    public AdditionalSearchParam(String additionalSearchHandler, String tests) {
         this.additionalSearchHandler = additionalSearchHandler;
         this.tests = tests;
     }
@@ -23,11 +21,11 @@ public class AdditionalSearchParam {
         this.additionalSearchHandler = additionalSearchHandler;
     }
 
-    public List<String> getTests(){
+    public String getTests(){
         return tests;
     }
 
-    public void setTests(List<String> tests){
+    public void setTests(String tests){
         this.tests = tests;
     }
 }

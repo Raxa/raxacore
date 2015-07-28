@@ -3,7 +3,6 @@ package org.bahmni.module.bahmnicore.util;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.model.searchParams.AdditionalSearchParam;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.openmrs.api.AdministrationService;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -41,9 +40,9 @@ public class SqlQueryHelper {
         return  queryString.replaceAll(PARAM_PLACE_HOLDER_REGEX,"?");
     }
 
-    public PreparedStatement constructPreparedStatement(String queryString, Map<String, String[]> params, Connection conn, AdministrationService administrationService) throws SQLException {
+    public PreparedStatement constructPreparedStatement(String queryString, Map<String, String[]> params, Connection conn) throws SQLException {
         if (params.get("additionalParams") != null && params.get("additionalParams") != null) {
-            queryString = parseAdditionalParams(params.get("additionalParams")[0], queryString, administrationService);
+            queryString = parseAdditionalParams(params.get("additionalParams")[0], queryString);
         }
 
         List<String> paramNamesFromPlaceHolders = getParamNamesFromPlaceHolders(queryString);
@@ -59,25 +58,17 @@ public class SqlQueryHelper {
         return preparedStatement;
     }
 
-    String parseAdditionalParams(String additionalParams, String queryString, AdministrationService administrationService) {
+    String parseAdditionalParams(String additionalParams, String queryString) {
         try {
-            boolean hasReadAtLeastOneAdditionalParam = false;
             AdditionalSearchParam additionalSearchParams = new ObjectMapper().readValue(additionalParams, AdditionalSearchParam.class);
-            String additionalQueryString = administrationService.getGlobalProperty(additionalSearchParams.getAdditionalSearchHandler());
-            for (String test : additionalSearchParams.getTests()) {
-                if (hasReadAtLeastOneAdditionalParam) {
-                    queryString += " OR ";
-                }
-                String additionalQuery = " ";
-                additionalQuery += additionalQueryString.replaceAll("\\$\\{testName\\}", test);
-                queryString += additionalQuery;
-                hasReadAtLeastOneAdditionalParam = true;
-            }
-            queryString += "))";
+            String test = additionalSearchParams.getTests();
+            queryString = queryString.replaceAll("\\$\\{testName\\}", test);
         } catch (IOException e) {
             log.error("Failed to parse Additional Search Parameters.");
             e.printStackTrace();
         }
         return queryString;
     }
+
+
 }
