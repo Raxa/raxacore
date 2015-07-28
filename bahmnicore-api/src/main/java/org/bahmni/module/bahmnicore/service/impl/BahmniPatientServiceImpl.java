@@ -65,29 +65,6 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     }
 
     @Override
-    public Patient createPatient(BahmniPatient bahmniPatient) {
-        Patient patient = null;
-        ExecutionMode executionMode = bahmniCoreApiProperties.getExecutionMode();
-        try {
-            patient = savePatient(bahmniPatient, patient);
-        } catch (APIAuthenticationException e) {
-            throw e;
-        } catch (RuntimeException e) {
-            executionMode.handleSavePatientFailure(e, bahmniPatient);
-        }
-        return patient;
-    }
-
-    private Patient savePatient(BahmniPatient bahmniPatient, Patient patient) {
-        patient = patientMapper.map(patient, bahmniPatient);
-        Patient savedPatient = patientService.savePatient(patient);
-        String patientIdentifier = savedPatient.getPatientIdentifier().toString();
-        logger.debug(String.format("[%s] : Patient saved", patientIdentifier));
-        patientImageService.saveImage(patientIdentifier, bahmniPatient.getImage());
-        return savedPatient;
-    }
-
-    @Override
     public List<PatientResponse> search(PatientSearchParameters searchParameters) {
         return patientDao.getPatients(searchParameters.getIdentifier(), searchParameters.getName(), searchParameters.getCustomAttribute(), searchParameters.getAddressFieldName(), searchParameters.getAddressFieldValue(), searchParameters.getLength(), searchParameters.getStart(), searchParameters.getPatientAttributes());
     }
@@ -97,7 +74,4 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
         return patientDao.getPatients(partialIdentifier, shouldMatchExactPatientId);
     }
 
-    private Patient getPatientByUuid(String uuid) {
-        return patientService.getPatientByUuid(uuid);
-    }
 }

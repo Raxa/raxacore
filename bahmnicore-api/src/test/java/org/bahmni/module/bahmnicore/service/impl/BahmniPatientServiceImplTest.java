@@ -59,55 +59,6 @@ public class BahmniPatientServiceImplTest {
     }
 
     @Test
-    public void shouldMapPostValuesToNewPatientOnCreate() throws Exception {
-        String identifier = "BAH420420";
-        PatientMother patientMother = new PatientMother().withName("ram", "boo", "singh").withPatientIdentifier(identifier);
-        when(patientMapper.map(any(Patient.class), any(BahmniPatient.class))).thenReturn(patientMother.build());
-        when(patientService.savePatient(any(Patient.class))).thenReturn(patientMother.build());
-
-        bahmniPatientService.createPatient(patientMother.buildBahmniPatient());
-
-        verify(patientMapper).map(Matchers.<Patient>eq(null), any(BahmniPatient.class));
-    }
-
-    @Test
-    public void shouldSaveMappedPatientOnCreate() throws Exception {
-        String identifier = "BAH420420";
-        PatientMother patientMother = new PatientMother().withName("ram", "boo", "singh").withPatientIdentifier(identifier);
-        Patient patient = patientMother.build();
-        when(patientMapper.map(any(Patient.class), any(BahmniPatient.class))).thenReturn(patient);
-        when(patientService.savePatient(eq(patient))).thenReturn(patientMother.build());
-
-        bahmniPatientService.createPatient(patientMother.buildBahmniPatient());
-
-        verify(patientService).savePatient(patient);
-    }
-
-    @Test
-    public void shouldSavePatientWithUUID() throws Exception {
-        String identifier = "BAH420420";
-        PatientMother patientMother = new PatientMother().withName("ram", "boo", "singh").withPatientIdentifier(identifier);
-        Patient patient = patientMother.build();
-        patient.setUuid("UUID");
-        when(patientMapper.map(any(Patient.class), any(BahmniPatient.class))).thenReturn(patient);
-        when(patientService.savePatient(eq(patient))).thenReturn(patientMother.build());
-
-        bahmniPatientService.createPatient(patientMother.buildBahmniPatient());
-
-        verify(patientService).savePatient(patient);
-
-    }
-
-    @Test(expected = APIAuthenticationException.class)
-    public void shouldRethrowTheApiAutheticationException() throws Exception {
-        when(patientMapper.map(any(Patient.class), any(BahmniPatient.class))).thenReturn(new PatientMother().build());
-        when(patientService.savePatient(any(Patient.class))).thenThrow(new APIAuthenticationException());
-
-
-        bahmniPatientService.createPatient(new PatientMother().buildBahmniPatient());
-    }
-
-    @Test
     public void shouldGetPatientConfig() throws Exception {
         List<PersonAttributeType> personAttributeTypes = new ArrayList<>();
         personAttributeTypes.add(new PersonAttributeType() {{

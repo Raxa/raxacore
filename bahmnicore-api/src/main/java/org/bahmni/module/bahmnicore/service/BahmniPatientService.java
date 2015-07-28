@@ -10,7 +10,6 @@ import java.util.List;
 
 public interface BahmniPatientService {
     public PatientConfigResponse getConfig();
-    public Patient createPatient(BahmniPatient bahmniPatient);
     public List<PatientResponse> search(PatientSearchParameters searchParameters);
     public List<Patient> get(String partialIdentifier, boolean shouldMatchExactPatientId);
 }
