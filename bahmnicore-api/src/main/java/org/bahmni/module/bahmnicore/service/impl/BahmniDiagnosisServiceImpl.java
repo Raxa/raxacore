@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 
+import java.text.*;
 import java.util.*;
 
 import static org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisHelper.BAHMNI_INITIAL_DIAGNOSIS;
@@ -146,10 +147,10 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
         return bahmniDiagnosisRequests;
     }
 
-    public List<BahmniDiagnosisRequest> getBahmniDiagnosisByPatientAndDate(String patientUuid, String date){
+    public List<BahmniDiagnosisRequest> getBahmniDiagnosisByPatientAndDate(String patientUuid, String date) throws ParseException {
         Patient patient = patientService.getPatientByUuid(patientUuid);
-        Date fromDate = new DateMapper().toDate(date);
 
+        Date fromDate = date!=null ? new SimpleDateFormat("yyyy-MM-dd").parse(date) : null;
         List<Diagnosis> diagnosisByPatientAndDate = diagnosisService.getDiagnoses(patient, fromDate);
 
         List<BahmniDiagnosisRequest> bahmniDiagnosisRequests = new ArrayList<>();
