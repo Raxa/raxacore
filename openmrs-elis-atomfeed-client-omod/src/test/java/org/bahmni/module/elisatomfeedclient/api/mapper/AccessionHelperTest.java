@@ -174,10 +174,10 @@ public class AccessionHelperTest {
         Encounter encounter = accessionHelper.addOrDiscontinueOrderDifferences(new OpenElisAccessionBuilder().build(), diff, previousEncounter);
 
         Set<Order> result = encounter.getOrders();
-        Assert.assertEquals(2, result.size());
+        Assert.assertEquals(3, result.size());
         for (Order order : result) {
-            if (order.getConcept().getUuid().equals("test2")) {
-                Assert.assertTrue(order.getVoided());
+            if (order.getAction().equals(Order.Action.DISCONTINUE)) {
+                Assert.assertTrue(order.getPreviousOrder().getConcept().getUuid().endsWith(order.getConcept().getUuid()));
             }
         }
     }
