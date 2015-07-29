@@ -153,7 +153,7 @@ public class AccessionHelperTest {
         diff.addAddedTestDetail(new OpenElisTestDetailBuilder().withTestUuid("test2").build());
         diff.addAddedTestDetail(new OpenElisTestDetailBuilder().withTestUuid("panel1").build());
 
-        Encounter encounter = accessionHelper.addOrVoidOrderDifferences(new OpenElisAccessionBuilder().build(), diff, previousEncounter);
+        Encounter encounter = accessionHelper.addOrDiscontinueOrderDifferences(new OpenElisAccessionBuilder().build(), diff, previousEncounter);
 
         Assert.assertEquals(4, encounter.getOrders().size());
     }
@@ -171,7 +171,7 @@ public class AccessionHelperTest {
         AccessionDiff diff = new AccessionDiff();
         diff.addRemovedTestDetails(new OpenElisTestDetailBuilder().withTestUuid("test2").withStatus("Cancelled").build());
 
-        Encounter encounter = accessionHelper.addOrVoidOrderDifferences(new OpenElisAccessionBuilder().build(), diff, previousEncounter);
+        Encounter encounter = accessionHelper.addOrDiscontinueOrderDifferences(new OpenElisAccessionBuilder().build(), diff, previousEncounter);
 
         Set<Order> result = encounter.getOrders();
         Assert.assertEquals(2, result.size());

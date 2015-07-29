@@ -5,9 +5,18 @@ import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
-import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.joda.time.DateTime;
-import org.openmrs.*;
+import org.openmrs.CareSetting;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterRole;
+import org.openmrs.EncounterType;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
+import org.openmrs.Provider;
+import org.openmrs.User;
+import org.openmrs.Visit;
+import org.openmrs.VisitType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
@@ -16,8 +25,18 @@ import org.openmrs.api.ProviderService;
 import org.openmrs.api.UserService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class AccessionHelper {
     private final EncounterService encounterService;
@@ -32,7 +51,7 @@ public class AccessionHelper {
     private OrderType labOrderType;
 
     public AccessionHelper(ElisAtomFeedProperties properties) {
-        this(Context.getService(EncounterService.class), Context.getService(PatientService.class), Context.getService(VisitService.class), Context.getService(ConceptService.class), Context.getService(UserService.class), Context.getService(ProviderService.class),Context.getService(OrderService.class), properties);
+        this(Context.getService(EncounterService.class), Context.getService(PatientService.class), Context.getService(VisitService.class), Context.getService(ConceptService.class), Context.getService(UserService.class), Context.getService(ProviderService.class), Context.getService(OrderService.class), properties);
     }
 
     AccessionHelper(EncounterService encounterService, PatientService patientService, VisitService visitService, ConceptService conceptService, UserService userService, ProviderService providerService, OrderService orderService, ElisAtomFeedProperties properties) {
@@ -59,7 +78,7 @@ public class AccessionHelper {
         Date accessionDate = openElisAccession.fetchDate();
         Visit visit = new VisitIdentificationHelper(visitService).getVisitFor(patient, visitType, accessionDate);
 
-        Encounter encounter = newEncounterInstance(visit, patient, labSystemProvider, encounterType,  accessionDate);
+        Encounter encounter = newEncounterInstance(visit, patient, labSystemProvider, encounterType, accessionDate);
         encounter.setUuid(openElisAccession.getAccessionUuid());
 
         Set<String> groupedOrders = groupOrders(openElisAccession.getTestDetails());
@@ -81,7 +100,7 @@ public class AccessionHelper {
         return encounter;
     }
 
-    public Encounter addOrVoidOrderDifferences(OpenElisAccession openElisAccession, AccessionDiff diff, Encounter previousEncounter) {
+    public Encounter addOrDiscontinueOrderDifferences(OpenElisAccession openElisAccession, AccessionDiff diff, Encounter previousEncounter) {
         if (diff.getAddedTestDetails().size() > 0) {
             Set<String> addedOrders = groupOrders(diff.getAddedTestDetails());
             Set<Order> newOrders = createOrders(openElisAccession, addedOrders, previousEncounter.getPatient());
@@ -90,7 +109,7 @@ public class AccessionHelper {
 
         if (diff.getRemovedTestDetails().size() > 0) {
             Set<String> removedOrders = groupOrders(diff.getRemovedTestDetails());
-            voidOrders(previousEncounter, removedOrders);
+            discontinueOrders(previousEncounter, removedOrders);
         }
 
         return previousEncounter;
@@ -122,19 +141,25 @@ public class AccessionHelper {
     }
 
     private OrderType getLabOrderType() {
-        if (labOrderType == null){
+        if (labOrderType == null) {
             labOrderType = orderService.getOrderTypeByName(properties.getOrderTypeLabOrderName());
         }
         return labOrderType;
     }
 
-    private void voidOrders(Encounter previousEncounter, Set<String> removedOrders) {
+    private void discontinueOrders(Encounter previousEncounter, Set<String> removedOrders) {
+        List<Order> newOrdersForDiscontinue = new ArrayList<>();
         for (String removedOrder : removedOrders) {
             for (Order order : previousEncounter.getOrders()) {
-                if (removedOrder.equals(order.getConcept().getUuid())) {
-                    order.setVoided(true);
+                if (!order.getAction().equals(Order.Action.DISCONTINUE) && order.isActive() && removedOrder.equals(order.getConcept().getUuid())) {
+                    Order newOrder = order.cloneForDiscontinuing();
+                    newOrder.setOrderer(order.getOrderer());
+                    newOrdersForDiscontinue.add(newOrder);
                 }
             }
+        }
+        for (Order order : newOrdersForDiscontinue) {
+            previousEncounter.addOrder(order);
         }
     }
 
@@ -159,7 +184,7 @@ public class AccessionHelper {
 
     public Visit findOrInitializeVisit(Patient patient, Date visitDate, String visitType) {
         Visit applicableVisit = getVisitForPatientWithinDates(patient, visitDate);
-        if (applicableVisit != null){
+        if (applicableVisit != null) {
             return applicableVisit;
         }
         Visit visit = new Visit();
@@ -173,12 +198,12 @@ public class AccessionHelper {
         DateTime startTime = new DateTime(visitDate);
         if (nextVisit == null) {
             if (!DateUtils.isSameDay(visitDate, new Date())) {
-                Date stopTime = startTime.withTime(23,59, 59, 000).toDate();
+                Date stopTime = startTime.withTime(23, 59, 59, 000).toDate();
                 visit.setStopDatetime(stopTime);
             }
         } else {
             DateTime nextVisitStartTime = new DateTime(nextVisit.getStartDatetime());
-            DateTime visitStopDate = startTime.withTime(23,59, 59, 000);
+            DateTime visitStopDate = startTime.withTime(23, 59, 59, 000);
             boolean isEndTimeBeforeNextVisitStart = visitStopDate.isBefore(nextVisitStartTime);
             if (!isEndTimeBeforeNextVisitStart) {
                 visitStopDate = nextVisitStartTime.minusSeconds(1);

@@ -84,7 +84,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 AccessionDiff diff = openElisAccession.getDiff(orderEncounter);
                 if (diff.hasDifference()) {
                     logger.info("updating encounter for accession : " + accessionUrl);
-                    accessionMapper.addOrVoidOrderDifferences(openElisAccession, diff, orderEncounter);
+                    accessionMapper.addOrDiscontinueOrderDifferences(openElisAccession, diff, orderEncounter);
                     shouldSaveOrderEncounter = true;
                 }
             } else {

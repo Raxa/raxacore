@@ -97,7 +97,7 @@ public class OpenElisAccessionEventWorkerTest {
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2))).build();
         stubAccession(openElisAccession);
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
-        when(accessionMapper.addOrVoidOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
+        when(accessionMapper.addOrDiscontinueOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
         when(accessionMapper.findOrInitializeVisit(any(Patient.class), any(Date.class), any(String.class))).thenReturn(visit);
         when(encounterService.saveEncounter(previousEncounter)).thenReturn(previousEncounter);
         accessionEventWorker.process(event);
@@ -120,7 +120,7 @@ public class OpenElisAccessionEventWorkerTest {
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(previousEncounter);
         AccessionDiff accessionDiff = new AccessionDiff();
         accessionDiff.addRemovedTestDetails(test3);
-        when(accessionMapper.addOrVoidOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
+        when(accessionMapper.addOrDiscontinueOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class))).thenReturn(encounterFromAccession);
         final Visit visit = new Visit();
         visit.setId(1);
         previousEncounter.setVisit(visit);
@@ -132,7 +132,7 @@ public class OpenElisAccessionEventWorkerTest {
 
         verify(encounterService, times(2)).getEncounterByUuid(openElisAccession.getAccessionUuid());
         verify(accessionMapper, never()).mapToNewEncounter(any(OpenElisAccession.class), any(String.class));
-        verify(accessionMapper).addOrVoidOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class));
+        verify(accessionMapper).addOrDiscontinueOrderDifferences(any(OpenElisAccession.class), any(AccessionDiff.class), any(Encounter.class));
         verify(encounterService).saveEncounter(previousEncounter);
         verify(bahmniVisitAttributeSaveCommand).save(previousEncounter);
     }
