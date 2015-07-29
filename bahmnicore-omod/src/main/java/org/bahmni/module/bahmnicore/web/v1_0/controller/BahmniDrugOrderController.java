@@ -97,12 +97,6 @@ public class BahmniDrugOrderController extends BaseRestController{
         return getPrescribedOrders(patientUuid, includeActiveVisit, numberOfVisits);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = baseUrl + "/config")
-    @ResponseBody
-    public DrugOrderConfigResponse getConfig() {
-        return drugOrderService.getConfig();
-    }
-
     private Collection<Concept> getOrdAttributeConcepts() {
         Concept orderAttribute = conceptService.getConceptByName(BahmniOrderAttribute.ORDER_ATTRIBUTES_CONCEPT_SET_NAME);
         return orderAttribute== null? Collections.EMPTY_LIST :orderAttribute.getSetMembers();

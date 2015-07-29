@@ -1,14 +1,16 @@
-package org.bahmni.module.bahmnicore.web.v1_0.controller;
+package org.bahmni.module.bahmnicore.web.v1_0.controller.search;
 
 import org.bahmni.module.bahmnicore.contract.patient.PatientSearchParameters;
-import org.bahmni.module.bahmnicore.contract.patient.response.PatientConfigResponse;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
+import org.bahmni.module.bahmnicore.dao.PersonAttributeDao;
+import org.bahmni.module.bahmnicore.dao.PersonNameDao;
+import org.bahmni.module.bahmnicore.model.ResultList;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
-import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,23 +26,20 @@ import java.util.List;
 
 /**
  * Controller for REST web service access to
- * the Drug resource.
+ * the Search resource.
  */
 @Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/patient")
-public class BahmniPatientController extends BaseRestController {
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/search/patient")
+public class BahmniPatientSearchController extends BaseRestController {
 
     private BahmniPatientService bahmniPatientService;
+    private PersonNameDao namesDao;
+    private PersonAttributeDao personAttributeDao;
+
 
     @Autowired
-    public BahmniPatientController(BahmniPatientService bahmniPatientService) {
+    public BahmniPatientSearchController(BahmniPatientService bahmniPatientService) {
         this.bahmniPatientService = bahmniPatientService;
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "config")
-    @ResponseBody
-    public PatientConfigResponse getConfig() {
-        return bahmniPatientService.getConfig();
     }
 
     @RequestMapping(method = RequestMethod.GET)

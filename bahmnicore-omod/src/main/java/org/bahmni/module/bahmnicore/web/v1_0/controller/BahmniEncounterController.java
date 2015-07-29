@@ -61,35 +61,6 @@ public class BahmniEncounterController extends BaseRestController {
 
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "config")
-    @ResponseBody
-    public EncounterConfigResponse getConfig(String callerContext) {
-        EncounterConfigResponse encounterConfigResponse = new EncounterConfigResponse();
-        List<VisitType> visitTypes = visitService.getAllVisitTypes();
-        for (VisitType visitType : visitTypes) {
-            if (!visitType.isRetired()) {
-                encounterConfigResponse.addVisitType(visitType.getName(), visitType.getUuid());
-            }
-        }
-        List<EncounterType> allEncounterTypes = encounterService.getAllEncounterTypes(false);
-        for (EncounterType encounterType : allEncounterTypes) {
-            encounterConfigResponse.addEncounterType(encounterType.getName(), encounterType.getUuid());
-        }
-        Concept conceptSetConcept = conceptService.getConcept(callerContext);
-        if (conceptSetConcept != null) {
-            List<Concept> conceptsByConceptSet = conceptService.getConceptsByConceptSet(conceptSetConcept);
-            for (Concept concept : conceptsByConceptSet) {
-                ConceptData conceptData = new ConceptData(concept.getUuid(), concept.getName().getName());
-                encounterConfigResponse.addConcept(concept.getName().getName(), conceptData);
-            }
-        }
-        List<OrderType> orderTypes = orderService.getOrderTypes(true);
-        for (OrderType orderType : orderTypes) {
-            encounterConfigResponse.addOrderType(orderType.getName(), orderType.getUuid());
-        }
-        return encounterConfigResponse;
-    }
-
     @RequestMapping(method = RequestMethod.GET, value = "/{uuid}")
     @ResponseBody
     public BahmniEncounterTransaction get(@PathVariable("uuid") String uuid, Boolean includeAll) {

@@ -1,5 +1,6 @@
-package org.bahmni.module.bahmnicore.web.v1_0.controller;
+package org.bahmni.module.bahmnicore.web.v1_0.controller.search;
 
+import org.bahmni.module.bahmnicore.web.v1_0.controller.search.PersonAttributeSearchController;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
