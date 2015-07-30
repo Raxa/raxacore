@@ -96,7 +96,7 @@ public class BahmniConfigController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/bahmniencounter")
     @ResponseBody
-    public EncounterConfigResponse getConfig(String callerContext) {
+    public EncounterConfigResponse getConfig(@RequestParam("callerContext")String callerContext) {
         EncounterConfigResponse encounterConfigResponse = new EncounterConfigResponse();
         List<VisitType> visitTypes = visitService.getAllVisitTypes();
         for (VisitType visitType : visitTypes) {
