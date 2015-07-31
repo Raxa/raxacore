@@ -3092,4 +3092,9 @@
         <sqlFile path="V1_90_PatientSearchSql.sql"/>
     </changeSet>
 
+    <changeSet id="bahmni-core-201507311820" author="Hemanth" context="rel3">
+        <comment>Optimised the high risk patient sql to consider latest test value</comment>
+        <sqlFile path="V1_91_PatientSearchSql.sql"/>
+    </changeSet>
+
 </databaseChangeLog>
