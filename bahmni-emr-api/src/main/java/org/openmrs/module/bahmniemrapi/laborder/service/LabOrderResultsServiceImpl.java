@@ -146,10 +146,10 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         return Collections.EMPTY_LIST;
     }
 
-    private List<EncounterTransaction.Order> getTestOrdersForConcepts(EncounterTransaction encounterTransaction, Encounter encounter, Map<String, Encounter> encounterTestOrderUuidMap, Collection<String> concepts) {
+    List<EncounterTransaction.Order> getTestOrdersForConcepts(EncounterTransaction encounterTransaction, Encounter encounter, Map<String, Encounter> encounterTestOrderUuidMap, Collection<String> concepts) {
         List<EncounterTransaction.Order> orders = new ArrayList<>();
         for (EncounterTransaction.Order order : encounterTransaction.getOrders()) {
-            if(order.getDateStopped() == null && concepts.contains(order.getConcept().getName()) && !Order.Action.DISCONTINUE.toString().equals(order.getAction())){
+            if(concepts.contains(order.getConcept().getName()) && !Order.Action.DISCONTINUE.toString().equals(order.getAction())){
                 encounterTestOrderUuidMap.put(order.getUuid(), encounter);
                 orders.add(order);
             }
@@ -171,7 +171,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private List<EncounterTransaction.Order> getTestOrders(EncounterTransaction encounterTransaction, Encounter encounter, Map<String, Encounter> encounterTestOrderUuidMap) {
         List<EncounterTransaction.Order> orders = new ArrayList<>();
         for (EncounterTransaction.Order order : encounterTransaction.getOrders()) {
-            if(order.getDateStopped() == null && LAB_ORDER_TYPE.equals(order.getOrderType()) && !Order.Action.DISCONTINUE.toString().equals(order.getAction())){
+            if(LAB_ORDER_TYPE.equals(order.getOrderType()) && !Order.Action.DISCONTINUE.toString().equals(order.getAction())){
                 encounterTestOrderUuidMap.put(order.getUuid(), encounter);
                 orders.add(order);
             }
@@ -188,7 +188,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         }
     }
 
-    private List<LabOrderResult> mapOrdersWithObs(List<EncounterTransaction.Order> testOrders, List<EncounterTransaction.Observation> observations, Map<String, Encounter> encounterTestOrderMap, Map<String, Encounter> encounterObservationMap, Map<String, List<AccessionNote>> encounterToAccessionNotesMap) {
+    List<LabOrderResult> mapOrdersWithObs(List<EncounterTransaction.Order> testOrders, List<EncounterTransaction.Observation> observations, Map<String, Encounter> encounterTestOrderMap, Map<String, Encounter> encounterObservationMap, Map<String, List<AccessionNote>> encounterToAccessionNotesMap) {
         List<LabOrderResult> labOrderResults = new ArrayList<>();
         for (EncounterTransaction.Order testOrder : testOrders) {
             List<EncounterTransaction.Observation> obsGroups = findObsGroup(observations, testOrder);
@@ -196,7 +196,8 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
                 for (EncounterTransaction.Observation obsGroup : obsGroups) {
                     labOrderResults.addAll(mapObs(obsGroup, encounterTestOrderMap, encounterObservationMap,encounterToAccessionNotesMap));
                 }
-            } else {
+            }
+            else if(testOrder.getDateStopped() == null) {
                 EncounterTransaction.Concept orderConcept = testOrder.getConcept();
                 Encounter orderEncounter = encounterTestOrderMap.get(testOrder.getUuid());
                 LabOrderResult labOrderResult = new LabOrderResult(orderEncounter.getUuid(), orderEncounter.getEncounterDatetime(), orderConcept.getName(), orderConcept.getUnits(), null, null, null, null, false, null, null);
