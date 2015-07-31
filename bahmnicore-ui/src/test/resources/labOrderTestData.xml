@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
 
-    <order_type order_type_id="101" name="Bahmni Lab Order" java_class_name="org.openmrs.Order"
+    <order_type order_type_id="101" name="Order" java_class_name="org.openmrs.Order"
                 description="Bahmni Lab Order" creator="1" date_created="2008-08-15 15:49:04.0" retired="1" retired_by="1"
                 retire_reason="None" date_retired="2008-08-15 00:00:00.0" uuid="dd3fb1d0-ae06-22e3-a5e2-0800211c9a66"/>
 
