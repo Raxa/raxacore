@@ -34,7 +34,7 @@ public class LabOrderResultsServiceImplTest {
     }
 
     @Test
-    public void getTestOrdersForConcepts_EvenWhenTheyAreDiscontinued() throws Exception {
+    public void filterTestOrders_EvenWhenTheyAreDiscontinued() throws Exception {
         List<String> concepts = Arrays.asList("concept1", "concept2","concept3");
         Map<String, Encounter> encounterTestOrderUuidMap = new HashMap<>();
         EncounterTransaction.Order order1 = createOrder("uuid1","concept1", Order.Action.NEW.toString(), null);
@@ -42,9 +42,20 @@ public class LabOrderResultsServiceImplTest {
         EncounterTransaction.Order order3 = createOrder("uuid3", "concept3", Order.Action.NEW.toString(), new Date());
         when(encounterTransaction.getOrders()).thenReturn(Arrays.asList(order1, order2, order3));
 
-        List<EncounterTransaction.Order> orders = labOrderResultsServiceImpl.getTestOrdersForConcepts(encounterTransaction, encounter, encounterTestOrderUuidMap, concepts);
+        List<EncounterTransaction.Order> orders = labOrderResultsServiceImpl.filterTestOrders(encounterTransaction, encounter, encounterTestOrderUuidMap, concepts);
 
         assertEquals(3, orders.size());
+    }
+
+    @Test
+    public void filterTestOrders_shouldNotFilterByConcept() throws Exception {
+        Map<String, Encounter> encounterTestOrderUuidMap = new HashMap<>();
+        EncounterTransaction.Order order1 = createOrder("uuid1","concept1", Order.Action.NEW.toString(), null);
+        when(encounterTransaction.getOrders()).thenReturn(Arrays.asList(order1));
+
+        List<EncounterTransaction.Order> orders = labOrderResultsServiceImpl.filterTestOrders(encounterTransaction, encounter, encounterTestOrderUuidMap, null);
+
+        assertEquals(1, orders.size());
     }
 
     @Test
@@ -101,6 +112,7 @@ public class LabOrderResultsServiceImplTest {
         order.setAction(action);
         order.setDateStopped(dateStopped);
         order.setUuid(uuid);
+        order.setOrderType(LabOrderResultsServiceImpl.LAB_ORDER_TYPE);
         return order;
     }
 
