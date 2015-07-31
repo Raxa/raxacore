@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.bahmni.module</groupId>
         <artifactId>bahmni</artifactId>
-        <version>0.74-SNAPSHOT</version>
+        <version>0.75-SNAPSHOT</version>
     </parent>
     <artifactId>bahmnicore-omod</artifactId>
     <packaging>jar</packaging>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>mail-appender</artifactId>
-            <version>0.74-SNAPSHOT</version>
+            <version>0.75-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>common</artifactId>
-            <version>0.74-SNAPSHOT</version>
+            <version>0.75-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.bahmni.module</groupId>
@@ -170,7 +170,7 @@
         <dependency>
             <groupId>org.bahmni.test</groupId>
             <artifactId>bahmni-test-commons</artifactId>
-            <version>0.74-SNAPSHOT</version>
+            <version>0.75-SNAPSHOT</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
