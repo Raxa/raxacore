@@ -94,7 +94,7 @@ public class BahmniOrderServiceImplTest {
     public void shouldGetBahmniOrdersForOrder() throws Exception {
         Order order = createOrder();
         when(orderService.getOrderByUuid("someOrderUuid")).thenReturn(order);
-        bahmniOrderService.ordersForOrder(personUUID, Arrays.asList(concept), null, "someOrderUuid");
+        bahmniOrderService.ordersForOrderUuid(personUUID, Arrays.asList(concept), null, "someOrderUuid");
         verify(bahmniObsService).observationsFor(personUUID, Arrays.asList(concept), null, null, false, order);
     }
 

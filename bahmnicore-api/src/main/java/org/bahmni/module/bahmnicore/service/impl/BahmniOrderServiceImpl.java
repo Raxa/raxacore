@@ -50,7 +50,7 @@ public class BahmniOrderServiceImpl implements BahmniOrderService {
     }
 
     @Override
-    public List<BahmniOrder> ordersForOrder(String patientUuid, List<Concept> concepts, List<String> obsIgnoreList, String orderUuid) {
+    public List<BahmniOrder> ordersForOrderUuid(String patientUuid, List<Concept> concepts, List<String> obsIgnoreList, String orderUuid) {
         List<BahmniOrder> bahmniOrders = new ArrayList<>();
         Order order = orderService.getOrderByUuid(orderUuid);
         Collection<BahmniObservation> obs = bahmniObsService.observationsFor(patientUuid, concepts, null, obsIgnoreList, false, order);
@@ -75,6 +75,7 @@ public class BahmniOrderServiceImpl implements BahmniOrderService {
         BahmniOrder bahmniOrder = new BahmniOrder();
 
         bahmniOrder.setOrderDateTime(order.getDateActivated());
+        bahmniOrder.setOrderNumber(order.getOrderNumber());
         bahmniOrder.setOrderTypeUuid(order.getOrderType().getUuid());
         bahmniOrder.setOrderUuid(order.getUuid());
         bahmniOrder.setProvider(order.getOrderer().getName());

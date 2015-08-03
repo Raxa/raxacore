@@ -9,6 +9,7 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BahmniOrder {
     private String orderUuid;
+    private String orderNumber;
     private String orderTypeUuid;
     private String provider;
     private Date orderDate;
@@ -19,6 +20,14 @@ public class BahmniOrder {
 
     public BahmniOrder(){
 
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
     public Boolean getHasObservations() {

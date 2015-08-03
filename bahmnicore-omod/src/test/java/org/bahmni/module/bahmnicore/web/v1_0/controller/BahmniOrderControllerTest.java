@@ -50,7 +50,7 @@ public class BahmniOrderControllerTest {
         BahmniOrderController bahmniOrderController = new BahmniOrderController(conceptService, bahmniOrderService);
         List<BahmniOrder> bahmniOrders = bahmniOrderController.get("patientUuid", Arrays.asList("Weight"),"OrderTypeUuid", null, null, null, null, true);
 
-        verify(bahmniOrderService, never()).ordersForOrder("patientUuid", Arrays.asList(concept), null, "someUuid");
+        verify(bahmniOrderService, never()).ordersForOrderUuid("patientUuid", Arrays.asList(concept), null, "someUuid");
         verify(bahmniOrderService, never()).ordersForVisit("visitUuid", "orderTypeUuid", Arrays.asList("Weight"), Arrays.asList(concept));
         assertEquals(1, bahmniOrders.size());
     }
@@ -62,7 +62,7 @@ public class BahmniOrderControllerTest {
         obs.setUuid("initialId");
         bahmniOrder.setBahmniObservations(Arrays.asList(obs));
 
-        when(bahmniOrderService.ordersForOrder("patientUuid", Arrays.asList(this.concept), null, "OrderUuid")).thenReturn(Arrays.asList(bahmniOrder));
+        when(bahmniOrderService.ordersForOrderUuid("patientUuid", Arrays.asList(this.concept), null, "OrderUuid")).thenReturn(Arrays.asList(bahmniOrder));
         BahmniOrderController bahmniOrderController = new BahmniOrderController(conceptService, bahmniOrderService);
         List<BahmniOrder> bahmniOrders = bahmniOrderController.get("patientUuid", Arrays.asList("Weight"), null, null, "OrderUuid", 0, null, true);
 
@@ -83,7 +83,7 @@ public class BahmniOrderControllerTest {
         List<BahmniOrder> bahmniOrders = bahmniOrderController.get("patientUuid", Arrays.asList("Weight"), "orderTypeUuid", "visitUuid", null, null, Arrays.asList("Weight"), false);
 
         verify(bahmniOrderService, never()).ordersForOrderType("patientUuid", Arrays.asList(concept), null, null, "someUuid", true);
-        verify(bahmniOrderService, never()).ordersForOrder("patientUuid", Arrays.asList(concept), null, "someUuid");
+        verify(bahmniOrderService, never()).ordersForOrderUuid("patientUuid", Arrays.asList(concept), null, "someUuid");
         verify(bahmniOrderService, atLeastOnce()).ordersForVisit("visitUuid", "orderTypeUuid", Arrays.asList("Weight"), Arrays.asList(concept));
         assertEquals(1, bahmniOrders.size());
     }

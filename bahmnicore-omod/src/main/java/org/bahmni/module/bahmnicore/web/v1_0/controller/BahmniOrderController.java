@@ -33,7 +33,7 @@ public class BahmniOrderController extends BaseRestController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public List<BahmniOrder> get(@RequestParam(value = "patientUuid", required = true) String patientUuid,
-                                 @RequestParam(value = "concept", required = true) List<String> rootConceptNames,
+                                 @RequestParam(value = "concept", required = false) List<String> rootConceptNames,
                                  @RequestParam(value = "orderTypeUuid", required = false) String orderTypeUuid,
                                  @RequestParam(value = "visitUuid", required = false) String visitUuid,
                                  @RequestParam(value = "orderUuid", required = false) String orderUuid,
@@ -48,7 +48,7 @@ public class BahmniOrderController extends BaseRestController {
 
         List<Concept> rootConcepts = getConcepts(rootConceptNames);
         if (orderUuid != null) {
-            return bahmniOrderService.ordersForOrder(patientUuid, rootConcepts, obsIgnoreList, orderUuid);
+            return bahmniOrderService.ordersForOrderUuid(patientUuid, rootConcepts, obsIgnoreList, orderUuid);
         }
         else {
             return bahmniOrderService.ordersForOrderType(patientUuid, rootConcepts, numberOfVisits, obsIgnoreList, orderTypeUuid, includeObs);
@@ -58,8 +58,10 @@ public class BahmniOrderController extends BaseRestController {
 
     private List<Concept> getConcepts(List<String> rootConceptNames) {
         List<Concept> rootConcepts = new ArrayList<>();
-        for (String rootConceptName : rootConceptNames) {
-            rootConcepts.add(conceptService.getConceptByName(rootConceptName));
+        if(rootConceptNames!=null) {
+            for (String rootConceptName : rootConceptNames) {
+                rootConcepts.add(conceptService.getConceptByName(rootConceptName));
+            }
         }
         return rootConcepts;
     }
