@@ -465,6 +465,10 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+        <repository>
+            <id>rubygems-releases</id>
+            <url>http://rubygems-proxy.torquebox.org/releases</url>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>

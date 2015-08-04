@@ -17,9 +17,18 @@
         <MODULE_PACKAGE>${project.groupId}.${MODULE_ID}</MODULE_PACKAGE>
 
         <reportingModuleVersion>0.9.1</reportingModuleVersion>
+        <gem.home>${basedir}/.rubygems</gem.home>
+        <gem.path>${basedir}/.rubygems</gem.path>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>rubygems</groupId>
+            <artifactId>compass</artifactId>
+            <version>1.0.3</version>
+            <type>gem</type>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>mail-appender</artifactId>
@@ -336,7 +345,43 @@
                             <outputDirectory>${project.build.directory}/classes</outputDirectory>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>Fetch SASS sources from uicommons</id>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.openmrs.module</groupId>
+                                    <artifactId>uicommons-scss</artifactId>
+                                    <version>1.6</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>src/main/compass/sass-external</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>de.saumya.mojo</groupId>
+                <artifactId>gem-maven-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jrubyVersion>1.7.10</jrubyVersion>
+                    <execArgs>${gem.home}/bin/compass compile ${basedir}/src/main/compass</execArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>
