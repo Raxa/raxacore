@@ -8,6 +8,8 @@ import java.util.List;
 
 @Data
 public class LabOrderResult {
+    private String orderUuid;
+    private String action;
     private String accessionUuid;
     private Date accessionDateTime;
     private Date visitStartTime;
@@ -31,7 +33,9 @@ public class LabOrderResult {
     public LabOrderResult() {
     }
 
-    public LabOrderResult(String accessionUuid, Date accessionDateTime, String testName, String testUnitOfMeasurement, Double minNormal, Double maxNormal, String result, Boolean abnormal, Boolean referredOut, String uploadedFileName, List<AccessionNote> accessionNotes) {
+    public LabOrderResult(String orderUuid, String action, String accessionUuid, Date accessionDateTime, String testName, String testUnitOfMeasurement, Double minNormal, Double maxNormal, String result, Boolean abnormal, Boolean referredOut, String uploadedFileName, List<AccessionNote> accessionNotes) {
+        this.orderUuid = orderUuid;
+        this.action = action;
         this.accessionUuid = accessionUuid;
         this.testName = testName;
         this.testUnitOfMeasurement = testUnitOfMeasurement;

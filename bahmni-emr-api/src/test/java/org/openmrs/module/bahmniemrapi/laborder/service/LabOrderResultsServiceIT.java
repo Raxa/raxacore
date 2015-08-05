@@ -2,7 +2,6 @@ package org.openmrs.module.bahmniemrapi.laborder.service;
 
 import org.junit.Test;
 import org.openmrs.Encounter;
-import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
@@ -10,7 +9,6 @@ import org.openmrs.module.bahmniemrapi.BaseIntegrationTest;
 import org.openmrs.module.bahmniemrapi.accessionnote.contract.AccessionNote;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResults;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.SimpleDateFormat;
@@ -51,24 +49,6 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldMapTestOrdersAndResultsForGivenVisit() throws Exception {
-        executeDataSet("diagnosisMetadata.xml");
-        executeDataSet("dispositionMetadata.xml");
-        executeDataSet("labOrderTestData.xml");
-        Patient patient = Context.getPatientService().getPatient(1000000);
-        Visit visit = Context.getVisitService().getVisit(4);
-
-        LabOrderResults results = labOrderResultsService.getAll(patient, Arrays.asList(visit), Integer.MAX_VALUE);
-        List<LabOrderResult> labOrderResults = results.getResults();
-
-        assertNotNull(labOrderResults);
-        assertEquals(1, labOrderResults.size());
-
-        assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, null, false, null);
-    }
-
-
-    @Test
     public void shouldMapAccessionNotesForAGivenVisit() throws Exception {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
@@ -93,7 +73,6 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
         assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, null, false, null);
     }
 
-
     @Test
     public void shouldGetLabOrdersForParticularConcepts() throws Exception{
         executeDataSet("diagnosisMetadata.xml");
@@ -111,6 +90,38 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
         assertOrderPresent(results, "Haemoglobin", "Blood Panel", 16, "System OpenMRS", "99.0", 200.0, 300.0, true, null, true, null);
         assertOrderPresent(results, "ESR", "Blood Panel", 16, "System OpenMRS", "10.0", null, null, false, "Some Notes", false, null);
 
+    }
+
+    @Test
+    public void shouldMapTestOrdersAndResultsForGivenVisit() throws Exception {
+        executeDataSet("diagnosisMetadata.xml");
+        executeDataSet("dispositionMetadata.xml");
+        executeDataSet("labOrderTestData.xml");
+        Patient patient = Context.getPatientService().getPatient(1000000);
+        Visit visit = Context.getVisitService().getVisit(4);
+
+        LabOrderResults results = labOrderResultsService.getAll(patient, Arrays.asList(visit), Integer.MAX_VALUE);
+        List<LabOrderResult> labOrderResults = results.getResults();
+
+        assertNotNull(labOrderResults);
+        assertEquals(1, labOrderResults.size());
+
+        assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, null, false, null);
+    }
+
+    @Test
+    public void shouldGetLabOrdersWithResultsEvenIfItIsDiscontinued()throws Exception{
+        executeDataSet("diagnosisMetadata.xml");
+        executeDataSet("dispositionMetadata.xml");
+        executeDataSet("labOrderTestData.xml");
+        Patient patient = Context.getPatientService().getPatient(1000001);
+
+        Visit visit = Context.getVisitService().getVisit(5);
+
+        LabOrderResults labOrderResults = labOrderResultsService.getAll(patient, Arrays.asList(visit), Integer.MAX_VALUE);
+        List<LabOrderResult> labResults = labOrderResults.getResults();
+
+        assertEquals(6, labResults.size());
     }
 
     private void assertOrderPresent(List<LabOrderResult> labOrderResults, String testName, String panelName, Integer accessionEncounterId, String provider, String value, Double minNormal, Double maxNormal, Boolean abnormal, String notes, Boolean referredOut, String uploadedFileName) {
