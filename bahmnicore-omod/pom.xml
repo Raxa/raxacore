@@ -19,6 +19,7 @@
         <reportingModuleVersion>0.9.1</reportingModuleVersion>
         <gem.home>${basedir}/.rubygems</gem.home>
         <gem.path>${basedir}/.rubygems</gem.path>
+        <uiframeworkVersion>3.3.1</uiframeworkVersion>
     </properties>
 
     <dependencies>
@@ -199,6 +200,12 @@
             <groupId>org.bahmni.module</groupId>
             <artifactId>bahmnicore-ui</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>uiframework-api</artifactId>
+            <version>${uiframeworkVersion}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
