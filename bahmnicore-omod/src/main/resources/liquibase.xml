@@ -3097,4 +3097,11 @@
         <sqlFile path="V1_91_PatientSearchSql.sql"/>
     </changeSet>
 
+    <changeSet id="bahmni-core-201508180000" author="Banka, Swathi">
+        <comment>Changing the OrderType name for lab order from Order to Lab Order</comment>
+        <sql>
+            UPDATE `order_type` SET `name` = 'Lab Order' WHERE name ='Order';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
