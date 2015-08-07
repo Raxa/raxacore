@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.dao.OrderDao;
+import org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls.BahmniLabOrderResultController;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

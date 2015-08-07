@@ -59,7 +59,7 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public List<DrugOrder> getPrescribedDrugOrders(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits) {
         Session currentSession = getCurrentSession();
-        List<Integer> visitWithDrugOrderIds = getVisitIds(getVisitsWithOrders(patient, "DrugOrder", includeActiveVisit, numberOfVisits));
+        List<Integer> visitWithDrugOrderIds = getVisitIds(getVisitsWithActiveOrders(patient, "DrugOrder", includeActiveVisit, numberOfVisits));
         if (!visitWithDrugOrderIds.isEmpty()) {
             Query query = currentSession.createQuery("select d1 from DrugOrder d1, Encounter e, Visit v where d1.encounter = e and e.visit = v and v.visitId in (:visitIds) " +
                     "and d1.voided = false and d1.action != :discontinued and " +
@@ -142,13 +142,28 @@ public class OrderDaoImpl implements OrderDao {
         return applicationDataDirectory.getFile(ORDER_TEMPLATES_DIRECTORY + FILE_SEPARATOR + TEMPLATES_JSON_FILE);
     }
 
-    public List<Visit> getVisitsWithOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits) {
+    public List<Visit> getVisitsWithActiveOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits) {
         Session currentSession = getCurrentSession();
         String includevisit = includeActiveVisit == null || includeActiveVisit == false ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
         Query queryVisitsWithDrugOrders = currentSession.createQuery("select v from " + orderType + " o, Encounter e, Visit v where o.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
                 "and o.voided = false and o.dateStopped = null and o.action != :discontinued " + includevisit + " group by v.visitId order by v.startDatetime desc");
         queryVisitsWithDrugOrders.setParameter("patientId", patient);
         queryVisitsWithDrugOrders.setParameter("discontinued", Order.Action.DISCONTINUE);
+        if (includeActiveVisit == null || includeActiveVisit == false) {
+            queryVisitsWithDrugOrders.setParameter("now", new Date());
+        }
+        if (numberOfVisits != null) {
+            queryVisitsWithDrugOrders.setMaxResults(numberOfVisits);
+        }
+        return (List<Visit>) queryVisitsWithDrugOrders.list();
+    }
+
+    public List<Visit> getVisitsWithAllOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits) {
+        Session currentSession = getCurrentSession();
+        String includevisit = includeActiveVisit == null || includeActiveVisit == false ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
+        Query queryVisitsWithDrugOrders = currentSession.createQuery("select v from " + orderType + " o, Encounter e, Visit v where o.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
+                "and o.voided = false and o.dateStopped = null " + includevisit + " group by v.visitId order by v.startDatetime desc");
+        queryVisitsWithDrugOrders.setParameter("patientId", patient);
         if (includeActiveVisit == null || includeActiveVisit == false) {
             queryVisitsWithDrugOrders.setParameter("now", new Date());
         }

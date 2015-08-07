@@ -112,7 +112,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
 
-        List<Visit> visits = orderDao.getVisitsWithOrders(patient, "Order", true, 1);
+        List<Visit> visits = orderDao.getVisitsWithActiveOrders(patient, "Order", true, 1);
 
         assertThat(visits.size(), is(equalTo(1)));
         assertThat(visits.get(0).getId(), is(equalTo(5)));

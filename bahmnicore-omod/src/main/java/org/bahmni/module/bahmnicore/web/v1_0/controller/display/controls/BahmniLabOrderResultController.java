@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.web.v1_0.controller;
+package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 
 import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.openmrs.Patient;
@@ -50,7 +50,7 @@ public class BahmniLabOrderResultController extends BaseRestController{
         Patient patient = patientService.getPatientByUuid(patientUuid);
         List<Visit> visits = null;
         if (numberOfVisits != null) {
-            visits = orderDao.getVisitsWithOrders(patient, "Order", true, numberOfVisits);
+            visits = orderDao.getVisitsWithAllOrders(patient, "Order", true, numberOfVisits);
         }
         if (numberOfAccessions == null)
             numberOfAccessions = Integer.MAX_VALUE;

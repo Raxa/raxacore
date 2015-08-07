@@ -2,11 +2,9 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
-import org.bahmni.module.bahmnicore.service.BahmniVisitService;
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.openmrs.*;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Visit> getVisitsWithOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits){
-        return orderDao.getVisitsWithOrders(patient, orderType, includeActiveVisit,numberOfVisits);
+        return orderDao.getVisitsWithActiveOrders(patient, orderType, includeActiveVisit, numberOfVisits);
     }
 
     @Override
