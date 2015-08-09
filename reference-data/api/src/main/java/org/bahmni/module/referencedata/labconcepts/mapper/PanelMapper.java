@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.labconcepts.mapper;
 
+import ca.uhn.hl7v2.Test;
 import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
 import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Panel;
