@@ -124,15 +124,15 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         Patient patient = patientService.getPatient(2);
 
         List<Concept> concepts = new ArrayList<>();
-        concepts.add(conceptService.getConcept(24));
-        concepts.add(conceptService.getConcept(27));
+        concepts.add(conceptService.getConcept(3));
+        concepts.add(conceptService.getConcept(25));
 
         List<Visit> visits = orderService.getVisitsWithOrders(patient, "DrugOrder", true, 1);
         assertEquals(1, visits.size());
 
         List<DrugOrder> result = orderDao.getPrescribedDrugOrdersForConcepts(patient, true, visits, concepts);
         assertEquals(2, result.size());
-        assertThat(getOrderIds(result), hasItems(55, 59));
+        assertThat(getOrderIds(result), hasItems(55, 57));
 
     }
 
