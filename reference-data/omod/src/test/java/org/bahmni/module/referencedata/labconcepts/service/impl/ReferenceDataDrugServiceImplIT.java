@@ -4,7 +4,6 @@ import org.bahmni.module.referencedata.BaseIntegrationTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Drug;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataDrugService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.ConceptClass;
 import org.openmrs.api.APIException;
@@ -96,7 +95,6 @@ public class ReferenceDataDrugServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void same_drug_multiple_times() throws Exception {
         Drug drug = new Drug();
         drug.setName("NEW DRUG");

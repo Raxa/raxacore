@@ -14,11 +14,11 @@
     <person_name person_name_id="1" preferred="true" person_id="2" prefix="" given_name="Abc" middle_name="" family_name="Def" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="399e3a7b-6482-409d-94ce-c87bb3ca3cca"/>
 
 
-    <visit visit_id="1" date_started="2001-09-22 00:00:00" date_created="2001-09-22 00:00:00" patient_id="1001" visit_type_id="1" date_stopped="2002-10-08 04:08:16" location_id="2" creator="1" changed_by="1" voided_by="1" uuid="8244fcd2-f20f-11e3-b47b-c6959a4485cd" voided="0"/>
-    <visit visit_id="2" date_started="2003-09-22 00:00:00" date_created="2003-09-22 00:00:00" patient_id="1001" visit_type_id="1" date_stopped="2004-10-08 04:08:16" location_id="2" creator="1" changed_by="1" voided_by="1" uuid="317295fa-f208-11e3-b47b-c6959a4485cd" voided="0"/>
-    <visit visit_id="3" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="1001" visit_type_id="1" date_stopped="2013-05-08 04:08:16" location_id="2" creator="1" changed_by="1" voided_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
-    <visit visit_id="4" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="1002" visit_type_id="1" date_stopped="2013-05-08 04:08:16" location_id="2" creator="1" changed_by="1" voided_by="1" uuid="7b3a3aea-f22a-11e3-b47b-c6959a4485cd" voided="0"/>
-    <visit visit_id="5" date_started="2014-01-22 00:00:00" date_created="2014-01-22 00:00:00" patient_id="1001" visit_type_id="1" location_id="2" creator="1" changed_by="1" voided_by="1" uuid="84d8b838-f5f4-11e3-b47b-c6959a4485cd" voided="0"/>
+    <visit visit_id="1" date_started="2001-09-22 00:00:00" date_created="2001-09-22 00:00:00" patient_id="1001" visit_type_id="1" date_stopped="2002-10-08 04:08:16" location_id="2" creator="1" changed_by="1000" voided_by="1000" uuid="8244fcd2-f20f-11e3-b47b-c6959a4485cd" voided="0"/>
+    <visit visit_id="2" date_started="2003-09-22 00:00:00" date_created="2003-09-22 00:00:00" patient_id="1001" visit_type_id="1" date_stopped="2004-10-08 04:08:16" location_id="2" creator="1" changed_by="1000" voided_by="1000" uuid="317295fa-f208-11e3-b47b-c6959a4485cd" voided="0"/>
+    <visit visit_id="3" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="1001" visit_type_id="1" date_stopped="2013-05-08 04:08:16" location_id="2" creator="1" changed_by="1000" voided_by="1000" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
+    <visit visit_id="4" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="1002" visit_type_id="1" date_stopped="2013-05-08 04:08:16" location_id="2" creator="1" changed_by="1000" voided_by="1000" uuid="7b3a3aea-f22a-11e3-b47b-c6959a4485cd" voided="0"/>
+    <visit visit_id="5" date_started="2014-01-22 00:00:00" date_created="2014-01-22 00:00:00" patient_id="1001" visit_type_id="1" location_id="2" creator="1" changed_by="1000" voided_by="1000" uuid="84d8b838-f5f4-11e3-b47b-c6959a4485cd" voided="0"/>
 
     <encounter encounter_id="15" encounter_type="2" patient_id="1001" visit_id="1" location_id="2" encounter_datetime="2004-09-01 00:00:00.0" creator="1" date_created="2004-08-18 14:09:05.0" voided="false" uuid="4aaf37ee-f208-11e3-b47b-c6959a4485cd"/>
     <encounter encounter_id="16" encounter_type="2" patient_id="1001" visit_id="2" location_id="2" encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" uuid="6d0ae386-707a-4629-9850-f15206e63ab0"/>
@@ -32,12 +32,13 @@
     <orders order_id="19" order_type_id="15" patient_id="1001" encounter_id="18" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="NEW" order_number="5" instructions="drug in active visit" date_activated="2014-02-01 00:00:00.0" creator="1" date_created="2014-02-01 00:00:00.0" voided="false" uuid="0246222e-f5f5-11e3-b47b-c6959a4485cd"/>
     <orders order_id="20" order_type_id="15" patient_id="1001" encounter_id="18" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="NEW" order_number="6" instructions="LabOrder in active visit" date_activated="2014-02-01 00:00:00.0" creator="1" date_created="2014-02-01 00:00:00.1" voided="false" uuid="cba00378-0c03-11e4-bb80-f18addb6f9bb"/>
 
-    <drug_order order_id="15" drug_inventory_id="3" dose="125.0" dispense_as_written="true" as_needed="false" frequency="2"/>
-    <drug_order order_id="16" drug_inventory_id="3" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2"/>
-    <drug_order order_id="17" drug_inventory_id="3" dose="515.0" dispense_as_written="true" as_needed="false" frequency="2"/>
-    <drug_order order_id="18" drug_inventory_id="3" dose="615.0" dispense_as_written="true" as_needed="false" frequency="2"/>
-    <drug_order order_id="19" drug_inventory_id="3" dose="715.0" dispense_as_written="true" as_needed="false" frequency="2"/>
+    <drug_order order_id="15" drug_inventory_id="3" dose="125.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="16" drug_inventory_id="3" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="17" drug_inventory_id="3" dose="515.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="18" drug_inventory_id="3" dose="615.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="19" drug_inventory_id="3" dose="715.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
     <test_order order_id="20"/>
+
 
     <orders order_id="55" order_type_id="15" patient_id="2" encounter_id="33" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="NEW" order_number="1" instructions="non-expiring" date_activated="2008-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" uuid="6d0ae386-707a-4629-9850-f15209d43ab0"/>
     <orders order_id="56" order_type_id="15" patient_id="2" encounter_id="34" urgency="ROUTINE" concept_id="24" orderer="1" care_setting="1" order_action="NEW" order_number="2" instructions="expire-date in future" date_activated="2013-08-08 00:00:00.0" auto_expire_date="2099-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" uuid="92a6bdef-72d4-49d9-8a1f-804892f66acf"/>
@@ -45,22 +46,23 @@
     <orders order_id="58" order_type_id="15" patient_id="2" encounter_id="33" urgency="ROUTINE" concept_id="26" orderer="1" care_setting="1" order_action="NEW" order_number="4" instructions="another expire-date in future" date_activated="2013-08-08 00:00:00.0" auto_expire_date="2099-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false"  uuid="bda9c148-f22a-11e3-b47b-c6959a4485cd"/>
     <orders order_id="59" order_type_id="15" patient_id="2" encounter_id="33" urgency="ROUTINE" concept_id="27" orderer="1" care_setting="1" order_action="NEW" order_number="5" instructions="drug in active visit" date_activated="2014-02-01 00:00:00.0" creator="1" date_created="2014-02-01 00:00:00.0" voided="false" uuid="0246222e-f5f5-11e3-b47b-c8b69a4485cd"/>
 
+    <drug_order order_id="55" drug_inventory_id="1113" dose="125.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="56" drug_inventory_id="1113" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="57" drug_inventory_id="1114" dose="515.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="58" drug_inventory_id="1115" dose="615.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+    <drug_order order_id="59" drug_inventory_id="1116" dose="715.0" dispense_as_written="true" as_needed="false" frequency="2000"/>
+
     <drug drug_id="1113" concept_id="24" name="Paracetamol" combination="false" strength="325.0mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="0000820a-d297-44e3-be6e-698531d9dd3f"/>
     <drug drug_id="1114" concept_id="25" name="Aspirin" combination="false" strength="325.0mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="1111820a-d297-44e3-be6e-698531d9dd3f"/>
     <drug drug_id="1115" concept_id="26" name="diazepam" combination="false" strength="325.0mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="2222820a-d297-44e3-be6e-698531d9dd3f"/>
     <drug drug_id="1116" concept_id="27" name="cetrizine" combination="false" strength="325.0mg" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="3333820a-d297-44e3-be6e-698531d9dd3f"/>
 
-    <drug_order order_id="55" drug_inventory_id="11" dose="125.0" dispense_as_written="true" as_needed="false" frequency="2"/>
-    <drug_order order_id="56" drug_inventory_id="11" dose="225.0" dispense_as_written="true" as_needed="false" frequency="2"/>
-    <drug_order order_id="57" drug_inventory_id="12" dose="515.0" dispense_as_written="true" as_needed="false" frequency="2"/>
-    <drug_order order_id="58" drug_inventory_id="3" dose="615.0" dispense_as_written="true" as_needed="false" frequency="2"/>
-    <drug_order order_id="59" drug_inventory_id="3" dose="715.0" dispense_as_written="true" as_needed="false" frequency="2"/>
 
     <encounter encounter_id="33" encounter_type="2" patient_id="7" visit_id="50" location_id="2" form_id="1" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 12:34:40.0" voided="false" uuid="e403fafb-e5e4-42d0-9d11-4f52e86fa48c"/>
     <encounter encounter_id="34" encounter_type="2" patient_id="7" visit_id="51" location_id="2" form_id="1" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 12:34:40.0" voided="false" uuid="e403fafb-e5e4-42d0-9d11-4f52e86fda2c"/>
     <order_type order_type_id="1" name="Drug order" parent="17" java_class_name="org.openmrs.DrugOrder" description="Categorises medication orders for the patient" date_created="2008-08-15 13:49:47.0" retired="false" uuid="131168f4-15f5-102d-96e4-000c29c2a5d7" creator="1" />
-    <orders order_id="111" order_type_id="1" previous_order_id="1" order_number="111" orderer="1" urgency="ROUTINE" order_action="REVISE" concept_id="3" creator="1" date_activated="2008-08-15 00:00:00.0" date_created="2008-08-15 00:00:00.0" voided="false" patient_id="2" uuid="e1f97g64-697a-11e3-bd76-0800271c1b75" care_setting="1" encounter_id="33" />
-    <visit visit_id="50" patient_id="2" visit_type_id="1" date_started="2005-01-01 00:00:00.0" location_id="1" indication_concept_id="5497" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="1e5d5d48-6b78-11e0-93c3-18a97ba044dc" />
-    <visit visit_id="51" patient_id="2" visit_type_id="1" date_started="2005-01-01 00:00:00.0" location_id="1" indication_concept_id="5497" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="1e5d5d48-6b78-11e0-93c3-18a97b8ca4dc" />
+    <orders order_id="111" order_type_id="1" previous_order_id="1" order_number="111" orderer="1" urgency="ROUTINE" order_action="REVISE" concept_id="1" creator="1" date_activated="2008-08-15 00:00:00.0" date_created="2008-08-15 00:00:00.0" voided="false" patient_id="2" uuid="e1f97g64-697a-11e3-bd76-0800271c1b75" care_setting="1" encounter_id="33" />
+    <visit visit_id="50" patient_id="2" visit_type_id="5" date_started="2005-01-01 00:00:00.0" location_id="1" indication_concept_id="5497" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="1e5d5d48-6b78-11e0-93c3-18a97ba044dc" />
+    <visit visit_id="51" patient_id="2" visit_type_id="5" date_started="2005-01-01 00:00:00.0" location_id="1" indication_concept_id="5497" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="1e5d5d48-6b78-11e0-93c3-18a97b8ca4dc" />
 
 </dataset>

@@ -15,15 +15,15 @@
 
 
 
-    <location location_id="1" name="Unknown_Location" description=" 0" creator="1" retired="0" retired_by=" 0"  uuid="8d6c993e-c2cc-11de-8d13-0010c6dffd0f" date_created="2005-09-22 00:00:00"/>
-    <location location_id="2" name="Ganiyari" description="Ganiyari hospital" creator="1" retired="0" retired_by=" 0"  uuid="8d6c993e-c2cc-11de-8d13-0040c6dffd0f" date_created="2005-09-22 00:00:00" />
-    <location location_id="3" name="Semariya" description="Semariya subcentre" creator="1" retired="0" retired_by=" 0"  uuid="8d6c993e-c2cc-11de-8d13-0010c6dfed0f" date_created="2005-09-22 00:00:00" />
-    <location location_id="4" name="Shivtarai" description="Shivtarai subcentre" creator="1" retired="0" retired_by=" 0"  uuid="8d6c993e-c2cc-11de-8d13-0010cadffd0f" date_created="2005-09-22 00:00:00" />
-    <location location_id="5" name="Bahmni" description="Bahmni subcentre" creator="1" retired="0" retired_by=" 0"  uuid="8d6c993e-c2cc-11de-8d13-0010c6affd0f" date_created="2005-09-22 00:00:00" />
+    <location location_id="1" name="Unknown_Location" description=" 0" creator="1" retired="0" retired_by=" 0" parent_location=" 0" uuid="8d6c993e-c2cc-11de-8d13-0010c6dffd0f" date_created="2005-09-22 00:00:00"/>
+    <location location_id="2" name="Ganiyari" description="Ganiyari hospital" creator="1" retired="0" retired_by=" 0" parent_location=" 0" uuid="8d6c993e-c2cc-11de-8d13-0040c6dffd0f" date_created="2005-09-22 00:00:00" />
+    <location location_id="3" name="Semariya" description="Semariya subcentre" creator="1" retired="0" retired_by=" 0" parent_location=" 0" uuid="8d6c993e-c2cc-11de-8d13-0010c6dfed0f" date_created="2005-09-22 00:00:00" />
+    <location location_id="4" name="Shivtarai" description="Shivtarai subcentre" creator="1" retired="0" retired_by=" 0" parent_location=" 0" uuid="8d6c993e-c2cc-11de-8d13-0010cadffd0f" date_created="2005-09-22 00:00:00" />
+    <location location_id="5" name="Bahmni" description="Bahmni subcentre" creator="1" retired="0" retired_by=" 0" parent_location=" 0" uuid="8d6c993e-c2cc-11de-8d13-0010c6affd0f" date_created="2005-09-22 00:00:00" />
 
-    <person_address person_address_id="1" person_id="1" preferred="true" city_village="Ramgarh" state_province="Madhya Pradesh" creator="1" date_created="2006-11-24 10:50:16.0" voided="false" void_reason="" county_district="Dindori" address3="Dindori"/>
+    <person_address person_address_id="1" person_id="1025" preferred="true" city_village="Ramgarh" state_province="Madhya Pradesh" creator="1" date_created="2006-11-24 10:50:16.0" voided="false" void_reason="" county_district="Dindori" address3="Dindori"/>
 
-    <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="1" patient_id ="1024" identifier="GAN200000" identifier_type="1" location_id="1" creator="1" changed_by="501" voided_by="501" uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0" />
+    <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="1" patient_id ="1024" identifier="GAN200000" identifier_type="3" location_id="1000" creator="1" changed_by="1000" voided_by="1000" uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0" />
 
     <concept_datatype concept_datatype_id="1" name="numeric" hl7_abbreviation="NM" description="numeric concept" date_created="2013-12-04 11:36:42" retired="0"/>
     <concept_datatype concept_datatype_id="2" name="text" hl7_abbreviation="ST" description="text concept" date_created="2013-12-04 11:36:42" retired="0"/>

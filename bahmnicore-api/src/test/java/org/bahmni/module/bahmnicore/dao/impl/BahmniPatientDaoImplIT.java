@@ -47,7 +47,7 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
         List<PatientResponse> patients = patientDao.getPatients("", "Horatio", null, "city_village", "", 100, 0, null);
 
-        assertEquals(3, patients.size());
+        assertEquals(2, patients.size());
         PatientResponse patient1 = patients.get(0);
         PatientResponse patient2 = patients.get(1);
         List<String> uuids = asList("341b4e41-790c-484f-b6ed-71dc8da222db", "86526ed5-3c11-11de-a0ba-001e378eb67a");

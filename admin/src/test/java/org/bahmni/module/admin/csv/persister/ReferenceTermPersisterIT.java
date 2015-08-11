@@ -45,7 +45,7 @@ public class ReferenceTermPersisterIT extends BaseIntegrationTest {
 
     @Test
     public void save_new_referenceTerm() {
-        ReferenceTermRow referenceTermRow = new ReferenceTermRow("TB1002", "SNOMED CT", "Tuberclosis", null, null);
+        ReferenceTermRow referenceTermRow = new ReferenceTermRow("TB1001", "ICD-10", "Tuberclosis", null, null);
         Messages errorMessages = referenceTermPersister.persist(referenceTermRow);
         assertTrue("should have persisted the reference term row", errorMessages.isEmpty());
 
@@ -61,7 +61,7 @@ public class ReferenceTermPersisterIT extends BaseIntegrationTest {
     @Test
     public void update_exisiting_referenceTerm() {
 
-        ReferenceTermRow referenceTermRow = new ReferenceTermRow("TB100", "SNOMED CT", "Tuberclosis", null, null);
+        ReferenceTermRow referenceTermRow = new ReferenceTermRow("TB100", "ICD-10", "Tuberclosis", null, null);
         referenceTermPersister.persist(referenceTermRow);
 
         Context.openSession();
@@ -74,7 +74,7 @@ public class ReferenceTermPersisterIT extends BaseIntegrationTest {
         Context.closeSession();
 
 
-        ReferenceTermRow updatedReferenceTermRow = new ReferenceTermRow("TB100", "SNOMED CT", "TuberclosisEdited", "Description", "1.1");
+        ReferenceTermRow updatedReferenceTermRow = new ReferenceTermRow("TB100", "ICD-10", "TuberclosisEdited", "Description", "1.1");
         referenceTermPersister.persist(updatedReferenceTermRow);
 
         Context.openSession();
@@ -90,10 +90,10 @@ public class ReferenceTermPersisterIT extends BaseIntegrationTest {
 
     @Test
     public void fails_save_when_invalid_conceptsource() {
-        ReferenceTermRow referenceTermRow = new ReferenceTermRow("TB100", "ICG 11", "Tuberclosis", null, null);
+        ReferenceTermRow referenceTermRow = new ReferenceTermRow("TB100", "ICG 10", "Tuberclosis", null, null);
         Messages errorMessages = referenceTermPersister.persist(referenceTermRow);
 
         assertFalse("should have persisted the reference term row", errorMessages.isEmpty());
-        assertTrue(errorMessages.toString().contains("Concept reference source ICG 11 does not exists."));
+        assertTrue(errorMessages.toString().contains("Concept reference source ICG 10 does not exists."));
     }
 }

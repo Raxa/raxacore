@@ -9,7 +9,6 @@ import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
 import org.bahmni.module.admin.csv.utils.CSVUtils;
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.EncounterService;
@@ -24,7 +23,7 @@ import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
-@Ignore
+
 public class EncounterPersisterIT extends BaseIntegrationTest {
     
     @Autowired
@@ -669,7 +668,6 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    @Ignore
     public void persist_case_insensitive_coded_concept_values() {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
