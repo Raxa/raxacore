@@ -5,7 +5,7 @@
                 retired="0" uuid="ef4554cb-2225-471a-9cd5-1234552c337c"/>
     <encounter_type encounter_type_id="100" name="LAB_RESULT" description="Some desc 2" creator="1"
                     date_created="2005-01-01 00:00:00.0" retired="false" uuid="4fe21921-01cc-4720-a6bf-a61a17c4d05b"/>
-    <order_type order_type_id="16" name="Order" description="An order for tests" creator="1" java_class_name="org.openmrs.Order"
+    <order_type order_type_id="16" name="Lab Order" description="An order for tests" creator="1" java_class_name="org.openmrs.Order"
                 date_created="2008-08-15 13:49:47.0" retired="false" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>
 
     <!--concept set for lab_result_concept_set-->

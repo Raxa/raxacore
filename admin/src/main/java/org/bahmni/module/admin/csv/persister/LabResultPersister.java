@@ -23,7 +23,7 @@ import java.util.HashSet;
 @Component
 public class LabResultPersister implements EntityPersister<LabResultsRow> {
     public static final String LAB_RESULT_ENCOUNTER_TYPE = "LAB_RESULT";
-    public static final String LAB_ORDER_TYPE = "Order";
+    public static final String LAB_ORDER_TYPE = "Lab Order";
     private String patientMatchingAlgorithmClassName;
     private boolean shouldMatchExactPatientId;
 
