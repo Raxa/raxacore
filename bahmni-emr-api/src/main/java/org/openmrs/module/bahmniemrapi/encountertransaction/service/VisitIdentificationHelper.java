@@ -1,6 +1,5 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.service;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.openmrs.Encounter;
@@ -38,10 +37,6 @@ public class VisitIdentificationHelper {
 
     public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate) {
         return getVisitFor(patient, visitTypeForNewVisit, orderDate, null, null);
-    }
-
-    public boolean hasActiveVisit(Patient patient) {
-        return CollectionUtils.isNotEmpty(visitService.getActiveVisitsByPatient(patient));
     }
 
     private boolean matchingVisitsFound(List<Visit> visits) {
@@ -83,7 +78,7 @@ public class VisitIdentificationHelper {
         return visits.get(visits.size() - 1);
     }
 
-    public Visit createNewVisit(Patient patient, Date date, String visitTypeForNewVisit, Date visitStartDate, Date visitEndDate) {
+    private Visit createNewVisit(Patient patient, Date date, String visitTypeForNewVisit, Date visitStartDate, Date visitEndDate) {
         VisitType visitTypeByName = getVisitTypeByName(visitTypeForNewVisit);
         if (visitTypeByName == null) {
             throw new RuntimeException("Visit type:'" + visitTypeForNewVisit + "' not found.");

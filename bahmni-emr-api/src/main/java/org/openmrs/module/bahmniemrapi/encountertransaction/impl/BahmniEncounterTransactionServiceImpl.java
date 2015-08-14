@@ -77,10 +77,6 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         VisitIdentificationHelper visitIdentificationHelper = new VisitIdentificationHelper(visitService);
         bahmniEncounterTransaction = new RetrospectiveEncounterTransactionService(visitIdentificationHelper).updatePastEncounters(bahmniEncounterTransaction, patient, visitStartDate, visitEndDate);
 
-        if(!visitIdentificationHelper.hasActiveVisit(patient)){
-            visitIdentificationHelper.createNewVisit(patient, bahmniEncounterTransaction.getEncounterDateTime(), bahmniEncounterTransaction.getVisitType(), visitStartDate, visitEndDate);
-        }
-
         EncounterTransaction encounterTransaction = emrEncounterService.save(bahmniEncounterTransaction.toEncounterTransaction());
         //Get the saved encounter transaction from emr-api
         String encounterUuid = encounterTransaction.getEncounterUuid();
