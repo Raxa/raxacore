@@ -7,6 +7,7 @@ import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Patient;
 import org.openmrs.User;
+import org.openmrs.VisitType;
 import org.openmrs.api.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPreSaveCommand;
@@ -76,9 +77,8 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         }
         VisitIdentificationHelper visitIdentificationHelper = new VisitIdentificationHelper(visitService);
         bahmniEncounterTransaction = new RetrospectiveEncounterTransactionService(visitIdentificationHelper).updatePastEncounters(bahmniEncounterTransaction, patient, visitStartDate, visitEndDate);
-
-        if(!visitIdentificationHelper.hasActiveVisit(patient)){
-            visitIdentificationHelper.createNewVisit(patient, bahmniEncounterTransaction.getEncounterDateTime(), bahmniEncounterTransaction.getVisitType(), visitStartDate, visitEndDate);
+        if (!StringUtils.isBlank(bahmniEncounterTransaction.getVisitType())) {
+            setVisitTypeUuid(visitIdentificationHelper, bahmniEncounterTransaction);
         }
 
         EncounterTransaction encounterTransaction = emrEncounterService.save(bahmniEncounterTransaction.toEncounterTransaction());
@@ -92,6 +92,13 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
             updatedEncounterTransaction = saveCommand.save(bahmniEncounterTransaction,currentEncounter, updatedEncounterTransaction);
         }
         return bahmniEncounterTransactionMapper.map(updatedEncounterTransaction, includeAll);
+    }
+
+    private void setVisitTypeUuid(VisitIdentificationHelper visitIdentificationHelper, BahmniEncounterTransaction bahmniEncounterTransaction) {
+        VisitType visitType = visitIdentificationHelper.getVisitTypeByName(bahmniEncounterTransaction.getVisitType());
+        if (visitType != null) {
+            bahmniEncounterTransaction.setVisitTypeUuid(visitType.getUuid());
+        }
     }
 
     @Override

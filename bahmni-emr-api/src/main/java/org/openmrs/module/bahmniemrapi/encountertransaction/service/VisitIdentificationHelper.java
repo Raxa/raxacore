@@ -103,7 +103,7 @@ public class VisitIdentificationHelper {
         return visitService.saveVisit(visit);
     }
 
-    private VisitType getVisitTypeByName(String visitTypeName) {
+    public VisitType getVisitTypeByName(String visitTypeName) {
         List<VisitType> visitTypes = visitService.getVisitTypes(visitTypeName);
         return visitTypes.isEmpty() ? null : visitTypes.get(0);
     }
