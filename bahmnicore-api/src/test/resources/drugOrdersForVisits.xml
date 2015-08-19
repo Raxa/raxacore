@@ -39,9 +39,9 @@
     <orders order_id="1007" order_type_id="1" encounter_id="3001" urgency="ON_SCHEDULED_DATE" concept_id="88" instructions="Before meals" comment_to_fulfiller="Take while sleeping" orderer="1" care_setting="1" order_action="NEW" order_number="2"  date_activated="2011-10-19 00:00:00.0" scheduled_date="2011-10-22 00:00:00.0" date_stopped="2011-10-30 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1024" uuid="92c1bdef-72d4-88d9-8a1f-804892f66abf"/>
     <orders order_id="1008" order_type_id="1" encounter_id="3001" urgency="ON_SCHEDULED_DATE" concept_id="3" orderer="1" care_setting="1" order_action="NEW" order_number="3"  date_activated="2011-10-20 00:00:00.0" scheduled_date="2011-10-24 00:00:00.0" auto_expire_date="2011-11-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1024" uuid="92c1bdef-72d4-77d9-8a1f-804892f66abe"/>
 
-    <drug drug_id="2001" concept_id="792" dosage_form="51" name="Triomune-30" combination="true" creator="2" date_created="2005-02-24 00:00:00.0" retired="false" uuid="42f00b94-26fe-102b-80cb-0017a47871b2"/>
-    <drug drug_id="3001" concept_id="792" dosage_form="51" name="Triomune-40" combination="true" creator="2" date_created="2005-02-24 00:00:00.0" retired="false" uuid="42f00efa-26fe-102b-80cb-0017a47871b2"/>
-    <drug drug_id="4001" concept_id="2004" dosage_form="51" name="Paracetamol 250 mg" combination="true" creator="2" date_created="2005-02-24 00:00:00.0" retired="false" uuid="42f00efa-26fe-102b-80cb-0017b9a871b2"/>
+    <drug drug_id="2001" concept_id="792" dosage_form="51" name="Triomune-30" combination="true" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="42f00b94-26fe-102b-80cb-0017a47871b2"/>
+    <drug drug_id="3001" concept_id="792" dosage_form="51" name="Triomune-40" combination="true" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="42f00efa-26fe-102b-80cb-0017a47871b2"/>
+    <drug drug_id="4001" concept_id="2004" dosage_form="51" name="Paracetamol 250 mg" combination="true" creator="1" date_created="2005-02-24 00:00:00.0" retired="false" uuid="42f00efa-26fe-102b-80cb-0017b9a871b2"/>
 
 
     <drug_order order_id="1005" drug_inventory_id="2001" dosing_type="org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions"

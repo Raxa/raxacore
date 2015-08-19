@@ -4,12 +4,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.openmrs.*;
-import org.openmrs.module.bahmniemrapi.builder.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Person;
+import org.openmrs.User;
+import org.openmrs.Visit;
+import org.openmrs.module.bahmniemrapi.builder.ConceptBuilder;
+import org.openmrs.module.bahmniemrapi.builder.EncounterBuilder;
+import org.openmrs.module.bahmniemrapi.builder.ObsBuilder;
+import org.openmrs.module.bahmniemrapi.builder.PersonBuilder;
+import org.openmrs.module.bahmniemrapi.builder.VisitBuilder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.ObservationMapper;
-import org.openmrs.module.emrapi.encounter.mapper.DrugMapper1_10;
+import org.openmrs.module.emrapi.encounter.mapper.DrugMapper1_11;
 import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 import org.openmrs.test.TestUtil;
 import org.openmrs.util.LocaleUtility;
@@ -23,7 +32,9 @@ import java.util.Date;
 import java.util.Locale;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -44,7 +55,7 @@ public class OMRSObsToBahmniObsMapperTest {
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
         when(observationTypeMatcher.getObservationType(any(Obs.class))).thenReturn(ObservationTypeMatcher.ObservationType.OBSERVATION);
-        observationMapper = new ObservationMapper(new ConceptMapper(), new DrugMapper1_10());
+        observationMapper = new ObservationMapper(new ConceptMapper(), new DrugMapper1_11());
     }
 
     @Test
