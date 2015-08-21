@@ -3103,5 +3103,22 @@
             UPDATE `order_type` SET `name` = 'Lab Order' WHERE name ='Order';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201508181421" author="Padma, Shireesha">
+        <comment>Adding global property for Reason for death</comment>
+        <sql>
+            insert into global_property
+            (`property`,
+            `property_value`,
+            `description`,
+            `uuid`)
+            values
+            ('concept.reasonForDeath',
+            '',
+            'Concept id of the REASON FOR DEATH Concept Set',
+            uuid())
+            ON DUPLICATE KEY UPDATE
+            `property_value`=@concept_set_uuid;
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
