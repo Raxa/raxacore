@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.openmrs.module.bahmnimapping.dao.EntityMappingDao;
 import org.openmrs.module.bahmnimapping.model.EntityMapping;
+import org.openmrs.module.bahmnimapping.model.EntityMappingType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +18,7 @@ public class EntityMappingDaoImpl implements EntityMappingDao {
     private SessionFactory sessionFactory;
 
     @Override
-    public List<EntityMapping> getEntityMappings(String mappingTypeName, String entity1Uuid) {
+    public List<EntityMapping> getEntityMappings(String entity1Uuid, String mappingTypeName) {
         Session currentSession = sessionFactory.getCurrentSession();
         Query query = currentSession.createQuery(
                 "select em " +
@@ -29,5 +30,14 @@ public class EntityMappingDaoImpl implements EntityMappingDao {
         query.setParameter("mappingTypeName", mappingTypeName);
         query.setParameter("entity1Uuid", entity1Uuid);
         return (List<EntityMapping>)query.list();
+    }
+
+    @Override
+    public EntityMappingType getEntityMappingTypeByName(String name) {
+        Session currentSession = sessionFactory.getCurrentSession();
+        Query query = currentSession.createQuery("from EntityMappingType where name = :name");
+        query.setParameter("name",name);
+        List list = query.list();
+        return list.size()>0? (EntityMappingType) list.get(0) :null;
     }
 }

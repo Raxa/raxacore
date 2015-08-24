@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
-    <entity_mapping_type id="1" name="program_obstemplates" entity1_type="PatientProgram" entity2_type="Observation"/>
-    <entity_mapping_type id="2" name="order_obstemplates" entity1_type="OrderType" entity2_type="Observation"/>
+    <entity_mapping_type id="1" name="program_obstemplates" entity1_type="org.openmrs.Program" entity2_type="org.openmrs.Obs"/>
+    <entity_mapping_type id="2" name="order_obstemplates" entity1_type="org.openmrs.OrderType" entity2_type="org.openmrs.Obs"/>
 
     <entity_mapping id="1" entity_mapping_type_id="1" entity1_uuid="uuid1" entity2_uuid="uuid2"/>
     <entity_mapping id="2" entity_mapping_type_id="1" entity1_uuid="uuid1" entity2_uuid="uuid3"/>

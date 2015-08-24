@@ -202,6 +202,10 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.bahmni.module</groupId>
+            <artifactId>bahmni-mapping</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>uiframework-api</artifactId>
             <version>${uiframeworkVersion}</version>
