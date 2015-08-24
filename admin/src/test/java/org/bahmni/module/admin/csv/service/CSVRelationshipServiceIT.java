@@ -46,7 +46,7 @@ public class CSVRelationshipServiceIT extends BaseIntegrationTest {
     public void shouldSavePatientRelationship() throws Exception {
         csvRelationshipService = new CSVRelationshipService(patientService, personService, providerService, administrationService);
 
-        Relationship relationship = csvRelationshipService.save(new RelationshipRow("ABC123", "XYZ", "Parent", "Child", "2015-04-28", "2016-04-28"));
+        Relationship relationship = csvRelationshipService.save(new RelationshipRow("ABC123", "XYZ", "", "Parent", "2015-04-28", "2016-04-28"));
 
         assertNotNull("Should have saved the relationship", relationship);
         assertEquals(relationship.getPersonA().getPersonId().intValue(), 8);
@@ -60,7 +60,7 @@ public class CSVRelationshipServiceIT extends BaseIntegrationTest {
     public void shouldSavePatientRelationshipWithTodayDateIfStartDateIsNotSpecified() throws Exception {
         csvRelationshipService = new CSVRelationshipService(patientService, personService, providerService, administrationService);
 
-        Relationship relationship = csvRelationshipService.save(new RelationshipRow("ABC123", "XYZ", "Parent", "Child", null, "2099-04-01"));
+        Relationship relationship = csvRelationshipService.save(new RelationshipRow("ABC123", "XYZ", "", "Parent", null, "2099-04-01"));
 
         assertNotNull("Should have saved the relationship", relationship);
         assertEquals(relationship.getPersonA().getPersonId().intValue(), 8);
@@ -70,22 +70,20 @@ public class CSVRelationshipServiceIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldNotSavePatientRelationshipThatExists() throws Exception {
+    public void shouldUpdateExistingPatientRelationshipThatExists() throws Exception {
         csvRelationshipService = new CSVRelationshipService(patientService, personService, providerService, administrationService);
 
-        csvRelationshipService.save(new RelationshipRow("ABC123", "XYZ", "Parent", "Child", "2015-04-28", "2016-04-28"));
+        csvRelationshipService.save(new RelationshipRow("ABC123", "XYZ", "", "Parent", "2015-04-28", "2016-04-28"));
 
-        expectedEx.expect(RuntimeException.class);
-        expectedEx.expectMessage("Relationship with ABC123 and XYZ with the type Parent exists.");
-
-        csvRelationshipService.save(new RelationshipRow("ABC123", "XYZ", "Parent", "Child", "2015-04-28", "2016-04-28"));
+        Relationship relationship = csvRelationshipService.save(new RelationshipRow("ABC123", "XYZ", "", "Parent", "2015-04-29", "2016-04-29"));
+        assertEquals(relationship.getStartDate(), CSVUtils.getDateFromString("2015-04-29"));
     }
 
     @Test
     public void shouldSaveProviderRelationship() throws Exception {
         csvRelationshipService = new CSVRelationshipService(patientService, personService, providerService, administrationService);
 
-        Relationship relationship = csvRelationshipService.save(new RelationshipRow("ABC123", "Super User", "Patient", "Doctor", "2015-04-28", "2016-04-28"));
+        Relationship relationship = csvRelationshipService.save(new RelationshipRow("ABC123", "", "Super User", "Nurse", "2015-04-28", "2016-04-28"));
 
         assertNotNull("Should have saved the relationship", relationship);
         assertEquals(relationship.getPersonA().getPersonId().intValue(), 8);
@@ -93,17 +91,5 @@ public class CSVRelationshipServiceIT extends BaseIntegrationTest {
         assertEquals(relationship.getRelationshipType().getId().intValue(), 10);
         assertEquals(relationship.getStartDate(), CSVUtils.getDateFromString("2015-04-28"));
         assertEquals(relationship.getEndDate(), CSVUtils.getDateFromString("2016-04-28"));
-    }
-
-    @Test
-    public void shouldNotSaveProviderRelationshipThatExists() throws Exception {
-        csvRelationshipService = new CSVRelationshipService(patientService, personService, providerService, administrationService);
-
-        csvRelationshipService.save(new RelationshipRow("ABC123", "Super User", "Patient", "Doctor", "2015-04-28", "2016-04-28"));
-
-        expectedEx.expect(RuntimeException.class);
-        expectedEx.expectMessage("Relationship with ABC123 and Super User with the type Patient exists.");
-
-        csvRelationshipService.save(new RelationshipRow("ABC123", "Super User", "Patient", "Doctor", "2015-04-28", "2016-04-28"));
     }
 }
