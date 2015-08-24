@@ -5,29 +5,29 @@ import org.bahmni.csv.annotation.CSVHeader;
 
 public class RelationshipRow extends CSVEntity {
 
-    @CSVHeader(name = "PersonA")
-    private String personA;
+    @CSVHeader(name = "Registration_Number")
+    private String patientIdentifier;
 
-    @CSVHeader(name = "PersonB")
-    private String personB;
+    @CSVHeader(name = "Relationship_Type")
+    private String relationshipType;
 
-    @CSVHeader(name = "AIsToB")
-    private String aIsToB;
+    @CSVHeader(name = "Related_To_Registration_Number")
+    private String patientRelationIdentifier;
 
-    @CSVHeader(name = "BIsToA")
-    private String bIsToA;
+    @CSVHeader(name = "Provider_Name")
+    private String providerName;
 
-    @CSVHeader(name = "StartDate")
+    @CSVHeader(name = "Relationship_StartDate")
     private String startDate;
 
-    @CSVHeader(name = "EndDate")
+    @CSVHeader(name = "Relationship_EndDate")
     private String endDate;
 
-    public RelationshipRow(String personA, String personB, String aIsToB, String bIsToA, String startDate, String endDate) {
-        this.personA = personA;
-        this.personB = personB;
-        this.aIsToB = aIsToB;
-        this.bIsToA = bIsToA;
+    public RelationshipRow(String patientIdentifier, String patientRelationIdentifier, String providerName, String relationshipType, String startDate, String endDate) {
+        this.patientIdentifier = patientIdentifier;
+        this.patientRelationIdentifier = patientRelationIdentifier;
+        this.providerName = providerName;
+        this.relationshipType = relationshipType;
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -35,36 +35,36 @@ public class RelationshipRow extends CSVEntity {
     public RelationshipRow() {
     }
 
-    public String getPersonA() {
-        return personA;
+    public String getPatientIdentifier() {
+        return patientIdentifier;
     }
 
-    public void setPersonA(String personA) {
-        this.personA = personA;
+    public void setPatientIdentifier(String patientIdentifier) {
+        this.patientIdentifier = patientIdentifier;
     }
 
-    public String getPersonB() {
-        return personB;
+    public String getPatientRelationIdentifier() {
+        return patientRelationIdentifier;
     }
 
-    public void setPersonB(String personB) {
-        this.personB = personB;
+    public void setPatientRelationIdentifier(String patientRelationIdentifier) {
+        this.patientRelationIdentifier = patientRelationIdentifier;
     }
 
-    public String getaIsToB() {
-        return aIsToB;
+    public String getProviderName() {
+        return providerName;
     }
 
-    public void setaIsToB(String aIsToB) {
-        this.aIsToB = aIsToB;
+    public void setProviderName(String providerName) {
+        this.providerName = providerName;
     }
 
-    public String getbIsToA() {
-        return bIsToA;
+    public String getRelationshipType() {
+        return relationshipType;
     }
 
-    public void setbIsToA(String bIsToA) {
-        this.bIsToA = bIsToA;
+    public void setRelationshipType(String relationshipType) {
+        this.relationshipType = relationshipType;
     }
 
     public String getStartDate() {

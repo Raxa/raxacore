@@ -2,8 +2,11 @@ package org.bahmni.module.admin.csv.service;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.bahmni.csv.Messages;
 import org.bahmni.module.admin.csv.models.RelationshipRow;
+import org.bahmni.module.admin.csv.utils.CSVUtils;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
@@ -11,19 +14,16 @@ import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
 
 import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.bahmni.module.admin.csv.utils.CSVUtils.getDateFromString;
 import static org.bahmni.module.admin.csv.utils.CSVUtils.getTodayDate;
 
 public class CSVRelationshipService {
 
-    public static final String BAHMNI_RELATIONSHIP_TYPE_MAP_PROPERTY = "bahmni.relationshipTypeMap";
-    public static final String PATIENT_RELATIONSHIP = "patient";
-    public static final String PROVIDER_RELATIONSHIP = "provider";
+    private static final String BAHMNI_RELATIONSHIP_TYPE_MAP_PROPERTY = "bahmni.relationshipTypeMap";
+    private static final String PATIENT_RELATIONSHIP = "patient";
+    private static final String PROVIDER_RELATIONSHIP = "provider";
 
     private BahmniPatientService patientService;
     private PersonService personService;
@@ -39,79 +39,85 @@ public class CSVRelationshipService {
     }
 
     public Relationship save(RelationshipRow relationshipRow) throws ParseException {
-
-        List<Patient> patientsMatchedPersonA = patientService.get(relationshipRow.getPersonA(), true);
-        if (null == patientsMatchedPersonA || patientsMatchedPersonA.size() == 0) {
-            throw new RuntimeException("No matching patients found with ID:'" + relationshipRow.getPersonA() + "'");
+        List<Patient> patientList = patientService.get(relationshipRow.getPatientIdentifier(), true);
+        if (null == patientList || patientList.size() == 0) {
+            throw new RuntimeException("No matching patients found with ID:'" + relationshipRow.getPatientIdentifier() + "'");
         } else {
-            Patient patientA = patientsMatchedPersonA.get(0);
-            Relationship relationship = createRelationship(relationshipRow, patientA);
+            Patient patient = patientList.get(0);
+            Relationship relationship = createRelationship(relationshipRow, patient);
             return personService.saveRelationship(relationship);
         }
     }
 
-    private Relationship createRelationship(RelationshipRow relationshipRow, Patient patientA) throws ParseException {
-        Relationship relationship = new Relationship();
+    private Relationship createRelationship(RelationshipRow relationshipRow, Patient patient) throws ParseException {
 
-        RelationshipType relationshipType = getMatchingRelationship(relationshipRow.getaIsToB(), relationshipRow.getbIsToA());
-        relationship.setPersonA(patientA);
-        relationship.setPersonB(getPersonB(relationshipRow, patientA, relationshipType));
+        RelationshipType relationshipType = getMatchingRelationship(relationshipRow.getRelationshipType());
+        Person personB = getRelatedPerson(relationshipRow);
+        Relationship relationship = checkForExistingRelationship(patient, relationshipType, personB);
+
+        if (relationship == null){
+            relationship = new Relationship();
+            relationship.setPersonA(patient);
+            relationship.setPersonB(personB);
+            relationship.setRelationshipType(relationshipType);
+        }
+
         relationship.setStartDate(getStartDate(relationshipRow));
         relationship.setEndDate(getEndDate(relationshipRow));
-        relationship.setRelationshipType(relationshipType);
-
         return relationship;
     }
 
-
-    private Person getPersonB(RelationshipRow relationshipRow, Patient patientA, RelationshipType relationshipType) {
+    private Person getRelatedPerson(RelationshipRow relationshipRow) {
         String relationshipMapProperty = administrationService.getGlobalProperty(BAHMNI_RELATIONSHIP_TYPE_MAP_PROPERTY);
         Map<String, Object> relationshipMap = new Gson().fromJson(relationshipMapProperty, new TypeToken<HashMap<String, Object>>() {
         }.getType());
 
-        if (isPatientRelationship(relationshipMap, relationshipRow.getaIsToB())) {
+        if (isProviderRelationship(relationshipMap, relationshipRow.getRelationshipType())) {
+            return getProvider(relationshipRow);
 
-            List<Patient> matchedPatient = patientService.get(relationshipRow.getPersonB(), true);
-
-            if (null == matchedPatient || matchedPatient.size() == 0) {
-                throw new RuntimeException("No matching patients found with ID:'" + relationshipRow.getPersonB() + "'");
-            }
-            checkForExistingRelationship(relationshipRow, patientA, relationshipType, matchedPatient.get(0));
-            return matchedPatient.get(0);
-        } else if (isProviderRelationship(relationshipMap, relationshipRow.getaIsToB())) {
-
-            List<Provider> matchedProvider = providerService.getProviders(relationshipRow.getPersonB(), null, null, null);
-            if (null == matchedProvider || matchedProvider.size() == 0) {
-                throw new RuntimeException("No matching provider found with ID:'" + relationshipRow.getPersonB() + "'");
-            }
-            checkForExistingRelationship(relationshipRow, patientA, relationshipType, matchedProvider.get(0).getPerson());
-            return matchedProvider.get(0).getPerson();
+        } else if (isPatientRelationship(relationshipMap, relationshipRow.getRelationshipType())) {
+            return getPatient(relationshipRow);
 
         } else {
-            throw new RuntimeException("Relationship map not found for the relationship " + relationshipRow.getaIsToB());
+            throw new RuntimeException("Relationship not found " + relationshipRow.getProviderName());
         }
     }
 
-    private void checkForExistingRelationship(RelationshipRow relationshipRow, Patient patientA, RelationshipType relationshipType, Person matchedPatient) {
-        List<Relationship> existingRelationship = personService.getRelationships(patientA, matchedPatient, relationshipType);
-        if (existingRelationship != null && existingRelationship.size() > 0) {
-            throw new RuntimeException("Relationship with " + relationshipRow.getPersonA() + " and " + relationshipRow.getPersonB() + " with the type " + relationshipType.getaIsToB() + " exists.");
+    private Person getProvider(RelationshipRow relationshipRow) {
+        if (StringUtils.isEmpty(relationshipRow.getProviderName())) {
+            throw new RuntimeException("Provider name not found");
         }
+        List<Provider> matchedProvider = providerService.getProviders(relationshipRow.getProviderName(), null, null, null);
+        if (CollectionUtils.isEmpty(matchedProvider)) {
+            throw new RuntimeException("No matching provider found with ID:'" + relationshipRow.getProviderName() + "'");
+        }
+        return matchedProvider.get(0).getPerson();
     }
 
-    private RelationshipType getMatchingRelationship(String aIsToBRelationship, String bIsToA) {
-        List<RelationshipType> relationshipTypeByAIsToB = patientService.getByAIsToB(aIsToBRelationship);
+    private Person getPatient(RelationshipRow relationshipRow) {
+        List<Patient> matchedPatient = patientService.get(relationshipRow.getPatientRelationIdentifier(), true);
 
-        if (relationshipTypeByAIsToB == null || relationshipTypeByAIsToB.size() == 0) {
-            throw new RuntimeException("No matching relationship type found with relationship type name:'" + aIsToBRelationship + "'");
+        if (CollectionUtils.isEmpty(matchedPatient)) {
+            throw new RuntimeException("No matching patients found with ID:'" + relationshipRow.getPatientRelationIdentifier() + "'");
         }
+        return matchedPatient.get(0);
+    }
 
-        for (RelationshipType relationshipType : relationshipTypeByAIsToB) {
-            if (relationshipTypeByAIsToB.get(0).getbIsToA().equals(bIsToA)) {
-                return relationshipType;
-            }
+    private Relationship checkForExistingRelationship(Patient patient, RelationshipType relationshipType, Person matchedPerson) {
+        List<Relationship> existingRelationship = personService.getRelationships(patient, matchedPerson, relationshipType);
+        if (CollectionUtils.isNotEmpty(existingRelationship)) {
+            return existingRelationship.get(0);
         }
-        throw new RuntimeException("Relationship aIsToB and bIsToA are not matching.");
+        return null;
+    }
+
+    private RelationshipType getMatchingRelationship(String relationshipType) {
+        List<RelationshipType> relationshipTypes = patientService.getByAIsToB(relationshipType);
+
+        if (CollectionUtils.isEmpty(relationshipTypes)) {
+            throw new RuntimeException("No matching relationship type found with relationship type name:'" + relationshipType + "'");
+        }
+        return relationshipTypes.get(0);
     }
 
     private List<String> getRelationshipTypes(Map<String, Object> relationshipMap, String relationship) {
@@ -120,20 +126,19 @@ public class CSVRelationshipService {
 
     private boolean isProviderRelationship(Map<String, Object> relationshipMap, String relationshipType) {
         List<String> relationshipTypes = getRelationshipTypes(relationshipMap, PROVIDER_RELATIONSHIP);
-        return relationshipTypes != null && relationshipTypes.contains(relationshipType);
+        return relationshipTypes != null && containsIgnoreCase(relationshipTypes, relationshipType);
     }
 
     private boolean isPatientRelationship(Map<String, Object> relationshipMap, String relationshipType) {
         List<String> relationshipTypes = getRelationshipTypes(relationshipMap, PATIENT_RELATIONSHIP);
-        return relationshipTypes != null && relationshipTypes.contains(relationshipType);
+        return relationshipTypes != null && containsIgnoreCase(relationshipTypes, relationshipType);
     }
 
     private Date getStartDate(RelationshipRow relationshipRow) throws ParseException {
         if (!StringUtils.isEmpty(relationshipRow.getStartDate())) {
             return getDateFromString(relationshipRow.getStartDate());
-        } else {
-            return getTodayDate();
         }
+        return getTodayDate();
     }
 
     private Date getEndDate(RelationshipRow relationshipRow) throws ParseException {
@@ -142,4 +147,14 @@ public class CSVRelationshipService {
         }
         return null;
     }
+
+    private boolean containsIgnoreCase(List<String> relationshipTypes, String relationshipType) {
+        for (String relType : relationshipTypes) {
+            if(relationshipType.equalsIgnoreCase(relType)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

@@ -79,9 +79,9 @@ public class CSVRelationshipServiceTest {
         when(patientService.getByAIsToB("Parent")).thenReturn(relationshipTypes);
 
         expectedEx.expect(RuntimeException.class);
-        expectedEx.expectMessage("Relationship aIsToB and bIsToA are not matching.");
+        expectedEx.expectMessage("No matching relationship type found with relationship type name:'something'");
 
-        csvRelationshipService.save(new RelationshipRow("GAN200012", "", "Parent", "something", null, null));
+        csvRelationshipService.save(new RelationshipRow("GAN200012", "","", "something", null, null));
     }
 
     @Test
@@ -96,7 +96,7 @@ public class CSVRelationshipServiceTest {
         expectedEx.expect(RuntimeException.class);
         expectedEx.expectMessage("No matching patients found with ID:'GAN200013'");
 
-        csvRelationshipService.save(new RelationshipRow("GAN200012", "GAN200013", "Parent", "Child", null, null));
+        csvRelationshipService.save(new RelationshipRow("GAN200012", "GAN200013", "", "Parent", null, null));
     }
 
     @Test
@@ -111,12 +111,13 @@ public class CSVRelationshipServiceTest {
         expectedEx.expect(RuntimeException.class);
         expectedEx.expectMessage("No matching provider found with ID:'Super User'");
 
-        csvRelationshipService.save(new RelationshipRow("GAN200012", "Super User", "Parent", "Child", null, null));
+        csvRelationshipService.save(new RelationshipRow("GAN200012", "", "Super User", "Parent", null, null));
     }
 
     @Test
     public void shouldFailIfRelationshipMapDoesNotExist() throws Exception {
         when(patientService.get("GAN200012", true)).thenReturn(getPatients());
+        when(patientService.get("GAN200013", true)).thenReturn(null);
         ArrayList<RelationshipType> relationshipTypes = getRelationshipTypes();
         when(patientService.getByAIsToB("Parent")).thenReturn(relationshipTypes);
         when(providerService.getProviders("Super User", null, null, null)).thenReturn(null);
@@ -124,24 +125,24 @@ public class CSVRelationshipServiceTest {
         when(administrationService.getGlobalProperty(anyString())).thenReturn(null);
 
         expectedEx.expect(RuntimeException.class);
-        expectedEx.expectMessage("Relationship map not found for the relationship Parent");
+        expectedEx.expectMessage("Relationship not found ProviderName");
 
-        csvRelationshipService.save(new RelationshipRow("GAN200012", "Super User", "Parent", "Child", null, null));
+        csvRelationshipService.save(new RelationshipRow("GAN200012", "GAN200013", "ProviderName", "Parent", null, null));
     }
 
     @Test
     public void shouldSaveRelationship() throws Exception {
         when(patientService.get("GAN200012", true)).thenReturn(getPatients());
         ArrayList<RelationshipType> relationshipTypes = getRelationshipTypes();
-        when(patientService.getByAIsToB("Parent")).thenReturn(relationshipTypes);
+        when(patientService.getByAIsToB("Doctor")).thenReturn(relationshipTypes);
         when(providerService.getProviders("Super User", null, null, null)).thenReturn(getProviders());
-        when(administrationService.getGlobalProperty(anyString())).thenReturn("{provider: [\"Parent\"]}");
+        when(administrationService.getGlobalProperty(anyString())).thenReturn("{provider: [\"Doctor\"]}");
         Relationship expectedRelationship = new Relationship();
         expectedRelationship.setPersonA(getPatients().get(0));
         expectedRelationship.setPersonB(getProviders().get(0).getPerson());
         when(personService.saveRelationship(any(Relationship.class))).thenReturn(expectedRelationship);
 
-        Relationship relationship = csvRelationshipService.save(new RelationshipRow("GAN200012", "Super User", "Parent", "Child", null, null));
+        Relationship relationship = csvRelationshipService.save(new RelationshipRow("GAN200012", "", "Super User", "Doctor", null, null));
         assertNotNull("Relationship should not be null", relationship);
         assertEquals(expectedRelationship.getPersonA(), relationship.getPersonA());
         assertEquals(expectedRelationship.getPersonB(), relationship.getPersonB());

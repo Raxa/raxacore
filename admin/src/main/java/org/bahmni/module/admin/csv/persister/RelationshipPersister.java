@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
-import java.util.Date;
 
 @Component
 public class RelationshipPersister implements EntityPersister<RelationshipRow> {
@@ -43,38 +42,33 @@ public class RelationshipPersister implements EntityPersister<RelationshipRow> {
         this.userContext = userContext;
     }
 
-    Messages messages = new Messages();
-
     @Override
     public Messages validate(RelationshipRow relationshipRow) {
+        return new Messages();
+    }
 
-        if (StringUtils.isEmpty(relationshipRow.getPersonA())) {
-            messages.add("Patient unique identifier not specified.");
+    void validateRow(RelationshipRow relationshipRow){
+        if (StringUtils.isEmpty(relationshipRow.getPatientIdentifier())) {
+            throw new RuntimeException("Patient unique identifier not specified.");
         }
 
-        if (StringUtils.isEmpty(relationshipRow.getPersonB())) {
-            messages.add("Target relationship person identifier not specified.");
+        if (StringUtils.isEmpty(relationshipRow.getPatientRelationIdentifier()) && StringUtils.isEmpty(relationshipRow.getProviderName())) {
+            throw new RuntimeException("Both Provider Name and Relation Identifier cannot be null.");
         }
 
-        if (StringUtils.isEmpty(relationshipRow.getaIsToB())) {
-            messages.add("Relationship type A is to B is not specified.");
-        }
-
-        if (StringUtils.isEmpty(relationshipRow.getbIsToA())) {
-            messages.add("Relationship type B is to A is not specified.");
+        if (StringUtils.isEmpty(relationshipRow.getRelationshipType())) {
+            throw new RuntimeException("Relationship type is not specified.");
         }
 
         if ((!StringUtils.isEmpty(relationshipRow.getStartDate()) && !StringUtils.isEmpty(relationshipRow.getEndDate()))) {
             try {
                 if (CSVUtils.getDateFromString(relationshipRow.getStartDate()).after(CSVUtils.getDateFromString(relationshipRow.getEndDate()))){
-                    messages.add("Start date should be before end date.");
+                    throw new RuntimeException("Start date should be before end date.");
                 }
             } catch (ParseException e) {
-                messages.add("Could not parse provided dates. Please provide date in format yyyy-mm-dd");
+                throw new RuntimeException("Could not parse provided dates. Please provide date in format yyyy-mm-dd");
             }
         }
-
-        return messages;
     }
 
     @Override
@@ -82,7 +76,7 @@ public class RelationshipPersister implements EntityPersister<RelationshipRow> {
         try {
             Context.openSession();
             Context.setUserContext(userContext);
-
+            validateRow(relationshipRow);
             new CSVRelationshipService(patientService, personService, providerService, administrationService).save(relationshipRow);
 
             return new Messages();

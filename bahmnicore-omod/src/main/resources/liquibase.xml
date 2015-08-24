@@ -3120,5 +3120,11 @@
             `property_value`=@concept_set_uuid;
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201508211600" author="Vikash, Abishek">
+        <comment>Updating column stage_name of import_status table </comment>
+        <sql>
+            ALTER TABLE import_status MODIFY stage_name varchar(30);
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
