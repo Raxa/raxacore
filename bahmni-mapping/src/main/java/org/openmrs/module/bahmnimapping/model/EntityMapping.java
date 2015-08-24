@@ -16,3 +16,5 @@ public class EntityMapping {
     private EntityMappingType entityMappingType;
 
 }
+
+

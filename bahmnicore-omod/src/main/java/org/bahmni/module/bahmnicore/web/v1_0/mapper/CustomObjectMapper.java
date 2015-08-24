@@ -2,7 +2,8 @@ package org.bahmni.module.bahmnicore.web.v1_0.mapper;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
-import org.openmrs.Concept;
+import org.openmrs.BaseOpenmrsObject;
+import org.openmrs.ConceptName;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
@@ -12,8 +13,10 @@ public class CustomObjectMapper extends ObjectMapper {
     public CustomObjectMapper() {
         super();
         configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
+        configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
         _serializationConfig.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
-        _serializationConfig.addMixInAnnotations(Concept.class, ConceptMixin.class);
-        _deserializationConfig.addMixInAnnotations(Concept.class, ConceptMixin.class);
+        _serializationConfig.addMixInAnnotations(BaseOpenmrsObject.class, ConceptMixin.class);
+        _deserializationConfig.addMixInAnnotations(BaseOpenmrsObject.class, ConceptMixin.class);
+        _serializationConfig.addMixInAnnotations(ConceptName.class, ConceptNameMixin.class);
     }
 }

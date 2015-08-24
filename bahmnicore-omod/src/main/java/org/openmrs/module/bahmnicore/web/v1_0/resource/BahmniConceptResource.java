@@ -2,10 +2,12 @@ package org.openmrs.module.bahmnicore.web.v1_0.resource;
 
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.NamedRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptResource1_9;
 
@@ -22,6 +24,11 @@ public class BahmniConceptResource extends ConceptResource1_9 {
         allowedMissingProperties.add("units");
         allowedMissingProperties.add("precise");
         allowedMissingProperties.add("handler");
+    }
+
+    @Override
+    protected PageableResult doSearch(RequestContext context) {
+        return super.doSearch(context);
     }
 
     @Override

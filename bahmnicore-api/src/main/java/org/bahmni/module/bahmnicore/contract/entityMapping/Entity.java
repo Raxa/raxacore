@@ -7,6 +7,7 @@ import java.util.List;
 @Data
 public class Entity <T1,T2> {
     public T1 entity1;
+
     public List<T2> mappings;
 
     public Entity () {

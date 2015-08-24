@@ -16,11 +16,11 @@
     </bean>
 
 
-    <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
-        <property name="objectMapper">
-            <bean class="org.bahmni.module.bahmnicore.web.v1_0.mapper.CustomObjectMapper"/>
-        </property>
-    </bean>
+    <!--<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">-->
+        <!--<property name="objectMapper">-->
+            <!--<bean class="org.bahmni.module.bahmnicore.web.v1_0.mapper.CustomObjectMapper"/>-->
+        <!--</property>-->
+    <!--</bean>-->
 
 
     <!--Include uiframework css files for all modules-->
