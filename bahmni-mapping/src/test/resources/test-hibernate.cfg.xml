@@ -11,6 +11,8 @@
         <!--<property name="use_sql_comments">true</property>-->
 
         <mapping resource="LocationEncounterTypeMap.hbm.xml"/>
+        <mapping resource="EntityMapping.hbm.xml"/>
+        <mapping resource="EntityMappingType.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>

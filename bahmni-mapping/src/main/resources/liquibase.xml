@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="bahmni-mapping-201508200613" author="Gautham, Sudhakar" context="rel0.75">
+        <comment>Entity mapping table</comment>
+        <createTable tableName="entity_mapping_type">
+            <column autoIncrement="true" name="id" type="int"><constraints nullable="false" primaryKey="true"/></column>
+            <column name="name" type="varchar(100)"><constraints nullable="false"/></column>
+            <column name="entity1_type" type="varchar(100)"><constraints nullable="false"/></column>
+            <column name="entity2_type" type="varchar(100)"><constraints nullable="false"/></column>
+            <column name="date_created" type="DATETIME"> <constraints nullable="false"/> </column>
+        </createTable>
+        <createTable tableName="entity_mapping">
+            <column autoIncrement="true" name="id" type="int"> <constraints nullable="false" primaryKey="true"/> </column>
+            <column name="entity_mapping_type_id" type="int"> <constraints nullable="false"/> </column>
+            <column name="entity1_uuid" type="char(38)"> <constraints nullable="false"/> </column>
+            <column name="entity2_uuid" type="char(38)"> <constraints nullable="false"/> </column>
+            <column name="date_created" type="DATETIME"> <constraints nullable="false"/> </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="entity_mapping_entity_mapping_type_fk"
+                                 baseTableName="entity_mapping" baseColumnNames="entity_mapping_type_id"
+                                 referencedTableName="entity_mapping_type" referencedColumnNames="id" />
+    </changeSet>
+
+</databaseChangeLog>
