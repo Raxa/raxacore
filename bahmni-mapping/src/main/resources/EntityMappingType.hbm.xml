@@ -7,6 +7,7 @@
     <class name="EntityMappingType" table="entity_mapping_type" batch-size="25">
         <id name="id" type="int"> <generator class="native" /> </id>
         <property name="name" type="java.lang.String"/>
+        <property name="uuid" type="java.lang.String"/>
         <property name="entity1Type" type="java.lang.String" column="entity1_type"/>
         <property name="entity2Type" type="java.lang.String" column="entity2_type"/>
     </class>

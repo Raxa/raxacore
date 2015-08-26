@@ -13,6 +13,7 @@ public class EntityMapping {
     private Integer id;
     private String entity1Uuid;
     private String entity2Uuid;
+    private String uuid;
     private EntityMappingType entityMappingType;
 
 }

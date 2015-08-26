@@ -15,8 +15,5 @@ public class CustomObjectMapper extends ObjectMapper {
         configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
         configure(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS, false);
         _serializationConfig.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"));
-        _serializationConfig.addMixInAnnotations(BaseOpenmrsObject.class, ConceptMixin.class);
-        _deserializationConfig.addMixInAnnotations(BaseOpenmrsObject.class, ConceptMixin.class);
-        _serializationConfig.addMixInAnnotations(ConceptName.class, ConceptNameMixin.class);
     }
 }

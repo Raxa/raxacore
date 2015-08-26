@@ -11,6 +11,7 @@ import lombok.experimental.Builder;
 @AllArgsConstructor
 public class EntityMappingType {
     private Integer id;
+    private String uuid;
     private String name;
     private String entity1Type;
     private String entity2Type;
