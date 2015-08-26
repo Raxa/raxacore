@@ -11,9 +11,9 @@ import lombok.experimental.Builder;
 @AllArgsConstructor
 public class EntityMapping {
     private Integer id;
+    private String uuid;
     private String entity1Uuid;
     private String entity2Uuid;
-    private String uuid;
     private EntityMappingType entityMappingType;
 
 }

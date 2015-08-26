@@ -19,6 +19,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
@@ -37,56 +38,56 @@ public class EntityMappingSearchHandlerTest {
     RequestContext requestContext;
 
     @InjectMocks
-    EntityMappingSearchHandler entityMappingController;
+    EntityMappingSearchHandler entityMappingSearchHandler;
 
-    String entityTypeName = "program_obsTemplate";
-    String entity1Uuid = "entity1-uuid";
-    String entity2Uuid = "entity2-uuid";
-    EntityMappingType programObsTemplate;
+    String PROGRAM_OBS_TEMPLATE = "program_obsTemplate";
+    String ENTITY1_UUID = "entity1-uuid";
+    String ENTITY2_UUID = "entity2-uuid";
+    EntityMappingType programObsTemplateMappingType;
 
     @Before
     public void setUp() throws Exception {
-        when(requestContext.getParameter("mappingType")).thenReturn(entityTypeName);
-        when(requestContext.getParameter("entityUuid")).thenReturn(entity1Uuid);
-        programObsTemplate = EntityMappingType.builder().id(1).entity1Type("org.openmrs.Program")
-                .entity2Type("org.openmrs.Concept").name(entityTypeName).build();
+        when(requestContext.getParameter("mappingType")).thenReturn(PROGRAM_OBS_TEMPLATE);
+        when(requestContext.getParameter("entityUuid")).thenReturn(ENTITY1_UUID);
+        programObsTemplateMappingType = EntityMappingType.builder().id(1).entity1Type("org.openmrs.Program")
+                .entity2Type("org.openmrs.Concept").name(PROGRAM_OBS_TEMPLATE).build();
 
-        when(entityMappingDao.getEntityMappingTypeByName(entityTypeName)).thenReturn(programObsTemplate);
+        when(entityMappingDao.getEntityMappingTypeByName(PROGRAM_OBS_TEMPLATE)).thenReturn(programObsTemplateMappingType);
 
     }
 
     @Test
     public void shouldGetEntityWithMappingsWhenThereAreEntityMappings() throws Exception {
-        EntityMapping entityMapping = EntityMapping.builder().entity1Uuid(entity1Uuid).entity2Uuid(entity2Uuid)
-                .entityMappingType(programObsTemplate).build();
+        EntityMapping entityMapping = EntityMapping.builder().entity1Uuid(ENTITY1_UUID).entity2Uuid(ENTITY2_UUID)
+                .entityMappingType(programObsTemplateMappingType).build();
 
-        when(entityMappingDao.getEntityMappings(entity1Uuid, entityTypeName)).thenReturn(asList(entityMapping));
+        when(entityMappingDao.getEntityMappings(ENTITY1_UUID, PROGRAM_OBS_TEMPLATE)).thenReturn(Collections.singletonList(entityMapping));
 
         Program program = new Program();
         Concept concept = new Concept();
 
-        when(abstractDao.getByUuid(entity1Uuid, Program.class)).thenReturn(program);
-        when(abstractDao.getByUuid(entity2Uuid, Concept.class)).thenReturn(concept);
+        when(abstractDao.getByUuid(ENTITY1_UUID, Program.class)).thenReturn(program);
+        when(abstractDao.getByUuid(ENTITY2_UUID, Concept.class)).thenReturn(concept);
 
-        AlreadyPaged pageableResult = (AlreadyPaged) entityMappingController.search(requestContext);
+        AlreadyPaged pageableResult = (AlreadyPaged) entityMappingSearchHandler.search(requestContext);
         Entity entityWithMappings = (Entity) pageableResult.getPageOfResults().get(0);
 
         assertNotNull(entityWithMappings);
         assertEquals(program, entityWithMappings.getEntity());
-        assertEquals(asList(concept), entityWithMappings.getMappings());
+        assertEquals(Collections.singletonList(concept), entityWithMappings.getMappings());
     }
 
     @Test
     public void shouldGetEntityWithZeroMappingsWhenThereIsNoEntityMapping() throws Exception {
-        when(entityMappingDao.getEntityMappings(entity1Uuid, entityTypeName)).thenReturn(new ArrayList<EntityMapping>());
+        when(entityMappingDao.getEntityMappings(ENTITY1_UUID, PROGRAM_OBS_TEMPLATE)).thenReturn(new ArrayList<EntityMapping>());
 
         Program program = new Program();
         Concept concept = new Concept();
 
-        when(abstractDao.getByUuid(entity1Uuid, Program.class)).thenReturn(program);
-        when(abstractDao.getByUuid(entity2Uuid, Concept.class)).thenReturn(concept);
+        when(abstractDao.getByUuid(ENTITY1_UUID, Program.class)).thenReturn(program);
+        when(abstractDao.getByUuid(ENTITY2_UUID, Concept.class)).thenReturn(concept);
 
-        AlreadyPaged pageableResult = (AlreadyPaged) entityMappingController.search(requestContext);
+        AlreadyPaged pageableResult = (AlreadyPaged) entityMappingSearchHandler.search(requestContext);
         Entity entityWithMappings = (Entity) pageableResult.getPageOfResults().get(0);
 
         assertNotNull(entityWithMappings);
@@ -98,10 +99,10 @@ public class EntityMappingSearchHandlerTest {
     @Test
     public void shouldGetWithZeroMappingsWhenThereIsNoEntityMappingType() throws Exception {
 
-        when(entityMappingDao.getEntityMappingTypeByName(entityTypeName)).thenReturn(null);
-        when(entityMappingDao.getEntityMappings(entity1Uuid, entityTypeName)).thenReturn(new ArrayList<EntityMapping>());
+        when(entityMappingDao.getEntityMappingTypeByName(PROGRAM_OBS_TEMPLATE)).thenReturn(null);
+        when(entityMappingDao.getEntityMappings(ENTITY1_UUID, PROGRAM_OBS_TEMPLATE)).thenReturn(new ArrayList<EntityMapping>());
 
-        PageableResult pageableResult = entityMappingController.search(requestContext);
+        PageableResult pageableResult = entityMappingSearchHandler.search(requestContext);
 
         assertTrue(pageableResult instanceof EmptySearchResult);
     }
