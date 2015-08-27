@@ -12,7 +12,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.DrugOrder;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.PersonService;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -30,10 +32,13 @@ public class BahmniBridgeTest {
     @Mock
     private PatientService patientService;
     @Mock
+    private PersonService personService;
+    @Mock
     private OrderDao orderDao;
     @Mock
     private BahmniDrugOrderService bahmniDrugOrderService;
-
+    @Mock
+    private ConceptService conceptService;
     BahmniBridge bahmniBridge;
 
     String patientUuid = "patient-uuid";
@@ -41,7 +46,7 @@ public class BahmniBridgeTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        bahmniBridge = new BahmniBridge(obsDao, patientService, orderDao, bahmniDrugOrderService);
+        bahmniBridge = new BahmniBridge(obsDao, patientService, personService, conceptService, orderDao, bahmniDrugOrderService);
         bahmniBridge.forPatient(patientUuid);
     }
 

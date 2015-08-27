@@ -1,5 +1,6 @@
 package org.bahmni.module.elisatomfeedclient.api.worker;
 
+import groovy.lang.GroovyClassLoader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
@@ -13,25 +14,18 @@ import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.joda.time.DateTime;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Obs;
-import org.openmrs.Order;
-import org.openmrs.Provider;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
+import org.openmrs.module.bahmniemrapi.elisFeedInterceptor.ElisFeedInterceptor;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
+import org.openmrs.util.OpenmrsUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class OpenElisAccessionEventWorker implements EventWorker {
@@ -102,13 +96,42 @@ public class OpenElisAccessionEventWorker implements EventWorker {
             if (openElisAccession.getAccessionNotes() != null && !openElisAccession.getAccessionNotes().isEmpty()) {
                 processAccessionNotes(openElisAccession, orderEncounter);
             }
-            associateTestResultsToOrder(openElisAccession);
+            Set<Encounter> updatedEncounters = associateTestResultsToOrder(openElisAccession);
+            runInterceptors(updatedEncounters);
+
+            saveUpdatedEncounters(updatedEncounters);
         } catch (IOException e) {
             logger.error("openelisatomfeedclient:error processing event : " + accessionUrl + e.getMessage(), e);
             throw new OpenElisFeedException("could not read accession data", e);
         } catch (ParseException pe) {
             logger.error("openelisatomfeedclient:error processing lab results. Invalid result data type : " + accessionUrl + pe.getMessage(), pe);
             throw new OpenElisFeedException("could not read accession data. Invalid result data type.", pe);
+        }
+    }
+
+    private void saveUpdatedEncounters(Set<Encounter> updatedEncounters) {
+        for (Encounter updatedEncounter : updatedEncounters) {
+            encounterService.saveEncounter(updatedEncounter);
+        }
+    }
+
+    private void runInterceptors(Set<Encounter> encounters) {
+        GroovyClassLoader gcl = new GroovyClassLoader();
+        File directory = new File(OpenmrsUtil.getApplicationDataDirectory() + "elisFeedInterceptor");
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                Class clazz;
+                try {
+                    clazz = gcl.parseClass(file);
+                    logger.info("BahmniEncounterTransactionUpdateAdvice : Using rules in " + clazz.getName());
+                    ElisFeedInterceptor elisFeedInterceptor = (ElisFeedInterceptor) clazz.newInstance();
+                    elisFeedInterceptor.run(encounters);
+                    logger.info("BahmniEncounterTransactionUpdateAdvice : Done");
+                } catch (IOException | IllegalAccessException | InstantiationException e) {
+                    logger.error(e);
+                }
+            }
         }
     }
 
@@ -124,17 +147,17 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         if (accessionNoteDiff.hasDifferenceInAccessionNotes()) {
             for (OpenElisAccessionNote note : accessionNoteDiff.getAccessionNotesToBeAdded()) {
                 Encounter noteEncounter = getEncounterForNote(note, encountersForAccession, labNotesEncounterType, orderEncounter);
-                if(!encounterHelper.hasObservationWithText(openElisAccession.getAccessionUuid(),noteEncounter)){
-                    noteEncounter.addObs(createObsWith(openElisAccession.getAccessionUuid(), accessionConcept,note.getDateTimeAsDate()));
+                if (!encounterHelper.hasObservationWithText(openElisAccession.getAccessionUuid(), noteEncounter)) {
+                    noteEncounter.addObs(createObsWith(openElisAccession.getAccessionUuid(), accessionConcept, note.getDateTimeAsDate()));
                 }
-                noteEncounter.addObs(createObsWith(note.getNote(), labNotesConcept,note.getDateTimeAsDate()));
+                noteEncounter.addObs(createObsWith(note.getNote(), labNotesConcept, note.getDateTimeAsDate()));
                 Encounter newEncounter = encounterService.saveEncounter(noteEncounter);
                 encountersForAccession.add(newEncounter);
             }
         }
     }
 
-    private Encounter getEncounterForNote(OpenElisAccessionNote note, Set<Encounter> encountersForAccession, EncounterType encounterType,Encounter orderEncounter) {
+    private Encounter getEncounterForNote(OpenElisAccessionNote note, Set<Encounter> encountersForAccession, EncounterType encounterType, Encounter orderEncounter) {
         Provider provider = providerHelper.getProviderByUuidOrReturnDefault(note.getProviderUuid(), LAB_MANAGER_IDENTIFIER);
         Encounter encounterWithDefaultProvider = null;
 
@@ -142,13 +165,12 @@ public class OpenElisAccessionEventWorker implements EventWorker {
             for (Encounter encounter : encountersForAccession) {
                 if (note.isProviderInEncounter(encounter)) {
                     return encounter;
-                }
-                else if(ProviderHelper.getProviderFrom(encounter).equals(provider)){
+                } else if (ProviderHelper.getProviderFrom(encounter).equals(provider)) {
                     encounterWithDefaultProvider = encounter;
                 }
             }
         }
-        return encounterWithDefaultProvider != null? encounterWithDefaultProvider : encounterHelper.createNewEncounter(orderEncounter.getVisit(),encounterType, orderEncounter.getEncounterDatetime(), orderEncounter.getPatient(), provider );
+        return encounterWithDefaultProvider != null ? encounterWithDefaultProvider : encounterHelper.createNewEncounter(orderEncounter.getVisit(), encounterType, orderEncounter.getEncounterDatetime(), orderEncounter.getPatient(), provider);
     }
 
     private Concept getAccessionConcept() {
@@ -163,7 +185,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         return encounterService.getEncounterType(ACCESSION_NOTE_ENCOUNTER_TYPE);
     }
 
-    private Obs createObsWith(String textValue, Concept concept,Date obsDateTime) {
+    private Obs createObsWith(String textValue, Concept concept, Date obsDateTime) {
         Obs observation = new Obs();
         observation.setConcept(concept);
         observation.setValueText(textValue);
@@ -171,7 +193,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         return observation;
     }
 
-    protected void associateTestResultsToOrder(OpenElisAccession openElisAccession) throws ParseException {
+    protected Set<Encounter> associateTestResultsToOrder(OpenElisAccession openElisAccession) throws ParseException {
         Encounter orderEncounter = encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid());
         final EncounterType labResultEncounterType = getLabResultEncounterType();
         final Set<OpenElisTestDetail> allTests = openElisAccession.getTestDetails();
@@ -210,10 +232,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 }
             }
         }
-
-        for (Encounter updatedEncounter : updatedEncounters) {
-            encounterService.saveEncounter(updatedEncounter);
-        }
+        return updatedEncounters;
     }
 
     private List<Encounter> findVisitEncountersOfType(Visit visit, EncounterType encounterType) {
