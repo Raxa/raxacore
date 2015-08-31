@@ -3126,6 +3126,13 @@
             ALTER TABLE import_status MODIFY stage_name varchar(30);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201508310334" author="Padma">
+        <comment>Deleting bahmnicore.relationshipTypeMap from global property</comment>
+        <sql>
+            delete ignore from global_property where property='bahmnicore.relationshipTypeMap';
+        </sql>
+    </changeSet>
+
 
     <changeSet id="bahmni-mapping-201508200613" author="Gautham, Sudhakar" context="rel0.75">
         <comment>Entity mapping table</comment>
