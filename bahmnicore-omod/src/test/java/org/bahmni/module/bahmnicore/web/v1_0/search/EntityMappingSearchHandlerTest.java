@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.search;
 
 import org.bahmni.module.bahmnicore.contract.entityMapping.Entity;
-import org.bahmni.module.bahmnicore.dao.AbstractDao;
+import org.bahmni.module.bahmnicore.dao.EntityDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,6 @@ import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -33,7 +32,7 @@ public class EntityMappingSearchHandlerTest {
     @Mock
     EntityMappingDao entityMappingDao;
     @Mock
-    AbstractDao abstractDao;
+    EntityDao entityDao;
     @Mock
     RequestContext requestContext;
 
@@ -66,8 +65,8 @@ public class EntityMappingSearchHandlerTest {
         Program program = new Program();
         Concept concept = new Concept();
 
-        when(abstractDao.getByUuid(ENTITY1_UUID, Program.class)).thenReturn(program);
-        when(abstractDao.getByUuid(ENTITY2_UUID, Concept.class)).thenReturn(concept);
+        when(entityDao.getByUuid(ENTITY1_UUID, Program.class)).thenReturn(program);
+        when(entityDao.getByUuid(ENTITY2_UUID, Concept.class)).thenReturn(concept);
 
         AlreadyPaged pageableResult = (AlreadyPaged) entityMappingSearchHandler.search(requestContext);
         Entity entityWithMappings = (Entity) pageableResult.getPageOfResults().get(0);
@@ -84,8 +83,8 @@ public class EntityMappingSearchHandlerTest {
         Program program = new Program();
         Concept concept = new Concept();
 
-        when(abstractDao.getByUuid(ENTITY1_UUID, Program.class)).thenReturn(program);
-        when(abstractDao.getByUuid(ENTITY2_UUID, Concept.class)).thenReturn(concept);
+        when(entityDao.getByUuid(ENTITY1_UUID, Program.class)).thenReturn(program);
+        when(entityDao.getByUuid(ENTITY2_UUID, Concept.class)).thenReturn(concept);
 
         AlreadyPaged pageableResult = (AlreadyPaged) entityMappingSearchHandler.search(requestContext);
         Entity entityWithMappings = (Entity) pageableResult.getPageOfResults().get(0);

@@ -1,6 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import org.bahmni.module.bahmnicore.dao.AbstractDao;
+import org.bahmni.module.bahmnicore.dao.EntityDao;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class AbstractDaoImpl implements AbstractDao{
+public class EntityDaoImpl implements EntityDao {
     @Autowired
     private SessionFactory sessionFactory;
 

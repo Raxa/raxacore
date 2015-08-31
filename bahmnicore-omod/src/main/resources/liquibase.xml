@@ -3150,4 +3150,22 @@
                                  referencedTableName="entity_mapping_type" referencedColumnNames="id" />
     </changeSet>
 
+    <changeSet id="bahmni-mapping-201508271719" author="Gautam, Shan" context="rel0.75">
+        <comment>Inserting Program Obstemplate Mapping type</comment>
+        <insert tableName="entity_mapping_type">
+            <column name="name" value="program_obstemplate"/>
+            <column name="uuid" valueComputed="uuid()"/>
+            <column name="entity1_type" value="org.openmrs.Program"></column>
+            <column name="entity2_type" value="org.openmrs.Concept"></column>
+            <column name="date_created" valueComputed="now()"></column>
+        </insert>
+    </changeSet>
+
+    <changeSet id="bahmni-mapping-201508271736" author="Shan, Gautam" context="rel0.75">
+        <comment>Introducing constraint unique key to name column in the entity_mapping_type table</comment>
+        <addUniqueConstraint constraintName="unique_entity_mapping_type_name"
+                             columnNames="name"
+                             tableName="entity_mapping_type"/>
+    </changeSet>
+
 </databaseChangeLog>

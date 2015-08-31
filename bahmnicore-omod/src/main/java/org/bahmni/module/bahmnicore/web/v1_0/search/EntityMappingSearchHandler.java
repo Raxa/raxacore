@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.search;
 
 import org.bahmni.module.bahmnicore.contract.entityMapping.Entity;
-import org.bahmni.module.bahmnicore.dao.AbstractDao;
+import org.bahmni.module.bahmnicore.dao.EntityDao;
 import org.openmrs.module.bahmnimapping.dao.EntityMappingDao;
 import org.openmrs.module.bahmnimapping.model.EntityMapping;
 import org.openmrs.module.bahmnimapping.model.EntityMappingType;
@@ -25,12 +25,12 @@ import java.util.List;
 public class EntityMappingSearchHandler implements SearchHandler {
     private EntityMappingDao entityMappingDao;
 
-    private AbstractDao abstractDao;
+    private EntityDao entityDao;
 
     @Autowired
-    public EntityMappingSearchHandler(EntityMappingDao entityMappingDao, AbstractDao abstractDao) {
+    public EntityMappingSearchHandler(EntityMappingDao entityMappingDao, EntityDao entityDao) {
         this.entityMappingDao = entityMappingDao;
-        this.abstractDao = abstractDao;
+        this.entityDao = entityDao;
     }
 
     @Override
@@ -58,10 +58,10 @@ public class EntityMappingSearchHandler implements SearchHandler {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        List mappings = new ArrayList();
-        Object entity = abstractDao.getByUuid(entityUuid, entity1Class);
+        List<Object> mappings = new ArrayList<>();
+        Object entity = entityDao.getByUuid(entityUuid, entity1Class);
         for (EntityMapping entityMapping : entityMappings) {
-            Object mappedEntity = abstractDao.getByUuid(entityMapping.getEntity2Uuid(), entity2Class);
+            Object mappedEntity = entityDao.getByUuid(entityMapping.getEntity2Uuid(), entity2Class);
             mappings.add(mappedEntity);
         }
 

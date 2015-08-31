@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.bahmni.module.bahmnicore.BaseIntegrationTest;
-import org.bahmni.module.bahmnicore.dao.AbstractDao;
+import org.bahmni.module.bahmnicore.dao.EntityDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 
 public class AbstractDaoImplIT extends BaseIntegrationTest {
     @Autowired
-    AbstractDao abstractDao;
+    EntityDao entityDao;
 
     @Before
     public void setUp() throws Exception {
@@ -22,7 +22,7 @@ public class AbstractDaoImplIT extends BaseIntegrationTest {
     @Test
     public void getByUuidShouldGetLocationByUuid() throws Exception {
         String locationUuid = "8d6c993e-c2cc-11de-8d13-0010c6dfed0f";
-        Location location = abstractDao.getByUuid(locationUuid, Location.class);
+        Location location = entityDao.getByUuid(locationUuid, Location.class);
         assertNotNull(location);
         assertEquals(locationUuid, location.getUuid());
         assertEquals("Semariya subcentre",location.getDescription());
@@ -31,7 +31,7 @@ public class AbstractDaoImplIT extends BaseIntegrationTest {
     @Test
     public void getByUuidShouldGetConceptByUuid() throws Exception{
         String conceptUuid = "True_concept_uuid";
-        Concept concept = abstractDao.getByUuid(conceptUuid, Concept.class);
+        Concept concept = entityDao.getByUuid(conceptUuid, Concept.class);
         assertNotNull(concept);
         assertEquals(conceptUuid, concept.getUuid());
         assertEquals("True",concept.getName().getName());
