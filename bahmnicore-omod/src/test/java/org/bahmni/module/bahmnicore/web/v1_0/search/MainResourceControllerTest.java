@@ -164,42 +164,6 @@ public abstract class MainResourceControllerTest extends BaseIntegrationTest {
 		return new ObjectMapper().readValue(response.getContentAsString(), SimpleObject.class);
 	}
 	
-	@Test
-	public void shouldGetDefaultByUuid() throws Exception {
-		MockHttpServletResponse response = handle(request(RequestMethod.GET, getURI() + "/" + getUuid()));
-		SimpleObject result = deserialize(response);
-
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-	}
-
-	@Test
-	public void shouldGetRefByUuid() throws Exception {
-		MockHttpServletRequest request = request(RequestMethod.GET, getURI() + "/" + getUuid());
-		request.addParameter("v", "ref");
-		SimpleObject result = deserialize(handle(request));
-
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-	}
-
-	@Test
-	public void shouldGetFullByUuid() throws Exception {
-		MockHttpServletRequest request = request(RequestMethod.GET, getURI() + "/" + getUuid());
-		request.addParameter("v", "full");
-		SimpleObject result = deserialize(handle(request));
-
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getUuid(), PropertyUtils.getProperty(result, "uuid"));
-	}
-
-	@Test
-	public void shouldGetAll() throws Exception {
-		SimpleObject result = deserialize(handle(request(RequestMethod.GET, getURI())));
-
-		Assert.assertNotNull(result);
-		Assert.assertEquals(getAllCount(), Util.getResultsSize(result));
-	}
 	
 	/**
 	 * @return the URI of the resource
