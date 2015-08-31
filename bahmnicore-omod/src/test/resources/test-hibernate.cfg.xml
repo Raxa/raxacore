@@ -13,6 +13,8 @@
         <mapping resource="org/bahmni/module/db/hibernate/ObsRelationship.hbm.xml"/>
         <mapping resource="org/bahmni/module/db/hibernate/ObsRelationshipType.hbm.xml"/>
         <mapping resource="BahmniConfig.hbm.xml"/>
+        <mapping resource="EntityMappingType.hbm.xml"></mapping>
+        <mapping resource="EntityMapping.hbm.xml"></mapping>
 
     </session-factory>
 </hibernate-configuration>

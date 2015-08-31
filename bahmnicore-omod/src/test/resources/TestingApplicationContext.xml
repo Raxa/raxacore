@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -6,6 +7,11 @@
 
     <bean id="propertiesReader" class="org.bahmni.module.bahmnicore.properties.SystemPropertiesReader"
           scope="singleton"/>
+    <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+        <property name="objectMapper">
+            <bean class="org.bahmni.module.bahmnicore.web.v1_0.mapper.CustomObjectMapper"/>
+        </property>
+    </bean>
 
     <bean id="sessionFactory" class="org.openmrs.api.db.hibernate.HibernateSessionFactoryBean">
         <property name="configLocations">
