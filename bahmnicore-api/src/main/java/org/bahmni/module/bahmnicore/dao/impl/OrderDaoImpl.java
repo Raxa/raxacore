@@ -223,12 +223,14 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public List<Order> getAllOrdersForVisits(Patient patient, OrderType orderType, List<Visit> visits) {
-
+        if (visits == null || visits.isEmpty()) {
+            return new ArrayList<>();
+        }
         Session currentSession = getCurrentSession();
         Query queryVisitsWithDrugOrders = currentSession.createQuery(" select o from Order o where o.encounter.encounterId in\n" +
                 "(select e.encounterId from Encounter e where e.visit in (:visits) group by e.visit.visitId )\n" +
-                "and o.dateStopped = null and o.voided = false and o.orderType = (:orderTypeId) and o.action != :discontinued and o.patient = (:patientId) order by o.dateActivated desc");
-        queryVisitsWithDrugOrders.setParameter("patientId", patient);
+                "and o.dateStopped = null and o.voided = false and o.orderType = (:orderTypeId) " +
+                "and o.action != :discontinued order by o.dateActivated desc");
         queryVisitsWithDrugOrders.setParameter("discontinued", Order.Action.DISCONTINUE);
         queryVisitsWithDrugOrders.setParameter("orderTypeId", orderType);
         queryVisitsWithDrugOrders.setParameterList("visits", visits);

@@ -2,11 +2,10 @@ package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.service.OrderService;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Test;
-import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -22,9 +21,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -199,6 +196,30 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         assertThat(drugOrders.size(), is(equalTo(0)));
 
     }
+
+    @Test
+    public void getAllOrdersForVisits_shouldReturnEmptyListWhenNoVisitsFound() {
+        assertThat(orderDao.getAllOrdersForVisits(null, null, null).size(), is(equalTo(0)));
+        assertThat(orderDao.getAllOrdersForVisits(null, null, new ArrayList<Visit>()).size(), is(equalTo(0)));
+    }
+
+    @Test
+    public void getAllOrdersForVisits_shouldReturnAllOrdersGivenAVisitAndAPatient() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Visit visit = Context.getVisitService().getVisit(1);
+        Patient patient = null;
+        OrderType orderType = Context.getOrderService().getOrderType(15);
+
+        List<Order> allOrdersForVisits = orderDao.getAllOrdersForVisits(patient, orderType, Arrays.asList(visit));
+
+        assertThat(allOrdersForVisits.size(), is(equalTo(2)));
+
+        Order firstOrder = Context.getOrderService().getOrder(15);
+        Order secondOrder = Context.getOrderService().getOrder(16);
+        assertThat(allOrdersForVisits, hasItems(firstOrder, secondOrder));
+    }
+
+
 
     private boolean visitWithUuidExists(String uuid, List<Visit> visits) {
         boolean exists = false;
