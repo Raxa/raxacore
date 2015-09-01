@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
         Patient patient = patientService.getPatientByUuid(patientUuid);
         OrderType orderType = orderService.getOrderTypeByUuid(orderTypeUuid);
         List<Visit> visits = visitDao.getVisitsByPatient(patient, numberOfVisits);
-        return orderDao.getAllOrdersForVisits(patient, orderType, visits);
+        return orderDao.getAllOrdersForVisits(orderType, visits);
     }
     @Override
     public Order getOrderByUuid(String orderUuid){

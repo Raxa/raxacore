@@ -222,7 +222,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> getAllOrdersForVisits(Patient patient, OrderType orderType, List<Visit> visits) {
+    public List<Order> getAllOrdersForVisits(OrderType orderType, List<Visit> visits) {
         if (visits == null || visits.isEmpty()) {
             return new ArrayList<>();
         }
