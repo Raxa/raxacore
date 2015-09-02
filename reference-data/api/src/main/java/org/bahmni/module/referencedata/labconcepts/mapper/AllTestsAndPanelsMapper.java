@@ -12,7 +12,7 @@ public class AllTestsAndPanelsMapper extends ResourceMapper {
     public AllTestsAndPanels map(Concept testsAndPanelsConcept) {
         AllTestsAndPanels allTestsAndPanels = new AllTestsAndPanels();
         allTestsAndPanels = mapResource(allTestsAndPanels, testsAndPanelsConcept);
-        allTestsAndPanels.setDescription(MapperUtils.getDescription(testsAndPanelsConcept));
+        allTestsAndPanels.setDescription(ConceptExtension.getDescription(testsAndPanelsConcept));
         allTestsAndPanels.setTestsAndPanels(new TestAndPanelMapper().map(testsAndPanelsConcept));
         return allTestsAndPanels;
     }

@@ -14,9 +14,9 @@ public class PanelMapper extends ResourceMapper {
     public Panel map(Concept panelConcept) {
         Panel panel = new Panel();
         panel = mapResource(panel, panelConcept);
-        panel.setTests(MapperUtils.getMinimalResources(panelConcept.getSetMembers(), LabTest.LAB_TEST_CONCEPT_CLASS));
+        panel.setTests(ConceptExtension.getResourceReferencesOfConceptClass(panelConcept.getSetMembers(), LabTest.LAB_TEST_CONCEPT_CLASS));
         panel.setSortOrder(getSortWeight(panelConcept));
-        panel.setDescription(MapperUtils.getDescriptionOrName(panelConcept));
+        panel.setDescription(ConceptExtension.getDescriptionOrName(panelConcept));
         return panel;
     }
 }

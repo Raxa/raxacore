@@ -5,6 +5,7 @@ package org.bahmni.module.referencedata.web.controller;
 import org.bahmni.module.referencedata.BaseIntegrationTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
+import org.bahmni.module.referencedata.labconcepts.contract.RadiologyTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,7 @@ public class ConceptOperationControllersIT extends BaseIntegrationTest {
     private Concept sampleConcept;
     private Concept departmentConcept;
     private Concept testConcept;
+    private Concept radiologyTestConcept;
 
     @Before
     public void setUp() throws Exception {
@@ -32,6 +34,7 @@ public class ConceptOperationControllersIT extends BaseIntegrationTest {
         sampleConcept = conceptService.getConcept(102);
         departmentConcept = conceptService.getConcept(202);
         testConcept = conceptService.getConcept(302);
+        radiologyTestConcept = conceptService.getConcept(401);
     }
 
     @Test
@@ -67,5 +70,15 @@ public class ConceptOperationControllersIT extends BaseIntegrationTest {
         assertEquals(testConcept.getName(Context.getLocale()).getName(), testResponse.getName());
         assertNotEquals(testConcept.isRetired(), testResponse.getIsActive());
         assertEquals("Numeric", testResponse.getResultType());
+    }
+
+    @Test
+    public void shouldPublishRadiologyTest() throws Exception {
+        MockHttpServletRequest request = newGetRequest("/rest/v1/reference-data/radiology/" + radiologyTestConcept.getUuid());
+        MockHttpServletResponse response = handle(request);
+        RadiologyTest testResponse = deserialize(response, RadiologyTest.class);
+        assertEquals(radiologyTestConcept.getUuid(), testResponse.getId());
+        assertEquals(radiologyTestConcept.getName(Context.getLocale()).getName(), testResponse.getName());
+        assertNotEquals(radiologyTestConcept.isRetired(), testResponse.getIsActive());
     }
 }

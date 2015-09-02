@@ -4,7 +4,7 @@ import org.bahmni.module.referencedata.labconcepts.contract.Department;
 import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.openmrs.Concept;
 
-import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.getMinimalResources;
+import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtension.getResourceReferencesOfConceptClass;
 
 public class DepartmentMapper extends ResourceMapper {
 
@@ -16,8 +16,8 @@ public class DepartmentMapper extends ResourceMapper {
     public Department map(Concept departmentConcept) {
         Department department = new Department();
         department = mapResource(department, departmentConcept);
-        department.setDescription(MapperUtils.getDescriptionOrName(departmentConcept));
-        department.setTests(getMinimalResources(departmentConcept.getSetMembers(), LabTest.LAB_TEST_CONCEPT_CLASS));
+        department.setDescription(ConceptExtension.getDescriptionOrName(departmentConcept));
+        department.setTests(getResourceReferencesOfConceptClass(departmentConcept.getSetMembers(), LabTest.LAB_TEST_CONCEPT_CLASS));
         return department;
     }
 }

@@ -4,6 +4,11 @@ import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.Panel;
 import org.bahmni.module.referencedata.labconcepts.contract.TestsAndPanels;
 import org.openmrs.Concept;
+import org.openmrs.ConceptClass;
+
+import static org.bahmni.module.referencedata.labconcepts.contract.LabTest.LAB_TEST_CONCEPT_CLASS;
+import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtension.isOfConceptClass;
+import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtension.isOfConceptClassByUUID;
 
 public class TestAndPanelMapper extends ResourceMapper {
 
@@ -20,16 +25,16 @@ public class TestAndPanelMapper extends ResourceMapper {
     public TestsAndPanels map(Concept sampleConcept) {
         TestsAndPanels testsAndPanels = new TestsAndPanels();
         for (Concept concept : sampleConcept.getSetMembers()) {
-            if (MapperUtils.isActive(concept)) addConcept(testsAndPanels, concept);
+            if (ConceptExtension.isActive(concept)) addConcept(testsAndPanels, concept);
         }
         return testsAndPanels;
     }
 
     private void addConcept(TestsAndPanels testsAndPanels, Concept concept) {
-        if (MapperUtils.isLabTestConcept(concept)) {
+        if (isOfConceptClass(concept, LAB_TEST_CONCEPT_CLASS)) {
             LabTest test = labTestMapper.map(concept);
             testsAndPanels.addTest(test);
-        } else if (MapperUtils.isPanelConcept(concept)) {
+        } else if (isOfConceptClassByUUID(concept, ConceptClass.LABSET_UUID)) {
             Panel panel = panelMapper.map(concept);
             testsAndPanels.addPanel(panel);
         }

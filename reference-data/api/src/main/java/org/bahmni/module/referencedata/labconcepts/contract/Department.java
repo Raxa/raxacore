@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Department extends Resource {
     private String description;
-    private List<MinimalResource> tests;
+    private List<ResourceReference> tests;
 
     public static final String DEPARTMENT_PARENT_CONCEPT_NAME = "Lab Departments";
     public static final String DEPARTMENT_CONCEPT_CLASS = "Department";
@@ -12,11 +12,11 @@ public class Department extends Resource {
     public Department() {
     }
 
-    public List<MinimalResource> getTests() {
+    public List<ResourceReference> getTests() {
         return tests;
     }
 
-    public void setTests(List<MinimalResource> tests) {
+    public void setTests(List<ResourceReference> tests) {
         this.tests = tests;
     }
 

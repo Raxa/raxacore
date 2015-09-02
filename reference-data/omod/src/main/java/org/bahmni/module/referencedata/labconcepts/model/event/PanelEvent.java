@@ -1,7 +1,9 @@
 package org.bahmni.module.referencedata.labconcepts.model.event;
 
 import org.openmrs.Concept;
-import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.isPanelConcept;
+import org.openmrs.ConceptClass;
+
+import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtension.isOfConceptClassByUUID;
 
 public class PanelEvent extends ConceptOperationEvent {
 
@@ -11,7 +13,7 @@ public class PanelEvent extends ConceptOperationEvent {
 
     @Override
     public boolean isResourceConcept(Concept concept) {
-        return isPanelConcept(concept);
+        return isOfConceptClassByUUID(concept, ConceptClass.LABSET_UUID);
     }
 
 }

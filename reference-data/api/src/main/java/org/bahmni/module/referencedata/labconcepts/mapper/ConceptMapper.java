@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.addConceptName;
-import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.getConceptName;
+import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtension.addConceptName;
+import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtension.getConceptName;
 
 public class ConceptMapper {
 

@@ -1,13 +1,13 @@
 package org.bahmni.module.referencedata.labconcepts.contract;
 
-public class MinimalResource {
+public class ResourceReference {
     private String name;
     private String uuid;
 
-    public MinimalResource() {
+    public ResourceReference() {
     }
 
-    public MinimalResource(String uuid, String name) {
+    public ResourceReference(String uuid, String name) {
         this.uuid = uuid;
         this.name = name;
     }

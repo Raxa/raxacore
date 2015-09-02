@@ -5,7 +5,7 @@ import org.bahmni.module.referencedata.labconcepts.contract.ConceptCommon;
 import org.openmrs.ConceptClass;
 import org.openmrs.api.ConceptNameType;
 
-import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.*;
+import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtension.*;
 
 public class ConceptCommonMapper {
 

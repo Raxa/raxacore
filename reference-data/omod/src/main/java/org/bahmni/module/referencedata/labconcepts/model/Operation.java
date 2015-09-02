@@ -21,7 +21,8 @@ public class Operation {
             panelEvent(),
             labConceptSetEvent(),
             allTestsAndPanelsConceptSetEvent(),
-            drugEvent()
+            drugEvent(),
+            radiologyTestEvent()
     );
 
     public Operation(Method method) {

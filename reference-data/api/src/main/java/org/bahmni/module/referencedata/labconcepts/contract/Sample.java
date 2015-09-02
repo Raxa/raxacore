@@ -6,25 +6,25 @@ public class Sample extends Resource {
     private String shortName;
     public static final String SAMPLE_CONCEPT_CLASS = "Sample";
     private Double sortOrder;
-    private List<MinimalResource> tests;
-    private List<MinimalResource> panels;
+    private List<ResourceReference> tests;
+    private List<ResourceReference> panels;
 
     public Sample() {
     }
 
-    public List<MinimalResource> getTests() {
+    public List<ResourceReference> getTests() {
         return tests;
     }
 
-    public void setTests(List<MinimalResource> tests) {
+    public void setTests(List<ResourceReference> tests) {
         this.tests = tests;
     }
 
-    public List<MinimalResource> getPanels() {
+    public List<ResourceReference> getPanels() {
         return panels;
     }
 
-    public void setPanels(List<MinimalResource> panels) {
+    public void setPanels(List<ResourceReference> panels) {
         this.panels = panels;
     }
 

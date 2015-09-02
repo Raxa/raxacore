@@ -1,6 +1,5 @@
 package org.bahmni.module.referencedata.labconcepts.mapper;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.labconcepts.contract.Drug;
 import org.bahmni.module.referencedata.labconcepts.model.DrugMetaData;
 import org.openmrs.Concept;
@@ -8,7 +7,7 @@ import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 import org.springframework.util.Assert;
 
-import static org.bahmni.module.referencedata.labconcepts.mapper.MapperUtils.getConceptName;
+import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtension.getConceptName;
 
 public class DrugMapper {
 
@@ -24,7 +23,7 @@ public class DrugMapper {
 
         org.openmrs.Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
         conceptDrug.setName(drug.getName());
-        MapperUtils.addConceptName(conceptDrug.getConcept(), getConceptName(drug.getGenericName(), ConceptNameType.FULLY_SPECIFIED));
+        ConceptExtension.addConceptName(conceptDrug.getConcept(), getConceptName(drug.getGenericName(), ConceptNameType.FULLY_SPECIFIED));
         conceptDrug.setCombination(drug.isCombination());
         conceptDrug.setStrength(drug.getStrength());
         conceptDrug.setMaximumDailyDose(drug.doubleMaximumDose());

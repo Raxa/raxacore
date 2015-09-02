@@ -1,7 +1,7 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.referencedata.labconcepts.contract.Department;
-import org.bahmni.module.referencedata.labconcepts.contract.MinimalResource;
+import org.bahmni.module.referencedata.labconcepts.contract.ResourceReference;
 import org.bahmni.module.referencedata.labconcepts.mapper.DepartmentMapper;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;
@@ -98,7 +98,7 @@ public class DepartmentMapperTest {
         departmentConcept.addSetMember(testConcept);
 
         Department departmentData = departmentMapper.map(departmentConcept);
-        List<MinimalResource> tests = departmentData.getTests();
+        List<ResourceReference> tests = departmentData.getTests();
 
         assertEquals(1, tests.size());
         assertEquals("TestName", tests.get(0).getName());
