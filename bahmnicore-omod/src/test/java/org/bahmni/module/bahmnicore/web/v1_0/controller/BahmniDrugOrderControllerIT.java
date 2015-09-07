@@ -1,8 +1,12 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
+import org.bahmni.module.referencedata.labconcepts.contract.Drug;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.DrugOrder;
+import org.openmrs.Order;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -22,11 +26,27 @@ public class BahmniDrugOrderControllerIT extends BaseIntegrationTest {
     @Autowired
     private BahmniDrugOrderController bahmniDrugOrderController;
 
+    @Autowired
+    private BahmniDrugOrderService bahmniDrugOrderService;
+
     @Before
     public void setUp() throws Exception {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("drugOrdersForVisits.xml");
+    }
+
+    @Test
+    public void shouldReturnDrugOrdersWithoutJavaAssistOrderProxy() throws Exception{
+        executeDataSet("activeOrderTests.xml");
+        List<DrugOrder> drugOrders = bahmniDrugOrderService.getActiveDrugOrders("c475abf0-59d7-4bfe-8d73-57604a17e519");
+        for(Order order: drugOrders){
+            //This issue happened in Possible when the Order that is returned is a javassist proxy instead of a DrugOrder and it returned a ClassCastException
+            if(!(order instanceof DrugOrder)){
+                fail("The Order ["+order+"] is not an instance of drugOrder");
+            }
+        }
+        assertEquals(3,drugOrders.size());
     }
 
     @Test
