@@ -40,6 +40,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniV
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -108,8 +109,21 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
     private List<DrugOrder> getActiveDrugOrders(String patientUuid, Date asOfDate) {
         Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
-        return (List<DrugOrder>) (List<? extends Order>) orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
+        List<Order> orders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
                 orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString()), asOfDate);
+        return getDrugOrders(orders);
+    }
+
+    private List<DrugOrder> getDrugOrders(List<Order> orders){
+        HibernateLazyLoader hibernateLazyLoader = new HibernateLazyLoader();
+        List<DrugOrder> drugOrders = new ArrayList<>();
+        for(Order order: orders){
+            order = hibernateLazyLoader.load(order);
+            if(order instanceof DrugOrder) {
+                drugOrders.add((DrugOrder) order);
+            }
+        }
+        return drugOrders;
     }
 
     @Override
