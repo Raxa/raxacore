@@ -3175,4 +3175,14 @@
                              tableName="entity_mapping_type"/>
     </changeSet>
 
+    <changeSet id="bahmni-mapping-201509021719" author="Shruthi, Padma" context="rel0.76">
+        <comment>Inserting Program EncounterType Mapping</comment>
+        <insert tableName="entity_mapping_type">
+            <column name="name" value="program_encountertype"/>
+            <column name="uuid" valueComputed="uuid()"/>
+            <column name="entity1_type" value="org.openmrs.Program"></column>
+            <column name="entity2_type" value="org.openmrs.EncounterType"></column>
+            <column name="date_created" valueComputed="now()"></column>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

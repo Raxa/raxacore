@@ -66,15 +66,11 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     @Override
     public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
         // TODO : Mujir - map string VisitType to the uuids and set on bahmniEncounterTransaction object
-
         if(!StringUtils.isBlank(bahmniEncounterTransaction.getEncounterUuid())){
             Encounter encounterByUuid = encounterService.getEncounterByUuid(bahmniEncounterTransaction.getEncounterUuid());
             if(encounterByUuid != null){
                 bahmniEncounterTransaction.setEncounterTypeUuid(encounterByUuid.getEncounterType().getUuid());
             }
-        }
-        if (StringUtils.isBlank(bahmniEncounterTransaction.getEncounterTypeUuid())) {
-            setEncounterType(bahmniEncounterTransaction);
         }
         if(bahmniEncounterTransaction.getEncounterDateTime() == null){
             bahmniEncounterTransaction.setEncounterDateTime(new Date());
@@ -138,14 +134,6 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         for (EncounterDataPostSaveCommand saveCommand : encounterDataPostDeleteCommands) {
             saveCommand.save(bahmniEncounterTransaction,encounter, null);
         }
-    }
-
-    private void setEncounterType(BahmniEncounterTransaction bahmniEncounterTransaction) {
-        EncounterType encounterType = encounterTypeIdentifier.getEncounterTypeFor(bahmniEncounterTransaction.getEncounterType(), bahmniEncounterTransaction.getLocationUuid());
-        if (encounterType == null) {
-            throw new RuntimeException("Encounter type not found.");
-        }
-        bahmniEncounterTransaction.setEncounterTypeUuid(encounterType.getUuid());
     }
 
     private List<EncounterTransaction> getEncounterTransactions(List<Encounter> encounters, boolean includeAll) {

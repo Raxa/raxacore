@@ -74,14 +74,8 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
 
     private EncounterType getEncounterType(EncounterParameters encounterParameters) {
         EncounterType encounterType = encounterParameters.getEncounterType();
-
         if (encounterType == null) {
-            Location location = encounterParameters.getLocation();
-            String locationUuid = null;
-            if(location != null){
-                locationUuid = location.getUuid();
-            }
-            encounterType = encounterTypeIdentifier.getEncounterTypeFor(locationUuid);
+            encounterType = encounterTypeIdentifier.getDefaultEncounterType();
         }
         return encounterType;
     }

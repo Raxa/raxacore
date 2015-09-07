@@ -198,7 +198,7 @@ public class EncounterSessionMatcherTest {
         when(encounter.getLocation()).thenReturn(null);
         when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
         when(encounter.getCreator()).thenReturn(creator);
-        when(encounterTypeIdentifier.getEncounterTypeFor(null)).thenReturn(defaultEncounterType);
+        when(encounterTypeIdentifier.getDefaultEncounterType()).thenReturn(defaultEncounterType);
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers, null, null));
 
@@ -216,7 +216,7 @@ public class EncounterSessionMatcherTest {
         when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
         when(encounter.getCreator()).thenReturn(creator);
         EncounterParameters encounterParameters = getEncounterParameters(providers, location, null);
-        when(encounterTypeIdentifier.getEncounterTypeFor("location")).thenReturn(encounterType);
+        when(encounterTypeIdentifier.getDefaultEncounterType()).thenReturn(encounterType);
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
 
@@ -243,7 +243,7 @@ public class EncounterSessionMatcherTest {
         Encounter encounter2 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
         visit.setEncounters(new LinkedHashSet<>(Arrays.asList(encounter1, encounter2)));
         EncounterParameters encounterParameters = getEncounterParameters(providers, location, null);
-        when(encounterTypeIdentifier.getEncounterTypeFor(location.getUuid())).thenReturn(encounterType);
+        when(encounterTypeIdentifier.getDefaultEncounterType()).thenReturn(encounterType);
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
 
@@ -261,7 +261,7 @@ public class EncounterSessionMatcherTest {
 
         visit.setEncounters(new LinkedHashSet<>(Arrays.asList(encounter1, encounter2, encounter3)));
         EncounterParameters encounterParameters = getEncounterParameters(providers, location, null);
-        when(encounterTypeIdentifier.getEncounterTypeFor(location.getUuid())).thenReturn(encounterType);
+        when(encounterTypeIdentifier.getDefaultEncounterType()).thenReturn(encounterType);
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
 
@@ -311,16 +311,16 @@ public class EncounterSessionMatcherTest {
         User creator = new User(person);
         creator.setId(12345);
 
-        Encounter encounter1 = new EncounterBuilder().withEncounterType(new EncounterType()).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
+        Encounter encounter1 = new EncounterBuilder().withEncounterType(new EncounterType()).withLocation(location).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
 
-        Encounter encounter2 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
+        Encounter encounter2 = new EncounterBuilder().withLocation(location).withEncounterType(encounterType).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
         encounter2.setVoided(true);
 
-        Encounter encounter3 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
+        Encounter encounter3 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
 
         visit.setEncounters(new LinkedHashSet<>(Arrays.asList(encounter1, encounter2, encounter3)));
         EncounterParameters encounterParameters = getEncounterParameters(providers, location, null);
-        when(encounterTypeIdentifier.getEncounterTypeFor(location.getUuid())).thenReturn(encounterType);
+        when(encounterTypeIdentifier.getDefaultEncounterType()).thenReturn(encounterType);
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
 

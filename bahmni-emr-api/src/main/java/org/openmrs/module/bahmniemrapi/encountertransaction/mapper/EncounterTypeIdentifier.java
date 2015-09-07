@@ -53,7 +53,7 @@ public class EncounterTypeIdentifier {
         return encounterType;
     }
 
-    private EncounterType getDefaultEncounterType() {
+    public EncounterType getDefaultEncounterType() {
         String defaultEncounterType = administrationService.getGlobalProperty("bahmni.encounterType.default");
         return encounterService.getEncounterType(defaultEncounterType);
     }
