@@ -33,6 +33,9 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     @Override
     public Encounter findEncounter(Visit visit, EncounterParameters encounterParameters) {
         Provider provider = null;
+         if(encounterParameters.getEncounterUuid() != null){
+                 return findEncounterByUuid(visit, encounterParameters.getEncounterUuid());
+         }
         if (encounterParameters.getProviders() != null && !encounterParameters.getProviders().isEmpty())
             provider = encounterParameters.getProviders().iterator().next();
 
@@ -43,6 +46,16 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         }
     }
 
+
+    private Encounter findEncounterByUuid(Visit visit, String encounterUuid) {
+        for (Encounter encounter : visit.getEncounters()) {
+            if (encounter.getUuid().equals(encounterUuid)) {
+                return encounter;
+            }
+        }
+        return null;
+    }
+
     private Encounter findRegularEncounter(Visit visit, EncounterParameters encounterParameters, Provider provider) {
         EncounterType encounterType = getEncounterType(encounterParameters);
 
@@ -50,7 +63,7 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
             for (Encounter encounter : visit.getEncounters()) {
                 if (!encounter.isVoided() && encounterType.equals(encounter.getEncounterType())) {
                     Date encounterDateChanged = encounter.getDateChanged() == null ? encounter.getDateCreated() : encounter.getDateChanged();
-                    if (!isCurrentSessionTimeExpired(encounterDateChanged) && isSameProvider(provider, encounter) && areSameEncounterDates(encounter, encounterParameters))
+                    if (!isCurrentSessionTimeExpired(encounterDateChanged) && isSameProvider(provider, encounter) && areSameEncounters(encounter, encounterParameters))
                         if (isLocationNotDefined(encounterParameters, encounter) || isSameLocation(encounterParameters, encounter))
                             return encounter;
                 }
@@ -77,7 +90,7 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         if (visit.getEncounters() != null) {
             for (Encounter encounter : visit.getEncounters()) {
                 if (!encounter.isVoided() && (encounterParameters.getEncounterType() == null || encounterParameters.getEncounterType().equals(encounter.getEncounterType()))) {
-                    if (isSameProvider(provider, encounter) && areSameEncounterDates(encounter, encounterParameters)) {
+                    if (isSameProvider(provider, encounter) && areSameEncounters(encounter, encounterParameters)) {
                         return encounter;
                     }
                 }
@@ -86,7 +99,10 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         return null;
     }
 
-    private boolean areSameEncounterDates(Encounter encounter, EncounterParameters encounterParameters) {
+    private boolean areSameEncounters(Encounter encounter, EncounterParameters encounterParameters) {
+        if (encounterParameters.getEncounterUuid() != null) {
+            return encounterParameters.getEncounterUuid().equals(encounter.getUuid());
+        }
         return encounterParameters.getEncounterDateTime() == null || (DateUtils.isSameDay(encounter.getEncounterDatetime(), encounterParameters.getEncounterDateTime()));
     }
 

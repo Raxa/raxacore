@@ -66,6 +66,13 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     @Override
     public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
         // TODO : Mujir - map string VisitType to the uuids and set on bahmniEncounterTransaction object
+
+        if(!StringUtils.isBlank(bahmniEncounterTransaction.getEncounterUuid())){
+            Encounter encounterByUuid = encounterService.getEncounterByUuid(bahmniEncounterTransaction.getEncounterUuid());
+            if(encounterByUuid != null){
+                bahmniEncounterTransaction.setEncounterTypeUuid(encounterByUuid.getEncounterType().getUuid());
+            }
+        }
         if (StringUtils.isBlank(bahmniEncounterTransaction.getEncounterTypeUuid())) {
             setEncounterType(bahmniEncounterTransaction);
         }
