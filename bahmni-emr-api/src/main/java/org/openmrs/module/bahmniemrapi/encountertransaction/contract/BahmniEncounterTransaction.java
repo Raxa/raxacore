@@ -187,14 +187,6 @@ public class BahmniEncounterTransaction {
         return encounterTransaction.setLocationUuid(locationUuid);
     }
 
-    public String getLocationName() {
-        return encounterTransaction.getLocationName();
-    }
-
-    public EncounterTransaction setLocationName(String locationName) {
-         return encounterTransaction.setLocationName(locationName);
-    }
-
     public List<AccessionNote> getAccessionNotes() {
         return accessionNotes;
     }
