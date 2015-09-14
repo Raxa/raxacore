@@ -11,7 +11,7 @@
     <name>BahmniEMR Core API</name>
 
     <properties>
-        <openmrsAtomfeedVersion>2.3</openmrsAtomfeedVersion>
+        <openmrsAtomfeedVersion>2.4</openmrsAtomfeedVersion>
     </properties>
 
     <dependencies>
