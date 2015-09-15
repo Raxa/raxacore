@@ -5,7 +5,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTypeIdentifier;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.Calendar;
 import java.util.Date;
 
 @Component
@@ -33,17 +31,12 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     @Override
     public Encounter findEncounter(Visit visit, EncounterParameters encounterParameters) {
         Provider provider = null;
-         if(encounterParameters.getEncounterUuid() != null){
-                 return findEncounterByUuid(visit, encounterParameters.getEncounterUuid());
-         }
+        if (encounterParameters.getEncounterUuid() != null) {
+            return findEncounterByUuid(visit, encounterParameters.getEncounterUuid());
+        }
         if (encounterParameters.getProviders() != null && !encounterParameters.getProviders().isEmpty())
             provider = encounterParameters.getProviders().iterator().next();
-
-        if (BahmniEncounterTransaction.isRetrospectiveEntry(encounterParameters.getEncounterDateTime())) {
-            return findRetrospectiveEncounter(visit, encounterParameters, provider);
-        } else {
-            return findRegularEncounter(visit, encounterParameters, provider);
-        }
+        return findRegularEncounter(visit, encounterParameters, provider);
     }
 
 
@@ -63,9 +56,9 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
             for (Encounter encounter : visit.getEncounters()) {
                 if (!encounter.isVoided() && encounterType.equals(encounter.getEncounterType())) {
                     Date encounterDateChanged = encounter.getDateChanged() == null ? encounter.getDateCreated() : encounter.getDateChanged();
-                    if (!isCurrentSessionTimeExpired(encounterDateChanged) && isSameProvider(provider, encounter) && areSameEncounters(encounter, encounterParameters))
-                        if (isLocationNotDefined(encounterParameters, encounter) || isSameLocation(encounterParameters, encounter))
-                            return encounter;
+                    if (isCurrentSessionTimeValid(encounterDateChanged, encounterParameters.getEncounterDateTime())
+                            && isSameProvider(provider, encounter) && areSameEncounters(encounter, encounterParameters) && isSameUser(encounter, encounterParameters))
+                        return encounter;
                 }
             }
         }
@@ -78,7 +71,7 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         if (encounterType == null) {
             Location location = encounterParameters.getLocation();
             String locationUuid = null;
-            if(location != null){
+            if (location != null) {
                 locationUuid = location.getUuid();
             }
             encounterType = encounterTypeIdentifier.getEncounterTypeFor(locationUuid);
@@ -86,24 +79,18 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         return encounterType;
     }
 
-    private Encounter findRetrospectiveEncounter(Visit visit, EncounterParameters encounterParameters, Provider provider) {
-        if (visit.getEncounters() != null) {
-            for (Encounter encounter : visit.getEncounters()) {
-                if (!encounter.isVoided() && (encounterParameters.getEncounterType() == null || encounterParameters.getEncounterType().equals(encounter.getEncounterType()))) {
-                    if (isSameProvider(provider, encounter) && areSameEncounters(encounter, encounterParameters)) {
-                        return encounter;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
     private boolean areSameEncounters(Encounter encounter, EncounterParameters encounterParameters) {
         if (encounterParameters.getEncounterUuid() != null) {
             return encounterParameters.getEncounterUuid().equals(encounter.getUuid());
         }
         return encounterParameters.getEncounterDateTime() == null || (DateUtils.isSameDay(encounter.getEncounterDatetime(), encounterParameters.getEncounterDateTime()));
+    }
+
+    private boolean isSameUser(Encounter encounter, EncounterParameters encounterParameters) {
+        if (encounter.getCreator().getUuid().equalsIgnoreCase(encounterParameters.getUserUuid())) {
+            return true;
+        }
+        return false;
     }
 
     private boolean isSameLocation(EncounterParameters encounterParameters, Encounter encounter) {
@@ -127,13 +114,12 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         return false;
     }
 
-    private boolean isCurrentSessionTimeExpired(Date encounterCreatedDate) {
+    private boolean isCurrentSessionTimeValid(Date encounterCreatedDate, Date currentEncounterDate) {
         String configuredSessionDuration = adminService.getGlobalProperty("bahmni.encountersession.duration");
         int sessionDurationInMinutes = DEFAULT_SESSION_DURATION_IN_MINUTES;
         if (configuredSessionDuration != null)
             sessionDurationInMinutes = Integer.parseInt(configuredSessionDuration);
         Date allowedEncounterTime = DateUtils.addMinutes(encounterCreatedDate, sessionDurationInMinutes);
-
-        return DateUtils.truncatedCompareTo(allowedEncounterTime, new Date(), Calendar.MILLISECOND) <= 0;
+        return currentEncounterDate.after(encounterCreatedDate) && currentEncounterDate.before(allowedEncounterTime);
     }
 }

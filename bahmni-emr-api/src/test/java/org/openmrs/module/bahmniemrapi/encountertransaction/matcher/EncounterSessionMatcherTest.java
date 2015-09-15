@@ -94,6 +94,7 @@ public class EncounterSessionMatcherTest {
         when(encounter.getLocation()).thenReturn(location);
         when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
         when(encounter.getCreator()).thenReturn(creator);
+        when(encounter.getEncounterDatetime()).thenReturn(new Date());
 
         visit.addEncounter(encounter);
 
@@ -112,6 +113,7 @@ public class EncounterSessionMatcherTest {
         when(encounter.getLocation()).thenReturn(location);
         when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
         when(encounter.getCreator()).thenReturn(creator);
+        when(encounter.getEncounterDatetime()).thenReturn(new Date());
         visit.addEncounter(encounter);
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers, location));
@@ -127,6 +129,7 @@ public class EncounterSessionMatcherTest {
         when(encounter.getEncounterType()).thenReturn(encounterType);
         when(encounter.getLocation()).thenReturn(location);
         when(encounter.getDateChanged()).thenReturn(DateUtils.addHours(new Date(), -2));
+        when(encounter.getEncounterDatetime()).thenReturn(new Date());
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers, location));
 
@@ -140,6 +143,7 @@ public class EncounterSessionMatcherTest {
         when(encounter.getEncounterType()).thenReturn(encounterType);
         when(encounter.getLocation()).thenReturn(location);
         when(encounter.getDateChanged()).thenReturn(new Date());
+        when(encounter.getEncounterDatetime()).thenReturn(new Date());
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(new HashSet<Provider>(), location));
 
@@ -154,6 +158,7 @@ public class EncounterSessionMatcherTest {
         when(encounter.getLocation()).thenReturn(location);
         when(administrationService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
         when(encounter.getDateChanged()).thenReturn(new Date());
+        when(encounter.getEncounterDatetime()).thenReturn(new Date());
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers, location));
 
@@ -167,6 +172,8 @@ public class EncounterSessionMatcherTest {
         when(encounter.getEncounterType()).thenReturn(encounterType);
         when(encounter.getDateChanged()).thenReturn(new Date());
         when(encounter.getLocation()).thenReturn(location);
+        when(encounter.getEncounterDatetime()).thenReturn(new Date());
+
         Location nonLocation = new Location();
         nonLocation.setUuid("some");
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers, nonLocation));
@@ -183,6 +190,8 @@ public class EncounterSessionMatcherTest {
         when(encounter.getLocation()).thenReturn(null);
         when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
         when(encounter.getCreator()).thenReturn(creator);
+        when(encounter.getEncounterDatetime()).thenReturn(new Date());
+
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers, null));
 
         assertNotNull(encounterReturned);
@@ -199,6 +208,7 @@ public class EncounterSessionMatcherTest {
         when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
         when(encounter.getCreator()).thenReturn(creator);
         when(encounterTypeIdentifier.getEncounterTypeFor(null)).thenReturn(defaultEncounterType);
+        when(encounter.getEncounterDatetime()).thenReturn(new Date());
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers, null, null));
 
@@ -214,6 +224,7 @@ public class EncounterSessionMatcherTest {
         when(encounter.getDateChanged()).thenReturn(new Date());
         when(encounter.getLocation()).thenReturn(location);
         when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
+        when(encounter.getEncounterDatetime()).thenReturn(new Date());
         when(encounter.getCreator()).thenReturn(creator);
         EncounterParameters encounterParameters = getEncounterParameters(providers, location, null);
         when(encounterTypeIdentifier.getEncounterTypeFor("location")).thenReturn(encounterType);
@@ -239,8 +250,8 @@ public class EncounterSessionMatcherTest {
 
     @Test
     public void shouldReturnEncounterBasedOnEncounterTypeMappedToLocation(){
-        Encounter encounter1 = new EncounterBuilder().withEncounterType(new EncounterType()).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
-        Encounter encounter2 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
+        Encounter encounter1 = new EncounterBuilder().withEncounterType(new EncounterType()).withLocation(location).withProvider(person).withDateCreated(new Date()).withDatetime(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
+        Encounter encounter2 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withDatetime(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
         visit.setEncounters(new LinkedHashSet<>(Arrays.asList(encounter1, encounter2)));
         EncounterParameters encounterParameters = getEncounterParameters(providers, location, null);
         when(encounterTypeIdentifier.getEncounterTypeFor(location.getUuid())).thenReturn(encounterType);
@@ -252,12 +263,12 @@ public class EncounterSessionMatcherTest {
 
     @Test
     public void shouldNotReturnVoidedEncounter(){
-        Encounter encounter1 = new EncounterBuilder().withEncounterType(new EncounterType()).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
+        Encounter encounter1 = new EncounterBuilder().withEncounterType(new EncounterType()).withLocation(location).withProvider(person).withDateCreated(new Date()).withDatetime(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
 
-        Encounter encounter2 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
+        Encounter encounter2 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withDatetime(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
         encounter2.setVoided(true);
 
-        Encounter encounter3 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
+        Encounter encounter3 = new EncounterBuilder().withEncounterType(encounterType).withLocation(location).withProvider(person).withDateCreated(new Date()).withDatetime(new Date()).withEncounterProviders(encounterProviders).withCreator(creator).build();
 
         visit.setEncounters(new LinkedHashSet<>(Arrays.asList(encounter1, encounter2, encounter3)));
         EncounterParameters encounterParameters = getEncounterParameters(providers, location, null);
@@ -293,6 +304,8 @@ public class EncounterSessionMatcherTest {
         when(encounter.getEncounterType()).thenReturn(encounterType);
         when(encounter.getLocation()).thenReturn(location);
         when(encounter.getEncounterDatetime()).thenReturn(DateUtils.addDays(new Date(), -10));
+        when(encounter.getDateCreated()).thenReturn(DateUtils.addDays(new Date(), -10));
+        when(encounter.getDateChanged()).thenReturn(DateUtils.addDays(new Date(), -10));
         when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
         when(encounter.getCreator()).thenReturn(creator);
         visit.addEncounter(encounter);
@@ -336,6 +349,8 @@ public class EncounterSessionMatcherTest {
         encounterParameters.setEncounterType(encounterType);
         encounterParameters.setProviders(providers);
         encounterParameters.setLocation(location);
+        encounterParameters.setEncounterDateTime(new Date());
+        encounterParameters.setUserUuid(creator.getUuid());
         return encounterParameters;
     }
 }
