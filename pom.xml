@@ -28,7 +28,7 @@
         <openMRSVersion>1.11.4-SNAPSHOT</openMRSVersion>
         <openMRSWebServicesVersion>2.12-SNAPSHOT</openMRSWebServicesVersion>
         <springVersion>3.2.7.RELEASE</springVersion>
-        <atomfeed.version>1.7</atomfeed.version>
+        <atomfeed.version>1.6</atomfeed.version>
         <addressHierarchyVersion>2.7</addressHierarchyVersion>
         <reportingModuleVersion>0.9.1</reportingModuleVersion>
         <calculationModuleVersion>1.1</calculationModuleVersion>
