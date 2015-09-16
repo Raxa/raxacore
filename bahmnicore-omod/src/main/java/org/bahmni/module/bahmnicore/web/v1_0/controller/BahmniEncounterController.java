@@ -63,14 +63,14 @@ public class BahmniEncounterController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/{uuid}")
     @ResponseBody
-    public BahmniEncounterTransaction get(@PathVariable("uuid") String uuid, Boolean includeAll) {
+    public BahmniEncounterTransaction get(@PathVariable("uuid") String uuid, @RequestParam(value = "includeAll", required = false) Boolean includeAll) {
         EncounterTransaction encounterTransaction = emrEncounterService.getEncounterTransaction(uuid, includeAll);
         return bahmniEncounterTransactionMapper.map(encounterTransaction, includeAll);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/active")
     @ResponseBody
-    public BahmniEncounterTransaction getActive(ActiveEncounterParameters activeEncounterParameters) {
+    public BahmniEncounterTransaction getActive(@ModelAttribute("activeEncounterParameters") ActiveEncounterParameters activeEncounterParameters) {
         EncounterTransaction activeEncounter = emrEncounterService.getActiveEncounter(activeEncounterParameters);
         return bahmniEncounterTransactionMapper.map(activeEncounter, activeEncounterParameters.getIncludeAll());
     }
@@ -100,7 +100,7 @@ public class BahmniEncounterController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{uuid}")
     @ResponseBody
-    public void delete(@PathVariable("uuid") String uuid, String reason){
+    public void delete(@PathVariable("uuid") String uuid, @RequestParam(value = "reason", defaultValue = "web service call") String reason){
         BahmniEncounterTransaction bahmniEncounterTransaction = get(uuid,false);
         bahmniEncounterTransaction.setReason(reason);
         bahmniEncounterTransactionService.delete(bahmniEncounterTransaction);

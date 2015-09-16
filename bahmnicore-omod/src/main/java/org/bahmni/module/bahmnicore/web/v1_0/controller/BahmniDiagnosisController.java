@@ -22,7 +22,7 @@ public class BahmniDiagnosisController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET, value = "search")
     @ResponseBody
-    public List<BahmniDiagnosisRequest> search(@RequestParam("patientUuid") String patientUuid, @RequestParam(value = "fromDate", required = false) String date, String visitUuid) throws Exception {
+    public List<BahmniDiagnosisRequest> search(@RequestParam("patientUuid") String patientUuid, @RequestParam(value = "fromDate", required = false) String date, @RequestParam(value = "visitUuid", required = false) String visitUuid) throws Exception {
         if (visitUuid != null) {
             return bahmniDiagnosisService.getBahmniDiagnosisByPatientAndVisit(patientUuid, visitUuid);
         } else {
