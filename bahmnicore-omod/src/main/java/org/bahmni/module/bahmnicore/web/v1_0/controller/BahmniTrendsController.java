@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class BahmniTrendsController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public List<PersonObservationData> get(String patientUUID) {
+    public List<PersonObservationData> get(@RequestParam(value = "patientUUID", required = true) String patientUUID) {
         List<Obs> obsForPerson = personObsService.getObsForPerson(patientUUID);
         List<PersonObservationData> observationDataList = new ArrayList<>();
         for (Obs obs : obsForPerson) {
@@ -50,7 +51,7 @@ public class BahmniTrendsController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET, value = "concepts")
     @ResponseBody
-    public List<ConceptData> getConceptsfor(String patientUUID) {
+    public List<ConceptData> getConceptsfor(@RequestParam(value = "patientUUID", required = true) String patientUUID) {
         List<Concept> numericConcepts = personObsService.getNumericConceptsForPerson(patientUUID);
         List<ConceptData> conceptDataList = new ArrayList<>();
         for (Concept concept : numericConcepts){
