@@ -56,9 +56,14 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
             for (Encounter encounter : visit.getEncounters()) {
                 if (!encounter.isVoided() && encounterType.equals(encounter.getEncounterType())) {
                     Date encounterDateChanged = encounter.getDateChanged() == null ? encounter.getDateCreated() : encounter.getDateChanged();
-                    if (isCurrentSessionTimeValid(encounterDateChanged, encounterParameters.getEncounterDateTime())
-                            && isSameProvider(provider, encounter) && areSameEncounters(encounter, encounterParameters) && isSameUser(encounter, encounterParameters))
-                        return encounter;
+                    if (isCurrentSessionTimeValid(encounterDateChanged, encounterParameters.getEncounterDateTime()) && areSameEncounters(encounter, encounterParameters)){
+                        if(null != provider){
+                            if(isSameProvider(provider, encounter))
+                                return encounter;
+                        } else if(isSameUser(encounter)){
+                            return encounter;
+                        }
+                    }
                 }
             }
         }
@@ -86,23 +91,16 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         return encounterParameters.getEncounterDateTime() == null || (DateUtils.isSameDay(encounter.getEncounterDatetime(), encounterParameters.getEncounterDateTime()));
     }
 
-    private boolean isSameUser(Encounter encounter, EncounterParameters encounterParameters) {
-        if (encounter.getCreator().getUuid().equalsIgnoreCase(encounterParameters.getUserUuid())) {
+    private boolean isSameUser(Encounter encounter) {
+        if (encounter.getCreator().getUuid().equalsIgnoreCase(Context.getAuthenticatedUser().getUuid())) {
             return true;
         }
         return false;
     }
 
-    private boolean isSameLocation(EncounterParameters encounterParameters, Encounter encounter) {
-        return ((encounter.getLocation() != null && encounter.getLocation().equals(encounterParameters.getLocation())));
-    }
-
-    private boolean isLocationNotDefined(EncounterParameters encounterParameters, Encounter encounter) {
-        return (encounterParameters.getLocation() == null && encounter.getLocation() == null);
-    }
 
     private boolean isSameProvider(Provider provider, Encounter encounter) {
-        if (provider == null || CollectionUtils.isEmpty(encounter.getEncounterProviders())
+        if (CollectionUtils.isEmpty(encounter.getEncounterProviders())
                 || (encounter.getCreator().getId().intValue() != Context.getUserContext().getAuthenticatedUser().getId().intValue())
                 ) {
             return false;
@@ -117,8 +115,12 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     private boolean isCurrentSessionTimeValid(Date encounterCreatedDate, Date currentEncounterDate) {
         String configuredSessionDuration = adminService.getGlobalProperty("bahmni.encountersession.duration");
         int sessionDurationInMinutes = DEFAULT_SESSION_DURATION_IN_MINUTES;
-        if (configuredSessionDuration != null)
+        if (configuredSessionDuration != null) {
             sessionDurationInMinutes = Integer.parseInt(configuredSessionDuration);
+        }
+        if(null == currentEncounterDate) {
+            currentEncounterDate = new Date();
+        }
         Date allowedEncounterTime = DateUtils.addMinutes(encounterCreatedDate, sessionDurationInMinutes);
         return currentEncounterDate.after(encounterCreatedDate) && currentEncounterDate.before(allowedEncounterTime);
     }
