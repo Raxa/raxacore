@@ -8,10 +8,14 @@ import org.openmrs.EncounterType;
 import org.openmrs.Patient;
 import org.openmrs.User;
 import org.openmrs.VisitType;
-import org.openmrs.api.*;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.LocationService;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.ProviderService;
+import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPreSaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPostSaveCommand;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPreSaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTypeIdentifier;
@@ -72,6 +76,11 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
                 bahmniEncounterTransaction.setEncounterTypeUuid(encounterByUuid.getEncounterType().getUuid());
             }
         }
+
+        if (StringUtils.isBlank(bahmniEncounterTransaction.getEncounterTypeUuid())) {
+            setEncounterType(bahmniEncounterTransaction);
+        }
+
         if(bahmniEncounterTransaction.getEncounterDateTime() == null){
             bahmniEncounterTransaction.setEncounterDateTime(new Date());
         }
@@ -134,6 +143,14 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         for (EncounterDataPostSaveCommand saveCommand : encounterDataPostDeleteCommands) {
             saveCommand.save(bahmniEncounterTransaction,encounter, null);
         }
+    }
+
+    private void setEncounterType(BahmniEncounterTransaction bahmniEncounterTransaction) {
+        EncounterType encounterType = encounterTypeIdentifier.getEncounterTypeFor(bahmniEncounterTransaction.getEncounterType(), bahmniEncounterTransaction.getLocationUuid());
+        if (encounterType == null) {
+            throw new RuntimeException("Encounter type not found.");
+        }
+        bahmniEncounterTransaction.setEncounterTypeUuid(encounterType.getUuid());
     }
 
     private List<EncounterTransaction> getEncounterTransactions(List<Encounter> encounters, boolean includeAll) {
