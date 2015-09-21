@@ -1,7 +1,8 @@
 package org.bahmni.module.referencedata.labconcepts.advice;
 
 import org.bahmni.module.referencedata.labconcepts.model.Operation;
-import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsJdbcImpl;
+import org.ict4h.atomfeed.server.repository.AllEventRecordsQueue;
+import org.ict4h.atomfeed.server.repository.jdbc.AllEventRecordsQueueJdbcImpl;
 import org.ict4h.atomfeed.server.service.Event;
 import org.ict4h.atomfeed.server.service.EventService;
 import org.ict4h.atomfeed.server.service.EventServiceImpl;
@@ -36,8 +37,8 @@ public class ConceptServiceEventInterceptor implements AfterReturningAdvice {
     }
 
     private EventServiceImpl createService(AtomFeedSpringTransactionManager atomFeedSpringTransactionManager) {
-        AllEventRecordsJdbcImpl records = new AllEventRecordsJdbcImpl(atomFeedSpringTransactionManager);
-        return new EventServiceImpl(records);
+        AllEventRecordsQueue allEventRecordsQueue = new AllEventRecordsQueueJdbcImpl(atomFeedSpringTransactionManager);
+        return new EventServiceImpl(allEventRecordsQueue);
     }
 
     @Override
