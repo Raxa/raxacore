@@ -72,7 +72,7 @@ public class BahmniEncounterController extends BaseRestController {
     @ResponseBody
     public BahmniEncounterTransaction getActive(@ModelAttribute("activeEncounterParameters") ActiveEncounterParameters activeEncounterParameters) {
         EncounterTransaction activeEncounter = emrEncounterService.getActiveEncounter(activeEncounterParameters);
-        return bahmniEncounterTransactionMapper.map(activeEncounter, activeEncounterParameters.getIncludeAll());
+         return bahmniEncounterTransactionMapper.map(activeEncounter, activeEncounterParameters.getIncludeAll());
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/find")
