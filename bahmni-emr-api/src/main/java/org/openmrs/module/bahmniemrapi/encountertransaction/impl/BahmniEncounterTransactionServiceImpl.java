@@ -1,33 +1,24 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Patient;
-import org.openmrs.User;
-import org.openmrs.VisitType;
+import org.openmrs.*;
 import org.openmrs.api.*;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPreSaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPostSaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTypeIdentifier;
+import org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterSessionMatcher;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.RetrospectiveEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
-import org.openmrs.module.emrapi.encounter.EmrEncounterService;
-import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
-import org.openmrs.module.emrapi.encounter.EncounterSearchParametersBuilder;
-import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
+import org.openmrs.module.emrapi.encounter.*;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Transactional
 public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTransactionService {
@@ -43,11 +34,14 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     private PatientService patientService;
     private LocationService locationService;
     private ProviderService providerService;
+    private AdministrationService administrationService;
+    private EncounterSessionMatcher encounterSessionMatcher;
 
     public BahmniEncounterTransactionServiceImpl(EncounterService encounterService, EmrEncounterService emrEncounterService, EncounterTransactionMapper encounterTransactionMapper,
                                                  EncounterTypeIdentifier encounterTypeIdentifier, List<EncounterDataPreSaveCommand> encounterDataPreSaveCommand, List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands,
                                                  List<EncounterDataPostSaveCommand> encounterDataPostDeleteCommands,
-                                                 BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper, VisitService visitService, PatientService patientService, LocationService locationService, ProviderService providerService) {
+                                                 BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper, VisitService visitService, PatientService patientService, LocationService locationService, ProviderService providerService,
+                                                 @Qualifier("adminService") AdministrationService administrationService, EncounterSessionMatcher encounterSessionMatcher) {
 
         this.encounterService = encounterService;
         this.emrEncounterService = emrEncounterService;
@@ -61,6 +55,8 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         this.patientService = patientService;
         this.locationService = locationService;
         this.providerService = providerService;
+        this.administrationService = administrationService;
+        this.encounterSessionMatcher = encounterSessionMatcher;
     }
 
     @Override
@@ -116,19 +112,25 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
 
     @Override
     public List<EncounterTransaction> find(EncounterSearchParameters encounterSearchParameters) {
-        User loginUser = Context.getUserContext().getAuthenticatedUser();
         List<Encounter> loggedInUserEncounters = new ArrayList<>();
         EncounterSearchParametersBuilder searchParameters = new EncounterSearchParametersBuilder(encounterSearchParameters,
                 this.patientService, this.encounterService, this.locationService, this.providerService, this.visitService);
-        List<Encounter> encounters = this.encounterService.getEncounters(searchParameters.getPatient(), searchParameters.getLocation(), searchParameters.getStartDate(), searchParameters.getEndDate(), new ArrayList(), searchParameters.getEncounterTypes(), searchParameters.getProviders(), searchParameters.getVisitTypes(), searchParameters.getVisits(), searchParameters.getIncludeAll().booleanValue());
-        if (CollectionUtils.isNotEmpty(encounters)) {
-            for (Encounter encounter : encounters) {
-                if (encounter.getCreator().getId().equals(loginUser.getId())) {
-                    loggedInUserEncounters.add(encounter);
-                }
-            }
+
+        Encounter encounter = encounterSessionMatcher.findEncounter(null, mapEncounterParameters(searchParameters));
+
+        if (null != encounter) {
+            loggedInUserEncounters.add(encounter);
         }
         return this.getEncounterTransactions(loggedInUserEncounters, encounterSearchParameters.getIncludeAll().booleanValue());
+    }
+
+    private EncounterParameters mapEncounterParameters(EncounterSearchParametersBuilder encounterSearchParameters) {
+        EncounterParameters encounterParameters = EncounterParameters.instance();
+        encounterParameters.setPatient(encounterSearchParameters.getPatient());
+        encounterParameters.setEncounterType(encounterSearchParameters.getEncounterTypes().iterator().next());
+        encounterParameters.setProviders(new HashSet<Provider>(encounterSearchParameters.getProviders()));
+        encounterParameters.setEncounterDateTime(encounterSearchParameters.getEndDate());
+        return encounterParameters;
     }
 
     @Override
