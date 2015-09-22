@@ -121,15 +121,21 @@ public class EncounterSessionMatcherTest {
     @Test
     public void shouldGetEncounter(){
         EncounterParameters encounterParameters = getEncounterParameters(providers, location);
-        encounterParameters.setEncounterDateTime(DateUtils.addDays(new Date(), -10));
+        encounterParameters.setEncounterDateTime(new Date());
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
+
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<Location> locationArgumentCaptor = ArgumentCaptor.forClass(Location.class);
         ArgumentCaptor<Date> dateArgumentCaptor = ArgumentCaptor.forClass(Date.class);
         ArgumentCaptor<Collection> collectionArgumentCaptor = ArgumentCaptor.forClass(Collection.class);
 
         verify(encounterService).getEncounters(patientArgumentCaptor.capture(), locationArgumentCaptor.capture(), dateArgumentCaptor.capture(), dateArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(),collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), eq(false));
+        System.out.println("expected" + encounterParameters.getEncounterDateTime());
+        System.out.println("actual" + dateArgumentCaptor.getAllValues().get(1));
+        System.out.println("expected" + DateUtils.addMinutes(encounterParameters.getEncounterDateTime(), -60));
+        System.out.println("actual" + dateArgumentCaptor.getAllValues().get(0));
+        System.out.println("expected" + encounterReturned);
         assertEquals(encounterParameters.getEncounterDateTime(), dateArgumentCaptor.getAllValues().get(1));
         assertEquals(DateUtils.addMinutes(encounterParameters.getEncounterDateTime(), -60), dateArgumentCaptor.getAllValues().get(0));
         assertNotNull(encounterReturned);
