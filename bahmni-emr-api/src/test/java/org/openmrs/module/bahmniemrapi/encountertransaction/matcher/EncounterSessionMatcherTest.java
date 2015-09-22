@@ -20,6 +20,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -119,9 +121,10 @@ public class EncounterSessionMatcherTest {
     }
 
     @Test
-    public void shouldGetEncounter(){
+    public void shouldGetEncounter() throws ParseException {
         EncounterParameters encounterParameters = getEncounterParameters(providers, location);
-        encounterParameters.setEncounterDateTime(new Date());
+        Date encounterDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2015-05-21 13:05:00");
+        encounterParameters.setEncounterDateTime(encounterDate);
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
 
@@ -131,13 +134,8 @@ public class EncounterSessionMatcherTest {
         ArgumentCaptor<Collection> collectionArgumentCaptor = ArgumentCaptor.forClass(Collection.class);
 
         verify(encounterService).getEncounters(patientArgumentCaptor.capture(), locationArgumentCaptor.capture(), dateArgumentCaptor.capture(), dateArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(),collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), eq(false));
-        System.out.println("expected" + encounterParameters.getEncounterDateTime());
-        System.out.println("actual" + dateArgumentCaptor.getAllValues().get(1));
-        System.out.println("expected" + DateUtils.addMinutes(encounterParameters.getEncounterDateTime(), -60));
-        System.out.println("actual" + dateArgumentCaptor.getAllValues().get(0));
-        System.out.println("expected" + encounterReturned);
-        assertEquals(encounterParameters.getEncounterDateTime(), dateArgumentCaptor.getAllValues().get(1));
-        assertEquals(DateUtils.addMinutes(encounterParameters.getEncounterDateTime(), -60), dateArgumentCaptor.getAllValues().get(0));
+        assertEquals(encounterDate, dateArgumentCaptor.getAllValues().get(1));
+        assertEquals(DateUtils.addMinutes(encounterDate, -60), dateArgumentCaptor.getAllValues().get(0));
         assertNotNull(encounterReturned);
     }
 
