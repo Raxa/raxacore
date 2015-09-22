@@ -53,6 +53,7 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
 
     private Encounter findMatchingEncounter(Visit visit, EncounterParameters encounterParameters) {
         Collection<Visit> visits = null;
+        List<Encounter> matchingEncounters = new ArrayList<>();
         if(visit != null ) {
            if(visit.getId() == null){ // To handle new Visit scenario where visit will not be persisted in DB and we get a visit obj (Called from emr-api).
                return null;
@@ -72,13 +73,16 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         if(CollectionUtils.isNotEmpty(encounters)){
             for (Encounter encounter : encounters) {
                 if (CollectionUtils.isNotEmpty(encounterParameters.getProviders())) {
-                    return encounter;
+                    matchingEncounters.add(encounter);
                 } else if (CollectionUtils.isEmpty(encounter.getEncounterProviders()) && isSameUser(encounter)) {
-                    return encounter;
+                     matchingEncounters.add(encounter);;
                 }
             }
         }
-        return null;
+        if(matchingEncounters.size() > 1){
+            throw new RuntimeException("More than one encounter matches the criteria");
+        }
+        return matchingEncounters.get(0);
     }
 
     private Date getSearchStartDate(Date endDate){

@@ -211,6 +211,29 @@ public class EncounterSessionMatcherTest {
         assertEquals(encounterReturned.getCreator(), creator1);
     }
 
+    @Test
+    public void shouldThrowExceptionWhenMultipleEncountersAreMatched() throws Exception {
+        EncounterParameters encounterParameters = getEncounterParameters(null, location);
+        encounterParameters.setEncounterDateTime(DateUtils.truncate(new Date(), Calendar.DATE));
+
+        Encounter e1 = new Encounter();
+        User creator1 = new User(1);
+        e1.setCreator(creator1);
+
+        Encounter e2 = new Encounter();
+        e2.setCreator(creator1);
+
+        when(userContext.getAuthenticatedUser()).thenReturn(creator1);
+        when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false))).thenReturn(Arrays.asList(e1, e2));
+
+        try {
+            Encounter encounterReturned = encounterSessionMatcher.findEncounter(null, encounterParameters);
+            assertFalse("should not have matched encounter", false);
+        }catch (RuntimeException e){
+           assertEquals("More than one encounter matches the criteria", e.getMessage());
+        }
+    }
+
 
     private EncounterParameters getEncounterParameters(Set<Provider> providers, Location location) {
         return getEncounterParameters(providers, location, this.encounterType);
