@@ -11,6 +11,6 @@ import java.util.List;
 public interface BahmniEncounterTransactionService {
     BahmniEncounterTransaction save(BahmniEncounterTransaction encounterTransaction);
     BahmniEncounterTransaction save(BahmniEncounterTransaction encounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate);
-    List<EncounterTransaction> find(EncounterSearchParameters encounterSearchParameters);
+    EncounterTransaction find(EncounterSearchParameters encounterSearchParameters);
     void delete(BahmniEncounterTransaction bahmniEncounterTransaction);
 }

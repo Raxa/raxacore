@@ -68,34 +68,16 @@ public class BahmniEncounterController extends BaseRestController {
         return bahmniEncounterTransactionMapper.map(encounterTransaction, includeAll);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/active")
-    @ResponseBody
-    public BahmniEncounterTransaction getActive(@ModelAttribute("activeEncounterParameters") ActiveEncounterParameters activeEncounterParameters) {
-        EncounterTransaction activeEncounter = emrEncounterService.getActiveEncounter(activeEncounterParameters);
-         return bahmniEncounterTransactionMapper.map(activeEncounter, activeEncounterParameters.getIncludeAll());
-    }
-
     @RequestMapping(method = RequestMethod.POST, value = "/find")
     @ResponseBody
-    public List<BahmniEncounterTransaction> find(@RequestBody EncounterSearchParameters encounterSearchParameters) {
-        List<BahmniEncounterTransaction> bahmniEncounterTransactions = new ArrayList<>();
+    public BahmniEncounterTransaction find(@RequestBody EncounterSearchParameters encounterSearchParameters) {
+        EncounterTransaction encounterTransaction = bahmniEncounterTransactionService.find(encounterSearchParameters);
 
-        List<EncounterTransaction> encounterTransactions = null;
-        try {
-            encounterTransactions = bahmniEncounterTransactionService.find(encounterSearchParameters);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (encounterTransactions != null && encounterTransactions.size() > 0) {
-            for (EncounterTransaction encounterTransaction : encounterTransactions) {
-                bahmniEncounterTransactions.add(bahmniEncounterTransactionMapper.map(encounterTransaction, encounterSearchParameters.getIncludeAll()));
-            }
+        if (encounterTransaction != null) {
+            return bahmniEncounterTransactionMapper.map(encounterTransaction, encounterSearchParameters.getIncludeAll());
         } else {
-            bahmniEncounterTransactions.add(bahmniEncounterTransactionMapper.map(new EncounterTransaction(), false));
+            return bahmniEncounterTransactionMapper.map(new EncounterTransaction(), false);
         }
-
-        return bahmniEncounterTransactions;
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/{uuid}")

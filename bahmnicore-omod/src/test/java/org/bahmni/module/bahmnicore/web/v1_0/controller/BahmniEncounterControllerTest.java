@@ -42,28 +42,20 @@ public class BahmniEncounterControllerTest {
 
     @Test
     public void returns_multiple_encounterTransactions_if_exists() throws Exception {
-        ArrayList<EncounterTransaction> encounterTransactions = new ArrayList<>();
         EncounterTransaction et1 = new EncounterTransaction();
         et1.setEncounterUuid("et1");
-        EncounterTransaction et2 = new EncounterTransaction();
-        et2.setEncounterUuid("et2");
-        encounterTransactions.add(et1);
-        encounterTransactions.add(et2);
 
         EncounterSearchParameters encounterSearchParameters = new EncounterSearchParameters();
         encounterSearchParameters.setIncludeAll(false);
 
-        when(bahmniEncounterTransactionService.find(encounterSearchParameters)).thenReturn(encounterTransactions);
+        when(bahmniEncounterTransactionService.find(encounterSearchParameters)).thenReturn(et1);
         when(bahmniEncounterTransactionMapper.map(et1, false)).thenReturn(new BahmniEncounterTransaction(et1));
-        when(bahmniEncounterTransactionMapper.map(et2, false)).thenReturn(new BahmniEncounterTransaction(et2));
 
         bahmniEncounterController = new BahmniEncounterController(null, null, null, null, emrEncounterService, null, bahmniEncounterTransactionService, bahmniEncounterTransactionMapper, null);
 
-        List<BahmniEncounterTransaction> bahmniEncounterTransactions = bahmniEncounterController.find(encounterSearchParameters);
+        BahmniEncounterTransaction bahmniEncounterTransaction = bahmniEncounterController.find(encounterSearchParameters);
 
-        assertEquals(2, bahmniEncounterTransactions.size());
-        assertEquals(et1.getEncounterUuid(), bahmniEncounterTransactions.get(0).getEncounterUuid());
-        assertEquals(et2.getEncounterUuid(), bahmniEncounterTransactions.get(1).getEncounterUuid());
+        assertEquals(et1.getEncounterUuid(), bahmniEncounterTransaction.getEncounterUuid());
     }
 
     @Test
@@ -74,12 +66,10 @@ public class BahmniEncounterControllerTest {
         when(emrEncounterService.find(encounterSearchParameters)).thenReturn(null);
         when(bahmniEncounterTransactionMapper.map(any(EncounterTransaction.class), anyBoolean())).thenReturn(new BahmniEncounterTransaction(new EncounterTransaction()));
 
-        bahmniEncounterController = new BahmniEncounterController(null, null, null, null, emrEncounterService, null, null, bahmniEncounterTransactionMapper, null);
-        List<BahmniEncounterTransaction> bahmniEncounterTransactions = bahmniEncounterController.find(encounterSearchParameters);
+        bahmniEncounterController = new BahmniEncounterController(null, null, null, null, emrEncounterService, null, bahmniEncounterTransactionService, bahmniEncounterTransactionMapper, null);
+        BahmniEncounterTransaction bahmniEncounterTransactions = bahmniEncounterController.find(encounterSearchParameters);
 
-        assertEquals(1, bahmniEncounterTransactions.size());
-        assertNotNull(bahmniEncounterTransactions.get(0));
-        assertNull(bahmniEncounterTransactions.get(0).getEncounterUuid());
+        assertNull(bahmniEncounterTransactions.getEncounterUuid());
     }
 
 }

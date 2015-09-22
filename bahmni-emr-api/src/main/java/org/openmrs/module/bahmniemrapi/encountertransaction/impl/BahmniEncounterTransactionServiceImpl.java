@@ -115,17 +115,15 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     }
 
     @Override
-    public List<EncounterTransaction> find(EncounterSearchParameters encounterSearchParameters) {
-        List<Encounter> loggedInUserEncounters = new ArrayList<>();
+    public EncounterTransaction find(EncounterSearchParameters encounterSearchParameters) {
         EncounterSearchParametersBuilder searchParameters = new EncounterSearchParametersBuilder(encounterSearchParameters,
                 this.patientService, this.encounterService, this.locationService, this.providerService, this.visitService);
 
         Encounter encounter = encounterSessionMatcher.findEncounter(null, mapEncounterParameters(searchParameters));
-
-        if (null != encounter) {
-            loggedInUserEncounters.add(encounter);
+        if(encounter != null){
+            return encounterTransactionMapper.map(encounter, encounterSearchParameters.getIncludeAll());
         }
-        return this.getEncounterTransactions(loggedInUserEncounters, encounterSearchParameters.getIncludeAll().booleanValue());
+        return null;
     }
 
     private EncounterParameters mapEncounterParameters(EncounterSearchParametersBuilder encounterSearchParameters) {
@@ -152,14 +150,6 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
             throw new RuntimeException("Encounter type not found.");
         }
         bahmniEncounterTransaction.setEncounterTypeUuid(encounterType.getUuid());
-    }
-
-    private List<EncounterTransaction> getEncounterTransactions(List<Encounter> encounters, boolean includeAll) {
-        List<EncounterTransaction> encounterTransactions = new ArrayList<>();
-        for (Encounter encounter : encounters) {
-            encounterTransactions.add(this.encounterTransactionMapper.map(encounter, Boolean.valueOf(includeAll)));
-        }
-        return encounterTransactions;
     }
 
 }
