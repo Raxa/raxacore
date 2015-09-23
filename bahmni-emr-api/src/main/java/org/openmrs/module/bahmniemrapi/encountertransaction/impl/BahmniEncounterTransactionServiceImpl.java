@@ -129,7 +129,9 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     private EncounterParameters mapEncounterParameters(EncounterSearchParametersBuilder encounterSearchParameters) {
         EncounterParameters encounterParameters = EncounterParameters.instance();
         encounterParameters.setPatient(encounterSearchParameters.getPatient());
-        encounterParameters.setEncounterType(encounterSearchParameters.getEncounterTypes().iterator().next());
+        if(encounterSearchParameters.getEncounterTypes().size() > 0){
+            encounterParameters.setEncounterType(encounterSearchParameters.getEncounterTypes().iterator().next());
+        }
         encounterParameters.setProviders(new HashSet<Provider>(encounterSearchParameters.getProviders()));
         encounterParameters.setEncounterDateTime(encounterSearchParameters.getEndDate());
         return encounterParameters;
