@@ -3199,4 +3199,163 @@
             DELETE FROM person_attribute_type WHERE name = 'Unknown patient';
         </sql>
     </changeSet>
+
+    <changeSet id="bahmni-clinical-201521091403" author="Banka,Sravanthi" context="rel0.76">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Patient-Listing'</sqlCheck>
+        </preConditions>
+        <comment>Add Patient-Listing role</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Patient-Listing', 'Will have access to all patient queues');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201521091408" author="Banka,Sravanthi" context="rel0.76">
+        <comment>Add privileges for patient listing</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Listing', 'Get Users');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Listing', 'Get Providers');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Listing', 'Get Concepts');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Listing', 'Get Visit Types');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-clinical-201521091410" author="Banka,Sravanthi" context="rel0.76">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Clinical-Read-Only'</sqlCheck>
+        </preConditions>
+        <comment>Add clinical read only role</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Clinical-Read-Only', 'Will have read only access to all clinical');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201521091414" author="Banka,Sravanthi" context="rel0.76">
+        <comment>Add privileges for clinical read only</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Patients');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Visits');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Add Users');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Edit Users');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Observations');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Encounters');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Care Settings');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Patient Programs');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get People');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Orders');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-clinical-201522091112" author="Banka,Sravanthi" context="rel0.76">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Save'</sqlCheck>
+        </preConditions>
+        <comment>Add consultation save</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Consultation-Save', 'Will have basic access to save consultation');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201522091114" author="Banka,Sravanthi" context="rel0.76">
+        <comment>Add privileges consultation save</comment>
+        <sql>
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Clinical-Read-Only', 'Consultation-Save');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'Edit Visits');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'Add Visits');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'Get Visit Attribute Types');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'Get Encounter Roles');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'Add Encounters');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'Edit Encounters');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-clinical-201522091116" author="Banka,Sravanthi" context="rel0.76">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Observation'</sqlCheck>
+        </preConditions>
+        <comment>Add consultation observation role</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Consultation-Observation', 'Will have access to consultation observation and save in both normal and retrospective mode');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201522091118" author="Banka,Sravanthi" context="rel0.76">
+        <comment>Add privileges consultation observation</comment>
+        <sql>
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Consultation-Save', 'Consultation-Observation');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-clinical-201522091120" author="Banka,Sravanthi" context="rel0.76">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Diagnosis'</sqlCheck>
+        </preConditions>
+        <comment>Add consultation diagnosis role</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Consultation-Diagnosis', 'Will have access to consultation diagnosis and save in both normal and retrospective mode');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201522091122" author="Banka,Sravanthi" context="rel0.76">
+        <comment>Add privileges consultation diagnosis</comment>
+        <sql>
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Consultation-Save', 'Consultation-Diagnosis');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-clinical-201522091124" author="Banka,Sravanthi" context="rel0.76">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Disposition'</sqlCheck>
+        </preConditions>
+        <comment>Add consultation disposition role</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Consultation-Disposition', 'Will have access to consultation disposition and save in both normal and retrospective mode');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201522091126" author="Banka,Sravanthi" context="rel0.76">
+        <comment>Add privileges consultation disposition</comment>
+        <sql>
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Consultation-Save', 'Consultation-Disposition');
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="bahmni-clinical-201522091128" author="Banka,Sravanthi" context="rel0.76">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Treatment'</sqlCheck>
+        </preConditions>
+        <comment>Add consultation treatment role</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Consultation-Treatment', 'Will have access to consultation treatment and save in both normal and retrospective mode');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201522091130" author="Banka,Sravanthi" context="rel0.76">
+        <comment>Add privileges consultation treatment</comment>
+        <sql>
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Consultation-Save', 'Consultation-Treatment');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Treatment', 'Edit Orders');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Treatment', 'Add Orders');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-clinical-201522091132" author="Banka,Sravanthi" context="rel0.76">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Orders'</sqlCheck>
+        </preConditions>
+        <comment>Add consultation orders role</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Consultation-Orders', 'Will have access to consultation orders and save in both normal and retrospective mode');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201522091134" author="Banka,Sravanthi" context="rel0.76">
+        <comment>Add privileges consultation orders</comment>
+        <sql>
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Consultation-Save', 'Consultation-Orders');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Orders', 'Edit Orders');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Orders', 'Add Orders');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
