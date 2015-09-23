@@ -82,7 +82,10 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         if(matchingEncounters.size() > 1){
             throw new RuntimeException("More than one encounter matches the criteria");
         }
-        return matchingEncounters.get(0);
+        if(matchingEncounters != null){
+            return matchingEncounters.get(0);
+        }
+        return null;
     }
 
     private Date getSearchStartDate(Date endDate){
