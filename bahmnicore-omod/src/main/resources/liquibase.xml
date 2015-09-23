@@ -3185,4 +3185,18 @@
             <column name="date_created" valueComputed="now()"></column>
         </insert>
     </changeSet>
+
+    <changeSet id="bahmni-core-201509231746" author="Swathi, Jaswanth" context="rel0.76">
+        <comment>Deleting Telephone Number person attribute type</comment>
+        <sql>
+            DELETE FROM person_attribute_type WHERE name = 'Telephone Number';
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201509231749" author="Swathi, Jaswanth" context="rel0.76">
+        <comment>Deleting Unknown patient person attribute type</comment>
+        <sql>
+            DELETE FROM person_attribute_type WHERE name = 'Unknown patient';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
