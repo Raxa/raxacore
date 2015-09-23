@@ -82,7 +82,7 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         if(matchingEncounters.size() > 1){
             throw new RuntimeException("More than one encounter matches the criteria");
         }
-        if(matchingEncounters != null){
+        if(!matchingEncounters.isEmpty()){
             return matchingEncounters.get(0);
         }
         return null;
