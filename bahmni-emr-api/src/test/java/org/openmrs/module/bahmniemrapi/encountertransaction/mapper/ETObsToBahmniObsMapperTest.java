@@ -51,10 +51,10 @@ public class ETObsToBahmniObsMapperTest {
         String encounterUuid = "encounter-uuid";
         String obsGroupUuid = "obs-group-uuid";
 
-        Person person1 = new PersonBuilder().withUUID("puuid1").withPersonName(person1name).build();
-        User user1 = new User(person1);
-        Person person2 = new PersonBuilder().withUUID("puuid2").withPersonName(person2name).build();
-        User user2 = new User(person2);
+        EncounterTransaction.User user1 = new EncounterTransaction.User();
+        user1.setPersonName(person1name);
+        EncounterTransaction.User user2 = new EncounterTransaction.User();
+        user2.setPersonName(person2name);
 
         EncounterTransaction.Concept etParentConcept = new EncounterTransaction.Concept();
         etParentConcept.setDataType("N/A");

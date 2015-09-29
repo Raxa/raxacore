@@ -2,7 +2,6 @@ package org.openmrs.module.bahmniemrapi.disposition.service;
 
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
-import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
@@ -13,7 +12,6 @@ import org.openmrs.module.emrapi.encounter.EncounterProviderMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 

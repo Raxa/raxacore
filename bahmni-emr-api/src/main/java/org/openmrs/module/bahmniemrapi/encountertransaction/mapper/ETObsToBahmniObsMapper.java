@@ -82,7 +82,7 @@ public class ETObsToBahmniObsMapper {
             bahmniObservation.addProvider(provider);
         }
         if(observation.getCreator() != null){
-            bahmniObservation.setCreatorName(observation.getCreator().getPersonName().toString());
+            bahmniObservation.setCreatorName(observation.getCreator().getPersonName());
         }
         return bahmniObservation;
     }

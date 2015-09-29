@@ -19,6 +19,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObser
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.ObservationMapper;
 import org.openmrs.module.emrapi.encounter.mapper.DrugMapper1_11;
+import org.openmrs.module.emrapi.encounter.mapper.UserMapper;
 import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 import org.openmrs.test.TestUtil;
 import org.openmrs.util.LocaleUtility;
@@ -55,7 +56,7 @@ public class OMRSObsToBahmniObsMapperTest {
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
         when(observationTypeMatcher.getObservationType(any(Obs.class))).thenReturn(ObservationTypeMatcher.ObservationType.OBSERVATION);
-        observationMapper = new ObservationMapper(new ConceptMapper(), new DrugMapper1_11());
+        observationMapper = new ObservationMapper(new ConceptMapper(), new DrugMapper1_11(), new UserMapper());
     }
 
     @Test
