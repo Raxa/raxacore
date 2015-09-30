@@ -10,10 +10,6 @@
     <packaging>jar</packaging>
     <name>BahmniEMR Core API</name>
 
-    <properties>
-        <openmrsAtomfeedVersion>2.5-SNAPSHOT</openmrsAtomfeedVersion>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.openmrs.test</groupId>
