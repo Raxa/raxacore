@@ -82,11 +82,11 @@ public class OMRSObsToBahmniObsMapperTest {
         parentConcept.addSetMember(conceptDetailsConceptSet);
         parentConcept.addSetMember(valueConcept2);
 
-        Obs abnormalObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(abnormalConcept).withValue(trueConcept).withDatetime(date).build();
-        Obs durationObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(durationConcept).withValue(10.0).withDatetime(date).build();
-        Obs valueObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(valueConcept).withValue("ovalue").withDatetime(date).build();
-        Obs obs1 = new ObsBuilder().withConcept(conceptDetailsConceptSet).withGroupMembers(valueObs, abnormalObs, durationObs).build();
-        Obs obs2 = new ObsBuilder().withConcept(valueConcept2).withValue("ovalue2").build();
+        Obs abnormalObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(abnormalConcept).withValue(trueConcept).withDatetime(date).withCreator(user).build();
+        Obs durationObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(durationConcept).withValue(10.0).withDatetime(date).withCreator(user).build();
+        Obs valueObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(valueConcept).withValue("ovalue").withDatetime(date).withCreator(user).build();
+        Obs obs1 = new ObsBuilder().withConcept(conceptDetailsConceptSet).withGroupMembers(valueObs, abnormalObs, durationObs).withCreator(user).build();
+        Obs obs2 = new ObsBuilder().withConcept(valueConcept2).withValue("ovalue2").withCreator(user).build();
         Obs parentObs = new ObsBuilder().withPerson(person).withEncounter(encounter).withConcept(parentConcept).withDatetime(date).withGroupMembers(obs1, obs2).withCreator(user).build();
 
         Collection<BahmniObservation> parentsObservations = new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null), observationTypeMatcher, observationMapper).map(asList(parentObs), Arrays.asList(parentConcept));
