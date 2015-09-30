@@ -29,10 +29,6 @@
         <url>http://openmrs.org</url>
     </organization>
 
-    <properties>
-        <openmrsAtomfeedVersion>2.5-SNAPSHOT</openmrsAtomfeedVersion>
-    </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
