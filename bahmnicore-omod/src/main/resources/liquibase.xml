@@ -3358,4 +3358,33 @@
             INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Orders', 'Add Orders');
         </sql>
     </changeSet>
+
+    <changeSet id="bahmni-core-201509301203" author="Chethan, Sourav" context="rel0.76">
+        <sql>
+            set @concept_source_id = 0;
+            set @concept_reference_term_id = 0;
+            set @set_concept_id = 0;
+            set @bahmni_initial_diagnosis_concept_id = 0;
+            set @bahmni_diagnosis_revised_concept_id = 0;
+            set @bahmni_diagnosis_status_concept_id = 0;
+
+            select concept_source_id into @concept_source_id from concept_reference_source where name = "org.openmrs.module.emrapi";
+
+            select concept_reference_term_id into @concept_reference_term_id from concept_reference_term where code = 'Diagnosis Concept Set' and concept_source_id = @concept_source_id;
+
+            select concept_id into @set_concept_id from concept_reference_map where concept_reference_term_id = @concept_reference_term_id;
+
+            select concept_id into @bahmni_initial_diagnosis_concept_id from concept_name where name = 'Bahmni Initial Diagnosis' and concept_name_type='FULLY_SPECIFIED' ;
+
+            select concept_id into @bahmni_diagnosis_revised_concept_id from concept_name where name = 'Bahmni Diagnosis Revised' and concept_name_type='FULLY_SPECIFIED';
+
+            select concept_id into @bahmni_diagnosis_status_concept_id from concept_name where name = 'Bahmni Diagnosis Status' and concept_name_type='FULLY_SPECIFIED';
+
+            call add_concept_set_members (@set_concept_id,@bahmni_initial_diagnosis_concept_id,1);
+            call add_concept_set_members (@set_concept_id,@bahmni_diagnosis_revised_concept_id,1);
+            call add_concept_set_members (@set_concept_id,@bahmni_diagnosis_status_concept_id,1);
+
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
