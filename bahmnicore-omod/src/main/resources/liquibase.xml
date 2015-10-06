@@ -3387,4 +3387,16 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-atomfeed-add-event-records-category-index" author="Achinta, Sudhakar" context="rel0.75">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_NAME = 'event_records' AND INDEX_NAME = 'event_records_category_idx'
+            </sqlCheck>
+        </preConditions>
+        <comment>Add index to the category column in event_records table for performance (if it is not already present)</comment>
+        <createIndex tableName="event_records" indexName="event_records_category_idx">
+            <column name="category"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
