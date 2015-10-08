@@ -3188,10 +3188,11 @@
 
     <changeSet id="bahmni-core-201509231746" author="Swathi, Jaswanth" context="rel0.76">
         <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM person_attribute_type WHERE name = 'Telephone Number'
+            </sqlCheck>
             <sqlCheck expectedResult="0">
-                SET @person_attribute_type_id = NULL;
-                SELECT person_attribute_type_id FROM person_attribute_type WHERE name = 'Telephone Number' into @person_attribute_type_id;
-                SELECT count(*) FROM person_attribute WHERE person_attribute_type_id = @person_attribute_type_id;
+                SELECT count(*) FROM person_attribute JOIN person_attribute_type ON person_attribute.person_attribute_type_id = person_attribute_type.person_attribute_type_id where name = 'Telephone Number'
             </sqlCheck>
         </preConditions>
         <comment>Deleting Telephone Number person attribute type</comment>
@@ -3202,10 +3203,11 @@
 
     <changeSet id="bahmni-core-201509231749" author="Swathi, Jaswanth" context="rel0.76">
         <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM person_attribute_type WHERE name = 'Unknown patient'
+            </sqlCheck>
             <sqlCheck expectedResult="0">
-                SET @person_attribute_type_id = NULL;
-                SELECT person_attribute_type_id FROM person_attribute_type WHERE name = 'Unknown patient' into @person_attribute_type_id;
-                SELECT count(*) FROM person_attribute WHERE person_attribute_type_id = @person_attribute_type_id;
+                SELECT count(*) FROM person_attribute JOIN person_attribute_type ON person_attribute.person_attribute_type_id = person_attribute_type.person_attribute_type_id where name = 'Unknown patient'
             </sqlCheck>
         </preConditions>
         <comment>Deleting Unknown patient person attribute type</comment>
