@@ -3415,4 +3415,114 @@
         </createIndex>
     </changeSet>
 
+
+    <changeSet id="bahmni-registration-201507101741" author="Shan,Sourav" context="rel0.77">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Registration'</sqlCheck>
+        </preConditions>
+        <comment>Add Registration Role</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Registration', 'Will have access to all registration roles');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-registration-201507101742" author="Shan,Sourav" context="rel0.77">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Registration-Read'</sqlCheck>
+        </preConditions>
+        <comment>Add Registration Read Role</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Registration-Read', 'Will have access to search patients');
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="bahmni-registration-201507101744" author="Shan,Sourav" context="rel0.77">
+        <comment>Add privileges registration read</comment>
+        <sql>
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Read', 'Registration');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Read', 'View Patients');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-registration-201507101747" author="Shan,Sourav" context="rel0.77">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Registration-Write'</sqlCheck>
+        </preConditions>
+        <comment>Add Registration Write Role</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Registration-Write', 'Will have access to update patient information');
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="bahmni-registration-201507101748" author="Shan,Sourav" context="rel0.77">
+        <comment>Add privileges registration write</comment>
+        <sql>
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Write', 'Registration');
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Read', 'Registration-Write');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Write', 'Add Patients');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Write', 'Edit Patients');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Write', 'Edit Patient Identifiers');
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="bahmni-registration-201507101749" author="Shan,Sourav" context="rel0.77">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Registration-Visit-Action'</sqlCheck>
+        </preConditions>
+        <comment>Add Registration Visit Action Role</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Registration-Visit-Action', 'Will have access to open and close visit');
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="bahmni-registration-201507101753" author="Shan,Sourav" context="rel0.77">
+        <comment>Add privileges registration visit action</comment>
+        <sql>
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Visit-Action', 'Registration');
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Write', 'Registration-Visit-Action');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Visit-Action', 'Add Visits');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Visit-Action', 'Delete Visits');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Visit-Action', 'Edit Visits');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-registration-201507101755" author="Shan,Sourav" context="rel0.77">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Registration-Additional'</sqlCheck>
+        </preConditions>
+        <comment>Add role for additional actions for registration app.</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Registration-Additional', 'Will have access to additional actions like encounter');
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="bahmni-registration-201507101757" author="Shan,Sourav" context="rel0.77">
+        <comment>Add privileges for additional action required for registration app like encounter etc.</comment>
+        <sql>
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Additional', 'Registration');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Add Encounters');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'app:registration');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Edit Encounters');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Get Encounter Roles');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Get Encounters');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Get Patients');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Get People');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Get Visit Attribute Types');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Get Visits');
+        </sql>
+    </changeSet>
+
+
+    <changeSet id="bahmni-registration-201507101808" author="Shan,Sourav" context="rel0.77">
+        <comment>Add patient listing role to registration</comment>
+        <sql>
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Patient-Listing', 'Registration');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
