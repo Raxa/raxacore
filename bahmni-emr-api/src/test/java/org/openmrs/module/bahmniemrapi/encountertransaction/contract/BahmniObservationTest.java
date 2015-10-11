@@ -98,7 +98,7 @@ public class BahmniObservationTest {
         assertEquals("void reason", observation.getVoidReason());
         assertEquals("child-uuid", observation.getGroupMembers().get(0).getUuid());
         assertEquals("child-value", observation.getGroupMembers().get(0).getValue());
-        assertEquals("parentConceptUuid", observation.getFormNamespace());//TODO: change it to formnamespace
+        assertEquals("parentConceptUuid", observation.getFormNamespace());
     }
 
     private EncounterTransaction.Concept createConcept(String conceptUuid, String conceptName) {
