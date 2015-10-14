@@ -25,6 +25,7 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
     private String obsGroupUuid;
     private String creatorName;
     private int conceptSortWeight;
+    private String parentConceptUuid;
 
     public BahmniObservation() {
         encounterTransactionObservation = new EncounterTransaction.Observation();
@@ -275,6 +276,15 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
             return false;
 
         return true;
+    }
+
+    public String getParentConceptUuid() {
+        return parentConceptUuid;
+    }
+
+    public void setParentConceptUuid(String parentConceptUuid) {
+        this.encounterTransactionObservation.setFormNamespace(parentConceptUuid);
+        this.parentConceptUuid = parentConceptUuid;
     }
 
     @Override

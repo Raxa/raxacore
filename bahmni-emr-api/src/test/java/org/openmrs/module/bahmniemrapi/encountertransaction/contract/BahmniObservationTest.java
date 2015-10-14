@@ -57,7 +57,7 @@ public class BahmniObservationTest {
         assertEquals(1, groupMembers.size());
         assertEquals("obs-value",observation.getValue());
         assertEquals(true, observation.getVoided());
-        assertEquals("chumma", observation.getVoidReason());
+        assertEquals("void reason", observation.getVoidReason());
         assertEquals("encounter-uuid",observation.getEncounterUuid());
         assertEquals("obs-Group-Uuid",observation.getObsGroupUuid());
 
@@ -82,8 +82,8 @@ public class BahmniObservationTest {
     public void shouldConvertBahmniObservationToETObservation() throws Exception {
         Date obsDateTime = new Date();
         EncounterTransaction.Concept concept = createConcept("concept-uuid", "concept-name");
-        BahmniObservation bahmniObservation = createBahmniObservation("obs-uuid","obs-value", concept,obsDateTime);
-        bahmniObservation.addGroupMember(createBahmniObservation("child-uuid", "child-value", concept, obsDateTime));
+        BahmniObservation bahmniObservation = createBahmniObservation("obs-uuid", "obs-value", concept, obsDateTime, "parentConceptUuid");
+        bahmniObservation.addGroupMember(createBahmniObservation("child-uuid", "child-value", concept, obsDateTime, "parentConceptUuid"));
 
         EncounterTransaction.Observation observation = bahmniObservation.toETObservation();
         
@@ -95,9 +95,10 @@ public class BahmniObservationTest {
         assertEquals(1,observation.getGroupMembers().size());
         assertEquals("obs-value",observation.getValue());
         assertEquals(true,observation.getVoided());
-        assertEquals("chumma", observation.getVoidReason());
+        assertEquals("void reason", observation.getVoidReason());
         assertEquals("child-uuid", observation.getGroupMembers().get(0).getUuid());
         assertEquals("child-value", observation.getGroupMembers().get(0).getValue());
+        assertEquals("parentConceptUuid", observation.getFormNamespace());//TODO: change it to formnamespace
     }
 
     private EncounterTransaction.Concept createConcept(String conceptUuid, String conceptName) {
@@ -107,7 +108,7 @@ public class BahmniObservationTest {
         return concept;
     }
 
-    private BahmniObservation createBahmniObservation(String uuid,String value,EncounterTransaction.Concept concept,Date obsDate) {
+    private BahmniObservation createBahmniObservation(String uuid,String value,EncounterTransaction.Concept concept,Date obsDate, String parentConceptUuid) {
         BahmniObservation bahmniObservation1 = new BahmniObservation();
         bahmniObservation1.setUuid(uuid);
         bahmniObservation1.setValue(value);
@@ -116,7 +117,8 @@ public class BahmniObservationTest {
         bahmniObservation1.setObservationDateTime(obsDate);
         bahmniObservation1.setOrderUuid("order-uuid");
         bahmniObservation1.setVoided(true);
-        bahmniObservation1.setVoidReason("chumma");
+        bahmniObservation1.setVoidReason("void reason");
+        bahmniObservation1.setParentConceptUuid(parentConceptUuid);
         return bahmniObservation1;
     }
 
@@ -129,7 +131,7 @@ public class BahmniObservationTest {
         etObservation.setObservationDateTime(obsDate);
         etObservation.setOrderUuid("order-uuid");
         etObservation.setVoided(true);
-        etObservation.setVoidReason("chumma");
+        etObservation.setVoidReason("void reason");
         return etObservation;
     }
 }
