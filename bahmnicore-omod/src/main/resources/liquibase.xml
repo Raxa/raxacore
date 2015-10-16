@@ -3524,6 +3524,125 @@
             INSERT INTO role_role(parent_role, child_role) VALUES ('Patient-Listing', 'Registration');
         </sql>
     </changeSet>
+    
+    <changeSet id="bahmni-inpatient-read-201513101438" author="Banka,Padma" context="rel0.77">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='InPatient-Read'</sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO role(role, description) VALUES('InPatient-Read','Ability to view the Inpatient dashboard');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-inpatient-patient-movement-201513101455" author="Banka,Padma" context="rel0.77">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Inpatient-Patient-Movement'</sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO role(role, description) VALUES('InPatient-Patient-Movement','Ability to admit, discharge and transfer the patient');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-inpatient-patient-movement-201513101524" author="Banka,Padma" context="release-0.77">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Patient-Documents-Upload'</sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO role(role, description) VALUES('Patient-Documents-Upload', 'Ability to upload patient documents and radiology uploads');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-admin-role-201513101528" author="Banka,Padma" context="release-0.77">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Admin-Role'</sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT into role(role, description) VALUES('Admin-Role', 'Ability to upload and download csvs');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-orders-role-201513101532" author="Banka,Padma" context="release-0.77">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Orders-Role'</sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT into role(role,description) VALUES('Orders-Role', 'Ability to view and fulfill orders');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-emr-reports-201513101535" author="Banka,Padma" context="release-0.77">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Emr-Reports'</sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT into role(role, description) VALUES('Emr-Reports','Ability to run reports');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-add-privileges-to-inpatient-read-201514101540" author="Banka,Padma" context="release-0.77">
+        <comment>Relating roles and adding privileges</comment>
+        <sql>
+            INSERT into role_role(parent_role, child_role) VALUES('Patient-Listing', 'InPatient-Read');
+            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Patients');
+            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get People');
+            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Encounters');
+            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Observations');
+            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Locations');
+            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Visits');
+            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Orders');
+            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Global Properties');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-addpreviliges-201514101844" author="Banka,Padma" context="release-0.77">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="4">
+                select count(*) from privilege where privilege in ('Get Beds', 'Assign Beds', 'Get Admission Locations', 'Edit Admission Locations');
+            </sqlCheck>
+        </preConditions>
+        <comment>Relating roles and adding privileges for bed management</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Admission Locations');
+            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Beds');
+            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Patient-Movement', 'Assign Beds');
+            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Patient-Movement', 'Edit Admission Locations');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-add-previliges-toinpatient-move-201514101850" author="Banka,Padma" context="release-0.77">
+        <comment>Adding privileges to Inpatient-patient-movement</comment>
+        <sql>
+            INSERT into role_role(parent_role, child_role) VALUES('InPatient-Read', 'InPatient-Patient-Movement');
+            INSERT into role_role(parent_role, child_role) VALUES('Consultation-Save', 'InPatient-Patient-Movement');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-add-privileges-to-patient-document-upload-201515101234" author="Banka,Padma" context="release-0.77">
+        <comment>Adding privileges to patient document upload role</comment>
+        <sql>
+            INSERT into role_role(parent_role, child_role) VALUES('Patient-Listing', 'Patient-Documents-Upload');
+            INSERT into role_role(parent_role, child_role) VALUES('Consultation-Save', 'Patient-Documents-Upload');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Documents-Upload', 'Get Global Properties');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Documents-Upload', 'Get Visits');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Documents-Upload', 'Get Patients');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Documents-Upload', 'Get Encounters');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-add-privileges-to-orders-role-201515101441" author="Banka,Padma" context="release-0.77">
+        <comment>Adding privileges to orders role</comment>
+        <sql>
+            INSERT into role_role(parent_role, child_role) VALUES('Consultation-Save', 'Orders-Role');
+            INSERT into role_role(parent_role, child_role) VALUES('Patient-Listing', 'Orders-Role');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Orders-Role', 'Get Global Properties');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Orders-Role', 'Get Encounters');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Orders-Role', 'Get Orders');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Orders-Role', 'Get Visits');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Orders-Role', 'Get Patients');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-addprevileges-admin-role-201516101234" author="Jaswanth,Padma" context="release-0.77">
+        <comment>Adding privileges to admin role</comment>
+        <sql>
+            INSERT into role_role(parent_role, child_role) VALUES('Privilege Level: Full', 'Admin-Role');
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-add-privilege-reports-role-201528101218" author="Jaswanth, Padma" context="release-0.77">
+        <comment>Adding privileges to emr-reports role</comment>
+        <sql>
+            INSERT into role_role(parent_role, child_role) VALUES('Patient-Listing', 'Emr-Reports');
+        </sql>
+    </changeSet>
 
     <changeSet id="bahmni-core-201510161510" author="Vikash, Shashi" context="rel0.77">
         <comment>Add relationship between orderType and conceptClass</comment>
