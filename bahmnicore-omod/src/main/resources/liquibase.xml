@@ -3525,4 +3525,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-201510161510" author="Vikash, Shashi" context="rel0.77">
+        <comment>Add relationship between orderType and conceptClass</comment>
+        <sql>
+            insert into order_type_class_map values((select order_type_id from order_type where name='Drug Order'), (select concept_class_id from concept_class where name='Drug'));
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
