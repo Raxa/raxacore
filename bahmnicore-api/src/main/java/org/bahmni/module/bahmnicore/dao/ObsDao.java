@@ -28,4 +28,6 @@ public interface ObsDao {
     List<Obs> getObsForOrder(String orderUuid);
 
     List<Obs> getObsForVisits(List<Person> persons, ArrayList<Encounter> visit, List<Concept> conceptsForNames, Collection<Concept> obsIgnoreList, Boolean filterOutOrders, Order order);
+
+    List<Obs> getObsFor(String patientUuid, Concept rootConcept, Concept childConcept, Integer numberOfVisits);
 }

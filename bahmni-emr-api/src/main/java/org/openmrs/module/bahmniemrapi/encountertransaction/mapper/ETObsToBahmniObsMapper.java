@@ -57,7 +57,9 @@ public class ETObsToBahmniObsMapper {
                     if (member.getValue() instanceof Boolean) {
                         bahmniObservation.setAbnormal((Boolean) member.getValue());
                     } else {
-                        bahmniObservation.setAbnormal(Boolean.parseBoolean(((EncounterTransaction.Concept) member.getValue()).getName()));
+                        if (member.getValue() != null) {
+                            bahmniObservation.setAbnormal(Boolean.parseBoolean(((EncounterTransaction.Concept) member.getValue()).getName()));
+                        }
                     }
                 } else if (member.getConcept().getConceptClass().equals(DURATION_CONCEPT_CLASS)) {
                     bahmniObservation.setDuration(new Double(member.getValue().toString()).longValue());
@@ -81,7 +83,7 @@ public class ETObsToBahmniObsMapper {
         for (EncounterTransaction.Provider provider : additionalBahmniObservationFields.getProviders()) {
             bahmniObservation.addProvider(provider);
         }
-        if(observation.getCreator() != null){
+        if (observation.getCreator() != null) {
             bahmniObservation.setCreatorName(observation.getCreator().getPersonName());
         }
         return bahmniObservation;

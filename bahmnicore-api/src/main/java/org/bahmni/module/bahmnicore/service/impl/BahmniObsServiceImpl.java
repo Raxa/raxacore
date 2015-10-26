@@ -42,23 +42,34 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     @Override
     public Collection<BahmniObservation> observationsFor(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits,
                                                          List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order) {
-        if(CollectionUtils.isNotEmpty(concepts)){
+        if (CollectionUtils.isNotEmpty(concepts)) {
             List<String> conceptNames = new ArrayList<>();
             for (Concept concept : concepts) {
                 conceptNames.add(concept.getName().getName());
             }
 
             List<Obs> observations = obsDao.getObsFor(patientUuid, conceptNames, numberOfVisits, obsIgnoreList, filterOutOrderObs, order);
-            return omrsObsToBahmniObsMapper.map(observations,concepts);
+            return omrsObsToBahmniObsMapper.map(observations, concepts);
         }
         return Collections.EMPTY_LIST;
+    }
+
+    @Override
+    public Collection<BahmniObservation> observationsFor(String patientUuid, Concept rootConcept, Concept childConcept, Integer numberOfVisits) {
+        List<Obs> observations = obsDao.getObsFor(patientUuid, rootConcept, childConcept, numberOfVisits);
+        List<BahmniObservation> bahmniObservations = new ArrayList<>();
+        for (Obs observation : observations) {
+            BahmniObservation bahmniObservation = omrsObsToBahmniObsMapper.map(observation);
+            bahmniObservations.add(bahmniObservation);
+        }
+        return bahmniObservations;
     }
 
     @Override
     public Collection<BahmniObservation> getLatest(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order) {
         List<Obs> latestObs = new ArrayList<>();
         for (Concept concept : concepts) {
-            if(null != concept) {
+            if (null != concept) {
                 latestObs.addAll(obsDao.getLatestObsFor(patientUuid, concept.getName().getName(), numberOfVisits, 1, obsIgnoreList, filterOutOrderObs, order));
             }
         }
@@ -77,7 +88,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public Collection<BahmniObservation> getLatestObsByVisit(Visit visit, Collection<Concept> concepts, List<String> obsIgnoreList, Boolean filterOutOrderObs){
+    public Collection<BahmniObservation> getLatestObsByVisit(Visit visit, Collection<Concept> concepts, List<String> obsIgnoreList, Boolean filterOutOrderObs) {
         List<Obs> latestObs = new ArrayList<>();
         for (Concept concept : concepts) {
             latestObs.addAll(obsDao.getLatestObsByVisit(visit, concept.getName().getName(), 1, obsIgnoreList, filterOutOrderObs));
@@ -87,7 +98,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public Collection<BahmniObservation> getInitialObsByVisit(Visit visit, List<Concept> concepts,List<String> obsIgnoreList, Boolean filterObsWithOrders) {
+    public Collection<BahmniObservation> getInitialObsByVisit(Visit visit, List<Concept> concepts, List<String> obsIgnoreList, Boolean filterObsWithOrders) {
         List<Obs> latestObs = new ArrayList<>();
         for (Concept concept : concepts) {
             latestObs.addAll(obsDao.getInitialObsByVisit(visit, concept.getName().getName(), 1, obsIgnoreList, filterObsWithOrders));
@@ -119,7 +130,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public Collection<BahmniObservation> getObservationsForOrder(String orderUuid){
+    public Collection<BahmniObservation> getObservationsForOrder(String orderUuid) {
         List<Obs> observations = obsDao.getObsForOrder(orderUuid);
         return omrsObsToBahmniObsMapper.map(observations, null);
     }
@@ -130,7 +141,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
     private List<Obs> getObsAtTopLevelAndApplyIgnoreList(List<Obs> observations, List<String> topLevelConceptNames, Collection<Concept> obsIgnoreList) {
         List<Obs> topLevelObservations = new ArrayList<>();
-        if(topLevelConceptNames == null) topLevelConceptNames = new ArrayList<>();
+        if (topLevelConceptNames == null) topLevelConceptNames = new ArrayList<>();
 
         Set<String> topLevelConceptNamesWithoutCase = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         topLevelConceptNamesWithoutCase.addAll(topLevelConceptNames);

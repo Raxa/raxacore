@@ -5,9 +5,8 @@ import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.*;
+import org.hibernate.criterion.Restrictions;
 import org.openmrs.*;
-import org.openmrs.Order;
 import org.openmrs.api.ConceptNameType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -18,7 +17,10 @@ import java.util.*;
 public class ObsDaoImpl implements ObsDao {
     @Autowired
     private SessionFactory sessionFactory;
-    private enum OrderBy {ASC,DESC};
+
+    private enum OrderBy {ASC, DESC}
+
+    ;
 
     @Override
     public List<Obs> getNumericObsByPerson(String personUUID) {
@@ -72,18 +74,18 @@ public class ObsDaoImpl implements ObsDao {
                 " and cn.conceptNameType = :conceptNameType " +
                 " and cn.voided = false and obs.voided = false ");
 
-        if(CollectionUtils.isNotEmpty(obsIgnoreList)) {
+        if (CollectionUtils.isNotEmpty(obsIgnoreList)) {
             query.append(" and cn.name not in (:obsIgnoreList) ");
         }
-        if(filterOutOrderObs) {
-            query.append( " and obs.order.orderId is null ");
+        if (filterOutOrderObs) {
+            query.append(" and obs.order.orderId is null ");
         }
-        if(null != order) {
-                    query.append( " and obs.order = (:order) ");
-                }
-        if(sortOrder == OrderBy.ASC){
+        if (null != order) {
+            query.append(" and obs.order = (:order) ");
+        }
+        if (sortOrder == OrderBy.ASC) {
             query.append(" order by obs.obsDatetime asc ");
-        }else{
+        } else {
             query.append(" order by obs.obsDatetime desc ");
         }
 
@@ -103,7 +105,7 @@ public class ObsDaoImpl implements ObsDao {
         return queryToGetObservations.list();
     }
 
-    public List<Obs> getInitialObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit,List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order) {
+    public List<Obs> getInitialObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order) {
         return getObsFor(patientUuid, Arrays.asList(conceptName), numberOfVisits, limit, OrderBy.ASC, obsIgnoreList, filterOutOrderObs, order);
     }
 
@@ -118,10 +120,10 @@ public class ObsDaoImpl implements ObsDao {
     }
 
     public List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer numberOfVisits, Integer limit, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order) {
-        return getObsFor(patientUuid,Arrays.asList(conceptName),numberOfVisits, limit, OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order);
+        return getObsFor(patientUuid, Arrays.asList(conceptName), numberOfVisits, limit, OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order);
     }
 
-    public List<Obs> getLatestObsByVisit(Visit visit, String conceptName, Integer limit, List<String> obsIgnoreList, Boolean filterOutOrderObs){
+    public List<Obs> getLatestObsByVisit(Visit visit, String conceptName, Integer limit, List<String> obsIgnoreList, Boolean filterOutOrderObs) {
         return getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList(conceptName), Arrays.asList(visit.getVisitId()), limit, OrderBy.DESC, obsIgnoreList, filterOutOrderObs, null);
     }
 
@@ -167,7 +169,7 @@ public class ObsDaoImpl implements ObsDao {
 
     @Override
     public List<Obs> getObsForOrder(String orderUuid) {
-        String queryString = "from Obs obs where obs.voided = false and obs.order.uuid = :orderUuid order by obs.obsDatetime desc" ;
+        String queryString = "from Obs obs where obs.voided = false and obs.order.uuid = :orderUuid order by obs.obsDatetime desc";
         Query queryToGetObs = sessionFactory.getCurrentSession().createQuery(queryString);
         queryToGetObs.setString("orderUuid", orderUuid);
 
@@ -177,23 +179,23 @@ public class ObsDaoImpl implements ObsDao {
     @Override
     public List<Obs> getObsForVisits(List<Person> persons, ArrayList<Encounter> encounters, List<Concept> conceptsForNames, Collection<Concept> obsIgnoreList, Boolean filterOutOrders, Order order) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Obs.class, "obs");
-        if(CollectionUtils.isNotEmpty(persons)) {
+        if (CollectionUtils.isNotEmpty(persons)) {
             criteria.add(Restrictions.in("person", persons));
         }
 
-        if(CollectionUtils.isNotEmpty(encounters)) {
+        if (CollectionUtils.isNotEmpty(encounters)) {
             criteria.add(Restrictions.in("encounter", encounters));
         }
-        if(CollectionUtils.isNotEmpty(conceptsForNames)) {
+        if (CollectionUtils.isNotEmpty(conceptsForNames)) {
             criteria.add(Restrictions.in("concept", conceptsForNames));
         }
-        if(CollectionUtils.isNotEmpty(obsIgnoreList)) {
+        if (CollectionUtils.isNotEmpty(obsIgnoreList)) {
             criteria.add(Restrictions.not(Restrictions.in("concept", obsIgnoreList)));
         }
-        if(filterOutOrders){
+        if (filterOutOrders) {
             criteria.add(Restrictions.isNull("order"));
         }
-        if(order != null){
+        if (order != null) {
             criteria.add(Restrictions.eq("order", order));
         }
         criteria.add(Restrictions.eq("voided", Boolean.valueOf(false)));
@@ -201,6 +203,35 @@ public class ObsDaoImpl implements ObsDao {
         criteria.addOrder(org.hibernate.criterion.Order.desc("obsDatetime"));
 
         return criteria.list();
+    }
+
+    @Override
+    public List<Obs> getObsFor(String patientUuid, Concept rootConcept, Concept childConcept, Integer numberOfVisits) {
+        List<Integer> listOfVisitIds = getVisitIdsFor(patientUuid, numberOfVisits);
+        if (listOfVisitIds == null || listOfVisitIds.isEmpty())
+            return new ArrayList<>();
+
+        String queryString = "SELECT rootObs.* " +
+                "FROM obs rootObs " +
+                "JOIN concept_name rootConceptName " +
+                "ON rootObs.concept_id = rootConceptName.concept_id AND rootConceptName.name = :rootConceptName AND " +
+                "rootConceptName.concept_name_type = 'FULLY_SPECIFIED' " +
+                "JOIN person ON person.person_id = rootObs.person_id AND person.uuid = :patientUuid AND " +
+                "rootObs.voided = 0 AND person.voided = 0 " +
+                "JOIN encounter ON encounter.encounter_id = rootObs.encounter_id AND encounter.voided = 0 " +
+                "JOIN visit ON visit.visit_id = encounter.visit_id AND visit.visit_id IN :visitIds " +
+                "JOIN obs groupByObs ON groupByObs.obs_group_id = rootObs.obs_id AND groupByObs.voided = 0 " +
+                "JOIN concept_name groupByConceptName " +
+                "ON groupByConceptName.concept_id = groupByObs.concept_id AND groupByConceptName.name = :childConceptName AND " +
+                "groupByConceptName.concept_name_type = 'FULLY_SPECIFIED'";
+
+        Query queryToGetObs = sessionFactory.getCurrentSession().createSQLQuery(queryString)
+                .addEntity(Obs.class)
+                .setParameter("rootConceptName", rootConcept.getName().getName())
+                .setParameter("patientUuid", patientUuid)
+                .setParameterList("visitIds", listOfVisitIds)
+                .setParameter("childConceptName", childConcept.getName().getName());
+        return queryToGetObs.list();
     }
 
     private List<Obs> filterByRootConcept(List<Obs> obs, String parentConceptName) {
@@ -225,11 +256,10 @@ public class ObsDaoImpl implements ObsDao {
         List<Obs> filteredObservations = new ArrayList<>();
         for (Obs obs : observations) {
             Integer encounterId = conceptToEncounterMap.get(obs.getConcept().getId());
-            if(encounterId == null) {
+            if (encounterId == null) {
                 conceptToEncounterMap.put(obs.getConcept().getId(), obs.getEncounter().getId());
                 filteredObservations.add(obs);
-            }
-            else if (obs.getEncounter().getId().intValue() == encounterId.intValue()) {
+            } else if (obs.getEncounter().getId().intValue() == encounterId.intValue()) {
                 filteredObservations.add(obs);
             }
         }
