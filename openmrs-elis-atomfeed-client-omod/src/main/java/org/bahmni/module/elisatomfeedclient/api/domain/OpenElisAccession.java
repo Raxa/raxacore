@@ -1,6 +1,5 @@
 package org.bahmni.module.elisatomfeedclient.api.domain;
 
-import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.elisatomfeedclient.api.worker.ProviderHelper;
 import org.joda.time.DateTime;
@@ -16,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Data
 public class OpenElisAccession {
     private String accessionUuid;
     private String patientUuid;
@@ -106,5 +104,67 @@ public class OpenElisAccession {
                 (accessionNote.isProviderInEncounter(encounter) || ProviderHelper.getProviderFrom(encounter).equals(defaultLabManagerProvider));
     }
 
+    public String getAccessionUuid() {
+        return accessionUuid;
+    }
 
+    public void setAccessionUuid(String accessionUuid) {
+        this.accessionUuid = accessionUuid;
+    }
+
+    public String getPatientUuid() {
+        return patientUuid;
+    }
+
+    public void setPatientUuid(String patientUuid) {
+        this.patientUuid = patientUuid;
+    }
+
+    public String getPatientFirstName() {
+        return patientFirstName;
+    }
+
+    public void setPatientFirstName(String patientFirstName) {
+        this.patientFirstName = patientFirstName;
+    }
+
+    public String getPatientLastName() {
+        return patientLastName;
+    }
+
+    public void setPatientLastName(String patientLastName) {
+        this.patientLastName = patientLastName;
+    }
+
+    public String getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(String dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public String getPatientIdentifier() {
+        return patientIdentifier;
+    }
+
+    public void setPatientIdentifier(String patientIdentifier) {
+        this.patientIdentifier = patientIdentifier;
+    }
+
+    public List<OpenElisAccessionNote> getAccessionNotes() {
+        return accessionNotes;
+    }
+
+    public void setAccessionNotes(List<OpenElisAccessionNote> accessionNotes) {
+        this.accessionNotes = accessionNotes;
+    }
+
+    public Set<OpenElisTestDetail> getTestDetails() {
+        return testDetails;
+    }
+
+    public void setTestDetails(Set<OpenElisTestDetail> testDetails) {
+        this.testDetails = testDetails;
+    }
 }

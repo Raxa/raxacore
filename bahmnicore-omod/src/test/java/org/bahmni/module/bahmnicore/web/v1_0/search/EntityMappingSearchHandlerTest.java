@@ -48,8 +48,7 @@ public class EntityMappingSearchHandlerTest {
     public void setUp() throws Exception {
         when(requestContext.getParameter("mappingType")).thenReturn(PROGRAM_OBS_TEMPLATE);
         when(requestContext.getParameter("entityUuid")).thenReturn(ENTITY1_UUID);
-        programObsTemplateMappingType = EntityMappingType.builder().id(1).entity1Type("org.openmrs.Program")
-                .entity2Type("org.openmrs.Concept").name(PROGRAM_OBS_TEMPLATE).build();
+        programObsTemplateMappingType = new EntityMappingType(1, null, PROGRAM_OBS_TEMPLATE, "org.openmrs.Program", "org.openmrs.Concept");
 
         when(entityMappingDao.getEntityMappingTypeByName(PROGRAM_OBS_TEMPLATE)).thenReturn(programObsTemplateMappingType);
 
@@ -57,8 +56,7 @@ public class EntityMappingSearchHandlerTest {
 
     @Test
     public void shouldGetEntityWithMappingsWhenThereAreEntityMappings() throws Exception {
-        EntityMapping entityMapping = EntityMapping.builder().entity1Uuid(ENTITY1_UUID).entity2Uuid(ENTITY2_UUID)
-                .entityMappingType(programObsTemplateMappingType).build();
+        EntityMapping entityMapping = new EntityMapping(null, null, ENTITY1_UUID, ENTITY2_UUID, programObsTemplateMappingType);
 
         when(entityMappingDao.getEntityMappings(ENTITY1_UUID, PROGRAM_OBS_TEMPLATE)).thenReturn(Collections.singletonList(entityMapping));
 

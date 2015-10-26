@@ -1,13 +1,9 @@
 package org.bahmni.module.bahmnicore.contract.patient.response;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Calendar;
 import java.util.Date;
 
-@Data
-@NoArgsConstructor
 public class PatientResponse {
 
     private String uuid;
@@ -22,6 +18,9 @@ public class PatientResponse {
     private Date dateCreated;
     private String activeVisitUuid;
     private String customAttribute;
+
+    public PatientResponse() {
+    }
 
     public String getAge() {
         if (birthDate == null)
@@ -56,4 +55,99 @@ public class PatientResponse {
         return Integer.toString(age);
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public Date getDeathDate() {
+        return deathDate;
+    }
+
+    public void setDeathDate(Date deathDate) {
+        this.deathDate = deathDate;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public String getAddressFieldValue() {
+        return addressFieldValue;
+    }
+
+    public void setAddressFieldValue(String addressFieldValue) {
+        this.addressFieldValue = addressFieldValue;
+    }
+
+    public String getGivenName() {
+        return givenName;
+    }
+
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public String getActiveVisitUuid() {
+        return activeVisitUuid;
+    }
+
+    public void setActiveVisitUuid(String activeVisitUuid) {
+        this.activeVisitUuid = activeVisitUuid;
+    }
+
+    public String getCustomAttribute() {
+        return customAttribute;
+    }
+
+    public void setCustomAttribute(String customAttribute) {
+        this.customAttribute = customAttribute;
+    }
 }

@@ -1,12 +1,9 @@
 package org.openmrs.module.bahmniemrapi.document.contract;
 
-import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Data
 public class VisitDocumentRequest {
     String patientUuid;
     String visitUuid;
@@ -37,4 +34,83 @@ public class VisitDocumentRequest {
         this.locationUuid = locationUuid;
     }
 
+    public String getPatientUuid() {
+        return patientUuid;
+    }
+
+    public void setPatientUuid(String patientUuid) {
+        this.patientUuid = patientUuid;
+    }
+
+    public String getVisitUuid() {
+        return visitUuid;
+    }
+
+    public void setVisitUuid(String visitUuid) {
+        this.visitUuid = visitUuid;
+    }
+
+    public String getVisitTypeUuid() {
+        return visitTypeUuid;
+    }
+
+    public void setVisitTypeUuid(String visitTypeUuid) {
+        this.visitTypeUuid = visitTypeUuid;
+    }
+
+    public Date getVisitStartDate() {
+        return visitStartDate;
+    }
+
+    public void setVisitStartDate(Date visitStartDate) {
+        this.visitStartDate = visitStartDate;
+    }
+
+    public Date getVisitEndDate() {
+        return visitEndDate;
+    }
+
+    public void setVisitEndDate(Date visitEndDate) {
+        this.visitEndDate = visitEndDate;
+    }
+
+    public String getEncounterTypeUuid() {
+        return encounterTypeUuid;
+    }
+
+    public void setEncounterTypeUuid(String encounterTypeUuid) {
+        this.encounterTypeUuid = encounterTypeUuid;
+    }
+
+    public Date getEncounterDateTime() {
+        return encounterDateTime;
+    }
+
+    public void setEncounterDateTime(Date encounterDateTime) {
+        this.encounterDateTime = encounterDateTime;
+    }
+
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
+    }
+
+    public String getProviderUuid() {
+        return providerUuid;
+    }
+
+    public void setProviderUuid(String providerUuid) {
+        this.providerUuid = providerUuid;
+    }
+
+    public String getLocationUuid() {
+        return locationUuid;
+    }
+
+    public void setLocationUuid(String locationUuid) {
+        this.locationUuid = locationUuid;
+    }
 }

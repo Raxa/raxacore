@@ -1,13 +1,9 @@
 package org.openmrs.module.bahmniemrapi.document.contract;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 
-@Data
-@AllArgsConstructor
+import java.util.Date;
+
 public class Document {
     String image;
     String format;
@@ -17,6 +13,15 @@ public class Document {
     boolean voided;
 
     public Document() {
+    }
+
+    public Document(String image, String format, String testUuid, String obsUuid, Date obsDateTime, boolean voided) {
+        this.image = image;
+        this.format = format;
+        this.testUuid = testUuid;
+        this.obsUuid = obsUuid;
+        this.obsDateTime = obsDateTime;
+        this.voided = voided;
     }
 
     public boolean isNew() {
@@ -29,5 +34,53 @@ public class Document {
 
     public boolean hasConceptChanged(String referenceUuid) {
         return !referenceUuid.equals(getTestUuid());
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public String getTestUuid() {
+        return testUuid;
+    }
+
+    public void setTestUuid(String testUuid) {
+        this.testUuid = testUuid;
+    }
+
+    public String getObsUuid() {
+        return obsUuid;
+    }
+
+    public void setObsUuid(String obsUuid) {
+        this.obsUuid = obsUuid;
+    }
+
+    public Date getObsDateTime() {
+        return obsDateTime;
+    }
+
+    public void setObsDateTime(Date obsDateTime) {
+        this.obsDateTime = obsDateTime;
+    }
+
+    public boolean isVoided() {
+        return voided;
+    }
+
+    public void setVoided(boolean voided) {
+        this.voided = voided;
     }
 }

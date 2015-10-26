@@ -1,16 +1,12 @@
 package org.openmrs.module.bahmniemrapi.visit.contract;
 
 
-import lombok.Getter;
-import lombok.Setter;
 import org.openmrs.Visit;
 
 import java.util.Date;
 
 public class VisitData {
-    @Getter @Setter
     private String uuid;
-    @Getter @Setter
     private Date startDateTime;
 
     public VisitData(Visit visit) {
@@ -18,4 +14,19 @@ public class VisitData {
         this.startDateTime = visit.getStartDatetime();
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public Date getStartDateTime() {
+        return startDateTime;
+    }
+
+    public void setStartDateTime(Date startDateTime) {
+        this.startDateTime = startDateTime;
+    }
 }

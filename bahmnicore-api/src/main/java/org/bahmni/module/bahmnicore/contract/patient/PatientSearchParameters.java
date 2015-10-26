@@ -1,12 +1,10 @@
 package org.bahmni.module.bahmnicore.contract.patient;
 
-import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 
 import java.util.Map;
 
-@Data
 public class PatientSearchParameters {
     private String identifier;
     private String name;
@@ -41,5 +39,69 @@ public class PatientSearchParameters {
         this.setAddressFieldValue(context.getParameter("address_field_value"));
         Map parameterMap = context.getRequest().getParameterMap();
         this.patientAttributes = (String[]) parameterMap.get("patientAttributes");
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAddressFieldName() {
+        return addressFieldName;
+    }
+
+    public void setAddressFieldName(String addressFieldName) {
+        this.addressFieldName = addressFieldName;
+    }
+
+    public String getAddressFieldValue() {
+        return addressFieldValue;
+    }
+
+    public void setAddressFieldValue(String addressFieldValue) {
+        this.addressFieldValue = addressFieldValue;
+    }
+
+    public Integer getStart() {
+        return start;
+    }
+
+    public void setStart(Integer start) {
+        this.start = start;
+    }
+
+    public Integer getLength() {
+        return length;
+    }
+
+    public void setLength(Integer length) {
+        this.length = length;
+    }
+
+    public String getCustomAttribute() {
+        return customAttribute;
+    }
+
+    public void setCustomAttribute(String customAttribute) {
+        this.customAttribute = customAttribute;
+    }
+
+    public String[] getPatientAttributes() {
+        return patientAttributes;
+    }
+
+    public void setPatientAttributes(String[] patientAttributes) {
+        this.patientAttributes = patientAttributes;
     }
 }
