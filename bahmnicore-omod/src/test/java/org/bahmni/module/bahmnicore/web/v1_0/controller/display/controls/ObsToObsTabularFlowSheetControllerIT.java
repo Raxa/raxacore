@@ -18,8 +18,9 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        executeDataSet("pivotTableDataSet.xml");
-        executeDataSet("pivotTableDataSetWithMultipleLevelConcepts.xml");
+        executeDataSet("flowSheetTableDataSet.xml");
+        executeDataSet("flowSheetDataSetWithMultipleLevelConcepts.xml");
+        executeDataSet("flowSheetTableDataSetForConceptDetails.xml");
     }
 
     @Test
@@ -95,5 +96,19 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
         assertNotNull(pivotTable.getHeaders());
         assertNotEquals("Should not be empty list", Collections.EMPTY_LIST, pivotTable.getHeaders());
         assertArrayEquals(new String[]{"SPECIMEN COLLECTION DATE", "WEIGHT (KG)"}, pivotTable.getHeaders().toArray());
+    }
+
+    @Test
+    public void shouldFetchConceptDetailsConcepts() throws Exception {
+        PivotTable pivotTable = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/observations/flowSheet",
+                new Parameter("patientUuid", "1a246ed5-3c11-11de-a0ba-001edlaeb67a"),
+                new Parameter("conceptSet", "Vitals"),
+                new Parameter("groupByConcept", "Temperature Data")
+        )), PivotTable.class);
+
+        List<PivotRow> rows = pivotTable.getRows();
+        assertEquals(1, rows.size());
+        assertEquals("98.0", rows.get(0).getValue("Temperature Data").getValueAsString());
+        assertTrue(rows.get(0).getValue("Temperature Data").isAbnormal());
     }
 }

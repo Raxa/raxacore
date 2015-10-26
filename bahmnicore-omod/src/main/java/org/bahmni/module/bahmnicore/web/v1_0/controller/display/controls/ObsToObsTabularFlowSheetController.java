@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Controller

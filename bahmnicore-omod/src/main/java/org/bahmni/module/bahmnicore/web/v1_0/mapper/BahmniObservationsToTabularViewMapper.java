@@ -39,7 +39,7 @@ public class BahmniObservationsToTabularViewMapper {
 
     private void constructColumns(List<String> conceptNames, Set<String> headers, PivotRow row, BahmniObservation observation) {
         if (observation.getConcept().isSet()) {
-            if (observation.getClass().getName().equals("Concept Details")) {
+            if (observation.getConcept().getConceptClass().equals("Concept Details")) {
                 addColumn(conceptNames, headers, row, observation);
             }
             for (BahmniObservation bahmniObservation : observation.getGroupMembers()) {

@@ -15,6 +15,7 @@ public class BahmniObservationBuilder {
         EncounterTransaction.Concept concept = new EncounterTransaction.Concept();
         concept.setName(name);
         concept.setSet(isSet);
+        concept.setConceptClass("Misc");
         bahmniObservation.setConcept(concept);
         return this;
     }
