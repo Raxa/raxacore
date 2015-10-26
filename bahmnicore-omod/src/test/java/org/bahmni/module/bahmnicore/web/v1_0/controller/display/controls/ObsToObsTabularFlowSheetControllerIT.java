@@ -24,7 +24,7 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldReturnAllTheMembersIfTheConceptNamesAreNotPassed() throws Exception {
-        PivotTable pivotTable = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/observations/tabular",
+        PivotTable pivotTable = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/observations/flowSheet",
                 new Parameter("patientUuid", "1a246ed5-3c11-11de-a0ba-001ed98eb67a"),
                 new Parameter("numberOfVisits", "1"),
                 new Parameter("conceptSet", "FOOD CONSTRUCT"),
@@ -43,7 +43,7 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldReturnOnlyConceptNamesWhichArePassed() throws Exception {
-        PivotTable pivotTable = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/observations/tabular",
+        PivotTable pivotTable = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/observations/flowSheet",
                 new Parameter("patientUuid", "1a246ed5-3c11-11de-a0ba-001ed98eb67a"),
                 new Parameter("numberOfVisits", "1"),
                 new Parameter("conceptSet", "FOOD CONSTRUCT"),
@@ -64,7 +64,7 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldGetAllMemberNamesAsHeadersWhenConceptNamesAreNotPassed() throws Exception {
-        PivotTable pivotTable = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/observations/tabular",
+        PivotTable pivotTable = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/observations/flowSheet",
                 new Parameter("patientUuid", "1a246ed5-3c11-11de-abaa-001ed98eb67a"),
                 new Parameter("numberOfVisits", "-1"),
                 new Parameter("conceptSet", "FOOD CONSTRUCT"),
@@ -80,7 +80,7 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldGetAllChildMembersAsColumnsIfTheConceptIsSet() throws Exception {
-        PivotTable pivotTable = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/observations/tabular",
+        PivotTable pivotTable = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/observations/flowSheet",
                 new Parameter("patientUuid", "1a246ed5-3c11-11de-a0ba-001ed98eb67b"),
                 new Parameter("conceptSet", "BACTERIOLOGY CONCEPT SET"),
                 new Parameter("groupByConcept", "SPECIMEN COLLECTION DATE")
