@@ -67,7 +67,7 @@ public class BahmniObservationsToTabularViewMapperTest {
 
         assertNotNull(pivotTable);
         assertEquals(1, pivotTable.getRows().size());
-        assertArrayEquals(new String[]{"WEIGHT", "Systolic", "HEIGHT", "Diastolic"}, pivotTable.getHeaders().toArray());
+        assertArrayEquals(new String[]{"WEIGHT", "Diastolic", "Systolic", "HEIGHT"}, pivotTable.getHeaders().toArray());
         assertEquals(170, pivotTable.getRows().get(0).getValue("HEIGHT").getValue());
         assertEquals(80, pivotTable.getRows().get(0).getValue("WEIGHT").getValue());
         assertEquals(120, pivotTable.getRows().get(0).getValue("Systolic").getValue());
