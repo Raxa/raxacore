@@ -3651,4 +3651,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-201510271500" author="Shan, Sourav" context="rel0.77">
+        <comment>SQL query to get list of active patients by location</comment>
+        <sqlFile path="V1_92_PatientSearch.sql"/>
+    </changeSet>
+
+
 </databaseChangeLog>
