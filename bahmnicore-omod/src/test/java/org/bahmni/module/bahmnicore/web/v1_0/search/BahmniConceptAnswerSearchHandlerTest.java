@@ -7,8 +7,10 @@ import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.webservices.rest.web.RequestContext;
+import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
+import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,7 +59,7 @@ public class BahmniConceptAnswerSearchHandlerTest {
         when(requestContext.getParameter("question")).thenReturn(QUESTION_CONCEPT);
         when(requestContext.getParameter("q")).thenReturn(QUERY);
 
-        AlreadyPaged<EncounterTransaction.Concept> searchResults = (AlreadyPaged<EncounterTransaction.Concept>) bahmniConceptAnswerSearchHandler.search(requestContext);
+        NeedsPaging<Concept> searchResults = (NeedsPaging<Concept>) bahmniConceptAnswerSearchHandler.search(requestContext);
 
         assertThat(searchResults.getPageOfResults().size(), is(equalTo(0)));
     }
