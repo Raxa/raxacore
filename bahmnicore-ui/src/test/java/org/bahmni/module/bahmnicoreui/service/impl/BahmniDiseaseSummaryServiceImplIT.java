@@ -49,15 +49,30 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         executeDataSet("dispositionMetadata.xml");
     }
 
+    private void setUpObservationTestData() throws Exception {
+        executeDataSet("observationsTestData.xml");
+        updateSearchIndex();
+    }
+
+    private void setUpLabOrderTestData() throws Exception {
+        executeDataSet("labOrderTestData.xml");
+        updateSearchIndex();
+    }
+
+    private void setUpDrugOrderTestData() throws Exception {
+        executeDataSet("drugOrderTestData.xml");
+        updateSearchIndex();
+    }
+
     @Test
     public void shouldReturnObsForGivenConceptsAndNoOfVisits() throws Exception {
-        executeDataSet("observationsTestData.xml");
+        setUpObservationTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(1);
         ArrayList<String> obsConcepts = new ArrayList<String>() {{
-            add("Blood Pressure");
             add("Weight");
+            add("Blood Pressure");
         }};
 
         diseaseDataParams.setObsConcepts(obsConcepts);
@@ -75,7 +90,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnObsForGivenConceptsForAllVisitsWhenNoOfVisitsNotSpecifed() throws Exception {
-        executeDataSet("observationsTestData.xml");
+        setUpObservationTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         ArrayList<String> obsConcepts = new ArrayList<String>() {{
@@ -104,7 +119,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnLabResultsForGivenConceptsAndNoOfVisits() throws Exception {
-        executeDataSet("labOrderTestData.xml");
+        setUpLabOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(1);
@@ -128,7 +143,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnLabResultsForGivenConceptsForAllVisits() throws Exception {
-        executeDataSet("labOrderTestData.xml");
+        setUpLabOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         ArrayList<String> labConcepts = new ArrayList<String>() {{
@@ -155,7 +170,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnDrugOrdersForGivenConceptsAndNoOfVisits() throws Exception {
-        executeDataSet("drugOrderTestData.xml");
+        setUpDrugOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(1);
@@ -179,7 +194,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnDrugOrdersForGivenConceptsForAllVisits() throws Exception {
-        executeDataSet("drugOrderTestData.xml");
+        setUpDrugOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         ArrayList<String> drugConcepts = new ArrayList<String>() {{
@@ -203,7 +218,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnObsForGivenConceptsAndVisitUuid() throws Exception {
-        executeDataSet("observationsTestData.xml");
+        setUpObservationTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         ArrayList<String> obsConcepts = new ArrayList<String>() {{
@@ -227,7 +242,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnLabResultsForGivenConceptsAndVisitUuid() throws Exception {
-        executeDataSet("labOrderTestData.xml");
+        setUpLabOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         ArrayList<String> labConcepts = new ArrayList<String>() {{
@@ -250,7 +265,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnDrugOrdersForGivenConceptsAndVisitUuid() throws Exception {
-        executeDataSet("drugOrderTestData.xml");
+        setUpDrugOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         ArrayList<String> drugConcepts = new ArrayList<String>() {{
@@ -274,7 +289,8 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnLeafConceptsNames() throws Exception {
-        executeDataSet("observationsTestData.xml");
+        setUpObservationTestData();
+
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(3);
         List<String> obsConcepts = new ArrayList<String>() {{
@@ -296,7 +312,8 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnShortNamesForCodedConceptObservations() throws Exception {
-        executeDataSet("observationsTestData.xml");
+        setUpObservationTestData();
+
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(3);
         ArrayList<String> obsConcepts = new ArrayList<String>() {{
