@@ -1,11 +1,8 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.bahmni.module.bahmnicore.dao.BahmniConceptDao;
-import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
-import org.hibernate.criterion.Restrictions;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +20,6 @@ public class BahmniConceptDaoImpl implements BahmniConceptDao {
 
     @Override
     public Collection<Concept> searchByQuestion(Concept questionConcept, String searchQuery) {
-        Session session = sessionFactory.getCurrentSession();
-        Criteria criteria = session.createCriteria(ConceptAnswer.class);
-        criteria.add(Restrictions.eq("concept", questionConcept));
-        Criteria nameCriteria = criteria.createCriteria("answerConcept");
-
         Query query = sessionFactory.getCurrentSession().createQuery(
                 "select answer " +
                         "from ConceptAnswer as answer " +
