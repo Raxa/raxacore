@@ -3663,4 +3663,13 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-201510292222" author="Shan" context="rel0.77">
+        <comment>Adding privileges to Registration-Additional role</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Add Users');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Edit Users');
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
