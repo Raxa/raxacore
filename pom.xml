@@ -35,6 +35,7 @@
         <serializationXstreamModuleVersion>0.2.7</serializationXstreamModuleVersion>
         <emrapi-omod.version>1.13-SNAPSHOT</emrapi-omod.version>
         <openmrsAtomfeedVersion>2.5.0</openmrsAtomfeedVersion>
+        <lombokVersion>1.16.0</lombokVersion>
     </properties>
 
     <distributionManagement>
