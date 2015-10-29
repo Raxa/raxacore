@@ -3656,5 +3656,11 @@
         <sqlFile path="V1_92_PatientSearch.sql"/>
     </changeSet>
 
+    <changeSet id="bahmni-core-201510291400" author="Shan" context="rel0.77">
+        <comment>Remove the SQL query to get list of active patients by location</comment>
+        <sql>
+            DELETE FROM global_property WHERE property IN ('emrapi.sqlSearch.activePatientsByLocation');
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
