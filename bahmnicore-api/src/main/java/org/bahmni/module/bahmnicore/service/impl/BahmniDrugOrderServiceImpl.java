@@ -44,11 +44,7 @@ import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
@@ -156,6 +152,13 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         response.setDosingInstructions(mapConcepts(getSetMembersOfConceptSetFromGP(GP_DOSING_INSTRUCTIONS_CONCEPT_UUID)));
         response.setOrderAttributes(fetchOrderAttributeConcepts());
         return response;
+    }
+
+    @Override
+    public List<Order> getAllDrugOrders(String patientUuid, Set<Concept> conceptsForDrugs) {
+        Patient patientByUuid = openmrsPatientService.getPatientByUuid(patientUuid);
+        OrderType orderTypeByUuid = orderService.getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID);
+        return orderDao.getAllOrders(patientByUuid, orderTypeByUuid, conceptsForDrugs);
     }
 
     private List<EncounterTransaction.Concept> fetchOrderAttributeConcepts() {

@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.contract.orderTemplate.OrderTemplateJson;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
@@ -24,10 +25,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class OrderDaoImpl implements OrderDao {
@@ -256,5 +254,21 @@ public class OrderDaoImpl implements OrderDao {
         queryVisitsWithDrugOrders.setParameter("discontinued", Order.Action.DISCONTINUE);
         queryVisitsWithDrugOrders.setParameter("visitUuid", visitUuid);
         return (List<Order>) queryVisitsWithDrugOrders.list();
+    }
+
+    @Override
+    public List<Order> getAllOrders(Patient patientByUuid, OrderType drugOrderType, Set<Concept> conceptsForDrugs) {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Order.class);
+        criteria.add(Restrictions.eq("patient", patientByUuid));
+        if (CollectionUtils.isNotEmpty(conceptsForDrugs)){
+            criteria.add(Restrictions.in("concept", conceptsForDrugs));
+        }
+        criteria.add(Restrictions.eq("orderType", drugOrderType));
+        criteria.add(Restrictions.eq("voided", false));
+        criteria.add(Restrictions.ne("action", Order.Action.DISCONTINUE));
+        criteria.addOrder(org.hibernate.criterion.Order.asc("orderId"));
+
+        return criteria.list();
+
     }
 }
