@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.bahmni.module</groupId>
         <artifactId>bahmni</artifactId>
-        <version>0.77-SNAPSHOT</version>
+        <version>0.78-SNAPSHOT</version>
     </parent>
     <artifactId>bahmnicore-api</artifactId>
     <packaging>jar</packaging>
@@ -119,7 +119,7 @@
         <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>web-clients</artifactId>
-            <version>0.77-SNAPSHOT</version>
+            <version>0.78-SNAPSHOT</version>
         </dependency>
 
 
