@@ -25,10 +25,10 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        executeDataSet("drugogram/drugOGram.xml");
-        executeDataSet("drugogram/revisedDrugsForDrugOGram.xml");
-        executeDataSet("drugogram/discontinueDrugsForDrugOGram.xml");
-        executeDataSet("drugogram/startAndStopOnSameDateDrugs.xml");
+        executeDataSet("drugogram.xml");
+        executeDataSet("revisedDrugsForDrugOGram.xml");
+        executeDataSet("discontinueDrugsForDrugOGram.xml");
+        executeDataSet("startAndStopOnSameDateDrugs.xml");
     }
 
     @Test
