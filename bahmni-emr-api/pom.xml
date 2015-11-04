@@ -27,6 +27,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>emrapi-api</artifactId>
+            <version>${emrapi-omod.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>emrapi-api</artifactId>
+            <version>${emrapi-omod.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.openmrs.api</groupId>
             <artifactId>openmrs-api</artifactId>
             <type>jar</type>
