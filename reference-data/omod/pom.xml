@@ -89,7 +89,7 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>emrapi-api-1.11</artifactId>
+            <artifactId>emrapi-api</artifactId>
             <version>${emrapi-omod.version}</version>
         </dependency>
         <dependency>
