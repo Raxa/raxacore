@@ -46,6 +46,11 @@
             <version>${emrapi-omod.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>emrapi-api</artifactId>
+            <version>${emrapi-omod.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>bahmni-emr-api</artifactId>
             <version>${project.version}</version>
