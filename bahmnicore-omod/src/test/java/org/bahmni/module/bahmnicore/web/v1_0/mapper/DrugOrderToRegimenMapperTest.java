@@ -5,7 +5,6 @@ import org.bahmni.test.builder.DrugOrderBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
@@ -446,6 +445,48 @@ public class DrugOrderToRegimenMapperTest {
         assertEquals(getOnlyDate(addDays(now, 10)), fourthRow.getDate());
         assertEquals("STOP", fourthRow.getDrugs().get("P 500mg"));
         assertEquals(null, fourthRow.getDrugs().get("Caffeine"));
+    }
+
+    @Test
+    public void shouldRetrieveIfTheDrugStartsOntheDayOfTheOtherDrugsStopped() throws Exception {
+        ArrayList<Order> drugOrders = new ArrayList<>();
+        Date now = new Date();
+        DrugOrder pmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(1000.0).withAutoExpireDate(addDays(now, 2)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder revisedPmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(addDays(now, 2)).withDose(10.0).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder caffeine = new DrugOrderBuilder().withDrugName("Caffeine").withDateActivated(addDays(now, 10)).withDose(600.0).withAutoExpireDate(addDays(now, 12)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Caffeine").withUUID("Caffeine uuid").withSet(false).withDataType("N/A").build()).build();
+        drugOrders.add(pmg);
+        drugOrders.add(revisedPmg);
+        drugOrders.add(caffeine);
+
+        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+
+        assertNotNull(regimen);
+        assertEquals(2, regimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertEquals("P 500mg", headerIterator.next().getName());
+        assertEquals("Caffeine", headerIterator.next().getName());
+        assertEquals(4, regimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+
+        RegimenRow firstRow = rowIterator.next();
+        assertEquals(getOnlyDate(now), firstRow.getDate());
+        assertEquals("1000.0", firstRow.getDrugs().get("P 500mg"));
+        assertEquals(null, firstRow.getDrugs().get("Caffeine"));
+
+        RegimenRow secondRow = rowIterator.next();
+        assertEquals(getOnlyDate(addDays(now, 2)), secondRow.getDate());
+        assertEquals("10.0", secondRow.getDrugs().get("P 500mg"));
+        assertEquals(null, secondRow.getDrugs().get("Caffeine"));
+
+        RegimenRow thirdRow = rowIterator.next();
+        assertEquals(getOnlyDate(addDays(now, 10)), thirdRow.getDate());
+        assertEquals("STOP", thirdRow.getDrugs().get("P 500mg"));
+        assertEquals("600.0", thirdRow.getDrugs().get("Caffeine"));
+
+        RegimenRow fourthRow = rowIterator.next();
+        assertEquals(getOnlyDate(addDays(now, 12)), fourthRow.getDate());
+        assertEquals(null, fourthRow.getDrugs().get("P 500mg"));
+        assertEquals("STOP", fourthRow.getDrugs().get("Caffeine"));
     }
 
     @Test

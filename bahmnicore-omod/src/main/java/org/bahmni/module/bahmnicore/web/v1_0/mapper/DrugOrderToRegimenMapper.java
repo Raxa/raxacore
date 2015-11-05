@@ -162,7 +162,7 @@ public class DrugOrderToRegimenMapper {
     }
 
     private void constructRowForDateActivated(DrugOrder drugOrder1, RegimenRow regimenRow) throws ParseException {
-        if (orderCrossDate(drugOrder1, regimenRow.getDate()))
+        if (orderCrossDate(drugOrder1, regimenRow.getDate()) && !"STOP".equals(regimenRow.getDrugs().get(drugOrder1.getConcept().getName().getName())))
             regimenRow.addDrugs(drugOrder1.getConcept().getName().getName(), drugOrder1.getDose().toString());
     }
 
