@@ -9,6 +9,7 @@ import org.bahmni.module.bahmnicoreui.helper.DrugOrderDiseaseSummaryAggregator;
 import org.bahmni.module.bahmnicoreui.helper.LabDiseaseSummaryAggregator;
 import org.bahmni.module.bahmnicoreui.helper.ObsDiseaseSummaryAggregator;
 import org.bahmni.module.referencedata.contract.ConceptDetails;
+import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.openmrs.api.PatientService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -41,10 +42,12 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
     private LabDiseaseSummaryAggregator labDiseaseSummaryAggregator;
     @Autowired
     private DrugOrderDiseaseSummaryAggregator drugOrderDiseaseSummaryAggregator;
+    @Autowired
+    SessionFactory sessionFactory;
 
     @org.junit.Before
     public void setUp() throws Exception {
-        bahmniDiseaseSummaryData = new BahmniDiseaseSummaryServiceImpl(patientService, labDiseaseSummaryAggregator, drugOrderDiseaseSummaryAggregator, obsDiseaseSummaryAggregator);
+        bahmniDiseaseSummaryData = new BahmniDiseaseSummaryServiceImpl(patientService, labDiseaseSummaryAggregator, drugOrderDiseaseSummaryAggregator, obsDiseaseSummaryAggregator, sessionFactory);
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
     }
@@ -173,7 +176,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         setUpDrugOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
-        diseaseDataParams.setNumberOfVisits(1);
+        diseaseDataParams.setNumberOfVisits(2);
         ArrayList<String> drugConcepts = new ArrayList<String>() {{
             add("Calpol 250mg");
         }};
@@ -185,10 +188,29 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         assertNotNull(drugTable);
         assertEquals(1, drugTable.size());
 
-        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2001-09-22")));
+        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2012-12-12")));
         assertNotNull(durgOrdersInVisit);
         assertEquals(1, durgOrdersInVisit.size());
-        assertEquals("250mg,125.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
+        assertEquals("250mg,325.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
+    }
+
+    @Test
+    public void shouldNotReturnVisitIfNoDrugsAreOrdered() throws Exception {
+        setUpDrugOrderTestData();
+
+        DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
+        diseaseDataParams.setNumberOfVisits(1);
+        ArrayList<String> drugConcepts = new ArrayList<String>() {{
+            add("Calpol 250mg");
+        }};
+
+        diseaseDataParams.setDrugConcepts(drugConcepts);
+        DiseaseSummaryData diseaseSummary = bahmniDiseaseSummaryData.getDiseaseSummary("75e04d42-3ca8-11e3-bf2b-080027175c1b", diseaseDataParams);
+        Map<String, Map<String, ConceptValue>> drugTable = diseaseSummary.getTabularData();
+
+        assertNotNull(drugTable);
+        assertEquals(0, drugTable.size());
+
     }
 
 
@@ -197,6 +219,32 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         setUpDrugOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
+        ArrayList<String> drugConcepts = new ArrayList<String>() {{
+            add("cetirizine 100mg");
+            add("Calpol 250mg");
+        }};
+
+        diseaseDataParams.setDrugConcepts(drugConcepts);
+        DiseaseSummaryData diseaseSummary = bahmniDiseaseSummaryData.getDiseaseSummary("75e04d42-3ca8-11e3-bf2b-080027175c1b", diseaseDataParams);
+        Map<String, Map<String, ConceptValue>> drugTable = diseaseSummary.getTabularData();
+
+        assertNotNull(drugTable);
+        assertEquals(2, drugTable.size());
+
+        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2001-09-22")));
+        assertNotNull(durgOrdersInVisit);
+        assertEquals(1, durgOrdersInVisit.size());
+        assertEquals("250mg,125.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
+
+    }
+
+    @Test
+    public void shouldReturnDrugOrdersForGivenConceptsForAllVisitsDependingOnTheInitialOrFinalCount() throws Exception {
+        setUpDrugOrderTestData();
+
+        DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
+        diseaseDataParams.setGroupBy("visits");
+        diseaseDataParams.setInitialCount(1);
         ArrayList<String> drugConcepts = new ArrayList<String>() {{
             add("cetirizine 100mg");
             add("Calpol 250mg");

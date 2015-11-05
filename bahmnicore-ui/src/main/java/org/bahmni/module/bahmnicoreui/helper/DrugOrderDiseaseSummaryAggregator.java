@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicoreui.helper;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
@@ -21,18 +22,19 @@ import java.util.List;
 @Component
 public class DrugOrderDiseaseSummaryAggregator {
 
+    private final Integer DEFAULT_VISIT_NUMBER = 50;
     private final VisitService visitService;
     private BahmniDrugOrderService drugOrderService;
     private ConceptHelper conceptHelper;
-    private OrderService orderService;
+    private VisitDao visitDao;
     private final DiseaseSummaryDrugOrderMapper diseaseSummaryDrugOrderMapper = new DiseaseSummaryDrugOrderMapper();
 
     @Autowired
-    public DrugOrderDiseaseSummaryAggregator(ConceptHelper conceptHelper, VisitService visitService, BahmniDrugOrderService drugOrderService, OrderService orderService) {
+    public DrugOrderDiseaseSummaryAggregator(ConceptHelper conceptHelper, VisitService visitService, BahmniDrugOrderService drugOrderService, VisitDao visitDao) {
         this.visitService = visitService;
         this.drugOrderService = drugOrderService;
-        this.orderService = orderService;
         this.conceptHelper = conceptHelper;
+        this.visitDao = visitDao;
     }
 
     public DiseaseSummaryData aggregate(Patient patient, DiseaseDataParams diseaseDataParams) {
@@ -48,10 +50,14 @@ public class DrugOrderDiseaseSummaryAggregator {
 
     private List<Visit> getVisits(Patient patient, final DiseaseDataParams diseaseDataParams) {
         if (StringUtils.isBlank(diseaseDataParams.getVisitUuid())) {
-            return orderService.getVisitsWithOrders(patient, "DrugOrder", true, diseaseDataParams.getNumberOfVisits());
+            return visitDao.getVisitsByPatient(patient, getNumberOfVisits(diseaseDataParams.getNumberOfVisits()));
         }
         return new ArrayList() {{
             add(visitService.getVisitByUuid(diseaseDataParams.getVisitUuid()));
         }};
+    }
+
+    private int getNumberOfVisits(Integer numberOfVisit) {
+        return null != numberOfVisit ? numberOfVisit : DEFAULT_VISIT_NUMBER;
     }
 }
