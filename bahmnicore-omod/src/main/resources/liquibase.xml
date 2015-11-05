@@ -3671,5 +3671,18 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-registration-201511041808" author="Vikash" context="rel0.77">
+        <comment>Modifying patient listing role, Registration additional role and giving relationship role to registration</comment>
+        <sql>
+            DELETE FROM role_role WHERE parent_role='Patient-Listing' AND child_role='Registration';
+            DELETE FROM role_role WHERE parent_role='Registration-Additional' AND child_role='Registration';
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Patient-Listing', 'Registration-Write');
+            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Additional', 'Registration-Write');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Write', 'Add Relationships');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Write', 'Edit Relationships');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Write', 'Delete Relationships');
+        </sql>
+    </changeSet>
+
 
 </databaseChangeLog>
