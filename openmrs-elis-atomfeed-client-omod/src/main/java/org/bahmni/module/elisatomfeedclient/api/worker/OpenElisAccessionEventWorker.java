@@ -246,7 +246,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     }
 
     private EncounterType getLabResultEncounterType() {
-        String resultEncounterType = atomFeedProperties.getEncounterTypeForInvestigation();
+        String resultEncounterType = atomFeedProperties.getEncounterTypeForLabResult();
         return encounterService.getEncounterType(resultEncounterType);
     }
 

@@ -9,29 +9,26 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class PropertiesReaderImpl implements PropertiesReader {
-    private Properties properties;
-    private static Log log = LogFactory.getLog(PropertiesReaderImpl.class);
+public class BahmniCoreProperties {
+    private static Properties properties;
+    private static Log log = LogFactory.getLog(BahmniCoreProperties.class);
 
-    private PropertiesReaderImpl(Properties properties) {
-        this.properties = properties;
-    }
-
-    public static PropertiesReaderImpl load() {
+    public static void load() {
         String propertyFile = new File(OpenmrsUtil.getApplicationDataDirectory(), "bahmnicore.properties").getAbsolutePath();
         log.info(String.format("Reading bahmni properties from : %s", propertyFile));
-        Properties properties;
         try {
             properties = new Properties(System.getProperties());
-                properties.load(new FileInputStream(propertyFile));
+            properties.load(new FileInputStream(propertyFile));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return new PropertiesReaderImpl(properties);
     }
 
-    @Override
-    public String getProperty(String key){
+    public static String getProperty(String key){
         return properties.getProperty(key);
+    }
+
+    public static void initalize(Properties props) {
+        properties = props;
     }
 }

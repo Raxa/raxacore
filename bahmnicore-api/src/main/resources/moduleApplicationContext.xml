@@ -14,7 +14,6 @@
         <property name="administrationService" ref="adminService"/>
     </bean>
 
-    <bean id="propertiesReader" class="org.bahmni.module.bahmnicore.properties.PropertiesReaderImpl" factory-method="load" scope="singleton"/>
 
     <bean id="orderDao" class="org.bahmni.module.bahmnicore.dao.impl.OrderDaoImpl" />
 

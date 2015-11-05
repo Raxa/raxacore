@@ -21,5 +21,4 @@
         <!--  default properties must be set in the hibernate.default.properties -->
     </bean>
 
-    <!--<bean id="propertiesReader" class="org.bahmni.module.bahmnicore.properties.SystemPropertiesReader" scope="singleton"/>-->
 </beans>

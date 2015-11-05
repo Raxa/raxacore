@@ -8,6 +8,4 @@
   		    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
     <!--<context:component-scan base-package="org.bahmni.module.bahmnicore.web"/>-->
 
-    <bean id="propertiesReader" class="org.bahmni.module.bahmnicore.properties.SystemPropertiesReader" scope="singleton"/>
-    <!--<bean id="propertiesReader" class="org.bahmni.test.properties.SystemPropertiesReader" scope="singleton"/>-->
 </beans>

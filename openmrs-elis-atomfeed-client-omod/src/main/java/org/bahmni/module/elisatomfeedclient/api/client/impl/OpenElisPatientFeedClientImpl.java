@@ -39,7 +39,7 @@ public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements
 
     @Override
     protected String getFeedUri(ElisAtomFeedProperties properties) {
-        return properties.getFeedUri("patient.feed.uri");
+        return properties.getPatientFeedUri();
     }
 
     @Override

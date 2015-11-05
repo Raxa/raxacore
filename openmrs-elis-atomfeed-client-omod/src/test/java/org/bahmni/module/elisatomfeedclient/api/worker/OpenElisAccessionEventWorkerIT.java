@@ -1,5 +1,6 @@
 package org.bahmni.module.elisatomfeedclient.api.worker;
 
+import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisAccessionBuilder;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisTestDetailBuilder;
@@ -23,6 +24,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniV
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.InputStream;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -46,10 +48,14 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
     @Before
     public void setUp() throws Exception {
         executeDataSet("labResult.xml");
+        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("test-bahmnicore.properties");
+        Properties properties = new Properties();
+        properties.load(resourceAsStream);
+        BahmniCoreProperties.initalize(properties);
         executeDataSet("visitAttributeDataSet.xml");
         MockitoAnnotations.initMocks(this);
-        this.openElisAccessionEventWorker = new OpenElisAccessionEventWorker(properties, httpClient,
-                Context.getEncounterService(), Context.getConceptService(), new AccessionHelper(properties),
+        this.openElisAccessionEventWorker = new OpenElisAccessionEventWorker(this.properties, httpClient,
+                Context.getEncounterService(), Context.getConceptService(), new AccessionHelper(this.properties),
                 Context.getProviderService(),
                 bahmniVisitAttributeSaveCommand);
     }
