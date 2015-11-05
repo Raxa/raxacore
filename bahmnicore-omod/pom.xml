@@ -41,6 +41,11 @@
             <version>${emrapi-omod.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>emrapi-api</artifactId>
+            <version>${emrapi-omod.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>bahmnicore-api</artifactId>
             <version>${project.parent.version}</version>
@@ -321,11 +326,6 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <configuration>
-                        <classpathDependencyExcludes>
-                            <classpathDependencyExcludes>org.openmrs.module:emrapi-api-1.9</classpathDependencyExcludes>
-                        </classpathDependencyExcludes>
-                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
