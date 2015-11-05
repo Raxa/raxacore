@@ -1,6 +1,7 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.command.impl;
 
 import org.joda.time.DateTime;
+import org.joda.time.Seconds;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -11,9 +12,7 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -43,7 +42,7 @@ public class OrderSaveCommandImplTest {
 
         orderSaveCommand.update(bahmniEncounterTransaction);
 
-        assertEquals(DateTime.now().plusMinutes(60).toDate().toString(), bahmniEncounterTransaction.getOrders().get(0).getAutoExpireDate().toString());
+        assertTrue(Math.abs(Seconds.secondsBetween(DateTime.now().plusMinutes(60), new DateTime(bahmniEncounterTransaction.getOrders().get(0).getAutoExpireDate())).getSeconds()) < 3);
     }
 
 
