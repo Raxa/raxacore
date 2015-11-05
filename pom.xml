@@ -12,7 +12,6 @@
         <module>bahmni-emr-api</module>
         <module>bahmnicore-api</module>
         <module>openmrs-elis-atomfeed-client-omod</module>
-        <module>openerp-atomfeed-client-omod</module>
         <module>bahmnicore-omod</module>
         <module>reference-data</module>
         <module>admin</module>
@@ -56,11 +55,6 @@
             <dependency>
                 <groupId>org.bahmni.module</groupId>
                 <artifactId>bahmni-emr-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.bahmni.module</groupId>
-                <artifactId>openerp-atomfeed-client-omod</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
