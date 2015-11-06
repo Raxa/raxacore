@@ -2,12 +2,17 @@ package org.bahmni.module.bahmnicore.web.v1_0.mapper;
 
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.builder.BahmniObservationBuilder;
+import org.openmrs.module.bahmniemrapi.builder.ETConceptBuilder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.pivottable.contract.PivotTable;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class BahmniObservationsToTabularViewMapperTest {
 
@@ -15,64 +20,77 @@ public class BahmniObservationsToTabularViewMapperTest {
 
     @Test
     public void shouldReturnAllObservationsInTabularFormatIfTheConceptNamesAreNotPassed() throws Exception {
-        BahmniObservation height = new BahmniObservationBuilder().withConcept("HEIGHT", false).withValue(170).build();
-        BahmniObservation weight = new BahmniObservationBuilder().withConcept("WEIGHT", false).withValue(80).build();
-        BahmniObservation vitals = new BahmniObservationBuilder().withConcept("Vitals", true).withGroupMember(height).withGroupMember(weight).build();
+        EncounterTransaction.Concept heightConcept = new ETConceptBuilder().withName("HEIGHT").withUuid("height uuid").withSet(false).withClass("Misc").build();
+        EncounterTransaction.Concept weightConcept = new ETConceptBuilder().withName("WEIGHT").withUuid("weight uuid").withSet(false).withClass("Misc").build();
+        EncounterTransaction.Concept vitalsConcept = new ETConceptBuilder().withName("Vitals").withUuid("vitals uuid").withSet(true).withClass("Misc").build();
+        BahmniObservation height = new BahmniObservationBuilder().withConcept(heightConcept).withValue(170).build();
+        BahmniObservation weight = new BahmniObservationBuilder().withConcept(weightConcept).withValue(80).build();
+        BahmniObservation vitals = new BahmniObservationBuilder().withConcept(vitalsConcept).withGroupMember(height).withGroupMember(weight).build();
         ArrayList<BahmniObservation> bahmniObservations = new ArrayList<>();
         bahmniObservations.add(vitals);
 
-        HashSet<String> conceptNames = new HashSet<>();
-        conceptNames.add("HEIGHT");
-        conceptNames.add("WEIGHT");
-        PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable("WEIGHT", conceptNames, bahmniObservations);
+        Set<EncounterTransaction.Concept> conceptNames = new HashSet<>();
+        conceptNames.add(heightConcept);
+        conceptNames.add(weightConcept);
+        PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(conceptNames, bahmniObservations);
 
         assertNotNull(pivotTable);
         assertEquals(1, pivotTable.getRows().size());
-        assertArrayEquals(new String[]{"WEIGHT", "HEIGHT"}, pivotTable.getHeaders().toArray());
+        assertEquals(conceptNames, pivotTable.getHeaders());
         assertEquals(170, pivotTable.getRows().get(0).getValue("HEIGHT").getValue());
         assertEquals(80, pivotTable.getRows().get(0).getValue("WEIGHT").getValue());
     }
 
     @Test
     public void shouldReturnObservationsInTabularFormatForOnlyTheConceptNamesArePassed() throws Exception {
-        BahmniObservation height = new BahmniObservationBuilder().withConcept("HEIGHT", false).withValue(170).build();
-        BahmniObservation weight = new BahmniObservationBuilder().withConcept("WEIGHT", false).withValue(80).build();
-        BahmniObservation vitals = new BahmniObservationBuilder().withConcept("Vitals", true).withGroupMember(height).withGroupMember(weight).build();
+        EncounterTransaction.Concept heightConcept = new ETConceptBuilder().withName("HEIGHT").withUuid("height uuid").withSet(false).withClass("Misc").build();
+        EncounterTransaction.Concept weightConcept = new ETConceptBuilder().withName("WEIGHT").withUuid("weight uuid").withSet(false).withClass("Misc").build();
+        EncounterTransaction.Concept vitalsConcept = new ETConceptBuilder().withName("Vitals").withUuid("vitals uuid").withSet(true).withClass("Misc").build();
+        BahmniObservation height = new BahmniObservationBuilder().withConcept(heightConcept).withValue(170).build();
+        BahmniObservation weight = new BahmniObservationBuilder().withConcept(weightConcept).withValue(80).build();
+        BahmniObservation vitals = new BahmniObservationBuilder().withConcept(vitalsConcept).withGroupMember(height).withGroupMember(weight).build();
         ArrayList<BahmniObservation> bahmniObservations = new ArrayList<>();
         bahmniObservations.add(vitals);
 
-        Set<String> conceptNames = new HashSet<>();
-        conceptNames.add("HEIGHT");
-        PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable("WEIGHT", conceptNames, bahmniObservations);
+        Set<EncounterTransaction.Concept> conceptNames = new HashSet<>();
+        conceptNames.add(heightConcept);
+        PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(conceptNames, bahmniObservations);
 
         assertNotNull(pivotTable);
         assertEquals(1, pivotTable.getRows().size());
-        assertArrayEquals(new String[]{"HEIGHT"}, pivotTable.getHeaders().toArray());
+        assertEquals(conceptNames, pivotTable.getHeaders());
         assertEquals(170, pivotTable.getRows().get(0).getValue("HEIGHT").getValue());
     }
 
     @Test
     public void shouldReturnOnlyLeafObservationsInTabularFormat() throws Exception {
-        BahmniObservation height = new BahmniObservationBuilder().withConcept("HEIGHT", false).withValue(170).build();
-        BahmniObservation weight = new BahmniObservationBuilder().withConcept("WEIGHT", false).withValue(80).build();
-        BahmniObservation systolic = new BahmniObservationBuilder().withConcept("Systolic", false).withValue(120).build();
-        BahmniObservation diastolic = new BahmniObservationBuilder().withConcept("Diastolic", false).withValue(90).build();
-        BahmniObservation bp = new BahmniObservationBuilder().withConcept("BP", true).withGroupMember(systolic).withGroupMember(diastolic).build();
-        BahmniObservation vitals = new BahmniObservationBuilder().withConcept("Vitals", true).withGroupMember(height).withGroupMember(weight).withGroupMember(bp).build();
+        EncounterTransaction.Concept heightConcept = new ETConceptBuilder().withName("HEIGHT").withUuid("height uuid").withSet(false).withClass("Misc").build();
+        EncounterTransaction.Concept weightConcept = new ETConceptBuilder().withName("WEIGHT").withUuid("weight uuid").withSet(false).withClass("Misc").build();
+        EncounterTransaction.Concept vitalsConcept = new ETConceptBuilder().withName("Vitals").withUuid("vitals uuid").withSet(true).withClass("Misc").build();
+        EncounterTransaction.Concept systolicConcept = new ETConceptBuilder().withName("Systolic").withUuid("Systolic uuid").withSet(false).withClass("Misc").build();
+        EncounterTransaction.Concept diastolicConcept = new ETConceptBuilder().withName("Diastolic").withUuid("Diastolic uuid").withSet(false).withClass("Misc").build();
+        EncounterTransaction.Concept bpConcept = new ETConceptBuilder().withName("BP").withUuid("BP uuid").withSet(true).withClass("Misc").build();
+
+        BahmniObservation systolic = new BahmniObservationBuilder().withConcept(systolicConcept).withValue(120).build();
+        BahmniObservation diastolic = new BahmniObservationBuilder().withConcept(diastolicConcept).withValue(90).build();
+        BahmniObservation bp = new BahmniObservationBuilder().withConcept(bpConcept).withGroupMember(systolic).withGroupMember(diastolic).build();
+        BahmniObservation height = new BahmniObservationBuilder().withConcept(heightConcept).withValue(170).build();
+        BahmniObservation weight = new BahmniObservationBuilder().withConcept(weightConcept).withValue(80).build();
+        BahmniObservation vitals = new BahmniObservationBuilder().withConcept(vitalsConcept).withGroupMember(height).withGroupMember(weight).withGroupMember(bp).build();
         ArrayList<BahmniObservation> bahmniObservations = new ArrayList<>();
         bahmniObservations.add(vitals);
 
-        HashSet<String> conceptNames = new HashSet<>();
-        conceptNames.add("HEIGHT");
-        conceptNames.add("WEIGHT");
-        conceptNames.add("Systolic");
-        conceptNames.add("Diastolic");
+        Set<EncounterTransaction.Concept> conceptNames = new HashSet<>();
+        conceptNames.add(heightConcept);
+        conceptNames.add(weightConcept);
+        conceptNames.add(systolicConcept);
+        conceptNames.add(diastolicConcept);
 
-        PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable("WEIGHT", conceptNames, bahmniObservations);
+        PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(conceptNames, bahmniObservations);
 
         assertNotNull(pivotTable);
         assertEquals(1, pivotTable.getRows().size());
-        assertArrayEquals(new String[]{"WEIGHT", "Systolic", "HEIGHT", "Diastolic"}, pivotTable.getHeaders().toArray());
+        assertEquals(conceptNames, pivotTable.getHeaders());
         assertEquals(170, pivotTable.getRows().get(0).getValue("HEIGHT").getValue());
         assertEquals(80, pivotTable.getRows().get(0).getValue("WEIGHT").getValue());
         assertEquals(120, pivotTable.getRows().get(0).getValue("Systolic").getValue());
@@ -81,26 +99,30 @@ public class BahmniObservationsToTabularViewMapperTest {
 
     @Test
     public void shouldReturnMultipleRowsIfThereAreMultipleRootObservations() throws Exception {
-        BahmniObservation height = new BahmniObservationBuilder().withConcept("HEIGHT", false).withValue(170).build();
-        BahmniObservation weight = new BahmniObservationBuilder().withConcept("WEIGHT", false).withValue(80).build();
-        BahmniObservation vitals = new BahmniObservationBuilder().withConcept("Vitals", true).withGroupMember(height).withGroupMember(weight).build();
+        EncounterTransaction.Concept heightConcept = new ETConceptBuilder().withName("HEIGHT").withUuid("height uuid").withSet(false).withClass("Misc").build();
+        EncounterTransaction.Concept weightConcept = new ETConceptBuilder().withName("WEIGHT").withUuid("weight uuid").withSet(false).withClass("Misc").build();
+        EncounterTransaction.Concept vitalsConcept = new ETConceptBuilder().withName("Vitals").withUuid("vitals uuid").withSet(true).withClass("Misc").build();
+        BahmniObservation firstHeight = new BahmniObservationBuilder().withConcept(heightConcept).withValue(170).build();
+        BahmniObservation firstWeight = new BahmniObservationBuilder().withConcept(weightConcept).withValue(80).build();
+        BahmniObservation firstVitals = new BahmniObservationBuilder().withConcept(vitalsConcept).withGroupMember(firstHeight).withGroupMember(firstWeight).build();
 
-        BahmniObservation secondHeight = new BahmniObservationBuilder().withConcept("HEIGHT", false).withValue(180).build();
-        BahmniObservation secondWeight = new BahmniObservationBuilder().withConcept("WEIGHT", false).withValue(90).build();
-        BahmniObservation secondVitals = new BahmniObservationBuilder().withConcept("Vitals", true).withGroupMember(secondHeight).withGroupMember(secondWeight).build();
+
+        BahmniObservation secondHeight = new BahmniObservationBuilder().withConcept(heightConcept).withValue(180).build();
+        BahmniObservation secondWeight = new BahmniObservationBuilder().withConcept(weightConcept).withValue(90).build();
+        BahmniObservation secondVitals = new BahmniObservationBuilder().withConcept(vitalsConcept).withGroupMember(secondHeight).withGroupMember(secondWeight).build();
         ArrayList<BahmniObservation> bahmniObservations = new ArrayList<>();
-        bahmniObservations.add(vitals);
+        bahmniObservations.add(firstVitals);
         bahmniObservations.add(secondVitals);
 
-        HashSet<String> conceptNames = new HashSet<>();
-        conceptNames.add("HEIGHT");
-        conceptNames.add("WEIGHT");
+        HashSet<EncounterTransaction.Concept> conceptNames = new HashSet<>();
+        conceptNames.add(heightConcept);
+        conceptNames.add(weightConcept);
 
-        PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable("WEIGHT", conceptNames, bahmniObservations);
+        PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(conceptNames, bahmniObservations);
 
         assertNotNull(pivotTable);
         assertEquals(2, pivotTable.getRows().size());
-        assertArrayEquals(new String[]{"WEIGHT", "HEIGHT"}, pivotTable.getHeaders().toArray());
+        assertEquals(conceptNames, pivotTable.getHeaders());
         assertEquals(170, pivotTable.getRows().get(0).getValue("HEIGHT").getValue());
         assertEquals(80, pivotTable.getRows().get(0).getValue("WEIGHT").getValue());
         assertEquals(180, pivotTable.getRows().get(1).getValue("HEIGHT").getValue());
@@ -109,7 +131,7 @@ public class BahmniObservationsToTabularViewMapperTest {
 
     @Test
     public void shouldRetrunEmptyTableIfThereAreNoObservations() throws Exception {
-        PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable("WEIGHT", null, null);
+        PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(null, null);
 
         assertNotNull(pivotTable);
         assertEquals(0, pivotTable.getRows().size());

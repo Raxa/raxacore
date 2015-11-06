@@ -39,7 +39,6 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
         assertEquals(rows.get(0).getValue("DATE OF FOOD ASSISTANCE").getValueAsString(), "2008-08-14 00:00:00");
         assertNotNull(pivotTable.getHeaders());
         assertNotEquals("Should not be empty list", Collections.EMPTY_LIST, pivotTable.getHeaders());
-        assertArrayEquals(new String[]{"FAVORITE FOOD, NON-CODED", "FOOD ASSISTANCE", "DATE OF FOOD ASSISTANCE"}, pivotTable.getHeaders().toArray());
     }
 
     @Test
@@ -60,7 +59,6 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
         assertNull("Should not return this concept", rows.get(0).getValue("FAVORITE FOOD, NON-CODED"));
         assertNotNull(pivotTable.getHeaders());
         assertNotEquals("Should not be empty list", Collections.EMPTY_LIST, pivotTable.getHeaders());
-        assertArrayEquals(pivotTable.getHeaders().toArray(), new String[]{"FOOD ASSISTANCE", "DATE OF FOOD ASSISTANCE"});
     }
 
     @Test
@@ -76,7 +74,6 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
         assertEquals(2, rows.size());
         assertNotNull(pivotTable.getHeaders());
         assertNotEquals("Should not be empty list", Collections.EMPTY_LIST, pivotTable.getHeaders());
-        assertArrayEquals(new String[]{"FAVORITE FOOD, NON-CODED", "FOOD ASSISTANCE", "DATE OF FOOD ASSISTANCE"}, pivotTable.getHeaders().toArray());
     }
 
     @Test
@@ -95,7 +92,6 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
         assertNull("Should not return this concept", rows.get(0).getValue("BACTERIOLOGY RESULTS"));
         assertNotNull(pivotTable.getHeaders());
         assertNotEquals("Should not be empty list", Collections.EMPTY_LIST, pivotTable.getHeaders());
-        assertArrayEquals(new String[]{"SPECIMEN COLLECTION DATE", "WEIGHT (KG)"}, pivotTable.getHeaders().toArray());
     }
 
     @Test
@@ -109,7 +105,6 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
 
         List<PivotRow> rows = pivotTable.getRows();
         assertEquals(1, pivotTable.getHeaders().size());
-        System.out.println(pivotTable.getHeaders());
         assertEquals(1, rows.size());
         assertEquals("98.0", rows.get(0).getValue("Temperature Data").getValueAsString());
         assertTrue(rows.get(0).getValue("Temperature Data").isAbnormal());
