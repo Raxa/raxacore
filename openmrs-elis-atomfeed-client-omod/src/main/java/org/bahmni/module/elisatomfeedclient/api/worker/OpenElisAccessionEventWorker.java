@@ -3,6 +3,7 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 import groovy.lang.GroovyClassLoader;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
+import org.bahmni.module.elisatomfeedclient.api.Constants;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
@@ -246,8 +247,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     }
 
     private EncounterType getLabResultEncounterType() {
-        String resultEncounterType = atomFeedProperties.getEncounterTypeForLabResult();
-        return encounterService.getEncounterType(resultEncounterType);
+        return encounterService.getEncounterType(Constants.DEFAULT_LAB_RESULT_ENCOUNTER_TYPE);
     }
 
     /**
@@ -325,7 +325,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         //the lab results provider may not be register as provider in MRS,
         //hence instead of failing, get the system provider
         if (provider == null) {
-            provider = providerService.getProviderByIdentifier(atomFeedProperties.getLabSystemIdentifier());
+            provider = providerService.getProviderByIdentifier(Constants.DEFAULT_LAB_SYSTEM_IDENTIFIER);
         }
 
         labResultProviders.add(provider);
