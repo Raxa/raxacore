@@ -9,7 +9,6 @@ import org.bahmni.module.bahmnicoreui.helper.DrugOrderDiseaseSummaryAggregator;
 import org.bahmni.module.bahmnicoreui.helper.LabDiseaseSummaryAggregator;
 import org.bahmni.module.bahmnicoreui.helper.ObsDiseaseSummaryAggregator;
 import org.bahmni.module.referencedata.contract.ConceptDetails;
-import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.openmrs.api.PatientService;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
@@ -42,12 +41,10 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
     private LabDiseaseSummaryAggregator labDiseaseSummaryAggregator;
     @Autowired
     private DrugOrderDiseaseSummaryAggregator drugOrderDiseaseSummaryAggregator;
-    @Autowired
-    SessionFactory sessionFactory;
 
     @org.junit.Before
     public void setUp() throws Exception {
-        bahmniDiseaseSummaryData = new BahmniDiseaseSummaryServiceImpl(patientService, labDiseaseSummaryAggregator, drugOrderDiseaseSummaryAggregator, obsDiseaseSummaryAggregator, sessionFactory);
+        bahmniDiseaseSummaryData = new BahmniDiseaseSummaryServiceImpl(patientService, labDiseaseSummaryAggregator, drugOrderDiseaseSummaryAggregator, obsDiseaseSummaryAggregator);
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
     }
