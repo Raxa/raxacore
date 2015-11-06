@@ -490,6 +490,45 @@ public class DrugOrderToRegimenMapperTest {
     }
 
     @Test
+    public void shouldRetrieveIfTheDrugStartsOntheDayOfTheOtherDrugsStoppedAndTheDrugIsRevised() throws Exception {
+        ArrayList<Order> drugOrders = new ArrayList<>();
+        Date now = new Date();
+        DrugOrder pmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(1000.0).withAutoExpireDate(now).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder revisedPmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(500.0).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder caffeine = new DrugOrderBuilder().withDrugName("Caffeine").withDateActivated(addDays(now, 10)).withDose(600.0).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Caffeine").withUUID("Caffeine uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder revisedCaffeine = new DrugOrderBuilder().withDrugName("Caffeine").withDateActivated(addDays(now, 10)).withDose(800.0).withAutoExpireDate(addDays(now, 12)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("Caffeine").withUUID("Caffeine uuid").withSet(false).withDataType("N/A").build()).build();
+        drugOrders.add(pmg);
+        drugOrders.add(revisedPmg);
+        drugOrders.add(caffeine);
+        drugOrders.add(revisedCaffeine);
+
+        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+
+        assertNotNull(regimen);
+        assertEquals(2, regimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertEquals("P 500mg", headerIterator.next().getName());
+        assertEquals("Caffeine", headerIterator.next().getName());
+        assertEquals(3, regimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+
+        RegimenRow firstRow = rowIterator.next();
+        assertEquals(getOnlyDate(now), firstRow.getDate());
+        assertEquals("500.0", firstRow.getDrugs().get("P 500mg"));
+        assertEquals(null, firstRow.getDrugs().get("Caffeine"));
+
+        RegimenRow secondRow = rowIterator.next();
+        assertEquals(getOnlyDate(addDays(now, 10)), secondRow.getDate());
+        assertEquals("STOP", secondRow.getDrugs().get("P 500mg"));
+        assertEquals("800.0", secondRow.getDrugs().get("Caffeine"));
+
+        RegimenRow thirdRow = rowIterator.next();
+        assertEquals(getOnlyDate(addDays(now, 12)), thirdRow.getDate());
+        assertEquals(null, thirdRow.getDrugs().get("P 500mg"));
+        assertEquals("STOP", thirdRow.getDrugs().get("Caffeine"));
+    }
+
+    @Test
     public void shouldFilterDrugsWhichDoesntHaveDosageInfo() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
