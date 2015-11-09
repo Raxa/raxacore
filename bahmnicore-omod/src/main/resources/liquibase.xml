@@ -3684,5 +3684,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-clinical-201511091150" author="Vikash, Achinta" context="rel0.77">
+        <comment>Adding Programs privilege to clinical-read only role</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Programs');
+        </sql>
+    </changeSet>
+
 
 </databaseChangeLog>
