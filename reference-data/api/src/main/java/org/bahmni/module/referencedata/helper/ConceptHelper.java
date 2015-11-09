@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.helper;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
 import org.openmrs.Concept;
 import org.bahmni.module.referencedata.contract.ConceptDetails;
@@ -29,9 +30,16 @@ public  class ConceptHelper {
         List<Concept> concepts = new ArrayList<>();
         if(conceptNames!= null){
             for (String conceptName : conceptNames) {
-                Concept concept = conceptService.getConceptByName(conceptName.replaceAll("%20", " "));
-                if(concept != null) {
-                    concepts.add(concept);
+                List<Concept> conceptsByName = conceptService.getConceptsByName(conceptName.replaceAll("%20", " "));
+                if(CollectionUtils.isNotEmpty(conceptsByName)) {
+                    for(Concept concept : conceptsByName) {
+                        for (ConceptName conceptNameObj : concept.getNames()) {
+                            if (conceptNameObj.getName().equalsIgnoreCase(conceptName) && conceptNameObj.isFullySpecifiedName()) {
+                                concepts.add(concept);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }

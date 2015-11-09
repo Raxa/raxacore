@@ -49,15 +49,30 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         executeDataSet("dispositionMetadata.xml");
     }
 
+    private void setUpObservationTestData() throws Exception {
+        executeDataSet("observationsTestData.xml");
+        updateSearchIndex();
+    }
+
+    private void setUpLabOrderTestData() throws Exception {
+        executeDataSet("labOrderTestData.xml");
+        updateSearchIndex();
+    }
+
+    private void setUpDrugOrderTestData() throws Exception {
+        executeDataSet("drugOrderTestData.xml");
+        updateSearchIndex();
+    }
+
     @Test
     public void shouldReturnObsForGivenConceptsAndNoOfVisits() throws Exception {
-        executeDataSet("observationsTestData.xml");
+        setUpObservationTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(1);
         ArrayList<String> obsConcepts = new ArrayList<String>() {{
-            add("Blood Pressure");
             add("Weight");
+            add("Blood Pressure");
         }};
 
         diseaseDataParams.setObsConcepts(obsConcepts);
@@ -75,7 +90,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnObsForGivenConceptsForAllVisitsWhenNoOfVisitsNotSpecifed() throws Exception {
-        executeDataSet("observationsTestData.xml");
+        setUpObservationTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         ArrayList<String> obsConcepts = new ArrayList<String>() {{
@@ -104,7 +119,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnLabResultsForGivenConceptsAndNoOfVisits() throws Exception {
-        executeDataSet("labOrderTestData.xml");
+        setUpLabOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(1);
@@ -128,7 +143,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnLabResultsForGivenConceptsForAllVisits() throws Exception {
-        executeDataSet("labOrderTestData.xml");
+        setUpLabOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         ArrayList<String> labConcepts = new ArrayList<String>() {{
@@ -155,7 +170,30 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnDrugOrdersForGivenConceptsAndNoOfVisits() throws Exception {
-        executeDataSet("drugOrderTestData.xml");
+        setUpDrugOrderTestData();
+
+        DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
+        diseaseDataParams.setNumberOfVisits(2);
+        ArrayList<String> drugConcepts = new ArrayList<String>() {{
+            add("Calpol 250mg");
+        }};
+
+        diseaseDataParams.setDrugConcepts(drugConcepts);
+        DiseaseSummaryData diseaseSummary = bahmniDiseaseSummaryData.getDiseaseSummary("75e04d42-3ca8-11e3-bf2b-080027175c1b", diseaseDataParams);
+        Map<String, Map<String, ConceptValue>> drugTable = diseaseSummary.getTabularData();
+
+        assertNotNull(drugTable);
+        assertEquals(1, drugTable.size());
+
+        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2012-12-12")));
+        assertNotNull(durgOrdersInVisit);
+        assertEquals(1, durgOrdersInVisit.size());
+        assertEquals("250mg,325.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
+    }
+
+    @Test
+    public void shouldNotReturnVisitIfNoDrugsAreOrdered() throws Exception {
+        setUpDrugOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(1);
@@ -168,20 +206,42 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         Map<String, Map<String, ConceptValue>> drugTable = diseaseSummary.getTabularData();
 
         assertNotNull(drugTable);
-        assertEquals(1, drugTable.size());
+        assertEquals(0, drugTable.size());
 
-        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2001-09-22")));
-        assertNotNull(durgOrdersInVisit);
-        assertEquals(1, durgOrdersInVisit.size());
-        assertEquals("250mg,125.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
     }
 
 
     @Test
     public void shouldReturnDrugOrdersForGivenConceptsForAllVisits() throws Exception {
-        executeDataSet("drugOrderTestData.xml");
+        setUpDrugOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
+        ArrayList<String> drugConcepts = new ArrayList<String>() {{
+            add("cetirizine 100mg");
+            add("Calpol 250mg");
+        }};
+
+        diseaseDataParams.setDrugConcepts(drugConcepts);
+        DiseaseSummaryData diseaseSummary = bahmniDiseaseSummaryData.getDiseaseSummary("75e04d42-3ca8-11e3-bf2b-080027175c1b", diseaseDataParams);
+        Map<String, Map<String, ConceptValue>> drugTable = diseaseSummary.getTabularData();
+
+        assertNotNull(drugTable);
+        assertEquals(2, drugTable.size());
+
+        Map<String, ConceptValue> durgOrdersInVisit = drugTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2001-09-22")));
+        assertNotNull(durgOrdersInVisit);
+        assertEquals(1, durgOrdersInVisit.size());
+        assertEquals("250mg,125.0,1/day x 7 days/week", durgOrdersInVisit.get("Calpol 250mg").getValue());
+
+    }
+
+    @Test
+    public void shouldReturnDrugOrdersForGivenConceptsForAllVisitsDependingOnTheInitialOrFinalCount() throws Exception {
+        setUpDrugOrderTestData();
+
+        DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
+        diseaseDataParams.setGroupBy("visits");
+        diseaseDataParams.setInitialCount(1);
         ArrayList<String> drugConcepts = new ArrayList<String>() {{
             add("cetirizine 100mg");
             add("Calpol 250mg");
@@ -203,7 +263,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnObsForGivenConceptsAndVisitUuid() throws Exception {
-        executeDataSet("observationsTestData.xml");
+        setUpObservationTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         ArrayList<String> obsConcepts = new ArrayList<String>() {{
@@ -227,7 +287,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnLabResultsForGivenConceptsAndVisitUuid() throws Exception {
-        executeDataSet("labOrderTestData.xml");
+        setUpLabOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         ArrayList<String> labConcepts = new ArrayList<String>() {{
@@ -250,7 +310,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnDrugOrdersForGivenConceptsAndVisitUuid() throws Exception {
-        executeDataSet("drugOrderTestData.xml");
+        setUpDrugOrderTestData();
 
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         ArrayList<String> drugConcepts = new ArrayList<String>() {{
@@ -274,7 +334,8 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnLeafConceptsNames() throws Exception {
-        executeDataSet("observationsTestData.xml");
+        setUpObservationTestData();
+
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(3);
         List<String> obsConcepts = new ArrayList<String>() {{
@@ -296,7 +357,8 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
     @Test
     public void shouldReturnShortNamesForCodedConceptObservations() throws Exception {
-        executeDataSet("observationsTestData.xml");
+        setUpObservationTestData();
+
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(3);
         ArrayList<String> obsConcepts = new ArrayList<String>() {{

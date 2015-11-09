@@ -4,8 +4,8 @@ import liquibase.util.file.FilenameUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
+import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,20 +25,15 @@ import java.util.UUID;
 public class PatientImageServiceImpl implements PatientImageService {
     private Log log = LogFactory.getLog(PatientImageServiceImpl.class);
     private static final String patientImagesFormat = "jpeg";
-    private BahmniCoreApiProperties bahmniCoreApiProperties;
     private final Integer NO_OF_PATIENT_FILE_IN_A_DIRECTORY = 100;
 
-    @Autowired
-    public PatientImageServiceImpl(BahmniCoreApiProperties bahmniCoreApiProperties) {
-        this.bahmniCoreApiProperties = bahmniCoreApiProperties;
-    }
 
     @Override
     public void saveImage(String patientIdentifier, String image) {
         try {
             if (image == null || image.isEmpty()) return;
 
-            File outputFile = new File(String.format("%s/%s.%s", bahmniCoreApiProperties.getImageDirectory(), patientIdentifier, patientImagesFormat));
+            File outputFile = new File(String.format("%s/%s.%s", BahmniCoreProperties.getProperty("bahmnicore.images.directory"), patientIdentifier, patientImagesFormat));
             saveImageInFile(image, patientImagesFormat, outputFile);
         } catch (IOException e) {
             throw new BahmniCoreException("[%s] : Could not save patient image", e);
@@ -50,7 +45,7 @@ public class PatientImageServiceImpl implements PatientImageService {
         try {
             if (images == null || images.isEmpty()) return null;
 
-            String basePath = bahmniCoreApiProperties.getDocumentBaseDirectory();
+            String basePath = BahmniCoreProperties.getProperty("bahmnicore.documents.baseDirectory");
             String relativeFilePath = createFilePath(basePath, patientId, encounterTypeName, format);
 
             File outputFile = new File(String.format("%s/%s", basePath, relativeFilePath));

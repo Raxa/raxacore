@@ -10,4 +10,3 @@ run_in_vagrant -c "sudo su - bahmni -c 'cd /bahmni_temp/ && ./run-liquibase-open
 #invoke migrations of bahmni core omods
 run_in_vagrant -c "sudo su - bahmni -c 'cd /bahmni_temp/ && ./run-core-bahmni-modules-liquibase.sh'"
 run_in_vagrant -c "sudo su - bahmni -c 'cd /bahmni_temp/ && ./run-openelis-atomfeed-client-liquibase.sh'"
-run_in_vagrant -c "sudo su - bahmni -c 'cd /bahmni_temp/ && ./run-openerp-atomfeed-client-liquibase.sh'"

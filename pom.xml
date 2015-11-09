@@ -4,7 +4,7 @@
 
     <groupId>org.bahmni.module</groupId>
     <artifactId>bahmni</artifactId>
-    <version>0.77-SNAPSHOT</version>
+    <version>0.78-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>BahmniEMR Core</name>
 
@@ -12,7 +12,6 @@
         <module>bahmni-emr-api</module>
         <module>bahmnicore-api</module>
         <module>openmrs-elis-atomfeed-client-omod</module>
-        <module>openerp-atomfeed-client-omod</module>
         <module>bahmnicore-omod</module>
         <module>reference-data</module>
         <module>admin</module>
@@ -56,11 +55,6 @@
             <dependency>
                 <groupId>org.bahmni.module</groupId>
                 <artifactId>bahmni-emr-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.bahmni.module</groupId>
-                <artifactId>openerp-atomfeed-client-omod</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -185,7 +179,7 @@
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>bahmni-migrator</artifactId>
-                <version>0.77-SNAPSHOT</version>
+                <version>0.78-SNAPSHOT</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
@@ -231,6 +225,12 @@
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>idgen-api</artifactId>
                 <version>2.6</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>emrapi-api</artifactId>
+                <version>${emrapi-omod.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>

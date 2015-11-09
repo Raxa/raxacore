@@ -20,7 +20,6 @@ run_in_vagrant -f "$SCRIPTS_DIR/tomcat_stop.sh"
 scp_to_vagrant $PROJECT_BASE/bahmnicore-omod/target/bahmnicore*-$VERSION.omod $MODULE_DEPLOYMENT_FOLDER/bahmnicore-$VERSION.omod
 
 # Copy omod files to the vagrant box - in /tmp
-scp_to_vagrant $PROJECT_BASE/openerp-atomfeed-client-omod/target/openerp-atomfeed-client*-$VERSION.omod $MODULE_DEPLOYMENT_FOLDER/openerp-atomfeed-client-$VERSION.omod
 scp_to_vagrant $PROJECT_BASE/openmrs-elis-atomfeed-client-omod/target/openelis-atomfeed-client*-$VERSION.omod $MODULE_DEPLOYMENT_FOLDER/openelis-atomfeed-client-$VERSION.omod
 scp_to_vagrant $PROJECT_BASE/reference-data/omod/target/reference-data*-$VERSION.omod $MODULE_DEPLOYMENT_FOLDER/reference-data-$VERSION.omod
 

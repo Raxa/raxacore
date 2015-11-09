@@ -1,6 +1,7 @@
 package org.bahmni.module.elisatomfeedclient.api.mapper;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.bahmni.module.elisatomfeedclient.api.Constants;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
@@ -38,6 +39,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.bahmni.module.elisatomfeedclient.api.Constants.DEFAULT_INVESTIGATION_ENCOUNTER_TYPE;
+
 public class AccessionHelper {
     private final EncounterService encounterService;
     private final PatientService patientService;
@@ -69,11 +72,11 @@ public class AccessionHelper {
     public Encounter mapToNewEncounter(OpenElisAccession openElisAccession, String visitType) {
         Patient patient = patientService.getPatientByUuid(openElisAccession.getPatientUuid());
         if (labUser == null) {
-            labUser = userService.getUserByUsername(properties.getLabSystemUserName());
+            labUser = userService.getUserByUsername(Constants.DEFAULT_LAB_SYSTEM_USERNAME);
         }
 
         Provider labSystemProvider = getLabSystemProvider();
-        EncounterType encounterType = encounterService.getEncounterType(properties.getEncounterTypeInvestigation());
+        EncounterType encounterType = encounterService.getEncounterType(DEFAULT_INVESTIGATION_ENCOUNTER_TYPE);
 
         Date accessionDate = openElisAccession.fetchDate();
         Visit visit = new VisitIdentificationHelper(visitService).getVisitFor(patient, visitType, accessionDate);
@@ -124,7 +127,7 @@ public class AccessionHelper {
     private Set<Order> createOrders(OpenElisAccession openElisAccession, Set<String> orderConceptUuids, Patient patient) {
         Set<Order> orders = new HashSet<>();
         if (labUser == null) {
-            labUser = userService.getUserByUsername(properties.getLabSystemUserName());
+            labUser = userService.getUserByUsername(Constants.DEFAULT_LAB_SYSTEM_USERNAME);
         }
         for (String orderConceptUuid : orderConceptUuids) {
             Order order = new Order();
@@ -142,7 +145,7 @@ public class AccessionHelper {
 
     private OrderType getLabOrderType() {
         if (labOrderType == null) {
-            labOrderType = orderService.getOrderTypeByName(properties.getOrderTypeLabOrderName());
+            labOrderType = orderService.getOrderTypeByName(Constants.DEFAULT_LAB_ORDER_TYPE);
         }
         return labOrderType;
     }

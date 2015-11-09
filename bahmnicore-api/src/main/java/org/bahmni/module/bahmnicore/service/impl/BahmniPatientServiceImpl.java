@@ -1,11 +1,10 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.log4j.Logger;
-import org.bahmni.module.bahmnicore.BahmniCoreApiProperties;
+import org.bahmni.module.bahmnicore.contract.patient.PatientSearchParameters;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientConfigResponse;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
-import org.bahmni.module.bahmnicore.contract.patient.PatientSearchParameters;
 import org.bahmni.module.bahmnicore.mapper.PatientMapper;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
@@ -27,7 +26,6 @@ import java.util.List;
 public class BahmniPatientServiceImpl implements BahmniPatientService {
     private PatientService patientService;
     private PatientImageService patientImageService;
-    private BahmniCoreApiProperties bahmniCoreApiProperties;
     private PatientMapper patientMapper;
     private static Logger logger = Logger.getLogger(BahmniPatientServiceImpl.class);
     private PersonService personService;
@@ -37,10 +35,9 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     @Autowired
     public BahmniPatientServiceImpl(PatientImageService patientImageService,
                                     PatientService patientService, PersonService personService, ConceptService conceptService,
-                                    BahmniCoreApiProperties bahmniCoreApiProperties, PatientMapper patientMapper, PatientDao patientDao) {
+                                    PatientMapper patientMapper, PatientDao patientDao) {
         this.patientImageService = patientImageService;
         this.patientService = patientService;
-        this.bahmniCoreApiProperties = bahmniCoreApiProperties;
         this.personService = personService;
         this.conceptService = conceptService;
         this.patientMapper = patientMapper;

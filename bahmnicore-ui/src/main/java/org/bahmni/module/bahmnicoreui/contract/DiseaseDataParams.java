@@ -5,19 +5,25 @@ import java.util.List;
 public class DiseaseDataParams {
 
     private Integer numberOfVisits;
+    private Integer initialCount;
+    private Integer latestCount;
     private List<String> obsConcepts;
     private List<String> drugConcepts;
     private List<String> labConcepts;
     private  String groupBy;
     private String visitUuid;
 
-    public Integer getNumberOfVisits() {
-        return numberOfVisits;
-    }
+    public Integer getNumberOfVisits() { return numberOfVisits; }
 
-    public void setNumberOfVisits(Integer numberOfVisits) {
-        this.numberOfVisits = numberOfVisits;
-    }
+    public void setNumberOfVisits(Integer numberOfVisits) { this.numberOfVisits = numberOfVisits; }
+
+    public Integer getLatestCount() { return latestCount; }
+
+    public void setLatestCount(Integer latestCount) { this.latestCount = latestCount; }
+
+    public Integer getInitialCount() { return initialCount; }
+
+    public void setInitialCount(Integer initialCount) { this.initialCount = initialCount; }
 
     public List<String> getObsConcepts() {
         return obsConcepts;

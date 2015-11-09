@@ -28,6 +28,7 @@ public class BahmniObsResource extends ObsResource1_11 {
                 description.addProperty("display");
                 description.addProperty("obsDatetime");
                 description.addProperty("visitUuid");
+                description.addProperty("encounterUuid");
                 description.addProperty("visitStartDateTime");
                 return description;
             }
@@ -51,6 +52,10 @@ public class BahmniObsResource extends ObsResource1_11 {
         return visitStartDatetime;
     }
 
-
+    @PropertyGetter("encounterUuid")
+    public String getEncounterUuid(Obs obs) {
+        Encounter encounter = obs.getEncounter();
+        return encounter.getUuid();
+    }
 }
 

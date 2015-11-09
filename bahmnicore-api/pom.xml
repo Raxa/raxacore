@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.bahmni.module</groupId>
         <artifactId>bahmni</artifactId>
-        <version>0.77-SNAPSHOT</version>
+        <version>0.78-SNAPSHOT</version>
     </parent>
     <artifactId>bahmnicore-api</artifactId>
     <packaging>jar</packaging>
@@ -73,9 +73,13 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
+            <artifactId>emrapi-api</artifactId>
+            <version>${emrapi-omod.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
             <artifactId>emrapi-api-1.11</artifactId>
             <version>${emrapi-omod.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <!--<dependency>-->
@@ -119,7 +123,7 @@
         <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>web-clients</artifactId>
-            <version>0.77-SNAPSHOT</version>
+            <version>0.78-SNAPSHOT</version>
         </dependency>
 
 

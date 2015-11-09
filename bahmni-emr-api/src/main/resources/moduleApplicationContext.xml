@@ -41,6 +41,7 @@
             <list>
                 <ref bean="drugOrderSaveCommandImpl"/>
                 <ref bean="orderSaveCommandImpl"/>
+                <ref bean="parentConceptSaveCommandImpl"/>
             </list>
         </constructor-arg>
         <constructor-arg>

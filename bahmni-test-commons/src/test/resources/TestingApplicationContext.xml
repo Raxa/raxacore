@@ -5,7 +5,7 @@
   		    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
     <!--<context:component-scan base-package="org.openmrs.module.bahmnicore.web"/>-->
 
-    <bean id="propertiesReader" class="org.bahmni.test.properties.SystemPropertiesReader"
+    <bean id="bahmniCoreProperties" class="org.bahmni.test.properties.SystemPropertiesReader"
           scope="singleton"/>
 
 </beans>
