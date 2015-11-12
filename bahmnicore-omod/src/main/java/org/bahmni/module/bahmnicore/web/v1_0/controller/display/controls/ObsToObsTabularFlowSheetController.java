@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/observations/flowSheet")
@@ -51,7 +48,9 @@ public class ObsToObsTabularFlowSheetController {
             @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
             @RequestParam(value = "conceptSet", required = true) String conceptSet,
             @RequestParam(value = "groupByConcept", required = true) String groupByConcept,
-            @RequestParam(value = "conceptNames", required = false) List<String> conceptNames) {
+            @RequestParam(value = "conceptNames", required = false) List<String> conceptNames,
+            @RequestParam(value = "initialCount", required = false) Integer initialCount,
+            @RequestParam(value = "latestCount", required = false) Integer latestCount) {
 
         Concept rootConcept = conceptService.getConceptByName(conceptSet);
         Concept childConcept = conceptService.getConceptByName(groupByConcept);
@@ -68,8 +67,37 @@ public class ObsToObsTabularFlowSheetController {
         if (conceptNames != null && !conceptNames.contains(groupByConcept)) {
             leafConcepts.add(conceptMapper.map(childConcept));
         }
-
+        bahmniObservations = filterDataByCount(bahmniObservations, initialCount, latestCount);
         return bahmniObservationsToTabularViewMapper.constructTable(leafConcepts, bahmniObservations);
+    }
+
+    private Collection<BahmniObservation> filterDataByCount(Collection<BahmniObservation> bahmniObservations, Integer initialCount, Integer latestCount) {
+        if (initialCount == null && latestCount == null) return bahmniObservations;
+        Collection<BahmniObservation> bahmniObservationCollection = new ArrayList<>();
+
+        if (bahmniObservations.size() < (getIntegerValue(initialCount) + getIntegerValue(latestCount))) {
+            latestCount = bahmniObservations.size();
+            initialCount = 0;
+        }
+        bahmniObservationCollection.addAll(filter(bahmniObservations, 0, getIntegerValue(initialCount)));
+        bahmniObservationCollection.addAll(filter(bahmniObservations, bahmniObservations.size() - getIntegerValue(latestCount), bahmniObservations.size()));
+
+        return bahmniObservationCollection;
+    }
+
+    private Collection<BahmniObservation> filter(Collection<BahmniObservation> bahmniObservations, int fromIndex, int toIndex) {
+        Collection<BahmniObservation> bahmniObservationCollection = new ArrayList<>();
+        fromIndex = (fromIndex > bahmniObservations.size() || fromIndex < 0) ? 0 : fromIndex;
+        toIndex = (toIndex > bahmniObservations.size()) ? bahmniObservations.size() : toIndex;
+        for (int index = fromIndex; index < toIndex; index++) {
+            bahmniObservationCollection.add((BahmniObservation) CollectionUtils.get(bahmniObservations, index));
+        }
+        return bahmniObservationCollection;
+    }
+
+    private int getIntegerValue(Integer value) {
+        if (value == null) return 0;
+        return value;
     }
 
     private void getSpecifiedLeafConcepts(Concept rootConcept, List<String> conceptNames, Set<EncounterTransaction.Concept> leafConcepts) {

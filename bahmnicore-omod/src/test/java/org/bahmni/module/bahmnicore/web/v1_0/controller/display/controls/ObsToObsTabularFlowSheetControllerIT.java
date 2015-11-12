@@ -109,4 +109,25 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
         assertEquals("98.0", rows.get(0).getValue("Temperature Data").getValueAsString());
         assertTrue(rows.get(0).getValue("Temperature Data").isAbnormal());
     }
+    @Test
+    public void shouldFetchLatestAndInitialObservationsIfTheyAreNotNull() throws Exception {
+        executeDataSet("flowSheetTableDataSetForInitialAndLatestCount.xml");
+        PivotTable pivotTable = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/observations/flowSheet",
+                new Parameter("patientUuid", "1a246ed5-3c11-11de-a0ba-001ed2aeb66u"),
+                new Parameter("conceptSet", "Vitals"),
+                new Parameter("groupByConcept", "Temperature Data"),
+                new Parameter("conceptNames", "Temperature Data"),
+                new Parameter("initialCount", "2"),
+                new Parameter("latestCount","0"),
+                new Parameter("numberOfVisits","1")
+        )), PivotTable.class);
+
+        List<PivotRow> rows = pivotTable.getRows();
+        assertEquals(1, pivotTable.getHeaders().size());
+        assertEquals(2, rows.size());
+        assertEquals("78.0",rows.get(0).getValue("Temperature Data").getValueAsString());
+        assertTrue(rows.get(0).getValue("Temperature Data").isAbnormal());
+
+    }
 }
+

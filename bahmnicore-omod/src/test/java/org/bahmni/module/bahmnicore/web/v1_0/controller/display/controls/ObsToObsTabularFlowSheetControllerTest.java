@@ -79,7 +79,7 @@ public class ObsToObsTabularFlowSheetControllerTest {
         Set<EncounterTransaction.Concept> leafConcepts = new HashSet<>(Arrays.asList(conceptMapper.map(member1), conceptMapper.map(member2), conceptMapper.map(groupByConcept)));
         when(bahmniObservationsToTabularViewMapper.constructTable(Matchers.<Set<EncounterTransaction.Concept>>any(), eq(bahmniObservations))).thenReturn(pivotTable);
 
-        PivotTable actualPivotTable = obsToObsPivotTableController.constructPivotTableFor("patientUuid", 1, "ConceptSetName", "GroupByConcept", conceptNames);
+        PivotTable actualPivotTable = obsToObsPivotTableController.constructPivotTableFor("patientUuid", 1, "ConceptSetName", "GroupByConcept", conceptNames, null, null);
 
         verify(conceptService, times(1)).getConceptByName("ConceptSetName");
         verify(bahmniObsService, times(1)).observationsFor("patientUuid", rootConcept, groupByConcept, 1);
@@ -107,7 +107,7 @@ public class ObsToObsTabularFlowSheetControllerTest {
         Set<String> leafConcepts = new HashSet<>(Arrays.asList("Member1", "Member2", "GroupByConcept"));
         when(bahmniObservationsToTabularViewMapper.constructTable(Matchers.<Set<EncounterTransaction.Concept>>any(), eq(bahmniObservations))).thenReturn(pivotTable);
 
-        PivotTable actualPivotTable = obsToObsPivotTableController.constructPivotTableFor("patientUuid", 1, "ConceptSetName", "GroupByConcept", conceptNames);
+        PivotTable actualPivotTable = obsToObsPivotTableController.constructPivotTableFor("patientUuid", 1, "ConceptSetName", "GroupByConcept", conceptNames, null, null);
 
         verify(conceptService, times(1)).getConceptByName("ConceptSetName");
         verify(conceptService, times(1)).getConceptByName("GroupByConcept");
@@ -134,7 +134,7 @@ public class ObsToObsTabularFlowSheetControllerTest {
 
         when(bahmniObservationsToTabularViewMapper.constructTable(Matchers.<Set<EncounterTransaction.Concept>>any(), eq(bahmniObservations))).thenReturn(pivotTable);
 
-        PivotTable actualPivotTable = obsToObsPivotTableController.constructPivotTableFor("patientUuid", null, "ConceptSetName", "GroupByConcept", conceptNames);
+        PivotTable actualPivotTable = obsToObsPivotTableController.constructPivotTableFor("patientUuid", null, "ConceptSetName", "GroupByConcept", conceptNames, null, null);
 
         verify(conceptService, times(1)).getConceptByName("ConceptSetName");
         verify(bahmniObsService, times(1)).observationsFor("patientUuid", rootConcept, groupByConcept, null);
@@ -156,7 +156,7 @@ public class ObsToObsTabularFlowSheetControllerTest {
         PivotTable pivotTable = new PivotTable();
         when(bahmniObservationsToTabularViewMapper.constructTable(Matchers.<Set<EncounterTransaction.Concept>>any(), eq(bahmniObservations))).thenReturn(pivotTable);
 
-        PivotTable actualPivotTable = obsToObsPivotTableController.constructPivotTableFor("patientUuid", 0, "ConceptSetName", "GroupByConcept", null);
+        PivotTable actualPivotTable = obsToObsPivotTableController.constructPivotTableFor("patientUuid", 0, "ConceptSetName", "GroupByConcept", null, null, null);
 
         verify(conceptService, times(1)).getConceptByName("ConceptSetName");
         verify(bahmniObsService, times(1)).observationsFor("patientUuid", rootConcept, groupByConcept, 0);
@@ -179,8 +179,7 @@ public class ObsToObsTabularFlowSheetControllerTest {
         Set<String> leafConcepts = new HashSet<>(Arrays.asList("GroupByConcept"));
         when(bahmniObservationsToTabularViewMapper.constructTable(Matchers.<Set<EncounterTransaction.Concept>>any(), eq(bahmniObservations))).thenReturn(pivotTable);
 
-        PivotTable actualPivotTable = obsToObsPivotTableController.constructPivotTableFor("patientUuid", -1, "ConceptSetName", "GroupByConcept", null);
-
+        PivotTable actualPivotTable = obsToObsPivotTableController.constructPivotTableFor("patientUuid", -1, "ConceptSetName", "GroupByConcept", null, null, null);
         verify(conceptService, times(1)).getConceptByName("ConceptSetName");
         verify(bahmniObsService, times(1)).observationsFor("patientUuid", rootConcept, groupByConcept, -1);
         verify(bahmniObservationsToTabularViewMapper, times(1)).constructTable(Matchers.<Set<EncounterTransaction.Concept>>any(), eq(bahmniObservations));
@@ -195,7 +194,7 @@ public class ObsToObsTabularFlowSheetControllerTest {
         exception.expect(RuntimeException.class);
         exception.expectMessage("Root concept not found for the name:  " + conceptSetName);
 
-        obsToObsPivotTableController.constructPivotTableFor("patientUuid", 1, conceptSetName, "GroupByConcept", Collections.EMPTY_LIST);
+        obsToObsPivotTableController.constructPivotTableFor("patientUuid", 1, conceptSetName, "GroupByConcept", Collections.EMPTY_LIST, null, null);
     }
 
     @Test
@@ -206,7 +205,7 @@ public class ObsToObsTabularFlowSheetControllerTest {
         exception.expect(RuntimeException.class);
         exception.expectMessage("null doesn't belong to the Root concept:  " + conceptSetName);
 
-        obsToObsPivotTableController.constructPivotTableFor("patientUuid", 1, conceptSetName, null, Collections.EMPTY_LIST);
+        obsToObsPivotTableController.constructPivotTableFor("patientUuid", 1, conceptSetName, null, Collections.EMPTY_LIST, null, null);
     }
 
     @Test
@@ -217,7 +216,30 @@ public class ObsToObsTabularFlowSheetControllerTest {
         exception.expect(RuntimeException.class);
         exception.expectMessage("GroupByConcept doesn't belong to the Root concept:  " + conceptSetName);
 
-        obsToObsPivotTableController.constructPivotTableFor("patientUuid", 1, conceptSetName, "GroupByConcept", Collections.EMPTY_LIST);
+        obsToObsPivotTableController.constructPivotTableFor("patientUuid", 1, conceptSetName, "GroupByConcept", Collections.EMPTY_LIST, null, null);
+    }
+
+    @Test
+    public void shouldFetchTheRequiredNoOfObservationsWhenInitialCountAndLatestCountAreGiven() throws Exception {
+        Concept groupByConcept = new ConceptBuilder().withName("GroupByConcept").withClass("N/A").withDataType("Numeric").withSet(false).build();
+        Concept rootConcept = new ConceptBuilder().withName("ConceptSetName").withClass("N/A").withSetMember(groupByConcept).withDataType("Numeric").withSet(true).build();
+        when(conceptService.getConceptByName("ConceptSetName")).thenReturn(rootConcept);
+        when(conceptService.getConceptByName("GroupByConcept")).thenReturn(groupByConcept);
+
+        ArrayList<BahmniObservation> bahmniObservations = new ArrayList<>();
+        when(bahmniObsService.observationsFor("patientUuid", rootConcept, groupByConcept, -1)).thenReturn(bahmniObservations);
+
+        PivotTable pivotTable = new PivotTable();
+        Set<String> leafConcepts = new HashSet<>(Arrays.asList("GroupByConcept"));
+        when(bahmniObservationsToTabularViewMapper.constructTable(Matchers.<Set<EncounterTransaction.Concept>>any(), eq(bahmniObservations))).thenReturn(pivotTable);
+
+        PivotTable actualPivotTable = obsToObsPivotTableController.constructPivotTableFor("patientUuid", -1, "ConceptSetName", "GroupByConcept", null, bahmniObservations.size(), 1);
+
+        verify(conceptService, times(1)).getConceptByName("ConceptSetName");
+        verify(bahmniObsService, times(1)).observationsFor("patientUuid", rootConcept, groupByConcept, -1);
+        verify(bahmniObservationsToTabularViewMapper, times(1)).constructTable(Matchers.<Set<EncounterTransaction.Concept>>any(), eq(bahmniObservations));
+        assertNotNull(actualPivotTable);
+        assertEquals(pivotTable, actualPivotTable);
     }
 
 }

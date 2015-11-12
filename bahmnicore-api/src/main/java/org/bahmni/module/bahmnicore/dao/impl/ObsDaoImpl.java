@@ -223,7 +223,8 @@ public class ObsDaoImpl implements ObsDao {
                 "JOIN obs groupByObs ON groupByObs.obs_group_id = rootObs.obs_id AND groupByObs.voided = 0 " +
                 "JOIN concept_name groupByConceptName " +
                 "ON groupByConceptName.concept_id = groupByObs.concept_id AND groupByConceptName.name = :childConceptName AND " +
-                "groupByConceptName.concept_name_type = 'FULLY_SPECIFIED'";
+                "groupByConceptName.concept_name_type = 'FULLY_SPECIFIED'" +
+                "order by obs_datetime asc ";
 
         Query queryToGetObs = sessionFactory.getCurrentSession().createSQLQuery(queryString)
                 .addEntity(Obs.class)
