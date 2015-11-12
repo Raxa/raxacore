@@ -17,8 +17,6 @@ import java.util.List;
 @Service
 public class DrugMetaDataServiceImpl implements DrugMetaDataService {
 
-    private static final org.apache.log4j.Logger log = Logger.getLogger(DrugMetaDataServiceImpl.class);
-
     private final ConceptService conceptService;
 
     @Autowired
@@ -33,8 +31,7 @@ public class DrugMetaDataServiceImpl implements DrugMetaDataService {
 
         Concept drugConcept = conceptService.getConceptByName(drug.getGenericName());
         ConceptClass drugConceptClass = conceptService.getConceptClassByUuid(ConceptClass.DRUG_UUID);
-        ConceptDatatype naDataType = conceptService.getConceptDatatypeByUuid(ConceptDatatype.N_A_UUID);
-        return new DrugMetaData(existingDrug, drugConcept, dosageFormConcept, drugConceptClass, naDataType);
+        return new DrugMetaData(existingDrug, drugConcept, dosageFormConcept, drugConceptClass);
     }
 
     private Drug getExistingDrug(org.bahmni.module.referencedata.labconcepts.contract.Drug drug,Concept dosageFormConcept) {

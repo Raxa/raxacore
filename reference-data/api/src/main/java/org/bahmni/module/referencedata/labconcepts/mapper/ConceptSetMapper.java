@@ -33,8 +33,7 @@ public class ConceptSetMapper {
 
 
     public ConceptSet map(Concept concept) {
-        String conceptReferenceTermCode = null, conceptReferenceTermSource = null,
-                conceptReferenceTermRelationship = null, conceptDescription = null, conceptShortname = null;
+        String conceptDescription = null, conceptShortname = null;
         String name = concept.getName(Context.getLocale()).getName();
         ConceptDescription description = concept.getDescription(Context.getLocale());
         if (description != null) {

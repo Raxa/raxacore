@@ -23,17 +23,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 @Component("openElisPatientFeedClient")
 public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements OpenElisPatientFeedClient {
-    private BahmniPatientService bahmniPatientService;
     private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
     private Logger logger = Logger.getLogger(OpenElisPatientFeedClientImpl.class);
 
 
     @Autowired
     public OpenElisPatientFeedClientImpl(ElisAtomFeedProperties properties,
-                                         BahmniPatientService bahmniPatientService,
                                          PlatformTransactionManager transactionManager, BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand) {
         super(properties, transactionManager);
-        this.bahmniPatientService = bahmniPatientService;
         this.bahmniVisitAttributeSaveCommand = bahmniVisitAttributeSaveCommand;
     }
 

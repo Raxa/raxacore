@@ -30,7 +30,7 @@ public class DrugMetaDataMapperTest {
 
     @Test
     public void create_new_drug_if_existing_drug_is_null() throws Exception {
-        DrugMetaData drugMetaData = new DrugMetaData(null, new Concept(), new Concept(), drugConceptClass, naDatatype);
+        DrugMetaData drugMetaData = new DrugMetaData(null, new Concept(), new Concept(), drugConceptClass);
         Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
         assertNotNull(conceptDrug);
         assertNotNull(conceptDrug.getConcept());
@@ -40,7 +40,7 @@ public class DrugMetaDataMapperTest {
     @Test
     public void create_new_drug_with_existing_concept() throws Exception {
         Concept drugConcept = new ConceptBuilder().withName("Drug Concept").withClassUUID(ConceptClass.DRUG_UUID).build();
-        DrugMetaData drugMetaData = new DrugMetaData(null, drugConcept, null, drugConceptClass, naDatatype);
+        DrugMetaData drugMetaData = new DrugMetaData(null, drugConcept, null, drugConceptClass);
         Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
         assertNotNull(conceptDrug);
         assertNotNull(conceptDrug.getConcept());
@@ -52,7 +52,7 @@ public class DrugMetaDataMapperTest {
     @Test
     public void create_new_drug_with_dosage_form_concept() throws Exception {
         Concept tablet = new ConceptBuilder().withName("Tablet").build();
-        DrugMetaData drugMetaData = new DrugMetaData(null, new Concept(), tablet, drugConceptClass, naDatatype);
+        DrugMetaData drugMetaData = new DrugMetaData(null, new Concept(), tablet, drugConceptClass);
         Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
         assertNotNull(conceptDrug);
         assertNotNull(conceptDrug.getConcept());
@@ -64,7 +64,7 @@ public class DrugMetaDataMapperTest {
     public void create_new_drug_with_dosage_form_and_existing_concept() throws Exception {
         Concept tablet = new ConceptBuilder().withName("Tablet").build();
         Concept drugConcept = new ConceptBuilder().withName("Drug Concept").withClassUUID(ConceptClass.DRUG_UUID).build();
-        DrugMetaData drugMetaData = new DrugMetaData(null, drugConcept, tablet, drugConceptClass, naDatatype);
+        DrugMetaData drugMetaData = new DrugMetaData(null, drugConcept, tablet, drugConceptClass);
         Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
         assertNotNull(conceptDrug);
         assertNotNull(conceptDrug.getConcept());
@@ -77,7 +77,7 @@ public class DrugMetaDataMapperTest {
     public void update_drug_concept_on_existing_drug() throws Exception {
         Drug existingDrug = new DrugBuilder().withConcept("Drug Concept").withDosageForm("Tablet").build();
         Concept drugConcept = new ConceptBuilder().withName("New Concept").withClassUUID(ConceptClass.DRUG_UUID).build();
-        DrugMetaData drugMetaData = new DrugMetaData(existingDrug, drugConcept, null, drugConceptClass, naDatatype);
+        DrugMetaData drugMetaData = new DrugMetaData(existingDrug, drugConcept, null, drugConceptClass);
         assertEquals("Drug Concept", existingDrug.getConcept().getName(Context.getLocale()).getName());
         assertEquals("Tablet", existingDrug.getDosageForm().getName(Context.getLocale()).getName());
         Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
@@ -91,7 +91,7 @@ public class DrugMetaDataMapperTest {
         Drug existingDrug = new DrugBuilder().withConcept("Drug Concept").withDosageForm("Tablet").build();
         Concept capsule = new ConceptBuilder().withName("Capsule").build();
         Concept drugConcept = new ConceptBuilder().withName("New Concept").withClassUUID(ConceptClass.DRUG_UUID).build();
-        DrugMetaData drugMetaData = new DrugMetaData(existingDrug, drugConcept, capsule, drugConceptClass, naDatatype);
+        DrugMetaData drugMetaData = new DrugMetaData(existingDrug, drugConcept, capsule, drugConceptClass);
         assertEquals("Drug Concept", existingDrug.getConcept().getName(Context.getLocale()).getName());
         assertEquals("Tablet", existingDrug.getDosageForm().getName(Context.getLocale()).getName());
         Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);

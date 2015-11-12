@@ -18,8 +18,6 @@ import java.util.Map;
 public class SqlSearchServiceImpl implements SqlSearchService {
     private AdministrationService administrationService;
 
-    private static Logger logger = Logger.getLogger(SqlSearchServiceImpl.class);
-
     public void setAdministrationService(AdministrationService administrationService) {
         this.administrationService = administrationService;
     }

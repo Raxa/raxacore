@@ -9,19 +9,15 @@ public class DrugMetaData {
     private Concept drugConcept;
     private Concept dosageForm;
     private ConceptClass drugConceptClass;
-    private ConceptDatatype naDataType;
     private Drug existingDrug;
-    private boolean conceptExists;
-
     public DrugMetaData() {
     }
 
-    public DrugMetaData(Drug existingDrug, Concept drugConcept, Concept dosageFormConcept, ConceptClass drugConceptClass, ConceptDatatype naDataType) {
+    public DrugMetaData(Drug existingDrug, Concept drugConcept, Concept dosageFormConcept, ConceptClass drugConceptClass) {
         this.existingDrug = existingDrug;
         this.drugConcept = drugConcept;
         this.dosageForm = dosageFormConcept;
         this.drugConceptClass = drugConceptClass;
-        this.naDataType = naDataType;
     }
 
     public Concept getDrugConcept() {

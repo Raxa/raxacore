@@ -33,8 +33,6 @@ import java.util.List;
 public class BahmniPatientSearchController extends BaseRestController {
 
     private BahmniPatientService bahmniPatientService;
-    private PersonNameDao namesDao;
-    private PersonAttributeDao personAttributeDao;
 
 
     @Autowired

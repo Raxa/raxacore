@@ -43,7 +43,7 @@ public class BahmniPatientServiceImplTest {
     @Before
     public void setup() {
         initMocks(this);
-        bahmniPatientService = new BahmniPatientServiceImpl(patientImageService, patientService, personService, conceptService, patientMapper, patientDao);
+        bahmniPatientService = new BahmniPatientServiceImpl(personService, conceptService, patientDao);
     }
 
     @Test

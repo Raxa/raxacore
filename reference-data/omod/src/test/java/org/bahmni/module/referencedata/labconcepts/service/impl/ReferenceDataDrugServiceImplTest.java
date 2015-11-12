@@ -12,14 +12,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
-import org.openmrs.ConceptDatatype;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 
 import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +37,7 @@ public class ReferenceDataDrugServiceImplTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        when(drugMetaDataService.getDrugMetaData((Drug)anyObject())).thenReturn(new DrugMetaData(new org.openmrs.Drug(), new Concept(), new Concept(), new ConceptClass(), new ConceptDatatype()));
+        when(drugMetaDataService.getDrugMetaData((Drug)anyObject())).thenReturn(new DrugMetaData(new org.openmrs.Drug(), new Concept(), new Concept(), new ConceptClass()));
         referenceDataDrugService = new ReferenceDataDrugServiceImpl(conceptService, drugMetaDataService);
     }
 

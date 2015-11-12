@@ -5,16 +5,13 @@ import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.BahmniObservationsToTabularViewMapper;
 import org.openmrs.Concept;
-import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
-import org.openmrs.api.ObsService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.pivottable.contract.PivotTable;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,22 +28,19 @@ import java.util.Set;
 public class ObsToObsTabularFlowSheetController {
 
     public static final String CONCEPT_DETAILS = "Concept Details";
-    private static Logger logger = Logger.getLogger(ObsToObsTabularFlowSheetController.class);
     private BahmniObsService bahmniObsService;
     private ConceptService conceptService;
     private BahmniObservationsToTabularViewMapper bahmniObservationsToTabularViewMapper;
-    private AdministrationService adminService;
     private ConceptMapper conceptMapper;
-    private ObsService obsService;
+
+    private static Logger logger = Logger.getLogger(ObsToObsTabularFlowSheetController.class);
 
     @Autowired
     public ObsToObsTabularFlowSheetController(BahmniObsService bahmniObsService, ConceptService conceptService,
-                                              BahmniObservationsToTabularViewMapper bahmniObservationsToTabularViewMapper,
-                                              @Qualifier("adminService") AdministrationService administrationService) {
+                                              BahmniObservationsToTabularViewMapper bahmniObservationsToTabularViewMapper) {
         this.bahmniObsService = bahmniObsService;
         this.conceptService = conceptService;
         this.bahmniObservationsToTabularViewMapper = bahmniObservationsToTabularViewMapper;
-        this.adminService = administrationService;
         this.conceptMapper = new ConceptMapper();
     }
 

@@ -17,11 +17,6 @@ import java.util.Set;
 
 public class EncounterHelper {
     private EncounterService encounterService;
-//    private VisitService visitService;
-//    private AccessionHelper accessionMapper;
-//    private VisitHelper visitHelper;
-
-
 
     public EncounterHelper(EncounterService encounterService) {
         this.encounterService = encounterService;

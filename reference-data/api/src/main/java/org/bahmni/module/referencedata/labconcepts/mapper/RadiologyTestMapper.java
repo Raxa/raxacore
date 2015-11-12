@@ -1,7 +1,5 @@
 package org.bahmni.module.referencedata.labconcepts.mapper;
 
-import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
-import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
 import org.bahmni.module.referencedata.labconcepts.contract.RadiologyTest;
 import org.openmrs.Concept;
 

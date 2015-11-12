@@ -20,9 +20,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
     private ObsDao obsDao;
     private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
-    private static final String[] NOT_STANDARD_OBS_CLASSES = {"Diagnosis", "LabSet", "LabTest", "Finding"};
     private VisitService visitService;
-    private ObsService obsService;
     private ConceptService conceptService;
 
     @Autowired
@@ -30,7 +28,6 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         this.obsDao = obsDao;
         this.omrsObsToBahmniObsMapper = omrsObsToBahmniObsMapper;
         this.visitService = visitService;
-        this.obsService = obsService;
         this.conceptService = conceptService;
     }
 
