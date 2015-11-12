@@ -8,6 +8,7 @@ import org.openmrs.util.OpenmrsUtil;
 import org.springframework.aop.MethodBeforeAdvice;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
 
 public class BahmniEncounterTransactionUpdateAdvice implements MethodBeforeAdvice {
@@ -18,7 +19,14 @@ public class BahmniEncounterTransactionUpdateAdvice implements MethodBeforeAdvic
     public void before(Method method, Object[] args, Object target) throws Throwable {
         logger.info("BahmniEncounterTransactionUpdateAdvice : Start");
         GroovyClassLoader gcl = new GroovyClassLoader();
-        Class clazz = gcl.parseClass(new File(OpenmrsUtil.getApplicationDataDirectory() + "obscalculator/BahmniObsValueCalculator.groovy")); 
+        String fileName = OpenmrsUtil.getApplicationDataDirectory() + "obscalculator/BahmniObsValueCalculator.groovy";
+        Class clazz;
+        try {
+            clazz = gcl.parseClass(new File(fileName));
+        } catch (FileNotFoundException fileNotFound) {
+            logger.warn("Could not find ObsValueCalculator: " + fileName +". Possible system misconfiguration. ", fileNotFound);
+            return;
+        }
         logger.info("BahmniEncounterTransactionUpdateAdvice : Using rules in " + clazz.getName());
         ObsValueCalculator obsValueCalculator = (ObsValueCalculator) clazz.newInstance();
         obsValueCalculator.run((BahmniEncounterTransaction) args[0]);
