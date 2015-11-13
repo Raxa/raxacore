@@ -18,7 +18,7 @@ import org.openmrs.util.OpenmrsConstants;
 import java.util.Collection;
 import java.util.Locale;
 
-@Resource(name = RestConstants.VERSION_1 + "/concept", supportedClass = Concept.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*"}, order = 0)
+@Resource(name = RestConstants.VERSION_1 + "/concept", supportedClass = Concept.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"}, order = 0)
 public class BahmniConceptResource extends ConceptResource1_9 {
 
     public BahmniConceptResource() {

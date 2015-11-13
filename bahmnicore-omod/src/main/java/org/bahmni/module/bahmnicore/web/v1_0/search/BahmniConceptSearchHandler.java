@@ -32,7 +32,7 @@ public class BahmniConceptSearchHandler implements SearchHandler {
     @Override
     public SearchConfig getSearchConfig() {
         SearchQuery searchQuery = new SearchQuery.Builder("Allows you to search for concepts by fully specified name").withRequiredParameters("name").build();
-        return new SearchConfig("byFullySpecifiedName", RestConstants.VERSION_1 + "/concept", Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*"), searchQuery);
+        return new SearchConfig("byFullySpecifiedName", RestConstants.VERSION_1 + "/concept", Arrays.asList("1.8.*", "1.9.*", "1.10.*", "1.11.*", "1.12.*"), searchQuery);
     }
 
     @Override

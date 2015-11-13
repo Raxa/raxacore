@@ -35,7 +35,7 @@ public class EntityMappingSearchHandler implements SearchHandler {
 
     @Override
     public SearchConfig getSearchConfig() {
-        return new SearchConfig("byEntityAndMappingType", RestConstants.VERSION_1 + "/entitymapping", Arrays.asList("1.9.*", "1.10.*", "1.11.*"),
+        return new SearchConfig("byEntityAndMappingType", RestConstants.VERSION_1 + "/entitymapping", Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*"),
                 new SearchQuery.Builder("Allows you to find entity relationships of entity with specific mapping type").withRequiredParameters("entityUuid", "mappingType").build());
     }
 
