@@ -16,7 +16,7 @@ import org.openmrs.module.webservices.rest.web.response.ConversionException;
 import org.openmrs.module.webservices.rest.web.response.ResourceDoesNotSupportOperationException;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 
-@Resource(name = RestConstants.VERSION_1 + "/entitymapping", supportedClass = Entity.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*"})
+@Resource(name = RestConstants.VERSION_1 + "/entitymapping", supportedClass = Entity.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*"})
 public class EntityMappingResource extends DelegatingCrudResource<Entity> {
 
     @Override
