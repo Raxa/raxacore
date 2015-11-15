@@ -9,7 +9,7 @@ import org.openmrs.DrugOrder;
 import org.openmrs.Order;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
-import org.openmrs.module.bahmniemrapi.drugogram.contract.Regimen;
+import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.RegimenRow;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.util.LocaleUtility;
@@ -28,9 +28,9 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({LocaleUtility.class})
-public class DrugOrderToRegimenMapperTest {
+public class DrugOrderToTreatmentRegimenMapperTest {
 
-    private DrugOrderToRegimenMapper drugOrderToRegimenMapper;
+    private DrugOrderToTreatmentRegimenMapper drugOrderToTreatmentRegimenMapper;
 
     @Before
     public void setUp() throws Exception {
@@ -38,7 +38,7 @@ public class DrugOrderToRegimenMapperTest {
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
         Context.setUserContext(new UserContext());
-        drugOrderToRegimenMapper = new DrugOrderToRegimenMapper();
+        drugOrderToTreatmentRegimenMapper = new DrugOrderToTreatmentRegimenMapper();
     }
 
     @Test
@@ -50,15 +50,15 @@ public class DrugOrderToRegimenMapperTest {
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetemol);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(2, regimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("Ibeprofen", headerIterator.next().getName());
         assertEquals("Paracetemol", headerIterator.next().getName());
-        assertEquals(3, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertEquals(3, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow startDateRow = rowIterator.next();
         assertEquals(getOnlyDate(now), startDateRow.getDate());
@@ -85,15 +85,15 @@ public class DrugOrderToRegimenMapperTest {
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetemol);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(2, regimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("Ibeprofen", headerIterator.next().getName());
         assertEquals("Paracetemol", headerIterator.next().getName());
-        assertEquals(2, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertEquals(2, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow startDateRow = rowIterator.next();
         assertEquals(getOnlyDate(now), startDateRow.getDate());
@@ -115,15 +115,15 @@ public class DrugOrderToRegimenMapperTest {
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetemol);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(2, regimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("Ibeprofen", headerIterator.next().getName());
         assertEquals("Paracetemol", headerIterator.next().getName());
-        assertEquals(4, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertEquals(4, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow startDateRow = rowIterator.next();
         assertEquals(getOnlyDate(now), startDateRow.getDate());
@@ -155,15 +155,15 @@ public class DrugOrderToRegimenMapperTest {
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetemol);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(2, regimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("Ibeprofen", headerIterator.next().getName());
         assertEquals("Paracetemol", headerIterator.next().getName());
-        assertEquals(4, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertEquals(4, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow startDateRow = rowIterator.next();
         assertEquals(getOnlyDate(now), startDateRow.getDate());
@@ -193,14 +193,14 @@ public class DrugOrderToRegimenMapperTest {
         DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(now).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(ibeprofen);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(1, regimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(1, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("Ibeprofen", headerIterator.next().getName());
-        assertEquals(2, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertEquals(2, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow startDateRow = rowIterator.next();
         assertEquals(getOnlyDate(now), startDateRow.getDate());
@@ -224,17 +224,17 @@ public class DrugOrderToRegimenMapperTest {
         drugOrders.add(lignocaine);
         drugOrders.add(magnesium);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(4, regimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(4, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("Ibeprofen", headerIterator.next().getName());
         assertEquals("Paracetamol", headerIterator.next().getName());
         assertEquals("Lignocaine", headerIterator.next().getName());
         assertEquals("Magnesium", headerIterator.next().getName());
-        assertEquals(4, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertEquals(4, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(now), firstRow.getDate());
@@ -275,15 +275,15 @@ public class DrugOrderToRegimenMapperTest {
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetamol);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(2, regimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("Ibeprofen", headerIterator.next().getName());
         assertEquals("Paracetamol", headerIterator.next().getName());
-        assertEquals(4, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertEquals(4, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(now), firstRow.getDate());
@@ -314,11 +314,11 @@ public class DrugOrderToRegimenMapperTest {
 
         drugOrders.add(ibeprofen);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(0, regimen.getHeaders().size());
-        assertEquals(0, regimen.getRows().size());
+        assertNotNull(treatmentRegimen);
+        assertEquals(0, treatmentRegimen.getHeaders().size());
+        assertEquals(0, treatmentRegimen.getRows().size());
     }
 
     @Test
@@ -330,14 +330,14 @@ public class DrugOrderToRegimenMapperTest {
         drugOrders.add(ibeprofen);
         drugOrders.add(ibeprofenRevised);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(1, regimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(1, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("Ibeprofen", headerIterator.next().getName());
-        assertEquals(3, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertEquals(3, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow startDateRow = rowIterator.next();
         assertEquals(getOnlyDate(now), startDateRow.getDate());
@@ -363,16 +363,16 @@ public class DrugOrderToRegimenMapperTest {
         drugOrders.add(caffeine);
         drugOrders.add(lajvanti);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(3, regimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(3, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("P 500mg", headerIterator.next().getName());
         assertEquals("Caffeine", headerIterator.next().getName());
         assertEquals("Lajvanti", headerIterator.next().getName());
-        assertEquals(5, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertEquals(5, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(now), firstRow.getDate());
@@ -416,15 +416,15 @@ public class DrugOrderToRegimenMapperTest {
         drugOrders.add(revisedPmg);
         drugOrders.add(caffeine);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(2, regimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("Caffeine", headerIterator.next().getName());
         assertEquals("P 500mg", headerIterator.next().getName());
-        assertEquals(4, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertEquals(4, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(now), firstRow.getDate());
@@ -458,15 +458,15 @@ public class DrugOrderToRegimenMapperTest {
         drugOrders.add(revisedPmg);
         drugOrders.add(caffeine);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(2, regimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("P 500mg", headerIterator.next().getName());
         assertEquals("Caffeine", headerIterator.next().getName());
-        assertEquals(4, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertEquals(4, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(now), firstRow.getDate());
@@ -502,15 +502,15 @@ public class DrugOrderToRegimenMapperTest {
         drugOrders.add(caffeine);
         drugOrders.add(revisedCaffeine);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(2, regimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = regimen.getHeaders().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("P 500mg", headerIterator.next().getName());
         assertEquals("Caffeine", headerIterator.next().getName());
-        assertEquals(3, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertEquals(3, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(now), firstRow.getDate());
@@ -535,10 +535,10 @@ public class DrugOrderToRegimenMapperTest {
         DrugOrder pmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(null).withAutoExpireDate(addDays(now, 2)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(pmg);
 
-        Regimen regimen = drugOrderToRegimenMapper.map(drugOrders, null);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
-        assertNotNull(regimen);
-        assertEquals(0, regimen.getHeaders().size());
+        assertNotNull(treatmentRegimen);
+        assertEquals(0, treatmentRegimen.getHeaders().size());
     }
 
     private Date addDays(Date now, int days) {

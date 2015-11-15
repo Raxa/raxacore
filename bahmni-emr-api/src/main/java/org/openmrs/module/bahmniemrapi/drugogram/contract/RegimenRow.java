@@ -13,7 +13,7 @@ public class RegimenRow{
             return o1.drugs.equals(o2.drugs) ? 0 : 1;
         }
     }
-
+    private String month;
     private Date date;
     private Map<String, String> drugs = new HashMap<>();
 
@@ -44,4 +44,13 @@ public class RegimenRow{
     public void addDrugs(String name, String dose) {
         drugs.put(name, dose);
     }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
 }

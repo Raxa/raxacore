@@ -3,7 +3,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.module.bahmniemrapi.drugogram.contract.Regimen;
+import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.RegimenRow;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,12 +33,12 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchDrugsInRegimenTableFormat() throws Exception {
-        Regimen regimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", null);
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", null);
 
-        assertNotNull(regimen);
-        assertEquals(2, regimen.getHeaders().size());
-        assertEquals(3, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        assertEquals(3, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(stringToDate("2005-09-23 08:00:00")), firstRow.getDate());
@@ -58,12 +58,12 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchSpecifiedDrugsInRegimenTableFormat() throws Exception {
-        Regimen regimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", Arrays.asList("Ibuprofen"));
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", Arrays.asList("Ibuprofen"));
 
-        assertNotNull(regimen);
-        assertEquals(1, regimen.getHeaders().size());
-        assertEquals(2, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(1, treatmentRegimen.getHeaders().size());
+        assertEquals(2, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(stringToDate("2005-09-23 08:00:00")), firstRow.getDate());
@@ -78,12 +78,12 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchSpecifiedDrugsWhenWeSpecifyConceptSetNameInRegimenTableFormat() throws Exception {
-        Regimen regimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", Arrays.asList("TB Drugs"));
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", Arrays.asList("TB Drugs"));
 
-        assertNotNull(regimen);
-        assertEquals(1, regimen.getHeaders().size());
-        assertEquals(2, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(1, treatmentRegimen.getHeaders().size());
+        assertEquals(2, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(stringToDate("2005-09-23 09:00:00")), firstRow.getDate());
@@ -96,12 +96,12 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchRevisedDrugsInRegimenTableFormat() throws Exception {
-        Regimen regimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001edc8eb67a", null);
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001edc8eb67a", null);
 
-        assertNotNull(regimen);
-        assertEquals(2, regimen.getHeaders().size());
-        assertEquals(4, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        assertEquals(4, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(stringToDate("2005-09-23 08:00:00")), firstRow.getDate());
@@ -126,12 +126,12 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchDiscontinueDrugsInRegimenTableFormat() throws Exception {
-        Regimen regimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001edxseb67a", null);
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001edxseb67a", null);
 
-        assertNotNull(regimen);
-        assertEquals(2, regimen.getHeaders().size());
-        assertEquals(4, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        assertEquals(4, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(stringToDate("2005-09-23 08:00:00")), firstRow.getDate());
@@ -156,12 +156,12 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchOrdersWhichAreStartedAndStoppedOnSameDate() throws Exception {
-        Regimen regimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001djxseb67a", null);
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001djxseb67a", null);
 
-        assertNotNull(regimen);
-        assertEquals(3, regimen.getHeaders().size());
-        assertEquals(5, regimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = regimen.getRows().iterator();
+        assertNotNull(treatmentRegimen);
+        assertEquals(3, treatmentRegimen.getHeaders().size());
+        assertEquals(5, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(stringToDate("2005-09-23 08:00:00")), firstRow.getDate());
         assertEquals("1000.0", firstRow.getDrugs().get("Ibuprofen"));

@@ -1,11 +1,13 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 
+import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
-import org.bahmni.module.bahmnicore.web.v1_0.mapper.DrugOrderToRegimenMapper;
+import org.bahmni.module.bahmnicore.web.v1_0.mapper.DrugOrderToTreatmentRegimenMapper;
 import org.openmrs.Concept;
 import org.openmrs.Order;
 import org.openmrs.api.ConceptService;
-import org.openmrs.module.bahmniemrapi.drugogram.contract.Regimen;
+import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
+import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimenExtension;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,23 +26,28 @@ import java.util.Set;
 public class DrugOGramController {
 
     private BahmniDrugOrderService bahmniDrugOrderService;
-    private DrugOrderToRegimenMapper drugOrderToRegimenMapper;
+    private DrugOrderToTreatmentRegimenMapper drugOrderToTreatmentRegimenMapper;
     private ConceptService conceptService;
+    private BahmniExtensions bahmniExtensions;
 
     @Autowired
-    public DrugOGramController(BahmniDrugOrderService bahmniDrugOrderService, DrugOrderToRegimenMapper drugOrderToRegimenMapper, ConceptService conceptService) {
+    public DrugOGramController(BahmniDrugOrderService bahmniDrugOrderService, DrugOrderToTreatmentRegimenMapper drugOrderToTreatmentRegimenMapper, ConceptService conceptService, BahmniExtensions bahmniExtensions) {
         this.bahmniDrugOrderService = bahmniDrugOrderService;
-        this.drugOrderToRegimenMapper = drugOrderToRegimenMapper;
+        this.drugOrderToTreatmentRegimenMapper = drugOrderToTreatmentRegimenMapper;
         this.conceptService = conceptService;
+        this.bahmniExtensions = bahmniExtensions;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Regimen getRegimen(@RequestParam(value = "patientUuid", required = true) String patientUuid,
+    public TreatmentRegimen getRegimen(@RequestParam(value = "patientUuid", required = true) String patientUuid,
                               @RequestParam(value = "drugs", required = false) List<String> drugs) throws ParseException {
         Set<Concept> conceptsForDrugs = getConceptsForDrugs(drugs);
         List<Order> allDrugOrders = bahmniDrugOrderService.getAllDrugOrders(patientUuid, conceptsForDrugs);
-        return drugOrderToRegimenMapper.map(allDrugOrders, conceptsForDrugs);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(allDrugOrders, conceptsForDrugs);
+        TreatmentRegimenExtension extension = bahmniExtensions.getTreatmentRegimenExtension();
+        extension.update(treatmentRegimen);
+        return treatmentRegimen;
     }
 
     private Set<Concept> getConceptsForDrugs(List<String> drugs) {

@@ -9,4 +9,9 @@ public class ApplicationDataDirectoryImpl implements ApplicationDataDirectory {
     public File getFile(String relativePath) {
         return new File(OpenmrsUtil.getApplicationDataDirectory() + relativePath);
     }
+
+    @Override
+    public File getFileFromConfig(String relativePath) {
+        return new File(OpenmrsUtil.getApplicationDataDirectory(),"bahmni_config"+ File.separator+relativePath);
+    }
 }

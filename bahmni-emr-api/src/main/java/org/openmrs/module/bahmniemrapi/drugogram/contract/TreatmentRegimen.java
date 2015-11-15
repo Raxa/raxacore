@@ -5,7 +5,7 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.util.*;
 
-public class Regimen {
+public class TreatmentRegimen {
     private Set<EncounterTransaction.Concept> headers = new LinkedHashSet<>();
     private SortedSet<RegimenRow> rows = new TreeSet<>(new RegimenRow.RegimenComparator());
 
