@@ -37,8 +37,8 @@ public class BahmniObservationsToTabularViewMapperTest {
         assertNotNull(pivotTable);
         assertEquals(1, pivotTable.getRows().size());
         assertEquals(conceptNames, pivotTable.getHeaders());
-        assertEquals(170, pivotTable.getRows().get(0).getValue("HEIGHT").getValue());
-        assertEquals(80, pivotTable.getRows().get(0).getValue("WEIGHT").getValue());
+        assertEquals(170, pivotTable.getRows().get(0).getValue("HEIGHT").get(0).getValue());
+        assertEquals(80, pivotTable.getRows().get(0).getValue("WEIGHT").get(0).getValue());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class BahmniObservationsToTabularViewMapperTest {
         assertNotNull(pivotTable);
         assertEquals(1, pivotTable.getRows().size());
         assertEquals(conceptNames, pivotTable.getHeaders());
-        assertEquals(170, pivotTable.getRows().get(0).getValue("HEIGHT").getValue());
+        assertEquals(170, pivotTable.getRows().get(0).getValue("HEIGHT").get(0).getValue());
     }
 
     @Test
@@ -91,10 +91,10 @@ public class BahmniObservationsToTabularViewMapperTest {
         assertNotNull(pivotTable);
         assertEquals(1, pivotTable.getRows().size());
         assertEquals(conceptNames, pivotTable.getHeaders());
-        assertEquals(170, pivotTable.getRows().get(0).getValue("HEIGHT").getValue());
-        assertEquals(80, pivotTable.getRows().get(0).getValue("WEIGHT").getValue());
-        assertEquals(120, pivotTable.getRows().get(0).getValue("Systolic").getValue());
-        assertEquals(90, pivotTable.getRows().get(0).getValue("Diastolic").getValue());
+        assertEquals(170, pivotTable.getRows().get(0).getValue("HEIGHT").get(0).getValue());
+        assertEquals(80, pivotTable.getRows().get(0).getValue("WEIGHT").get(0).getValue());
+        assertEquals(120, pivotTable.getRows().get(0).getValue("Systolic").get(0).getValue());
+        assertEquals(90, pivotTable.getRows().get(0).getValue("Diastolic").get(0).getValue());
     }
 
     @Test
@@ -123,10 +123,10 @@ public class BahmniObservationsToTabularViewMapperTest {
         assertNotNull(pivotTable);
         assertEquals(2, pivotTable.getRows().size());
         assertEquals(conceptNames, pivotTable.getHeaders());
-        assertEquals(170, pivotTable.getRows().get(0).getValue("HEIGHT").getValue());
-        assertEquals(80, pivotTable.getRows().get(0).getValue("WEIGHT").getValue());
-        assertEquals(180, pivotTable.getRows().get(1).getValue("HEIGHT").getValue());
-        assertEquals(90, pivotTable.getRows().get(1).getValue("WEIGHT").getValue());
+        assertEquals(170, pivotTable.getRows().get(0).getValue("HEIGHT").get(0).getValue());
+        assertEquals(80, pivotTable.getRows().get(0).getValue("WEIGHT").get(0).getValue());
+        assertEquals(180, pivotTable.getRows().get(1).getValue("HEIGHT").get(0).getValue());
+        assertEquals(90, pivotTable.getRows().get(1).getValue("WEIGHT").get(0).getValue());
     }
 
     @Test
