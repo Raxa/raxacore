@@ -117,7 +117,7 @@
          creator="1" concept_id="302" voided="0"/>
 
 
-    <obs obs_id="5011" person_id="9898" concept_id="299" encounter_id="5679" obs_datetime="2008-08-01 00:00:00.0"
+    <obs obs_id="5011" person_id="9898" concept_id="299" encounter_id="5679" obs_datetime="2008-08-22 15:09:06.0"
          location_id="1" creator="1" date_created="2008-08-22 14:11:13.0" voided="false"
          uuid="8888cdcb-6a76-47e3-ef2e-2oz51z0pfa9u"/>
 
