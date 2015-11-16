@@ -82,12 +82,13 @@ public class BahmniDrugOrderControllerIT extends BaseIntegrationTest {
         Map<String, Collection<BahmniDrugOrder>> drugOrders = bahmniDrugOrderController.getVisitWisePrescribedAndOtherActiveOrders("1a246ed5-3c11-11de-a0ba-001ed98eb67a", 2, true, new ArrayList());
         assertEquals(2, drugOrders.keySet().size());
 
-        assertEquals(4, drugOrders.get("visitDrugOrders").size());
+        assertEquals(5, drugOrders.get("visitDrugOrders").size());
         Iterator<BahmniDrugOrder> drugOrderIterator = drugOrders.get("visitDrugOrders").iterator();
         assertEquals("92c1bdef-72d4-77d9-8a1f-80411ac77abe", drugOrderIterator.next().getUuid());
         assertEquals("92c1bdef-72d4-77d9-8a1f-80411ac66abe", drugOrderIterator.next().getUuid());
         assertEquals("92c1bdef-72d4-88d9-8a1f-804892f66abf", drugOrderIterator.next().getUuid());
         assertEquals("92c1bdef-72d4-49d9-8a1f-804892f44acf", drugOrderIterator.next().getUuid());
+        assertEquals("92c1bdef-72d4-77d9-8a1f-804892f66aba", drugOrderIterator.next().getUuid());
 
         assertEquals(0, drugOrders.get("Other Active DrugOrders").size());
 
@@ -101,7 +102,7 @@ public class BahmniDrugOrderControllerIT extends BaseIntegrationTest {
     public void shouldReturnDrugOrdersForSpecifiedNumberOfVisits() throws Exception {
         executeDataSet("drugOrdersForVisits.xml");
         List<BahmniDrugOrder> prescribedDrugOrders = bahmniDrugOrderController.getPrescribedDrugOrders("86526ed5-3c11-11de-a0ba-001ed98eb67a", true, 2);
-        assertEquals(4, prescribedDrugOrders.size());
+        assertEquals(5, prescribedDrugOrders.size());
 
         BahmniDrugOrder drugOrder1 = prescribedDrugOrders.get(0);
         assertEquals("d798916f-210d-4c4e-8978-467d1a969f31", drugOrder1.getVisit().getUuid());
@@ -148,6 +149,16 @@ public class BahmniDrugOrderControllerIT extends BaseIntegrationTest {
         assertEquals("Triomune-40", drugOrder4.getDrug().getName());
         assertEquals("2005-09-23 00:00:00.0", drugOrder4.getEffectiveStartDate().toString());
         assertEquals("2005-09-29 00:00:00.0", drugOrder4.getEffectiveStopDate().toString());
+
+        BahmniDrugOrder drugOrder5 = prescribedDrugOrders.get(4);
+        assertEquals("d798916f-210d-4c4e-8978-467d1a969f31", drugOrder5.getVisit().getUuid());
+        assertEquals("FreeTextDrug", drugOrder5.getDrugNonCoded());
+        EncounterTransaction.DosingInstructions dosingInstructions5 = drugOrder5.getDosingInstructions();
+        assertEquals("{\"dose\": \"1.5\", \"doseUnits\": \"Tablet\"}", dosingInstructions5.getAdministrationInstructions());
+        assertEquals(15, drugOrder5.getDuration(), 0);
+        assertEquals(null, drugOrder5.getDrug());
+        assertEquals("2005-09-23 00:00:00.0", drugOrder5.getEffectiveStartDate().toString());
+        assertEquals("2005-09-23 00:00:00.0", drugOrder5.getEffectiveStopDate().toString());
     }
 
 }
