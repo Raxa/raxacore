@@ -5,10 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.pivottable.contract.PivotRow;
 import org.openmrs.module.bahmniemrapi.pivottable.contract.PivotTable;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -39,7 +39,10 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
         assertEquals(rows.get(0).getValue("DATE OF FOOD ASSISTANCE").get(0).getValueAsString(), "2008-08-14 00:00:00");
         assertNotNull(pivotTable.getHeaders());
         assertNotEquals("Should not be empty list", Collections.EMPTY_LIST, pivotTable.getHeaders());
-        assertArrayEquals(new String[]{"FAVORITE FOOD, NON-CODED", "FOOD ASSISTANCE", "DATE OF FOOD ASSISTANCE"}, pivotTable.getHeaders().toArray());
+        HashSet<String> headerNames = getHeaderNames(pivotTable.getHeaders());
+        String[] expectedHeaderNames = {"DATE OF FOOD ASSISTANCE", "FOOD ASSISTANCE", "FAVORITE FOOD, NON-CODED"};
+        HashSet<String> expectedHeaderNamesSet = new HashSet(Arrays.asList(expectedHeaderNames));
+        assertEquals(expectedHeaderNamesSet, headerNames);
     }
 
     @Test
@@ -60,7 +63,10 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
         assertNull("Should not return this concept", rows.get(0).getValue("FAVORITE FOOD, NON-CODED"));
         assertNotNull(pivotTable.getHeaders());
         assertNotEquals("Should not be empty list", Collections.EMPTY_LIST, pivotTable.getHeaders());
-        assertArrayEquals(pivotTable.getHeaders().toArray(), new String[]{"FOOD ASSISTANCE", "DATE OF FOOD ASSISTANCE"});
+        HashSet<String> headerNames = getHeaderNames(pivotTable.getHeaders());
+        String[] expectedHeaderNames = {"FOOD ASSISTANCE", "DATE OF FOOD ASSISTANCE"};
+        HashSet<String> expectedHeaderNamesSet = new HashSet(Arrays.asList(expectedHeaderNames));
+        assertEquals(expectedHeaderNamesSet, headerNames);
     }
 
     @Test
@@ -76,7 +82,19 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
         assertEquals(2, rows.size());
         assertNotNull(pivotTable.getHeaders());
         assertNotEquals("Should not be empty list", Collections.EMPTY_LIST, pivotTable.getHeaders());
-        assertArrayEquals(new String[]{"FAVORITE FOOD, NON-CODED", "FOOD ASSISTANCE", "DATE OF FOOD ASSISTANCE"}, pivotTable.getHeaders().toArray());
+        HashSet<String> headerNames = getHeaderNames(pivotTable.getHeaders());
+        String[] expectedHeaderNames = {"DATE OF FOOD ASSISTANCE", "FOOD ASSISTANCE", "FAVORITE FOOD, NON-CODED"};
+        HashSet<String> expectedHeaderNamesSet = new HashSet(Arrays.asList(expectedHeaderNames));
+        assertEquals(expectedHeaderNamesSet, headerNames);
+    }
+
+    private HashSet<String> getHeaderNames(Set<EncounterTransaction.Concept> headers) {
+        HashSet<String> headerNames = new HashSet<>();
+
+        for (EncounterTransaction.Concept header : headers)
+            headerNames.add(header.getName());
+
+        return headerNames;
     }
 
     @Test
