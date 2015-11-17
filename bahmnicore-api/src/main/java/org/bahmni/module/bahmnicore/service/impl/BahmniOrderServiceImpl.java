@@ -9,6 +9,7 @@ import org.openmrs.Concept;
 import org.openmrs.Order;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.order.contract.BahmniOrder;
+import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +21,17 @@ import java.util.List;
 @Service
 public class BahmniOrderServiceImpl implements BahmniOrderService {
 
+    private ConceptMapper conceptMapper;
     private OrderService orderService;
     private BahmniObsService bahmniObsService;
     private static final Logger log = Logger.getLogger(BahmniOrderServiceImpl.class);
 
     @Autowired
-    public BahmniOrderServiceImpl(OrderService orderService, BahmniObsService bahmniObsService) {
+    public BahmniOrderServiceImpl(OrderService orderService, BahmniObsService bahmniObsService, ConceptMapper conceptMapper) {
         this.orderService = orderService;
         this.bahmniObsService = bahmniObsService;
+        this.conceptMapper = conceptMapper;
+
     }
 
     @Override
@@ -79,7 +83,7 @@ public class BahmniOrderServiceImpl implements BahmniOrderService {
         bahmniOrder.setOrderTypeUuid(order.getOrderType().getUuid());
         bahmniOrder.setOrderUuid(order.getUuid());
         bahmniOrder.setProvider(order.getOrderer().getName());
-        bahmniOrder.setConceptName(order.getConcept().getName().getName());
+        bahmniOrder.setConcept(conceptMapper.map(order.getConcept()));
         bahmniOrder.setHasObservations(CollectionUtils.isNotEmpty(bahmniObservations));
         bahmniOrder.setCommentToFulfiller(order.getCommentToFulfiller());
         if(includeObs) {

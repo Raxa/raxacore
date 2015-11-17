@@ -8,11 +8,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import static org.mockito.Matchers.any;
 import org.mockito.Mock;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.order.contract.BahmniOrder;
+import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.ObservationMapper;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 import org.openmrs.util.LocaleUtility;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -41,6 +44,7 @@ public class BahmniOrderServiceImplTest {
     private OrderType orderType;
     private Provider provider;
     private Patient patient;
+    private EncounterTransaction.Concept  encounterTransactionconcept;
 
     @Mock
     ObsDao obsDao;
@@ -54,6 +58,9 @@ public class BahmniOrderServiceImplTest {
     private OrderService orderService;
     @Mock
     private ConceptService conceptService;
+    @Mock
+    private ConceptMapper conceptMapper;
+
 
     @Before
     public void setUp() {
@@ -61,7 +68,14 @@ public class BahmniOrderServiceImplTest {
 
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
-        bahmniOrderService = new BahmniOrderServiceImpl(orderService, bahmniObsService);
+        concept= new org.bahmni.test.builder.ConceptBuilder().withUUID("otUUID").build();
+        encounterTransactionconcept = new EncounterTransaction.Concept();
+        encounterTransactionconcept.setName("Concept for order");
+        encounterTransactionconcept.setConceptClass("otClass");
+        encounterTransactionconcept.setDataType("N/A");
+        encounterTransactionconcept.setUuid("otUUID");
+        when(conceptMapper.map(any(Concept.class))).thenReturn(encounterTransactionconcept);
+        bahmniOrderService = new BahmniOrderServiceImpl(orderService, bahmniObsService, conceptMapper);
 
     }
 
@@ -112,7 +126,6 @@ public class BahmniOrderServiceImplTest {
         patient = new Patient();
         patient.setId(1);
         patient.setUuid(personUUID);
-        concept= new Concept();
         orderType = new OrderType();
         provider = new Provider();
         conceptName = new ConceptName();
@@ -122,8 +135,6 @@ public class BahmniOrderServiceImplTest {
         provider.setId(2);
         provider.setName("Superman");
         order.setOrderer(provider);
-        conceptName.setName("someConceptName");
-        concept.setNames(Arrays.asList(conceptName));
         order.setConcept(concept);
         order.setId(1);
         order.setPatient(patient);

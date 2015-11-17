@@ -5,6 +5,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObser
 
 import java.util.Collection;
 import java.util.Date;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BahmniOrder {
@@ -13,7 +14,7 @@ public class BahmniOrder {
     private String orderTypeUuid;
     private String provider;
     private Date orderDate;
-    private String conceptName;
+    private EncounterTransaction.Concept concept;
     private Boolean hasObservations;
     private Collection<BahmniObservation> bahmniObservations;
     private String commentToFulfiller;
@@ -78,12 +79,12 @@ public class BahmniOrder {
         this.orderDate = orderDate;
     }
 
-    public String getConceptName() {
-        return conceptName;
+    public EncounterTransaction.Concept getConcept() {
+        return concept;
     }
 
-    public void setConceptName(String concept) {
-        this.conceptName = concept;
+    public void setConcept(EncounterTransaction.Concept concept) {
+        this.concept = concept;
     }
 
     public String getCommentToFulfiller() {
