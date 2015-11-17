@@ -46,7 +46,7 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
         List<EncounterTransaction.DrugOrder> drugOrders = bahmniEncounterTransaction.getDrugOrders();
         Map<String,List<EncounterTransaction.DrugOrder>> sameDrugNameOrderLists = new LinkedHashMap<>();
         for (EncounterTransaction.DrugOrder drugOrder : drugOrders) {
-            String name = drugOrder.getDrug().getName();
+            String name = drugOrder.getDrugNonCoded()==null ? drugOrder.getDrug().getName() : drugOrder.getDrugNonCoded();
             if(sameDrugNameOrderLists.get(name) == null){
                 sameDrugNameOrderLists.put(name, new ArrayList<EncounterTransaction.DrugOrder>());
             }

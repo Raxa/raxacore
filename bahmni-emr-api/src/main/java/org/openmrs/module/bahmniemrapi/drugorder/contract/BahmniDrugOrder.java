@@ -50,6 +50,10 @@ public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
         return drugOrder.getDosingInstructionType();
     }
 
+    public String getDrugNonCoded() {
+        return drugOrder.getDrugNonCoded();
+    }
+
     public EncounterTransaction.Drug getDrug() {
         return drugOrder.getDrug();
     }

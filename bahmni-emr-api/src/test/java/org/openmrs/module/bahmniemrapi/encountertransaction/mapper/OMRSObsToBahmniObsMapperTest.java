@@ -4,13 +4,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Person;
+import org.openmrs.User;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.bahmniemrapi.builder.*;
+import org.openmrs.module.bahmniemrapi.builder.ConceptBuilder;
+import org.openmrs.module.bahmniemrapi.builder.EncounterBuilder;
+import org.openmrs.module.bahmniemrapi.builder.ObsBuilder;
+import org.openmrs.module.bahmniemrapi.builder.PersonBuilder;
+import org.openmrs.module.bahmniemrapi.builder.VisitBuilder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.ObservationMapper;
-import org.openmrs.module.emrapi.encounter.mapper.DrugMapper1_11;
+import org.openmrs.module.emrapi.encounter.mapper.DrugMapper1_12;
 import org.openmrs.module.emrapi.encounter.mapper.UserMapper;
 import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 import org.openmrs.test.TestUtil;
@@ -51,7 +60,7 @@ public class OMRSObsToBahmniObsMapperTest {
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
         when(Context.getAuthenticatedUser()).thenReturn(authenticatedUser);
         when(observationTypeMatcher.getObservationType(any(Obs.class))).thenReturn(ObservationTypeMatcher.ObservationType.OBSERVATION);
-        observationMapper = new ObservationMapper(new ConceptMapper(), new DrugMapper1_11(), new UserMapper());
+        observationMapper = new ObservationMapper(new ConceptMapper(), new DrugMapper1_12(), new UserMapper());
     }
 
     @Test
