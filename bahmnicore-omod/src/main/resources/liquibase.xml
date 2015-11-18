@@ -3691,5 +3691,26 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-201511180200" author="Swathi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from concept where concept_id in (select concept_id from concept_name where name='DrugOther' and concept_name_type='FULLY_SPECIFIED');
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding 'DrugOther' concept.</comment>
+        <sql>
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'DrugOther', 'DrugOther', 'N/A', 'Misc', false);
+        </sql>
+    </changeSet>
 
+    <changeSet id="bahmni-core-201511180201" author="Swathi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from global_property where property='drugOrder.drugOther' and property_value not like ""</sqlCheck>
+        </preConditions>
+        <comment>Setting 'DrugOther' concept uuid as value for 'drugOrder.drugOther' globalProperty.</comment>
+        <sql>
+            select uuid into @uuid from concept where concept_id in (select concept_id from concept_name where name='DrugOther' and concept_name_type='FULLY_SPECIFIED');
+            UPDATE global_property set property_value = @uuid where property='drugOrder.drugOther';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
