@@ -3713,4 +3713,24 @@
             UPDATE global_property set property_value = @uuid where property='drugOrder.drugOther';
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201518111152" author="JP,Sravanthi" context="rel0.77">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Bahmni-User'</sqlCheck>
+        </preConditions>
+        <comment>Add bahmni user role</comment>
+        <sql>
+            INSERT INTO role (role, description) VALUES ('Bahmni-User', 'Ability to login and save user preferences');
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201518111156" author="JP,Sravanthi" context="rel0.77">
+        <comment>Add privileges bahmni user</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Bahmni-User', 'Get Users');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Bahmni-User', 'Get Providers');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Bahmni-User', 'Add Users');
+            INSERT INTO role_privilege (role, privilege) VALUES ('Bahmni-User', 'Edit Users');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
