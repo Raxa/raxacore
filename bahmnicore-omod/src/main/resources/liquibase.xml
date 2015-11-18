@@ -3741,12 +3741,12 @@
             UPDATE global_property set description='Fully Specified name of the Concept Set created as Reasons for death' where property='concept.reasonForDeath';
     <changeSet id="bahmni-core-201511180931" author="Vinay">
         <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from privilege where privilege='View Reports'</sqlCheck>
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege='app:reports'</sqlCheck>
         </preConditions>
         <sql>
             set @uuid = '';
             select uuid() into @uuid;
-            insert into privilege(privilege, description, uuid) values('View Reports', 'View Reports', @uuid);
+            insert into privilege(privilege, description, uuid) values('app:reports', 'View Reports', @uuid);
         </sql>
     </changeSet>
 </databaseChangeLog>
