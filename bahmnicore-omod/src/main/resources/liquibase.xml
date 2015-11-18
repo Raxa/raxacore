@@ -2059,6 +2059,56 @@
             insert into privilege(privilege, description, uuid) values('app:clinical:consultationTab', 'View Consultation tab', @uuid);
         </sql>
     </changeSet>
+
+    <changeSet id="hack-201511121343" author="goodrich">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege='View Providers'</sqlCheck>
+        </preConditions>
+        <comment>Workaround for adding missing View Providers privlege</comment>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            insert into privilege(privilege, description, uuid) values('View Providers', 'Able to view Provider', @uuid);
+        </sql>
+    </changeSet>
+
+    <changeSet id="hack-201511121200" author="goodrich">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege='View Visit Types'</sqlCheck>
+        </preConditions>
+        <comment>Workaround for adding missing View Providers privlege</comment>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            insert into privilege(privilege, description, uuid) values('View Visit Types', 'Able to view Visit Types', @uuid);
+        </sql>
+    </changeSet>
+
+    <changeSet id="hack-201511121201" author="goodrich">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege='View Visits'</sqlCheck>
+        </preConditions>
+        <comment>Workaround for adding missing View Providers privlege</comment>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            insert into privilege(privilege, description, uuid) values('View Visits', 'Able to view Visits', @uuid);
+        </sql>
+    </changeSet>
+
+    <changeSet id="hack-201511121245" author="goodrich">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege='View Visit Attribute Types'</sqlCheck>
+        </preConditions>
+        <comment>Workaround for adding missing View Visit Attribute Types privlege</comment>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            insert into privilege(privilege, description, uuid) values('View Visit Attribute Types', 'Able to view Visit Attribute Types', @uuid);
+        </sql>
+    </changeSet>
+
+
     <changeSet id="bahmni-core-201410101446" author="banka">
         <comment>Add privileges for clinical read only</comment>
         <sql>
