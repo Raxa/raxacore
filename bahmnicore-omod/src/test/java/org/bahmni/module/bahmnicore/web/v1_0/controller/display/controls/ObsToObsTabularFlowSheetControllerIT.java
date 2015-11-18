@@ -5,10 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.pivottable.contract.PivotRow;
 import org.openmrs.module.bahmniemrapi.pivottable.contract.PivotTable;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 

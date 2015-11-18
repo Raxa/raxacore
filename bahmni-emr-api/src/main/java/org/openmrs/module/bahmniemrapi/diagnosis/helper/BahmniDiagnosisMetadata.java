@@ -30,31 +30,16 @@ public class BahmniDiagnosisMetadata {
 
     private EncounterTransactionMapper encounterTransactionMapper;
 
-    private Concept bahmniInitialDiagnosis;
-
-    private Concept bahmniDiagnosisRevised;
-
-    private Concept bahmniDiagnosisStatus;
-
     public Concept getBahmniInitialDiagnosis() {
-        if (bahmniInitialDiagnosis == null) {
-            bahmniInitialDiagnosis = conceptService.getConceptByName(BAHMNI_INITIAL_DIAGNOSIS);
-        }
-        return bahmniInitialDiagnosis;
+        return conceptService.getConceptByName(BAHMNI_INITIAL_DIAGNOSIS);
     }
 
     public Concept getBahmniDiagnosisRevised() {
-        if (bahmniDiagnosisRevised == null) {
-            bahmniDiagnosisRevised = conceptService.getConceptByName(BAHMNI_DIAGNOSIS_REVISED);
-        }
-        return bahmniDiagnosisRevised;
+        return conceptService.getConceptByName(BAHMNI_DIAGNOSIS_REVISED);
     }
 
     public Concept getBahmniDiagnosisStatus() {
-        if (bahmniDiagnosisStatus == null) {
-            bahmniDiagnosisStatus = conceptService.getConceptByName(BAHMNI_DIAGNOSIS_STATUS);
-        }
-        return bahmniDiagnosisStatus;
+        return conceptService.getConceptByName(BAHMNI_DIAGNOSIS_STATUS);
     }
 
     @Autowired
