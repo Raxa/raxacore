@@ -3694,7 +3694,7 @@
     <changeSet id="bahmni-core-201511180200" author="Swathi">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
-                select count(*) from concept where concept_id in (select concept_id from concept_name where name='DrugOther' and concept_name_type='FULLY_SPECIFIED');
+                select count(*) from concept where concept_id in (select concept_id from concept_name where name='DrugOther' and concept_name_type='FULLY_SPECIFIED')
             </sqlCheck>
         </preConditions>
         <comment>Adding 'DrugOther' concept.</comment>
@@ -3705,7 +3705,7 @@
 
     <changeSet id="bahmni-core-201511180201" author="Swathi">
         <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from global_property where property='drugOrder.drugOther' and property_value not like ""</sqlCheck>
+            <sqlCheck expectedResult="0">select count(*) from global_property where property='drugOrder.drugOther' and property_value not like ""  and property_value is not NULL</sqlCheck>
         </preConditions>
         <comment>Setting 'DrugOther' concept uuid as value for 'drugOrder.drugOther' globalProperty.</comment>
         <sql>
