@@ -271,4 +271,25 @@ public class OrderDaoImpl implements OrderDao {
         return criteria.list();
 
     }
+
+    @Override
+    public Map<String, DrugOrder> getDiscontinuedDrugOrders(List<DrugOrder> drugOrders) {
+
+        if(drugOrders == null || drugOrders.size()==0)
+            return new HashMap<>();
+
+        Session currentSession = getCurrentSession();
+
+        Query query = currentSession.createQuery("select d1 from DrugOrder d1 where d1.action = :discontinued and  d1.previousOrder in :drugOrderList");
+        query.setParameter("discontinued", Order.Action.DISCONTINUE);
+        query.setParameterList("drugOrderList", drugOrders);
+        List<DrugOrder> discontinuedDrugOrders=query.list();
+
+        Map<String,DrugOrder> discontinuedDrugOrderMap=new HashMap<>();
+       for(DrugOrder discontinuedDrugOrder: discontinuedDrugOrders){
+           discontinuedDrugOrderMap.put(discontinuedDrugOrder.getPreviousOrder().getOrderNumber(),discontinuedDrugOrder);
+       }
+
+        return discontinuedDrugOrderMap;
+    }
 }

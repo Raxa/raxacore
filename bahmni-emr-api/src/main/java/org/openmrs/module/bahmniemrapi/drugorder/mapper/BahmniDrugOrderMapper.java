@@ -4,6 +4,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.DrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.OrderMapper;
 import org.openmrs.module.emrapi.encounter.mapper.OrderMapper1_12;
 
@@ -11,18 +12,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class BahmniDrugOrderMapper {
 
     private BahmniProviderMapper providerMapper;
     private OrderAttributesMapper orderAttributesMapper;
+    private ConceptMapper conceptMapper;
 
-    public BahmniDrugOrderMapper(BahmniProviderMapper providerMapper, OrderAttributesMapper orderAttributesMapper) {
+    public BahmniDrugOrderMapper(BahmniProviderMapper providerMapper, OrderAttributesMapper orderAttributesMapper, ConceptMapper conceptMapper) {
         this.providerMapper = providerMapper;
         this.orderAttributesMapper = orderAttributesMapper;
+        this.conceptMapper = conceptMapper;
     }
 
-    public List<BahmniDrugOrder> mapToResponse(List<DrugOrder> activeDrugOrders, Collection<BahmniObservation> orderAttributeObs) throws IOException {
+    public List<BahmniDrugOrder> mapToResponse(List<DrugOrder> activeDrugOrders,
+                                               Collection<BahmniObservation> orderAttributeObs,
+                                               Map<String, DrugOrder> discontinuedOrderMap) throws IOException {
 
         OrderMapper drugOrderMapper = new OrderMapper1_12();
 
@@ -34,6 +40,12 @@ public class BahmniDrugOrderMapper {
             bahmniDrugOrder.setVisit(openMRSDrugOrder.getEncounter().getVisit());
             bahmniDrugOrder.setProvider(providerMapper.map(openMRSDrugOrder.getOrderer()));
             bahmniDrugOrder.setCreatorName(openMRSDrugOrder.getCreator().getPersonName().toString());
+
+            if(discontinuedOrderMap.containsKey(openMRSDrugOrder.getOrderNumber())){
+                bahmniDrugOrder.setOrderReasonText(discontinuedOrderMap.get(openMRSDrugOrder.getOrderNumber()).getOrderReasonNonCoded());
+                bahmniDrugOrder.setOrderReasonConcept(conceptMapper.map(discontinuedOrderMap.get(openMRSDrugOrder.getOrderNumber()).getOrderReason()));
+            }
+
             bahmniDrugOrders.add(bahmniDrugOrder);
         }
         if(CollectionUtils.isNotEmpty(orderAttributeObs)){

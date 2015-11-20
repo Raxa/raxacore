@@ -5,6 +5,7 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface OrderDao {
@@ -33,4 +34,6 @@ public interface OrderDao {
     List<Order> getOrdersForVisitUuid(String visitUuid, String orderTypeUuid);
 
     List<Order> getAllOrders(Patient patientByUuid, OrderType drugOrderTypeUuid, Set<Concept> conceptsForDrugs);
+
+    Map<String,DrugOrder> getDiscontinuedDrugOrders(List<DrugOrder> drugOrders);
 }

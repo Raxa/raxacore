@@ -133,6 +133,10 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         return orderDao.getPrescribedDrugOrders(visitUuids);
     }
 
+    public Map<String,DrugOrder> getDiscontinuedDrugOrders(List<DrugOrder> drugOrders){
+        return orderDao.getDiscontinuedDrugOrders(drugOrders);
+    }
+
     @Override
     public List<DrugOrder> getPrescribedDrugOrdersForConcepts(Patient patient, Boolean includeActiveVisit, List<Visit> visits, List<Concept> concepts) {
         if(concepts.isEmpty() || concepts == null){

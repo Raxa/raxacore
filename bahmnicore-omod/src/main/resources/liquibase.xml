@@ -3770,4 +3770,30 @@
             insert into entity_mapping_type(name ,uuid ,entity1_type , entity2_type , date_created) values('loginlocation_visittype', uuid() , 'org.openmrs.Location' , 'org.openmrs.VisitType' , '2015-11-25 18:54:23.0');
         </sql>
     </changeSet>
+    <changeSet id="bahmni-clinical-201511251240" author="Shireesha">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_name where name in ('Stopped Order Reason','Refused To Take')  and concept_name_type='FULLY_SPECIFIED'</sqlCheck>
+        </preConditions>
+        <comment>Adding Stopped Order Reason and answers</comment>
+        <sql>
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+            set @stopped_order_reason_concept_id = 0;
+
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Stopped Order Reason', 'Stopped Order Reason', 'Coded', 'Question', false);
+
+            select concept_id into @stopped_order_reason_concept_id from concept_name where name = 'Stopped Order Reason' and concept_name_type = 'FULLY_SPECIFIED';
+
+            set @concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+            set @refused_to_take_concept_id = 0;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Refused To Take', 'Refused To Take', 'N/A', 'Misc', false);
+            select concept_id into @refused_to_take_concept_id from concept_name where name = 'Refused To Take' and concept_name_type = 'FULLY_SPECIFIED';
+            call add_concept_answer(@stopped_order_reason_concept_id, @refused_to_take_concept_id, 1);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

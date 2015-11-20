@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.bahmni.module.bahmnicore.BaseIntegrationTest;
+import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.junit.Test;
 import org.openmrs.*;
@@ -216,8 +217,6 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         Order secondOrder = Context.getOrderService().getOrder(16);
         assertThat(allOrdersForVisits, hasItems(firstOrder, secondOrder));
     }
-
-
 
     private boolean visitWithUuidExists(String uuid, List<Visit> visits) {
         boolean exists = false;

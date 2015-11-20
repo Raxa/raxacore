@@ -6,6 +6,7 @@ import org.openmrs.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface BahmniDrugOrderService {
@@ -21,4 +22,6 @@ public interface BahmniDrugOrderService {
     DrugOrderConfigResponse getConfig();
 
     List<Order> getAllDrugOrders(String patientUuid, Set<Concept> conceptsForDrugs);
+
+    Map<String,DrugOrder> getDiscontinuedDrugOrders(List<DrugOrder> drugOrders);
 }
