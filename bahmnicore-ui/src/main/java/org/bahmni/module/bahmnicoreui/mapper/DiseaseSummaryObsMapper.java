@@ -23,7 +23,7 @@ public class DiseaseSummaryObsMapper {
                 constructLeafObservationsFromConceptSet(bahmniObservation, observationsFromConceptSet);
                 for (BahmniObservation leafObservation : observationsFromConceptSet) {
                     String startDateTime = getGroupByDate(leafObservation, groupBy);
-                    String conceptName = leafObservation.getConceptNameToDisplay();
+                        String conceptName = leafObservation.getConcept().getName();
                     String observationValue = computeValueForLeafObservation(leafObservation, observationsByEncounter, diseaseSummaryMap);
                     diseaseSummaryMap.put(startDateTime, conceptName, observationValue, leafObservation.isAbnormal(), false);
                 }

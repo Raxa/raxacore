@@ -36,14 +36,12 @@ public class ConceptHelperTest {
 
     @Test
     public void shouldGetLeafConcepts() {
-        List<String> obsConcepts = Arrays.asList("Vitals");
         Concept weightConcept = new ConceptBuilder().withName("Weight").withClass("N/A").build();
         Concept heightConcept = new ConceptBuilder().withName("Height").withClass("N/A").build();
         Concept vitalsConcept = new ConceptBuilder().withName("Vitals").withSetMember(heightConcept).withSetMember(weightConcept).withClass("N/A").build();
         vitalsConcept.setSet(true);
-        when(conceptService.getConceptByName("Vitals")).thenReturn(vitalsConcept);
 
-        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(obsConcepts, withoutAttributes);
+        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(Arrays.asList(vitalsConcept), withoutAttributes);
 
         assertEquals(2, leafConceptNames.size());
         Iterator<ConceptDetails> leafConceptIterator = leafConceptNames.iterator();
@@ -53,14 +51,12 @@ public class ConceptHelperTest {
 
     @Test
     public void shouldGetLeafConceptsWithUnits() {
-        List<String> obsConcepts = Arrays.asList("Vitals");
         Concept weightConcept = new ConceptNumericBuilder().withName("Weight").withClass("N/A").build();
         Concept heightConcept = new ConceptNumericBuilder().withName("Height").withClass("N/A").withUnit("Cms").build();
         Concept vitalsConcept = new ConceptNumericBuilder().withName("Vitals").withSetMember(heightConcept).withSetMember(weightConcept).withClass("N/A").build();
         vitalsConcept.setSet(true);
-        when(conceptService.getConceptByName("Vitals")).thenReturn(vitalsConcept);
 
-        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(obsConcepts, withoutAttributes);
+        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(Arrays.asList(vitalsConcept), withoutAttributes);
 
         assertEquals(2, leafConceptNames.size());
         Iterator<ConceptDetails> leafConceptIterator = leafConceptNames.iterator();
@@ -72,14 +68,12 @@ public class ConceptHelperTest {
 
     @Test
     public void shouldGetLeafConceptsWithUnitsLowAbsoluteAndHighAbsolute() {
-        List<String> obsConcepts = Arrays.asList("Vitals");
         Concept weightConcept = new ConceptNumericBuilder().withName("Weight").withClass("N/A").withLowNormal(50.0).withHiNormal(100.0).build();
         Concept heightConcept = new ConceptNumericBuilder().withName("Height").withClass("N/A").withUnit("Cms").withLowNormal(140.0).withHiNormal(180.0).build();
         Concept vitalsConcept = new ConceptNumericBuilder().withName("Vitals").withSetMember(heightConcept).withSetMember(weightConcept).withClass("N/A").build();
         vitalsConcept.setSet(true);
-        when(conceptService.getConceptByName("Vitals")).thenReturn(vitalsConcept);
 
-        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(obsConcepts, withoutAttributes);
+        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(Arrays.asList(vitalsConcept), withoutAttributes);
 
         assertEquals(2, leafConceptNames.size());
         Iterator<ConceptDetails> leafConceptIterator = leafConceptNames.iterator();
@@ -97,14 +91,10 @@ public class ConceptHelperTest {
 
     @Test
     public void shouldGetConceptDetailsFromConceptList() {
-        List<String> conceptNames = Arrays.asList("Height", "Weight");
         Concept weightConcept = new ConceptNumericBuilder().withName("Weight").withClass("N/A").withLowNormal(10.3).withHiNormal(11.1).build();
         Concept heightConcept = new ConceptNumericBuilder().withName("Height").withClass("N/A").withUnit("Cms").build();
 
-        when(conceptService.getConceptByName("Weight")).thenReturn(weightConcept);
-        when(conceptService.getConceptByName("Height")).thenReturn(heightConcept);
-
-        Set<ConceptDetails> conceptDetailsList = conceptHelper.getConceptDetails(conceptNames);
+        Set<ConceptDetails> conceptDetailsList = conceptHelper.getConceptDetails(Arrays.asList(heightConcept, weightConcept));
 
 
         assertEquals(2, conceptDetailsList.size());

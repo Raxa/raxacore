@@ -4,6 +4,7 @@ import org.bahmni.module.referencedata.contract.ConceptDetails;
 import org.bahmni.module.referencedata.helper.ConceptHelper;
 import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptService;
+import org.openmrs.Concept;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -42,7 +44,8 @@ public class ConceptsController extends BaseRestController {
     @RequestMapping(value = "/leafConcepts", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<Set<ConceptDetails>> getLeafConcepts(@RequestParam(value = "conceptName", required = true) String conceptName) {
-        Set<ConceptDetails> leafConceptDetails = conceptHelper.getLeafConceptDetails(Arrays.asList(conceptName), true);
+        List<Concept> concepts = conceptHelper.getConceptsForNames(Arrays.asList(conceptName));
+        Set<ConceptDetails> leafConceptDetails = conceptHelper.getLeafConceptDetails(concepts, true);
         return  new ResponseEntity<>(leafConceptDetails, HttpStatus.OK);
     }
 }

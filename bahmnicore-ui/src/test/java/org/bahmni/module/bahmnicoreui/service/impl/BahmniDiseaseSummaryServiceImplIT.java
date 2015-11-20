@@ -111,10 +111,10 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
 
         obsForVisit = obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2008-08-18")));
         assertEquals(2, obsForVisit.size());
-        assertEquals("120.0", obsForVisit.get("Systolic").getValue());
-        assertTrue(obsForVisit.get("Systolic").getAbnormal());
-        assertEquals("40.0", obsForVisit.get("Diastolic").getValue());
-        assertTrue(obsForVisit.get("Diastolic").getAbnormal());
+        assertEquals("120.0", obsForVisit.get("Systolic Data").getValue());
+        assertTrue(obsForVisit.get("Systolic Data").getAbnormal());
+        assertEquals("40.0", obsForVisit.get("Diastolic Data").getValue());
+        assertTrue(obsForVisit.get("Diastolic Data").getAbnormal());
     }
 
     @Test

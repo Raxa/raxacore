@@ -43,7 +43,7 @@ public class DrugOrderDiseaseSummaryAggregator {
         if (!concepts.isEmpty()) {
             List<DrugOrder> drugOrders = drugOrderService.getPrescribedDrugOrdersForConcepts(patient, true, getVisits(patient, diseaseDataParams), concepts);
             diseaseSummaryData.addTabularData(diseaseSummaryDrugOrderMapper.map(drugOrders, diseaseDataParams.getGroupBy()));
-            diseaseSummaryData.addConceptDetails(conceptHelper.getConceptDetails(diseaseDataParams.getDrugConcepts()));
+            diseaseSummaryData.addConceptDetails(conceptHelper.getConceptDetails(concepts));
         }
         return diseaseSummaryData;
     }

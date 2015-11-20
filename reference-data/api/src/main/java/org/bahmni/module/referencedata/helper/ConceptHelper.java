@@ -46,11 +46,10 @@ public  class ConceptHelper {
         return concepts;
     }
 
-    public Set<ConceptDetails> getLeafConceptDetails(List<String> obsConcepts, boolean withoutAttributes) {
+    public Set<ConceptDetails> getLeafConceptDetails(List<Concept> obsConcepts, boolean withoutAttributes) {
         if(obsConcepts != null && !obsConcepts.isEmpty()){
-            Set<ConceptDetails> leafConcepts = new LinkedHashSet<>();
-            for (String conceptName : obsConcepts) {
-                Concept concept = conceptService.getConceptByName(conceptName);
+                Set<ConceptDetails> leafConcepts = new LinkedHashSet<>();
+            for (Concept concept : obsConcepts) {
                 addLeafConcepts(concept, null, leafConcepts, withoutAttributes);
             }
             return leafConcepts;
@@ -108,12 +107,11 @@ public  class ConceptHelper {
                 ETObsToBahmniObsMapper.DURATION_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName());
     }
 
-    public Set<ConceptDetails> getConceptDetails(List<String> conceptNames) {
+    public Set<ConceptDetails> getConceptDetails(List<Concept> conceptNames) {
         LinkedHashSet<ConceptDetails> conceptDetails = new LinkedHashSet<>();
-        for (String conceptName : conceptNames) {
-            Concept conceptByName = conceptService.getConceptByName(conceptName);
-            if (conceptByName != null){
-                conceptDetails.add(createConceptDetails(conceptByName));
+        for (Concept concept : conceptNames) {
+            if (concept != null){
+                conceptDetails.add(createConceptDetails(concept));
             }
         }
         return conceptDetails;

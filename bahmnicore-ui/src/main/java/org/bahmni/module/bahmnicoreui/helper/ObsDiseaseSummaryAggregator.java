@@ -33,14 +33,14 @@ public class ObsDiseaseSummaryAggregator {
 
     public DiseaseSummaryData aggregate(Patient patient, DiseaseDataParams queryParams) {
         DiseaseSummaryData diseaseSummaryData = new DiseaseSummaryData();
-        Collection<BahmniObservation> bahmniObservations = fetchBahmniObservations(patient, queryParams);
-        constructDiseaseSummaryData(bahmniObservations, queryParams.getObsConcepts(), queryParams.getGroupBy(), diseaseSummaryData);
+        List<Concept> concepts = conceptHelper.getConceptsForNames(queryParams.getObsConcepts());
+        Collection<BahmniObservation> bahmniObservations = fetchBahmniObservations(patient, queryParams, concepts);
+        constructDiseaseSummaryData(bahmniObservations, concepts, queryParams.getGroupBy(), diseaseSummaryData);
         return diseaseSummaryData;
     }
 
-    private Collection<BahmniObservation> fetchBahmniObservations(Patient patient, DiseaseDataParams queryParams) {
+    private Collection<BahmniObservation> fetchBahmniObservations(Patient patient, DiseaseDataParams queryParams, List<Concept> concepts) {
         if (StringUtils.isBlank(queryParams.getVisitUuid())) {
-            List<Concept> concepts = conceptHelper.getConceptsForNames(queryParams.getObsConcepts());
             if (!concepts.isEmpty()) {
                 return bahmniObsService.observationsFor(patient.getUuid(), concepts, queryParams.getNumberOfVisits(), null, false, null);
             }
@@ -59,8 +59,8 @@ public class ObsDiseaseSummaryAggregator {
         return bahmniObservations;
     }
 
-    private void constructDiseaseSummaryData(Collection<BahmniObservation> bahmniObservations, List<String> conceptNames, String groupBy, DiseaseSummaryData diseaseSummaryData) {
+    private void constructDiseaseSummaryData(Collection<BahmniObservation> bahmniObservations, List<Concept> concepts, String groupBy, DiseaseSummaryData diseaseSummaryData) {
         diseaseSummaryData.setTabularData(diseaseSummaryObsMapper.map(bahmniObservations, groupBy));
-        diseaseSummaryData.addConceptDetails(conceptHelper.getLeafConceptDetails(conceptNames, false));
+        diseaseSummaryData.addConceptDetails(conceptHelper.getLeafConceptDetails(concepts, false));
     }
 }
