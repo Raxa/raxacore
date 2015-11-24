@@ -59,6 +59,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
         BahmniObservation bahmniObservation = createBahmniObservation(obsUuid, "obs-value", createConcept("96408258-000b-424e-af1a-403919332938", "FAVORITE FOOD, NON-CODED"), obsDate, null);
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         bahmniEncounterTransaction.addObservation(bahmniObservation);
+        bahmniEncounterTransaction.setVisitTypeUuid("c0c579b0-8e59-401d-8a4a-976a0b183593");
 
         bahmniEncounterTransaction.setEncounterTypeUuid("07000be2-26b6-4cce-8b40-866d8435b613");
         bahmniEncounterTransaction.setPatientUuid(patientUuid);
@@ -70,6 +71,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
         assertEquals(1, encounterTransaction.getObservations().size());
         assertEquals(bahmniObservation.getValue(), encounterTransaction.getObservations().iterator().next().getValue());
         assertEquals(obsUuid, encounterTransaction.getObservations().iterator().next().getUuid());
+        assertEquals("OPD", bahmniEncounterTransaction.getVisitType());
     }
 
     @Test
