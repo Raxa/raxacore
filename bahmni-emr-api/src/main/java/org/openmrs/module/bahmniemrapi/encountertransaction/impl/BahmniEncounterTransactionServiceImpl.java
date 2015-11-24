@@ -5,6 +5,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.*;
 import org.openmrs.api.*;
+import org.openmrs.module.bahmniemrapi.BahmniEmrAPIException;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPostSaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPreSaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
@@ -70,6 +71,8 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
             }
         }
 
+        setVisitType(bahmniEncounterTransaction);
+
         if (StringUtils.isBlank(bahmniEncounterTransaction.getEncounterTypeUuid())) {
             setEncounterType(bahmniEncounterTransaction);
         }
@@ -97,6 +100,20 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
             updatedEncounterTransaction = saveCommand.save(bahmniEncounterTransaction,currentEncounter, updatedEncounterTransaction);
         }
         return bahmniEncounterTransactionMapper.map(updatedEncounterTransaction, includeAll);
+    }
+
+    private void setVisitType(BahmniEncounterTransaction bahmniEncounterTransaction) {
+        if(!StringUtils.isBlank(bahmniEncounterTransaction.getVisitTypeUuid())){
+            bahmniEncounterTransaction.setVisitType(getVisitTypeByUuid(bahmniEncounterTransaction.getVisitTypeUuid()).getName());
+        }
+    }
+
+    private VisitType getVisitTypeByUuid(String uuid){
+        VisitType visitType = visitService.getVisitTypeByUuid(uuid);
+        if(visitType == null){
+            throw new BahmniEmrAPIException("Cannot find visit type with UUID "+ visitType);
+        }
+        return visitType;
     }
 
     private void setVisitTypeUuid(VisitIdentificationHelper visitIdentificationHelper, BahmniEncounterTransaction bahmniEncounterTransaction) {
