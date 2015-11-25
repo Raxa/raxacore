@@ -3764,4 +3764,10 @@
             insert into privilege(privilege, description, uuid) values('app:reports', 'View Reports', @uuid);
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201511250237" author="Hanisha">
+        <comment>Adding new loginLocationToVisitTypeMapping in entityMappingType table</comment>
+        <sql>
+            insert into entity_mapping_type(name ,uuid ,entity1_type , entity2_type , date_created) values('loginlocation_visittype', uuid() , 'org.openmrs.Location' , 'org.openmrs.VisitType' , '2015-11-25 18:54:23.0');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
