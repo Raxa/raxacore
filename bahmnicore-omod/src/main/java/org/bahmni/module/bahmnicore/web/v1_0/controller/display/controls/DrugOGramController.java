@@ -6,8 +6,9 @@ import org.bahmni.module.bahmnicore.web.v1_0.mapper.DrugOrderToTreatmentRegimenM
 import org.openmrs.Concept;
 import org.openmrs.Order;
 import org.openmrs.api.ConceptService;
+import org.openmrs.module.bahmniemrapi.drugogram.contract.BaseTableExtension;
+import org.openmrs.module.bahmniemrapi.drugogram.contract.TableExtension;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
-import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimenExtension;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,7 +46,7 @@ public class DrugOGramController {
         Set<Concept> conceptsForDrugs = getConceptsForDrugs(drugs);
         List<Order> allDrugOrders = bahmniDrugOrderService.getAllDrugOrders(patientUuid, conceptsForDrugs);
         TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(allDrugOrders, conceptsForDrugs);
-        TreatmentRegimenExtension extension = bahmniExtensions.getTreatmentRegimenExtension();
+        BaseTableExtension<TreatmentRegimen> extension = bahmniExtensions.getExtension("TreatmentRegimenExtension.groovy");
         extension.update(treatmentRegimen);
         return treatmentRegimen;
     }

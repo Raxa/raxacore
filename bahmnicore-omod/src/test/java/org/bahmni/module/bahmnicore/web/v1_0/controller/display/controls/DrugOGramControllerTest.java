@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.Order;
 import org.openmrs.api.ConceptService;
-import org.openmrs.module.bahmniemrapi.drugogram.contract.BaseTreatmentRegimenExtension;
+import org.openmrs.module.bahmniemrapi.drugogram.contract.BaseTableExtension;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -38,7 +38,7 @@ public class DrugOGramControllerTest {
     @Before
     public void setUp() throws Exception {
         drugOGramController = new DrugOGramController(bahmniDrugOrderService, drugOrderToTreatmentRegimenMapper, conceptService,bahmniExtensions);
-        when(bahmniExtensions.getTreatmentRegimenExtension()).thenReturn(new BaseTreatmentRegimenExtension());
+        when(bahmniExtensions.getExtension(anyString())).thenReturn(new BaseTableExtension());
     }
 
     @Test

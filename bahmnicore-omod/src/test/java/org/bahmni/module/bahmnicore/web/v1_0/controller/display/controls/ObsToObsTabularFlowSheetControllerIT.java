@@ -49,7 +49,8 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
                 new Parameter("conceptSet", "FOOD CONSTRUCT"),
                 new Parameter("groupByConcept", "FOOD ASSISTANCE"),
                 new Parameter("conceptNames", "FOOD ASSISTANCE"),
-                new Parameter("conceptNames", "DATE OF FOOD ASSISTANCE")
+                new Parameter("conceptNames", "DATE OF FOOD ASSISTANCE"),
+                new Parameter("name", null)
         )), PivotTable.class);
 
         List<PivotRow> rows = pivotTable.getRows();

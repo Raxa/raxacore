@@ -2,10 +2,12 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
+import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.BahmniObservationsToTabularViewMapper;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
+import org.openmrs.module.bahmniemrapi.drugogram.contract.BaseTableExtension;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.pivottable.contract.PivotTable;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
@@ -29,16 +31,18 @@ public class ObsToObsTabularFlowSheetController {
     private ConceptService conceptService;
     private BahmniObservationsToTabularViewMapper bahmniObservationsToTabularViewMapper;
     private ConceptMapper conceptMapper;
+    private BahmniExtensions bahmniExtensions;
 
     private static Logger logger = Logger.getLogger(ObsToObsTabularFlowSheetController.class);
 
     @Autowired
     public ObsToObsTabularFlowSheetController(BahmniObsService bahmniObsService, ConceptService conceptService,
-                                              BahmniObservationsToTabularViewMapper bahmniObservationsToTabularViewMapper) {
+                                              BahmniObservationsToTabularViewMapper bahmniObservationsToTabularViewMapper, BahmniExtensions bahmniExtensions) {
         this.bahmniObsService = bahmniObsService;
         this.conceptService = conceptService;
         this.bahmniObservationsToTabularViewMapper = bahmniObservationsToTabularViewMapper;
         this.conceptMapper = new ConceptMapper();
+        this.bahmniExtensions = bahmniExtensions;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -50,7 +54,8 @@ public class ObsToObsTabularFlowSheetController {
             @RequestParam(value = "groupByConcept", required = true) String groupByConcept,
             @RequestParam(value = "conceptNames", required = false) List<String> conceptNames,
             @RequestParam(value = "initialCount", required = false) Integer initialCount,
-            @RequestParam(value = "latestCount", required = false) Integer latestCount) {
+            @RequestParam(value = "latestCount", required = false) Integer latestCount,
+            @RequestParam(value = "name", required = false) String groovyExtension) {
 
         Concept rootConcept = conceptService.getConceptByName(conceptSet);
         Concept childConcept = conceptService.getConceptByName(groupByConcept);
@@ -68,7 +73,10 @@ public class ObsToObsTabularFlowSheetController {
             leafConcepts.add(conceptMapper.map(childConcept));
         }
         bahmniObservations = filterDataByCount(bahmniObservations, initialCount, latestCount);
-        return bahmniObservationsToTabularViewMapper.constructTable(leafConcepts, bahmniObservations);
+        PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(leafConcepts, bahmniObservations);
+        BaseTableExtension<PivotTable> extension = bahmniExtensions.getExtension(groovyExtension + ".groovy");
+        extension.update(pivotTable, patientUuid);
+        return pivotTable;
     }
 
     private Collection<BahmniObservation> filterDataByCount(Collection<BahmniObservation> bahmniObservations, Integer initialCount, Integer latestCount) {
