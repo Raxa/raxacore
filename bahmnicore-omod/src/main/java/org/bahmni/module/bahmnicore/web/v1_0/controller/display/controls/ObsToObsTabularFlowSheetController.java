@@ -73,7 +73,7 @@ public class ObsToObsTabularFlowSheetController {
             leafConcepts.add(conceptMapper.map(childConcept));
         }
         bahmniObservations = filterDataByCount(bahmniObservations, initialCount, latestCount);
-        PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(leafConcepts, bahmniObservations);
+        PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(leafConcepts, bahmniObservations, groupByConcept);
         BaseTableExtension<PivotTable> extension = bahmniExtensions.getExtension(groovyExtension + ".groovy");
         extension.update(pivotTable, patientUuid);
         return pivotTable;
