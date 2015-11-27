@@ -63,7 +63,7 @@ public class ObsToObsTabularFlowSheetController {
 
         Collection<BahmniObservation> bahmniObservations = bahmniObsService.observationsFor(patientUuid, rootConcept, childConcept, numberOfVisits);
 
-        Set<EncounterTransaction.Concept> leafConcepts = new HashSet<>();
+        Set<EncounterTransaction.Concept> leafConcepts = new LinkedHashSet<>();
         if (CollectionUtils.isEmpty(conceptNames)) {
             getAllLeafConcepts(rootConcept, leafConcepts);
         } else {
