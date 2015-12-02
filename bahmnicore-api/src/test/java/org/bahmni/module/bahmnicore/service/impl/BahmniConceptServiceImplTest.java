@@ -8,7 +8,9 @@ import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -36,9 +38,9 @@ public class BahmniConceptServiceImplTest {
     }
 
     @Test
-    public void searchByQuestionShouldDelegateToConceptDaoToSearchConcepts() {
+    public void searchByQuestionShouldUseBahmniConceptDaoToSearchConcepts() {
         Concept questionConcept = new Concept();
-        when(conceptService.getConceptByName(QUESTION)).thenReturn(questionConcept);
+        when(bahmniConceptDao.getConceptByFullySpecifiedName(QUESTION)).thenReturn(questionConcept);
         Concept resultConcept = new Concept();
         when(bahmniConceptDao.searchByQuestion(questionConcept, SEARCH_QUERY)).thenReturn(Arrays.asList(resultConcept));
 
@@ -47,4 +49,8 @@ public class BahmniConceptServiceImplTest {
         assertThat(concepts.iterator().next().getUuid(), is(equalTo(resultConcept.getUuid())));
     }
 
+    @Test(expected = ConceptNotFoundException.class)
+    public void searchByQuestionShouldThrowExceptionWhenQuestionConceptNotFound() throws Exception{
+        bahmniConceptService.searchByQuestion("this concept doesn't exist","headache");
+    }
 }

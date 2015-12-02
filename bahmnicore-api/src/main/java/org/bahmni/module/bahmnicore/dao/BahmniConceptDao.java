@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface BahmniConceptDao {
     Collection<Concept> searchByQuestion(Concept questionConcept, String searchQuery);
+    Concept getConceptByFullySpecifiedName(String fullySpecifiedConceptName);
 }
