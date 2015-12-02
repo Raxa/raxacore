@@ -1,11 +1,13 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
+import org.openmrs.Order;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniOrderAttribute;
@@ -95,6 +97,53 @@ public class BahmniDrugOrderController extends BaseRestController {
                                                          @RequestParam(value = "includeActiveVisit", required = false) Boolean includeActiveVisit,
                                                          @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits) {
         return getPrescribedOrders(patientUuid, includeActiveVisit, numberOfVisits);
+    }
+
+
+    @RequestMapping(value = baseUrl + "/drugOrderDetails", method = RequestMethod.GET)
+    @ResponseBody
+    public List<BahmniDrugOrder> getDrugOrderDetails(@RequestParam(value = "patientUuid") String patientUuid,
+                                                         @RequestParam(value = "drugNames", required = false) List<String> drugNames) {
+        Set<Concept> conceptsForDrugs = getConceptsForDrugs(drugNames);
+        List<DrugOrder> drugOrders = new ArrayList<>();
+
+        if (CollectionUtils.isEmpty(conceptsForDrugs)) {
+            return new ArrayList<>();
+        }
+
+        List<Order> allDrugOrders = drugOrderService.getAllDrugOrders(patientUuid, conceptsForDrugs);
+        for (Order allDrugOrder : allDrugOrders) {
+            drugOrders.add((DrugOrder) allDrugOrder);
+        }
+
+        Map<String, DrugOrder> drugOrderMap = drugOrderService.getDiscontinuedDrugOrders(drugOrders);
+        try {
+            return new BahmniDrugOrderMapper(new BahmniProviderMapper(), getOrderAttributesMapper(), conceptMapper).mapToResponse(drugOrders, null, drugOrderMap);
+        } catch (IOException e) {
+            logger.error("Could not parse dosing instructions", e);
+            throw new RuntimeException("Could not parse dosing instructions", e);
+
+        }
+    }
+
+    private Set<Concept> getConceptsForDrugs(List<String> drugs) {
+        if (drugs == null) return null;
+        Set<Concept> drugConcepts = new HashSet<>();
+        for (String drug : drugs) {
+            Concept concept = conceptService.getConceptByName(drug);
+            getDrugs(concept, drugConcepts);
+        }
+        return drugConcepts;
+    }
+
+    private void getDrugs(Concept concept, Set<Concept> drugConcepts) {
+        if (concept.isSet()) {
+            for (Concept drugConcept : concept.getSetMembers()) {
+                getDrugs(drugConcept, drugConcepts);
+            }
+        } else {
+            drugConcepts.add(concept);
+        }
     }
 
     private Collection<Concept> getOrdAttributeConcepts() {

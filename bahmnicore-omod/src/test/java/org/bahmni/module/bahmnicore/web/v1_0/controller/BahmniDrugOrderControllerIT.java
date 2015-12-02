@@ -160,4 +160,23 @@ public class BahmniDrugOrderControllerIT extends BaseIntegrationTest {
         assertEquals("2005-09-23 00:00:00.0", drugOrder5.getEffectiveStartDate().toString());
         assertEquals("2005-09-23 00:00:00.0", drugOrder5.getEffectiveStopDate().toString());
     }
+
+
+    @Test
+    public void shouldNotReturnDrugOrdersIfDrugNamesAreNotPresent() throws Exception {
+        executeDataSet("allDrugOrdersForConcepts.xml");
+        List<BahmniDrugOrder> prescribedDrugOrders = bahmniDrugOrderController.getDrugOrderDetails("1a246ed5-3c11-3456-wenh-001ed98eb612", null);
+        assertEquals(prescribedDrugOrders.size(), 0);
+    }
+
+    @Test
+    public void shouldReturnAllDrugOrdersForGivenDrugNames() throws Exception {
+        executeDataSet("allDrugOrdersForConcepts.xml");
+        List<String> drugNames = new ArrayList<>();
+        drugNames.add("Acidul");
+        drugNames.add("Mepron");
+        List<BahmniDrugOrder> prescribedDrugOrders = bahmniDrugOrderController.getDrugOrderDetails("1a246ed5-3c11-3456-wenh-001ed98eb612", drugNames);
+        assertEquals(prescribedDrugOrders.size(), 4);
+    }
+
 }
