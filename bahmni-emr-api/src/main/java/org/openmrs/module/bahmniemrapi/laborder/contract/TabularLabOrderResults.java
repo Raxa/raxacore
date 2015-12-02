@@ -13,9 +13,9 @@ public class TabularLabOrderResults {
     private List<CoordinateValue> values = new ArrayList<>();
 
     @JsonCreator
-    public TabularLabOrderResults(@JsonProperty("dates")List<DateLabel> dates,
-                                  @JsonProperty("orders")List<TestOrderLabel> orders,
-                                  @JsonProperty("values")List<CoordinateValue> values) {
+    public TabularLabOrderResults(@JsonProperty("dates") List<DateLabel> dates,
+                                  @JsonProperty("orders") List<TestOrderLabel> orders,
+                                  @JsonProperty("values") List<CoordinateValue> values) {
         this.dates = dates;
         this.orders = orders;
         this.values = values;
@@ -26,8 +26,8 @@ public class TabularLabOrderResults {
         private String date;
 
         @JsonCreator
-        public DateLabel(@JsonProperty("index")Integer index,
-                         @JsonProperty("date")String date) {
+        public DateLabel(@JsonProperty("index") Integer index,
+                         @JsonProperty("date") String date) {
             this.index = index;
             this.date = date;
         }
@@ -57,11 +57,11 @@ public class TabularLabOrderResults {
         private String testUnitOfMeasurement;
 
         @JsonCreator
-        public TestOrderLabel(@JsonProperty("index")Integer index,
-                              @JsonProperty("testName")String testName,
-                              @JsonProperty("minNormal")Double minNormal,
-                              @JsonProperty("maxNormal")Double maxNormal,
-                              @JsonProperty("testUnitOfMeasurement")String testUnitOfMeasurement) {
+        public TestOrderLabel(@JsonProperty("index") Integer index,
+                              @JsonProperty("testName") String testName,
+                              @JsonProperty("minNormal") Double minNormal,
+                              @JsonProperty("maxNormal") Double maxNormal,
+                              @JsonProperty("testUnitOfMeasurement") String testUnitOfMeasurement) {
             this.index = index;
             this.testName = testName;
             this.minNormal = minNormal;

@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 public class BahmniEncounterTransactionUpdateAdvice implements MethodBeforeAdvice {
 
     private static Logger logger = Logger.getLogger(BahmniEncounterTransactionUpdateAdvice.class);
-    
+
     @Override
     public void before(Method method, Object[] args, Object target) throws Throwable {
         logger.info("BahmniEncounterTransactionUpdateAdvice : Start");
@@ -24,7 +24,7 @@ public class BahmniEncounterTransactionUpdateAdvice implements MethodBeforeAdvic
         try {
             clazz = gcl.parseClass(new File(fileName));
         } catch (FileNotFoundException fileNotFound) {
-            logger.warn("Could not find ObsValueCalculator: " + fileName +". Possible system misconfiguration. ", fileNotFound);
+            logger.warn("Could not find ObsValueCalculator: " + fileName + ". Possible system misconfiguration. ", fileNotFound);
             return;
         }
         logger.info("BahmniEncounterTransactionUpdateAdvice : Using rules in " + clazz.getName());
@@ -32,5 +32,5 @@ public class BahmniEncounterTransactionUpdateAdvice implements MethodBeforeAdvic
         obsValueCalculator.run((BahmniEncounterTransaction) args[0]);
         logger.info("BahmniEncounterTransactionUpdateAdvice : Done");
     }
-    
+
 }

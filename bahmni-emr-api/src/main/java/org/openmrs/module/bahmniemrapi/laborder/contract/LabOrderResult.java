@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 public class LabOrderResult {
+
     private String orderUuid;
     private String action;
     private String accessionUuid;

@@ -14,7 +14,12 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Component
 public class BahmniDiagnosisMetadata {
 
@@ -62,7 +67,7 @@ public class BahmniDiagnosisMetadata {
     public List<BahmniDiagnosisRequest> map(List<EncounterTransaction.Diagnosis> diagnoses, boolean includeAll) {
         List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
         for (EncounterTransaction.Diagnosis diagnosis : diagnoses) {
-            bahmniDiagnoses.add(mapBahmniDiagnosis(diagnosis,null, true, includeAll));
+            bahmniDiagnoses.add(mapBahmniDiagnosis(diagnosis, null, true, includeAll));
         }
         return bahmniDiagnoses;
     }
@@ -73,11 +78,11 @@ public class BahmniDiagnosisMetadata {
         bahmniDiagnosis.setExistingObs(diagnosis.getExistingObs());
 
         Obs diagnosisObsGroup = obsService.getObsByUuid(diagnosis.getExistingObs());
-        if (diagnosisSchemaContainsStatus()){
+        if (diagnosisSchemaContainsStatus()) {
             Obs statusObs = findObs(diagnosisObsGroup, BAHMNI_DIAGNOSIS_STATUS);
-            if (statusObs != null){
+            if (statusObs != null) {
                 Concept statusConcept = statusObs.getValueCoded();
-                if (statusConcept != null ) {
+                if (statusConcept != null) {
                     bahmniDiagnosis.setDiagnosisStatusConcept(new EncounterTransaction.Concept(statusConcept.getUuid(), statusConcept.getName().getName()));
                 }
             }
@@ -90,8 +95,8 @@ public class BahmniDiagnosisMetadata {
             bahmniDiagnosis.setFirstDiagnosis(mapBahmniDiagnosis(initialDiagnosis, null, false, includeAll));
         }
 
-        if(latestDiagnosis!=null){
-            bahmniDiagnosis.setLatestDiagnosis(mapBahmniDiagnosis(latestDiagnosis,null,false,includeAll));
+        if (latestDiagnosis != null) {
+            bahmniDiagnosis.setLatestDiagnosis(mapBahmniDiagnosis(latestDiagnosis, null, false, includeAll));
         }
 
         Obs revisedObs = findObs(diagnosisObsGroup, BAHMNI_DIAGNOSIS_REVISED);

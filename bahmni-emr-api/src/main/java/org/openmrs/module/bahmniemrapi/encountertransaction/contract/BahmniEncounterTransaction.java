@@ -5,17 +5,22 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.openmrs.module.bahmniemrapi.accessionnote.contract.AccessionNote;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
+import org.openmrs.module.bahmniemrapi.encountertransaction.utils.DateUtil;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
-import org.openmrs.module.bahmniemrapi.encountertransaction.utils.DateUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BahmniEncounterTransaction {
 
     private EncounterTransaction encounterTransaction = new EncounterTransaction();
-
     private List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
     private Collection<BahmniObservation> observations = new TreeSet<>();
     private List<AccessionNote> accessionNotes;
@@ -53,83 +58,67 @@ public class BahmniEncounterTransaction {
         encounterTransaction.setVisitUuid(visitUuid);
     }
 
-
     public String getEncounterUuid() {
         return encounterTransaction.getEncounterUuid();
     }
 
-
     public void setEncounterUuid(String encounterUuid) {
         encounterTransaction.setEncounterUuid(encounterUuid);
     }
-
 
     public void addObservation(BahmniObservation observation) {
         observation.setEncounterDateTime(getEncounterDateTime());
         observations.add(observation);
     }
 
-
     public void addOrder(EncounterTransaction.Order order) {
         encounterTransaction.addOrder(order);
     }
 
-
     public void addDrugOrder(EncounterTransaction.DrugOrder drugOrder) {
         encounterTransaction.addDrugOrder(drugOrder);
     }
-
 
     public void addBahmniDiagnosis(BahmniDiagnosisRequest diagnosis) {
         bahmniDiagnoses.add(diagnosis);
         encounterTransaction.addDiagnosis(diagnosis);
     }
 
-
     public Set<EncounterTransaction.Provider> getProviders() {
         return encounterTransaction.getProviders();
     }
-
 
     public void setProviders(Set<EncounterTransaction.Provider> providers) {
         encounterTransaction.setProviders(providers);
     }
 
-
     public EncounterTransaction.Disposition getDisposition() {
         return encounterTransaction.getDisposition();
     }
-
 
     public void setDisposition(EncounterTransaction.Disposition disposition) {
         encounterTransaction.setDisposition(disposition);
     }
 
-
     public String getPatientUuid() {
         return encounterTransaction.getPatientUuid();
     }
-
 
     public String getEncounterTypeUuid() {
         return encounterTransaction.getEncounterTypeUuid();
     }
 
-
     public String getVisitTypeUuid() {
         return encounterTransaction.getVisitTypeUuid();
     }
-
 
     public EncounterTransaction setPatientUuid(String patientUuid) {
         return encounterTransaction.setPatientUuid(patientUuid);
     }
 
-
     public EncounterTransaction setVisitTypeUuid(String visitTypeUuid) {
         return encounterTransaction.setVisitTypeUuid(visitTypeUuid);
     }
-
 
     public EncounterTransaction setEncounterTypeUuid(String encounterTypeUuid) {
         return encounterTransaction.setEncounterTypeUuid(encounterTypeUuid);
@@ -146,11 +135,9 @@ public class BahmniEncounterTransaction {
         this.observations = observations;
     }
 
-
     public List<EncounterTransaction.Order> getOrders() {
         return encounterTransaction.getOrders();
     }
-
 
     public void setOrders(List<EncounterTransaction.Order> orders) {
         encounterTransaction.setOrders(orders);
@@ -161,27 +148,22 @@ public class BahmniEncounterTransaction {
         return encounterTransaction.getDrugOrders();
     }
 
-
     public void setDrugOrders(List<EncounterTransaction.DrugOrder> drugOrders) {
         encounterTransaction.setDrugOrders(drugOrders);
     }
-
 
     @JsonSerialize(using = CustomJsonDateSerializer.class)
     public Date getEncounterDateTime() {
         return encounterTransaction.getEncounterDateTime();
     }
 
-
     public EncounterTransaction setEncounterDateTime(Date encounterDateTime) {
         return encounterTransaction.setEncounterDateTime(encounterDateTime);
     }
 
-
     public String getLocationUuid() {
         return encounterTransaction.getLocationUuid();
     }
-
 
     public EncounterTransaction setLocationUuid(String locationUuid) {
         return encounterTransaction.setLocationUuid(locationUuid);
@@ -192,7 +174,7 @@ public class BahmniEncounterTransaction {
     }
 
     public EncounterTransaction setLocationName(String locationName) {
-         return encounterTransaction.setLocationName(locationName);
+        return encounterTransaction.setLocationName(locationName);
     }
 
     public List<AccessionNote> getAccessionNotes() {
@@ -313,8 +295,8 @@ public class BahmniEncounterTransaction {
     public boolean hasPastDrugOrders() {
         List<EncounterTransaction.DrugOrder> drugOrders = encounterTransaction.getDrugOrders();
 
-        for(EncounterTransaction.DrugOrder drugOrder: drugOrders){
-            if(drugOrder.getScheduledDate().before(this.getEncounterDateTime())){
+        for (EncounterTransaction.DrugOrder drugOrder : drugOrders) {
+            if (drugOrder.getScheduledDate().before(this.getEncounterDateTime())) {
                 return true;
             }
         }
@@ -340,7 +322,7 @@ public class BahmniEncounterTransaction {
     }
 
     private EncounterTransaction.DrugOrder getOldestDrugOrder() {
-        if(getDrugOrders().size()==0)
+        if (getDrugOrders().size() == 0)
             return null;
 
         EncounterTransaction.DrugOrder oldestDrugOrder = getDrugOrders().get(0);

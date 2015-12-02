@@ -9,6 +9,8 @@ import org.springframework.validation.Errors;
 import java.util.Date;
 import java.util.Locale;
 
+import static org.openmrs.module.bahmniemrapi.drugorder.DrugOrderUtil.calculateAutoExpireDate;
+
 public class FlexibleDosingInstructions implements DosingInstructions {
 
     @Override
@@ -39,7 +41,7 @@ public class FlexibleDosingInstructions implements DosingInstructions {
 
     @Override
     public Date getAutoExpireDate(DrugOrder drugOrder) {
-        return drugOrderUtil.calculateAutoExpireDate(drugOrder.getDuration(), drugOrder.getDurationUnits(), drugOrder.getNumRefills(), drugOrder.getEffectiveStartDate(), drugOrder.getFrequency());
+        return calculateAutoExpireDate(drugOrder.getDuration(), drugOrder.getDurationUnits(), drugOrder.getNumRefills(), drugOrder.getEffectiveStartDate(), drugOrder.getFrequency());
     }
 
 }

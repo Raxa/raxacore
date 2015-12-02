@@ -13,44 +13,54 @@ import org.openmrs.module.bahmniemrapi.BaseIntegrationTest;
 import org.openmrs.module.bahmniemrapi.document.contract.Document;
 import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentRequest;
 import org.openmrs.module.bahmniemrapi.document.service.VisitDocumentService;
-import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
 
     public static final String FIRST_LOCATION_UUID = "8d6c993e-c2cc-11de-8d13-0040c6dffd0f";
-    private static final String patientUUID = "86526ed5-3c11-11de-a0ba-001e378eb67a";
-    private final String firstVisitUuid = "ad41fb41-a41a-4ad6-8835-2f59099acf5a";
-    private final String secondVisitUuid = "d794516f-210d-4c4e-8978-467d97969f31";
-    private final String visitTypeUUID = "f01c54cb-2225-471a-9cd5-d348552c337c";
-    private final String firstEncounterTypeUUID = "759799ab-c9a5-435e-b671-77773ada74e4";
-    private final String secondEncounterTypeUUID = "4ee21921-01cc-4720-a6bf-a61a17c4d05b";
-    private final String firstProviderUuid = "331c6bf8-7846-11e3-a96a-0800271c1b75";
-    private final String secondProviderUuid = "331c6bf8-7846-11e3-a96a-0800271c1333";
-    private final String secondLocationUuid = "899c993e-c2cc-11de-8d13-0040c6dffd0f";
-    private final String firstEncounterUuid = "6d0ae386-707a-4629-9850-f15206e63ab0";
-    private final String secondEncounterUuid = "6d0ae386-707a-4629-9850-f15206e63222";
-    private final String conceptUuid = "4f596de5-5caa-11e3-a4c0-0800271c1b75";
+    public static final String patientUUID = "86526ed5-3c11-11de-a0ba-001e378eb67a";
+    public static final String firstVisitUuid = "ad41fb41-a41a-4ad6-8835-2f59099acf5a";
+    public static final String secondVisitUuid = "d794516f-210d-4c4e-8978-467d97969f31";
+    public static final String visitTypeUUID = "f01c54cb-2225-471a-9cd5-d348552c337c";
+    public static final String firstEncounterTypeUUID = "759799ab-c9a5-435e-b671-77773ada74e4";
+    public static final String secondEncounterTypeUUID = "4ee21921-01cc-4720-a6bf-a61a17c4d05b";
+    public static final String firstProviderUuid = "331c6bf8-7846-11e3-a96a-0800271c1b75";
+    public static final String secondProviderUuid = "331c6bf8-7846-11e3-a96a-0800271c1333";
+    public static final String secondLocationUuid = "899c993e-c2cc-11de-8d13-0040c6dffd0f";
+    public static final String firstEncounterUuid = "6d0ae386-707a-4629-9850-f15206e63ab0";
+    public static final String secondEncounterUuid = "6d0ae386-707a-4629-9850-f15206e63222";
+    public static final String conceptUuid = "4f596de5-5caa-11e3-a4c0-0800271c1b75";
 
     @Autowired
-    VisitDocumentService visitDocumentService;
-    @Autowired
-    EncounterService encounterService;
-    @Autowired
-    ObsService obsService;
-    @Autowired
-    VisitService visitService;
+    private VisitDocumentService visitDocumentService;
 
-    VisitDocumentRequest visitDocumentRequest;
+    @Autowired
+    private EncounterService encounterService;
+
+    @Autowired
+    private ObsService obsService;
+
+    @Autowired
+    private VisitService visitService;
+
+    private VisitDocumentRequest visitDocumentRequest;
 
     @Before
     public void setUp() throws Exception {
@@ -274,7 +284,6 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
                 secondProviderUuid, null);
         executeDataSet("visitDocumentData.xml");
 
-//        Date currentDate = new Date(System.currentTimeMillis() - 1000);
         visitDocumentService.upload(visitDocumentRequest);
         Visit visit = visitService.getVisit(1);
         Set<Encounter> encounters = visit.getEncounters();

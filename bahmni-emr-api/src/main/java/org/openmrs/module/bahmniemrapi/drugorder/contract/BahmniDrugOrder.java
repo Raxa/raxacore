@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
+public class BahmniDrugOrder implements Comparable<BahmniDrugOrder> {
 
     private VisitData visit;
     private EncounterTransaction.DrugOrder drugOrder;
@@ -134,8 +134,7 @@ public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
         this.orderAttributes = orderAttributes;
     }
 
-    public String getCreatorName()
-    {
+    public String getCreatorName() {
         return creatorName;
     }
 
@@ -143,18 +142,19 @@ public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
         this.creatorName = creatorName;
     }
 
-    public void setOrderReasonConcept(EncounterTransaction.Concept concept ) {
+    public void setOrderReasonConcept(EncounterTransaction.Concept concept) {
         this.drugOrder.setOrderReasonConcept(concept);
 
     }
-    public void  setOrderReasonText(String orderReasonText) {
+
+    public void setOrderReasonText(String orderReasonText) {
         this.drugOrder.setOrderReasonText(orderReasonText);
     }
 
     @Override
-    public boolean equals(Object otherOrder){
-        if(otherOrder == null)                return false;
-        if(!(otherOrder instanceof BahmniDrugOrder)) return false;
+    public boolean equals(Object otherOrder) {
+        if (otherOrder == null) return false;
+        if (!(otherOrder instanceof BahmniDrugOrder)) return false;
 
         BahmniDrugOrder other = (BahmniDrugOrder) otherOrder;
         return this.getUuid().equals(other.getUuid());

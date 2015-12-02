@@ -5,10 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openmrs.Concept;
-import org.openmrs.Person;
-import org.openmrs.User;
 import org.openmrs.api.ConceptService;
-import org.openmrs.module.bahmniemrapi.builder.PersonBuilder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.AdditionalBahmniObservationFields;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
@@ -16,10 +13,10 @@ import org.openmrs.util.LocaleUtility;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
-import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -31,9 +28,9 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class ETObsToBahmniObsMapperTest {
 
     @Mock
-    ConceptService conceptService;
+    private ConceptService conceptService;
 
-    ETObsToBahmniObsMapper etObsToBahmniObsMapper;
+    private ETObsToBahmniObsMapper etObsToBahmniObsMapper;
 
     @Before
     public void setUp() throws Exception {
@@ -76,11 +73,11 @@ public class ETObsToBahmniObsMapperTest {
         observation2.setUuid("obs2-uuid");
         observation2.setCreator(user2);
         observation2.setConcept(etParentConcept);
-        observation2.setGroupMembers(asList(observation1));
+        observation2.setGroupMembers(Collections.singletonList(observation1));
 
         AdditionalBahmniObservationFields additionalBahmniObservationFields = new AdditionalBahmniObservationFields(encounterUuid, new Date(), new Date(), obsGroupUuid);
 
-        BahmniObservation actualObs = etObsToBahmniObsMapper.map(observation2, additionalBahmniObservationFields, asList(parentConcept), false);
+        BahmniObservation actualObs = etObsToBahmniObsMapper.map(observation2, additionalBahmniObservationFields, Collections.singletonList(parentConcept), false);
 
         assertEquals(person2name, actualObs.getCreatorName());
         assertEquals(encounterUuid, actualObs.getEncounterUuid());

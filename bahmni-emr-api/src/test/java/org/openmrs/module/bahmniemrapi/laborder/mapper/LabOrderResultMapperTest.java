@@ -20,16 +20,16 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class LabOrderResultMapperTest {
-    LabOrderResultMapper labOrderResultMapper;
     @Mock
-    ConceptService conceptService;
+    private ConceptService conceptService;
+
+    private LabOrderResultMapper labOrderResultMapper;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
         labOrderResultMapper = new LabOrderResultMapper(conceptService);
     }
-
 
     @Test
     public void shouldMapTestOrderAndLabOrderResultToObs() throws Exception {
@@ -75,7 +75,7 @@ public class LabOrderResultMapperTest {
         testConcept.setDatatype(coded);
         Order testOrder = new Order(1);
 
-       labOrderResultMapper.map(labOrderResult, testOrder, testConcept);
+        labOrderResultMapper.map(labOrderResult, testOrder, testConcept);
 
     }
 

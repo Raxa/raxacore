@@ -1,13 +1,13 @@
 package org.openmrs.module.bahmniemrapi.diagnosis.contract;
 
 import org.junit.Test;
-import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class BahmniDiagnosisTest {
+
     @Test
     public void isSame_Returns_True_If_CodedAnswers_Are_Same() {
         EncounterTransaction.Concept malariaDiagnosis = new EncounterTransaction.Concept("uuid", "Malaria");

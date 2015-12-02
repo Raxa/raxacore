@@ -24,28 +24,27 @@ public class AccessionNotesMapper {
     private EncounterType validationNotesEncounterType;
 
     public List<AccessionNote> map(EncounterTransaction encounterTransaction) {
-        if(hasValidationNotes(encounterTransaction)){
+        if (hasValidationNotes(encounterTransaction)) {
             String providerName = encounterTransaction.getProviders().iterator().next().getName();
-            return getAccessionNotes(encounterTransaction,providerName);
+            return getAccessionNotes(encounterTransaction, providerName);
         }
         return Collections.emptyList();
     }
 
     private List<AccessionNote> getAccessionNotes(EncounterTransaction encounterTransaction, String providerName) {
-        List<EncounterTransaction.Observation> observations =    encounterTransaction.getObservations();
+        List<EncounterTransaction.Observation> observations = encounterTransaction.getObservations();
         List<AccessionNote> accessionNotes = new ArrayList<>();
         String accessionUuid = getAccessionUuid(observations);
         List<EncounterTransaction.Observation> filteredObservations = new ArrayList<>();
         for (EncounterTransaction.Observation observation : observations) {
-            if(observation.getConcept().getName().equals(ACCESSION_NOTES_CONCEPT_NAME)){
+            if (observation.getConcept().getName().equals(ACCESSION_NOTES_CONCEPT_NAME)) {
                 AccessionNote note = new AccessionNote();
                 note.setAccessionUuid(accessionUuid);
                 note.setText((String) observation.getValue());
                 note.setDateTime(observation.getObservationDateTime());
                 note.setProviderName(providerName);
                 accessionNotes.add(note);
-            }
-            else if(!observation.getConcept().getName().equals(ACCESSION_UUID_CONCEPT_NAME)){
+            } else if (!observation.getConcept().getName().equals(ACCESSION_UUID_CONCEPT_NAME)) {
                 filteredObservations.add(observation);
             }
         }
@@ -55,19 +54,19 @@ public class AccessionNotesMapper {
 
     private String getAccessionUuid(List<EncounterTransaction.Observation> observations) {
         for (EncounterTransaction.Observation observation : observations) {
-            if(observation.getConcept().getName().equals(ACCESSION_UUID_CONCEPT_NAME)){
-                return  (String) observation.getValue();
+            if (observation.getConcept().getName().equals(ACCESSION_UUID_CONCEPT_NAME)) {
+                return (String) observation.getValue();
             }
         }
         return null;
     }
 
     private boolean hasValidationNotes(EncounterTransaction encounterTransaction) {
-        if(validationNotesEncounterType == null){
+        if (validationNotesEncounterType == null) {
             validationNotesEncounterType = encounterService.getEncounterType(VALIDATION_NOTES_ENCOUNTER_TYPE);
-            if(validationNotesEncounterType == null) return false;
+            if (validationNotesEncounterType == null) return false;
         }
-        if(encounterTransaction.getEncounterTypeUuid() != null && encounterTransaction.getEncounterTypeUuid().equals(validationNotesEncounterType.getUuid()) && !encounterTransaction.getObservations().isEmpty()){
+        if (encounterTransaction.getEncounterTypeUuid() != null && encounterTransaction.getEncounterTypeUuid().equals(validationNotesEncounterType.getUuid()) && !encounterTransaction.getObservations().isEmpty()) {
             return true;
         }
         return false;

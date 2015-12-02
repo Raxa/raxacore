@@ -6,11 +6,13 @@ import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.util.Date;
-import java.util.List;
 
 public interface BahmniEncounterTransactionService {
     BahmniEncounterTransaction save(BahmniEncounterTransaction encounterTransaction);
+
     BahmniEncounterTransaction save(BahmniEncounterTransaction encounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate);
+
     EncounterTransaction find(EncounterSearchParameters encounterSearchParameters);
+
     void delete(BahmniEncounterTransaction bahmniEncounterTransaction);
 }

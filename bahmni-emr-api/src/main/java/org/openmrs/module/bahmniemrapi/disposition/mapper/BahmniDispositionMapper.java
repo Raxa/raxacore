@@ -10,7 +10,7 @@ import java.util.Set;
 @Component
 public class BahmniDispositionMapper {
 
-    public BahmniDisposition map(EncounterTransaction.Disposition disposition, Set<EncounterTransaction.Provider> providers, User user){
+    public BahmniDisposition map(EncounterTransaction.Disposition disposition, Set<EncounterTransaction.Provider> providers, User user) {
         BahmniDisposition bahmniDisposition = new BahmniDisposition();
         bahmniDisposition.setAdditionalObs(disposition.getAdditionalObs());
         bahmniDisposition.setCode(disposition.getCode());
