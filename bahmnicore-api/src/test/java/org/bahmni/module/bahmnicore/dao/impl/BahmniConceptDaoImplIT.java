@@ -13,8 +13,7 @@ import java.util.Collection;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
     @Autowired
@@ -79,5 +78,28 @@ public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
         assertThat(result.size(), is(equalTo(2)));
 
         assertThat(result, contains(conceptService.getConcept(902), conceptService.getConcept(903)));
+    }
+
+    @Test
+    public void getConceptByFullySpecifiedNameShouldGetConceptByItsFullySpecifiedName() throws Exception{
+        Concept result = bahmniConceptDao.getConceptByFullySpecifiedName("Acne");
+
+        assertNotNull(result);
+        assertEquals("65230431-2fe5-49fc-b535-ae42bc90979d",result.getUuid());
+    }
+
+    @Test
+    public void getConceptByFullySpecifiedNameShouldBeCaseInsensitive() throws Exception{
+        Concept result = bahmniConceptDao.getConceptByFullySpecifiedName("ACNE");
+
+        assertNotNull(result);
+        assertEquals("65230431-2fe5-49fc-b535-ae42bc90979d",result.getUuid());
+    }
+
+    @Test
+    public void searchByQuestionShouldGetAllConceptAnswersWhenQueryIsEmpty(){
+        Collection<Concept> result = bahmniConceptDao.searchByQuestion(questionConcept, null);
+
+        assertEquals(4,result.size());
     }
 }

@@ -27,7 +27,7 @@ public class BahmniConceptDaoImpl implements BahmniConceptDao {
 
     @Override
     public Collection<Concept> searchByQuestion(Concept questionConcept, String searchQuery) {
-        String[] queryArray = searchQuery.split(WHITE_SPACE);
+        String[] queryArray = (searchQuery==null? "":searchQuery).split(WHITE_SPACE);
         StringBuffer queryStringBuffer = new StringBuffer(BASE_SEARCH_QUERY);
         appendSearchQueriesToBase(queryArray, queryStringBuffer);
 
@@ -45,6 +45,19 @@ public class BahmniConceptDaoImpl implements BahmniConceptDao {
             resultConcepts.add(answer.getAnswerConcept());
         }
         return resultConcepts;
+    }
+
+    @Override
+    public Concept getConceptByFullySpecifiedName(String fullySpecifiedConceptName) {
+        String queryString="select concept " +
+            "from ConceptName as conceptName " +
+            "where conceptName.conceptNameType ='FULLY_SPECIFIED' " +
+            " and lower(conceptName.name)= lower(:fullySpecifiedName)";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryString);
+        query.setString("fullySpecifiedName",fullySpecifiedConceptName);
+
+        List<Concept> concepts = query.list();
+        return concepts.size()>0?concepts.get(0):null;
     }
 
     private void appendSearchQueriesToBase(String[] queryArray, StringBuffer queryStringBuffer) {

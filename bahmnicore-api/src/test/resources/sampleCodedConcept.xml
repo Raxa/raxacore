@@ -25,5 +25,6 @@
 
     <concept concept_id="905" retired="0" datatype_id="4" class_id="1" is_set="false" creator="1" date_created="2013-12-04 11:36:42" uuid="65230431-2fe5-49fc-b535-ae43ec909735" />
     <concept_name concept_id="905" name="Acute Porphyria (voided)" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1007" voided="true" uuid="5d2d4cb7-93fb-3837-80f7-0ebb94092afc" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_name concept_id="905" name="Acne" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1008" voided="true" uuid="5d2d4cb7-93fb-7843-80f7-0ebb94092afc" concept_name_type="SHORT" locale_preferred="0"/>
     <concept_answer concept_answer_id="1005" concept_id="90" answer_concept="905" creator="1" date_created="2008-08-18 12:34:26.0" uuid="a2230431-2fe5-49fc-b535-ae42bc909747"/>
 </dataset>

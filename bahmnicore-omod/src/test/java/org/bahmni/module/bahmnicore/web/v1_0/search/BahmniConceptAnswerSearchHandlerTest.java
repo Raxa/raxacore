@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;

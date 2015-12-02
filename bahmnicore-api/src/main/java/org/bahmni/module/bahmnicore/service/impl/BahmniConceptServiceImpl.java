@@ -6,6 +6,7 @@ import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,8 +40,12 @@ public class BahmniConceptServiceImpl implements BahmniConceptService{
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<Concept> searchByQuestion(String questionConcept, String query) {
-        return bahmniConceptDao.searchByQuestion(conceptByName(questionConcept), query);
+    public Collection<Concept> searchByQuestion(String questionConceptName, String query) {
+        Concept questionConcept = bahmniConceptDao.getConceptByFullySpecifiedName(questionConceptName);
+        if(questionConcept==null){
+            throw new ConceptNotFoundException("Concept '" + questionConceptName + "' not found");
+        }
+        return bahmniConceptDao.searchByQuestion(questionConcept, query);
     }
 
     private EncounterTransaction.Concept convertToContract(Concept concept) {
