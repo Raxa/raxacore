@@ -20,11 +20,17 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @PrepareForTest(LocaleUtility.class)
@@ -33,8 +39,10 @@ public class ObsRelationshipMapperTest {
 
     @Mock
     private ObsRelationService obsrelationService;
+
     @Mock
     private ObservationMapper observationMapper;
+
     @Mock
     private EncounterProviderMapper encounterProviderMapper;
 
@@ -46,7 +54,7 @@ public class ObsRelationshipMapperTest {
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(LocaleUtility.class);
-        PowerMockito.when(LocaleUtility.getLocalesInOrder()).thenReturn(new HashSet<>(Arrays.asList(Locale.getDefault())));
+        PowerMockito.when(LocaleUtility.getLocalesInOrder()).thenReturn(new HashSet<>(Collections.singletonList(Locale.getDefault())));
 
         initMocks(this);
         obsRelationshipMapper = new ObsRelationshipMapper(obsrelationService, encounterProviderMapper, OMRSObsToBahmniObsMapper);
@@ -76,7 +84,7 @@ public class ObsRelationshipMapperTest {
         bahmniObservations.add(targetObservation);
 
         List<BahmniObservation> mappedBahmniObservations = obsRelationshipMapper.map(bahmniObservations, "encounter-uuid");
-        
+
         verify(obsrelationService).getRelationsWhereSourceObsInEncounter("encounter-uuid");
         verify(OMRSObsToBahmniObsMapper, times(1)).map(targetObs);
         assertEquals(2, mappedBahmniObservations.size());

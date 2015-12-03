@@ -1,11 +1,14 @@
 package org.openmrs.module.bahmniemrapi.drugogram.contract;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
-public class RegimenRow{
+public class RegimenRow {
 
-    public static class RegimenComparator implements Comparator<RegimenRow>{
+    public static class RegimenComparator implements Comparator<RegimenRow> {
         @Override
         public int compare(RegimenRow o1, RegimenRow o2) {
             if (o1.date.after(o2.date)) return 1;
@@ -13,6 +16,7 @@ public class RegimenRow{
             return o1.drugs.equals(o2.drugs) ? 0 : 1;
         }
     }
+
     private String month;
     private Date date;
     private Map<String, String> drugs = new HashMap<>();

@@ -2,13 +2,14 @@ package org.openmrs.module.bahmniemrapi.order.contract;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.util.Collection;
 import java.util.Date;
-import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BahmniOrder {
+
     private String orderUuid;
     private String orderNumber;
     private String orderTypeUuid;
@@ -19,7 +20,7 @@ public class BahmniOrder {
     private Collection<BahmniObservation> bahmniObservations;
     private String commentToFulfiller;
 
-    public BahmniOrder(){
+    public BahmniOrder() {
 
     }
 

@@ -11,14 +11,15 @@ import org.openmrs.api.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
 @Component
 public class VisitIdentificationHelper {
+
     private VisitService visitService;
 
     @Autowired
@@ -28,7 +29,7 @@ public class VisitIdentificationHelper {
 
     public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate, Date visitStartDate, Date visitEndDate) {
         Date nextDate = getEndOfTheDay(orderDate);
-        List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, nextDate, orderDate, null, null, true, false);
+        List<Visit> visits = visitService.getVisits(null, Collections.singletonList(patient), null, null, null, nextDate, orderDate, null, null, true, false);
         if (matchingVisitsFound(visits)) {
             Visit matchingVisit = getVisit(orderDate, visits);
             return stretchVisits(orderDate, matchingVisit);
@@ -70,13 +71,12 @@ public class VisitIdentificationHelper {
         for (Visit visit : visits) {
             Date visitStartDatetime = visit.getStartDatetime();
             Date visitStopDatetime = visit.getStopDatetime();
-            if(visitStopDatetime!=null) {
+            if (visitStopDatetime != null) {
                 if ((orderDate.equals(visitStartDatetime) || visitStartDatetime.before(orderDate)) &&
                         (orderDate.equals(visitStopDatetime) || visitStopDatetime.after(orderDate)))
                     return visit;
-            }
-            else {
-                if(orderDate.equals(visitStartDatetime) || visitStartDatetime.before(orderDate))
+            } else {
+                if (orderDate.equals(visitStartDatetime) || visitStartDatetime.before(orderDate))
                     return visit;
             }
         }

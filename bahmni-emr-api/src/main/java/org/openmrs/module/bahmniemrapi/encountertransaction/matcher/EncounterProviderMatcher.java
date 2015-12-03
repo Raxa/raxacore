@@ -35,7 +35,6 @@ public class EncounterProviderMatcher implements BaseEncounterMatcher {
         if (provider == null || encounter.getProvider() == null) {
             return false;
         }
-
         return encounter.getProvider().getId().equals(provider.getPerson().getId());
     }
 }

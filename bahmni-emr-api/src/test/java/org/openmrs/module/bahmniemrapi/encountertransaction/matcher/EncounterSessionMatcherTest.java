@@ -7,13 +7,19 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
-import org.openmrs.*;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterProvider;
+import org.openmrs.EncounterType;
+import org.openmrs.Location;
+import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.Provider;
+import org.openmrs.User;
+import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
-import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.api.impl.EncounterServiceImpl;
-import org.openmrs.module.bahmniemrapi.builder.EncounterBuilder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTypeIdentifier;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.powermock.api.mockito.PowerMockito;
@@ -22,39 +28,57 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Context.class)
 public class EncounterSessionMatcherTest {
+
     @Mock
-    AdministrationService administrationService;
+    private AdministrationService administrationService;
+
     @Mock
-    EncounterTypeIdentifier encounterTypeIdentifier;
+    private EncounterTypeIdentifier encounterTypeIdentifier;
+
     @Mock
-    EncounterServiceImpl encounterService;
-    Set<Provider> providers;
-    Set<EncounterProvider> encounterProviders;
-    User creator;
+    private EncounterServiceImpl encounterService;
+
     @Mock
-    UserContext userContext;
-    EncounterType encounterType;
+    private UserContext userContext;
+
     @Mock
-    Encounter encounter;
-    Person person;
-    Patient patient;
-    Visit visit;
-    EncounterSessionMatcher encounterSessionMatcher;
+    private Encounter encounter;
+
+    private EncounterType encounterType;
+    private Set<Provider> providers;
+    private Set<EncounterProvider> encounterProviders;
+    private User creator;
+    private Person person;
+    private Patient patient;
+    private Visit visit;
+    private EncounterSessionMatcher encounterSessionMatcher;
     private Location location;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         initMocks(this);
         encounterSessionMatcher = new EncounterSessionMatcher(administrationService, encounterTypeIdentifier, encounterService);
         visit = new Visit();
@@ -103,7 +127,7 @@ public class EncounterSessionMatcherTest {
     }
 
     @Test
-    public void shouldReturnEncounterOfDefaultTypeIfEncounterParameterDoesNotHaveEncounterTypeAndLocationIsNotSet(){
+    public void shouldReturnEncounterOfDefaultTypeIfEncounterParameterDoesNotHaveEncounterTypeAndLocationIsNotSet() {
         visit.addEncounter(encounter);
         when(encounter.getProvider()).thenReturn(person);
         EncounterType defaultEncounterType = new EncounterType();
@@ -133,14 +157,14 @@ public class EncounterSessionMatcherTest {
         ArgumentCaptor<Date> dateArgumentCaptor = ArgumentCaptor.forClass(Date.class);
         ArgumentCaptor<Collection> collectionArgumentCaptor = ArgumentCaptor.forClass(Collection.class);
 
-        verify(encounterService).getEncounters(patientArgumentCaptor.capture(), locationArgumentCaptor.capture(), dateArgumentCaptor.capture(), dateArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(),collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), eq(false));
+        verify(encounterService).getEncounters(patientArgumentCaptor.capture(), locationArgumentCaptor.capture(), dateArgumentCaptor.capture(), dateArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), eq(false));
         assertEquals(encounterDate, dateArgumentCaptor.getAllValues().get(1));
         assertEquals(DateUtils.addMinutes(encounterDate, -60), dateArgumentCaptor.getAllValues().get(0));
         assertNotNull(encounterReturned);
     }
 
     @Test
-    public void shouldReturnNullWhenNewlyCreatedVisitIsPassedEncounter(){
+    public void shouldReturnNullWhenNewlyCreatedVisitIsPassedEncounter() {
         EncounterParameters encounterParameters = getEncounterParameters(providers, location);
         encounterParameters.setEncounterDateTime(DateUtils.addDays(new Date(), -10));
 
@@ -150,12 +174,12 @@ public class EncounterSessionMatcherTest {
         ArgumentCaptor<Date> dateArgumentCaptor = ArgumentCaptor.forClass(Date.class);
         ArgumentCaptor<Collection> collectionArgumentCaptor = ArgumentCaptor.forClass(Collection.class);
 
-        verify(encounterService, times(0)).getEncounters(patientArgumentCaptor.capture(), locationArgumentCaptor.capture(), dateArgumentCaptor.capture(), dateArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(),collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), eq(false));
+        verify(encounterService, times(0)).getEncounters(patientArgumentCaptor.capture(), locationArgumentCaptor.capture(), dateArgumentCaptor.capture(), dateArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), collectionArgumentCaptor.capture(), eq(false));
         assertNull(encounterReturned);
     }
 
     @Test
-    public void shouldGetEncounterFromSameDay(){
+    public void shouldGetEncounterFromSameDay() {
         EncounterParameters encounterParameters = getEncounterParameters(providers, location);
         Date encounterDateTime = DateUtils.addMinutes(DateUtils.truncate(new Date(), Calendar.DATE), 15);
         encounterParameters.setEncounterDateTime(encounterDateTime);
@@ -173,7 +197,7 @@ public class EncounterSessionMatcherTest {
     }
 
     @Test
-    public void shouldGetRetrospectiveEncounter(){
+    public void shouldGetRetrospectiveEncounter() {
         EncounterParameters encounterParameters = getEncounterParameters(providers, location);
         encounterParameters.setEncounterDateTime(DateUtils.truncate(new Date(), Calendar.DATE));
 
@@ -190,7 +214,7 @@ public class EncounterSessionMatcherTest {
     }
 
     @Test
-    public void shouldMatchEncounterBasedOnUserWhenNoProviderIsSupplied(){
+    public void shouldMatchEncounterBasedOnUserWhenNoProviderIsSupplied() {
         EncounterParameters encounterParameters = getEncounterParameters(null, location);
         encounterParameters.setEncounterDateTime(DateUtils.truncate(new Date(), Calendar.DATE));
 
@@ -229,8 +253,8 @@ public class EncounterSessionMatcherTest {
         try {
             Encounter encounterReturned = encounterSessionMatcher.findEncounter(null, encounterParameters);
             assertFalse("should not have matched encounter", false);
-        }catch (RuntimeException e){
-           assertEquals("More than one encounter matches the criteria", e.getMessage());
+        } catch (RuntimeException e) {
+            assertEquals("More than one encounter matches the criteria", e.getMessage());
         }
     }
 
@@ -240,7 +264,7 @@ public class EncounterSessionMatcherTest {
     }
 
     private EncounterParameters getEncounterParameters(Set<Provider> providers, Location location, EncounterType encounterType) {
-        EncounterParameters encounterParameters =  EncounterParameters.instance();
+        EncounterParameters encounterParameters = EncounterParameters.instance();
         encounterParameters.setPatient(patient);
         encounterParameters.setEncounterType(encounterType);
         encounterParameters.setProviders(providers);

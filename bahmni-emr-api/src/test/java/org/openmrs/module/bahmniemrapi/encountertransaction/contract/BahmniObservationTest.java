@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class BahmniObservationTest {
+
     private EncounterTransaction.Observation eTObservation;
 
     @Mock
@@ -32,7 +33,7 @@ public class BahmniObservationTest {
     }
 
     @Test
-    public void shouldCreateBahmniObservationFromETObservation(){
+    public void shouldCreateBahmniObservationFromETObservation() {
         Date obsDate = new Date();
         EncounterTransaction.Concept concept = createConcept("concept-uuid", "concept-name");
         Concept conceptFromService = PowerMockito.mock(Concept.class);
@@ -47,24 +48,24 @@ public class BahmniObservationTest {
 
         eTObservation.addGroupMember(createETObservation("child-uuid", "child-value", concept, obsDate));
 
-        BahmniObservation observation =  new ETObsToBahmniObsMapper(conceptService).create(eTObservation, new AdditionalBahmniObservationFields("encounter-uuid",new Date(),null,"obs-Group-Uuid"));
+        BahmniObservation observation = new ETObsToBahmniObsMapper(conceptService).create(eTObservation, new AdditionalBahmniObservationFields("encounter-uuid", new Date(), null, "obs-Group-Uuid"));
         assertEquals("comment", observation.getComment());
         assertEquals("obs-uuid", observation.getUuid());
-        assertEquals("concept-uuid",observation.getConceptUuid());
+        assertEquals("concept-uuid", observation.getConceptUuid());
         assertEquals("order-uuid", observation.getOrderUuid());
-        assertEquals(obsDate,observation.getObservationDateTime());
+        assertEquals(obsDate, observation.getObservationDateTime());
         Collection<BahmniObservation> groupMembers = observation.getGroupMembers();
         assertEquals(1, groupMembers.size());
-        assertEquals("obs-value",observation.getValue());
+        assertEquals("obs-value", observation.getValue());
         assertEquals(true, observation.getVoided());
         assertEquals("void reason", observation.getVoidReason());
-        assertEquals("encounter-uuid",observation.getEncounterUuid());
-        assertEquals("obs-Group-Uuid",observation.getObsGroupUuid());
+        assertEquals("encounter-uuid", observation.getEncounterUuid());
+        assertEquals("obs-Group-Uuid", observation.getObsGroupUuid());
 
         BahmniObservation child = groupMembers.iterator().next();
         assertEquals("child-uuid", child.getUuid());
         assertEquals("child-value", child.getValue());
-        assertEquals("encounter-uuid",child.getEncounterUuid());
+        assertEquals("encounter-uuid", child.getEncounterUuid());
     }
 
     @Test
@@ -86,15 +87,15 @@ public class BahmniObservationTest {
         bahmniObservation.addGroupMember(createBahmniObservation("child-uuid", "child-value", concept, obsDateTime, "parentConceptUuid"));
 
         EncounterTransaction.Observation observation = bahmniObservation.toETObservation();
-        
-        assertEquals("comment",observation.getComment());
-        assertEquals("obs-uuid",observation.getUuid());
-        assertEquals("concept-uuid",observation.getConceptUuid());
-        assertEquals("order-uuid",observation.getOrderUuid());
-        assertEquals(obsDateTime,observation.getObservationDateTime());
-        assertEquals(1,observation.getGroupMembers().size());
-        assertEquals("obs-value",observation.getValue());
-        assertEquals(true,observation.getVoided());
+
+        assertEquals("comment", observation.getComment());
+        assertEquals("obs-uuid", observation.getUuid());
+        assertEquals("concept-uuid", observation.getConceptUuid());
+        assertEquals("order-uuid", observation.getOrderUuid());
+        assertEquals(obsDateTime, observation.getObservationDateTime());
+        assertEquals(1, observation.getGroupMembers().size());
+        assertEquals("obs-value", observation.getValue());
+        assertEquals(true, observation.getVoided());
         assertEquals("void reason", observation.getVoidReason());
         assertEquals("child-uuid", observation.getGroupMembers().get(0).getUuid());
         assertEquals("child-value", observation.getGroupMembers().get(0).getValue());
@@ -108,7 +109,7 @@ public class BahmniObservationTest {
         return concept;
     }
 
-    private BahmniObservation createBahmniObservation(String uuid,String value,EncounterTransaction.Concept concept,Date obsDate, String parentConceptUuid) {
+    private BahmniObservation createBahmniObservation(String uuid, String value, EncounterTransaction.Concept concept, Date obsDate, String parentConceptUuid) {
         BahmniObservation bahmniObservation1 = new BahmniObservation();
         bahmniObservation1.setUuid(uuid);
         bahmniObservation1.setValue(value);
@@ -122,7 +123,7 @@ public class BahmniObservationTest {
         return bahmniObservation1;
     }
 
-    private EncounterTransaction.Observation createETObservation(String uuid,String value,EncounterTransaction.Concept concept,final Date obsDate) {
+    private EncounterTransaction.Observation createETObservation(String uuid, String value, EncounterTransaction.Concept concept, final Date obsDate) {
         EncounterTransaction.Observation etObservation = new EncounterTransaction.Observation();
         etObservation.setUuid(uuid);
         etObservation.setValue(value);

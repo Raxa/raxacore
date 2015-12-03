@@ -4,7 +4,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
-import org.openmrs.Location;
 import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.EncounterService;
@@ -16,12 +15,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 @Component
 public class EncounterSessionMatcher implements BaseEncounterMatcher {
 
     public static final int DEFAULT_SESSION_DURATION_IN_MINUTES = 60;
+
     private AdministrationService adminService;
     private EncounterTypeIdentifier encounterTypeIdentifier;
     private EncounterService encounterService;
@@ -32,7 +37,6 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         this.encounterTypeIdentifier = encounterTypeIdentifier;
         this.encounterService = encounterService;
     }
-
 
     @Override
     public Encounter findEncounter(Visit visit, EncounterParameters encounterParameters) {
@@ -54,11 +58,11 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     private Encounter findMatchingEncounter(Visit visit, EncounterParameters encounterParameters) {
         Collection<Visit> visits = null;
         List<Encounter> matchingEncounters = new ArrayList<>();
-        if(visit != null ) {
-           if(visit.getId() == null){ // To handle new Visit scenario where visit will not be persisted in DB and we get a visit obj (Called from emr-api).
-               return null;
-           }
-           visits = Arrays.asList(visit);
+        if (visit != null) {
+            if (visit.getId() == null) { // To handle new Visit scenario where visit will not be persisted in DB and we get a visit obj (Called from emr-api).
+                return null;
+            }
+            visits = Collections.singletonList(visit);
         }
         if (null == encounterParameters.getEncounterDateTime()) {
             encounterParameters.setEncounterDateTime(new Date());
@@ -66,31 +70,32 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
         encounterParameters.setEncounterType(getEncounterType(encounterParameters));
         List<Encounter> encounters = this.encounterService.getEncounters(encounterParameters.getPatient(), null,
                 getSearchStartDate(encounterParameters.getEncounterDateTime()),
-                encounterParameters.getEncounterDateTime(), new ArrayList(),
-                Arrays.asList(encounterParameters.getEncounterType()),
+                encounterParameters.getEncounterDateTime(), new ArrayList<org.openmrs.Form>(),
+                Collections.singletonList(encounterParameters.getEncounterType()),
                 encounterParameters.getProviders(), null, visits, false);
 
-        if(CollectionUtils.isNotEmpty(encounters)){
+        if (CollectionUtils.isNotEmpty(encounters)) {
             for (Encounter encounter : encounters) {
                 if (CollectionUtils.isNotEmpty(encounterParameters.getProviders())) {
                     matchingEncounters.add(encounter);
                 } else if (CollectionUtils.isEmpty(encounter.getEncounterProviders()) && isSameUser(encounter)) {
-                     matchingEncounters.add(encounter);;
+                    matchingEncounters.add(encounter);
+                    ;
                 }
             }
         }
-        if(matchingEncounters.size() > 1){
+        if (matchingEncounters.size() > 1) {
             throw new RuntimeException("More than one encounter matches the criteria");
         }
-        if(!matchingEncounters.isEmpty()){
+        if (!matchingEncounters.isEmpty()) {
             return matchingEncounters.get(0);
         }
         return null;
     }
 
-    private Date getSearchStartDate(Date endDate){
+    private Date getSearchStartDate(Date endDate) {
         Date startDate = DateUtils.addMinutes(endDate, getSessionDuration() * -1);
-        if (!DateUtils.isSameDay(startDate, endDate)){
+        if (!DateUtils.isSameDay(startDate, endDate)) {
             return DateUtils.truncate(endDate, Calendar.DATE);
         }
         return startDate;

@@ -10,11 +10,12 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class LabOrderResults {
+
     private List<LabOrderResult> results = new ArrayList<>();
     private TabularLabOrderResults tabularResult;
 
     @JsonCreator
-    public LabOrderResults(@JsonProperty("results")List<LabOrderResult> results) {
+    public LabOrderResults(@JsonProperty("results") List<LabOrderResult> results) {
         this.results = results;
         this.tabularResult = this.tabulate();
     }
@@ -29,14 +30,14 @@ public class LabOrderResults {
 
         for (LabOrderResult result : results) {
             LocalDate orderDate = new LocalDate(result.getAccessionDateTime());
-            if(dateMap.get(orderDate) == null) {
+            if (dateMap.get(orderDate) == null) {
                 dateMap.put(orderDate, new TabularLabOrderResults.DateLabel(dateLabelIndexCounter++, orderDate.toString("dd-MMM-yyyy")));
             }
-            if(orderMap.get(result.getTestName()) == null) {
+            if (orderMap.get(result.getTestName()) == null) {
                 orderMap.put(result.getTestName(), new TabularLabOrderResults.TestOrderLabel(testOrderLabelCounter++, result.getTestName(), result.getMinNormal(), result.getMaxNormal(), result.getTestUnitOfMeasurement()));
             }
 
-            if(result.getResult() != null || result.getReferredOut() == true || result.getUploadedFileName() != null) {
+            if (result.getResult() != null || result.getReferredOut() || result.getUploadedFileName() != null) {
                 TabularLabOrderResults.CoordinateValue coordinateValue = new TabularLabOrderResults.CoordinateValue();
                 coordinateValue.setDateIndex(dateMap.get(orderDate).getIndex());
                 coordinateValue.setTestOrderIndex(orderMap.get(result.getTestName()).getIndex());

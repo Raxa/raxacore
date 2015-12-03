@@ -9,7 +9,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterProvider;
+import org.openmrs.Obs;
+import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.disposition.contract.BahmniDisposition;
@@ -19,10 +23,15 @@ import org.openmrs.module.emrapi.encounter.EncounterProviderMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 public class BahmniDispositionServiceTest {
@@ -36,10 +45,6 @@ public class BahmniDispositionServiceTest {
     @Mock
     private ObservationTypeMatcher observationTypeMatcher;
 
-    private Visit visit;
-
-    private BahmniDispositionService bahmniDispositionService;
-
     @Mock
     private EncounterProviderMapper encounterProviderMapper;
 
@@ -49,11 +54,15 @@ public class BahmniDispositionServiceTest {
     @Mock
     private PatientService patientService;
 
+    private Visit visit;
+
+    private BahmniDispositionService bahmniDispositionService;
+
     private Obs height = null;
 
 
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         Concept heightConcept = new ConceptBuilder().withName("HEIGHT").build();
@@ -67,13 +76,13 @@ public class BahmniDispositionServiceTest {
 
         visit = new VisitBuilder().withEncounter(encounter).build();
 
-        bahmniDispositionService = new BahmniDispositionServiceImpl(visitService,dispositionMapper,observationTypeMatcher,
-                encounterProviderMapper,bahmniDispositionMapper, patientService);
+        bahmniDispositionService = new BahmniDispositionServiceImpl(visitService, dispositionMapper, observationTypeMatcher,
+                encounterProviderMapper, bahmniDispositionMapper);
 
     }
 
     @Test
-    public void shouldReturnEmptyDispositionListWhenVisitNotAvailable(){
+    public void shouldReturnEmptyDispositionListWhenVisitNotAvailable() {
         when(visitService.getVisitByUuid("visitUuid")).thenReturn(null);
         List<BahmniDisposition> actualDispositions = bahmniDispositionService.getDispositionByVisitUuid("visitUuid");
 
@@ -82,7 +91,7 @@ public class BahmniDispositionServiceTest {
     }
 
     @Test
-    public void shouldReturnDispositionsWhenVisitIsValid(){
+    public void shouldReturnDispositionsWhenVisitIsValid() {
 
         Set<EncounterTransaction.Provider> eTProvider = new HashSet<>();
         EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
@@ -90,7 +99,7 @@ public class BahmniDispositionServiceTest {
         provider.setUuid("uuid");
         eTProvider.add(provider);
 
-        EncounterTransaction.Disposition eTDisposition= new EncounterTransaction.Disposition();
+        EncounterTransaction.Disposition eTDisposition = new EncounterTransaction.Disposition();
         eTDisposition.setCode("1234")
                 .setExistingObs("a26a8c32-6fc1-4f5e-8a96-f5f5b05b87d")
                 .setVoided(false)
@@ -111,13 +120,13 @@ public class BahmniDispositionServiceTest {
 
         List<BahmniDisposition> actualDispositions = bahmniDispositionService.getDispositionByVisitUuid("visitUuid");
 
-        assertEquals(1,actualDispositions.size());
+        assertEquals(1, actualDispositions.size());
         assertEquals(bahmniDisposition, actualDispositions.get(0));
 
     }
 
     @Test
-    public void shouldReturnEmptyDispositionListWhenNoneOfObservationsAreDispositions(){
+    public void shouldReturnEmptyDispositionListWhenNoneOfObservationsAreDispositions() {
         Set<EncounterTransaction.Provider> eTProvider = new HashSet<>();
         EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
         provider.setName("Sample");
@@ -130,11 +139,11 @@ public class BahmniDispositionServiceTest {
 
         List<BahmniDisposition> actualDispositions = bahmniDispositionService.getDispositionByVisitUuid("visitUuid");
 
-        assertEquals(0,actualDispositions.size());
+        assertEquals(0, actualDispositions.size());
     }
 
     @Test
-    public void shouldReturnEmptyDispositionListWhenObservationsAreVoided(){
+    public void shouldReturnEmptyDispositionListWhenObservationsAreVoided() {
         Set<EncounterTransaction.Provider> eTProvider = new HashSet<>();
         EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
         provider.setName("Sample");
@@ -149,18 +158,18 @@ public class BahmniDispositionServiceTest {
 
         List<BahmniDisposition> actualDispositions = bahmniDispositionService.getDispositionByVisitUuid("visitUuid");
 
-        assertEquals(0,actualDispositions.size());
+        assertEquals(0, actualDispositions.size());
     }
 
     @Test
-    public void shouldReturnDispositionForMultipleVisits(){
+    public void shouldReturnDispositionForMultipleVisits() {
         Set<EncounterTransaction.Provider> eTProvider = new HashSet<>();
         EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
         provider.setName("Sample");
         provider.setUuid("uuid");
         eTProvider.add(provider);
 
-        EncounterTransaction.Disposition eTDisposition= new EncounterTransaction.Disposition();
+        EncounterTransaction.Disposition eTDisposition = new EncounterTransaction.Disposition();
         eTDisposition.setCode("1234")
                 .setExistingObs("a26a8c32-6fc1-4f5e-8a96-f5f5b05b87d")
                 .setVoided(false)
@@ -179,9 +188,9 @@ public class BahmniDispositionServiceTest {
         when(dispositionMapper.getDisposition(height)).thenReturn(eTDisposition);
         when(bahmniDispositionMapper.map(eTDisposition, eTProvider, null)).thenReturn(bahmniDisposition);
 
-        List<BahmniDisposition> actualDispositions = bahmniDispositionService.getDispositionByVisits(Arrays.asList(visit));
+        List<BahmniDisposition> actualDispositions = bahmniDispositionService.getDispositionByVisits(Collections.singletonList(visit));
 
-        assertEquals(1,actualDispositions.size());
+        assertEquals(1, actualDispositions.size());
         assertEquals(bahmniDisposition, actualDispositions.get(0));
     }
 }

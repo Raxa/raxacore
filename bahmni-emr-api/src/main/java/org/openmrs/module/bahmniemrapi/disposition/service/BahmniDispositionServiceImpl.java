@@ -3,7 +3,6 @@ package org.openmrs.module.bahmniemrapi.disposition.service;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Visit;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.disposition.contract.BahmniDisposition;
 import org.openmrs.module.bahmniemrapi.disposition.mapper.BahmniDispositionMapper;
@@ -32,18 +31,15 @@ public class BahmniDispositionServiceImpl implements BahmniDispositionService {
 
     private BahmniDispositionMapper bahmniDispositionMapper;
 
-    private PatientService patientService;
-
     @Autowired
     public BahmniDispositionServiceImpl(VisitService visitService, DispositionMapper dispositionMapper,
                                         ObservationTypeMatcher observationTypeMatcher, EncounterProviderMapper encounterProviderMapper,
-                                        BahmniDispositionMapper bahmniDispositionMapper, PatientService patientService){
+                                        BahmniDispositionMapper bahmniDispositionMapper) {
         this.visitService = visitService;
         this.dispositionMapper = dispositionMapper;
         this.observationTypeMatcher = observationTypeMatcher;
         this.encounterProviderMapper = encounterProviderMapper;
         this.bahmniDispositionMapper = bahmniDispositionMapper;
-        this.patientService = patientService;
     }
 
     @Override
@@ -51,32 +47,31 @@ public class BahmniDispositionServiceImpl implements BahmniDispositionService {
         Assert.notNull(visitUuid);
 
         Visit visit = visitService.getVisitByUuid(visitUuid);
-
-        if(visit == null){
+        if (visit == null) {
             return new ArrayList<>();
         }
-
         return getDispositionByVisit(visit);
     }
 
-    public List<BahmniDisposition> getDispositionByVisits(List<Visit> visits){
+    public List<BahmniDisposition> getDispositionByVisits(List<Visit> visits) {
         List<BahmniDisposition> dispositions = new ArrayList<>();
 
-        for(Visit visit: visits){
+        for (Visit visit : visits) {
             dispositions.addAll(getDispositionByVisit(visit));
         }
 
-        return  dispositions;
+        return dispositions;
     }
 
     private List<BahmniDisposition> getDispositionByVisit(Visit visit) {
         List<BahmniDisposition> dispositions = new ArrayList<>();
+
         for (Encounter encounter : visit.getEncounters()) {
             Set<Obs> observations = encounter.getObsAtTopLevel(false);
             Set<EncounterTransaction.Provider> eTProvider = encounterProviderMapper.convert(encounter.getEncounterProviders());
 
             for (Obs observation : observations) {
-                if(ObservationTypeMatcher.ObservationType.DISPOSITION.equals(observationTypeMatcher.getObservationType(observation))){
+                if (ObservationTypeMatcher.ObservationType.DISPOSITION.equals(observationTypeMatcher.getObservationType(observation))) {
                     addBahmniDisposition(dispositions, eTProvider, observation);
                 }
             }
@@ -86,7 +81,7 @@ public class BahmniDispositionServiceImpl implements BahmniDispositionService {
 
     private void addBahmniDisposition(List<BahmniDisposition> dispositions, Set<EncounterTransaction.Provider> eTProvider, Obs observation) {
         EncounterTransaction.Disposition eTDisposition = dispositionMapper.getDisposition(observation);
-        if(eTDisposition!=null){
+        if (eTDisposition != null) {
             dispositions.add(bahmniDispositionMapper.map(eTDisposition, eTProvider, observation.getCreator()));
         }
     }

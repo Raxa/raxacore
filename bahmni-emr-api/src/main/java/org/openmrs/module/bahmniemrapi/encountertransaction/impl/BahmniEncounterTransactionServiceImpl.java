@@ -3,8 +3,17 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.*;
-import org.openmrs.api.*;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Patient;
+import org.openmrs.Provider;
+import org.openmrs.Visit;
+import org.openmrs.VisitType;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.LocationService;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.ProviderService;
+import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.BahmniEmrAPIException;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPostSaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPreSaveCommand;
@@ -15,15 +24,21 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterSes
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.RetrospectiveEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
-import org.openmrs.module.emrapi.encounter.*;
+import org.openmrs.module.emrapi.encounter.EmrEncounterService;
+import org.openmrs.module.emrapi.encounter.EncounterParameters;
+import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
+import org.openmrs.module.emrapi.encounter.EncounterSearchParametersBuilder;
+import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 @Transactional
 public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTransactionService {
+
     private EncounterService encounterService;
     private EmrEncounterService emrEncounterService;
     private EncounterTransactionMapper encounterTransactionMapper;
@@ -36,14 +51,13 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     private PatientService patientService;
     private LocationService locationService;
     private ProviderService providerService;
-    private AdministrationService administrationService;
     private EncounterSessionMatcher encounterSessionMatcher;
 
     public BahmniEncounterTransactionServiceImpl(EncounterService encounterService, EmrEncounterService emrEncounterService, EncounterTransactionMapper encounterTransactionMapper,
                                                  EncounterTypeIdentifier encounterTypeIdentifier, List<EncounterDataPreSaveCommand> encounterDataPreSaveCommand, List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands,
                                                  List<EncounterDataPostSaveCommand> encounterDataPostDeleteCommands,
                                                  BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper, VisitService visitService, PatientService patientService, LocationService locationService, ProviderService providerService,
-                                                 @Qualifier("adminService") AdministrationService administrationService, EncounterSessionMatcher encounterSessionMatcher) {
+                                                 EncounterSessionMatcher encounterSessionMatcher) {
 
         this.encounterService = encounterService;
         this.emrEncounterService = emrEncounterService;
@@ -57,22 +71,21 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         this.patientService = patientService;
         this.locationService = locationService;
         this.providerService = providerService;
-        this.administrationService = administrationService;
         this.encounterSessionMatcher = encounterSessionMatcher;
     }
 
     @Override
     public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
 
-        if(bahmniEncounterTransaction.getEncounterDateTime() == null){
+        if (bahmniEncounterTransaction.getEncounterDateTime() == null) {
             bahmniEncounterTransaction.setEncounterDateTime(new Date());
         }
 
-        handleDrugOrders(bahmniEncounterTransaction,patient);
+        handleDrugOrders(bahmniEncounterTransaction, patient);
 
-        if(!StringUtils.isBlank(bahmniEncounterTransaction.getEncounterUuid())){
+        if (!StringUtils.isBlank(bahmniEncounterTransaction.getEncounterUuid())) {
             Encounter encounterByUuid = encounterService.getEncounterByUuid(bahmniEncounterTransaction.getEncounterUuid());
-            if(encounterByUuid != null){
+            if (encounterByUuid != null) {
                 bahmniEncounterTransaction.setEncounterTypeUuid(encounterByUuid.getEncounterType().getUuid());
             }
         }
@@ -97,35 +110,34 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         String encounterUuid = encounterTransaction.getEncounterUuid();
         Encounter currentEncounter = encounterService.getEncounterByUuid(encounterUuid);
 
-        boolean includeAll = false;
-        EncounterTransaction updatedEncounterTransaction = encounterTransactionMapper.map(currentEncounter, includeAll);
+        EncounterTransaction updatedEncounterTransaction = encounterTransactionMapper.map(currentEncounter, false);
         for (EncounterDataPostSaveCommand saveCommand : encounterDataPostSaveCommands) {
-            updatedEncounterTransaction = saveCommand.save(bahmniEncounterTransaction,currentEncounter, updatedEncounterTransaction);
+            updatedEncounterTransaction = saveCommand.save(bahmniEncounterTransaction, currentEncounter, updatedEncounterTransaction);
         }
-        return bahmniEncounterTransactionMapper.map(updatedEncounterTransaction, includeAll);
+        return bahmniEncounterTransactionMapper.map(updatedEncounterTransaction, false);
     }
 
-    private void handleDrugOrders(BahmniEncounterTransaction bahmniEncounterTransaction,Patient patient) {
+    private void handleDrugOrders(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient) {
 
         bahmniEncounterTransaction.updateDrugOrderIfScheduledDateNotSet(new Date());
 
-        if(bahmniEncounterTransaction.hasPastDrugOrders()){
+        if (bahmniEncounterTransaction.hasPastDrugOrders()) {
             BahmniEncounterTransaction pastEncounterTransaction = bahmniEncounterTransaction.cloneForPastDrugOrders();
-            save(pastEncounterTransaction,patient,null,null);
+            save(pastEncounterTransaction, patient, null, null);
             bahmniEncounterTransaction.clearDrugOrders();
         }
     }
 
     private void setVisitType(BahmniEncounterTransaction bahmniEncounterTransaction) {
-        if(!StringUtils.isBlank(bahmniEncounterTransaction.getVisitTypeUuid())){
+        if (!StringUtils.isBlank(bahmniEncounterTransaction.getVisitTypeUuid())) {
             bahmniEncounterTransaction.setVisitType(getVisitTypeByUuid(bahmniEncounterTransaction.getVisitTypeUuid()).getName());
         }
     }
 
-    private VisitType getVisitTypeByUuid(String uuid){
+    private VisitType getVisitTypeByUuid(String uuid) {
         VisitType visitType = visitService.getVisitTypeByUuid(uuid);
-        if(visitType == null){
-            throw new BahmniEmrAPIException("Cannot find visit type with UUID "+ visitType);
+        if (visitType == null) {
+            throw new BahmniEmrAPIException("Cannot find visit type with UUID " + null);
         }
         return visitType;
     }
@@ -149,15 +161,15 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
                 this.patientService, this.encounterService, this.locationService, this.providerService, this.visitService);
 
         Visit visit = null;
-        if(! BahmniEncounterTransaction.isRetrospectiveEntry(searchParameters.getEndDate())){
+        if (!BahmniEncounterTransaction.isRetrospectiveEntry(searchParameters.getEndDate())) {
             List<Visit> visits = this.visitService.getActiveVisitsByPatient(searchParameters.getPatient());
-            if(CollectionUtils.isNotEmpty(visits)){
+            if (CollectionUtils.isNotEmpty(visits)) {
                 visit = visits.get(0);
             }
         }
 
         Encounter encounter = encounterSessionMatcher.findEncounter(visit, mapEncounterParameters(searchParameters));
-        if(encounter != null){
+        if (encounter != null) {
             return encounterTransactionMapper.map(encounter, encounterSearchParameters.getIncludeAll());
         }
         return null;
@@ -166,7 +178,7 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     private EncounterParameters mapEncounterParameters(EncounterSearchParametersBuilder encounterSearchParameters) {
         EncounterParameters encounterParameters = EncounterParameters.instance();
         encounterParameters.setPatient(encounterSearchParameters.getPatient());
-        if(encounterSearchParameters.getEncounterTypes().size() > 0){
+        if (encounterSearchParameters.getEncounterTypes().size() > 0) {
             encounterParameters.setEncounterType(encounterSearchParameters.getEncounterTypes().iterator().next());
         }
         encounterParameters.setProviders(new HashSet<Provider>(encounterSearchParameters.getProviders()));
@@ -179,7 +191,7 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         Encounter encounter = encounterService.getEncounterByUuid(bahmniEncounterTransaction.getEncounterUuid());
         encounterService.voidEncounter(encounter, bahmniEncounterTransaction.getReason());
         for (EncounterDataPostSaveCommand saveCommand : encounterDataPostDeleteCommands) {
-            saveCommand.save(bahmniEncounterTransaction,encounter, null);
+            saveCommand.save(bahmniEncounterTransaction, encounter, null);
         }
     }
 

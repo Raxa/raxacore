@@ -4,11 +4,10 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObser
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PivotRow {
-    Map<String, ArrayList<BahmniObservation>> columns = new HashMap<>();
+    private Map<String, ArrayList<BahmniObservation>> columns = new HashMap<>();
 
     public void addColumn(String name, BahmniObservation bahmniObservation) {
         ArrayList<BahmniObservation> bahmniObs;

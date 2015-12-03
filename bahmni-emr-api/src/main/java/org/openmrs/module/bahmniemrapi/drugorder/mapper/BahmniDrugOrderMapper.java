@@ -41,15 +41,15 @@ public class BahmniDrugOrderMapper {
             bahmniDrugOrder.setProvider(providerMapper.map(openMRSDrugOrder.getOrderer()));
             bahmniDrugOrder.setCreatorName(openMRSDrugOrder.getCreator().getPersonName().toString());
 
-            if(discontinuedOrderMap.containsKey(openMRSDrugOrder.getOrderNumber())){
+            if (discontinuedOrderMap.containsKey(openMRSDrugOrder.getOrderNumber())) {
                 bahmniDrugOrder.setOrderReasonText(discontinuedOrderMap.get(openMRSDrugOrder.getOrderNumber()).getOrderReasonNonCoded());
                 bahmniDrugOrder.setOrderReasonConcept(conceptMapper.map(discontinuedOrderMap.get(openMRSDrugOrder.getOrderNumber()).getOrderReason()));
             }
 
             bahmniDrugOrders.add(bahmniDrugOrder);
         }
-        if(CollectionUtils.isNotEmpty(orderAttributeObs)){
-           bahmniDrugOrders = orderAttributesMapper.map(bahmniDrugOrders,orderAttributeObs);
+        if (CollectionUtils.isNotEmpty(orderAttributeObs)) {
+            bahmniDrugOrders = orderAttributesMapper.map(bahmniDrugOrders, orderAttributeObs);
         }
         return bahmniDrugOrders;
     }

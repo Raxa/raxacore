@@ -27,13 +27,11 @@ public class OrderSaveCommandImpl implements EncounterDataPreSaveCommand {
         int encounterSessionDuration = configuredSessionDuration != null ? Integer.parseInt(configuredSessionDuration) : DEFAULT_SESSION_DURATION_IN_MINUTES;
 
         for (EncounterTransaction.Order order : bahmniEncounterTransaction.getOrders()) {
-            if(order.getAutoExpireDate() == null){
+            if (order.getAutoExpireDate() == null) {
                 order.setAutoExpireDate(DateTime.now().plusMinutes(encounterSessionDuration).toDate());
             }
         }
         return bahmniEncounterTransaction;
     }
-
-
 
 }
