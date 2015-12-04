@@ -10,5 +10,6 @@ public class TestObsValueCalculator implements ObsValueCalculator {
     @Override
     void run(BahmniEncounterTransaction bahmniEncounterTransaction) {
         bahmniEncounterTransaction.setEncounterUuid(DEFAULT_ENCOUNTER_UUID)
+
     }
 }

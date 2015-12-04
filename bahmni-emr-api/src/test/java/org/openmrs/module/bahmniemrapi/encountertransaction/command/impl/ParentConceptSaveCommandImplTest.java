@@ -5,9 +5,9 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncou
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.Collections;
+import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ParentConceptSaveCommandImplTest {
 
@@ -27,17 +27,17 @@ public class ParentConceptSaveCommandImplTest {
         BahmniObservation vitalsObs = new BahmniObservation();
         vitalsObs.setUuid("parentUuid");
         vitalsObs.setConcept(vitals);
-        vitalsObs.setGroupMembers(Collections.singletonList(heightObs));
+        vitalsObs.setGroupMembers(Arrays.asList(heightObs));
 
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-        bahmniEncounterTransaction.setObservations(Collections.singletonList(vitalsObs));
+        bahmniEncounterTransaction.setObservations(Arrays.asList(vitalsObs));
 
         ParentConceptSaveCommandImpl updateConcept = new ParentConceptSaveCommandImpl();
         bahmniEncounterTransaction = updateConcept.update(bahmniEncounterTransaction);
 
-        assertEquals(1, bahmniEncounterTransaction.getObservations().size());
+        assertEquals(1,bahmniEncounterTransaction.getObservations().size());
         BahmniObservation actualObs = bahmniEncounterTransaction.getObservations().iterator().next();
-        assertEquals("vitals", actualObs.getParentConceptUuid());
-        assertEquals("vitals", actualObs.getGroupMembers().iterator().next().getParentConceptUuid()); //Height
+        assertEquals("vitals",actualObs.getParentConceptUuid());
+        assertEquals("vitals",actualObs.getGroupMembers().iterator().next().getParentConceptUuid()); //Height
     }
 }

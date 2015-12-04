@@ -13,7 +13,7 @@ public class AdditionalBahmniObservationFields implements Cloneable {
     private Set<EncounterTransaction.Provider> providers = new HashSet<>();
     private String obsGroupUuid;
 
-    public AdditionalBahmniObservationFields(String encounterUuid, Date encounterDateTime, Date visitDateTime, String obsGroupUuid) {
+    public AdditionalBahmniObservationFields(String encounterUuid, Date encounterDateTime, Date visitDateTime,String obsGroupUuid) {
         this.encounterUuid = encounterUuid;
         this.encounterDateTime = encounterDateTime;
         this.visitDateTime = visitDateTime;
@@ -52,6 +52,7 @@ public class AdditionalBahmniObservationFields implements Cloneable {
         this.providers = providers;
     }
 
+
     public void addProvider(EncounterTransaction.Provider provider) {
         this.providers.add(provider);
     }
@@ -67,9 +68,10 @@ public class AdditionalBahmniObservationFields implements Cloneable {
     @Override
     public Object clone() {
         try {
-            return super.clone();
+            AdditionalBahmniObservationFields additionalBahmniObservationFields = (AdditionalBahmniObservationFields) super.clone();
+            return additionalBahmniObservationFields;
         } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("unable to clone " + this.getClass().getName(), e);
+            throw new RuntimeException("unable to clone "+this.getClass().getName(),e);
         }
     }
 }

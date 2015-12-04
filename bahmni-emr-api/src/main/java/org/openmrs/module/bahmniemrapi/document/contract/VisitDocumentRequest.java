@@ -5,14 +5,14 @@ import java.util.Date;
 import java.util.List;
 
 public class VisitDocumentRequest {
-    private String patientUuid;
-    private String visitUuid;
-    private String visitTypeUuid;
-    private Date visitStartDate;
-    private Date visitEndDate;
-    private String encounterTypeUuid;
-    private Date encounterDateTime;
-    private List<Document> documents = new ArrayList<>();
+    String patientUuid;
+    String visitUuid;
+    String visitTypeUuid;
+    Date visitStartDate;
+    Date visitEndDate;
+    String encounterTypeUuid;
+    Date encounterDateTime;
+    List<Document> documents = new ArrayList<>();
     private String providerUuid;
     private String locationUuid;
 

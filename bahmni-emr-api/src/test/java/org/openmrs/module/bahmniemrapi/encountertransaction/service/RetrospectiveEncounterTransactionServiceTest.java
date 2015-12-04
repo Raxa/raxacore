@@ -1,5 +1,7 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.service;
 
+import java.util.Collection;
+import java.util.Iterator;
 import org.bahmni.test.builder.VisitBuilder;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -25,12 +27,12 @@ public class RetrospectiveEncounterTransactionServiceTest {
     private VisitIdentificationHelper mockVisitIdentificationHelper;
 
     @Before
-    public void setUp() {
+    public void setUp(){
         initMocks(this);
     }
 
     @Test
-    public void do_not_update_the_encounter_if_it_is_freshly_created() {
+    public void do_not_update_the_encounter_if_it_is_freshly_created(){
         Patient patient = new Patient();
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
 
@@ -39,11 +41,11 @@ public class RetrospectiveEncounterTransactionServiceTest {
         RetrospectiveEncounterTransactionService retrospectiveService = new RetrospectiveEncounterTransactionService(mockVisitIdentificationHelper);
         BahmniEncounterTransaction updatedEncounterTransaction = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, patient, null, null);
 
-        assertEquals(bahmniEncounterTransaction, updatedEncounterTransaction);
+        assertEquals(bahmniEncounterTransaction,updatedEncounterTransaction);
     }
 
     @Test
-    public void do_not_update_the_encounter_if_it_is_just_created() {
+    public void do_not_update_the_encounter_if_it_is_just_created(){
         Date encounterJustCreated = DateTime.now().plusSeconds(10).toDate();
 
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
@@ -54,7 +56,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
         RetrospectiveEncounterTransactionService retrospectiveService = new RetrospectiveEncounterTransactionService(mockVisitIdentificationHelper);
         BahmniEncounterTransaction updatedEncounterTransaction = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, null, null, null);
 
-        assertEquals(bahmniEncounterTransaction, updatedEncounterTransaction);
+        assertEquals(bahmniEncounterTransaction,updatedEncounterTransaction);
     }
 
     @Test

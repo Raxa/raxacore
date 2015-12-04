@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -18,7 +18,6 @@ public class ETObsToBahmniObsMapper {
     public static final String CONCEPT_DETAILS_CONCEPT_CLASS = "Concept Details";
     public static final String ABNORMAL_CONCEPT_CLASS = "Abnormal";
     public static final String DURATION_CONCEPT_CLASS = "Duration";
-
     private ConceptService conceptService;
 
     @Autowired
@@ -36,7 +35,7 @@ public class ETObsToBahmniObsMapper {
 
     public BahmniObservation create(EncounterTransaction.Observation observation, AdditionalBahmniObservationFields additionalBahmniObservationFields) {
         return map(observation, additionalBahmniObservationFields,
-                Collections.singletonList(conceptService.getConceptByUuid(observation.getConceptUuid())),
+                Arrays.asList(conceptService.getConceptByUuid(observation.getConceptUuid())),
                 false);
     }
 

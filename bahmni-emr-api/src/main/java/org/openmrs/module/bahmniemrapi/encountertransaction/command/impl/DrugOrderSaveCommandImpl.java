@@ -11,14 +11,7 @@ import org.openmrs.module.emrapi.encounter.service.OrderMetadataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
@@ -31,10 +24,10 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
         public int compare(EncounterTransaction.DrugOrder o1, EncounterTransaction.DrugOrder o2) {
             Date date1 = o1.getScheduledDate();
             Date date2 = o2.getScheduledDate();
-            if (date1 == null) {
+            if(date1 == null){
                 date1 = new Date();
             }
-            if (date2 == null) {
+            if(date2 == null){
                 date2 = new Date();
             }
             return date1.compareTo(date2);
@@ -51,10 +44,10 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
     @Override
     public BahmniEncounterTransaction update(BahmniEncounterTransaction bahmniEncounterTransaction) {
         List<EncounterTransaction.DrugOrder> drugOrders = bahmniEncounterTransaction.getDrugOrders();
-        Map<String, List<EncounterTransaction.DrugOrder>> sameDrugNameOrderLists = new LinkedHashMap<>();
+        Map<String,List<EncounterTransaction.DrugOrder>> sameDrugNameOrderLists = new LinkedHashMap<>();
         for (EncounterTransaction.DrugOrder drugOrder : drugOrders) {
-            String name = drugOrder.getDrugNonCoded() == null ? drugOrder.getDrug().getName() : drugOrder.getDrugNonCoded();
-            if (sameDrugNameOrderLists.get(name) == null) {
+            String name = drugOrder.getDrugNonCoded()==null ? drugOrder.getDrug().getName() : drugOrder.getDrugNonCoded();
+            if(sameDrugNameOrderLists.get(name) == null){
                 sameDrugNameOrderLists.put(name, new ArrayList<EncounterTransaction.DrugOrder>());
             }
             sameDrugNameOrderLists.get(name).add(drugOrder);
@@ -72,12 +65,12 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
 //        Refactor using Lambda expressions after updating to Java 8
         EncounterTransaction.DrugOrder currentDateOrder = getCurrentOrderFromOrderList(orders);
 
-        if (currentDateOrder != null) {
+        if(currentDateOrder != null){
             Date expectedStartDateForCurrentOrder = getExpectedStartDateForOrder(currentDateOrder);
             Date expectedStopDateForCurrentOrder = getExpectedStopDateForOrder(currentDateOrder, expectedStartDateForCurrentOrder);
 
             for (EncounterTransaction.DrugOrder order : orders) {
-                if (order != currentDateOrder && !"DISCONTINUE".equals(order.getAction()) && DateUtils.isSameDay(getExpectedStartDateForOrder(order), expectedStopDateForCurrentOrder)) {
+                if(order!=currentDateOrder && !"DISCONTINUE".equals(order.getAction()) && DateUtils.isSameDay(getExpectedStartDateForOrder(order), expectedStopDateForCurrentOrder)){
                     currentDateOrder.setScheduledDate(expectedStartDateForCurrentOrder);
                     currentDateOrder.setAutoExpireDate(expectedStopDateForCurrentOrder);
 
@@ -86,7 +79,7 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
                     currentDateOrder = order;
                     expectedStartDateForCurrentOrder = getExpectedStartDateForOrder(order);
                     expectedStopDateForCurrentOrder = getExpectedStopDateForOrder(currentDateOrder, expectedStartDateForCurrentOrder);
-                } else if (!"DISCONTINUE".equals(order.getAction()) && order.getScheduledDate() == null && !BahmniEncounterTransaction.isRetrospectiveEntry(encounterDateTime)) {
+                }else if(!"DISCONTINUE".equals(order.getAction()) && order.getScheduledDate() == null && !BahmniEncounterTransaction.isRetrospectiveEntry(encounterDateTime)){
                     //In retro.. date will be put as encouter date/time
                     order.setDateActivated(expectedStartDateForCurrentOrder);
                 }
@@ -100,7 +93,7 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
     }
 
     private Date getExpectedStartDateForOrder(EncounterTransaction.DrugOrder order) {
-        if (order.getScheduledDate() == null) {
+        if( order.getScheduledDate() == null){
             return new Date();
         }
         return order.getScheduledDate();

@@ -31,10 +31,10 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     public static final String LAB_MINNORMAL = "LAB_MINNORMAL";
     public static final String LAB_MAXNORMAL = "LAB_MAXNORMAL";
     public static final String LAB_NOTES = "LAB_NOTES";
-    public static final String REFERRED_OUT = "REFERRED_OUT";
+    private static final String REFERRED_OUT = "REFERRED_OUT";
     public static final String LAB_REPORT = "LAB_REPORT";
-    public static final String VALIDATION_NOTES_ENCOUNTER_TYPE = "VALIDATION NOTES";
-    public static final String LAB_ORDER_TYPE = "Lab Order";
+    private static final String VALIDATION_NOTES_ENCOUNTER_TYPE = "VALIDATION NOTES";
+    public static final String LAB_ORDER_TYPE="Lab Order";
 
     @Autowired
     private EncounterTransactionMapper encounterTransactionMapper;
@@ -54,7 +54,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
 
         int totalEncounters = encounters.size();
         int currentAccession = 0;
-        for (int i = totalEncounters - 1; i >= 0; i--) {
+        for (int i=totalEncounters -1; i >= 0; i--) {
             Encounter encounter = encounters.get(i);
             if (currentAccession >= numberOfAccessions) {
                 break;
@@ -82,7 +82,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         for (LabOrderResult labOrderResult : labOrderResults) {
             if (labOrderResult.getResult() != null) {
                 filteredResults.add(labOrderResult);
-            } else if (labOrderResult.getAction().equals(Order.Action.NEW.toString())) {
+            } else if(labOrderResult.getAction().equals(Order.Action.NEW.toString())){
                 filteredResults.add(labOrderResult);
             }
         }
@@ -90,7 +90,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     }
 
     @Override
-    public List<LabOrderResult> getAllForConcepts(Patient patient, Collection<String> concepts, List<Visit> visits) {
+    public List<LabOrderResult> getAllForConcepts(Patient patient, Collection<String> concepts, List<Visit> visits){
         if (concepts != null && !concepts.isEmpty()) {
 
             List<EncounterTransaction.Order> testOrders = new ArrayList<>();
@@ -110,39 +110,39 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
             }
             return mapOrdersWithObs(testOrders, observations, encounterTestOrderUuidMap, encounterObservationMap, encounterToAccessionNotesMap);
         }
-        return Collections.emptyList();
+        return Collections.EMPTY_LIST;
     }
 
-    private void createAccessionNotesByEncounter(Map<String, List<AccessionNote>> encounterToAccessionNotesMap, List<Encounter> encounters, Encounter encounter) {
+    private void  createAccessionNotesByEncounter(Map<String, List<AccessionNote>> encounterToAccessionNotesMap, List<Encounter> encounters, Encounter encounter) {
         List<AccessionNote> accessionNotes = getAccessionNotesFor(encounter, encounters);
-        if (accessionNotes.size() != 0) {
+        if(accessionNotes.size() != 0){
             List<AccessionNote> existingAccessionNotes = encounterToAccessionNotesMap.get(encounter.getUuid());
-            if (existingAccessionNotes != null) {
+            if(existingAccessionNotes != null){
                 accessionNotes.addAll(existingAccessionNotes);
             }
-            encounterToAccessionNotesMap.put(encounter.getUuid(), accessionNotes);
+            encounterToAccessionNotesMap.put(encounter.getUuid(),accessionNotes);
         }
     }
 
     private List<AccessionNote> getAccessionNotesFor(Encounter orderEncounter, List<Encounter> encounters) {
         for (Encounter encounter : encounters) {
-            if (VALIDATION_NOTES_ENCOUNTER_TYPE.equals(encounter.getEncounterType().getName()) && hasValidationNotesFor(orderEncounter.getUuid(), encounter)) {
+            if(VALIDATION_NOTES_ENCOUNTER_TYPE.equals(encounter.getEncounterType().getName()) && hasValidationNotesFor(orderEncounter.getUuid(),encounter)){
                 return createAccessionNotesFor(orderEncounter.getUuid(), encounter);
             }
         }
-        return Collections.emptyList();
+        return Collections.EMPTY_LIST;
     }
 
     private List<AccessionNote> createAccessionNotesFor(String encounterUuid, Encounter accessionNotesEncounter) {
         List<AccessionNote> accessionNotes = new ArrayList<>();
         for (Obs observation : accessionNotesEncounter.getAllObs()) {
-            if (!encounterUuid.equals(observation.getValueText())) {
+            if(!encounterUuid.equals(observation.getValueText())){
                 AccessionNote accessionNote = new AccessionNote();
                 accessionNote.setAccessionUuid(encounterUuid);
                 accessionNote.setDateTime(observation.getObsDatetime());
                 accessionNote.setText(observation.getValueText());
                 Collection<Set<Provider>> providersForRole = accessionNotesEncounter.getProvidersByRoles().values();
-                if (providersForRole.size() > 0) {
+                if(providersForRole.size() >0){
                     Provider provider = providersForRole.iterator().next().iterator().next();
                     accessionNote.setProviderName(provider.getName());
                 }
@@ -155,7 +155,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private boolean hasValidationNotesFor(String encounterUuid, Encounter encounter) {
         Set<Obs> observations = encounter.getAllObs();
         for (Obs observation : observations) {
-            if (encounterUuid.equals(observation.getValueText())) return true;
+            if(encounterUuid.equals(observation.getValueText())) return true;
         }
         return false;
     }
@@ -164,7 +164,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         List<EncounterTransaction.Order> orders = new ArrayList<>();
         for (EncounterTransaction.Order order : encounterTransaction.getOrders()) {
             boolean conceptFilter = (concepts == null) || concepts.contains(order.getConcept().getName());
-            if (conceptFilter && LAB_ORDER_TYPE.equals(order.getOrderType())) {
+            if(conceptFilter && LAB_ORDER_TYPE.equals(order.getOrderType())){
                 encounterTestOrderUuidMap.put(order.getUuid(), encounter);
                 orders.add(order);
             }
@@ -175,7 +175,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private List<EncounterTransaction.Observation> filterVoided(List<EncounterTransaction.Observation> observations) {
         List<EncounterTransaction.Observation> nonVoidedObservations = new ArrayList<>();
         for (EncounterTransaction.Observation observation : observations) {
-            if (!observation.getVoided()) {
+            if(!observation.getVoided()){
                 nonVoidedObservations.add(observation);
             }
         }
@@ -185,7 +185,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private void mapObservationsWithEncounter(List<EncounterTransaction.Observation> observations, Encounter encounter, Map<String, Encounter> encounterObservationMap) {
         for (EncounterTransaction.Observation observation : observations) {
             encounterObservationMap.put(observation.getUuid(), encounter);
-            if (observation.getGroupMembers().size() > 0) {
+            if(observation.getGroupMembers().size() > 0) {
                 mapObservationsWithEncounter(observation.getGroupMembers(), encounter, encounterObservationMap);
             }
         }
@@ -195,11 +195,12 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         List<LabOrderResult> labOrderResults = new ArrayList<>();
         for (EncounterTransaction.Order testOrder : testOrders) {
             List<EncounterTransaction.Observation> obsGroups = findObsGroup(observations, testOrder);
-            if (!obsGroups.isEmpty()) {
+            if(!obsGroups.isEmpty()) {
                 for (EncounterTransaction.Observation obsGroup : obsGroups) {
-                    labOrderResults.addAll(mapObs(obsGroup, testOrder, encounterTestOrderMap, encounterObservationMap, encounterToAccessionNotesMap));
+                    labOrderResults.addAll(mapObs(obsGroup, testOrder, encounterTestOrderMap, encounterObservationMap,encounterToAccessionNotesMap));
                 }
-            } else if (testOrder.getDateStopped() == null) {
+            }
+            else if(testOrder.getDateStopped() == null) {
                 EncounterTransaction.Concept orderConcept = testOrder.getConcept();
                 Encounter orderEncounter = encounterTestOrderMap.get(testOrder.getUuid());
                 LabOrderResult labOrderResult = new LabOrderResult(testOrder.getUuid(), testOrder.getAction(), orderEncounter.getUuid(), orderEncounter.getEncounterDatetime(), orderConcept.getName(), orderConcept.getUnits(), null, null, null, null, false, null, null);
@@ -212,9 +213,9 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
 
     private List<LabOrderResult> mapObs(EncounterTransaction.Observation obsGroup, EncounterTransaction.Order testOrder, Map<String, Encounter> encounterTestOrderMap, Map<String, Encounter> encounterObservationMap, Map<String, List<AccessionNote>> encounterToAccessionNotesMap) {
         List<LabOrderResult> labOrderResults = new ArrayList<>();
-        if (isPanel(obsGroup)) {
+        if(isPanel(obsGroup)) {
             for (EncounterTransaction.Observation observation : obsGroup.getGroupMembers()) {
-                LabOrderResult order = createLabOrderResult(observation, testOrder, encounterTestOrderMap, encounterObservationMap, encounterToAccessionNotesMap);
+                LabOrderResult order = createLabOrderResult(observation, testOrder, encounterTestOrderMap, encounterObservationMap,encounterToAccessionNotesMap);
                 order.setPanelUuid(obsGroup.getConceptUuid());
                 order.setPanelName(obsGroup.getConcept().getName());
                 labOrderResults.add(order);
@@ -277,10 +278,10 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
 
     private EncounterTransaction.Observation getLeafObservation(EncounterTransaction.Observation observation, String conceptName) {
         for (EncounterTransaction.Observation childObs : observation.getGroupMembers()) {
-            if (!childObs.getGroupMembers().isEmpty()) {
+            if(!childObs.getGroupMembers().isEmpty()) {
                 return getLeafObservation(childObs, conceptName);
             }
-            if (childObs.getConcept().getName().equalsIgnoreCase(conceptName)) {
+            if(childObs.getConcept().getName().equalsIgnoreCase(conceptName)) {
                 return childObs;
             }
         }
@@ -290,7 +291,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private List<EncounterTransaction.Observation> findObsGroup(List<EncounterTransaction.Observation> observations, EncounterTransaction.Order testOrder) {
         List<EncounterTransaction.Observation> obsGroups = new ArrayList<>();
         for (EncounterTransaction.Observation observation : observations) {
-            if (observation.getOrderUuid() != null && observation.getOrderUuid().equals(testOrder.getUuid())) {
+            if(observation.getOrderUuid() != null && observation.getOrderUuid().equals(testOrder.getUuid())) {
                 obsGroups.add(observation);
             }
         }

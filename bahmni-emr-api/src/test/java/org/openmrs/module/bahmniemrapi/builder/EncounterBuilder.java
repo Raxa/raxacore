@@ -1,15 +1,6 @@
 package org.openmrs.module.bahmniemrapi.builder;
 
-import org.openmrs.Encounter;
-import org.openmrs.EncounterProvider;
-import org.openmrs.EncounterType;
-import org.openmrs.Location;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.Provider;
-import org.openmrs.User;
-import org.openmrs.Visit;
-import org.openmrs.VisitType;
+import org.openmrs.*;
 
 import java.util.Date;
 import java.util.HashSet;

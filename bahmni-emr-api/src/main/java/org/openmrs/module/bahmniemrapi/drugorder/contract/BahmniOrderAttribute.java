@@ -2,7 +2,6 @@ package org.openmrs.module.bahmniemrapi.drugorder.contract;
 
 public class BahmniOrderAttribute {
     public static final String ORDER_ATTRIBUTES_CONCEPT_SET_NAME = "Order Attributes";
-
     private String name;
     private String value;
     private String obsUuid;

@@ -5,5 +5,5 @@ import org.openmrs.Encounter;
 import java.util.Set;
 
 public interface ElisFeedInterceptor {
-    void run(Set<Encounter> encounters);
+    public void run(Set<Encounter> encounters);
 }

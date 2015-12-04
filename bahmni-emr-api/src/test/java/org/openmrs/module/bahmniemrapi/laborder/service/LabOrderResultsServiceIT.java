@@ -13,20 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class LabOrderResultsServiceIT extends BaseIntegrationTest {
-
+    
     @Autowired
     private LabOrderResultsService labOrderResultsService;
 
@@ -49,7 +45,7 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
         assertOrderPresent(labOrderResults, "HIV ELISA", null, 16, null, null, null, null, null, null, false, null);
         assertOrderPresent(labOrderResults, "PS for Malaria", null, 16, "System OpenMRS", null, null, null, null, null, true, null);
         assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, null, false, null);
-        assertFalse(isOrderPresent(labOrderResults, "Chest X-Ray", 16));
+        assertFalse(isOrderPresent(labOrderResults, "Chest X-Ray",16));
     }
 
     @Test
@@ -62,7 +58,7 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
         Patient patient = Context.getPatientService().getPatient(1000000);
         Visit visit = Context.getVisitService().getVisit(4);
 
-        LabOrderResults results = labOrderResultsService.getAll(patient, Collections.singletonList(visit), Integer.MAX_VALUE);
+        LabOrderResults results = labOrderResultsService.getAll(patient, Arrays.asList(visit), Integer.MAX_VALUE);
         List<LabOrderResult> labOrderResults = results.getResults();
 
         assertEquals(1, labOrderResults.size());
@@ -78,7 +74,7 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldGetLabOrdersForParticularConcepts() throws Exception {
+    public void shouldGetLabOrdersForParticularConcepts() throws Exception{
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("labOrderTestData.xml");
@@ -104,7 +100,7 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
         Patient patient = Context.getPatientService().getPatient(1000000);
         Visit visit = Context.getVisitService().getVisit(4);
 
-        LabOrderResults results = labOrderResultsService.getAll(patient, Collections.singletonList(visit), Integer.MAX_VALUE);
+        LabOrderResults results = labOrderResultsService.getAll(patient, Arrays.asList(visit), Integer.MAX_VALUE);
         List<LabOrderResult> labOrderResults = results.getResults();
 
         assertNotNull(labOrderResults);
@@ -114,7 +110,7 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldGetLabOrdersWithResultsEvenIfItIsDiscontinued() throws Exception {
+    public void shouldGetLabOrdersWithResultsEvenIfItIsDiscontinued()throws Exception{
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("labOrderTestData.xml");
@@ -122,7 +118,7 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
 
         Visit visit = Context.getVisitService().getVisit(5);
 
-        LabOrderResults labOrderResults = labOrderResultsService.getAll(patient, Collections.singletonList(visit), Integer.MAX_VALUE);
+        LabOrderResults labOrderResults = labOrderResultsService.getAll(patient, Arrays.asList(visit), Integer.MAX_VALUE);
         List<LabOrderResult> labResults = labOrderResults.getResults();
 
         assertEquals(6, labResults.size());
@@ -131,7 +127,7 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
     private void assertOrderPresent(List<LabOrderResult> labOrderResults, String testName, String panelName, Integer accessionEncounterId, String provider, String value, Double minNormal, Double maxNormal, Boolean abnormal, String notes, Boolean referredOut, String uploadedFileName) {
         Encounter accessionEncounter = Context.getEncounterService().getEncounter(accessionEncounterId);
         for (LabOrderResult labOrderResult : labOrderResults) {
-            if (labOrderResult.getTestName().equals(testName) && labOrderResult.getAccessionUuid().equals(accessionEncounter.getUuid())) {
+            if(labOrderResult.getTestName().equals(testName) && labOrderResult.getAccessionUuid().equals(accessionEncounter.getUuid())) {
                 assertEquals(panelName, labOrderResult.getPanelName());
                 assertEquals(accessionEncounter.getEncounterDatetime(), labOrderResult.getAccessionDateTime());
                 assertEquals(value, labOrderResult.getResult());
@@ -148,11 +144,11 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
         fail();
     }
 
-    private boolean isOrderPresent(List<LabOrderResult> labOrderResults, String testName, Integer accessionEncounterId) {
+    private boolean isOrderPresent(List<LabOrderResult> labOrderResults, String testName, Integer accessionEncounterId){
         Encounter accessionEncounter = Context.getEncounterService().getEncounter(accessionEncounterId);
         for (LabOrderResult labOrderResult : labOrderResults) {
-            if (labOrderResult.getTestName().equals(testName) && labOrderResult.getAccessionUuid().equals(accessionEncounter.getUuid())) {
-                return true;
+            if(labOrderResult.getTestName().equals(testName) && labOrderResult.getAccessionUuid().equals(accessionEncounter.getUuid())) {
+               return true;
             }
         }
         return false;

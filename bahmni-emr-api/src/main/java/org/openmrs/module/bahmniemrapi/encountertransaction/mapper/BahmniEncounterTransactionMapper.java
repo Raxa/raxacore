@@ -19,7 +19,6 @@ import java.util.List;
 
 @Component
 public class BahmniEncounterTransactionMapper {
-
     private AccessionNotesMapper accessionNotesMapper;
     private BahmniDiagnosisMetadata bahmniDiagnosisMetadata;
     private ObsRelationshipMapper obsRelationshipMapper;
@@ -47,7 +46,7 @@ public class BahmniEncounterTransactionMapper {
         List<BahmniDiagnosisRequest> bahmniDiagnoses = bahmniDiagnosisMetadata.map(encounterTransaction.getDiagnoses(), includeAll);
         bahmniEncounterTransaction.setBahmniDiagnoses(bahmniDiagnoses);
         bahmniEncounterTransaction.setAccessionNotes(accessionNotesMapper.map(encounterTransaction));
-        AdditionalBahmniObservationFields additionalBahmniObservationFields = new AdditionalBahmniObservationFields(encounterTransaction.getEncounterUuid(), encounterTransaction.getEncounterDateTime(), null, null);
+        AdditionalBahmniObservationFields additionalBahmniObservationFields = new AdditionalBahmniObservationFields(encounterTransaction.getEncounterUuid(), encounterTransaction.getEncounterDateTime(), null,null);
         additionalBahmniObservationFields.setProviders(encounterTransaction.getProviders());
         List<BahmniObservation> bahmniObservations = fromETObsToBahmniObs.create(encounterTransaction.getObservations(), additionalBahmniObservationFields);
         bahmniEncounterTransaction.setObservations(obsRelationshipMapper.map(bahmniObservations, encounterTransaction.getEncounterUuid()));

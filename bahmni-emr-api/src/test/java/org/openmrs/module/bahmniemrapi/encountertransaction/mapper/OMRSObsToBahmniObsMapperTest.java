@@ -34,9 +34,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -49,10 +47,8 @@ public class OMRSObsToBahmniObsMapperTest {
 
     @Mock
     private ObservationTypeMatcher observationTypeMatcher;
-
     @Mock
     private User authenticatedUser;
-
     private ObservationMapper observationMapper;
 
     @Before

@@ -15,11 +15,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObser
 import org.openmrs.module.bahmniemrapi.obsrelation.contract.ObsRelationship;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyString;
@@ -28,15 +24,12 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class BahmniObservationSaveCommandImplTest {
-
     @Mock
     private ObsService obsService;
-
     @Mock
     private ObsRelationService obsRelationService;
 
-    private BahmniObservationSaveCommandImpl bahmniObservationSaveCommand;
-
+    BahmniObservationSaveCommandImpl bahmniObservationSaveCommand;
     @Before
     public void setUp() throws Exception {
         initMocks(this);
@@ -44,7 +37,7 @@ public class BahmniObservationSaveCommandImplTest {
     }
 
     @Test
-    public void shouldSaveObsRelationsForTheGivenObservations() {
+    public void shouldSaveObsRelationsForTheGivenObservations(){
         Date obsDate = new Date();
         List<BahmniObservation> bahmniObservations = new ArrayList<>();
         ObsRelationship targetObs = createObsRelationShip("relationTypeName", createBahmniObservation("target-uuid", "target-value", createConcept("target-concept-uuid", "target-concept-name"), obsDate, null));
@@ -54,8 +47,8 @@ public class BahmniObservationSaveCommandImplTest {
 
         Encounter currentEncounter = new Encounter();
         Set<Obs> obsList = new HashSet<>();
-        obsList.add(createObs("obs-uuid", "obs-value", obsDate));
-        obsList.add(createObs("obs-uuid2", "obs-value", obsDate));
+        obsList.add(createObs("obs-uuid","obs-value", obsDate));
+        obsList.add(createObs("obs-uuid2","obs-value", obsDate));
         obsList.add(createObs("target-uuid", "target-value", obsDate));
         currentEncounter.setObs(obsList);
 
@@ -69,19 +62,19 @@ public class BahmniObservationSaveCommandImplTest {
         ArgumentCaptor<org.bahmni.module.obsrelationship.model.ObsRelationship> obsRelationshipArgument = ArgumentCaptor.forClass(org.bahmni.module.obsrelationship.model.ObsRelationship.class);
         verify(obsRelationService).saveOrUpdate(obsRelationshipArgument.capture());
 
-        assertEquals("obs-uuid", obsRelationshipArgument.getValue().getSourceObs().getUuid());
-        assertEquals("obs-uuid", obsRelationshipArgument.getValue().getSourceObs().getUuid());
-        assertEquals(obsDate, obsRelationshipArgument.getValue().getSourceObs().getObsDatetime());
+        assertEquals("obs-uuid",obsRelationshipArgument.getValue().getSourceObs().getUuid());
+        assertEquals("obs-uuid",obsRelationshipArgument.getValue().getSourceObs().getUuid());
+        assertEquals(obsDate,obsRelationshipArgument.getValue().getSourceObs().getObsDatetime());
 
-        assertEquals("target-uuid", obsRelationshipArgument.getValue().getTargetObs().getUuid());
-        assertEquals("target-value", obsRelationshipArgument.getValue().getTargetObs().getValueText());
-        assertEquals(obsDate, obsRelationshipArgument.getValue().getTargetObs().getObsDatetime());
+        assertEquals("target-uuid",obsRelationshipArgument.getValue().getTargetObs().getUuid());
+        assertEquals("target-value",obsRelationshipArgument.getValue().getTargetObs().getValueText());
+        assertEquals(obsDate,obsRelationshipArgument.getValue().getTargetObs().getObsDatetime());
 
-        assertEquals("relationTypeName", obsRelationshipArgument.getValue().getObsRelationshipType().getName());
+        assertEquals("relationTypeName",obsRelationshipArgument.getValue().getObsRelationshipType().getName());
     }
 
     @Test
-    public void shouldSaveObsRelationsWhenTargetObsNotInCurrentEncounter() {
+    public void shouldSaveObsRelationsWhenTargetObsNotInCurrentEncounter(){
         Date obsDate = new Date();
         List<BahmniObservation> bahmniObservations = new ArrayList<>();
         ObsRelationship targetObs = createObsRelationShip("relationTypeName", createBahmniObservation("target-uuid", "target-value", createConcept("target-concept-uuid", "target-concept-name"), obsDate, null));
@@ -91,8 +84,8 @@ public class BahmniObservationSaveCommandImplTest {
 
         Encounter currentEncounter = new Encounter();
         Set<Obs> obsList = new HashSet<>();
-        obsList.add(createObs("obs-uuid", "obs-value", obsDate));
-        obsList.add(createObs("obs-uuid2", "obs-value", obsDate));
+        obsList.add(createObs("obs-uuid","obs-value", obsDate));
+        obsList.add(createObs("obs-uuid2","obs-value", obsDate));
         Obs targetObsOpenmrs = createObs("target-uuid", "target-value", obsDate);
         currentEncounter.setObs(obsList);
 
@@ -107,15 +100,15 @@ public class BahmniObservationSaveCommandImplTest {
         ArgumentCaptor<org.bahmni.module.obsrelationship.model.ObsRelationship> obsRelationshipArgument = ArgumentCaptor.forClass(org.bahmni.module.obsrelationship.model.ObsRelationship.class);
         verify(obsRelationService).saveOrUpdate(obsRelationshipArgument.capture());
 
-        assertEquals("obs-uuid", obsRelationshipArgument.getValue().getSourceObs().getUuid());
-        assertEquals("obs-uuid", obsRelationshipArgument.getValue().getSourceObs().getUuid());
-        assertEquals(obsDate, obsRelationshipArgument.getValue().getSourceObs().getObsDatetime());
+        assertEquals("obs-uuid",obsRelationshipArgument.getValue().getSourceObs().getUuid());
+        assertEquals("obs-uuid",obsRelationshipArgument.getValue().getSourceObs().getUuid());
+        assertEquals(obsDate,obsRelationshipArgument.getValue().getSourceObs().getObsDatetime());
 
-        assertEquals("target-uuid", obsRelationshipArgument.getValue().getTargetObs().getUuid());
-        assertEquals("target-value", obsRelationshipArgument.getValue().getTargetObs().getValueText());
-        assertEquals(obsDate, obsRelationshipArgument.getValue().getTargetObs().getObsDatetime());
+        assertEquals("target-uuid",obsRelationshipArgument.getValue().getTargetObs().getUuid());
+        assertEquals("target-value",obsRelationshipArgument.getValue().getTargetObs().getValueText());
+        assertEquals(obsDate,obsRelationshipArgument.getValue().getTargetObs().getObsDatetime());
 
-        assertEquals("relationTypeName", obsRelationshipArgument.getValue().getObsRelationshipType().getName());
+        assertEquals("relationTypeName",obsRelationshipArgument.getValue().getObsRelationshipType().getName());
     }
 
     private Obs createObs(String uuid, String value, Date obsDate) {
@@ -139,6 +132,7 @@ public class BahmniObservationSaveCommandImplTest {
         bahmniEncounterTransaction.setObservations(bahmniObservations);
         return bahmniEncounterTransaction;
     }
+
 
 
     private EncounterTransaction createUpdateEncounterTransaction() {

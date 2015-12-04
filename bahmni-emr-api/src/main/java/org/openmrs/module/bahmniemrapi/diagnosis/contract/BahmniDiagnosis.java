@@ -47,18 +47,20 @@ public class BahmniDiagnosis extends EncounterTransaction.Diagnosis {
         if (StringUtils.isEmpty(getExistingObs())) {
             return false;
         }
-        return getExistingObs().equals(diagnosis.getExistingObs());
+        return getExistingObs().equals(diagnosis.getExistingObs()) ;
     }
 
     public boolean isSameFreeTextAnswer(EncounterTransaction.Diagnosis diagnosis) {
         if (getFreeTextAnswer() == null || diagnosis.getFreeTextAnswer() == null)
             return false;
+
         return getFreeTextAnswer().equals(diagnosis.getFreeTextAnswer());
     }
 
     public boolean isSameCodedAnswer(EncounterTransaction.Diagnosis diagnosis) {
         if (getCodedAnswer() == null || diagnosis.getCodedAnswer() == null)
             return false;
+
         return getCodedAnswer().getUuid().equals(diagnosis.getCodedAnswer().getUuid());
     }
 

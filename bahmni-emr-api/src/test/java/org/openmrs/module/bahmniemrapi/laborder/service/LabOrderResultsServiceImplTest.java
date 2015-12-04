@@ -10,13 +10,7 @@ import org.openmrs.Visit;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -25,13 +19,13 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class LabOrderResultsServiceImplTest {
 
     @Mock
-    private EncounterTransaction encounterTransaction;
+    EncounterTransaction encounterTransaction;
 
     @Mock
-    private Encounter encounter;
+    Encounter encounter;
 
     @InjectMocks
-    private LabOrderResultsServiceImpl labOrderResultsServiceImpl;
+    LabOrderResultsServiceImpl labOrderResultsServiceImpl;
 
     @Before
     public void init() {
@@ -41,9 +35,9 @@ public class LabOrderResultsServiceImplTest {
 
     @Test
     public void filterTestOrders_EvenWhenTheyAreDiscontinued() throws Exception {
-        List<String> concepts = Arrays.asList("concept1", "concept2", "concept3");
+        List<String> concepts = Arrays.asList("concept1", "concept2","concept3");
         Map<String, Encounter> encounterTestOrderUuidMap = new HashMap<>();
-        EncounterTransaction.Order order1 = createOrder("uuid1", "concept1", Order.Action.NEW.toString(), null);
+        EncounterTransaction.Order order1 = createOrder("uuid1","concept1", Order.Action.NEW.toString(), null);
         EncounterTransaction.Order order2 = createOrder("uuid2", "concept2", Order.Action.REVISE.toString(), null);
         EncounterTransaction.Order order3 = createOrder("uuid3", "concept3", Order.Action.NEW.toString(), new Date());
         when(encounterTransaction.getOrders()).thenReturn(Arrays.asList(order1, order2, order3));
@@ -56,8 +50,8 @@ public class LabOrderResultsServiceImplTest {
     @Test
     public void filterTestOrders_shouldNotFilterByConcept() throws Exception {
         Map<String, Encounter> encounterTestOrderUuidMap = new HashMap<>();
-        EncounterTransaction.Order order1 = createOrder("uuid1", "concept1", Order.Action.NEW.toString(), null);
-        when(encounterTransaction.getOrders()).thenReturn(Collections.singletonList(order1));
+        EncounterTransaction.Order order1 = createOrder("uuid1","concept1", Order.Action.NEW.toString(), null);
+        when(encounterTransaction.getOrders()).thenReturn(Arrays.asList(order1));
 
         List<EncounterTransaction.Order> orders = labOrderResultsServiceImpl.filterTestOrders(encounterTransaction, encounter, encounterTestOrderUuidMap, null);
 
@@ -66,7 +60,7 @@ public class LabOrderResultsServiceImplTest {
 
     @Test
     public void mapOrdersWithObs_shouldMapAllObservationsToLabOrderResults() {
-        EncounterTransaction.Order order1 = createOrder("uuid1", "concept1", Order.Action.NEW.toString(), null);
+        EncounterTransaction.Order order1 = createOrder("uuid1","concept1", Order.Action.NEW.toString(), null);
         EncounterTransaction.Order order2 = createOrder("uuid2", "concept2", Order.Action.REVISE.toString(), null);
         List<EncounterTransaction.Order> testOrders = Arrays.asList(order1, order2);
         EncounterTransaction.Observation order1_Obs1 = createObservation("obsuuid1", order1.getUuid());
@@ -88,8 +82,8 @@ public class LabOrderResultsServiceImplTest {
 
     @Test
     public void mapOrdersWithObs_shouldMapLabTestWithoutResultToLabOrderResult() {
-        EncounterTransaction.Order order1 = createOrder("uuid1", "concept1", Order.Action.NEW.toString(), null);
-        List<EncounterTransaction.Order> testOrders = Collections.singletonList(order1);
+        EncounterTransaction.Order order1 = createOrder("uuid1","concept1", Order.Action.NEW.toString(), null);
+        List<EncounterTransaction.Order> testOrders = Arrays.asList(order1);
         Map<String, Encounter> orderToEncounterMapping = new HashMap<>();
         orderToEncounterMapping.put(order1.getUuid(), encounter);
 
@@ -100,8 +94,8 @@ public class LabOrderResultsServiceImplTest {
 
     @Test
     public void mapOrdersWithObs_shouldNOTMapDiscontinuedLabTestWithoutResultsToLabOrderResult() {
-        EncounterTransaction.Order discontinuedOrder = createOrder("uuid1", "concept1", Order.Action.NEW.toString(), new Date());
-        List<EncounterTransaction.Order> testOrders = Collections.singletonList(discontinuedOrder);
+        EncounterTransaction.Order discontinuedOrder = createOrder("uuid1","concept1", Order.Action.NEW.toString(), new Date());
+        List<EncounterTransaction.Order> testOrders = Arrays.asList(discontinuedOrder);
         Map<String, Encounter> orderToEncounterMapping = new HashMap<>();
         orderToEncounterMapping.put(discontinuedOrder.getUuid(), encounter);
 

@@ -27,7 +27,6 @@ public class DrugOrderUtil {
     public static Date aSecondBefore(Date date) {
         return addSeconds(date, -1);
     }
-
     public static Date aSecondAfter(Date date) {
         return addSeconds(date, 1);
     }

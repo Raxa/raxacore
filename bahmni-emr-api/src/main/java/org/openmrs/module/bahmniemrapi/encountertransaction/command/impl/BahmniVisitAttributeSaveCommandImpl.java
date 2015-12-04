@@ -17,9 +17,8 @@ public class BahmniVisitAttributeSaveCommandImpl implements EncounterDataPostSav
     public static final String ADMISSION_STATUS_ATTRIBUTE_TYPE = "Admission Status";
     public static final String OPD_VISIT_TYPE = "OPD";
     public static final String ADMISSION_ENCOUNTER_TYPE = "ADMISSION";
-    public static final String DISCHARGE_ENCOUNTER_TYPE = "DISCHARGE";
+    private static final String DISCHARGE_ENCOUNTER_TYPE = "DISCHARGE";
     public static final String IPD_VISIT_TYPE = "IPD";
-
     private VisitService visitService;
 
     @Autowired
@@ -56,9 +55,9 @@ public class BahmniVisitAttributeSaveCommandImpl implements EncounterDataPostSav
             visit.setAttribute(admissionStatus);
         }
         if (currentEncounter.getEncounterType().getName().equalsIgnoreCase(DISCHARGE_ENCOUNTER_TYPE)) {
-            if (currentEncounter.isVoided()) {
+            if(currentEncounter.isVoided()){
                 admissionStatus.setValueReferenceInternal("Admitted");
-            } else {
+            }else{
                 admissionStatus.setValueReferenceInternal("Discharged");
             }
             visit.setAttribute(admissionStatus);

@@ -7,23 +7,17 @@ import org.openmrs.module.bahmniemrapi.obsrelation.contract.ObsRelationship;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BahmniObservation implements Comparable<BahmniObservation> {
+public class BahmniObservation implements Comparable<BahmniObservation>{
 
     private Date encounterDateTime;
     private Date visitStartDateTime;
     private ObsRelationship targetObsRelation;
     private EncounterTransaction.Observation encounterTransactionObservation;
     private Collection<BahmniObservation> groupMembers = new ArrayList<>();
-    private Set<EncounterTransaction.Provider> providers = new HashSet<>();
+    public Set<EncounterTransaction.Provider> providers = new HashSet<>();
     private Boolean isAbnormal;
     private Long duration;
     private String type;
@@ -56,10 +50,10 @@ public class BahmniObservation implements Comparable<BahmniObservation> {
             if (value instanceof EncounterTransaction.Concept) {
                 EncounterTransaction.Concept concept = (EncounterTransaction.Concept) value;
                 return (concept.getShortName() == null ? concept.getName() : concept.getShortName());
-            } else if (value instanceof EncounterTransaction.Drug) {
+            } else if(value instanceof  EncounterTransaction.Drug){
                 EncounterTransaction.Drug drug = (EncounterTransaction.Drug) value;
                 return drug.getName();
-            } else if (value instanceof Boolean) {
+            }else if (value instanceof Boolean) {
                 return (Boolean) value ? "Yes" : "No";
             }
             return String.valueOf(value);
@@ -193,10 +187,9 @@ public class BahmniObservation implements Comparable<BahmniObservation> {
         this.providers = providers;
     }
 
-    public void addProvider(EncounterTransaction.Provider provider) {
+    public void addProvider(EncounterTransaction.Provider provider){
         this.providers.add(provider);
     }
-
     public Boolean getIsAbnormal() {
         return isAbnormal;
     }

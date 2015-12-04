@@ -17,7 +17,7 @@ import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisMetadata;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
@@ -39,25 +39,25 @@ public class BahmniDiagnosisSaveCommandImplTest {
 
     @Mock
     private BahmniDiagnosisMetadata bahmniDiagnosisMetadata;
-
     private BahmniDiagnosisSaveCommandImpl bahmniDiagnosisSaveCommand;
 
     @Before
     public void before() {
         initMocks(this);
         bahmniDiagnosisSaveCommand = new BahmniDiagnosisSaveCommandImpl(obsService, encounterService, bahmniDiagnosisMetadata);
+
     }
 
     @Test
-    public void shouldSaveWithExistingObs() {
+    public void shouldSaveWithExistingObs () {
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
         bahmniDiagnosisRequest.setEncounterUuid("encounterUuid");
         bahmniDiagnosisRequest.setExistingObs("existingUuid");
         bahmniDiagnosisRequest.setFirstDiagnosis(new BahmniDiagnosis());
-        bahmniEncounterTransaction.setBahmniDiagnoses(Collections.singletonList(bahmniDiagnosisRequest));
+        bahmniEncounterTransaction.setBahmniDiagnoses(Arrays.asList(bahmniDiagnosisRequest));
         EncounterTransaction updatedEncounterTransaction = new EncounterTransaction("visitUUid", "encounterUuid");
-        updatedEncounterTransaction.setDiagnoses(Collections.singletonList(new EncounterTransaction.Diagnosis().setExistingObs("existingUuid")));
+        updatedEncounterTransaction.setDiagnoses(Arrays.asList(new EncounterTransaction.Diagnosis().setExistingObs("existingUuid")));
 
         Encounter currentEncounter = setUpData();
         EncounterTransaction transaction = bahmniDiagnosisSaveCommand.save(bahmniEncounterTransaction, currentEncounter, updatedEncounterTransaction);
@@ -67,16 +67,16 @@ public class BahmniDiagnosisSaveCommandImplTest {
     }
 
     @Test
-    public void shouldSaveNewObs() {
+    public void shouldSaveNewObs () {
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
         bahmniDiagnosisRequest.setEncounterUuid("encounterUuid");
         bahmniDiagnosisRequest.setFreeTextAnswer("new Obs");
         bahmniDiagnosisRequest.setFirstDiagnosis(new BahmniDiagnosis());
-        bahmniEncounterTransaction.setBahmniDiagnoses(Collections.singletonList(bahmniDiagnosisRequest));
+        bahmniEncounterTransaction.setBahmniDiagnoses(Arrays.asList(bahmniDiagnosisRequest));
 
         EncounterTransaction updatedEncounterTransaction = new EncounterTransaction("visitUUid", "encounterUuid");
-        updatedEncounterTransaction.setDiagnoses(Collections.singletonList(new EncounterTransaction.Diagnosis().setFreeTextAnswer("new Obs").setExistingObs("existingUuid")));
+        updatedEncounterTransaction.setDiagnoses(Arrays.asList(new EncounterTransaction.Diagnosis().setFreeTextAnswer("new Obs").setExistingObs("existingUuid")));
 
         Encounter currentEncounter = setUpData();
         EncounterTransaction transaction = bahmniDiagnosisSaveCommand.save(bahmniEncounterTransaction, currentEncounter, updatedEncounterTransaction);
@@ -86,16 +86,16 @@ public class BahmniDiagnosisSaveCommandImplTest {
     }
 
     @Test(expected = BahmniEmrAPIException.class)
-    public void shouldThrowErrorForNotFindingAMatchingObservation() {
+    public void shouldThrowErrorForNotFindingAMatchingObservation () {
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
         bahmniDiagnosisRequest.setEncounterUuid("encounterUuid");
         bahmniDiagnosisRequest.setCodedAnswer(new EncounterTransaction.Concept("conceptId", "conceptname"));
         bahmniDiagnosisRequest.setFirstDiagnosis(new BahmniDiagnosis());
-        bahmniEncounterTransaction.setBahmniDiagnoses(Collections.singletonList(bahmniDiagnosisRequest));
+        bahmniEncounterTransaction.setBahmniDiagnoses(Arrays.asList(bahmniDiagnosisRequest));
 
         EncounterTransaction updatedEncounterTransaction = new EncounterTransaction("visitUUid", "encounterUuid");
-        updatedEncounterTransaction.setDiagnoses(Collections.singletonList(new EncounterTransaction.Diagnosis().setFreeTextAnswer("different Obs").setExistingObs("existingUuid")));
+        updatedEncounterTransaction.setDiagnoses(Arrays.asList(new EncounterTransaction.Diagnosis().setFreeTextAnswer("different Obs").setExistingObs("existingUuid")));
 
         Encounter currentEncounter = setUpData();
         EncounterTransaction transaction = bahmniDiagnosisSaveCommand.save(bahmniEncounterTransaction, currentEncounter, updatedEncounterTransaction);

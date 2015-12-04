@@ -2,31 +2,28 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/context
-		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+		http://www.springframework.org/schema/context/spring-context-3.0.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <context:component-scan base-package="org.openmrs.module.bahmniemrapi"/>
 
     <bean parent="serviceContext">
         <property name="moduleService">
             <list merge="true">
-                <value>org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService
-                </value>
+                <value>org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService</value>
                 <ref local="bahmniEncounterTransactionService"/>
             </list>
         </property>
     </bean>
 
-    <bean id="bahmniEncounterTransactionService"
-          class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+    <bean id="bahmniEncounterTransactionService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
             <ref bean="transactionManager"/>
         </property>
-        <property name="target">
-            <ref local="bahmniEncounterTransactionServiceTarget"/>
-        </property>
+        <property name="target"><ref local="bahmniEncounterTransactionServiceTarget"/></property>
         <property name="preInterceptors">
             <ref bean="serviceInterceptors"/>
         </property>
@@ -35,13 +32,11 @@
         </property>
     </bean>
 
-    <bean id="bahmniEncounterTransactionServiceTarget"
-          class="org.openmrs.module.bahmniemrapi.encountertransaction.impl.BahmniEncounterTransactionServiceImpl"
-          autowire="constructor">
-        <constructor-arg ref="encounterService"/>
-        <constructor-arg ref="emrEncounterService"/>
-        <constructor-arg ref="encounterTransactionMapper"/>
-        <constructor-arg ref="encounterTypeIdentifier"/>
+    <bean id="bahmniEncounterTransactionServiceTarget" class="org.openmrs.module.bahmniemrapi.encountertransaction.impl.BahmniEncounterTransactionServiceImpl" autowire="constructor">
+        <constructor-arg  ref="encounterService"/>
+        <constructor-arg  ref="emrEncounterService"/>
+        <constructor-arg  ref="encounterTransactionMapper"/>
+        <constructor-arg  ref="encounterTypeIdentifier"/>
         <constructor-arg>
             <list>
                 <ref bean="drugOrderSaveCommandImpl"/>
@@ -61,10 +56,10 @@
                 <ref bean="bahmniVisitAttributeSaveCommandImpl"/>
             </list>
         </constructor-arg>
-        <constructor-arg ref="bahmniEncounterTransactionMapper"/>
-        <constructor-arg ref="visitService"/>
-        <constructor-arg ref="patientService"/>
-        <constructor-arg ref="locationService"/>
-        <constructor-arg ref="providerService"/>
+        <constructor-arg ref="bahmniEncounterTransactionMapper" />
+        <constructor-arg ref="visitService" />
+        <constructor-arg ref="patientService" />
+        <constructor-arg ref="locationService" />
+        <constructor-arg ref="providerService" />
     </bean>
 </beans>

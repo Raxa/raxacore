@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class DrugOrderSaveCommandImplTest {
-
     @Mock
     private OrderMetadataService orderMetadataService;
 
@@ -36,6 +35,9 @@ public class DrugOrderSaveCommandImplTest {
     private ConceptService conceptService;
 
     public static final String DAY_DURATION_UNIT = "Day";
+    public static final String ONCE_A_DAY_CONCEPT_NAME = "Once A Day";
+    public static final String SNOMED_CT_DAYS_CODE = "258703001";
+
 
     DrugOrderSaveCommandImpl drugOrderSaveCommand;
 
@@ -67,7 +69,7 @@ public class DrugOrderSaveCommandImplTest {
     public void shouldSetDatesForDrugOrderConflictingWithCurrentDateOrders() {
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         Concept dayConcept = new Concept();
-        dayConcept.addConceptMapping(getConceptMap(Duration.SNOMED_CT_CONCEPT_SOURCE_HL7_CODE, Duration.SNOMED_CT_DAYS_CODE, "35543629-7d8c-11e1-909d-c80aa9edcf4e"));
+        dayConcept.addConceptMapping(getConceptMap(Duration.SNOMED_CT_CONCEPT_SOURCE_HL7_CODE, Duration.SNOMED_CT_DAYS_CODE,"35543629-7d8c-11e1-909d-c80aa9edcf4e"));
 
         when(conceptService.getConceptByName(DAY_DURATION_UNIT)).thenReturn(dayConcept);
         OrderFrequency orderFrequency = new OrderFrequency();

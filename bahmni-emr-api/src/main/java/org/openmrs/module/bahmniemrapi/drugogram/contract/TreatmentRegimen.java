@@ -1,11 +1,9 @@
 package org.openmrs.module.bahmniemrapi.drugogram.contract;
 
+import org.openmrs.Concept;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 public class TreatmentRegimen {
     private Set<EncounterTransaction.Concept> headers = new LinkedHashSet<>();

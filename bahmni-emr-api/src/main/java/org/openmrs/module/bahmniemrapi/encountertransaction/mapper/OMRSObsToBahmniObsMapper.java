@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Component(value = "omrsObsToBahmniObsMapper")
@@ -34,9 +34,9 @@ public class OMRSObsToBahmniObsMapper {
     public Collection<BahmniObservation> map(List<Obs> obsList, Collection<Concept> rootConcepts) {
         Collection<BahmniObservation> bahmniObservations = new ArrayList<>();
         for (Obs obs : obsList) {
-            if (observationTypeMatcher.getObservationType(obs).equals(ObservationTypeMatcher.ObservationType.OBSERVATION)) {
-                BahmniObservation bahmniObservation = map(obs);
-                if (CollectionUtils.isNotEmpty(rootConcepts)) {
+            if(observationTypeMatcher.getObservationType(obs).equals(ObservationTypeMatcher.ObservationType.OBSERVATION)){
+                BahmniObservation bahmniObservation =map(obs);
+                if(CollectionUtils.isNotEmpty(rootConcepts )){
                     bahmniObservation.setConceptSortWeight(ConceptSortWeightUtil.getSortWeightFor(bahmniObservation.getConcept().getName(), rootConcepts));
                 }
                 bahmniObservations.add(bahmniObservation);
@@ -46,7 +46,7 @@ public class OMRSObsToBahmniObsMapper {
     }
 
     public BahmniObservation map(Obs obs) {
-        String obsGroupUuid = obs.getObsGroup() == null ? null : obs.getObsGroup().getUuid();
+        String obsGroupUuid = obs.getObsGroup() == null? null : obs.getObsGroup().getUuid();
         AdditionalBahmniObservationFields additionalBahmniObservationFields =
                 new AdditionalBahmniObservationFields(
                         obs.getEncounter().getUuid(),
@@ -56,6 +56,6 @@ public class OMRSObsToBahmniObsMapper {
         for (EncounterProvider encounterProvider : obs.getEncounter().getEncounterProviders()) {
             additionalBahmniObservationFields.addProvider(bahmniProviderMapper.map(encounterProvider.getProvider()));
         }
-        return etObsToBahmniObsMapper.map(observationMapper.map(obs), additionalBahmniObservationFields, Collections.singletonList(obs.getConcept()), true);
+        return etObsToBahmniObsMapper.map(observationMapper.map(obs), additionalBahmniObservationFields, Arrays.asList(obs.getConcept()), true);
     }
 }
