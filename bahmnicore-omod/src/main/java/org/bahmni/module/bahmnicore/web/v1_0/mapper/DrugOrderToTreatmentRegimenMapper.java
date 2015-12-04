@@ -64,9 +64,10 @@ public class DrugOrderToTreatmentRegimenMapper {
 					Date dateActivated = drugOrder.getScheduledDate() != null ?
 							getOnlyDate(drugOrder.getScheduledDate()) :
 							getOnlyDate(drugOrder.getDateActivated());
+					if (autoExpiryDate == null)
+						return true;
 					return dateActivated.before(autoExpiryDate);
-				}
-				catch (ParseException e) {
+				} catch (ParseException e) {
 					e.printStackTrace();
 				}
 				return false;
@@ -90,6 +91,8 @@ public class DrugOrderToTreatmentRegimenMapper {
 					Date stopDate = drugOrder.getDateStopped() != null ?
 							getOnlyDate(drugOrder.getDateStopped()) :
 							getOnlyDate(drugOrder.getAutoExpireDate());
+					if (stopDate == null)
+						return false;
 					return startDate.equals(stopDate);
 				}
 				catch (ParseException e) {
@@ -146,11 +149,13 @@ public class DrugOrderToTreatmentRegimenMapper {
 			DrugOrder drugOrder1 = (DrugOrder) order1;
 
 			constructRowsForDateActivated(dateActivatedRow, drugOrder1);
-			constructRowsForDateStopped(dateStoppedRow, drugOrder1);
+			if (dateStoppedRow != null)
+				constructRowsForDateStopped(dateStoppedRow, drugOrder1);
 
 		}
 		regimenRows.addAll(dateActivatedRow);
-		regimenRows.addAll(dateStoppedRow);
+		if (dateStoppedRow != null)
+			regimenRows.addAll(dateStoppedRow);
 	}
 
 	private void constructRowsForDateStopped(SortedSet<RegimenRow> dateStoppedRow, DrugOrder drugOrder1)
@@ -158,16 +163,18 @@ public class DrugOrderToTreatmentRegimenMapper {
 		Date stoppedDate =
 				drugOrder1.getDateStopped() != null ? drugOrder1.getDateStopped() : drugOrder1.getAutoExpireDate();
 
-		for (RegimenRow regimenRow : dateStoppedRow) {
-			constructRowForDateStopped(drugOrder1, stoppedDate, regimenRow);
-		}
+        for (RegimenRow regimenRow : dateStoppedRow) {
+            constructRowForDateStopped(drugOrder1, stoppedDate, regimenRow);
+        }
 	}
 
 	private void constructRowForDateStopped(DrugOrder drugOrder1, Date stoppedDate, RegimenRow regimenRow)
 			throws ParseException {
 		if (orderCrossDate(drugOrder1, regimenRow.getDate())) {
 
-			if (getOnlyDate(stoppedDate).equals(regimenRow.getDate()))
+			if (stoppedDate == null)
+				regimenRow.addDrugs(drugOrder1.getConcept().getName().getName(), drugOrder1.getDose().toString());
+			else if (getOnlyDate(stoppedDate).equals(regimenRow.getDate()))
 				regimenRow.addDrugs(drugOrder1.getConcept().getName().getName(), "Stop");
 			else
 				regimenRow.addDrugs(drugOrder1.getConcept().getName().getName(), drugOrder1.getDose().toString());
@@ -200,6 +207,8 @@ public class DrugOrderToTreatmentRegimenMapper {
 		Date dateActivated = drugOrder.getScheduledDate() != null ?
 				getOnlyDate(drugOrder.getScheduledDate()) :
 				getOnlyDate(drugOrder.getDateActivated());
+		if (autoExpiryDate == null)
+			return true;
 		return dateActivated.equals(date) || autoExpiryDate.equals(date) || dateActivated.before(date) && autoExpiryDate
 				.after(date);
 	}
@@ -218,7 +227,8 @@ public class DrugOrderToTreatmentRegimenMapper {
 		Date date = drugOrder.getDateStopped() != null ?
 				getOnlyDate(drugOrder.getDateStopped()) :
 				getOnlyDate(drugOrder.getAutoExpireDate());
-
+		if (date == null)
+			return null;
 		return getRegimenRowFor(regimenRows, date);
 	}
 
@@ -240,6 +250,8 @@ public class DrugOrderToTreatmentRegimenMapper {
 	}
 
 	private Date getOnlyDate(Date date) throws ParseException {
+		if(date == null)
+			return null;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		return sdf.parse(sdf.format(date));
 	}

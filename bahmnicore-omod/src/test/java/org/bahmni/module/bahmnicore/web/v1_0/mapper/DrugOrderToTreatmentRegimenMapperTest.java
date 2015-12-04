@@ -553,4 +553,34 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         return sdf.parse(sdf.format(date));
     }
 
+    @Test
+    public void shouldMapDrugOrdersWhichStartOnSameDateAndOneEndsInFiveDaysAnotherContinues() throws Exception {
+        ArrayList<Order> drugOrders = new ArrayList<>();
+        Date now = new Date();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(now).withDose(200.0).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
+        drugOrders.add(ibeprofen);
+        drugOrders.add(paracetemol);
+
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
+
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
+        assertEquals("Ibeprofen", headerIterator.next().getName());
+        assertEquals("Paracetemol", headerIterator.next().getName());
+        assertEquals(2, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
+
+        RegimenRow startDateRow = rowIterator.next();
+        assertEquals(getOnlyDate(now), startDateRow.getDate());
+        assertEquals("1000.0", startDateRow.getDrugs().get("Ibeprofen"));
+        assertEquals("200.0", startDateRow.getDrugs().get("Paracetemol"));
+
+        RegimenRow stoppedDateRow = rowIterator.next();
+        assertEquals(getOnlyDate(addDays(now, 5)), stoppedDateRow.getDate());
+        assertEquals("Stop", stoppedDateRow.getDrugs().get("Ibeprofen"));
+        assertEquals("200.0", stoppedDateRow.getDrugs().get("Paracetemol"));
+    }
+
 }
