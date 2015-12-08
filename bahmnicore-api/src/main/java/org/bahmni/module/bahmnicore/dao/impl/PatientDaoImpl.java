@@ -33,7 +33,7 @@ public class PatientDaoImpl implements PatientDao {
     private static final String PERSON_ATTRIBUTE_IDS_PARAMETER = "personAttributeTypeIds";
 
     public static final String WHERE_CLAUSE = " where p.voided = 'false' and pn.voided = 'false' and pn.preferred=true ";
-    public static final String SELECT_STATEMENT = "select p.uuid as uuid, p.person_id as personId, pi.identifier as identifier, pn.given_name as givenName, pn.middle_name as middleName, pn.family_name as familyName, p.gender as gender, p.birthdate as birthDate," +
+    public static final String SELECT_STATEMENT = "select p.uuid as uuid, pi.identifier as identifier, pn.given_name as givenName, pn.middle_name as middleName, pn.family_name as familyName, p.gender as gender, p.birthdate as birthDate," +
             " p.death_date as deathDate, pa.:addressFieldName as addressFieldValue, p.date_created as dateCreated, v.uuid as activeVisitUuid ";
     public static final String FROM_TABLE = " from patient pat " ;
     public static final String JOIN_CLAUSE =  " inner join person p on pat.patient_id=p.person_id " +
@@ -85,7 +85,6 @@ public class PatientDaoImpl implements PatientDao {
                 .addScalar("uuid", StandardBasicTypes.STRING)
                 .addScalar("identifier", StandardBasicTypes.STRING)
                 .addScalar("givenName", StandardBasicTypes.STRING)
-                .addScalar("personId", StandardBasicTypes.INTEGER)
                 .addScalar("middleName", StandardBasicTypes.STRING)
                 .addScalar("familyName", StandardBasicTypes.STRING)
                 .addScalar("gender", StandardBasicTypes.STRING)
