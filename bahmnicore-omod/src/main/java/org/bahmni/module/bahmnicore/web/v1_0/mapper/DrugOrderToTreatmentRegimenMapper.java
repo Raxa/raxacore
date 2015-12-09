@@ -172,11 +172,12 @@ public class DrugOrderToTreatmentRegimenMapper {
 			throws ParseException {
 		if (orderCrossDate(drugOrder1, regimenRow.getDate())) {
 
-			if (stoppedDate == null)
+			Date startDate = drugOrder1.getDateActivated() != null ? drugOrder1.getDateActivated(): drugOrder1.getScheduledDate();
+			if (stoppedDate == null && (startDate.before(regimenRow.getDate()) || startDate.equals(regimenRow.getDate()) ))
 				regimenRow.addDrugs(drugOrder1.getConcept().getName().getName(), drugOrder1.getDose().toString());
-			else if (getOnlyDate(stoppedDate).equals(regimenRow.getDate()))
+			else if (stoppedDate != null && getOnlyDate(stoppedDate).equals(regimenRow.getDate()))
 				regimenRow.addDrugs(drugOrder1.getConcept().getName().getName(), "Stop");
-			else
+			else if (stoppedDate != null )
 				regimenRow.addDrugs(drugOrder1.getConcept().getName().getName(), drugOrder1.getDose().toString());
 		}
 	}
@@ -192,10 +193,15 @@ public class DrugOrderToTreatmentRegimenMapper {
 		Date dateActivated = drugOrder1.getScheduledDate() != null ?
 				getOnlyDate(drugOrder1.getScheduledDate()) :
 				getOnlyDate(drugOrder1.getDateActivated());
-		if (orderCrossDate(drugOrder1, regimenRow.getDate()) && !"Stop"
+		Date dateStopped = drugOrder1.getAutoExpireDate() != null ?
+				getOnlyDate(drugOrder1.getAutoExpireDate()) :
+				getOnlyDate(drugOrder1.getDateStopped());
+		if (dateStopped == null && (dateActivated.before(regimenRow.getDate()) || dateActivated.equals(regimenRow.getDate())) )
+			regimenRow.addDrugs(drugOrder1.getConcept().getName().getName(), drugOrder1.getDose().toString());
+		else if (dateStopped != null && orderCrossDate(drugOrder1, regimenRow.getDate()) && !"Stop"
 				.equals(regimenRow.getDrugs().get(drugOrder1.getConcept().getName().getName())))
 			regimenRow.addDrugs(drugOrder1.getConcept().getName().getName(), drugOrder1.getDose().toString());
-		else if (orderCrossDate(drugOrder1, regimenRow.getDate()) && drugOrder1.getAction().equals(Order.Action.REVISE)
+		else if (dateStopped != null && orderCrossDate(drugOrder1, regimenRow.getDate()) && drugOrder1.getAction().equals(Order.Action.REVISE)
 				&& regimenRow.getDate().equals(dateActivated))
 			regimenRow.addDrugs(drugOrder1.getConcept().getName().getName(), drugOrder1.getDose().toString());
 	}
