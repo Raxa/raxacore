@@ -35,6 +35,7 @@ public class ConceptMapper {
         concept.setUnits(conceptRow.getUnits());
         concept.setHiNormal(conceptRow.getHiNormal());
         concept.setLowNormal(conceptRow.getLowNormal());
+        concept.setLocale(conceptRow.getLocale());
         addSynonyms(conceptRow, concept);
         addAnswers(conceptRow, concept);
         addConceptReferenceTerms(conceptRow, concept);
@@ -77,6 +78,7 @@ public class ConceptMapper {
         String shortName = concept.getDisplayName();
         String conceptClass = concept.getClassName();
         String conceptDatatype = concept.getDataType();
+        String locale = concept.getLocale();
         List<KeyValue> conceptSynonyms = getKeyValueList("synonym", concept.getSynonyms());
         List<KeyValue> conceptAnswers = getKeyValueList("answer", concept.getAnswers());
 
@@ -88,6 +90,6 @@ public class ConceptMapper {
         String units = concept.getUnits();
         String hiNormal = concept.getHiNormal();
         String lowNormal = concept.getLowNormal();
-        return new ConceptRow(uuid, name, description, conceptClass, shortName, conceptDatatype, units, hiNormal, lowNormal, referenceTermRows, conceptSynonyms, conceptAnswers);
+        return new ConceptRow(uuid, name, description, conceptClass, shortName, conceptDatatype, units, hiNormal, lowNormal, referenceTermRows, conceptSynonyms, conceptAnswers,locale);
     }
 }
