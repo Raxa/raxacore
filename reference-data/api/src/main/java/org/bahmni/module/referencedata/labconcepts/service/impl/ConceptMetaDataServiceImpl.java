@@ -41,6 +41,11 @@ public class ConceptMetaDataServiceImpl implements ConceptMetaDataService {
             return conceptService.getConceptByUuid(uuid);
         }
 
+        Concept conceptByName = conceptService.getConceptByName(uniqueName);
+        if (conceptByName != null) {
+            return conceptByName;
+        }
+
         administrationService = Context.getAdministrationService();
         List<Locale> locales = administrationService.getAllowedLocales();
         List<ConceptSearchResult> conceptSearchResults = conceptService.getConcepts(uniqueName, locales, false, null, null, null, null, null, null, null);
