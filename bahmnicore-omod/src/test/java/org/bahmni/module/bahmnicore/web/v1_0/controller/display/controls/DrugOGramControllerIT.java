@@ -193,6 +193,55 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
         assertEquals("Stop", fifthRow.getDrugs().get("Paracetamol"));
     }
 
+    @Test
+    public void shouldFetchSpecifiedDrugsWhenWeSpecifyConceptNamesInRegimenTableFormat() throws Exception {
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", Arrays.asList("Ibuprofen", "Crocin"));
+
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        assertEquals(3, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
+
+        RegimenRow firstRow = rowIterator.next();
+        assertEquals(getOnlyDate(stringToDate("2005-09-23 09:00:00")), firstRow.getDate());
+        assertEquals("1000.0", firstRow.getDrugs().get("Ibuprofen"));
+        assertEquals("450.0", firstRow.getDrugs().get("Crocin"));
+
+        RegimenRow secondRow = rowIterator.next();
+        assertEquals(getOnlyDate(stringToDate("2005-09-26 00:00:00.0")), secondRow.getDate());
+        assertEquals("1000.0", secondRow.getDrugs().get("Ibuprofen"));
+        assertEquals("Stop", secondRow.getDrugs().get("Crocin"));
+
+        RegimenRow thirdRow = rowIterator.next();
+        assertEquals(getOnlyDate(stringToDate("2005-09-30 00:00:00.0")), thirdRow.getDate());
+        assertEquals("Stop", thirdRow.getDrugs().get("Ibuprofen"));
+    }
+
+    @Test
+    public void shouldNotFetchParacetamolAsItWasNotPrescribedToPatientButSpecifiedInConceptNames() throws Exception {
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", Arrays.asList("Ibuprofen", "Crocin", "Paracetamol"));
+
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        assertEquals(3, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
+
+        RegimenRow firstRow = rowIterator.next();
+        assertEquals(getOnlyDate(stringToDate("2005-09-23 09:00:00")), firstRow.getDate());
+        assertEquals("1000.0", firstRow.getDrugs().get("Ibuprofen"));
+        assertEquals("450.0", firstRow.getDrugs().get("Crocin"));
+
+        RegimenRow secondRow = rowIterator.next();
+        assertEquals(getOnlyDate(stringToDate("2005-09-26 00:00:00.0")), secondRow.getDate());
+        assertEquals("1000.0", secondRow.getDrugs().get("Ibuprofen"));
+        assertEquals("Stop", secondRow.getDrugs().get("Crocin"));
+
+        RegimenRow thirdRow = rowIterator.next();
+        assertEquals(getOnlyDate(stringToDate("2005-09-30 00:00:00.0")), thirdRow.getDate());
+        assertEquals("Stop", thirdRow.getDrugs().get("Ibuprofen"));
+    }
+
+
     public Date getOnlyDate(Date date) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         return sdf.parse(sdf.format(date));

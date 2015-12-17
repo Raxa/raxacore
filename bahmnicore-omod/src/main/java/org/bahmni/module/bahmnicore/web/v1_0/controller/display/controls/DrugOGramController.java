@@ -7,7 +7,6 @@ import org.openmrs.Concept;
 import org.openmrs.Order;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.BaseTableExtension;
-import org.openmrs.module.bahmniemrapi.drugogram.contract.TableExtension;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/drugOGram/regimen")
@@ -45,7 +42,7 @@ public class DrugOGramController {
                               @RequestParam(value = "drugs", required = false) List<String> drugs) throws ParseException {
         Set<Concept> conceptsForDrugs = getConceptsForDrugs(drugs);
         List<Order> allDrugOrders = bahmniDrugOrderService.getAllDrugOrders(patientUuid, conceptsForDrugs);
-        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(allDrugOrders, conceptsForDrugs);
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(allDrugOrders);
         BaseTableExtension<TreatmentRegimen> extension = bahmniExtensions.getExtension("TreatmentRegimenExtension.groovy");
         extension.update(treatmentRegimen);
         return treatmentRegimen;
@@ -53,7 +50,7 @@ public class DrugOGramController {
 
     private Set<Concept> getConceptsForDrugs(List<String> drugs) {
         if (drugs == null) return null;
-        Set<Concept> drugConcepts = new HashSet<>();
+        Set<Concept> drugConcepts = new LinkedHashSet<>();
         for (String drug : drugs) {
             Concept concept = conceptService.getConceptByName(drug);
             getDrugs(concept, drugConcepts);

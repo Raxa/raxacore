@@ -46,12 +46,12 @@ public class DrugOGramControllerTest {
         ArrayList<Order> drugOrders = new ArrayList<>();
         when(bahmniDrugOrderService.getAllDrugOrders("patientUuid", null)).thenReturn(drugOrders);
         TreatmentRegimen expected = new TreatmentRegimen();
-        when(drugOrderToTreatmentRegimenMapper.map(drugOrders, null)).thenReturn(expected);
+        when(drugOrderToTreatmentRegimenMapper.map(drugOrders)).thenReturn(expected);
 
         TreatmentRegimen actual = drugOGramController.getRegimen("patientUuid", null);
 
         verify(bahmniDrugOrderService, times(1)).getAllDrugOrders("patientUuid", null);
-        verify(drugOrderToTreatmentRegimenMapper, times(1)).map(drugOrders, null);
+        verify(drugOrderToTreatmentRegimenMapper, times(1)).map(drugOrders);
         assertEquals(expected, actual);
         assertEquals(0, expected.getHeaders().size());
     }
@@ -66,12 +66,12 @@ public class DrugOGramControllerTest {
         concepts.add(paracetamol);
         when(bahmniDrugOrderService.getAllDrugOrders("patientUuid", concepts)).thenReturn(drugOrders);
         TreatmentRegimen expected = new TreatmentRegimen();
-        when(drugOrderToTreatmentRegimenMapper.map(drugOrders, concepts)).thenReturn(expected);
+        when(drugOrderToTreatmentRegimenMapper.map(drugOrders)).thenReturn(expected);
 
         TreatmentRegimen actual = drugOGramController.getRegimen("patientUuid", Arrays.asList("Paracetamol"));
 
         verify(bahmniDrugOrderService, times(1)).getAllDrugOrders("patientUuid", concepts);
-        verify(drugOrderToTreatmentRegimenMapper, times(1)).map(drugOrders, concepts);
+        verify(drugOrderToTreatmentRegimenMapper, times(1)).map(drugOrders);
         assertEquals(expected, actual);
         assertEquals(0, expected.getHeaders().size());
     }
@@ -88,12 +88,12 @@ public class DrugOGramControllerTest {
         concepts.add(paracetamol);
         when(bahmniDrugOrderService.getAllDrugOrders("patientUuid", concepts)).thenReturn(drugOrders);
         TreatmentRegimen expected = new TreatmentRegimen();
-        when(drugOrderToTreatmentRegimenMapper.map(drugOrders, concepts)).thenReturn(expected);
+        when(drugOrderToTreatmentRegimenMapper.map(drugOrders)).thenReturn(expected);
 
         TreatmentRegimen actual = drugOGramController.getRegimen("patientUuid", Arrays.asList("TB Drugs"));
 
         verify(bahmniDrugOrderService, times(1)).getAllDrugOrders("patientUuid", concepts);
-        verify(drugOrderToTreatmentRegimenMapper, times(1)).map(drugOrders, concepts);
+        verify(drugOrderToTreatmentRegimenMapper, times(1)).map(drugOrders);
         assertEquals(expected, actual);
         assertEquals(0, expected.getHeaders().size());
     }
