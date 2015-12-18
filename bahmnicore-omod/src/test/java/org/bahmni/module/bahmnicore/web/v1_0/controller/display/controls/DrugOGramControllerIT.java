@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.RegimenRow;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.DateFormat;
@@ -220,6 +221,38 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
         assertNotNull(treatmentRegimen);
         assertEquals(2, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
+        assertEquals("Ibuprofen", headerIterator.next().getName());
+        assertEquals("Crocin", headerIterator.next().getName());
+        assertEquals(false, headerIterator.hasNext());
+        assertEquals(3, treatmentRegimen.getRows().size());
+        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
+
+        RegimenRow firstRow = rowIterator.next();
+        assertEquals(getOnlyDate(stringToDate("2005-09-23 09:00:00")), firstRow.getDate());
+        assertEquals("1000.0", firstRow.getDrugs().get("Ibuprofen"));
+        assertEquals("450.0", firstRow.getDrugs().get("Crocin"));
+
+        RegimenRow secondRow = rowIterator.next();
+        assertEquals(getOnlyDate(stringToDate("2005-09-26 00:00:00.0")), secondRow.getDate());
+        assertEquals("1000.0", secondRow.getDrugs().get("Ibuprofen"));
+        assertEquals("Stop", secondRow.getDrugs().get("Crocin"));
+
+        RegimenRow thirdRow = rowIterator.next();
+        assertEquals(getOnlyDate(stringToDate("2005-09-30 00:00:00.0")), thirdRow.getDate());
+        assertEquals("Stop", thirdRow.getDrugs().get("Ibuprofen"));
+    }
+
+    @Test
+    public void shouldFetchSpecifiedDrugsWhenWeSpecifyConceptNamesInRegimenTableFormatCrocinShouldComeFirst() throws Exception {
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", Arrays.asList("Crocin", "Ibuprofen"), null, null);
+
+        assertNotNull(treatmentRegimen);
+        assertEquals(2, treatmentRegimen.getHeaders().size());
+        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
+        assertEquals("Crocin", headerIterator.next().getName());
+        assertEquals("Ibuprofen", headerIterator.next().getName());
+        assertEquals(false, headerIterator.hasNext());
         assertEquals(3, treatmentRegimen.getRows().size());
         Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
