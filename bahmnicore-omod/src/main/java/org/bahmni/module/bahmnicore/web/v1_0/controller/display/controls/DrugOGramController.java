@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.DrugOrderToTreatmentRegimenMapper;
@@ -42,10 +43,25 @@ public class DrugOGramController {
                               @RequestParam(value = "drugs", required = false) List<String> drugs) throws ParseException {
         Set<Concept> conceptsForDrugs = getConceptsForDrugs(drugs);
         List<Order> allDrugOrders = bahmniDrugOrderService.getAllDrugOrders(patientUuid, conceptsForDrugs);
-        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(allDrugOrders);
+        if (!CollectionUtils.isEmpty(conceptsForDrugs)) {
+            conceptsForDrugs = filterConceptsForDrugOrders(conceptsForDrugs, allDrugOrders);
+        }
+        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(allDrugOrders, conceptsForDrugs);
         BaseTableExtension<TreatmentRegimen> extension = bahmniExtensions.getExtension("TreatmentRegimenExtension.groovy");
         extension.update(treatmentRegimen);
         return treatmentRegimen;
+    }
+
+    private Set<Concept> filterConceptsForDrugOrders(Set<Concept> conceptsForDrugs, List<Order> allDrugOrders) {
+        Set<Concept> drugConcepts = new LinkedHashSet<>();
+        for (Concept conceptsForDrug : conceptsForDrugs) {
+            for (Order drugOrder : allDrugOrders) {
+                if (conceptsForDrug.equals(drugOrder.getConcept()) && !drugConcepts.contains(conceptsForDrug)){
+                    drugConcepts.add(conceptsForDrug);
+                }
+            }
+        }
+        return drugConcepts;
     }
 
     private Set<Concept> getConceptsForDrugs(List<String> drugs) {
