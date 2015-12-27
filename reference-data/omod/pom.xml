@@ -130,6 +130,11 @@
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>addresshierarchy-omod</artifactId>
+            <version>2.7</version>
+        </dependency>
     </dependencies>
 
     <build>
