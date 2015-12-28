@@ -18,10 +18,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 @PrepareForTest({Context.class, AddressHierarchyEntryEventInterceptor.class})
 @RunWith(PowerMockRunner.class)
@@ -44,18 +45,51 @@ public class AddressHierarchyEntryEventInterceptorTest {
         ArrayList<PlatformTransactionManager> platformTransactionManagers = new ArrayList<>();
         platformTransactionManagers.add(new HibernateTransactionManager());
         when(Context.getRegisteredComponents(PlatformTransactionManager.class)).thenReturn(platformTransactionManagers);
-        PowerMockito.whenNew(AtomFeedSpringTransactionManager.class).withAnyArguments().thenReturn(atomFeedSpringTransactionManager);
+        whenNew(AtomFeedSpringTransactionManager.class).withAnyArguments().thenReturn(atomFeedSpringTransactionManager);
         publishedFeed = new AddressHierarchyEntryEventInterceptor();
 
     }
 
     @Test
-    public void shouldPublishUpdateEventToFeedAfterUpdateConceptOperation() throws Throwable {
+    public void shouldPublishToFeedAfterSavingAddressHierarchyEntry() throws Throwable {
         Method method = AddressHierarchyService.class.getMethod("saveAddressHierarchyEntry", AddressHierarchyEntry.class);
         Object[] objects = new Object[]{addressHierarchyEntry};
 
-        publishedFeed.afterReturning(addressHierarchyEntry, method, objects, null);
+        publishedFeed.afterReturning(null, method, objects, null);
         verify(atomFeedSpringTransactionManager).executeWithTransaction(any(AFTransactionWorkWithoutResult.class));
     }
 
+    @Test
+    public void shouldPublishToFeedAfterSavingAddressHierarchyEntries() throws Throwable {
+        Method method = AddressHierarchyService.class.getMethod("saveAddressHierarchyEntries", List.class);
+        ArrayList<Object> entries = new ArrayList<>();
+        entries.add(addressHierarchyEntry);
+        entries.add(addressHierarchyEntry);
+        Object[] objects = new Object[]{entries};
+
+        publishedFeed.afterReturning(null, method, objects, null);
+        verify(atomFeedSpringTransactionManager, times(2)).executeWithTransaction(any(AFTransactionWorkWithoutResult.class));
+    }
+
+    @Test
+    public void shouldNotCreateEventIfParameterIsNull() throws Exception {
+        Method method = AddressHierarchyService.class.getMethod("saveAddressHierarchyEntries", List.class);
+
+        publishedFeed.afterReturning(null, method, null, null);
+
+        verify(atomFeedSpringTransactionManager, never()).executeWithTransaction(any(AFTransactionWorkWithoutResult.class));
+    }
+
+    @Test
+    public void shouldNotCreateEventIfEntryInParameterIsNull() throws Exception {
+        Method method = AddressHierarchyService.class.getMethod("saveAddressHierarchyEntries", List.class);
+        ArrayList<Object> entries = new ArrayList<>();
+        entries.add(null);
+
+        Object[] objects = new Object[]{entries};
+
+        publishedFeed.afterReturning(null, method, objects, null);
+
+        verify(atomFeedSpringTransactionManager, never()).executeWithTransaction(any(AFTransactionWorkWithoutResult.class));
+    }
 }

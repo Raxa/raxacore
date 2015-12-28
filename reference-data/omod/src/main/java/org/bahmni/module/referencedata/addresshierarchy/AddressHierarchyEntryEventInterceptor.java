@@ -18,15 +18,17 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-public class AddressHierarchyEntryEventInterceptor implements AfterReturningAdvice{
+import static java.util.Arrays.asList;
 
+public class AddressHierarchyEntryEventInterceptor implements AfterReturningAdvice {
 
     private final AtomFeedSpringTransactionManager atomFeedSpringTransactionManager;
     private final EventService eventService;
-    private String SAVE_LOCATION_METHOD = "saveAddressHierarchyEntry";
-    private String TEMPLATE = "/openmrs/ws/rest/v1/addressHierarchy/%s";
-    public static final String CATEGORY = "addressHierarchy";
-    public static final String TITLE = "addressHierarchy";
+
+    private static final List<String> SAVE_ADDRESS_HIERARCY_ENTRY_METHODS = asList("saveAddressHierarchyEntries", "saveAddressHierarchyEntry");
+    private static final String TEMPLATE = "/openmrs/ws/rest/v1/addressHierarchy/%s";
+    private static final String CATEGORY = "addressHierarchy";
+    private static final String TITLE = "addressHierarchy";
 
     public AddressHierarchyEntryEventInterceptor() {
         atomFeedSpringTransactionManager = new AtomFeedSpringTransactionManager(getSpringPlatformTransactionManager());
@@ -34,25 +36,47 @@ public class AddressHierarchyEntryEventInterceptor implements AfterReturningAdvi
         this.eventService = new EventServiceImpl(allEventRecordsQueue);
     }
 
+    @Override
     public void afterReturning(Object returnValue, Method method, Object[] arguments, Object target) throws Exception {
-        if (method.getName().equals(SAVE_LOCATION_METHOD)) {
-            String contents = String.format(TEMPLATE, ((AddressHierarchyEntry) returnValue).getUuid());
-            final Event event = new Event(UUID.randomUUID().toString(), TITLE, DateTime.now(), (URI) null, contents, CATEGORY);
-
-            atomFeedSpringTransactionManager.executeWithTransaction(
-                    new AFTransactionWorkWithoutResult() {
-                        @Override
-                        protected void doInTransaction() {
-                            eventService.notify(event);
-                        }
-                        @Override
-                        public PropagationDefinition getTxPropagationDefinition() {
-                            return PropagationDefinition.PROPAGATION_REQUIRED;
-                        }
-                    }
-            );
-
+        if (SAVE_ADDRESS_HIERARCY_ENTRY_METHODS.contains(method.getName())) {
+            createEvents(arguments);
         }
+    }
+
+    private void createEvents(Object[] arguments) {
+        if (arguments == null) {
+            return;
+        }
+        if (arguments[0] instanceof List) {
+            List<AddressHierarchyEntry> entries = (List<AddressHierarchyEntry>) arguments[0];
+            for (AddressHierarchyEntry entry : entries) {
+                createAndNotifyEvent(entry);
+            }
+            return;
+        }
+        createAndNotifyEvent((AddressHierarchyEntry) arguments[0]);
+    }
+
+    private void createAndNotifyEvent(AddressHierarchyEntry entry) {
+        if (entry == null) {
+            return;
+        }
+        String contents = String.format(TEMPLATE, entry.getUuid());
+        final Event event = new Event(UUID.randomUUID().toString(), TITLE, DateTime.now(), (URI) null, contents, CATEGORY);
+
+        atomFeedSpringTransactionManager.executeWithTransaction(
+                new AFTransactionWorkWithoutResult() {
+                    @Override
+                    protected void doInTransaction() {
+                        eventService.notify(event);
+                    }
+
+                    @Override
+                    public PropagationDefinition getTxPropagationDefinition() {
+                        return PropagationDefinition.PROPAGATION_REQUIRED;
+                    }
+                }
+        );
     }
 
     private PlatformTransactionManager getSpringPlatformTransactionManager() {
