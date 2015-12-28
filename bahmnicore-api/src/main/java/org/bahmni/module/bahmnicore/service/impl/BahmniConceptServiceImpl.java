@@ -56,7 +56,7 @@ public class BahmniConceptServiceImpl implements BahmniConceptService{
     private Concept getConcept(String conceptSetName) {
         Concept conceptSet = bahmniConceptDao.getConceptByFullySpecifiedName(conceptSetName);
         if (conceptSet == null) {
-            throw new ConceptNotFoundException("Concept '" + conceptSet + "' not found");
+            throw new ConceptNotFoundException("Concept '" + conceptSetName + "' not found");
         }
         return conceptSet;
     }
