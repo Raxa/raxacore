@@ -22,6 +22,10 @@
         <point>org.openmrs.api.ConceptService</point>
         <class>org.bahmni.module.referencedata.labconcepts.advice.ConceptServiceEventInterceptor</class>
     </advice>
+    <advice>
+        <point>org.openmrs.module.addresshierarchy.service.AddressHierarchyService</point>
+        <class>org.bahmni.module.referencedata.addresshierarchy.AddressHierarchyEntryEventInterceptor</class>
+    </advice>
     <!-- Module Activator -->
     <!-- Internationalization -->
     <!-- All message codes should start with ${project.parent.artifactId}. -->
