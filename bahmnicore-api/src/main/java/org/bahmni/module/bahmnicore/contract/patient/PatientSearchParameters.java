@@ -26,6 +26,7 @@ public class PatientSearchParameters {
         } else if (query != null) {
             if (query.matches(".*\\d+.*")) {
                 this.setIdentifier(query);
+                this.setIdentifierPrefix("");
             } else {
                 this.setName(query);
             }
