@@ -14,12 +14,15 @@ public class PatientSearchParameters {
     private Integer length;
     private String customAttribute;
     private String[] patientAttributes;
+    private String identifierPrefix;
 
     public PatientSearchParameters(RequestContext context) {
         String query = context.getParameter("q");
         String identifier = context.getParameter("identifier");
+        String identifierPrefix = context.getParameter("identifierPrefix");
         if (identifier != null) {
             this.setIdentifier(identifier);
+            this.setIdentifierPrefix(identifierPrefix);
         } else if (query != null) {
             if (query.matches(".*\\d+.*")) {
                 this.setIdentifier(query);
@@ -48,6 +51,10 @@ public class PatientSearchParameters {
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
+
+    public String getIdentifierPrefix() {return identifierPrefix;}
+
+    public void setIdentifierPrefix(String identifierPrefix) {this.identifierPrefix = identifierPrefix;}
 
     public String getName() {
         return name;
