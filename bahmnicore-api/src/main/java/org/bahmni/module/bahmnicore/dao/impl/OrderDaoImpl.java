@@ -79,9 +79,7 @@ public class OrderDaoImpl implements OrderDao {
             if (startDate != null) {
                 queryString.append(" and d1.scheduledDate >= :startDate ");
             }
-            if (endDate != null) {
-                queryString.append(" and d1.scheduledDate <= :endDate ");
-            }
+            queryString.append(" and d1.scheduledDate <= :endDate ");
             queryString.append(" order by d1.scheduledDate desc");
 
         } else {
