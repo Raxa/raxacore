@@ -98,7 +98,10 @@ public class OrderDaoImpl implements OrderDao {
         query.setParameter("discontinued", Order.Action.DISCONTINUE);
         query.setParameter("revised", Order.Action.REVISE);
         if (startDate != null) query.setParameter("startDate", startDate);
-        if (endDate != null) query.setParameter("endDate", endDate);
+        if (endDate != null)
+            query.setParameter("endDate", endDate);
+        else if (getEffectiveOrdersOnly)
+            query.setParameter("endDate", new Date());
         return query.list();
     }
 
