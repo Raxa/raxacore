@@ -10,15 +10,11 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
-import org.openmrs.Obs;
-import org.openmrs.Order;
-import org.openmrs.OrderType;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.module.emrapi.CareSettingType;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -338,5 +334,79 @@ public class OrderDaoImpl implements OrderDao {
         }
 
         return discontinuedDrugOrderMap;
+    }
+
+    @Override
+    public List<Order> getActiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate, Set<Concept> concepts) {
+        if (patient == null) {
+            throw new IllegalArgumentException("Patient is required when fetching active orders");
+        }
+        if (asOfDate == null) {
+            asOfDate = new Date();
+        }
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Order.class);
+        criteria.add(Restrictions.eq("patient", patient));
+        if (careSetting != null) {
+            criteria.add(Restrictions.eq("careSetting", careSetting));
+        }
+
+        if (concepts!= null || CollectionUtils.isNotEmpty(concepts)) {
+            criteria.add(Restrictions.in("concept", concepts));
+        }
+        criteria.add(Restrictions.eq("orderType", orderType));
+        criteria.add(Restrictions.le("dateActivated", asOfDate));
+        criteria.add(Restrictions.eq("voided", false));
+        criteria.add(Restrictions.ne("action", Order.Action.DISCONTINUE));
+
+        Disjunction dateStoppedAndAutoExpDateDisjunction = Restrictions.disjunction();
+        Criterion stopAndAutoExpDateAreBothNull = Restrictions.and(Restrictions.isNull("dateStopped"), Restrictions
+                .isNull("autoExpireDate"));
+        dateStoppedAndAutoExpDateDisjunction.add(stopAndAutoExpDateAreBothNull);
+
+        Criterion autoExpireDateEqualToOrAfterAsOfDate = Restrictions.and(Restrictions.isNull("dateStopped"), Restrictions
+                .ge("autoExpireDate", asOfDate));
+        dateStoppedAndAutoExpDateDisjunction.add(autoExpireDateEqualToOrAfterAsOfDate);
+
+        dateStoppedAndAutoExpDateDisjunction.add(Restrictions.ge("dateStopped", asOfDate));
+
+        criteria.add(dateStoppedAndAutoExpDateDisjunction);
+
+        return criteria.list();
+    }
+
+    @Override
+    public List<Order> getInactiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate, Set<Concept> concepts) {
+        if (patient == null) {
+            throw new IllegalArgumentException("Patient is required when fetching active orders");
+        }
+        if (asOfDate == null) {
+            asOfDate = new Date();
+        }
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Order.class);
+        criteria.add(Restrictions.eq("patient", patient));
+        if (careSetting != null) {
+            criteria.add(Restrictions.eq("careSetting", careSetting));
+        }
+
+        if (concepts!= null || CollectionUtils.isNotEmpty(concepts)) {
+            criteria.add(Restrictions.in("concept", concepts));
+        }
+        criteria.add(Restrictions.eq("orderType", orderType));
+        criteria.add(Restrictions.eq("voided", false));
+        criteria.add(Restrictions.ne("action", Order.Action.DISCONTINUE));
+
+        Disjunction dateStoppedAndAutoExpDateDisjunction = Restrictions.disjunction();
+        Criterion isStopped = Restrictions.and(Restrictions.isNotNull("dateStopped"),
+                Restrictions.le("dateStopped", asOfDate));
+        dateStoppedAndAutoExpDateDisjunction.add(isStopped);
+
+        Criterion isAutoExpired = Restrictions.and(Restrictions.isNull("dateStopped"), Restrictions
+                .le("autoExpireDate", asOfDate));
+        dateStoppedAndAutoExpDateDisjunction.add(isAutoExpired);
+
+
+        criteria.add(dateStoppedAndAutoExpDateDisjunction);
+
+        return criteria.list();
     }
 }
