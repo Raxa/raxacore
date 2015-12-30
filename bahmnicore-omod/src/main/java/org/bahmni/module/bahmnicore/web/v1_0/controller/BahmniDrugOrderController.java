@@ -1,7 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
@@ -101,19 +100,25 @@ public class BahmniDrugOrderController extends BaseRestController {
     @ResponseBody
     public List<BahmniDrugOrder> getDrugOrderDetails(@RequestParam(value = "patientUuid") String patientUuid,
                                                                       @RequestParam(value = "isActive", required = false) Boolean isActive,
-                                                                      @RequestParam(value = "drugConceptSet", required = false) String drugConceptSetName) throws ParseException {
-        Set<Concept> drugConcepts = getDrugConcepts(drugConceptSetName);
+                                                                      @RequestParam(value = "includeConceptSet", required = false) String drugConceptSetToBeFiltered,
+                                                                      @RequestParam(value = "excludeConceptSet", required = false) String drugConceptSetToBeExcluded) throws ParseException {
+        if(drugConceptSetToBeExcluded.equals(drugConceptSetToBeFiltered)){
+            logger.error("Drug concept to be filtered and excluded cant be same");
+            return  new ArrayList<>();
+        }
+        Set<Concept> drugConceptsToBeFiltered = getDrugConcepts(drugConceptSetToBeFiltered);
+        Set<Concept> drugConceptsToBeExcluded = getDrugConcepts(drugConceptSetToBeExcluded);
         List<DrugOrder> drugOrders = new ArrayList<>();
 
         if (isActive == null) {
-            List<Order> orders = drugOrderService.getAllDrugOrders(patientUuid, drugConcepts, null, null);
+            List<Order> orders = drugOrderService.getAllDrugOrders(patientUuid, drugConceptsToBeFiltered, null, null, drugConceptsToBeExcluded);
             for (Order order : orders) {
                 drugOrders.add((DrugOrder) order);
             }
         } else if (isActive) {
-            drugOrders = drugOrderService.getActiveDrugOrders(patientUuid, drugConcepts);
+            drugOrders = drugOrderService.getActiveDrugOrders(patientUuid, drugConceptsToBeFiltered, drugConceptsToBeExcluded);
         } else {
-            drugOrders = drugOrderService.getInactiveDrugOrders(patientUuid, drugConcepts);
+            drugOrders = drugOrderService.getInactiveDrugOrders(patientUuid, drugConceptsToBeFiltered, drugConceptsToBeExcluded);
         }
 
         Map<String, DrugOrder> discontinuedDrugOrderMap = drugOrderService.getDiscontinuedDrugOrders(drugOrders);

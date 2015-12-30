@@ -298,11 +298,14 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> getAllOrders(Patient patientByUuid, OrderType drugOrderType, Set<Concept> conceptsForDrugs, Date startDate, Date endDate) {
+    public List<Order> getAllOrders(Patient patientByUuid, OrderType drugOrderType, Set<Concept> conceptsForDrugs, Date startDate, Date endDate,Set<Concept> drugConceptsToBeExcluded) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Order.class);
         criteria.add(Restrictions.eq("patient", patientByUuid));
         if (CollectionUtils.isNotEmpty(conceptsForDrugs)) {
             criteria.add(Restrictions.in("concept", conceptsForDrugs));
+        }
+        if (CollectionUtils.isNotEmpty(drugConceptsToBeExcluded)) {
+            criteria.add(Restrictions.not(Restrictions.in("concept", drugConceptsToBeExcluded)));
         }
         criteria.add(Restrictions.eq("orderType", drugOrderType));
         criteria.add(Restrictions.eq("voided", false));
@@ -337,7 +340,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> getActiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate, Set<Concept> concepts) {
+    public List<Order> getActiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate, Set<Concept> conceptsToFilter, Set<Concept> conceptsToExclude) {
         if (patient == null) {
             throw new IllegalArgumentException("Patient is required when fetching active orders");
         }
@@ -350,8 +353,11 @@ public class OrderDaoImpl implements OrderDao {
             criteria.add(Restrictions.eq("careSetting", careSetting));
         }
 
-        if (concepts!= null || CollectionUtils.isNotEmpty(concepts)) {
-            criteria.add(Restrictions.in("concept", concepts));
+        if (CollectionUtils.isNotEmpty(conceptsToFilter)) {
+            criteria.add(Restrictions.in("concept", conceptsToFilter));
+        }
+        if (CollectionUtils.isNotEmpty(conceptsToExclude)) {
+            criteria.add(Restrictions.not(Restrictions.in("concept", conceptsToExclude)));
         }
         criteria.add(Restrictions.eq("orderType", orderType));
         criteria.add(Restrictions.le("dateActivated", asOfDate));
@@ -375,7 +381,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> getInactiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate, Set<Concept> concepts) {
+    public List<Order> getInactiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate, Set<Concept> concepts, Set<Concept> conceptsToExclude) {
         if (patient == null) {
             throw new IllegalArgumentException("Patient is required when fetching active orders");
         }
@@ -390,6 +396,9 @@ public class OrderDaoImpl implements OrderDao {
 
         if (concepts!= null || CollectionUtils.isNotEmpty(concepts)) {
             criteria.add(Restrictions.in("concept", concepts));
+        }
+        if (CollectionUtils.isNotEmpty(conceptsToExclude)) {
+            criteria.add(Restrictions.not(Restrictions.in("concept", conceptsToExclude)));
         }
         criteria.add(Restrictions.eq("orderType", orderType));
         criteria.add(Restrictions.eq("voided", false));

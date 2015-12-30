@@ -264,7 +264,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
         OrderType orderType = Context.getOrderService().getOrderType(1);
-        List<Order> activeOrders = orderDao.getActiveOrders(patient, orderType, null, new Date(), null);
+        List<Order> activeOrders = orderDao.getActiveOrders(patient, orderType, null, new Date(), null, null);
 
         assertEquals(activeOrders.size(), 2);
         assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f836");
@@ -279,7 +279,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         HashSet<Concept> concepts = new HashSet<Concept>();
         concepts.add(concept);
 
-        List<Order> activeOrders = orderDao.getActiveOrders(patient, orderType, null, new Date(), concepts);
+        List<Order> activeOrders = orderDao.getActiveOrders(patient, orderType, null, new Date(), concepts, null);
 
         assertEquals(activeOrders.size(), 1);
         assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f836");
@@ -290,7 +290,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
         OrderType orderType = Context.getOrderService().getOrderType(1);
-        List<Order> activeOrders = orderDao.getInactiveOrders(patient, orderType, null, new Date(), null);
+        List<Order> activeOrders = orderDao.getInactiveOrders(patient, orderType, null, new Date(), null, null);
 
         assertEquals(activeOrders.size(), 2);
         assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f837");
@@ -306,7 +306,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         HashSet<Concept> concepts = new HashSet<Concept>();
         concepts.add(concept);
 
-        List<Order> activeOrders = orderDao.getInactiveOrders(patient, orderType, null, new Date(), concepts);
+        List<Order> activeOrders = orderDao.getInactiveOrders(patient, orderType, null, new Date(), concepts, null);
 
         assertEquals(activeOrders.size(), 1);
         assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f839");
