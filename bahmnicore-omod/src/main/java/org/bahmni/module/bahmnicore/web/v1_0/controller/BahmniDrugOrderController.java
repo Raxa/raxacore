@@ -1,7 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
@@ -13,10 +12,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniOrderAttribute;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
-import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniProviderMapper;
-import org.openmrs.module.bahmniemrapi.drugorder.mapper.OrderAttributesMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,18 +41,16 @@ public class BahmniDrugOrderController extends BaseRestController {
 
     private static Logger logger = Logger.getLogger(BahmniDrugOrderController.class);
 
-    private OrderAttributesMapper orderAttributesMapper;
-
-    private ConceptMapper conceptMapper;
+    private BahmniDrugOrderMapper bahmniDrugOrderMapper;
 
     public BahmniDrugOrderController(BahmniDrugOrderService drugOrderService) {
         this.drugOrderService = drugOrderService;
-        this.conceptMapper = new ConceptMapper();
+        this.bahmniDrugOrderMapper = new BahmniDrugOrderMapper();
+    }
+    public BahmniDrugOrderController() {
+        this.bahmniDrugOrderMapper = new BahmniDrugOrderMapper();
     }
 
-    public BahmniDrugOrderController() {
-        this.conceptMapper = new ConceptMapper();
-    }
 
     //TODO: Active orders are available in OMRS 1.10.x. Consider moving once we upgrade OpenMRS.
     @RequestMapping(value = baseUrl + "/active", method = RequestMethod.GET)
@@ -101,25 +95,35 @@ public class BahmniDrugOrderController extends BaseRestController {
         return getPrescribedOrders(null, patientUuid, includeActiveVisit, numberOfVisits, null, null, false);
     }
 
+
     @RequestMapping(value = baseUrl + "/drugOrderDetails", method = RequestMethod.GET)
     @ResponseBody
     public List<BahmniDrugOrder> getDrugOrderDetails(@RequestParam(value = "patientUuid") String patientUuid,
-                                                         @RequestParam(value = "drugNames", required = false) List<String> drugNames) throws ParseException {
-        Set<Concept> conceptsForDrugs = getConceptsForDrugs(drugNames);
+                                                                      @RequestParam(value = "isActive", required = false) Boolean isActive,
+                                                                      @RequestParam(value = "includeConceptSet", required = false) String drugConceptSetToBeFiltered,
+                                                                      @RequestParam(value = "excludeConceptSet", required = false) String drugConceptSetToBeExcluded) throws ParseException {
+        if(drugConceptSetToBeExcluded.equals(drugConceptSetToBeFiltered)){
+            logger.error("Drug concept to be filtered and excluded cant be same");
+            return  new ArrayList<>();
+        }
+        Set<Concept> drugConceptsToBeFiltered = getDrugConcepts(drugConceptSetToBeFiltered);
+        Set<Concept> drugConceptsToBeExcluded = getDrugConcepts(drugConceptSetToBeExcluded);
         List<DrugOrder> drugOrders = new ArrayList<>();
 
-        if (CollectionUtils.isEmpty(conceptsForDrugs)) {
-            return new ArrayList<>();
+        if (isActive == null) {
+            List<Order> orders = drugOrderService.getAllDrugOrders(patientUuid, drugConceptsToBeFiltered, null, null, drugConceptsToBeExcluded);
+            for (Order order : orders) {
+                drugOrders.add((DrugOrder) order);
+            }
+        } else if (isActive) {
+            drugOrders = drugOrderService.getActiveDrugOrders(patientUuid, drugConceptsToBeFiltered, drugConceptsToBeExcluded);
+        } else {
+            drugOrders = drugOrderService.getInactiveDrugOrders(patientUuid, drugConceptsToBeFiltered, drugConceptsToBeExcluded);
         }
 
-        List<Order> allDrugOrders = drugOrderService.getAllDrugOrders(patientUuid, conceptsForDrugs, null, null);
-        for (Order allDrugOrder : allDrugOrders) {
-            drugOrders.add((DrugOrder) allDrugOrder);
-        }
-
-        Map<String, DrugOrder> drugOrderMap = drugOrderService.getDiscontinuedDrugOrders(drugOrders);
+        Map<String, DrugOrder> discontinuedDrugOrderMap = drugOrderService.getDiscontinuedDrugOrders(drugOrders);
         try {
-            return new BahmniDrugOrderMapper(new BahmniProviderMapper(), getOrderAttributesMapper(), conceptMapper).mapToResponse(drugOrders, null, drugOrderMap);
+            return bahmniDrugOrderMapper.mapToResponse(drugOrders, null, discontinuedDrugOrderMap);
         } catch (IOException e) {
             logger.error("Could not parse dosing instructions", e);
             throw new RuntimeException("Could not parse dosing instructions", e);
@@ -127,20 +131,19 @@ public class BahmniDrugOrderController extends BaseRestController {
         }
     }
 
-    private Set<Concept> getConceptsForDrugs(List<String> drugs) {
-        if (drugs == null) return null;
+    Set<Concept> getDrugConcepts(String drugConceptSetName){
+        if(drugConceptSetName == null) return  null;
         Set<Concept> drugConcepts = new HashSet<>();
-        for (String drug : drugs) {
-            Concept concept = conceptService.getConceptByName(drug);
-            getDrugs(concept, drugConcepts);
-        }
+        Concept concept = conceptService.getConceptByName(drugConceptSetName);
+        if(concept == null) return  null;
+        populateDrugConcepts(concept, drugConcepts);
         return drugConcepts;
     }
 
-    private void getDrugs(Concept concept, Set<Concept> drugConcepts) {
+    private void populateDrugConcepts(Concept concept, Set<Concept> drugConcepts) {
         if (concept.isSet()) {
-            for (Concept drugConcept : concept.getSetMembers()) {
-                getDrugs(drugConcept, drugConcepts);
+            for (Concept conceptSetMember : concept.getSetMembers()) {
+                populateDrugConcepts(conceptSetMember, drugConcepts);
             }
         } else {
             drugConcepts.add(concept);
@@ -150,13 +153,6 @@ public class BahmniDrugOrderController extends BaseRestController {
     private Collection<Concept> getOrdAttributeConcepts() {
         Concept orderAttribute = conceptService.getConceptByName(BahmniOrderAttribute.ORDER_ATTRIBUTES_CONCEPT_SET_NAME);
         return orderAttribute == null ? Collections.EMPTY_LIST : orderAttribute.getSetMembers();
-    }
-
-    private OrderAttributesMapper getOrderAttributesMapper() {
-        if (orderAttributesMapper == null) {
-            orderAttributesMapper = new OrderAttributesMapper();
-        }
-        return orderAttributesMapper;
     }
 
     private List<BahmniDrugOrder> getActiveOrders(String patientUuid) {
@@ -175,7 +171,7 @@ public class BahmniDrugOrderController extends BaseRestController {
         Map<String, DrugOrder> drugOrderMap = drugOrderService.getDiscontinuedDrugOrders(drugOrders);
         try {
             Collection<BahmniObservation> orderAttributeObs = bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null, null, false, null, null, null);
-            return new BahmniDrugOrderMapper(new BahmniProviderMapper(), getOrderAttributesMapper(),conceptMapper).mapToResponse(drugOrders, orderAttributeObs, drugOrderMap);
+            return bahmniDrugOrderMapper.mapToResponse(drugOrders, orderAttributeObs, drugOrderMap);
         } catch (IOException e) {
             logger.error("Could not parse drug order", e);
             throw new RuntimeException("Could not parse drug order", e);

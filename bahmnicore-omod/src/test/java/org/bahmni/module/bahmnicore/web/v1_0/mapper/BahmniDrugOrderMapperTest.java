@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.*;
 import org.openmrs.api.AdministrationService;
-import org.openmrs.module.bahmniemrapi.builder.ConceptBuilder;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
@@ -45,10 +44,14 @@ public class BahmniDrugOrderMapperTest {
     private ConceptMapper conceptMapper;
 
     @Mock
+    private OrderAttributesMapper orderAttributesMapper;
+
+    @Mock
     private Concept reasonConcept;
 
     @Mock
     private EncounterTransaction.Concept reasonETConcept;
+    private BahmniDrugOrderMapper bahmniDrugOrderMapper;
 
     @Before
     public void setUp() throws Exception {
@@ -57,6 +60,8 @@ public class BahmniDrugOrderMapperTest {
         PowerMockito.mockStatic(LocaleUtility.class);
         when(LocaleUtility.getLocalesInOrder()).thenReturn(new HashSet<Locale>(Arrays.asList(Locale.getDefault())));
         when(providerMapper.map(null)).thenReturn(null);
+        bahmniDrugOrderMapper = new BahmniDrugOrderMapper();
+        bahmniDrugOrderMapper.setMappers(providerMapper,orderAttributesMapper, conceptMapper);
     }
 
 
@@ -90,7 +95,7 @@ public class BahmniDrugOrderMapperTest {
         List<DrugOrder> drugOrderList = new ArrayList<>();
         drugOrderList.add(drugOrder1);
 
-        List<BahmniDrugOrder> mappedDrugOrders = new BahmniDrugOrderMapper(providerMapper, new OrderAttributesMapper(), conceptMapper).mapToResponse(drugOrderList, null, new HashMap<String,DrugOrder>());
+        List<BahmniDrugOrder> mappedDrugOrders = bahmniDrugOrderMapper.mapToResponse(drugOrderList, null, new HashMap<String, DrugOrder>());
         assertEquals(1, mappedDrugOrders.size());
         BahmniDrugOrder mappedOrder = mappedDrugOrders.get(0);
         EncounterTransaction.DosingInstructions dosingInstructions = mappedOrder.getDosingInstructions();
@@ -141,7 +146,7 @@ public class BahmniDrugOrderMapperTest {
         List<DrugOrder> drugOrderList = new ArrayList<>();
         drugOrderList.add(drugOrder1);
 
-        List<BahmniDrugOrder> mappedDrugOrders = new BahmniDrugOrderMapper(providerMapper, new OrderAttributesMapper(),conceptMapper).mapToResponse(drugOrderList, null, new HashMap<String,DrugOrder>());
+        List<BahmniDrugOrder> mappedDrugOrders = bahmniDrugOrderMapper.mapToResponse(drugOrderList, null, new HashMap<String, DrugOrder>());
         assertEquals(1, mappedDrugOrders.size());
         BahmniDrugOrder mappedOrder = mappedDrugOrders.get(0);
 
@@ -221,7 +226,7 @@ public class BahmniDrugOrderMapperTest {
         Map<String,DrugOrder> discontinuedOrders = new HashMap<>();
         discontinuedOrders.put("1234", drugOrderDiscontinued);
 
-        List<BahmniDrugOrder> mappedDrugOrders = new BahmniDrugOrderMapper(providerMapper, new OrderAttributesMapper(),conceptMapper).mapToResponse(drugOrderList, null, discontinuedOrders);
+        List<BahmniDrugOrder> mappedDrugOrders = bahmniDrugOrderMapper.mapToResponse(drugOrderList, null, discontinuedOrders);
         assertEquals(1, mappedDrugOrders.size());
         BahmniDrugOrder mappedOrder = mappedDrugOrders.get(0);
 

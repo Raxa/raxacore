@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.*;
 
 public class BahmniDrugOrderControllerIT extends BaseIntegrationTest {
@@ -44,7 +45,7 @@ public class BahmniDrugOrderControllerIT extends BaseIntegrationTest {
                 fail("The Order ["+order+"] is not an instance of drugOrder");
             }
         }
-        assertEquals(3,drugOrders.size());
+        assertEquals(3, drugOrders.size());
     }
 
     @Test
@@ -172,22 +173,63 @@ public class BahmniDrugOrderControllerIT extends BaseIntegrationTest {
         assertEquals("2005-09-23 00:00:00.0", drugOrder5.getEffectiveStopDate().toString());
     }
 
-
     @Test
-    public void shouldNotReturnDrugOrdersIfDrugNamesAreNotPresent() throws Exception {
+    public void shouldReturnAllDrugOrdersForGivenConceptSet() throws Exception {
         executeDataSet("allDrugOrdersForConcepts.xml");
-        List<BahmniDrugOrder> prescribedDrugOrders = bahmniDrugOrderController.getDrugOrderDetails("1a246ed5-3c11-3456-wenh-001ed98eb612", null);
-        assertEquals(prescribedDrugOrders.size(), 0);
+        List<BahmniDrugOrder> allDrugOrders = bahmniDrugOrderController.getDrugOrderDetails("1a246ed5-3c11-3456-wenh-001ed98eb612", null, "All TB Drugs", null);
+        assertEquals(5, allDrugOrders.size());
+        assertThat(getOrderUuids(allDrugOrders), hasItems("6d0ae116-ewrg-4629-9850-f15205e63ab0", "6d0ae116-5r45-4629-9850-f15205e63ab0", "6d0ae116-707a-4629-iop6-f15205e63ab0",
+                "6d0ae116-707a-4629-wenm-f15205e63ab0", "6d0ae116-ewrg-4629-9850-f15205e6bgop"));
     }
 
     @Test
-    public void shouldReturnAllDrugOrdersForGivenDrugNames() throws Exception {
+    public void shouldReturnActiveDrugOrdersForGivenConceptSet() throws Exception {
         executeDataSet("allDrugOrdersForConcepts.xml");
-        List<String> drugNames = new ArrayList<>();
-        drugNames.add("Acidul");
-        drugNames.add("Mepron");
-        List<BahmniDrugOrder> prescribedDrugOrders = bahmniDrugOrderController.getDrugOrderDetails("1a246ed5-3c11-3456-wenh-001ed98eb612", drugNames);
-        assertEquals(prescribedDrugOrders.size(), 4);
+        List<BahmniDrugOrder> activeDrugOrders = bahmniDrugOrderController.getDrugOrderDetails("1a246ed5-3c11-3456-wenh-001ed98eb612", true, "All TB Drugs", null);
+        assertEquals(1, activeDrugOrders.size());
+        assertThat(getOrderUuids(activeDrugOrders), hasItems("6d0ae116-ewrg-4629-9850-f15205e6bgop"));
+    }
+
+    @Test
+    public void shouldReturnInactiveDrugOrdersForGivenConceptSet() throws Exception {
+        executeDataSet("allDrugOrdersForConcepts.xml");
+        List<BahmniDrugOrder> inactiveDrugOrders = bahmniDrugOrderController.getDrugOrderDetails("1a246ed5-3c11-3456-wenh-001ed98eb612", false, "All TB Drugs", null);
+        assertEquals(4, inactiveDrugOrders.size());
+        assertThat(getOrderUuids(inactiveDrugOrders), hasItems("6d0ae116-ewrg-4629-9850-f15205e63ab0", "6d0ae116-5r45-4629-9850-f15205e63ab0", "6d0ae116-707a-4629-iop6-f15205e63ab0",
+                "6d0ae116-707a-4629-wenm-f15205e63ab0"));
+    }
+
+    @Test
+    public void shouldReturnAllDrugOrderExceptForGivenConceptSet() throws Exception{
+        executeDataSet("allDrugOrdersForConcepts.xml");
+        List<BahmniDrugOrder> allDrugOrders = bahmniDrugOrderController.getDrugOrderDetails("1a246ed5-3c11-3456-wenh-001ed98eb612", null, null, "All TB Drugs");
+        assertEquals(2, allDrugOrders.size());
+        assertEquals("6d0ae116-ewrg-4629-9850-f15205e6bgoq", allDrugOrders.get(0).getUuid());
+        assertEquals("6d0ae116-ewrg-4629-9850-f15205e6bgoh", allDrugOrders.get(1).getUuid());
+    }
+
+    @Test
+    public void shouldReturnActiveDrugOrderExceptForGivenConceptSet() throws Exception{
+        executeDataSet("allDrugOrdersForConcepts.xml");
+        List<BahmniDrugOrder> activeDrugOrders = bahmniDrugOrderController.getDrugOrderDetails("1a246ed5-3c11-3456-wenh-001ed98eb612", true, null, "All TB Drugs");
+        assertEquals(1, activeDrugOrders.size());
+        assertEquals("6d0ae116-ewrg-4629-9850-f15205e6bgoq", activeDrugOrders.get(0).getUuid());
+    }
+
+    @Test
+    public void shouldReturnInactiveDrugOrderExceptForGivenConceptSet() throws Exception{
+        executeDataSet("allDrugOrdersForConcepts.xml");
+        List<BahmniDrugOrder> inactiveDrugOrders = bahmniDrugOrderController.getDrugOrderDetails("1a246ed5-3c11-3456-wenh-001ed98eb612", false, null, "All TB Drugs");
+        assertEquals(1, inactiveDrugOrders.size());
+        assertEquals("6d0ae116-ewrg-4629-9850-f15205e6bgoh", inactiveDrugOrders.get(0).getUuid());
+    }
+
+    private List<String> getOrderUuids(List<BahmniDrugOrder> bahmniDrugOrders) {
+        ArrayList<String> orderUuids = new ArrayList<>();
+        for (BahmniDrugOrder drugOrder : bahmniDrugOrders) {
+            orderUuids.add(drugOrder.getUuid());
+        }
+        return orderUuids;
     }
 
 }

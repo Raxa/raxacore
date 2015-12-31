@@ -20,10 +20,10 @@ public class BahmniDrugOrderMapper {
     private OrderAttributesMapper orderAttributesMapper;
     private ConceptMapper conceptMapper;
 
-    public BahmniDrugOrderMapper(BahmniProviderMapper providerMapper, OrderAttributesMapper orderAttributesMapper, ConceptMapper conceptMapper) {
-        this.providerMapper = providerMapper;
-        this.orderAttributesMapper = orderAttributesMapper;
-        this.conceptMapper = conceptMapper;
+    public BahmniDrugOrderMapper() {
+        this.providerMapper = new BahmniProviderMapper();
+        this.orderAttributesMapper = new OrderAttributesMapper();
+        this.conceptMapper = new ConceptMapper();
     }
 
     public List<BahmniDrugOrder> mapToResponse(List<DrugOrder> activeDrugOrders,
@@ -52,5 +52,11 @@ public class BahmniDrugOrderMapper {
            bahmniDrugOrders = orderAttributesMapper.map(bahmniDrugOrders,orderAttributeObs);
         }
         return bahmniDrugOrders;
+    }
+
+    public void setMappers(BahmniProviderMapper bahmniProviderMapper, OrderAttributesMapper orderAttributesMapper, ConceptMapper conceptMapper){
+        providerMapper = bahmniProviderMapper;
+        this.orderAttributesMapper = orderAttributesMapper;
+        this.conceptMapper = conceptMapper;
     }
 }

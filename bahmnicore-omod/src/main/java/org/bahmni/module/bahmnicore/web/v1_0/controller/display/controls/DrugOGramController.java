@@ -51,7 +51,7 @@ public class DrugOGramController {
         Date startDate = BahmniDateUtil.convertToDate(startDateStr, BahmniDateUtil.DateFormatType.UTC);
         Date endDate = BahmniDateUtil.convertToDate(endDateStr, BahmniDateUtil.DateFormatType.UTC);
 
-        List<Order> allDrugOrders = bahmniDrugOrderService.getAllDrugOrders(patientUuid, conceptsForDrugs, startDate, endDate);
+        List<Order> allDrugOrders = bahmniDrugOrderService.getAllDrugOrders(patientUuid, conceptsForDrugs, startDate, endDate, null);
         if (!CollectionUtils.isEmpty(conceptsForDrugs)) {
             conceptsForDrugs = filterConceptsForDrugOrders(conceptsForDrugs, allDrugOrders);
         }
