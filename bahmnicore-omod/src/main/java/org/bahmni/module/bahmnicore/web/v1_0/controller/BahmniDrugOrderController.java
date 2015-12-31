@@ -102,10 +102,6 @@ public class BahmniDrugOrderController extends BaseRestController {
                                                                       @RequestParam(value = "isActive", required = false) Boolean isActive,
                                                                       @RequestParam(value = "includeConceptSet", required = false) String drugConceptSetToBeFiltered,
                                                                       @RequestParam(value = "excludeConceptSet", required = false) String drugConceptSetToBeExcluded) throws ParseException {
-        if(drugConceptSetToBeExcluded.equals(drugConceptSetToBeFiltered)){
-            logger.error("Drug concept to be filtered and excluded cant be same");
-            return  new ArrayList<>();
-        }
         Set<Concept> drugConceptsToBeFiltered = getDrugConcepts(drugConceptSetToBeFiltered);
         Set<Concept> drugConceptsToBeExcluded = getDrugConcepts(drugConceptSetToBeExcluded);
         List<DrugOrder> drugOrders = new ArrayList<>();
