@@ -5,10 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.pivottable.contract.PivotRow;
 import org.openmrs.module.bahmniemrapi.pivottable.contract.PivotTable;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -111,6 +113,27 @@ public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
         List<PivotRow> rows = pivotTable.getRows();
         assertEquals(1, pivotTable.getHeaders().size());
         assertEquals(0, rows.size());
+    }
+
+    @Test
+    public void shouldGetHeadersWithNormalRangeWhenHeaderHasANumericConcept() throws Exception {
+        executeDataSet("flowSheetTableDataSetForInitialAndLatestCount.xml");
+        PivotTable pivotTable = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/observations/flowSheet",
+            new Parameter("patientUuid", "1a246ed5-3c11-11de-a0ba-001ed2aeb66u"),
+            new Parameter("conceptSet", "Vitals"),
+            new Parameter("groupByConcept", "Temperature Data"),
+            new Parameter("conceptNames", "Temperature Data"),
+            new Parameter("initialCount", "2"),
+            new Parameter("latestCount","0"),
+            new Parameter("numberOfVisits","1")
+        )), PivotTable.class);
+
+        Set<EncounterTransaction.Concept> headers = pivotTable.getHeaders();
+        assertEquals(1, headers.size());
+
+        EncounterTransaction.Concept temperatureConcept = (EncounterTransaction.Concept) headers.toArray()[0];
+        assertEquals(108, temperatureConcept.getHiNormal(),0);
+        assertEquals(98, temperatureConcept.getLowNormal(),0);
     }
 }
 
