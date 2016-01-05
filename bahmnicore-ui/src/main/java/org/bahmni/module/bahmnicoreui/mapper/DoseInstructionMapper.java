@@ -38,7 +38,7 @@ public class DoseInstructionMapper {
         return objectMapper.readValue(dosingInstructions, typeRef);
     }
 
-    private static String concat(String separator, String... values) {
+    public static String concat(String separator, String... values) {
         StringBuilder stringBuilder = new StringBuilder();
         for (String value : values) {
             if (value != null && !value.isEmpty()) {

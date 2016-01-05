@@ -531,19 +531,6 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         assertEquals("Stop", thirdRow.getDrugs().get("Caffeine"));
     }
 
-    @Test
-    public void shouldFilterDrugsWhichDoesntHaveDosageInfo() throws Exception {
-        ArrayList<Order> drugOrders = new ArrayList<>();
-        Date now = new Date();
-        DrugOrder pmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(null).withAutoExpireDate(addDays(now, 2)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
-        drugOrders.add(pmg);
-
-        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
-
-        assertNotNull(treatmentRegimen);
-        assertEquals(0, treatmentRegimen.getHeaders().size());
-    }
-
     private Date addDays(Date now, int days) {
         Calendar c = Calendar.getInstance();
         c.setTime(now);

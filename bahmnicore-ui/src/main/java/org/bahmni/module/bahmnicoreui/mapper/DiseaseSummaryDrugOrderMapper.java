@@ -38,6 +38,6 @@ public class DiseaseSummaryDrugOrderMapper{
         String dose = drugOrder.getDose() == null ? "" : drugOrder.getDose() + doseUnit;
         String frequency = DoseInstructionMapper.getFrequency(drugOrder);
         String asNeeded = drugOrder.getAsNeeded() ? "SOS" : null;
-        return strength + "," + dose + "," + frequency + "," + asNeeded;
+        return DoseInstructionMapper.concat(",", strength, dose, frequency, asNeeded);
     }
 }
