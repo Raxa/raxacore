@@ -89,9 +89,9 @@ public class ObsToObsTabularFlowSheetController {
         return pivotTable;
     }
 
-    private void setNoramlRangeForHeaders(Set<EncounterTransaction.Concept> headers) {
+     void setNoramlRangeForHeaders(Set<EncounterTransaction.Concept> headers) {
         for (EncounterTransaction.Concept header : headers) {
-            if(header.getConceptClass().equals("Concept Details")){
+            if(CONCEPT_DETAILS.equals(header.getConceptClass())){
                 List<Concept> setMembers = conceptService.getConceptsByConceptSet(conceptService.getConceptByUuid(header.getUuid()));
                 Concept primaryConcept = getNumeric(setMembers);
                 if(primaryConcept==null) continue;
