@@ -20,6 +20,8 @@ public class PatientSearchParameters {
         String query = context.getParameter("q");
         String identifier = context.getParameter("identifier");
         String identifierPrefix = context.getParameter("identifierPrefix");
+        if (identifierPrefix == null)
+            identifierPrefix = "";
         if (identifier != null) {
             this.setIdentifier(identifier);
             this.setIdentifierPrefix(identifierPrefix);
