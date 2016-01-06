@@ -2,12 +2,12 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.contract;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.joda.time.DateTime;
 import org.openmrs.module.bahmniemrapi.accessionnote.contract.AccessionNote;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
-import org.openmrs.module.bahmniemrapi.encountertransaction.utils.DateUtil;
 
 import java.util.*;
 
@@ -299,7 +299,7 @@ public class BahmniEncounterTransaction {
     }
 
     public static boolean isRetrospectiveEntry(Date encounterDateTime) {
-        return encounterDateTime != null && DateUtil.isBefore(encounterDateTime, new Date());
+        return encounterDateTime != null && new DateTime(encounterDateTime).toDateMidnight().isBefore(new DateTime(new Date()).toDateMidnight());
     }
 
     public String getReason() {
