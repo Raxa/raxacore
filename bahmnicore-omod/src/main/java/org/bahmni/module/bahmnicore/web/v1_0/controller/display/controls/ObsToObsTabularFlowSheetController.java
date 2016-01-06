@@ -83,9 +83,10 @@ public class ObsToObsTabularFlowSheetController {
         }
         bahmniObservations = filterDataByCount(bahmniObservations, initialCount, latestCount);
         PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(leafConcepts, bahmniObservations, groupByConcept);
+        setNoramlRangeForHeaders(pivotTable.getHeaders());
+
         BaseTableExtension<PivotTable> extension = bahmniExtensions.getExtension(groovyExtension + ".groovy");
         extension.update(pivotTable, patientUuid);
-        setNoramlRangeForHeaders(pivotTable.getHeaders());
         return pivotTable;
     }
 
