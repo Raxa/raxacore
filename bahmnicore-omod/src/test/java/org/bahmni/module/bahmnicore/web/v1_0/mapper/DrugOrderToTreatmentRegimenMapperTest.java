@@ -35,6 +35,9 @@ public class DrugOrderToTreatmentRegimenMapperTest {
 
     private DrugOrderToTreatmentRegimenMapper drugOrderToTreatmentRegimenMapper;
 
+    public static final String DAY_DURATION_UNIT = "Day";
+
+
     @Before
     public void setUp() throws Exception {
         initMocks(this);
@@ -48,8 +51,8 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldMapDrugOrdersWhichStartOnSameDateAndEndOnDifferentDateAndCrossEachOther() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(now).withDose(200.0).withAutoExpireDate(addDays(now, 6)).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(now).withDose(200.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 6)).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetemol);
 
@@ -83,8 +86,8 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldMapDrugOrdersWhichStartAndEndOnSameDate() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(now).withDose(200.0).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(now).withDose(200.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetemol);
 
@@ -113,8 +116,8 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldMapDrugOrdersWhichStartAndEndOnDifferentDateDoesntOverlap() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(addDays(now, 2)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(addDays(now, 3)).withDose(200.0).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 2)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(addDays(now, 3)).withDose(200.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetemol);
 
@@ -153,8 +156,8 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldMapDrugOrdersWhichStartAndEndOnDifferentDateAndOverlaps() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(addDays(now, 3)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(addDays(now, 2)).withDose(200.0).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 3)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(addDays(now, 2)).withDose(200.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetemol);
 
@@ -193,7 +196,7 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldMapTo2RowsIfTheDrugIsStartedAndStoppedOnTheSameDay() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(now).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(now).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(ibeprofen);
 
         TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
@@ -218,10 +221,10 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldMapTo2RowsIf2DrugsAreStartedAndStoppedOnTheSameDay() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(now).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder paracetamol = new DrugOrderBuilder().withDrugName("Paracetamol").withDateActivated(now).withDose(500.0).withAutoExpireDate(now).withConcept(new ConceptBuilder().withName("Paracetamol").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder lignocaine = new DrugOrderBuilder().withDrugName("Lignocaine").withDateActivated(now).withDose(300.0).withAutoExpireDate(addDays(now, 3)).withConcept(new ConceptBuilder().withName("Lignocaine").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder magnesium = new DrugOrderBuilder().withDrugName("Magnesium").withDateActivated(now).withDose(5000.0).withAutoExpireDate(addDays(now, 10)).withConcept(new ConceptBuilder().withName("Magnesium").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(now).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder paracetamol = new DrugOrderBuilder().withDrugName("Paracetamol").withDateActivated(now).withDose(500.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(now).withConcept(new ConceptBuilder().withName("Paracetamol").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder lignocaine = new DrugOrderBuilder().withDrugName("Lignocaine").withDateActivated(now).withDose(300.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 3)).withConcept(new ConceptBuilder().withName("Lignocaine").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder magnesium = new DrugOrderBuilder().withDrugName("Magnesium").withDateActivated(now).withDose(5000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 10)).withConcept(new ConceptBuilder().withName("Magnesium").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetamol);
         drugOrders.add(lignocaine);
@@ -273,8 +276,8 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         // I know the test name sounds weird. If you have any better name, feel free to change it.
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(now).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder paracetamol = new DrugOrderBuilder().withDrugName("Paracetamol").withDateActivated(addDays(now, 2)).withDose(500.0).withAutoExpireDate(addDays(now, 2)).withConcept(new ConceptBuilder().withName("Paracetamol").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(now).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder paracetamol = new DrugOrderBuilder().withDrugName("Paracetamol").withDateActivated(addDays(now, 2)).withDose(500.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 2)).withConcept(new ConceptBuilder().withName("Paracetamol").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetamol);
 
@@ -313,7 +316,7 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldNotFetchTheDrugIfTheDrugIsStoppedBeforeScheduledDate() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withScheduledDate(addDays(now, 10)).withDose(1000.0).withAutoExpireDate(addDays(now, 3)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withScheduledDate(addDays(now, 10)).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 3)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
 
         drugOrders.add(ibeprofen);
 
@@ -328,8 +331,8 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldMapRevisedDrugOrders() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Ibeprofen").withUUID("uuid").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder ibeprofenRevised = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(addDays(now, 5)).withDose(500.0).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("Ibeprofen").withUUID("uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Ibeprofen").withUUID("uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofenRevised = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(addDays(now, 5)).withDose(500.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("Ibeprofen").withUUID("uuid").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(ibeprofen);
         drugOrders.add(ibeprofenRevised);
 
@@ -359,9 +362,9 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldMapScheduledDrugOrders() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder pmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(1000.0).withAutoExpireDate(now).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder caffeine = new DrugOrderBuilder().withDrugName("Caffeine").withScheduledDate(now).withDose(500.0).withAutoExpireDate(addDays(now, 3)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Caffeine").withUUID("Caffeine uuid").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder lajvanti = new DrugOrderBuilder().withDrugName("Lajvanti").withScheduledDate(addDays(now, 2)).withDose(3.0).withAutoExpireDate(addDays(now, 5)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Lajvanti").withUUID("Lajvanti uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder pmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(now).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder caffeine = new DrugOrderBuilder().withDrugName("Caffeine").withScheduledDate(now).withDose(500.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 3)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Caffeine").withUUID("Caffeine uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder lajvanti = new DrugOrderBuilder().withDrugName("Lajvanti").withScheduledDate(addDays(now, 2)).withDose(3.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 5)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Lajvanti").withUUID("Lajvanti uuid").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(pmg);
         drugOrders.add(caffeine);
         drugOrders.add(lajvanti);
@@ -412,9 +415,9 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldRetrieveIfTheDrugStartedAndStoppedOnTheSameDayLiesBetweenOtherDrug() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder pmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(1000.0).withAutoExpireDate(addDays(now, 2)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder revisedPmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(addDays(now, 2)).withDose(10.0).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder caffeine = new DrugOrderBuilder().withDrugName("Caffeine").withDateActivated(addDays(now, 2)).withDose(600.0).withAutoExpireDate(addDays(now, 2)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Caffeine").withUUID("Caffeine uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder pmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 2)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder revisedPmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(addDays(now, 2)).withDose(10.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder caffeine = new DrugOrderBuilder().withDrugName("Caffeine").withDateActivated(addDays(now, 2)).withDose(600.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 2)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Caffeine").withUUID("Caffeine uuid").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(pmg);
         drugOrders.add(revisedPmg);
         drugOrders.add(caffeine);
@@ -454,9 +457,9 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldRetrieveIfTheDrugStartsOntheDayOfTheOtherDrugsStopped() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder pmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(1000.0).withAutoExpireDate(addDays(now, 2)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder revisedPmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(addDays(now, 2)).withDose(10.0).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder caffeine = new DrugOrderBuilder().withDrugName("Caffeine").withDateActivated(addDays(now, 10)).withDose(600.0).withAutoExpireDate(addDays(now, 12)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Caffeine").withUUID("Caffeine uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder pmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 2)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder revisedPmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(addDays(now, 2)).withDose(10.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder caffeine = new DrugOrderBuilder().withDrugName("Caffeine").withDateActivated(addDays(now, 10)).withDose(600.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 12)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Caffeine").withUUID("Caffeine uuid").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(pmg);
         drugOrders.add(revisedPmg);
         drugOrders.add(caffeine);
@@ -496,10 +499,10 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldRetrieveIfTheDrugStartsOntheDayOfTheOtherDrugsStoppedAndTheDrugIsRevised() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder pmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(1000.0).withAutoExpireDate(now).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder revisedPmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(500.0).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder caffeine = new DrugOrderBuilder().withDrugName("Caffeine").withDateActivated(addDays(now, 10)).withDose(600.0).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Caffeine").withUUID("Caffeine uuid").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder revisedCaffeine = new DrugOrderBuilder().withDrugName("Caffeine").withDateActivated(addDays(now, 10)).withDose(800.0).withAutoExpireDate(addDays(now, 12)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("Caffeine").withUUID("Caffeine uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder pmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(now).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder revisedPmg = new DrugOrderBuilder().withDrugName("P 500mg").withDateActivated(now).withDose(500.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("P 500mg").withUUID("P 500mg uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder caffeine = new DrugOrderBuilder().withDrugName("Caffeine").withDateActivated(addDays(now, 10)).withDose(600.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Caffeine").withUUID("Caffeine uuid").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder revisedCaffeine = new DrugOrderBuilder().withDrugName("Caffeine").withDateActivated(addDays(now, 10)).withDose(800.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 12)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("Caffeine").withUUID("Caffeine uuid").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(pmg);
         drugOrders.add(revisedPmg);
         drugOrders.add(caffeine);
@@ -547,8 +550,8 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldMapDrugOrdersWhichStartOnSameDateAndOneEndsInFiveDaysAnotherContinues() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(now).withDose(200.0).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(now).withDose(200.0).withFrequency(DAY_DURATION_UNIT).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetemol);
 
@@ -577,8 +580,8 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldMapDrugOrdersWhichStartOnDifferentDatesAndOneEndsInFiveDaysAnotherContinues() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(addDays(now, 2)).withDose(200.0).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 5)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(addDays(now, 2)).withDose(200.0).withFrequency(DAY_DURATION_UNIT).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetemol);
 
@@ -613,7 +616,7 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldMapDrugOrderWhichHaveNoStopDate() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(now).withDose(200.0).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(now).withDose(200.0).withFrequency(DAY_DURATION_UNIT).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(paracetemol);
 
         TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
@@ -634,8 +637,8 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldMapDrugOrdersWhichStartOnDifferentDatesAndOneStoppedBeforeAnotherStartsContinues() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(addDays(now, 2)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(addDays(now, 5)).withDose(200.0).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 2)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(addDays(now, 5)).withDose(200.0).withFrequency(DAY_DURATION_UNIT).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetemol);
 
@@ -670,8 +673,8 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     public void shouldFetchTheAsTheOrderSpecifiedInTheConceptNames() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withAutoExpireDate(addDays(now, 2)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(addDays(now, 5)).withDose(200.0).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 2)).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
+        DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(addDays(now, 5)).withDose(200.0).withFrequency(DAY_DURATION_UNIT).withConcept(new ConceptBuilder().withName("Paracetemol").withSet(false).withDataType("N/A").build()).build();
         drugOrders.add(ibeprofen);
         drugOrders.add(paracetemol);
 

@@ -198,7 +198,7 @@ public class DrugOrderToTreatmentRegimenMapper {
 		String drugName = drugOrder1.getConcept().getName().getName();
 
 		String dosage = null;
-		if(drugOrder1.getDose() == null) {
+		if(drugOrder1.getFrequency() == null) {
 			try {
 				dosage = DoseInstructionMapper.getFrequency(drugOrder1);
 			} catch (IOException e) {
