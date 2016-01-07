@@ -40,7 +40,7 @@ public class PatientDaoImpl implements PatientDao {
             " left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
             " inner join patient_identifier pi on pi.patient_id = p.person_id " +
             " left outer join visit v on v.patient_id = pat.patient_id and v.date_stopped is null ";
-    public static final String BY_NAME_PARTS = " concat(coalesce(given_name, ''), coalesce(middle_name, ''), coalesce(family_name, '')) like ";
+    public static final String BY_NAME_PARTS = " concat_ws(' ',coalesce(given_name), coalesce(middle_name), coalesce(family_name)) like ";
     public static final String BY_IDENTIFIER = " identifier like ";
     public static final String BY_ADDRESS_FIELD = " :addressFieldName like :addressFieldValue";
     public static final String ORDER_BY = " order by p.date_created desc LIMIT :" + LIMIT_PARAM + " OFFSET :" + OFFSET_PARAM;
