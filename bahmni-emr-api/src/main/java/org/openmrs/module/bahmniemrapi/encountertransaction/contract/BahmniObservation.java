@@ -28,6 +28,7 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
     private String parentConceptUuid;
     private Double hiNormal;
     private Double lowNormal;
+    private Boolean isUnknown;
 
     public BahmniObservation() {
         encounterTransactionObservation = new EncounterTransaction.Observation();
@@ -292,6 +293,7 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
         if (type != null ? !type.equals(that.type) : that.type != null) return false;
         if (visitStartDateTime != null ? !visitStartDateTime.equals(that.visitStartDateTime) : that.visitStartDateTime != null)
             return false;
+        if (isUnknown != null ? !isUnknown.equals(that.isUnknown) : that.isUnknown != null) return false;
 
         return true;
     }
@@ -314,6 +316,7 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
         result = 31 * result + (groupMembers != null ? groupMembers.hashCode() : 0);
         result = 31 * result + (providers != null ? providers.hashCode() : 0);
         result = 31 * result + (isAbnormal != null ? isAbnormal.hashCode() : 0);
+        result = 31 * result + (isUnknown != null ? isUnknown.hashCode() : 0);
         result = 31 * result + (duration != null ? duration.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + conceptSortWeight;
@@ -346,5 +349,13 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
 
     public void setCreatorName(String creatorName) {
         this.creatorName = creatorName;
+    }
+
+    public void setUnknown(Boolean isUnknown) {
+        this.isUnknown = isUnknown;
+    }
+
+    public Boolean isUnknown() {
+        return isUnknown;
     }
 }

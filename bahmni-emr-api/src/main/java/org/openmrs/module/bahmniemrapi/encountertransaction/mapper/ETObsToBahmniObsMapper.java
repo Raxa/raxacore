@@ -18,6 +18,7 @@ public class ETObsToBahmniObsMapper {
     public static final String CONCEPT_DETAILS_CONCEPT_CLASS = "Concept Details";
     public static final String ABNORMAL_CONCEPT_CLASS = "Abnormal";
     public static final String DURATION_CONCEPT_CLASS = "Duration";
+    private static final String UNKNOWN_CONCEPT_CLASS = "Unknown" ;
     private ConceptService conceptService;
 
     @Autowired
@@ -60,6 +61,14 @@ public class ETObsToBahmniObsMapper {
                         if (member.getValue() != null) {
                             bahmniObservation.setAbnormal(Boolean.parseBoolean(((EncounterTransaction.Concept) member.getValue()).getName()));
                         }
+                    }
+                } else if (member.getConcept().getConceptClass().equals(UNKNOWN_CONCEPT_CLASS)) {
+                    if (member.getValue() instanceof Boolean) {
+                        bahmniObservation.setUnknown((Boolean) member.getValue());
+                        if(member.getConcept().getShortName() != null)
+                            bahmniObservation.setValue(member.getConcept().getShortName());
+                        else
+                            bahmniObservation.setValue(member.getConcept().getName());
                     }
                 } else if (member.getConcept().getConceptClass().equals(DURATION_CONCEPT_CLASS)) {
                     bahmniObservation.setDuration(new Double(member.getValue().toString()).longValue());

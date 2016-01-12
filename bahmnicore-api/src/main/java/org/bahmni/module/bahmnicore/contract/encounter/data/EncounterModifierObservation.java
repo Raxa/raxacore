@@ -231,4 +231,13 @@ public class EncounterModifierObservation {
     public void setGroupMembers(Collection<EncounterModifierObservation> groupMembers) {
         this.groupMembers = groupMembers;
     }
+
+    public Boolean isUnknown() {
+        return bahmniObservation.isUnknown();
+    }
+
+    public void setUnknown(Boolean unknown) {
+        bahmniObservation.setUnknown(unknown);
+    }
+
 }

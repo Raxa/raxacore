@@ -89,4 +89,104 @@ public class ETObsToBahmniObsMapperTest {
         assertEquals(person1name, actualValueObs.getCreatorName());
         assertEquals("obs2-uuid", actualValueObs.getObsGroupUuid());
     }
+
+    @Test
+    public void testMapObservationValueWithUnknownConceptShortName() throws Exception {
+        String person1name = "superman";
+        String person2name = "RajSingh";
+        String encounterUuid = "encounter-uuid";
+        String obsGroupUuid = "obs-group-uuid";
+
+        EncounterTransaction.User user1 = new EncounterTransaction.User();
+        user1.setPersonName(person1name);
+        EncounterTransaction.User user2 = new EncounterTransaction.User();
+        user2.setPersonName(person2name);
+
+        EncounterTransaction.Concept etParentConcept = new EncounterTransaction.Concept();
+        etParentConcept.setDataType("N/A");
+        etParentConcept.setConceptClass("Concept Details");
+        EncounterTransaction.Concept etValueConcept = new EncounterTransaction.Concept();
+        etValueConcept.setDataType("text");
+        etValueConcept.setConceptClass("Misc");
+        EncounterTransaction.Concept etUnknownValueConcept = new EncounterTransaction.Concept();
+        etUnknownValueConcept.setDataType("Boolean");
+        etUnknownValueConcept.setConceptClass("Unknown");
+        etUnknownValueConcept.setShortName("Unknown");
+
+        Concept valueConcept = new org.openmrs.module.bahmniemrapi.builder.ConceptBuilder().withName("valueConcept").withDataType("text").withUUID("cuuid2").withClass("").build();
+        Concept unknownConcept = new org.openmrs.module.bahmniemrapi.builder.ConceptBuilder().withName("unknownConcept").withDataType("Boolean").withUUID("cuuid3").withClass("Unknown").withShortName("Unknown").build();
+        Concept parentConcept = new org.openmrs.module.bahmniemrapi.builder.ConceptBuilder().withName("parentConcept").withDataType("N/A").build();
+        parentConcept.addSetMember(valueConcept);
+        parentConcept.addSetMember(unknownConcept);
+
+        EncounterTransaction.Observation observation1 = new EncounterTransaction.Observation();
+        observation1.setUuid("obs1-uuid");
+        observation1.setCreator(user1);
+        observation1.setValue("notes");
+        observation1.setConcept(etValueConcept);
+        EncounterTransaction.Observation observation2 = new EncounterTransaction.Observation();
+        observation2.setUuid("obs2-uuid");
+        observation2.setCreator(user2);
+        observation2.setConcept(etParentConcept);
+        EncounterTransaction.Observation observation3 = new EncounterTransaction.Observation();
+        observation3.setUuid("obs3-uuid");
+        observation3.setCreator(user1);
+        observation3.setValue(true);
+        observation3.setConcept(etUnknownValueConcept);
+
+        observation2.setGroupMembers(asList(observation1,observation3));
+
+        AdditionalBahmniObservationFields additionalBahmniObservationFields = new AdditionalBahmniObservationFields(encounterUuid, new Date(), new Date(), obsGroupUuid);
+
+        BahmniObservation actualObs = etObsToBahmniObsMapper.map(observation2, additionalBahmniObservationFields, asList(parentConcept), true);
+
+        assertEquals("Unknown", actualObs.getValueAsString());
+        assertEquals(true, actualObs.isUnknown());
+    }
+
+
+    @Test
+    public void testMapObservationValueToUnknownConceptFullNameWhenShortNameIsNull() throws Exception {
+        String person1name = "superman";
+        String person2name = "RajSingh";
+        String encounterUuid = "encounter-uuid";
+        String obsGroupUuid = "obs-group-uuid";
+
+        EncounterTransaction.User user1 = new EncounterTransaction.User();
+        user1.setPersonName(person1name);
+        EncounterTransaction.User user2 = new EncounterTransaction.User();
+        user2.setPersonName(person2name);
+
+        EncounterTransaction.Concept etParentConcept = new EncounterTransaction.Concept();
+        etParentConcept.setDataType("N/A");
+        etParentConcept.setConceptClass("Concept Details");
+        EncounterTransaction.Concept etUnknownValueConcept = new EncounterTransaction.Concept();
+        etUnknownValueConcept.setDataType("Boolean");
+        etUnknownValueConcept.setConceptClass("Unknown");
+        etUnknownValueConcept.setName("unknownConcept");
+
+        Concept unknownConcept = new org.openmrs.module.bahmniemrapi.builder.ConceptBuilder().withName("unknownConcept").withDataType("Boolean").withUUID("cuuid3").withClass("Unknown").build();
+        Concept parentConcept = new org.openmrs.module.bahmniemrapi.builder.ConceptBuilder().withName("parentConcept").withDataType("N/A").build();
+        parentConcept.addSetMember(unknownConcept);
+
+
+        EncounterTransaction.Observation observation2 = new EncounterTransaction.Observation();
+        observation2.setUuid("obs2-uuid");
+        observation2.setCreator(user2);
+        observation2.setConcept(etParentConcept);
+        EncounterTransaction.Observation observation3 = new EncounterTransaction.Observation();
+        observation3.setUuid("obs3-uuid");
+        observation3.setCreator(user1);
+        observation3.setValue(true);
+        observation3.setConcept(etUnknownValueConcept);
+
+        observation2.setGroupMembers(asList(observation3));
+
+        AdditionalBahmniObservationFields additionalBahmniObservationFields = new AdditionalBahmniObservationFields(encounterUuid, new Date(), new Date(), obsGroupUuid);
+
+        BahmniObservation actualObs = etObsToBahmniObsMapper.map(observation2, additionalBahmniObservationFields, asList(parentConcept), true);
+
+        assertEquals("unknownConcept", actualObs.getValueAsString());
+        assertEquals(true, actualObs.isUnknown());
+    }
 }
