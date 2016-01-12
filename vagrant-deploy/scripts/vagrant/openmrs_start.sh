@@ -1,2 +1,2 @@
 #!/bin/sh -x
-sudo service tomcat start
+sudo service openmrs start
