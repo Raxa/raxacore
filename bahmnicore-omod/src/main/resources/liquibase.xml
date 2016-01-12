@@ -3710,4 +3710,14 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
+    <changeSet id="bahmni-clinical-201601111633" author="Sourav,Preethi" context="rel4">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from entity_mapping_type where name='location_encountertype'</sqlCheck>
+        </preConditions>
+        <comment>Add entity mapping type for location_encountertype</comment>
+        <sql>
+            insert into entity_mapping_type (name, uuid, entity1_type, entity2_type, date_created)
+            values ('location_encountertype', uuid(), "org.openmrs.Location", "org.openmrs.EncounterType", now());
+        </sql>
+    </changeSet>
 </databaseChangeLog>
