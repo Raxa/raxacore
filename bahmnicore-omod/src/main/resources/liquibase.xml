@@ -3710,6 +3710,32 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
+    <changeSet author="Achinta, Gautam" id="bahmni-core-201601131220">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select concept_id from concept where uuid="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+            </sqlCheck>
+        </preConditions>
+        <comment>update Height concept uuid to standard CEIL concept uuid</comment>
+        <sql>
+            update concept set uuid="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAA" where concept_id in (
+                select concept_name.concept_id from concept_name where name="Height" and concept_name_type="FULLY_SPECIFIED"
+            );
+        </sql>
+    </changeSet>
+    <changeSet author="Achinta, Gautam" id="bahmni-core-201601131234">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select concept_id from concept where uuid="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+            </sqlCheck>
+        </preConditions>
+        <comment>update Height concept uuid to standard CEIL concept uuid</comment>
+        <sql>
+            update concept set uuid="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAA" where concept_id in (
+            select concept_name.concept_id from concept_name where name="Weight" and concept_name_type="FULLY_SPECIFIED"
+            );
+        </sql>
+    </changeSet>
 
     <changeSet id="bahmni-clinical-201601111633" author="Sourav,Preethi" context="rel4">
         <preConditions onFail="MARK_RAN">

@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.bahmni.module.bahmnicore.CIELDictionary;
 import org.bahmni.module.bahmnicore.service.Rule;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
@@ -16,8 +17,6 @@ import java.util.List;
 public class BSARule implements Rule {
 
     private final String REGISTRATION_ENCOUNTER_TYPE = "Registration";
-    private final String WEIGHT_NAME = "Weight";
-    private final String HEIGHT_NAME = "Height";
 
     @Override
     public Double getDose(String patientUuid, Double baseDose) {
@@ -65,22 +64,20 @@ public class BSARule implements Rule {
     }
 
     private Double getWeight(Person person, Encounter selectedEncounter) {
-        //use CEIL uuid to fetch weight
         ObsService obsService = Context.getObsService();
-        Concept weight = Context.getConceptService().getConcept(WEIGHT_NAME);
+        Concept weight = Context.getConceptService().getConceptByUuid(CIELDictionary.WEIGHT_UUID);
 
-        List<Obs> obss = obsService.getObservations(Arrays.asList(person),Arrays.asList(selectedEncounter),Arrays.asList(weight),
+        List<Obs> obss = obsService.getObservations(Arrays.asList(person), Arrays.asList(selectedEncounter), Arrays.asList(weight),
             null, null, null, null, null, null, null, null, false);
 
         return obss.size()>0 ? obss.get(0).getValueNumeric() : null;
     }
 
     private Double getHeight(Person person, Encounter selectedEncounter) {
-        //use CEIL uuid to fetch height
         ObsService obsService = Context.getObsService();
-        Concept height = Context.getConceptService().getConcept(HEIGHT_NAME);
+        Concept height = Context.getConceptService().getConceptByUuid(CIELDictionary.HEIGHT_UUID);
 
-        List<Obs> obss = obsService.getObservations(Arrays.asList(person),Arrays.asList(selectedEncounter),Arrays.asList(height),
+        List<Obs> obss = obsService.getObservations(Arrays.asList(person), Arrays.asList(selectedEncounter), Arrays.asList(height),
             null, null, null, null, null, null, null, null, false);
 
         return obss.size()>0 ? obss.get(0).getValueNumeric() : null;
