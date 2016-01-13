@@ -129,6 +129,32 @@ public class DrugOrderToTreatmentRegimenMapper {
 		}
 
 		drugOrders.removeAll(drugOrdersStartedAndStoppedOnSameDate);
+		for (Order order : drugOrders) {
+			DrugOrder drugOrder = (DrugOrder) order;
+
+			String drugName = drugOrder.getConcept().getName().getName();
+			String dosage = getDose(drugOrder);
+
+			for (RegimenRow regimenRow : regimenRows) {
+				Date dateActivated = drugOrder.getScheduledDate() != null ?
+						getOnlyDate(drugOrder.getScheduledDate()) :
+						getOnlyDate(drugOrder.getDateActivated());
+				Date dateStopped = drugOrder.getAutoExpireDate() != null ?
+						getOnlyDate(drugOrder.getAutoExpireDate()) :
+						getOnlyDate(drugOrder.getDateStopped());
+				if (orderCrossDate(drugOrder, regimenRow.getDate())) {
+					if (dateStopped == null)
+						regimenRow.addDrugs(drugName, dosage);
+					else if ( !"Stop".equals(regimenRow.getDrugs().get(drugName))) {
+						regimenRow.addDrugs(drugName, dosage);
+					}
+					else if (drugOrder.getAction().equals(Order.Action.REVISE)
+							&& regimenRow.getDate().equals(dateActivated)) {
+						regimenRow.addDrugs(drugName, dosage);
+					}
+				}
+			}
+		}
 	}
 
 	private Set<EncounterTransaction.Concept> mapHeaders(Set<Concept> headers) {
@@ -169,15 +195,17 @@ public class DrugOrderToTreatmentRegimenMapper {
 
 	private void constructRowForDateStopped(DrugOrder drugOrder1, Date stoppedDate, RegimenRow regimenRow)
 			throws ParseException {
-		if (orderCrossDate(drugOrder1, regimenRow.getDate())) {
 
+		if (orderCrossDate(drugOrder1, regimenRow.getDate())) {
+			String drugName = drugOrder1.getConcept().getName().getName();
+			String dosage = getDose(drugOrder1);
 			Date startDate = drugOrder1.getScheduledDate() != null ? drugOrder1.getScheduledDate(): drugOrder1.getDateActivated();
 			if (stoppedDate == null && (startDate.before(regimenRow.getDate()) || startDate.equals(regimenRow.getDate()) ))
-				regimenRow.addDrugs(drugOrder1.getConcept().getName().getName(), drugOrder1.getDose().toString());
+				regimenRow.addDrugs(drugName, dosage);
 			else if (stoppedDate != null && getOnlyDate(stoppedDate).equals(regimenRow.getDate()))
-				regimenRow.addDrugs(drugOrder1.getConcept().getName().getName(), "Stop");
+				regimenRow.addDrugs(drugName, "Stop");
 			else if (stoppedDate != null )
-				regimenRow.addDrugs(drugOrder1.getConcept().getName().getName(), drugOrder1.getDose().toString());
+				regimenRow.addDrugs(drugName, dosage);
 		}
 	}
 
@@ -197,17 +225,7 @@ public class DrugOrderToTreatmentRegimenMapper {
 				getOnlyDate(drugOrder1.getDateStopped());
 		String drugName = drugOrder1.getConcept().getName().getName();
 
-		String dosage = null;
-		if(drugOrder1.getFrequency() == null) {
-			try {
-				dosage = DoseInstructionMapper.getFrequency(drugOrder1);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		else {
-			dosage = drugOrder1.getDose().toString();
-		}
+		String dosage = getDose(drugOrder1);
 		if (dateStopped == null && (dateActivated.before(regimenRow.getDate()) || dateActivated.equals(regimenRow.getDate())) ) {
 			regimenRow.addDrugs(drugName, dosage);
 		}
@@ -275,5 +293,19 @@ public class DrugOrderToTreatmentRegimenMapper {
 			return null;
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		return sdf.parse(sdf.format(date));
+	}
+
+	private String getDose(DrugOrder drugOrder) {
+		String dosage = null;
+		if (drugOrder.getFrequency() == null) {
+			try {
+				dosage = DoseInstructionMapper.getFrequency(drugOrder);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			dosage = drugOrder.getDose().toString();
+		}
+		return dosage;
 	}
 }
