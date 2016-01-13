@@ -22,10 +22,10 @@ public class DoseCalculatorServiceImplIT extends BaseIntegrationTest {
     @Test
     public void shouldGetCalculatedDoseForAGivenRule() throws Exception {
         Double dosage = doseCalculatorService.getCalculatedDoseForRule("person_1024_uuid", 5.0, "BSA");
-        assertEquals(8.659,dosage,0.001);
+        assertEquals(8.65,dosage,0.01);
 
         dosage = doseCalculatorService.getCalculatedDoseForRule("person_1024_uuid", 5.0, "BMI");
-        assertEquals(136.7,dosage,0.001);
+        assertEquals(136.7,dosage,0.01);
     }
 
     @Test(expected = APIException.class)
@@ -36,10 +36,15 @@ public class DoseCalculatorServiceImplIT extends BaseIntegrationTest {
     @Test
     public void shouldGetCalculatedDoseForTheLatestObservations() throws Exception{
         Double dosage = doseCalculatorService.getCalculatedDoseForRule("person_1030_uuid", 5.0, "BSA");
-        assertEquals(9.576,dosage,0.001);
+        assertEquals(9.58,dosage,0.01);
 
         dosage = doseCalculatorService.getCalculatedDoseForRule("person_1030_uuid", 5.0, "BMI");
-        assertEquals(138.4,dosage,0.001);
+        assertEquals(138.4,dosage,0.01);
+    }
+
+    @Test(expected = Exception.class)
+    public void shouldThrowExceptionWhenHeightOrWeightObsForPatientAreNotAvailabe() throws Exception{
+        doseCalculatorService.getCalculatedDoseForRule("person_1031_uuid", 5.0, "BMI");
     }
 
 }
