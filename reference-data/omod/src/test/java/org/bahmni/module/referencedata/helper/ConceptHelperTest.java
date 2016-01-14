@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -64,6 +66,67 @@ public class ConceptHelperTest {
         assertEquals("Height", heightConceptResult.getName());
         assertEquals("Cms", heightConceptResult.getUnits());
         assertEquals("Weight", leafConceptIterator.next().getName());
+    }
+
+    @Test
+    public void shouldGetLeafConceptsWithAttributesForConceptSetWithConceptDetailsClass() {
+        Concept weightConcept = new ConceptNumericBuilder().withName("Weight").withClass("N/A").build();
+        Concept heightConcept = new ConceptNumericBuilder().withName("Height").withClass("N/A").withUnit("Cms").build();
+        Concept vitalsConcept = new ConceptNumericBuilder().withName("Vitals").withSetMember(heightConcept).withSetMember(weightConcept).withClass("Concept Details").build();
+        vitalsConcept.setSet(true);
+
+        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(Arrays.asList(vitalsConcept), withoutAttributes);
+
+        assertEquals(1, leafConceptNames.size());
+        Iterator<ConceptDetails> leafConceptIterator = leafConceptNames.iterator();
+        ConceptDetails vitalsConceptResult = leafConceptIterator.next();
+        assertEquals("Vitals", vitalsConceptResult.getName());
+    }
+
+    @Test
+    public void shouldGetLeafConceptsWithExtraAttributesForConceptDetailsClassWhenWithAttributesIsTrue() {
+        Concept temperatureConcept = new ConceptNumericBuilder().withName("Temperature").withClass("N/A").build();
+        Concept temperatureUnknownConcept = new ConceptNumericBuilder().withName("Temperature Unknown").withClass("Unknown").build();
+        Concept temperatureAbnormalConcept = new ConceptNumericBuilder().withName("Temperature Abnormal").withClass("Abnormal").build();
+        Concept temperatureDataConcept = new ConceptNumericBuilder()
+                .withName("Temperature Data")
+                .withSetMember(temperatureConcept)
+                .withSetMember(temperatureUnknownConcept)
+                .withSetMember(temperatureAbnormalConcept)
+                .withClass("Concept Details").build();
+        temperatureDataConcept.setSet(true);
+
+        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(Arrays.asList(temperatureDataConcept), true);
+
+        assertEquals(1, leafConceptNames.size());
+        Iterator<ConceptDetails> leafConceptIterator = leafConceptNames.iterator();
+        ConceptDetails temperatureConceptResult = leafConceptIterator.next();
+        assertEquals("Temperature", temperatureConceptResult.getName());
+        assertFalse(temperatureConceptResult.getAttributes().isEmpty());
+        assertEquals("Temperature Unknown", temperatureConceptResult.getAttribute("Unknown Concept"));
+    }
+
+    @Test
+    public void shouldGetLeafConceptsWithExtraAttributesForConceptDetailsClassWhenWithAttributesIsFalse() {
+        Concept temperatureConcept = new ConceptNumericBuilder().withName("Temperature").withClass("N/A").build();
+        Concept temperatureUnknownConcept = new ConceptNumericBuilder().withName("Temperature Unknown").withClass("Unknown").build();
+        Concept temperatureAbnormalConcept = new ConceptNumericBuilder().withName("Temperature Abnormal").withClass("Abnormal").build();
+        Concept temperatureDataConcept = new ConceptNumericBuilder()
+                .withName("Temperature Data")
+                .withSetMember(temperatureConcept)
+                .withSetMember(temperatureUnknownConcept)
+                .withSetMember(temperatureAbnormalConcept)
+                .withClass("Concept Details").build();
+        temperatureDataConcept.setSet(true);
+
+        Set<ConceptDetails> leafConceptNames = conceptHelper.getLeafConceptDetails(Arrays.asList(temperatureDataConcept), false);
+
+        assertEquals(1, leafConceptNames.size());
+        Iterator<ConceptDetails> leafConceptIterator = leafConceptNames.iterator();
+        ConceptDetails temperatureConceptResult = leafConceptIterator.next();
+        assertEquals("Temperature Data", temperatureConceptResult.getName());
+        assertFalse(temperatureConceptResult.getAttributes().isEmpty());
+        assertEquals("Temperature Unknown", temperatureConceptResult.getAttribute("Unknown Concept"));
     }
 
     @Test

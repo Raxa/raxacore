@@ -18,7 +18,7 @@ public class ETObsToBahmniObsMapper {
     public static final String CONCEPT_DETAILS_CONCEPT_CLASS = "Concept Details";
     public static final String ABNORMAL_CONCEPT_CLASS = "Abnormal";
     public static final String DURATION_CONCEPT_CLASS = "Duration";
-    private static final String UNKNOWN_CONCEPT_CLASS = "Unknown" ;
+    public static final String UNKNOWN_CONCEPT_CLASS = "Unknown" ;
     private ConceptService conceptService;
 
     @Autowired

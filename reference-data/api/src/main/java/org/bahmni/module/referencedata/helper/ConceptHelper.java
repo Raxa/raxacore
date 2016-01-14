@@ -66,14 +66,32 @@ public  class ConceptHelper {
             }
             else if(!shouldBeExcluded(rootConcept)){
                 Concept conceptToAdd = rootConcept;
-                if(parentConcept != null && ! withoutAttributes){
-                    if(ETObsToBahmniObsMapper.CONCEPT_DETAILS_CONCEPT_CLASS.equals(parentConcept.getConceptClass().getName())){
-                        conceptToAdd = parentConcept;
-                    }
+                if(parentConcept != null && !withoutAttributes && hasConceptDetailsClass(parentConcept)){
+                    conceptToAdd = parentConcept;
                 }
-                leafConcepts.add(createConceptDetails(conceptToAdd));
+                ConceptDetails conceptDetails = createConceptDetails(conceptToAdd);
+                addAttributes(conceptDetails, parentConcept);
+                leafConcepts.add(conceptDetails);
             }
         }
+    }
+
+    private void addAttributes(ConceptDetails conceptDetails, Concept parentConcept) {
+        if(parentConcept != null && hasConceptDetailsClass(parentConcept)){
+            for (Concept concept : parentConcept.getSetMembers()) {
+                if("Unknown".equals(concept.getConceptClass().getName())) {
+                    conceptDetails.addAttribute("Unknown Concept", getConceptName(concept, ConceptNameType.FULLY_SPECIFIED));
+                }
+                if("Abnormal".equals(concept.getConceptClass().getName())) {
+                    conceptDetails.addAttribute("Abnormal Concept", getConceptName(concept, ConceptNameType.FULLY_SPECIFIED));
+                }
+            }
+        }
+
+    }
+
+    private boolean hasConceptDetailsClass(Concept parentConcept) {
+        return ETObsToBahmniObsMapper.CONCEPT_DETAILS_CONCEPT_CLASS.equals(parentConcept.getConceptClass().getName());
     }
 
     private ConceptDetails createConceptDetails(Concept conceptToAdd) {
@@ -104,7 +122,8 @@ public  class ConceptHelper {
 
     private boolean shouldBeExcluded(Concept rootConcept) {
         return ETObsToBahmniObsMapper.ABNORMAL_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName()) ||
-                ETObsToBahmniObsMapper.DURATION_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName());
+                ETObsToBahmniObsMapper.DURATION_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName()) ||
+                ETObsToBahmniObsMapper.UNKNOWN_CONCEPT_CLASS.equals(rootConcept.getConceptClass().getName());
     }
 
     public Set<ConceptDetails> getConceptDetails(List<Concept> conceptNames) {
