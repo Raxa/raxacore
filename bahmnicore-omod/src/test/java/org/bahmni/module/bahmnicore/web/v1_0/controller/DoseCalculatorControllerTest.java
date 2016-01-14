@@ -25,17 +25,17 @@ public class DoseCalculatorControllerTest {
 
     @Test
     public void shouldGetCorrectCalculatedDoseForGivenRule() throws Exception {
-        when(doseCalculatorService.getCalculatedDoseForRule("patientUuid", 5.0, "BSA")).thenReturn(10.0);
+        when(doseCalculatorService.getCalculatedDoseForRule("patientUuid", 5.0, "mg/m2")).thenReturn(10.0);
 
-        Double calculatedDose = doseCalculatorController.getCalculatedDose("patientUuid", 5.0, "BSA");
+        Double calculatedDose = doseCalculatorController.getCalculatedDose("patientUuid", 5.0, "mg/m2");
 
         assertEquals(10.0,calculatedDose,0.0);
     }
 
     @Test(expected = APIException.class)
     public void shouldThrowExceptionOnInvalidRule() throws Exception {
-        when(doseCalculatorService.getCalculatedDoseForRule("patientUuid", 5.0, "FUL")).thenThrow(new APIException());
+        when(doseCalculatorService.getCalculatedDoseForRule("patientUuid", 5.0, "randomUnit")).thenThrow(new APIException());
 
-        doseCalculatorController.getCalculatedDose("patientUuid", 5.0, "FUL");
+        doseCalculatorController.getCalculatedDose("patientUuid", 5.0, "randomUnit");
     }
 }

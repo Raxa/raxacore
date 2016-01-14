@@ -4,7 +4,6 @@ import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.service.DoseCalculatorService;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.api.APIException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertEquals;
@@ -22,24 +21,31 @@ public class DoseCalculatorServiceImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldGetCalculatedDoseForAGivenRule() throws Exception {
-        Double dosage = doseCalculatorService.getCalculatedDoseForRule("person_1024_uuid", 5.0, "BSA");
+        Double dosage = doseCalculatorService.getCalculatedDoseForRule("person_1024_uuid", 5.0, "mg/m2");
         assertEquals(8.65,dosage,0.01);
 
-        dosage = doseCalculatorService.getCalculatedDoseForRule("person_1024_uuid", 5.0, "WeightBasedDose");
+        dosage = doseCalculatorService.getCalculatedDoseForRule("person_1024_uuid", 5.0, "mg/kg");
         assertEquals(350.0,dosage,0.01);
     }
 
-    @Test(expected = APIException.class)
+    @Test
     public void shouldThrowExceptionWhenRuleNotFound() throws Exception{
-        doseCalculatorService.getCalculatedDoseForRule("person_uuid", 5.0, "FSO");
+        Double calculatedDose;
+        try {
+            calculatedDose = doseCalculatorService.getCalculatedDoseForRule("person_uuid", 5.0, "randomUnit");
+        } catch (Exception e) {
+            calculatedDose = null;
+            assertEquals(e.getMessage(),"Dose Calculator for randomUnit not found");
+        }
+        assertEquals(null,calculatedDose);
     }
 
     @Test
     public void shouldGetCalculatedDoseForTheLatestObservations() throws Exception{
-        Double dosage = doseCalculatorService.getCalculatedDoseForRule("person_1030_uuid", 5.0, "BSA");
+        Double dosage = doseCalculatorService.getCalculatedDoseForRule("person_1030_uuid", 5.0, "mg/m2");
         assertEquals(9.58,dosage,0.01);
 
-        dosage = doseCalculatorService.getCalculatedDoseForRule("person_1030_uuid", 5.0, "WeightBasedDose");
+        dosage = doseCalculatorService.getCalculatedDoseForRule("person_1030_uuid", 5.0, "mg/kg");
         assertEquals(400.0,dosage,0.01);
     }
 
