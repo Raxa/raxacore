@@ -21,7 +21,7 @@ public class WeightBasedDoseCalculatorIT extends BaseIntegrationTest{
     public void shouldThrowExceptionWeightNotAvailableWhenWeightObsDoesNotExist() {
         Double calculatedDoseForRule;
         try {
-            calculatedDoseForRule = weightBasedDoseCalculator.getDose("person_1032_uuid", 5.0);
+            calculatedDoseForRule = weightBasedDoseCalculator.calculateDose("person_1032_uuid", 5.0);
         } catch (Exception e) {
             calculatedDoseForRule = null;
             assertEquals(e.getMessage(), "Weight is not available");

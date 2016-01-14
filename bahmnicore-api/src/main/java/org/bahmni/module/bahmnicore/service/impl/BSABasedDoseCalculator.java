@@ -21,7 +21,7 @@ public class BSABasedDoseCalculator implements DoseCalculator {
     private final String REGISTRATION_ENCOUNTER_TYPE = "REG";
 
     @Override
-    public Double getDose(String patientUuid, Double baseDose) throws Exception {
+    public Double calculateDose(String patientUuid, Double baseDose) throws Exception {
 
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
 

@@ -21,10 +21,10 @@ public class DoseCalculatorServiceImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldGetCalculatedDoseForAGivenRule() throws Exception {
-        Double dosage = doseCalculatorService.getCalculatedDoseForRule("person_1024_uuid", 5.0, "mg/m2");
+        Double dosage = doseCalculatorService.calculateDose("person_1024_uuid", 5.0, "mg/m2");
         assertEquals(8.65,dosage,0.01);
 
-        dosage = doseCalculatorService.getCalculatedDoseForRule("person_1024_uuid", 5.0, "mg/kg");
+        dosage = doseCalculatorService.calculateDose("person_1024_uuid", 5.0, "mg/kg");
         assertEquals(350.0,dosage,0.01);
     }
 
@@ -32,7 +32,7 @@ public class DoseCalculatorServiceImplIT extends BaseIntegrationTest {
     public void shouldThrowExceptionWhenRuleNotFound() throws Exception{
         Double calculatedDose;
         try {
-            calculatedDose = doseCalculatorService.getCalculatedDoseForRule("person_uuid", 5.0, "randomUnit");
+            calculatedDose = doseCalculatorService.calculateDose("person_uuid", 5.0, "randomUnit");
         } catch (Exception e) {
             calculatedDose = null;
             assertEquals(e.getMessage(),"Dose Calculator for randomUnit not found");
@@ -42,10 +42,10 @@ public class DoseCalculatorServiceImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldGetCalculatedDoseForTheLatestObservations() throws Exception{
-        Double dosage = doseCalculatorService.getCalculatedDoseForRule("person_1030_uuid", 5.0, "mg/m2");
+        Double dosage = doseCalculatorService.calculateDose("person_1030_uuid", 5.0, "mg/m2");
         assertEquals(9.58,dosage,0.01);
 
-        dosage = doseCalculatorService.getCalculatedDoseForRule("person_1030_uuid", 5.0, "mg/kg");
+        dosage = doseCalculatorService.calculateDose("person_1030_uuid", 5.0, "mg/kg");
         assertEquals(400.0,dosage,0.01);
     }
 

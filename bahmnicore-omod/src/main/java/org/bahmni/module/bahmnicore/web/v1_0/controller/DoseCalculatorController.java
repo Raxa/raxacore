@@ -23,9 +23,9 @@ public class DoseCalculatorController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public Double getCalculatedDose(@RequestParam(value = "patientUuid") String patientUuid,
-                                    @RequestParam(value = "baseDose") Double baseDose,
-                                    String doseUnits) throws Exception {
-        return doseCaluclatorService.getCalculatedDoseForRule(patientUuid, baseDose, doseUnits);
+    public Double calculateDose(@RequestParam(value = "patientUuid") String patientUuid,
+                                @RequestParam(value = "baseDose") Double baseDose,
+                                String doseUnits) throws Exception {
+        return doseCaluclatorService.calculateDose(patientUuid, baseDose, doseUnits);
     }
 }

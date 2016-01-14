@@ -21,7 +21,7 @@ public class BSABasedDoseCalculatorIT extends BaseIntegrationTest{
     public void shouldThrowExceptionHeightNotAvailableWhenHeightObsDoesNotExist() {
         Double calculatedDoseForRule;
         try {
-            calculatedDoseForRule = bsaBasedDoseCalculator.getDose("person_1031_uuid", 5.0);
+            calculatedDoseForRule = bsaBasedDoseCalculator.calculateDose("person_1031_uuid", 5.0);
         } catch (Exception e) {
             calculatedDoseForRule=null;
             assertEquals(e.getMessage(), "Height is not available");
@@ -33,7 +33,7 @@ public class BSABasedDoseCalculatorIT extends BaseIntegrationTest{
     public void shouldThrowExceptionWeightNotAvailableWhenWeightObsDoesNotExist() {
         Double calculatedDoseForRule;
         try {
-            calculatedDoseForRule = bsaBasedDoseCalculator.getDose("person_1032_uuid", 5.0);
+            calculatedDoseForRule = bsaBasedDoseCalculator.calculateDose("person_1032_uuid", 5.0);
         } catch (Exception e) {
             calculatedDoseForRule = null;
             assertEquals(e.getMessage(), "Weight is not available");

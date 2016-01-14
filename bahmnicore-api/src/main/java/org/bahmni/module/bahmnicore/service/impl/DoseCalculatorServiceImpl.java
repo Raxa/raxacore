@@ -12,9 +12,9 @@ public class DoseCalculatorServiceImpl implements DoseCalculatorService {
     private DoseCalculatorFactory doseCalculatorFactory;
 
     @Override
-    public Double getCalculatedDoseForRule(String patientUuid, Double baseDose, String doseUnits) throws Exception {
+    public Double calculateDose(String patientUuid, Double baseDose, String doseUnits) throws Exception {
         DoseCalculator doseCalculator = doseCalculatorFactory.getRule(doseUnits);
-        return doseCalculator.getDose(patientUuid,baseDose);
+        return doseCalculator.calculateDose(patientUuid, baseDose);
     }
 
 }
