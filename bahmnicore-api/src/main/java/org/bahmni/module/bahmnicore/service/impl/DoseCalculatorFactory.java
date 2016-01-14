@@ -19,7 +19,7 @@ public class DoseCalculatorFactory {
         this.put("mg/m2", BSABasedDoseCalculator.class);
     }};
 
-    public DoseCalculator getRule(String doseUnits) {
+    public DoseCalculator getCalculator(String doseUnits) {
         Class<? extends DoseCalculator> rule = doseCalculatorMap.get(doseUnits);
         if (null == rule) {
             String errMessage = "Dose Calculator for " + doseUnits + " not found";

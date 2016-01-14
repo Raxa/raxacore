@@ -13,7 +13,7 @@ public class DoseCalculatorServiceImpl implements DoseCalculatorService {
 
     @Override
     public Double calculateDose(String patientUuid, Double baseDose, String doseUnits) throws Exception {
-        DoseCalculator doseCalculator = doseCalculatorFactory.getRule(doseUnits);
+        DoseCalculator doseCalculator = doseCalculatorFactory.getCalculator(doseUnits);
         return doseCalculator.calculateDose(patientUuid, baseDose);
     }
 
