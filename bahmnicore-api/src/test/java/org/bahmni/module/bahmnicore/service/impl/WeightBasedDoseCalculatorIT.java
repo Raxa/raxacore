@@ -14,7 +14,7 @@ public class WeightBasedDoseCalculatorIT extends BaseIntegrationTest{
 
     @Before
     public void setUp() throws Exception {
-        executeDataSet("RuleTestData.xml");
+        executeDataSet("DoseCalculatorTestData.xml");
     }
 
     @Test

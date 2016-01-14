@@ -16,7 +16,7 @@ public class DoseCalculatorServiceImplIT extends BaseIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        executeDataSet("doseCalculatorTestData.xml");
+        executeDataSet("doseCalculatorServiceTestData.xml");
     }
 
     @Test
