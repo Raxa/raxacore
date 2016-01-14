@@ -14,14 +14,10 @@ public class DoseCalculatorFactory {
 
     @Autowired
     private ApplicationContext appContext;
-    private Map<String, Class<? extends DoseCalculator>> doseCalculatorMap;
-
-    public DoseCalculatorFactory() {
-        doseCalculatorMap = new HashMap<String, Class<? extends DoseCalculator>>() {{
-            this.put("mg/kg", WeightBasedDoseCalculator.class);
-            this.put("mg/m2", BSABasedDoseCalculator.class);
-        }};
-    }
+    public static final Map<String, Class<? extends DoseCalculator>> doseCalculatorMap = new HashMap<String, Class<? extends DoseCalculator>>() {{
+        this.put("mg/kg", WeightBasedDoseCalculator.class);
+        this.put("mg/m2", BSABasedDoseCalculator.class);
+    }};
 
     public DoseCalculator getRule(String doseUnits) {
         Class<? extends DoseCalculator> rule = doseCalculatorMap.get(doseUnits);
