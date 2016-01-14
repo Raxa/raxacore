@@ -27,7 +27,7 @@ public class DoseCalculatorController extends BaseRestController {
     @ResponseBody
     public Double calculateDose(@RequestParam(value = "patientUuid") String patientUuid,
                                 @RequestParam(value = "baseDose") Double baseDose,
-                                String stringDoseUnit) throws Exception {
+                                @RequestParam(value = "doseUnit") String stringDoseUnit) throws Exception {
         DoseCalculatorFactory.DoseUnit doseUnit = DoseCalculatorFactory.DoseUnit.getConstant(stringDoseUnit);
         if(null== doseUnit){
             String errMessage = "Dose Calculator not found for given doseUnits (" + stringDoseUnit + ").";
