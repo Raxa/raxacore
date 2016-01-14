@@ -25,13 +25,13 @@
     <concept_datatype concept_datatype_id="1" name="numeric" hl7_abbreviation="NM"
                       description="numeric concept" date_created="2013-12-04 11:36:42" retired="0"/>
     <concept concept_id="101" retired="0" datatype_id="1" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42"
-             uuid="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+             uuid="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
     <concept_name concept_id="101" name="Height" locale="en" creator="1" date_created="2005-01-01 00:00:00.0"
                   concept_name_id="11" voided="false" uuid="height_name_uuid" concept_name_type="FULLY_SPECIFIED"
                   locale_preferred="0"/>
 
     <concept concept_id="102" retired="0" datatype_id="1" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42"
-             uuid="5090AAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
+             uuid="5089AAAAAAAAAAAAAAAAAAAAAAAAAAAA" />
     <concept_name concept_id="102" name="Weight" locale="en" creator="1" date_created="2005-01-01 00:00:00.0"
                   concept_name_id="12" voided="false" uuid="weight_name_uuid" concept_name_type="FULLY_SPECIFIED"
                   locale_preferred="0"/>

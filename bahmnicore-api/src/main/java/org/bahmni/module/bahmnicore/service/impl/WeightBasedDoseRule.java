@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class BMIRule implements Rule {
+public class WeightBasedDoseRule implements Rule {
 
     private final String REGISTRATION_ENCOUNTER_TYPE = "REG";
 
@@ -22,11 +22,9 @@ public class BMIRule implements Rule {
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
         Encounter selectedEncounter = getLatestEncounterByPatient(patient);
 
-        Double height = getHeight(patient,selectedEncounter);
         Double weight = getWeight(patient,selectedEncounter);
-        Double bsa = calculateBMI(height, weight);
 
-        return bsa*baseDose;
+        return new BigDecimal(weight*baseDose).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     private Encounter getLatestEncounterByPatient(Patient patient) {
@@ -44,12 +42,6 @@ public class BMIRule implements Rule {
         return selectedEncounter;
     }
 
-    private Double calculateBMI(Double height, Double weight) {
-        Double heightInMeters = height / 100;
-        Double value = weight / (heightInMeters * heightInMeters);
-        return new BigDecimal(value).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-    }
-
     private Double getWeight(Person person, Encounter selectedEncounter) throws Exception {
         ObsService obsService = Context.getObsService();
         Concept weight = Context.getConceptService().getConceptByUuid(CIELDictionary.WEIGHT_UUID);
@@ -58,18 +50,6 @@ public class BMIRule implements Rule {
             null, null, null, null, null, null, null, null, false);
         if(CollectionUtils.isEmpty(obss)){
             throw new Exception("Weight is not available");
-        }
-        return obss.get(0).getValueNumeric();
-    }
-
-    private Double getHeight(Person person, Encounter selectedEncounter) throws Exception {
-        ObsService obsService = Context.getObsService();
-        Concept height = Context.getConceptService().getConceptByUuid(CIELDictionary.HEIGHT_UUID);
-
-        List<Obs> obss = obsService.getObservations(Arrays.asList(person), Arrays.asList(selectedEncounter), Arrays.asList(height),
-            null, null, null, null, null, null, null, null, false);
-        if(CollectionUtils.isEmpty(obss)){
-            throw new Exception("Height is not available");
         }
         return obss.get(0).getValueNumeric();
     }
