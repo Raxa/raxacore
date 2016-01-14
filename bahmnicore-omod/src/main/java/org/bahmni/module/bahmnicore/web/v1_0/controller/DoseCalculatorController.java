@@ -1,6 +1,8 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.service.DoseCalculatorService;
+import org.bahmni.module.bahmnicore.service.impl.DoseCalculatorFactory;
+import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,12 @@ public class DoseCalculatorController extends BaseRestController {
     @ResponseBody
     public Double calculateDose(@RequestParam(value = "patientUuid") String patientUuid,
                                 @RequestParam(value = "baseDose") Double baseDose,
-                                String doseUnits) throws Exception {
-        return doseCaluclatorService.calculateDose(patientUuid, baseDose, doseUnits);
+                                String stringDoseUnit) throws Exception {
+        DoseCalculatorFactory.DoseUnit doseUnit = DoseCalculatorFactory.DoseUnit.getConstant(stringDoseUnit);
+        if(null== doseUnit){
+            String errMessage = "Dose Calculator not found for given doseUnits (" + stringDoseUnit + ").";
+            throw new APIException(errMessage);
+        }
+        return doseCaluclatorService.calculateDose(patientUuid, baseDose, doseUnit);
     }
 }
