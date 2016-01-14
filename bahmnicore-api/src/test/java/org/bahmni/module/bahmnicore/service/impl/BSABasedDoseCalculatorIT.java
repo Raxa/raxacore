@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertEquals;
 
-public class WeightBasedDoseRuleIT extends BaseIntegrationTest{
+public class BSABasedDoseCalculatorIT extends BaseIntegrationTest{
 
     @Autowired
-    private WeightBasedDoseRule bMIRule;
+    private BSABasedDoseCalculator bsaBasedDoseCalculator;
 
     @Before
     public void setUp() throws Exception {
@@ -18,10 +18,22 @@ public class WeightBasedDoseRuleIT extends BaseIntegrationTest{
     }
 
     @Test
+    public void shouldThrowExceptionHeightNotAvailableWhenHeightObsDoesNotExist() {
+        Double calculatedDoseForRule;
+        try {
+            calculatedDoseForRule = bsaBasedDoseCalculator.getDose("person_1031_uuid", 5.0);
+        } catch (Exception e) {
+            calculatedDoseForRule=null;
+            assertEquals(e.getMessage(), "Height is not available");
+        }
+        assertEquals(calculatedDoseForRule, null);
+    }
+
+    @Test
     public void shouldThrowExceptionWeightNotAvailableWhenWeightObsDoesNotExist() {
         Double calculatedDoseForRule;
         try {
-            calculatedDoseForRule = bMIRule.getDose("person_1032_uuid", 5.0);
+            calculatedDoseForRule = bsaBasedDoseCalculator.getDose("person_1032_uuid", 5.0);
         } catch (Exception e) {
             calculatedDoseForRule = null;
             assertEquals(e.getMessage(), "Weight is not available");

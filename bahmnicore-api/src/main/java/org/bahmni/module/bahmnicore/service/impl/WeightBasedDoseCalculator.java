@@ -2,9 +2,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.CIELDictionary;
-import org.bahmni.module.bahmnicore.service.Rule;
-import org.joda.time.LocalDate;
-import org.joda.time.Years;
+import org.bahmni.module.bahmnicore.service.DoseCalculator;
 import org.openmrs.*;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
@@ -12,28 +10,21 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 @Service
-public class BSARule implements Rule {
+public class WeightBasedDoseCalculator implements DoseCalculator {
 
     private final String REGISTRATION_ENCOUNTER_TYPE = "REG";
 
     @Override
     public Double getDose(String patientUuid, Double baseDose) throws Exception {
-
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
-
         Encounter selectedEncounter = getLatestEncounterByPatient(patient);
 
-        Integer ageInYears = ageInYears(patient, selectedEncounter.getEncounterDatetime());
+        Double weight = getWeight(patient,selectedEncounter);
 
-        Double height = getHeight(patient, selectedEncounter);
-        Double weight = getWeight(patient, selectedEncounter);
-        Double bsa = calculateBSA(height, weight, ageInYears);
-
-        return new BigDecimal(bsa*baseDose).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return new BigDecimal(weight*baseDose).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     private Encounter getLatestEncounterByPatient(Patient patient) {
@@ -51,18 +42,6 @@ public class BSARule implements Rule {
         return selectedEncounter;
     }
 
-    private Integer ageInYears(Patient patient, Date asOfDate) {
-        Date birthdate = patient.getBirthdate();
-        return Years.yearsBetween(new LocalDate(birthdate), new LocalDate(asOfDate)).getYears();
-    }
-
-    private Double calculateBSA(Double height, Double weight, Integer patientAgeInYears) {
-        if (patientAgeInYears <= 15 && weight <= 40) {
-            return Math.sqrt(weight * height / 3600);
-        }
-        return Math.pow(weight, 0.425) * Math.pow(height, 0.725) * 0.007184;
-    }
-
     private Double getWeight(Person person, Encounter selectedEncounter) throws Exception {
         ObsService obsService = Context.getObsService();
         Concept weight = Context.getConceptService().getConceptByUuid(CIELDictionary.WEIGHT_UUID);
@@ -71,18 +50,6 @@ public class BSARule implements Rule {
             null, null, null, null, null, null, null, null, false);
         if(CollectionUtils.isEmpty(obss)){
             throw new Exception("Weight is not available");
-        }
-        return obss.get(0).getValueNumeric();
-    }
-
-    private Double getHeight(Person person, Encounter selectedEncounter) throws Exception {
-        ObsService obsService = Context.getObsService();
-        Concept height = Context.getConceptService().getConceptByUuid(CIELDictionary.HEIGHT_UUID);
-
-        List<Obs> obss = obsService.getObservations(Arrays.asList(person), Arrays.asList(selectedEncounter), Arrays.asList(height),
-            null, null, null, null, null, null, null, null, false);
-        if(CollectionUtils.isEmpty(obss)){
-            throw new Exception("Height is not available");
         }
         return obss.get(0).getValueNumeric();
     }
