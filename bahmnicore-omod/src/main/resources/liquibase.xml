@@ -3810,8 +3810,5 @@
         <addForeignKeyConstraint constraintName="patient_program_attribute_changed_by_fk"
                                  baseTableName="patient_program_attribute" baseColumnNames="changed_by"
                                  referencedTableName="users" referencedColumnNames="user_id" />
-        <addForeignKeyConstraint constraintName="patient_program_attribute_retired_by_fk"
-                                 baseTableName="patient_program_attribute" baseColumnNames="retired_by"
-                                 referencedTableName="users" referencedColumnNames="user_id" />
     </changeSet>
 </databaseChangeLog>
