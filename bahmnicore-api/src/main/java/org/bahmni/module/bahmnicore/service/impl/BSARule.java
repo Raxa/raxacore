@@ -8,7 +8,6 @@ import org.joda.time.Years;
 import org.openmrs.*;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.webservices.rest.RuntimeWrappedException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -52,12 +51,12 @@ public class BSARule implements Rule {
         return selectedEncounter;
     }
 
-    private static Integer ageInYears(Patient patient, Date asOfDate) {
+    private Integer ageInYears(Patient patient, Date asOfDate) {
         Date birthdate = patient.getBirthdate();
         return Years.yearsBetween(new LocalDate(birthdate), new LocalDate(asOfDate)).getYears();
     }
 
-    private static Double calculateBSA(Double height, Double weight, Integer patientAgeInYears) {
+    private Double calculateBSA(Double height, Double weight, Integer patientAgeInYears) {
         if (patientAgeInYears <= 15 && weight <= 40) {
             return Math.sqrt(weight * height / 3600);
         }

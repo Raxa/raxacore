@@ -31,7 +31,7 @@ public class DoseCalculatorServiceImpl implements DoseCalculatorService {
         } catch (ClassNotFoundException e) {
             String errMessage = "Rule " + ruleName + " not found";
             log.error(errMessage);
-            throw new APIException(errMessage);
+            throw new APIException(errMessage, e);
         }
         return (Rule)appContext.getBean(ruleClass);
     }
