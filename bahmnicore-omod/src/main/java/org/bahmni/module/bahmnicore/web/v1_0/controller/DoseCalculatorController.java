@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.service.DoseCalculatorService;
-import org.bahmni.module.bahmnicore.service.impl.DoseCalculatorFactory;
+import org.bahmni.module.bahmnicore.service.impl.DoseCalculatorFactory.CalculatedDoseUnit;
 import org.openmrs.api.APIException;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
@@ -28,11 +28,11 @@ public class DoseCalculatorController extends BaseRestController {
     public Double calculateDose(@RequestParam(value = "patientUuid") String patientUuid,
                                 @RequestParam(value = "baseDose") Double baseDose,
                                 @RequestParam(value = "doseUnit") String stringDoseUnit) throws Exception {
-        DoseCalculatorFactory.DoseUnit doseUnit = DoseCalculatorFactory.DoseUnit.getConstant(stringDoseUnit);
-        if(null== doseUnit){
+        CalculatedDoseUnit calculatedDoseUnit = CalculatedDoseUnit.getConstant(stringDoseUnit);
+        if(null== calculatedDoseUnit){
             String errMessage = "Dose Calculator not found for given doseUnits (" + stringDoseUnit + ").";
             throw new APIException(errMessage);
         }
-        return doseCaluclatorService.calculateDose(patientUuid, baseDose, doseUnit);
+        return doseCaluclatorService.calculateDose(patientUuid, baseDose, calculatedDoseUnit);
     }
 }

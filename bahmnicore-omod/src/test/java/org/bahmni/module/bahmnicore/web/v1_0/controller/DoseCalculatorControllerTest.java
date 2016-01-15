@@ -26,7 +26,7 @@ public class DoseCalculatorControllerTest {
 
     @Test
     public void shouldGetCorrectCalculatedDoseForGivenRule() throws Exception {
-        when(doseCalculatorService.calculateDose("patientUuid", 5.0, DoseCalculatorFactory.DoseUnit.mg_per_m2)).thenReturn(10.0);
+        when(doseCalculatorService.calculateDose("patientUuid", 5.0, DoseCalculatorFactory.CalculatedDoseUnit.mg_per_m2)).thenReturn(10.0);
 
         Double calculatedDose = doseCalculatorController.calculateDose("patientUuid", 5.0, "mg/m2");
 

@@ -4,7 +4,7 @@ import org.bahmni.module.bahmnicore.service.DoseCalculator;
 import org.bahmni.module.bahmnicore.service.DoseCalculatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.bahmni.module.bahmnicore.service.impl.DoseCalculatorFactory.DoseUnit;
+import org.bahmni.module.bahmnicore.service.impl.DoseCalculatorFactory.CalculatedDoseUnit;
 
 @Service
 public class DoseCalculatorServiceImpl implements DoseCalculatorService {
@@ -13,8 +13,8 @@ public class DoseCalculatorServiceImpl implements DoseCalculatorService {
     private DoseCalculatorFactory doseCalculatorFactory;
 
     @Override
-    public Double calculateDose(String patientUuid, Double baseDose, DoseUnit doseUnit) throws Exception {
-        DoseCalculator doseCalculator = doseCalculatorFactory.getCalculator(doseUnit);
+    public Double calculateDose(String patientUuid, Double baseDose, CalculatedDoseUnit calculatedDoseUnit) throws Exception {
+        DoseCalculator doseCalculator = doseCalculatorFactory.getCalculator(calculatedDoseUnit);
         return doseCalculator.calculateDose(patientUuid, baseDose);
     }
 

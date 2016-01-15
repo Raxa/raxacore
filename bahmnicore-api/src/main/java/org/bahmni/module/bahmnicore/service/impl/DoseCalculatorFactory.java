@@ -14,22 +14,22 @@ public class DoseCalculatorFactory {
     @Autowired
     private ApplicationContext appContext;
 
-    public static final Map<DoseUnit, Class<? extends DoseCalculator>> doseCalculatorMap = new HashMap<DoseUnit, Class<? extends DoseCalculator>>() {{
-        this.put(DoseUnit.mg_per_kg, WeightBasedDoseCalculator.class);
-        this.put(DoseUnit.mg_per_m2, BSABasedDoseCalculator.class);
+    public static final Map<CalculatedDoseUnit, Class<? extends DoseCalculator>> doseCalculatorMap = new HashMap<CalculatedDoseUnit, Class<? extends DoseCalculator>>() {{
+        this.put(CalculatedDoseUnit.mg_per_kg, WeightBasedDoseCalculator.class);
+        this.put(CalculatedDoseUnit.mg_per_m2, BSABasedDoseCalculator.class);
     }};
 
-    public DoseCalculator getCalculator(DoseUnit doseUnit) {
-        return appContext.getBean(doseCalculatorMap.get(doseUnit));
+    public DoseCalculator getCalculator(CalculatedDoseUnit calculatedDoseUnit) {
+        return appContext.getBean(doseCalculatorMap.get(calculatedDoseUnit));
     }
 
-    public enum DoseUnit {
+    public enum CalculatedDoseUnit {
         mg_per_kg ,
         mg_per_m2 ;
 
-        public static DoseUnit getConstant(String stringDoseUnit){
-            if("mg/kg".equals(stringDoseUnit)) return DoseUnit.mg_per_kg;
-            if("mg/m2".equals(stringDoseUnit)) return DoseUnit.mg_per_m2;
+        public static CalculatedDoseUnit getConstant(String stringDoseUnit){
+            if("mg/kg".equals(stringDoseUnit)) return mg_per_kg;
+            if("mg/m2".equals(stringDoseUnit)) return mg_per_m2;
             return null;
         }
     }
