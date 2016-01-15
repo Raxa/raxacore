@@ -1,6 +1,8 @@
 package org.bahmni.module.bahmnicore.service;
 
+import org.bahmni.module.bahmnicore.service.impl.Dose;
+
 public interface DoseCalculator {
 
-    Double calculateDose(String patientUuid, Double baseDose) throws Exception;
+    Dose calculateDose(String patientUuid, Double baseDose) throws Exception;
 }

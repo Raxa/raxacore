@@ -21,20 +21,24 @@ public class DoseCalculatorServiceImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldGetCalculatedDoseForAGivenRule() throws Exception {
-        Double dosage = doseCalculatorService.calculateDose("person_1024_uuid", 5.0, DoseCalculatorFactory.CalculatedDoseUnit.mg_per_m2);
-        assertEquals(8.65,dosage,0.01);
+        Dose dosage = doseCalculatorService.calculateDose("person_1024_uuid", 5.0, Dose.CalculatedDoseUnit.mg_per_m2);
+        assertEquals(8.65, dosage.getValue(),0.01);
+        assertEquals(Dose.DoseUnit.mg, dosage.getDoseUnit());
 
-        dosage = doseCalculatorService.calculateDose("person_1024_uuid", 5.0, DoseCalculatorFactory.CalculatedDoseUnit.mg_per_kg);
-        assertEquals(350.0,dosage,0.01);
+        dosage = doseCalculatorService.calculateDose("person_1024_uuid", 5.0, Dose.CalculatedDoseUnit.mg_per_kg);
+        assertEquals(350.0, dosage.getValue(),0.01);
+        assertEquals(Dose.DoseUnit.mg, dosage.getDoseUnit());
     }
 
     @Test
     public void shouldGetCalculatedDoseForTheLatestObservations() throws Exception{
-        Double dosage = doseCalculatorService.calculateDose("person_1030_uuid", 5.0, DoseCalculatorFactory.CalculatedDoseUnit.mg_per_m2);
-        assertEquals(9.58,dosage,0.01);
+        Dose dosage = doseCalculatorService.calculateDose("person_1030_uuid", 5.0, Dose.CalculatedDoseUnit.mg_per_m2);
+        assertEquals(9.58, dosage.getValue(),0.01);
+        assertEquals(Dose.DoseUnit.mg, dosage.getDoseUnit());
 
-        dosage = doseCalculatorService.calculateDose("person_1030_uuid", 5.0, DoseCalculatorFactory.CalculatedDoseUnit.mg_per_kg);
-        assertEquals(400.0,dosage,0.01);
+        dosage = doseCalculatorService.calculateDose("person_1030_uuid", 5.0, Dose.CalculatedDoseUnit.mg_per_kg);
+        assertEquals(400.0, dosage.getValue(),0.01);
+        assertEquals(Dose.DoseUnit.mg, dosage.getDoseUnit());
     }
 
 }

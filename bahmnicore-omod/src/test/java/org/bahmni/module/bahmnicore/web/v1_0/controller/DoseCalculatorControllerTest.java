@@ -1,13 +1,12 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.service.DoseCalculatorService;
-import org.bahmni.module.bahmnicore.service.impl.DoseCalculatorFactory;
-import org.junit.Assert;
+import org.bahmni.module.bahmnicore.service.impl.Dose;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -26,22 +25,24 @@ public class DoseCalculatorControllerTest {
 
     @Test
     public void shouldGetCorrectCalculatedDoseForGivenRule() throws Exception {
-        when(doseCalculatorService.calculateDose("patientUuid", 5.0, DoseCalculatorFactory.CalculatedDoseUnit.mg_per_m2)).thenReturn(10.0);
+        when(doseCalculatorService.calculateDose("patientUuid", 5.0, Dose.CalculatedDoseUnit.mg_per_m2))
+            .thenReturn(new Dose(10.0, Dose.DoseUnit.mg));
 
-        Double calculatedDose = doseCalculatorController.calculateDose("patientUuid", 5.0, "mg/m2");
+        Dose calculatedDose = doseCalculatorController.calculateDose("patientUuid", 5.0, "mg/m2");
 
-        assertEquals(10.0,calculatedDose,0.0);
+        assertEquals(10.0, calculatedDose.getValue(),0.0);
+        assertEquals(Dose.DoseUnit.mg, calculatedDose.getDoseUnit());
     }
 
     @Test
     public void shouldThrowExceptionWhenDoseUnitsIsNotValid() throws Exception{
-        Double calculatedDose;
+        Dose calculatedDose;
         try {
             calculatedDose = doseCalculatorController.calculateDose("patientUuid", 5.0, "randomUnit");
         } catch (Exception e) {
             calculatedDose = null;
-            Assert.assertEquals("Dose Calculator not found for given doseUnits (randomUnit).", e.getMessage());
+            assertEquals("Dose Calculator not found for given doseUnits (randomUnit).", e.getMessage());
         }
-        Assert.assertEquals(null, calculatedDose);
+        assertEquals(null, calculatedDose);
     }
 }

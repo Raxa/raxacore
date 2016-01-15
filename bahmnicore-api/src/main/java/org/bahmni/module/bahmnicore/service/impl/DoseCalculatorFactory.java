@@ -14,23 +14,13 @@ public class DoseCalculatorFactory {
     @Autowired
     private ApplicationContext appContext;
 
-    public static final Map<CalculatedDoseUnit, Class<? extends DoseCalculator>> doseCalculatorMap = new HashMap<CalculatedDoseUnit, Class<? extends DoseCalculator>>() {{
-        this.put(CalculatedDoseUnit.mg_per_kg, WeightBasedDoseCalculator.class);
-        this.put(CalculatedDoseUnit.mg_per_m2, BSABasedDoseCalculator.class);
+    public static final Map<Dose.CalculatedDoseUnit, Class<? extends DoseCalculator>> doseCalculatorMap = new HashMap<Dose.CalculatedDoseUnit, Class<? extends DoseCalculator>>() {{
+        this.put(Dose.CalculatedDoseUnit.mg_per_kg, WeightBasedDoseCalculator.class);
+        this.put(Dose.CalculatedDoseUnit.mg_per_m2, BSABasedDoseCalculator.class);
     }};
 
-    public DoseCalculator getCalculator(CalculatedDoseUnit calculatedDoseUnit) {
+    public DoseCalculator getCalculator(Dose.CalculatedDoseUnit calculatedDoseUnit) {
         return appContext.getBean(doseCalculatorMap.get(calculatedDoseUnit));
     }
 
-    public enum CalculatedDoseUnit {
-        mg_per_kg ,
-        mg_per_m2 ;
-
-        public static CalculatedDoseUnit getConstant(String stringDoseUnit){
-            if("mg/kg".equals(stringDoseUnit)) return mg_per_kg;
-            if("mg/m2".equals(stringDoseUnit)) return mg_per_m2;
-            return null;
-        }
-    }
 }

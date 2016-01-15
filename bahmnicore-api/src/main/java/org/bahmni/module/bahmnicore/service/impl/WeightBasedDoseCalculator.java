@@ -18,13 +18,14 @@ public class WeightBasedDoseCalculator implements DoseCalculator {
     private final String REGISTRATION_ENCOUNTER_TYPE = "REG";
 
     @Override
-    public Double calculateDose(String patientUuid, Double baseDose) throws Exception {
+    public Dose calculateDose(String patientUuid, Double baseDose) throws Exception {
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
         Encounter selectedEncounter = getLatestEncounterByPatient(patient);
 
         Double weight = getWeight(patient,selectedEncounter);
 
-        return new BigDecimal(weight*baseDose).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        double roundedUpDoseValue = new BigDecimal(weight * baseDose).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return new Dose(roundedUpDoseValue, Dose.DoseUnit.mg);
     }
 
     private Encounter getLatestEncounterByPatient(Patient patient) {

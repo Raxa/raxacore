@@ -15,13 +15,15 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static org.bahmni.module.bahmnicore.service.impl.Dose.*;
+
 @Service
 public class BSABasedDoseCalculator implements DoseCalculator {
 
     private final String REGISTRATION_ENCOUNTER_TYPE = "REG";
 
     @Override
-    public Double calculateDose(String patientUuid, Double baseDose) throws Exception {
+    public Dose calculateDose(String patientUuid, Double baseDose) throws Exception {
 
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
 
@@ -33,7 +35,8 @@ public class BSABasedDoseCalculator implements DoseCalculator {
         Double weight = getWeight(patient, selectedEncounter);
         Double bsa = calculateBSA(height, weight, ageInYears);
 
-        return new BigDecimal(bsa*baseDose).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        double roundedUpValue = new BigDecimal(bsa * baseDose).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        return new Dose(roundedUpValue, DoseUnit.mg);
     }
 
     private Encounter getLatestEncounterByPatient(Patient patient) {
