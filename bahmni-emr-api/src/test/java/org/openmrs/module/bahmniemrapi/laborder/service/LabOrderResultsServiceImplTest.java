@@ -42,7 +42,7 @@ public class LabOrderResultsServiceImplTest {
         EncounterTransaction.Order order3 = createOrder("uuid3", "concept3", Order.Action.NEW.toString(), new Date());
         when(encounterTransaction.getOrders()).thenReturn(Arrays.asList(order1, order2, order3));
 
-        List<EncounterTransaction.Order> orders = labOrderResultsServiceImpl.filterTestOrders(encounterTransaction, encounter, encounterTestOrderUuidMap, concepts);
+        List<EncounterTransaction.Order> orders = labOrderResultsServiceImpl.filterTestOrders(encounterTransaction, encounter, encounterTestOrderUuidMap, concepts, null, null);
 
         assertEquals(3, orders.size());
     }
@@ -53,7 +53,7 @@ public class LabOrderResultsServiceImplTest {
         EncounterTransaction.Order order1 = createOrder("uuid1","concept1", Order.Action.NEW.toString(), null);
         when(encounterTransaction.getOrders()).thenReturn(Arrays.asList(order1));
 
-        List<EncounterTransaction.Order> orders = labOrderResultsServiceImpl.filterTestOrders(encounterTransaction, encounter, encounterTestOrderUuidMap, null);
+        List<EncounterTransaction.Order> orders = labOrderResultsServiceImpl.filterTestOrders(encounterTransaction, encounter, encounterTestOrderUuidMap, null, null, null);
 
         assertEquals(1, orders.size());
     }

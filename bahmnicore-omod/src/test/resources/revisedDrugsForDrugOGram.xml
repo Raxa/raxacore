@@ -28,14 +28,14 @@
 
     <orders order_id="2000" order_type_id="1" encounter_id="2000" urgency="ROUTINE" concept_id="1000" orderer="1"
             care_setting="1" order_action="NEW" order_number="1" date_activated="2005-09-23 08:00:00"
-            auto_expire_date="2005-09-30 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false"
+            scheduled_date="2005-09-23 08:00:00" auto_expire_date="2005-09-30 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false"
             patient_id="2000" uuid="6d0ae116-707a-4629-9850-f15206cvibab0" date_stopped="2005-09-25 08:00:00"/>
     <orders order_id="2002" order_type_id="1" encounter_id="2000" urgency="ROUTINE" concept_id="1000" orderer="1"
             care_setting="1" order_action="REVISE" order_number="1" date_activated="2005-09-25 08:00:00"
-            auto_expire_date="2005-10-02 00:00:00.0" creator="1" date_created="2008-08-25 12:20:22.0" voided="false"
+            scheduled_date="2005-09-25 08:00:00" auto_expire_date="2005-10-02 00:00:00.0" creator="1" date_created="2008-08-25 12:20:22.0" voided="false"
             patient_id="2000" uuid="6d0ae116-707a-4629-9850-f15206csibab0" previous_order_id="2000"/>
     <orders order_id="2001" order_type_id="1" encounter_id="2000" urgency="ROUTINE" concept_id="1001" orderer="1"
-            care_setting="1" order_action="NEW" order_number="1" date_activated="2005-09-23 09:00:00"
+            care_setting="1" order_action="NEW" order_number="1" date_activated="2005-09-23 09:00:00" scheduled_date="2005-09-23 09:00:00"
             auto_expire_date="2005-09-26 00:00:00.0" creator="1" date_created="2008-08-19 12:22:22.0" voided="false"
             patient_id="2000" uuid="6d0ae116-707a-4629-9850-f152zjskibab0"/>
 

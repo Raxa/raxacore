@@ -311,8 +311,8 @@ public class OrderDaoImpl implements OrderDao {
         criteria.add(Restrictions.eq("voided", false));
         criteria.add(Restrictions.ne("action", Order.Action.DISCONTINUE));
         criteria.addOrder(org.hibernate.criterion.Order.asc("orderId"));
-        if(startDate != null) criteria.add(Restrictions.ge("dateActivated", startDate));
-        if(endDate != null) criteria.add(Restrictions.le("dateActivated", endDate));
+        if(startDate != null) criteria.add(Restrictions.ge("scheduledDate", startDate));
+        if(endDate != null) criteria.add(Restrictions.le("scheduledDate", endDate));
 
         return criteria.list();
 
