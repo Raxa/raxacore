@@ -154,14 +154,14 @@ public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
     }
 
     @Test
-    public void shouldGetAllDrugsInTheGivenListOfConceptsWhenThereIsNoDrugNameGiven() throws Exception{
+    public void shouldGetAllDrugsInTheGivenListOfConceptsWhichMatchTheDrugConceptNameAsWell() throws Exception{
         executeDataSet("drugsWithConcepts.xml");
 
-        List<Concept> concepts = conceptService.getConceptsByConceptSet(conceptService.getConcept(3010));
-        List<Drug> drugs = bahmniConceptDao.searchDrugsByDrugName(concepts, null);
+        List<Concept> concepts = conceptService.getConceptsByConceptSet(conceptService.getConcept(6010));
+        List<Drug> drugs = bahmniConceptDao.searchDrugsByDrugName(concepts, "Di Methyl Alkane");
 
-        assertEquals(3,drugs.size());
-        assertThat(drugs, containsInAnyOrder(conceptService.getDrug(2001), conceptService.getDrug(4001), conceptService.getDrug(6001)));
+        assertEquals(1,drugs.size());
+        assertEquals(conceptService.getDrug(8001),drugs.get(0));
 
     }
 }

@@ -60,7 +60,7 @@ public class ConceptSetBasedDrugSearchHandlerIT extends MainResourceControllerTe
     public void shouldSearchForDrugBySearchTermAndConceptSet() throws Exception{
         MockHttpServletRequest request = request(RequestMethod.GET, getURI());
         request.addParameter("s", "byConceptSet");
-        request.addParameter("searchTerm", "t");
+        request.addParameter("searchTerm", "aceta");
         request.addParameter("q", "All TB Drugs");
         request.addParameter("v", RestConstants.REPRESENTATION_DEFAULT);
         SimpleObject result = deserialize(handle(request));
