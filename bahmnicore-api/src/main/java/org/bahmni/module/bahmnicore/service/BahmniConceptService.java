@@ -11,5 +11,5 @@ public interface BahmniConceptService {
     EncounterTransaction.Concept getConceptByName(String conceptName);
 
     Collection<Concept> searchByQuestion(String questionConcept, String query);
-    Collection<Drug> getDrugsByConceptSetName(String conceptSetName);
+    Collection<Drug> getDrugsByConceptSetName(String conceptSetName, String searchTerm);
 }

@@ -48,9 +48,9 @@ public class BahmniConceptServiceImpl implements BahmniConceptService{
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<Drug> getDrugsByConceptSetName(String conceptSetName) {
+    public Collection<Drug> getDrugsByConceptSetName(String conceptSetName, String searchTerm) {
         List<Concept> setMembers = conceptService.getConceptsByConceptSet(getConcept(conceptSetName));
-        return bahmniConceptDao.getDrugByListOfConcepts(setMembers);
+        return bahmniConceptDao.searchDrugsByDrugName(setMembers, searchTerm);
     }
 
     private Concept getConcept(String conceptSetName) {

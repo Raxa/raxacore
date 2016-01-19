@@ -62,15 +62,15 @@ public class BahmniConceptServiceImplTest {
 
         when(bahmniConceptDao.getConceptByFullySpecifiedName(conceptSetName)).thenReturn(allTBDrugsConceptSet);
         when(conceptService.getConceptsByConceptSet(allTBDrugsConceptSet)).thenReturn(allTBDrugConcepts);
-        when(bahmniConceptDao.getDrugByListOfConcepts(allTBDrugConcepts)).thenReturn(allTBDrugs);
+        when(bahmniConceptDao.searchDrugsByDrugName(allTBDrugConcepts,null)).thenReturn(allTBDrugs);
 
-        Collection<Drug> drugs = bahmniConceptService.getDrugsByConceptSetName(conceptSetName);
+        Collection<Drug> drugs = bahmniConceptService.getDrugsByConceptSetName(conceptSetName, null);
 
         assertThat(drugs, containsInAnyOrder(allTBDrugs.toArray()));
     }
 
     @Test(expected = ConceptNotFoundException.class)
     public void getDrugsByConceptSetNameShouldFailWhenConceptSetNameDoesNotExist() {
-        bahmniConceptService.getDrugsByConceptSetName("this concept doesn't exist");
+        bahmniConceptService.getDrugsByConceptSetName("this concept doesn't exist", null);
     }
 }

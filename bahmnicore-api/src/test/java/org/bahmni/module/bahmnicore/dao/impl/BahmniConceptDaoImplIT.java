@@ -2,7 +2,6 @@ package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.dao.BahmniConceptDao;
-import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.Drug;
@@ -10,6 +9,7 @@ import org.openmrs.api.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -125,7 +125,42 @@ public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
 
         Collection<Drug> drugs = bahmniConceptDao.getDrugByListOfConcepts(
                 conceptService.getConceptsByConceptSet(conceptService.getConcept(3010)));
-        assertEquals(2, drugs.size());
-        assertThat(drugs, containsInAnyOrder(conceptService.getDrug(2001), conceptService.getDrug(4001)));
+        assertEquals(3, drugs.size());
+        assertThat(drugs, containsInAnyOrder(conceptService.getDrug(2001), conceptService.getDrug(4001), conceptService.getDrug(6001)));
+    }
+
+    @Test
+    public void shouldSearchDrugsByDrugNameInTheGivenListOfConcepts() throws Exception{
+        executeDataSet("drugsWithConcepts.xml");
+
+        List<Concept> concepts = conceptService.getConceptsByConceptSet(conceptService.getConcept(3010));
+        List<Drug> resultantDrugs = bahmniConceptDao.searchDrugsByDrugName(concepts, "Isoniazid");
+
+        assertEquals(1,resultantDrugs.size());
+        assertEquals(conceptService.getDrug(4001),resultantDrugs.get(0));
+
+    }
+
+    @Test
+    public void shouldSearchDrugsByDrugNameInTheGivenListOfConceptsIrrespectiveOfCase() throws Exception{
+        executeDataSet("drugsWithConcepts.xml");
+
+        List<Concept> concepts = conceptService.getConceptsByConceptSet(conceptService.getConcept(3010));
+        List<Drug> resultantDrugs = bahmniConceptDao.searchDrugsByDrugName(concepts, "IsOnIazId");
+
+        assertEquals(1,resultantDrugs.size());
+        assertEquals(conceptService.getDrug(4001),resultantDrugs.get(0));
+
+    }
+
+    @Test
+    public void shouldGetAllDrugsInTheGivenListOfConceptsWhichMatchTheDrugConceptNameAsWell() throws Exception{
+        executeDataSet("drugsWithConcepts.xml");
+
+        List<Concept> concepts = conceptService.getConceptsByConceptSet(conceptService.getConcept(3010));
+        List<Drug> drugs = bahmniConceptDao.searchDrugsByDrugName(concepts, "t");
+
+        assertEquals(3,drugs.size());
+        assertThat(drugs, containsInAnyOrder(conceptService.getDrug(2001), conceptService.getDrug(4001), conceptService.getDrug(6001)));
     }
 }

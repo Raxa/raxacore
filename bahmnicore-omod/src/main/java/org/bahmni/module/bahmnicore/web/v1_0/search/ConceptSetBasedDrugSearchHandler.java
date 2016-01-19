@@ -2,7 +2,6 @@ package org.bahmni.module.bahmnicore.web.v1_0.search;
 
 import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.openmrs.Drug;
-import org.openmrs.api.ConceptService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
@@ -34,7 +33,8 @@ public class ConceptSetBasedDrugSearchHandler implements SearchHandler{
     @Override
     public PageableResult search(RequestContext requestContext) throws ResponseException {
         String conceptSetName = requestContext.getParameter("q");
-        Collection<Drug> drugs = bahmniConceptService.getDrugsByConceptSetName(conceptSetName);
+        String searchTerm = requestContext.getParameter("searchTerm");
+        Collection<Drug> drugs = bahmniConceptService.getDrugsByConceptSetName(conceptSetName, searchTerm);
         List<Drug> drugResponse = new ArrayList<>(drugs);
         return new AlreadyPaged<>(requestContext, drugResponse, false);
     }
