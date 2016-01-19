@@ -39,8 +39,4 @@
     <drug drug_id="8001" concept_id="2025" dosage_form="51" name="Paracetamol Very High Dose" combination="true" creator="1"
           date_created="2005-02-24 00:00:00.0" retired="false" uuid="paraceta-26fe-102b-80cb-0017a47871b2"/>
 
-    <concept_set concept_set="6010" concept_id="2005" concept_set_id="4011" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0" uuid="59310077-eeee-4326-bb05-c6e11fd3d9ba" ></concept_set>
-    <concept_set concept_set="6010" concept_id="2004" concept_set_id="4012" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0" uuid="69310077-eeee-4326-bb05-c6e11f33d323" ></concept_set>
-    <concept_set concept_set="6010" concept_id="2015" concept_set_id="4013" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0" uuid="79310077-eeee-4326-bb05-c6e11f33d345" ></concept_set>
-    <concept_set concept_set="6010" concept_id="2025" concept_set_id="4014" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0" uuid="89310077-eeee-4326-bb05-c6e11f33d345" ></concept_set>
 </dataset>

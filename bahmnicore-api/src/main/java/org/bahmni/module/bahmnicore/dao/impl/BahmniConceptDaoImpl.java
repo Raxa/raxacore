@@ -72,7 +72,7 @@ public class BahmniConceptDaoImpl implements BahmniConceptDao {
     public List searchDrugsByDrugName(List<Concept> concepts, String searchTerm) {
         String drugName = (null == searchTerm) ? "" : searchTerm;
         return sessionFactory.getCurrentSession()
-            .createQuery("select distinct drug " +
+            .createQuery("select drug " +
                     "from Drug as drug " +
                     "join drug.concept as concept " +
                     "join concept.names as conceptNames " +
