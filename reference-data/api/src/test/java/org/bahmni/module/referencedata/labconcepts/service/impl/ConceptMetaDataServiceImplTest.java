@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.ConceptSearchResult;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
@@ -54,6 +55,9 @@ public class ConceptMetaDataServiceImplTest {
         initMocks(this);
         PowerMockito.mockStatic(org.openmrs.util.LocaleUtility.class);
         PowerMockito.mockStatic(Context.class);
+        ConceptName conceptName = new ConceptName();
+        conceptName.setName("ConceptA");
+        when(concept.getName()).thenReturn(conceptName);
     }
 
     @Test

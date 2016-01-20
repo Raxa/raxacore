@@ -51,10 +51,17 @@ public class ConceptMetaDataServiceImpl implements ConceptMetaDataService {
         List<ConceptSearchResult> conceptSearchResults = conceptService.getConcepts(uniqueName, locales, false, null, null, null, null, null, null, null);
         if (conceptSearchResults.isEmpty())
             return null;
-        return conceptSearchResults.get(0).getConcept();
-
+        return getMatchingConcept(conceptSearchResults,uniqueName);
     }
 
+    private org.openmrs.Concept  getMatchingConcept(List<ConceptSearchResult> conceptSearchResults, String uniqueName) {
+        for(ConceptSearchResult conceptSearchResult : conceptSearchResults) {
+                if (conceptSearchResult.getConcept().getName().toString().equalsIgnoreCase(uniqueName)) {
+                    return conceptSearchResult.getConcept();
+                }
+        }
+        return null;
+    }
 
     private Locale getLocale(String locale) {
         if (StringUtils.isEmpty(locale)) {
