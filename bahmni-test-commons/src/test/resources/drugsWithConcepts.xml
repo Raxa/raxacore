@@ -13,8 +13,8 @@
     <concept_name concept_id="3010" name="All TB Drugs" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="243" voided="false" uuid="79310077-e601-4326-bb05-c6e11fe3d9ba" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
     <concept_set concept_set="3010" concept_id="2005" concept_set_id="2011" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-eeee-4326-bb05-c6e11fd3d9ba" ></concept_set>
-    <concept_set concept_set="3010" concept_id="2004" concept_set_id="2012" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-eeee-4326-bb05-c6e11f33d323" ></concept_set>
-    <concept_set concept_set="3010" concept_id="2015" concept_set_id="2013" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-eeee-4326-bb05-c6e11f33d345" ></concept_set>
+    <concept_set concept_set="3010" concept_id="2004" concept_set_id="2012" sort_weight="2" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-eeee-4326-bb05-c6e11f33d323" ></concept_set>
+    <concept_set concept_set="3010" concept_id="2015" concept_set_id="2013" sort_weight="3" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-eeee-4326-bb05-c6e11f33d345" ></concept_set>
 
 
     <concept concept_id="2006" retired="false" datatype_id="10" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-1111-4326-bb05-c6e11fe3d9ba"/>

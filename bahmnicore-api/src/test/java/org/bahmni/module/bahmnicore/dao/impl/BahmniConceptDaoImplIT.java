@@ -133,8 +133,7 @@ public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
     public void shouldSearchDrugsByDrugNameInTheGivenListOfConcepts() throws Exception{
         executeDataSet("drugsWithConcepts.xml");
 
-        List<Concept> concepts = conceptService.getConceptsByConceptSet(conceptService.getConcept(3010));
-        List<Drug> resultantDrugs = bahmniConceptDao.searchDrugsByDrugName(concepts, "Isoniazid");
+        List<Drug> resultantDrugs = bahmniConceptDao.searchDrugsByDrugName(3010, "Isoniazid");
 
         assertEquals(1,resultantDrugs.size());
         assertEquals(conceptService.getDrug(4001),resultantDrugs.get(0));
@@ -145,8 +144,7 @@ public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
     public void shouldSearchDrugsByDrugNameInTheGivenListOfConceptsIrrespectiveOfCase() throws Exception{
         executeDataSet("drugsWithConcepts.xml");
 
-        List<Concept> concepts = conceptService.getConceptsByConceptSet(conceptService.getConcept(3010));
-        List<Drug> resultantDrugs = bahmniConceptDao.searchDrugsByDrugName(concepts, "IsOnIazId");
+        List<Drug> resultantDrugs = bahmniConceptDao.searchDrugsByDrugName(3010, "IsOnIazId");
 
         assertEquals(1,resultantDrugs.size());
         assertEquals(conceptService.getDrug(4001),resultantDrugs.get(0));
@@ -157,10 +155,46 @@ public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
     public void shouldGetAllDrugsInTheGivenListOfConceptsWhichMatchTheDrugConceptNameAsWell() throws Exception{
         executeDataSet("drugsWithConcepts.xml");
 
-        List<Concept> concepts = conceptService.getConceptsByConceptSet(conceptService.getConcept(3010));
-        List<Drug> drugs = bahmniConceptDao.searchDrugsByDrugName(concepts, "t");
+        List<Drug> drugs = bahmniConceptDao.searchDrugsByDrugName(3010, "t");
 
         assertEquals(3,drugs.size());
         assertThat(drugs, containsInAnyOrder(conceptService.getDrug(2001), conceptService.getDrug(4001), conceptService.getDrug(6001)));
     }
+
+    @Test
+    public void shouldGetAllDrugsInTheGivenListOfConceptsWhenSearchTermNotGiven() throws Exception{
+        executeDataSet("drugsWithConcepts.xml");
+
+        List<Drug> drugs = bahmniConceptDao.searchDrugsByDrugName(3010, null);
+
+        assertEquals(3,drugs.size());
+        assertThat(drugs, containsInAnyOrder(conceptService.getDrug(2001), conceptService.getDrug(4001), conceptService.getDrug(6001)));
+    }
+
+    @Test
+    public void shouldGetMatchingDrugsInSortedOrder_wrt_sortWeightWhenSearchTermIsGiven() throws Exception{
+        executeDataSet("drugsWithConcepts.xml");
+
+        List<Drug> drugs = bahmniConceptDao.searchDrugsByDrugName(3010, "t");
+
+        assertEquals(3,drugs.size());
+
+        assertEquals(conceptService.getDrug(2001),drugs.get(0));
+        assertEquals(conceptService.getDrug(4001),drugs.get(1));
+        assertEquals(conceptService.getDrug(6001),drugs.get(2));
+    }
+
+    @Test
+    public void shouldGetMatchingDrugsInSortedOrder_wrt_sortWeightWhenSearchTermIsNotGiven() throws Exception{
+        executeDataSet("drugsWithConcepts.xml");
+
+        List<Drug> drugs = bahmniConceptDao.searchDrugsByDrugName(3010, null);
+
+        assertEquals(3,drugs.size());
+
+        assertEquals(conceptService.getDrug(2001),drugs.get(0));
+        assertEquals(conceptService.getDrug(4001),drugs.get(1));
+        assertEquals(conceptService.getDrug(6001),drugs.get(2));
+    }
+
 }

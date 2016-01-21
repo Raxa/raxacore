@@ -62,7 +62,7 @@ public class BahmniConceptServiceImplTest {
 
         when(bahmniConceptDao.getConceptByFullySpecifiedName(conceptSetName)).thenReturn(allTBDrugsConceptSet);
         when(conceptService.getConceptsByConceptSet(allTBDrugsConceptSet)).thenReturn(allTBDrugConcepts);
-        when(bahmniConceptDao.searchDrugsByDrugName(allTBDrugConcepts,null)).thenReturn(allTBDrugs);
+        when(bahmniConceptDao.searchDrugsByDrugName(allTBDrugsConceptSet.getId(), null)).thenReturn(allTBDrugs);
 
         Collection<Drug> drugs = bahmniConceptService.getDrugsByConceptSetName(conceptSetName, null);
 

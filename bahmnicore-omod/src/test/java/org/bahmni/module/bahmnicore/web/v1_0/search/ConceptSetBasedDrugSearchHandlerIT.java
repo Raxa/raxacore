@@ -11,10 +11,10 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
+
 import static org.junit.Assert.assertTrue;
 
-public class ConceptSetBasedDrugSearchHandlerIT extends MainResourceControllerTest{
-
+public class ConceptSetBasedDrugSearchHandlerIT extends MainResourceControllerTest {
 
     @Override
     public String getURI() {
@@ -33,7 +33,7 @@ public class ConceptSetBasedDrugSearchHandlerIT extends MainResourceControllerTe
 
     @Before
     public void setUp() throws Exception {
-        executeDataSet("drugsWithConcepts.xml");
+        executeDataSet("search/conceptSetBasedDrug/drugsWithConcepts.xml");
     }
 
     @Test
@@ -57,7 +57,7 @@ public class ConceptSetBasedDrugSearchHandlerIT extends MainResourceControllerTe
     }
 
     @Test
-    public void shouldSearchForDrugBySearchTermAndConceptSet() throws Exception{
+    public void shouldSearchForDrugBySearchTermAndConceptSet() throws Exception {
         MockHttpServletRequest request = request(RequestMethod.GET, getURI());
         request.addParameter("s", "byConceptSet");
         request.addParameter("searchTerm", "aceta");

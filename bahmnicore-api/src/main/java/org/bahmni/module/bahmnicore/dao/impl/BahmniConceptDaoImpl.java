@@ -3,9 +3,11 @@ package org.bahmni.module.bahmnicore.dao.impl;
 import org.bahmni.module.bahmnicore.dao.BahmniConceptDao;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
+import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
 import org.openmrs.Drug;
+import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,6 +25,10 @@ public class BahmniConceptDaoImpl implements BahmniConceptDao {
             " and answerConceptNames.voided = false ";
     @Autowired
     private SessionFactory sessionFactory;
+    private String drugsWithConceptNamesForConceptSet = "concept_set csmembers " +
+    "INNER JOIN concept c ON c.concept_id = csmembers.concept_id and csmembers.concept_set= (:conceptSetId) " +
+    "RIGHT JOIN concept_name cn ON csmembers.concept_id = cn.concept_id and cn.voided = 0 " +
+    "INNER JOIN drug d ON csmembers.concept_id = d.concept_id and d.retired = 0 ";
 
     @Override
     public Collection<Concept> searchByQuestion(Concept questionConcept, String searchQuery) {
@@ -69,22 +75,47 @@ public class BahmniConceptDaoImpl implements BahmniConceptDao {
     }
 
     @Override
-    public List searchDrugsByDrugName(List<Concept> concepts, String searchTerm) {
-        String drugName = (null == searchTerm) ? "" : searchTerm;
-        return sessionFactory.getCurrentSession()
-            .createQuery("select drug " +
-                    "from Drug as drug " +
-                    "join drug.concept as concept " +
-                    "join concept.names as conceptNames " +
-                    "left join concept.conceptSets as conceptSets " +
-                    "where concept in (:concepts) " +
-                    "and (lower(conceptNames.name)  like '%' || lower(:drugName) || '%'" +
-                    "or lower(drug.name) like '%' || lower(:drugName) || '%')" +
-                    "order by conceptSets.sortWeight"
-            )
-            .setParameterList("concepts", concepts)
-            .setString("drugName", drugName)
-            .list();
+    public List searchDrugsByDrugName(Integer conceptSetId, String searchTerm) {
+        List drugIds;
+        if (null != searchTerm) {
+            drugIds = sessionFactory.getCurrentSession()
+                .createSQLQuery(getSqlForDrugsMatchingEitherConceptOrDrugName())
+                .addScalar("drugId", StandardBasicTypes.INTEGER)
+                .setParameter("conceptSetId", conceptSetId)
+                .setString("searchPattern", searchBothSidesOf(searchTerm))
+                .list();
+        } else {
+            drugIds = sessionFactory.getCurrentSession()
+                .createSQLQuery(getSqlForAllDrugIds())
+                .setParameter("conceptSetId", conceptSetId)
+                .list();
+        }
+        return getDrugsByDrugIds(drugIds);
+    }
+
+    private String getSqlForDrugsMatchingEitherConceptOrDrugName() {
+        return getDrugIdsFrom("(SELECT DISTINCT csmembers.sort_weight as sortWeight,d.drug_id as drugId "
+            + "FROM " + drugsWithConceptNamesForConceptSet
+            + "WHERE lower(cn.name) like (:searchPattern) or lower(d.name) LIKE (:searchPattern))");
+    }
+
+    private String getSqlForAllDrugIds() {
+        return getDrugIdsFrom("SELECT DISTINCT csmembers.sort_weight as sortWeight,d.drug_id as drugId "
+            + "FROM "
+            + drugsWithConceptNamesForConceptSet);
+    }
+
+    private String getDrugIdsFrom(String drugs) {
+        return "SELECT drugs.drugId as drugId FROM (" + drugs + ") as drugs ORDER BY drugs.sortWeight";
+    }
+
+    private List<Drug> getDrugsByDrugIds(List<Integer> drugsIdsInSortedOrder) {
+        List<Drug> drugsInSortedOrder;
+        drugsInSortedOrder = new ArrayList<>();
+        for (Integer drugId : drugsIdsInSortedOrder) {
+            drugsInSortedOrder.add(Context.getConceptService().getDrug(drugId));
+        }
+        return drugsInSortedOrder;
     }
 
     private void appendSearchQueriesToBase(String[] queryArray, StringBuffer queryStringBuffer) {
