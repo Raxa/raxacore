@@ -104,4 +104,17 @@
             INSERT INTO visit_type (name, description, creator, uuid, date_created) VALUES ('LAB VISIT', 'Visits for lab visit by patient when the tests are not ordered through OpenMRS', 1, uuid(), curdate());
         </sql>
     </changeSet>
+
+    <changeSet id="20160119-1147" context="setup" author="Shashi, Hanisha">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="tags" tableName="failed_events"/>
+            </not>
+        </preConditions>
+        <comment>Creating column tags for failed_events table. This is same as atom spec feed.entry.categories.</comment>
+        <addColumn tableName="failed_events">
+            <column name="tags" type="varchar(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
