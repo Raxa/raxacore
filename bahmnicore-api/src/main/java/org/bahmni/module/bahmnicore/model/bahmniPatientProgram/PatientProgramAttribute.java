@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.model.bahmniPatientProgram;
 
-import org.openmrs.PatientProgram;
 import org.openmrs.attribute.Attribute;
 import org.openmrs.attribute.BaseAttribute;
 
