@@ -57,7 +57,7 @@ public class DrugOGramController {
         }
         TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(allDrugOrders, conceptsForDrugs);
         BaseTableExtension<TreatmentRegimen> extension = bahmniExtensions.getExtension("TreatmentRegimenExtension.groovy");
-        extension.update(treatmentRegimen);
+        extension.update(treatmentRegimen, patientUuid);
         return treatmentRegimen;
     }
 
