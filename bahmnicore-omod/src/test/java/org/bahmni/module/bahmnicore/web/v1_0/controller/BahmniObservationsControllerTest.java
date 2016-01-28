@@ -11,9 +11,11 @@ import org.openmrs.Concept;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.VisitService;
+import org.openmrs.module.bahmniemrapi.builder.BahmniObservationBuilder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -34,12 +36,14 @@ public class BahmniObservationsControllerTest {
 
     private Visit visit;
     private Concept concept;
+    private BahmniObservationsController bahmniObservationsController;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         visit = new VisitBuilder().build();
         concept = new Concept();
+        bahmniObservationsController = new BahmniObservationsController(bahmniObsService, conceptService, visitService);
         when(visitService.getVisitByUuid("visitId")).thenReturn(visit);
         when(conceptService.getConceptByName("Weight")).thenReturn(concept);
     }
@@ -50,7 +54,6 @@ public class BahmniObservationsControllerTest {
         latestObs.setUuid("initialId");
         when(bahmniObsService.getLatestObsByVisit(visit, Arrays.asList(concept), null, true)).thenReturn(Arrays.asList(latestObs));
 
-        BahmniObservationsController bahmniObservationsController = new BahmniObservationsController(bahmniObsService, conceptService, visitService);
         Collection<BahmniObservation> bahmniObservations = bahmniObservationsController.get("visitId", "latest", Arrays.asList("Weight"), null, true);
 
         verify(bahmniObsService, never()).getInitialObsByVisit(visit, Arrays.asList(concept), null, false);
@@ -68,7 +71,6 @@ public class BahmniObservationsControllerTest {
 
         when(bahmniObsService.getInitialObsByVisit(visit, Arrays.asList(this.concept), null, true)).thenReturn(Arrays.asList(initialObs));
 
-        BahmniObservationsController bahmniObservationsController = new BahmniObservationsController(bahmniObsService, conceptService, visitService);
         Collection<BahmniObservation> bahmniObservations = bahmniObservationsController.get("visitId", "initial", Arrays.asList("Weight"), null, true);
 
         assertEquals(1, bahmniObservations.size());
@@ -79,12 +81,27 @@ public class BahmniObservationsControllerTest {
         BahmniObservation obs = new BahmniObservation();
         when(bahmniObsService.getObservationForVisit("visitId", Arrays.asList("Weight"), null, true, null)).thenReturn(Arrays.asList(obs));
 
-        BahmniObservationsController bahmniObservationsController = new BahmniObservationsController(bahmniObsService, conceptService, visitService);
         Collection<BahmniObservation> bahmniObservations = bahmniObservationsController.get("visitId", null, Arrays.asList("Weight"), null, true);
 
         verify(bahmniObsService, never()).getLatestObsByVisit(visit, Arrays.asList(concept), null, false);
         verify(bahmniObsService, never()).getInitialObsByVisit(visit, Arrays.asList(concept), null, false);
 
         assertEquals(1, bahmniObservations.size());
+    }
+
+    @Test
+    public void shouldMakeACallToGetObsForEncounterAndConceptsSpecified() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        String encounterUuid = "encounterUuid";
+        String obsUuid = "ObsUuid";
+        ArrayList<BahmniObservation> bahmniObservations = new ArrayList<>();
+        bahmniObservations.add(new BahmniObservationBuilder().withUuid(obsUuid).build());
+        when(bahmniObsService.getObservationsForEncounter(encounterUuid, conceptNames)).thenReturn(bahmniObservations);
+
+        Collection<BahmniObservation> actualResult = bahmniObservationsController.get(encounterUuid, conceptNames);
+
+        verify(bahmniObsService, times(1)).getObservationsForEncounter(encounterUuid, conceptNames);
+        assertEquals(1, actualResult.size());
+        assertEquals(obsUuid, actualResult.iterator().next().getUuid());
     }
 }

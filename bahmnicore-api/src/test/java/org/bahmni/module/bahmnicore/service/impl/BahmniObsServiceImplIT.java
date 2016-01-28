@@ -13,12 +13,10 @@ import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+
 public class BahmniObsServiceImplIT extends BaseIntegrationTest {
 
     @Autowired
@@ -119,5 +117,16 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
         Collection<BahmniObservation> bahmniObservations =
                 personObsService.getObservationForVisit("ad41fb41-a41a-4ad6-8835-2f59099acf5b", Arrays.asList("SYSTOlic", "Diastolic"), null, false, null);
         assertEquals(2, bahmniObservations.size());
+    }
+
+    @Test
+    public void shouldRetrieveObsForEncounter() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("Systolic");
+
+        Collection<BahmniObservation> observations = personObsService.getObservationsForEncounter("bb0af6767-707a-4629-9850-f15206e63ab0", conceptNames);
+
+        assertEquals(1, observations.size());
+        assertEquals("6d8f507a-fb89-11e3-bb80-f18addb6f9bd", observations.iterator().next().getUuid());
     }
 }

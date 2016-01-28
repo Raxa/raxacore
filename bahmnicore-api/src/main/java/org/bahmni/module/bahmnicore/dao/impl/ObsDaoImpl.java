@@ -114,7 +114,6 @@ public class ObsDaoImpl implements ObsDao {
         return queryToGetObservations.list();
     }
 
-
     @Override
     public List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer limit) {
         Query queryToGetObservations = sessionFactory.getCurrentSession().createQuery(
@@ -151,6 +150,23 @@ public class ObsDaoImpl implements ObsDao {
         queryToGetObs.setString("conceptName", conceptName);
         queryToGetObs.setString("patientUuid", patientUuid);
         queryToGetObs.setInteger("visitId", visitId);
+
+        return queryToGetObs.list();
+    }
+
+    @Override
+    public List<Obs> getObsForConceptsByEncounter(String encounterUuid, List<String> conceptNames) {
+        if (encounterUuid == null) return new ArrayList<>();
+
+        String queryString =
+                "select obs\n" +
+                        "from Obs obs, ConceptName cn \n" +
+                        "where obs.voided = false and obs.encounter.uuid =:encounterUuid " +
+                        "and obs.concept.conceptId = cn.concept.conceptId  " +
+                        "and cn.name in (:conceptNames) and cn.conceptNameType='FULLY_SPECIFIED'";
+        Query queryToGetObs = sessionFactory.getCurrentSession().createQuery(queryString);
+        queryToGetObs.setParameterList("conceptNames", conceptNames);
+        queryToGetObs.setString("encounterUuid", encounterUuid);
 
         return queryToGetObs.list();
     }

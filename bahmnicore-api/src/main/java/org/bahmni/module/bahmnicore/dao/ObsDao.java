@@ -25,4 +25,5 @@ public interface ObsDao {
 
     List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds, Integer limit, ObsDaoImpl.OrderBy sortOrder, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order, Date startDate, Date endDate);
 
+    List<Obs> getObsForConceptsByEncounter(String encounterUuid, List<String> conceptNames);
 }

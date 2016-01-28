@@ -77,4 +77,13 @@ public class ObsDaoImplIT extends BaseIntegrationTest {
         assertEquals(3, bahmniObservations.get(0).getGroupMembers(true).size());
     }
 
+    @Test
+    public void shouldRetrieveObservationWithinEncounter() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("Breast Cancer Progress");
+        List<Obs> observations = obsDao.getObsForConceptsByEncounter("f8ee38f6-1c8e-11e4-bb80-f18addb6f9bb", conceptNames);
+
+        assertEquals(1, observations.size());
+        assertEquals("6d8f507a-fb89-11e3-bb80-f18addb6f909", observations.get(0).getUuid());
+    }
 }

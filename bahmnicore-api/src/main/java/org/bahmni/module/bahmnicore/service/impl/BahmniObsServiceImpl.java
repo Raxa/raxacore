@@ -139,6 +139,12 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
+    public Collection<BahmniObservation> getObservationsForEncounter(String encounterUuid, List<String> conceptNames) {
+        List<Obs> observations = obsDao.getObsForConceptsByEncounter(encounterUuid, conceptNames);
+        return omrsObsToBahmniObsMapper.map(observations, getConceptsByName(conceptNames));
+    }
+
+    @Override
     public Collection<BahmniObservation> getObservationsForOrder(String orderUuid) {
         List<Obs> observations = obsDao.getObsForOrder(orderUuid);
         return omrsObsToBahmniObsMapper.map(observations, null);
@@ -146,6 +152,14 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
     private Concept getConceptByName(String conceptName) {
         return conceptService.getConceptByName(conceptName);
+    }
+
+    private Collection<Concept> getConceptsByName(List<String> conceptNames) {
+        List<Concept> concepts = new ArrayList<>();
+        for (String conceptName : conceptNames) {
+            concepts.add(getConceptByName(conceptName));
+        }
+        return concepts;
     }
 
     private List<Obs> getObsAtTopLevelAndApplyIgnoreList(List<Obs> observations, List<String> topLevelConceptNames, Collection<Concept> obsIgnoreList) {

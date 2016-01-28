@@ -21,9 +21,11 @@ import org.openmrs.util.LocaleUtility;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -99,5 +101,15 @@ public class BahmniObsServiceImplTest {
     public void shouldGetAllObsForOrder() throws Exception {
         bahmniObsService.getObservationsForOrder("orderUuid");
         verify(obsDao, times(1)).getObsForOrder("orderUuid");
+    }
+
+    @Test
+    public void shouldMakeACallToGetObservationsForEncounterAndConcepts() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        String encounterUuid = "encounterUuid";
+
+        bahmniObsService.getObservationsForEncounter(encounterUuid, conceptNames);
+
+        verify(obsDao, times(1)).getObsForConceptsByEncounter(encounterUuid, conceptNames);
     }
 }

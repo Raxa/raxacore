@@ -84,4 +84,11 @@ public class BahmniObservationsController extends BaseRestController {
             return bahmniObsService.getObservationForVisit(visitUuid, conceptNames, MiscUtils.getConceptsForNames(obsIgnoreList, conceptService), filterObsWithOrders, null);
         }
     }
+
+    @RequestMapping(method = RequestMethod.GET, params = {"encounterUuid"})
+    @ResponseBody
+    public Collection<BahmniObservation> get(@RequestParam(value = "encounterUuid", required = true) String encounterUuid,
+                                             @RequestParam(value = "concept", required = false) List<String> conceptNames) {
+        return bahmniObsService.getObservationsForEncounter(encounterUuid, conceptNames);
+    }
 }
