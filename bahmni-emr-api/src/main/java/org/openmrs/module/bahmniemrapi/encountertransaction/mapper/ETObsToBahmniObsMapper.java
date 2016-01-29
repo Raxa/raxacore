@@ -50,6 +50,7 @@ public class ETObsToBahmniObsMapper {
         bahmniObservation.setEncounterUuid(additionalBahmniObservationFields.getEncounterUuid());
         bahmniObservation.setObsGroupUuid(additionalBahmniObservationFields.getObsGroupUuid());
         if (CONCEPT_DETAILS_CONCEPT_CLASS.equals(observation.getConcept().getConceptClass()) && flatten) {
+            Boolean isUnknownProcessed = false;
             for (EncounterTransaction.Observation member : observation.getGroupMembers()) {
                 if (member.getVoided()) {
                     continue;
@@ -65,16 +66,21 @@ public class ETObsToBahmniObsMapper {
                 } else if (member.getConcept().getConceptClass().equals(UNKNOWN_CONCEPT_CLASS)) {
                     if (member.getValue() instanceof Boolean) {
                         bahmniObservation.setUnknown((Boolean) member.getValue());
-                        if(member.getConcept().getShortName() != null)
-                            bahmniObservation.setValue(member.getConcept().getShortName());
-                        else
-                            bahmniObservation.setValue(member.getConcept().getName());
+                          if((Boolean) member.getValue()){
+                              isUnknownProcessed = true;
+                              if(member.getConcept().getShortName() != null)
+                                bahmniObservation.setValue(member.getConcept().getShortName());
+                              else
+                                bahmniObservation.setValue(member.getConcept().getName());
+                          }
                     }
                 } else if (member.getConcept().getConceptClass().equals(DURATION_CONCEPT_CLASS)) {
                     bahmniObservation.setDuration(new Double(member.getValue().toString()).longValue());
                 } else {
-                    bahmniObservation.setValue(member.getValue());
-                    bahmniObservation.setType(member.getConcept().getDataType());
+                    if(!isUnknownProcessed) {
+                        bahmniObservation.setValue(member.getValue());
+                        bahmniObservation.setType(member.getConcept().getDataType());
+                    }
                     bahmniObservation.getConcept().setUnits(member.getConcept().getUnits());
                     bahmniObservation.setHiNormal(member.getConcept().getHiNormal());
                     bahmniObservation.setLowNormal(member.getConcept().getLowNormal());
