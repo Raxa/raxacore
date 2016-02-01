@@ -40,52 +40,12 @@ public class ETObsToBahmniObsMapper {
                 false);
     }
 
-    BahmniObservation map(EncounterTransaction.Observation observation, AdditionalBahmniObservationFields additionalBahmniObservationFields, List<Concept> rootConcepts, boolean flatten) {
+    protected BahmniObservation map(EncounterTransaction.Observation observation, AdditionalBahmniObservationFields additionalBahmniObservationFields, List<Concept> rootConcepts, boolean flatten) {
 
-        BahmniObservation bahmniObservation = new BahmniObservation();
-        bahmniObservation.setEncounterTransactionObservation(observation);
-        bahmniObservation.setEncounterDateTime(additionalBahmniObservationFields.getEncounterDateTime());
-        bahmniObservation.setVisitStartDateTime(additionalBahmniObservationFields.getVisitDateTime());
-        bahmniObservation.setConceptSortWeight(ConceptSortWeightUtil.getSortWeightFor(bahmniObservation.getConcept().getName(), rootConcepts));
-        bahmniObservation.setEncounterUuid(additionalBahmniObservationFields.getEncounterUuid());
-        bahmniObservation.setObsGroupUuid(additionalBahmniObservationFields.getObsGroupUuid());
+        BahmniObservation bahmniObservation= createBahmniObservation(observation,additionalBahmniObservationFields,rootConcepts,flatten);
+
         if (CONCEPT_DETAILS_CONCEPT_CLASS.equals(observation.getConcept().getConceptClass()) && flatten) {
-            Boolean isUnknownProcessed = false;
-            for (EncounterTransaction.Observation member : observation.getGroupMembers()) {
-                if (member.getVoided()) {
-                    continue;
-                }
-                if (member.getConcept().getConceptClass().equals(ABNORMAL_CONCEPT_CLASS)) {
-                    if (member.getValue() instanceof Boolean) {
-                        bahmniObservation.setAbnormal((Boolean) member.getValue());
-                    } else {
-                        if (member.getValue() != null) {
-                            bahmniObservation.setAbnormal(Boolean.parseBoolean(((EncounterTransaction.Concept) member.getValue()).getName()));
-                        }
-                    }
-                } else if (member.getConcept().getConceptClass().equals(UNKNOWN_CONCEPT_CLASS)) {
-                    if (member.getValue() instanceof Boolean) {
-                        bahmniObservation.setUnknown((Boolean) member.getValue());
-                          if((Boolean) member.getValue()){
-                              isUnknownProcessed = true;
-                              if(member.getConcept().getShortName() != null)
-                                bahmniObservation.setValue(member.getConcept().getShortName());
-                              else
-                                bahmniObservation.setValue(member.getConcept().getName());
-                          }
-                    }
-                } else if (member.getConcept().getConceptClass().equals(DURATION_CONCEPT_CLASS)) {
-                    bahmniObservation.setDuration(new Double(member.getValue().toString()).longValue());
-                } else {
-                    if(!isUnknownProcessed) {
-                        bahmniObservation.setValue(member.getValue());
-                        bahmniObservation.setType(member.getConcept().getDataType());
-                    }
-                    bahmniObservation.getConcept().setUnits(member.getConcept().getUnits());
-                    bahmniObservation.setHiNormal(member.getConcept().getHiNormal());
-                    bahmniObservation.setLowNormal(member.getConcept().getLowNormal());
-                }
-            }
+            handleFlattenedConceptDetails(observation,bahmniObservation);
         } else if (observation.getGroupMembers().size() > 0) {
             for (EncounterTransaction.Observation groupMember : observation.getGroupMembers()) {
                 AdditionalBahmniObservationFields additionalFields = (AdditionalBahmniObservationFields) additionalBahmniObservationFields.clone();
@@ -108,4 +68,66 @@ public class ETObsToBahmniObsMapper {
         return bahmniObservation;
     }
 
+    private void setValueAndType(BahmniObservation bahmniObservation, EncounterTransaction.Observation member) {
+        if(!bahmniObservation.isUnknown()) {
+            bahmniObservation.setValue(member.getValue());
+            bahmniObservation.setType(member.getConcept().getDataType());
+        }
+    }
+
+    private void handleUnknownConceptClass(BahmniObservation bahmniObservation, EncounterTransaction.Observation etObs) {
+        Object unknownObsValue = etObs.getValue();
+        if(!(unknownObsValue instanceof Boolean) && unknownObsValue == null){
+            return;
+        }
+
+        bahmniObservation.setUnknown((Boolean)unknownObsValue);
+        if((Boolean)unknownObsValue){
+            bahmniObservation.setValue(getConceptName(etObs));
+        }
+    }
+
+    private String getConceptName(EncounterTransaction.Observation etObs) {
+        return etObs.getConcept().getShortName() != null ? etObs.getConcept().getShortName() : etObs.getConcept().getName();
+    }
+    private void handleAbnormalConceptClass(BahmniObservation bahmniObservation, EncounterTransaction.Observation etObs) {
+        if (etObs.getValue() instanceof Boolean) {
+            bahmniObservation.setAbnormal((Boolean) etObs.getValue());
+        } else {
+            if (etObs.getValue() != null) {
+                bahmniObservation.setAbnormal(Boolean.parseBoolean(((EncounterTransaction.Concept) etObs.getValue()).getName()));
+            }
+        }
+    }
+
+    private void handleFlattenedConceptDetails(EncounterTransaction.Observation observation, BahmniObservation bahmniObservation) {
+        for (EncounterTransaction.Observation member : observation.getGroupMembers()) {
+            if (member.getVoided()) {
+                continue;
+            }
+            if (member.getConcept().getConceptClass().equals(ABNORMAL_CONCEPT_CLASS)) {
+                handleAbnormalConceptClass(bahmniObservation, member);
+            } else if (member.getConcept().getConceptClass().equals(UNKNOWN_CONCEPT_CLASS)) {
+                handleUnknownConceptClass(bahmniObservation, member);
+            } else if (member.getConcept().getConceptClass().equals(DURATION_CONCEPT_CLASS)) {
+                bahmniObservation.setDuration(new Double(member.getValue().toString()).longValue());
+            } else {
+                setValueAndType(bahmniObservation, member);
+                bahmniObservation.getConcept().setUnits(member.getConcept().getUnits());
+                bahmniObservation.setHiNormal(member.getConcept().getHiNormal());
+                bahmniObservation.setLowNormal(member.getConcept().getLowNormal());
+            }
+        }
+    }
+    private BahmniObservation createBahmniObservation(EncounterTransaction.Observation observation, AdditionalBahmniObservationFields additionalBahmniObservationFields, List<Concept> rootConcepts, boolean flatten) {
+        BahmniObservation bahmniObservation = new BahmniObservation();
+        bahmniObservation.setEncounterTransactionObservation(observation);
+        bahmniObservation.setEncounterDateTime(additionalBahmniObservationFields.getEncounterDateTime());
+        bahmniObservation.setVisitStartDateTime(additionalBahmniObservationFields.getVisitDateTime());
+        bahmniObservation.setConceptSortWeight(ConceptSortWeightUtil.getSortWeightFor(bahmniObservation.getConcept().getName(), rootConcepts));
+        bahmniObservation.setEncounterUuid(additionalBahmniObservationFields.getEncounterUuid());
+        bahmniObservation.setObsGroupUuid(additionalBahmniObservationFields.getObsGroupUuid());
+        bahmniObservation.setUnknown(false);
+        return bahmniObservation;
+    }
 }
