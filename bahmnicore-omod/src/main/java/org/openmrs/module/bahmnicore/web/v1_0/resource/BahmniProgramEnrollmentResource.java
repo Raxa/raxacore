@@ -15,7 +15,6 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
@@ -66,7 +65,7 @@ public class BahmniProgramEnrollmentResource extends ProgramEnrollmentResource1_
             parentRep.addProperty("attributes", Representation.REF);
             return parentRep;
         } else if (rep instanceof FullRepresentation) {
-            parentRep.addProperty("states", new CustomRepresentation("(auditInfo,uuid,startDate,endDate,voided,state:REF)"));
+            parentRep.addProperty("states", Representation.REF);
             parentRep.addProperty("attributes", Representation.DEFAULT);
             return parentRep;
         } else {
