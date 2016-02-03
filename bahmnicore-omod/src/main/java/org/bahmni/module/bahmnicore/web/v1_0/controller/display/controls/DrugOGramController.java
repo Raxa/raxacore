@@ -2,12 +2,12 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
+import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.DrugOrderToTreatmentRegimenMapper;
 import org.openmrs.Concept;
 import org.openmrs.Order;
-import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.BaseTableExtension;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -30,14 +30,14 @@ public class DrugOGramController {
 
     private BahmniDrugOrderService bahmniDrugOrderService;
     private DrugOrderToTreatmentRegimenMapper drugOrderToTreatmentRegimenMapper;
-    private ConceptService conceptService;
+    private BahmniConceptService bahmniConceptService;
     private BahmniExtensions bahmniExtensions;
 
     @Autowired
-    public DrugOGramController(BahmniDrugOrderService bahmniDrugOrderService, DrugOrderToTreatmentRegimenMapper drugOrderToTreatmentRegimenMapper, ConceptService conceptService, BahmniExtensions bahmniExtensions) {
+    public DrugOGramController(BahmniDrugOrderService bahmniDrugOrderService, DrugOrderToTreatmentRegimenMapper drugOrderToTreatmentRegimenMapper, BahmniConceptService bahmniConceptService, BahmniExtensions bahmniExtensions) {
         this.bahmniDrugOrderService = bahmniDrugOrderService;
         this.drugOrderToTreatmentRegimenMapper = drugOrderToTreatmentRegimenMapper;
-        this.conceptService = conceptService;
+        this.bahmniConceptService = bahmniConceptService;
         this.bahmniExtensions = bahmniExtensions;
     }
 
@@ -65,7 +65,7 @@ public class DrugOGramController {
         Set<Concept> drugConcepts = new LinkedHashSet<>();
         for (Concept conceptsForDrug : conceptsForDrugs) {
             for (Order drugOrder : allDrugOrders) {
-                if (conceptsForDrug.equals(drugOrder.getConcept()) && !drugConcepts.contains(conceptsForDrug)){
+                if (conceptsForDrug.equals(drugOrder.getConcept()) && !drugConcepts.contains(conceptsForDrug)) {
                     drugConcepts.add(conceptsForDrug);
                 }
             }
@@ -77,13 +77,16 @@ public class DrugOGramController {
         if (drugs == null) return null;
         Set<Concept> drugConcepts = new LinkedHashSet<>();
         for (String drug : drugs) {
-            Concept concept = conceptService.getConceptByName(drug);
+            Concept concept = bahmniConceptService.getConceptByFullySpecifiedName(drug);
             getDrugs(concept, drugConcepts);
         }
         return drugConcepts;
     }
 
     private void getDrugs(Concept concept, Set<Concept> drugConcepts) {
+        if (concept == null) {
+            return;
+        }
         if (concept.isSet()) {
             for (Concept drugConcept : concept.getSetMembers()) {
                 getDrugs(drugConcept, drugConcepts);

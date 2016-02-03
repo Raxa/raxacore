@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 
 import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
+import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.DrugOrderToTreatmentRegimenMapper;
 import org.bahmni.test.builder.ConceptBuilder;
@@ -12,7 +13,6 @@ import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Order;
-import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.BaseTableExtension;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -29,15 +29,15 @@ public class DrugOGramControllerTest {
     @Mock
     private DrugOrderToTreatmentRegimenMapper drugOrderToTreatmentRegimenMapper;
     @Mock
-    private ConceptService conceptService;
-    @Mock
     private BahmniExtensions bahmniExtensions;
+    @Mock
+    private BahmniConceptService bahmniConceptService;
 
     private DrugOGramController drugOGramController;
 
     @Before
     public void setUp() throws Exception {
-        drugOGramController = new DrugOGramController(bahmniDrugOrderService, drugOrderToTreatmentRegimenMapper, conceptService,bahmniExtensions);
+        drugOGramController = new DrugOGramController(bahmniDrugOrderService, drugOrderToTreatmentRegimenMapper, bahmniConceptService, bahmniExtensions);
         when(bahmniExtensions.getExtension(anyString())).thenReturn(new BaseTableExtension());
     }
 
@@ -65,7 +65,7 @@ public class DrugOGramControllerTest {
         drugOrders.add(paracetemol);
         Set<Concept> concepts = new LinkedHashSet<>();
         concepts.add(paracetemolConcept);
-        when(conceptService.getConceptByName("Paracetamol")).thenReturn(paracetemolConcept);
+        when(bahmniConceptService.getConceptByFullySpecifiedName("Paracetamol")).thenReturn(paracetemolConcept);
 
         when(bahmniDrugOrderService.getAllDrugOrders("patientUuid", concepts, null, null, null)).thenReturn(drugOrders);
         TreatmentRegimen expected = new TreatmentRegimen();
@@ -85,8 +85,8 @@ public class DrugOGramControllerTest {
         Concept tbDrugs = new ConceptBuilder().withName("TB Drugs").withSet(true).withSetMember(paracetamol).build();
         DrugOrder paracetemolDrug = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(new Date()).withDose(200.0).withConcept(paracetamol).build();
 
-        when(conceptService.getConceptByName("TB Drugs")).thenReturn(tbDrugs);
-        when(conceptService.getConceptByName("Paracetemol")).thenReturn(paracetamol);
+        when(bahmniConceptService.getConceptByFullySpecifiedName("TB Drugs")).thenReturn(tbDrugs);
+        when(bahmniConceptService.getConceptByFullySpecifiedName("Paracetemol")).thenReturn(paracetamol);
 
         ArrayList<Order> drugOrders = new ArrayList<>();
         drugOrders.add(paracetemolDrug);

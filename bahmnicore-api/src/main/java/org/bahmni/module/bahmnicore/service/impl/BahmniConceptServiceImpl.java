@@ -52,6 +52,12 @@ public class BahmniConceptServiceImpl implements BahmniConceptService{
         return bahmniConceptDao.searchDrugsByDrugName(getConcept(conceptSetName).getId(), searchTerm);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Concept getConceptByFullySpecifiedName(String drug) {
+        return bahmniConceptDao.getConceptByFullySpecifiedName(drug);
+    }
+
     private Concept getConcept(String conceptSetName) {
         Concept conceptSet = bahmniConceptDao.getConceptByFullySpecifiedName(conceptSetName);
         if (conceptSet == null) {

@@ -16,7 +16,10 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -49,7 +52,7 @@ public class BahmniConceptServiceImplTest {
     }
 
     @Test(expected = ConceptNotFoundException.class)
-    public void searchByQuestionShouldThrowExceptionWhenQuestionConceptNotFound() throws Exception{
+    public void searchByQuestionShouldThrowExceptionWhenQuestionConceptNotFound() throws Exception {
         bahmniConceptService.searchByQuestion("this concept doesn't exist", "headache");
     }
 
@@ -72,5 +75,17 @@ public class BahmniConceptServiceImplTest {
     @Test(expected = ConceptNotFoundException.class)
     public void getDrugsByConceptSetNameShouldFailWhenConceptSetNameDoesNotExist() {
         bahmniConceptService.getDrugsByConceptSetName("this concept doesn't exist", null);
+    }
+
+    @Test
+    public void shouldMakeACallToGetConceptByFullySpecifiedName() throws Exception {
+        Concept expectedConcept = new Concept();
+        String conceptName = "Concept Name";
+        when(bahmniConceptDao.getConceptByFullySpecifiedName(conceptName)).thenReturn(expectedConcept);
+
+        Concept actualConcept = bahmniConceptService.getConceptByFullySpecifiedName(conceptName);
+
+        verify(bahmniConceptDao, times(1)).getConceptByFullySpecifiedName(conceptName);
+        assertEquals(expectedConcept, actualConcept);
     }
 }
