@@ -102,19 +102,24 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
     @Override
     public List<DrugOrder> getActiveDrugOrders(String patientUuid) {
-        return getActiveDrugOrders(patientUuid, new Date(), null, null);
+        return getActiveDrugOrders(patientUuid, new Date(), null, null, null, null);
+    }
+
+    @Override
+    public List<DrugOrder> getActiveDrugOrders(String patientUuid, Date startDate, Date endDate) {
+        return getActiveDrugOrders(patientUuid, new Date(), null, null, startDate, endDate);
     }
 
     @Override
     public List<DrugOrder> getActiveDrugOrders(String patientUuid, Set<Concept> conceptsToFilter, Set<Concept> conceptsToExclude) {
-        return getActiveDrugOrders(patientUuid, new Date(), conceptsToFilter, conceptsToExclude);
+        return getActiveDrugOrders(patientUuid, new Date(), conceptsToFilter, conceptsToExclude, null, null);
     }
 
-    private List<DrugOrder> getActiveDrugOrders(String patientUuid, Date asOfDate, Set<Concept> conceptsToFilter, Set<Concept> conceptsToExclude) {
+    private List<DrugOrder> getActiveDrugOrders(String patientUuid, Date asOfDate, Set<Concept> conceptsToFilter, Set<Concept> conceptsToExclude, Date startDate, Date endDate) {
         Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
         CareSetting careSettingByName = orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString());
         List<Order> orders = orderDao.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
-                careSettingByName, asOfDate, conceptsToFilter, conceptsToExclude);
+                careSettingByName, asOfDate, conceptsToFilter, conceptsToExclude, startDate, endDate);
         return getDrugOrders(orders);
     }
 
@@ -159,7 +164,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         if(concepts.isEmpty() || concepts == null){
             return new ArrayList<>();
         }
-        return orderDao.getPrescribedDrugOrdersForConcepts(patient, includeActiveVisit, visits, concepts, startDate , endDate);
+        return orderDao.getPrescribedDrugOrdersForConcepts(patient, includeActiveVisit, visits, concepts, startDate, endDate);
     }
 
     @Override
@@ -240,7 +245,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     private List<DrugOrder> checkOverlappingOrderAndUpdate(List<DrugOrder> newDrugOrders, String patientUuid, Date orderDate) {
-        List<DrugOrder> activeDrugOrders = getActiveDrugOrders(patientUuid, orderDate, null, null);
+        List<DrugOrder> activeDrugOrders = getActiveDrugOrders(patientUuid, orderDate, null, null, null, null);
         List<DrugOrder> drugOrdersToRemove = new ArrayList<>();
         for (DrugOrder newDrugOrder : newDrugOrders) {
             for (DrugOrder activeDrugOrder : activeDrugOrders) {

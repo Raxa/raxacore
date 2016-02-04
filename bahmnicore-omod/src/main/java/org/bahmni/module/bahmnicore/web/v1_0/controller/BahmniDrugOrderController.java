@@ -55,9 +55,13 @@ public class BahmniDrugOrderController extends BaseRestController {
     //TODO: Active orders are available in OMRS 1.10.x. Consider moving once we upgrade OpenMRS.
     @RequestMapping(value = baseUrl + "/active", method = RequestMethod.GET)
     @ResponseBody
-    public List<BahmniDrugOrder> getActiveDrugOrders(@RequestParam(value = "patientUuid") String patientUuid) {
+    public List<BahmniDrugOrder> getActiveDrugOrders(@RequestParam(value = "patientUuid") String patientUuid,
+                                                     @RequestParam(value = "startDate", required = false) String startDateStr,
+                                                     @RequestParam(value = "endDate", required = false) String endDateStr) throws ParseException {
         logger.info("Retrieving active drug orders for patient with uuid " + patientUuid);
-        return getActiveOrders(patientUuid);
+        Date startDate = BahmniDateUtil.convertToDate(startDateStr, BahmniDateUtil.DateFormatType.UTC);
+        Date endDate = BahmniDateUtil.convertToDate(endDateStr, BahmniDateUtil.DateFormatType.UTC);
+        return getActiveOrders(patientUuid, startDate, endDate);
     }
 
     @RequestMapping(value = baseUrl + "/prescribedAndActive", method = RequestMethod.GET)
@@ -79,7 +83,7 @@ public class BahmniDrugOrderController extends BaseRestController {
         visitWiseOrders.put("visitDrugOrders", prescribedOrders);
 
         if (Boolean.TRUE.equals(getOtherActive)) {
-            List<BahmniDrugOrder> activeDrugOrders = getActiveOrders(patientUuid);
+            List<BahmniDrugOrder> activeDrugOrders = getActiveOrders(patientUuid, null, null);
             activeDrugOrders.removeAll(prescribedOrders);
             visitWiseOrders.put("Other Active DrugOrders", activeDrugOrders);
         }
@@ -91,8 +95,15 @@ public class BahmniDrugOrderController extends BaseRestController {
     @ResponseBody
     public List<BahmniDrugOrder> getPrescribedDrugOrders(@RequestParam(value = "patientUuid") String patientUuid,
                                                          @RequestParam(value = "includeActiveVisit", required = false) Boolean includeActiveVisit,
-                                                         @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits) {
-        return getPrescribedOrders(null, patientUuid, includeActiveVisit, numberOfVisits, null, null, false);
+                                                         @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
+                                                         @RequestParam(value = "startDate", required = false) String startDateStr,
+                                                         @RequestParam(value = "endDate", required = false) String endDateStr ) throws ParseException {
+
+        Date startDate = BahmniDateUtil.convertToDate(startDateStr, BahmniDateUtil.DateFormatType.UTC);
+        Date endDate = BahmniDateUtil.convertToDate(endDateStr, BahmniDateUtil.DateFormatType.UTC);
+
+
+        return getPrescribedOrders(null, patientUuid, includeActiveVisit, numberOfVisits, startDate, endDate, false);
     }
 
 
@@ -151,8 +162,8 @@ public class BahmniDrugOrderController extends BaseRestController {
         return orderAttribute == null ? Collections.EMPTY_LIST : orderAttribute.getSetMembers();
     }
 
-    private List<BahmniDrugOrder> getActiveOrders(String patientUuid) {
-        List<DrugOrder> activeDrugOrders = drugOrderService.getActiveDrugOrders(patientUuid);
+    private List<BahmniDrugOrder> getActiveOrders(String patientUuid, Date startDate, Date endDate) {
+        List<DrugOrder> activeDrugOrders = drugOrderService.getActiveDrugOrders(patientUuid, startDate, endDate);
         logger.info(activeDrugOrders.size() + " active drug orders found");
         return getBahmniDrugOrders(patientUuid,activeDrugOrders);
     }

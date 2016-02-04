@@ -113,7 +113,7 @@ public class BahmniDrugOrderControllerIT extends BaseIntegrationTest {
     @Test
     public void shouldReturnDrugOrdersForSpecifiedNumberOfVisits() throws Exception {
         executeDataSet("drugOrdersForVisits.xml");
-        List<BahmniDrugOrder> prescribedDrugOrders = bahmniDrugOrderController.getPrescribedDrugOrders("86526ed5-3c11-11de-a0ba-001ed98eb67a", true, 2);
+        List<BahmniDrugOrder> prescribedDrugOrders = bahmniDrugOrderController.getPrescribedDrugOrders("86526ed5-3c11-11de-a0ba-001ed98eb67a", true, 2, null, null);
         assertEquals(5, prescribedDrugOrders.size());
 
         BahmniDrugOrder drugOrder1 = prescribedDrugOrders.get(0);

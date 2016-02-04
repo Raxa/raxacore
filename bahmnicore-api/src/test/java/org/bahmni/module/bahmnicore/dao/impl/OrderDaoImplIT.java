@@ -106,21 +106,34 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
 
-        Date startDate = BahmniDateUtil.convertToDate("2013-01-01T00:00:00.000", BahmniDateUtil.DateFormatType.UTC);
+        Date startDate = BahmniDateUtil.convertToDate("2003-01-01T00:00:00.000", BahmniDateUtil.DateFormatType.UTC);
         Date endDate = BahmniDateUtil.convertToDate("2013-09-09T00:00:00.000", BahmniDateUtil.DateFormatType.UTC);
 
         List<DrugOrder> drugOrders = orderDao.getPrescribedDrugOrders(patient, true, null, startDate, null, false);
-        assertThat(drugOrders.size(), is(equalTo(6)));
-        assertThat(getOrderIds(drugOrders), hasItems(16, 17, 19, 21, 23, 24));
+        assertThat(drugOrders.size(), is(equalTo(7)));
+        assertThat(getOrderIds(drugOrders), hasItems(16, 15,21, 23, 24, 19, 17));
 
         drugOrders = orderDao.getPrescribedDrugOrders(patient, true, null, startDate, endDate, false);
-        assertThat(drugOrders.size(), is(equalTo(2)));
-        assertThat(getOrderIds(drugOrders), hasItems(16, 17));
+        assertThat(drugOrders.size(), is(equalTo(3)));
+        assertThat(getOrderIds(drugOrders), hasItems(15,16,17));
 
         drugOrders = orderDao.getPrescribedDrugOrders(patient, true, null, null, endDate, false);
         assertThat(drugOrders.size(), is(equalTo(3)));
         assertThat(getOrderIds(drugOrders), hasItems(15, 16, 17));
 
+    }
+
+    @Test
+    public void getPrescribedDrugOrders_ShouldFetchAllPastDrugOrdersThatAreActiveInGivenDateRange() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Patient patient = Context.getPatientService().getPatient(1001);
+
+        Date startDate = BahmniDateUtil.convertToDate("2015-01-01T00:00:00.000", BahmniDateUtil.DateFormatType.UTC);
+        Date endDate = BahmniDateUtil.convertToDate("2015-09-09T00:00:00.000", BahmniDateUtil.DateFormatType.UTC);
+
+        List<DrugOrder> drugOrders = orderDao.getPrescribedDrugOrders(patient, true, null, startDate, endDate, false);
+        assertThat(drugOrders.size(), is(equalTo(7)));
+        assertThat(getOrderIds(drugOrders), hasItems(21, 23, 24, 19, 17 ,16, 15 ));
     }
 
     @Test
@@ -264,7 +277,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
         OrderType orderType = Context.getOrderService().getOrderType(1);
-        List<Order> activeOrders = orderDao.getActiveOrders(patient, orderType, null, new Date(), null, null);
+        List<Order> activeOrders = orderDao.getActiveOrders(patient, orderType, null, new Date(), null, null, null, null);
 
         assertEquals(activeOrders.size(), 2);
         assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f836");
@@ -279,7 +292,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         HashSet<Concept> concepts = new HashSet<Concept>();
         concepts.add(concept);
 
-        List<Order> activeOrders = orderDao.getActiveOrders(patient, orderType, null, new Date(), concepts, null);
+        List<Order> activeOrders = orderDao.getActiveOrders(patient, orderType, null, new Date(), concepts, null, null, null);
 
         assertEquals(activeOrders.size(), 1);
         assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f836");
@@ -295,6 +308,20 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         assertEquals(activeOrders.size(), 2);
         assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f837");
         assertEquals(activeOrders.get(1).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f839");
+    }
+
+    @Test
+    public void getActiveDrugOrdersForPatientWithinDateRange() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Patient patient = Context.getPatientService().getPatient(1001);
+        OrderType orderType = Context.getOrderService().getOrderType(1);
+        Date startDate = BahmniDateUtil.convertToDate("2014-01-01T00:00:00.000", BahmniDateUtil.DateFormatType.UTC);
+        Date endDate = BahmniDateUtil.convertToDate("2014-09-09T00:00:00.000", BahmniDateUtil.DateFormatType.UTC);
+
+        List<Order> activeOrders = orderDao.getActiveOrders(patient, orderType, null, new Date(), null, null, startDate, endDate);
+
+        assertEquals(activeOrders.size(), 2);
+        assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f836");
     }
 
     @Test

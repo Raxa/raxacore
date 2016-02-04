@@ -65,24 +65,26 @@ public class OrderDaoImpl implements OrderDao {
             return new ArrayList<>();
         }
         StringBuilder queryString = new StringBuilder("select d1 " +
-            "from DrugOrder d1, Encounter e, Visit v " +
-            "where d1.encounter = e and e.visit = v and v.visitId in (:visitIds) " +
-            "and d1.voided = false and d1.action != :discontinued " +
-            "and not exists " +
-            "(select d2 from DrugOrder d2 where d2.voided = false and d2.action = :revised and d2.encounter = d1.encounter and d2.previousOrder = d1)");
+                "from DrugOrder d1, Encounter e, Visit v " +
+                "where d1.encounter = e and e.visit = v and v.visitId in (:visitIds) " +
+                "and d1.voided = false and d1.action != :discontinued " +
+                "and not exists " +
+                "(select d2 from DrugOrder d2 where d2.voided = false and d2.action = :revised and d2.encounter = d1.encounter and d2.previousOrder = d1)");
 
         if (getEffectiveOrdersOnly) {
             if (startDate != null) {
-                queryString.append(" and d1.scheduledDate >= :startDate ");
+                queryString.append(" and (d1.scheduledDate >= :startDate or d1.autoExpireDate >= :startDate or d1.autoExpireDate = null)");
             }
-            queryString.append(" and d1.scheduledDate <= :endDate ");
+            if (endDate != null || getEffectiveOrdersOnly) {
+                queryString.append(" and d1.scheduledDate <= :endDate ");
+            }
             queryString.append(" order by d1.scheduledDate desc");
 
         } else {
             if (startDate != null) {
-                queryString.append(" and d1.dateActivated >= :startDate ");
+                queryString.append(" and (d1.dateActivated >= :startDate or d1.autoExpireDate >= :startDate or d1.autoExpireDate = null)");
             }
-            if (endDate != null) {
+            if (endDate != null  || getEffectiveOrdersOnly) {
                 queryString.append(" and d1.dateActivated <= :endDate ");
             }
             queryString.append(" order by d1.dateActivated desc");
@@ -104,9 +106,9 @@ public class OrderDaoImpl implements OrderDao {
         if (visitUuids != null && visitUuids.size() != 0) {
             Session currentSession = getCurrentSession();
             Query query = currentSession.createQuery("select d1 from DrugOrder d1, Encounter e, Visit v where d1.encounter = e and e.visit = v and v.uuid in (:visitUuids) " +
-                "and d1.voided = false and d1.action != :discontinued and " +
-                "not exists (select d2 from DrugOrder d2 where d2.voided = false and d2.action = :revised and d2.encounter = d1.encounter and d2.previousOrder = d1)" +
-                "order by d1.dateActivated desc");
+                    "and d1.voided = false and d1.action != :discontinued and " +
+                    "not exists (select d2 from DrugOrder d2 where d2.voided = false and d2.action = :revised and d2.encounter = d1.encounter and d2.previousOrder = d1)" +
+                    "order by d1.dateActivated desc");
             query.setParameterList("visitUuids", visitUuids);
             query.setParameter("discontinued", Order.Action.DISCONTINUE);
             query.setParameter("revised", Order.Action.REVISE);
@@ -123,10 +125,10 @@ public class OrderDaoImpl implements OrderDao {
             StringBuilder queryBuilder = new StringBuilder("select d1 from DrugOrder d1, Encounter e, Visit v where d1.encounter = e and e.visit = v and v.visitId in (:visitIds) and d1.drug.concept in (:concepts)" +
                     "and d1.voided = false and d1.action != :discontinued and " +
                     "not exists (select d2 from DrugOrder d2 where d2.voided = false and d2.action = :revised and d2.encounter = d1.encounter and d2.previousOrder = d1)");
-            if(startDate != null){
+            if (startDate != null) {
                 queryBuilder.append(" and d1.dateActivated >= :startDate");
             }
-            if(endDate != null) {
+            if (endDate != null) {
                 queryBuilder.append(" and d1.dateActivated <= :endDate ");
             }
             queryBuilder.append(" order by d1.dateActivated desc");
@@ -185,7 +187,7 @@ public class OrderDaoImpl implements OrderDao {
         Session currentSession = getCurrentSession();
         String includevisit = includeActiveVisit == null || includeActiveVisit == false ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
         Query queryVisitsWithDrugOrders = currentSession.createQuery("select v from " + orderType + " o, Encounter e, Visit v where o.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
-            "and o.voided = false and o.dateStopped = null and o.action != :discontinued " + includevisit + " group by v.visitId order by v.startDatetime desc");
+                "and o.voided = false and o.dateStopped = null and o.action != :discontinued " + includevisit + " group by v.visitId order by v.startDatetime desc");
         queryVisitsWithDrugOrders.setParameter("patientId", patient);
         queryVisitsWithDrugOrders.setParameter("discontinued", Order.Action.DISCONTINUE);
         if (includeActiveVisit == null || includeActiveVisit == false) {
@@ -201,7 +203,7 @@ public class OrderDaoImpl implements OrderDao {
         Session currentSession = getCurrentSession();
         String includevisit = includeActiveVisit == null || includeActiveVisit == false ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
         Query queryVisitsWithDrugOrders = currentSession.createQuery("select v from " + orderType + " o, Encounter e, Visit v where o.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
-            "and o.voided = false and o.dateStopped = null " + includevisit + " group by v.visitId order by v.startDatetime desc");
+                "and o.voided = false and o.dateStopped = null " + includevisit + " group by v.visitId order by v.startDatetime desc");
         queryVisitsWithDrugOrders.setParameter("patientId", patient);
         if (includeActiveVisit == null || includeActiveVisit == false) {
             queryVisitsWithDrugOrders.setParameter("now", new Date());
@@ -311,8 +313,8 @@ public class OrderDaoImpl implements OrderDao {
         criteria.add(Restrictions.eq("voided", false));
         criteria.add(Restrictions.ne("action", Order.Action.DISCONTINUE));
         criteria.addOrder(org.hibernate.criterion.Order.asc("orderId"));
-        if(startDate != null) criteria.add(Restrictions.ge("scheduledDate", startDate));
-        if(endDate != null) criteria.add(Restrictions.le("scheduledDate", endDate));
+        if (startDate != null) criteria.add(Restrictions.ge("scheduledDate", startDate));
+        if (endDate != null) criteria.add(Restrictions.le("scheduledDate", endDate));
 
         return criteria.list();
 
@@ -340,7 +342,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> getActiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate, Set<Concept> conceptsToFilter, Set<Concept> conceptsToExclude) {
+    public List<Order> getActiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate, Set<Concept> conceptsToFilter, Set<Concept> conceptsToExclude, Date startDate, Date endDate) {
         if (patient == null) {
             throw new IllegalArgumentException("Patient is required when fetching active orders");
         }
@@ -363,14 +365,20 @@ public class OrderDaoImpl implements OrderDao {
         criteria.add(Restrictions.le("dateActivated", asOfDate));
         criteria.add(Restrictions.eq("voided", false));
         criteria.add(Restrictions.ne("action", Order.Action.DISCONTINUE));
+        if (startDate != null) {
+            criteria.add(Restrictions.or(Restrictions.ge("scheduledDate", startDate), Restrictions.ge("autoExpireDate", startDate)));
+            if (endDate == null) {
+                endDate = new Date();
+            }
+            criteria.add(Restrictions.le("scheduledDate", endDate));
+        }
 
         Disjunction dateStoppedAndAutoExpDateDisjunction = Restrictions.disjunction();
         Criterion stopAndAutoExpDateAreBothNull = Restrictions.and(Restrictions.isNull("dateStopped"), Restrictions
                 .isNull("autoExpireDate"));
         dateStoppedAndAutoExpDateDisjunction.add(stopAndAutoExpDateAreBothNull);
+        Criterion autoExpireDateEqualToOrAfterAsOfDate = Restrictions.and(Restrictions.isNull("dateStopped"), Restrictions.ge("autoExpireDate", asOfDate));
 
-        Criterion autoExpireDateEqualToOrAfterAsOfDate = Restrictions.and(Restrictions.isNull("dateStopped"), Restrictions
-                .ge("autoExpireDate", asOfDate));
         dateStoppedAndAutoExpDateDisjunction.add(autoExpireDateEqualToOrAfterAsOfDate);
 
         dateStoppedAndAutoExpDateDisjunction.add(Restrictions.ge("dateStopped", asOfDate));
@@ -394,7 +402,7 @@ public class OrderDaoImpl implements OrderDao {
             criteria.add(Restrictions.eq("careSetting", careSetting));
         }
 
-        if (concepts!= null || CollectionUtils.isNotEmpty(concepts)) {
+        if (concepts != null || CollectionUtils.isNotEmpty(concepts)) {
             criteria.add(Restrictions.in("concept", concepts));
         }
         if (CollectionUtils.isNotEmpty(conceptsToExclude)) {
