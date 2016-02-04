@@ -30,7 +30,6 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -69,7 +68,7 @@ public class ObsToObsTabularFlowSheetControllerTest {
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
         Context.setUserContext(new UserContext());
         obsToObsPivotTableController = new ObsToObsTabularFlowSheetController(bahmniObsService, conceptService, bahmniObservationsToTabularViewMapper, bahmniExtensions);
-        Mockito.when(bahmniExtensions.getExtension(anyString())).thenReturn(new BaseTableExtension());
+        Mockito.when(bahmniExtensions.getExtension(anyString(), anyString())).thenReturn(new BaseTableExtension());
     }
 
     @Test

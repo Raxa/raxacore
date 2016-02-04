@@ -51,6 +51,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
             List<Obs> observations = obsDao.getObsByPatientAndVisit(patientUuid, conceptNames,
                     visitDao.getVisitIdsFor(patientUuid, numberOfVisits), -1, ObsDaoImpl.OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order, startDate, endDate);
+
             return omrsObsToBahmniObsMapper.map(observations, concepts);
         }
         return Collections.EMPTY_LIST;

@@ -4,7 +4,6 @@ import groovy.lang.GroovyClassLoader;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.dao.ApplicationDataDirectory;
 import org.bahmni.module.bahmnicore.dao.impl.ApplicationDataDirectoryImpl;
-import org.openmrs.module.bahmniemrapi.drugogram.contract.BaseTableExtension;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -13,38 +12,32 @@ import java.io.IOException;
 @Component
 public class BahmniExtensions {
 
-	private static final Logger log = Logger.getLogger(BahmniExtensions.class);
+    private static final Logger log = Logger.getLogger(BahmniExtensions.class);
 
-	private GroovyClassLoader groovyClassLoader;
+    private GroovyClassLoader groovyClassLoader;
 
-	private ApplicationDataDirectory applicationDataDirectory;
+    private ApplicationDataDirectory applicationDataDirectory;
 
-	public BahmniExtensions() {
-		groovyClassLoader = new GroovyClassLoader();
-		applicationDataDirectory = new ApplicationDataDirectoryImpl();
-	}
+    public BahmniExtensions() {
+        groovyClassLoader = new GroovyClassLoader();
+        applicationDataDirectory = new ApplicationDataDirectoryImpl();
+    }
 
-	public <T> BaseTableExtension<T> getExtension(String groovyExtensionFileName) {
-		File treatmentRegimenExtensionGroovyPath = applicationDataDirectory
-				.getFileFromConfig("openmrs"+ File.separator +"treatmentRegimenExtension" + File.separator + groovyExtensionFileName);
-		if (!treatmentRegimenExtensionGroovyPath.exists()) {
-			return new BaseTableExtension<T>();
-		}
-
-		try {
-			Class clazz = groovyClassLoader.parseClass(treatmentRegimenExtensionGroovyPath);
-			return (BaseTableExtension<T>)clazz.newInstance();
-		}
-		catch (IOException e) {
-			log.error("Problem with the groovy class " + treatmentRegimenExtensionGroovyPath, e);
-		}
-		catch (InstantiationException e) {
-			log.error("The groovy class " + treatmentRegimenExtensionGroovyPath + " cannot be instantiated", e);
-		}
-		catch (IllegalAccessException e) {
-			log.error("Problem with the groovy class " + treatmentRegimenExtensionGroovyPath, e);
-		}
-		return new BaseTableExtension<T>();
-	}
-
+    public Object getExtension(String directory, String fileName) {
+        File groovyFile = applicationDataDirectory
+                .getFileFromConfig("openmrs" + File.separator + directory + File.separator + fileName);
+        if (!groovyFile.exists()) {
+            log.error("File not found " + groovyFile.getAbsolutePath());
+        } else {
+            try {
+                Class clazz = groovyClassLoader.parseClass(groovyFile);
+                return clazz.newInstance();
+            } catch (IOException | IllegalAccessException e) {
+                log.error("Problem with the groovy class " + groovyFile, e);
+            } catch (InstantiationException e) {
+                log.error("The groovy class " + groovyFile + " cannot be instantiated", e);
+            }
+        }
+        return null;
+    }
 }

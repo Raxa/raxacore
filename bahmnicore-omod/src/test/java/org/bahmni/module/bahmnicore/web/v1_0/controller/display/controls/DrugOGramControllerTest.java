@@ -38,7 +38,7 @@ public class DrugOGramControllerTest {
     @Before
     public void setUp() throws Exception {
         drugOGramController = new DrugOGramController(bahmniDrugOrderService, drugOrderToTreatmentRegimenMapper, bahmniConceptService, bahmniExtensions);
-        when(bahmniExtensions.getExtension(anyString())).thenReturn(new BaseTableExtension());
+        when(bahmniExtensions.getExtension(anyString(), anyString())).thenReturn(new BaseTableExtension());
     }
 
     @Test
