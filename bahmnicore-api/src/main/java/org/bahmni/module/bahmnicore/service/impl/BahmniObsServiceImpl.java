@@ -4,6 +4,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.bahmni.module.bahmnicore.dao.impl.ObsDaoImpl;
+import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
+import org.bahmni.module.bahmnicore.obs.ObservationsAdder;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.util.MiscUtils;
 import org.openmrs.*;
@@ -25,14 +27,16 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
     private VisitService visitService;
     private ConceptService conceptService;
+    private BahmniExtensions bahmniExtensions;
 
     @Autowired
-    public BahmniObsServiceImpl(ObsDao obsDao, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper, VisitService visitService, ConceptService conceptService, VisitDao visitDao) {
+    public BahmniObsServiceImpl(ObsDao obsDao, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper, VisitService visitService, ConceptService conceptService, VisitDao visitDao, BahmniExtensions bahmniExtensions) {
         this.obsDao = obsDao;
         this.omrsObsToBahmniObsMapper = omrsObsToBahmniObsMapper;
         this.visitService = visitService;
         this.conceptService = conceptService;
         this.visitDao = visitDao;
+        this.bahmniExtensions = bahmniExtensions;
     }
 
     @Override
@@ -51,6 +55,10 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
             List<Obs> observations = obsDao.getObsByPatientAndVisit(patientUuid, conceptNames,
                     visitDao.getVisitIdsFor(patientUuid, numberOfVisits), -1, ObsDaoImpl.OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order, startDate, endDate);
+
+            ObservationsAdder observationsAdder = (ObservationsAdder) bahmniExtensions.getExtension("observationsAdder", "CurrentMonthOfTreatment.groovy");
+            if (observationsAdder != null)
+                observationsAdder.addObservations(observations, conceptNames);
 
             return omrsObsToBahmniObsMapper.map(observations, concepts);
         }

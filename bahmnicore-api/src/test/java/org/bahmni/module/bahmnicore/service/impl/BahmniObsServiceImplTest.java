@@ -3,6 +3,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.bahmni.module.bahmnicore.dao.impl.ObsDaoImpl;
+import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.test.builder.VisitBuilder;
@@ -53,6 +54,8 @@ public class BahmniObsServiceImplTest {
     private VisitService visitService;
     @Mock
     private ConceptService conceptService;
+    @Mock
+    private BahmniExtensions bahmniExtensions;
 
     @Before
     public void setUp() {
@@ -61,7 +64,7 @@ public class BahmniObsServiceImplTest {
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
         when(observationTypeMatcher.getObservationType(any(Obs.class))).thenReturn(ObservationTypeMatcher.ObservationType.OBSERVATION);
-        bahmniObsService = new BahmniObsServiceImpl(obsDao, new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null), observationTypeMatcher, observationMapper), visitService, conceptService, visitDao);
+        bahmniObsService = new BahmniObsServiceImpl(obsDao, new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null), observationTypeMatcher, observationMapper), visitService, conceptService, visitDao, bahmniExtensions);
     }
 
     @Test
@@ -83,6 +86,7 @@ public class BahmniObsServiceImplTest {
         bahmniObsService.observationsFor(personUUID, Arrays.asList(bloodPressureConcept), numberOfVisits, null, false, null, null, null);
         verify(obsDao).getObsByPatientAndVisit(personUUID, Arrays.asList("Blood Pressure"),
                 visitDao.getVisitIdsFor(personUUID, numberOfVisits), -1, ObsDaoImpl.OrderBy.DESC, null, false, null, null, null);
+        verify(bahmniExtensions, times(1)).getExtension("observationsAdder", "CurrentMonthOfTreatment.groovy");
     }
 
     @Test
