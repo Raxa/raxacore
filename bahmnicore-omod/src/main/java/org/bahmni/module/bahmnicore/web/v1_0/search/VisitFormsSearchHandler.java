@@ -15,6 +15,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class VisitFormsSearchHandler implements SearchHandler {
 
     @Override
     public SearchConfig getSearchConfig() {
-        SearchQuery searchQuery = new SearchQuery.Builder(QUERY_INFORMATION).withRequiredParameters("patient", "numberOfVisits").build();
+        SearchQuery searchQuery = new SearchQuery.Builder(QUERY_INFORMATION).withRequiredParameters("patient", "numberOfVisits").withOptionalParameters("conceptNames").build();
         return new SearchConfig("byPatientUuid", RestConstants.VERSION_1 + "/obs", asList("1.10.*", "1.11.*", "1.12.*"), searchQuery);
     }
 
@@ -38,13 +39,16 @@ public class VisitFormsSearchHandler implements SearchHandler {
 
         String patientUuid = context.getRequest().getParameter("patient");
         int numberOfVisits = Integer.parseInt(context.getRequest().getParameter("numberOfVisits"));
-
+        String[] conceptNames = context.getRequest().getParameterValues("conceptNames");
         Patient patient = Context.getPatientService().getPatientByUuid(patientUuid);
         if (patient == null) {
             throw new InvalidSearchException("Patient does not exist.");
         }
+        List<Concept> conceptSetMembers = getConcepts(conceptNames);
 
-        List<Concept> conceptSetMembers = Context.getConceptService().getConcept(ALL_OBSERVATION_TEMPLATES).getSetMembers();
+        if (conceptSetMembers.isEmpty())
+            conceptSetMembers = Context.getConceptService().getConcept(ALL_OBSERVATION_TEMPLATES).getSetMembers();
+
         List<Visit> listOfVisitsNeeded = listOfVisitsNeeded(numberOfVisits, patient);
 
         List<Obs> finalObsList = new ArrayList<>();
@@ -55,10 +59,13 @@ public class VisitFormsSearchHandler implements SearchHandler {
 
         List<String> conceptUuids = new ArrayList<>();
         for (Concept conceptSetMember : conceptSetMembers) {
-            conceptUuids.add(conceptSetMember.getUuid());
+            String conceptUuid = conceptSetMember.getUuid();
+            if (conceptUuid != null) {
+                conceptUuids.add(conceptSetMember.getUuid());
+            }
         }
 
-        if(CollectionUtils.isNotEmpty(conceptUuids)) {
+        if (CollectionUtils.isNotEmpty(conceptUuids)) {
             for (Obs obs : initialObsList) {
                 if (conceptUuids.contains(obs.getConcept().getUuid())) {
                     finalObsList.add(obs);
@@ -66,6 +73,21 @@ public class VisitFormsSearchHandler implements SearchHandler {
             }
         }
         return new NeedsPaging<Obs>(finalObsList, context);
+    }
+
+    private List<Concept> getConcepts(String[] conceptNames) {
+        List<Concept> conceptSetMembers = new ArrayList<>();
+        if (conceptNames == null)
+            return conceptSetMembers;
+
+        for (String conceptName : conceptNames) {
+            Concept conceptByName = Context.getConceptService().getConceptByName(conceptName);
+            if (conceptByName != null) {
+                conceptSetMembers.add(conceptByName);
+            }
+        }
+
+        return conceptSetMembers;
     }
 
     private List<Visit> listOfVisitsNeeded(int numberOfVisits, Patient patient) {
