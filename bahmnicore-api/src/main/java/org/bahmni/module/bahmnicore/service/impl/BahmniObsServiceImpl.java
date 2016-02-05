@@ -48,21 +48,30 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     public Collection<BahmniObservation> observationsFor(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits,
                                                          List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order, Date startDate, Date endDate) {
         if (CollectionUtils.isNotEmpty(concepts)) {
-            List<String> conceptNames = new ArrayList<>();
-            for (Concept concept : concepts) {
-                conceptNames.add(concept.getName().getName());
-            }
+            List<String> conceptNames = getConceptNames(concepts);
 
             List<Obs> observations = obsDao.getObsByPatientAndVisit(patientUuid, conceptNames,
                     visitDao.getVisitIdsFor(patientUuid, numberOfVisits), -1, ObsDaoImpl.OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order, startDate, endDate);
 
-            ObservationsAdder observationsAdder = (ObservationsAdder) bahmniExtensions.getExtension("observationsAdder", "CurrentMonthOfTreatment.groovy");
-            if (observationsAdder != null)
-                observationsAdder.addObservations(observations, conceptNames);
+            sendObsToGroovyScript(conceptNames, observations);
 
             return omrsObsToBahmniObsMapper.map(observations, concepts);
         }
         return Collections.EMPTY_LIST;
+    }
+
+    private List<String> getConceptNames(Collection<Concept> concepts) {
+        List<String> conceptNames = new ArrayList<>();
+        for (Concept concept : concepts) {
+            conceptNames.add(concept.getName().getName());
+        }
+        return conceptNames;
+    }
+
+    private void sendObsToGroovyScript(List<String> questions, List<Obs> observations) {
+        ObservationsAdder observationsAdder = (ObservationsAdder) bahmniExtensions.getExtension("observationsAdder", "CurrentMonthOfTreatment.groovy");
+        if (observationsAdder != null)
+            observationsAdder.addObservations(observations, questions);
     }
 
     @Override
@@ -87,6 +96,8 @@ public class BahmniObsServiceImpl implements BahmniObsService {
             }
         }
 
+        sendObsToGroovyScript(getConceptNames(concepts), latestObs);
+
         return omrsObsToBahmniObsMapper.map(latestObs, concepts);
     }
 
@@ -109,6 +120,8 @@ public class BahmniObsServiceImpl implements BahmniObsService {
             latestObs.addAll(obsDao.getObsByPatientAndVisit(patientUuid, Arrays.asList(concept.getName().getName()),
                     visitDao.getVisitIdsFor(patientUuid, numberOfVisits), 1, ObsDaoImpl.OrderBy.ASC, obsIgnoreList, filterOutOrderObs, order, startDate, endDate));
         }
+
+        sendObsToGroovyScript(getConceptNames(conceptNames), latestObs);
 
         return omrsObsToBahmniObsMapper.map(latestObs, conceptNames);
     }
