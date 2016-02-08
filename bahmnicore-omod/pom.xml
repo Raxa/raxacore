@@ -29,6 +29,18 @@
             <version>1.0.3</version>
             <type>gem</type>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>rubygems</groupId>
+                    <artifactId>rb-inotify</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>rubygems</groupId>
+            <artifactId>rb-inotify</artifactId>
+            <version>0.9.5</version>
+            <type>gem</type>
         </dependency>
         <dependency>
             <groupId>org.bahmni.module</groupId>
