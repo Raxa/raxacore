@@ -8,7 +8,7 @@ public class WildCardParameter {
     }
 
     public static WildCardParameter create(String value) {
-        if(value == null || value == ""){
+        if(value == null || "".equals(value)){
             return new WildCardParameter(new String[0]);
         }
         String[] splitName = value.split(" ");
