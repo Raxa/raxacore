@@ -32,9 +32,14 @@
             <column name="changed_by" />
         </many-to-one>
 
-        <set name="encounters" cascade="save-update" table="episode_encounters">
+        <set name="encounters" cascade="save-update" table="episode_encounter">
             <key column="episode_id"/>
             <many-to-many column="encounter_id" class="org.openmrs.Encounter"/>
+        </set>
+
+        <set name="patientPrograms" cascade="save-update" table="episode_patient_program">
+            <key column="episode_id"/>
+            <many-to-many column="patient_program_id" class="org.openmrs.PatientProgram"/>
         </set>
     </class>
 </hibernate-mapping>

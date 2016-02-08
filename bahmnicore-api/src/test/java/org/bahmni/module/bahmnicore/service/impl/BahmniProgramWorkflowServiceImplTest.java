@@ -1,19 +1,32 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.dao.BahmniProgramWorkflowDAO;
+import org.bahmni.module.bahmnicore.model.Episode;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
+import org.bahmni.module.bahmnicore.service.EpisodeService;
 import org.bahmni.module.bahmnicore.service.impl.BahmniProgramWorkflowServiceImpl;
+import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.openmrs.Patient;
+import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 public class BahmniProgramWorkflowServiceImplTest {
@@ -23,13 +36,15 @@ public class BahmniProgramWorkflowServiceImplTest {
     @Mock
     BahmniProgramWorkflowDAO bahmniProgramWorkflowDAO;
 
+    @Mock
+    EpisodeService episodeService;
+
     private Integer sampleId = 1234;
     private String sampleUuid = "a1b2c3";
 
     @Before
     public void before() {
-        bahmniProgramWorkflowService = new BahmniProgramWorkflowServiceImpl();
-        bahmniProgramWorkflowService.setProgramWorkflowDAO(bahmniProgramWorkflowDAO);
+        bahmniProgramWorkflowService = new BahmniProgramWorkflowServiceImpl(bahmniProgramWorkflowDAO, episodeService);
     }
 
     @Test
@@ -68,5 +83,36 @@ public class BahmniProgramWorkflowServiceImplTest {
     public void testGetPatientProgramAttributeByUuid() throws Exception {
         bahmniProgramWorkflowService.getPatientProgramAttributeByUuid(sampleUuid);
         verify(bahmniProgramWorkflowDAO).getPatientProgramAttributeByUuid(sampleUuid);
+    }
+
+    @Test
+    public void testSavePatientProgramShouldCreateEpisode() throws Exception {
+        BahmniPatientProgram patientProgram = new BahmniPatientProgram();
+        patientProgram.setPatient(new Patient());
+        patientProgram.setProgram(new Program());
+        when(bahmniProgramWorkflowDAO.savePatientProgram(patientProgram)).thenReturn(patientProgram);
+
+        bahmniProgramWorkflowService.savePatientProgram(patientProgram);
+
+        ArgumentCaptor<Episode> argumentCaptor = ArgumentCaptor.forClass(Episode.class);
+        verify(episodeService).save(argumentCaptor.capture());
+        verify(bahmniProgramWorkflowDAO).savePatientProgram(patientProgram);
+        PatientProgram savedPatientProgram = argumentCaptor.getValue().getPatientPrograms().iterator().next();
+        assertThat(savedPatientProgram.getUuid(), is(equalTo(patientProgram.getUuid())));
+    }
+
+    @Test
+    public void testUpdatePatientProgramShouldNotCreateNewEpisode() throws Exception {
+        Episode episode = new Episode();
+        BahmniPatientProgram patientProgram = new BahmniPatientProgram();
+        patientProgram.setPatient(new Patient());
+        patientProgram.setProgram(new Program());
+        when(bahmniProgramWorkflowDAO.savePatientProgram(patientProgram)).thenReturn(patientProgram);
+        when(episodeService.getEpisodeForPatientProgram(patientProgram)).thenReturn(episode);
+
+        bahmniProgramWorkflowService.savePatientProgram(patientProgram);
+
+        verify(episodeService, times(0)).save(any(Episode.class));
+        verify(bahmniProgramWorkflowDAO).savePatientProgram(patientProgram);
     }
 }
