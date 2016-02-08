@@ -28,7 +28,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.Program
 
 import java.util.*;
 
-@Resource(name = RestConstants.VERSION_1 + "/programenrollment", supportedClass = BahmniPatientProgram.class, supportedOpenmrsVersions = {"1.12.*,2.*"}, order = 0)
+@Resource(name = RestConstants.VERSION_1 + "/bahmniprogramenrollment", supportedClass = BahmniPatientProgram.class, supportedOpenmrsVersions = {"1.12.*,2.*"}, order = 0)
 public class BahmniProgramEnrollmentResource extends ProgramEnrollmentResource1_10 {
 
     @PropertySetter("attributes")
