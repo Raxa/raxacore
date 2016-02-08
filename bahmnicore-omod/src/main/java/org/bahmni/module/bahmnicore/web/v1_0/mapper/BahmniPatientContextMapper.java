@@ -1,0 +1,75 @@
+package org.bahmni.module.bahmnicore.web.v1_0.mapper;
+
+import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
+import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.PatientProgramAttribute;
+import org.openmrs.Concept;
+import org.openmrs.Patient;
+import org.openmrs.PersonAttribute;
+import org.openmrs.api.ConceptService;
+import org.openmrs.module.bahmniemrapi.patient.PatientContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+public class BahmniPatientContextMapper {
+    @Autowired
+    private ConceptService conceptService;
+
+    public PatientContext map(Patient patient, BahmniPatientProgram patientProgram, List<String> configuredPersonAttributes, List<String> configuredProgramAttributes) {
+        PatientContext patientContext = new PatientContext();
+
+        patientContext.setBirthdate(patient.getBirthdate());
+        patientContext.setFamilyName(patient.getFamilyName());
+        patientContext.setGivenName(patient.getGivenName());
+        patientContext.setMiddleName(patient.getMiddleName());
+        patientContext.setGender(patient.getGender());
+        patientContext.setIdentifier(patient.getPatientIdentifier().getIdentifier());
+        patientContext.setUuid(patient.getUuid());
+
+        mapConfiguredPersonAttributes(patient, configuredPersonAttributes, patientContext);
+        mapConfiguredProgramAttributes(patientProgram, configuredProgramAttributes, patientContext);
+
+        return patientContext;
+    }
+
+    private void mapConfiguredProgramAttributes(BahmniPatientProgram patientProgram, List<String> configuredProgramAttributes, PatientContext patientContext) {
+        if (patientProgram == null || configuredProgramAttributes == null) {
+            return;
+        }
+        for (String configuredProgramAttribute : configuredProgramAttributes) {
+            for (PatientProgramAttribute patientProgramAttribute : patientProgram.getAttributes()) {
+                if (patientProgramAttribute.getAttributeType().getName().equals(configuredProgramAttribute)) {
+                    if (patientProgramAttribute.getAttributeType().getDatatypeClassname().equals("org.bahmni.module.bahmnicore.customdatatype.datatype.CodedConceptDatatype")) {
+                        Concept concept = conceptService.getConcept(patientProgramAttribute.getValueReference());
+                        patientContext.addProgramAttribute(configuredProgramAttribute, patientProgramAttribute.getAttributeType().getDescription(), concept.getName().getName());
+                    } else {
+                        patientContext.addProgramAttribute(configuredProgramAttribute, patientProgramAttribute.getAttributeType().getDescription(), patientProgramAttribute.getValueReference());
+                    }
+                }
+            }
+        }
+    }
+
+    private void mapConfiguredPersonAttributes(Patient patient, List<String> configuredPersonAttributes, PatientContext patientContext) {
+        if (configuredPersonAttributes == null) {
+            return;
+        }
+        for (String configuredPersonAttribute : configuredPersonAttributes) {
+            PersonAttribute personAttribute = patient.getAttribute(configuredPersonAttribute);
+            mapPersonAttribute(patientContext, configuredPersonAttribute, personAttribute);
+        }
+    }
+
+    private void mapPersonAttribute(PatientContext patientContext, String configuredPersonAttribute, PersonAttribute personAttribute) {
+        if (personAttribute != null) {
+            if (personAttribute.getAttributeType().getFormat().equals("org.openmrs.Concept")) {
+                Concept concept = conceptService.getConcept(personAttribute.getValue());
+                patientContext.addPersonAttribute(configuredPersonAttribute, personAttribute.getAttributeType().getDescription(), concept.getName().getName());
+            } else {
+                patientContext.addPersonAttribute(configuredPersonAttribute, personAttribute.getAttributeType().getDescription(), personAttribute.getValue());
+            }
+        }
+    }
+}
