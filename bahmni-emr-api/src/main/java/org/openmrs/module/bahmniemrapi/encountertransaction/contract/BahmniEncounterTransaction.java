@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.contract;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.joda.time.DateTime;
@@ -23,6 +24,8 @@ public class BahmniEncounterTransaction {
     private String visitType;
     private String patientId;
     private String reason;
+    private String patientProgramUuid;
+
 
     public BahmniEncounterTransaction() {
         this(new EncounterTransaction());
@@ -63,6 +66,13 @@ public class BahmniEncounterTransaction {
         encounterTransaction.setEncounterUuid(encounterUuid);
     }
 
+    public String getPatientProgramUuid() {
+        return patientProgramUuid;
+    }
+
+    public void setPatientProgramUuid(String patientProgramUuid) {
+        this.patientProgramUuid = patientProgramUuid;
+    }
 
     public void addObservation(BahmniObservation observation) {
         observation.setEncounterDateTime(getEncounterDateTime());
@@ -352,6 +362,10 @@ public class BahmniEncounterTransaction {
             }
         }
         return oldestDrugOrder;
+    }
+
+    public boolean isAssociatedToPatientProgram() {
+        return StringUtils.isNotBlank(patientProgramUuid);
     }
 }
 

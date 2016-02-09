@@ -1,6 +1,8 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.contract;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,6 +12,8 @@ import org.openmrs.module.bahmniemrapi.obsrelation.contract.ObsRelationship;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -18,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -204,6 +209,16 @@ public class BahmniEncounterTransactionTest {
 		assertEquals("locationUuid", clonedEncounterTransaction.getLocationUuid());
 		assertEquals("patientUuid", clonedEncounterTransaction.getPatientUuid());
 		assertEquals(providers, clonedEncounterTransaction.getProviders());
+	}
+
+	@Test
+	public void shouldDeserializeBahmniEncounterTransactionFromJson() throws IOException {
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("sampleEncounterTransaction.json").getFile());
+
+		BahmniEncounterTransaction encounterTransaction = new ObjectMapper().readValue(file, BahmniEncounterTransaction.class);
+		assertNotNull(encounterTransaction);
+		assertEquals(encounterTransaction.getPatientProgramUuid(), "253a5353-46b6-4668-97bb-8d1967ef3418");
 	}
 
 	private ArrayList<BahmniDiagnosisRequest> createBahmniDiagnoses() {

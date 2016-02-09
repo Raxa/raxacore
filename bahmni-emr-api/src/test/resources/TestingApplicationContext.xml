@@ -21,4 +21,36 @@
         <!--  default properties must be set in the hibernate.default.properties -->
     </bean>
 
+    <bean id="bahmniEncounterTransactionServiceTarget" class="org.openmrs.module.bahmniemrapi.encountertransaction.impl.BahmniEncounterTransactionServiceImpl" autowire="constructor">
+        <constructor-arg  ref="encounterService"/>
+        <constructor-arg  ref="emrEncounterService"/>
+        <constructor-arg  ref="encounterTransactionMapper"/>
+        <constructor-arg  ref="encounterTypeIdentifier"/>
+        <constructor-arg>
+            <list>
+                <ref bean="drugOrderSaveCommandImpl"/>
+                <ref bean="orderSaveCommandImpl"/>
+                <ref bean="parentConceptSaveCommandImpl"/>
+            </list>
+        </constructor-arg>
+        <constructor-arg>
+            <list>
+                <ref bean="bahmniDiagnosisSaveCommandImpl"/>
+                <ref bean="bahmniObservationSaveCommandImpl"/>
+                <ref bean="bahmniVisitAttributeSaveCommandImpl"/>
+            </list>
+        </constructor-arg>
+        <constructor-arg>
+            <list>
+                <ref bean="bahmniVisitAttributeSaveCommandImpl"/>
+            </list>
+        </constructor-arg>
+        <constructor-arg ref="bahmniEncounterTransactionMapper" />
+        <constructor-arg ref="visitService" />
+        <constructor-arg ref="patientService" />
+        <constructor-arg ref="locationService" />
+        <constructor-arg ref="providerService" />
+    </bean>
+
+
 </beans>

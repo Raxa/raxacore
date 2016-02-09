@@ -539,6 +539,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
     }
 
 
+
     private BahmniObservation getObservationByConceptUuid(Collection<BahmniObservation> bahmniObservations,
                                                           String conceptUuid) {
         for (BahmniObservation bahmniObservation : bahmniObservations) {

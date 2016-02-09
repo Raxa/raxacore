@@ -28,6 +28,16 @@
         </property>
     </bean>
 
+    <bean name="bahmniProgramWorkflowService" class="org.bahmni.module.bahmnicore.service.impl.BahmniProgramWorkflowServiceImpl">
+        <property name="programWorkflowDAO">
+            <bean class="org.bahmni.module.bahmnicore.dao.impl.BahmniHibernateProgramWorkflowDAOImpl">
+                <property name="sessionFactory">
+                    <ref bean="sessionFactory" />
+                </property>
+            </bean>
+        </property>
+    </bean>
+
     <!-- Services accessible via Context.getService() -->
     <bean parent="serviceContext">
         <property name="moduleService">
@@ -38,16 +48,7 @@
                     <property name="transactionManager">
                         <ref bean="transactionManager" />
                     </property>
-                    <property name="target">
-                        <bean class="org.bahmni.module.bahmnicore.service.impl.BahmniProgramWorkflowServiceImpl">
-                            <property name="programWorkflowDAO">
-                                <bean class="org.bahmni.module.bahmnicore.dao.impl.BahmniHibernateProgramWorkflowDAOImpl">
-                                    <property name="sessionFactory">
-                                        <ref bean="sessionFactory" />
-                                    </property>
-                                </bean>
-                            </property>
-                        </bean>
+                    <property name="target" ref="bahmniProgramWorkflowService">
                     </property>
                     <property name="preInterceptors">
                         <ref bean="serviceInterceptors" />
@@ -58,5 +59,59 @@
                 </bean>
             </list>
         </property>
+    </bean>
+
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService</value>
+                <ref local="bahmniEncounterTransactionService"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="bahmniEncounterTransactionService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="target"><ref local="bahmniEncounterTransactionServiceTarget"/></property>
+        <property name="preInterceptors">
+            <ref bean="serviceInterceptors"/>
+        </property>
+        <property name="transactionAttributeSource">
+            <ref bean="transactionAttributeSource"/>
+        </property>
+    </bean>
+
+    <bean id="bahmniEncounterTransactionServiceTarget" class="org.openmrs.module.bahmniemrapi.encountertransaction.impl.BahmniEncounterTransactionServiceImpl" autowire="constructor">
+        <constructor-arg  ref="encounterService"/>
+        <constructor-arg  ref="emrEncounterService"/>
+        <constructor-arg  ref="encounterTransactionMapper"/>
+        <constructor-arg  ref="encounterTypeIdentifier"/>
+        <constructor-arg>
+            <list>
+                <ref bean="drugOrderSaveCommandImpl"/>
+                <ref bean="orderSaveCommandImpl"/>
+                <ref bean="parentConceptSaveCommandImpl"/>
+            </list>
+        </constructor-arg>
+        <constructor-arg>
+            <list>
+                <ref bean="bahmniDiagnosisSaveCommandImpl"/>
+                <ref bean="bahmniObservationSaveCommandImpl"/>
+                <ref bean="bahmniVisitAttributeSaveCommandImpl"/>
+                <ref bean="episodeEncounterCreateCommand"/>
+            </list>
+        </constructor-arg>
+        <constructor-arg>
+            <list>
+                <ref bean="bahmniVisitAttributeSaveCommandImpl"/>
+            </list>
+        </constructor-arg>
+        <constructor-arg ref="bahmniEncounterTransactionMapper" />
+        <constructor-arg ref="visitService" />
+        <constructor-arg ref="patientService" />
+        <constructor-arg ref="locationService" />
+        <constructor-arg ref="providerService" />
     </bean>
 </beans>
