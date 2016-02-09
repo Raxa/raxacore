@@ -501,9 +501,6 @@
             <id>bahmni-artifactory-releases</id>
             <name>bahmni-artifactory-releases</name>
             <url>http://bahmnirepo.thoughtworks.com/artifactory/libs-release-local</url>
-            <snapshots>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
         </repository>        
         <repository>
             <id>rubygems-releases</id>
