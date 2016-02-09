@@ -23,8 +23,8 @@ public class PatientAttributeQueryHelper {
 	}
 
 	public String appendToJoinClause(String join){
-		return join + " inner join person_attribute pattrln on pattrln.person_id = p.person_id " +
-				" inner join person_attribute_type attrt on attrt.person_attribute_type_id = pattrln.person_attribute_type_id and attrt.person_attribute_type_id in ("+ StringUtils.join(personAttributeTypeIds, ',')+") ";
+		return join + " LEFT OUTER JOIN person_attribute pattrln on pattrln.person_id = p.person_id " +
+				" LEFT OUTER JOIN person_attribute_type attrt on attrt.person_attribute_type_id = pattrln.person_attribute_type_id and attrt.person_attribute_type_id in ("+ StringUtils.join(personAttributeTypeIds, ',')+") ";
 	}
 
 	public String appendToWhereClause(String where){

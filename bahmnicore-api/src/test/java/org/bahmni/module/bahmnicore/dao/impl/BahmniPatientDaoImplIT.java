@@ -4,6 +4,7 @@ import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.Person;
@@ -188,5 +189,30 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
         assertEquals("{\"caste\":\"testCaste1\"}",response.getCustomAttribute());
         assertEquals("{\"stage\":\"Stage1\"}",response.getPatientProgramAttributeValue());
 
+    }
+
+    @Test
+    @Ignore
+    public void shouldFetchPatientsByCodedConcepts(){
+        List<PatientResponse> patients = patientDao.getPatients("", "", "John", "testCaste1", "city_village", "Bilaspur", 100, 0, null, "Fac", "facility");
+        assertEquals(1, patients.size());
+        PatientResponse response = patients.get(0);
+        assertEquals("GAN200002",response.getIdentifier());
+        assertEquals("df8ae447-6745-45be-b859-403241d9913d",response.getUuid());
+        assertEquals(1026,response.getPersonId());
+        assertEquals("GAN200002",response.getIdentifier());
+        assertEquals("Bilaspur",response.getAddressFieldValue());
+        assertEquals("John",response.getGivenName());
+        assertEquals("Peeter",response.getMiddleName());
+        assertEquals("Sinha",response.getFamilyName());
+        assertEquals("F",response.getGender());
+        assertEquals("{\"caste\":\"testCaste1\"}",response.getCustomAttribute());
+        assertEquals("{\"facility\":\"Facility1, City1, Country1\"}",response.getPatientProgramAttributeValue());
+    }
+
+    @Test
+    public void shouldSearchByPatientIdentifierWithAttributes() {
+        List<PatientResponse> patients = patientDao.getPatients("", "", "John", null, "city_village", "", 100, 0, null,"",null);
+        assertEquals(5, patients.size());
     }
 }
