@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.service;
 
-import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.PatientProgramAttribute;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
 import org.openmrs.annotation.Authorized;

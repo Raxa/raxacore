@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 public class EpisodeDaoIT extends BaseIntegrationTest {
 
@@ -81,4 +82,25 @@ public class EpisodeDaoIT extends BaseIntegrationTest {
         assertThat(patientPrograms.iterator().next().getUuid(), is(equalTo(patientProgram.getUuid())));
     }
 
+    @Test
+    public void shouldReturnNullIfEpisodeNotFoundForProgram() {
+        PatientProgram patientProgram = bahmniProgramWorkflowService.getPatientProgram(1);
+        assertThat(patientProgram, is(notNullValue()));
+
+        Episode episodeForPatientProgram = episodeDAO.getEpisodeForPatientProgram(patientProgram);
+
+        assertThat(episodeForPatientProgram, is(nullValue()));
+    }
+
+    @Test (expected = Exception.class)
+    public void shouldThrowExceptionIfTransientProgramInstanceUsedToRetrieveEpisode() {
+        episodeDAO.getEpisodeForPatientProgram(new PatientProgram());
+    }
+
+    @Test
+    public void shouldReturnNullIfProgramToFetchEpisodeIsNull() {
+        Episode episodeForPatientProgram = episodeDAO.getEpisodeForPatientProgram(null);
+
+        assertThat(episodeForPatientProgram, is(nullValue()));
+    }
 }

@@ -6,7 +6,6 @@ import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.module.bahmnicore.service.EpisodeService;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Encounter;
 import org.openmrs.PatientProgram;
 import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 public class EpisodeServiceImplIT extends BaseIntegrationTest {
     @Autowired
@@ -35,22 +35,40 @@ public class EpisodeServiceImplIT extends BaseIntegrationTest {
         assertThat(savedEpisode.getEncounters(), is(notNullValue()));
     }
 
-    private Episode createAnEpisode() {
-        Episode episode = new Episode();
-        episode.addPatientProgram(bahmniProgramWorkflowService.getPatientProgram(1));
-        episodeService.save(episode);
-        return episode;
-    }
-
     @Test
     public void shouldRetrieveEpisodeForAProgram() {
         createAnEpisode();
-        PatientProgram patientProgram = bahmniProgramWorkflowService.getPatientProgram(1);
+        PatientProgram patientProgram = testPatientProgram();
 
         Episode episodeForPatientProgram = episodeService.getEpisodeForPatientProgram(patientProgram);
 
         Set<PatientProgram> patientPrograms = episodeForPatientProgram.getPatientPrograms();
         assertThat(patientPrograms.size(), is(equalTo(1)));
         assertThat(patientPrograms.iterator().next().getUuid(), is(equalTo(patientProgram.getUuid())));
+    }
+
+    @Test
+    public void shouldReturnNullIfPatientProgramIsNotLinkedToAnEpisode() {
+        Episode episodeForPatientProgram = episodeService.getEpisodeForPatientProgram(testPatientProgram());
+
+        assertThat(episodeForPatientProgram, is(nullValue()));
+    }
+
+    @Test
+    public void shouldReturnNullEpisodeIfPatientProgramIsNull() {
+        Episode episodeForPatientProgram = episodeService.getEpisodeForPatientProgram(null);
+
+        assertThat(episodeForPatientProgram, is(nullValue()));
+    }
+
+    private Episode createAnEpisode() {
+        Episode episode = new Episode();
+        episode.addPatientProgram(testPatientProgram());
+        episodeService.save(episode);
+        return episode;
+    }
+
+    private PatientProgram testPatientProgram() {
+        return bahmniProgramWorkflowService.getPatientProgram(1);
     }
 }
