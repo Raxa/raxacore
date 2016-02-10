@@ -1,8 +1,13 @@
 package org.bahmni.module.bahmnicore.web.v1_0.search;
 
+import org.bahmni.module.bahmnicore.model.Episode;
+import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
+import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
+import org.bahmni.module.bahmnicore.service.EpisodeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.openmrs.*;
@@ -11,6 +16,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.response.InvalidSearchException;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -18,16 +24,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-import org.openmrs.Patient;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @PrepareForTest(Context.class)
@@ -35,7 +38,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class VisitFormsSearchHandlerTest {
 
-    private VisitFormsSearchHandler visitFormsSearchHandler;
+    @InjectMocks
+    private VisitFormsSearchHandler visitFormsSearchHandler = new VisitFormsSearchHandler();
     @Mock
     RequestContext context;
     @Mock
@@ -48,6 +52,10 @@ public class VisitFormsSearchHandlerTest {
     VisitService visitService;
     @Mock
     ObsService obsService;
+    @Mock
+    private BahmniProgramWorkflowService programWorkflowService;
+    @Mock
+    private EpisodeService episodeService;
 
     @Mock
     Encounter encounter;
@@ -56,12 +64,10 @@ public class VisitFormsSearchHandlerTest {
     Visit visit;
     Obs obs;
 
-
     @Before
     public void before() throws Exception {
         initMocks(this);
         setUp();
-        visitFormsSearchHandler = new VisitFormsSearchHandler();
     }
 
     public Concept createConcept(String conceptName, String locale) {
@@ -152,7 +158,6 @@ public class VisitFormsSearchHandlerTest {
     }
 
     @Test
-
     public void getConceptsShouldReturnEmptyConceptSetIfConceptIsNotFound() throws Exception {
 
         String[] conceptNames = {null, null};
@@ -172,5 +177,90 @@ public class VisitFormsSearchHandlerTest {
         PowerMockito.when(obsService.getObservations(any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(Integer.class), any(Integer.class), any(Date.class), any(Date.class), eq(false))).thenReturn(Arrays.asList(obs, obs2));
         NeedsPaging<Obs> searchResults = (NeedsPaging<Obs>) visitFormsSearchHandler.search(context);
         assertThat(searchResults.getPageOfResults().size(), is(equalTo(2)));
+    }
+
+    @Test(expected = InvalidSearchException.class)
+    public void shouldThrowExceptionIfThePatienUuidIsNull(){
+        when(context.getRequest().getParameter("patient")).thenReturn(null);
+
+        visitFormsSearchHandler.search(context);
+    }
+
+    @Test
+    public void shouldGetObservationsWithinThePatientProgramIfThePatientProgramUuidIsPassed() throws Exception {
+        when(conceptService.getConcept("All Observation Templates")).thenReturn(concept);
+        when(context.getRequest().getParameterValues("conceptNames")).thenReturn(null);
+        String patientProgramUuid = "patient-program-uuid";
+        when(context.getRequest().getParameter("patientProgramUuid")).thenReturn(patientProgramUuid);
+        when(Context.getService(BahmniProgramWorkflowService.class)).thenReturn(programWorkflowService);
+        PatientProgram patientProgram = new BahmniPatientProgram();
+        when(programWorkflowService.getPatientProgramByUuid(patientProgramUuid)).thenReturn(patientProgram);
+        when(Context.getService(EpisodeService.class)).thenReturn(episodeService);
+        Episode episode = new Episode();
+        episode.addEncounter(new Encounter());
+        when(episodeService.getEpisodeForPatientProgram(patientProgram)).thenReturn(episode);
+
+        PowerMockito.when(obsService.getObservations(any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(Integer.class), any(Integer.class), any(Date.class), any(Date.class), eq(false))).thenReturn(Arrays.asList(obs));
+
+        visitFormsSearchHandler.search(context);
+
+        verify(conceptService, never()).getConceptsByName(null);
+        verify(conceptService, times(1)).getConcept("All Observation Templates");
+        verify(programWorkflowService, times(1)).getPatientProgramByUuid(patientProgramUuid);
+        verify(episodeService, times(1)).getEpisodeForPatientProgram(patientProgram);
+        verify(visitService, never()).getVisitsByPatient(patient);
+        verify(encounterService, never()).getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false));
+        verify(obsService, times(1)).getObservations(any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(Integer.class), any(Integer.class), any(Date.class), any(Date.class), eq(false));
+    }
+
+    @Test
+    public void shouldNotFetchAnyObservationsIfThereIsNoEpisodeForTheProgram() throws Exception {
+        when(conceptService.getConcept("All Observation Templates")).thenReturn(concept);
+        when(context.getRequest().getParameterValues("conceptNames")).thenReturn(null);
+        String patientProgramUuid = "patient-program-uuid";
+        when(context.getRequest().getParameter("patientProgramUuid")).thenReturn(patientProgramUuid);
+        when(Context.getService(BahmniProgramWorkflowService.class)).thenReturn(programWorkflowService);
+        PatientProgram patientProgram = new BahmniPatientProgram();
+        when(programWorkflowService.getPatientProgramByUuid(patientProgramUuid)).thenReturn(patientProgram);
+        when(Context.getService(EpisodeService.class)).thenReturn(episodeService);
+        when(episodeService.getEpisodeForPatientProgram(patientProgram)).thenReturn(null);
+
+        PowerMockito.when(obsService.getObservations(any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(Integer.class), any(Integer.class), any(Date.class), any(Date.class), eq(false))).thenReturn(Arrays.asList(obs));
+
+        visitFormsSearchHandler.search(context);
+
+        verify(conceptService, never()).getConceptsByName(null);
+        verify(conceptService, times(1)).getConcept("All Observation Templates");
+        verify(programWorkflowService, times(1)).getPatientProgramByUuid(patientProgramUuid);
+        verify(episodeService, times(1)).getEpisodeForPatientProgram(patientProgram);
+        verify(visitService, never()).getVisitsByPatient(patient);
+        verify(encounterService, never()).getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false));
+        verify(obsService, never()).getObservations(any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(Integer.class), any(Integer.class), any(Date.class), any(Date.class), eq(false));
+    }
+
+    @Test
+    public void shouldNotFetchAnyObservationsIfThereAreNoEncountersInEpisode() throws Exception {
+        when(conceptService.getConcept("All Observation Templates")).thenReturn(concept);
+        when(context.getRequest().getParameterValues("conceptNames")).thenReturn(null);
+        String patientProgramUuid = "patient-program-uuid";
+        when(context.getRequest().getParameter("patientProgramUuid")).thenReturn(patientProgramUuid);
+        when(Context.getService(BahmniProgramWorkflowService.class)).thenReturn(programWorkflowService);
+        PatientProgram patientProgram = new BahmniPatientProgram();
+        when(programWorkflowService.getPatientProgramByUuid(patientProgramUuid)).thenReturn(patientProgram);
+        when(Context.getService(EpisodeService.class)).thenReturn(episodeService);
+        Episode episode = new Episode();
+        when(episodeService.getEpisodeForPatientProgram(patientProgram)).thenReturn(episode);
+
+        PowerMockito.when(obsService.getObservations(any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(Integer.class), any(Integer.class), any(Date.class), any(Date.class), eq(false))).thenReturn(Arrays.asList(obs));
+
+        visitFormsSearchHandler.search(context);
+
+        verify(conceptService, never()).getConceptsByName(null);
+        verify(conceptService, times(1)).getConcept("All Observation Templates");
+        verify(programWorkflowService, times(1)).getPatientProgramByUuid(patientProgramUuid);
+        verify(episodeService, times(1)).getEpisodeForPatientProgram(patientProgram);
+        verify(visitService, never()).getVisitsByPatient(patient);
+        verify(encounterService, never()).getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false));
+        verify(obsService, never()).getObservations(any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(List.class), any(Integer.class), any(Integer.class), any(Date.class), any(Date.class), eq(false));
     }
 }
