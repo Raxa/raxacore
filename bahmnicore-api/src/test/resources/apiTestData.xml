@@ -170,8 +170,8 @@
     <concept_answer concept_answer_id="408" concept_id="9022" answer_concept="100" creator="1" date_created="2004-08-12 00:00:00.0"/>
     <concept_answer concept_answer_id="409" concept_id="9022" answer_concept="200" creator="1" date_created="2004-08-12 00:00:00.0"/>
 
-    <concept concept_id="1853" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="facility_uuid" />
-    <concept_name concept_id="1853" name="Facility1, City1, Country1" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="6" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb84093xyz" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <!--<concept concept_id="1853" retired="0" datatype_id="3" class_id="1" is_set="0" creator="1" date_created="2015-12-04 11:36:42" uuid="facility_uuid" />-->
+    <!--<concept_name concept_id="1853" name="Facility1, City1, Country1" locale="en" creator="1" date_created="2015-01-01 00:00:00.0" concept_name_id="6" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb84093xyz" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>-->
 
     <location location_id="1" name="OPD Room 1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
     <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14" changed_by="1" date_changed="2012-10-23 18:04:14" retired="0" uuid="f01c54cb-2225-471a-9cd5-d348552c337c"/>
