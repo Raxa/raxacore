@@ -25,7 +25,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <openMRSVersion>1.12.0-SNAPSHOT</openMRSVersion>
-        <openMRSWebServicesVersion>2.12.1</openMRSWebServicesVersion>
+        <openMRSWebServicesVersion>2.12</openMRSWebServicesVersion>
         <springVersion>3.2.7.RELEASE</springVersion>
         <atomfeed.version>1.9.1</atomfeed.version>
         <addressHierarchyVersion>2.7</addressHierarchyVersion>
@@ -497,14 +497,6 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
-        <repository>
-            <id>bahmni-artifactory-releases</id>
-            <name>bahmni-artifactory-releases</name>
-            <url>http://bahmnirepo.thoughtworks.com/artifactory/libs-release-local</url>
-            <snapshots>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>        
         <repository>
             <id>rubygems-releases</id>
             <url>http://rubygems-proxy.torquebox.org/releases</url>
