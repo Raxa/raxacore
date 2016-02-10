@@ -23,4 +23,8 @@ public class PivotTable {
     public void setRows(List<PivotRow> rows) {
         this.rows = rows;
     }
+
+    public void addRow(PivotRow row){
+        this.rows.add(row);
+    }
 }

@@ -242,4 +242,19 @@ public class ObsDaoImpl implements ObsDao {
         if(endDate != null) queryToGetObs.setParameter("endDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endDate));
         return queryToGetObs.list();
     }
+
+    @Override
+    public Obs getChildObsFromParent(String parentObsUuid, Concept childConcept) {
+        String queryString = "from Obs obs where obs.obsGroup.uuid = :parentObsUuid and obs.concept = :concept order by obs.obsDatetime desc";
+        Query queryToGetObs = sessionFactory.getCurrentSession().createQuery(queryString);
+        queryToGetObs.setParameter("parentObsUuid", parentObsUuid);
+        queryToGetObs.setParameter("concept", childConcept);
+        List<Obs> obsList = queryToGetObs.list();
+        if(obsList.size()>0){
+            return (Obs) queryToGetObs.list().get(0);
+        }
+        return null;
+
+    }
+
 }

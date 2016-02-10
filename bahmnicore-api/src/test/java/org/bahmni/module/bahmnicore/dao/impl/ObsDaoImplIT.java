@@ -86,4 +86,13 @@ public class ObsDaoImplIT extends BaseIntegrationTest {
         assertEquals(1, observations.size());
         assertEquals("6d8f507a-fb89-11e3-bb80-f18addb6f909", observations.get(0).getUuid());
     }
+
+
+    @Test
+    public void shouldRetrieveChildObservationFromParentGroup() throws Exception {
+        Concept vitalsConcept = Context.getConceptService().getConceptByName("Histopathology");
+        Obs observation = obsDao.getChildObsFromParent("7d8f507a-fb89-11e3-bb80-f18addb6f9a4", vitalsConcept);
+
+        assertEquals((Integer)24, observation.getId());
+    }
 }

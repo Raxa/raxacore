@@ -10,6 +10,8 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahmniObsMapper;
 import org.openmrs.module.emrapi.encounter.OrderMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.mapper.OrderMapper1_12;
@@ -36,6 +38,7 @@ public class BahmniBridge {
     private ConceptService conceptService;
     private OrderDao orderDao;
     private BahmniDrugOrderService bahmniDrugOrderService;
+    private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
 
     OrderMapper drugOrderMapper = new OrderMapper1_12();
     /**
@@ -51,13 +54,14 @@ public class BahmniBridge {
     }
 
     @Autowired
-    public BahmniBridge(ObsDao obsDao, PatientService patientService, PersonService personService, ConceptService conceptService, OrderDao orderDao, BahmniDrugOrderService bahmniDrugOrderService) {
+    public BahmniBridge(ObsDao obsDao, PatientService patientService, PersonService personService, ConceptService conceptService, OrderDao orderDao, BahmniDrugOrderService bahmniDrugOrderService, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper) {
         this.obsDao = obsDao;
         this.patientService = patientService;
         this.personService = personService;
         this.conceptService = conceptService;
         this.orderDao = orderDao;
         this.bahmniDrugOrderService = bahmniDrugOrderService;
+        this.omrsObsToBahmniObsMapper = omrsObsToBahmniObsMapper;
     }
 
     /**
@@ -193,5 +197,18 @@ public class BahmniBridge {
                     return 0;
             }
         });
+    }
+
+    public BahmniObservation getChildObsFromParentObs(String parentObsGroupUuid, String childConceptName){
+        Concept childConcept = conceptService.getConceptByName(childConceptName);
+        return omrsObsToBahmniObsMapper.map(obsDao.getChildObsFromParent(parentObsGroupUuid, childConcept));
+    }
+
+    public BahmniObservation getLatestBahmniObservationFor(String conceptName){
+        Obs obs = latestObs(conceptName);
+        if(obs != null) {
+            return omrsObsToBahmniObsMapper.map(obs);
+        }
+        return null;
     }
 }

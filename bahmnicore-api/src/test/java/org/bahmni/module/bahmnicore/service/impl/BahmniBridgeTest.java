@@ -11,11 +11,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.DrugOrder;
+import org.openmrs.Obs;
 import org.openmrs.Order;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahmniObsMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -38,6 +43,8 @@ public class BahmniBridgeTest {
     private BahmniDrugOrderService bahmniDrugOrderService;
     @Mock
     private ConceptService conceptService;
+    @Mock
+    private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
     BahmniBridge bahmniBridge;
 
     String patientUuid = "patient-uuid";
@@ -45,7 +52,7 @@ public class BahmniBridgeTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        bahmniBridge = new BahmniBridge(obsDao, patientService, personService, conceptService, orderDao, bahmniDrugOrderService);
+        bahmniBridge = new BahmniBridge(obsDao, patientService, personService, conceptService, orderDao, bahmniDrugOrderService, omrsObsToBahmniObsMapper);
         bahmniBridge.forPatient(patientUuid);
     }
 
@@ -108,6 +115,29 @@ public class BahmniBridgeTest {
         PowerMockito.when(bahmniDrugOrderService.getAllDrugOrders(patientUuid, null, null, null, null)).thenReturn(allDrugOrders);
 
         Assert.assertEquals(addDays(now, 2), bahmniBridge.getStartDateOfTreatment());
+
+    }
+
+    @Test
+    public void shouldGetChildObservationFromParent() throws Exception {
+        Concept vitalsConcept = new Concept();
+        ConceptName vitalConceptName = new ConceptName();
+        vitalConceptName.setName("vital concept name");
+        Locale locale = new Locale("En");
+        vitalConceptName.setLocale(locale);
+        vitalsConcept.setFullySpecifiedName(vitalConceptName);
+
+        PowerMockito.when(conceptService.getConceptByName("vital concept name")).thenReturn(vitalsConcept);
+
+        Obs obs = new Obs();
+        obs.setUuid("observation uuid");
+
+        BahmniObservation bahmniObs = new BahmniObservation();
+        bahmniObs.setUuid("observation uuid");
+
+        PowerMockito.when(obsDao.getChildObsFromParent("parent obs uuid", vitalsConcept)).thenReturn(obs);
+        PowerMockito.when(omrsObsToBahmniObsMapper.map(obs)).thenReturn(bahmniObs);
+        Assert.assertEquals("observation uuid", bahmniBridge.getChildObsFromParentObs("parent obs uuid", "vital concept name").getUuid());
 
     }
 
