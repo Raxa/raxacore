@@ -191,6 +191,7 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
     }
 
+//    TODO this test needs the proper data setUp
     @Test
     @Ignore
     public void shouldFetchPatientsByCodedConcepts(){
