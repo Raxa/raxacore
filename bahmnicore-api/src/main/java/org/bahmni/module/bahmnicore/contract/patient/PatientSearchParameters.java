@@ -15,6 +15,8 @@ public class PatientSearchParameters {
     private String customAttribute;
     private String[] patientAttributes;
     private String identifierPrefix;
+    private String programAttributeFieldValue;
+    private String programAttributeFieldName;
 
     public PatientSearchParameters(RequestContext context) {
         String query = context.getParameter("q");
@@ -35,16 +37,18 @@ public class PatientSearchParameters {
         }
         this.setStart(context.getStartIndex());
         this.setLength(context.getLimit());
-        this.setCustomAttribute(context.getParameter("custom_attribute"));
-        String addressFieldNameFromRequest = context.getParameter("address_field_name");
+        this.setCustomAttribute(context.getParameter("customAttribute"));
+        String addressFieldNameFromRequest = context.getParameter("addressFieldName");
         if  (StringUtils.isNotEmpty(addressFieldNameFromRequest)){
             this.setAddressFieldName(addressFieldNameFromRequest);
         } else {
             this.setAddressFieldName("city_village");
         }
-        this.setAddressFieldValue(context.getParameter("address_field_value"));
+        this.setAddressFieldValue(context.getParameter("addressFieldValue"));
         Map parameterMap = context.getRequest().getParameterMap();
         this.patientAttributes = (String[]) parameterMap.get("patientAttributes");
+        this.setProgramAttributeFieldValue(context.getParameter("programAttributeFieldValue"));
+        this.setProgramAttributeFieldName(context.getParameter("programAttributeFieldName"));
     }
 
     public String getIdentifier() {
@@ -113,5 +117,21 @@ public class PatientSearchParameters {
 
     public void setPatientAttributes(String[] patientAttributes) {
         this.patientAttributes = patientAttributes;
+    }
+
+    public String getProgramAttributeFieldValue() {
+        return programAttributeFieldValue;
+    }
+
+    public void setProgramAttributeFieldValue(String programAttributeFieldValue) {
+        this.programAttributeFieldValue = programAttributeFieldValue;
+    }
+
+    public String getProgramAttributeFieldName() {
+        return programAttributeFieldName;
+    }
+
+    public void setProgramAttributeFieldName(String programAttributeFieldName) {
+        this.programAttributeFieldName = programAttributeFieldName;
     }
 }

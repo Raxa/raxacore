@@ -1,15 +1,15 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
+import org.bahmni.module.bahmnicore.contract.patient.search.PatientSearchBuilder;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
-import org.bahmni.module.bahmnicore.model.WildCardParameter;
+import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
-import org.hibernate.transform.Transformers;
-import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.RelationshipType;
@@ -20,30 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.apache.commons.lang.StringUtils.isEmpty;
-import static org.apache.commons.lang.StringUtils.isNotEmpty;
-
 @Repository
 public class PatientDaoImpl implements PatientDao {
-    private static final String LIMIT_PARAM = "limit";
-    private static final String OFFSET_PARAM = "offset";
-    private static final String CUSTOM_ATTRIBUTE_PARAM = "customAttribute";
-    private static final String PERSON_ATTRIBUTE_NAMES_PARAMETER = "personAttributeTypeNames";
-    private static final String PERSON_ATTRIBUTE_IDS_PARAMETER = "personAttributeTypeIds";
-
-    public static final String WHERE_CLAUSE = " where p.voided = 'false' and pn.voided = 'false' and pn.preferred=true ";
-    public static final String SELECT_STATEMENT = "select p.uuid as uuid, p.person_id as personId, pi.identifier as identifier, pn.given_name as givenName, pn.middle_name as middleName, pn.family_name as familyName, p.gender as gender, p.birthdate as birthDate," +
-            " p.death_date as deathDate, pa.:addressFieldName as addressFieldValue, p.date_created as dateCreated, v.uuid as activeVisitUuid ";
-    public static final String FROM_TABLE = " from patient pat " ;
-    public static final String JOIN_CLAUSE =  " inner join person p on pat.patient_id=p.person_id " +
-            " left join person_name pn on pn.person_id = p.person_id" +
-            " left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
-            " inner join patient_identifier pi on pi.patient_id = p.person_id " +
-            " left outer join visit v on v.patient_id = pat.patient_id and v.date_stopped is null ";
-    public static final String BY_NAME_PARTS = " concat_ws(' ',coalesce(given_name), coalesce(middle_name), coalesce(family_name)) like ";
-    public static final String BY_IDENTIFIER = " identifier like ";
-    public static final String BY_ADDRESS_FIELD = " :addressFieldName like :addressFieldValue";
-    public static final String ORDER_BY = " order by p.date_created desc LIMIT :" + LIMIT_PARAM + " OFFSET :" + OFFSET_PARAM;
 
     private SessionFactory sessionFactory;
 
@@ -53,123 +31,58 @@ public class PatientDaoImpl implements PatientDao {
     }
 
     @Override
-    public List<PatientResponse> getPatients(String identifier, String identifierPrefix, String name, String customAttribute, String addressFieldName, String addressFieldValue, Integer length, Integer offset, String[] customAttributeFields) {
-        Session currentSession = sessionFactory.getCurrentSession();
-        WildCardParameter nameParameter = WildCardParameter.create(name);
-        String nameSearchCondition = getNameSearchCondition(nameParameter);
-        String identifierSearchCondition = getIdentifierSearchCondition(identifier, identifierPrefix);
-        WildCardParameter customAttributeParameter = WildCardParameter.create(customAttribute);
-        String customAttributeJoins = getCustomAttributeJoins(customAttributeParameter, customAttributeFields);
-        String selectStatement = getSelectStatementWithCustomAttributes(SELECT_STATEMENT, customAttributeFields);
-
-        String group_by = " group by p.person_id, p.uuid , pi.identifier , pn.given_name , pn.middle_name , pn.family_name , \n" +
-                "p.gender , p.birthdate , p.death_date , pa.:addressFieldName, p.date_created , \n" +
-                "v.uuid  ";
-        String query = selectStatement + FROM_TABLE + JOIN_CLAUSE + customAttributeJoins + WHERE_CLAUSE;
-
-        query = isEmpty(identifier) ? query : combine(query, "and", enclose(identifierSearchCondition));
-        query = isEmpty(nameSearchCondition) ? query : combine(query, "and", enclose(nameSearchCondition));
-
-        if (isNotEmpty(addressFieldValue)) {
-            query = combine(query, "and", enclose(BY_ADDRESS_FIELD));
-            query = query.replaceAll(":addressFieldValue", "'%" + addressFieldValue + "%'");
+    public List<PatientResponse> getPatients(String identifier, String identifierPrefix, String name, String customAttribute, String addressFieldName, String addressFieldValue, Integer length, Integer offset, String[] customAttributeFields, String programAttributeFieldValue,String programAttributeFieldName) {
+        if(isInValidSearchParams(customAttributeFields,programAttributeFieldName)){
+            return new ArrayList<>();
         }
 
-        if(customAttributeFields !=null && customAttributeFields.length >0) {
-            query += group_by;
-        }
-        query += ORDER_BY;
-        query = query.replaceAll(":addressFieldName", addressFieldName);
-        SQLQuery sqlQuery = currentSession
-                .createSQLQuery(query)
-                .addScalar("uuid", StandardBasicTypes.STRING)
-                .addScalar("identifier", StandardBasicTypes.STRING)
-                .addScalar("givenName", StandardBasicTypes.STRING)
-                .addScalar("personId", StandardBasicTypes.INTEGER)
-                .addScalar("middleName", StandardBasicTypes.STRING)
-                .addScalar("familyName", StandardBasicTypes.STRING)
-                .addScalar("gender", StandardBasicTypes.STRING)
-                .addScalar("birthDate", StandardBasicTypes.DATE)
-                .addScalar("deathDate", StandardBasicTypes.DATE)
-                .addScalar("addressFieldValue", StandardBasicTypes.STRING)
-                .addScalar("dateCreated", StandardBasicTypes.TIMESTAMP)
-                .addScalar("activeVisitUuid", StandardBasicTypes.STRING);
+        ProgramAttributeType programAttributeType = getProgramAttributeType(programAttributeFieldName);
 
-        if(customAttributeFields !=null && customAttributeFields.length >0){
-            sqlQuery.addScalar("customAttribute", StandardBasicTypes.STRING);
-            sqlQuery.setParameterList(PERSON_ATTRIBUTE_NAMES_PARAMETER, Arrays.asList(customAttributeFields));
-        }
-        if(!customAttributeParameter.isEmpty()) {
-            sqlQuery = replacePatientAttributeTypeParameters(customAttributeFields, sqlQuery, currentSession);
-        }
-        replaceCustomAttributeParameters(customAttributeParameter, sqlQuery);
-        sqlQuery.setParameter(LIMIT_PARAM, length);
-        sqlQuery.setParameter(OFFSET_PARAM, offset);
-        sqlQuery.setResultTransformer(Transformers.aliasToBean(PatientResponse.class));
+        SQLQuery sqlQuery = new PatientSearchBuilder(sessionFactory)
+                .withPatientName(name)
+                .withPatientAddress(addressFieldName,addressFieldValue)
+                .withPatientIdentifier(identifier,identifierPrefix)
+                .withPatientAttributes(customAttribute, getPersonAttributeIds(customAttributeFields))
+                .withProgramAttributes(programAttributeFieldValue, programAttributeType)
+                .buildSqlQuery(length,offset);
         return sqlQuery.list();
     }
 
-    private String getIdentifierSearchCondition(String identifier, String identifierPrefix) {
-        return BY_IDENTIFIER + " '" + identifierPrefix + "%" + identifier + "%'";
-    }
-
-
-    private String getSelectStatementWithCustomAttributes(String selectStatement, String[] customAttributeFields){
-        if(customAttributeFields != null && customAttributeFields.length > 0){
-            return selectStatement + ", " +
-                    "concat('{',group_concat(DISTINCT (coalesce(concat('\"',attrt.name,'\":\"', pattrln.value,'\"'))) SEPARATOR ','),'}') AS customAttribute";
+    private boolean isInValidSearchParams(String[] customAttributeFields, String programAttributeFieldName) {
+        List<Integer> personAttributeIds = getPersonAttributeIds(customAttributeFields);
+        if(customAttributeFields != null && personAttributeIds.size() == 0){
+            return true;
         }
-        return selectStatement;
-    }
 
-    private SQLQuery replacePatientAttributeTypeParameters(String[] patientAttributes, SQLQuery sqlQuery, Session currentSession) {
-        if (!ArrayUtils.isEmpty(patientAttributes)) {
-            ArrayList<Integer> personAttributeIds = getPersonAttributeIds(patientAttributes, currentSession);
-            sqlQuery.setParameterList(PERSON_ATTRIBUTE_IDS_PARAMETER, personAttributeIds);
+        ProgramAttributeType programAttributeTypeId = getProgramAttributeType(programAttributeFieldName);
+        if(programAttributeFieldName != null && programAttributeTypeId == null){
+            return true;
         }
-        return sqlQuery;
+        return false;
     }
 
-    private ArrayList<Integer> getPersonAttributeIds(String[] patientAttributes, Session currentSession) {
+    private ProgramAttributeType getProgramAttributeType(String programAttributeField) {
+        if(StringUtils.isEmpty(programAttributeField)){
+            return null;
+        }
+
+        return (ProgramAttributeType) sessionFactory.getCurrentSession().createCriteria(ProgramAttributeType.class).add(Restrictions.eq("name",programAttributeField)).uniqueResult();
+    }
+
+    private List<Integer> getPersonAttributeIds(String[] patientAttributes) {
+        if (patientAttributes == null || patientAttributes.length == 0 ){
+            return new ArrayList<>();
+        }
+
         String query = "select person_attribute_type_id from person_attribute_type where name in " +
-                "( :" + PERSON_ATTRIBUTE_NAMES_PARAMETER + " )";
-        Query queryToGetAttributeIds = currentSession.createSQLQuery( query);
-        queryToGetAttributeIds.setParameterList(PERSON_ATTRIBUTE_NAMES_PARAMETER, Arrays.asList(patientAttributes));
+                "( :personAttributeTypeNames)";
+        Query queryToGetAttributeIds = sessionFactory.getCurrentSession().createSQLQuery( query);
+        queryToGetAttributeIds.setParameterList("personAttributeTypeNames", Arrays.asList(patientAttributes));
         List list = queryToGetAttributeIds.list();
-        return (ArrayList<Integer>) list;
+        return (List<Integer>) list;
     }
 
 
-    private SQLQuery replaceCustomAttributeParameters(WildCardParameter wildcardParameters, SQLQuery sqlQuery) {
-        int index = 0;
-        for (String wildcardPart : wildcardParameters.getParts()) {
-            sqlQuery.setParameter(CUSTOM_ATTRIBUTE_PARAM + index++, wildcardPart);
-        }
-        return sqlQuery;
-    }
-
-    private String getCustomAttributeJoins(WildCardParameter wildcardParameters, String[] customAttributeFields) {
-        String customAttributeGetJoin = " left outer join person_attribute pattrln on pattrln.person_id = p.person_id " +
-                " left outer join person_attribute_type attrt on attrt.person_attribute_type_id = pattrln.person_attribute_type_id and attrt.name in (:" + PERSON_ATTRIBUTE_NAMES_PARAMETER + ") ";
-        String joinStatement = "";
-
-        if (!wildcardParameters.isEmpty()) {
-            for (int index = 0; index < wildcardParameters.getParts().length; index++) {
-                String indexString = String.valueOf(index);
-                joinStatement = joinStatement +
-                        " inner join person_attribute pattr" + indexString +
-                        " on pattr" + indexString + ".person_id=p.person_id" +
-                        " and pattr" + indexString + ".value like :" + CUSTOM_ATTRIBUTE_PARAM + indexString;
-                if (customAttributeFields != null && customAttributeFields.length > 0) {
-                    joinStatement = joinStatement + " and pattr" + indexString + ".person_attribute_type_id in ( :" + PERSON_ATTRIBUTE_IDS_PARAMETER + " )";
-                }
-            }
-        }
-        if (customAttributeFields != null && customAttributeFields.length > 0) {
-            joinStatement = joinStatement + customAttributeGetJoin;
-        }
-        return joinStatement;
-    }
 
     @Override
     public Patient getPatient(String identifier) {
@@ -193,12 +106,9 @@ public class PatientDaoImpl implements PatientDao {
             return querytoGetPatients.list();
         }
 
-        Query querytoGetPatients = sessionFactory.getCurrentSession().createQuery(
-                "select pi.patient " +
-                        " from PatientIdentifier pi " +
-                        " where pi.identifier = :partialIdentifier ");
-        querytoGetPatients.setString("partialIdentifier", partialIdentifier);
-        return querytoGetPatients.list();
+        Patient patient = getPatient(partialIdentifier);
+        List<Patient> result = (patient == null ? new ArrayList<Patient>(): Arrays.asList(patient));
+        return result;
     }
 
     @Override
@@ -209,29 +119,5 @@ public class PatientDaoImpl implements PatientDao {
                         " where rt.aIsToB = :aIsToB ");
         querytoGetPatients.setString("aIsToB", aIsToB);
         return querytoGetPatients.list();
-    }
-
-    private String getNameSearchCondition(WildCardParameter wildCardParameter) {
-        if (wildCardParameter.isEmpty())
-            return "";
-        else {
-            String query_by_name_parts = "";
-            for (String part : wildCardParameter.getParts()) {
-                if (!query_by_name_parts.equals("")) {
-                    query_by_name_parts += " and " + BY_NAME_PARTS + " '" + part + "'";
-                } else {
-                    query_by_name_parts += BY_NAME_PARTS + " '" + part + "'";
-                }
-            }
-            return query_by_name_parts;
-        }
-    }
-
-    private static String combine(String query, String operator, String condition) {
-        return String.format("%s %s %s", query, operator, condition);
-    }
-
-    private static String enclose(String value) {
-        return String.format("(%s)", value);
     }
 }

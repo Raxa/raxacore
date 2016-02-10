@@ -28,6 +28,8 @@ public class PatientResponse {
     private Date dateCreated;
     private String activeVisitUuid;
     private String customAttribute;
+    private String patientProgramAttributeValue;
+
 
     public PatientResponse() {
     }
@@ -160,4 +162,13 @@ public class PatientResponse {
     public void setCustomAttribute(String customAttribute) {
         this.customAttribute = customAttribute;
     }
+
+    public String getPatientProgramAttributeValue() {
+        return patientProgramAttributeValue;
+    }
+
+    public void setPatientProgramAttributeValue(String patientProgramAttributeValue) {
+        this.patientProgramAttributeValue = patientProgramAttributeValue;
+    }
+
 }

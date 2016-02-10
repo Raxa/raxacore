@@ -89,6 +89,7 @@
     <location location_id="5" name="Bahmni" description="Bahmni subcentre" creator="1" retired="0" retired_by=" 0"  uuid="8d6c993e-c2cc-11de-8d13-0010c6affd0f" date_created="2005-09-22 00:00:00" />
 
     <person_address person_address_id="1" person_id="1025" preferred="true" city_village="Ramgarh" state_province="Madhya Pradesh" creator="1" date_created="2006-11-24 10:50:16.0" voided="false" void_reason="" county_district="Dindori" address3="Dindori"/>
+    <person_address person_address_id="2" person_id="1026" preferred="true" city_village="Bilaspur" state_province="Madhya Pradesh" creator="1" date_created="2006-11-24 10:50:16.0" voided="false" void_reason="" county_district="Dindori" address3="Dindori"/>
 
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="1" patient_id ="1024" identifier="GAN200000" identifier_type="1"  creator="1"  uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="2" patient_id="1025" identifier="GAN200001" identifier_type="1"  creator="1"  uuid="7facee27-82c0-4375-ae95-a90f129ea493" preferred="1" voided="0" />
@@ -169,6 +170,8 @@
     <concept_answer concept_answer_id="408" concept_id="9022" answer_concept="100" creator="1" date_created="2004-08-12 00:00:00.0"/>
     <concept_answer concept_answer_id="409" concept_id="9022" answer_concept="200" creator="1" date_created="2004-08-12 00:00:00.0"/>
 
+    <concept concept_id="1853" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="facility_uuid" />
+    <concept_name concept_id="1853" name="Facility1, City1, Country1" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="6" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb84093xyz" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
     <location location_id="1" name="OPD Room 1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
     <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14" changed_by="1" date_changed="2012-10-23 18:04:14" retired="0" uuid="f01c54cb-2225-471a-9cd5-d348552c337c"/>
@@ -200,5 +203,20 @@
     <encounter encounter_id="381" encounter_type="1" patient_id="1025" visit_id="111" location_id="1" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206ebanka"/>
     <obs obs_id="66" concept_id="9021" person_id="1025" value_numeric="125" encounter_id="381" obs_datetime="2008-08-18 18:09:05.0" date_created="2008-08-18 18:09:05.0" uuid="6d8f507a-fb89-11e3-bb80-f18addbbanka" creator="1" voided="0" />
 
+    <!-- concept with outcome concept of type question -->
+    <program program_id="5" concept_id="111" outcomes_concept_id="100" creator="1" date_created="2008-08-15 16:07:11.0"
+             changed_by="1" date_changed="2008-08-15 17:04:50.0" retired="false" name="HIV Program"
+             description="hiv program" uuid="d7477c21-bfc3-4922-9591-e89d8b9c8efa"/>
+
+    <program_attribute_type program_attribute_type_id="1" name="stage" min_occurs="1" retired="false"
+                            creator="1" date_created="2008-08-15 17:04:50.0" datatype="org.openmrs.customdatatype.datatype.FreeTextDatatype"
+                            uuid="d7477c21-bfc3-4922-9591-e89d8b9c8efb"/>
+    <program_attribute_type program_attribute_type_id="2" name="facility" min_occurs="1" retired="false"
+                            creator="1" date_created="2008-08-15 17:04:50.0" datatype="org.bahmni.module.bahmnicore.customdatatype.datatype.CodedConceptDatatype"
+                            uuid="d7477c21-bfc3-4922-9591-e89d8b9c8efe"/>
+
+    <patient_program patient_program_id="1" patient_id="1026" program_id="5" date_enrolled="2006-10-14 00:00:00.0" creator="1" date_created="2007-09-20 00:00:00.0" voided="false" uuid="9119b9f8-af3d-4ad8-9e2e-2317c3de91c6"/>
+    <patient_program_attribute patient_program_attribute_id="1" patient_program_id="1" attribute_type_id="1" value_reference="Stage1" uuid="3a2bdb18-6faa-11e0-8414-001e378eb67e" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" />
+    <patient_program_attribute patient_program_attribute_id="2" patient_program_id="1" attribute_type_id="2" value_reference="1853" uuid="3b1c22ec-c298-45d3-9b86-8154db493aab" creator="1" date_created="2005-02-09 00:00:00.0" voided="false" />
 
 </dataset>
