@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.service;
 
-import org.openmrs.module.addresshierarchy.AddressHierarchyEntry;
+import org.bahmni.module.bahmnicore.model.BahmniAddressHierarchyEntry;
 
 public interface BahmniAddressHierarchyService {
-    AddressHierarchyEntry getAddressHierarchyEntryByUuid(String uuid);
+    BahmniAddressHierarchyEntry getAddressHierarchyEntryByUuid(String uuid);
 }

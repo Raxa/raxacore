@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.dao;
 
-import org.openmrs.module.addresshierarchy.AddressHierarchyEntry;
+import org.bahmni.module.bahmnicore.model.BahmniAddressHierarchyEntry;
 
 public interface BahmniAddressHierarchyDao {
-    AddressHierarchyEntry getAddressHierarchyEntryByUuid(String uuid);
+    BahmniAddressHierarchyEntry getAddressHierarchyEntryByUuid(String uuid);
 }

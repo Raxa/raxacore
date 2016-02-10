@@ -1,10 +1,10 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.bahmni.module.bahmnicore.model.BahmniAddressHierarchyEntry;
 import org.bahmni.module.bahmnicore.service.BahmniAddressHierarchyService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.openmrs.module.addresshierarchy.AddressHierarchyEntry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -26,10 +26,10 @@ public class BahmniAddressHierarchyControllerTest {
 
     @Test
     public void shouldGetAddressHierarchyEntryByUuid() throws Exception {
-        AddressHierarchyEntry addressHierarchyEntry = new AddressHierarchyEntry();
+        BahmniAddressHierarchyEntry addressHierarchyEntry = new BahmniAddressHierarchyEntry();
         addressHierarchyEntry.setName("test");
         when(bahmniAddressHierarchyService.getAddressHierarchyEntryByUuid("uuid")).thenReturn(addressHierarchyEntry);
-        AddressHierarchyEntry hierarchyEntry = bahmniAddressHierarchyController.get("uuid");
+        BahmniAddressHierarchyEntry hierarchyEntry = bahmniAddressHierarchyController.get("uuid");
 
         verify(bahmniAddressHierarchyService, times(1)).getAddressHierarchyEntryByUuid("uuid");
         assertNotNull(hierarchyEntry);
@@ -38,7 +38,7 @@ public class BahmniAddressHierarchyControllerTest {
 
     @Test
     public void shouldReturnNullIfUuidIsNull() throws Exception {
-        AddressHierarchyEntry hierarchyEntry = bahmniAddressHierarchyController.get(null);
+        BahmniAddressHierarchyEntry hierarchyEntry = bahmniAddressHierarchyController.get(null);
 
         verify(bahmniAddressHierarchyService, never()).getAddressHierarchyEntryByUuid(anyString());
         assertNull(hierarchyEntry);

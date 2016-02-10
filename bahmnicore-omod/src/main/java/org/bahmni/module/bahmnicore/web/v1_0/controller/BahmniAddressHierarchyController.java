@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.bahmni.module.bahmnicore.model.BahmniAddressHierarchyEntry;
 import org.bahmni.module.bahmnicore.service.BahmniAddressHierarchyService;
-import org.openmrs.module.addresshierarchy.AddressHierarchyEntry;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,7 +23,7 @@ public class BahmniAddressHierarchyController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/addressHierarchy/{uuid}")
     @ResponseBody
-    public AddressHierarchyEntry get(@PathVariable("uuid") String uuid) {
+    public BahmniAddressHierarchyEntry get(@PathVariable("uuid") String uuid) {
         if (uuid == null) {
             return null;
         }
