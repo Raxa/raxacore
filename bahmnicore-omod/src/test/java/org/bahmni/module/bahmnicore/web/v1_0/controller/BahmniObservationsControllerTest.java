@@ -18,6 +18,7 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -104,4 +105,25 @@ public class BahmniObservationsControllerTest {
         assertEquals(1, actualResult.size());
         assertEquals(obsUuid, actualResult.iterator().next().getUuid());
     }
+
+    @Test
+    public void shouldGetObsForPatientProgramWhenPatientProgramUuidIsSpecified() throws Exception {
+        List<String> conceptNames = new ArrayList<String>();
+        String patientProgramUuid = "patientProgramUuid";
+
+        bahmniObservationsController.get("patientUuid", conceptNames, null, null, null, null, null, null, patientProgramUuid);
+
+        verify(bahmniObsService, times(1)).getObservationsForPatientProgram(patientProgramUuid, conceptNames);
+    }
+
+    @Test
+    public void shouldNotGetObsForPatientProgramWhenPatientProgramUuidIsSpecified() throws Exception {
+        List<String> conceptNames = new ArrayList<String>();
+        String patientProgramUuid = null;
+
+        bahmniObservationsController.get("patientUuid", conceptNames, null, null, null, null, null, null, patientProgramUuid);
+
+        verify(bahmniObsService, times(0)).getObservationsForPatientProgram(patientProgramUuid, conceptNames);
+    }
+
 }

@@ -34,6 +34,7 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("observationsTestData.xml");
+        executeDataSet("patientProgramTestData.xml");
     }
 
     @Test
@@ -128,5 +129,38 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
 
         assertEquals(1, observations.size());
         assertEquals("6d8f507a-fb89-11e3-bb80-f18addb6f9bd", observations.iterator().next().getUuid());
+    }
+
+    @Test
+    public void shouldRetrieveObsForPatientProgram() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("Ruled Out");
+
+        Collection<BahmniObservation> observations = personObsService.getObservationsForPatientProgram("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames);
+
+        assertEquals(1, observations.size());
+        assertEquals("6d8f507a-fb899-11e3-bb80-996addb6f9we", observations.iterator().next().getUuid());
+
+    }
+
+    @Test
+    public void shouldRetrieveEmptyObsListWhenPatientProgramUuidDoesNotExist() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("Ruled Out");
+
+        Collection<BahmniObservation> observations = personObsService.getObservationsForPatientProgram("patientProgramUuid", conceptNames);
+
+        assertEquals(0, observations.size());
+    }
+
+    @Test
+    public void shouldRetrieveEmptyObsIfPatientProgramDoesNotHaveAnyEncounters() throws Exception {
+
+        ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("Ruled Out");
+
+        Collection<BahmniObservation> observations = personObsService.getObservationsForPatientProgram("df0foifo-dkcd-475d-b939-6d82327f36a3", conceptNames);
+
+        assertEquals(0, observations.size());
     }
 }

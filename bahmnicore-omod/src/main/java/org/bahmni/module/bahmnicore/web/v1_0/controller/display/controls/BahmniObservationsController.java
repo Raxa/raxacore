@@ -49,13 +49,17 @@ public class BahmniObservationsController extends BaseRestController {
                                              @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
                                              @RequestParam(value = "filterObsWithOrders", required = false, defaultValue = "true") Boolean filterObsWithOrders,
                                              @RequestParam(value = "startDate", required = false) String startDateStr,
-                                             @RequestParam(value = "endDate", required = false) String endDateStr) throws ParseException {
+                                             @RequestParam(value = "endDate", required = false) String endDateStr,
+                                             @RequestParam(value = "patientProgramUuid", required = false) String patientProgramUuid) throws ParseException {
 
         List<Concept> rootConcepts = MiscUtils.getConceptsForNames(rootConceptNames, conceptService);
         Date startDate = BahmniDateUtil.convertToDate(startDateStr, BahmniDateUtil.DateFormatType.UTC);
         Date endDate = BahmniDateUtil.convertToDate(endDateStr, BahmniDateUtil.DateFormatType.UTC);
 
-        if (ObjectUtils.equals(scope, LATEST)) {
+        if(patientProgramUuid != null){
+            return bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, rootConceptNames);
+        }
+        else if (ObjectUtils.equals(scope, LATEST)) {
             return bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders,
                     null, startDate, endDate);
         } else if (ObjectUtils.equals(scope, INITIAL)) {

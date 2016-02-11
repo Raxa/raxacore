@@ -168,4 +168,15 @@ public class BahmniObsServiceImplTest {
 
         verify(obsDao).getObsFor(personUUID, bloodPressureConcept, bloodPressureConcept, visitDao.getVisitIdsFor(personUUID, numberOfVisits), new ArrayList<Encounter>(), null, null);
     }
+
+    public void shouldGetObsbyPatientProgramUuid() throws Exception {
+        String patientProgramUuid = "patientProgramUuid";
+        ArrayList<String> conceptNames = new ArrayList<>();
+        ArrayList<Encounter> encounters = new ArrayList<>();
+        when(bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid)).thenReturn(encounters);
+
+        bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, conceptNames);
+
+        verify(bahmniProgramWorkflowService, times(1)).getEncountersByPatientProgramUuid(patientProgramUuid);
+    }
 }

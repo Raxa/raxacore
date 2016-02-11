@@ -13,6 +13,7 @@ import org.bahmni.module.bahmnicore.util.MiscUtils;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.VisitService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahmniObsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -179,6 +180,17 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     public Collection<BahmniObservation> getObservationsForEncounter(String encounterUuid, List<String> conceptNames) {
         List<Obs> observations = obsDao.getObsForConceptsByEncounter(encounterUuid, conceptNames);
         return omrsObsToBahmniObsMapper.map(observations, getConceptsByName(conceptNames));
+    }
+
+    @Override
+    public Collection<BahmniObservation> getObservationsForPatientProgram(String patientProgramUuid, List<String> conceptNames) {
+        Collection<Encounter> encounterList = programWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid);
+        Collection<BahmniObservation> bahmniObservations = new ArrayList<>();
+
+        for (Encounter encounter : encounterList) {
+            bahmniObservations.addAll(getObservationsForEncounter(encounter.getUuid(), conceptNames));
+        }
+        return bahmniObservations;
     }
 
     @Override
