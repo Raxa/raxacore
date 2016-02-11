@@ -7,6 +7,7 @@ import org.bahmni.module.bahmnicore.dao.impl.ObsDaoImpl;
 import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
 import org.bahmni.module.bahmnicore.obs.ObservationsAdder;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
+import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.module.bahmnicore.util.MiscUtils;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
@@ -16,7 +17,6 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahm
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.util.*;
 
 @Service
@@ -28,15 +28,17 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     private VisitService visitService;
     private ConceptService conceptService;
     private BahmniExtensions bahmniExtensions;
+    private BahmniProgramWorkflowService programWorkflowService;
 
     @Autowired
-    public BahmniObsServiceImpl(ObsDao obsDao, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper, VisitService visitService, ConceptService conceptService, VisitDao visitDao, BahmniExtensions bahmniExtensions) {
+    public BahmniObsServiceImpl(ObsDao obsDao, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper, VisitService visitService, ConceptService conceptService, VisitDao visitDao, BahmniExtensions bahmniExtensions, BahmniProgramWorkflowService programWorkflowService) {
         this.obsDao = obsDao;
         this.omrsObsToBahmniObsMapper = omrsObsToBahmniObsMapper;
         this.visitService = visitService;
         this.conceptService = conceptService;
         this.visitDao = visitDao;
         this.bahmniExtensions = bahmniExtensions;
+        this.programWorkflowService = programWorkflowService;
     }
 
     @Override
@@ -75,8 +77,9 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public Collection<BahmniObservation> observationsFor(String patientUuid, Concept rootConcept, Concept childConcept, Integer numberOfVisits, Date startDate, Date endDate) throws ParseException {
-        List<Obs> observations = obsDao.getObsFor(patientUuid, rootConcept, childConcept, visitDao.getVisitIdsFor(patientUuid, numberOfVisits), startDate, endDate );
+    public Collection<BahmniObservation> observationsFor(String patientUuid, Concept rootConcept, Concept childConcept, Integer numberOfVisits, Date startDate, Date endDate, String patientProgramUuid)  {
+        Collection<Encounter> encounters = programWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid);
+        List<Obs> observations = obsDao.getObsFor(patientUuid, rootConcept, childConcept, visitDao.getVisitIdsFor(patientUuid, numberOfVisits), encounters, startDate, endDate);
         List<BahmniObservation> bahmniObservations = new ArrayList<>();
         for (Obs observation : observations) {
             BahmniObservation bahmniObservation = omrsObsToBahmniObsMapper.map(observation);

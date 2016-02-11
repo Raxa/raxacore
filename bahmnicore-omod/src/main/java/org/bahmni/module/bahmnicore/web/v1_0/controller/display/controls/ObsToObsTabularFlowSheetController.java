@@ -59,7 +59,8 @@ public class ObsToObsTabularFlowSheetController {
             @RequestParam(value = "latestCount", required = false) Integer latestCount,
             @RequestParam(value = "name", required = false) String groovyExtension,
             @RequestParam(value = "startDate", required = false) String startDateStr,
-            @RequestParam(value = "endDate", required = false) String endDateStr) throws ParseException {
+            @RequestParam(value = "endDate", required = false) String endDateStr,
+            @RequestParam(value = "enrollment", required = false) String patientProgramUuid) throws ParseException {
 
         Concept rootConcept = conceptService.getConceptByName(conceptSet);
         Concept childConcept = conceptService.getConceptByName(groupByConcept);
@@ -67,7 +68,8 @@ public class ObsToObsTabularFlowSheetController {
         Date startDate = BahmniDateUtil.convertToDate(startDateStr, BahmniDateUtil.DateFormatType.UTC);
         Date endDate = BahmniDateUtil.convertToDate(endDateStr, BahmniDateUtil.DateFormatType.UTC);
 
-        Collection<BahmniObservation> bahmniObservations = bahmniObsService.observationsFor(patientUuid, rootConcept, childConcept, numberOfVisits, startDate, endDate);
+        Collection<BahmniObservation> bahmniObservations = bahmniObsService.observationsFor(
+                patientUuid, rootConcept, childConcept, numberOfVisits, startDate, endDate, patientProgramUuid);
 
         Set<EncounterTransaction.Concept> leafConcepts = new LinkedHashSet<>();
         if (CollectionUtils.isEmpty(conceptNames)) {
@@ -85,18 +87,18 @@ public class ObsToObsTabularFlowSheetController {
         PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(leafConcepts, bahmniObservations, groupByConcept);
         setNoramlRangeForHeaders(pivotTable.getHeaders());
 
-        BaseTableExtension<PivotTable> extension = (BaseTableExtension<PivotTable>) bahmniExtensions.getExtension("treatmentRegimenExtension" ,groovyExtension + ".groovy");
+        BaseTableExtension<PivotTable> extension = (BaseTableExtension<PivotTable>) bahmniExtensions.getExtension("treatmentRegimenExtension", groovyExtension + ".groovy");
         if (extension != null)
             extension.update(pivotTable, patientUuid);
         return pivotTable;
     }
 
-     void setNoramlRangeForHeaders(Set<EncounterTransaction.Concept> headers) {
+    void setNoramlRangeForHeaders(Set<EncounterTransaction.Concept> headers) {
         for (EncounterTransaction.Concept header : headers) {
-            if(CONCEPT_DETAILS.equals(header.getConceptClass())){
+            if (CONCEPT_DETAILS.equals(header.getConceptClass())) {
                 List<Concept> setMembers = conceptService.getConceptsByConceptSet(conceptService.getConceptByUuid(header.getUuid()));
                 Concept primaryConcept = getNumeric(setMembers);
-                if(primaryConcept==null) continue;
+                if (primaryConcept == null) continue;
                 header.setHiNormal(getHiNormal(primaryConcept));
                 header.setLowNormal(getLowNormal(primaryConcept));
             }
@@ -113,7 +115,7 @@ public class ObsToObsTabularFlowSheetController {
 
     private Concept getNumeric(List<Concept> setMembers) {
         for (Concept setMember : setMembers) {
-            if(setMember.getDatatype().isNumeric()){
+            if (setMember.getDatatype().isNumeric()) {
                 return setMember;
             }
         }
@@ -122,7 +124,7 @@ public class ObsToObsTabularFlowSheetController {
 
     private Set<EncounterTransaction.Concept> sortConcepts(List<String> conceptNames, Set<EncounterTransaction.Concept> leafConcepts) {
         Set<EncounterTransaction.Concept> sortedConcepts = new LinkedHashSet<>();
-        for (String conceptName: conceptNames){
+        for (String conceptName : conceptNames) {
             for (EncounterTransaction.Concept leafConcept : leafConcepts) {
                 if (conceptName.equals(leafConcept.getName())) {
                     sortedConcepts.add(leafConcept);

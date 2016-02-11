@@ -5,13 +5,18 @@ import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.bahmni.module.bahmnicore.dao.impl.ObsDaoImpl;
 import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
+import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.test.builder.VisitBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Person;
+import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
@@ -22,8 +27,10 @@ import org.openmrs.util.LocaleUtility;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -57,6 +64,9 @@ public class BahmniObsServiceImplTest {
     @Mock
     private BahmniExtensions bahmniExtensions;
 
+    @Mock
+    private BahmniProgramWorkflowService bahmniProgramWorkflowService;
+
     @Before
     public void setUp() {
         initMocks(this);
@@ -64,7 +74,7 @@ public class BahmniObsServiceImplTest {
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
         when(observationTypeMatcher.getObservationType(any(Obs.class))).thenReturn(ObservationTypeMatcher.ObservationType.OBSERVATION);
-        bahmniObsService = new BahmniObsServiceImpl(obsDao, new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null), observationTypeMatcher, observationMapper), visitService, conceptService, visitDao, bahmniExtensions);
+        bahmniObsService = new BahmniObsServiceImpl(obsDao, new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null), observationTypeMatcher, observationMapper), visitService, conceptService, visitDao, bahmniExtensions, bahmniProgramWorkflowService);
     }
 
     @Test
@@ -105,6 +115,18 @@ public class BahmniObsServiceImplTest {
     public void shouldGetAllObsForOrder() throws Exception {
         bahmniObsService.getObservationsForOrder("orderUuid");
         verify(obsDao, times(1)).getObsForOrder("orderUuid");
+    }
+
+    @Test
+    public void shouldGetObsForPatientProgram() {
+        Collection<Encounter> encounters = Arrays.asList(new Encounter(), new Encounter());
+        when(bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(any(String.class))).thenReturn(encounters);
+        Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
+        Integer numberOfVisits = 3;
+
+        bahmniObsService.observationsFor(personUUID, bloodPressureConcept, bloodPressureConcept, numberOfVisits, null, null, "patientProgramUuid");
+        verify(obsDao).getObsFor(personUUID, bloodPressureConcept, bloodPressureConcept, visitDao.getVisitIdsFor(personUUID, numberOfVisits), encounters, null, null);
+        verify(bahmniProgramWorkflowService).getEncountersByPatientProgramUuid("patientProgramUuid");
     }
 
     @Test

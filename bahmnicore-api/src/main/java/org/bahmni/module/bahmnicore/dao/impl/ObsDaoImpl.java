@@ -1,22 +1,32 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.ConceptDatatype;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Order;
+import org.openmrs.Person;
 import org.openmrs.api.ConceptNameType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 @Repository
 public class ObsDaoImpl implements ObsDao {
 
+    public static final String COMMA = ",";
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -210,10 +220,14 @@ public class ObsDaoImpl implements ObsDao {
     }
 
     @Override
-    public List<Obs> getObsFor(String patientUuid, Concept rootConcept, Concept childConcept, List<Integer> listOfVisitIds, Date startDate, Date endDate) {
+    public List<Obs> getObsFor(String patientUuid, Concept rootConcept, Concept childConcept, List<Integer> listOfVisitIds, Collection<Encounter> encounters, Date startDate, Date endDate) {
         if (listOfVisitIds == null || listOfVisitIds.isEmpty())
             return new ArrayList<>();
 
+        String encounterFilter = "";
+        if (encounters != null && encounters.size() > 0) {
+            encounterFilter = "AND encounter.encounter_id in (" + commaSeparatedEncounterIds(encounters) + ")";
+        }
         StringBuilder queryString = new StringBuilder("SELECT rootObs.* " +
                 "FROM obs rootObs " +
                 "JOIN concept_name rootConceptName " +
@@ -222,6 +236,7 @@ public class ObsDaoImpl implements ObsDao {
                 "JOIN person ON person.person_id = rootObs.person_id AND person.uuid = :patientUuid AND " +
                 "rootObs.voided = 0 AND person.voided = 0 " +
                 "JOIN encounter ON encounter.encounter_id = rootObs.encounter_id AND encounter.voided = 0 " +
+                encounterFilter +
                 "JOIN visit ON visit.visit_id = encounter.visit_id AND visit.visit_id IN :visitIds " +
                 "JOIN obs groupByObs ON groupByObs.obs_group_id = rootObs.obs_id AND groupByObs.voided = 0 " +
                 "JOIN concept_name groupByConceptName " +
@@ -240,7 +255,17 @@ public class ObsDaoImpl implements ObsDao {
         queryToGetObs.setParameter("childConceptName", childConcept.getName().getName());
         if(startDate != null) queryToGetObs.setParameter("startDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(startDate));
         if(endDate != null) queryToGetObs.setParameter("endDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endDate));
+
+
         return queryToGetObs.list();
+    }
+
+    private String commaSeparatedEncounterIds(Collection<Encounter> encounters) {
+        ArrayList<String> encounterIds = new ArrayList<>();
+        for(Encounter encounter: encounters) {
+            encounterIds.add(encounter.getEncounterId().toString());
+        }
+        return StringUtils.join(encounterIds, COMMA);
     }
 
     @Override

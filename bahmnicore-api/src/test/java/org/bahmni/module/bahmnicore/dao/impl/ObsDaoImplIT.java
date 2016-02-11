@@ -6,7 +6,9 @@ import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Encounter;
 import org.openmrs.Obs;
+import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +20,9 @@ public class ObsDaoImplIT extends BaseIntegrationTest {
     
     @Autowired
     ObsDao obsDao;
+
+    @Autowired
+    EncounterService encounterService;
 
     Map<Integer, Integer> conceptToObsMap = new HashMap<>();
 
@@ -70,11 +75,36 @@ public class ObsDaoImplIT extends BaseIntegrationTest {
         listOfVisitIds.add(902);
         rootConcept.getName().getName();
 
-        List<Obs> bahmniObservations = obsDao.getObsFor(patientUUid, rootConcept, childConcept,listOfVisitIds, startDate, null);
+        List<Obs> bahmniObservations = obsDao.getObsFor(patientUUid, rootConcept, childConcept,listOfVisitIds, Collections.EMPTY_LIST, startDate, null);
 
         assertEquals(1, bahmniObservations.size());
         assertEquals(rootConceptName, bahmniObservations.get(0).getConcept().getName().getName());
         assertEquals(3, bahmniObservations.get(0).getGroupMembers(true).size());
+    }
+
+
+    @Test
+    public void shouldFilterObservationsBasedOnEncounters() throws Exception {
+        String rootConceptName = "Breast Cancer Intake";
+        String childConceptName = "Histopathology";
+        String patientUUid = "86526ed5-3c11-11de-a0ba-001e378eb67a";
+        Date startDate = BahmniDateUtil.convertToDate("2008-08-18T15:00:01.000", BahmniDateUtil.DateFormatType.UTC);
+        Concept rootConcept = Context.getConceptService().getConceptByName(rootConceptName);
+        Concept childConcept = Context.getConceptService().getConceptByName(childConceptName);
+        List<Integer> listOfVisitIds = new ArrayList<Integer>();
+        listOfVisitIds.add(902);
+        rootConcept.getName().getName();
+        Encounter anEncounter = encounterService.getEncounter(40);
+        Encounter anotherEncounter = encounterService.getEncounter(41);
+        Encounter unrelatedEncounter = encounterService.getEncounter(3);
+
+        List<Obs> bahmniObservations = obsDao.getObsFor(patientUUid, rootConcept, childConcept,listOfVisitIds, Arrays.asList(anEncounter, anotherEncounter), startDate, null);
+
+        assertEquals(1, bahmniObservations.size());
+        assertEquals(rootConceptName, bahmniObservations.get(0).getConcept().getName().getName());
+        assertEquals(3, bahmniObservations.get(0).getGroupMembers(true).size());
+
+        assertEquals(0, obsDao.getObsFor(patientUUid, rootConcept, childConcept, listOfVisitIds, Arrays.asList(unrelatedEncounter), startDate, null).size());
     }
 
     @Test
