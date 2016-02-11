@@ -6,9 +6,6 @@ import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProg
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.module.bahmnicore.service.EpisodeService;
-import org.bahmni.module.bahmnicore.service.impl.BahmniProgramWorkflowServiceImpl;
-import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +20,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -114,5 +110,41 @@ public class BahmniProgramWorkflowServiceImplTest {
 
         verify(episodeService, times(0)).save(any(Episode.class));
         verify(bahmniProgramWorkflowDAO).savePatientProgram(patientProgram);
+    }
+
+    @Test
+    public void testGetEncountersByPatientProgram() {
+        Episode episode = new Episode();
+        String patientProgramUuid = "patientProgramUuid";
+        BahmniPatientProgram patientProgram = new BahmniPatientProgram();
+        patientProgram.setUuid(patientProgramUuid);
+        patientProgram.setPatient(new Patient());
+        patientProgram.setProgram(new Program());
+
+        when(bahmniProgramWorkflowDAO.getPatientProgramByUuid(patientProgramUuid)).thenReturn(patientProgram);
+        when(episodeService.getEpisodeForPatientProgram(patientProgram)).thenReturn(episode);
+
+        bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid);
+
+        verify(bahmniProgramWorkflowDAO).getPatientProgramByUuid(patientProgramUuid);
+        verify(episodeService).getEpisodeForPatientProgram(patientProgram);
+    }
+
+    @Test
+    public void testNullEncountersByPatientProgramIfEpisodeCannotBeFound() {
+        Episode episode = new Episode();
+        String patientProgramUuid = "patientProgramUuid";
+        BahmniPatientProgram patientProgram = new BahmniPatientProgram();
+        patientProgram.setUuid(patientProgramUuid);
+        patientProgram.setPatient(new Patient());
+        patientProgram.setProgram(new Program());
+
+        when(bahmniProgramWorkflowDAO.getPatientProgramByUuid(patientProgramUuid)).thenReturn(patientProgram);
+        when(episodeService.getEpisodeForPatientProgram(patientProgram)).thenReturn(null);
+
+        bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid);
+
+        verify(bahmniProgramWorkflowDAO).getPatientProgramByUuid(patientProgramUuid);
+        verify(episodeService).getEpisodeForPatientProgram(patientProgram);
     }
 }

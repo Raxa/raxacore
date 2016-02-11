@@ -7,12 +7,15 @@ import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.PatientProgramAtt
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.module.bahmnicore.service.EpisodeService;
+import org.openmrs.Encounter;
 import org.openmrs.PatientProgram;
 import org.openmrs.api.APIException;
 import org.openmrs.api.impl.ProgramWorkflowServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Transactional
@@ -58,6 +61,13 @@ public class BahmniProgramWorkflowServiceImpl extends ProgramWorkflowServiceImpl
     @Override
     public PatientProgramAttribute getPatientProgramAttributeByUuid(String uuid) {
         return ((BahmniProgramWorkflowDAO) dao).getPatientProgramAttributeByUuid(uuid);
+    }
+
+    @Override
+    public Collection<Encounter> getEncountersByPatientProgramUuid(String patientProgramUuid) {
+        PatientProgram patientProgram = dao.getPatientProgramByUuid(patientProgramUuid);
+        Episode episodeForPatientProgram = episodeService.getEpisodeForPatientProgram(patientProgram);
+        return episodeForPatientProgram == null ? Collections.EMPTY_LIST : episodeForPatientProgram.getEncounters();
     }
 
     @Override

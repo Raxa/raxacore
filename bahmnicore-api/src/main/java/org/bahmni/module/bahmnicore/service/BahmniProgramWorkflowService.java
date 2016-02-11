@@ -2,10 +2,12 @@ package org.bahmni.module.bahmnicore.service;
 
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.PatientProgramAttribute;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
+import org.openmrs.Encounter;
 import org.openmrs.annotation.Authorized;
 import org.openmrs.api.ProgramWorkflowService;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface BahmniProgramWorkflowService extends ProgramWorkflowService {
@@ -32,4 +34,7 @@ public interface BahmniProgramWorkflowService extends ProgramWorkflowService {
     @Authorized({"View PatientPrograms"})
     PatientProgramAttribute getPatientProgramAttributeByUuid(String var1);
 
+    @Transactional(readOnly = true)
+    @Authorized({"View PatientPrograms"})
+    Collection<Encounter> getEncountersByPatientProgramUuid(String patientProgramUuid);
 }
