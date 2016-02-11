@@ -103,12 +103,12 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
     @Override
     public Collection<BahmniObservation> getLatest(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits, List<String> obsIgnoreList,
-                                                   Boolean filterOutOrderObs, Order order, Date startDate, Date endDate) {
+                                                   Boolean filterOutOrderObs, Order order) {
         List<Obs> latestObs = new ArrayList<>();
         for (Concept concept : concepts) {
             if (null != concept) {
                 latestObs.addAll(obsDao.getObsByPatientAndVisit(patientUuid, Arrays.asList(concept.getName().getName()),
-                        visitDao.getVisitIdsFor(patientUuid, numberOfVisits), 1, ObsDaoImpl.OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order, startDate, endDate));
+                        visitDao.getVisitIdsFor(patientUuid, numberOfVisits), 1, ObsDaoImpl.OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order, null, null));
             }
         }
 
@@ -130,11 +130,11 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
     @Override
     public Collection<BahmniObservation> getInitial(String patientUuid, Collection<Concept> conceptNames,
-                                                    Integer numberOfVisits, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order, Date startDate, Date endDate) {
+                                                    Integer numberOfVisits, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order) {
         List<Obs> latestObs = new ArrayList<>();
         for (Concept concept : conceptNames) {
             latestObs.addAll(obsDao.getObsByPatientAndVisit(patientUuid, Arrays.asList(concept.getName().getName()),
-                    visitDao.getVisitIdsFor(patientUuid, numberOfVisits), 1, ObsDaoImpl.OrderBy.ASC, obsIgnoreList, filterOutOrderObs, order, startDate, endDate));
+                    visitDao.getVisitIdsFor(patientUuid, numberOfVisits), 1, ObsDaoImpl.OrderBy.ASC, obsIgnoreList, filterOutOrderObs, order, null, null));
         }
 
         sendObsToGroovyScript(getConceptNames(conceptNames), latestObs);

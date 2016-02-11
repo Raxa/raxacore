@@ -111,7 +111,7 @@ public class BahmniObservationsControllerTest {
         List<String> conceptNames = new ArrayList<String>();
         String patientProgramUuid = "patientProgramUuid";
 
-        bahmniObservationsController.get("patientUuid", conceptNames, null, null, null, null, null, null, patientProgramUuid);
+        bahmniObservationsController.get("patientUuid", conceptNames, null, null, null, null, patientProgramUuid);
 
         verify(bahmniObsService, times(1)).getObservationsForPatientProgram(patientProgramUuid, conceptNames);
     }
@@ -121,7 +121,7 @@ public class BahmniObservationsControllerTest {
         List<String> conceptNames = new ArrayList<String>();
         String patientProgramUuid = null;
 
-        bahmniObservationsController.get("patientUuid", conceptNames, null, null, null, null, null, null, patientProgramUuid);
+        bahmniObservationsController.get("patientUuid", conceptNames, null, null, null, null, patientProgramUuid);
 
         verify(bahmniObsService, times(0)).getObservationsForPatientProgram(patientProgramUuid, conceptNames);
     }

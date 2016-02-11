@@ -2,7 +2,6 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
-import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
 import org.bahmni.module.bahmnicore.util.MiscUtils;
 import org.openmrs.Concept;
 import org.openmrs.Visit;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -48,24 +46,20 @@ public class BahmniObservationsController extends BaseRestController {
                                              @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
                                              @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
                                              @RequestParam(value = "filterObsWithOrders", required = false, defaultValue = "true") Boolean filterObsWithOrders,
-                                             @RequestParam(value = "startDate", required = false) String startDateStr,
-                                             @RequestParam(value = "endDate", required = false) String endDateStr,
                                              @RequestParam(value = "patientProgramUuid", required = false) String patientProgramUuid) throws ParseException {
 
         List<Concept> rootConcepts = MiscUtils.getConceptsForNames(rootConceptNames, conceptService);
-        Date startDate = BahmniDateUtil.convertToDate(startDateStr, BahmniDateUtil.DateFormatType.UTC);
-        Date endDate = BahmniDateUtil.convertToDate(endDateStr, BahmniDateUtil.DateFormatType.UTC);
 
         if(patientProgramUuid != null){
             return bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, rootConceptNames);
         }
         else if (ObjectUtils.equals(scope, LATEST)) {
             return bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders,
-                    null, startDate, endDate);
+                    null);
         } else if (ObjectUtils.equals(scope, INITIAL)) {
-            return bahmniObsService.getInitial(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders, null, startDate, endDate);
+            return bahmniObsService.getInitial(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders, null);
         } else {
-            return bahmniObsService.observationsFor(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders, null, startDate, endDate);
+            return bahmniObsService.observationsFor(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders, null, null, null);
         }
 
     }
