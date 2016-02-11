@@ -11,10 +11,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.Date;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -27,13 +30,16 @@ import static org.mockito.Mockito.when;
 @RunWith(PowerMockRunner.class)
 public class BahmniProgramWorkflowServiceImplTest {
 
-    BahmniProgramWorkflowService bahmniProgramWorkflowService;
+    private BahmniProgramWorkflowService bahmniProgramWorkflowService;
 
     @Mock
-    BahmniProgramWorkflowDAO bahmniProgramWorkflowDAO;
+    private BahmniProgramWorkflowDAO bahmniProgramWorkflowDAO;
 
     @Mock
-    EpisodeService episodeService;
+    private EpisodeService episodeService;
+
+    @Mock
+    private BahmniPatientProgram patientProgram;
 
     private Integer sampleId = 1234;
     private String sampleUuid = "a1b2c3";
@@ -145,5 +151,19 @@ public class BahmniProgramWorkflowServiceImplTest {
 
         verify(bahmniProgramWorkflowDAO).getPatientProgramByUuid(patientProgramUuid);
         verify(episodeService).getEpisodeForPatientProgram(patientProgram);
+    }
+
+    @Test
+    public void shouldSetDateCompletedOfAProgramWhenItsOutcomeIsSetAndDateCompletedIsNull() {
+        when(patientProgram.getPatient()).thenReturn(new Patient());
+        when(patientProgram.getProgram()).thenReturn(new Program());
+        when(patientProgram.getOutcome()).thenReturn(new Concept());
+        when(patientProgram.getDateCompleted()).thenReturn(null);
+
+        bahmniProgramWorkflowService.savePatientProgram(patientProgram);
+
+        verify(patientProgram, times(1)).getOutcome();
+        verify(patientProgram, times(1)).setDateCompleted(any(Date.class));
+        verify(patientProgram, times(1)).getDateCompleted();
     }
 }

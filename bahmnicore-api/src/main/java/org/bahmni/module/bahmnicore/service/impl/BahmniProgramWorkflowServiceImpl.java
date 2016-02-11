@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Transactional
@@ -72,6 +73,9 @@ public class BahmniProgramWorkflowServiceImpl extends ProgramWorkflowServiceImpl
 
     @Override
     public PatientProgram savePatientProgram(PatientProgram patientProgram) throws APIException {
+        if (patientProgram.getOutcome() != null && patientProgram.getDateCompleted() == null) {
+            patientProgram.setDateCompleted(new Date());
+        }
         BahmniPatientProgram bahmniPatientProgram = (BahmniPatientProgram)super.savePatientProgram(patientProgram);
         createEpisodeIfRequired(bahmniPatientProgram);
         return bahmniPatientProgram;
