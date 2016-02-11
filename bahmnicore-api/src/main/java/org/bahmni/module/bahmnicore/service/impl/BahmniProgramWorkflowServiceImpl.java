@@ -66,8 +66,8 @@ public class BahmniProgramWorkflowServiceImpl extends ProgramWorkflowServiceImpl
     @Override
     public Collection<Encounter> getEncountersByPatientProgramUuid(String patientProgramUuid) {
         PatientProgram patientProgram = dao.getPatientProgramByUuid(patientProgramUuid);
-        Episode episodeForPatientProgram = episodeService.getEpisodeForPatientProgram(patientProgram);
-        return episodeForPatientProgram == null ? Collections.EMPTY_LIST : episodeForPatientProgram.getEncounters();
+        Episode episode = episodeService.getEpisodeForPatientProgram(patientProgram);
+        return episode == null ? Collections.EMPTY_LIST : episode.getEncounters();
     }
 
     @Override

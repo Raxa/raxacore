@@ -8,6 +8,7 @@ import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.test.builder.VisitBuilder;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +20,7 @@ import org.openmrs.Person;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.VisitService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahmniObsMapper;
 import org.openmrs.module.emrapi.encounter.ObservationMapper;
@@ -31,10 +33,17 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -137,5 +146,26 @@ public class BahmniObsServiceImplTest {
         bahmniObsService.getObservationsForEncounter(encounterUuid, conceptNames);
 
         verify(obsDao, times(1)).getObsForConceptsByEncounter(encounterUuid, conceptNames);
+    }
+
+    @Test
+    public void shouldReturnEmptyObservationListIfProgramDoesNotHaveEncounters() {
+        when(bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(any(String.class))).thenReturn(Collections.EMPTY_LIST);
+        Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
+
+        Collection<BahmniObservation> observations = bahmniObsService.observationsFor(personUUID, bloodPressureConcept, bloodPressureConcept, 3, null, null, "patientProgramUuid");
+
+        verify(obsDao, times(0)).getObsFor(anyString(), any(Concept.class), any(Concept.class), any(List.class), any(Collection.class), any(Date.class), any(Date.class));
+        assertThat(observations.size(), is(equalTo(0)));
+    }
+
+    @Test
+    public void shouldCallObsServiceWithEmptyListOfEncountersWhenProgramUuidIsNull() {
+        Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
+
+        int numberOfVisits = 3;
+        bahmniObsService.observationsFor(personUUID, bloodPressureConcept, bloodPressureConcept, numberOfVisits, null, null, null);
+
+        verify(obsDao).getObsFor(personUUID, bloodPressureConcept, bloodPressureConcept, visitDao.getVisitIdsFor(personUUID, numberOfVisits), new ArrayList<Encounter>(), null, null);
     }
 }

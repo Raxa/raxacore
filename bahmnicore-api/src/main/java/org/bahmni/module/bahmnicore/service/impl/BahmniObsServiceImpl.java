@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.bahmni.module.bahmnicore.dao.impl.ObsDaoImpl;
@@ -79,7 +80,18 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     @Override
     public Collection<BahmniObservation> observationsFor(String patientUuid, Concept rootConcept, Concept childConcept, Integer numberOfVisits, Date startDate, Date endDate, String patientProgramUuid)  {
         Collection<Encounter> encounters = programWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid);
+        if (programDoesNotHaveEncounters(patientProgramUuid, encounters)) return Collections.EMPTY_LIST;
+
         List<Obs> observations = obsDao.getObsFor(patientUuid, rootConcept, childConcept, visitDao.getVisitIdsFor(patientUuid, numberOfVisits), encounters, startDate, endDate);
+
+        return convertToBahmniObservation(observations);
+    }
+
+    private boolean programDoesNotHaveEncounters(String patientProgramUuid, Collection<Encounter> encounters) {
+        return StringUtils.isNotEmpty(patientProgramUuid) && encounters.size() == 0;
+    }
+
+    private List<BahmniObservation> convertToBahmniObservation(List<Obs> observations) {
         List<BahmniObservation> bahmniObservations = new ArrayList<>();
         for (Obs observation : observations) {
             BahmniObservation bahmniObservation = omrsObsToBahmniObsMapper.map(observation);

@@ -132,7 +132,6 @@ public class BahmniProgramWorkflowServiceImplTest {
 
     @Test
     public void testNullEncountersByPatientProgramIfEpisodeCannotBeFound() {
-        Episode episode = new Episode();
         String patientProgramUuid = "patientProgramUuid";
         BahmniPatientProgram patientProgram = new BahmniPatientProgram();
         patientProgram.setUuid(patientProgramUuid);
