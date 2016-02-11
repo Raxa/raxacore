@@ -12,6 +12,7 @@ import org.openmrs.module.bahmniemrapi.order.contract.BahmniOrder;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +26,9 @@ public class BahmniOrderServiceImpl implements BahmniOrderService {
     private OrderService orderService;
     private BahmniObsService bahmniObsService;
     private static final Logger log = Logger.getLogger(BahmniOrderServiceImpl.class);
+
+    public  BahmniOrderServiceImpl(){
+    }
 
     @Autowired
     public BahmniOrderServiceImpl(OrderService orderService, BahmniObsService bahmniObsService, ConceptMapper conceptMapper) {
@@ -73,6 +77,11 @@ public class BahmniOrderServiceImpl implements BahmniOrderService {
             bahmniOrders.add(bahmniOrder);
         }
         return bahmniOrders;
+    }
+
+    @Override
+    public Order getChildOrder(Order order) {
+        return orderService.getChildOrder(order);
     }
 
     private BahmniOrder createBahmniOrder(Order order, Collection<BahmniObservation> bahmniObservations, boolean includeObs){

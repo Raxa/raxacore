@@ -426,4 +426,12 @@ public class OrderDaoImpl implements OrderDao {
 
         return criteria.list();
     }
+
+    @Override
+    public Order getChildOrder(Order order) {
+        Session currentSession = getCurrentSession();
+        Query query = currentSession.createQuery("select o from Order o where o.previousOrder = :order and o.voided = false");
+        query.setParameter("order", order);
+        return (Order) query.uniqueResult();
+    }
 }

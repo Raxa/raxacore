@@ -18,4 +18,6 @@ public interface OrderService {
     Order getOrderByUuid(String orderUuid);
 
     List<Order> getAllOrdersForVisitUuid(String visitUuid, String orderTypeUuid);
+
+    Order getChildOrder(Order order);
 }

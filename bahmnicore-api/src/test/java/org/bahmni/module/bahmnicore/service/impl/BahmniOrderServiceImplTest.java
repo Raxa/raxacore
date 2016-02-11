@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -119,6 +120,14 @@ public class BahmniOrderServiceImplTest {
         verify(bahmniObsService).getObservationForVisit(visitUUID, null, Arrays.asList(concept), false, order);
         verify(orderService).getAllOrdersForVisitUuid(visitUUID, "someOrderTypeUuid");
         Assert.assertEquals(2, bahmniOrders.size());
+    }
+
+
+    @Test
+    public void shouldGetChildOrder() throws Exception {
+        Order order = createOrder();
+        bahmniOrderService.getChildOrder(order);
+        verify(orderService,times(1)).getChildOrder(order);
     }
 
     private Order createOrder() {

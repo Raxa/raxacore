@@ -4,6 +4,7 @@ import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.dao.ApplicationDataDirectory;
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
+import org.junit.Assert;
 import org.junit.Test;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
@@ -337,6 +338,15 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
 
         assertEquals(activeOrders.size(), 1);
         assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f839");
+    }
+
+    @Test
+    public void getChildOrder() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Order order = Context.getOrderService().getOrderByUuid("cba00378-0c03-11e4-bb80-f18addb6f837");
+        Order childOrder = Context.getOrderService().getOrderByUuid("cba00378-0c03-11e4-bb80-f18addb6f838");
+        Order actual = orderDao.getChildOrder(order);
+        Assert.assertEquals(actual, childOrder);
     }
 
     private boolean visitWithUuidExists(String uuid, List<Visit> visits) {

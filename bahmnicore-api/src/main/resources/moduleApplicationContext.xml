@@ -114,4 +114,29 @@
         <constructor-arg ref="locationService" />
         <constructor-arg ref="providerService" />
     </bean>
+
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.bahmni.module.bahmnicore.service.BahmniOrderService</value>
+                <bean
+                        class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+                    <property name="transactionManager">
+                        <ref bean="transactionManager" />
+                    </property>
+                    <property name="target">
+                        <bean class="org.bahmni.module.bahmnicore.service.impl.BahmniOrderServiceImpl">
+
+                        </bean>
+                    </property>
+                    <property name="preInterceptors">
+                        <ref bean="serviceInterceptors" />
+                    </property>
+                    <property name="transactionAttributeSource">
+                        <ref bean="transactionAttributeSource" />
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
 </beans>

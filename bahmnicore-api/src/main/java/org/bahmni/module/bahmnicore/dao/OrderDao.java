@@ -38,4 +38,5 @@ public interface OrderDao {
 
     List<Order> getInactiveOrders(Patient patient, OrderType orderTypeByName, CareSetting careSettingByName, Date asOfDate, Set<Concept> concepts, Set<Concept> drugConceptsToBeExcluded);
 
+    Order getChildOrder(Order order);
 }
