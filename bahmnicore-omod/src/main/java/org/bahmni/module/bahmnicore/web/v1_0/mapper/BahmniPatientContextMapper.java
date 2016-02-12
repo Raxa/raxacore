@@ -39,7 +39,7 @@ public class BahmniPatientContextMapper {
             return;
         }
         for (String configuredProgramAttribute : configuredProgramAttributes) {
-            for (PatientProgramAttribute patientProgramAttribute : patientProgram.getAttributes()) {
+            for (PatientProgramAttribute patientProgramAttribute : patientProgram.getActiveAttributes()) {
                 if (patientProgramAttribute.getAttributeType().getName().equals(configuredProgramAttribute)) {
                     if (patientProgramAttribute.getAttributeType().getDatatypeClassname().equals("org.bahmni.module.bahmnicore.customdatatype.datatype.CodedConceptDatatype")) {
                         Concept concept = conceptService.getConcept(patientProgramAttribute.getValueReference());
