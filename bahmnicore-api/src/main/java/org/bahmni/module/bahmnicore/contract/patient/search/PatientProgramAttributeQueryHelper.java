@@ -32,7 +32,7 @@ public class PatientProgramAttributeQueryHelper {
 			return where;
 		}
 
-		return combine(where, "and", enclose(" ppa.value_reference like "+ "'%" + patientProgramAttributeValue + "%'"));
+		return combine(where, "and", enclose(" ppa.value_reference like "+ "'%" + patientProgramAttributeValue + "%' and ppa.attribute_type_id =" + programAttributeTypeId.intValue()));
 	}
 
 	public Map<String,Type> addScalarQueryResult(){

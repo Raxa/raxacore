@@ -27,7 +27,7 @@ public class ProgramAttributeCodedValueQueryHelper extends PatientProgramAttribu
 			return where;
 		}
 
-		return combine(where, "and", enclose(" cn.name like "+ "'%" + patientProgramAttributeValue + "%'"));
+		return combine(where, "and", enclose(" cn.name like "+ "'%" + patientProgramAttributeValue + "%' and ppa.attribute_type_id =" + programAttributeTypeId.intValue()));
 
 	}
 

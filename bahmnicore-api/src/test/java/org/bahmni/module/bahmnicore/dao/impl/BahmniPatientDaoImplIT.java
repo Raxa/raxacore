@@ -188,10 +188,9 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
         assertEquals("F",response.getGender());
         assertEquals("{\"caste\":\"testCaste1\"}",response.getCustomAttribute());
         assertEquals("{\"stage\":\"Stage1\"}",response.getPatientProgramAttributeValue());
-
     }
 
-//    TODO this test needs the proper data setUp
+//    TODO this test needs the proper data setUp, As it was throwing h2 db data casting error
     @Test
     @Ignore
     public void shouldFetchPatientsByCodedConcepts(){
@@ -209,6 +208,23 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
         assertEquals("F",response.getGender());
         assertEquals("{\"caste\":\"testCaste1\"}",response.getCustomAttribute());
         assertEquals("{\"facility\":\"Facility1, City1, Country1\"}",response.getPatientProgramAttributeValue());
+    }
+
+    @Test
+    public void shouldFetchPatientsByOnlyOneProgramAttribute(){
+        List<PatientResponse> patients = patientDao.getPatients("", null, "", null, "city_village", "", 100, 0, null,"Stage1","stage");
+        assertEquals(1, patients.size());
+        PatientResponse response = patients.get(0);
+        assertEquals("GAN200002",response.getIdentifier());
+        assertEquals("df8ae447-6745-45be-b859-403241d9913d",response.getUuid());
+        assertEquals(1026,response.getPersonId());
+        assertEquals("GAN200002",response.getIdentifier());
+        assertEquals("Bilaspur",response.getAddressFieldValue());
+        assertEquals("John",response.getGivenName());
+        assertEquals("Peeter",response.getMiddleName());
+        assertEquals("Sinha",response.getFamilyName());
+        assertEquals("F",response.getGender());
+        assertEquals("{\"stage\":\"Stage1\"}",response.getPatientProgramAttributeValue());
     }
 
     @Test
