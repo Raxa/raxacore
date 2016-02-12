@@ -25,6 +25,6 @@ public class PivotTable {
     }
 
     public void addRow(PivotRow row){
-        this.rows.add(row);
+        this.rows.add(0,row);
     }
 }
