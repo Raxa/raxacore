@@ -134,7 +134,7 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
     @Test
     public void shouldRetrieveObsForPatientProgram() throws Exception {
         ArrayList<String> conceptNames = new ArrayList<>();
-        conceptNames.add("Ruled Out");
+        conceptNames.add("conceptABC");
 
         Collection<BahmniObservation> observations = personObsService.getObservationsForPatientProgram("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames);
 
@@ -146,7 +146,7 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
     @Test
     public void shouldRetrieveEmptyObsListWhenPatientProgramUuidDoesNotExist() throws Exception {
         ArrayList<String> conceptNames = new ArrayList<>();
-        conceptNames.add("Ruled Out");
+        conceptNames.add("conceptABC");
 
         Collection<BahmniObservation> observations = personObsService.getObservationsForPatientProgram("patientProgramUuid", conceptNames);
 
@@ -155,9 +155,8 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldRetrieveEmptyObsIfPatientProgramDoesNotHaveAnyEncounters() throws Exception {
-
         ArrayList<String> conceptNames = new ArrayList<>();
-        conceptNames.add("Ruled Out");
+        conceptNames.add("conceptABC");
 
         Collection<BahmniObservation> observations = personObsService.getObservationsForPatientProgram("df0foifo-dkcd-475d-b939-6d82327f36a3", conceptNames);
 

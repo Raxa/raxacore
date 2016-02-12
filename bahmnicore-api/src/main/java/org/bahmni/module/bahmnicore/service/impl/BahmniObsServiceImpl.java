@@ -184,13 +184,8 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
     @Override
     public Collection<BahmniObservation> getObservationsForPatientProgram(String patientProgramUuid, List<String> conceptNames) {
-        Collection<Encounter> encounterList = programWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid);
-        Collection<BahmniObservation> bahmniObservations = new ArrayList<>();
-
-        for (Encounter encounter : encounterList) {
-            bahmniObservations.addAll(getObservationsForEncounter(encounter.getUuid(), conceptNames));
-        }
-        return bahmniObservations;
+        List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames);
+        return omrsObsToBahmniObsMapper.map(observations, getConceptsByName(conceptNames));
     }
 
     @Override

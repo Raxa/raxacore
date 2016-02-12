@@ -282,4 +282,26 @@ public class ObsDaoImpl implements ObsDao {
 
     }
 
+    @Override
+    public List<Obs> getObsByPatientProgramUuidAndConceptNames(String patientProgramUuid, List<String> conceptNames) {
+            StringBuilder queryString =   new StringBuilder( "SELECT o.* " +
+                    "FROM patient_program pp " +
+                    "INNER JOIN episode_patient_program epp " +
+                    "ON pp.patient_program_id = epp.patient_program_id\n " +
+                    "INNER JOIN episode_encounter ee " +
+                    "ON epp.episode_id = ee.episode_id\n " +
+                    "INNER JOIN obs o " +
+                    "ON o.encounter_id = ee.encounter_id\n " +
+                    "INNER JOIN concept_name cn on o.concept_id = cn.concept_id\n " +
+                    "WHERE pp.uuid = (:patientProgramUuid) " +
+                    "AND o.voided = false " +
+                    "AND cn.concept_name_type='FULLY_SPECIFIED' " +
+                    "AND cn.name IN (:conceptNames)");
+
+            Query queryToGetObs = sessionFactory.getCurrentSession().createSQLQuery(queryString.toString()).addEntity(Obs.class);;
+            queryToGetObs.setParameterList("conceptNames", conceptNames);
+            queryToGetObs.setString("patientProgramUuid", patientProgramUuid);
+
+            return queryToGetObs.list();
+        }
 }

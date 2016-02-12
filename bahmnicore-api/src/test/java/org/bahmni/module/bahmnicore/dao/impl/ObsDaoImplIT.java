@@ -29,6 +29,8 @@ public class ObsDaoImplIT extends BaseIntegrationTest {
     @Before
     public void setUp() throws Exception {
         executeDataSet("obsTestData.xml");
+        executeDataSet("patientProgramTestData.xml");
+
         conceptToObsMap.put(9012, 5);
         conceptToObsMap.put(9011, 4);
     }
@@ -124,5 +126,15 @@ public class ObsDaoImplIT extends BaseIntegrationTest {
         Obs observation = obsDao.getChildObsFromParent("7d8f507a-fb89-11e3-bb80-f18addb6f9a4", vitalsConcept);
 
         assertEquals((Integer)24, observation.getId());
+    }
+
+    @Test
+    public void shouldRetrieveObsFromPatientProgramIdAndConceptNames() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("conceptABC");
+
+        List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames);
+
+        assertEquals(1, observations.size());
     }
 }

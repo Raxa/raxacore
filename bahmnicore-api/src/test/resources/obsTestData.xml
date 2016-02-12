@@ -129,5 +129,4 @@
 
     <obs obs_id="700" concept_id="190" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-fb89-Cats-bb80-f18addb6f9a4" creator="1" voided="0" />
     <obs obs_id="701" obs_group_id="700" concept_id="9011" person_id="1024" encounter_id="40" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="7d8f507a-dogs-11e3-bb80-f18addb6f9df" creator="1" voided="0" />
-
 </dataset>

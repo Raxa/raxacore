@@ -28,4 +28,6 @@ public interface ObsDao {
     List<Obs> getObsForConceptsByEncounter(String encounterUuid, List<String> conceptNames);
 
     Obs getChildObsFromParent(String parentObsUuid, Concept childConcept);
+
+    List<Obs> getObsByPatientProgramUuidAndConceptNames(String patientProgramUuid, List<String> conceptNames);
 }
