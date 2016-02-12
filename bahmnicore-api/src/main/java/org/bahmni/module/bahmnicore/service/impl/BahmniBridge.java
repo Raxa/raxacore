@@ -180,7 +180,7 @@ public class BahmniBridge {
      * @return
      */
     public Date getStartDateOfTreatment() throws ParseException {
-        List<Order> allDrugOrders = bahmniDrugOrderService.getAllDrugOrders(patientUuid, null, null, null, null);
+        List<Order> allDrugOrders = bahmniDrugOrderService.getAllDrugOrders(patientUuid, null, null, null, null, null);
         sortOders(allDrugOrders);
         return allDrugOrders.get(0).getScheduledDate() !=null ? allDrugOrders.get(0).getScheduledDate() : allDrugOrders.get(0).getDateActivated();
     }

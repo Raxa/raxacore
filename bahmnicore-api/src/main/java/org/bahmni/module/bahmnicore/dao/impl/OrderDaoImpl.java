@@ -300,7 +300,8 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> getAllOrders(Patient patientByUuid, OrderType drugOrderType, Set<Concept> conceptsForDrugs, Date startDate, Date endDate,Set<Concept> drugConceptsToBeExcluded) {
+    public List<Order> getAllOrders(Patient patientByUuid, OrderType drugOrderType, Set<Concept> conceptsForDrugs, Date startDate,
+                                    Date endDate, Set<Concept> drugConceptsToBeExcluded, Collection<Encounter> encounters) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Order.class);
         criteria.add(Restrictions.eq("patient", patientByUuid));
         if (CollectionUtils.isNotEmpty(conceptsForDrugs)) {
@@ -308,6 +309,9 @@ public class OrderDaoImpl implements OrderDao {
         }
         if (CollectionUtils.isNotEmpty(drugConceptsToBeExcluded)) {
             criteria.add(Restrictions.not(Restrictions.in("concept", drugConceptsToBeExcluded)));
+        }
+        if (CollectionUtils.isNotEmpty(encounters)) {
+            criteria.add(Restrictions.in("encounter", encounters));
         }
         criteria.add(Restrictions.eq("orderType", drugOrderType));
         criteria.add(Restrictions.eq("voided", false));
@@ -342,7 +346,8 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> getActiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate, Set<Concept> conceptsToFilter, Set<Concept> conceptsToExclude, Date startDate, Date endDate) {
+    public List<Order> getActiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate,
+                                       Set<Concept> conceptsToFilter, Set<Concept> conceptsToExclude, Date startDate, Date endDate, Collection<Encounter> encounters) {
         if (patient == null) {
             throw new IllegalArgumentException("Patient is required when fetching active orders");
         }
@@ -351,6 +356,9 @@ public class OrderDaoImpl implements OrderDao {
         }
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Order.class);
         criteria.add(Restrictions.eq("patient", patient));
+        if (CollectionUtils.isNotEmpty(encounters)) {
+            criteria.add(Restrictions.in("encounter", encounters));
+        }
         if (careSetting != null) {
             criteria.add(Restrictions.eq("careSetting", careSetting));
         }
@@ -389,7 +397,8 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> getInactiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate, Set<Concept> concepts, Set<Concept> conceptsToExclude) {
+    public List<Order> getInactiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate,
+                                         Set<Concept> concepts, Set<Concept> conceptsToExclude, Collection<Encounter> encounters) {
         if (patient == null) {
             throw new IllegalArgumentException("Patient is required when fetching active orders");
         }
@@ -398,6 +407,10 @@ public class OrderDaoImpl implements OrderDao {
         }
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Order.class);
         criteria.add(Restrictions.eq("patient", patient));
+        if (CollectionUtils.isNotEmpty(encounters)) {
+            criteria.add(Restrictions.in("encounter", encounters));
+        }
+
         if (careSetting != null) {
             criteria.add(Restrictions.eq("careSetting", careSetting));
         }

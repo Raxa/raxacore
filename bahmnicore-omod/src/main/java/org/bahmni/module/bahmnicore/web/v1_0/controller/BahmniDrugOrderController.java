@@ -7,7 +7,6 @@ import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
-import org.openmrs.Order;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniOrderAttribute;
@@ -111,31 +110,12 @@ public class BahmniDrugOrderController extends BaseRestController {
     @ResponseBody
     public List<BahmniDrugOrder> getDrugOrderDetails(@RequestParam(value = "patientUuid") String patientUuid,
                                                                       @RequestParam(value = "isActive", required = false) Boolean isActive,
-                                                                      @RequestParam(value = "includeConceptSet", required = false) String drugConceptSetToBeFiltered,
-                                                                      @RequestParam(value = "excludeConceptSet", required = false) String drugConceptSetToBeExcluded) throws ParseException {
-        Set<Concept> drugConceptsToBeFiltered = getDrugConcepts(drugConceptSetToBeFiltered);
-        Set<Concept> drugConceptsToBeExcluded = getDrugConcepts(drugConceptSetToBeExcluded);
-        List<DrugOrder> drugOrders = new ArrayList<>();
-
-        if (isActive == null) {
-            List<Order> orders = drugOrderService.getAllDrugOrders(patientUuid, drugConceptsToBeFiltered, null, null, drugConceptsToBeExcluded);
-            for (Order order : orders) {
-                drugOrders.add((DrugOrder) order);
-            }
-        } else if (isActive) {
-            drugOrders = drugOrderService.getActiveDrugOrders(patientUuid, drugConceptsToBeFiltered, drugConceptsToBeExcluded);
-        } else {
-            drugOrders = drugOrderService.getInactiveDrugOrders(patientUuid, drugConceptsToBeFiltered, drugConceptsToBeExcluded);
-        }
-
-        Map<String, DrugOrder> discontinuedDrugOrderMap = drugOrderService.getDiscontinuedDrugOrders(drugOrders);
-        try {
-            return bahmniDrugOrderMapper.mapToResponse(drugOrders, null, discontinuedDrugOrderMap);
-        } catch (IOException e) {
-            logger.error("Could not parse dosing instructions", e);
-            throw new RuntimeException("Could not parse dosing instructions", e);
-
-        }
+                                                                      @RequestParam(value = "includeConceptSet", required = false) String drugConceptSetNameToBeFiltered,
+                                                                      @RequestParam(value = "excludeConceptSet", required = false) String drugConceptSetNameToBeExcluded,
+                                                                      @RequestParam(value = "patientProgramUuid", required = false) String patientProgramUuid) throws ParseException {
+        Set<Concept> drugConceptsToBeFiltered = getDrugConcepts(drugConceptSetNameToBeFiltered);
+        Set<Concept> drugConceptsToBeExcluded = getDrugConcepts(drugConceptSetNameToBeExcluded);
+        return drugOrderService.getDrugOrders(patientUuid, isActive, drugConceptsToBeFiltered, drugConceptsToBeExcluded, patientProgramUuid);
     }
 
     Set<Concept> getDrugConcepts(String drugConceptSetName){

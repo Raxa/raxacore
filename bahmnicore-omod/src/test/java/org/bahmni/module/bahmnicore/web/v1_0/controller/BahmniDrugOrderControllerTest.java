@@ -1,8 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
-import org.bahmni.module.bahmnicore.service.BahmniObsService;
-import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,11 +8,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openmrs.api.ConceptService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 

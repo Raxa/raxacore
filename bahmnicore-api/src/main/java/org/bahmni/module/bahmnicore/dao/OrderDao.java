@@ -16,7 +16,8 @@ public interface OrderDao {
 
     List<DrugOrder> getPrescribedDrugOrders(List<String> visitUuids);
 
-    List<DrugOrder> getPrescribedDrugOrdersForConcepts(Patient patient, Boolean includeActiveVisit, List<Visit> visits, List<Concept> conceptIds, Date startDate, Date endDate);
+    List<DrugOrder> getPrescribedDrugOrdersForConcepts(Patient patient, Boolean includeActiveVisit, List<Visit> visits,
+                                                       List<Concept> conceptIds, Date startDate, Date endDate);
 
     Collection<EncounterTransaction.DrugOrder> getDrugOrderForRegimen(String regimenName);
 
@@ -30,13 +31,16 @@ public interface OrderDao {
 
     List<Order> getOrdersForVisitUuid(String visitUuid, String orderTypeUuid);
 
-    List<Order> getAllOrders(Patient patientByUuid, OrderType drugOrderTypeUuid, Set<Concept> conceptsForDrugs, Date startDate, Date endDate, Set<Concept> drugConceptsToBeExcluded);
+    List<Order> getAllOrders(Patient patientByUuid, OrderType drugOrderTypeUuid, Set<Concept> conceptsForDrugs,
+                             Date startDate, Date endDate, Set<Concept> drugConceptsToBeExcluded, Collection<Encounter> encounters);
 
     Map<String,DrugOrder> getDiscontinuedDrugOrders(List<DrugOrder> drugOrders);
 
-    List<Order> getActiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate, Set<Concept> conceptsToFilter, Set<Concept> conceptsToExclude, Date startDate, Date endDate);
+    List<Order> getActiveOrders(Patient patient, OrderType orderType, CareSetting careSetting, Date asOfDate, Set<Concept> conceptsToFilter,
+                                Set<Concept> conceptsToExclude, Date startDate, Date endDate, Collection<Encounter> encounters);
 
-    List<Order> getInactiveOrders(Patient patient, OrderType orderTypeByName, CareSetting careSettingByName, Date asOfDate, Set<Concept> concepts, Set<Concept> drugConceptsToBeExcluded);
+    List<Order> getInactiveOrders(Patient patient, OrderType orderTypeByName, CareSetting careSettingByName, Date asOfDate,
+                                  Set<Concept> concepts, Set<Concept> drugConceptsToBeExcluded, Collection<Encounter> encounters);
 
     Order getChildOrder(Order order);
 }

@@ -3,6 +3,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.contract.drugorder.ConceptData;
 import org.bahmni.module.bahmnicore.contract.drugorder.DrugOrderConfigResponse;
 import org.bahmni.module.bahmnicore.contract.drugorder.OrderFrequencyData;
@@ -10,6 +11,7 @@ import org.bahmni.module.bahmnicore.dao.OrderDao;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
+import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.openmrs.CareSetting;
@@ -35,8 +37,10 @@ import org.openmrs.api.ProviderService;
 import org.openmrs.api.UserService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniOrderAttribute;
 import org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions;
+import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
@@ -45,6 +49,7 @@ import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.*;
 
@@ -66,14 +71,19 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private String systemUserName;
     private ConceptMapper conceptMapper = new ConceptMapper();
     private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
+    private BahmniProgramWorkflowService bahmniProgramWorkflowService;
+    private BahmniDrugOrderMapper bahmniDrugOrderMapper;
+
 
     private static final String GP_DOSING_INSTRUCTIONS_CONCEPT_UUID = "order.dosingInstructionsConceptUuid";
+    private static Logger logger = Logger.getLogger(BahmniDrugOrderService.class);
+
 
     @Autowired
     public BahmniDrugOrderServiceImpl(VisitService visitService, ConceptService conceptService, OrderService orderService,
                                       ProviderService providerService, EncounterService encounterService,
                                       UserService userService, PatientDao patientDao,
-                                      PatientService patientService, OrderDao orderDao, BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand) {
+                                      PatientService patientService, OrderDao orderDao, BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand, BahmniProgramWorkflowService bahmniProgramWorkflowService) {
         this.visitService = visitService;
         this.conceptService = conceptService;
         this.orderService = orderService;
@@ -84,6 +94,8 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         this.openmrsPatientService = patientService;
         this.orderDao = orderDao;
         this.bahmniVisitAttributeSaveCommand = bahmniVisitAttributeSaveCommand;
+        this.bahmniProgramWorkflowService = bahmniProgramWorkflowService;
+        this.bahmniDrugOrderMapper = new BahmniDrugOrderMapper();
     }
 
     @Override
@@ -102,37 +114,12 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
     @Override
     public List<DrugOrder> getActiveDrugOrders(String patientUuid) {
-        return getActiveDrugOrders(patientUuid, new Date(), null, null, null, null);
+        return getActiveDrugOrders(patientUuid, new Date(), null, null, null, null, null);
     }
 
     @Override
     public List<DrugOrder> getActiveDrugOrders(String patientUuid, Date startDate, Date endDate) {
-        return getActiveDrugOrders(patientUuid, new Date(), null, null, startDate, endDate);
-    }
-
-    @Override
-    public List<DrugOrder> getActiveDrugOrders(String patientUuid, Set<Concept> conceptsToFilter, Set<Concept> conceptsToExclude) {
-        return getActiveDrugOrders(patientUuid, new Date(), conceptsToFilter, conceptsToExclude, null, null);
-    }
-
-    private List<DrugOrder> getActiveDrugOrders(String patientUuid, Date asOfDate, Set<Concept> conceptsToFilter, Set<Concept> conceptsToExclude, Date startDate, Date endDate) {
-        Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
-        CareSetting careSettingByName = orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString());
-        List<Order> orders = orderDao.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
-                careSettingByName, asOfDate, conceptsToFilter, conceptsToExclude, startDate, endDate);
-        return getDrugOrders(orders);
-    }
-
-    private List<DrugOrder> getDrugOrders(List<Order> orders){
-        HibernateLazyLoader hibernateLazyLoader = new HibernateLazyLoader();
-        List<DrugOrder> drugOrders = new ArrayList<>();
-        for(Order order: orders){
-            order = hibernateLazyLoader.load(order);
-            if(order instanceof DrugOrder) {
-                drugOrders.add((DrugOrder) order);
-            }
-        }
-        return drugOrders;
+        return getActiveDrugOrders(patientUuid, new Date(), null, null, startDate, endDate, null);
     }
 
     @Override
@@ -150,13 +137,45 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     @Override
-    public List<DrugOrder> getInactiveDrugOrders(String patientUuid, Set<Concept> concepts, Set<Concept> drugConceptsToBeExcluded) {
+    public List<DrugOrder> getInactiveDrugOrders(String patientUuid, Set<Concept> concepts, Set<Concept> drugConceptsToBeExcluded,
+                                                 Collection<Encounter> encounters) {
         Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
         CareSetting careSettingByName = orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString());
         Date asOfDate = new Date();
         List<Order> orders = orderDao.getInactiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
-                careSettingByName, asOfDate, concepts, drugConceptsToBeExcluded);
-        return getDrugOrders(orders);
+                careSettingByName, asOfDate, concepts, drugConceptsToBeExcluded, encounters);
+        return mapOrderToDrugOrder(orders);
+    }
+
+    @Override
+    public List<BahmniDrugOrder> getDrugOrders(String patientUuid, Boolean isActive, Set<Concept> drugConceptsToBeFiltered,
+                                               Set<Concept> drugConceptsToBeExcluded, String patientProgramUuid) throws ParseException {
+        Collection<Encounter> programEncounters = null;
+        if (patientProgramUuid != null) {
+            programEncounters = bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid);
+            if(programEncounters.isEmpty()){
+                return new ArrayList<>();
+            }
+        }
+        List<DrugOrder> drugOrders;
+
+        if (isActive == null) {
+            List<Order> orders = getAllDrugOrders(patientUuid, drugConceptsToBeFiltered, null, null, drugConceptsToBeExcluded, programEncounters);
+            drugOrders = mapOrderToDrugOrder(orders);
+        } else if (isActive) {
+            drugOrders = getActiveDrugOrders(patientUuid, new Date(), drugConceptsToBeFiltered, drugConceptsToBeExcluded, null, null, programEncounters);
+        } else {
+            drugOrders = getInactiveDrugOrders(patientUuid, drugConceptsToBeFiltered, drugConceptsToBeExcluded, programEncounters);
+        }
+
+        Map<String, DrugOrder> discontinuedDrugOrderMap = getDiscontinuedDrugOrders(drugOrders);
+        try {
+            return bahmniDrugOrderMapper.mapToResponse(drugOrders, null, discontinuedDrugOrderMap);
+        } catch (IOException e) {
+            logger.error("Could not parse dosing instructions", e);
+            throw new RuntimeException("Could not parse dosing instructions", e);
+
+        }
     }
 
     @Override
@@ -181,10 +200,11 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     @Override
-    public List<Order> getAllDrugOrders(String patientUuid, Set<Concept> conceptsForDrugs, Date startDate, Date endDate, Set<Concept> drugConceptsToBeExcluded) throws ParseException {
+    public List<Order> getAllDrugOrders(String patientUuid, Set<Concept> conceptsForDrugs, Date startDate, Date endDate,
+                                        Set<Concept> drugConceptsToBeExcluded, Collection<Encounter> encounters) throws ParseException {
         Patient patientByUuid = openmrsPatientService.getPatientByUuid(patientUuid);
         OrderType orderTypeByUuid = orderService.getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID);
-        return orderDao.getAllOrders(patientByUuid, orderTypeByUuid, conceptsForDrugs, startDate, endDate, drugConceptsToBeExcluded);
+        return orderDao.getAllOrders(patientByUuid, orderTypeByUuid, conceptsForDrugs, startDate, endDate, drugConceptsToBeExcluded, encounters);
     }
 
     private List<EncounterTransaction.Concept> fetchOrderAttributeConcepts() {
@@ -245,7 +265,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     private List<DrugOrder> checkOverlappingOrderAndUpdate(List<DrugOrder> newDrugOrders, String patientUuid, Date orderDate) {
-        List<DrugOrder> activeDrugOrders = getActiveDrugOrders(patientUuid, orderDate, null, null, null, null);
+        List<DrugOrder> activeDrugOrders = getActiveDrugOrders(patientUuid, orderDate, null, null, null, null, null);
         List<DrugOrder> drugOrdersToRemove = new ArrayList<>();
         for (DrugOrder newDrugOrder : newDrugOrders) {
             for (DrugOrder activeDrugOrder : activeDrugOrders) {
@@ -350,4 +370,26 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         }
         return drugOrderType;
     }
+
+    List<DrugOrder> getActiveDrugOrders(String patientUuid, Date asOfDate, Set<Concept> conceptsToFilter,
+                                                Set<Concept> conceptsToExclude, Date startDate, Date endDate, Collection<Encounter> encounters) {
+        Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
+        CareSetting careSettingByName = orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString());
+        List<Order> orders = orderDao.getActiveOrders(patient, orderService.getOrderTypeByName("Drug order"),
+                careSettingByName, asOfDate, conceptsToFilter, conceptsToExclude, startDate, endDate, encounters);
+        return mapOrderToDrugOrder(orders);
+    }
+
+    private List<DrugOrder> mapOrderToDrugOrder(List<Order> orders){
+        HibernateLazyLoader hibernateLazyLoader = new HibernateLazyLoader();
+        List<DrugOrder> drugOrders = new ArrayList<>();
+        for(Order order: orders){
+            order = hibernateLazyLoader.load(order);
+            if(order instanceof DrugOrder) {
+                drugOrders.add((DrugOrder) order);
+            }
+        }
+        return drugOrders;
+    }
+
 }
