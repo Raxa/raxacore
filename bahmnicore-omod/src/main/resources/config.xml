@@ -26,6 +26,7 @@
         <require_module>org.bahmni.module.reference-data</require_module>
         <require_module>org.openmrs.module.addresshierarchy</require_module>
         <require_module>org.openmrs.module.uiframework</require_module>
+        <require_module>org.openmrs.module.bacteriology</require_module>
     </require_modules>
     <!-- Extensions -->
 	
