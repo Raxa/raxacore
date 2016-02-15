@@ -24,11 +24,7 @@ import java.util.UUID;
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/bahmniencounter")
 public class BahmniEncounterController extends BaseRestController {
-    private AdministrationService adminService;
-    private VisitService visitService;
-    private ConceptService conceptService;
     private EncounterService encounterService;
-    private OrderService orderService;
     private EmrEncounterService emrEncounterService;
     private EncounterTransactionMapper encounterTransactionMapper;
     private BahmniEncounterTransactionService bahmniEncounterTransactionService;
@@ -38,21 +34,15 @@ public class BahmniEncounterController extends BaseRestController {
     }
 
     @Autowired
-    public BahmniEncounterController(VisitService visitService, ConceptService conceptService,
-                                     EncounterService encounterService, OrderService orderService,
+    public BahmniEncounterController(EncounterService encounterService,
                                      EmrEncounterService emrEncounterService, EncounterTransactionMapper encounterTransactionMapper,
                                      BahmniEncounterTransactionService bahmniEncounterTransactionService,
-                                     BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper, @Qualifier("adminService") AdministrationService administrationService) {
-        this.visitService = visitService;
-        this.conceptService = conceptService;
+                                     BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper) {
         this.encounterService = encounterService;
-        this.orderService = orderService;
         this.emrEncounterService = emrEncounterService;
         this.encounterTransactionMapper = encounterTransactionMapper;
         this.bahmniEncounterTransactionService = bahmniEncounterTransactionService;
         this.bahmniEncounterTransactionMapper = bahmniEncounterTransactionMapper;
-        this.adminService = administrationService;
-
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{uuid}")
