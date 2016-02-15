@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
+import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.test.builder.DrugOrderBuilder;
 import org.joda.time.DateTime;
@@ -45,6 +46,9 @@ public class BahmniBridgeTest {
     private ConceptService conceptService;
     @Mock
     private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
+    @Mock
+    private BahmniConceptService bahmniConceptService;
+
     BahmniBridge bahmniBridge;
 
     String patientUuid = "patient-uuid";
@@ -52,7 +56,7 @@ public class BahmniBridgeTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        bahmniBridge = new BahmniBridge(obsDao, patientService, personService, conceptService, orderDao, bahmniDrugOrderService, omrsObsToBahmniObsMapper);
+        bahmniBridge = new BahmniBridge(obsDao, patientService, personService, conceptService, orderDao, bahmniDrugOrderService, omrsObsToBahmniObsMapper, bahmniConceptService);
         bahmniBridge.forPatient(patientUuid);
     }
 
@@ -140,6 +144,20 @@ public class BahmniBridgeTest {
         PowerMockito.when(omrsObsToBahmniObsMapper.map(obs)).thenReturn(bahmniObs);
         Assert.assertEquals("observation uuid", bahmniBridge.getChildObsFromParentObs("parent obs uuid", "vital concept name").getUuid());
 
+    }
+
+    @Test
+    public void shouldGetConceptByFullySpecifiedName() throws Exception {
+        Concept vitalsConcept = new Concept();
+        ConceptName vitalConceptName = new ConceptName();
+        vitalConceptName.setName("vital concept name");
+        Locale locale = new Locale("En");
+        vitalConceptName.setLocale(locale);
+        vitalsConcept.setFullySpecifiedName(vitalConceptName);
+
+        PowerMockito.when(bahmniConceptService.getConceptByFullySpecifiedName("vital concept name")).thenReturn(vitalsConcept);
+
+        Assert.assertEquals(vitalsConcept, bahmniBridge.getConceptByFullySpecifiedName("vital concept name"));
     }
 
     public Date addDays(Date now, int days) {

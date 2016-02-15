@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
+import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
@@ -39,6 +40,7 @@ public class BahmniBridge {
     private OrderDao orderDao;
     private BahmniDrugOrderService bahmniDrugOrderService;
     private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
+    private BahmniConceptService bahmniConceptService;
 
     OrderMapper drugOrderMapper = new OrderMapper1_12();
     /**
@@ -54,7 +56,7 @@ public class BahmniBridge {
     }
 
     @Autowired
-    public BahmniBridge(ObsDao obsDao, PatientService patientService, PersonService personService, ConceptService conceptService, OrderDao orderDao, BahmniDrugOrderService bahmniDrugOrderService, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper) {
+    public BahmniBridge(ObsDao obsDao, PatientService patientService, PersonService personService, ConceptService conceptService, OrderDao orderDao, BahmniDrugOrderService bahmniDrugOrderService, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper, BahmniConceptService bahmniConceptService) {
         this.obsDao = obsDao;
         this.patientService = patientService;
         this.personService = personService;
@@ -62,6 +64,7 @@ public class BahmniBridge {
         this.orderDao = orderDao;
         this.bahmniDrugOrderService = bahmniDrugOrderService;
         this.omrsObsToBahmniObsMapper = omrsObsToBahmniObsMapper;
+        this.bahmniConceptService = bahmniConceptService;
     }
 
     /**
@@ -172,6 +175,14 @@ public class BahmniBridge {
     private boolean hasScheduledOrderBecameActive(EncounterTransaction.DrugOrder drugOrder) {
 
         return drugOrder.getScheduledDate().before(new Date());
+    }
+
+    /**
+     * Retrieve concept by FullySpecifiedName
+     */
+
+    public Concept getConceptByFullySpecifiedName(String conceptName) {
+        return bahmniConceptService.getConceptByFullySpecifiedName(conceptName);
     }
 
     /**
