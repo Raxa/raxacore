@@ -20,6 +20,7 @@ import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentat
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
+import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
@@ -47,7 +48,7 @@ public class BahmniProgramEnrollmentResource extends ProgramEnrollmentResource1_
     public static Collection<PatientState> getStates(BahmniPatientProgram instance) {
         ArrayList<PatientState> states = new ArrayList<>();
         for (PatientState state : instance.getStates()) {
-            if(!state.isVoided()){
+            if (!state.isVoided()) {
                 states.add(state);
             }
         }
@@ -93,7 +94,7 @@ public class BahmniProgramEnrollmentResource extends ProgramEnrollmentResource1_
     }
 
     protected void delete(PatientProgram delegate, String reason, RequestContext context) throws ResponseException {
-        if(!delegate.isVoided().booleanValue()) {
+        if (!delegate.isVoided().booleanValue()) {
             Context.getService(BahmniProgramWorkflowService.class).voidPatientProgram(delegate, reason);
         }
     }
@@ -113,17 +114,33 @@ public class BahmniProgramEnrollmentResource extends ProgramEnrollmentResource1_
 
     protected PageableResult doSearch(RequestContext context) {
         String patientUuid = context.getRequest().getParameter("patient");
-        if(patientUuid != null) {
-            PatientService patientService = Context.getPatientService();
-            Patient patient = patientService.getPatientByUuid(patientUuid);
-            if(patient == null) {
-                return new EmptySearchResult();
-            } else {
-                List patientPrograms = Context.getService(BahmniProgramWorkflowService.class).getPatientPrograms(patient, (Program)null, (Date)null, (Date)null, (Date)null, (Date)null, context.getIncludeAll());
-                return new NeedsPaging(patientPrograms, context);
-            }
+        String patientProgramUuid = context.getRequest().getParameter("patientProgramUuid");
+        if (patientProgramUuid != null) {
+            return searchByProgramUuid(context, patientProgramUuid);
+        } else if (patientUuid != null) {
+            return searchByPatientUuid(context, patientUuid);
         } else {
             return super.doSearch(context);
+        }
+    }
+
+    private PageableResult searchByPatientUuid(RequestContext context, String patientUuid) {
+        PatientService patientService = Context.getPatientService();
+        Patient patient = patientService.getPatientByUuid(patientUuid);
+        if (patient == null) {
+            return new EmptySearchResult();
+        } else {
+            List patientPrograms = Context.getService(BahmniProgramWorkflowService.class).getPatientPrograms(patient, (Program) null, (Date) null, (Date) null, (Date) null, (Date) null, context.getIncludeAll());
+            return new NeedsPaging(patientPrograms, context);
+        }
+    }
+
+    private PageableResult searchByProgramUuid(RequestContext context, String patientProgramUuid) {
+        PatientProgram byUniqueId = getByUniqueId(patientProgramUuid);
+        if (byUniqueId == null) {
+            return new EmptySearchResult();
+        } else {
+            return new AlreadyPaged<>(context, Collections.singletonList(byUniqueId), false);
         }
     }
 }
