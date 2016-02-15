@@ -85,7 +85,7 @@ public class ObsToObsTabularFlowSheetController {
         }
         bahmniObservations = filterDataByCount(bahmniObservations, initialCount, latestCount);
         PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(leafConcepts, bahmniObservations, groupByConcept);
-        setNoramlRangeForHeaders(pivotTable.getHeaders());
+        setNormalRangeAndUnits(pivotTable.getHeaders());
 
         BaseTableExtension<PivotTable> extension = (BaseTableExtension<PivotTable>) bahmniExtensions.getExtension("treatmentRegimenExtension", groovyExtension + ".groovy");
         if (extension != null)
@@ -93,7 +93,7 @@ public class ObsToObsTabularFlowSheetController {
         return pivotTable;
     }
 
-    void setNoramlRangeForHeaders(Set<EncounterTransaction.Concept> headers) {
+    private void setNormalRangeAndUnits(Set<EncounterTransaction.Concept> headers) {
         for (EncounterTransaction.Concept header : headers) {
             if (CONCEPT_DETAILS.equals(header.getConceptClass())) {
                 List<Concept> setMembers = conceptService.getConceptsByConceptSet(conceptService.getConceptByUuid(header.getUuid()));
@@ -101,8 +101,13 @@ public class ObsToObsTabularFlowSheetController {
                 if (primaryConcept == null) continue;
                 header.setHiNormal(getHiNormal(primaryConcept));
                 header.setLowNormal(getLowNormal(primaryConcept));
+                header.setUnits(getUnits(primaryConcept));
             }
         }
+    }
+
+    private String getUnits(Concept primaryConcept) {
+        return conceptService.getConceptNumeric(primaryConcept.getConceptId()).getUnits();
     }
 
     private Double getLowNormal(Concept primaryConcept) {

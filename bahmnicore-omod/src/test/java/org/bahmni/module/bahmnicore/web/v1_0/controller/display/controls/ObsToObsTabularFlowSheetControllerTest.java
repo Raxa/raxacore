@@ -12,6 +12,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.openmrs.Concept;
+import org.openmrs.ConceptNumeric;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -30,6 +31,7 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
@@ -310,5 +312,38 @@ public class ObsToObsTabularFlowSheetControllerTest {
 
     }
 
+    @Test
+    public void shouldFetchPivotTableWithHighNormalLowNormalAndUnitsForConceptWithConceptDetailsClass() throws Exception {
+        Concept labMagnesium = new ConceptBuilder().withName("Lab, Magnesium").withClass("Misc").withSet(false).withDataTypeNumeric().build();
+        Concept labMagnesiumAbnormal = new ConceptBuilder().withName("Lab, Magnesium Abnormal").withClass("Abnormal").withDataType("Boolean").withSet(false).build();
+        Concept labMagnesiumData = new ConceptBuilder().withName("Lab, Magnesium Data").withClass("Concept Details").withDataType("N/A").withSetMember(labMagnesium).withSetMember(labMagnesiumAbnormal).withSet(true).build();
+        ConceptNumeric labMagnesiumNumeric = new ConceptNumeric();
+        labMagnesiumNumeric.setHiNormal(5.0);
+        labMagnesiumNumeric.setLowNormal(2.0);
+        labMagnesiumNumeric.setUnits("mg");
+        when(conceptService.getConceptNumeric(anyInt())).thenReturn(labMagnesiumNumeric);
+
+        when(conceptService.getConceptByName("Lab, Magnesium Data")).thenReturn(labMagnesiumData);
+        when(conceptService.getConceptByName("Lab, Magnesium")).thenReturn(labMagnesium);
+        when(conceptService.getConceptByName("Lab, Magnesium Abnormal")).thenReturn(labMagnesiumAbnormal);
+
+        ArrayList<BahmniObservation> bahmniObservations = new ArrayList<>();
+        bahmniObservations.add(new BahmniObservation().setConcept(conceptMapper.map(labMagnesium)).setValue(2.3));
+        when(bahmniObsService.observationsFor("patientUuid", labMagnesiumData, labMagnesium, -1, null, null, null)).thenReturn(bahmniObservations);
+
+        PivotTable pivotTable = new PivotTable();
+        Set<EncounterTransaction.Concept> headers = new HashSet<>();
+
+        headers.add(conceptMapper.map(labMagnesiumData));
+        pivotTable.setHeaders(headers);
+        when(bahmniObservationsToTabularViewMapper.constructTable(Matchers.<Set<EncounterTransaction.Concept>>any(), eq(bahmniObservations), anyString())).thenReturn(pivotTable);
+        when(conceptService.getConceptsByConceptSet(conceptService.getConceptByUuid(anyString()))).thenReturn(Arrays.asList(labMagnesium,labMagnesiumAbnormal));
+        PivotTable actualPivotTable = obsToObsPivotTableController.constructPivotTableFor("patientUuid", -1, "Lab, Magnesium Data", "Lab, Magnesium", Arrays.asList("Lab, Magnesium"), bahmniObservations.size(), 1, null, null, null, null);
+        Set<EncounterTransaction.Concept> actualHeaders = actualPivotTable.getHeaders();
+        EncounterTransaction.Concept header = actualHeaders.iterator().next();
+        assertEquals(new Double(2.0), header.getLowNormal());
+        assertEquals(new Double(5.0), header.getHiNormal());
+        assertEquals("mg", header.getUnits());
+    }
 
 }
