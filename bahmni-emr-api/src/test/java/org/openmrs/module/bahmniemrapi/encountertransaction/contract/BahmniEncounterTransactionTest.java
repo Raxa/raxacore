@@ -176,6 +176,8 @@ public class BahmniEncounterTransactionTest {
 
 	@Test
 	public void shouldCopyRequiredFieldsOnCloneForDrugOrders() {
+		String PATIENT_PROGRAM_UUID = "patientProgramUuid";
+
 		Set<EncounterTransaction.Provider> providers = new HashSet<EncounterTransaction.Provider>();
 		EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
 		provider.setUuid("providerUuid");
@@ -196,6 +198,7 @@ public class BahmniEncounterTransactionTest {
 		bahmniEncounterTransaction.setEncounterTypeUuid("encounterTypeUuid");
 		bahmniEncounterTransaction.setLocationUuid("locationUuid");
 		bahmniEncounterTransaction.setPatientUuid("patientUuid");
+		bahmniEncounterTransaction.setPatientProgramUuid(PATIENT_PROGRAM_UUID);
 		bahmniEncounterTransaction.setProviders(providers);
 
 		BahmniEncounterTransaction clonedEncounterTransaction = bahmniEncounterTransaction.cloneForPastDrugOrders();
@@ -208,6 +211,7 @@ public class BahmniEncounterTransactionTest {
 		assertEquals("encounterTypeUuid", clonedEncounterTransaction.getEncounterTypeUuid());
 		assertEquals("locationUuid", clonedEncounterTransaction.getLocationUuid());
 		assertEquals("patientUuid", clonedEncounterTransaction.getPatientUuid());
+		assertEquals(PATIENT_PROGRAM_UUID, clonedEncounterTransaction.getPatientProgramUuid());
 		assertEquals(providers, clonedEncounterTransaction.getProviders());
 	}
 

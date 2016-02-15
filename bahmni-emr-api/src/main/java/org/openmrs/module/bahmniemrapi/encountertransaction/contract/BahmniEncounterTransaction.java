@@ -341,6 +341,7 @@ public class BahmniEncounterTransaction {
         previousBahmniEncounterTransaction.setProviders(getProviders());
         previousBahmniEncounterTransaction.setVisitType(getVisitType());
         previousBahmniEncounterTransaction.setVisitTypeUuid(getVisitTypeUuid());
+        previousBahmniEncounterTransaction.setPatientProgramUuid(getPatientProgramUuid());
 
         EncounterTransaction.DrugOrder oldestDrugOrder = getOldestDrugOrder();
         previousBahmniEncounterTransaction.setEncounterDateTime(oldestDrugOrder == null ? null : oldestDrugOrder.getScheduledDate());
