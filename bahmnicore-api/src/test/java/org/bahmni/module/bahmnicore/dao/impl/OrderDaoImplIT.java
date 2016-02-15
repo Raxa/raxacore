@@ -386,6 +386,37 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         Assert.assertEquals(actual, childOrder);
     }
 
+    @Test
+    public void getOrdersByPatientProgram() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        OrderType orderType = Context.getOrderService().getOrderType(1);
+        Concept concept = Context.getConceptService().getConcept(16);
+        HashSet<Concept> concepts = new HashSet<Concept>();
+        concepts.add(concept);
+
+        List<Order> activeOrders = orderDao.getOrdersByPatientProgram("dfdfoifo-dkcd-475d-b990-6d82327f36a3", orderType, null);
+
+        assertEquals(2, activeOrders.size());
+        assertEquals(activeOrders.get(0).getUuid(), "0246222e-f5f5-11e3-b47b-c8b69a44dcba");
+        assertEquals(activeOrders.get(1).getUuid(), "0246222e-f5f5-11e3-b47b-c8b69a44badc");
+    }
+
+    @Test
+    public void getOrdersByPatientProgramWithConceptNames() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        OrderType orderType = Context.getOrderService().getOrderType(1);
+        HashSet<Concept> concepts = new HashSet<Concept>();
+        Concept paracetamolConcept = Context.getConceptService().getConcept(24);
+        concepts.add(paracetamolConcept);
+        Concept nonOrderedDrugConcept = Context.getConceptService().getConcept(26);
+        concepts.add(nonOrderedDrugConcept);
+
+        List<Order> activeOrders = orderDao.getOrdersByPatientProgram("dfdfoifo-dkcd-475d-b990-6d82327f36a3", orderType, concepts);
+
+        assertEquals(1, activeOrders.size());
+        assertEquals(activeOrders.get(0).getUuid(), "0246222e-f5f5-11e3-b47b-c8b69a44dcba");
+    }
+
     private boolean visitWithUuidExists(String uuid, List<Visit> visits) {
         boolean exists = false;
         for (Visit visit : visits) {

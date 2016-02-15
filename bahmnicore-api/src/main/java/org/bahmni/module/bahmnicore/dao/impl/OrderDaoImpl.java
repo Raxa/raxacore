@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.contract.orderTemplate.OrderTemplateJson;
 import org.bahmni.module.bahmnicore.dao.ApplicationDataDirectory;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
+import org.bahmni.module.bahmnicore.model.Episode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -300,8 +301,7 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> getAllOrders(Patient patientByUuid, OrderType drugOrderType, Set<Concept> conceptsForDrugs, Date startDate,
-                                    Date endDate, Set<Concept> drugConceptsToBeExcluded, Collection<Encounter> encounters) {
+    public List<Order> getAllOrders(Patient patientByUuid, OrderType drugOrderType, Set<Concept> conceptsForDrugs, Set<Concept> drugConceptsToBeExcluded, Collection<Encounter> encounters) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Order.class);
         criteria.add(Restrictions.eq("patient", patientByUuid));
         if (CollectionUtils.isNotEmpty(conceptsForDrugs)) {
@@ -317,11 +317,29 @@ public class OrderDaoImpl implements OrderDao {
         criteria.add(Restrictions.eq("voided", false));
         criteria.add(Restrictions.ne("action", Order.Action.DISCONTINUE));
         criteria.addOrder(org.hibernate.criterion.Order.asc("orderId"));
-        if (startDate != null) criteria.add(Restrictions.ge("scheduledDate", startDate));
-        if (endDate != null) criteria.add(Restrictions.le("scheduledDate", endDate));
 
         return criteria.list();
 
+    }
+
+    public List<Order> getOrdersByPatientProgram(String patientProgramUuid, OrderType drugOrderType, Set<Concept> conceptsForDrugs){
+        StringBuilder queryString = new StringBuilder("select order\n" +
+                "from Episode as episode\n" +
+                "    join episode.encounters as encounter\n" +
+                "        join encounter.orders as order\n" +
+                "    join episode.patientPrograms as patientProgram\n" +
+                "where patientProgram.uuid = :patientProgramUuid and order.voided = false and order.orderType= :drugOrderType and order.action != :orderAction");
+        if (CollectionUtils.isNotEmpty(conceptsForDrugs)) {
+            queryString.append(" and order.concept in :conceptsForDrugs ");
+        }
+        Query query = sessionFactory.getCurrentSession().createQuery(queryString.toString())
+                .setParameter("patientProgramUuid", patientProgramUuid)
+                .setParameter("drugOrderType", drugOrderType)
+                .setParameter("orderAction", Order.Action.DISCONTINUE);
+        if (CollectionUtils.isNotEmpty(conceptsForDrugs)) {
+            query.setParameterList("conceptsForDrugs", conceptsForDrugs);
+        }
+        return query.list();
     }
 
     @Override

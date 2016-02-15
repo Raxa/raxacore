@@ -44,14 +44,12 @@ public class DrugOGramController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public TreatmentRegimen getRegimen(@RequestParam(value = "patientUuid", required = true) String patientUuid,
-                                       @RequestParam(value = "drugs", required = false) List<String> drugs,
-                                       @RequestParam(value = "startDate", required = false) String startDateStr,
-                                       @RequestParam(value = "endDate", required = false) String endDateStr) throws ParseException {
+                                       @RequestParam(value = "patientProgramUuid", required = false) String patientProgramUuid,
+                                       @RequestParam(value = "drugs", required = false) List<String> drugs) throws ParseException {
         Set<Concept> conceptsForDrugs = getConceptsForDrugs(drugs);
-        Date startDate = BahmniDateUtil.convertToDate(startDateStr, BahmniDateUtil.DateFormatType.UTC);
-        Date endDate = BahmniDateUtil.convertToDate(endDateStr, BahmniDateUtil.DateFormatType.UTC);
 
-        List<Order> allDrugOrders = bahmniDrugOrderService.getAllDrugOrders(patientUuid, conceptsForDrugs, startDate, endDate, null, null);
+
+        List<Order> allDrugOrders = bahmniDrugOrderService.getAllDrugOrders(patientUuid, patientProgramUuid, conceptsForDrugs,null, null);
         if (!CollectionUtils.isEmpty(conceptsForDrugs)) {
             conceptsForDrugs = filterConceptsForDrugOrders(conceptsForDrugs, allDrugOrders);
         }

@@ -93,14 +93,14 @@ public class BahmniDrugOrderServiceImplTest {
     public void shouldGetAllDrugOrdersOfAPatientProgram() throws ParseException {
         List<BahmniDrugOrder> drugOrderDetails = bahmniDrugOrderService.getDrugOrders(PATIENT_UUID, null, conceptsToFilter, null, PATIENT_PROGRAM_UUID);
 
-        verify(orderDao).getAllOrders(mockPatient, mockOrderType, conceptsToFilter, null, null, null, encounters);
+        verify(orderDao).getAllOrders(mockPatient, mockOrderType, conceptsToFilter, null, encounters);
     }
 
     @Test
     public void shouldNotConsiderEncountersToFetchDrugOrdersIfPatientProgramUuidIsNull() throws Exception {
         List<BahmniDrugOrder> drugOrderDetails = bahmniDrugOrderService.getDrugOrders(PATIENT_UUID, null, conceptsToFilter, null, null);
 
-        verify(orderDao).getAllOrders(mockPatient, mockOrderType, conceptsToFilter, null, null, null, null);
+        verify(orderDao).getAllOrders(mockPatient, mockOrderType, conceptsToFilter, null, null);
         verifyNoMoreInteractions(bahmniProgramWorkflowService);
     }
 }
