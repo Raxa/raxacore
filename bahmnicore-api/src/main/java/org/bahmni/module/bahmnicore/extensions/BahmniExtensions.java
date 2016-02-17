@@ -13,6 +13,7 @@ import java.io.IOException;
 public class BahmniExtensions {
 
     private static final Logger log = Logger.getLogger(BahmniExtensions.class);
+    public static final String GROOVY_EXTENSION = ".groovy";
 
     private GroovyClassLoader groovyClassLoader;
 

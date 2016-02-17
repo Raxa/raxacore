@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
@@ -34,6 +35,7 @@ public class ObsToObsTabularFlowSheetController {
     private BahmniObservationsToTabularViewMapper bahmniObservationsToTabularViewMapper;
     private ConceptMapper conceptMapper;
     private BahmniExtensions bahmniExtensions;
+    public static final String FLOWSHEET_EXTENSION = "flowsheetExtension";
 
     private static Logger logger = Logger.getLogger(ObsToObsTabularFlowSheetController.class);
 
@@ -87,7 +89,11 @@ public class ObsToObsTabularFlowSheetController {
         PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(leafConcepts, bahmniObservations, groupByConcept);
         setNormalRangeAndUnits(pivotTable.getHeaders());
 
-        BaseTableExtension<PivotTable> extension = (BaseTableExtension<PivotTable>) bahmniExtensions.getExtension("treatmentRegimenExtension", groovyExtension + ".groovy");
+        if(StringUtils.isEmpty(groovyExtension)){
+            return pivotTable;
+        }
+
+        BaseTableExtension<PivotTable> extension = (BaseTableExtension<PivotTable>) bahmniExtensions.getExtension(FLOWSHEET_EXTENSION, groovyExtension + BahmniExtensions.GROOVY_EXTENSION);
         if (extension != null)
             extension.update(pivotTable, patientUuid);
         return pivotTable;
