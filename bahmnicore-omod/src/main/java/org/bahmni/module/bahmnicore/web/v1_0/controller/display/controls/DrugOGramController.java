@@ -57,7 +57,7 @@ public class DrugOGramController {
         BaseTableExtension<TreatmentRegimen> extension = (BaseTableExtension<TreatmentRegimen>) bahmniExtensions.getExtension("treatmentRegimenExtension"
                 , "TreatmentRegimenExtension.groovy");
         if (extension != null)
-            extension.update(treatmentRegimen, patientUuid);
+            extension.update(treatmentRegimen, patientUuid, patientProgramUuid);
         return treatmentRegimen;
     }
 

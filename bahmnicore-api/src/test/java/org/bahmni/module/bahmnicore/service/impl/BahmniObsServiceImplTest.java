@@ -176,6 +176,6 @@ public class BahmniObsServiceImplTest {
 
         bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, conceptNames);
 
-        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames);
+        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, null);
     }
 }

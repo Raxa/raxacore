@@ -184,7 +184,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
     @Override
     public Collection<BahmniObservation> getObservationsForPatientProgram(String patientProgramUuid, List<String> conceptNames) {
-        List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames);
+        List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, null);
         return omrsObsToBahmniObsMapper.map(observations, getConceptsByName(conceptNames));
     }
 

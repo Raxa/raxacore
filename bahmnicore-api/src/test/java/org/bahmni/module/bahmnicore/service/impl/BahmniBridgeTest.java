@@ -28,6 +28,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.*;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 
 @RunWith(PowerMockRunner.class)
 public class BahmniBridgeTest {
@@ -52,6 +55,7 @@ public class BahmniBridgeTest {
     BahmniBridge bahmniBridge;
 
     String patientUuid = "patient-uuid";
+    String patientProgramUuid = "patient-program-uuid";
 
     @Before
     public void setUp() throws Exception {
@@ -158,6 +162,25 @@ public class BahmniBridgeTest {
         PowerMockito.when(bahmniConceptService.getConceptByFullySpecifiedName("vital concept name")).thenReturn(vitalsConcept);
 
         Assert.assertEquals(vitalsConcept, bahmniBridge.getConceptByFullySpecifiedName("vital concept name"));
+    }
+
+    @Test
+    public void shouldGetTheLatestAmongAllTheObservationsWithPatientUuid() throws Exception {
+        bahmniBridge.forPatient(patientUuid);
+
+        bahmniBridge.latestObs("conceptName");
+
+        verify(obsDao, times(1)).getLatestObsFor(patientUuid, "conceptName", 1);
+    }
+
+    @Test
+    public void shouldGetTheLatestAmongAllTheObservationsWithPatientProgramUuid() throws Exception {
+        bahmniBridge.forPatientProgram(patientProgramUuid);
+        List<String> conceptNames = new ArrayList<>();
+        conceptNames.add("conceptName");
+        bahmniBridge.latestObs("conceptName");
+
+        verify(obsDao, times(1)).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, 1);
     }
 
     public Date addDays(Date now, int days) {

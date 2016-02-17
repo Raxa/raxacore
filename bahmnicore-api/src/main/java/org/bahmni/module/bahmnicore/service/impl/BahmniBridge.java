@@ -31,6 +31,7 @@ import java.util.*;
 public class BahmniBridge {
 
     private String patientUuid;
+    private String patientProgramUuid;
     private String visitUUid;
 
     private ObsDao obsDao;
@@ -81,6 +82,19 @@ public class BahmniBridge {
     }
 
     /**
+     * Set patient program uuid. This will be used by methods that require the patient to perform its operations associated with a specific program.
+     * <p/>
+     * Setting patient program uuid might be mandatory depending on the operation you intend to perform using the bridge.
+     *
+     * @param patientProgramUuid
+     * @return
+     */
+    public BahmniBridge forPatientProgram(String patientProgramUuid) {
+        this.patientProgramUuid = patientProgramUuid;
+        return this;
+    }
+
+    /**
      * Set visit uuid. This will be used by methods that require a visit to perform its operations.
      * <p/>
      * Setting visit uuid might be mandatory depending on the operation you intend to perform using the bridge.
@@ -101,7 +115,14 @@ public class BahmniBridge {
      * @return
      */
     public Obs latestObs(String conceptName) {
-        List<Obs> obsList = obsDao.getLatestObsFor(patientUuid, conceptName, 1);
+        List<Obs> obsList;
+        List<String> conceptNames = new ArrayList<>();
+        conceptNames.add(conceptName);
+        if (patientProgramUuid != null) {
+            obsList = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, 1);
+        } else {
+            obsList = obsDao.getLatestObsFor(patientUuid, conceptName, 1);
+        }
         if (obsList.size() > 0) {
             return obsList.get(0);
         }
