@@ -5,15 +5,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.bahmni.module.bahmnicore.dao.impl.ObsDaoImpl;
-import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
-import org.bahmni.module.bahmnicore.obs.ObservationsAdder;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.module.bahmnicore.util.MiscUtils;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.VisitService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahmniObsMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,17 +26,15 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
     private VisitService visitService;
     private ConceptService conceptService;
-    private BahmniExtensions bahmniExtensions;
     private BahmniProgramWorkflowService programWorkflowService;
 
     @Autowired
-    public BahmniObsServiceImpl(ObsDao obsDao, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper, VisitService visitService, ConceptService conceptService, VisitDao visitDao, BahmniExtensions bahmniExtensions, BahmniProgramWorkflowService programWorkflowService) {
+    public BahmniObsServiceImpl(ObsDao obsDao, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper, VisitService visitService, ConceptService conceptService, VisitDao visitDao, BahmniProgramWorkflowService programWorkflowService) {
         this.obsDao = obsDao;
         this.omrsObsToBahmniObsMapper = omrsObsToBahmniObsMapper;
         this.visitService = visitService;
         this.conceptService = conceptService;
         this.visitDao = visitDao;
-        this.bahmniExtensions = bahmniExtensions;
         this.programWorkflowService = programWorkflowService;
     }
 
@@ -57,8 +52,6 @@ public class BahmniObsServiceImpl implements BahmniObsService {
             List<Obs> observations = obsDao.getObsByPatientAndVisit(patientUuid, conceptNames,
                     visitDao.getVisitIdsFor(patientUuid, numberOfVisits), -1, ObsDaoImpl.OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order, startDate, endDate);
 
-            sendObsToGroovyScript(conceptNames, observations);
-
             return omrsObsToBahmniObsMapper.map(observations, concepts);
         }
         return Collections.EMPTY_LIST;
@@ -70,12 +63,6 @@ public class BahmniObsServiceImpl implements BahmniObsService {
             conceptNames.add(concept.getName().getName());
         }
         return conceptNames;
-    }
-
-    private void sendObsToGroovyScript(List<String> questions, List<Obs> observations) {
-        ObservationsAdder observationsAdder = (ObservationsAdder) bahmniExtensions.getExtension("observationsAdder", "CurrentMonthOfTreatment.groovy");
-        if (observationsAdder != null)
-            observationsAdder.addObservations(observations, questions);
     }
 
     @Override
@@ -112,8 +99,6 @@ public class BahmniObsServiceImpl implements BahmniObsService {
             }
         }
 
-        sendObsToGroovyScript(getConceptNames(concepts), latestObs);
-
         return omrsObsToBahmniObsMapper.map(latestObs, concepts);
     }
 
@@ -136,8 +121,6 @@ public class BahmniObsServiceImpl implements BahmniObsService {
             latestObs.addAll(obsDao.getObsByPatientAndVisit(patientUuid, Arrays.asList(concept.getName().getName()),
                     visitDao.getVisitIdsFor(patientUuid, numberOfVisits), 1, ObsDaoImpl.OrderBy.ASC, obsIgnoreList, filterOutOrderObs, order, null, null));
         }
-
-        sendObsToGroovyScript(getConceptNames(conceptNames), latestObs);
 
         return omrsObsToBahmniObsMapper.map(latestObs, conceptNames);
     }
@@ -185,6 +168,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     @Override
     public Collection<BahmniObservation> getObservationsForPatientProgram(String patientProgramUuid, List<String> conceptNames) {
         List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, null);
+
         return omrsObsToBahmniObsMapper.map(observations, getConceptsByName(conceptNames));
     }
 

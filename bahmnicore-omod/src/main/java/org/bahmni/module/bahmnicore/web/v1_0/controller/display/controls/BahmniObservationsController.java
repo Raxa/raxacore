@@ -1,9 +1,12 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
+import org.bahmni.module.bahmnicore.obs.ObservationsAdder;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.util.MiscUtils;
 import org.openmrs.Concept;
+import org.openmrs.Obs;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.VisitService;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,12 +34,14 @@ public class BahmniObservationsController extends BaseRestController {
     private BahmniObsService bahmniObsService;
     private ConceptService conceptService;
     private VisitService visitService;
+    private BahmniExtensions bahmniExtensions;
 
     @Autowired
-    public BahmniObservationsController(BahmniObsService bahmniObsService, ConceptService conceptService, VisitService visitService) {
+    public BahmniObservationsController(BahmniObsService bahmniObsService, ConceptService conceptService, VisitService visitService, BahmniExtensions bahmniExtensions) {
         this.bahmniObsService = bahmniObsService;
         this.conceptService = conceptService;
         this.visitService = visitService;
+        this.bahmniExtensions = bahmniExtensions;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -50,18 +56,21 @@ public class BahmniObservationsController extends BaseRestController {
 
         List<Concept> rootConcepts = MiscUtils.getConceptsForNames(rootConceptNames, conceptService);
 
-        if(patientProgramUuid != null){
-            return bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, rootConceptNames);
-        }
-        else if (ObjectUtils.equals(scope, LATEST)) {
-            return bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders,
+        Collection<BahmniObservation> observations;
+        if (patientProgramUuid != null) {
+            observations = bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, rootConceptNames);
+        } else if (ObjectUtils.equals(scope, LATEST)) {
+            observations = bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders,
                     null);
         } else if (ObjectUtils.equals(scope, INITIAL)) {
-            return bahmniObsService.getInitial(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders, null);
+            observations = bahmniObsService.getInitial(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders, null);
         } else {
-            return bahmniObsService.observationsFor(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders, null, null, null);
+            observations = bahmniObsService.observationsFor(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders, null, null, null);
         }
 
+        sendObsToGroovyScript(getConceptNames(rootConcepts), observations);
+
+        return observations;
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"visitUuid"})
@@ -88,5 +97,19 @@ public class BahmniObservationsController extends BaseRestController {
     public Collection<BahmniObservation> get(@RequestParam(value = "encounterUuid", required = true) String encounterUuid,
                                              @RequestParam(value = "concept", required = false) List<String> conceptNames) {
         return bahmniObsService.getObservationsForEncounter(encounterUuid, conceptNames);
+    }
+
+    private void sendObsToGroovyScript(List<String> questions, Collection<BahmniObservation> observations) throws ParseException {
+        ObservationsAdder observationsAdder = (ObservationsAdder) bahmniExtensions.getExtension("observationsAdder", "CurrentMonthOfTreatment.groovy");
+        if (observationsAdder != null)
+            observationsAdder.addObservations(observations, questions);
+    }
+
+    private List<String> getConceptNames(Collection<Concept> concepts) {
+        List<String> conceptNames = new ArrayList<>();
+        for (Concept concept : concepts) {
+            conceptNames.add(concept.getName().getName());
+        }
+        return conceptNames;
     }
 }
