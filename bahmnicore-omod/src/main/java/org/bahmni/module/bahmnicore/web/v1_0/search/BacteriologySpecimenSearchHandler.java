@@ -8,6 +8,7 @@ import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bacteriology.api.BacteriologyService;
 import org.openmrs.module.bacteriology.api.encounter.domain.Specimen;
+import org.openmrs.module.bacteriology.api.encounter.domain.Specimens;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
@@ -68,22 +69,9 @@ public class BacteriologySpecimenSearchHandler implements SearchHandler {
         List<Concept> concepts = Arrays.asList(bacteriologyConceptSet);
         List<Obs> observations = obsService.getObservations(null, encountersAsList, concepts, null, null, null, null, null, null, null, null, false);
 
-        List<Specimen> specimenList = new ArrayList<>();
-        for (Obs obs : observations) {
-            Specimen specimen = bacteriologyService.getSpecimenFromObs(obs);
-            specimenList.add(specimen);
-        }
-        sortSpecimensByDateCollected(specimenList);
+        Specimens sortedSpecimens = bacteriologyService.getSpecimens(observations).sortByDateCollected();
 
-        return new NeedsPaging<Specimen>(specimenList, requestContext);
+        return new NeedsPaging<Specimen>(sortedSpecimens, requestContext);
     }
 
-    private void sortSpecimensByDateCollected(List<Specimen> specimenList) {
-        Collections.sort(specimenList, new Comparator<Specimen>() {
-            @Override
-            public int compare(Specimen specimen1, Specimen specimen2) {
-                return specimen2.getDateCollected().compareTo(specimen1.getDateCollected());
-            }
-        });
-    }
 }
