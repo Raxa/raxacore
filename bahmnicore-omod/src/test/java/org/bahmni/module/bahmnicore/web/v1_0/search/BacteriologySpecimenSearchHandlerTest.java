@@ -13,6 +13,7 @@ import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bacteriology.api.BacteriologyService;
 import org.openmrs.module.bacteriology.api.encounter.domain.Specimen;
+import org.openmrs.module.bacteriology.api.encounter.domain.Specimens;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.powermock.api.mockito.PowerMockito;
@@ -55,6 +56,7 @@ public class BacteriologySpecimenSearchHandlerTest {
         Encounter encounter = new Encounter();
         Obs observation = new Obs();
         Specimen specimen = new Specimen();
+        Specimens specimens = new Specimens(Arrays.asList(specimen));
 
         List<Encounter> encounters = Arrays.asList(encounter);
         List<Concept> concepts = Arrays.asList(bacteriologyConceptSet);
@@ -62,13 +64,14 @@ public class BacteriologySpecimenSearchHandlerTest {
         when(requestContext.getParameter("patientProgramUuid")).thenReturn("sample-patientProgramUuid");
         when(bahmniProgramWorkflowService.getEncountersByPatientProgramUuid("sample-patientProgramUuid")).thenReturn(encounters);
         when(conceptService.getConceptByName(BACTERIOLOGY_CONCEPT_SET)).thenReturn(bacteriologyConceptSet);
+        List<Obs> observations = Arrays.asList(observation);
         when(obsService.getObservations(null, encounters, concepts, null, null, null, null, null, null, null, null, false))
-                .thenReturn(Arrays.asList(observation));
-        when(bacteriologyService.getSpecimenFromObs(observation)).thenReturn(specimen);
+                .thenReturn(observations);
+        when(bacteriologyService.getSpecimens(observations)).thenReturn(specimens);
 
         NeedsPaging<Specimen> pageableResult = (NeedsPaging)bacteriologySpecimenSearchHandler.search(requestContext);
-        List<Specimen> resultObservations = pageableResult.getPageOfResults();
-        assertEquals(1, resultObservations.size());
-        assertEquals(resultObservations.get(0), specimen);
+        Specimens resultSpecimens = new Specimens(pageableResult.getPageOfResults());
+        assertEquals(1, resultSpecimens.size());
+        assertEquals(specimens, resultSpecimens);
     }
 }
