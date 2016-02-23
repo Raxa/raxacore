@@ -1399,6 +1399,7 @@
         </insert>
     </changeSet>
     <changeSet id="bahmni-core-201409241028" author="Hemanth">
+        <validCheckSum>3:48db15b4c8ef5eb006f8bb9a82854735</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from concept_reference_source where name='ISO 8601 Duration'</sqlCheck>
         </preConditions>
