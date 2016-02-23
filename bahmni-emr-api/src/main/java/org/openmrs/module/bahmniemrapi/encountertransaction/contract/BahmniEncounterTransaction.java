@@ -176,15 +176,6 @@ public class BahmniEncounterTransaction {
         encounterTransaction.setDrugOrders(drugOrders);
     }
 
-    public void setOrderGroups(List<EncounterTransaction.OrderGroup> orderGroups) {
-        encounterTransaction.setOrderGroups(orderGroups);
-    }
-
-    public List<EncounterTransaction.OrderGroup> getOrderGroups() {
-        return encounterTransaction.getOrderGroups();
-    }
-
-
     @JsonSerialize(using = CustomJsonDateSerializer.class)
     public Date getEncounterDateTime() {
         return encounterTransaction.getEncounterDateTime();
