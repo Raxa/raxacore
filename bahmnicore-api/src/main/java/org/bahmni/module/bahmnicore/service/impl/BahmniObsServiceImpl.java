@@ -10,6 +10,7 @@ import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.module.bahmnicore.util.MiscUtils;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.ObsService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahmniObsMapper;
@@ -27,15 +28,17 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     private VisitService visitService;
     private ConceptService conceptService;
     private BahmniProgramWorkflowService programWorkflowService;
+    private ObsService obsService;
 
     @Autowired
-    public BahmniObsServiceImpl(ObsDao obsDao, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper, VisitService visitService, ConceptService conceptService, VisitDao visitDao, BahmniProgramWorkflowService programWorkflowService) {
+    public BahmniObsServiceImpl(ObsDao obsDao, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper, VisitService visitService, ConceptService conceptService, VisitDao visitDao, BahmniProgramWorkflowService programWorkflowService, ObsService obsService) {
         this.obsDao = obsDao;
         this.omrsObsToBahmniObsMapper = omrsObsToBahmniObsMapper;
         this.visitService = visitService;
         this.conceptService = conceptService;
         this.visitDao = visitDao;
         this.programWorkflowService = programWorkflowService;
+        this.obsService = obsService;
     }
 
     @Override
@@ -170,6 +173,12 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, null);
 
         return omrsObsToBahmniObsMapper.map(observations, getConceptsByName(conceptNames));
+    }
+
+    @Override
+    public BahmniObservation getBahmniObservationByUuid(String observationUuid) {
+        Obs obs = obsService.getObsByUuid(observationUuid);
+        return omrsObsToBahmniObsMapper.map(obs);
     }
 
     @Override

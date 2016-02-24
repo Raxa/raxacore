@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
 
@@ -128,6 +129,19 @@ public class BahmniObservationsControllerTest {
         bahmniObservationsController.get("patientUuid", conceptNames, null, null, null, null, patientProgramUuid);
 
         verify(bahmniObsService, times(0)).getObservationsForPatientProgram(patientProgramUuid, conceptNames);
+    }
+
+    @Test
+    public void shouldGetBahmniObservationWithTheGivenObservationUuid() throws Exception {
+        String observationUuid = "observationUuid";
+        BahmniObservation expectedBahmniObservation = new BahmniObservation();
+        when(bahmniObsService.getBahmniObservationByUuid(observationUuid)).thenReturn(expectedBahmniObservation);
+
+        BahmniObservation actualBahmniObservation = bahmniObservationsController.get(observationUuid);
+
+        verify(bahmniObsService, times(1)).getBahmniObservationByUuid("observationUuid");
+        assertNotNull("BahmniObservation should not be null", actualBahmniObservation);
+        assertEquals(expectedBahmniObservation, actualBahmniObservation);
     }
 
 }

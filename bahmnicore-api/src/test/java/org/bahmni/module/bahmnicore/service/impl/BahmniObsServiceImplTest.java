@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import junit.framework.Assert;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.bahmni.module.bahmnicore.dao.impl.ObsDaoImpl;
@@ -11,8 +12,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.openmrs.*;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.ObsService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
@@ -28,6 +31,8 @@ import java.util.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
@@ -58,6 +63,10 @@ public class BahmniObsServiceImplTest {
     private ConceptService conceptService;
     @Mock
     private BahmniProgramWorkflowService bahmniProgramWorkflowService;
+    @Mock
+    private ObsService obsService;
+    @Mock
+    private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
 
     @Before
     public void setUp() {
@@ -66,7 +75,7 @@ public class BahmniObsServiceImplTest {
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
         when(observationTypeMatcher.getObservationType(any(Obs.class))).thenReturn(ObservationTypeMatcher.ObservationType.OBSERVATION);
-        bahmniObsService = new BahmniObsServiceImpl(obsDao, new OMRSObsToBahmniObsMapper(new ETObsToBahmniObsMapper(null), observationTypeMatcher, observationMapper), visitService, conceptService, visitDao, bahmniProgramWorkflowService);
+        bahmniObsService = new BahmniObsServiceImpl(obsDao, omrsObsToBahmniObsMapper, visitService, conceptService, visitDao, bahmniProgramWorkflowService, obsService);
     }
 
     @Test
@@ -159,5 +168,21 @@ public class BahmniObsServiceImplTest {
         bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, conceptNames);
 
         verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, null);
+    }
+
+    @Test
+    public void shouldGetBahmniObservationByObservationUuid() throws Exception {
+        String observationUuid = "observationUuid";
+        Obs obs = new Obs();
+        BahmniObservation expectedBahmniObservation = new BahmniObservation();
+        when(obsService.getObsByUuid(observationUuid)).thenReturn(obs);
+        when(omrsObsToBahmniObsMapper.map(obs)).thenReturn(expectedBahmniObservation);
+
+        BahmniObservation actualBahmniObservation = bahmniObsService.getBahmniObservationByUuid(observationUuid);
+
+        verify(obsService, times(1)).getObsByUuid(observationUuid);
+        verify(omrsObsToBahmniObsMapper, times(1)).map(obs);
+        assertNotNull(actualBahmniObservation);
+        assertEquals(expectedBahmniObservation, actualBahmniObservation);
     }
 }
