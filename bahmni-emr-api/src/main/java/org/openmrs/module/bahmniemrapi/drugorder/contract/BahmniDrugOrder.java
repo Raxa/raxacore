@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmniemrapi.drugorder.contract;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.Visit;
 import org.openmrs.module.bahmniemrapi.visit.contract.VisitData;
 import org.openmrs.module.emrapi.CareSettingType;
@@ -94,12 +95,8 @@ public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
         return drugOrder.getOrderType();
     }
 
-    public String getOrderGroupUuid() {
-        return drugOrder.getOrderGroup().getUuid();
-    }
-
-    public String getOrderSetUuid() {
-        return drugOrder.getOrderGroup().getOrderSet() != null ? drugOrder.getOrderGroup().getOrderSet().getUuid() : null;
+    public EncounterTransaction.OrderGroup getOrderGroup(){
+        return drugOrder.getOrderGroup();
     }
 
     public Date getScheduledDate() {
