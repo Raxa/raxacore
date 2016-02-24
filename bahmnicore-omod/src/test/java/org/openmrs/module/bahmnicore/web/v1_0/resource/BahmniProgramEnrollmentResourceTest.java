@@ -3,6 +3,7 @@ package org.openmrs.module.bahmnicore.web.v1_0.resource;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -53,16 +54,6 @@ public class BahmniProgramEnrollmentResourceTest {
         initMocks(this);
         PowerMockito.mockStatic(Context.class);
         bahmniProgramEnrollmentResource = new BahmniProgramEnrollmentResource();
-    }
-
-    @Test
-    public void testRepresentationDescription() throws Exception {
-        DelegatingResourceDescription delegatingResourceDescription = bahmniProgramEnrollmentResource.getRepresentationDescription(Representation.FULL);
-        Map<String, DelegatingResourceDescription.Property> properties = delegatingResourceDescription.getProperties();
-        Assert.assertTrue(properties.containsKey("attributes"));
-        Assert.assertEquals(properties.get("attributes").getRep(), Representation.DEFAULT);
-        Assert.assertTrue(properties.containsKey("states"));
-        Assert.assertEquals(properties.get("states").getRep().getRepresentation(), "(auditInfo,uuid,startDate,endDate,voided,state:REF)");
     }
 
     @Test
