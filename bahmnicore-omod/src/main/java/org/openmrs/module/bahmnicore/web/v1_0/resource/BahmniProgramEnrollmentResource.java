@@ -60,8 +60,8 @@ public class BahmniProgramEnrollmentResource extends ProgramEnrollmentResource1_
         SimpleObject state = new SimpleObject();
         state.put("auditInfo", patientStateResource.getAuditInfo(patientState));
         state.put("uuid", patientState.getUuid());
-        state.put("startDate", patientState.getStartDate());
-        state.put("endDate", patientState.getEndDate());
+        state.put("startDate", ConversionUtil.convertToRepresentation(patientState.getStartDate(), Representation.DEFAULT));
+        state.put("endDate", ConversionUtil.convertToRepresentation(patientState.getEndDate(), Representation.DEFAULT));
         state.put("voided", patientState.getVoided());
         state.put("state", ConversionUtil.convertToRepresentation(patientState.getState(), Representation.REF));
         return state;
