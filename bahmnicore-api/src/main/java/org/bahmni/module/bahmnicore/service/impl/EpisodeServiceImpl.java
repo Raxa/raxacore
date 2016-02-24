@@ -6,8 +6,10 @@ import org.bahmni.module.bahmnicore.service.EpisodeService;
 import org.openmrs.PatientProgram;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@Transactional
 public class EpisodeServiceImpl implements EpisodeService {
     @Autowired
     private EpisodeDAO episodeDAO;
