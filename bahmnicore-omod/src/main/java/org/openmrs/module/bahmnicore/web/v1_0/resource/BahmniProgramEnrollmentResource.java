@@ -10,20 +10,19 @@ import org.openmrs.PatientState;
 import org.openmrs.Program;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
+import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
-import org.openmrs.module.webservices.rest.web.representation.CustomRepresentation;
+import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.FullRepresentation;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
-import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
-import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingResourceDescription;
-import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
-import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
+import org.openmrs.module.webservices.rest.web.resource.impl.*;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.ProgramEnrollmentResource1_10;
 
@@ -45,14 +44,27 @@ public class BahmniProgramEnrollmentResource extends ProgramEnrollmentResource1_
     }
 
     @PropertyGetter("states")
-    public static Collection<PatientState> getStates(BahmniPatientProgram instance) {
-        ArrayList<PatientState> states = new ArrayList<>();
-        for (PatientState state : instance.getStates()) {
+    public static List<SimpleObject> getStates(BahmniPatientProgram instance) throws Exception {
+        List<SimpleObject> states = new ArrayList<>();
+        for(PatientState state: instance.getStates()){
             if (!state.isVoided()) {
-                states.add(state);
+                states.add(getPatientState(state));
             }
         }
         return states;
+    }
+
+    private static SimpleObject getPatientState(PatientState patientState) throws Exception {
+        DelegatingSubResource patientStateResource = (DelegatingSubResource)Context.getService(RestService.class).getResourceBySupportedClass(PatientState.class);
+
+        SimpleObject state = new SimpleObject();
+        state.put("auditInfo", patientStateResource.getAuditInfo(patientState));
+        state.put("uuid", patientState.getUuid());
+        state.put("startDate", patientState.getStartDate());
+        state.put("endDate", patientState.getEndDate());
+        state.put("voided", patientState.getVoided());
+        state.put("state", ConversionUtil.convertToRepresentation(patientState.getState(), Representation.REF));
+        return state;
     }
 
     @Override
@@ -67,7 +79,7 @@ public class BahmniProgramEnrollmentResource extends ProgramEnrollmentResource1_
             parentRep.addProperty("attributes", Representation.REF);
             return parentRep;
         } else if (rep instanceof FullRepresentation) {
-            parentRep.addProperty("states", new CustomRepresentation("(auditInfo,uuid,startDate,endDate,voided,state:REF)"));
+            parentRep.addProperty("states");
             parentRep.addProperty("attributes", Representation.DEFAULT);
             return parentRep;
         } else {
