@@ -21,7 +21,7 @@ public interface BahmniDrugOrderService {
 
     DrugOrderConfigResponse getConfig();
 
-    List<Order> getAllDrugOrders(String patientUuid, Set<Concept> conceptsForDrugs, Date startDate, Date endDate,
+    List<Order> getAllDrugOrders(String patientUuid, String patientProgramUuid, Set<Concept> conceptsForDrugs,
                                  Set<Concept> drugConceptsToBeExcluded, Collection<Encounter> encounters) throws ParseException;
 
     Map<String,DrugOrder> getDiscontinuedDrugOrders(List<DrugOrder> drugOrders);

@@ -133,8 +133,21 @@ public class ObsDaoImplIT extends BaseIntegrationTest {
         ArrayList<String> conceptNames = new ArrayList<>();
         conceptNames.add("conceptABC");
 
-        List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames);
+        List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames, null);
 
         assertEquals(1, observations.size());
     }
+
+    @Test
+    public void shouldRetrieveObsFromPatientProgramIdAndConceptNamesOrderByObsDateTime() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("DiagnosisProgram");
+
+        List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames, 1);
+
+        assertEquals(1, observations.size());
+        assertEquals("2016-08-18 15:09:05.0", observations.get(0).getObsDatetime().toString());
+    }
+
+
 }

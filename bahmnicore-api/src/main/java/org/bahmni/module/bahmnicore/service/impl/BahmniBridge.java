@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
+import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
@@ -30,6 +31,7 @@ import java.util.*;
 public class BahmniBridge {
 
     private String patientUuid;
+    private String patientProgramUuid;
     private String visitUUid;
 
     private ObsDao obsDao;
@@ -39,6 +41,7 @@ public class BahmniBridge {
     private OrderDao orderDao;
     private BahmniDrugOrderService bahmniDrugOrderService;
     private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
+    private BahmniConceptService bahmniConceptService;
 
     OrderMapper drugOrderMapper = new OrderMapper1_12();
     /**
@@ -54,7 +57,7 @@ public class BahmniBridge {
     }
 
     @Autowired
-    public BahmniBridge(ObsDao obsDao, PatientService patientService, PersonService personService, ConceptService conceptService, OrderDao orderDao, BahmniDrugOrderService bahmniDrugOrderService, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper) {
+    public BahmniBridge(ObsDao obsDao, PatientService patientService, PersonService personService, ConceptService conceptService, OrderDao orderDao, BahmniDrugOrderService bahmniDrugOrderService, OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper, BahmniConceptService bahmniConceptService) {
         this.obsDao = obsDao;
         this.patientService = patientService;
         this.personService = personService;
@@ -62,6 +65,7 @@ public class BahmniBridge {
         this.orderDao = orderDao;
         this.bahmniDrugOrderService = bahmniDrugOrderService;
         this.omrsObsToBahmniObsMapper = omrsObsToBahmniObsMapper;
+        this.bahmniConceptService = bahmniConceptService;
     }
 
     /**
@@ -74,6 +78,19 @@ public class BahmniBridge {
      */
     public BahmniBridge forPatient(String patientUuid) {
         this.patientUuid = patientUuid;
+        return this;
+    }
+
+    /**
+     * Set patient program uuid. This will be used by methods that require the patient to perform its operations associated with a specific program.
+     * <p/>
+     * Setting patient program uuid might be mandatory depending on the operation you intend to perform using the bridge.
+     *
+     * @param patientProgramUuid
+     * @return
+     */
+    public BahmniBridge forPatientProgram(String patientProgramUuid) {
+        this.patientProgramUuid = patientProgramUuid;
         return this;
     }
 
@@ -98,7 +115,14 @@ public class BahmniBridge {
      * @return
      */
     public Obs latestObs(String conceptName) {
-        List<Obs> obsList = obsDao.getLatestObsFor(patientUuid, conceptName, 1);
+        List<Obs> obsList;
+        List<String> conceptNames = new ArrayList<>();
+        conceptNames.add(conceptName);
+        if (patientProgramUuid != null) {
+            obsList = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, 1);
+        } else {
+            obsList = obsDao.getLatestObsFor(patientUuid, conceptName, 1);
+        }
         if (obsList.size() > 0) {
             return obsList.get(0);
         }
@@ -175,12 +199,21 @@ public class BahmniBridge {
     }
 
     /**
+     * Retrieve concept by FullySpecifiedName
+     */
+
+    public Concept getConceptByFullySpecifiedName(String conceptName) {
+        return bahmniConceptService.getConceptByFullySpecifiedName(conceptName);
+    }
+
+    /**
      * Retrieve concept for <code>conceptName</code>
      *
      * @return
      */
     public Date getStartDateOfTreatment() throws ParseException {
-        List<Order> allDrugOrders = bahmniDrugOrderService.getAllDrugOrders(patientUuid, null, null, null, null, null);
+        List<Order> allDrugOrders = bahmniDrugOrderService.getAllDrugOrders(patientUuid, null, null, null, null);
+
         sortOders(allDrugOrders);
         return allDrugOrders.get(0).getScheduledDate() !=null ? allDrugOrders.get(0).getScheduledDate() : allDrugOrders.get(0).getDateActivated();
     }

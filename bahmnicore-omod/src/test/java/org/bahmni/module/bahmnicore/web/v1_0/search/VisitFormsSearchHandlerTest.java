@@ -35,7 +35,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
-
 public class VisitFormsSearchHandlerTest {
 
     @InjectMocks

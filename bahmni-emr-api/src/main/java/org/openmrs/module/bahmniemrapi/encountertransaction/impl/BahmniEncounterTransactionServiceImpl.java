@@ -36,14 +36,21 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     private PatientService patientService;
     private LocationService locationService;
     private ProviderService providerService;
-    private AdministrationService administrationService;
     private EncounterSessionMatcher encounterSessionMatcher;
 
-    public BahmniEncounterTransactionServiceImpl(EncounterService encounterService, EmrEncounterService emrEncounterService, EncounterTransactionMapper encounterTransactionMapper,
-                                                 EncounterTypeIdentifier encounterTypeIdentifier, List<EncounterDataPreSaveCommand> encounterDataPreSaveCommand, List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands,
+    public BahmniEncounterTransactionServiceImpl(EncounterService encounterService,
+                                                 EmrEncounterService emrEncounterService,
+                                                 EncounterTransactionMapper encounterTransactionMapper,
+                                                 EncounterTypeIdentifier encounterTypeIdentifier,
+                                                 List<EncounterDataPreSaveCommand> encounterDataPreSaveCommand,
+                                                 List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands,
                                                  List<EncounterDataPostSaveCommand> encounterDataPostDeleteCommands,
-                                                 BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper, VisitService visitService, PatientService patientService, LocationService locationService, ProviderService providerService,
-                                                 @Qualifier("adminService") AdministrationService administrationService, EncounterSessionMatcher encounterSessionMatcher) {
+                                                 BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper,
+                                                 VisitService visitService,
+                                                 PatientService patientService,
+                                                 LocationService locationService,
+                                                 ProviderService providerService,
+                                                 EncounterSessionMatcher encounterSessionMatcher) {
 
         this.encounterService = encounterService;
         this.emrEncounterService = emrEncounterService;
@@ -57,7 +64,6 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         this.patientService = patientService;
         this.locationService = locationService;
         this.providerService = providerService;
-        this.administrationService = administrationService;
         this.encounterSessionMatcher = encounterSessionMatcher;
     }
 

@@ -160,7 +160,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         List<DrugOrder> drugOrders;
 
         if (isActive == null) {
-            List<Order> orders = getAllDrugOrders(patientUuid, drugConceptsToBeFiltered, null, null, drugConceptsToBeExcluded, programEncounters);
+            List<Order> orders = getAllDrugOrders(patientUuid, null, drugConceptsToBeFiltered, drugConceptsToBeExcluded, programEncounters);
             drugOrders = mapOrderToDrugOrder(orders);
         } else if (isActive) {
             drugOrders = getActiveDrugOrders(patientUuid, new Date(), drugConceptsToBeFiltered, drugConceptsToBeExcluded, null, null, programEncounters);
@@ -200,11 +200,13 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     @Override
-    public List<Order> getAllDrugOrders(String patientUuid, Set<Concept> conceptsForDrugs, Date startDate, Date endDate,
-                                        Set<Concept> drugConceptsToBeExcluded, Collection<Encounter> encounters) throws ParseException {
+    public List<Order> getAllDrugOrders(String patientUuid, String patientProgramUuid, Set<Concept> conceptsForDrugs,Set<Concept> drugConceptsToBeExcluded, Collection<Encounter> encounters) throws ParseException {
         Patient patientByUuid = openmrsPatientService.getPatientByUuid(patientUuid);
         OrderType orderTypeByUuid = orderService.getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID);
-        return orderDao.getAllOrders(patientByUuid, orderTypeByUuid, conceptsForDrugs, startDate, endDate, drugConceptsToBeExcluded, encounters);
+        if (patientProgramUuid != null) {
+            return orderDao.getOrdersByPatientProgram(patientProgramUuid, orderTypeByUuid, conceptsForDrugs);
+        }
+        return orderDao.getAllOrders(patientByUuid, orderTypeByUuid, conceptsForDrugs, drugConceptsToBeExcluded, encounters);
     }
 
     private List<EncounterTransaction.Concept> fetchOrderAttributeConcepts() {

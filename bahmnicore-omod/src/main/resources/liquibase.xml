@@ -1399,6 +1399,7 @@
         </insert>
     </changeSet>
     <changeSet id="bahmni-core-201409241028" author="Hemanth">
+        <validCheckSum>3:48db15b4c8ef5eb006f8bb9a82854735</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from concept_reference_source where name='ISO 8601 Duration'</sqlCheck>
         </preConditions>
@@ -1408,7 +1409,7 @@
             select uuid() into @uuid;
 
             insert into concept_reference_source (name, description, hl7_code, creator, date_created, uuid)
-                values('ISO 8601 Duration', 'ISO 8601 Duration Source', 'SCT', 1, now(), @uuid);
+            values('ISO 8601 Duration', 'ISO 8601 Duration Source', 'SCT', 1, now(), @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201409241048" author="Hemanth">
@@ -1541,6 +1542,7 @@
     </changeSet>
     <changeSet id="bahmni-core-201409041530" author="Rohan, Sravanthi">
         <validCheckSum>3:f2057b5f013e4faea7a403e2ef20e13d</validCheckSum>
+        <validCheckSum>3:30a534a584da0e66d93a6dc1093fd2a1</validCheckSum>
         <comment>Adding hours, weeks and months concepts for drug order duration units</comment>
         <sql>
             set @concept_id = 0;
@@ -1556,26 +1558,30 @@
             call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id,'Hours','hours', 'N/A', 'Misc', false);
             call add_concept_set_members (@set_concept_id,@concept_id,1);
             select concept_reference_term_id from concept_reference_term where name='Hour(s)' into @concept_reference_term_id;
-            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator) values (
-            @concept_reference_term_id , @concept_map_type_id, @concept_id, now(),1);
+            select uuid() into @uuid;
+            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator, uuid) values (
+            @concept_reference_term_id , @concept_map_type_id, @concept_id, now(),1, @uuid);
 
             select concept_reference_term_id from concept_reference_term where name='Day(s)' into @concept_reference_term_id;
             select concept_map_type_id from concept_map_type where name='SAME-AS' into @concept_map_type_id;
             select concept_id from concept_name where name = 'Days' and concept_name_type = 'FULLY_SPECIFIED' into @concept_id;
-            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator) values (
-            @concept_reference_term_id , @concept_map_type_id, @concept_id, now(),1);
+            select uuid() into @uuid;
+            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator, uuid) values (
+            @concept_reference_term_id , @concept_map_type_id, @concept_id, now(),1, @uuid);
 
             call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id,'Weeks','weeks', 'N/A', 'Misc', false);
             call add_concept_set_members (@set_concept_id,@concept_id,1);
             select concept_reference_term_id from concept_reference_term where name='Week(s)' into @concept_reference_term_id;
-            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator) values (
-            @concept_reference_term_id , @concept_map_type_id, @concept_id, now(),1);
+            select uuid() into @uuid;
+            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator, uuid) values (
+            @concept_reference_term_id , @concept_map_type_id, @concept_id, now(),1, @uuid);
 
             call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id,'Months','months', 'N/A', 'Misc', false);
             call add_concept_set_members (@set_concept_id,@concept_id,1);
             select concept_reference_term_id from concept_reference_term where name='Month(s)' into @concept_reference_term_id;
-            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator) values (
-            @concept_reference_term_id , @concept_map_type_id, @concept_id, now(),1);
+            select uuid() into @uuid;
+            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator, uuid) values (
+            @concept_reference_term_id , @concept_map_type_id, @concept_id, now(),1, @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201409091224" author="Mihir, Shruthi">
@@ -2025,21 +2031,25 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201410101436" author="banka">
+        <validCheckSum>3:28348ce478fb4680742c031590de5548</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Clinical:ReadOnly'</sqlCheck>
         </preConditions>
         <comment>Add role for clinical read only access</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Clinical:ReadOnly', 'Will have read only access to clinical app');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Clinical:ReadOnly', 'Will have read only access to clinical app', @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201410101440" author="banka">
+        <validCheckSum>3:b0491f30ba36025f2ed8212b775b8722</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Clinical:FullAccess'</sqlCheck>
         </preConditions>
         <comment>Add role for clinical full access</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Clinical:FullAccess', 'Will have full access to clinical app');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Clinical:FullAccess', 'Will have full access to clinical app', @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201410151525" author="Rohan, Hemanth">
@@ -2220,6 +2230,7 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201410301713" author="Vinay">
+        <validCheckSum>3:6188bf0917228defa2c058eb141f90df</validCheckSum>
         <comment>Fix the new add_concept procedure</comment>
         <sql>
             DROP PROCEDURE IF EXISTS add_concept;
@@ -2441,6 +2452,7 @@
     </changeSet>
     <changeSet id="bahmni-core-201412160932" author="Rohan, Shruthi">
         <validCheckSum>3:f77d13ad07ec98f9e3beda3047a09da8</validCheckSum>
+        <validCheckSum>3:e106e85dee90f3b8f62789aa3a3306ed</validCheckSum>
         <comment>Adding minutes concept for drug order duration units</comment>
         <sql>
             set @concept_id = 0;
@@ -2456,11 +2468,13 @@
             call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id,'Minute(s)','minute(s)', 'N/A', 'Misc', false);
             call add_concept_set_members (@set_concept_id,@concept_id,1);
             select concept_reference_term_id from concept_reference_term where name='Minute(s)' into @concept_reference_term_id;
-            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator) values (
-            @concept_reference_term_id , @concept_map_type_id, @concept_id, now(),1);
+            select uuid() into @uuid;
+            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator, uuid) values (
+            @concept_reference_term_id , @concept_map_type_id, @concept_id, now(),1, @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201412171832" author="Mujir, Mihir">
+        <validCheckSum>3:ff3f26723a22f34131d082f64923f708</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="1">
                 select count(*) from concept_name where name='Admission' and concept_name_type='FULLY_SPECIFIED';
@@ -2487,11 +2501,13 @@
             select concept_map_type_id from concept_map_type where name='SAME-AS' into @concept_map_type_id;
             select concept_id from concept_name where name='Admission' and concept_name_type='FULLY_SPECIFIED' into @concept_id;
 
-            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator) values (
-            @concept_reference_term_id , @concept_map_type_id, @concept_id, @current_date, 1);
+            select uuid() into @uuid;
+            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator, uuid) values (
+            @concept_reference_term_id , @concept_map_type_id, @concept_id, @current_date, 1, @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201412171835" author="Mujir, Mihir">
+        <validCheckSum>3:8dab05861bd023ac8ce19d56224d6576</validCheckSum>
         <validCheckSum>3:ba27b100100f1dc0f5d2d0afdf9d29e9</validCheckSum>
         <comment>Adding Deny Admission concept reference term and mapping for close visit task</comment>
         <sql>
@@ -2517,8 +2533,9 @@
 
             call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Deny Admission','Deny Admission', 'N/A', 'Misc', false);
 
-            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator) values (
-            @concept_reference_term_id , @concept_map_type_id, @concept_id, @current_date, 1);
+            select uuid() into @uuid;
+            insert into concept_reference_map (concept_reference_term_id, concept_map_type_id, concept_id, date_created, creator, uuid) values (
+            @concept_reference_term_id , @concept_map_type_id, @concept_id, @current_date, 1, @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201412181423" author="Rohan">
@@ -2755,10 +2772,12 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-core-201505251642" author="Ranganathan">
+        <validCheckSum>3:b92570973c3eb23083225d3dd889d0f9</validCheckSum>
         <comment>Adding gender values and codes used across MRS</comment>
         <sql>
-            INSERT INTO global_property(property, property_value, description)
-            VALUES('mrs.genders', '{"M":"Male", "F":"Female","O":"Other"}', 'List of gender and gender codes used across MRS');
+            select uuid() into @uuid;
+            INSERT INTO global_property(property, property_value, description, uuid)
+            VALUES('mrs.genders', '{"M":"Male", "F":"Female","O":"Other"}', 'List of gender and gender codes used across MRS', @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmniconfig-201505252028" author="Mihir">
@@ -3056,12 +3075,14 @@
     </changeSet>
 
     <changeSet id="bahmni-clinical-201521091403" author="Banka,Sravanthi" context="rel0.76">
+        <validCheckSum>3:f80b42404035832f37d3e49969040ad8</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Patient-Listing'</sqlCheck>
         </preConditions>
         <comment>Add Patient-Listing role</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Patient-Listing', 'Will have access to all patient queues');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Patient-Listing', 'Will have access to all patient queues', @uuid);
         </sql>
     </changeSet>
 
@@ -3076,12 +3097,14 @@
     </changeSet>
 
     <changeSet id="bahmni-clinical-201521091410" author="Banka,Sravanthi" context="rel0.76">
+        <validCheckSum>3:f59bf18aa0180b197d66809f8d044045</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Clinical-Read-Only'</sqlCheck>
         </preConditions>
         <comment>Add clinical read only role</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Clinical-Read-Only', 'Will have read only access to all clinical');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Clinical-Read-Only', 'Will have read only access to all clinical', @uuid);
         </sql>
     </changeSet>
 
@@ -3102,12 +3125,14 @@
     </changeSet>
 
     <changeSet id="bahmni-clinical-201522091112" author="Banka,Sravanthi" context="rel0.76">
+        <validCheckSum>3:c545deeb45605141fe0541d9d34d86af</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Save'</sqlCheck>
         </preConditions>
         <comment>Add consultation save</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Consultation-Save', 'Will have basic access to save consultation');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Consultation-Save', 'Will have basic access to save consultation', @uuid);
         </sql>
     </changeSet>
 
@@ -3125,12 +3150,14 @@
     </changeSet>
 
     <changeSet id="bahmni-clinical-201522091116" author="Banka,Sravanthi" context="rel0.76">
+        <validCheckSum>3:967ec329a7e61ba5b8cbe38506e168b0</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Observation'</sqlCheck>
         </preConditions>
         <comment>Add consultation observation role</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Consultation-Observation', 'Will have access to consultation observation and save in both normal and retrospective mode');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Consultation-Observation', 'Will have access to consultation observation and save in both normal and retrospective mode', @uuid);
         </sql>
     </changeSet>
 
@@ -3142,12 +3169,14 @@
     </changeSet>
 
     <changeSet id="bahmni-clinical-201522091120" author="Banka,Sravanthi" context="rel0.76">
+        <validCheckSum>3:0c9e9e7903837d6926b32a972c5faf8e</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Diagnosis'</sqlCheck>
         </preConditions>
         <comment>Add consultation diagnosis role</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Consultation-Diagnosis', 'Will have access to consultation diagnosis and save in both normal and retrospective mode');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Consultation-Diagnosis', 'Will have access to consultation diagnosis and save in both normal and retrospective mode', @uuid);
         </sql>
     </changeSet>
 
@@ -3159,12 +3188,14 @@
     </changeSet>
 
     <changeSet id="bahmni-clinical-201522091124" author="Banka,Sravanthi" context="rel0.76">
+        <validCheckSum>3:d302c1e82e1f31aea89338314fa13a47</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Disposition'</sqlCheck>
         </preConditions>
         <comment>Add consultation disposition role</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Consultation-Disposition', 'Will have access to consultation disposition and save in both normal and retrospective mode');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Consultation-Disposition', 'Will have access to consultation disposition and save in both normal and retrospective mode', @uuid);
         </sql>
     </changeSet>
 
@@ -3177,12 +3208,14 @@
 
 
     <changeSet id="bahmni-clinical-201522091128" author="Banka,Sravanthi" context="rel0.76">
+        <validCheckSum>3:5b2f666ec5a56a0758016bd976c4ad04</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Treatment'</sqlCheck>
         </preConditions>
         <comment>Add consultation treatment role</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Consultation-Treatment', 'Will have access to consultation treatment and save in both normal and retrospective mode');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Consultation-Treatment', 'Will have access to consultation treatment and save in both normal and retrospective mode', @uuid);
         </sql>
     </changeSet>
 
@@ -3196,12 +3229,14 @@
     </changeSet>
 
     <changeSet id="bahmni-clinical-201522091132" author="Banka,Sravanthi" context="rel0.76">
+        <validCheckSum>3:193c893d18677a71d5c3f4d05af00004</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Orders'</sqlCheck>
         </preConditions>
         <comment>Add consultation orders role</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Consultation-Orders', 'Will have access to consultation orders and save in both normal and retrospective mode');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Consultation-Orders', 'Will have access to consultation orders and save in both normal and retrospective mode', @uuid);
         </sql>
     </changeSet>
 
@@ -3254,22 +3289,26 @@
         </createIndex>
     </changeSet>
     <changeSet id="bahmni-registration-201507101741" author="Shan,Sourav" context="rel0.77">
+        <validCheckSum>3:f8aec9024ab069f3dc3a79bf4aa6592c</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Registration'</sqlCheck>
         </preConditions>
         <comment>Add Registration Role</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Registration', 'Will have access to all registration roles');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Registration', 'Will have access to all registration roles', @uuid);
         </sql>
     </changeSet>
 
     <changeSet id="bahmni-registration-201507101742" author="Shan,Sourav" context="rel0.77">
+        <validCheckSum>3:5c336c2dec0e96eb935aa83ca6a651c5</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Registration-Read'</sqlCheck>
         </preConditions>
         <comment>Add Registration Read Role</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Registration-Read', 'Will have access to search patients');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Registration-Read', 'Will have access to search patients', @uuid);
         </sql>
     </changeSet>
 
@@ -3283,12 +3322,14 @@
     </changeSet>
 
     <changeSet id="bahmni-registration-201507101747" author="Shan,Sourav" context="rel0.77">
+        <validCheckSum>3:114b8a6393c1e0dd45fb76587ac9d0b4</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Registration-Write'</sqlCheck>
         </preConditions>
         <comment>Add Registration Write Role</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Registration-Write', 'Will have access to update patient information');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Registration-Write', 'Will have access to update patient information', @uuid);
         </sql>
     </changeSet>
 
@@ -3306,12 +3347,14 @@
 
 
     <changeSet id="bahmni-registration-201507101749" author="Shan,Sourav" context="rel0.77">
+        <validCheckSum>3:871f7655c54461883fc852ebb7fb4ac2</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Registration-Visit-Action'</sqlCheck>
         </preConditions>
         <comment>Add Registration Visit Action Role</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Registration-Visit-Action', 'Will have access to open and close visit');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Registration-Visit-Action', 'Will have access to open and close visit', @uuid);
         </sql>
     </changeSet>
 
@@ -3328,12 +3371,14 @@
     </changeSet>
 
     <changeSet id="bahmni-registration-201507101755" author="Shan,Sourav" context="rel0.77">
+        <validCheckSum>3:7f34dabe1072f0b87cde58f693b02a28</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Registration-Additional'</sqlCheck>
         </preConditions>
         <comment>Add role for additional actions for registration app.</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Registration-Additional', 'Will have access to additional actions like encounter');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Registration-Additional', 'Will have access to additional actions like encounter', @uuid);
         </sql>
     </changeSet>
 
@@ -3380,51 +3425,63 @@
     </changeSet>
 
     <changeSet id="bahmni-inpatient-read-201513101438" author="Banka,Padma" context="rel0.77">
+        <validCheckSum>3:2f8220ed4381a71f1fff9ad046c56877</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='InPatient-Read'</sqlCheck>
         </preConditions>
         <sql>
-            INSERT INTO role(role, description) VALUES('InPatient-Read','Ability to view the Inpatient dashboard');
+            select uuid() into @uuid;
+            INSERT INTO role(role, description, uuid) VALUES('InPatient-Read','Ability to view the Inpatient dashboard', @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-inpatient-patient-movement-201513101455" author="Banka,Padma" context="rel0.77">
+        <validCheckSum>3:81c62a25ae700462be75dff46f86bc4d</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Inpatient-Patient-Movement'</sqlCheck>
         </preConditions>
         <sql>
-            INSERT INTO role(role, description) VALUES('InPatient-Patient-Movement','Ability to admit, discharge and transfer the patient');
+            select uuid() into @uuid;
+            INSERT INTO role(role, description, uuid) VALUES('InPatient-Patient-Movement','Ability to admit, discharge and transfer the patient', @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-inpatient-patient-movement-201513101524" author="Banka,Padma" context="release-0.77">
+        <validCheckSum>3:3c282da97bb8e0b9adab7d3f4fba68fb</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Patient-Documents-Upload'</sqlCheck>
         </preConditions>
         <sql>
-            INSERT INTO role(role, description) VALUES('Patient-Documents-Upload', 'Ability to upload patient documents and radiology uploads');
+            select uuid() into @uuid;
+            INSERT INTO role(role, description, uuid) VALUES('Patient-Documents-Upload', 'Ability to upload patient documents and radiology uploads', @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-admin-role-201513101528" author="Banka,Padma" context="release-0.77">
+        <validCheckSum>3:42d2bc95cd1ac3045c5a01a36f22892f</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Admin-Role'</sqlCheck>
         </preConditions>
         <sql>
-            INSERT into role(role, description) VALUES('Admin-Role', 'Ability to upload and download csvs');
+            select uuid() into @uuid;
+            INSERT into role(role, description, uuid) VALUES('Admin-Role', 'Ability to upload and download csvs', @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-orders-role-201513101532" author="Banka,Padma" context="release-0.77">
+        <validCheckSum>3:fb813933154056d8a4f895238e2150cb</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Orders-Role'</sqlCheck>
         </preConditions>
         <sql>
-            INSERT into role(role,description) VALUES('Orders-Role', 'Ability to view and fulfill orders');
+            select uuid() into @uuid;
+            INSERT into role(role,description, uuid) VALUES('Orders-Role', 'Ability to view and fulfill orders', @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-emr-reports-201513101535" author="Banka,Padma" context="release-0.77">
+        <validCheckSum>3:657717602f3b21d62ffbdf2090349027</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Emr-Reports'</sqlCheck>
         </preConditions>
         <sql>
-            INSERT into role(role, description) VALUES('Emr-Reports','Ability to run reports');
+            select uuid() into @uuid;
+            INSERT into role(role, description, uuid) VALUES('Emr-Reports','Ability to run reports', @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-orders-role-201523111314" author="Chethan,Shashi" context="release-0.77">
@@ -3611,12 +3668,14 @@
     </changeSet>
 
     <changeSet id="bahmni-core-201518111152" author="JP,Sravanthi" context="rel0.77">
+        <validCheckSum>3:64d89e89d5f248daa9c489a02904deed</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Bahmni-User'</sqlCheck>
         </preConditions>
         <comment>Add bahmni user role</comment>
         <sql>
-            INSERT INTO role (role, description) VALUES ('Bahmni-User', 'Ability to login and save user preferences');
+            select uuid() into @uuid;
+            INSERT INTO role (role, description, uuid) VALUES ('Bahmni-User', 'Ability to login and save user preferences', @uuid);
         </sql>
     </changeSet>
 

@@ -29,5 +29,5 @@ public interface ObsDao {
 
     Obs getChildObsFromParent(String parentObsUuid, Concept childConcept);
 
-    List<Obs> getObsByPatientProgramUuidAndConceptNames(String patientProgramUuid, List<String> conceptNames);
+    List<Obs> getObsByPatientProgramUuidAndConceptNames(String patientProgramUuid, List<String> conceptNames, Integer limit);
 }

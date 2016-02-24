@@ -1,4 +1,4 @@
-package org.openmrs.module.bahmniemrapi.drugogram.contract;
+package org.bahmni.module.bahmnicore.extensions;
 
 import org.junit.Test;
 

@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -13,10 +12,6 @@ import org.openmrs.module.emrapi.encounter.EmrEncounterService;
 import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -26,8 +21,6 @@ import static org.mockito.Mockito.when;
 public class BahmniEncounterControllerTest {
     @Mock
     private EmrEncounterService emrEncounterService;
-    @Mock
-    private AdministrationService adminService;
     @Mock
     private BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper;
     @Mock
@@ -51,7 +44,7 @@ public class BahmniEncounterControllerTest {
         when(bahmniEncounterTransactionService.find(encounterSearchParameters)).thenReturn(et1);
         when(bahmniEncounterTransactionMapper.map(et1, false)).thenReturn(new BahmniEncounterTransaction(et1));
 
-        bahmniEncounterController = new BahmniEncounterController(null, null, null, null, emrEncounterService, null, bahmniEncounterTransactionService, bahmniEncounterTransactionMapper, null);
+        bahmniEncounterController = new BahmniEncounterController(null, emrEncounterService, null, bahmniEncounterTransactionService, bahmniEncounterTransactionMapper);
 
         BahmniEncounterTransaction bahmniEncounterTransaction = bahmniEncounterController.find(encounterSearchParameters);
 
@@ -66,7 +59,7 @@ public class BahmniEncounterControllerTest {
         when(emrEncounterService.find(encounterSearchParameters)).thenReturn(null);
         when(bahmniEncounterTransactionMapper.map(any(EncounterTransaction.class), anyBoolean())).thenReturn(new BahmniEncounterTransaction(new EncounterTransaction()));
 
-        bahmniEncounterController = new BahmniEncounterController(null, null, null, null, emrEncounterService, null, bahmniEncounterTransactionService, bahmniEncounterTransactionMapper, null);
+        bahmniEncounterController = new BahmniEncounterController(null, emrEncounterService, null, bahmniEncounterTransactionService, bahmniEncounterTransactionMapper);
         BahmniEncounterTransaction bahmniEncounterTransactions = bahmniEncounterController.find(encounterSearchParameters);
 
         assertNull(bahmniEncounterTransactions.getEncounterUuid());

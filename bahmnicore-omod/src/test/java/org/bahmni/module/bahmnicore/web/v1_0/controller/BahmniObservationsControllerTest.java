@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls.BahmniObservationsController;
 import org.bahmni.test.builder.VisitBuilder;
@@ -21,6 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 
 
@@ -28,12 +30,12 @@ public class BahmniObservationsControllerTest {
 
     @Mock
     private BahmniObsService bahmniObsService;
-
     @Mock
     private ConceptService conceptService;
-
     @Mock
     private VisitService visitService;
+    @Mock
+    private BahmniExtensions bahmniExtensions;
 
     private Visit visit;
     private Concept concept;
@@ -44,7 +46,7 @@ public class BahmniObservationsControllerTest {
         MockitoAnnotations.initMocks(this);
         visit = new VisitBuilder().build();
         concept = new Concept();
-        bahmniObservationsController = new BahmniObservationsController(bahmniObsService, conceptService, visitService);
+        bahmniObservationsController = new BahmniObservationsController(bahmniObsService, conceptService, visitService, bahmniExtensions);
         when(visitService.getVisitByUuid("visitId")).thenReturn(visit);
         when(conceptService.getConceptByName("Weight")).thenReturn(concept);
     }
@@ -80,12 +82,15 @@ public class BahmniObservationsControllerTest {
     @Test
     public void returnAllObservations() throws Exception {
         BahmniObservation obs = new BahmniObservation();
-        when(bahmniObsService.getObservationForVisit("visitId", Arrays.asList("Weight"), null, true, null)).thenReturn(Arrays.asList(obs));
+        List<String> conceptNames = Arrays.asList("Weight");
+        ArrayList<Concept> obsIgnoreList = new ArrayList<>();
+        when(bahmniObsService.getObservationForVisit("visitId", conceptNames, obsIgnoreList, true, null)).thenReturn(Arrays.asList(obs));
 
-        Collection<BahmniObservation> bahmniObservations = bahmniObservationsController.get("visitId", null, Arrays.asList("Weight"), null, true);
+        Collection<BahmniObservation> bahmniObservations = bahmniObservationsController.get("visitId", null, conceptNames, null, true);
 
         verify(bahmniObsService, never()).getLatestObsByVisit(visit, Arrays.asList(concept), null, false);
         verify(bahmniObsService, never()).getInitialObsByVisit(visit, Arrays.asList(concept), null, false);
+        verify(bahmniObsService, times(1)).getObservationForVisit("visitId", conceptNames, obsIgnoreList, true, null);
 
         assertEquals(1, bahmniObservations.size());
     }
@@ -124,6 +129,19 @@ public class BahmniObservationsControllerTest {
         bahmniObservationsController.get("patientUuid", conceptNames, null, null, null, null, patientProgramUuid);
 
         verify(bahmniObsService, times(0)).getObservationsForPatientProgram(patientProgramUuid, conceptNames);
+    }
+
+    @Test
+    public void shouldGetBahmniObservationWithTheGivenObservationUuid() throws Exception {
+        String observationUuid = "observationUuid";
+        BahmniObservation expectedBahmniObservation = new BahmniObservation();
+        when(bahmniObsService.getBahmniObservationByUuid(observationUuid)).thenReturn(expectedBahmniObservation);
+
+        BahmniObservation actualBahmniObservation = bahmniObservationsController.get(observationUuid);
+
+        verify(bahmniObsService, times(1)).getBahmniObservationByUuid("observationUuid");
+        assertNotNull("BahmniObservation should not be null", actualBahmniObservation);
+        assertEquals(expectedBahmniObservation, actualBahmniObservation);
     }
 
 }

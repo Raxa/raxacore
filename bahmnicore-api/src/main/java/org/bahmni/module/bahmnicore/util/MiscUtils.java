@@ -20,6 +20,6 @@ public class MiscUtils {
             }
             return rootConcepts;
         }
-        return null;
+        return new ArrayList<>();
     }
 }

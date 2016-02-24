@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 
 import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.RegimenRow;
@@ -34,7 +35,7 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchDrugsInRegimenTableFormat() throws Exception {
-        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", null, null, null);
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", null, null);
 
         assertNotNull(treatmentRegimen);
         assertEquals(2, treatmentRegimen.getHeaders().size());
@@ -59,7 +60,7 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchSpecifiedDrugsInRegimenTableFormat() throws Exception {
-        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", Arrays.asList("Ibuprofen"), null, null);
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", null, Arrays.asList("Ibuprofen"));
 
         assertNotNull(treatmentRegimen);
         assertEquals(1, treatmentRegimen.getHeaders().size());
@@ -79,7 +80,7 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchSpecifiedDrugsWhenWeSpecifyConceptSetNameInRegimenTableFormat() throws Exception {
-        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", Arrays.asList("TB Drugs"), null, null);
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", null, Arrays.asList("TB Drugs"));
 
         assertNotNull(treatmentRegimen);
         assertEquals(1, treatmentRegimen.getHeaders().size());
@@ -97,7 +98,7 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchRevisedDrugsInRegimenTableFormat() throws Exception {
-        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001edc8eb67a", null, null, null);
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001edc8eb67a", null, null);
 
         assertNotNull(treatmentRegimen);
         assertEquals(2, treatmentRegimen.getHeaders().size());
@@ -127,7 +128,7 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchDiscontinueDrugsInRegimenTableFormat() throws Exception {
-        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001edxseb67a", null, null, null);
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001edxseb67a", null, null);
 
         assertNotNull(treatmentRegimen);
         assertEquals(2, treatmentRegimen.getHeaders().size());
@@ -157,7 +158,7 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchOrdersWhichAreStartedAndStoppedOnSameDate() throws Exception {
-        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001djxseb67a", null, null, null);
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001djxseb67a", null, null);
 
         assertNotNull(treatmentRegimen);
         assertEquals(3, treatmentRegimen.getHeaders().size());
@@ -195,11 +196,12 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldRetrieveDrugsOrderedWithinProgramStartDateAndEndDate()  throws Exception {
-        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001edc8eb67a", null, "2005-09-22T14:29:38.000", "2005-09-24T14:29:38.000");
+    public void shouldRetrieveDrugsOrdersForGivenPatientUuid() throws Exception {
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001edc8eb67a", null, null);
 
         assertNotNull(treatmentRegimen);
         assertEquals(2, treatmentRegimen.getHeaders().size());
+        assertEquals(4, treatmentRegimen.getRows().size());
         Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(stringToDate("2005-09-23 08:00:00")), firstRow.getDate());
@@ -208,16 +210,22 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
         RegimenRow secondRow = rowIterator.next();
         assertEquals(getOnlyDate(stringToDate("2005-09-25 08:00:00")), secondRow.getDate());
-        assertEquals("Stop", secondRow.getDrugs().get("Ibuprofen"));
+        assertEquals("500.0", secondRow.getDrugs().get("Ibuprofen"));
         assertEquals("450.0", secondRow.getDrugs().get("Crocin"));
 
         RegimenRow thirdRow = rowIterator.next();
         assertEquals(getOnlyDate(stringToDate("2005-09-26 00:00:00.0")), thirdRow.getDate());
+        assertEquals("500.0", thirdRow.getDrugs().get("Ibuprofen"));
         assertEquals("Stop", thirdRow.getDrugs().get("Crocin"));
+
+        RegimenRow fourthRow = rowIterator.next();
+        assertEquals(getOnlyDate(stringToDate("2005-10-02 08:00:00")), fourthRow.getDate());
+        assertEquals("Stop", fourthRow.getDrugs().get("Ibuprofen"));
+        assertEquals(null, fourthRow.getDrugs().get("Crocin"));
     }
 
     public void shouldFetchSpecifiedDrugsWhenWeSpecifyConceptNamesInRegimenTableFormat() throws Exception {
-        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", Arrays.asList("Ibuprofen", "Crocin"), null, null);
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", null, Arrays.asList("Ibuprofen", "Crocin"));
 
         assertNotNull(treatmentRegimen);
         assertEquals(2, treatmentRegimen.getHeaders().size());
@@ -245,7 +253,7 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchSpecifiedDrugsWhenWeSpecifyConceptNamesInRegimenTableFormatCrocinShouldComeFirst() throws Exception {
-        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", Arrays.asList("Crocin", "Ibuprofen"), null, null);
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", null, Arrays.asList("Crocin", "Ibuprofen"));
 
         assertNotNull(treatmentRegimen);
         assertEquals(2, treatmentRegimen.getHeaders().size());
@@ -273,7 +281,7 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldNotFetchParacetamolAsItWasNotPrescribedToPatientButSpecifiedInConceptNames() throws Exception {
-        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", Arrays.asList("Ibuprofen", "Crocin", "Paracetamol"), null, null);
+        TreatmentRegimen treatmentRegimen = drugOGramController.getRegimen("1a246ed5-3c11-11de-a0ba-001ed98eb67a", null, Arrays.asList("Ibuprofen", "Crocin", "Paracetamol"));
 
         assertNotNull(treatmentRegimen);
         assertEquals(2, treatmentRegimen.getHeaders().size());

@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
@@ -34,6 +35,7 @@ public class ObsToObsTabularFlowSheetController {
     private BahmniObservationsToTabularViewMapper bahmniObservationsToTabularViewMapper;
     private ConceptMapper conceptMapper;
     private BahmniExtensions bahmniExtensions;
+    public static final String FLOWSHEET_EXTENSION = "flowsheetExtension";
 
     private static Logger logger = Logger.getLogger(ObsToObsTabularFlowSheetController.class);
 
@@ -85,15 +87,19 @@ public class ObsToObsTabularFlowSheetController {
         }
         bahmniObservations = filterDataByCount(bahmniObservations, initialCount, latestCount);
         PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(leafConcepts, bahmniObservations, groupByConcept);
-        setNoramlRangeForHeaders(pivotTable.getHeaders());
+        setNormalRangeAndUnits(pivotTable.getHeaders());
 
-        BaseTableExtension<PivotTable> extension = (BaseTableExtension<PivotTable>) bahmniExtensions.getExtension("treatmentRegimenExtension", groovyExtension + ".groovy");
+        if(StringUtils.isEmpty(groovyExtension)){
+            return pivotTable;
+        }
+
+        BaseTableExtension<PivotTable> extension = (BaseTableExtension<PivotTable>) bahmniExtensions.getExtension(FLOWSHEET_EXTENSION, groovyExtension + BahmniExtensions.GROOVY_EXTENSION);
         if (extension != null)
-            extension.update(pivotTable, patientUuid);
+            extension.update(pivotTable, patientUuid, patientProgramUuid);
         return pivotTable;
     }
 
-    void setNoramlRangeForHeaders(Set<EncounterTransaction.Concept> headers) {
+    private void setNormalRangeAndUnits(Set<EncounterTransaction.Concept> headers) {
         for (EncounterTransaction.Concept header : headers) {
             if (CONCEPT_DETAILS.equals(header.getConceptClass())) {
                 List<Concept> setMembers = conceptService.getConceptsByConceptSet(conceptService.getConceptByUuid(header.getUuid()));
@@ -101,8 +107,13 @@ public class ObsToObsTabularFlowSheetController {
                 if (primaryConcept == null) continue;
                 header.setHiNormal(getHiNormal(primaryConcept));
                 header.setLowNormal(getLowNormal(primaryConcept));
+                header.setUnits(getUnits(primaryConcept));
             }
         }
+    }
+
+    private String getUnits(Concept primaryConcept) {
+        return conceptService.getConceptNumeric(primaryConcept.getConceptId()).getUnits();
     }
 
     private Double getLowNormal(Concept primaryConcept) {
