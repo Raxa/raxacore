@@ -3485,11 +3485,13 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-orders-role-201523111314" author="Chethan,Shashi" context="release-0.77">
+        <validCheckSum>3:41981a3f2794678c672a10fd47a4d683</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Privilege Level: Full'</sqlCheck>
         </preConditions>
         <sql>
-            INSERT into role(role,description) VALUES('Privilege Level: Full', 'A role that has all API privileges');
+            select uuid() into @uuid;
+            INSERT into role(role, description, uuid) VALUES('Privilege Level: Full', 'A role that has all API privileges', @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-add-privileges-to-inpatient-read-201514101540" author="Banka,Padma" context="release-0.77">
