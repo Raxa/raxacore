@@ -113,10 +113,10 @@ public class BahmniObservationsControllerTest {
 
     @Test
     public void shouldGetObsForPatientProgramWhenPatientProgramUuidIsSpecified() throws Exception {
-        List<String> conceptNames = new ArrayList<String>();
         String patientProgramUuid = "patientProgramUuid";
+        List<String> conceptNames = Arrays.asList("Weight");
 
-        bahmniObservationsController.get("patientUuid", conceptNames, null, null, null, null, patientProgramUuid);
+        bahmniObservationsController.get(patientProgramUuid, conceptNames, null);
 
         verify(bahmniObsService, times(1)).getObservationsForPatientProgram(patientProgramUuid, conceptNames);
     }
@@ -126,9 +126,31 @@ public class BahmniObservationsControllerTest {
         List<String> conceptNames = new ArrayList<String>();
         String patientProgramUuid = null;
 
-        bahmniObservationsController.get("patientUuid", conceptNames, null, null, null, null, patientProgramUuid);
+        bahmniObservationsController.get(patientProgramUuid);
 
         verify(bahmniObsService, times(0)).getObservationsForPatientProgram(patientProgramUuid, conceptNames);
+    }
+
+    @Test
+    public void shouldGetLatestObsForPatientProgramWhenPatientProgramUuidAndScopeLatestIsSpecified() throws Exception {
+        List<String> conceptNames = new ArrayList<String>();
+        String patientProgramUuid = "patientProgramUuid";
+        String scope = "latest";
+
+        bahmniObservationsController.get(patientProgramUuid, conceptNames, scope);
+
+        verify(bahmniObsService, times(1)).getLatestObservationsForPatientProgram(patientProgramUuid, conceptNames);
+    }
+
+    @Test
+    public void shouldGetInitialObsForPatientProgramWhenPatientProgramUuidAndScopeLatestIsSpecified() throws Exception {
+        List<String> conceptNames = new ArrayList<String>();
+        String patientProgramUuid = "patientProgramUuid";
+        String scope = "initial";
+
+        bahmniObservationsController.get(patientProgramUuid, conceptNames, scope);
+
+        verify(bahmniObsService, times(1)).getInitialObservationsForPatientProgram(patientProgramUuid, conceptNames);
     }
 
     @Test

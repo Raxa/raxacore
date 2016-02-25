@@ -283,7 +283,7 @@ public class ObsDaoImpl implements ObsDao {
     }
 
     @Override
-    public List<Obs> getObsByPatientProgramUuidAndConceptNames(String patientProgramUuid, List<String> conceptNames, Integer limit) {
+    public List<Obs> getObsByPatientProgramUuidAndConceptNames(String patientProgramUuid, List<String> conceptNames, Integer limit, OrderBy sortOrder) {
             StringBuilder queryString =   new StringBuilder( "SELECT o.* " +
                     "FROM patient_program pp " +
                     "INNER JOIN episode_patient_program epp " +
@@ -296,10 +296,14 @@ public class ObsDaoImpl implements ObsDao {
                     "WHERE pp.uuid = (:patientProgramUuid) " +
                     "AND o.voided = false " +
                     "AND cn.concept_name_type='FULLY_SPECIFIED' " +
-                    "AND cn.name IN (:conceptNames)" +
-                    "ORDER by o.obs_datetime desc");
+                    "AND cn.name IN (:conceptNames)");
+            if (sortOrder == OrderBy.ASC) {
+                queryString.append(" ORDER by o.obs_datetime asc");
+            } else {
+                queryString.append(" ORDER by o.obs_datetime desc");
+            }
             if (limit != null){
-                queryString.append(" limit 1");
+                queryString.append(" limit " + limit);
             }
             Query queryToGetObs = sessionFactory.getCurrentSession().createSQLQuery(queryString.toString()).addEntity(Obs.class);;
             queryToGetObs.setParameterList("conceptNames", conceptNames);

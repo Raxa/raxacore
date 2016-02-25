@@ -164,10 +164,33 @@ public class BahmniObsServiceImplTest {
     public void shouldGetObsbyPatientProgramUuid() throws Exception {
         String patientProgramUuid = "patientProgramUuid";
         ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("Paracetamol");
 
         bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, conceptNames);
 
-        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, null);
+        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), null, ObsDaoImpl.OrderBy.DESC);
+    }
+
+    @Test
+    public void shouldGetLatestObsbyPatientProgramUuid() throws Exception {
+        String patientProgramUuid = "patientProgramUuid";
+        List<String> conceptNames = new ArrayList<>();
+        conceptNames.add("Paracetamol");
+
+        bahmniObsService.getLatestObservationsForPatientProgram(patientProgramUuid, conceptNames);
+
+        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), 1, ObsDaoImpl.OrderBy.DESC);
+    }
+
+    @Test
+    public void shouldGetInitialObsbyPatientProgramUuid() throws Exception {
+        String patientProgramUuid = "patientProgramUuid";
+        List<String> conceptNames = new ArrayList<>();
+        conceptNames.add("Paracetamol");
+
+        bahmniObsService.getInitialObservationsForPatientProgram(patientProgramUuid, conceptNames);
+
+        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), 1, ObsDaoImpl.OrderBy.ASC);
     }
 
     @Test

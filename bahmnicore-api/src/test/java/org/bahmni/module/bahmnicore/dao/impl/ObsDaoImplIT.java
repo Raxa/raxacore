@@ -133,21 +133,43 @@ public class ObsDaoImplIT extends BaseIntegrationTest {
         ArrayList<String> conceptNames = new ArrayList<>();
         conceptNames.add("conceptABC");
 
-        List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames, null);
+        List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames, null, null);
 
         assertEquals(1, observations.size());
     }
 
     @Test
-    public void shouldRetrieveObsFromPatientProgramIdAndConceptNamesOrderByObsDateTime() throws Exception {
+    public void shouldRetrieveLatestObsFromPatientProgramIdAndConceptNamesOrderByObsDateTime() throws Exception {
         ArrayList<String> conceptNames = new ArrayList<>();
         conceptNames.add("DiagnosisProgram");
 
-        List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames, 1);
+        List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames, 1, ObsDaoImpl.OrderBy.DESC);
 
         assertEquals(1, observations.size());
         assertEquals("2016-08-18 15:09:05.0", observations.get(0).getObsDatetime().toString());
     }
 
+    @Test
+    public void shouldRetrieveObsFromPatientProgramIdAndConceptNamesInDescendingOrderByObsDateTime() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("DiagnosisProgram");
 
+        List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames, -1, ObsDaoImpl.OrderBy.DESC);
+
+        assertEquals(2, observations.size());
+        assertEquals("2016-08-18 15:09:05.0", observations.get(0).getObsDatetime().toString());
+        assertEquals("2015-08-18 15:09:05.0", observations.get(1).getObsDatetime().toString());
+    }
+
+    @Test
+    public void shouldRetrieveObsFromPatientProgramIdAndConceptNamesInAscendingOrderByObsDateTime() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("DiagnosisProgram");
+
+        List<Obs> observations = obsDao.getObsByPatientProgramUuidAndConceptNames("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames, -1, ObsDaoImpl.OrderBy.ASC);
+
+        assertEquals(2, observations.size());
+        assertEquals("2015-08-18 15:09:05.0", observations.get(0).getObsDatetime().toString());
+        assertEquals("2016-08-18 15:09:05.0", observations.get(1).getObsDatetime().toString());
+    }
 }
