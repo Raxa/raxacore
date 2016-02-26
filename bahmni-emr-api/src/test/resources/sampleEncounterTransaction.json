@@ -3,7 +3,9 @@
   "patientUuid": "213d707d-7ae7-4c94-9649-dbe971120094",
   "encounterUuid": null,
   "visitUuid": null,
-  "patientProgramUuid":"253a5353-46b6-4668-97bb-8d1967ef3418",
+  "context": {
+    "patientProgramUuid":"253a5353-46b6-4668-97bb-8d1967ef3418"
+  },
   "providers": [
     {
       "uuid": "c1c26908-3f10-11e4-adec-0800271c1b75"

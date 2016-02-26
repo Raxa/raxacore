@@ -1,19 +1,26 @@
-package org.openmrs.module.bahmniemrapi.encountertransaction.matcher;
+package org.bahmni.module.bahmnicore.matcher;
 
 import org.apache.commons.lang3.time.DateUtils;
+import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.BDDMockito;
 import org.mockito.Mock;
-import org.openmrs.*;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterProvider;
+import org.openmrs.EncounterType;
+import org.openmrs.Location;
+import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.Provider;
+import org.openmrs.User;
+import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
-import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.api.impl.EncounterServiceImpl;
-import org.openmrs.module.bahmniemrapi.builder.EncounterBuilder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTypeIdentifier;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.powermock.api.mockito.PowerMockito;
@@ -22,12 +29,26 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(PowerMockRunner.class)
@@ -52,11 +73,13 @@ public class EncounterSessionMatcherTest {
     Visit visit;
     EncounterSessionMatcher encounterSessionMatcher;
     private Location location;
+    @Mock
+    private BahmniProgramWorkflowService bahmniProgramWorkflowService;
 
     @Before
     public void setUp(){
         initMocks(this);
-        encounterSessionMatcher = new EncounterSessionMatcher(administrationService, encounterTypeIdentifier, encounterService);
+        encounterSessionMatcher = new EncounterSessionMatcher(administrationService, encounterTypeIdentifier, encounterService, bahmniProgramWorkflowService);
         visit = new Visit();
         visit.setId(3);
 
@@ -100,6 +123,7 @@ public class EncounterSessionMatcherTest {
         when(userContext.getAuthenticatedUser()).thenReturn(creator);
 
         when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false))).thenReturn(Arrays.asList(encounter));
+        when(bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(null)).thenReturn(Collections.<Encounter>emptyList());
     }
 
     @Test
@@ -212,6 +236,29 @@ public class EncounterSessionMatcherTest {
     }
 
     @Test
+    public void shouldNotReturnExistingEncounterIfItDoesNotMatchPatientProgram() {
+        EncounterParameters encounterParameters = getEncounterParameters(null, location);
+        HashMap<String, Object> context = new HashMap<>();
+        String patientProgramUuid = "94393942-dc4d-11e5-b5d2-0a1d41d68578";
+        context.put("patientProgramUuid", patientProgramUuid);
+        encounterParameters.setContext(context);
+
+        encounterParameters.setEncounterDateTime(DateUtils.truncate(new Date(), Calendar.DATE));
+
+        Encounter e1 = new Encounter();
+        User creator1 = new User(1);
+        e1.setCreator(creator1);
+
+        when(userContext.getAuthenticatedUser()).thenReturn(creator1);
+        when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false)))
+                .thenReturn(Arrays.asList(e1));
+        when(bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid)).thenReturn(Collections.<Encounter>emptyList());
+
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(null, encounterParameters);
+        assertNull(encounterReturned);
+    }
+
+    @Test
     public void shouldThrowExceptionWhenMultipleEncountersAreMatched() throws Exception {
         EncounterParameters encounterParameters = getEncounterParameters(null, location);
         encounterParameters.setEncounterDateTime(DateUtils.truncate(new Date(), Calendar.DATE));
@@ -227,7 +274,7 @@ public class EncounterSessionMatcherTest {
         when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false))).thenReturn(Arrays.asList(e1, e2));
 
         try {
-            Encounter encounterReturned = encounterSessionMatcher.findEncounter(null, encounterParameters);
+            encounterSessionMatcher.findEncounter(null, encounterParameters);
             assertFalse("should not have matched encounter", false);
         }catch (RuntimeException e){
            assertEquals("More than one encounter matches the criteria", e.getMessage());
