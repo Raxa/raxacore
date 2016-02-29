@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface PatientDao {
 
-    public List<PatientResponse> getPatients(String identifier, String identifierPrefix, String name, String customAttribute, String addressFieldName, String addressFieldValue, Integer length, Integer offset, String[] patientAttributes,String programAttribute,String programAttributeField);
+    public List<PatientResponse> getPatients(String identifier, String identifierPrefix, String name, String customAttribute,
+                                             String addressFieldName, String addressFieldValue, Integer length, Integer offset,
+                                             String[] patientAttributes, String programAttributeValue, String programAttributeField);
 
     public Patient getPatient(String identifier);
 

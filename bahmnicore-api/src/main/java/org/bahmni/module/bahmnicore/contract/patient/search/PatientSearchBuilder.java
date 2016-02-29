@@ -24,7 +24,7 @@ public class PatientSearchBuilder {
 			" left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
 			" inner join patient_identifier pi on pi.patient_id = p.person_id " +
 			" left outer join visit v on v.patient_id = pat.patient_id and v.date_stopped is null ";
-	private static final String GROUP_BY = " group by ";
+	private static final String GROUP_BY_KEYWORD = " group by ";
 	public static final String ORDER_BY = " order by p.date_created desc LIMIT :limit OFFSET :offset";
 	private static final String LIMIT_PARAM = "limit";
 	private static final String OFFSET_PARAM = "offset";
@@ -38,6 +38,8 @@ public class PatientSearchBuilder {
 	private String orderBy;
 	private SessionFactory sessionFactory;
 	private Map<String,Type> types;
+	private String having;
+
 
 	public PatientSearchBuilder(SessionFactory sessionFactory){
 		select = SELECT_STATEMENT;
@@ -46,6 +48,7 @@ public class PatientSearchBuilder {
 		join = JOIN_CLAUSE;
 		orderBy = ORDER_BY;
 		groupBy = "";
+		having = "";
 		this.sessionFactory = sessionFactory;
 		types = new HashMap<>();
 
@@ -81,7 +84,7 @@ public class PatientSearchBuilder {
 		select = patientAttributeQueryHelper.selectClause(select);
 		join = patientAttributeQueryHelper.appendToJoinClause(join);
 		groupBy = patientAttributeQueryHelper.appendToGroupByClause(groupBy);
-		where = patientAttributeQueryHelper.appendToWhereClause(where);
+		having = patientAttributeQueryHelper.appendToHavingClause(having);
 		types.putAll(patientAttributeQueryHelper.addScalarQueryResult());
 		return this;
 	}
@@ -112,7 +115,7 @@ public class PatientSearchBuilder {
 	}
 
 	public SQLQuery buildSqlQuery(Integer limit, Integer offset){
-		String query = select + from + join + where + GROUP_BY + groupBy + orderBy;
+		String query = select + from + join + where + GROUP_BY_KEYWORD + groupBy  + having + orderBy;
 
 		SQLQuery sqlQuery = sessionFactory.getCurrentSession()
 				.createSQLQuery(query)
