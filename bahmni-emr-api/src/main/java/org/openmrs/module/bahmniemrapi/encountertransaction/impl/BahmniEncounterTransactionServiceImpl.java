@@ -3,24 +3,38 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.*;
-import org.openmrs.api.*;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
+import org.openmrs.VisitType;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.LocationService;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.ProviderService;
+import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.BahmniEmrAPIException;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPostSaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPreSaveCommand;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterSearchParameters;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTypeIdentifier;
-import org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterSessionMatcher;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.RetrospectiveEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
-import org.openmrs.module.emrapi.encounter.*;
+import org.openmrs.module.emrapi.encounter.EmrEncounterService;
+import org.openmrs.module.emrapi.encounter.EncounterParameters;
+import org.openmrs.module.emrapi.encounter.EncounterSearchParametersBuilder;
+import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 @Transactional
 public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTransactionService {
@@ -36,7 +50,7 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     private PatientService patientService;
     private LocationService locationService;
     private ProviderService providerService;
-    private EncounterSessionMatcher encounterSessionMatcher;
+    private BaseEncounterMatcher encounterSessionMatcher;
 
     public BahmniEncounterTransactionServiceImpl(EncounterService encounterService,
                                                  EmrEncounterService emrEncounterService,
@@ -50,7 +64,7 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
                                                  PatientService patientService,
                                                  LocationService locationService,
                                                  ProviderService providerService,
-                                                 EncounterSessionMatcher encounterSessionMatcher) {
+                                                 BaseEncounterMatcher encounterSessionMatcher) {
 
         this.encounterService = encounterService;
         this.emrEncounterService = emrEncounterService;
@@ -150,32 +164,35 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     }
 
     @Override
-    public EncounterTransaction find(EncounterSearchParameters encounterSearchParameters) {
-        EncounterSearchParametersBuilder searchParameters = new EncounterSearchParametersBuilder(encounterSearchParameters,
+    public EncounterTransaction find(BahmniEncounterSearchParameters encounterSearchParameters) {
+        EncounterSearchParametersBuilder searchParametersBuilder = new EncounterSearchParametersBuilder(encounterSearchParameters,
                 this.patientService, this.encounterService, this.locationService, this.providerService, this.visitService);
 
         Visit visit = null;
-        if(! BahmniEncounterTransaction.isRetrospectiveEntry(searchParameters.getEndDate())){
-            List<Visit> visits = this.visitService.getActiveVisitsByPatient(searchParameters.getPatient());
+        if(! BahmniEncounterTransaction.isRetrospectiveEntry(searchParametersBuilder.getEndDate())){
+            List<Visit> visits = this.visitService.getActiveVisitsByPatient(searchParametersBuilder.getPatient());
             if(CollectionUtils.isNotEmpty(visits)){
                 visit = visits.get(0);
             }
         }
 
-        Encounter encounter = encounterSessionMatcher.findEncounter(visit, mapEncounterParameters(searchParameters));
+        Encounter encounter = encounterSessionMatcher.findEncounter(visit, mapEncounterParameters(searchParametersBuilder, encounterSearchParameters));
         if(encounter != null){
             return encounterTransactionMapper.map(encounter, encounterSearchParameters.getIncludeAll());
         }
         return null;
     }
 
-    private EncounterParameters mapEncounterParameters(EncounterSearchParametersBuilder encounterSearchParameters) {
+    private EncounterParameters mapEncounterParameters(EncounterSearchParametersBuilder encounterSearchParameters, BahmniEncounterSearchParameters searchParameters) {
         EncounterParameters encounterParameters = EncounterParameters.instance();
         encounterParameters.setPatient(encounterSearchParameters.getPatient());
         if(encounterSearchParameters.getEncounterTypes().size() > 0){
             encounterParameters.setEncounterType(encounterSearchParameters.getEncounterTypes().iterator().next());
         }
-        encounterParameters.setProviders(new HashSet<Provider>(encounterSearchParameters.getProviders()));
+        encounterParameters.setProviders(new HashSet<>(encounterSearchParameters.getProviders()));
+        HashMap<String, Object> context = new HashMap<>();
+        context.put("patientProgramUuid", searchParameters.getPatientProgramUuid());
+        encounterParameters.setContext(context);
         encounterParameters.setEncounterDateTime(encounterSearchParameters.getEndDate());
         return encounterParameters;
     }

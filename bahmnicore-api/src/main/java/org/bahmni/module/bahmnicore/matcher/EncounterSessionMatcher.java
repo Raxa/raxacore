@@ -1,10 +1,11 @@
-package org.openmrs.module.bahmniemrapi.encountertransaction.matcher;
+package org.bahmni.module.bahmnicore.matcher;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
-import org.openmrs.Location;
 import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.EncounterService;
@@ -22,15 +23,21 @@ import java.util.*;
 public class EncounterSessionMatcher implements BaseEncounterMatcher {
 
     public static final int DEFAULT_SESSION_DURATION_IN_MINUTES = 60;
+    public static final String PATIENT_PROGAM_UUID = "patientProgramUuid";
     private AdministrationService adminService;
     private EncounterTypeIdentifier encounterTypeIdentifier;
     private EncounterService encounterService;
+    private BahmniProgramWorkflowService bahmniProgramWorkflowService;
 
     @Autowired
-    public EncounterSessionMatcher(@Qualifier("adminService") AdministrationService administrationService, EncounterTypeIdentifier encounterTypeIdentifier, EncounterService encounterService) {
+    public EncounterSessionMatcher(@Qualifier("adminService") AdministrationService administrationService,
+                                   EncounterTypeIdentifier encounterTypeIdentifier,
+                                   EncounterService encounterService,
+                                   BahmniProgramWorkflowService bahmniProgramWorkflowService) {
         this.adminService = administrationService;
         this.encounterTypeIdentifier = encounterTypeIdentifier;
         this.encounterService = encounterService;
+        this.bahmniProgramWorkflowService = bahmniProgramWorkflowService;
     }
 
 
@@ -64,18 +71,23 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
             encounterParameters.setEncounterDateTime(new Date());
         }
         encounterParameters.setEncounterType(getEncounterType(encounterParameters));
-        List<Encounter> encounters = this.encounterService.getEncounters(encounterParameters.getPatient(), null,
+        Collection<Encounter> encounters = this.encounterService.getEncounters(encounterParameters.getPatient(), null,
                 getSearchStartDate(encounterParameters.getEncounterDateTime()),
                 encounterParameters.getEncounterDateTime(), new ArrayList(),
                 Arrays.asList(encounterParameters.getEncounterType()),
                 encounterParameters.getProviders(), null, visits, false);
+
+        Map<String, Object> context = encounterParameters.getContext();
+        if (context != null) {
+            encounters = filterByPatientProgram(encounters, (String) context.get(PATIENT_PROGAM_UUID));
+        }
 
         if(CollectionUtils.isNotEmpty(encounters)){
             for (Encounter encounter : encounters) {
                 if (CollectionUtils.isNotEmpty(encounterParameters.getProviders())) {
                     matchingEncounters.add(encounter);
                 } else if (CollectionUtils.isEmpty(encounter.getEncounterProviders()) && isSameUser(encounter)) {
-                     matchingEncounters.add(encounter);;
+                     matchingEncounters.add(encounter);
                 }
             }
         }
@@ -86,6 +98,13 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
             return matchingEncounters.get(0);
         }
         return null;
+    }
+
+    private Collection filterByPatientProgram(Collection<Encounter> encounters, String patientProgramUuid) {
+        if (StringUtils.isBlank(patientProgramUuid)) return encounters;
+
+        return CollectionUtils.intersection(encounters,
+                bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid));
     }
 
     private Date getSearchStartDate(Date endDate){

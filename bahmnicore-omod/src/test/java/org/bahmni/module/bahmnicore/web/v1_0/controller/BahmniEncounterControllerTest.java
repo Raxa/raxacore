@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterSearchParameters;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
@@ -38,7 +39,7 @@ public class BahmniEncounterControllerTest {
         EncounterTransaction et1 = new EncounterTransaction();
         et1.setEncounterUuid("et1");
 
-        EncounterSearchParameters encounterSearchParameters = new EncounterSearchParameters();
+        BahmniEncounterSearchParameters encounterSearchParameters = new BahmniEncounterSearchParameters();
         encounterSearchParameters.setIncludeAll(false);
 
         when(bahmniEncounterTransactionService.find(encounterSearchParameters)).thenReturn(et1);
@@ -53,7 +54,7 @@ public class BahmniEncounterControllerTest {
 
     @Test
     public void should_return_empty_encounter_transaction_if_there_are_no_encounters_exists() throws Exception {
-        EncounterSearchParameters encounterSearchParameters = new EncounterSearchParameters();
+        BahmniEncounterSearchParameters encounterSearchParameters = new BahmniEncounterSearchParameters();
         encounterSearchParameters.setIncludeAll(false);
 
         when(emrEncounterService.find(encounterSearchParameters)).thenReturn(null);

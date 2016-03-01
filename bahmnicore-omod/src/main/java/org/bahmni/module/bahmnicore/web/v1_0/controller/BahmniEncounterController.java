@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.openmrs.Encounter;
 import org.openmrs.api.*;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterSearchParameters;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
@@ -54,7 +55,7 @@ public class BahmniEncounterController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/find")
     @ResponseBody
-    public BahmniEncounterTransaction find(@RequestBody EncounterSearchParameters encounterSearchParameters) {
+    public BahmniEncounterTransaction find(@RequestBody BahmniEncounterSearchParameters encounterSearchParameters) {
         EncounterTransaction encounterTransaction = bahmniEncounterTransactionService.find(encounterSearchParameters);
 
         if (encounterTransaction != null) {
