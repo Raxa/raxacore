@@ -13,28 +13,28 @@ import java.util.List;
 public interface BahmniProgramWorkflowService extends ProgramWorkflowService {
 
     @Transactional(readOnly = true)
-    @Authorized({"View PatientProgram Attribute Types"})
+    @Authorized({"View Program Attribute Types"})
     List<ProgramAttributeType> getAllProgramAttributeTypes();
 
     @Transactional(readOnly = true)
-    @Authorized({"View PatientProgram Attribute Types"})
+    @Authorized({"View Program Attribute Types"})
     ProgramAttributeType getProgramAttributeType(Integer var1);
 
     @Transactional(readOnly = true)
-    @Authorized({"View PatientProgram Attribute Types"})
+    @Authorized({"View Program Attribute Types"})
     ProgramAttributeType getProgramAttributeTypeByUuid(String var1);
 
-    @Authorized({"Manage PatientProgram Attribute Types"})
+    @Authorized({"Manage Program Attribute Types"})
     ProgramAttributeType saveProgramAttributeType(ProgramAttributeType var1);
 
-    @Authorized({"Purge PatientProgram Attribute Types"})
+    @Authorized({"Purge Program Attribute Types"})
     void purgeProgramAttributeType(ProgramAttributeType var1);
 
     @Transactional(readOnly = true)
-    @Authorized({"View PatientPrograms"})
+    @Authorized({"View Patient Programs"})
     PatientProgramAttribute getPatientProgramAttributeByUuid(String var1);
 
     @Transactional(readOnly = true)
-    @Authorized({"View PatientPrograms"})
+    @Authorized({"View Patient Programs"})
     Collection<Encounter> getEncountersByPatientProgramUuid(String patientProgramUuid);
 }
