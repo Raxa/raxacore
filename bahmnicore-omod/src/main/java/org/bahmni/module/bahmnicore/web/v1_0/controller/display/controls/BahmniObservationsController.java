@@ -6,7 +6,6 @@ import org.bahmni.module.bahmnicore.obs.ObservationsAdder;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.util.MiscUtils;
 import org.openmrs.Concept;
-import org.openmrs.Obs;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.VisitService;
@@ -99,9 +98,8 @@ public class BahmniObservationsController extends BaseRestController {
     @ResponseBody
     public Collection<BahmniObservation> get(@RequestParam(value = "patientProgramUuid", required = true) String patientProgramUuid,
                                              @RequestParam(value = "concept", required = false) List<String> rootConceptNames,
-                                             @RequestParam(value = "scope", required = false) String scope) {
-        List<Concept> rootConcepts = MiscUtils.getConceptsForNames(rootConceptNames, conceptService);
-
+                                             @RequestParam(value = "scope", required = false) String scope) throws ParseException {
+        
         Collection<BahmniObservation> observations;
         if (ObjectUtils.equals(scope, LATEST)) {
             observations = bahmniObsService.getLatestObservationsForPatientProgram(patientProgramUuid, rootConceptNames);
@@ -110,6 +108,7 @@ public class BahmniObservationsController extends BaseRestController {
         } else {
             observations = bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, rootConceptNames);
         }
+        sendObsToGroovyScript(rootConceptNames, observations);
         return observations;
     }
 
