@@ -115,6 +115,7 @@ public class BahmniObservationsControllerTest {
     public void shouldGetObsForPatientProgramWhenPatientProgramUuidIsSpecified() throws Exception {
         String patientProgramUuid = "patientProgramUuid";
         List<String> conceptNames = Arrays.asList("Weight");
+        when(bahmniExtensions.getExtension("observationsAdder","CurrentMonthOfTreatment.groovy")).thenReturn(null);
 
         bahmniObservationsController.get(patientProgramUuid, conceptNames, null);
 
@@ -125,6 +126,7 @@ public class BahmniObservationsControllerTest {
     public void shouldNotGetObsForPatientProgramWhenPatientProgramUuidIsSpecified() throws Exception {
         List<String> conceptNames = new ArrayList<String>();
         String patientProgramUuid = null;
+        when(bahmniExtensions.getExtension("observationsAdder","CurrentMonthOfTreatment.groovy")).thenReturn(null);
 
         bahmniObservationsController.get(patientProgramUuid);
 
@@ -147,6 +149,7 @@ public class BahmniObservationsControllerTest {
         List<String> conceptNames = new ArrayList<String>();
         String patientProgramUuid = "patientProgramUuid";
         String scope = "initial";
+        when(bahmniExtensions.getExtension("observationsAdder","CurrentMonthOfTreatment.groovy")).thenReturn(null);
 
         bahmniObservationsController.get(patientProgramUuid, conceptNames, scope);
 
