@@ -46,6 +46,8 @@ public class OMRSObsToBahmniObsMapper {
     }
 
     public BahmniObservation map(Obs obs) {
+        if(obs == null)
+             return null;
         String obsGroupUuid = obs.getObsGroup() == null? null : obs.getObsGroup().getUuid();
         AdditionalBahmniObservationFields additionalBahmniObservationFields =
                 new AdditionalBahmniObservationFields(
