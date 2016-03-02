@@ -5,10 +5,10 @@ import org.bahmni.module.bahmnicore.service.BahmniAddressHierarchyService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1)
@@ -27,7 +27,21 @@ public class BahmniAddressHierarchyController {
         if (uuid == null) {
             return null;
         }
-        return bahmniAddressHierarchyService.getAddressHierarchyEntryByUuid(uuid);
+        BahmniAddressHierarchyEntry bahmniAddressHierarchyEntry = null;
+        List<BahmniAddressHierarchyEntry>  addressHierarchyEntries = bahmniAddressHierarchyService.getAddressHierarchyEntriesByUuid(Arrays.asList(uuid));
+        if(!addressHierarchyEntries.isEmpty()){
+            bahmniAddressHierarchyEntry = addressHierarchyEntries.get(0);
+        }
+        return bahmniAddressHierarchyEntry;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/addressHierarchy")
+    @ResponseBody
+    public List<BahmniAddressHierarchyEntry> getAddressHierarchyEntriesByUuid(@RequestParam(value = "uuids", required = true) List<String> uuids) {
+        if (uuids.isEmpty()) {
+            return null;
+        }
+        return bahmniAddressHierarchyService.getAddressHierarchyEntriesByUuid(uuids);
     }
 
 }

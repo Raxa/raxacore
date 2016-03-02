@@ -7,6 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -27,13 +30,17 @@ public class BahmniAddressHierarchyServiceImplTest {
 
     @Test
     public void shouldGetAddressHierarchyEntryByUuid() throws Exception {
+        List<BahmniAddressHierarchyEntry> addressHierarchyEntries = new ArrayList<>();
         BahmniAddressHierarchyEntry addressHierarchyEntry = new BahmniAddressHierarchyEntry();
         addressHierarchyEntry.setName("test");
-        when(bahmniAddressHierarchyDao.getAddressHierarchyEntryByUuid("uuid")).thenReturn(addressHierarchyEntry);
+        addressHierarchyEntries.add(addressHierarchyEntry);
+        List<String> uuids = new ArrayList<>();
+        uuids.add("uuid");
+        when(bahmniAddressHierarchyDao.getAddressHierarchyEntriesByUuid(uuids)).thenReturn(addressHierarchyEntries);
 
-        BahmniAddressHierarchyEntry hierarchyEntryByUuid = bahmniAddressHierarchyService.getAddressHierarchyEntryByUuid("uuid");
+        List<BahmniAddressHierarchyEntry> hierarchyEntriesByUuid = bahmniAddressHierarchyService.getAddressHierarchyEntriesByUuid(uuids);
 
-        verify(bahmniAddressHierarchyDao, times(1)).getAddressHierarchyEntryByUuid("uuid");
-        assertEquals(addressHierarchyEntry.getName(), hierarchyEntryByUuid.getName());
+        verify(bahmniAddressHierarchyDao, times(1)).getAddressHierarchyEntriesByUuid(uuids);
+        assertEquals(addressHierarchyEntry.getName(), hierarchyEntriesByUuid.get(0).getName());
     }
 }

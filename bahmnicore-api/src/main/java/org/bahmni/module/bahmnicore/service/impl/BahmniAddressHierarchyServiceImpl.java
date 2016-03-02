@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Component
 @Transactional
 public class BahmniAddressHierarchyServiceImpl implements BahmniAddressHierarchyService {
@@ -18,7 +20,7 @@ public class BahmniAddressHierarchyServiceImpl implements BahmniAddressHierarchy
     }
 
     @Override
-    public BahmniAddressHierarchyEntry getAddressHierarchyEntryByUuid(String uuid) {
-        return bahmniAddressHierarchyDao.getAddressHierarchyEntryByUuid(uuid);
+    public List<BahmniAddressHierarchyEntry> getAddressHierarchyEntriesByUuid(List<String> uuids) {
+        return bahmniAddressHierarchyDao.getAddressHierarchyEntriesByUuid(uuids);
     }
 }
