@@ -3942,7 +3942,6 @@
             <column name="episode_id"/>
         </createIndex>
     </changeSet>
-<<<<<<< 5cf32840ef9e3822e7ef910b8ed722c89bd3ca01
     <changeSet author="vinay" id="20160302-1822">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="1">
