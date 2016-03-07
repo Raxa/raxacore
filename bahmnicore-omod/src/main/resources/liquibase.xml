@@ -3485,11 +3485,13 @@
         </sql>
     </changeSet>
     <changeSet id="bahmni-orders-role-201523111314" author="Chethan,Shashi" context="release-0.77">
+        <validCheckSum>3:41981a3f2794678c672a10fd47a4d683</validCheckSum>
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from role where role='Privilege Level: Full'</sqlCheck>
         </preConditions>
         <sql>
-            INSERT into role(role,description) VALUES('Privilege Level: Full', 'A role that has all API privileges');
+            select uuid() into @uuid;
+            INSERT into role(role, description, uuid) VALUES('Privilege Level: Full', 'A role that has all API privileges', @uuid);
         </sql>
     </changeSet>
     <changeSet id="bahmni-add-privileges-to-inpatient-read-201514101540" author="Banka,Padma" context="release-0.77">
@@ -3966,4 +3968,113 @@
             <column name="episode_id"/>
         </createIndex>
     </changeSet>
+    <changeSet author="vinay" id="20160302-1822">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) FROM global_property where property = 'emr.encounterMatcher'
+                and property_value = 'org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterSessionMatcher'
+            </sqlCheck>
+        </preConditions>
+        <comment>Update custom encounter session matcher</comment>
+        <sql>
+            update global_property set property_value='org.bahmni.module.bahmnicore.matcher.EncounterSessionMatcher' where property='emr.encounterMatcher' ;
+        </sql>
+    </changeSet>
+
+    <changeSet id="20160226-0222" author="Shan,Hanisha">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from role where role='Program-Enrollment'</sqlCheck>
+        </preConditions>
+        <comment>Add role for Enrolling patient to program </comment>
+        <sql>
+            INSERT INTO role (role, description,uuid) VALUES ('Program-Enrollment', 'Can manage patient programs', uuid());
+        </sql>
+    </changeSet>
+
+    <changeSet id="20160302-1225" author="Shan,Hanisha">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege = 'Manage Program Attribute Types'</sqlCheck>
+        </preConditions>
+        <insert tableName="privilege">
+            <column name="privilege" value="Manage Program Attribute Types"/>
+            <column name="description" value="Access to enter,edit and view program attributes"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="20160302-1226" author="Shan,Hanisha">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege = 'View Program Attribute Types'</sqlCheck>
+        </preConditions>
+        <insert tableName="privilege">
+            <column name="privilege" value="View Program Attribute Types"/>
+            <column name="description" value="Access to only view program attributes"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="20160302-1230" author="Shan,Hanisha">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege = 'Purge Program Attribute Types'</sqlCheck>
+        </preConditions>
+        <insert tableName="privilege">
+            <column name="privilege" value="Purge Program Attribute Types"/>
+            <column name="description" value="Access to purge program attribute types"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="20160302-1231" author="Shan,Hanisha">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT count(*) from role_privilege where role='Program-Enrollment'</sqlCheck>
+        </preConditions>
+        <comment>Add Manage Program Attribute Type privilege to Program-Enrollment role</comment>
+        <insert tableName="role_privilege">
+            <column name="role" value="Program-Enrollment"/>
+            <column name="privilege" value="Manage Program Attribute Types"/>
+        </insert>
+
+        <comment>Add View Program Attribute Types privilege to Program-Enrollment role</comment>
+        <insert tableName="role_privilege">
+            <column name="role" value="Program-Enrollment"/>
+            <column name="privilege" value="View Program Attribute Types"/>
+        </insert>
+
+        <comment>Add Purge Program Attribute Types privilege to Program-Enrollment role</comment>
+        <insert tableName="role_privilege">
+            <column name="role" value="Program-Enrollment"/>
+            <column name="privilege" value="Purge Program Attribute Types"/>
+        </insert>
+
+        <comment>Add (Add Patient Programs) privilege to Program-Enrollment role</comment>
+        <insert tableName="role_privilege">
+            <column name="role" value="Program-Enrollment"/>
+            <column name="privilege" value="Add Patient Programs"/>
+        </insert>
+
+        <comment>Add (View Patient Programs) privilege to Program-Enrollment role</comment>
+        <insert tableName="role_privilege">
+            <column name="role" value="Program-Enrollment"/>
+            <column name="privilege" value="View Patient Programs"/>
+        </insert>
+
+        <comment>Add (Edit Patient Programs) privilege to Program-Enrollment role</comment>
+        <insert tableName="role_privilege">
+            <column name="role" value="Program-Enrollment"/>
+            <column name="privilege" value="Edit Patient Programs"/>
+        </insert>
+
+        <comment>Add (Get Programs) privilege to Program-Enrollment role</comment>
+        <insert tableName="role_privilege">
+            <column name="role" value="Program-Enrollment"/>
+            <column name="privilege" value="Get Programs"/>
+        </insert>
+
+        <comment>Add (Get People) privilege to Clinical:FullAccess role</comment>
+        <insert tableName="role_privilege">
+            <column name="role" value="Clinical:FullAccess"/>
+            <column name="privilege" value="Get People"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>

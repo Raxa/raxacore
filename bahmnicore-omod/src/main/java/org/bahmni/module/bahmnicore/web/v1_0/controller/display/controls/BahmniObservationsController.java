@@ -6,7 +6,6 @@ import org.bahmni.module.bahmnicore.obs.ObservationsAdder;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.util.MiscUtils;
 import org.openmrs.Concept;
-import org.openmrs.Obs;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.VisitService;
@@ -51,17 +50,13 @@ public class BahmniObservationsController extends BaseRestController {
                                              @RequestParam(value = "scope", required = false) String scope,
                                              @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
                                              @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
-                                             @RequestParam(value = "filterObsWithOrders", required = false, defaultValue = "true") Boolean filterObsWithOrders,
-                                             @RequestParam(value = "patientProgramUuid", required = false) String patientProgramUuid) throws ParseException {
+                                             @RequestParam(value = "filterObsWithOrders", required = false, defaultValue = "true") Boolean filterObsWithOrders ) throws ParseException {
 
         List<Concept> rootConcepts = MiscUtils.getConceptsForNames(rootConceptNames, conceptService);
 
         Collection<BahmniObservation> observations;
-        if (patientProgramUuid != null) {
-            observations = bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, rootConceptNames);
-        } else if (ObjectUtils.equals(scope, LATEST)) {
-            observations = bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders,
-                    null);
+        if (ObjectUtils.equals(scope, LATEST)) {
+            observations = bahmniObsService.getLatest(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders, null);
         } else if (ObjectUtils.equals(scope, INITIAL)) {
             observations = bahmniObsService.getInitial(patientUUID, rootConcepts, numberOfVisits, obsIgnoreList, filterObsWithOrders, null);
         } else {
@@ -97,6 +92,24 @@ public class BahmniObservationsController extends BaseRestController {
     public Collection<BahmniObservation> get(@RequestParam(value = "encounterUuid", required = true) String encounterUuid,
                                              @RequestParam(value = "concept", required = false) List<String> conceptNames) {
         return bahmniObsService.getObservationsForEncounter(encounterUuid, conceptNames);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, params = {"patientProgramUuid"})
+    @ResponseBody
+    public Collection<BahmniObservation> get(@RequestParam(value = "patientProgramUuid", required = true) String patientProgramUuid,
+                                             @RequestParam(value = "concept", required = false) List<String> rootConceptNames,
+                                             @RequestParam(value = "scope", required = false) String scope) throws ParseException {
+        
+        Collection<BahmniObservation> observations;
+        if (ObjectUtils.equals(scope, LATEST)) {
+            observations = bahmniObsService.getLatestObservationsForPatientProgram(patientProgramUuid, rootConceptNames);
+        } else if (ObjectUtils.equals(scope, INITIAL)) {
+            observations = bahmniObsService.getInitialObservationsForPatientProgram(patientProgramUuid, rootConceptNames);
+        } else {
+            observations = bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, rootConceptNames);
+        }
+        sendObsToGroovyScript(rootConceptNames, observations);
+        return observations;
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"observationUuid"})

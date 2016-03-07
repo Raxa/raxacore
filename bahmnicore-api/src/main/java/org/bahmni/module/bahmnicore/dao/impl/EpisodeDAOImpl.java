@@ -16,7 +16,6 @@ public class EpisodeDAOImpl implements EpisodeDAO {
     private SessionFactory sessionFactory;
 
     @Override
-    @Transactional
     public void save(Episode episode) {
         session().save(episode);
     }

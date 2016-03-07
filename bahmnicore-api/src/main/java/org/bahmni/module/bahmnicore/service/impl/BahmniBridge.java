@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
+import org.bahmni.module.bahmnicore.dao.impl.ObsDaoImpl;
 import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.joda.time.LocalDate;
@@ -119,7 +120,7 @@ public class BahmniBridge {
         List<String> conceptNames = new ArrayList<>();
         conceptNames.add(conceptName);
         if (patientProgramUuid != null) {
-            obsList = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, 1);
+            obsList = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, 1,  ObsDaoImpl.OrderBy.DESC);
         } else {
             obsList = obsDao.getLatestObsFor(patientUuid, conceptName, 1);
         }

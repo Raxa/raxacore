@@ -9,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import static org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterSessionMatcher.DEFAULT_SESSION_DURATION_IN_MINUTES;
-
 @Component
 public class OrderSaveCommandImpl implements EncounterDataPreSaveCommand {
 
     private AdministrationService adminService;
+    public static final int DEFAULT_SESSION_DURATION_IN_MINUTES = 60;
 
     @Autowired
     public OrderSaveCommandImpl(@Qualifier("adminService") AdministrationService administrationService) {

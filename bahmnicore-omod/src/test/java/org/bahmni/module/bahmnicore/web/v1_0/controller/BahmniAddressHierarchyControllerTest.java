@@ -6,6 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -26,21 +30,23 @@ public class BahmniAddressHierarchyControllerTest {
 
     @Test
     public void shouldGetAddressHierarchyEntryByUuid() throws Exception {
+        List<BahmniAddressHierarchyEntry> addressHierarchyEntries = new ArrayList<>();
         BahmniAddressHierarchyEntry addressHierarchyEntry = new BahmniAddressHierarchyEntry();
         addressHierarchyEntry.setName("test");
-        when(bahmniAddressHierarchyService.getAddressHierarchyEntryByUuid("uuid")).thenReturn(addressHierarchyEntry);
+        addressHierarchyEntries.add(addressHierarchyEntry);
+        when(bahmniAddressHierarchyService.getAddressHierarchyEntriesByUuid(Arrays.asList("uuid"))).thenReturn(addressHierarchyEntries);
         BahmniAddressHierarchyEntry hierarchyEntry = bahmniAddressHierarchyController.get("uuid");
 
-        verify(bahmniAddressHierarchyService, times(1)).getAddressHierarchyEntryByUuid("uuid");
+        verify(bahmniAddressHierarchyService, times(1)).getAddressHierarchyEntriesByUuid(Arrays.asList("uuid"));
         assertNotNull(hierarchyEntry);
-        assertEquals("test", addressHierarchyEntry.getName());
+        assertEquals("test", addressHierarchyEntries.get(0).getName());
     }
 
     @Test
     public void shouldReturnNullIfUuidIsNull() throws Exception {
         BahmniAddressHierarchyEntry hierarchyEntry = bahmniAddressHierarchyController.get(null);
 
-        verify(bahmniAddressHierarchyService, never()).getAddressHierarchyEntryByUuid(anyString());
+        verify(bahmniAddressHierarchyService, never()).getAddressHierarchyEntriesByUuid(Arrays.asList(anyString()));
         assertNull(hierarchyEntry);
     }
 }

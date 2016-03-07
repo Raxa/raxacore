@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
+import org.bahmni.module.bahmnicore.dao.impl.ObsDaoImpl;
 import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.test.builder.DrugOrderBuilder;
@@ -180,7 +181,7 @@ public class BahmniBridgeTest {
         conceptNames.add("conceptName");
         bahmniBridge.latestObs("conceptName");
 
-        verify(obsDao, times(1)).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, 1);
+        verify(obsDao, times(1)).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, 1, ObsDaoImpl.OrderBy.DESC);
     }
 
     public Date addDays(Date now, int days) {

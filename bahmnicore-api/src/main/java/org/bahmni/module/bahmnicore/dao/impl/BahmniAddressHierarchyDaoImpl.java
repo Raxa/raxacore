@@ -11,17 +11,21 @@ import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Repository
 public class BahmniAddressHierarchyDaoImpl implements BahmniAddressHierarchyDao {
     @Autowired
     private SessionFactory sessionFactory;
 
     @Override
-    public BahmniAddressHierarchyEntry getAddressHierarchyEntryByUuid(String uuid) {
+    public List<BahmniAddressHierarchyEntry> getAddressHierarchyEntriesByUuid(List<String> uuids) {
         Session currentSession = sessionFactory.getCurrentSession();
+        List<BahmniAddressHierarchyEntry> bahmniAddressHierarchyEntries;
         StringBuilder queryString = new StringBuilder("select ahe.address_hierarchy_entry_id as addressHierarchyEntryId, ahe.parent_id as parentId, ahe.uuid as uuid, ahe.level_id as levelId, " +
                 " ahe.user_generated_id as userGeneratedId, ahe.name as name from address_hierarchy_entry ahe " +
-                "where ahe.uuid = (:uuid) ");
+                "where ahe.uuid in (:uuids) ");
 
         SQLQuery sqlQuery = currentSession
                 .createSQLQuery(queryString.toString())
@@ -32,14 +36,15 @@ public class BahmniAddressHierarchyDaoImpl implements BahmniAddressHierarchyDao 
                 .addScalar("userGeneratedId", StandardBasicTypes.STRING)
                 .addScalar("name", StandardBasicTypes.STRING);
 
-        sqlQuery.setParameter("uuid", uuid);
+        sqlQuery.setParameterList("uuids", uuids);
         sqlQuery.setResultTransformer(Transformers.aliasToBean(BahmniAddressHierarchyEntry.class));
 
-        BahmniAddressHierarchyEntry bahmniAddressHierarchyEntry = (BahmniAddressHierarchyEntry) sqlQuery.uniqueResult();
+        bahmniAddressHierarchyEntries = (List<BahmniAddressHierarchyEntry>) sqlQuery.list();
+        for(BahmniAddressHierarchyEntry bahmniAddressHierarchyEntry: bahmniAddressHierarchyEntries){
+            bahmniAddressHierarchyEntry.setAddressHierarchyLevel(getAddressHierarchyLevelById(bahmniAddressHierarchyEntry.getLevelId()));
+        }
 
-        bahmniAddressHierarchyEntry.setAddressHierarchyLevel(getAddressHierarchyLevelById(bahmniAddressHierarchyEntry.getLevelId()));
-
-        return bahmniAddressHierarchyEntry;
+        return bahmniAddressHierarchyEntries;
     }
 
     private BahmniAddressHierarchyLevel getAddressHierarchyLevelById(Integer levelId) {

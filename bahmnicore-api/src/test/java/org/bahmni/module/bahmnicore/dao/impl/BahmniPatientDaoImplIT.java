@@ -186,15 +186,13 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
         assertEquals("Peeter",response.getMiddleName());
         assertEquals("Sinha",response.getFamilyName());
         assertEquals("F",response.getGender());
-        assertEquals("{\"caste\":\"testCaste1\"}",response.getCustomAttribute());
+        assertEquals("{\"givenNameLocal\":\"ram\",\"caste\":\"testCaste1\"}",response.getCustomAttribute());
         assertEquals("{\"stage\":\"Stage1\"}",response.getPatientProgramAttributeValue());
     }
 
-//    TODO this test needs the proper data setUp, As it was throwing h2 db data casting error
     @Test
-    @Ignore
     public void shouldFetchPatientsByCodedConcepts(){
-        List<PatientResponse> patients = patientDao.getPatients("", "", "John", "testCaste1", "city_village", "Bilaspur", 100, 0, null, "Fac", "facility");
+        List<PatientResponse> patients = patientDao.getPatients("", "", "John", "testCaste1", "city_village", "Bilaspur", 100, 0, new String[]{"caste"}, "Fac", "facility");
         assertEquals(1, patients.size());
         PatientResponse response = patients.get(0);
         assertEquals("GAN200002",response.getIdentifier());
@@ -232,4 +230,15 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
         List<PatientResponse> patients = patientDao.getPatients("", "", "John", null, "city_village", "", 100, 0, null,"",null);
         assertEquals(5, patients.size());
     }
+
+    @Test
+    public void shouldSearchPatientBasedOnPatientAttributes() throws Exception {
+        List<PatientResponse> patients = patientDao.getPatients("", "", "", "ud", "city_village", "", 100, 0, new String[]{"occupation", "fatherName"},"",null);
+        assertEquals(2, patients.size());
+        assertEquals("{\"fatherName\":\"Yudishtar\",\"occupation\":\"\"}",patients.get(0).getCustomAttribute());
+        assertEquals("{\"occupation\":\"Student\",\"fatherName\":\"Dude\"}",patients.get(1).getCustomAttribute());
+        patients = patientDao.getPatients("", "", "", "ud", "city_village", "", 100, 0, new String[]{"occupation"},"",null);
+        assertEquals(1, patients.size());
+    }
+
 }

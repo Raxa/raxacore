@@ -222,7 +222,7 @@ public class BahmniEncounterTransactionTest {
 
 		BahmniEncounterTransaction encounterTransaction = new ObjectMapper().readValue(file, BahmniEncounterTransaction.class);
 		assertNotNull(encounterTransaction);
-		assertEquals(encounterTransaction.getPatientProgramUuid(), "253a5353-46b6-4668-97bb-8d1967ef3418");
+		assertEquals("253a5353-46b6-4668-97bb-8d1967ef3418", encounterTransaction.getPatientProgramUuid());
 	}
 
 	private ArrayList<BahmniDiagnosisRequest> createBahmniDiagnoses() {

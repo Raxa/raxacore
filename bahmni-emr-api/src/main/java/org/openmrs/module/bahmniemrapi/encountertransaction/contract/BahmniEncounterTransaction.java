@@ -24,7 +24,6 @@ public class BahmniEncounterTransaction {
     private String visitType;
     private String patientId;
     private String reason;
-    private String patientProgramUuid;
 
 
     public BahmniEncounterTransaction() {
@@ -67,11 +66,11 @@ public class BahmniEncounterTransaction {
     }
 
     public String getPatientProgramUuid() {
-        return patientProgramUuid;
+        return (String) encounterTransaction.getContext().get("patientProgramUuid");
     }
 
     public void setPatientProgramUuid(String patientProgramUuid) {
-        this.patientProgramUuid = patientProgramUuid;
+        this.encounterTransaction.getContext().put("patientProgramUuid", patientProgramUuid);
     }
 
     public void addObservation(BahmniObservation observation) {
@@ -242,6 +241,15 @@ public class BahmniEncounterTransaction {
         return encounterTransaction;
     }
 
+    public Map<String, Object> getContext() {
+        return encounterTransaction.getContext();
+    }
+
+    public EncounterTransaction setContext(Map<String, Object> extensions) {
+        encounterTransaction.setContext(extensions);
+        return encounterTransaction;
+    }
+
     public String getPatientId() {
         return patientId;
     }
@@ -367,7 +375,7 @@ public class BahmniEncounterTransaction {
     }
 
     public boolean isAssociatedToPatientProgram() {
-        return StringUtils.isNotBlank(patientProgramUuid);
+        return StringUtils.isNotBlank(getPatientProgramUuid());
     }
 }
 
