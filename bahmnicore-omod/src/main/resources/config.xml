@@ -27,6 +27,7 @@
         <require_module>org.openmrs.module.addresshierarchy</require_module>
         <require_module>org.openmrs.module.uiframework</require_module>
         <require_module>org.openmrs.module.bacteriology</require_module>
+        <require_module>org.openmrs.module.bedmanagement</require_module>
     </require_modules>
     <!-- Extensions -->
 	
