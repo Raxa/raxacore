@@ -1,6 +1,8 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.bahmni.module.bahmnicore.web.v1_0.VisitClosedException;
 import org.openmrs.Encounter;
+import org.openmrs.Visit;
 import org.openmrs.api.*;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterSearchParameters;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
@@ -8,18 +10,17 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObser
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
-import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
 import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.UUID;
 
 @Controller
@@ -68,9 +69,17 @@ public class BahmniEncounterController extends BaseRestController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/{uuid}")
     @ResponseBody
     public void delete(@PathVariable("uuid") String uuid, @RequestParam(value = "reason", defaultValue = "web service call") String reason){
-        BahmniEncounterTransaction bahmniEncounterTransaction = get(uuid,false);
-        bahmniEncounterTransaction.setReason(reason);
-        bahmniEncounterTransactionService.delete(bahmniEncounterTransaction);
+        String errorMessage = "You can't Undo Discharge a patient after closing the visit.";
+        Visit visit = encounterService.getEncounterByUuid(uuid).getVisit();
+        Date stopDate = visit.getStopDatetime();
+        if(stopDate != null && stopDate.before(new Date())){
+            throw new VisitClosedException(errorMessage);
+        }
+        else{
+            BahmniEncounterTransaction bahmniEncounterTransaction = get(uuid,false);
+            bahmniEncounterTransaction.setReason(reason);
+            bahmniEncounterTransactionService.delete(bahmniEncounterTransaction);
+        }
     }
 
     @RequestMapping(method = RequestMethod.POST)

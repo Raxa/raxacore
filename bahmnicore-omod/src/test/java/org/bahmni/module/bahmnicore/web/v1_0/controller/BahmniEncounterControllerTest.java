@@ -1,22 +1,26 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.bahmni.module.bahmnicore.web.v1_0.VisitClosedException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.openmrs.api.AdministrationService;
+import org.openmrs.Encounter;
+import org.openmrs.Visit;
+import org.openmrs.api.EncounterService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterSearchParameters;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
-import org.openmrs.module.emrapi.encounter.EncounterSearchParameters;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class BahmniEncounterControllerTest {
@@ -27,6 +31,8 @@ public class BahmniEncounterControllerTest {
     @Mock
     private BahmniEncounterTransactionService bahmniEncounterTransactionService;
 
+    @Mock
+    private EncounterService encounterService;
     private BahmniEncounterController bahmniEncounterController;
 
     @Before
@@ -64,6 +70,25 @@ public class BahmniEncounterControllerTest {
         BahmniEncounterTransaction bahmniEncounterTransactions = bahmniEncounterController.find(encounterSearchParameters);
 
         assertNull(bahmniEncounterTransactions.getEncounterUuid());
+    }
+
+    @Test(expected=VisitClosedException.class)
+    public void should_throw_visit_closed_exception_if_encounter_visit_is_closed() throws Exception{
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Visit visit = new Visit();
+        visit.setId(123);
+        visit.setStopDatetime(format.parse("2016-03-08 12:46:46"));
+
+        Encounter encounter = new Encounter();
+        encounter.setId(321);
+        encounter.setUuid("410491d2-b617-42ad-bf0f-de2fc9b42998");
+        encounter.setVisit(visit);
+
+        bahmniEncounterController = new BahmniEncounterController(encounterService, emrEncounterService, null, bahmniEncounterTransactionService, bahmniEncounterTransactionMapper);
+
+        when(encounterService.getEncounterByUuid("410491d2-b617-42ad-bf0f-de2fc9b42998")).thenReturn(encounter);
+
+        bahmniEncounterController.delete("410491d2-b617-42ad-bf0f-de2fc9b42998","Undo Discharge");
     }
 
 }
