@@ -1,8 +1,9 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.openmrs.api.context.Context;
-import org.openmrs.module.rulesengine.contract.Dose;
-import org.openmrs.module.rulesengine.service.DoseRuleService;
+import org.openmrs.api.APIException;
+import org.openmrs.module.rulesengine.domain.Dose;
+import org.openmrs.module.rulesengine.rule.BSABasedDoseRule;
+import org.openmrs.module.rulesengine.rule.WeightBasedDoseRule;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.stereotype.Controller;
@@ -19,8 +20,16 @@ public class DoseCalculatorController extends BaseRestController {
     @ResponseBody
     public Dose calculateDose(@RequestParam(value = "patientUuid") String patientUuid,
                               @RequestParam(value = "baseDose") Double baseDose,
-                              @RequestParam(value = "doseUnit") String stringDoseUnit) throws Exception {
-        DoseRuleService doseRuleService = Context.getService(DoseRuleService.class);
-        return doseRuleService.calculateDose(patientUuid, baseDose, stringDoseUnit);
+                              @RequestParam(value = "doseUnit") String doseUnit) throws Exception {
+        if("mg/kg".equals(doseUnit)){
+            WeightBasedDoseRule weightBasedDoseRule = new WeightBasedDoseRule();
+            return weightBasedDoseRule.calculateDose(patientUuid, baseDose);
+        }
+        if("mg/m2".equals(doseUnit)){
+            BSABasedDoseRule bsaBasedDoseRule = new BSABasedDoseRule();
+            return bsaBasedDoseRule.calculateDose(patientUuid, baseDose);
+        }
+        String errMessage = "Dosing Rule not found for given doseUnits (" + doseUnit + ").";
+        throw new APIException(errMessage);
     }
 }
