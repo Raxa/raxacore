@@ -69,7 +69,7 @@ public class BahmniEncounterController extends BaseRestController {
     @RequestMapping(method = RequestMethod.DELETE, value = "/{uuid}")
     @ResponseBody
     public void delete(@PathVariable("uuid") String uuid, @RequestParam(value = "reason", defaultValue = "web service call") String reason){
-        String errorMessage = "You can't Undo Discharge a patient after closing the visit.";
+        String errorMessage = "Visit for this patient is closed. You cannot do an 'Undo Discharge' for the patient.";
         Visit visit = encounterService.getEncounterByUuid(uuid).getVisit();
         Date stopDate = visit.getStopDatetime();
         if(stopDate != null && stopDate.before(new Date())){
