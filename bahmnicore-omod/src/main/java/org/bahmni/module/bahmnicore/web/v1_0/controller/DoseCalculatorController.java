@@ -22,12 +22,10 @@ public class DoseCalculatorController extends BaseRestController {
                               @RequestParam(value = "baseDose") Double baseDose,
                               @RequestParam(value = "doseUnit") String doseUnit) throws Exception {
         if("mg/kg".equals(doseUnit)){
-            WeightBasedDoseRule weightBasedDoseRule = new WeightBasedDoseRule();
-            return weightBasedDoseRule.calculateDose(patientUuid, baseDose);
+            return WeightBasedDoseRule.calculateDose(patientUuid, baseDose);
         }
         if("mg/m2".equals(doseUnit)){
-            BSABasedDoseRule bsaBasedDoseRule = new BSABasedDoseRule();
-            return bsaBasedDoseRule.calculateDose(patientUuid, baseDose);
+            return BSABasedDoseRule.calculateDose(patientUuid, baseDose);
         }
         String errMessage = "Dosing Rule not found for given doseUnits (" + doseUnit + ").";
         throw new APIException(errMessage);
