@@ -1,0 +1,41 @@
+{
+  "patient": {
+    "person": {
+      "names": [
+        {
+          "givenName": "fhqbe",
+          "middleName": "dw",
+          "familyName": "fen",
+          "preferred": false
+        }
+      ],
+      "addresses": [
+        {
+          "cityVillage": "erwf",
+          "countyDistrict": "fwefe",
+          "stateProvince": "fewf",
+          "postalCode": "22"
+        }
+      ],
+      "birthdate": "1984-03-08",
+      "gender": "O",
+      "birthtime": null,
+      "attributes": [
+
+      ],
+      "deathDate": null,
+      "causeOfDeath": ""
+    },
+    "identifiers": [
+      {
+        "identifierPrefix": "BAH",
+        "identifierType": {
+          "name": "Our Id"
+        },
+        "preferred": true,
+        "voided": false
+      }
+    ]
+  },
+  "relationships": []
+}
