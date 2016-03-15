@@ -20,7 +20,6 @@
         <gem.home>${basedir}/.rubygems</gem.home>
         <gem.path>${basedir}/.rubygems</gem.path>
         <uiframeworkVersion>3.3.1</uiframeworkVersion>
-        <bedManagementVersion>5.5-SNAPSHOT</bedManagementVersion>
     </properties>
 
     <dependencies>
@@ -268,12 +267,6 @@
             <groupId>org.openmrs.module</groupId>
             <artifactId>bacteriology-api</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>bedmanagement-api</artifactId>
-            <version>${bedManagementVersion}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
