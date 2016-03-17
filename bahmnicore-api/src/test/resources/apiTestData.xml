@@ -136,7 +136,9 @@
     <concept concept_id="666" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="8f596de5-5caa-11e3-a4c0-0800271c1b75" />
 
     <concept concept_id="777" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="9f596de5-5caa-11e3-a4c0-0800271c1b75" />
-    <concept_name concept_id="777" name="Student" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="8" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afi" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept_name concept_id="777" name="Student" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="81" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afi" concept_name_type="SHORT" locale_preferred="0"/>
+    <concept_name concept_id="777" name="Student_Fully" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="82" voided="false" uuid="5d2d4cb7-955b-4837-8bb7-0ebb94092afc" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
     <concept concept_id="100" retired="0" datatype_id="5" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="True_concept_uuid" />
     <concept_name concept_id="100" name="True" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="10" voided="false" uuid="6d2d4cb7-955b-4837-80f7-0ebb94092afh" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
