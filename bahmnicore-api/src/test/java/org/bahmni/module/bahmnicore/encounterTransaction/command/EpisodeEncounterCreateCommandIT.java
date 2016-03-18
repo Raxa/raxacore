@@ -1,9 +1,7 @@
 package org.bahmni.module.bahmnicore.encounterTransaction.command;
 
 import org.bahmni.module.bahmnicore.BaseIntegrationTest;
-import org.bahmni.module.bahmnicore.model.Episode;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
-import org.bahmni.module.bahmnicore.service.EpisodeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
@@ -13,6 +11,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.episodes.Episode;
+import org.openmrs.module.episodes.service.EpisodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;

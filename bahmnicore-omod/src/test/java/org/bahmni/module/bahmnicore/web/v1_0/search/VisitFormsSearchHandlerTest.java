@@ -1,9 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.search;
 
-import org.bahmni.module.bahmnicore.model.Episode;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
-import org.bahmni.module.bahmnicore.service.EpisodeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +22,8 @@ import org.openmrs.api.ObsService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.episodes.Episode;
+import org.openmrs.module.episodes.service.EpisodeService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;

@@ -335,6 +335,12 @@
             <version>0.82-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>episodes-api</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
             <version>4.2.4</version>

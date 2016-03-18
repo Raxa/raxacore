@@ -30,6 +30,7 @@
         <require_module>org.openmrs.module.bacteriology</require_module>
         <require_module>org.openmrs.module.bedmanagement</require_module>
         <require_module>org.openmrs.module.rulesengine</require_module>
+        <require_module>org.openmrs.module.episodes</require_module>
     </require_modules>
     <!-- Extensions -->
 	
@@ -128,7 +129,6 @@
         ProgramAttributeType.hbm.xml
         PatientProgramAttribute.hbm.xml
         PatientProgram.hbm.xml
-        Episode.hbm.xml
     </mappingFiles>
     <!-- Internationalization -->
     <!-- All message codes should start with moduleId.* -->

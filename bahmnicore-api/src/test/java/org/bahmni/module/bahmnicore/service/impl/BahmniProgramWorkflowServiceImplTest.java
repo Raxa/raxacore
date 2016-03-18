@@ -1,11 +1,9 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.dao.BahmniProgramWorkflowDAO;
-import org.bahmni.module.bahmnicore.model.Episode;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
-import org.bahmni.module.bahmnicore.service.EpisodeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +13,8 @@ import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
+import org.openmrs.module.episodes.Episode;
+import org.openmrs.module.episodes.service.EpisodeService;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Date;

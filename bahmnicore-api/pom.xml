@@ -119,8 +119,12 @@
             <artifactId>web-clients</artifactId>
             <version>0.82-SNAPSHOT</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>episodes-api</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.ict4h.openmrs</groupId>
             <artifactId>openmrs-atomfeed-common</artifactId>

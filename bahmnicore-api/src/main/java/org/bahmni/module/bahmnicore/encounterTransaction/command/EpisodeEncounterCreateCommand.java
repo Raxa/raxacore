@@ -1,13 +1,13 @@
 package org.bahmni.module.bahmnicore.encounterTransaction.command;
 
-import org.bahmni.module.bahmnicore.model.Episode;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
-import org.bahmni.module.bahmnicore.service.EpisodeService;
 import org.openmrs.Encounter;
 import org.openmrs.PatientProgram;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPostSaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.episodes.Episode;
+import org.openmrs.module.episodes.service.EpisodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

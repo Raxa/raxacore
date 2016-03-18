@@ -20,9 +20,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.anyBoolean;
@@ -70,7 +73,7 @@ public class BahmniProgramEnrollmentResourceTest {
         PageableResult pageableResult = bahmniProgramEnrollmentResource.doSearch(requestContext);
 
         assertNotNull(pageableResult);
-        assertNotEquals("org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult", pageableResult.getClass().getName());
+        assertThat("org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult", is(not(equalTo(pageableResult.getClass().getName()))));
         verify(requestContext, times(2)).getRequest();
         verify(requestContext, times(1)).getIncludeAll();
         verify(httpServletRequest, times(2)).getParameter(anyString());
@@ -117,7 +120,7 @@ public class BahmniProgramEnrollmentResourceTest {
         PageableResult pageableResult = bahmniProgramEnrollmentResource.doSearch(requestContext);
 
         assertNotNull(pageableResult);
-        assertNotEquals("org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult", pageableResult.getClass().getName());
+        assertThat("org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult", is(not(equalTo(pageableResult.getClass().getName()))));
         verify(requestContext, times(2)).getRequest();
         verify(httpServletRequest, times(2)).getParameter(anyString());
         verify(bahmniProgramWorkflowService, times(1)).getPatientProgramByUuid(anyString());

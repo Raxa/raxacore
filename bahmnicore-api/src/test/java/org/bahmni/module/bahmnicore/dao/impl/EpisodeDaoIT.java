@@ -1,14 +1,14 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.bahmni.module.bahmnicore.BaseIntegrationTest;
-import org.bahmni.module.bahmnicore.dao.EpisodeDAO;
-import org.bahmni.module.bahmnicore.model.Episode;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.PatientProgram;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.episodes.Episode;
+import org.openmrs.module.episodes.dao.impl.EpisodeDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Set;

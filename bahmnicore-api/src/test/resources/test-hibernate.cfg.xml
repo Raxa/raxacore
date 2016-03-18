@@ -12,10 +12,10 @@
         <mapping resource="ProgramAttributeType.hbm.xml"/>
         <mapping resource="PatientProgramAttribute.hbm.xml"/>
         <mapping resource="PatientProgram.hbm.xml"/>
-        <mapping resource="Episode.hbm.xml"/>
         <mapping resource="org/bahmni/module/db/hibernate/ObsRelationship.hbm.xml"/>
         <mapping resource="org/bahmni/module/db/hibernate/ObsRelationshipType.hbm.xml"/>
         <mapping resource="EntityMappingType.hbm.xml"></mapping>
         <mapping resource="EntityMapping.hbm.xml"></mapping>
+        <mapping resource="Episode.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

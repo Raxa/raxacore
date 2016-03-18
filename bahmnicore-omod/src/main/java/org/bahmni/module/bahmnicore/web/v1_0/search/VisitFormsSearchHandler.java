@@ -1,9 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.search;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.bahmni.module.bahmnicore.model.Episode;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
-import org.bahmni.module.bahmnicore.service.EpisodeService;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -11,6 +9,8 @@ import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.episodes.Episode;
+import org.openmrs.module.episodes.service.EpisodeService;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
