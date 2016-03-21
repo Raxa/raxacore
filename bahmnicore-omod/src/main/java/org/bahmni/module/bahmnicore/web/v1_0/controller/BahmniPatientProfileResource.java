@@ -108,6 +108,7 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
     public ResponseEntity<Object> update(@PathVariable("uuid") String uuid, @RequestBody SimpleObject propertiesToCreate) throws Exception {
         PatientProfile delegate = mapForUpdatePatient(uuid, propertiesToCreate);
         setConvertedProperties(delegate, propertiesToCreate, getUpdatableProperties(), true);
+        delegate.setRelationships(getRelationships(propertiesToCreate, delegate.getPatient()));
         try {
             delegate = emrPatientProfileService.save(delegate);
             return new ResponseEntity<>(ConversionUtil.convertToRepresentation(delegate, Representation.FULL), HttpStatus.OK);
@@ -151,8 +152,6 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         delegate.setPatient(patient);
 
         propertiesToUpdate.removeProperty("patient");
-        delegate.setRelationships(getRelationships(propertiesToUpdate, delegate.getPatient()));
-
         return delegate;
     }
 
