@@ -18,9 +18,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 
@@ -50,10 +48,12 @@ public class VisitFormsSearchHandler implements SearchHandler {
         if (patient == null) {
             throw new InvalidSearchException("Patient does not exist.");
         }
-        List<Concept> conceptSetMembers = getConcepts(conceptNames);
-
-        if (conceptSetMembers.isEmpty())
-            conceptSetMembers = Context.getConceptService().getConcept(ALL_OBSERVATION_TEMPLATES).getSetMembers();
+        List<String> conceptNamesList = new ArrayList<>();
+        if (conceptNames == null) {
+            conceptNamesList = getConcepts(Context.getConceptService().getConcept(ALL_OBSERVATION_TEMPLATES).getSetMembers());
+        } else {
+            conceptNamesList = Arrays.asList(conceptNames);
+        }
 
         List<Encounter> encounterList;
         if (patientProgramUuid != null) {
@@ -62,12 +62,12 @@ public class VisitFormsSearchHandler implements SearchHandler {
             encounterList = getEncountersFor(numberOfVisits, patient);
         }
 
-        List<Obs> finalObsList = getObservations(patient, conceptSetMembers, encounterList);
+        List<Obs> finalObsList = getObservations(patient, conceptNamesList, encounterList);
 
         return new NeedsPaging<Obs>(finalObsList, context);
     }
 
-    private List<Obs> getObservations(Patient patient, List<Concept> conceptSetMembers, List<Encounter> encounterList) {
+    private List<Obs> getObservations(Patient patient, List<String> conceptNames, List<Encounter> encounterList) {
         List<Obs> finalObsList = new ArrayList<>();
         if (CollectionUtils.isEmpty(encounterList)) {
             return finalObsList;
@@ -75,11 +75,13 @@ public class VisitFormsSearchHandler implements SearchHandler {
 
         List<Obs> initialObsList = Context.getObsService().getObservations(Collections.singletonList(patient.getPerson()), encounterList, null, null, null, null, null, null, null, null, null, false);
 
-        if (CollectionUtils.isNotEmpty(conceptSetMembers)) {
-            for (Obs obs : initialObsList) {
-                if (conceptSetMembers.contains(obs.getConcept())) {
-                    finalObsList.add(obs);
-                }
+        for (Obs obs : initialObsList) {
+            String name = null;
+            if(obs.getConcept()!= null && obs.getConcept().getFullySpecifiedName(Locale.ENGLISH) != null){
+                name = obs.getConcept().getFullySpecifiedName(Locale.ENGLISH).getName();
+            }
+            if (conceptNames.contains(name)) {
+                finalObsList.add(obs);
             }
         }
         return finalObsList;
@@ -102,19 +104,16 @@ public class VisitFormsSearchHandler implements SearchHandler {
         return encounterList;
     }
 
-    private List<Concept> getConcepts(String[] conceptNames) {
-        List<Concept> conceptSetMembers = new ArrayList<>();
-        if (conceptNames == null)
-            return conceptSetMembers;
+    private List<String> getConcepts(List<Concept> concepts) {
+        List<String> conceptNames = new ArrayList<>();
+        if (concepts == null)
+            return conceptNames;
 
-        for (String conceptName : conceptNames) {
-            Concept conceptByName = Context.getConceptService().getConceptByName(conceptName);
-            if (conceptByName != null) {
-                conceptSetMembers.add(conceptByName);
-            }
+        for (Concept concept : concepts) {
+            conceptNames.add(concept.getFullySpecifiedName(Locale.ENGLISH).getName());
         }
 
-        return conceptSetMembers;
+        return conceptNames;
     }
 
     private List<Visit> listOfVisitsNeeded(int numberOfVisits, Patient patient) {
