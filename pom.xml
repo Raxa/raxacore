@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.bahmni.module</groupId>
@@ -24,7 +24,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <openMRSVersion>1.12.0-SNAPSHOT</openMRSVersion>
+        <openMRSVersion>1.12.0-beta</openMRSVersion>
         <openMRSWebServicesVersion>2.12.1</openMRSWebServicesVersion>
         <springVersion>3.2.7.RELEASE</springVersion>
         <atomfeed.version>1.9.1</atomfeed.version>
@@ -305,7 +305,7 @@
         </dependencies>
 
     </dependencyManagement>
-    
+
     <dependencies>
         <dependency>
             <groupId>log4j</groupId>
@@ -462,7 +462,7 @@
         </repository>
         <repository>
             <id>JBoss</id>
-            <name>The "public-jboss" repository group provides a combined view all JBoss community project artifacts
+            <name>The &quot;public-jboss&quot; repository group provides a combined view all JBoss community project artifacts
             </name>
             <layout>default</layout>
             <url>http://repository.jboss.org/nexus/content/groups/public-jboss</url>
@@ -501,7 +501,7 @@
             <id>bahmni-artifactory-releases</id>
             <name>bahmni-artifactory-releases</name>
             <url>http://bahmnirepo.thoughtworks.com/artifactory/libs-release-local</url>
-        </repository>        
+        </repository>
         <repository>
             <id>rubygems-releases</id>
             <url>http://rubygems-proxy.torquebox.org/releases</url>
