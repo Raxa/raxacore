@@ -24,7 +24,9 @@
     <encounter encounter_id="3001" encounter_type="1" patient_id="1024" visit_id="2001" location_id="1" encounter_datetime="2011-10-19 00:00:00.0" creator="1" date_created="2008-08-19 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63111"/>
 
     <concept concept_id="2004" retired="false" datatype_id="4" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-e601-4326-bb05-c6e11fe3d9ba"/>
-    <concept_name concept_id="2004" name="Paracetamol" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="24" voided="false" uuid="49310077-e601-4326-bb05-c6e11fe3d9ba" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_name concept_name_id="2004" concept_id="2004" name="Paracetamol" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="49310077-e601-4326-bb05-c6e11fe3d9cb"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
     <concept concept_id="2005" retired="false" datatype_id="4" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-eeee-4326-bb05-c6e11fe3d9ba"/>
     <concept_name concept_id="2005" name="Order Attributes" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="25" voided="false" uuid="49310077-e601-4326-bb05-c6e11fe3dddd" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>

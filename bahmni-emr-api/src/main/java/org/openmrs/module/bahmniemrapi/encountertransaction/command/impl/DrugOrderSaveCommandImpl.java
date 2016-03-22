@@ -46,7 +46,7 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
         List<EncounterTransaction.DrugOrder> drugOrders = bahmniEncounterTransaction.getDrugOrders();
         Map<String,List<EncounterTransaction.DrugOrder>> sameDrugNameOrderLists = new LinkedHashMap<>();
         for (EncounterTransaction.DrugOrder drugOrder : drugOrders) {
-            String name = drugOrder.getDrugNonCoded()==null ? drugOrder.getDrug().getName() : drugOrder.getDrugNonCoded();
+            String name = getDrugName(drugOrder);
             if(sameDrugNameOrderLists.get(name) == null){
                 sameDrugNameOrderLists.put(name, new ArrayList<EncounterTransaction.DrugOrder>());
             }
@@ -59,6 +59,16 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
         }
 
         return bahmniEncounterTransaction;
+    }
+
+    private String getDrugName(EncounterTransaction.DrugOrder drugOrder) {
+        String drugName = drugOrder.getDrugNonCoded();
+        if (drugName == null) {
+            if (drugOrder.getDrug() != null) {
+                drugName = drugOrder.getDrug().getName();
+            }
+        }
+        return drugName;
     }
 
     private void checkAndFixChainOverlapsWithCurrentDateOrder(Collection<EncounterTransaction.DrugOrder> orders, Date encounterDateTime) {

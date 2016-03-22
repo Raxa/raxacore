@@ -1,6 +1,5 @@
 package org.openmrs.module.bahmniemrapi.drugorder.contract;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.Visit;
 import org.openmrs.module.bahmniemrapi.visit.contract.VisitData;
 import org.openmrs.module.emrapi.CareSettingType;
@@ -168,5 +167,13 @@ public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
     @Override
     public int compareTo(BahmniDrugOrder otherOrder) {
         return otherOrder.getEffectiveStartDate().compareTo(this.getEffectiveStartDate());
+    }
+
+    public void setConcept(EncounterTransaction.Concept concept) {
+        this.drugOrder.setConcept(concept);
+    }
+
+    public EncounterTransaction.Concept getConcept() {
+        return this.drugOrder.getConcept();
     }
 }
