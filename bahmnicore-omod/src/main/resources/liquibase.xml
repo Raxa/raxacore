@@ -4051,4 +4051,34 @@
         </insert>
     </changeSet>
 
+    <changeSet id="20160322153797" author="Jaswanth, Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM INFORMATION_SCHEMA.STATISTICS
+                WHERE table_schema='openmrs' AND table_name='bed_patient_assignment_map' AND
+                column_name='date_stopped';
+            </sqlCheck>
+        </preConditions>
+        <comment>Add index on date_stopped column for bed_patient_assignment_map table</comment>
+        <createIndex indexName="bed_patient_assignment_map_date_stopped"
+                     tableName="bed_patient_assignment_map">
+            <column name="date_stopped"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="201603221630968" author="Jaswanth, Hemanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM INFORMATION_SCHEMA.STATISTICS
+                WHERE table_schema='openmrs' AND table_name='visit' AND
+                column_name='date_stopped';
+            </sqlCheck>
+        </preConditions>
+        <comment>Add index on date_stopped column for visit table</comment>
+        <createIndex indexName="visit_date_stopped"
+                     tableName="visit">
+            <column name="date_stopped"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
