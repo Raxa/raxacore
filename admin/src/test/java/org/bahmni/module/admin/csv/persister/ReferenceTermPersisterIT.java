@@ -1,27 +1,20 @@
 package org.bahmni.module.admin.csv.persister;
 
 import org.bahmni.csv.Messages;
-import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.BaseIntegrationTest;
-import org.bahmni.module.admin.csv.models.PatientRow;
 import org.bahmni.module.admin.csv.models.ReferenceTermRow;
-import org.bahmni.module.referencedata.labconcepts.contract.Concept;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.openmrs.ConceptReferenceTerm;
 import org.openmrs.ConceptSource;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
-import org.openmrs.test.BaseContextSensitiveTest;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ReferenceTermPersisterIT extends BaseIntegrationTest {
 

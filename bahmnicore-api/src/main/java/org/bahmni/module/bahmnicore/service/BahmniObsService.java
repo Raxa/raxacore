@@ -6,7 +6,6 @@ import org.openmrs.Order;
 import org.openmrs.Visit;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 
-import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;

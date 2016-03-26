@@ -1,6 +1,6 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
-import org.bahmni.module.referencedata.labconcepts.contract.*;
+import org.bahmni.module.referencedata.labconcepts.contract.RadiologyTest;
 import org.bahmni.module.referencedata.labconcepts.mapper.RadiologyTestMapper;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;
@@ -8,10 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.openmrs.Concept;
-import org.openmrs.*;
 import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
@@ -20,15 +17,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
-import static org.bahmni.module.referencedata.labconcepts.advice.ConceptServiceEventInterceptorTest.createConceptSet;
-import static org.bahmni.module.referencedata.labconcepts.advice.ConceptServiceEventInterceptorTest.getConceptSets;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 @PrepareForTest(Context.class)

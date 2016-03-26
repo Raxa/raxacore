@@ -8,7 +8,9 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.Drug;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class DrugEventTest {
 

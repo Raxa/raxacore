@@ -2,9 +2,7 @@ package org.bahmni.module.bahmnicore.service;
 
 import org.openmrs.Concept;
 import org.openmrs.Order;
-import org.openmrs.api.OpenmrsService;
 import org.openmrs.module.bahmniemrapi.order.contract.BahmniOrder;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

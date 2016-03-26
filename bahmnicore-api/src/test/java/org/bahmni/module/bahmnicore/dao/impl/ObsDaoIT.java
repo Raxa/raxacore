@@ -7,10 +7,10 @@ import org.junit.Test;
 import org.openmrs.Obs;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;

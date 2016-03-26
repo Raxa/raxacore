@@ -1,11 +1,10 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller.search;
 
-import org.bahmni.module.bahmnicore.web.v1_0.controller.search.PersonAttributeSearchController;
+import org.bahmni.module.bahmnicore.dao.PersonAttributeDao;
+import org.bahmni.module.bahmnicore.model.ResultList;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.bahmni.module.bahmnicore.dao.PersonAttributeDao;
-import org.bahmni.module.bahmnicore.model.ResultList;
 
 import java.util.Arrays;
 

@@ -4,7 +4,6 @@ package org.bahmni.module.admin.csv.persister;
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.EntityPersister;
 import org.bahmni.csv.Messages;
-import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.concepts.mapper.ConceptSetMapper;
 import org.bahmni.module.admin.csv.models.ConceptSetRow;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;

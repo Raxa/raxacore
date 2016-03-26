@@ -68,8 +68,7 @@ public class AdditionalBahmniObservationFields implements Cloneable {
     @Override
     public Object clone() {
         try {
-            AdditionalBahmniObservationFields additionalBahmniObservationFields = (AdditionalBahmniObservationFields) super.clone();
-            return additionalBahmniObservationFields;
+            return super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("unable to clone "+this.getClass().getName(),e);
         }

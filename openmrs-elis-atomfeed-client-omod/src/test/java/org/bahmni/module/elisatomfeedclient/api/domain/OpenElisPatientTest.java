@@ -1,12 +1,7 @@
 package org.bahmni.module.elisatomfeedclient.api.domain;
 
-import org.apache.commons.beanutils.locale.converters.DateLocaleConverter;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Test;
-
-import java.util.Calendar;
-import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
 

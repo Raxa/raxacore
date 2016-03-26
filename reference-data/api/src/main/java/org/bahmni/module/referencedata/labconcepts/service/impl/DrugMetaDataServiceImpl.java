@@ -1,12 +1,10 @@
 package org.bahmni.module.referencedata.labconcepts.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Logger;
 import org.bahmni.module.referencedata.labconcepts.model.DrugMetaData;
 import org.bahmni.module.referencedata.labconcepts.service.DrugMetaDataService;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
-import org.openmrs.ConceptDatatype;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;

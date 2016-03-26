@@ -2,22 +2,19 @@ package org.bahmni.module.admin.csv.persister;
 
 import org.bahmni.csv.KeyValue;
 import org.bahmni.csv.Messages;
-import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.BaseIntegrationTest;
 import org.bahmni.module.admin.csv.models.PatientRow;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
-import org.openmrs.test.BaseContextSensitiveTest;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import static org.junit.Assert.assertTrue;
 
 @Ignore("Was never working. Injection needs to be fixed")
 public class PatientPersisterIT extends BaseIntegrationTest {

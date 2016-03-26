@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-import static org.openmrs.module.bahmniemrapi.encountertransaction.service.DateUtils.isBefore;
-
 @Component
 public class RetrospectiveEncounterTransactionService {
     protected final VisitIdentificationHelper visitIdentificationHelper;

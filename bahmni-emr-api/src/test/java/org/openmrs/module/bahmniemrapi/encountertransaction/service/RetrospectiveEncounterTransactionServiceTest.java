@@ -1,7 +1,5 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.service;
 
-import java.util.Collection;
-import java.util.Iterator;
 import org.bahmni.test.builder.VisitBuilder;
 import org.joda.time.DateTime;
 import org.junit.Before;

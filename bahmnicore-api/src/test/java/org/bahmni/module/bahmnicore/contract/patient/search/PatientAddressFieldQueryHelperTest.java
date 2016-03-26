@@ -1,12 +1,13 @@
 package org.bahmni.module.bahmnicore.contract.patient.search;
 
 import org.hibernate.type.StandardBasicTypes;
-import org.junit.Test;
 import org.hibernate.type.Type;
+import org.junit.Test;
 
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PatientAddressFieldQueryHelperTest {
 

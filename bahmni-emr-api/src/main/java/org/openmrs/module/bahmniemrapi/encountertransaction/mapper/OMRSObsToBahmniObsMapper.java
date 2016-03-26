@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Component(value = "omrsObsToBahmniObsMapper")
@@ -58,6 +58,6 @@ public class OMRSObsToBahmniObsMapper {
         for (EncounterProvider encounterProvider : obs.getEncounter().getEncounterProviders()) {
             additionalBahmniObservationFields.addProvider(bahmniProviderMapper.map(encounterProvider.getProvider()));
         }
-        return etObsToBahmniObsMapper.map(observationMapper.map(obs), additionalBahmniObservationFields, Arrays.asList(obs.getConcept()), true);
+        return etObsToBahmniObsMapper.map(observationMapper.map(obs), additionalBahmniObservationFields, Collections.singletonList(obs.getConcept()), true);
     }
 }

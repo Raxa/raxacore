@@ -4,7 +4,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.EntityPersister;
 import org.bahmni.csv.Messages;
-import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.PatientProgramRow;
 import org.bahmni.module.admin.csv.service.PatientMatchService;
 import org.openmrs.ConceptName;

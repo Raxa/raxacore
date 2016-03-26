@@ -1,7 +1,5 @@
 package org.bahmni.module.admin.builder;
 
-import org.bahmni.test.builder.DrugBuilder;
-import org.openmrs.Concept;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 

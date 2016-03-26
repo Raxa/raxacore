@@ -4,9 +4,7 @@ import org.openmrs.BaseOpenmrsData;
 import org.openmrs.Encounter;
 import org.openmrs.PatientProgram;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Episode extends BaseOpenmrsData {

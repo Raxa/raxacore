@@ -2,8 +2,6 @@ package org.bahmni.module.referencedata.labconcepts.model.event;
 
 import org.ict4h.atomfeed.server.service.Event;
 import org.joda.time.DateTime;
-import org.openmrs.Concept;
-import org.openmrs.ConceptClass;
 import org.openmrs.Drug;
 
 import java.net.URISyntaxException;

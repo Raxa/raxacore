@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.RowMapper;
 import org.bahmni.module.bahmnicore.service.SqlSearchService;
 import org.bahmni.module.bahmnicore.util.SqlQueryHelper;

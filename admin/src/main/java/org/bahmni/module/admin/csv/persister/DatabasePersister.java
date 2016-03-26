@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import org.bahmni.csv.CSVEntity;
 import org.bahmni.csv.EntityPersister;
 import org.bahmni.csv.Messages;
-import org.bahmni.csv.RowResult;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 

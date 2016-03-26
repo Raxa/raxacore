@@ -1,6 +1,15 @@
 package org.openmrs.module.bahmniemrapi.document.service.impl;
 
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterRole;
+import org.openmrs.EncounterType;
+import org.openmrs.Location;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.Provider;
+import org.openmrs.Visit;
+import org.openmrs.VisitType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
@@ -13,7 +22,12 @@ import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class VisitDocumentServiceImpl implements VisitDocumentService {
@@ -115,7 +129,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         Provider provider = Context.getProviderService().getProviderByUuid(providerUuid);
 
         EncounterParameters encounterParameters = EncounterParameters.instance();
-        encounterParameters.setEncounterType(encounterType).setProviders(new HashSet<>(Arrays.asList(provider))).setLocation(location);
+        encounterParameters.setEncounterType(encounterType).setProviders(new HashSet<>(Collections.singletonList(provider))).setLocation(location);
 
         Encounter existingEncounter = new EncounterProviderMatcher().findEncounter(visit, encounterParameters);
         if (existingEncounter != null) {

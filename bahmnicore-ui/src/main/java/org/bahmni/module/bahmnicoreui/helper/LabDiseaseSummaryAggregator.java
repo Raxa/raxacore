@@ -2,8 +2,6 @@ package org.bahmni.module.bahmnicoreui.helper;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
-import org.bahmni.module.bahmnicore.dao.impl.VisitDaoImpl;
-import org.bahmni.module.bahmnicore.service.OrderService;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
 import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryLabMapper;

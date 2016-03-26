@@ -2,7 +2,6 @@ package org.bahmni.module.obsrelationship.dao;
 
 import org.bahmni.module.obsrelationship.model.ObsRelationship;
 import org.bahmni.module.obsrelationship.model.ObsRelationshipType;
-import org.openmrs.Encounter;
 import org.openmrs.Obs;
 
 import java.util.List;

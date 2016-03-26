@@ -1,6 +1,15 @@
 package org.bahmni.test.builder;
 
-import org.openmrs.*;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterProvider;
+import org.openmrs.EncounterType;
+import org.openmrs.Location;
+import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.PersonName;
+import org.openmrs.Provider;
+import org.openmrs.Visit;
+import org.openmrs.VisitType;
 
 import java.util.Date;
 import java.util.HashSet;

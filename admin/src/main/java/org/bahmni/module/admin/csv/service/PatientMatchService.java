@@ -37,8 +37,7 @@ public class PatientMatchService {
 
     private Patient matchPatients(List<Patient> matchingPatients, List<KeyValue> patientAttributes, String matchingAlgorithmClassName) throws IOException, IllegalAccessException, InstantiationException, CannotMatchPatientException {
         if (StringUtils.isEmpty(matchingAlgorithmClassName)) {
-            Patient patient = new BahmniPatientMatchingAlgorithm().run(matchingPatients, patientAttributes);
-            return patient;
+            return new BahmniPatientMatchingAlgorithm().run(matchingPatients, patientAttributes);
         }
         PatientMatchingAlgorithm patientMatchingAlgorithm = getPatientMatchingAlgorithm(matchingAlgorithmClassName);
         log.debug("PatientMatching : Using Algorithm in " + patientMatchingAlgorithm.getClass().getName());

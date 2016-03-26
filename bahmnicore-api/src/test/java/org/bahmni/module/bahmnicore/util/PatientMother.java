@@ -1,7 +1,10 @@
 package org.bahmni.module.bahmnicore.util;
 
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
-import org.openmrs.*;
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
 import java.text.ParseException;

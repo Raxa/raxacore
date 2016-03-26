@@ -1,9 +1,9 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
+import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.module.referencedata.labconcepts.mapper.ResourceMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.SampleMapper;
-import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;
 import org.junit.Test;

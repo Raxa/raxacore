@@ -2,9 +2,7 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 
 import org.openmrs.Concept;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 public class ConceptSortWeightUtil {
     public static int getSortWeightFor(String conceptName, Collection<Concept> concepts) {

@@ -9,7 +9,8 @@ import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
 import org.ict4h.atomfeed.client.repository.jdbc.AllFailedEventsJdbcImpl;
 import org.ict4h.atomfeed.client.repository.jdbc.AllMarkersJdbcImpl;
-import org.ict4h.atomfeed.client.service.*;
+import org.ict4h.atomfeed.client.service.AtomFeedClient;
+import org.ict4h.atomfeed.client.service.EventWorker;
 import org.openmrs.module.atomfeed.transaction.support.AtomFeedSpringTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 

@@ -1,8 +1,8 @@
 package org.bahmni.module.bahmnicore.mapper;
 
 import org.bahmni.module.bahmnicore.model.Age;
-import org.openmrs.Patient;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
+import org.openmrs.Patient;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

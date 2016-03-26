@@ -1,9 +1,8 @@
 package patientMatchingAlgorithm
 
-import org.bahmni.csv.KeyValue;
+import org.bahmni.csv.KeyValue
 import org.bahmni.module.admin.csv.patientmatchingalgorithm.PatientMatchingAlgorithm
-import org.openmrs.Patient;
-
+import org.openmrs.Patient
 
 public class IdAndNameMatch extends PatientMatchingAlgorithm{
     @Override

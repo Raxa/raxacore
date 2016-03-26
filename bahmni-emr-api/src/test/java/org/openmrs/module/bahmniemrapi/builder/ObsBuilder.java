@@ -1,6 +1,10 @@
 package org.openmrs.module.bahmniemrapi.builder;
 
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Person;
+import org.openmrs.User;
 import org.openmrs.util.LocaleUtility;
 
 import java.util.Arrays;

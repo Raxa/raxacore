@@ -1,10 +1,6 @@
 package org.bahmni.module.bahmnicore.contract.visit;
 
-import org.openmrs.EncounterProvider;
-
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 public class VisitSummary {
     private String uuid;

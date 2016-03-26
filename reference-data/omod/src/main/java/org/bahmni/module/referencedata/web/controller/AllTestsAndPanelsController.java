@@ -2,6 +2,7 @@ package org.bahmni.module.referencedata.web.controller;
 
 import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
 import org.bahmni.module.referencedata.labconcepts.mapper.AllTestsAndPanelsMapper;
+import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.openmrs.Concept;
 
 
 @Controller

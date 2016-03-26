@@ -3,7 +3,8 @@ package org.bahmni.module.bahmnicore.contract.drugorder;
 
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DrugOrderConfigResponse {
     private List<ConceptData> doseUnits;

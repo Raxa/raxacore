@@ -1,28 +1,20 @@
 package org.bahmni.module.admin.csv.service;
 
 import org.bahmni.csv.KeyValue;
-import org.bahmni.module.admin.csv.models.PatientRow;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.openmrs.Patient;
 import org.openmrs.PersonAddress;
-import org.openmrs.api.APIException;
 import org.openmrs.module.addresshierarchy.AddressField;
 import org.openmrs.module.addresshierarchy.AddressHierarchyLevel;
-import org.openmrs.module.addresshierarchy.db.AddressHierarchyDAO;
 import org.openmrs.module.addresshierarchy.service.AddressHierarchyService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class CSVAddressServiceTest {

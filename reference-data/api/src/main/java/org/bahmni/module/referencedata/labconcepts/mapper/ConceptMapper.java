@@ -4,7 +4,10 @@ package org.bahmni.module.referencedata.labconcepts.mapper;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm;
 import org.bahmni.module.referencedata.labconcepts.model.ConceptMetaData;
-import org.openmrs.*;
+import org.openmrs.ConceptAnswer;
+import org.openmrs.ConceptDescription;
+import org.openmrs.ConceptMap;
+import org.openmrs.ConceptName;
 import org.openmrs.api.context.Context;
 
 import java.util.ArrayList;

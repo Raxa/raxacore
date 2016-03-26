@@ -7,7 +7,9 @@ import org.mockito.Mock;
 
 import java.util.Date;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class OpenElisPatientFeedWorkerTest {

@@ -1,9 +1,8 @@
 package org.bahmni.module.referencedata.helper;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
-import org.openmrs.Concept;
 import org.bahmni.module.referencedata.contract.ConceptDetails;
+import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.api.ConceptNameType;
@@ -14,7 +13,12 @@ import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Component
 public  class ConceptHelper {
