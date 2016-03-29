@@ -4,6 +4,7 @@ import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.junit.Assert;
 import org.junit.Test;
+import org.mozilla.javascript.EcmaError;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
@@ -12,6 +13,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderServiceImplIT extends BaseIntegrationTest {
@@ -61,7 +63,7 @@ public class OrderServiceImplIT extends BaseIntegrationTest {
         String orderTypeUuid = "bf7f3ab0-ae06-11e3-a5e2-0800200c9a66";
         String patientUuid = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
 
-        List<Order> allOrders = bahmniOrderService.getAllOrders(patientUuid, orderTypeUuid, null, null);
+        List<Order> allOrders = bahmniOrderService.getAllOrders(patientUuid, orderTypeUuid, null, null, null);
         Assert.assertEquals(5, allOrders.size());
         Assert.assertEquals((Integer)20, allOrders.get(0).getId());
         Assert.assertEquals((Integer)19, allOrders.get(1).getId());
@@ -77,11 +79,25 @@ public class OrderServiceImplIT extends BaseIntegrationTest {
         String orderTypeUuid = "bf7f3ab0-ae06-11e3-a5e2-0800200c9a66";
         String patientUuid = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
 
-        List<Order> allOrders = bahmniOrderService.getAllOrders(patientUuid, orderTypeUuid, 1, 3);
+        List<Order> allOrders = bahmniOrderService.getAllOrders(patientUuid, orderTypeUuid, 1, 3, null);
         Assert.assertEquals(3, allOrders.size());
         Assert.assertEquals((Integer)19, allOrders.get(0).getId());
         Assert.assertEquals((Integer)15, allOrders.get(1).getId());
         Assert.assertEquals((Integer)16, allOrders.get(2).getId());
+    }
+
+    @Test
+    public void shouldGetOrdersForPatientAndOrderTypeAndLocationUuid() throws Exception{
+        executeDataSet("patientWithOrders.xml");
+        String orderTypeUuid = "131168f4-15f5-102d-96e4-000c29c2a5d7";
+        String patientUuid = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
+        List<String> locationUuids = new ArrayList<>();
+        locationUuids.add("8d6c993e-c2cc-11de-7921-0010c6affd0f");
+
+        List<Order> allOrders = bahmniOrderService.getAllOrders(patientUuid, orderTypeUuid, 1, 1,locationUuids);
+
+        Assert.assertEquals(1, allOrders.size());
+        Assert.assertEquals((Integer)26, allOrders.get(0).getId());
     }
 
     private void ensureCorrectDataSetup(String patientUuid, String radiologyOrderTypeUuid) {

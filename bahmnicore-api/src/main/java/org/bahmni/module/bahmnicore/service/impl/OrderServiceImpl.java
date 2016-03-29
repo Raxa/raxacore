@@ -11,7 +11,6 @@ import org.openmrs.api.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,10 +40,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getAllOrders(String patientUuid, String orderTypeUuid, Integer offset, Integer limit) {
+    public List<Order> getAllOrders(String patientUuid, String orderTypeUuid, Integer offset, Integer limit, List<String> locationUuids) {
         Patient patient = patientService.getPatientByUuid(patientUuid);
         OrderType orderType = orderService.getOrderTypeByUuid(orderTypeUuid);
-        return orderDao.getAllOrders(patient, Arrays.asList(orderType), offset, limit);
+        return orderDao.getAllOrders(patient, orderType, offset, limit, locationUuids);
     }
 
     @Override

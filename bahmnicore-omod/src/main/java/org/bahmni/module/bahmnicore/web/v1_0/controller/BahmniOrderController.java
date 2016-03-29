@@ -39,7 +39,8 @@ public class BahmniOrderController extends BaseRestController {
                                  @RequestParam(value = "orderUuid", required = false) String orderUuid,
                                  @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
                                  @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList,
-                                 @RequestParam(value = "includeObs", required = false, defaultValue ="true") boolean includeObs) {
+                                 @RequestParam(value = "includeObs", required = false, defaultValue ="true") boolean includeObs,
+                                 @RequestParam(value = "locationUuids", required = false) List<String> locationUuids) {
 
 
         if (visitUuid != null) {
@@ -51,7 +52,7 @@ public class BahmniOrderController extends BaseRestController {
             return bahmniOrderService.ordersForOrderUuid(patientUuid, rootConcepts, obsIgnoreList, orderUuid);
         }
         else {
-            return bahmniOrderService.ordersForOrderType(patientUuid, rootConcepts, numberOfVisits, obsIgnoreList, orderTypeUuid, includeObs);
+            return  bahmniOrderService.ordersForOrderType(patientUuid, rootConcepts, numberOfVisits, obsIgnoreList, orderTypeUuid, includeObs, locationUuids);
         }
 
     }

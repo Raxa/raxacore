@@ -89,24 +89,24 @@ public class BahmniOrderServiceImplTest {
     @Test
     public void shouldGetBahmniOrdersForOrderType() throws Exception {
         when(orderService.getAllOrdersForVisits(personUUID, "someOrderTypeUuid", 2)).thenReturn(Arrays.asList(createOrder(), createOrder(), createOrder()));
-        List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForOrderType(personUUID, Arrays.asList(concept), 2, null, "someOrderTypeUuid", true);
+        List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForOrderType(personUUID, Arrays.asList(concept), 2, null, "someOrderTypeUuid", true, null);
         verify(orderService).getAllOrdersForVisits(personUUID, "someOrderTypeUuid", 2);
         Assert.assertEquals(3, bahmniOrders.size());
     }
 
     @Test
     public void shouldGetAllOrdersIfNumberOfVisitsIsNullOrZero() throws Exception {
-        when(orderService.getAllOrders(personUUID, "someOrderTypeUuid", null, null)).thenReturn(Arrays.asList(createOrder(), createOrder(), createOrder()));
-        List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForOrderType(personUUID, Arrays.asList(concept), null, null, "someOrderTypeUuid", true);
-        verify(orderService).getAllOrders(personUUID, "someOrderTypeUuid", null, null);
+        when(orderService.getAllOrders(personUUID, "someOrderTypeUuid", null, null, null)).thenReturn(Arrays.asList(createOrder(), createOrder(), createOrder()));
+        List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForOrderType(personUUID, Arrays.asList(concept), null, null, "someOrderTypeUuid", true, null);
+        verify(orderService).getAllOrders(personUUID, "someOrderTypeUuid", null, null, null);
         Assert.assertEquals(3, bahmniOrders.size());
     }
 
     @Test
     public void shouldNotSetObservationIfIncludeObsFlagIsSetToFalse() throws Exception {
-        when(orderService.getAllOrders(personUUID, "someOrderTypeUuid", null, null)).thenReturn(Arrays.asList(createOrder(), createOrder(), createOrder()));
-        List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForOrderType(personUUID, Arrays.asList(concept), null, null, "someOrderTypeUuid", false);
-        verify(orderService).getAllOrders(personUUID, "someOrderTypeUuid", null, null);
+        when(orderService.getAllOrders(personUUID, "someOrderTypeUuid", null, null, null)).thenReturn(Arrays.asList(createOrder(), createOrder(), createOrder()));
+        List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForOrderType(personUUID, Arrays.asList(concept), null, null, "someOrderTypeUuid", false, null);
+        verify(orderService).getAllOrders(personUUID, "someOrderTypeUuid", null, null, null);
         Assert.assertEquals(3, bahmniOrders.size());
         Assert.assertNull(bahmniOrders.get(0).getBahmniObservations());
     }

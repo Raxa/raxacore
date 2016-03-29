@@ -430,6 +430,52 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         assertEquals(activeOrders.get(0).getUuid(), "0246222e-f5f5-11e3-b47b-c8b69a44dcba");
     }
 
+    @Test
+    public void getOrdersByLocationsWhenLocationUuidsAreProvided() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Patient patient = Context.getPatientService().getPatient(1001);
+        HashSet<Concept> concepts = new HashSet<Concept>();
+        OrderType orderType = Context.getOrderService().getOrderType(1);
+        List<String> locationUuids = new ArrayList<>();
+
+        locationUuids.add("8d6c993e-c2cc-11de-7921-0010c6affd0f");
+        locationUuids.add("8d6c993e-c2cc-11de-7000-0010c6affd0f");
+
+        List<Order> activeOrders = orderDao.getAllOrders(patient, orderType, null, null, locationUuids);
+
+        assertEquals(3, activeOrders.size());
+        assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f836");
+        assertEquals(activeOrders.get(1).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f839");
+        assertEquals(activeOrders.get(2).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f841");
+    }
+
+    @Test
+    public void shouldReturnAllOrdersWhenLocationUuidsAreNotProvided() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Patient patient = Context.getPatientService().getPatient(1001);
+        HashSet<Concept> concepts = new HashSet<Concept>();
+        OrderType orderType = Context.getOrderService().getOrderType(1);
+        List<String> locationUuids = new ArrayList<>();
+
+        List<Order> activeOrders = orderDao.getAllOrders(patient, orderType, null, null, locationUuids);
+
+        assertEquals(3, activeOrders.size());
+    }
+
+    @Test
+    public void shouldReturnEmptyListOfOrdersWhenEncountersAreNotThereForGivenLocationUuids() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Patient patient = Context.getPatientService().getPatient(1001);
+        HashSet<Concept> concepts = new HashSet<Concept>();
+        OrderType orderType = Context.getOrderService().getOrderType(1);
+        List<String> locationUuids = new ArrayList<>();
+        locationUuids.add("8d6c993e-c2cc-11de-8d13-0010c6dffd0f");
+
+        List<Order> activeOrders = orderDao.getAllOrders(patient, orderType, null, null, locationUuids);
+
+        assertEquals(0, activeOrders.size());
+    }
+
     private boolean visitWithUuidExists(String uuid, List<Visit> visits) {
         boolean exists = false;
         for (Visit visit : visits) {

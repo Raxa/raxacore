@@ -107,8 +107,9 @@ public class BahmniDrugOrderServiceImplTest {
     @Test
     public void shouldNotConsiderEncountersToFetchDrugOrdersIfPatientProgramUuidIsNull() throws Exception {
         List<BahmniDrugOrder> drugOrderDetails = bahmniDrugOrderService.getDrugOrders(PATIENT_UUID, null, conceptsToFilter, null, null);
+        List<Encounter> encounters = null ;
 
-        verify(orderDao).getAllOrders(mockPatient, mockOrderType, conceptsToFilter, null, null);
+        verify(orderDao).getAllOrders(mockPatient, mockOrderType,conceptsToFilter, null, encounters);
         verifyNoMoreInteractions(bahmniProgramWorkflowService);
     }
 }

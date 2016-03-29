@@ -38,11 +38,11 @@ public class BahmniOrderServiceImpl implements BahmniOrderService {
     }
 
     @Override
-    public List<BahmniOrder> ordersForOrderType(String patientUuid, List<Concept> concepts, Integer numberOfVisits, List<String> obsIgnoreList, String orderTypeUuid, Boolean includeObs) {
+    public List<BahmniOrder> ordersForOrderType(String patientUuid, List<Concept> concepts, Integer numberOfVisits, List<String> obsIgnoreList, String orderTypeUuid, Boolean includeObs, List<String> locationUuids) {
         List<BahmniOrder> bahmniOrders = new ArrayList<>();
         List<Order> orders;
         if(numberOfVisits == null || numberOfVisits ==0){
-            orders = orderService.getAllOrders(patientUuid, orderTypeUuid, null, null);
+            orders = orderService.getAllOrders(patientUuid, orderTypeUuid, null, null, locationUuids);
         }else {
             orders = orderService.getAllOrdersForVisits(patientUuid, orderTypeUuid, numberOfVisits);
         }
