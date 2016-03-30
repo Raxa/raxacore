@@ -51,7 +51,8 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
     @Test
     public void shouldReturnHttpPreconditionFailedStatusAndJumpSizeIfIdentifierIsPassedInTheRequestAndTheirIsAJump() throws Exception {
         LinkedHashMap identifierProperties = (LinkedHashMap) ((ArrayList) ((LinkedHashMap) propertiesToCreate.get("patient")).get("identifiers")).get(0);
-        identifierProperties.put("registrationNumber", "300020");
+        String identifier = String.valueOf(identifierProperties.get("identifierPrefix")).concat("300020");
+        identifierProperties.put("identifier", identifier);
         ResponseEntity<Object> response = bahmniPatientProfileResource.create(false, propertiesToCreate);
         SimpleObject simpleObject = new SimpleObject();
         simpleObject = simpleObject.parseJson(String.valueOf(response.getBody()));
@@ -62,7 +63,8 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
     @Test
     public void shouldCreatePatientWhenUserAcceptsTheJump() throws Exception {
         LinkedHashMap identifierProperties = (LinkedHashMap) ((ArrayList) ((LinkedHashMap) propertiesToCreate.get("patient")).get("identifiers")).get(0);
-        identifierProperties.put("registrationNumber", "300020");
+        String identifier = String.valueOf(identifierProperties.get("identifierPrefix")).concat("300020");
+        identifierProperties.put("identifier", identifier);
         ResponseEntity<Object> response = bahmniPatientProfileResource.create(true, propertiesToCreate);
         Assert.assertEquals(200, response.getStatusCode().value());
     }
@@ -70,7 +72,8 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
     @Test
     public void shouldCreatePatientWhenIdentifierIsPassedAndJumpIsZero() throws Exception {
         LinkedHashMap identifierProperties = (LinkedHashMap) ((ArrayList) ((LinkedHashMap) propertiesToCreate.get("patient")).get("identifiers")).get(0);
-        identifierProperties.put("registrationNumber", "300010");
+        String identifier = String.valueOf(identifierProperties.get("identifierPrefix")).concat("300010");
+        identifierProperties.put("identifier", identifier);
         ResponseEntity<Object> response = bahmniPatientProfileResource.create(false, propertiesToCreate);
         Assert.assertEquals(200, response.getStatusCode().value());
     }

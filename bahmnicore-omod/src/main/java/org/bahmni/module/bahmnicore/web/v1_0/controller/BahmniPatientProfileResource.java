@@ -71,8 +71,8 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         String identifierPrefix = String.valueOf(identifierProperties.get("identifierPrefix"));
         identifierProperties.remove("identifierPrefix");
         String identifier;
-        if (identifierProperties.get("registrationNumber") != null) {
-            long givenRegistrationNumber = Long.parseLong(String.valueOf(identifierProperties.get("registrationNumber")));
+        if (identifierProperties.get("identifier") != null) {
+            long givenRegistrationNumber = Long.parseLong(String.valueOf(identifierProperties.get("identifier")).replace(identifierPrefix, ""));
             if (!jumpAccepted) {
                 long latestRegistrationNumber = Long.parseLong(identifierSourceServiceWrapper.getSequenceValue(identifierPrefix));
                 long sizeOfJump = givenRegistrationNumber - latestRegistrationNumber;
@@ -82,13 +82,11 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
                     return new ResponseEntity<Object>("Given identifier is less than the last generated identifier : " + latestRegistrationNumber, HttpStatus.BAD_REQUEST);
                 }
             }
-            identifier = identifierPrefix + givenRegistrationNumber;
             identifierSourceServiceWrapper.saveSequenceValue(givenRegistrationNumber + 1, identifierPrefix);
         } else {
             identifier = identifierSourceServiceWrapper.generateIdentifier(identifierPrefix, "");
+            identifierProperties.put("identifier", identifier);
         }
-        identifierProperties.remove("registrationNumber");
-        identifierProperties.put("identifier", identifier);
 
         PatientProfile delegate = mapForCreatePatient(propertiesToCreate);
         setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
