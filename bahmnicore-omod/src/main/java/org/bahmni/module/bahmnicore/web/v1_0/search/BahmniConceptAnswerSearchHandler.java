@@ -1,6 +1,8 @@
 package org.bahmni.module.bahmnicore.web.v1_0.search;
 
 import org.bahmni.module.bahmnicore.service.BahmniConceptService;
+import org.bahmni.module.bahmnicore.web.v1_0.contract.BahmniConceptAnswer;
+import org.openmrs.ConceptAnswer;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.resource.api.PageableResult;
@@ -31,16 +33,20 @@ public class BahmniConceptAnswerSearchHandler implements SearchHandler {
     @Override
     public SearchConfig getSearchConfig() {
         SearchQuery searchQuery = new SearchQuery.Builder("Allows you to search for concepts based on a question").withRequiredParameters(QUESTION_KEY).build();
-        return new SearchConfig("byQuestion", RestConstants.VERSION_1 + "/concept", Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*"), searchQuery);
+        return new SearchConfig("byQuestion", RestConstants.VERSION_1 + "/bahmniconceptanswer", Arrays.asList("1.9.*", "1.10.*", "1.11.*", "1.12.*"), searchQuery);
     }
 
     @Override
     public PageableResult search(RequestContext requestContext) throws ResponseException {
         String questionConceptName = requestContext.getParameter(QUESTION_KEY);
         String query = requestContext.getParameter(QUERY);
-        Collection<org.openmrs.Concept> concepts = bahmniConceptService.searchByQuestion(questionConceptName, query);
-        ArrayList<Object> conceptsInArrayList = new ArrayList<>();
-        conceptsInArrayList.addAll(concepts);
-        return new NeedsPaging<>(conceptsInArrayList, requestContext);
+        Collection<ConceptAnswer> conceptAnswers = bahmniConceptService.searchByQuestion(questionConceptName, query);
+
+        ArrayList<BahmniConceptAnswer> bahmniConceptAnswers = new ArrayList<>();
+        for (ConceptAnswer answer : conceptAnswers) {
+            bahmniConceptAnswers.add(BahmniConceptAnswer.create(answer));
+        }
+
+        return new NeedsPaging<>(bahmniConceptAnswers, requestContext);
     }
 }

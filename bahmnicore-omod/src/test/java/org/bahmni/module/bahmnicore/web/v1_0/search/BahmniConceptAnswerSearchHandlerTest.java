@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.Concept;
+import org.openmrs.ConceptAnswer;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.api.SearchConfig;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
@@ -51,7 +52,7 @@ public class BahmniConceptAnswerSearchHandlerTest {
 
     @Test
     public void shouldDelegateSearchOfConceptsToBahmniConceptService() {
-        Collection<Concept> conceptServiceResult = new ArrayList<>();
+        Collection<ConceptAnswer> conceptServiceResult = new ArrayList<>();
         when(bahmniConceptService.searchByQuestion(QUESTION_CONCEPT, QUERY)).thenReturn(conceptServiceResult);
         when(requestContext.getParameter("question")).thenReturn(QUESTION_CONCEPT);
         when(requestContext.getParameter("q")).thenReturn(QUERY);

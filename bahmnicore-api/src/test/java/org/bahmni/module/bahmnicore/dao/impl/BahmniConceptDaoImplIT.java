@@ -4,10 +4,12 @@ import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.dao.BahmniConceptDao;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.ConceptAnswer;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,11 +33,11 @@ public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
     public void shouldReturnNonVoidedAnswersForAQuestion() throws Exception {
         executeDataSet("sampleCodedConcept.xml");
         questionConcept = conceptService.getConcept(90);
-        Collection<Concept> result = bahmniConceptDao.searchByQuestion(questionConcept, "Aneurism");
+        Collection<ConceptAnswer> result = bahmniConceptDao.searchByQuestion(questionConcept, "Aneurism");
 
         assertThat(result.size(), is(equalTo(1)));
 
-        Concept resultConcept = result.iterator().next();
+        Concept resultConcept = result.iterator().next().getAnswerConcept();
         assertTrue(resultConcept.getId().equals(902));
     }
 
@@ -43,11 +45,11 @@ public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
     public void shouldIgnoreCaseWhenSearching() throws Exception {
         executeDataSet("sampleCodedConcept.xml");
         questionConcept = conceptService.getConcept(90);
-        Collection<Concept> result = bahmniConceptDao.searchByQuestion(questionConcept, "aNeUrIsM");
+        Collection<ConceptAnswer> result = bahmniConceptDao.searchByQuestion(questionConcept, "aNeUrIsM");
 
         assertThat(result.size(), is(equalTo(1)));
 
-        Concept resultConcept = result.iterator().next();
+        Concept resultConcept = result.iterator().next().getAnswerConcept();
         assertTrue(resultConcept.getId().equals(902));
     }
 
@@ -55,7 +57,7 @@ public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
     public void shouldNotReturnVoidedAnswers() throws Exception {
         executeDataSet("sampleCodedConcept.xml");
         questionConcept = conceptService.getConcept(90);
-        Collection<Concept> result = bahmniConceptDao.searchByQuestion(questionConcept, "Porphyria");
+        Collection<ConceptAnswer> result = bahmniConceptDao.searchByQuestion(questionConcept, "Porphyria");
         assertThat(result.size(), is(equalTo(0)));
     }
 
@@ -65,14 +67,20 @@ public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
         questionConcept = conceptService.getConcept(90);
 
         //Searching for "Abscess, Skin"
-        Collection<Concept> result = bahmniConceptDao.searchByQuestion(questionConcept, " ab sk  ");
+        Collection<ConceptAnswer> result = bahmniConceptDao.searchByQuestion(questionConcept, " ab sk  ");
         assertThat(result.size(), is(equalTo(1)));
-        Concept resultConcept = result.iterator().next();
+        Concept resultConcept = result.iterator().next().getAnswerConcept();
         assertTrue(resultConcept.getId().equals(903));
 
         result = bahmniConceptDao.searchByQuestion(questionConcept, "in  ab");
         assertThat(result.size(), is(equalTo(2)));
-        assertThat(result, containsInAnyOrder(conceptService.getConcept(902), conceptService.getConcept(903)));
+
+        ArrayList<ConceptAnswer> actualConceptAnswers = new ArrayList<>(result);
+        ArrayList<Concept> actualConcepts = new ArrayList<>();
+        actualConcepts.add(actualConceptAnswers.get(0).getAnswerConcept());
+        actualConcepts.add(actualConceptAnswers.get(1).getAnswerConcept());
+
+        assertThat(actualConcepts, containsInAnyOrder(conceptService.getConcept(902), conceptService.getConcept(903)));
 
         result = bahmniConceptDao.searchByQuestion(questionConcept, "in  and another term that is not present");
         assertThat(result.size(), is(equalTo(0)));
@@ -83,11 +91,16 @@ public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
         executeDataSet("sampleCodedConcept.xml");
         questionConcept = conceptService.getConcept(90);
 
-        Collection<Concept> result = bahmniConceptDao.searchByQuestion(questionConcept, "ab");
+        Collection<ConceptAnswer> result = bahmniConceptDao.searchByQuestion(questionConcept, "ab");
 
         assertThat(result.size(), is(equalTo(2)));
 
-        assertThat(result, containsInAnyOrder(conceptService.getConcept(902), conceptService.getConcept(903)));
+        ArrayList<ConceptAnswer> actualConceptAnswers = new ArrayList<>(result);
+        ArrayList<Concept> actualConcepts = new ArrayList<>();
+        actualConcepts.add(actualConceptAnswers.get(0).getAnswerConcept());
+        actualConcepts.add(actualConceptAnswers.get(1).getAnswerConcept());
+
+        assertThat(actualConcepts, containsInAnyOrder(conceptService.getConcept(902), conceptService.getConcept(903)));
     }
 
     @Test
@@ -117,7 +130,7 @@ public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
         executeDataSet("sampleCodedConcept.xml");
         questionConcept = conceptService.getConcept(90);
 
-        Collection<Concept> result = bahmniConceptDao.searchByQuestion(questionConcept, null);
+        Collection<ConceptAnswer> result = bahmniConceptDao.searchByQuestion(questionConcept, null);
 
         assertEquals(4,result.size());
     }
