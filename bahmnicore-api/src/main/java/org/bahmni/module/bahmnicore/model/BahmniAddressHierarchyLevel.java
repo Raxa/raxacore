@@ -1,7 +1,5 @@
 package org.bahmni.module.bahmnicore.model;
 
-import org.openmrs.module.addresshierarchy.AddressField;
-
 public class BahmniAddressHierarchyLevel {
 
     private Integer levelId;

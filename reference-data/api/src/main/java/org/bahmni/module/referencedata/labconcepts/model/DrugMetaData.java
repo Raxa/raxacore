@@ -2,7 +2,6 @@ package org.bahmni.module.referencedata.labconcepts.model;
 
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
-import org.openmrs.ConceptDatatype;
 import org.openmrs.Drug;
 
 public class DrugMetaData {

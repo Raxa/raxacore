@@ -1,8 +1,8 @@
 package org.bahmni.module.referencedata.web.controller;
 
 import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
-import org.openmrs.Concept;
 import org.bahmni.module.referencedata.labconcepts.mapper.AllSamplesMapper;
+import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;

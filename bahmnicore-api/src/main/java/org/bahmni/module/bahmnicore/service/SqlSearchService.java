@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.service;
 
-import org.codehaus.jackson.JsonNode;
 import org.openmrs.module.webservices.rest.SimpleObject;
 
 import java.util.List;

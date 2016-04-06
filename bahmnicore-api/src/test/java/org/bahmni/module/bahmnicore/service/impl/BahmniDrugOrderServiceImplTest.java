@@ -7,7 +7,12 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.openmrs.*;
+import org.openmrs.CareSetting;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.PatientService;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
@@ -23,7 +28,10 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollection;
 import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class BahmniDrugOrderServiceImplTest {
@@ -99,8 +107,9 @@ public class BahmniDrugOrderServiceImplTest {
     @Test
     public void shouldNotConsiderEncountersToFetchDrugOrdersIfPatientProgramUuidIsNull() throws Exception {
         List<BahmniDrugOrder> drugOrderDetails = bahmniDrugOrderService.getDrugOrders(PATIENT_UUID, null, conceptsToFilter, null, null);
+        List<Encounter> encounters = null ;
 
-        verify(orderDao).getAllOrders(mockPatient, mockOrderType, conceptsToFilter, null, null);
+        verify(orderDao).getAllOrders(mockPatient, mockOrderType,conceptsToFilter, null, encounters);
         verifyNoMoreInteractions(bahmniProgramWorkflowService);
     }
 }

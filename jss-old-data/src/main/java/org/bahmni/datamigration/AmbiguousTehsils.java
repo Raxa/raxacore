@@ -2,7 +2,6 @@ package org.bahmni.datamigration;
 
 import org.apache.log4j.Logger;
 
-import java.io.*;
 import java.util.HashSet;
 
 public class AmbiguousTehsils {

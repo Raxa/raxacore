@@ -1,15 +1,16 @@
 package org.bahmni.module.admin.observation;
 
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.openmrs.Concept;
+import org.openmrs.api.ConceptService;
+
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import org.openmrs.Concept;
-import org.openmrs.api.ConceptService;
 
 public class ConceptCacheTest {
 

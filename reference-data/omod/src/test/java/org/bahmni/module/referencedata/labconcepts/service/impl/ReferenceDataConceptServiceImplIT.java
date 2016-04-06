@@ -17,15 +17,15 @@ import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptInUseException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
-import org.openmrs.util.LocaleUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static org.powermock.api.mockito.PowerMockito.when;
 
 public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
 

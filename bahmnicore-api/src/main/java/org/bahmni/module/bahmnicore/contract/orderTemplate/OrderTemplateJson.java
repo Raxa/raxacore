@@ -1,7 +1,8 @@
 package org.bahmni.module.bahmnicore.contract.orderTemplate;
 
-import java.util.List;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+
+import java.util.List;
 
 public class OrderTemplateJson {
         private List<OrderTemplate> orderTemplates;

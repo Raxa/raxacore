@@ -36,7 +36,7 @@ public class OrderSearchHandler implements SearchHandler{
     public PageableResult search(RequestContext requestContext) throws ResponseException {
         String patientUuid = requestContext.getParameter("patientUuid");
         String orderTypeUuid = requestContext.getParameter("orderTypeUuid");
-        List<Order> allOrders = bahmniOrderService.getAllOrders(patientUuid, orderTypeUuid, requestContext.getStartIndex(), requestContext.getLimit());
+        List<Order> allOrders = bahmniOrderService.getAllOrders(patientUuid, orderTypeUuid, requestContext.getStartIndex(), requestContext.getLimit(), null);
         return new AlreadyPaged<>(requestContext, allOrders, false);
     }
 }

@@ -1,7 +1,6 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.contract;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -22,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

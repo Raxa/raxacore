@@ -1,6 +1,7 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 
 import org.openmrs.Concept;
+import org.openmrs.ConceptNumeric;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.AdditionalBahmniObservationFields;
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -36,7 +37,7 @@ public class ETObsToBahmniObsMapper {
 
     public BahmniObservation create(EncounterTransaction.Observation observation, AdditionalBahmniObservationFields additionalBahmniObservationFields) {
         return map(observation, additionalBahmniObservationFields,
-                Arrays.asList(conceptService.getConceptByUuid(observation.getConceptUuid())),
+                Collections.singletonList(conceptService.getConceptByUuid(observation.getConceptUuid())),
                 false);
     }
 
@@ -101,6 +102,7 @@ public class ETObsToBahmniObsMapper {
     }
 
     private void handleFlattenedConceptDetails(EncounterTransaction.Observation observation, BahmniObservation bahmniObservation) {
+        setHiNormalAndLowNormalForNumericUnknownObs(observation, bahmniObservation);
         for (EncounterTransaction.Observation member : observation.getGroupMembers()) {
             if (member.getVoided()) {
                 continue;
@@ -119,6 +121,20 @@ public class ETObsToBahmniObsMapper {
             }
         }
     }
+
+    private void setHiNormalAndLowNormalForNumericUnknownObs(EncounterTransaction.Observation observation, BahmniObservation bahmniObservation) {
+        if (observation.getGroupMembers().size() == 1 && observation.getGroupMembers().get(0).getConcept().getConceptClass().equals(UNKNOWN_CONCEPT_CLASS)){
+            Concept conceptDetailsConcept = conceptService.getConceptByUuid(observation.getConceptUuid());
+
+            Concept primaryNumericConcept = conceptDetailsConcept.getSetMembers().get(0);
+            if (primaryNumericConcept.isNumeric()){
+                ConceptNumeric conceptNumeric = conceptService.getConceptNumeric(primaryNumericConcept.getId());
+                bahmniObservation.setHiNormal(conceptNumeric.getHiNormal());
+                bahmniObservation.setLowNormal(conceptNumeric.getLowNormal());
+            }
+        }
+    }
+
     private BahmniObservation createBahmniObservation(EncounterTransaction.Observation observation, AdditionalBahmniObservationFields additionalBahmniObservationFields, List<Concept> rootConcepts, boolean flatten) {
         BahmniObservation bahmniObservation = new BahmniObservation();
         bahmniObservation.setEncounterTransactionObservation(observation);

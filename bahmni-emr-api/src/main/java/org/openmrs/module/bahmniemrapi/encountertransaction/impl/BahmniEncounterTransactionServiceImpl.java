@@ -13,6 +13,7 @@ import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.VisitService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.BahmniEmrAPIException;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPostSaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPreSaveCommand;
@@ -42,7 +43,6 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
     private EmrEncounterService emrEncounterService;
     private EncounterTransactionMapper encounterTransactionMapper;
     private EncounterTypeIdentifier encounterTypeIdentifier;
-    private List<EncounterDataPreSaveCommand> encounterDataPreSaveCommand;
     private List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands;
     private List<EncounterDataPostSaveCommand> encounterDataPostDeleteCommands;
     private BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper;
@@ -56,7 +56,6 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
                                                  EmrEncounterService emrEncounterService,
                                                  EncounterTransactionMapper encounterTransactionMapper,
                                                  EncounterTypeIdentifier encounterTypeIdentifier,
-                                                 List<EncounterDataPreSaveCommand> encounterDataPreSaveCommand,
                                                  List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands,
                                                  List<EncounterDataPostSaveCommand> encounterDataPostDeleteCommands,
                                                  BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper,
@@ -70,7 +69,6 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
         this.emrEncounterService = emrEncounterService;
         this.encounterTransactionMapper = encounterTransactionMapper;
         this.encounterTypeIdentifier = encounterTypeIdentifier;
-        this.encounterDataPreSaveCommand = encounterDataPreSaveCommand;
         this.encounterDataPostSaveCommands = encounterDataPostSaveCommands;
         this.encounterDataPostDeleteCommands = encounterDataPostDeleteCommands;
         this.bahmniEncounterTransactionMapper = bahmniEncounterTransactionMapper;
@@ -103,7 +101,8 @@ public class BahmniEncounterTransactionServiceImpl implements BahmniEncounterTra
             setEncounterType(bahmniEncounterTransaction);
         }
 
-        for (EncounterDataPreSaveCommand saveCommand : encounterDataPreSaveCommand) {
+        List<EncounterDataPreSaveCommand> encounterDataPreSaveCommands = Context.getRegisteredComponents(EncounterDataPreSaveCommand.class);
+        for (EncounterDataPreSaveCommand saveCommand : encounterDataPreSaveCommands) {
             saveCommand.update(bahmniEncounterTransaction);
         }
         VisitIdentificationHelper visitIdentificationHelper = new VisitIdentificationHelper(visitService);

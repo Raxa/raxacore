@@ -16,7 +16,13 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 @Service
@@ -104,7 +110,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
             }
             return mapOrdersWithObs(testOrders, observations, encounterTestOrderUuidMap, encounterObservationMap, encounterToAccessionNotesMap);
         }
-        return Collections.EMPTY_LIST;
+        return new ArrayList<>();
     }
 
     private void  createAccessionNotesByEncounter(Map<String, List<AccessionNote>> encounterToAccessionNotesMap, List<Encounter> encounters, Encounter encounter) {
@@ -124,7 +130,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
                 return createAccessionNotesFor(orderEncounter.getUuid(), encounter);
             }
         }
-        return Collections.EMPTY_LIST;
+        return new ArrayList<>();
     }
 
     private List<AccessionNote> createAccessionNotesFor(String encounterUuid, Encounter accessionNotesEncounter) {

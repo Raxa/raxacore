@@ -1,7 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.mapper;
 
 import org.junit.Test;
-import org.omg.CORBA.BAD_CONTEXT;
 import org.openmrs.module.bahmniemrapi.builder.BahmniObservationBuilder;
 import org.openmrs.module.bahmniemrapi.builder.ETConceptBuilder;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;

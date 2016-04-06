@@ -15,7 +15,13 @@ import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.joda.time.DateTime;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterType;
+import org.openmrs.Obs;
+import org.openmrs.Order;
+import org.openmrs.Provider;
+import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
@@ -26,7 +32,11 @@ import org.openmrs.util.OpenmrsUtil;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 public class OpenElisAccessionEventWorker implements EventWorker {

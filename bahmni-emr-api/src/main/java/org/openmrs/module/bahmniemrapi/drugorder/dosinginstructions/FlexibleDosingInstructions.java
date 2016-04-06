@@ -39,7 +39,7 @@ public class FlexibleDosingInstructions implements DosingInstructions {
 
     @Override
     public Date getAutoExpireDate(DrugOrder drugOrder) {
-        return drugOrderUtil.calculateAutoExpireDate(drugOrder.getDuration(), drugOrder.getDurationUnits(), drugOrder.getNumRefills(), drugOrder.getEffectiveStartDate(), drugOrder.getFrequency());
+        return DrugOrderUtil.calculateAutoExpireDate(drugOrder.getDuration(), drugOrder.getDurationUnits(), drugOrder.getNumRefills(), drugOrder.getEffectiveStartDate(), drugOrder.getFrequency());
     }
 
 }

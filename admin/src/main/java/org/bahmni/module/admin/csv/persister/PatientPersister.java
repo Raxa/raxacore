@@ -3,7 +3,6 @@ package org.bahmni.module.admin.csv.persister;
 import org.apache.log4j.Logger;
 import org.bahmni.csv.EntityPersister;
 import org.bahmni.csv.Messages;
-import org.bahmni.csv.RowResult;
 import org.bahmni.module.admin.csv.models.PatientRow;
 import org.bahmni.module.admin.csv.service.CSVAddressService;
 import org.bahmni.module.admin.csv.service.CSVPatientService;

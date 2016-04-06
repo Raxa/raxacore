@@ -1,8 +1,6 @@
 package org.bahmni.module.referencedata.web.controller;
 
 import org.bahmni.module.referencedata.labconcepts.contract.Drug;
-import org.openmrs.Concept;
-import org.openmrs.api.context.Context;
 import org.bahmni.module.referencedata.labconcepts.mapper.DrugMapper;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;

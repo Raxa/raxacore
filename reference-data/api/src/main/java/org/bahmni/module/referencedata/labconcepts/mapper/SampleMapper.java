@@ -1,6 +1,9 @@
 package org.bahmni.module.referencedata.labconcepts.mapper;
 
-import org.bahmni.module.referencedata.labconcepts.contract.*;
+import org.bahmni.module.referencedata.labconcepts.contract.AllSamples;
+import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
+import org.bahmni.module.referencedata.labconcepts.contract.Panel;
+import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.openmrs.Concept;
 import org.openmrs.api.context.Context;
 

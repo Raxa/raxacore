@@ -1,7 +1,6 @@
 package org.openmrs.module.bahmniemrapi.diagnosis.contract;
 
 import org.junit.Test;
-import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import static org.junit.Assert.assertFalse;

@@ -7,7 +7,6 @@ import org.hibernate.classic.Session;
 import org.openmrs.PatientProgram;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class EpisodeDAOImpl implements EpisodeDAO {

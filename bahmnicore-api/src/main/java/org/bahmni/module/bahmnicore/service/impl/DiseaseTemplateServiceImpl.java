@@ -1,7 +1,5 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-import java.util.*;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
@@ -27,6 +25,13 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 @Service
 public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {

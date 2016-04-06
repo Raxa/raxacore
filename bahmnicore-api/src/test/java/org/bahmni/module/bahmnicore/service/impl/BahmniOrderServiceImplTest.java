@@ -8,9 +8,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.mockito.Matchers.any;
 import org.mockito.Mock;
-import org.openmrs.*;
+import org.openmrs.CareSetting;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
+import org.openmrs.Provider;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.order.contract.BahmniOrder;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
@@ -25,6 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -83,24 +89,24 @@ public class BahmniOrderServiceImplTest {
     @Test
     public void shouldGetBahmniOrdersForOrderType() throws Exception {
         when(orderService.getAllOrdersForVisits(personUUID, "someOrderTypeUuid", 2)).thenReturn(Arrays.asList(createOrder(), createOrder(), createOrder()));
-        List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForOrderType(personUUID, Arrays.asList(concept), 2, null, "someOrderTypeUuid", true);
+        List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForOrderType(personUUID, Arrays.asList(concept), 2, null, "someOrderTypeUuid", true, null);
         verify(orderService).getAllOrdersForVisits(personUUID, "someOrderTypeUuid", 2);
         Assert.assertEquals(3, bahmniOrders.size());
     }
 
     @Test
     public void shouldGetAllOrdersIfNumberOfVisitsIsNullOrZero() throws Exception {
-        when(orderService.getAllOrders(personUUID, "someOrderTypeUuid", null, null)).thenReturn(Arrays.asList(createOrder(), createOrder(), createOrder()));
-        List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForOrderType(personUUID, Arrays.asList(concept), null, null, "someOrderTypeUuid", true);
-        verify(orderService).getAllOrders(personUUID, "someOrderTypeUuid", null, null);
+        when(orderService.getAllOrders(personUUID, "someOrderTypeUuid", null, null, null)).thenReturn(Arrays.asList(createOrder(), createOrder(), createOrder()));
+        List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForOrderType(personUUID, Arrays.asList(concept), null, null, "someOrderTypeUuid", true, null);
+        verify(orderService).getAllOrders(personUUID, "someOrderTypeUuid", null, null, null);
         Assert.assertEquals(3, bahmniOrders.size());
     }
 
     @Test
     public void shouldNotSetObservationIfIncludeObsFlagIsSetToFalse() throws Exception {
-        when(orderService.getAllOrders(personUUID, "someOrderTypeUuid", null, null)).thenReturn(Arrays.asList(createOrder(), createOrder(), createOrder()));
-        List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForOrderType(personUUID, Arrays.asList(concept), null, null, "someOrderTypeUuid", false);
-        verify(orderService).getAllOrders(personUUID, "someOrderTypeUuid", null, null);
+        when(orderService.getAllOrders(personUUID, "someOrderTypeUuid", null, null, null)).thenReturn(Arrays.asList(createOrder(), createOrder(), createOrder()));
+        List<BahmniOrder> bahmniOrders = bahmniOrderService.ordersForOrderType(personUUID, Arrays.asList(concept), null, null, "someOrderTypeUuid", false, null);
+        verify(orderService).getAllOrders(personUUID, "someOrderTypeUuid", null, null, null);
         Assert.assertEquals(3, bahmniOrders.size());
         Assert.assertNull(bahmniOrders.get(0).getBahmniObservations());
     }

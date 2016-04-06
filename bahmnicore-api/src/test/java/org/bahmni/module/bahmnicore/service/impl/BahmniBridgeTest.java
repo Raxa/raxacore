@@ -27,7 +27,12 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

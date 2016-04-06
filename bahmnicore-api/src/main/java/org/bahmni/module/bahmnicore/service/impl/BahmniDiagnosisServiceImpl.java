@@ -1,8 +1,16 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.service.BahmniDiagnosisService;
-import org.openmrs.*;
-import org.openmrs.api.*;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.Visit;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.ObsService;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisMetadata;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
@@ -15,7 +23,11 @@ import org.springframework.util.Assert;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 @Component
 public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {

@@ -6,7 +6,10 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 public class BahmniPatient {
 	private Date birthdate;

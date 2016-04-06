@@ -90,36 +90,5 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>docker-deploy</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>exec-maven-plugin</artifactId>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <executions>
-                            <execution>
-                                <id>Deploy</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>exec</goal>
-                                </goals>
-                                <configuration>
-                                    <executable>${basedir}/scripts/docker/docker-deploy.sh</executable>
-                                    <arguments>
-                                        <argument>${basedir}</argument>
-                                        <argument>${project.version}</argument>
-                                        <argument>${web.container.name}</argument>
-                                    </arguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 </project>

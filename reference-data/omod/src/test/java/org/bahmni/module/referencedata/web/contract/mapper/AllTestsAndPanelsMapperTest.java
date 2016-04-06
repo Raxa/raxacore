@@ -13,25 +13,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openmrs.Concept;
-import org.powermock.api.mockito.PowerMockito;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptDatatype;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import static org.junit.Assert.assertEquals;
-
-
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.when;
-
-
-import java.util.List;
-import java.util.Locale;
 
 import java.util.Date;
+import java.util.Locale;
 import java.util.Set;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)

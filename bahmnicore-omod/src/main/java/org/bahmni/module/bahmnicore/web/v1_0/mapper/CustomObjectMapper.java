@@ -2,8 +2,6 @@ package org.bahmni.module.bahmnicore.web.v1_0.mapper;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
-import org.openmrs.BaseOpenmrsObject;
-import org.openmrs.ConceptName;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;

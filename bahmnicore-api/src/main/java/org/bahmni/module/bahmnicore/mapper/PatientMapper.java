@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.mapper;
 
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
-import org.openmrs.*;
+import org.openmrs.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

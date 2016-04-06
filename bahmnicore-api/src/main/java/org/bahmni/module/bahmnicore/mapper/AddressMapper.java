@@ -1,9 +1,9 @@
 package org.bahmni.module.bahmnicore.mapper;
 
+import org.bahmni.module.bahmnicore.model.BahmniAddress;
 import org.bahmni.module.bahmnicore.model.BahmniPatient;
 import org.openmrs.Patient;
 import org.openmrs.PersonAddress;
-import org.bahmni.module.bahmnicore.model.BahmniAddress;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

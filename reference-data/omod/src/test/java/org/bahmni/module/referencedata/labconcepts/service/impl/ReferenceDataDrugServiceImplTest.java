@@ -15,7 +15,6 @@ import org.openmrs.ConceptClass;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 
-import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.verify;

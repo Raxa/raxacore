@@ -6,12 +6,12 @@ import org.bahmni.csv.annotation.CSVHeader;
 import org.bahmni.csv.annotation.CSVRegexHeader;
 import org.bahmni.csv.annotation.CSVRepeatingHeaders;
 
-import static org.bahmni.module.admin.csv.utils.CSVUtils.getDateFromString;
-
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.bahmni.module.admin.csv.utils.CSVUtils.getDateFromString;
 
 public class LabResultsRow extends CSVEntity {
     @CSVHeader(name = "Registration Number")

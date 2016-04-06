@@ -5,7 +5,6 @@ import org.bahmni.module.obsrelationship.model.ObsRelationship;
 import org.bahmni.module.obsrelationship.model.ObsRelationshipType;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -21,6 +21,7 @@
     <require_modules>
         <require_module>org.openmrs.module.webservices.rest</require_module>
         <require_module>org.openmrs.module.idgen</require_module>
+        <require_module>org.openmrs.module.idgen.webservices</require_module>
         <require_module>org.openmrs.module.emrapi</require_module>
         <require_module>org.ict4h.openmrs.openmrs-atomfeed</require_module>
         <require_module>org.bahmni.module.reference-data</require_module>

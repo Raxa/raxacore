@@ -10,7 +10,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
-import static org.bahmni.module.referencedata.labconcepts.contract.LabTest.*;
+import static org.bahmni.module.referencedata.labconcepts.contract.LabTest.LAB_TEST_CONCEPT_CLASS;
 import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtension.isOfConceptClass;
 
 public class LabTestEvent extends ConceptOperationEvent {

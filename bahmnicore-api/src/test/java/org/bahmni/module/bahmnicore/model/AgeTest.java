@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.model;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.openmrs.module.webservices.rest.SimpleObject;

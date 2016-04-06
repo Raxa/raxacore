@@ -5,11 +5,22 @@ import org.bahmni.csv.Messages;
 import org.bahmni.module.admin.csv.models.LabResultRow;
 import org.bahmni.module.admin.csv.models.LabResultsRow;
 import org.bahmni.module.admin.csv.service.PatientMatchService;
+import org.openmrs.CareSetting;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterRole;
+import org.openmrs.Obs;
+import org.openmrs.Order;
+import org.openmrs.Patient;
+import org.openmrs.Provider;
+import org.openmrs.Visit;
+import org.openmrs.api.APIException;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.OrderService;
+import org.openmrs.api.ProviderService;
+import org.openmrs.api.context.UserContext;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
-import org.openmrs.*;
-import org.openmrs.api.*;
-import org.openmrs.api.context.UserContext;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
 import org.openmrs.module.bahmniemrapi.laborder.mapper.LabOrderResultMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,8 +113,7 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
         LabOrderResult labOrderResult = new LabOrderResult();
         labOrderResult.setResult(labResultRow.getResult());
         labOrderResult.setResultDateTime(testOrder.getDateActivated());
-        Obs obs = labOrderResultMapper.map(labOrderResult, testOrder, testOrder.getConcept());
-        return obs;
+        return labOrderResultMapper.map(labOrderResult, testOrder, testOrder.getConcept());
     }
 
     private Provider getProvider() {

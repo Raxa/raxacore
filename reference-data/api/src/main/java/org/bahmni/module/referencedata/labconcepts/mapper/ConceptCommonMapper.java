@@ -4,15 +4,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptCommon;
 import org.bahmni.module.referencedata.labconcepts.model.ConceptMetaData;
 import org.openmrs.Concept;
-import org.openmrs.ConceptDescription;
 import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.context.Context;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Locale;
 
-import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtension.*;
+import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtension.addConceptName;
+import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtension.constructDescription;
+import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtension.getConceptName;
 
 public class ConceptCommonMapper {
 

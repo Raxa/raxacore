@@ -2,7 +2,6 @@ package org.bahmni.module.elisatomfeedclient.api.client.impl;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
-import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.client.OpenElisFeedClient;
 import org.bahmni.module.elisatomfeedclient.api.client.OpenElisPatientFeedClient;

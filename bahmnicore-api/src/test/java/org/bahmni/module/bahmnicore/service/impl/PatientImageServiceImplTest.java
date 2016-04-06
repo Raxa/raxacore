@@ -1,10 +1,8 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
-import org.bahmni.module.bahmnicore.service.PatientImageService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -14,7 +12,6 @@ import java.io.File;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(BahmniCoreProperties.class)

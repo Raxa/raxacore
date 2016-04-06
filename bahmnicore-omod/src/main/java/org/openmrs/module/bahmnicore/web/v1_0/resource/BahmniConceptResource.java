@@ -30,6 +30,7 @@ public class BahmniConceptResource extends ConceptResource1_9 {
         allowedMissingProperties.add("lowCritical");
         allowedMissingProperties.add("units");
         allowedMissingProperties.add("precise");
+        allowedMissingProperties.add("allowDecimal");
         allowedMissingProperties.add("handler");
     }
 
@@ -62,10 +63,14 @@ public class BahmniConceptResource extends ConceptResource1_9 {
                 description.addProperty("datatype",Representation.DEFAULT);
                 description.addProperty("conceptClass",Representation.DEFAULT);
                 description.addProperty("hiNormal");
-                description.addProperty("lowNormal");
                 description.addProperty("hiAbsolute");
+                description.addProperty("hiCritical");
+                description.addProperty("lowNormal");
                 description.addProperty("lowAbsolute");
+                description.addProperty("lowCritical");
                 description.addProperty("units");
+                description.addProperty("precise");
+                description.addProperty("allowDecimal");
                 description.addProperty("handler");
                 description.addProperty("descriptions", Representation.DEFAULT);
                 description.addProperty("answers", new NamedRepresentation("bahmniAnswer"));

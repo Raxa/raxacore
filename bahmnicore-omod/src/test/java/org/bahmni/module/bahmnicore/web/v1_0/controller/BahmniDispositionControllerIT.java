@@ -4,7 +4,6 @@ import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.disposition.contract.BahmniDisposition;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

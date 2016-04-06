@@ -18,7 +18,6 @@ import org.openmrs.api.context.UserContext;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
 import org.openmrs.module.bahmniemrapi.laborder.service.LabOrderResultsService;
 import org.openmrs.test.TestUtil;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;

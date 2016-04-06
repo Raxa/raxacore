@@ -10,7 +10,12 @@ import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm
 import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
 import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.bahmni.module.admin.csv.utils.CSVUtils.getKeyValueList;
 
@@ -91,8 +96,7 @@ public class ConceptSetMapper {
             referenceTermRows.add(new ConceptReferenceTermRow(term.getReferenceTermSource(), term.getReferenceTermCode(), term.getReferenceTermRelationship()));
         }
         String uuid = conceptSet.getUuid();
-        ConceptSetRow conceptSetRow = new ConceptSetRow(uuid, name, description, conceptClass, shortName, referenceTermRows, children);
-        return conceptSetRow;
+        return new ConceptSetRow(uuid, name, description, conceptClass, shortName, referenceTermRows, children);
     }
 
 

@@ -8,8 +8,7 @@ import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 
 import java.io.IOException;
-import java.util.*;
-import java.lang.String;
+import java.util.List;
 
 public class DiseaseSummaryDrugOrderMapper{
 

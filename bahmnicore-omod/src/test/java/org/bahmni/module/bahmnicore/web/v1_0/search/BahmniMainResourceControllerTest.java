@@ -13,15 +13,11 @@
  */
 package org.bahmni.module.bahmnicore.web.v1_0.search;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
-import org.junit.Test;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.test.Util;
 import org.openmrs.module.webservices.rest.web.RestConstants;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -32,7 +28,11 @@ import org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMa
 import org.xml.sax.InputSource;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.xpath.XPath;

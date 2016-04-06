@@ -3,6 +3,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.bahmni.module.bahmnicore.dao.BahmniConceptDao;
 import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.openmrs.Concept;
+import org.openmrs.ConceptAnswer;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
@@ -42,7 +43,7 @@ public class BahmniConceptServiceImpl implements BahmniConceptService{
 
     @Override
     @Transactional(readOnly = true)
-    public Collection<Concept> searchByQuestion(String questionConceptName, String query) {
+    public Collection<ConceptAnswer> searchByQuestion(String questionConceptName, String query) {
         return bahmniConceptDao.searchByQuestion(getConcept(questionConceptName), query);
     }
 

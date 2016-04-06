@@ -11,7 +11,9 @@ import org.openmrs.ConceptDatatype;
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class DrugMetaDataMapperTest {
 

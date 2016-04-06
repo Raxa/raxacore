@@ -1,6 +1,15 @@
-[![Build Status](https://travis-ci.org/Bhamni/bahmni-core.svg?branch=master)](https://travis-ci.org/Bhamni/bahmni-core)
+# OpenMRS module bahmnicore
 
-*Now you can deploy your omods to your vagrant box by*
-* `mvn clean install` to generate the artifacts
-* `./scripts/vagrant-deploy.sh` to deploy the generated omods to your vagrant installation
-* `./scripts/vagrant-database.sh` to run liquibase migrations in vagrant
+This module provides necessary services for running Bahmni
+
+## Build
+
+Clone the repository and build the omod
+   
+    git clone https://github.com/bahmni/bahmni-core
+    cd bahmni-core
+    mvn clean install
+    
+## Deploy
+
+Copy ```bahmni-core/bahmnicore-omod/target/bahmnicore-omod-VERSION-SNAPSHOT.omod``` into OpenMRS modules directory and restart OpenMRS

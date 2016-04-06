@@ -4,7 +4,6 @@ import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.ConceptReferenceTermRow;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.bahmni.module.referencedata.labconcepts.contract.Concept;
-import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm;
 import org.junit.Before;
 import org.junit.Test;
 

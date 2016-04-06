@@ -1,9 +1,20 @@
 package org.bahmni.module.bahmnicore.dao;
 
-import org.openmrs.*;
+import org.openmrs.CareSetting;
+import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
+import org.openmrs.Encounter;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface OrderDao {
     List<Order> getCompletedOrdersFrom(List<Order> orders);
@@ -44,4 +55,6 @@ public interface OrderDao {
     Order getChildOrder(Order order);
 
     List<Order> getOrdersByPatientProgram(String patientProgramUuid, OrderType orderTypeByUuid, Set<Concept> conceptsForDrugs);
+
+    List<Order> getAllOrders(Patient patientByUuid, OrderType drugOrderTypeUuid, Integer offset, Integer limit, List<String> locationUuids);
 }

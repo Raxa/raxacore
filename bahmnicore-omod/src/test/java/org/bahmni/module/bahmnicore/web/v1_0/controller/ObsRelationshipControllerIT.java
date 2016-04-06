@@ -5,12 +5,11 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @Ignore
 public class ObsRelationshipControllerIT extends BaseIntegrationTest {

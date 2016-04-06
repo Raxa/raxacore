@@ -1,9 +1,9 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.bahmni.module.bahmnicore.dao.PersonAttributeDao;
+import org.bahmni.module.bahmnicore.model.ResultList;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
-import org.bahmni.module.bahmnicore.model.ResultList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

@@ -9,7 +9,10 @@ import org.openmrs.User;
 import org.openmrs.module.bahmniemrapi.disposition.contract.BahmniDisposition;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BahmniDispositionMapperTest {
 

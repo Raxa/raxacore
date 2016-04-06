@@ -5,7 +5,6 @@ import org.openmrs.ConceptSet;
 import org.openmrs.api.context.Context;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class SetMemberMapper {

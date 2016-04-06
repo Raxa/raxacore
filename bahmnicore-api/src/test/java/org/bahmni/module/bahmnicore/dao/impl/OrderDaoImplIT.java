@@ -6,7 +6,13 @@ import org.bahmni.module.bahmnicore.service.OrderService;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
 import org.junit.Assert;
 import org.junit.Test;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
+import org.openmrs.Encounter;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -15,11 +21,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -415,6 +428,52 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
 
         assertEquals(1, activeOrders.size());
         assertEquals(activeOrders.get(0).getUuid(), "0246222e-f5f5-11e3-b47b-c8b69a44dcba");
+    }
+
+    @Test
+    public void getOrdersByLocationsWhenLocationUuidsAreProvided() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Patient patient = Context.getPatientService().getPatient(1001);
+        HashSet<Concept> concepts = new HashSet<Concept>();
+        OrderType orderType = Context.getOrderService().getOrderType(1);
+        List<String> locationUuids = new ArrayList<>();
+
+        locationUuids.add("8d6c993e-c2cc-11de-7921-0010c6affd0f");
+        locationUuids.add("8d6c993e-c2cc-11de-7000-0010c6affd0f");
+
+        List<Order> activeOrders = orderDao.getAllOrders(patient, orderType, null, null, locationUuids);
+
+        assertEquals(3, activeOrders.size());
+        assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f836");
+        assertEquals(activeOrders.get(1).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f839");
+        assertEquals(activeOrders.get(2).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f841");
+    }
+
+    @Test
+    public void shouldReturnAllOrdersWhenLocationUuidsAreNotProvided() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Patient patient = Context.getPatientService().getPatient(1001);
+        HashSet<Concept> concepts = new HashSet<Concept>();
+        OrderType orderType = Context.getOrderService().getOrderType(1);
+        List<String> locationUuids = new ArrayList<>();
+
+        List<Order> activeOrders = orderDao.getAllOrders(patient, orderType, null, null, locationUuids);
+
+        assertEquals(3, activeOrders.size());
+    }
+
+    @Test
+    public void shouldReturnEmptyListOfOrdersWhenEncountersAreNotThereForGivenLocationUuids() throws Exception {
+        executeDataSet("patientWithOrders.xml");
+        Patient patient = Context.getPatientService().getPatient(1001);
+        HashSet<Concept> concepts = new HashSet<Concept>();
+        OrderType orderType = Context.getOrderService().getOrderType(1);
+        List<String> locationUuids = new ArrayList<>();
+        locationUuids.add("8d6c993e-c2cc-11de-8d13-0010c6dffd0f");
+
+        List<Order> activeOrders = orderDao.getAllOrders(patient, orderType, null, null, locationUuids);
+
+        assertEquals(0, activeOrders.size());
     }
 
     private boolean visitWithUuidExists(String uuid, List<Visit> visits) {

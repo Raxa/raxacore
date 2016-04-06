@@ -3,14 +3,12 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 import org.bahmni.module.obsrelationship.api.ObsRelationService;
 import org.bahmni.module.obsrelationship.model.ObsRelationship;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
-import org.openmrs.module.emrapi.encounter.*;
-import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.emrapi.encounter.EncounterProviderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class ObsRelationshipMapper {

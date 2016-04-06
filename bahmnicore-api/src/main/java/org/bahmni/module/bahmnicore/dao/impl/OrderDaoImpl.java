@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.contract.orderTemplate.OrderTemplateJson;
 import org.bahmni.module.bahmnicore.dao.ApplicationDataDirectory;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
-import org.bahmni.module.bahmnicore.model.Episode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -15,7 +14,15 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.openmrs.*;
+import org.openmrs.CareSetting;
+import org.openmrs.Concept;
+import org.openmrs.DrugOrder;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Order;
+import org.openmrs.OrderType;
+import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.module.emrapi.CareSettingType;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Arrays;
 
 @Component
 public class OrderDaoImpl implements OrderDao {
@@ -301,19 +309,19 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public List<Order> getAllOrders(Patient patientByUuid, OrderType drugOrderType, Set<Concept> conceptsForDrugs, Set<Concept> drugConceptsToBeExcluded, Collection<Encounter> encounters) {
+    public List<Order> getAllOrders(Patient patientByUuid, OrderType orderType, Set<Concept> conceptsForOrders, Set<Concept> orderConceptsToBeExcluded, Collection<Encounter> encounters) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Order.class);
         criteria.add(Restrictions.eq("patient", patientByUuid));
-        if (CollectionUtils.isNotEmpty(conceptsForDrugs)) {
-            criteria.add(Restrictions.in("concept", conceptsForDrugs));
+        if (CollectionUtils.isNotEmpty(conceptsForOrders)) {
+            criteria.add(Restrictions.in("concept", conceptsForOrders));
         }
-        if (CollectionUtils.isNotEmpty(drugConceptsToBeExcluded)) {
-            criteria.add(Restrictions.not(Restrictions.in("concept", drugConceptsToBeExcluded)));
+        if (CollectionUtils.isNotEmpty(orderConceptsToBeExcluded)) {
+            criteria.add(Restrictions.not(Restrictions.in("concept", orderConceptsToBeExcluded)));
         }
         if (CollectionUtils.isNotEmpty(encounters)) {
             criteria.add(Restrictions.in("encounter", encounters));
         }
-        criteria.add(Restrictions.eq("orderType", drugOrderType));
+        criteria.add(Restrictions.eq("orderType", orderType));
         criteria.add(Restrictions.eq("voided", false));
         criteria.add(Restrictions.ne("action", Order.Action.DISCONTINUE));
         criteria.addOrder(org.hibernate.criterion.Order.asc("orderId"));
@@ -340,6 +348,23 @@ public class OrderDaoImpl implements OrderDao {
             query.setParameterList("conceptsForDrugs", conceptsForDrugs);
         }
         return query.list();
+    }
+
+    @Override
+    public List<Order> getAllOrders(Patient patientByUuid, OrderType drugOrderTypeUuid, Integer offset, Integer limit, List<String> locationUuids) {
+        if (CollectionUtils.isNotEmpty(locationUuids)) {
+            Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Encounter.class, "encounter");
+            criteria.createAlias("encounter.location", "location");
+            criteria.add(Restrictions.in("location.uuid", locationUuids));
+            criteria.add(Restrictions.eq("encounter.patient", patientByUuid));
+            List<Encounter> encounters = criteria.list();
+            if (CollectionUtils.isEmpty(encounters)) {
+                return new ArrayList<>();
+            }
+
+            return getAllOrders(patientByUuid, drugOrderTypeUuid, null, null, encounters);
+        }
+        return getAllOrders(patientByUuid, Arrays.asList(drugOrderTypeUuid), offset, limit);
     }
 
     @Override

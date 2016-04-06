@@ -5,8 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
 
 public class ConceptCommon {
     private String uniqueName;

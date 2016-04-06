@@ -1,7 +1,5 @@
 package org.bahmni.module.admin.retrospectiveEncounter.domain;
 
-import java.util.Collection;
-
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Visit;
@@ -12,6 +10,7 @@ import org.openmrs.module.emrapi.EmrApiConstants;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;

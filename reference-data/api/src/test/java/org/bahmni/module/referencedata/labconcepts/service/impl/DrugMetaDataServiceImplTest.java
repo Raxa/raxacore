@@ -8,14 +8,11 @@ import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.ConceptDatatype;
-import org.openmrs.ConceptName;
-import org.openmrs.api.AdministrationService;
-import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
-import org.openmrs.module.emrapi.test.builder.ConceptBuilder;
-import org.openmrs.util.LocaleUtility;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 

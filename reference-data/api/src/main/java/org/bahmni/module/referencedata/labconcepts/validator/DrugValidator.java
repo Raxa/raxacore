@@ -3,8 +3,6 @@ package org.bahmni.module.referencedata.labconcepts.validator;
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.referencedata.labconcepts.contract.Drug;
 import org.bahmni.module.referencedata.labconcepts.model.DrugMetaData;
-import org.openmrs.Concept;
-import org.openmrs.ConceptClass;
 
 import java.util.ArrayList;
 import java.util.List;

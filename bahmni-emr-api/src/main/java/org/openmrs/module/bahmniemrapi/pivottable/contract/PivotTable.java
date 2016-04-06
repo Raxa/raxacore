@@ -2,7 +2,10 @@ package org.openmrs.module.bahmniemrapi.pivottable.contract;
 
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 public class PivotTable {
     private Set<EncounterTransaction.Concept> headers = new LinkedHashSet<>();

@@ -2,7 +2,6 @@ package org.bahmni.module.elisatomfeedclient.api;
 
 import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
 import org.ict4h.atomfeed.client.AtomFeedProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,7 +1,11 @@
 package org.bahmni.module.bahmnicore.dao;
 
 import org.bahmni.module.bahmnicore.dao.impl.ObsDaoImpl;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Order;
+import org.openmrs.Person;
 
 import java.util.ArrayList;
 import java.util.Collection;

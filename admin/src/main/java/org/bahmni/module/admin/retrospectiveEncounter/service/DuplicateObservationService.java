@@ -1,7 +1,5 @@
 package org.bahmni.module.admin.retrospectiveEncounter.service;
 
-import java.util.Collection;
-
 import org.bahmni.module.admin.retrospectiveEncounter.domain.DuplicateObservationsMatcher;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -13,6 +11,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentif
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 

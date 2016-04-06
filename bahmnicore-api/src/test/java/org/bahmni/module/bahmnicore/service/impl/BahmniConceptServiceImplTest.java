@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.Concept;
+import org.openmrs.ConceptAnswer;
 import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
@@ -43,12 +44,12 @@ public class BahmniConceptServiceImplTest {
     public void searchByQuestionShouldUseBahmniConceptDaoToSearchConcepts() {
         Concept questionConcept = new Concept();
         when(bahmniConceptDao.getConceptByFullySpecifiedName(QUESTION)).thenReturn(questionConcept);
-        Concept resultConcept = new Concept();
-        when(bahmniConceptDao.searchByQuestion(questionConcept, SEARCH_QUERY)).thenReturn(Arrays.asList(resultConcept));
+        ConceptAnswer resultConceptAnswer = new ConceptAnswer();
+        when(bahmniConceptDao.searchByQuestion(questionConcept, SEARCH_QUERY)).thenReturn(Arrays.asList(resultConceptAnswer));
 
-        Collection<Concept> concepts = bahmniConceptService.searchByQuestion(QUESTION, SEARCH_QUERY);
-        assertThat(concepts.size(), is(equalTo(1)));
-        assertThat(concepts.iterator().next().getUuid(), is(equalTo(resultConcept.getUuid())));
+        Collection<ConceptAnswer> conceptAnswers = bahmniConceptService.searchByQuestion(QUESTION, SEARCH_QUERY);
+        assertThat(conceptAnswers.size(), is(equalTo(1)));
+        assertThat(conceptAnswers.iterator().next().getUuid(), is(equalTo(resultConceptAnswer.getUuid())));
     }
 
     @Test(expected = ConceptNotFoundException.class)

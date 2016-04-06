@@ -1,18 +1,11 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.dao.VisitDao;
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.disposition.contract.BahmniDisposition;
 import org.openmrs.module.bahmniemrapi.disposition.service.BahmniDispositionService;
-import org.openmrs.module.emrapi.encounter.DispositionMapper;
-import org.openmrs.module.emrapi.encounter.EncounterProviderMapper;
-import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/disposition")

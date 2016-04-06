@@ -18,8 +18,8 @@ public class PatientAttributeQueryHelper {
 	}
 
 	public String selectClause(String select){
-			return select + ", group_concat(DISTINCT(coalesce(pattr_full_name.name, pattr_short_name.name, pattr.value)) SEPARATOR ',') as pattr_value, " +
-					"concat('{',group_concat(DISTINCT (concat('\"',attrt.name,'\":\"',coalesce(pattr_full_name.name, pattr_short_name.name, pattr.value),'\"')) SEPARATOR ','),'}') AS customAttribute";
+			return select + ", group_concat(DISTINCT(coalesce(pattr_short_name.name, pattr_full_name.name, pattr.value)) SEPARATOR ',') as pattr_value, " +
+					"concat('{',group_concat(DISTINCT (concat('\"',attrt.name,'\":\"',coalesce(pattr_short_name.name, pattr_full_name.name, pattr.value),'\"')) SEPARATOR ','),'}') AS customAttribute";
 	}
 
 	public String appendToJoinClause(String join){

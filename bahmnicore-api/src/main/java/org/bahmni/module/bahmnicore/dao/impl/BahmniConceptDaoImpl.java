@@ -11,7 +11,10 @@ import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 @Repository
 public class BahmniConceptDaoImpl implements BahmniConceptDao {
@@ -31,7 +34,7 @@ public class BahmniConceptDaoImpl implements BahmniConceptDao {
     "INNER JOIN drug d ON csmembers.concept_id = d.concept_id and d.retired = 0 ";
 
     @Override
-    public Collection<Concept> searchByQuestion(Concept questionConcept, String searchQuery) {
+    public Collection<ConceptAnswer> searchByQuestion(Concept questionConcept, String searchQuery) {
         String[] queryArray = (searchQuery==null? "":searchQuery).split(WHITE_SPACE);
         StringBuffer queryStringBuffer = new StringBuffer(BASE_SEARCH_QUERY);
         appendSearchQueriesToBase(queryArray, queryStringBuffer);
@@ -44,12 +47,7 @@ public class BahmniConceptDaoImpl implements BahmniConceptDao {
             query.setString("query"+ i, searchBothSidesOf(queryArray[i]));
         }
 
-        List<ConceptAnswer> answers = query.list();
-        HashSet<Concept> resultConcepts = new HashSet<>();
-        for (ConceptAnswer answer : answers) {
-            resultConcepts.add(answer.getAnswerConcept());
-        }
-        return resultConcepts;
+        return new HashSet<>(query.list());
     }
 
     @Override

@@ -2,7 +2,9 @@ package org.openmrs.module.bahmniemrapi.laborder.mapper;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.*;
+import org.openmrs.Concept;
+import org.openmrs.Obs;
+import org.openmrs.Order;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;

@@ -14,8 +14,6 @@ import org.openmrs.ConceptSearchResult;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.context.ServiceContext;
-import org.openmrs.api.impl.AdministrationServiceImpl;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -24,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 

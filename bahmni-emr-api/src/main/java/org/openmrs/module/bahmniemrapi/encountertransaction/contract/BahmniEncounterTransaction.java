@@ -10,7 +10,13 @@ import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.CustomJsonDateSerializer;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BahmniEncounterTransaction {

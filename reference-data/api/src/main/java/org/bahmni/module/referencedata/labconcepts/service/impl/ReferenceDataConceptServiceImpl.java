@@ -1,6 +1,10 @@
 package org.bahmni.module.referencedata.labconcepts.service.impl;
 
-import org.bahmni.module.referencedata.labconcepts.contract.*;
+import org.bahmni.module.referencedata.labconcepts.contract.Concept;
+import org.bahmni.module.referencedata.labconcepts.contract.ConceptCommon;
+import org.bahmni.module.referencedata.labconcepts.contract.ConceptReferenceTerm;
+import org.bahmni.module.referencedata.labconcepts.contract.ConceptSet;
+import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptMapper;
 import org.bahmni.module.referencedata.labconcepts.mapper.ConceptSetMapper;
 import org.bahmni.module.referencedata.labconcepts.model.ConceptMetaData;

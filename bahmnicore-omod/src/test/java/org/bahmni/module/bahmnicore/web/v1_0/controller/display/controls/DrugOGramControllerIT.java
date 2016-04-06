@@ -2,10 +2,9 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 
 import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.RegimenRow;
+import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,7 +18,6 @@ import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 public class DrugOGramControllerIT extends BaseIntegrationTest {
     @Autowired
