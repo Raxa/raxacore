@@ -67,4 +67,9 @@ public class ConceptNumericBuilder {
         return this;
     }
 
+    public ConceptNumericBuilder withId(Integer id) {
+        concept.setId(id);
+        return this;
+    }
+
 }
