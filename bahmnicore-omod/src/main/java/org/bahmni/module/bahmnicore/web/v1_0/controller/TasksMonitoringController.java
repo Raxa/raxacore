@@ -18,9 +18,6 @@ import java.util.List;
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/scheduledTasks")
 public class TasksMonitoringController extends BaseRestController {
 
-    public TasksMonitoringController() {
-    }
-
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody()
     public List<TasksMonitoringResponse> get() {

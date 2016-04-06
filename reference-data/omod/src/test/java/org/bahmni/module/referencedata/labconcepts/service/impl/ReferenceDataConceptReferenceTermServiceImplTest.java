@@ -12,6 +12,7 @@ import org.openmrs.ConceptSource;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
@@ -34,7 +35,7 @@ public class ReferenceDataConceptReferenceTermServiceImplTest {
     }
 
     @Test
-    public void should_throw_exception_if_concept_reference_source_not_found() throws Exception {
+    public void shouldThrowExceptionIfConceptReferenceSourceNotFound() throws Exception {
         when(conceptService.getConceptSourceByName(anyString())).thenReturn(null);
         ConceptReferenceTerm conceptReferenceTerm = new ConceptReferenceTerm();
         conceptReferenceTerm.setConceptSource(new ConceptSource());
@@ -42,19 +43,21 @@ public class ReferenceDataConceptReferenceTermServiceImplTest {
         exception.expect(APIException.class);
         exception.expectMessage("Concept reference source not found");
         referenceDataConceptReferenceTermService.getConceptReferenceTerm("some", "some");
+        fail("Should throw API exception as there is no concept reference source");
     }
 
     @Test
-    public void should_throw_exception_if_concept_reference_term_not_found() throws Exception {
+    public void shouldThrowExceptionIfConceptReferenceTermNotFound() throws Exception {
         when(conceptService.getConceptSourceByName(anyString())).thenReturn(new ConceptSource());
         when(conceptService.getConceptReferenceTermByCode(anyString(), any(ConceptSource.class))).thenReturn(null);
         exception.expect(APIException.class);
         exception.expectMessage("Concept reference term code not found");
         referenceDataConceptReferenceTermService.getConceptReferenceTerm("some", "some");
+        fail("Should throw API exception as there is no concept reference term");
     }
 
     @Test
-    public void should_throw_exception_if_concept_reference_term_not_mapped_to_source() throws Exception {
+    public void shouldThrowExceptionIfConceptReferenceTermNotMappedToSource() throws Exception {
         ConceptSource source = new ConceptSource(1);
         ConceptSource termSource = new ConceptSource(2);
         source.setUuid("source");
@@ -66,5 +69,6 @@ public class ReferenceDataConceptReferenceTermServiceImplTest {
         exception.expect(APIException.class);
         exception.expectMessage("Concept reference term not mapped to the given source");
         referenceDataConceptReferenceTermService.getConceptReferenceTerm("some", "some");
+        fail("Should throw API exception  because concept reference term not mapped to concept reference source");
     }
 }

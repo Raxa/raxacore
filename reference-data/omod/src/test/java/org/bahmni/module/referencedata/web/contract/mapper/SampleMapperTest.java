@@ -61,7 +61,7 @@ public class SampleMapperTest {
     }
 
     @Test
-    public void map_all_sample_fields_from_concept() {
+    public void mapAllSampleFieldsFromConcept() {
         Sample sampleData = sampleMapper.map(sampleConcept);
         assertEquals("Sample UUID", sampleData.getId());
         assertEquals(sortOrder, sampleData.getSortOrder());
@@ -71,7 +71,7 @@ public class SampleMapperTest {
     }
 
     @Test
-    public void send_default_for_no_short_name() {
+    public void sendDefaultForNoShortName() {
         sampleConcept = new ConceptBuilder().forSample().build();
         assertEquals(0, sampleConcept.getShortNames().size());
 
@@ -81,13 +81,13 @@ public class SampleMapperTest {
     }
 
     @Test
-    public void is_active_true_by_default() {
+    public void isActiveTrueByDefault() {
         Sample sampleData = sampleMapper.map(sampleConcept);
         assertTrue(sampleData.getIsActive());
     }
 
     @Test
-    public void double_max_as_sort_order_when_sort_order_not_specified() {
+    public void doubleMaxAsSortOrderWhenSortOrderNotSpecified() {
         ConceptSet conceptSet = createConceptSet(allSamplesConcept, sampleConcept);
         List<ConceptSet> conceptSets = getConceptSets(conceptSet);
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);
@@ -97,7 +97,7 @@ public class SampleMapperTest {
     }
 
     @Test
-    public void map_tests_from_concept_set_members(){
+    public void mapTestsFromConceptSetMembers(){
         Concept testConcept = new ConceptBuilder().forTest().withDataType("N/A").build();
         Concept sampleConcept = new ConceptBuilder().forSample().withSetMember(testConcept).build();
         Sample sample = sampleMapper.map(sampleConcept);
@@ -107,7 +107,7 @@ public class SampleMapperTest {
     }
 
     @Test
-    public void map_panels_from_concept_set_members(){
+    public void mapPanelsFromConceptSetMembers(){
         Concept panelConcept = new ConceptBuilder().forPanel().build();
         Concept sampleConcept = new ConceptBuilder().forSample().withSetMember(panelConcept).build();
         Sample sample = sampleMapper.map(sampleConcept);

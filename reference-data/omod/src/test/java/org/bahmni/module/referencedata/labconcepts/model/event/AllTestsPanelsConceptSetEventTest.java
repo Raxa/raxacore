@@ -29,13 +29,14 @@ import static org.mockito.Mockito.when;
 @RunWith(PowerMockRunner.class)
 public class AllTestsPanelsConceptSetEventTest {
     private Concept parentConcept;
-    private Concept testConcept;
-    private Concept panelConcept;
+    Concept testConcept;
+    Concept panelConcept;
     @Mock
     private ConceptService conceptService;
 
     @Before
-    public void setup() {
+    public void setUp() {
+
         Locale defaultLocale = new Locale("en", "GB");
         PowerMockito.mockStatic(Context.class);
         when(Context.getLocale()).thenReturn(defaultLocale);
@@ -46,7 +47,7 @@ public class AllTestsPanelsConceptSetEventTest {
     }
 
     @Test
-    public void should_create_one_event_for_All_Tests_And_Panels_and_set_members() throws Exception {
+    public void shouldCreateOneEventForAllTestsAndPanelsAndSetMembers() throws Exception {
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{parentConcept});
         assertEquals(events.size(), 1);
         Event event = events.get(0);

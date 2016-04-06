@@ -212,7 +212,7 @@ public class ObsDaoImpl implements ObsDao {
         if (order != null) {
             criteria.add(Restrictions.eq("order", order));
         }
-        criteria.add(Restrictions.eq("voided", Boolean.valueOf(false)));
+        criteria.add(Restrictions.eq("voided", Boolean.FALSE));
 
         criteria.addOrder(org.hibernate.criterion.Order.desc("obsDatetime"));
 
@@ -305,7 +305,7 @@ public class ObsDaoImpl implements ObsDao {
             if (limit != null){
                 queryString.append(" limit " + limit);
             }
-            Query queryToGetObs = sessionFactory.getCurrentSession().createSQLQuery(queryString.toString()).addEntity(Obs.class);;
+            Query queryToGetObs = sessionFactory.getCurrentSession().createSQLQuery(queryString.toString()).addEntity(Obs.class);
             queryToGetObs.setParameterList("conceptNames", conceptNames);
             queryToGetObs.setString("patientProgramUuid", patientProgramUuid);
 

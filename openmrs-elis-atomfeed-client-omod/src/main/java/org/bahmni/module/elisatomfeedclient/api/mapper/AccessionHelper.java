@@ -48,7 +48,7 @@ public class AccessionHelper {
     private final ConceptService conceptService;
     private User labUser;
     private OrderService orderService;
-    private ElisAtomFeedProperties properties;
+    ElisAtomFeedProperties properties;
     private final UserService userService;
     private final ProviderService providerService;
     private OrderType labOrderType;

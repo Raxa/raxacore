@@ -50,7 +50,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
 
 
     @Test
-    public void getPrescribedDrugOrders_ShouldNotGetDiscontinueOrders() throws Exception {
+    public void getPrescribedDrugOrdersShouldNotGetDiscontinueOrders() throws Exception {
         executeDataSet("patientWithDiscontinuedOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
 
@@ -61,7 +61,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void getPrescribedDrugOrders_ShouldGetRevisedOrdersAloneIfRevisionIsInSameEncounter() throws Exception {
+    public void getPrescribedDrugOrdersShouldGetRevisedOrdersAloneIfRevisionIsInSameEncounter() throws Exception {
         executeDataSet("patientWithOrderRevisedInSameEncounter.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
 
@@ -72,7 +72,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void getPrescribedDrugOrders_ShouldGetBothRevisedOrdersAndPreviousOrderIfRevisionIsInDifferentEncounter() throws Exception {
+    public void getPrescribedDrugOrdersShouldGetBothRevisedOrdersAndPreviousOrderIfRevisionIsInDifferentEncounter() throws Exception {
         executeDataSet("patientWithOrderRevisedInDifferentEncounter.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
 
@@ -83,7 +83,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void getPrescribedDrugOrders_ShouldFetchAllPrescribedDrugOrdersInPastVisits() throws Exception {
+    public void getPrescribedDrugOrdersShouldFetchAllPrescribedDrugOrdersInPastVisits() throws Exception {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
 
@@ -101,7 +101,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void getPrescribedDrugOrders_shouldFetchAllPrescribedDrugOrdersIncludingActiveVisit() throws Exception {
+    public void getPrescribedDrugOrdersShouldFetchAllPrescribedDrugOrdersIncludingActiveVisit() throws Exception {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
 
@@ -116,7 +116,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void getPrescribedDrugOrders_ShouldFetchAllPrescribedDrugOrdersWithInGivenDateRange() throws Exception{
+    public void getPrescribedDrugOrdersShouldFetchAllPrescribedDrugOrdersWithInGivenDateRange() throws Exception{
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
 
@@ -138,7 +138,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void getPrescribedDrugOrders_ShouldFetchAllPastDrugOrdersThatAreActiveInGivenDateRange() throws Exception {
+    public void getPrescribedDrugOrdersShouldFetchAllPastDrugOrdersThatAreActiveInGivenDateRange() throws Exception {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
 
@@ -151,7 +151,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void getVisitsWithOrders_ShouldFetchVisitsWithGivenOrderType() throws Exception {
+    public void getVisitsWithOrdersShouldFetchVisitsWithGivenOrderType() throws Exception {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
 
@@ -162,7 +162,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void getPrescribedDrugOrdersForConcepts_shouldFetchAllPrescribedDrugOrdersForGivenConceptsForGivenNoOfVisits() throws Exception {
+    public void getPrescribedDrugOrdersForConceptsShouldFetchAllPrescribedDrugOrdersForGivenConceptsForGivenNoOfVisits() throws Exception {
         executeDataSet("patientWithOrders.xml");
         Patient patient = patientService.getPatient(2);
 
@@ -226,7 +226,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void getDrugOrderForRegimen_shouldRetrieveDrugOrdersAssignedToTheRegimen() throws Exception {
+    public void getDrugOrderForRegimenShouldRetrieveDrugOrdersAssignedToTheRegimen() throws Exception {
         ApplicationDataDirectory applicationDataDirectory = mock(ApplicationDataDirectory.class);
         when(applicationDataDirectory.getFile("ordertemplates/templates.json"))
                 .thenReturn(new File(this.getClass().getClassLoader().getResource("templates.json").toURI()));
@@ -244,7 +244,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void getDrugOrderForRegimen_shouldFailWhenFileDoesNotExist() {
+    public void getDrugOrderForRegimenShouldFailWhenFileDoesNotExist() {
         ApplicationDataDirectory applicationDataDirectory = mock(ApplicationDataDirectory.class);
         when(applicationDataDirectory.getFile("ordertemplates/templates.json")).thenThrow(NullPointerException.class);
         orderDao.setApplicationDataDirectory(applicationDataDirectory);
@@ -253,7 +253,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void getDrugOrderForRegimen_shouldReturnEmptyListWhenRegimenNotFound() throws URISyntaxException {
+    public void getDrugOrderForRegimenShouldReturnEmptyListWhenRegimenNotFound() throws URISyntaxException {
         ApplicationDataDirectory applicationDataDirectory = mock(ApplicationDataDirectory.class);
         when(applicationDataDirectory.getFile("ordertemplates/templates.json"))
                 .thenReturn(new File(this.getClass().getClassLoader().getResource("templates.json").toURI()));
@@ -265,16 +265,15 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void getAllOrdersForVisits_shouldReturnEmptyListWhenNoVisitsFound() {
+    public void getAllOrdersForVisitsShouldReturnEmptyListWhenNoVisitsFound() {
         assertThat(orderDao.getAllOrdersForVisits(null, null).size(), is(equalTo(0)));
         assertThat(orderDao.getAllOrdersForVisits(null, new ArrayList<Visit>()).size(), is(equalTo(0)));
     }
 
     @Test
-    public void getAllOrdersForVisits_shouldReturnAllOrdersGivenAVisitAndAPatient() throws Exception {
+    public void getAllOrdersForVisitsShouldReturnAllOrdersGivenAVisitAndAPatient() throws Exception {
         executeDataSet("patientWithOrders.xml");
         Visit visit = Context.getVisitService().getVisit(1);
-        Patient patient = null;
         OrderType orderType = Context.getOrderService().getOrderType(15);
 
         List<Order> allOrdersForVisits = orderDao.getAllOrdersForVisits(orderType, Arrays.asList(visit));
@@ -396,7 +395,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         Order order = Context.getOrderService().getOrderByUuid("cba00378-0c03-11e4-bb80-f18addb6f837");
         Order childOrder = Context.getOrderService().getOrderByUuid("cba00378-0c03-11e4-bb80-f18addb6f838");
         Order actual = orderDao.getChildOrder(order);
-        Assert.assertEquals(actual, childOrder);
+        assertEquals(actual, childOrder);
     }
 
     @Test
@@ -434,7 +433,6 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     public void getOrdersByLocationsWhenLocationUuidsAreProvided() throws Exception {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
-        HashSet<Concept> concepts = new HashSet<Concept>();
         OrderType orderType = Context.getOrderService().getOrderType(1);
         List<String> locationUuids = new ArrayList<>();
 
@@ -453,7 +451,6 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     public void shouldReturnAllOrdersWhenLocationUuidsAreNotProvided() throws Exception {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
-        HashSet<Concept> concepts = new HashSet<Concept>();
         OrderType orderType = Context.getOrderService().getOrderType(1);
         List<String> locationUuids = new ArrayList<>();
 
@@ -466,7 +463,6 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
     public void shouldReturnEmptyListOfOrdersWhenEncountersAreNotThereForGivenLocationUuids() throws Exception {
         executeDataSet("patientWithOrders.xml");
         Patient patient = Context.getPatientService().getPatient(1001);
-        HashSet<Concept> concepts = new HashSet<Concept>();
         OrderType orderType = Context.getOrderService().getOrderType(1);
         List<String> locationUuids = new ArrayList<>();
         locationUuids.add("8d6c993e-c2cc-11de-8d13-0010c6dffd0f");

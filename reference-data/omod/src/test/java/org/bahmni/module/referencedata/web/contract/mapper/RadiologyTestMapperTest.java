@@ -31,7 +31,6 @@ public class RadiologyTestMapperTest {
     private Date dateChanged;
     @Mock
     private ConceptService conceptService;
-    private ConceptSet testRadiologyTestConceptSet;
 
     @Before
     public void setUp() throws Exception {
@@ -50,7 +49,7 @@ public class RadiologyTestMapperTest {
     }
 
     @Test
-    public void map_name_of_radiology_test_from_concept() throws Exception {
+    public void mapNameOfRadiologyTestFromConcept() throws Exception {
         RadiologyTest testData = testMapper.map(radiologyConcept);
         assertEquals("RadiologyUUID", testData.getId());
         assertEquals(dateCreated, testData.getDateCreated());

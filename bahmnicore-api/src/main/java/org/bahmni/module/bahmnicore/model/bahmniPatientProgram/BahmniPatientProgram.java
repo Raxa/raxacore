@@ -79,7 +79,7 @@ public class BahmniPatientProgram extends PatientProgram implements Customizable
                 PatientProgramAttribute i$ = this.getActiveAttributes(attribute.getAttributeType()).get(0);
                 if (!i$.getValue().equals(attribute.getValue())) {
                     if (i$.getId() != null) {
-                        i$.setVoided(Boolean.valueOf(true));
+                        i$.setVoided(Boolean.TRUE);
                     } else {
                         this.getAttributes().remove(i$);
                     }
@@ -91,7 +91,7 @@ public class BahmniPatientProgram extends PatientProgram implements Customizable
                 for (PatientProgramAttribute existing : this.getActiveAttributes(attribute.getAttributeType())) {
                     if (existing.getAttributeType().equals(attribute.getAttributeType())) {
                         if (existing.getId() != null) {
-                            existing.setVoided(Boolean.valueOf(true));
+                            existing.setVoided(Boolean.TRUE);
                         } else {
                             this.getAttributes().remove(existing);
                         }
