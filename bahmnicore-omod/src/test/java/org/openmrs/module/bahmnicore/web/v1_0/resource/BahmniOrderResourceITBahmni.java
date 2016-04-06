@@ -1,7 +1,7 @@
 package org.openmrs.module.bahmnicore.web.v1_0.resource;
 
 import org.bahmni.module.bahmnicore.service.OrderService;
-import org.bahmni.module.bahmnicore.web.v1_0.search.MainResourceControllerTest;
+import org.bahmni.module.bahmnicore.web.v1_0.search.BahmniMainResourceControllerTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Order;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import static org.junit.Assert.*;
 
-public class BahmniOrderResourceIT extends MainResourceControllerTest {
+public class BahmniOrderResourceITBahmni extends BahmniMainResourceControllerTest {
 
     @Autowired
     OrderService orderService;

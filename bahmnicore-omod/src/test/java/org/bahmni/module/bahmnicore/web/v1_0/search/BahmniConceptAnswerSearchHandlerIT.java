@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
-public class BahmniConceptAnswerSearchHandlerIT extends MainResourceControllerTest {
+public class BahmniConceptAnswerSearchHandlerIT extends BahmniMainResourceControllerTest {
     @Override
     public String getURI() {
         return "concept";

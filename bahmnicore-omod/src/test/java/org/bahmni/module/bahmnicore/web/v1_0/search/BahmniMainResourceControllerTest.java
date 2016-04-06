@@ -45,7 +45,7 @@ import java.util.List;
 /**
  * Facilitates testing controllers.
  */
-public abstract class MainResourceControllerTest extends BaseIntegrationTest {
+public abstract class BahmniMainResourceControllerTest extends BaseIntegrationTest {
 	
 	@Autowired
 	private AnnotationMethodHandlerAdapter handlerAdapter;

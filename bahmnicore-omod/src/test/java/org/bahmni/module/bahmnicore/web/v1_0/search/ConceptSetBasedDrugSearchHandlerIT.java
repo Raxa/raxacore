@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 
-public class ConceptSetBasedDrugSearchHandlerIT extends MainResourceControllerTest {
+public class ConceptSetBasedDrugSearchHandlerIT extends BahmniMainResourceControllerTest {
 
     @Override
     public String getURI() {

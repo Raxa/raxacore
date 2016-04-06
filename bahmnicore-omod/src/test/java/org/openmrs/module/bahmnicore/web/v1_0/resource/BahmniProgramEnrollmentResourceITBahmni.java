@@ -2,7 +2,7 @@ package org.openmrs.module.bahmnicore.web.v1_0.resource;
 
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
-import org.bahmni.module.bahmnicore.web.v1_0.search.MainResourceControllerTest;
+import org.bahmni.module.bahmnicore.web.v1_0.search.BahmniMainResourceControllerTest;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.HashMap;
 import java.util.List;
 
-public class BahmniProgramEnrollmentResourceIT  extends MainResourceControllerTest {
+public class BahmniProgramEnrollmentResourceITBahmni extends BahmniMainResourceControllerTest {
 
 
     private BahmniProgramWorkflowService service;

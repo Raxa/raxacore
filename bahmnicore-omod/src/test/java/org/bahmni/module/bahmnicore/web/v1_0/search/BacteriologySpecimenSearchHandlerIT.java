@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
-public class BacteriologySpecimenSearchHandlerIT extends MainResourceControllerTest{
+public class BacteriologySpecimenSearchHandlerIT extends BahmniMainResourceControllerTest {
     @Override
     public String getURI() {
         return "specimen";

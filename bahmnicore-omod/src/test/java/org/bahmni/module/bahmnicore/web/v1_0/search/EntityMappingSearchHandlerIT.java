@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
-public class EntityMappingSearchHandlerIT extends MainResourceControllerTest {
+public class EntityMappingSearchHandlerIT extends BahmniMainResourceControllerTest {
 
     private static final String ENTITY_MAPPING_DATA_SET_XML = "entityMappingDataSet.xml";
 

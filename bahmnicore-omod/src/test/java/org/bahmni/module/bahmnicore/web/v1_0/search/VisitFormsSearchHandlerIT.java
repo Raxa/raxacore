@@ -4,13 +4,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.webservices.rest.SimpleObject;
-import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
 
-public class VisitFormsSearchHandlerIT  extends MainResourceControllerTest {
+public class VisitFormsSearchHandlerIT  extends BahmniMainResourceControllerTest {
     private static final String VISIT_FORM_DATA_SET_XML = "visitFormDataSet.xml";
 
     @Before
