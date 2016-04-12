@@ -29,7 +29,7 @@ public class PatientResponse {
     private String activeVisitUuid;
     private String customAttribute;
     private String patientProgramAttributeValue;
-
+    private Boolean hasBeenAdmitted;
 
     public PatientResponse() {
     }
@@ -169,6 +169,14 @@ public class PatientResponse {
 
     public void setPatientProgramAttributeValue(String patientProgramAttributeValue) {
         this.patientProgramAttributeValue = patientProgramAttributeValue;
+    }
+
+    public Boolean getHasBeenAdmitted() {
+        return hasBeenAdmitted;
+    }
+
+    public void setHasBeenAdmitted(Boolean hasBeenAdmitted) {
+        this.hasBeenAdmitted = hasBeenAdmitted;
     }
 
 }

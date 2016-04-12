@@ -32,7 +32,7 @@ public class PatientDaoImpl implements PatientDao {
 
     @Override
     public List<PatientResponse> getPatients(String identifier, String identifierPrefix, String name, String customAttribute,
-                                             String addressFieldName, String addressFieldValue, Integer length,
+                                             String addressFieldName, String addressFieldValue, Integer limit,
                                              Integer offset, String[] customAttributeFields, String programAttributeValue,
                                              String programAttributeFieldName) {
         if(isInValidSearchParams(customAttributeFields,programAttributeFieldName)){
@@ -47,7 +47,7 @@ public class PatientDaoImpl implements PatientDao {
                 .withPatientIdentifier(identifier,identifierPrefix)
                 .withPatientAttributes(customAttribute, getPersonAttributeIds(customAttributeFields))
                 .withProgramAttributes(programAttributeValue, programAttributeType)
-                .buildSqlQuery(length,offset);
+                .buildSqlQuery(limit,offset);
         return sqlQuery.list();
     }
 

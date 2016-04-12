@@ -122,6 +122,10 @@
     <visit visit_id="10" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="8" visit_type_id="1"  location_id="2" creator="1"  uuid="00bfb3d3-247f-4404-a040-1116acdb7875" voided="0"/>
     <visit visit_id="11" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="8" visit_type_id="1"  location_id="2" creator="1"  uuid="2eac608a-31bc-4c0e-b6b7-4ff9cd57646a" voided="0"/>
 
+    <visit visit_id="12" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="1026" visit_type_id="1"  location_id="2" creator="1"  uuid="e2a7af0f-5ae4-40d5-9820-af907a459999" voided="0"/>
+    <visit_attribute_type visit_attribute_type_id="1" name="Admission Status" datatype="org.openmrs.customdatatype.datatype.FreeTextDatatype" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="8770f6d6-7673-11e0-8f03-001e367eb6e7" />
+    <visit_attribute visit_attribute_id="1" attribute_type_id="1" visit_id="12" value_reference="Admitted" uuid="8770f6d6-7673-11e0-8f03-001e367eb6iu" voided="0" creator="1" date_created="2005-09-22 00:00:00"/>
+
     <concept_datatype concept_datatype_id="1" name="numeric" hl7_abbreviation="NM" description="numeric concept" date_created="2013-12-04 11:36:42" retired="0"/>
     <concept_datatype concept_datatype_id="2" name="text" hl7_abbreviation="ST" description="text concept" date_created="2013-12-04 11:36:42" retired="0"/>
     <concept_datatype concept_datatype_id="3" name="Boolean" hl7_abbreviation="BIT" description="boolean concept" date_created="2013-12-04 11:36:42" retired="0"/>

@@ -14,6 +14,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
@@ -238,6 +239,19 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
         assertEquals("{\"occupation\":\"Student\",\"fatherName\":\"Dude\"}",patients.get(1).getCustomAttribute());
         patients = patientDao.getPatients("", "", "", "ud", "city_village", "", 100, 0, new String[]{"occupation"},"",null);
         assertEquals(1, patients.size());
+    }
+
+    @Test
+    public void shouldReturnAdmissionStatus() throws Exception{
+        List<PatientResponse> patients = patientDao.getPatients("200000", "", null, null, "city_village", null, 10, 0, null, null, null);
+        assertEquals(1, patients.size());
+        PatientResponse patient200000 = patients.get(0);
+        assertFalse(patient200000.getHasBeenAdmitted());
+
+        patients = patientDao.getPatients("200002", "", null, null, "city_village", null, 10, 0, null, null, null);
+        assertEquals(1, patients.size());
+        PatientResponse patient200003 = patients.get(0);
+        assertTrue(patient200003.getHasBeenAdmitted());
     }
 
 }

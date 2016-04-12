@@ -15,15 +15,29 @@ import java.util.List;
 import java.util.Map;
 
 public class PatientSearchBuilder {
-	public static final String SELECT_STATEMENT = "select p.uuid as uuid, p.person_id as personId, pi.identifier as identifier, pn.given_name as givenName, pn.middle_name as middleName, pn.family_name as familyName, p.gender as gender, p.birthdate as birthDate," +
-			" p.death_date as deathDate, p.date_created as dateCreated, v.uuid as activeVisitUuid ";
+	public static final String SELECT_STATEMENT = "select " +
+			"p.uuid as uuid, " +
+			"p.person_id as personId, " +
+			"pi.identifier as identifier, " +
+			"pn.given_name as givenName, " +
+			"pn.middle_name as middleName, " +
+			"pn.family_name as familyName, " +
+			"p.gender as gender, " +
+			"p.birthdate as birthDate, " +
+			"p.death_date as deathDate, " +
+			"p.date_created as dateCreated, " +
+			"v.uuid as activeVisitUuid, " +
+			"(CASE va.value_reference WHEN 'Admitted' THEN TRUE ELSE FALSE END) as hasBeenAdmitted ";
 	public static final String WHERE_CLAUSE = " where p.voided = 'false' and pn.voided = 'false' and pn.preferred=true ";
 	public static final String FROM_TABLE = " from patient pat " ;
 	public static final String JOIN_CLAUSE =  " inner join person p on pat.patient_id=p.person_id " +
 			" left join person_name pn on pn.person_id = p.person_id" +
 			" left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
 			" inner join patient_identifier pi on pi.patient_id = p.person_id " +
-			" left outer join visit v on v.patient_id = pat.patient_id and v.date_stopped is null ";
+			" left outer join visit v on v.patient_id = pat.patient_id and v.date_stopped is null " +
+			" left outer join visit_attribute va on va.visit_id = v.visit_id " +
+			"   and va.attribute_type_id = (select visit_attribute_type_id from visit_attribute_type where name='Admission Status') " +
+			"   and va.voided = 0";
 	private static final String GROUP_BY_KEYWORD = " group by ";
 	public static final String ORDER_BY = " order by p.date_created desc LIMIT :limit OFFSET :offset";
 	private static final String LIMIT_PARAM = "limit";
@@ -129,7 +143,8 @@ public class PatientSearchBuilder {
 				.addScalar("birthDate", StandardBasicTypes.DATE)
 				.addScalar("deathDate", StandardBasicTypes.DATE)
 				.addScalar("dateCreated", StandardBasicTypes.TIMESTAMP)
-				.addScalar("activeVisitUuid", StandardBasicTypes.STRING);
+				.addScalar("activeVisitUuid", StandardBasicTypes.STRING)
+				.addScalar("hasBeenAdmitted", StandardBasicTypes.BOOLEAN);
 
 		Iterator<Map.Entry<String,Type>> iterator = types.entrySet().iterator();
 
