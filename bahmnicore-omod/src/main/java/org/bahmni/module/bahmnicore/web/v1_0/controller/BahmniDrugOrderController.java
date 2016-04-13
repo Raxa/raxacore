@@ -23,11 +23,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -165,11 +168,49 @@ public class BahmniDrugOrderController extends BaseRestController {
         Map<String, DrugOrder> drugOrderMap = drugOrderService.getDiscontinuedDrugOrders(drugOrders);
         try {
             Collection<BahmniObservation> orderAttributeObs = bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null, null, false, null, null, null);
-            return bahmniDrugOrderMapper.mapToResponse(drugOrders, orderAttributeObs, drugOrderMap);
+            List<BahmniDrugOrder> bahmniDrugOrders = bahmniDrugOrderMapper.mapToResponse(drugOrders, orderAttributeObs, drugOrderMap);
+            return sortDrugOrdersAccordingToTheirSortWeight(bahmniDrugOrders);
         } catch (IOException e) {
             logger.error("Could not parse drug order", e);
             throw new RuntimeException("Could not parse drug order", e);
         }
     }
 
+    private List<BahmniDrugOrder> sortDrugOrdersAccordingToTheirSortWeight(List<BahmniDrugOrder> bahmniDrugOrders) {
+        Map<String, ArrayList<BahmniDrugOrder>> bahmniDrugOrderMap = groupDrugOrdersAccordingToOrderSet(bahmniDrugOrders);
+        List<BahmniDrugOrder> sortDrugOrders = new ArrayList<>();
+        for (String key : bahmniDrugOrderMap.keySet()) {
+            if(key == null) {
+                continue;
+            }
+            List<BahmniDrugOrder> bahmniDrugOrder = bahmniDrugOrderMap.get(key);
+            Collections.sort(bahmniDrugOrder, new Comparator<BahmniDrugOrder>() {
+                @Override
+                public int compare(BahmniDrugOrder o1, BahmniDrugOrder o2) {
+                    return o1.getSortWeight().compareTo(o2.getSortWeight());
+                }
+            });
+        }
+
+        for (String s : bahmniDrugOrderMap.keySet()) {
+            sortDrugOrders.addAll(bahmniDrugOrderMap.get(s));
+        }
+        return sortDrugOrders;
+    }
+
+    private Map<String, ArrayList<BahmniDrugOrder>> groupDrugOrdersAccordingToOrderSet(List<BahmniDrugOrder> bahmniDrugOrders) {
+        Map<String, ArrayList<BahmniDrugOrder>> groupedDrugOrders = new LinkedHashMap<>();
+
+        for (BahmniDrugOrder bahmniDrugOrder: bahmniDrugOrders) {
+            String orderSetUuid = null == bahmniDrugOrder.getOrderGroup() ? null : bahmniDrugOrder.getOrderGroup().getOrderSet().getUuid();
+
+            if(!groupedDrugOrders.containsKey(orderSetUuid)){
+                groupedDrugOrders.put(orderSetUuid, new ArrayList<BahmniDrugOrder>());
+            }
+
+            groupedDrugOrders.get(orderSetUuid).add(bahmniDrugOrder);
+        }
+
+        return groupedDrugOrders;
+    }
 }

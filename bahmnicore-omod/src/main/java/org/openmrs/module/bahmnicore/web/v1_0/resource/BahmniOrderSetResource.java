@@ -26,7 +26,9 @@ public class BahmniOrderSetResource extends MetadataDelegatingCrudResource<Order
 
     @Override
     public OrderSet getByUniqueId(String uniqueId) {
-        return Context.getOrderSetService().getOrderSetByUuid(uniqueId);
+        OrderSet orderSet = Context.getOrderSetService().getOrderSetByUuid(uniqueId);
+        orderSet.setOrderSetMembers(orderSet.getUnRetiredOrderSetMembers());
+        return orderSet;
     }
 
     @Override
@@ -64,7 +66,11 @@ public class BahmniOrderSetResource extends MetadataDelegatingCrudResource<Order
      */
     @Override
     protected NeedsPaging<OrderSet> doGetAll(RequestContext context) {
-        return new NeedsPaging<OrderSet>(Context.getOrderSetService().getOrderSets(context.getIncludeAll()), context);
+        List<OrderSet> orderSets = Context.getOrderSetService().getOrderSets(context.getIncludeAll());
+        for (OrderSet orderSet : orderSets) {
+            orderSet.setOrderSetMembers(orderSet.getUnRetiredOrderSetMembers());
+        }
+        return new NeedsPaging<OrderSet>(orderSets, context);
     }
 
     @Override
