@@ -20,6 +20,7 @@ import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.module.webservices.rest.web.ConversionUtil;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.openmrs.module.webservices.rest.web.api.RestService;
 import org.openmrs.module.webservices.rest.web.representation.Representation;
 import org.openmrs.module.webservices.rest.web.resource.impl.DelegatingCrudResource;
@@ -71,19 +72,19 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         String identifierPrefix = String.valueOf(identifierProperties.get("identifierPrefix"));
         identifierProperties.remove("identifierPrefix");
         String identifier;
-        if (identifierProperties.get("identifier") != null) {
+        boolean isRegistrationIDNumeric = String.valueOf(identifierProperties.get("identifier")).replace(identifierPrefix, "").matches("[0-9]+");
+        if (identifierProperties.get("identifier") != null && isRegistrationIDNumeric) {
             long givenRegistrationNumber = Long.parseLong(String.valueOf(identifierProperties.get("identifier")).replace(identifierPrefix, ""));
+            long latestRegistrationNumber = Long.parseLong(identifierSourceServiceWrapper.getSequenceValue(identifierPrefix));
             if (!jumpAccepted) {
-                long latestRegistrationNumber = Long.parseLong(identifierSourceServiceWrapper.getSequenceValue(identifierPrefix));
                 long sizeOfJump = givenRegistrationNumber - latestRegistrationNumber;
                 if (sizeOfJump > 0) {
                     return new ResponseEntity<Object>("{\"sizeOfJump\":" + sizeOfJump + "}", HttpStatus.PRECONDITION_FAILED);
-                } else if (sizeOfJump < 0) {
-                    return new ResponseEntity<Object>("Given identifier is less than the last generated identifier : " + latestRegistrationNumber, HttpStatus.BAD_REQUEST);
                 }
             }
+            if (latestRegistrationNumber < (givenRegistrationNumber + 1 ))
             identifierSourceServiceWrapper.saveSequenceValue(givenRegistrationNumber + 1, identifierPrefix);
-        } else {
+        } else if(identifierProperties.get("identifier") == null) {
             identifier = identifierSourceServiceWrapper.generateIdentifier(identifierPrefix, "");
             identifierProperties.put("identifier", identifier);
         }
@@ -99,7 +100,7 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
             } else if (e instanceof NonUniqueObjectException) {
                 return new ResponseEntity<Object>(e, HttpStatus.OK);
             }  else if (e instanceof ValidationException) {
-                return new ResponseEntity<Object>(e, HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, null), HttpStatus.CONFLICT);
             } else {
                 return new ResponseEntity<Object>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
