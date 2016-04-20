@@ -15,7 +15,6 @@ public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
     private EncounterTransaction.DrugOrder drugOrder;
     private EncounterTransaction.Provider provider;
     private List<BahmniOrderAttribute> orderAttributes;
-    private Double sortWeight;
 
     private String creatorName;
 
@@ -100,11 +99,7 @@ public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
     }
 
     public Double getSortWeight(){
-        return sortWeight;
-    }
-
-    public void setSortWeight(Double sortWeight){
-        this.sortWeight = sortWeight;
+        return drugOrder.getSortWeight();
     }
 
     public Date getScheduledDate() {

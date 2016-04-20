@@ -40,7 +40,6 @@ public class BahmniDrugOrderMapper {
             bahmniDrugOrder.setVisit(openMRSDrugOrder.getEncounter().getVisit());
             bahmniDrugOrder.setProvider(providerMapper.map(openMRSDrugOrder.getOrderer()));
             bahmniDrugOrder.setCreatorName(openMRSDrugOrder.getCreator().getPersonName().toString());
-            bahmniDrugOrder.setSortWeight(openMRSDrugOrder.getSortWeight());
 
             if(discontinuedOrderMap.containsKey(openMRSDrugOrder.getOrderNumber())){
                 bahmniDrugOrder.setOrderReasonText(discontinuedOrderMap.get(openMRSDrugOrder.getOrderNumber()).getOrderReasonNonCoded());
