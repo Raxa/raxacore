@@ -37,15 +37,19 @@ public class BahmniLocationSearchHandler implements SearchHandler{
 
     @Override
     public PageableResult search(RequestContext requestContext) throws ResponseException {
-        String query = requestContext.getParameter("q");
+        String[] tagNames = requestContext.getRequest().getParameterMap().get("tags");
+        String operator = requestContext.getParameter("operator");
         List<LocationTag> tags = new ArrayList<>();
-        if(query != null && !query.isEmpty()) {
-            for(String tag : query.split(",")){
-                tags.add(locationService.getLocationTagByName(tag));
-            }
+        List<Location> locations = null;
+        for (String tagName : tagNames) {
+            tags.add(locationService.getLocationTagByName(tagName));
         }
-
-        List<Location> locations =  locationService.getLocationsHavingAllTags(tags);
+        if(null == operator || "ALL".equals(operator)){
+            locations = locationService.getLocationsHavingAllTags(tags);
+        }
+        if("ANY".equals(operator)){
+            locations = locationService.getLocationsHavingAnyTag(tags);
+        }
         return new AlreadyPaged<>(requestContext, locations, false);
     }
 }
