@@ -4089,4 +4089,9 @@
         </sql>
     </changeSet>
 
+    <changeSet id="201604261630" author="Gautam">
+        <comment>SQL query to get list of active patients by location</comment>
+        <sqlFile path="V1_92_PatientSearch.sql"/>
+    </changeSet>
+
 </databaseChangeLog>
