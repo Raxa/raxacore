@@ -310,7 +310,12 @@ public class DrugOrderToTreatmentRegimenMapper {
 				e.printStackTrace();
 			}
 		} else {
-			dosage = drugOrder.getDose().toString();
+			if(drugOrder.getDose() != null){
+				dosage = drugOrder.getDose().toString();
+			}
+			else{
+				dosage = "";
+			}
 		}
 		return dosage;
 	}
