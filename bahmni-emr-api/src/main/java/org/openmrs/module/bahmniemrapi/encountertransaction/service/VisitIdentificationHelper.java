@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 
 @Component
-public class VisitIdentificationHelper {
+public class VisitIdentificationHelper implements VisitMatcher {
     private VisitService visitService;
 
     @Autowired
