@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.bahmni.module.admin.csv.utils.CSVUtils.getKeyValueList;
 
@@ -33,6 +34,12 @@ public class ConceptMapper {
         concept.setUnits(conceptRow.getUnits());
         concept.setHiNormal(conceptRow.getHiNormal());
         concept.setLowNormal(conceptRow.getLowNormal());
+        if(Objects.equals(conceptRow.getPrecise(), "") || conceptRow.getPrecise() == null){
+            concept.setPrecise("true");
+        }
+        else{
+            concept.setPrecise(conceptRow.getPrecise());
+        }
         concept.setLocale(conceptRow.getLocale());
         addSynonyms(conceptRow, concept);
         addAnswers(conceptRow, concept);
@@ -109,6 +116,8 @@ public class ConceptMapper {
         String units = concept.getUnits();
         String hiNormal = concept.getHiNormal();
         String lowNormal = concept.getLowNormal();
-        return new ConceptRow(uuid, name, description, conceptClass, shortName, conceptDatatype, units, hiNormal, lowNormal, referenceTermRows, conceptSynonyms, conceptAnswers,locale);
+        String precise = concept.getPrecise();
+        return new ConceptRow(uuid, name, description, conceptClass, shortName, conceptDatatype, units, hiNormal,
+                lowNormal, precise, referenceTermRows, conceptSynonyms, conceptAnswers,locale);
     }
 }

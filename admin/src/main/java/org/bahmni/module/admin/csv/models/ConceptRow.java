@@ -51,10 +51,15 @@ public class ConceptRow extends CSVEntity {
     @CSVHeader(name = "Low Normal", optional = true)
     public String lowNormal;
 
+    @CSVHeader(name = "Allow Decimal", optional = true)
+    public String precise;
+
     @CSVHeader(name = "locale", optional = true)
     public String locale;
 
-    public ConceptRow(String uuid, String name, String description, String conceptClass, String shortName, String dataType, String units, String hiNormal, String lowNormal, List<ConceptReferenceTermRow> referenceTermRows, List<KeyValue> synonyms, List<KeyValue> answers, String locale) {
+    public ConceptRow(String uuid, String name, String description, String conceptClass, String shortName, String dataType,
+                      String units, String hiNormal, String lowNormal, String precise, List<ConceptReferenceTermRow> referenceTermRows,
+                      List<KeyValue> synonyms, List<KeyValue> answers, String locale) {
         this.uuid = uuid;
         this.name = name;
         this.description = description;
@@ -66,9 +71,10 @@ public class ConceptRow extends CSVEntity {
         this.units = units;
         this.hiNormal = hiNormal;
         this.lowNormal = lowNormal;
+        this.precise = precise;
         this.referenceTerms = referenceTermRows;
         this.locale = locale;
-        String[] aRow = {uuid, name, description, conceptClass, shortName, dataType, units, hiNormal, lowNormal,locale};
+        String[] aRow = {uuid, name, description, conceptClass, shortName, dataType, units, hiNormal, lowNormal, precise,locale};
         String[] synonymsRow = getStringArray(synonyms);
         String[] answersRow = getStringArray(answers);
         aRow = ArrayUtils.addAll(aRow, ArrayUtils.addAll(synonymsRow, answersRow));
@@ -94,7 +100,7 @@ public class ConceptRow extends CSVEntity {
         }
 
         //TODO FIX reference terms
-        return new ConceptRow("uuid", "name", "description", "class", "shortname", "datatype", "units", "High Normal", "Low Normal", referenceTermHeaders, synonymHeaders, answerHeaders,"locale");
+        return new ConceptRow("uuid", "name", "description", "class", "shortname", "datatype", "units", "High Normal", "Low Normal","Allow Decimal", referenceTermHeaders, synonymHeaders, answerHeaders,"locale");
     }
 
     public ConceptRow() {
@@ -169,6 +175,14 @@ public class ConceptRow extends CSVEntity {
         this.lowNormal = lowNormal;
     }
 
+    public String getPrecise() {
+        return precise;
+    }
+
+    public void setPrecise(String precise) {
+        this.precise = precise;
+    }
+
     public String getLocale() {
         return locale;
     }
@@ -181,7 +195,7 @@ public class ConceptRow extends CSVEntity {
         addBlankSynonyms(maxSynonyms);
         addBlankAnswers(maxAnswers);
         addBlankReferenceTerms(maxReferenceTerms);
-        String[] aRow = {uuid, name, description, conceptClass, shortName, dataType, units, hiNormal, lowNormal};
+        String[] aRow = {uuid, name, description, conceptClass, shortName, dataType, units, hiNormal, lowNormal, precise};
         String[] synonymsRow = getStringArray(synonyms);
         String[] answersRow = getStringArray(answers);
         aRow = ArrayUtils.addAll(aRow, ArrayUtils.addAll(synonymsRow, answersRow));

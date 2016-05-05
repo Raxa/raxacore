@@ -18,6 +18,7 @@ public class ConceptNumericMapper {
             conceptNumeric.setUnits(conceptData.getUnits());
             setHiNormal(conceptData, conceptNumeric);
             setLowNormal(conceptData, conceptNumeric);
+            setPrecise(conceptData, conceptNumeric);
         }
         return conceptNumeric;
     }
@@ -33,6 +34,12 @@ public class ConceptNumericMapper {
         String hiNormal = conceptData.getHiNormal();
         if (!StringUtils.isBlank(hiNormal)) {
             conceptNumeric.setHiNormal(Double.valueOf(hiNormal));
+        }
+    }
+    private void setPrecise(org.bahmni.module.referencedata.labconcepts.contract.Concept conceptData, ConceptNumeric conceptNumeric) {
+        String precise = conceptData.getPrecise();
+        if (!StringUtils.isBlank(precise)) {
+            conceptNumeric.setAllowDecimal(Boolean.valueOf(precise));
         }
     }
 }

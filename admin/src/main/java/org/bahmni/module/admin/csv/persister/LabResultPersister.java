@@ -6,6 +6,7 @@ import org.bahmni.module.admin.csv.models.LabResultRow;
 import org.bahmni.module.admin.csv.models.LabResultsRow;
 import org.bahmni.module.admin.csv.service.PatientMatchService;
 import org.openmrs.CareSetting;
+import org.openmrs.ConceptNumeric;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterRole;
 import org.openmrs.Obs;
@@ -75,6 +76,14 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
             encounter.addProvider(encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID), getProvider());
             HashSet<Obs> resultObservations = new HashSet<>();
             for (LabResultRow labResultRow : labResultsRow.getTestResults()) {
+                labResultRow.getResult();
+                org.openmrs.Concept concept = conceptService.getConceptByName(labResultRow.getTest());
+                if(concept.isNumeric()){
+                    ConceptNumeric cn = (ConceptNumeric)concept;
+                    if(!cn.isAllowDecimal() && labResultRow.getResult().contains(".")){
+                        throw new APIException("Decimal is not allowed for "+ cn.getName() +" concept");
+                    }
+                }
                 Order testOrder = getTestOrder(patient, labResultRow, labResultsRow.getTestDate());
                 encounter.addOrder(testOrder);
                 resultObservations.add(getResultObs(labResultRow, testOrder));

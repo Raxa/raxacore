@@ -31,4 +31,13 @@
                   date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
                   uuid="252b58c0-872e-11f3-baa7-080X12Fc9a66" locale_preferred="0"/>
     <!--test Urea Nitorgen-->
+
+    <!--test Eosinophil (Blood)-->
+    <concept concept_id="108" retired="false" datatype_id="1" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="concept-uuid-1"/>
+    <concept_numeric concept_id="108" units="cells/mmL" precise="false"/>
+    <concept_name concept_name_id="10" concept_id="108" name="Eosinophil (Blood)" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="concept-name-uuid-1" locale_preferred="0"/>
+    <!--test Eosinophil (Blood)-->
 </dataset>

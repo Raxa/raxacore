@@ -12,11 +12,13 @@ public class Concept extends ConceptCommon {
     private String units;
     private String hiNormal;
     private String lowNormal;
+    private String precise;
 
     public Concept() {
     }
 
-    public Concept(String uuid, String name, String conceptDescription, String conceptClass, String conceptShortname, List<ConceptReferenceTerm> conceptReferenceTermList, List<String> conceptSynonyms, List<String> conceptAnswers, String datatype) {
+    public Concept(String uuid, String name, String conceptDescription, String conceptClass, String conceptShortname,
+                   List<ConceptReferenceTerm> conceptReferenceTermList, List<String> conceptSynonyms, List<String> conceptAnswers, String datatype) {
         super(uuid, name, conceptDescription, conceptClass, conceptShortname, conceptReferenceTermList, datatype);
         this.answers = conceptAnswers;
         this.synonyms = conceptSynonyms;
@@ -62,4 +64,14 @@ public class Concept extends ConceptCommon {
     public String getLowNormal() {
         return lowNormal;
     }
+
+    public String getPrecise() {
+        return precise;
+    }
+
+    public void setPrecise(String precise) {
+        this.precise = precise;
+    }
+
+
 }

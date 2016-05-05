@@ -5,7 +5,9 @@ import org.bahmni.module.admin.BaseIntegrationTest;
 import org.bahmni.module.admin.csv.models.LabResultRow;
 import org.bahmni.module.admin.csv.models.LabResultsRow;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.openmrs.CareSetting;
 import org.openmrs.Encounter;
 import org.openmrs.Order;
@@ -52,6 +54,22 @@ public class LabResultPersisterIT extends BaseIntegrationTest {
         Context.authenticate("admin", "test");
         userContext = Context.getUserContext();
         labResultPersister.init(userContext, null, true);
+    }
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
+    @Test
+    public void shouldThrowExceptionIfLabResultsHaveDecimalInANonAllowDecimalConcept() throws Exception {
+        String visitType = "LAB RESULT IMPORT VISIT";
+        LabResultsRow labResultsRow = new LabResultsRow();
+        labResultsRow.setPatientIdentifier("GAN200001").setTestDateString("2014-10-11").setVisitType(visitType);
+        labResultsRow.setTestResults(Arrays.asList(new LabResultRow().setTest("Eosinophil (Blood)").setResult("10.6")));
+
+        expectedException.expect(org.openmrs.api.APIException.class);
+        expectedException.expectMessage("Decimal is not allowed for Eosinophil (Blood) concept");
+
+        labResultPersister.persist(labResultsRow);
     }
 
     @Test
