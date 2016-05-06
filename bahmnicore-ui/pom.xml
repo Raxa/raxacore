@@ -143,6 +143,12 @@
             <type>jar</type>
             <version>${addressHierarchyVersion}</version>
         </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>episodes-api</artifactId>
+            <version>0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>

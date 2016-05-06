@@ -17,12 +17,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 
 public class BahmniDrugOrderControllerIT extends BaseIntegrationTest {
 
