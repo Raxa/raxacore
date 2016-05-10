@@ -120,7 +120,12 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
             saveCommand.update(bahmniEncounterTransaction);
         }
         VisitMatcher visitMatcher = getVisitMatcher();
-        bahmniEncounterTransaction = new RetrospectiveEncounterTransactionService(visitMatcher).updatePastEncounters(bahmniEncounterTransaction, patient, visitStartDate, visitEndDate);
+        if (BahmniEncounterTransaction.isRetrospectiveEntry(bahmniEncounterTransaction.getEncounterDateTime())) {
+            bahmniEncounterTransaction = new RetrospectiveEncounterTransactionService(visitMatcher).updatePastEncounters(bahmniEncounterTransaction, patient, visitStartDate, visitEndDate);
+        } else {
+            visitMatcher.createOrStretchVisit(bahmniEncounterTransaction, patient, visitStartDate, visitEndDate);
+        }
+
         if (!StringUtils.isBlank(bahmniEncounterTransaction.getVisitType())) {
             setVisitTypeUuid(visitMatcher, bahmniEncounterTransaction);
         }
