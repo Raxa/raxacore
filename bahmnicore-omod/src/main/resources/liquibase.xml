@@ -4024,4 +4024,140 @@
         <sqlFile path="V1_92_PatientSearch.sql"/>
     </changeSet>
 
+    <changeSet author="Pankaj, Achinta" id="20160510-999">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM privilege WHERE privilege='app:clinical:locationpicker';
+            </sqlCheck>
+        </preConditions>
+        <comment>Creating Location Picker Privilege</comment>
+        <sql>
+            INSERT INTO privilege (privilege, description, uuid) VALUES ('app:clinical:locationpicker', 'View Location Picker option', uuid());
+        </sql>
+    </changeSet>
+
+    <changeSet author="Pankaj, Achinta" id="201605101601-999">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM privilege WHERE privilege='app:clinical:onbehalf';
+            </sqlCheck>
+        </preConditions>
+        <comment>Creating On Behalf Of Privilege</comment>
+        <sql>
+            INSERT INTO privilege (privilege, description, uuid) VALUES ('app:clinical:onbehalf', 'View On behalf of option', uuid());
+        </sql>
+    </changeSet>
+
+    <changeSet author="Pankaj, Achinta" id="201605101713-999">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from privilege, role where privilege.privilege='app:clinical:retrospective' and role.role = 'Clinical:FullAccess';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding Retrospective Picker Privileges To Clinical:FullAccess Role</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'app:clinical:retrospective');
+        </sql>
+    </changeSet>
+
+    <changeSet author="Pankaj, Achinta" id="201605101613-999">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from privilege, role where privilege.privilege='app:clinical:locationpicker' and role.role = 'Clinical:FullAccess';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding Location Picker Privileges To Clinical:FullAccess Role</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'app:clinical:locationpicker');
+        </sql>
+    </changeSet>
+
+    <changeSet author="Pankaj, Achinta" id="201605101616-999">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from privilege, role where privilege.privilege='app:clinical:onbehalf' and role.role = 'Clinical:FullAccess';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding On Behalf Of Privileges To Clinical:FullAccess Role</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'app:clinical:onbehalf');
+        </sql>
+    </changeSet>
+
+    <changeSet author="Pankaj, Achinta" id="201605101750-999">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from privilege, role where privilege.privilege='app:clinical:retrospective' and role.role = 'Consultation-Save';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding Retrospective Picker Privileges To Consultation-Save Role</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'app:clinical:retrospective');
+        </sql>
+    </changeSet>
+
+    <changeSet author="Pankaj, Achinta" id="201605101618-999">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from privilege, role where privilege.privilege='app:clinical:locationpicker' and role.role = 'Consultation-Save';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding Location Picker Privileges To Consultation-Save Role</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'app:clinical:locationpicker');
+        </sql>
+    </changeSet>
+
+    <changeSet author="Pankaj, Achinta" id="201605101619-999">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from privilege, role where privilege.privilege='app:clinical:onbehalf' and role.role = 'Consultation-Save';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding On Behalf Of Privileges To Consultation-Save Role</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'app:clinical:onbehalf');
+        </sql>
+    </changeSet>
+
+    <changeSet author="Pankaj, Achinta" id="201605101751-999">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from privilege, role where privilege.privilege='app:clinical:retrospective' and role.role = 'Program-Enrollment';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding Retrospective Picker Privileges To Program-Enrollment Role</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Program-Enrollment', 'app:clinical:retrospective');
+        </sql>
+    </changeSet>
+
+    <changeSet author="Pankaj, Achinta" id="201605101622-999">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from privilege, role where privilege.privilege='app:clinical:locationpicker' and role.role = 'Program-Enrollment';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding Location Picker Privileges To Program-Enrollment Role</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Program-Enrollment', 'app:clinical:locationpicker');
+        </sql>
+    </changeSet>
+
+    <changeSet author="Pankaj, Achinta" id="201605101623-999">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from privilege, role where privilege.privilege='app:clinical:onbehalf' and role.role = 'Program-Enrollment';
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding On Behalf Of Privileges To Program-Enrollment Role</comment>
+        <sql>
+            INSERT INTO role_privilege (role, privilege) VALUES ('Program-Enrollment', 'app:clinical:onbehalf');
+        </sql>
+    </changeSet>
+
+
+
+
+
 </databaseChangeLog>
