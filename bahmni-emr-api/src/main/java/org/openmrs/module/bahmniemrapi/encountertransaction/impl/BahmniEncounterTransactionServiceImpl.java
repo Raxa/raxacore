@@ -145,11 +145,10 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
 
     private VisitMatcher getVisitMatcher() {
         String globalProperty = Context.getAdministrationService().getGlobalProperty("bahmni.visitMatcher");
-        VisitMatcher visitMatcher = StringUtils.isNotEmpty(globalProperty) ? visitMatchersMap.get(globalProperty) : new VisitIdentificationHelper(visitService);
-        if(visitMatcher == null) {
-            throw new APIException("No such Visit Matcher found");
+        if(visitMatchersMap.get(globalProperty)!=null) {
+            return visitMatchersMap.get(globalProperty);
         }
-        return visitMatcher;
+        return new VisitIdentificationHelper(visitService);
     }
 
     private void handleDrugOrders(BahmniEncounterTransaction bahmniEncounterTransaction,Patient patient) {
