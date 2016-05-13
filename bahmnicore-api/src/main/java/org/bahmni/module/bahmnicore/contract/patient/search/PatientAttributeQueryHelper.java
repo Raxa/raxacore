@@ -18,25 +18,20 @@ public class PatientAttributeQueryHelper {
 	}
 
 	public String selectClause(String select){
-			return select + ", group_concat(DISTINCT(coalesce(pattr_full_name.name, pattr_short_name.name, pattr.value)) SEPARATOR ',') as pattr_value, " +
-					"concat('{',group_concat(DISTINCT (concat('\"',attrt.name,'\":\"',coalesce(pattr_full_name.name, pattr_short_name.name, pattr.value),'\"')) SEPARATOR ','),'}') AS customAttribute";
+			return select + ", " +
+					"concat('{',group_concat(DISTINCT (coalesce(concat('\"',attrt.name,'\":\"', pattrln.value,'\"'))) SEPARATOR ','),'}') AS customAttribute";
 	}
 
 	public String appendToJoinClause(String join){
-		return join +" LEFT OUTER JOIN person_attribute_type attrt " +
-					"on attrt.person_attribute_type_id in ("+ StringUtils.join(personAttributeTypeIds, ',')+") " +
-				" LEFT OUTER JOIN person_attribute pattr on pattr.person_id = p.person_id and pattr.voided=0" +
-					" and attrt.person_attribute_type_id = pattr.person_attribute_type_id" +
-				"   LEFT OUTER JOIN concept_name as pattr_short_name  on pattr.value = CAST(pattr_short_name.concept_id AS CHAR) and pattr_short_name.concept_name_type = 'SHORT' " +
-				"  LEFT OUTER JOIN concept_name as pattr_full_name  on pattr.value = CAST(pattr_full_name.concept_id AS CHAR) and pattr_full_name.concept_name_type = 'FULLY_SPECIFIED'";
+		return join + " LEFT OUTER JOIN person_attribute pattrln on pattrln.person_id = p.person_id " +
+				" LEFT OUTER JOIN person_attribute_type attrt on attrt.person_attribute_type_id = pattrln.person_attribute_type_id and attrt.person_attribute_type_id in ("+ StringUtils.join(personAttributeTypeIds, ',')+") ";
 	}
 
-	public String appendToHavingClause(String having){
+	public String appendToWhereClause(String where){
 		if(StringUtils.isEmpty(customAttribute)){
-			return having;
+			return where;
 		}
-		final String patientAttrHavingClause = " pattr_value like '%" + customAttribute + "%' ";
-		return StringUtils.isEmpty(having)? combine(having, "having", patientAttrHavingClause): combine(having, "AND", patientAttrHavingClause);
+		return combine(where, "and", enclose(" pattrln.value like "+ "'%" + customAttribute + "%'"));
 	}
 
 	public Map<String,Type> addScalarQueryResult(){

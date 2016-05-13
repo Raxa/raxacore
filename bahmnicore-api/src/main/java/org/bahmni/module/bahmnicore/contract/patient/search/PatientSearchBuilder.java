@@ -52,8 +52,6 @@ public class PatientSearchBuilder {
 	private String orderBy;
 	private SessionFactory sessionFactory;
 	private Map<String,Type> types;
-	private String having;
-
 
 	public PatientSearchBuilder(SessionFactory sessionFactory){
 		select = SELECT_STATEMENT;
@@ -62,7 +60,6 @@ public class PatientSearchBuilder {
 		join = JOIN_CLAUSE;
 		orderBy = ORDER_BY;
 		groupBy = "";
-		having = "";
 		this.sessionFactory = sessionFactory;
 		types = new HashMap<>();
 
@@ -98,7 +95,7 @@ public class PatientSearchBuilder {
 		select = patientAttributeQueryHelper.selectClause(select);
 		join = patientAttributeQueryHelper.appendToJoinClause(join);
 		groupBy = patientAttributeQueryHelper.appendToGroupByClause(groupBy);
-		having = patientAttributeQueryHelper.appendToHavingClause(having);
+		where = patientAttributeQueryHelper.appendToWhereClause(where);
 		types.putAll(patientAttributeQueryHelper.addScalarQueryResult());
 		return this;
 	}
@@ -129,7 +126,7 @@ public class PatientSearchBuilder {
 	}
 
 	public SQLQuery buildSqlQuery(Integer limit, Integer offset){
-		String query = select + from + join + where + GROUP_BY_KEYWORD + groupBy  + having + orderBy;
+		String query = select + from + join + where + GROUP_BY_KEYWORD + groupBy  + orderBy;
 
 		SQLQuery sqlQuery = sessionFactory.getCurrentSession()
 				.createSQLQuery(query)
