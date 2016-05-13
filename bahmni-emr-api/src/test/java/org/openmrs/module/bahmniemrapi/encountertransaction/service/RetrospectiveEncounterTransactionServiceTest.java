@@ -30,34 +30,6 @@ public class RetrospectiveEncounterTransactionServiceTest {
     }
 
     @Test
-    public void do_not_update_the_encounter_if_it_is_freshly_created(){
-        Patient patient = new Patient();
-        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-
-        when(mockVisitIdentificationHelper.getVisitFor(patient, null, null, null, null)).thenReturn(null);
-
-        RetrospectiveEncounterTransactionService retrospectiveService = new RetrospectiveEncounterTransactionService(mockVisitIdentificationHelper);
-        BahmniEncounterTransaction updatedEncounterTransaction = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, patient, null, null);
-
-        assertEquals(bahmniEncounterTransaction,updatedEncounterTransaction);
-    }
-
-    @Test
-    public void do_not_update_the_encounter_if_it_is_just_created(){
-        Date encounterJustCreated = DateTime.now().plusSeconds(10).toDate();
-
-        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-        bahmniEncounterTransaction.setEncounterDateTime(encounterJustCreated);
-
-        when(mockVisitIdentificationHelper.getVisitFor(null, null, encounterJustCreated, null, null)).thenReturn(null);
-
-        RetrospectiveEncounterTransactionService retrospectiveService = new RetrospectiveEncounterTransactionService(mockVisitIdentificationHelper);
-        BahmniEncounterTransaction updatedEncounterTransaction = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, null, null, null);
-
-        assertEquals(bahmniEncounterTransaction,updatedEncounterTransaction);
-    }
-
-    @Test
     public void update_a_past_encounter_with_matching_visit_details_if_exists() {
         Date jan1_2011 = new DateTime(2014, 1, 1, 10, 0, 0).toDate();
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();

@@ -8,6 +8,7 @@ import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 
 @Component
-public class VisitIdentificationHelper {
-    private VisitService visitService;
+public class VisitIdentificationHelper implements VisitMatcher {
+    protected VisitService visitService;
 
     @Autowired
     public VisitIdentificationHelper(VisitService visitService) {
@@ -44,11 +45,11 @@ public class VisitIdentificationHelper {
         return CollectionUtils.isNotEmpty(visitService.getActiveVisitsByPatient(patient));
     }
 
-    private boolean matchingVisitsFound(List<Visit> visits) {
+    protected boolean matchingVisitsFound(List<Visit> visits) {
         return visits != null && !visits.isEmpty();
     }
 
-    private Visit stretchVisits(Date orderDate, Visit matchingVisit) {
+    protected Visit stretchVisits(Date orderDate, Visit matchingVisit) {
         if (matchingVisit.getStartDatetime().after(orderDate)) {
             matchingVisit.setStartDatetime(orderDate);
         }
@@ -58,7 +59,7 @@ public class VisitIdentificationHelper {
         return matchingVisit;
     }
 
-    private Visit getVisit(Date orderDate, List<Visit> visits) {
+    protected Visit getVisit(Date orderDate, List<Visit> visits) {
         if (visits.size() > 1) {
             return getVisitMatchingOrderDate(orderDate, visits);
         } else {
@@ -108,7 +109,12 @@ public class VisitIdentificationHelper {
         return visitTypes.isEmpty() ? null : visitTypes.get(0);
     }
 
-    private static Date getEndOfTheDay(Date date) {
+    @Override
+    public void createOrStretchVisit(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
+        //
+    }
+
+    protected static Date getEndOfTheDay(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.HOUR_OF_DAY, 23);
@@ -117,4 +123,6 @@ public class VisitIdentificationHelper {
         cal.set(Calendar.MILLISECOND, 0);
         return cal.getTime();
     }
+
+
 }
