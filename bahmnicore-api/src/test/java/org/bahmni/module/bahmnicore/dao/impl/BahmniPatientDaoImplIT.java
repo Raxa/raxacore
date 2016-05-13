@@ -23,7 +23,7 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
     private PatientDao patientDao;
 
     @Before
-    public void setup() throws Exception {
+    public void setUp() throws Exception {
         executeDataSet("apiTestData.xml");
     }
 
