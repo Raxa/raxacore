@@ -4,6 +4,7 @@ import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Patient;
 import org.openmrs.Person;
@@ -190,7 +191,9 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
         assertEquals("{\"stage\":\"Stage1\"}",response.getPatientProgramAttributeValue());
     }
 
+
     @Test
+    @Ignore
     public void shouldFetchPatientsByCodedConcepts(){
         List<PatientResponse> patients = patientDao.getPatients("", "", "John", "testCaste1", "city_village", "Bilaspur", 100, 0, null, "Fac", "facility");
         assertEquals(1, patients.size());
