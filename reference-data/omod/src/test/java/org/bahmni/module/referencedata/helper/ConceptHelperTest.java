@@ -10,12 +10,12 @@ import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ConceptHelperTest {
@@ -166,5 +166,93 @@ public class ConceptHelperTest {
         assertEquals("Weight", weightConceptDetails.getName());
         assertEquals(new Double(10.3), weightConceptDetails.getLowNormal());
         assertEquals(new Double(11.1), weightConceptDetails.getHiNormal());
+    }
+
+    @Test
+    public void shouldGetAllChildConceptNames() throws Exception {
+        Concept weightConcept = new ConceptNumericBuilder().withName("Weight").withClass("N/A").withLowNormal(50.0).withHiNormal(100.0).build();
+        Concept heightConcept = new ConceptNumericBuilder().withName("Height").withClass("N/A").withUnit("Cms").withLowNormal(140.0).withHiNormal(180.0).build();
+        Concept systolicConcept = new ConceptNumericBuilder().withName("Systolic").withClass("N/A").build();
+        Concept diastolicConcept = new ConceptNumericBuilder().withName("Diastolic").withClass("N/A").build();
+        Concept bpConcept = new ConceptNumericBuilder().withName("BP").withSetMember(systolicConcept).withSetMember(diastolicConcept).withClass("N/A").build();
+        Concept vitalsConcept = new ConceptNumericBuilder().withName("Vitals").withSetMember(heightConcept).withSetMember(weightConcept).withSetMember(bpConcept).withClass("N/A").build();
+
+        ArrayList<Concept> concepts = new ArrayList<>();
+        concepts.add(vitalsConcept);
+
+        Set<String> childConceptNames = conceptHelper.getChildConceptNames(concepts);
+        assertNotNull("Child concept names should not be null", childConceptNames);
+        assertEquals(6, childConceptNames.size());
+        assertTrue("Should contain vitals", childConceptNames.contains("Vitals"));
+        assertTrue("Should contain height", childConceptNames.contains("Height"));
+        assertTrue("Should contain weight", childConceptNames.contains("Weight"));
+        assertTrue("Should contain BP", childConceptNames.contains("BP"));
+        assertTrue("Should contain systolic", childConceptNames.contains("Systolic"));
+        assertTrue("Should contain diastolic", childConceptNames.contains("Diastolic"));
+    }
+
+    @Test
+    public void shouldNotGetVoidedConceptNames() throws Exception {
+        Concept heightConcept = new ConceptNumericBuilder().withName("Height").withClass("N/A").withUnit("Cms").withLowNormal(140.0).withHiNormal(180.0).withRetired(true).build();
+        Concept weightConcept = new ConceptNumericBuilder().withName("Weight").withClass("N/A").withLowNormal(50.0).withHiNormal(100.0).build();
+        Concept systolicConcept = new ConceptNumericBuilder().withName("Systolic").withClass("N/A").build();
+        Concept diastolicConcept = new ConceptNumericBuilder().withName("Diastolic").withClass("N/A").build();
+        Concept bpConcept = new ConceptNumericBuilder().withName("BP").withSetMember(systolicConcept).withSetMember(diastolicConcept).withClass("N/A").build();
+        Concept vitalsConcept = new ConceptNumericBuilder().withName("Vitals").withSetMember(heightConcept).withSetMember(weightConcept).withSetMember(bpConcept).withClass("N/A").build();
+
+        ArrayList<Concept> concepts = new ArrayList<>();
+        concepts.add(vitalsConcept);
+
+        Set<String> childConceptNames = conceptHelper.getChildConceptNames(concepts);
+        assertNotNull("Child concept names should not be null", childConceptNames);
+        assertEquals(5, childConceptNames.size());
+        assertTrue("Should contain vitals", childConceptNames.contains("Vitals"));
+        assertFalse("Should not contain height", childConceptNames.contains("Height"));
+        assertTrue("Should contain weight", childConceptNames.contains("Weight"));
+        assertTrue("Should contain BP", childConceptNames.contains("BP"));
+        assertTrue("Should contain systolic", childConceptNames.contains("Systolic"));
+        assertTrue("Should contain diastolic", childConceptNames.contains("Diastolic"));
+    }
+
+    @Test
+    public void shouldGetLeafConceptNames() throws Exception {
+        Concept weightConcept = new ConceptNumericBuilder().withName("Weight").withClass("N/A").withLowNormal(50.0).withHiNormal(100.0).build();
+        Concept heightConcept = new ConceptNumericBuilder().withName("Height").withClass("N/A").withUnit("Cms").withLowNormal(140.0).withHiNormal(180.0).build();
+        Concept systolicConcept = new ConceptNumericBuilder().withName("Systolic").withClass("N/A").build();
+        Concept diastolicConcept = new ConceptNumericBuilder().withName("Diastolic").withClass("N/A").build();
+        Concept bpConcept = new ConceptBuilder().withName("BP").withSetMember(systolicConcept).withSetMember(diastolicConcept).withSet(true).withClass("N/A").build();
+        Concept vitalsConcept = new ConceptBuilder().withName("Vitals").withSetMember(heightConcept).withSetMember(weightConcept).withSetMember(bpConcept).withSet(true).withClass("N/A").build();
+
+        ArrayList<Concept> concepts = new ArrayList<>();
+        concepts.add(vitalsConcept);
+
+        Set<String> leafConceptNames = conceptHelper.getLeafConceptNames(concepts);
+        assertNotNull("Leaf concept names should not be null", leafConceptNames);
+        assertEquals(4, leafConceptNames.size());
+        assertTrue("Should contain height", leafConceptNames.contains("Height"));
+        assertTrue("Should contain weight", leafConceptNames.contains("Weight"));
+        assertTrue("Should contain systolic", leafConceptNames.contains("Systolic"));
+        assertTrue("Should contain diastolic", leafConceptNames.contains("Diastolic"));
+    }
+
+    @Test
+    public void shouldNotGetVoidedLeafConceptNames() throws Exception {
+        Concept weightConcept = new ConceptNumericBuilder().withName("Weight").withClass("N/A").withLowNormal(50.0).withHiNormal(100.0).withRetired(true).build();
+        Concept heightConcept = new ConceptNumericBuilder().withName("Height").withClass("N/A").withUnit("Cms").withLowNormal(140.0).withHiNormal(180.0).build();
+        Concept systolicConcept = new ConceptNumericBuilder().withName("Systolic").withClass("N/A").build();
+        Concept diastolicConcept = new ConceptNumericBuilder().withName("Diastolic").withClass("N/A").build();
+        Concept bpConcept = new ConceptBuilder().withName("BP").withSetMember(systolicConcept).withSetMember(diastolicConcept).withSet(true).withClass("N/A").build();
+        Concept vitalsConcept = new ConceptBuilder().withName("Vitals").withSetMember(heightConcept).withSetMember(weightConcept).withSetMember(bpConcept).withSet(true).withClass("N/A").build();
+
+        ArrayList<Concept> concepts = new ArrayList<>();
+        concepts.add(vitalsConcept);
+
+        Set<String> leafConceptNames = conceptHelper.getLeafConceptNames(concepts);
+        assertNotNull("Leaf concept names should not be null", leafConceptNames);
+        assertEquals(3, leafConceptNames.size());
+        assertTrue("Should contain height", leafConceptNames.contains("Height"));
+        assertFalse("Should not contain weight", leafConceptNames.contains("Weight"));
+        assertTrue("Should contain systolic", leafConceptNames.contains("Systolic"));
+        assertTrue("Should contain diastolic", leafConceptNames.contains("Diastolic"));
     }
 }

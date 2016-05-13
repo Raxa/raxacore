@@ -72,4 +72,9 @@ public class ConceptNumericBuilder {
         return this;
     }
 
+    public ConceptNumericBuilder withRetired(boolean retired) {
+        concept.setRetired(retired);
+        return this;
+    }
+
 }
