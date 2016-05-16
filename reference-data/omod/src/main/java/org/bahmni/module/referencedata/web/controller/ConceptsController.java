@@ -50,6 +50,22 @@ public class ConceptsController extends BaseRestController {
     public ResponseEntity<Set<ConceptDetails>> getLeafConcepts(@RequestParam(value = "conceptName", required = true) String conceptName) {
         List<Concept> concepts = conceptHelper.getConceptsForNames(Collections.singletonList(conceptName));
         Set<ConceptDetails> leafConceptDetails = conceptHelper.getLeafConceptDetails(concepts, true);
-        return  new ResponseEntity<>(leafConceptDetails, HttpStatus.OK);
+        return new ResponseEntity<>(leafConceptDetails, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/leafConceptNames", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Set<String>> getLeafConcepts(@RequestParam(value = "conceptNames", required = true) List<String> conceptNames) {
+        List<Concept> concepts = conceptHelper.getConceptsForNames(conceptNames);
+        Set<String> leafConceptDetails = conceptHelper.getLeafConceptNames(concepts);
+        return new ResponseEntity<>(leafConceptDetails, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/getChildConcepts", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Set<String>> getChildConcepts(@RequestParam(value = "conceptNames", required = true) List<String> conceptNames) {
+        List<Concept> conceptsForNames = conceptHelper.getConceptsForNames(conceptNames);
+        Set<String> childConceptNames = conceptHelper.getChildConceptNames(conceptsForNames);
+        return new ResponseEntity<>(childConceptNames, HttpStatus.OK);
     }
 }

@@ -11,11 +11,11 @@ import java.util.Date;
 
 @Component
 public class RetrospectiveEncounterTransactionService {
-    protected final VisitIdentificationHelper visitIdentificationHelper;
+    protected final VisitMatcher visitMatcher;
 
     @Autowired
-    public RetrospectiveEncounterTransactionService(VisitIdentificationHelper visitIdentificationHelper) {
-        this.visitIdentificationHelper = visitIdentificationHelper;
+    public RetrospectiveEncounterTransactionService(VisitMatcher visitMatcher) {
+        this.visitMatcher = visitMatcher;
     }
 
     public BahmniEncounterTransaction updatePastEncounters(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
@@ -23,7 +23,7 @@ public class RetrospectiveEncounterTransactionService {
             return bahmniEncounterTransaction;
         }
 
-        Visit matchingVisit = visitIdentificationHelper.getVisitFor(patient, bahmniEncounterTransaction.getVisitType(),
+        Visit matchingVisit = visitMatcher.getVisitFor(patient, bahmniEncounterTransaction.getVisitType(),
                 bahmniEncounterTransaction.getEncounterDateTime(), visitStartDate, visitEndDate);
         bahmniEncounterTransaction.setVisitUuid(matchingVisit.getUuid());
 

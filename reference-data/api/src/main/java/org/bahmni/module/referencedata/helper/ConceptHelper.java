@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-public  class ConceptHelper {
+public class ConceptHelper {
     private ConceptService conceptService;
 
     @Autowired
@@ -30,13 +30,13 @@ public  class ConceptHelper {
     }
 
 
-    public List<Concept> getConceptsForNames(Collection<String> conceptNames){
+    public List<Concept> getConceptsForNames(Collection<String> conceptNames) {
         List<Concept> concepts = new ArrayList<>();
-        if(conceptNames!= null){
+        if (conceptNames != null) {
             for (String conceptName : conceptNames) {
                 List<Concept> conceptsByName = conceptService.getConceptsByName(conceptName.replaceAll("%20", " "));
-                if(CollectionUtils.isNotEmpty(conceptsByName)) {
-                    for(Concept concept : conceptsByName) {
+                if (CollectionUtils.isNotEmpty(conceptsByName)) {
+                    for (Concept concept : conceptsByName) {
                         for (ConceptName conceptNameObj : concept.getNames()) {
                             if (conceptNameObj.getName().equalsIgnoreCase(conceptName) && conceptNameObj.isFullySpecifiedName()) {
                                 concepts.add(concept);
@@ -51,8 +51,8 @@ public  class ConceptHelper {
     }
 
     public Set<ConceptDetails> getLeafConceptDetails(List<Concept> obsConcepts, boolean withoutAttributes) {
-        if(obsConcepts != null && !obsConcepts.isEmpty()){
-                Set<ConceptDetails> leafConcepts = new LinkedHashSet<>();
+        if (obsConcepts != null && !obsConcepts.isEmpty()) {
+            Set<ConceptDetails> leafConcepts = new LinkedHashSet<>();
             for (Concept concept : obsConcepts) {
                 addLeafConcepts(concept, null, leafConcepts, withoutAttributes);
             }
@@ -62,15 +62,14 @@ public  class ConceptHelper {
     }
 
     protected void addLeafConcepts(Concept rootConcept, Concept parentConcept, Set<ConceptDetails> leafConcepts, boolean withoutAttributes) {
-        if(rootConcept != null){
-            if(rootConcept.isSet()){
+        if (rootConcept != null) {
+            if (rootConcept.isSet()) {
                 for (Concept setMember : rootConcept.getSetMembers()) {
-                    addLeafConcepts(setMember,rootConcept,leafConcepts, withoutAttributes);
+                    addLeafConcepts(setMember, rootConcept, leafConcepts, withoutAttributes);
                 }
-            }
-            else if(!shouldBeExcluded(rootConcept)){
+            } else if (!shouldBeExcluded(rootConcept)) {
                 Concept conceptToAdd = rootConcept;
-                if(parentConcept != null && !withoutAttributes && hasConceptDetailsClass(parentConcept)){
+                if (parentConcept != null && !withoutAttributes && hasConceptDetailsClass(parentConcept)) {
                     conceptToAdd = parentConcept;
                 }
                 ConceptDetails conceptDetails = createConceptDetails(conceptToAdd);
@@ -81,12 +80,12 @@ public  class ConceptHelper {
     }
 
     private void addAttributes(ConceptDetails conceptDetails, Concept parentConcept) {
-        if(parentConcept != null && hasConceptDetailsClass(parentConcept)){
+        if (parentConcept != null && hasConceptDetailsClass(parentConcept)) {
             for (Concept concept : parentConcept.getSetMembers()) {
-                if("Unknown".equals(concept.getConceptClass().getName())) {
+                if ("Unknown".equals(concept.getConceptClass().getName())) {
                     conceptDetails.addAttribute("Unknown Concept", getConceptName(concept, ConceptNameType.FULLY_SPECIFIED));
                 }
-                if("Abnormal".equals(concept.getConceptClass().getName())) {
+                if ("Abnormal".equals(concept.getConceptClass().getName())) {
                     conceptDetails.addAttribute("Abnormal Concept", getConceptName(concept, ConceptNameType.FULLY_SPECIFIED));
                 }
             }
@@ -106,7 +105,7 @@ public  class ConceptHelper {
         ConceptDetails conceptDetails = new ConceptDetails();
         conceptDetails.setName(shortName == null ? fullName : shortName);
         conceptDetails.setFullName(fullName);
-        if (concept.isNumeric()){
+        if (concept.isNumeric()) {
             ConceptNumeric numericConcept = (ConceptNumeric) concept;
             conceptDetails.setUnits(numericConcept.getUnits());
             conceptDetails.setHiNormal(numericConcept.getHiNormal());
@@ -115,11 +114,11 @@ public  class ConceptHelper {
         return conceptDetails;
     }
 
-    protected String getConceptName(Concept rootConcept, ConceptNameType conceptNameType) {
+    private String getConceptName(Concept rootConcept, ConceptNameType conceptNameType) {
         String conceptName = null;
         ConceptName name = rootConcept.getName(Context.getLocale(), conceptNameType, null);
-        if(name != null){
-            conceptName  = name.getName();
+        if (name != null) {
+            conceptName = name.getName();
         }
         return conceptName;
     }
@@ -131,9 +130,9 @@ public  class ConceptHelper {
     }
 
     public Set<ConceptDetails> getConceptDetails(List<Concept> conceptNames) {
-        LinkedHashSet<ConceptDetails> conceptDetails = new LinkedHashSet<>();
+        Set<ConceptDetails> conceptDetails = new LinkedHashSet<>();
         for (Concept concept : conceptNames) {
-            if (concept != null){
+            if (concept != null) {
                 conceptDetails.add(createConceptDetails(concept));
             }
         }
@@ -142,5 +141,36 @@ public  class ConceptHelper {
 
     public List<Concept> getParentConcepts(Concept concept) {
         return conceptService.getConceptsByAnswer(concept);
+    }
+
+    public Set<String> getChildConceptNames(List<Concept> conceptsForNames) {
+        Set<String> conceptDetails = new LinkedHashSet<>();
+        getConceptNames(conceptDetails, conceptsForNames);
+        return conceptDetails;
+    }
+
+    private void getConceptNames(Set<String> conceptDetails, List<Concept> concepts) {
+        for (Concept concept : concepts) {
+            if (!concept.isRetired()) {
+                conceptDetails.add(getConceptName(concept, ConceptNameType.FULLY_SPECIFIED));
+            }
+            getConceptNames(conceptDetails, concept.getSetMembers());
+        }
+    }
+
+    public Set<String> getLeafConceptNames(List<Concept> concepts) {
+        Set<String> leafConcepts = new LinkedHashSet<>();
+        getLeafConceptName(leafConcepts, concepts);
+        return leafConcepts;
+    }
+
+    private void getLeafConceptName(Set<String> leafConcepts, List<Concept> concepts) {
+        for (Concept concept : concepts) {
+            if (!concept.isSet() && !concept.isRetired()) {
+                leafConcepts.add(getConceptName(concept, ConceptNameType.FULLY_SPECIFIED));
+            } else if (concept.isSet() && !concept.isRetired()) {
+                getLeafConceptName(leafConcepts, concept.getSetMembers());
+            }
+        }
     }
 }

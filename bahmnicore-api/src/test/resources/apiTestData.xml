@@ -47,16 +47,13 @@
     <person_name person_name_id="1053" preferred="false" person_id="102" prefix="Mr." given_name="Patient" middle_name="Number" family_name="2" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c072b3ca3c99"/>
 
     <person_attribute_type person_attribute_type_id="1" name="caste" description="caste" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="b3b6d540-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
-    <person_attribute_type person_attribute_type_id="201" name="givenNameLocal" description="local first name" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="b3b6d900-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
-    <person_attribute_type person_attribute_type_id="301" name="middleNameLocal" description="local middle name" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="b436d540-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
-    <person_attribute_type person_attribute_type_id="401" name="familyNameLocal" description="local family name" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="z3b6d540-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
-    <person_attribute_type person_attribute_type_id="501" name="occupation" description="occupation" format="org.openmrs.Concept" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="z3b6d540-a32e-44c7-91b3-292d976675ac" sort_weight="1"/>
-    <person_attribute_type person_attribute_type_id="601" name="fatherName" description="Father's name" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="z3b6d540-a32e-44c7-91b3-292d976675ad" sort_weight="1"/>
-    <person_attribute_type person_attribute_type_id="701" name="spouseName" description="Spouse' name" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="z3b6d540-a32e-44c7-91b3-292d976675ae" sort_weight="1"/>
+    <person_attribute_type person_attribute_type_id="201" name="givenNameLocal" description="caste" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="b3b6d900-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
+    <person_attribute_type person_attribute_type_id="301" name="middleNameLocal" description="caste" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="b436d540-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
+    <person_attribute_type person_attribute_type_id="401" name="familyNameLocal" description="caste" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="z3b6d540-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
 
     <person_attribute person_attribute_id="1" person_id="1024" value="caste1" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:46:47.0" voided="false" uuid="0768f3da-b692-44b7-a33f-abf2c450474a"/>
     <person_attribute person_attribute_id="2" person_id="1025" value="caste1" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:46:47.0" voided="false" uuid="56beb8bd-287c-47f2-9786-a7b98c933c0b"/>
-    <person_attribute person_attribute_id="3" person_id="1026" value="Caste2" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:57:09.0" voided="true" uuid="898f6ecd-78f1-42a5-8768-e0c219a3fa7c"/>
+    <person_attribute person_attribute_id="3" person_id="1026" value="Caste2" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="898f6ecd-78f1-42a5-8768-e0c219a3fa7c"/>
 
 
     <person_attribute person_attribute_id="4" person_id="1026" value="testCaste1" person_attribute_type_id="1" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="898f6ecd-78f1-42a5-8768-e0c219a3f030"/>
@@ -84,11 +81,6 @@
     <person_attribute person_attribute_id="26" person_id="1026" value="singh" person_attribute_type_id="301" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="438f6ecd-78f1-42a5-8768-e0c219a36a31"/>
     <person_attribute person_attribute_id="27" person_id="1026" value="gond" person_attribute_type_id="401" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="348f6ecd-78f1-42a5-8768-e0c219a36a32"/>
 
-    <person_attribute person_attribute_id="28" person_id="1024" value="777" person_attribute_type_id="501" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="348f6ecd-78f1-42a5-8768-e0c219a36a33"/>
-    <person_attribute person_attribute_id="29" person_id="1024" value="Dude" person_attribute_type_id="601" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="348f6ecd-78f1-42a5-8768-e0c219a36a34"/>
-    <person_attribute person_attribute_id="30" person_id="1025" value="Yudishtar" person_attribute_type_id="601" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="348f6ecd-78f1-42a5-8768-e0c219a36a35"/>
-    <person_attribute person_attribute_id="31" person_id="1026" value="Yudishtar" person_attribute_type_id="701" creator="1" date_created="2008-08-15 15:57:09.0" voided="false" uuid="348f6ecd-78f1-42a5-8768-e0c219a36a36"/>
-
 
     <location location_id="1" name="Unknown_Location" description=" 0" creator="1" retired="0" retired_by=" 0"  uuid="8d6c993e-c2cc-11de-8d13-0010c6dffd0f" date_created="2005-09-22 00:00:00"/>
     <location location_id="2" name="Ganiyari" description="Ganiyari hospital" creator="1" retired="0" retired_by=" 0"  uuid="8d6c993e-c2cc-11de-8d13-0040c6dffd0f" date_created="2005-09-22 00:00:00" />
@@ -106,6 +98,10 @@
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="5" patient_id ="6" identifier="GAN200004" identifier_type="1"  creator="1"  uuid="8387b8b6-9142-49da-8ac7-6e2b9a8dba19" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="6" patient_id ="7" identifier="GAN200005" identifier_type="1"  creator="1"  uuid="645bde33-dc92-4552-8533-790c8c7c48ad" preferred="1" voided="0"  />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="7" patient_id ="8" identifier="GAN200006" identifier_type="1"  creator="1"  uuid="58b20558-e598-4ace-bfbb-c7f8ffdd752c" preferred="1" voided="0" />
+    <!--<patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="8" patient_id ="9" identifier="GAN200007" identifier_type="1"  creator="1"  uuid="38e32e32-0a45-49f1-adf1-d1a0280a3065" preferred="1" voided="0" />-->
+    <!--<patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="9" patient_id ="10" identifier="GAN200008" identifier_type="1"  creator="1"  uuid="0f743697-3726-48f8-914e-af65010fa50b" preferred="1" voided="0" />-->
+    <!--<patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="10" patient_id ="11" identifier="GAN200009" identifier_type="1"  creator="1"  uuid="9bc2d57d-3fd4-4993-bf3b-d79ac1f8519f" preferred="1" voided="0" />-->
+    <!--<patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="11" patient_id ="12" identifier="GAN200010" identifier_type="1"  creator="1"  uuid="034b464d-6f47-41c7-8d5e-2264026c00a6" preferred="1" voided="0" />-->
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="12" patient_id ="101" identifier="GAN300001" identifier_type="1"  creator="1"  uuid="034b464d-6f47-41c7-8d65-2264026c00a6" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="13" patient_id ="102" identifier="SEV300001" identifier_type="1"  creator="1"  uuid="234b894d-6f47-41c7-8d65-2264026c00a6" preferred="1" voided="0" />
 
@@ -139,10 +135,7 @@
     <concept concept_id="555" retired="0" datatype_id="1" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="7f596de5-5caa-11e3-a4c0-0800271c1b75" />
     <concept concept_id="666" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="8f596de5-5caa-11e3-a4c0-0800271c1b75" />
 
-    <concept concept_id="777" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="9f596de5-5caa-11e3-a4c0-0800271c1b75" />
 
-    <concept_name concept_id="777" name="Student" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="81" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afi" concept_name_type="SHORT" locale_preferred="0"/>
-    <concept_name concept_id="777" name="Student_Fully" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="82" voided="false" uuid="5d2d4cb7-955b-4837-8bb7-0ebb94092afc" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
     <concept concept_id="100" retired="0" datatype_id="5" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="True_concept_uuid" />
     <concept_name concept_id="100" name="True" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="10" voided="false" uuid="6d2d4cb7-955b-4837-80f7-0ebb94092afh" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
@@ -181,8 +174,8 @@
     <concept_answer concept_answer_id="408" concept_id="9022" answer_concept="100" creator="1" date_created="2004-08-12 00:00:00.0"/>
     <concept_answer concept_answer_id="409" concept_id="9022" answer_concept="200" creator="1" date_created="2004-08-12 00:00:00.0"/>
 
-    <concept concept_id="1853" retired="0" datatype_id="3" class_id="1" is_set="0" creator="1" date_created="2015-12-04 11:36:42" uuid="facility_uuid" />
-    <concept_name concept_id="1853" name="Facility1, City1, Country1" locale="en" creator="1" date_created="2015-01-01 00:00:00.0" concept_name_id="9" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb84093xyz" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <!--<concept concept_id="1853" retired="0" datatype_id="3" class_id="1" is_set="0" creator="1" date_created="2015-12-04 11:36:42" uuid="facility_uuid" />-->
+    <!--<concept_name concept_id="1853" name="Facility1, City1, Country1" locale="en" creator="1" date_created="2015-01-01 00:00:00.0" concept_name_id="6" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb84093xyz" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>-->
 
     <location location_id="1" name="OPD Room 1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
     <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14" changed_by="1" date_changed="2012-10-23 18:04:14" retired="0" uuid="f01c54cb-2225-471a-9cd5-d348552c337c"/>
@@ -229,7 +222,7 @@
     <patient_program patient_program_id="1" patient_id="1026" program_id="5" date_enrolled="2006-10-14 00:00:00.0" creator="1" date_created="2007-09-20 00:00:00.0" voided="false" uuid="9119b9f8-af3d-4ad8-9e2e-2317c3de91c6"/>
     <patient_program patient_program_id="2" patient_id="1025" program_id="5" date_enrolled="2006-10-14 00:00:00.0" creator="1" date_created="2007-09-20 00:00:00.0" voided="false" uuid="9119b9f8-af3d-4ad8-9e2e-2317c3deeee"/>
     <patient_program_attribute patient_program_attribute_id="1" patient_program_id="1" attribute_type_id="1" value_reference="Stage1" uuid="3a2bdb18-6faa-11e0-8414-001e378eb67e" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" />
-    <patient_program_attribute patient_program_attribute_id="2" patient_program_id="1" attribute_type_id="2" value_reference="1853" uuid="3b1c22ec-c298-45d3-9b86-8154db493aab" creator="1" date_created="2005-02-09 00:00:00.0" voided="false" />
     <patient_program_attribute patient_program_attribute_id="3" patient_program_id="2" attribute_type_id="2" value_reference="Stage1" uuid="3a2bdb18-6faa-11e0-8414-001e378ebe76" creator="1" date_created="2005-01-01 00:00:00.0" voided="false" />
+    <patient_program_attribute patient_program_attribute_id="2" patient_program_id="1" attribute_type_id="2" value_reference="1853" uuid="3b1c22ec-c298-45d3-9b86-8154db493aab" creator="1" date_created="2005-02-09 00:00:00.0" voided="false" />
 
 </dataset>
