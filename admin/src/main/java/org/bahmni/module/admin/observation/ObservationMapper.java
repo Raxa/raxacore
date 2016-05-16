@@ -5,7 +5,9 @@ import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
+import org.openmrs.ConceptNumeric;
 import org.openmrs.Patient;
+import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
@@ -38,6 +40,16 @@ public class ObservationMapper {
             for (KeyValue obsRow : encounterRow.obsRows) {
                 if (obsRow.getValue() != null && !StringUtils.isEmpty(obsRow.getValue().trim())) {
                     List<String> conceptNames = new ArrayList<>(Arrays.asList(obsRow.getKey().split("\\.")));
+
+                    String lastConceptName = conceptNames.get(conceptNames.size() - 1);
+                    Concept lastConcept = Context.getConceptService().getConceptByName(lastConceptName);
+                    if(lastConcept.isNumeric()){
+                        ConceptNumeric cn = (ConceptNumeric) lastConcept;
+                        if(!cn.isAllowDecimal() && obsRow.getValue().contains(".")){
+                            throw new APIException("Decimal is not allowed for "+ cn.getName() +" concept");
+                        }
+                    }
+
                     EncounterTransaction.Observation existingObservation = getRootObservationIfExists(observations, conceptNames, null);
                     if (existingObservation == null) {
                         observations.add(createObservation(conceptNames, encounterDate, obsRow));
