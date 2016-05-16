@@ -1,6 +1,7 @@
 package org.openmrs.module.bahmnicore.web.v1_0.resource;
 
 import org.openmrs.Concept;
+import org.openmrs.ConceptDescription;
 import org.openmrs.ConceptName;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
@@ -15,6 +16,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.ConceptR
 import org.openmrs.util.LocaleUtility;
 import org.openmrs.util.OpenmrsConstants;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -97,5 +99,16 @@ public class BahmniConceptResource extends ConceptResource1_9 {
             names.addAll(concept.getNames(LocaleUtility.getDefaultLocale()));
         }
         return names;
+    }
+
+    @PropertyGetter("descriptions")
+    public static Object getDescriptions(Concept concept) {
+        Locale userDefaultLocale = LocaleUtility.fromSpecification(Context.getAuthenticatedUser().getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE));
+        Collection<ConceptDescription> conceptDescriptions = new ArrayList<>();
+        ConceptDescription conceptDescription = concept.getDescription(userDefaultLocale, false);
+        if(conceptDescription != null){
+            conceptDescriptions.add(conceptDescription);
+        }
+        return conceptDescriptions;
     }
 }
