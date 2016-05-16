@@ -15,14 +15,12 @@ public class BahmniDrugResource extends DrugResource1_10 {
     public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 
         DelegatingResourceDescription representationDescription = super.getRepresentationDescription(rep);
-        if(representationDescription == null){
-            if(rep instanceof NamedRepresentation && rep.getRepresentation().equals("bahmniAnswer")){
-                DelegatingResourceDescription description = new DelegatingResourceDescription();
-                description.addProperty("uuid");
-                description.addProperty("name", Representation.DEFAULT);
-                description.addProperty("displayString", findMethod("getDisplayString"));
-                return description;
-            }
+        if (representationDescription == null && rep instanceof NamedRepresentation && rep.getRepresentation().equals("bahmniAnswer")) {
+            DelegatingResourceDescription description = new DelegatingResourceDescription();
+            description.addProperty("uuid");
+            description.addProperty("name", Representation.DEFAULT);
+            description.addProperty("displayString", findMethod("getDisplayString"));
+            return description;
         }
         return representationDescription;
     }

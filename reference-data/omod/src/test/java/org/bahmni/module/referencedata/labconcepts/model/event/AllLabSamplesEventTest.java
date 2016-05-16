@@ -29,8 +29,6 @@ import static org.mockito.Mockito.when;
 public class AllLabSamplesEventTest {
 
     private Concept parentConcept;
-    private Concept concept;
-    private Concept anotherConcept;
     @Mock
     private ConceptService conceptService;
 
@@ -40,8 +38,8 @@ public class AllLabSamplesEventTest {
         PowerMockito.mockStatic(Context.class);
         when(Context.getLocale()).thenReturn(defaultLocale);
         when(Context.getConceptService()).thenReturn(conceptService);
-        concept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).build();
-        anotherConcept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).build();
+        Concept concept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).build();
+        Concept anotherConcept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).build();
         parentConcept = new ConceptBuilder().withName(AllSamples.ALL_SAMPLES).withSetMember(concept).withSetMember(anotherConcept).build();
 
     }

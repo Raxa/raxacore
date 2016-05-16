@@ -34,7 +34,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private static final String REFERRED_OUT = "REFERRED_OUT";
     public static final String LAB_REPORT = "LAB_REPORT";
     private static final String VALIDATION_NOTES_ENCOUNTER_TYPE = "VALIDATION NOTES";
-    public static final String LAB_ORDER_TYPE="Lab Order";
+    public static final String LAB_ORDER_TYPE = "Lab Order";
 
     @Autowired
     private EncounterTransactionMapper encounterTransactionMapper;
@@ -54,8 +54,8 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
 
         int totalEncounters = encounters.size();
         int currentAccession = 0;
-        for (int i=totalEncounters -1; i >= 0; i--) {
-            Encounter encounter = encounters.get(i);
+        for (int count = totalEncounters - 1; count >= 0; count--) {
+            Encounter encounter = encounters.get(count);
             if (currentAccession >= numberOfAccessions) {
                 break;
             }
@@ -82,7 +82,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         for (LabOrderResult labOrderResult : labOrderResults) {
             if (labOrderResult.getResult() != null) {
                 filteredResults.add(labOrderResult);
-            } else if(labOrderResult.getAction().equals(Order.Action.NEW.toString())){
+            } else if (labOrderResult.getAction().equals(Order.Action.NEW.toString())) {
                 filteredResults.add(labOrderResult);
             }
         }
@@ -102,8 +102,8 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
             List<Encounter> encounters = encounterService.getEncounters(patient, null, null, null, null, null, null, null, visits, false);
             for (Encounter encounter : encounters) {
                 EncounterTransaction encounterTransaction = encounterTransactionMapper.map(encounter, false);
-                testOrders.addAll(filterTestOrders(encounterTransaction, encounter, encounterTestOrderUuidMap, concepts, startDate , endDate));
-                List<EncounterTransaction.Observation> filteredObservations = filterObservations(encounterTransaction.getObservations(), startDate, endDate );
+                testOrders.addAll(filterTestOrders(encounterTransaction, encounter, encounterTestOrderUuidMap, concepts, startDate, endDate));
+                List<EncounterTransaction.Observation> filteredObservations = filterObservations(encounterTransaction.getObservations(), startDate, endDate);
                 observations.addAll(filteredObservations);
                 createAccessionNotesByEncounter(encounterToAccessionNotesMap, encounters, encounter);
                 mapObservationsWithEncounter(filteredObservations, encounter, encounterObservationMap);
@@ -113,20 +113,20 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         return new ArrayList<>();
     }
 
-    private void  createAccessionNotesByEncounter(Map<String, List<AccessionNote>> encounterToAccessionNotesMap, List<Encounter> encounters, Encounter encounter) {
+    private void createAccessionNotesByEncounter(Map<String, List<AccessionNote>> encounterToAccessionNotesMap, List<Encounter> encounters, Encounter encounter) {
         List<AccessionNote> accessionNotes = getAccessionNotesFor(encounter, encounters);
-        if(accessionNotes.size() != 0){
+        if (accessionNotes.size() != 0) {
             List<AccessionNote> existingAccessionNotes = encounterToAccessionNotesMap.get(encounter.getUuid());
-            if(existingAccessionNotes != null){
+            if (existingAccessionNotes != null) {
                 accessionNotes.addAll(existingAccessionNotes);
             }
-            encounterToAccessionNotesMap.put(encounter.getUuid(),accessionNotes);
+            encounterToAccessionNotesMap.put(encounter.getUuid(), accessionNotes);
         }
     }
 
     private List<AccessionNote> getAccessionNotesFor(Encounter orderEncounter, List<Encounter> encounters) {
         for (Encounter encounter : encounters) {
-            if(VALIDATION_NOTES_ENCOUNTER_TYPE.equals(encounter.getEncounterType().getName()) && hasValidationNotesFor(orderEncounter.getUuid(),encounter)){
+            if (VALIDATION_NOTES_ENCOUNTER_TYPE.equals(encounter.getEncounterType().getName()) && hasValidationNotesFor(orderEncounter.getUuid(), encounter)) {
                 return createAccessionNotesFor(orderEncounter.getUuid(), encounter);
             }
         }
@@ -136,13 +136,13 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private List<AccessionNote> createAccessionNotesFor(String encounterUuid, Encounter accessionNotesEncounter) {
         List<AccessionNote> accessionNotes = new ArrayList<>();
         for (Obs observation : accessionNotesEncounter.getAllObs()) {
-            if(!encounterUuid.equals(observation.getValueText())){
+            if (!encounterUuid.equals(observation.getValueText())) {
                 AccessionNote accessionNote = new AccessionNote();
                 accessionNote.setAccessionUuid(encounterUuid);
                 accessionNote.setDateTime(observation.getObsDatetime());
                 accessionNote.setText(observation.getValueText());
                 Collection<Set<Provider>> providersForRole = accessionNotesEncounter.getProvidersByRoles().values();
-                if(providersForRole.size() >0){
+                if (providersForRole.size() > 0) {
                     Provider provider = providersForRole.iterator().next().iterator().next();
                     accessionNote.setProviderName(provider.getName());
                 }
@@ -155,7 +155,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private boolean hasValidationNotesFor(String encounterUuid, Encounter encounter) {
         Set<Obs> observations = encounter.getAllObs();
         for (Obs observation : observations) {
-            if(encounterUuid.equals(observation.getValueText())) return true;
+            if (encounterUuid.equals(observation.getValueText())) return true;
         }
         return false;
     }
@@ -164,8 +164,8 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         List<EncounterTransaction.Order> orders = new ArrayList<>();
         for (EncounterTransaction.Order order : encounterTransaction.getOrders()) {
             boolean conceptFilter = (concepts == null) || concepts.contains(order.getConcept().getName());
-            if(conceptFilter && LAB_ORDER_TYPE.equals(order.getOrderType())){
-                if(!((startDate != null && order.getDateCreated().before(startDate))
+            if (conceptFilter && LAB_ORDER_TYPE.equals(order.getOrderType())) {
+                if (!((startDate != null && order.getDateCreated().before(startDate))
                         || (endDate != null && order.getDateCreated().after(endDate)))) {
                     encounterTestOrderUuidMap.put(order.getUuid(), encounter);
                     orders.add(order);
@@ -178,11 +178,9 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private List<EncounterTransaction.Observation> filterObservations(List<EncounterTransaction.Observation> observations, Date startDate, Date endDate) {
         List<EncounterTransaction.Observation> filteredObservations = new ArrayList<>();
         for (EncounterTransaction.Observation observation : observations) {
-            if(!observation.getVoided()){
-                if(!((startDate != null && observation.getObservationDateTime().before(startDate))
-                        || (endDate != null && observation.getObservationDateTime().after(endDate)))) {
-                    filteredObservations.add(observation);
-                }
+            if (!observation.getVoided() && !((startDate != null && observation.getObservationDateTime().before(startDate))
+                    || (endDate != null && observation.getObservationDateTime().after(endDate)))) {
+                filteredObservations.add(observation);
             }
         }
         return filteredObservations;
@@ -191,7 +189,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private void mapObservationsWithEncounter(List<EncounterTransaction.Observation> observations, Encounter encounter, Map<String, Encounter> encounterObservationMap) {
         for (EncounterTransaction.Observation observation : observations) {
             encounterObservationMap.put(observation.getUuid(), encounter);
-            if(observation.getGroupMembers().size() > 0) {
+            if (observation.getGroupMembers().size() > 0) {
                 mapObservationsWithEncounter(observation.getGroupMembers(), encounter, encounterObservationMap);
             }
         }
@@ -201,12 +199,11 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         List<LabOrderResult> labOrderResults = new ArrayList<>();
         for (EncounterTransaction.Order testOrder : testOrders) {
             List<EncounterTransaction.Observation> obsGroups = findObsGroup(observations, testOrder);
-            if(!obsGroups.isEmpty()) {
+            if (!obsGroups.isEmpty()) {
                 for (EncounterTransaction.Observation obsGroup : obsGroups) {
-                    labOrderResults.addAll(mapObs(obsGroup, testOrder, encounterTestOrderMap, encounterObservationMap,encounterToAccessionNotesMap));
+                    labOrderResults.addAll(mapObs(obsGroup, testOrder, encounterTestOrderMap, encounterObservationMap, encounterToAccessionNotesMap));
                 }
-            }
-            else if(testOrder.getDateStopped() == null) {
+            } else if (testOrder.getDateStopped() == null) {
                 EncounterTransaction.Concept orderConcept = testOrder.getConcept();
                 Encounter orderEncounter = encounterTestOrderMap.get(testOrder.getUuid());
                 LabOrderResult labOrderResult = new LabOrderResult(testOrder.getUuid(), testOrder.getAction(), orderEncounter.getUuid(), orderEncounter.getEncounterDatetime(), orderConcept.getName(), orderConcept.getUnits(), null, null, null, null, false, null, null);
@@ -219,9 +216,9 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
 
     private List<LabOrderResult> mapObs(EncounterTransaction.Observation obsGroup, EncounterTransaction.Order testOrder, Map<String, Encounter> encounterTestOrderMap, Map<String, Encounter> encounterObservationMap, Map<String, List<AccessionNote>> encounterToAccessionNotesMap) {
         List<LabOrderResult> labOrderResults = new ArrayList<>();
-        if(isPanel(obsGroup)) {
+        if (isPanel(obsGroup)) {
             for (EncounterTransaction.Observation observation : obsGroup.getGroupMembers()) {
-                LabOrderResult order = createLabOrderResult(observation, testOrder, encounterTestOrderMap, encounterObservationMap,encounterToAccessionNotesMap);
+                LabOrderResult order = createLabOrderResult(observation, testOrder, encounterTestOrderMap, encounterObservationMap, encounterToAccessionNotesMap);
                 order.setPanelUuid(obsGroup.getConceptUuid());
                 order.setPanelName(obsGroup.getConcept().getName());
                 labOrderResults.add(order);
@@ -273,21 +270,17 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         EncounterTransaction.Observation leafObservation = getLeafObservation(observation, conceptName);
         if (leafObservation != null) {
             Object value = leafObservation.getValue();
-            if (value instanceof EncounterTransaction.Concept) {
-                return ((EncounterTransaction.Concept) value).getName();
-            } else {
-                return value;
-            }
+            return (value instanceof EncounterTransaction.Concept) ? ((EncounterTransaction.Concept) value).getName() : value;
         }
         return null;
     }
 
     private EncounterTransaction.Observation getLeafObservation(EncounterTransaction.Observation observation, String conceptName) {
         for (EncounterTransaction.Observation childObs : observation.getGroupMembers()) {
-            if(!childObs.getGroupMembers().isEmpty()) {
+            if (!childObs.getGroupMembers().isEmpty()) {
                 return getLeafObservation(childObs, conceptName);
             }
-            if(childObs.getConcept().getName().equalsIgnoreCase(conceptName)) {
+            if (childObs.getConcept().getName().equalsIgnoreCase(conceptName)) {
                 return childObs;
             }
         }
@@ -297,7 +290,7 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
     private List<EncounterTransaction.Observation> findObsGroup(List<EncounterTransaction.Observation> observations, EncounterTransaction.Order testOrder) {
         List<EncounterTransaction.Observation> obsGroups = new ArrayList<>();
         for (EncounterTransaction.Observation observation : observations) {
-            if(observation.getOrderUuid() != null && observation.getOrderUuid().equals(testOrder.getUuid())) {
+            if (observation.getOrderUuid() != null && observation.getOrderUuid().equals(testOrder.getUuid())) {
                 obsGroups.add(observation);
             }
         }

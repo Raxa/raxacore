@@ -65,7 +65,7 @@ public class AllTestsAndPanelsMapperTest {
     }
 
     @Test
-    public void map_all_Tests_And_Panels_fields_from_concept() throws Exception {
+    public void mapAllTestsAndPanelsFieldsFromConcept() throws Exception {
 
         AllTestsAndPanels allTestsAndPanels = allTestsAndPanelsMapper.map(testAndPanelsConcept);
         LabTest testData = testMapper.map(testConcept);
@@ -88,7 +88,7 @@ public class AllTestsAndPanelsMapperTest {
     }
 
     @Test
-    public void should_not_map_the_test_or_panel_which_is_retired() throws Exception {
+    public void shouldNotMapTheTestOrPanelWhichIsRetired() throws Exception {
         Concept testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClass(LabTest.LAB_TEST_CONCEPT_CLASS).withDescription("SomeDescription")
                 .withDateChanged(dateChanged).withShortName("ShortName").withName("Test concept").withDataType(ConceptDatatype.NUMERIC).withRetired(true).build();
         Concept panelConcept = new ConceptBuilder().withUUID("Panel UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID).withDescription("SomeDescription")

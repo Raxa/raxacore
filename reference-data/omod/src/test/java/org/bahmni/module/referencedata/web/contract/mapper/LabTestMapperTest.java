@@ -44,19 +44,12 @@ public class LabTestMapperTest {
     private Concept sampleConcept;
     private Date dateCreated;
     private Date dateChanged;
-    private Concept laboratoryConcept;
     @Mock
     private ConceptService conceptService;
-    private Concept departmentConcept;
-    private Concept labDepartmentConcept;
     private Concept testConcept;
-    private Concept testAndPanelsConcept;
     private List<ConceptSet> sampleConceptSets;
     private List<ConceptSet> departmentConceptSets;
     private List<ConceptSet> testConceptSets;
-    private ConceptSet testDepartmentConceptSet;
-    private ConceptSet testSampleConceptSet;
-    private ConceptNumeric conceptNumeric;
 
     @Before
     public void setUp() throws Exception {
@@ -70,29 +63,29 @@ public class LabTestMapperTest {
         when(Context.getLocale()).thenReturn(defaultLocale);
         testConcept = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClass(LabTest.LAB_TEST_CONCEPT_CLASS).withDescription("SomeDescription")
                 .withDateChanged(dateChanged).withShortName("ShortName").withName("Test Name Here").withDataType(ConceptDatatype.NUMERIC).build();
-        testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID)
+        Concept testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID)
                 .withDateChanged(dateChanged).withShortName("ShortName").withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(testConcept).build();
         sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClass(Sample.SAMPLE_CONCEPT_CLASS).
                 withDateChanged(dateChanged).withSetMember(testConcept).withShortName("ShortName").withName("SampleName").build();
-        laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
+        Concept laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
                 .withName(AllSamples.ALL_SAMPLES).withClassUUID(ConceptClass.LABSET_UUID)
                 .withSetMember(sampleConcept).build();
-        departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
+        Concept departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withClass(Department.DEPARTMENT_CONCEPT_CLASS).withSetMember(testConcept).withDescription("Some Description").withName("Department Name").build();
-        labDepartmentConcept = new ConceptBuilder().withUUID("Laboratory Department UUID")
+        Concept labDepartmentConcept = new ConceptBuilder().withUUID("Laboratory Department UUID")
                 .withName(Department.DEPARTMENT_PARENT_CONCEPT_NAME).withClassUUID(ConceptClass.CONVSET_UUID)
                 .withSetMember(departmentConcept).build();
         ConceptSet sampleConceptSet = createConceptSet(laboratoryConcept, sampleConcept);
         ConceptSet departmentConceptSet = createConceptSet(labDepartmentConcept, departmentConcept);
         ConceptSet testConceptSet = createConceptSet(testAndPanelsConcept, testConcept);
-        testSampleConceptSet = createConceptSet(sampleConcept, testConcept);
-        testDepartmentConceptSet = createConceptSet(departmentConcept, testConcept);
+        ConceptSet testSampleConceptSet = createConceptSet(sampleConcept, testConcept);
+        ConceptSet testDepartmentConceptSet = createConceptSet(departmentConcept, testConcept);
         departmentConceptSets = getConceptSets(departmentConceptSet);
         sampleConceptSets = getConceptSets(sampleConceptSet);
         testConceptSets = getConceptSets(testConceptSet);
         testConceptSets.add(testSampleConceptSet);
         testConceptSets.add(testDepartmentConceptSet);
-        conceptNumeric = new ConceptNumeric(testConcept);
+        ConceptNumeric conceptNumeric = new ConceptNumeric(testConcept);
         conceptNumeric.setUnits("unit");
 
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenAnswer(new Answer<List<ConceptSet>>() {

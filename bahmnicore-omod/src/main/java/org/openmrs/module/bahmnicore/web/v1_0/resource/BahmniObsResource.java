@@ -20,18 +20,16 @@ public class BahmniObsResource extends ObsResource1_11 {
     public DelegatingResourceDescription getRepresentationDescription(Representation rep) {
 
         DelegatingResourceDescription representationDescription = super.getRepresentationDescription(rep);
-        if (representationDescription == null) {
-            if (rep instanceof NamedRepresentation && rep.getRepresentation().equals("visitFormDetails")) {
-                DelegatingResourceDescription description = new DelegatingResourceDescription();
-                description.addProperty("uuid");
-                description.addProperty("concept",new NamedRepresentation("bahmniAnswer"));
-                description.addProperty("display");
-                description.addProperty("obsDatetime");
-                description.addProperty("visitUuid");
-                description.addProperty("encounterUuid");
-                description.addProperty("visitStartDateTime");
-                return description;
-            }
+        if (representationDescription == null && rep instanceof NamedRepresentation && rep.getRepresentation().equals("visitFormDetails")) {
+            DelegatingResourceDescription description = new DelegatingResourceDescription();
+            description.addProperty("uuid");
+            description.addProperty("concept", new NamedRepresentation("bahmniAnswer"));
+            description.addProperty("display");
+            description.addProperty("obsDatetime");
+            description.addProperty("visitUuid");
+            description.addProperty("encounterUuid");
+            description.addProperty("visitStartDateTime");
+            return description;
         }
         return representationDescription;
     }
@@ -40,16 +38,14 @@ public class BahmniObsResource extends ObsResource1_11 {
     public String getvisitUuid(Obs obs) {
         Encounter encounter = obs.getEncounter();
         Visit visit = encounter.getVisit();
-        String visitUuid = visit.getUuid();
-        return visitUuid;
+        return visit.getUuid();
     }
 
     @PropertyGetter("visitStartDateTime")
     public Date getVisitDateTime(Obs obs) {
         Encounter encounter = obs.getEncounter();
         Visit visit = encounter.getVisit();
-        Date visitStartDatetime = visit.getStartDatetime();
-        return visitStartDatetime;
+        return visit.getStartDatetime();
     }
 
     @PropertyGetter("encounterUuid")
