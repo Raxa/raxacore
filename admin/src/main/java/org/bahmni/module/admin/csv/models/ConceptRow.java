@@ -83,17 +83,14 @@ public class ConceptRow extends CSVEntity {
     }
 
     public ConceptRow getHeaders() {
-        int synonymCount = 1, answerCount = 1;
         List<KeyValue> synonymHeaders = new ArrayList<>();
         List<KeyValue> answerHeaders = new ArrayList<>();
         List<ConceptReferenceTermRow> referenceTermHeaders = new ArrayList<>();
-        for (KeyValue ignored : synonyms) {
-            synonymHeaders.add(new KeyValue("synonymHeader", "synonym." + synonymCount));
-            synonymCount++;
+        for (int count = 1; count <= synonyms.size(); count++) {
+            synonymHeaders.add(new KeyValue("synonymHeader", "synonym." + count));
         }
-        for (KeyValue ignored : answers) {
-            answerHeaders.add(new KeyValue("answerHeader", "answer." + answerCount));
-            answerCount++;
+        for (int count = 1; count <= answers.size(); count++) {
+            answerHeaders.add(new KeyValue("answerHeader", "answer." + count));
         }
         for (ConceptReferenceTermRow referenceTerm : referenceTerms) {
             referenceTermHeaders.add(referenceTerm.getHeaders());

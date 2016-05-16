@@ -45,7 +45,6 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     @Autowired
     private VisitService visitService;
 
-    private String path;
     protected UserContext userContext;
     private boolean shouldMatchExactPatientId = false;
 
@@ -55,7 +54,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
         executeDataSet("diagnosisMetaData.xml");
         executeDataSet("dispositionMetaData.xml");
         executeDataSet("dataSetup.xml");
-        path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
         System.setProperty("OPENMRS_APPLICATION_DATA_DIRECTORY", path);
 
 

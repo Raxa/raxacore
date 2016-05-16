@@ -62,11 +62,9 @@ public class ConceptSetRow extends CSVEntity {
     }
 
     public ConceptSetRow getHeaders() {
-        int childCount = 1;
         List<KeyValue> childHeaders = new ArrayList<>();
-        for (KeyValue ignored : children) {
+        for (int childCount = 1; childCount <= children.size(); childCount++) {
             childHeaders.add(new KeyValue("childHeader", "child." + childCount));
-            childCount++;
         }
 
         List<ConceptReferenceTermRow> referenceTermHeaders = new ArrayList<>();

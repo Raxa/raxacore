@@ -33,10 +33,8 @@ public class ConceptOperationEventTest {
     public static final String CATEGORY = "category";
     public static final String TITLE = "title";
     private ConceptOperationEvent conceptOperationEvent;
-    private Concept concept;
     private Object[] arguments;
     private Concept childConcept;
-    private Concept parentConcept;
 
     @Mock
     private ConceptService conceptService;
@@ -45,10 +43,10 @@ public class ConceptOperationEventTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         conceptOperationEvent = new SampleEvent(URL, CATEGORY, TITLE);
-        concept = new ConceptBuilder().withUUID("UUID").build();
+        Concept concept = new ConceptBuilder().withUUID("UUID").build();
         arguments = new Object[]{concept};
         childConcept = new ConceptBuilder().withName("Child").build();
-        parentConcept = new ConceptBuilder().withName("Parent").withSetMember(childConcept).build();
+        Concept parentConcept = new ConceptBuilder().withName("Parent").withSetMember(childConcept).build();
         List<ConceptSet> conceptSets = getConceptSets(parentConcept, childConcept);
         PowerMockito.mockStatic(Context.class);
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(conceptSets);

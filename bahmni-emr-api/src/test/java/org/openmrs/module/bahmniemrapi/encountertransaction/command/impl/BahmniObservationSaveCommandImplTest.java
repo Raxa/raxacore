@@ -138,11 +138,6 @@ public class BahmniObservationSaveCommandImplTest {
     }
 
 
-
-    private EncounterTransaction createUpdateEncounterTransaction() {
-        return null;
-    }
-
     private EncounterTransaction.Concept createConcept(String conceptUuid, String conceptName) {
         EncounterTransaction.Concept concept = new EncounterTransaction.Concept();
         concept.setUuid(conceptUuid);

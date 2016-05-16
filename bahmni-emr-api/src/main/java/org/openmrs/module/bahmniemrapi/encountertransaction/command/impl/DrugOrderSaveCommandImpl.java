@@ -71,10 +71,8 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
 
     private String getDrugName(EncounterTransaction.DrugOrder drugOrder) {
         String drugName = drugOrder.getDrugNonCoded();
-        if (drugName == null) {
-            if (drugOrder.getDrug() != null) {
+        if (drugName == null && drugOrder.getDrug() != null ) {
                 drugName = drugOrder.getDrug().getName();
-            }
         }
         return drugName;
     }

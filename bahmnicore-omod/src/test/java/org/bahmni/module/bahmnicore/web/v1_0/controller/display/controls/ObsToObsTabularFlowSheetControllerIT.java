@@ -6,23 +6,13 @@ import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.pivottable.contract.PivotRow;
 import org.openmrs.module.bahmniemrapi.pivottable.contract.PivotTable;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ObsToObsTabularFlowSheetControllerIT extends BaseIntegrationTest {
-    @Autowired
-    private ObsToObsTabularFlowSheetController obsToObsPivotTableController;
-
     @Before
     public void setUp() throws Exception {
         executeDataSet("flowSheetTableDataSet.xml");

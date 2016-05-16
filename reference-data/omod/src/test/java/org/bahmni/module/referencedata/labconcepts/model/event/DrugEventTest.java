@@ -16,21 +16,19 @@ public class DrugEventTest {
 
     private static final Object[] WRONG_ARGUMENTS = new Object[]{};
     private Object[] drugs;
-    private Concept drugConcept;
     private Drug drug;
-    private Concept notDrug;
     private Object[] notDrugs;
     private DrugEvent drugEvent;
 
 
     @Before
     public void setUp() throws Exception {
-        drugConcept = new ConceptBuilder().withClass("drug").withUUID("drugConceptUuid").withClassUUID(ConceptClass.DRUG_UUID).build();
+        Concept drugConcept = new ConceptBuilder().withClass("drug").withUUID("drugConceptUuid").withClassUUID(ConceptClass.DRUG_UUID).build();
         drug = new Drug();
         drug.setConcept(drugConcept);
         drug.setUuid("drugUUID");
         drugs = new Object[]{drug};
-        notDrug = new Concept();
+        Concept notDrug = new Concept();
         notDrugs = new Object[]{notDrug};
         drugEvent = new DrugEvent(ConceptServiceEventFactory.CONCEPT_URL, ConceptServiceEventFactory.DRUG, ConceptServiceEventFactory.DRUG);
     }

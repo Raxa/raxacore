@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -47,7 +48,7 @@ public class ConceptsController extends BaseRestController {
     @RequestMapping(value = "/leafConcepts", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<Set<ConceptDetails>> getLeafConcepts(@RequestParam(value = "conceptName", required = true) String conceptName) {
-        List<Concept> concepts = conceptHelper.getConceptsForNames(Arrays.asList(conceptName));
+        List<Concept> concepts = conceptHelper.getConceptsForNames(Collections.singletonList(conceptName));
         Set<ConceptDetails> leafConceptDetails = conceptHelper.getLeafConceptDetails(concepts, true);
         return  new ResponseEntity<>(leafConceptDetails, HttpStatus.OK);
     }
