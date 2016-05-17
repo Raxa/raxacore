@@ -29,7 +29,7 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldSearchByPatientIdentifier() {
-        List<PatientResponse> patients = patientDao.getPatients("200001", "GAN", "", null, "city_village", "", 100, 0, null,"",null);
+        List<PatientResponse> patients = patientDao.getPatients("200001", "GAN", "", null, "city_village", "", 100, 0, null,"",null,null,null);
         assertEquals(1, patients.size());
         PatientResponse patient = patients.get(0);
         assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
@@ -45,7 +45,7 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldSearchByPartialPatientIdentifier() {
-        List<PatientResponse> patients = patientDao.getPatients("02", "GAN", "", null, "city_village", "", 100, 0, null,"",null);
+        List<PatientResponse> patients = patientDao.getPatients("02", "GAN", "", null, "city_village", "", 100, 0, null,"",null,null,null);
         assertEquals(1, patients.size());
         PatientResponse patient = patients.get(0);
 
@@ -55,7 +55,7 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
     @Test
     public void shouldSearchByName() {
 
-        List<PatientResponse> patients = patientDao.getPatients("", null, "Horatio", null, "city_village", "", 100, 0, null,"",null);
+        List<PatientResponse> patients = patientDao.getPatients("", null, "Horatio", null, "city_village", "", 100, 0, null,"",null,null,null);
 
         assertEquals(3, patients.size());
         PatientResponse patient1 = patients.get(0);
@@ -71,7 +71,7 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldSearchAcrossFirstNameAndLastName() {
-        List<PatientResponse> patients = patientDao.getPatients("", null, "Horati Sinha", null, "city_village", "", 100, 0, null,"",null);
+        List<PatientResponse> patients = patientDao.getPatients("", null, "Horati Sinha", null, "city_village", "", 100, 0, null,"",null,null,null);
 
         assertEquals(1, patients.size());
         PatientResponse patient1 = patients.get(0);
@@ -82,7 +82,7 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldSearchByVillage() {
-        List<PatientResponse> patients = patientDao.getPatients("", null, "", null, "city_village", "Ramgarh", 100, 0, null,"",null);
+        List<PatientResponse> patients = patientDao.getPatients("", null, "", null, "city_village", "Ramgarh", 100, 0, null,"",null,null,null);
         assertEquals(1, patients.size());
         PatientResponse patient = patients.get(0);
         assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
@@ -98,7 +98,7 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldSearchByNameAndVillage() {
-        List<PatientResponse> patients = patientDao.getPatients("", null, "Sin", null, "city_village", "Ramgarh", 100, 0, null,"",null);
+        List<PatientResponse> patients = patientDao.getPatients("", null, "Sin", null, "city_village", "Ramgarh", 100, 0, null,"",null,null,null);
         assertEquals(1, patients.size());
         PatientResponse patient = patients.get(0);
         assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
@@ -114,7 +114,7 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldSortResultsByCreationDate() {
-        List<PatientResponse> patients = patientDao.getPatients("", null, "Sinha", null, "city_village", "", 100, 0, null,"",null);
+        List<PatientResponse> patients = patientDao.getPatients("", null, "Sinha", null, "city_village", "", 100, 0, null,"",null,null,null);
         assertEquals(2, patients.size());
         assertEquals("Sinha", patients.get(0).getFamilyName());
         assertEquals("Sinha", patients.get(0).getFamilyName());
@@ -122,17 +122,17 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldReturnResultAfterGivenOffset() throws Exception {
-        List<PatientResponse> patients = patientDao.getPatients("", null, "Sinha", null, "city_village", "", 100, 1, null,"",null);
+        List<PatientResponse> patients = patientDao.getPatients("", null, "Sinha", null, "city_village", "", 100, 1, null,"",null,null,null);
         assertEquals(1, patients.size());
 
-        patients = patientDao.getPatients("", null, "Sinha", null, "city_village", "", 100, 2, null,"",null);
+        patients = patientDao.getPatients("", null, "Sinha", null, "city_village", "", 100, 2, null,"",null,null,null);
         assertEquals(0, patients.size());
     }
 
     @Test
     public void shouldFetchBasedOnPatientAttributeTypes() throws Exception {
         String[] patientAttributes = { "caste"};
-        List<PatientResponse> patients = patientDao.getPatients("", null, "", "testCaste1", "city_village", null, 100, 0, patientAttributes,"",null);
+        List<PatientResponse> patients = patientDao.getPatients("", null, "", "testCaste1", "city_village", null, 100, 0, patientAttributes,"",null,null,null);
 
         assertEquals(1, patients.size());
         assertEquals("{\"caste\":\"testCaste1\"}", patients.get(0).getCustomAttribute());
@@ -165,7 +165,7 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchPatientsByProgramAttributes(){
-        List<PatientResponse> patients = patientDao.getPatients("", null, "", "", "city_village", null, 100, 0, null,"Stage1","stage");
+        List<PatientResponse> patients = patientDao.getPatients("", null, "", "", "city_village", null, 100, 0, null,"Stage1","stage",null,null);
         assertEquals(1, patients.size());
         PatientResponse response = patients.get(0);
         assertEquals("GAN200002",response.getIdentifier());
@@ -175,7 +175,7 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchPatientsByAllSearchParametersExceptIdentifier(){
-        List<PatientResponse> patients = patientDao.getPatients("", "", "John", "testCaste1", "city_village", "Bilaspur", 100, 0, new String[]{"caste","givenNameLocal"},"Stage1","stage");
+        List<PatientResponse> patients = patientDao.getPatients("", "", "John", "testCaste1", "city_village", "Bilaspur", 100, 0, new String[]{"caste","givenNameLocal"},"Stage1","stage",null,null);
         assertEquals(1, patients.size());
         PatientResponse response = patients.get(0);
         assertEquals("GAN200002",response.getIdentifier());
@@ -195,7 +195,8 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
     @Test
     @Ignore
     public void shouldFetchPatientsByCodedConcepts(){
-        List<PatientResponse> patients = patientDao.getPatients("", "", "John", "testCaste1", "city_village", "Bilaspur", 100, 0, null, "Fac", "facility");
+
+        List<PatientResponse> patients = patientDao.getPatients("", "", "John", "testCaste1", "city_village", "Bilaspur", 100, 0, new String[]{"caste"}, "Fac", "facility",null,null);
         assertEquals(1, patients.size());
         PatientResponse response = patients.get(0);
         assertEquals("GAN200002",response.getIdentifier());
@@ -213,7 +214,7 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchPatientsByOnlyOneProgramAttribute(){
-        List<PatientResponse> patients = patientDao.getPatients("", null, "", null, "city_village", "", 100, 0, null,"Stage1","stage");
+        List<PatientResponse> patients = patientDao.getPatients("", null, "", null, "city_village", "", 100, 0, null,"Stage1","stage",null,null);
         assertEquals(1, patients.size());
         PatientResponse response = patients.get(0);
         assertEquals("GAN200002",response.getIdentifier());
@@ -230,21 +231,34 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldSearchByPatientIdentifierWithAttributes() {
-        List<PatientResponse> patients = patientDao.getPatients("", "", "John", null, "city_village", "", 100, 0, null,"",null);
+        List<PatientResponse> patients = patientDao.getPatients("", "", "John", null, "city_village", "", 100, 0, null,"",null,null,null);
         assertEquals(5, patients.size());
     }
 
     @Test
     public void shouldReturnAdmissionStatus() throws Exception{
-        List<PatientResponse> patients = patientDao.getPatients("200000", "", null, null, "city_village", null, 10, 0, null, null, null);
+        List<PatientResponse> patients = patientDao.getPatients("200000", "", null, null, "city_village", null, 10, 0, null, null, null,null,null);
         assertEquals(1, patients.size());
         PatientResponse patient200000 = patients.get(0);
         assertFalse(patient200000.getHasBeenAdmitted());
 
-        patients = patientDao.getPatients("200002", "", null, null, "city_village", null, 10, 0, null, null, null);
+        patients = patientDao.getPatients("200002", "", null, null, "city_village", null, 10, 0, null, null, null,null,null);
         assertEquals(1, patients.size());
         PatientResponse patient200003 = patients.get(0);
         assertTrue(patient200003.getHasBeenAdmitted());
     }
+
+    @Test
+    public void shouldReturnAddressAndPatientAttributes() throws Exception{
+        String[] addressResultFields = {"address3"};
+        String[] patientResultFields = {"middleNameLocal"  ,  "familyNameLocal" ,"givenNameLocal"};
+        List<PatientResponse> patients = patientDao.getPatients("GAN200002", "", null, null, null, null, 100, 0, new String[]{"caste","givenNameLocal"},null,null,addressResultFields,patientResultFields);
+        assertEquals(1, patients.size());
+        PatientResponse patient200002 = patients.get(0);
+        assertTrue("{\"givenNameLocal\":\"ram\",\"middleNameLocal\":\"singh\",\"familyNameLocal\":\"gond\"}".equals(patient200002.getCustomAttribute()));
+        assertTrue("{ \"address3\" : \"Dindori\"}".equals(patient200002.getAddressFieldValue()));
+    }
+
+
 
 }

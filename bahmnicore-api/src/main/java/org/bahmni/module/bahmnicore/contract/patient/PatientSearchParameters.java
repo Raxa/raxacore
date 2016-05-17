@@ -17,6 +17,8 @@ public class PatientSearchParameters {
     private String identifierPrefix;
     private String programAttributeFieldValue;
     private String programAttributeFieldName;
+    private String[] addressSearchResultFields;
+    private String[] patientSearchResultFields;
 
     public PatientSearchParameters(RequestContext context) {
         String query = context.getParameter("q");
@@ -49,6 +51,8 @@ public class PatientSearchParameters {
         this.patientAttributes = (String[]) parameterMap.get("patientAttributes");
         this.setProgramAttributeFieldValue(context.getParameter("programAttributeFieldValue"));
         this.setProgramAttributeFieldName(context.getParameter("programAttributeFieldName"));
+        this.setAddressSearchResultFields((String[]) parameterMap.get("addressSearchResultsConfig"));
+        this.setPatientSearchResultFields((String[]) parameterMap.get("patientSearchResultsConfig"));
     }
 
     public String getIdentifier() {
@@ -133,5 +137,21 @@ public class PatientSearchParameters {
 
     public void setProgramAttributeFieldName(String programAttributeFieldName) {
         this.programAttributeFieldName = programAttributeFieldName;
+    }
+
+    public String[] getAddressSearchResultFields() {
+        return addressSearchResultFields;
+    }
+
+    public void setAddressSearchResultFields(String[] addressSearchResultFields) {
+        this.addressSearchResultFields = addressSearchResultFields;
+    }
+
+    public String[] getPatientSearchResultFields() {
+        return patientSearchResultFields;
+    }
+
+    public void setPatientSearchResultFields(String[] patientSearchResultFields) {
+        this.patientSearchResultFields = patientSearchResultFields;
     }
 }

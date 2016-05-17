@@ -1,9 +1,13 @@
 package org.bahmni.module.bahmnicore.contract.patient.search;
 
+
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
@@ -11,14 +15,28 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 public class PatientAddressFieldQueryHelper {
 	private String addressFieldValue;
 	private String addressFieldName;
+	private String[] addressSearchResultFields;
 
-	public PatientAddressFieldQueryHelper(String addressFieldName,String addressFieldValue){
+	public PatientAddressFieldQueryHelper(String addressFieldName,String addressFieldValue, String[] addressResultFields){
 		this.addressFieldName = addressFieldName;
 		this.addressFieldValue = addressFieldValue;
+		this.addressSearchResultFields = addressResultFields;
 	}
 
 	public String selectClause(String select){
-		return select + ",pa."+addressFieldName+" as addressFieldValue";
+		String selectClause = ", ''  as addressFieldValue";
+		List<String> columnValuePairs = new ArrayList<>();
+
+		if (addressSearchResultFields != null) {
+			for (String field : addressSearchResultFields)
+				if (!field.equals("{}")) columnValuePairs.add(String.format("\"%s\" : ' , '\"' , IFNULL(pa.%s ,''), '\"'", field, field));
+
+			if(columnValuePairs.size() > 0)
+				selectClause = String.format(",CONCAT ('{ %s , '}') as addressFieldValue",
+					StringUtils.join(columnValuePairs.toArray(new String[columnValuePairs.size()]), ", ',"));
+		}
+
+		return select + selectClause;
 	}
 
 	public String appendToWhereClause(String where){

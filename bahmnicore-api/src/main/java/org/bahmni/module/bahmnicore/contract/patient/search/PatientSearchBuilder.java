@@ -71,8 +71,8 @@ public class PatientSearchBuilder {
 		return this;
 	}
 
-	public PatientSearchBuilder withPatientAddress(String addressFieldName,String addressFieldValue){
-		PatientAddressFieldQueryHelper patientAddressQueryHelper = new PatientAddressFieldQueryHelper(addressFieldName,addressFieldValue);
+	public PatientSearchBuilder withPatientAddress(String addressFieldName, String addressFieldValue, String[] addressAttributeFields){
+		PatientAddressFieldQueryHelper patientAddressQueryHelper = new PatientAddressFieldQueryHelper(addressFieldName,addressFieldValue, addressAttributeFields);
 		where = patientAddressQueryHelper.appendToWhereClause(where);
 		select = patientAddressQueryHelper.selectClause(select);
 		groupBy = patientAddressQueryHelper.appendToGroupByClause(groupBy);
@@ -86,12 +86,12 @@ public class PatientSearchBuilder {
 		return this;
 	}
 
-	public PatientSearchBuilder withPatientAttributes(String customAttribute, List<Integer> personAttributeIds){
-		if(personAttributeIds.size() == 0){
+	public PatientSearchBuilder withPatientAttributes(String customAttribute, List<Integer> personAttributeIds, List<Integer> attributeIds){
+		if(personAttributeIds.size() == 0 && attributeIds.size() == 0){
 			return this;
 		}
 
-		PatientAttributeQueryHelper patientAttributeQueryHelper = new PatientAttributeQueryHelper(customAttribute,personAttributeIds);
+		PatientAttributeQueryHelper patientAttributeQueryHelper = new PatientAttributeQueryHelper(customAttribute,personAttributeIds,attributeIds);
 		select = patientAttributeQueryHelper.selectClause(select);
 		join = patientAttributeQueryHelper.appendToJoinClause(join);
 		groupBy = patientAttributeQueryHelper.appendToGroupByClause(groupBy);
@@ -106,6 +106,7 @@ public class PatientSearchBuilder {
 		}
 
 		Integer programAttributeTypeId = programAttributeType.getProgramAttributeTypeId();
+
 		boolean isAttributeValueCodedConcept = programAttributeType.getDatatypeClassname().equals(CodedConceptDatatype.class.getCanonicalName());
 
 

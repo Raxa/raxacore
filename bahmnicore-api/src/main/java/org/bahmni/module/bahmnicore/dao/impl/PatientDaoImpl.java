@@ -31,7 +31,11 @@ public class PatientDaoImpl implements PatientDao {
     }
 
     @Override
-    public List<PatientResponse> getPatients(String identifier, String identifierPrefix, String name, String customAttribute, String addressFieldName, String addressFieldValue, Integer length, Integer offset, String[] customAttributeFields, String programAttributeFieldValue,String programAttributeFieldName) {
+    public List<PatientResponse> getPatients(String identifier, String identifierPrefix, String name, String customAttribute,
+                                             String addressFieldName, String addressFieldValue, Integer length,
+                                             Integer offset, String[] customAttributeFields, String programAttributeFieldValue,
+                                             String programAttributeFieldName, String[] addressSearchResultFields,
+                                             String[] patientSearchResultFields) {
         if(isInValidSearchParams(customAttributeFields,programAttributeFieldName)){
             return new ArrayList<>();
         }
@@ -40,9 +44,9 @@ public class PatientDaoImpl implements PatientDao {
 
         SQLQuery sqlQuery = new PatientSearchBuilder(sessionFactory)
                 .withPatientName(name)
-                .withPatientAddress(addressFieldName,addressFieldValue)
+                .withPatientAddress(addressFieldName,addressFieldValue, addressSearchResultFields)
                 .withPatientIdentifier(identifier,identifierPrefix)
-                .withPatientAttributes(customAttribute, getPersonAttributeIds(customAttributeFields))
+                .withPatientAttributes(customAttribute, getPersonAttributeIds(customAttributeFields), getPersonAttributeIds(patientSearchResultFields))
                 .withProgramAttributes(programAttributeFieldValue, programAttributeType)
                 .buildSqlQuery(length,offset);
         return sqlQuery.list();
@@ -63,7 +67,8 @@ public class PatientDaoImpl implements PatientDao {
             return null;
         }
 
-        return (ProgramAttributeType) sessionFactory.getCurrentSession().createCriteria(ProgramAttributeType.class).add(Restrictions.eq("name",programAttributeField)).uniqueResult();
+        return (ProgramAttributeType) sessionFactory.getCurrentSession().createCriteria(ProgramAttributeType.class).
+                add(Restrictions.eq("name",programAttributeField)).uniqueResult();
     }
 
     private List<Integer> getPersonAttributeIds(String[] patientAttributes) {
@@ -78,8 +83,6 @@ public class PatientDaoImpl implements PatientDao {
         List list = queryToGetAttributeIds.list();
         return (List<Integer>) list;
     }
-
-
 
     @Override
     public Patient getPatient(String identifier) {
