@@ -66,6 +66,14 @@ public class ETObsToBahmniObsMapper {
         if (observation.getCreator() != null) {
             bahmniObservation.setCreatorName(observation.getCreator().getPersonName());
         }
+
+        for (Concept aConcept : rootConcepts) {
+            if (bahmniObservation.getConcept().getName().equalsIgnoreCase(aConcept.getName().getName())){
+                if (aConcept.getShortNameInLocale(aConcept.getName().getLocale()) == null) {
+                    bahmniObservation.getConcept().setShortName(null);
+                }
+            }
+        }
         return bahmniObservation;
     }
 
