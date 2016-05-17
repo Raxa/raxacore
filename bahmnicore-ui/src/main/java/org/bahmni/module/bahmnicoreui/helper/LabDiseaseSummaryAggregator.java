@@ -66,7 +66,7 @@ public class LabDiseaseSummaryAggregator {
         for (LabOrderResult labOrderResult : labOrderResults) {
             if(labOrderResult.getTestName().equals(name)){
                 return labOrderResult;
-            };
+            }
         }
         return null;
     }
@@ -75,8 +75,8 @@ public class LabDiseaseSummaryAggregator {
         if(StringUtils.isBlank(diseaseDataParams.getVisitUuid())){
             return visitDao.getVisitsByPatient(patient, getNumberOfVisits(diseaseDataParams.getNumberOfVisits()));
         }
-        return new ArrayList(){{
-            add(visitService.getVisitByUuid(diseaseDataParams.getVisitUuid()))  ;
+        return new ArrayList() {{
+            add(visitService.getVisitByUuid(diseaseDataParams.getVisitUuid()));
         }};
     }
 

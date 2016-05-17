@@ -55,10 +55,7 @@ public class PatientDaoImpl implements PatientDao {
         }
 
         ProgramAttributeType programAttributeTypeId = getProgramAttributeType(programAttributeFieldName);
-        if(programAttributeFieldName != null && programAttributeTypeId == null){
-            return true;
-        }
-        return false;
+        return programAttributeFieldName != null && programAttributeTypeId == null;
     }
 
     private ProgramAttributeType getProgramAttributeType(String programAttributeField) {

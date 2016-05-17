@@ -40,9 +40,9 @@ public class EntityMappingSearchHandlerTest {
     @InjectMocks
     EntityMappingSearchHandler entityMappingSearchHandler;
 
-    String PROGRAM_OBS_TEMPLATE = "program_obsTemplate";
-    String ENTITY1_UUID = "entity1-uuid";
-    String ENTITY2_UUID = "entity2-uuid";
+    private String PROGRAM_OBS_TEMPLATE = "program_obsTemplate";
+    private String ENTITY1_UUID = "entity1-uuid";
+    private String ENTITY2_UUID = "entity2-uuid";
     String ENTITY3_UUID = "entity3-uuid";
     String ENTITY4_UUID = "entity4-uuid";
     EntityMappingType programObsTemplateMappingType;

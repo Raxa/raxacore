@@ -691,8 +691,8 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         ConceptName paracetamolConceptName = new ConceptName("Paracetemol", new Locale("en", "in"));
         ConceptName ibeprofenConceptName = new ConceptName("Ibeprofen", new Locale("en", "in"));
 
-        Concept paracetemolConcept= new ConceptBuilder().withName(paracetamolConceptName).withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Paracetemol").build();;
-        Concept ibeprofenConcept= new ConceptBuilder().withName(ibeprofenConceptName).withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Paracetemol").build();;
+        Concept paracetemolConcept= new ConceptBuilder().withName(paracetamolConceptName).withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Paracetemol").build();
+        Concept ibeprofenConcept= new ConceptBuilder().withName(ibeprofenConceptName).withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Paracetemol").build();
 
         Set<Concept> concepts = new LinkedHashSet<>();
         concepts.add(paracetemolConcept);
@@ -741,8 +741,8 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         ConceptName paracetamolConceptName = new ConceptName("Paracetemol", new Locale("en", "in"));
         ConceptName ibeprofenConceptName = new ConceptName("Ibeprofen", new Locale("en", "in"));
 
-        Concept paracetemolConcept= new ConceptBuilder().withName(paracetamolConceptName).withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Paracetemol").build();;
-        Concept ibeprofenConcept= new ConceptBuilder().withName(ibeprofenConceptName).withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Ibeprofen").build();;
+        Concept paracetemolConcept= new ConceptBuilder().withName(paracetamolConceptName).withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Paracetemol").build();
+        Concept ibeprofenConcept= new ConceptBuilder().withName(ibeprofenConceptName).withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Ibeprofen").build();
 
         Set<Concept> concepts = new LinkedHashSet<>();
         concepts.add(paracetemolConcept);
@@ -792,8 +792,8 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         ConceptName paracetamolConceptName = new ConceptName("Paracetemol", new Locale("en", "in"));
         ConceptName ibeprofenConceptName = new ConceptName("Ibeprofen", new Locale("en", "in"));
 
-        Concept paracetemolConcept= new ConceptBuilder().withName(paracetamolConceptName).withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Paracetemol").build();;
-        Concept ibeprofenConcept= new ConceptBuilder().withName(ibeprofenConceptName).withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Ibeprofen").build();;
+        Concept paracetemolConcept= new ConceptBuilder().withName(paracetamolConceptName).withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Paracetemol").build();
+        Concept ibeprofenConcept= new ConceptBuilder().withName(ibeprofenConceptName).withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Ibeprofen").build();
 
         Set<Concept> concepts = new LinkedHashSet<>();
         concepts.add(paracetemolConcept);

@@ -16,7 +16,7 @@ public class AllStates extends AllLookupValues {
     public String getLookUpValue(String key) {
         String stateId = allDistricts.getLookUpValue(key);
         String lookUpValue = allDistricts.getLookUpValue(stateId);
-        if (lookUpValue.equals("Madya Pradesh")) return "Madhya Pradesh";
+        "Madya Pradesh".equals(lookUpValue) return "Madhya Pradesh";
         return lookUpValue;
     }
 }

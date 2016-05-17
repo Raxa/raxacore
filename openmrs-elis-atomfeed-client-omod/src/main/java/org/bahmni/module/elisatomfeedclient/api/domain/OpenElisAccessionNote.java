@@ -61,10 +61,7 @@ public class OpenElisAccessionNote {
 
         OpenElisAccessionNote that = (OpenElisAccessionNote) o;
 
-        if (note != null ? !note.equals(that.note) : that.note != null) return false;
-        if (providerUuid != null ? !providerUuid.equals(that.providerUuid) : that.providerUuid != null) return false;
-
-        return true;
+        return note != null ? note.equals(that.note) : that.note == null && (providerUuid != null ? providerUuid.equals(that.providerUuid) : that.providerUuid == null);
     }
 
     @Override

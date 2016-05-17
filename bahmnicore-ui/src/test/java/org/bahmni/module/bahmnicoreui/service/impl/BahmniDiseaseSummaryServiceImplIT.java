@@ -28,8 +28,7 @@ import static org.junit.Assert.assertTrue;
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiveTest {
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DiseaseSummaryConstants.DATE_FORMAT);
-    SimpleDateFormat simpleDateTimeFormat = new SimpleDateFormat(DiseaseSummaryConstants.DATE_TIME_FORMAT);
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DiseaseSummaryConstants.DATE_FORMAT);
 
     private BahmniDiseaseSummaryServiceImpl bahmniDiseaseSummaryData;
     @Autowired

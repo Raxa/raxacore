@@ -41,7 +41,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
 public class EncounterHelperTest {
-    EncounterType encounterType;
+    private EncounterType encounterType;
     @Mock
     EncounterService encounterService;
     @Mock

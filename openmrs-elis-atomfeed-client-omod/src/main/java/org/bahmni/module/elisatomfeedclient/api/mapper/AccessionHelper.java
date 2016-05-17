@@ -48,7 +48,7 @@ public class AccessionHelper {
     private final ConceptService conceptService;
     private User labUser;
     private OrderService orderService;
-    ElisAtomFeedProperties properties;
+    protected ElisAtomFeedProperties properties;
     private final UserService userService;
     private final ProviderService providerService;
     private OrderType labOrderType;
@@ -169,12 +169,7 @@ public class AccessionHelper {
     private Set<String> groupOrders(Set<OpenElisTestDetail> openElisAccessionTestDetails) {
         Set<String> orderConceptUuids = new HashSet<>();
         for (OpenElisTestDetail testDetail : openElisAccessionTestDetails) {
-            String uuid;
-            if (testDetail.getPanelUuid() != null) {
-                uuid = testDetail.getPanelUuid();
-            } else {
-                uuid = testDetail.getTestUuid();
-            }
+            String uuid = testDetail.getPanelUuid() != null ? testDetail.getPanelUuid() : testDetail.getTestUuid();
             orderConceptUuids.add(uuid);
         }
         return orderConceptUuids;
@@ -217,12 +212,12 @@ public class AccessionHelper {
     }
 
     protected Visit getVisitForPatientWithinDates(Patient patient, Date startTime) {
-        List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, null, startTime, startTime, null, null, true, false);
+        List<Visit> visits = visitService.getVisits(null, Collections.singletonList(patient), null, null, null, startTime, startTime, null, null, true, false);
         return visits.isEmpty() ? null : visits.get(0);
     }
 
     protected Visit getVisitForPatientForNearestStartDate(Patient patient, Date startTime) {
-        List<Visit> visits = visitService.getVisits(null, Arrays.asList(patient), null, null, startTime, null, null, null, null, true, false);
+        List<Visit> visits = visitService.getVisits(null, Collections.singletonList(patient), null, null, startTime, null, null, null, null, true, false);
         if (visits.isEmpty()) {
             return null;
         }

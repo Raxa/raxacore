@@ -21,9 +21,9 @@ import java.util.List;
 
 public class BahmniOrderSetMemberControllerIT extends BahmniMainResourceControllerTest {
 
-    String orderSetUuid = RestConstants.ORDER_SET_UUID;
+    private String orderSetUuid = RestConstants.ORDER_SET_UUID;
 
-    String orderSetMemberUuid = RestConstants.ORDER_SET_MEMBER_UUID;
+    private String orderSetMemberUuid = RestConstants.ORDER_SET_MEMBER_UUID;
 
     private OrderSetService orderSetService;
 
