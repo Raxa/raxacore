@@ -37,9 +37,8 @@ public class ConceptDetails {
 
         ConceptDetails that = (ConceptDetails) o;
 
-        if (fullName != null ? !fullName.equals(that.fullName) : that.fullName != null) return false;
+        return fullName != null ? fullName.equals(that.fullName) : that.fullName == null;
 
-        return true;
     }
 
     @Override

@@ -40,7 +40,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @RunWith(PowerMockRunner.class)
 public class BahmniProgramEnrollmentResourceTest {
 
-    BahmniProgramEnrollmentResource bahmniProgramEnrollmentResource;
+    private BahmniProgramEnrollmentResource bahmniProgramEnrollmentResource;
     @Mock
     BahmniProgramWorkflowService bahmniProgramWorkflowService;
     @Mock

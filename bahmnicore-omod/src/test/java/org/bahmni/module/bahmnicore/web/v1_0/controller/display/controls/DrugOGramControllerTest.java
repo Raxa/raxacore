@@ -69,7 +69,7 @@ public class DrugOGramControllerTest {
 
     @Test
     public void shouldFetchSpecifiedDrugsAsRegimen() throws Exception {
-        Concept paracetemolConcept= new ConceptBuilder().withName("Paracetemol").withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Paracetemol").build();;
+        Concept paracetemolConcept= new ConceptBuilder().withName("Paracetemol").withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Paracetemol").build();
         DrugOrder paracetemol = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(new Date()).withDose(200.0).withConcept(paracetemolConcept).build();
 
         List<Order> drugOrders = new ArrayList<>();
@@ -94,7 +94,7 @@ public class DrugOGramControllerTest {
 
     @Test
     public void shouldFetchSpecifiedDrugsAsRegimenWhenTheyPassConceptSet() throws Exception {
-        Concept paracetamol = new ConceptBuilder().withName("Paracetemol").withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Paracetemol").build();;
+        Concept paracetamol = new ConceptBuilder().withName("Paracetemol").withDescription("Description").withClass("Some").withDataType("N/A").withShortName("Paracetemol").build();
         Concept tbDrugs = new ConceptBuilder().withName("TB Drugs").withSet(true).withSetMember(paracetamol).build();
         DrugOrder paracetemolDrug = new DrugOrderBuilder().withDrugName("Paracetemol").withDateActivated(new Date()).withDose(200.0).withConcept(paracetamol).build();
 

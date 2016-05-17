@@ -75,12 +75,9 @@ public class VisitFormsSearchHandlerTest {
     @Mock
     private EpisodeService episodeService;
 
-    @Mock
-    Encounter encounter;
-    Patient patient;
-    Concept concept;
-    Visit visit;
-    Obs obs;
+    private Patient patient;
+    private Concept concept;
+    private Obs obs;
 
     @Before
     public void before() throws Exception {
@@ -119,12 +116,12 @@ public class VisitFormsSearchHandlerTest {
         PowerMockito.when(Context.getConceptService()).thenReturn(conceptService);
         concept = createConcept("Vitals", "en");
 
-        visit = new Visit();
+        Visit visit = new Visit();
         PowerMockito.when(Context.getVisitService()).thenReturn(visitService);
         PowerMockito.when(Context.getVisitService().getVisitsByPatient(patient)).thenReturn(Arrays.asList(visit));
 
         PowerMockito.when(Context.getEncounterService()).thenReturn(encounterService);
-        encounter = mock(Encounter.class);
+        Encounter encounter = mock(Encounter.class);
         PowerMockito.when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false))).thenReturn(Arrays.asList(encounter));
         PowerMockito.when(Context.getObsService()).thenReturn(obsService);
         obs = createObs(concept);

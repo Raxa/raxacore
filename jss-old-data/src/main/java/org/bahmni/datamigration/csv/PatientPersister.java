@@ -183,7 +183,7 @@ public class PatientPersister implements EntityPersister<Patient> {
         patientAttribute.setAttributeType(allPatientAttributeTypes.getAttributeUUID(name));
         patientAttribute.setName(name);
         String valueToSet = lookupValueProvider == null ? value : lookupValueProvider.getLookUpValue(value, valueIndex);
-        valueToSet = name.equals("class") ? valueToSet : sentenceCase(valueToSet);
+        valueToSet = "class".equals(name) ? valueToSet : sentenceCase(valueToSet);
         patientAttribute.setValue(valueToSet);
         patientRequest.addPatientAttribute(patientAttribute);
     }

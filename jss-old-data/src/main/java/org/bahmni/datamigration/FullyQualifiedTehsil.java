@@ -44,12 +44,7 @@ public class FullyQualifiedTehsil {
         if (o == null || getClass() != o.getClass()) return false;
 
         FullyQualifiedTehsil that = (FullyQualifiedTehsil) o;
-
-        if (!district.equals(that.district)) return false;
-        if (!state.equals(that.state)) return false;
-        if (!tehsil.equals(that.tehsil)) return false;
-
-        return true;
+        return district.equals(that.district) && state.equals(that.state) && tehsil.equals(that.tehsil);
     }
 
     @Override

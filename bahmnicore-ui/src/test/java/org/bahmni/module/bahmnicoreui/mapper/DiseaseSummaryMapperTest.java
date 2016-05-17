@@ -42,15 +42,14 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest(LocaleUtility.class)
 public class DiseaseSummaryMapperTest {
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DiseaseSummaryConstants.DATE_FORMAT);
-    SimpleDateFormat simpleDateTimeFormat = new SimpleDateFormat(DiseaseSummaryConstants.DATE_TIME_FORMAT);
-    String date1;
-    String date2;
-    String date3;
-    String visit1Encounter1Date;
-    String visit1Encounter2Date;
-    String visit1Encounter3Date;
-    String dateFormat = DateFormatUtils.format(new Date(), DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DiseaseSummaryConstants.DATE_FORMAT);
+    private SimpleDateFormat simpleDateTimeFormat = new SimpleDateFormat(DiseaseSummaryConstants.DATE_TIME_FORMAT);
+    private String date1;
+    private String date2;
+    private String date3;
+    private String visit1Encounter1Date;
+    private String visit1Encounter2Date;
+    private String visit1Encounter3Date;
 
     @Before
     public void setUp() throws Exception {

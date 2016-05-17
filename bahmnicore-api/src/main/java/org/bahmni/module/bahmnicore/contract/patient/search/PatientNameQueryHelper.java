@@ -22,17 +22,15 @@ public class PatientNameQueryHelper {
 	private String getNameSearchCondition(WildCardParameter wildCardParameter) {
 		if (wildCardParameter.isEmpty())
 			return "";
-		else {
-			String query_by_name_parts = "";
-			for (String part : wildCardParameter.getParts()) {
-				if (!query_by_name_parts.equals("")) {
-					query_by_name_parts += " and " + BY_NAME_PARTS + " '" + part + "'";
-				} else {
-					query_by_name_parts += BY_NAME_PARTS + " '" + part + "'";
-				}
+		String query_by_name_parts = "";
+		for (String part : wildCardParameter.getParts()) {
+			if (!"".equals(query_by_name_parts)) {
+				query_by_name_parts += " and " + BY_NAME_PARTS + " '" + part + "'";
+			} else {
+				query_by_name_parts += BY_NAME_PARTS + " '" + part + "'";
 			}
-			return query_by_name_parts;
 		}
+		return query_by_name_parts;
 	}
 
 	private String combine(String query, String operator, String condition) {
