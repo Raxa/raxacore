@@ -20,7 +20,6 @@ import java.util.Locale;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -42,7 +41,6 @@ public class ETObsToBahmniObsMapperTest {
     private String etParentConceptClass = "Misc";
     private String etValueConceptClass = "Misc";
     private String etDataType = "N/A";
-    private String etConceptShortName = null;
 
     @Before
     public void setUp() throws Exception {
@@ -60,11 +58,12 @@ public class ETObsToBahmniObsMapperTest {
         return user;
     }
 
-    private EncounterTransaction.Concept createETConcept(String dataType, String etConceptClass, String shortName, String uuid) {
+    private EncounterTransaction.Concept createETConcept(String dataType, String etConceptClass,String name, String shortName, String uuid) {
 
         EncounterTransaction.Concept etConcept = new EncounterTransaction.Concept();
         etConcept.setDataType(dataType);
         etConcept.setConceptClass(etConceptClass);
+        etConcept.setName(name);
         etConcept.setShortName(shortName);
         etConcept.setUuid(uuid);
         return etConcept;
@@ -105,8 +104,8 @@ public class ETObsToBahmniObsMapperTest {
         EncounterTransaction.User user1 = createETUser(person1name);
         EncounterTransaction.User user2 = createETUser(person2name);
 
-        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, etParentConceptClass, etConceptShortName, null);
-        EncounterTransaction.Concept etValueConcept = createETConcept(etDataType, etValueConceptClass, etConceptShortName, null);
+        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, etParentConceptClass, "parentName", "parentShortName" , null);
+        EncounterTransaction.Concept etValueConcept = createETConcept(etDataType, etValueConceptClass, "valueName", "valueShortName", null);
 
 
         Concept valueConcept = createConcept("valueConcept", "text", "cuuid2", "", null);
@@ -134,9 +133,9 @@ public class ETObsToBahmniObsMapperTest {
         EncounterTransaction.User user1 = createETUser(person1name);
         EncounterTransaction.User user2 = createETUser(person2name);
 
-        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, "Concept Details", etConceptShortName, null);
-        EncounterTransaction.Concept etValueConcept = createETConcept("text", etValueConceptClass, etConceptShortName, null);
-        EncounterTransaction.Concept etUnknownConcept = createETConcept("Boolean", "Unknown", "Unknown", null);
+        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, "Concept Details", "parentName", "parentShortName", null);
+        EncounterTransaction.Concept etValueConcept = createETConcept("text", etValueConceptClass, "valueName", "valueShortName", null);
+        EncounterTransaction.Concept etUnknownConcept = createETConcept("Boolean", "Unknown", "Unknown", "Unknown", null);
 
 
         Concept valueConcept = createConcept("valueConcept", "text", "cuuid2", "", null);
@@ -165,9 +164,9 @@ public class ETObsToBahmniObsMapperTest {
         EncounterTransaction.User user1 = createETUser(person1name);
         EncounterTransaction.User user2 = createETUser(person2name);
 
-        EncounterTransaction.Concept etValueConcept = createETConcept("text", etValueConceptClass, etConceptShortName, null);
-        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, "Concept Details", etConceptShortName, null);
-        EncounterTransaction.Concept etUnknownConcept = createETConcept("Boolean", "Unknown", "unknownConcept", null);
+        EncounterTransaction.Concept etValueConcept = createETConcept("text", etValueConceptClass, "parentName", "parentShortName", null);
+        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, "Concept Details", "valueName", "valueShortName", null);
+        EncounterTransaction.Concept etUnknownConcept = createETConcept("Boolean", "Unknown", "Unknown", "unknownConcept", null);
 
         Concept parentConcept = createConcept("parentConcept", "N/A", null, null, null);
         Concept unknownConcept = createConcept("unknownConcept", "Boolean", "cuuid3", "Unknown", null);
@@ -191,9 +190,9 @@ public class ETObsToBahmniObsMapperTest {
         EncounterTransaction.User user1 = createETUser(person1name);
         EncounterTransaction.User user2 = createETUser(person2name);
 
-        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, "Concept Details", etConceptShortName, null);
-        EncounterTransaction.Concept etValueConcept = createETConcept("text", etValueConceptClass, etConceptShortName, null);
-        EncounterTransaction.Concept etUnknownConcept = createETConcept("Boolean", "Unknown", "Unknown", null);
+        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, "Concept Details", "parentName", "parentShortName", null);
+        EncounterTransaction.Concept etValueConcept = createETConcept("text", etValueConceptClass, "valueName", "valueShortName", null);
+        EncounterTransaction.Concept etUnknownConcept = createETConcept("Boolean", "Unknown", "Unknown", "Unknown", null);
 
         Concept valueConcept = createConcept("valueConcept", "text", "cuuid2", "", null);
         Concept parentConcept = createConcept("parentConcept", "N/A", null, null, null);
@@ -225,8 +224,8 @@ public class ETObsToBahmniObsMapperTest {
 
         EncounterTransaction.User user1 = createETUser(person1name);
 
-        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, "Concept Details", etConceptShortName, "PulseDataUuid");
-        EncounterTransaction.Concept etUnknownConcept = createETConcept("Boolean", "Unknown", "Unknown", null);
+        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, "Concept Details", "parentName", "parentShortName", "PulseDataUuid");
+        EncounterTransaction.Concept etUnknownConcept = createETConcept("Boolean", "Unknown", "Unknown", "Unknown", null);
 
         EncounterTransaction.Observation parentObservation = createETObservation("obs2-uuid", user1, null, etParentConcept);
         EncounterTransaction.Observation unknownObservation = createETObservation("obs3-uuid", user1, "true", etUnknownConcept);
