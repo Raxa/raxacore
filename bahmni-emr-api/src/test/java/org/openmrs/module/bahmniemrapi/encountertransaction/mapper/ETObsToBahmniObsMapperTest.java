@@ -5,13 +5,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
+import org.openmrs.User;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.AdditionalBahmniObservationFields;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.util.LocaleUtility;
+import org.openmrs.util.OpenmrsConstants;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -26,12 +30,15 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(LocaleUtility.class)
+@PrepareForTest({LocaleUtility.class, Context.class})
 
 public class ETObsToBahmniObsMapperTest {
 
     @Mock
     ConceptService conceptService;
+
+    @Mock
+    private User authenticatedUser;
 
     ETObsToBahmniObsMapper etObsToBahmniObsMapper;
     private String person1name = "superman";
@@ -47,8 +54,10 @@ public class ETObsToBahmniObsMapperTest {
         initMocks(this);
         etObsToBahmniObsMapper = new ETObsToBahmniObsMapper(conceptService);
         mockStatic(LocaleUtility.class);
+        mockStatic(Context.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
-
+        Mockito.when(Context.getAuthenticatedUser()).thenReturn(authenticatedUser);
+        Mockito.when(Context.getLocale()).thenReturn(Locale.ENGLISH);
     }
 
     private EncounterTransaction.User createETUser(String personname) {
@@ -104,6 +113,8 @@ public class ETObsToBahmniObsMapperTest {
         EncounterTransaction.User user1 = createETUser(person1name);
         EncounterTransaction.User user2 = createETUser(person2name);
 
+        Mockito.when(authenticatedUser.getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE)).thenReturn("fr");
+
         EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, etParentConceptClass, "parentName", "parentShortName" , null);
         EncounterTransaction.Concept etValueConcept = createETConcept(etDataType, etValueConceptClass, "valueName", "valueShortName", null);
 
@@ -132,6 +143,8 @@ public class ETObsToBahmniObsMapperTest {
 
         EncounterTransaction.User user1 = createETUser(person1name);
         EncounterTransaction.User user2 = createETUser(person2name);
+
+        Mockito.when(authenticatedUser.getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE)).thenReturn("fr");
 
         EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, "Concept Details", "parentName", "parentShortName", null);
         EncounterTransaction.Concept etValueConcept = createETConcept("text", etValueConceptClass, "valueName", "valueShortName", null);
@@ -164,6 +177,8 @@ public class ETObsToBahmniObsMapperTest {
         EncounterTransaction.User user1 = createETUser(person1name);
         EncounterTransaction.User user2 = createETUser(person2name);
 
+        Mockito.when(authenticatedUser.getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE)).thenReturn("fr");
+
         EncounterTransaction.Concept etValueConcept = createETConcept("text", etValueConceptClass, "parentName", "parentShortName", null);
         EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, "Concept Details", "valueName", "valueShortName", null);
         EncounterTransaction.Concept etUnknownConcept = createETConcept("Boolean", "Unknown", "Unknown", "unknownConcept", null);
@@ -189,6 +204,8 @@ public class ETObsToBahmniObsMapperTest {
 
         EncounterTransaction.User user1 = createETUser(person1name);
         EncounterTransaction.User user2 = createETUser(person2name);
+
+        Mockito.when(authenticatedUser.getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE)).thenReturn("fr");
 
         EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, "Concept Details", "parentName", "parentShortName", null);
         EncounterTransaction.Concept etValueConcept = createETConcept("text", etValueConceptClass, "valueName", "valueShortName", null);
@@ -223,6 +240,8 @@ public class ETObsToBahmniObsMapperTest {
     public void testSetHiNormalAndLowNormalWithBahmniObservationIfNumericConcept() {
 
         EncounterTransaction.User user1 = createETUser(person1name);
+
+        Mockito.when(authenticatedUser.getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE)).thenReturn("fr");
 
         EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, "Concept Details", "parentName", "parentShortName", "PulseDataUuid");
         EncounterTransaction.Concept etUnknownConcept = createETConcept("Boolean", "Unknown", "Unknown", "Unknown", null);

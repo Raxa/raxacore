@@ -10,6 +10,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObser
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.AdditionalBahmniObservationFields;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.util.LocaleUtility;
+import org.openmrs.util.OpenmrsConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -73,7 +74,7 @@ public class ETObsToBahmniObsMapper {
 
 
         User authenticatedUser = Context.getAuthenticatedUser();
-        String defaultLocale = authenticatedUser != null ? authenticatedUser.getUserProperty("defaultLocale") : null;
+        String defaultLocale = authenticatedUser != null ? authenticatedUser.getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE) : null;
         for (Concept aConcept : rootConcepts) {
             if (bahmniObservation.getConcept().getName().equalsIgnoreCase(aConcept.getName().getName())){
                 String shortName = null;
