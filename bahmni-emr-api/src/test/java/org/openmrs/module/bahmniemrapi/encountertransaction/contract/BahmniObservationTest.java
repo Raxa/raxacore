@@ -3,14 +3,20 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.contract;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
+import org.openmrs.User;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.AdditionalBahmniObservationFields;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Collection;
 import java.util.Date;
@@ -18,17 +24,25 @@ import java.util.Date;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({Context.class})
 public class BahmniObservationTest {
     private EncounterTransaction.Observation eTObservation;
 
     @Mock
     private ConceptService conceptService;
 
+    @Mock
+    private User authenticatedUser;
+
     @Before
     public void setUp() throws Exception {
         eTObservation = new EncounterTransaction.Observation();
         initMocks(this);
+        mockStatic(Context.class);
+        Mockito.when(Context.getAuthenticatedUser()).thenReturn(authenticatedUser);
     }
 
     @Test
