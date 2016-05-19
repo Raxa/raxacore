@@ -1,11 +1,15 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.ConceptNumeric;
+import org.openmrs.User;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.AdditionalBahmniObservationFields;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.util.LocaleUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -67,11 +71,26 @@ public class ETObsToBahmniObsMapper {
             bahmniObservation.setCreatorName(observation.getCreator().getPersonName());
         }
 
+
+        User authenticatedUser = Context.getAuthenticatedUser();
+        String defaultLocale = authenticatedUser != null ? authenticatedUser.getUserProperty("defaultLocale") : null;
         for (Concept aConcept : rootConcepts) {
             if (bahmniObservation.getConcept().getName().equalsIgnoreCase(aConcept.getName().getName())){
-                if (aConcept.getShortNameInLocale(aConcept.getName().getLocale()) == null) {
-                    bahmniObservation.getConcept().setShortName(null);
+                String shortName = null;
+
+                if (defaultLocale != null) {
+                    ConceptName shortNameInLocale = aConcept.getShortNameInLocale(LocaleUtility.fromSpecification(defaultLocale));
+                    if (shortNameInLocale != null) {
+                        shortName = shortNameInLocale.getName();
+                    }
+                    if (shortName == null) {
+                        ConceptName nameInLocale = aConcept.getName(LocaleUtility.fromSpecification(defaultLocale));
+                        if (nameInLocale != null) {
+                            shortName = nameInLocale.getName();
+                        }
+                    }
                 }
+                bahmniObservation.getConcept().setShortName(shortName);
             }
         }
         return bahmniObservation;
