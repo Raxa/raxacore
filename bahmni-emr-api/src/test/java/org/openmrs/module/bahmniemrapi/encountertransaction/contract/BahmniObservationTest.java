@@ -115,6 +115,15 @@ public class BahmniObservationTest {
         assertEquals("parentConceptUuid", observation.getFormNamespace());
     }
 
+    @Test
+    public void testBahmniObservationCreation() {
+        Date obsDateTime = new Date();
+        EncounterTransaction.Concept concept = createConcept("concept-uuid", "concept-name");
+        BahmniObservation bahmniObservation = createBahmniObservation("obs-uuid", "obs-value", concept, obsDateTime, "parentConceptUuid");
+
+        assertEquals("concept-name", bahmniObservation.getConceptNameToDisplay());
+    }
+
     private EncounterTransaction.Concept createConcept(String conceptUuid, String conceptName) {
         EncounterTransaction.Concept concept = new EncounterTransaction.Concept();
         concept.setUuid(conceptUuid);
