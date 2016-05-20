@@ -60,8 +60,9 @@ public class OpenElisAccessionNote {
         if (o == null || getClass() != o.getClass()) return false;
 
         OpenElisAccessionNote that = (OpenElisAccessionNote) o;
+        return (note != null && note.equals(that.note) &&
+                providerUuid != null && providerUuid.equals(that.providerUuid));
 
-        return note != null ? note.equals(that.note) : that.note == null && (providerUuid != null ? providerUuid.equals(that.providerUuid) : that.providerUuid == null);
     }
 
     @Override
