@@ -13,9 +13,9 @@ import java.util.UUID;
 import static java.util.Arrays.asList;
 
 public abstract class ConceptOperationEvent implements ConceptServiceOperationEvent {
-    String url;
-    String category;
-    String title;
+    protected String url;
+    protected String category;
+    protected String title;
 
     public ConceptOperationEvent(String url, String category, String title) {
         this.url = url;

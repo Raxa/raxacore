@@ -10,21 +10,21 @@ import org.openmrs.api.APIException;
 public class DrugMetaDataValidatorTest {
 
     @Test(expected = APIException.class)
-    public void ensure_drug_concept_is_not_null() {
+    public void ensureDrugConceptIsNotNull() {
         DrugMetaData drugMetaData = new DrugMetaData(new Drug(), null, new Concept(), new ConceptClass());
         DrugMetaDataValidator validator = new DrugMetaDataValidator();
         validator.validate(drugMetaData);
     }
 
     @Test(expected = APIException.class)
-    public void ensure_dosage_form_is_not_null(){
+    public void ensureDosageFormIsNotNull(){
         DrugMetaData drugMetaData = new DrugMetaData(new Drug(),new Concept(), null, new ConceptClass());
         DrugMetaDataValidator validator = new DrugMetaDataValidator();
         validator.validate(drugMetaData);
     }
 
     @Test
-    public void ensure_dosage_form_and_drug_concept_valid(){
+    public void ensureDosageFormAndDrugConceptValid(){
         DrugMetaData drugMetaData = new DrugMetaData(new Drug(),new Concept(), new Concept(), new ConceptClass());
         DrugMetaDataValidator validator = new DrugMetaDataValidator();
         validator.validate(drugMetaData);

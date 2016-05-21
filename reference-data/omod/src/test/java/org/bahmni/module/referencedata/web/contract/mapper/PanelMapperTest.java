@@ -96,7 +96,7 @@ public class PanelMapperTest {
     }
 
     @Test
-    public void map_all_panel_fields_from_concept() throws Exception {
+    public void mapAllPanelFieldsFromConcept() throws Exception {
         Panel panelData = panelMapper.map(panelConcept);
         assertEquals("Panel UUID", panelData.getId());
         assertEquals("Panel Name Here", panelData.getName());
@@ -108,13 +108,13 @@ public class PanelMapperTest {
     }
 
     @Test
-    public void is_active_true_by_default() throws Exception {
+    public void isActiveTrueByDefault() throws Exception {
         Panel panelData = panelMapper.map(panelConcept);
         assertTrue(panelData.getIsActive());
     }
 
     @Test
-    public void should_set_name_if_description_is_null() throws Exception {
+    public void shouldSetNameIfDescriptionIsNull() throws Exception {
         Concept panelConceptWithoutDescription = new ConceptBuilder().withDateCreated(dateCreated).withClassUUID(ConceptClass.LABSET_UUID)
                 .withSetMember(testConcept).withDateChanged(dateChanged).withShortName("ShortName").withName("Panel Name Here").withDataType(ConceptDatatype.NUMERIC).build();
 

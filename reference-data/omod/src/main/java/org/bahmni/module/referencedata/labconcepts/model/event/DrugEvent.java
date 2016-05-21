@@ -11,9 +11,9 @@ import java.util.UUID;
 import static java.util.Arrays.asList;
 
 public class DrugEvent implements ConceptServiceOperationEvent {
-    String url;
-    String category;
-    String title;
+    protected String url;
+    protected String category;
+    protected String title;
 
     public DrugEvent(String url, String category, String title) {
         this.url = url;

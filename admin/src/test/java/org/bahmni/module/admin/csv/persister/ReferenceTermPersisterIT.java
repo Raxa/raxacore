@@ -18,8 +18,6 @@ import static org.junit.Assert.assertTrue;
 
 public class ReferenceTermPersisterIT extends BaseIntegrationTest {
 
-    private String path;
-
     @Autowired
     private ReferenceTermPersister referenceTermPersister;
 
@@ -28,7 +26,7 @@ public class ReferenceTermPersisterIT extends BaseIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
         System.setProperty("OPENMRS_APPLICATION_DATA_DIRECTORY", path);
 
         Context.authenticate("admin", "test");
@@ -37,7 +35,7 @@ public class ReferenceTermPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void save_new_referenceTerm() {
+    public void saveNewReferenceTerm() {
         ReferenceTermRow referenceTermRow = new ReferenceTermRow("TB1002", "SNOMED CT", "Tuberclosis", null, null);
         Messages errorMessages = referenceTermPersister.persist(referenceTermRow);
         assertTrue("should have persisted the reference term row", errorMessages.isEmpty());
@@ -52,7 +50,7 @@ public class ReferenceTermPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void update_exisiting_referenceTerm() {
+    public void updateExisitingReferenceTerm() {
 
         ReferenceTermRow referenceTermRow = new ReferenceTermRow("TB100", "SNOMED CT", "Tuberclosis", null, null);
         referenceTermPersister.persist(referenceTermRow);
@@ -82,7 +80,7 @@ public class ReferenceTermPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void fails_save_when_invalid_conceptsource() {
+    public void failsSaveWhenInvalidConceptsource() {
         ReferenceTermRow referenceTermRow = new ReferenceTermRow("TB100", "ICG 11", "Tuberclosis", null, null);
         Messages errorMessages = referenceTermPersister.persist(referenceTermRow);
 

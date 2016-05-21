@@ -108,9 +108,9 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
 
         List<Order> latestOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug Order"),
                 orderService.getCareSettingByName("OUTPATIENT"), null);
-        Assert.assertEquals(originalOrders.size() + 1, latestOrders.size());
-        Assert.assertEquals(Order.Action.NEW, latestOrders.get(originalOrders.size()).getAction());
-        Assert.assertEquals(1, encounterTransaction.getDrugOrders().size());
+        assertEquals(originalOrders.size() + 1, latestOrders.size());
+        assertEquals(Order.Action.NEW, latestOrders.get(originalOrders.size()).getAction());
+        assertEquals(1, encounterTransaction.getDrugOrders().size());
     }
 
     @Test
@@ -150,19 +150,19 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
 
         List<Order> latestOrders = orderService.getActiveOrders(patient, orderService.getOrderTypeByName("Drug Order"),
                 orderService.getCareSettingByName("OUTPATIENT"), null);
-        Assert.assertEquals(originalOrders.size() + 1, latestOrders.size());
-        Assert.assertEquals(Order.Action.NEW, latestOrders.get(originalOrders.size()).getAction());
-        Assert.assertEquals(0, encounterTransaction.getDrugOrders().size());
+        assertEquals(originalOrders.size() + 1, latestOrders.size());
+        assertEquals(Order.Action.NEW, latestOrders.get(originalOrders.size()).getAction());
+        assertEquals(0, encounterTransaction.getDrugOrders().size());
 
         //Ensure that two encounters are created.
         List<Encounter> encounters = encounterService
                 .getEncounters(patient, null, pastScheduledDateForDrugOrder, null, null, null, null, null, null, false);
 
-        Assert.assertEquals(2, encounters.size());
-        Assert.assertEquals(1, encounters.get(0).getOrders().size());
-        Assert.assertEquals(0, encounters.get(1).getOrders().size());
-        Assert.assertEquals(1, encounterTransaction.getObservations().size());
-        Assert.assertEquals(obsUuid, encounterTransaction.getObservations().iterator().next().getUuid());
+        assertEquals(2, encounters.size());
+        assertEquals(1, encounters.get(0).getOrders().size());
+        assertEquals(0, encounters.get(1).getOrders().size());
+        assertEquals(1, encounterTransaction.getObservations().size());
+        assertEquals(obsUuid, encounterTransaction.getObservations().iterator().next().getUuid());
 
     }
 
@@ -204,12 +204,12 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
                 .getEncounters(patient, null, pastScheduledDateForDrugOrder, pastScheduledDateForDrugOrder, null, null, null,
                         null, null, false);
 
-        Assert.assertEquals(1, encounters.size());
-        Assert.assertEquals(1, encounters.get(0).getOrders().size());
+        assertEquals(1, encounters.size());
+        assertEquals(1, encounters.get(0).getOrders().size());
         DrugOrder order = (DrugOrder) encounters.get(0).getOrders().iterator().next();
-        Assert.assertEquals("1ce527b5-d6de-43f0-bc62-4616abacd77e", order.getDrug().getUuid());
-        Assert.assertEquals(1, encounterTransaction.getObservations().size());
-        Assert.assertEquals(obsUuid, encounterTransaction.getObservations().iterator().next().getUuid());
+        assertEquals("1ce527b5-d6de-43f0-bc62-4616abacd77e", order.getDrug().getUuid());
+        assertEquals(1, encounterTransaction.getObservations().size());
+        assertEquals(obsUuid, encounterTransaction.getObservations().iterator().next().getUuid());
 
     }
 
@@ -405,7 +405,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
 
         VisitAttribute visitAttribute = getAdmittedVisitAttribute(visit);
         assertNotNull(visitAttribute);
-        Assert.assertEquals("Admitted", visitAttribute.getValue());
+        assertEquals("Admitted", visitAttribute.getValue());
     }
 
     private VisitAttribute getAdmittedVisitAttribute(Visit visit) {
@@ -529,12 +529,12 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
                 .getEncounters(patient, null, pastScheduledDateForDrugOrder, pastScheduledDateForDrugOrder, null, null, null,
                         null, null, false);
 
-        Assert.assertEquals(1, encounters.size());
-        Assert.assertEquals(1, encounters.get(0).getOrders().size());
+        assertEquals(1, encounters.size());
+        assertEquals(1, encounters.get(0).getOrders().size());
         DrugOrder order = (DrugOrder) encounters.get(0).getOrders().iterator().next();
-        Assert.assertEquals("1ce527b5-d6de-43f0-bc62-4616abacd77e", order.getDrug().getUuid());
-        Assert.assertEquals(1, encounterTransaction.getObservations().size());
-        Assert.assertEquals(obsUuid, encounterTransaction.getObservations().iterator().next().getUuid());
+        assertEquals("1ce527b5-d6de-43f0-bc62-4616abacd77e", order.getDrug().getUuid());
+        assertEquals(1, encounterTransaction.getObservations().size());
+        assertEquals(obsUuid, encounterTransaction.getObservations().iterator().next().getUuid());
 
     }
 
@@ -568,7 +568,6 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
         bahmniObservation1.setTargetObsRelation(new ObsRelationship(bahmniObservation, null, "qualified-by"));
         return bahmniObservation1;
     }
-
     private BahmniObservation createBahmniObservation(String uuid, double value, EncounterTransaction.Concept concept,
                                                       Date obsDate, BahmniObservation bahmniObservation) {
         BahmniObservation bahmniObservation1 = new BahmniObservation();

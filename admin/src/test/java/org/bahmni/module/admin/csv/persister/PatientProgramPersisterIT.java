@@ -42,7 +42,7 @@ public class PatientProgramPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void enroll_patient_in_a_program() throws Exception {
+    public void enrollPatientInAProgram() throws Exception {
         PatientProgramRow patientProgramRow = new PatientProgramRow();
         patientProgramRow.patientIdentifier = "GAN200000";
         patientProgramRow.programName = "Diabetes Program";
@@ -64,7 +64,7 @@ public class PatientProgramPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_not_enroll_an_already_enrolled_patient_in_a_program() throws Exception {
+    public void shouldNotEnrollAnAlreadyEnrolledPatientInAProgram() throws Exception {
         PatientProgramRow patientProgramRow = new PatientProgramRow();
         patientProgramRow.patientIdentifier = "SEM200000";
         patientProgramRow.enrollmentDateTime = "1111-11-11";

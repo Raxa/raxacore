@@ -65,14 +65,14 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void fail_validation_for_empty_encounter_type() throws Exception {
+    public void failValidationForEmptyEncounterType() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         Messages rowResult = encounterPersister.persist(multipleEncounterRow);
         assertTrue("No Encounter details. Should have failed", !rowResult.isEmpty());
     }
 
     @Test
-    public void fail_validation_for_encounter_type_not_found() throws Exception {
+    public void failValidationForEncounterTypeNotFound() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "INVALID ENCOUNTER TYPE";
         multipleEncounterRow.visitType = "OPD";
@@ -90,7 +90,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void fail_validation_for_visit_type_not_found() throws Exception {
+    public void failValidationForVisitTypeNotFound() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "INVALID VISIT TYPE";
@@ -110,7 +110,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void fail_validation_for_empty_visit_type() throws Exception {
+    public void failValidationForEmptyVisitType() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.patientIdentifier = "GAN200000";
@@ -127,7 +127,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void fail_validation_for_encounter_date_in_incorrect_format() throws Exception {
+    public void failValidationForEncounterDateInIncorrectFormat() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.patientIdentifier = "GAN200000";
@@ -145,13 +145,13 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void no_validation_for_encounters() {
+    public void noValidationForEncounters() {
         Messages validationErrors = encounterPersister.validate(new MultipleEncounterRow());
         assertTrue("No Validation failure. Encounter Import does not run validation stage", validationErrors.isEmpty());
     }
 
     @Test
-    public void persist_encounters_for_patient() throws Exception {
+    public void persistEncountersForPatient() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
@@ -187,7 +187,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void create_visit_as_per_dates_in_file() throws Exception {
+    public void createVisitAsPerDatesInFile() throws Exception {
         String registrationNumber = "GAN200000";
         String visitStartDate = "2011-11-11";
         String visitEndDate = "2011-12-13";
@@ -232,7 +232,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
 
 
     @Test
-    public void persist_encounter_with_observation_hierarchy_for_patient() throws Exception {
+    public void persistEncounterWithObservationHierarchyForPatient() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
@@ -279,7 +279,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void persist_encounters_with_same_date_which_has_same_root_observations_in_it() throws Exception {
+    public void persistEncountersWithSameDateWhichHasSameRootObservationsInIt() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
@@ -335,7 +335,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void persist_encounter_with_observation_hierarchy_with_multiple_group_members() throws Exception {
+    public void persistEncounterWithObservationHierarchyWithMultipleGroupMembers() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
@@ -380,7 +380,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void persist_encounter_with_abnormal_observation() throws Exception {
+    public void persistEncounterWithAbnormalObservation() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
@@ -434,7 +434,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
 
 
     @Test
-    public void persist_multiple_encounters_for_patient() throws Exception {
+    public void persistMultipleEncountersForPatient() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
@@ -467,7 +467,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void persist_observations_for_patient() throws Exception {
+    public void persistObservationsForPatient() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
@@ -503,7 +503,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void persist_diagnosis() throws Exception {
+    public void persistDiagnosis() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
@@ -565,7 +565,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void roll_back_transaction_once_persistence_fails_for_one_resource() throws Exception {
+    public void rollBackTransactionOncePersistenceFailsForOneResource() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
@@ -591,9 +591,8 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void throw_error_when_patient_not_found() throws Exception {
+    public void throwErrorWhenPatientNotFound() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-//        multipleEncounterRow.encounterDateTime = "11/11/1111";
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "GAN200001";
@@ -606,9 +605,8 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void throw_error_when_multiple_patients_found() throws Exception {
+    public void throwErrorWhenMultiplePatientsFound() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
-//        multipleEncounterRow.encounterDateTime = "11/11/1111";
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "200000";
@@ -620,7 +618,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void external_algorithm_should_return_only_patients_with_GAN_identifier() throws Exception {
+    public void externalAlgorithmShouldReturnOnlyPatientsWithGanIdentifier() throws Exception {
         String patientId = "200000";
 
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
@@ -650,7 +648,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void external_algorithm_returns_patients_matching_id_and_name() throws Exception {
+    public void externalAlgorithmReturnsPatientsMatchingIdAndName() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
@@ -678,7 +676,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
 
     @Test
     @Ignore
-    public void persist_case_insensitive_coded_concept_values() {
+    public void persistCaseInsensitiveCodedConceptValues() {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
@@ -705,7 +703,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void persist_multiple_observation_for_same_concepts() throws Exception {
+    public void persistMultipleObservationForSameConcepts() throws Exception {
         MultipleEncounterRow multipleEncounterRow = new MultipleEncounterRow();
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";

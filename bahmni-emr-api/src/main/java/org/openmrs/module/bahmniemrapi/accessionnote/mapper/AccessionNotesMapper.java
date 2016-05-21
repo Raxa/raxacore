@@ -67,10 +67,7 @@ public class AccessionNotesMapper {
             validationNotesEncounterType = encounterService.getEncounterType(VALIDATION_NOTES_ENCOUNTER_TYPE);
             if(validationNotesEncounterType == null) return false;
         }
-        if(encounterTransaction.getEncounterTypeUuid() != null && encounterTransaction.getEncounterTypeUuid().equals(validationNotesEncounterType.getUuid()) && !encounterTransaction.getObservations().isEmpty()){
-            return true;
-        }
-        return false;
+        return encounterTransaction.getEncounterTypeUuid() != null && encounterTransaction.getEncounterTypeUuid().equals(validationNotesEncounterType.getUuid()) && !encounterTransaction.getObservations().isEmpty();
     }
 
 

@@ -35,14 +35,14 @@ public class ConceptSetPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_fail_validation_for_no_concept_name() throws Exception {
+    public void shouldFailValidationForNoConceptName() throws Exception {
         ConceptSetRow conceptRow = new ConceptSetRow();
         Messages persistErrorMessages = conceptSetPersister.validate(conceptRow);
         assertFalse(persistErrorMessages.isEmpty());
     }
 
     @Test
-    public void should_fail_validation_for_no_concept_class() throws Exception {
+    public void shouldFailValidationForNoConceptClass() throws Exception {
         ConceptSetRow conceptRow = new ConceptSetRow();
         conceptRow.name = "Concept Name";
         Messages persistErrorMessages = conceptSetPersister.validate(conceptRow);
@@ -51,7 +51,7 @@ public class ConceptSetPersisterIT extends BaseIntegrationTest {
 
 
     @Test
-    public void should_pass_validation_if_concept_name_and_concept_class_are_present() throws Exception {
+    public void shouldPassValidationIfConceptNameAndConceptClassArePresent() throws Exception {
         ConceptSetRow conceptRow = new ConceptSetRow();
         conceptRow.name = "concept Name";
         conceptRow.conceptClass = "concept Class";
@@ -60,7 +60,7 @@ public class ConceptSetPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_persist_new_concept_set_with_name_and_class_input_only() throws Exception {
+    public void shouldPersistNewConceptSetWithNameAndClassInputOnly() throws Exception {
         ConceptSetRow conceptRow = new ConceptSetRow();
         conceptRow.name = "New concept";
         conceptRow.conceptClass = "New Class";
@@ -81,7 +81,7 @@ public class ConceptSetPersisterIT extends BaseIntegrationTest {
 
 
     @Test
-    public void add_set_members() throws Exception {
+    public void addSetMembers() throws Exception {
         ConceptSetRow conceptRow = new ConceptSetRow();
         conceptRow.name = "New concept";
         conceptRow.conceptClass = "New Class";

@@ -56,7 +56,7 @@ public class CSVPatientServiceTest {
     public ExpectedException exception = ExpectedException.none();
 
     @Test
-    public void save_patient_name() throws ParseException {
+    public void savePatientName() throws ParseException {
         PatientRow patientRow = new PatientRow();
         patientRow.firstName = "Romesh";
         patientRow.middleName = "Sharad";
@@ -76,7 +76,7 @@ public class CSVPatientServiceTest {
     }
 
     @Test
-    public void save_registrationNumber_birthdate_gender() throws ParseException {
+    public void saveRegistrationNumberBirthdateGender() throws ParseException {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(CSVUtils.ENCOUNTER_DATE_PATTERN);
 
         PatientRow patientRow = new PatientRow();
@@ -100,7 +100,7 @@ public class CSVPatientServiceTest {
     }
 
     @Test
-    public void save_registrationNumber_age_gender() throws ParseException {
+    public void saveRegistrationNumberAgeGender() throws ParseException {
         PatientRow patientRow = new PatientRow();
         patientRow.age = "34";
         patientRow.gender = "Male";
@@ -122,7 +122,7 @@ public class CSVPatientServiceTest {
     }
 
     @Test
-    public void save_addressparts() throws ParseException {
+    public void saveAddressparts() throws ParseException {
         PatientRow patientRow = new PatientRow();
 
         List<KeyValue> addressParts = new ArrayList<KeyValue>() {{
@@ -173,7 +173,7 @@ public class CSVPatientServiceTest {
     }
 
     @Test
-    public void save_person_attributes() throws ParseException {
+    public void savePersonAttributes() throws ParseException {
         when(mockPersonService.getAllPersonAttributeTypes(false)).thenReturn(Arrays.asList(
                 createPersonAttributeType("familyNameLocal", "java.lang.String"),
                 createPersonAttributeType("caste", "java.lang.String")
@@ -196,7 +196,7 @@ public class CSVPatientServiceTest {
     }
 
     @Test
-    public void fails_whenNonExistingAttributeIsImported() throws ParseException {
+    public void failsWhenNonExistingAttributeIsImported() throws ParseException {
         CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
         when(mockPersonService.getAllPersonAttributeTypes(false)).thenReturn(Arrays.asList(createPersonAttributeType("familyNameLocal", "java.lang.String")));
 

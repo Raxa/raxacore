@@ -41,7 +41,6 @@ import static org.mockito.Mockito.when;
 @RunWith(PowerMockRunner.class)
 public class LabTestMapperTest {
     private LabTestMapper testMapper;
-    private Concept sampleConcept;
     private Date dateCreated;
     private Date dateChanged;
     @Mock
@@ -65,7 +64,7 @@ public class LabTestMapperTest {
                 .withDateChanged(dateChanged).withShortName("ShortName").withName("Test Name Here").withDataType(ConceptDatatype.NUMERIC).build();
         Concept testAndPanelsConcept = new ConceptBuilder().withUUID("Test and Panels UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.CONVSET_UUID)
                 .withDateChanged(dateChanged).withShortName("ShortName").withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(testConcept).build();
-        sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClass(Sample.SAMPLE_CONCEPT_CLASS).
+        Concept sampleConcept = new ConceptBuilder().withUUID("Sample UUID").withDateCreated(dateCreated).withClass(Sample.SAMPLE_CONCEPT_CLASS).
                 withDateChanged(dateChanged).withSetMember(testConcept).withShortName("ShortName").withName("SampleName").build();
         Concept laboratoryConcept = new ConceptBuilder().withUUID("Laboratory UUID")
                 .withName(AllSamples.ALL_SAMPLES).withClassUUID(ConceptClass.LABSET_UUID)
@@ -108,7 +107,7 @@ public class LabTestMapperTest {
     }
 
     @Test
-    public void map_all_test_fields_from_concept() throws Exception {
+    public void mapAllTestFieldsFromConcept() throws Exception {
         LabTest testData = testMapper.map(testConcept);
         assertEquals("Test UUID", testData.getId());
         assertEquals("Test Name Here", testData.getName());
@@ -119,14 +118,14 @@ public class LabTestMapperTest {
     }
 
     @Test
-    public void testUnitOfMeasure_is_null_if_not_specified() throws Exception {
+    public void testUnitOfMeasureIsNullIfNotSpecified() throws Exception {
         when(conceptService.getConceptNumeric(anyInt())).thenReturn(null);
         LabTest testData = testMapper.map(testConcept);
         assertNull(testData.getTestUnitOfMeasure());
     }
 
     @Test
-    public void should_set_name_if_description_is_null() throws Exception {
+    public void shouldSetNameIfDescriptionIsNull() throws Exception {
         Concept testConceptWithOutDescription = new ConceptBuilder().withUUID("Test UUID").withDateCreated(dateCreated).withClassUUID(ConceptClass.TEST_UUID)
                 .withDateChanged(dateChanged).withShortName("ShortName").withName("Test Name Here").withDataType(ConceptDatatype.NUMERIC).build();
 

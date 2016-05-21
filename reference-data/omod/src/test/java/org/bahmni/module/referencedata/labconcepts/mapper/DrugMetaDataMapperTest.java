@@ -31,7 +31,7 @@ public class DrugMetaDataMapperTest {
     }
 
     @Test
-    public void create_new_drug_if_existing_drug_is_null() throws Exception {
+    public void createNewDrugIfExistingDrugIsNull() throws Exception {
         DrugMetaData drugMetaData = new DrugMetaData(null, new Concept(), new Concept(), drugConceptClass);
         Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
         assertNotNull(conceptDrug);
@@ -40,7 +40,7 @@ public class DrugMetaDataMapperTest {
     }
 
     @Test
-    public void create_new_drug_with_existing_concept() throws Exception {
+    public void createNewDrugWithExistingConcept() throws Exception {
         Concept drugConcept = new ConceptBuilder().withName("Drug Concept").withClassUUID(ConceptClass.DRUG_UUID).build();
         DrugMetaData drugMetaData = new DrugMetaData(null, drugConcept, null, drugConceptClass);
         Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
@@ -52,7 +52,7 @@ public class DrugMetaDataMapperTest {
     }
 
     @Test
-    public void create_new_drug_with_dosage_form_concept() throws Exception {
+    public void createNewDrugWithDosageFormConcept() throws Exception {
         Concept tablet = new ConceptBuilder().withName("Tablet").build();
         DrugMetaData drugMetaData = new DrugMetaData(null, new Concept(), tablet, drugConceptClass);
         Drug conceptDrug = drugMetaDataMapper.map(drugMetaData);
@@ -63,7 +63,7 @@ public class DrugMetaDataMapperTest {
     }
 
     @Test
-    public void create_new_drug_with_dosage_form_and_existing_concept() throws Exception {
+    public void createNewDrugWithDosageFormAndExistingConcept() throws Exception {
         Concept tablet = new ConceptBuilder().withName("Tablet").build();
         Concept drugConcept = new ConceptBuilder().withName("Drug Concept").withClassUUID(ConceptClass.DRUG_UUID).build();
         DrugMetaData drugMetaData = new DrugMetaData(null, drugConcept, tablet, drugConceptClass);
@@ -76,7 +76,7 @@ public class DrugMetaDataMapperTest {
     }
 
     @Test
-    public void update_drug_concept_on_existing_drug() throws Exception {
+    public void updateDrugConceptOnExistingDrug() throws Exception {
         Drug existingDrug = new DrugBuilder().withConcept("Drug Concept").withDosageForm("Tablet").build();
         Concept drugConcept = new ConceptBuilder().withName("New Concept").withClassUUID(ConceptClass.DRUG_UUID).build();
         DrugMetaData drugMetaData = new DrugMetaData(existingDrug, drugConcept, null, drugConceptClass);
@@ -89,7 +89,7 @@ public class DrugMetaDataMapperTest {
     }
 
     @Test
-    public void update_all_fields_on_existing_drug() throws Exception {
+    public void updateAllFieldsOnExistingDrug() throws Exception {
         Drug existingDrug = new DrugBuilder().withConcept("Drug Concept").withDosageForm("Tablet").build();
         Concept capsule = new ConceptBuilder().withName("Capsule").build();
         Concept drugConcept = new ConceptBuilder().withName("New Concept").withClassUUID(ConceptClass.DRUG_UUID).build();

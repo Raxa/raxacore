@@ -29,8 +29,8 @@ import static org.mockito.Mockito.when;
 @RunWith(PowerMockRunner.class)
 public class AllTestsPanelsConceptSetEventTest {
     private Concept parentConcept;
-    Concept testConcept;
-    Concept panelConcept;
+    protected Concept testConcept;
+    protected Concept panelConcept;
     @Mock
     private ConceptService conceptService;
 

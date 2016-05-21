@@ -35,43 +35,43 @@ public class DrugEventTest {
 
 
     @Test
-    public void not_applicable_for_wrong_operation() throws Exception {
+    public void notApplicableForWrongOperation() throws Exception {
         Boolean applicable = drugEvent.isApplicable("don'tSaveDrug", WRONG_ARGUMENTS);
         assertFalse(applicable);
     }
 
     @Test
-    public void not_applicable_for_null_operation() throws Exception {
+    public void notApplicableForNullOperation() throws Exception {
         Boolean applicable = drugEvent.isApplicable(null, WRONG_ARGUMENTS);
         assertFalse(applicable);
     }
 
     @Test
-    public void not_applicable_for_null_arguments() throws Exception {
+    public void notApplicableForNullArguments() throws Exception {
         Boolean applicable = drugEvent.isApplicable("saveDrug", null);
         assertFalse(applicable);
     }
 
     @Test
-    public void not_applicable_for_wrong_arguments() throws Exception {
+    public void notApplicableForWrongArguments() throws Exception {
         Boolean applicable = drugEvent.isApplicable("saveDrug", WRONG_ARGUMENTS);
         assertFalse(applicable);
     }
 
     @Test
-    public void not_applicable_for_wrong_argument_type() throws Exception {
+    public void notApplicableForWrongArgumentType() throws Exception {
         Boolean applicable = drugEvent.isApplicable("saveDrug", notDrugs);
         assertFalse(applicable);
     }
 
     @Test
-    public void applicable_for_right_operations_and_arguments() throws Exception {
+    public void applicableForRightOperationsAndArguments() throws Exception {
         Boolean applicable = drugEvent.isApplicable("saveDrug", drugs);
         assertTrue(applicable);
     }
 
     @Test
-    public void publish_event_for_drugs() throws Exception {
+    public void publishEventForDrugs() throws Exception {
         Event event = drugEvent.asAtomFeedEvent(drugs);
         assertEquals(ConceptServiceEventFactory.DRUG, event.getCategory());
         assertEquals(ConceptServiceEventFactory.DRUG, event.getTitle());

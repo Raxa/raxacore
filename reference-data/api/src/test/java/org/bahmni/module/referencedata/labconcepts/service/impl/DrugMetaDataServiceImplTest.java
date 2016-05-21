@@ -30,7 +30,7 @@ public class DrugMetaDataServiceImplTest {
     }
 
     @Test
-    public void ensure_drug_metadata_is_proper_with_all_valid(){
+    public void ensureDrugMetadataIsProperWithAllValid(){
         Drug drug = new Drug();
         drug.setUuid("uuid");
         drug.setGenericName("genericName");
@@ -61,7 +61,7 @@ public class DrugMetaDataServiceImplTest {
     }
 
     @Test
-    public void existing_drug_is_null_when_uuid_is_invalid(){
+    public void existingDrugIsNullWhenUuidIsInvalid(){
         Drug drug = new Drug();
         drug.setUuid("uuid");
         drug.setGenericName("genericName");
@@ -73,7 +73,7 @@ public class DrugMetaDataServiceImplTest {
         org.openmrs.Drug drugInDb2 = new org.openmrs.Drug();
         drugInDb2.setUuid("uuid");
 
-        org.openmrs.Drug mrsDrug = new org.openmrs.Drug(1234);
+        new org.openmrs.Drug(1234);
 
         when(conceptService.getConceptByName("genericName")).thenReturn(new Concept(DRUG_CONCEPT));
         when(conceptService.getConceptByName("dosageForm")).thenReturn(null);
@@ -90,12 +90,12 @@ public class DrugMetaDataServiceImplTest {
     }
 
     @Test
-    public void new_drug_with_invalid_dosage_form(){
+    public void newDrugWithInvalidDosageForm(){
         Drug drug = new Drug();
         drug.setGenericName("genericName");
         drug.setDosageForm("dosageForm");
 
-        org.openmrs.Drug mrsDrug = new org.openmrs.Drug(1234);
+        new org.openmrs.Drug(1234);
 
         when(conceptService.getConceptByName("genericName")).thenReturn(new Concept(DRUG_CONCEPT));
         when(conceptService.getConceptByName("dosageForm")).thenReturn(null);

@@ -19,14 +19,12 @@ import static org.junit.Assert.assertTrue;
 @Ignore("Was never working. Injection needs to be fixed")
 public class PatientPersisterIT extends BaseIntegrationTest {
 
-    private String path;
-
     @Autowired
     private PatientPersister patientPersister;
 
     @Before
     public void setUp() throws Exception {
-        path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+        String path = Thread.currentThread().getContextClassLoader().getResource("").getPath();
         System.setProperty("OPENMRS_APPLICATION_DATA_DIRECTORY", path);
 
         Context.authenticate("admin", "test");

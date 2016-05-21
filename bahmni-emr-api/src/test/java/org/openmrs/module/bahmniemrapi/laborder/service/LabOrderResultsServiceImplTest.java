@@ -39,7 +39,7 @@ public class LabOrderResultsServiceImplTest {
     }
 
     @Test
-    public void filterTestOrders_EvenWhenTheyAreDiscontinued() throws Exception {
+    public void filterTestOrdersEvenWhenTheyAreDiscontinued() throws Exception {
         List<String> concepts = Arrays.asList("concept1", "concept2","concept3");
         Map<String, Encounter> encounterTestOrderUuidMap = new HashMap<>();
         EncounterTransaction.Order order1 = createOrder("uuid1","concept1", Order.Action.NEW.toString(), null);
@@ -53,7 +53,7 @@ public class LabOrderResultsServiceImplTest {
     }
 
     @Test
-    public void filterTestOrders_shouldNotFilterByConcept() throws Exception {
+    public void filterTestOrdersShouldNotFilterByConcept() throws Exception {
         Map<String, Encounter> encounterTestOrderUuidMap = new HashMap<>();
         EncounterTransaction.Order order1 = createOrder("uuid1","concept1", Order.Action.NEW.toString(), null);
         when(encounterTransaction.getOrders()).thenReturn(Arrays.asList(order1));
@@ -64,7 +64,7 @@ public class LabOrderResultsServiceImplTest {
     }
 
     @Test
-    public void mapOrdersWithObs_shouldMapAllObservationsToLabOrderResults() {
+    public void mapOrdersWithObsShouldMapAllObservationsToLabOrderResults() {
         EncounterTransaction.Order order1 = createOrder("uuid1","concept1", Order.Action.NEW.toString(), null);
         EncounterTransaction.Order order2 = createOrder("uuid2", "concept2", Order.Action.REVISE.toString(), null);
         List<EncounterTransaction.Order> testOrders = Arrays.asList(order1, order2);
@@ -86,7 +86,7 @@ public class LabOrderResultsServiceImplTest {
     }
 
     @Test
-    public void mapOrdersWithObs_shouldMapLabTestWithoutResultToLabOrderResult() {
+    public void mapOrdersWithObsShouldMapLabTestWithoutResultToLabOrderResult() {
         EncounterTransaction.Order order1 = createOrder("uuid1","concept1", Order.Action.NEW.toString(), null);
         List<EncounterTransaction.Order> testOrders = Arrays.asList(order1);
         Map<String, Encounter> orderToEncounterMapping = new HashMap<>();
@@ -98,7 +98,7 @@ public class LabOrderResultsServiceImplTest {
     }
 
     @Test
-    public void mapOrdersWithObs_shouldNOTMapDiscontinuedLabTestWithoutResultsToLabOrderResult() {
+    public void mapOrdersWithObsShouldNotMapDiscontinuedLabTestWithoutResultsToLabOrderResult() {
         EncounterTransaction.Order discontinuedOrder = createOrder("uuid1","concept1", Order.Action.NEW.toString(), new Date());
         List<EncounterTransaction.Order> testOrders = Arrays.asList(discontinuedOrder);
         Map<String, Encounter> orderToEncounterMapping = new HashMap<>();

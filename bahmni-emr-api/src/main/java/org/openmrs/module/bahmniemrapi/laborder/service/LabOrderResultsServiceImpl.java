@@ -164,12 +164,10 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         List<EncounterTransaction.Order> orders = new ArrayList<>();
         for (EncounterTransaction.Order order : encounterTransaction.getOrders()) {
             boolean conceptFilter = (concepts == null) || concepts.contains(order.getConcept().getName());
-            if (conceptFilter && LAB_ORDER_TYPE.equals(order.getOrderType())) {
-                if (!((startDate != null && order.getDateCreated().before(startDate))
-                        || (endDate != null && order.getDateCreated().after(endDate)))) {
-                    encounterTestOrderUuidMap.put(order.getUuid(), encounter);
-                    orders.add(order);
-                }
+            if ((conceptFilter && LAB_ORDER_TYPE.equals(order.getOrderType())) && !((startDate != null && order.getDateCreated().before(startDate))
+                    || (endDate != null && order.getDateCreated().after(endDate)))) {
+                encounterTestOrderUuidMap.put(order.getUuid(), encounter);
+                orders.add(order);
             }
         }
         return orders;

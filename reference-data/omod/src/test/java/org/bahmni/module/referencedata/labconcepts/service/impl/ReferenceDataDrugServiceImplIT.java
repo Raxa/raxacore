@@ -27,7 +27,7 @@ public class ReferenceDataDrugServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test(expected = APIException.class)
-    public void create_new_drug_with_new_concept_new_dosage_form_should_fail() throws Exception {
+    public void createNewDrugWithNewConceptNewDosageFormShouldFail() throws Exception {
         Drug drug = new Drug();
         drug.setName("New Drug");
         drug.setGenericName("Drug Concept name");
@@ -36,11 +36,11 @@ public class ReferenceDataDrugServiceImplIT extends BaseIntegrationTest {
         drug.setCombination(false);
         drug.setStrength("Very Strong");
         drug.setDosageForm("Unknown123");
-        org.openmrs.Drug savedDrug = referenceDataDrugService.saveDrug(drug);
+        referenceDataDrugService.saveDrug(drug);
     }
 
     @Test(expected=APIException.class)
-    public void existing_drug_existing_concept_new_dosage_form_should_fail() throws Exception {
+    public void existingDrugExistingConceptNewDosageFormShouldFail() throws Exception {
         Drug drug = new Drug();
         drug.setName("Existing Drug");
         drug.setGenericName("Old Drug Concept");
@@ -49,11 +49,11 @@ public class ReferenceDataDrugServiceImplIT extends BaseIntegrationTest {
         drug.setCombination(false);
         drug.setStrength("Very Strong");
         drug.setDosageForm("Unknown123");
-        org.openmrs.Drug savedDrug = referenceDataDrugService.saveDrug(drug);
+        referenceDataDrugService.saveDrug(drug);
     }
 
     @Test
-    public void existing_drug_existing_concept_existing_dosage_form() throws Exception {
+    public void existingDrugExistingConceptExistingDosageForm() throws Exception {
         Drug drug = new Drug();
         drug.setName("Existing Drug");
         drug.setGenericName("Old Drug Concept");
@@ -75,7 +75,7 @@ public class ReferenceDataDrugServiceImplIT extends BaseIntegrationTest {
 
 
     @Test
-    public void new_drug_existing_concept_existing_dosage_form() throws Exception {
+    public void newDrugExistingConceptExistingDosageForm() throws Exception {
         Drug drug = new Drug();
         drug.setName("New Drug");
         drug.setGenericName("Old Drug Concept");
@@ -97,7 +97,7 @@ public class ReferenceDataDrugServiceImplIT extends BaseIntegrationTest {
 
     @Test
     @Ignore
-    public void same_drug_multiple_times() throws Exception {
+    public void sameDrugMultipleTimes() throws Exception {
         Drug drug = new Drug();
         drug.setName("NEW DRUG");
         drug.setGenericName("Old Drug Concept");

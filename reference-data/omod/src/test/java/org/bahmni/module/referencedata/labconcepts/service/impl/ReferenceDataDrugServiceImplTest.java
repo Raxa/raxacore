@@ -41,7 +41,7 @@ public class ReferenceDataDrugServiceImplTest {
     }
 
     @Test
-    public void throw_error_if_drug_name_not_defined() throws Exception {
+    public void throwErrorIfDrugNameNotDefined() throws Exception {
         Drug drugData = new Drug();
         exception.expect(APIException.class);
         exception.expectMessage("Drug name is mandatory");
@@ -49,7 +49,7 @@ public class ReferenceDataDrugServiceImplTest {
     }
 
     @Test
-    public void throw_error_if_drug_generic_name_not_defined() throws Exception {
+    public void throwErrorIfDrugGenericNameNotDefined() throws Exception {
         Drug drug = new Drug();
         drug.setName("Drug Name");
         exception.expect(APIException.class);
@@ -58,7 +58,7 @@ public class ReferenceDataDrugServiceImplTest {
     }
 
     @Test
-    public void save_new_drug() throws Exception {
+    public void saveNewDrug() throws Exception {
         Drug drugData = new Drug();
         drugData.setName("Drug Name");
         drugData.setGenericName("Concept name");

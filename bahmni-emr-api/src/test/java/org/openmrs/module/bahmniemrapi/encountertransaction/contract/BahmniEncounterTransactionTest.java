@@ -30,8 +30,6 @@ public class BahmniEncounterTransactionTest {
 
 	private final Date obsDate = new Date();
 
-	BahmniEncounterTransaction bahmniEncounterTransaction;
-
 	@Before
 	public void setUp() throws Exception {
 
@@ -39,7 +37,7 @@ public class BahmniEncounterTransactionTest {
 
 	@Test
 	public void shouldConvertBahmniEncounterTransactionToET() {
-		bahmniEncounterTransaction = new BahmniEncounterTransaction();
+		BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
 		bahmniEncounterTransaction.setBahmniDiagnoses(createBahmniDiagnoses());
 		bahmniEncounterTransaction.setObservations(createBahmniObservations());
 		bahmniEncounterTransaction.setExtensions(createExtensions());

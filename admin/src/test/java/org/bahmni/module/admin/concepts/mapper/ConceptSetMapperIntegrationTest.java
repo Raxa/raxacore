@@ -34,7 +34,7 @@ public class ConceptSetMapperIntegrationTest {
     }
 
     @Test
-    public void map_concept_set_row_to_concept_set_dto() throws Exception {
+    public void mapConceptSetRowToConceptSetDto() throws Exception {
         ConceptSetRow conceptSetRow = new ConceptSetRow();
         conceptSetRow.name = "UniqueName";
         conceptSetRow.shortName = "shortName";
@@ -51,7 +51,7 @@ public class ConceptSetMapperIntegrationTest {
     }
 
     @Test
-    public void null_if_no_shortName() throws Exception {
+    public void nullIfNoShortName() throws Exception {
         ConceptSetRow conceptSetRow = new ConceptSetRow();
         conceptSetRow.name = "Some";
         conceptSetRow.shortName = " ";
@@ -78,7 +78,7 @@ public class ConceptSetMapperIntegrationTest {
     }
 
     @Test
-    public void map_concept_reference_term_to_concept_set_dto() throws Exception {
+    public void mapConceptReferenceTermToConceptSetDto() throws Exception {
         ConceptSetRow conceptSetRow = new ConceptSetRow();
         conceptSetRow.name = "UniqueName";
         conceptSetRow.shortName = "shortName";
@@ -99,7 +99,7 @@ public class ConceptSetMapperIntegrationTest {
     }
 
     @Test
-    public void get_concept_list_in_order_from_concept_set() throws Exception {
+    public void getConceptListInOrderFromConceptSet() throws Exception {
         org.openmrs.Concept child1 = new ConceptBuilder().withName("Child1").withDescription("Description").withClass("Some").withDataType("N/A").withShortName("short").build();
         org.openmrs.Concept child2 = new ConceptBuilder().withName("Child2").withDescription("Description").withClass("Some").withDataType("N/A").withShortName("short").build();
         org.openmrs.Concept child3 = new ConceptBuilder().withName("Child3").withDescription("Description").withClass("Some").withDataType("N/A").withShortName("short").build();
@@ -121,7 +121,7 @@ public class ConceptSetMapperIntegrationTest {
     }
 
     @Test
-    public void get_list_of_concept_with_concept_answers() throws Exception {
+    public void getListOfConceptWithConceptAnswers() throws Exception {
         org.openmrs.Concept answer1 = new ConceptBuilder().withName("Answer1").withDataType("N/A").withClass("Misc").withShortName("ShortName3").withUUID("answer1").build();
         org.openmrs.Concept child1 = new ConceptBuilder().withName("Child1").withDataType("N/A").withClass("Misc").withShortName("ShortName1").withUUID("child1").withAnswer(answer1).build();
         org.openmrs.Concept child2 = new ConceptBuilder().withName("Child2").withDataType("N/A").withClass("Misc").withShortName("ShortName2").withUUID("child2").build();
@@ -138,7 +138,7 @@ public class ConceptSetMapperIntegrationTest {
     }
 
     @Test
-    public void get_list_of_concept_with_concept_sets() throws Exception {
+    public void getListOfConceptWithConceptSets() throws Exception {
         org.openmrs.Concept answer1 = new ConceptBuilder().withName("Answer1").withDataType("N/A").withClass("Misc").withShortName("ShortName3").withUUID("answer1").build();
         org.openmrs.Concept child1 = new ConceptBuilder().withName("Child1").withDataType("N/A").withClass("Misc").withShortName("ShortName1").withUUID("child1").withAnswer(answer1).build();
         org.openmrs.Concept child2 = new ConceptBuilder().withName("Child2").withDataType("N/A").withClass("Misc").withShortName("ShortName2").withUUID("child2").build();
@@ -170,7 +170,7 @@ public class ConceptSetMapperIntegrationTest {
     }
 
     @Test
-    public void uuid_null_if_not_specified() throws Exception {
+    public void uuidNullIfNotSpecified() throws Exception {
         ConceptSetRow conceptRow = new ConceptSetRow();
         conceptRow.uuid = null;
         ConceptSet map = conceptSetMapper.map(conceptRow);
@@ -178,7 +178,7 @@ public class ConceptSetMapperIntegrationTest {
     }
 
     @Test
-    public void uuid_null_if_not_valid() throws Exception {
+    public void uuidNullIfNotValid() throws Exception {
         ConceptSetRow conceptSetRow = new ConceptSetRow();
         conceptSetRow.uuid = "invalid UUID";
         ConceptSet map = conceptSetMapper.map(conceptSetRow);

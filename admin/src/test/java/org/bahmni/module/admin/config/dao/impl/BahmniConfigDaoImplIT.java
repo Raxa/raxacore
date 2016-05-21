@@ -28,7 +28,7 @@ public class BahmniConfigDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void get_config_from_by_app_and_config_name() throws Exception {
+    public void getConfigFromByAppAndConfigName() throws Exception {
         BahmniConfig clinical = bahmniConfigDao.get("clinical", "app.json");
         assertNotNull(clinical);
         assertEquals("clinical", clinical.getAppName());
@@ -38,7 +38,7 @@ public class BahmniConfigDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void get_config_from_by_uuid() throws Exception {
+    public void getConfigFromByUuid() throws Exception {
         BahmniConfig clinical = bahmniConfigDao.get("0aa1efd4-6eeb-4cea-bd4b-94af86f24d97");
         assertNotNull(clinical);
         assertEquals("clinical", clinical.getAppName());
@@ -48,19 +48,19 @@ public class BahmniConfigDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void return_null_if_config_not_available() throws Exception {
+    public void returnNullIfConfigNotAvailable() throws Exception {
         BahmniConfig clinical = bahmniConfigDao.get("notclinical", "app.json");
         assertNull(clinical);
     }
 
     @Test
-    public void get_all_configs_for() throws Exception {
+    public void getAllConfigsFor() throws Exception {
         List<BahmniConfig> clinical = bahmniConfigDao.getAllFor("clinical");
         assertEquals(2, clinical.size());
     }
 
     @Test
-    public void insert_new_config() throws Exception {
+    public void insertNewConfig() throws Exception {
         BahmniConfig bahmniConfig = new BahmniConfig();
         bahmniConfig.setConfig("New Config");
         bahmniConfig.setAppName("registration");
@@ -74,7 +74,7 @@ public class BahmniConfigDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void update_config() throws Exception {
+    public void updateConfig() throws Exception {
         BahmniConfig clinical = bahmniConfigDao.get("clinical", "app.json");
         clinical.setConfig("Modified Config");
         BahmniConfig add = bahmniConfigDao.update(clinical);

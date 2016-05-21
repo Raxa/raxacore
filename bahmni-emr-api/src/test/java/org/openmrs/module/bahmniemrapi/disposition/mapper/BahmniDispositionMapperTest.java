@@ -19,7 +19,7 @@ public class BahmniDispositionMapperTest {
     private BahmniDispositionMapper bahmniDispositionMapper;
 
     @Before
-    public void setup(){
+    public void setUp(){
         bahmniDispositionMapper = new BahmniDispositionMapper();
     }
 

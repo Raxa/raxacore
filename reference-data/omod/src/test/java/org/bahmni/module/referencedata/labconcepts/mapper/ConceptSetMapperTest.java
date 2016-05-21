@@ -39,7 +39,7 @@ public class ConceptSetMapperTest {
     }
 
     @Test
-    public void map_concept_set_name_to_openmrs_conceptname() throws Exception {
+    public void mapConceptSetNameToOpenmrsConceptname() throws Exception {
         ConceptSet conceptSet = new ConceptSet();
         conceptSet.setUniqueName("Some");
         org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, new ArrayList<Concept>() , conceptMetaData);
@@ -47,7 +47,7 @@ public class ConceptSetMapperTest {
     }
 
     @Test
-    public void map_short_name() throws Exception {
+    public void mapShortName() throws Exception {
         ConceptSet conceptSet = new ConceptSet();
         conceptSet.setDisplayName("ShortName");
         org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, new ArrayList<Concept>(), conceptMetaData);
@@ -55,7 +55,7 @@ public class ConceptSetMapperTest {
     }
 
     @Test
-    public void map_description() throws Exception {
+    public void mapDescription() throws Exception {
         ConceptSet conceptSet = new ConceptSet();
         conceptSet.setDescription("Description");
         org.openmrs.Concept mappedConcept = conceptSetMapper.map(conceptSet, new ArrayList<Concept>(), conceptMetaData);
@@ -63,7 +63,7 @@ public class ConceptSetMapperTest {
     }
 
     @Test
-    public void map_concept_class() throws Exception {
+    public void mapConceptClass() throws Exception {
         ConceptSet conceptSet = new ConceptSet();
         conceptSet.setClassName("ClassName");
         ConceptClass conceptClass = new ConceptClass();
@@ -75,7 +75,7 @@ public class ConceptSetMapperTest {
     }
 
     @Test
-    public void map_set_members() throws Exception {
+    public void mapSetMembers() throws Exception {
         ConceptSet conceptSet = new ConceptSet();
         List<String> children = new ArrayList<>();
         children.add("1");
@@ -94,7 +94,7 @@ public class ConceptSetMapperTest {
     }
 
     @Test
-    public void dont_map_short_name_if_does_not_exist() throws Exception {
+    public void dontMapShortNameIfDoesNotExist() throws Exception {
         ConceptSet conceptSet = new ConceptSet();
         conceptSet.setDisplayName(null);
         conceptSet.setUniqueName("uniqueName");

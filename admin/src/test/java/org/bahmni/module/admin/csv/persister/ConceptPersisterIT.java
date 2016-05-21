@@ -44,14 +44,14 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_fail_validation_for_no_concept_name() throws Exception {
+    public void shouldFailValidationForNoConceptName() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         Messages errorMessages = conceptPersister.validate(conceptRow);
         assertFalse(errorMessages.isEmpty());
     }
 
     @Test
-    public void should_fail_validation_for_no_concept_class() throws Exception {
+    public void shouldFailValidationForNoConceptClass() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "Concept Name";
         Messages errorMessages = conceptPersister.validate(conceptRow);
@@ -60,7 +60,7 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
 
 
     @Test
-    public void should_pass_validation_if_concept_name_and_concept_class_are_present() throws Exception {
+    public void shouldPassValidationIfConceptNameAndConceptClassArePresent() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "concept Name";
         conceptRow.conceptClass = "concept Class";
@@ -69,7 +69,7 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_persist_new_concept_with_name_and_class_input_only() throws Exception {
+    public void shouldPersistNewConceptWithNameAndClassInputOnly() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "New concept";
         conceptRow.conceptClass = "New Class";
@@ -88,7 +88,7 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_persist_new_concept_with_name_and_class_and_datatype_description_shortname_synonyms_input_only() throws Exception {
+    public void shouldPersistNewConceptWithNameAndClassAndDatatypeDescriptionShortnameSynonymsInputOnly() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "New Concept";
         conceptRow.description = "New Description";
@@ -119,7 +119,7 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_persist_new_concept_with_answers() throws Exception {
+    public void shouldPersistNewConceptWithAnswers() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "New Concept";
         conceptRow.description = "New Description";
@@ -159,7 +159,7 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_set_concept_reference_terms() throws Exception {
+    public void shouldSetConceptReferenceTerms() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "New Concept";
         conceptRow.description = "New Description";
@@ -210,7 +210,7 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_update_details_on_existing_concepts() throws Exception {
+    public void shouldUpdateDetailsOnExistingConcepts() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "Existing Concept";
         conceptRow.conceptClass = "New Class";
@@ -239,7 +239,7 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_create_new_mapping_for_existing_concept() throws Exception {
+    public void shouldCreateNewMappingForExistingConcept() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "Existing Concept";
         conceptRow.conceptClass = "New Class";
@@ -279,7 +279,7 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void should_create_new_mappings_for_existing_concept() throws Exception {
+    public void shouldCreateNewMappingsForExistingConcept() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "Existing Concept";
         conceptRow.conceptClass = "New Class";
@@ -319,7 +319,7 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void create_new_concept_of_type_numeric_with_units_and_hinormal_lownormal() throws Exception {
+    public void createNewConceptOfTypeNumericWithUnitsAndHinormalLownormal() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "New Concept";
         conceptRow.conceptClass = "New Class";

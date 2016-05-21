@@ -30,7 +30,7 @@ public class BahmniLocationServiceImplTest {
     }
 
     @Test
-    public void getEncounterType_shouldRaiseErrorWhenLocationIsMappedToMultipleEncounterTypes() throws Exception {
+    public void getEncounterTypeShouldRaiseErrorWhenLocationIsMappedToMultipleEncounterTypes() throws Exception {
         String locationUuid = UUID.randomUUID().toString();
         when(locationEncounterTypeMapDao.getEncounterTypes(locationUuid)).thenReturn(Arrays.asList(new EncounterType(), new EncounterType()));
 
