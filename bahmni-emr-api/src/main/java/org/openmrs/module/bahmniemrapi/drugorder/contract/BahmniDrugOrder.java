@@ -15,6 +15,7 @@ public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
     private EncounterTransaction.DrugOrder drugOrder;
     private EncounterTransaction.Provider provider;
     private List<BahmniOrderAttribute> orderAttributes;
+    private boolean retired;
 
     private String creatorName;
 
@@ -179,5 +180,13 @@ public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
 
     public EncounterTransaction.Concept getConcept() {
         return this.drugOrder.getConcept();
+    }
+
+    public boolean getRetired() {
+        return this.retired;
+    }
+
+    public void setRetired(boolean retired) {
+        this.retired = retired;
     }
 }
