@@ -105,4 +105,50 @@ public class ConceptSetPersisterIT extends BaseIntegrationTest {
         Context.closeSession();
     }
 
+    @Test
+    public void should_fail_validation_for_conceptset_with_cycle () throws Exception{
+        ConceptSetRow conceptSetRow = new ConceptSetRow();
+        conceptSetRow.name = "Cycle concept Name";
+        conceptSetRow.conceptClass = "Cycle concept Class";
+
+        List<KeyValue> children = new ArrayList<>();
+        children.add(new KeyValue("1", "Child1"));
+        children.add(new KeyValue("2", "Cycle concept Name"));
+        conceptSetRow.children = children;
+        Messages persistErrorMessages = conceptSetPersister.validate(conceptSetRow);
+        assertFalse("Validation did not catch cycle", persistErrorMessages.isEmpty());
+    }
+
+    @Test
+    public void should_fail_to_persist_if_conceptSetRow_introduces_cycle() throws Exception {
+        ConceptSetRow row1 = new ConceptSetRow();
+        row1.name = "ConceptA";
+        row1.conceptClass = "New Class";
+        List<KeyValue> children = new ArrayList<>();
+        children.add(new KeyValue("1", "Child1"));
+        children.add(new KeyValue("2", "Child2"));
+        row1.children = children;
+
+        Messages persistErrorMessages = conceptSetPersister.persist(row1);
+        assertTrue(persistErrorMessages.isEmpty());
+        Context.openSession();
+        Context.authenticate("admin", "test");
+        Concept persistedConcept = conceptService.getConceptByName(row1.name);
+        assertNotNull(persistedConcept);
+
+        ConceptSetRow row2 = new ConceptSetRow();
+        row2.name = "Child2";
+        row2.conceptClass = "New Class";
+        List<KeyValue> children1 = new ArrayList<>();
+        children1.add(new KeyValue("1", "ConceptA"));
+        children1.add(new KeyValue("2", "Child3"));
+        row2.children = children1;
+
+        Messages persistErrorMessages1 = conceptSetPersister.persist(row2);
+        assertFalse(persistErrorMessages1.isEmpty());
+
+        Context.flushSession();
+        Context.closeSession();
+    }
+
 }
