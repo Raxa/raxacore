@@ -39,9 +39,11 @@ public class BahmniDrugOrderMapper {
             bahmniDrugOrder.setDrugOrder(drugOrderMapper.mapDrugOrder(openMRSDrugOrder));
             bahmniDrugOrder.setVisit(openMRSDrugOrder.getEncounter().getVisit());
             bahmniDrugOrder.setProvider(providerMapper.map(openMRSDrugOrder.getOrderer()));
-            bahmniDrugOrder.setRetired(openMRSDrugOrder.getDrug().getRetired());
-            bahmniDrugOrder.setCreatorName(openMRSDrugOrder.getCreator().getPersonName().toString());
+            if(openMRSDrugOrder.getDrug() != null){
+                bahmniDrugOrder.setRetired(openMRSDrugOrder.getDrug().getRetired());
+            }
 
+            bahmniDrugOrder.setCreatorName(openMRSDrugOrder.getCreator().getPersonName().toString());
             if(discontinuedOrderMap.containsKey(openMRSDrugOrder.getOrderNumber())){
                 bahmniDrugOrder.setOrderReasonText(discontinuedOrderMap.get(openMRSDrugOrder.getOrderNumber()).getOrderReasonNonCoded());
                 bahmniDrugOrder.setOrderReasonConcept(conceptMapper.map(discontinuedOrderMap.get(openMRSDrugOrder.getOrderNumber()).getOrderReason()));
