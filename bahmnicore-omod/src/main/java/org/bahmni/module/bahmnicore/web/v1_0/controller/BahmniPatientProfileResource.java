@@ -42,10 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Controller for REST web service access to
@@ -73,7 +70,7 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         identifierProperties.remove("identifierPrefix");
         String identifier;
         boolean isRegistrationIDNumeric = String.valueOf(identifierProperties.get("identifier")).replace(identifierPrefix, "").matches("[0-9]+");
-        if (identifierProperties.get("identifier") != null && isRegistrationIDNumeric) {
+        if (identifierProperties.get("identifier") != null && !Objects.equals(identifierPrefix, "") && isRegistrationIDNumeric) {
             long givenRegistrationNumber = Long.parseLong(String.valueOf(identifierProperties.get("identifier")).replace(identifierPrefix, ""));
             long latestRegistrationNumber = Long.parseLong(identifierSourceServiceWrapper.getSequenceValue(identifierPrefix));
             if (!jumpAccepted) {

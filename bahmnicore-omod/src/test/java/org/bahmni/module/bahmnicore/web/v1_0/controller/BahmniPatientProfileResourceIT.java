@@ -85,6 +85,22 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
     }
 
     @Test
+    public void shouldCreatePatientWhenIdentifierPrefixIsNotPresent() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        executeDataSet("createPatientMetadata.xml");
+        bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper);
+        when(identifierSourceServiceWrapper.getSequenceValue("")).thenReturn("300010");
+        when(identifierSourceServiceWrapper.generateIdentifier("", "")).thenReturn("300010");
+        classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("patient.json").getFile());
+        String jsonString = FileUtils.readFileToString(file);
+        jsonString = jsonString.replace("BAH", "");
+        propertiesToCreate = new SimpleObject().parseJson(jsonString);
+        ResponseEntity<Object> response = bahmniPatientProfileResource.create(false, propertiesToCreate);
+        Assert.assertEquals(200, response.getStatusCode().value());
+    }
+    
+    @Test
     public void shouldReturnBadRequestForInvalidJson() throws Exception {
         LinkedHashMap person = ((LinkedHashMap)((LinkedHashMap)propertiesToCreate.get("patient")).get("person"));
         person.remove("names");
