@@ -118,4 +118,16 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
         Assert.assertEquals(200, response.getStatusCode().value());
         Assert.assertEquals("Wed Mar 07 00:00:00 IST 1984", ((PatientProfile) response.getBody()).getPatient().getBirthdate().toString());
     }
+
+    @Test
+    public void shouldReturnBadRequestForLongPatientName() throws Exception {
+        File file = new File(classLoader.getResource("updatePatient.json").getFile());
+        String jsonString = FileUtils.readFileToString(file);
+        propertiesToCreate = new SimpleObject().parseJson(jsonString);
+        LinkedHashMap name = (LinkedHashMap) ((ArrayList) ((LinkedHashMap) ((LinkedHashMap) propertiesToCreate.get("patient")).get("person")).get("names")).get(0);
+        name.put("givenName", "LongStringLongStringLongStringLongStringLongStringLongString");
+        String uuid = "592b29e1-b3f5-423e-83cb-0d2c9b80867f";
+        ResponseEntity<Object> response = bahmniPatientProfileResource.update(uuid, propertiesToCreate);
+        Assert.assertEquals(400, response.getStatusCode().value());
+    }
 }

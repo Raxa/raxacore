@@ -117,7 +117,7 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
             if (e instanceof ContextAuthenticationException) {
                 return new ResponseEntity<Object>(e, HttpStatus.FORBIDDEN);
             } else if (e instanceof ValidationException) {
-                return new ResponseEntity<Object>(e.getMessage(), HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, null), HttpStatus.BAD_REQUEST);
             } else {
                 return new ResponseEntity<Object>(e, HttpStatus.INTERNAL_SERVER_ERROR);
             }
