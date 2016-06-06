@@ -8,6 +8,10 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.emrapi.patient.EmrPatientProfileService;
 import org.openmrs.module.emrapi.patient.PatientProfile;
@@ -23,11 +27,17 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.*;
 import static org.powermock.api.mockito.PowerMockito.spy;
 
 @PrepareForTest({Context.class, BahmniPatientProfileResource.class})
@@ -44,7 +54,14 @@ public class BahmniPatientProfileResourceTest {
     PatientResource1_8 patientResource1_8;
 
     @Mock
+    private AdministrationService administrationService;
+
+    @Mock
+    private PatientService patientService;
+
+    @Mock
     private IdentifierSourceServiceWrapper identifierSourceServiceWrapper;
+
     private BahmniPatientProfileResource bahmniPatientProfileResource;
     private SimpleObject propertiesToCreate;
 
@@ -57,7 +74,7 @@ public class BahmniPatientProfileResourceTest {
         propertiesToCreate = new SimpleObject().parseJson(jsonString);
         Patient patient = new Patient();
         patient.setGender("M");
-        PowerMockito.mockStatic(Context.class);
+        mockStatic(Context.class);
         PowerMockito.when(Context.getService(RestService.class)).thenReturn(restService);
         PowerMockito.when(restService.getResourceBySupportedClass(Patient.class)).thenReturn(patientResource1_8);
         PowerMockito.when(patientResource1_8.getPatient(any(SimpleObject.class))).thenReturn(patient);
@@ -68,14 +85,29 @@ public class BahmniPatientProfileResourceTest {
     public void createPatient() throws Exception {
         bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper);
         BahmniPatientProfileResource spy = spy(bahmniPatientProfileResource);
-        PatientProfile delegate = new PatientProfile();
+        PatientProfile delegate = mock(PatientProfile.class);
         when(identifierSourceServiceWrapper.generateIdentifier("BAH", "")).thenReturn("BAH300010");
-        PowerMockito.doReturn(delegate).when(spy, "mapForCreatePatient", propertiesToCreate);
+        doReturn(delegate).when(spy, "mapForCreatePatient", propertiesToCreate);
         when(emrPatientProfileService.save(delegate)).thenReturn(delegate);
+        when(Context.getAdministrationService()).thenReturn(administrationService);
+        when(administrationService.getGlobalProperty("emr.primaryIdentifierType")).thenReturn("dead-cafe");
+        when(Context.getPatientService()).thenReturn(patientService);
+        PatientIdentifierType patientIdentifierType = new PatientIdentifierType();
+        when(patientService.getPatientIdentifierTypeByUuid("dead-cafe")).thenReturn(patientIdentifierType);
+        Patient patient = mock(Patient.class);
+        when(delegate.getPatient()).thenReturn(patient);
+        PatientIdentifier patientIdentifier = mock(PatientIdentifier.class);
+        Set<PatientIdentifier> patientIdentifiers = new HashSet<>();
+        patientIdentifiers.add(patientIdentifier);
+        when(patient.getIdentifiers()).thenReturn(patientIdentifiers);
         doNothing().when(spy).setConvertedProperties(any(PatientProfile.class), any(SimpleObject.class), any(DelegatingResourceDescription.class), any(Boolean.class));
-        ResponseEntity<Object> response = spy.create(false, propertiesToCreate);
-        Assert.assertEquals(200, response.getStatusCode().value());
 
+        ResponseEntity<Object> response = spy.create(false, propertiesToCreate);
+
+        Assert.assertEquals(200, response.getStatusCode().value());
+        verify(administrationService, times(1)).getGlobalProperty("emr.primaryIdentifierType");
+        verify(patientService, times(1)).getPatientIdentifierTypeByUuid("dead-cafe");
+        verify(patientIdentifier, times(1)).setIdentifierType(patientIdentifierType);
     }
 
     @Test
@@ -84,7 +116,7 @@ public class BahmniPatientProfileResourceTest {
         BahmniPatientProfileResource spy = spy(bahmniPatientProfileResource);
         PatientProfile delegate = new PatientProfile();
         when(identifierSourceServiceWrapper.generateIdentifier("BAH", "")).thenReturn("BAH300010");
-        PowerMockito.doReturn(delegate).when(spy, "mapForUpdatePatient", anyString(), any(SimpleObject.class));
+        doReturn(delegate).when(spy, "mapForUpdatePatient", anyString(), any(SimpleObject.class));
         when(emrPatientProfileService.save(delegate)).thenReturn(delegate);
         doNothing().when(spy).setConvertedProperties(any(PatientProfile.class), any(SimpleObject.class), any(DelegatingResourceDescription.class), any(Boolean.class));
         ResponseEntity<Object> response = spy.update("someUuid", propertiesToCreate);

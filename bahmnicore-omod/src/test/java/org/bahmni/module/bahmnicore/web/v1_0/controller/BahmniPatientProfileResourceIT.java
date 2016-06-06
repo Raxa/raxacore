@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.emrapi.patient.EmrPatientProfileService;
 import org.openmrs.module.emrapi.patient.PatientProfile;
+import org.openmrs.module.idgen.contract.IdentifierSource;
 import org.openmrs.module.idgen.webservices.services.IdentifierSourceServiceWrapper;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -18,7 +19,10 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 
@@ -34,6 +38,9 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
 
     @Mock
     private IdentifierSourceServiceWrapper identifierSourceServiceWrapper;
+
+    @Mock
+    private IdentifierSource identifierSource;
 
     @Before
     public void setUp() throws Exception {
@@ -85,18 +92,28 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldCreatePatientWhenIdentifierPrefixIsNotPresent() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        executeDataSet("createPatientMetadata.xml");
-        bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper);
-        when(identifierSourceServiceWrapper.getSequenceValue("")).thenReturn("300010");
-        when(identifierSourceServiceWrapper.generateIdentifier("", "")).thenReturn("300010");
-        classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("patient.json").getFile());
-        String jsonString = FileUtils.readFileToString(file);
-        jsonString = jsonString.replace("BAH", "");
-        propertiesToCreate = new SimpleObject().parseJson(jsonString);
+    public void shouldCreatePatientWhenIdentifierPrefixIsNotPresentAndIdentifierIsManuallyEntered() throws Exception {
+        HashMap<String, Object> patient = propertiesToCreate.get("patient");
+        List<HashMap<String, String>> identifiers = (ArrayList<HashMap<String, String>>) patient.get("identifiers");
+        identifiers.get(0).put("identifier", "identifier");
+        identifiers.get(0).put("identifierPrefix", "");
+
         ResponseEntity<Object> response = bahmniPatientProfileResource.create(false, propertiesToCreate);
+
+        Assert.assertEquals(200, response.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldCreatePatientWhenIdentifierPrefixIsBlankAndNoIdentifierIsEntered() throws Exception {
+        when(identifierSourceServiceWrapper.getAllIdentifierSources()).thenReturn(Arrays.asList(identifierSource));
+        when(identifierSource.getName()).thenReturn("identifierName");
+        when(identifierSourceServiceWrapper.generateIdentifier("identifierName", "")).thenReturn("300010");
+        HashMap<String, Object> patient = propertiesToCreate.get("patient");
+        List<HashMap<String, String>> identifiers = (ArrayList<HashMap<String, String>>) patient.get("identifiers");
+        identifiers.get(0).put("identifierPrefix", "");
+
+        ResponseEntity<Object> response = bahmniPatientProfileResource.create(false, propertiesToCreate);
+
         Assert.assertEquals(200, response.getStatusCode().value());
     }
     

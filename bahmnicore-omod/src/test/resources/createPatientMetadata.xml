@@ -13,5 +13,6 @@
     <patient_identifier patient_identifier_id="1" patient_id="1" identifier="GAN223660" identifier_type="1"
                         preferred="1" location_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
                         uuid="0b7cf2fa-b377-455c-8750-231cf34a21ac"/>
+    <global_property property="emr.primaryIdentifierType" property_value="81433852-3f10-11e4-adec-0800271c1b75" uuid="9885827e-26fe-102b-80cb-2017a47871b3"/>
 </dataset>
 

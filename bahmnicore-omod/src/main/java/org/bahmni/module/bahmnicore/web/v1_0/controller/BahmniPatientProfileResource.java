@@ -6,6 +6,8 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.NonUniqueObjectException;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
@@ -82,11 +84,22 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
             if (latestRegistrationNumber < (givenRegistrationNumber + 1 ))
             identifierSourceServiceWrapper.saveSequenceValue(givenRegistrationNumber + 1, identifierPrefix);
         } else if(identifierProperties.get("identifier") == null) {
+            if (identifierPrefix.equals("")) {
+                identifierPrefix = identifierSourceServiceWrapper.getAllIdentifierSources().get(0).getName();
+            }
             identifier = identifierSourceServiceWrapper.generateIdentifier(identifierPrefix, "");
             identifierProperties.put("identifier", identifier);
         }
 
         PatientProfile delegate = mapForCreatePatient(propertiesToCreate);
+
+        String primaryIdentifierTypeUuid = Context.getAdministrationService().getGlobalProperty("emr.primaryIdentifierType");
+        PatientIdentifierType primaryIdentifierType = Context.getPatientService().getPatientIdentifierTypeByUuid(primaryIdentifierTypeUuid);
+
+        for (PatientIdentifier patientIdentifier : delegate.getPatient().getIdentifiers()) {
+            patientIdentifier.setIdentifierType(primaryIdentifierType);
+        }
+
         setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
         try {
             delegate = emrPatientProfileService.save(delegate);
