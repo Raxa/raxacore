@@ -8,7 +8,6 @@ import org.openmrs.EncounterType;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
-import org.openmrs.api.APIException;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;

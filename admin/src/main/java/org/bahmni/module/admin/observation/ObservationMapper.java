@@ -6,7 +6,6 @@ import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptNumeric;
-import org.openmrs.Patient;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;

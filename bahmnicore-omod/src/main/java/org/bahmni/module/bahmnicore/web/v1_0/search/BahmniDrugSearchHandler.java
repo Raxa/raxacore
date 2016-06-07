@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.web.v1_0.search;
 
-import org.bahmni.module.referencedata.labconcepts.contract.Concept;
 import org.openmrs.Drug;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
