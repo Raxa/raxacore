@@ -86,7 +86,7 @@ public class BahmniPatientProfileResourceTest {
         bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper);
         BahmniPatientProfileResource spy = spy(bahmniPatientProfileResource);
         PatientProfile delegate = mock(PatientProfile.class);
-        when(identifierSourceServiceWrapper.generateIdentifier("BAH", "")).thenReturn("BAH300010");
+        when(identifierSourceServiceWrapper.generateIdentifierUsingIdentifierSourceUuid("dead-cafe", "")).thenReturn("BAH300010");
         doReturn(delegate).when(spy, "mapForCreatePatient", propertiesToCreate);
         when(emrPatientProfileService.save(delegate)).thenReturn(delegate);
         when(Context.getAdministrationService()).thenReturn(administrationService);
@@ -107,6 +107,7 @@ public class BahmniPatientProfileResourceTest {
         Assert.assertEquals(200, response.getStatusCode().value());
         verify(administrationService, times(1)).getGlobalProperty("emr.primaryIdentifierType");
         verify(patientService, times(1)).getPatientIdentifierTypeByUuid("dead-cafe");
+        verify(identifierSourceServiceWrapper, times(1)).generateIdentifierUsingIdentifierSourceUuid("dead-cafe", "");
         verify(patientIdentifier, times(1)).setIdentifierType(patientIdentifierType);
     }
 
@@ -115,7 +116,6 @@ public class BahmniPatientProfileResourceTest {
         bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper);
         BahmniPatientProfileResource spy = spy(bahmniPatientProfileResource);
         PatientProfile delegate = new PatientProfile();
-        when(identifierSourceServiceWrapper.generateIdentifier("BAH", "")).thenReturn("BAH300010");
         doReturn(delegate).when(spy, "mapForUpdatePatient", anyString(), any(SimpleObject.class));
         when(emrPatientProfileService.save(delegate)).thenReturn(delegate);
         doNothing().when(spy).setConvertedProperties(any(PatientProfile.class), any(SimpleObject.class), any(DelegatingResourceDescription.class), any(Boolean.class));

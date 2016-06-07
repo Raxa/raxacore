@@ -32,6 +32,7 @@
         "identifierType": {
           "name": "Our Id"
         },
+        "identifierSourceUuid" : "dead-cafe",
         "preferred": true,
         "voided": false
       }

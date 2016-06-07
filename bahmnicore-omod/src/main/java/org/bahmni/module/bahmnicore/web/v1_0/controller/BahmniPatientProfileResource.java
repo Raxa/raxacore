@@ -70,11 +70,13 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         LinkedHashMap identifierProperties = (LinkedHashMap) ((ArrayList) ((LinkedHashMap) propertiesToCreate.get("patient")).get("identifiers")).get(0);
         String identifierPrefix = String.valueOf(identifierProperties.get("identifierPrefix"));
         identifierProperties.remove("identifierPrefix");
+        String identifierSourceUuid = String.valueOf(identifierProperties.get("identifierSourceUuid"));
         String identifier;
+        identifierProperties.remove("identifierSourceUuid");
         boolean isRegistrationIDNumeric = String.valueOf(identifierProperties.get("identifier")).replace(identifierPrefix, "").matches("[0-9]+");
         if (identifierProperties.get("identifier") != null && !Objects.equals(identifierPrefix, "") && isRegistrationIDNumeric) {
             long givenRegistrationNumber = Long.parseLong(String.valueOf(identifierProperties.get("identifier")).replace(identifierPrefix, ""));
-            long latestRegistrationNumber = Long.parseLong(identifierSourceServiceWrapper.getSequenceValue(identifierPrefix));
+            long latestRegistrationNumber = Long.parseLong(identifierSourceServiceWrapper.getSequenceValueUsingIdentifierSourceUuid(identifierSourceUuid));
             if (!jumpAccepted) {
                 long sizeOfJump = givenRegistrationNumber - latestRegistrationNumber;
                 if (sizeOfJump > 0) {
@@ -82,12 +84,9 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
                 }
             }
             if (latestRegistrationNumber < (givenRegistrationNumber + 1 ))
-            identifierSourceServiceWrapper.saveSequenceValue(givenRegistrationNumber + 1, identifierPrefix);
+            identifierSourceServiceWrapper.saveSequenceValueUsingIdentifierSourceUuid(givenRegistrationNumber + 1, identifierSourceUuid);
         } else if(identifierProperties.get("identifier") == null) {
-            if (identifierPrefix.equals("")) {
-                identifierPrefix = identifierSourceServiceWrapper.getAllIdentifierSources().get(0).getName();
-            }
-            identifier = identifierSourceServiceWrapper.generateIdentifier(identifierPrefix, "");
+            identifier = identifierSourceServiceWrapper.generateIdentifierUsingIdentifierSourceUuid(identifierSourceUuid, "");
             identifierProperties.put("identifier", identifier);
         }
 

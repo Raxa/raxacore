@@ -47,8 +47,8 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
         MockitoAnnotations.initMocks(this);
         executeDataSet("createPatientMetadata.xml");
         bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper);
-        when(identifierSourceServiceWrapper.getSequenceValue("BAH")).thenReturn("300010");
-        when(identifierSourceServiceWrapper.generateIdentifier("BAH", "")).thenReturn("BAH300010");
+        when(identifierSourceServiceWrapper.getSequenceValueUsingIdentifierSourceUuid("dead-cafe")).thenReturn("300010");
+        when(identifierSourceServiceWrapper.generateIdentifierUsingIdentifierSourceUuid("dead-cafe", "")).thenReturn("BAH300010");
         classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("patient.json").getFile());
         String jsonString = FileUtils.readFileToString(file);
