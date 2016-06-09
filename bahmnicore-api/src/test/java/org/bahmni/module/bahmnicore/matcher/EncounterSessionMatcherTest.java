@@ -23,12 +23,15 @@ import org.openmrs.api.context.UserContext;
 import org.openmrs.api.impl.EncounterServiceImpl;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTypeIdentifier;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
+import org.openmrs.module.episodes.Episode;
+import org.openmrs.module.episodes.service.EpisodeService;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -36,12 +39,17 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -55,31 +63,34 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @PrepareForTest(Context.class)
 public class EncounterSessionMatcherTest {
     @Mock
-    AdministrationService administrationService;
+    private AdministrationService administrationService;
     @Mock
-    EncounterTypeIdentifier encounterTypeIdentifier;
+    private EncounterTypeIdentifier encounterTypeIdentifier;
     @Mock
-    EncounterServiceImpl encounterService;
-    Set<Provider> providers;
-    Set<EncounterProvider> encounterProviders;
-    User creator;
+    private EncounterServiceImpl encounterService;
+    private Set<Provider> providers;
+    private Set<EncounterProvider> encounterProviders;
+    private User creator;
     @Mock
-    UserContext userContext;
-    EncounterType encounterType;
+    private UserContext userContext;
+    private EncounterType encounterType;
     @Mock
-    Encounter encounter;
-    Person person;
-    Patient patient;
-    Visit visit;
-    EncounterSessionMatcher encounterSessionMatcher;
+    private Encounter encounter;
+    private Person person;
+    private Patient patient;
+    private Visit visit;
+    private EncounterSessionMatcher encounterSessionMatcher;
     private Location location;
     @Mock
     private BahmniProgramWorkflowService bahmniProgramWorkflowService;
 
+    @Mock
+    private EpisodeService episodeService;
+
     @Before
     public void setUp(){
         initMocks(this);
-        encounterSessionMatcher = new EncounterSessionMatcher(administrationService, encounterTypeIdentifier, encounterService, bahmniProgramWorkflowService);
+        encounterSessionMatcher = new EncounterSessionMatcher(administrationService, encounterTypeIdentifier, encounterService, bahmniProgramWorkflowService, episodeService);
         visit = new Visit();
         visit.setId(3);
 
@@ -281,6 +292,61 @@ public class EncounterSessionMatcherTest {
         }
     }
 
+    @Test
+    public void shouldReturnNullIfProgramUuidIsNotSpecifiedAndOnlyEncountersRelatedToProgramsAreOpen(){
+        EncounterParameters encounterParameters = getEncounterParameters(null, location);
+        HashMap<String, Object> context = new HashMap<>();
+        context.put("patientProgramUuid", null);
+        encounterParameters.setContext(context);
+
+        encounterParameters.setEncounterDateTime(DateUtils.truncate(new Date(), Calendar.DATE));
+
+        Encounter e1 = new Encounter();
+        User creator1 = new User(1);
+        e1.setCreator(creator1);
+        List<Encounter> encounters = new ArrayList<>();
+        encounters.add(e1);
+
+        when(userContext.getAuthenticatedUser()).thenReturn(creator1);
+        when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false)))
+                .thenReturn(encounters);
+        when(episodeService.getEpisodeForEncounter(e1)).thenReturn(new Episode());
+
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(null, encounterParameters);
+
+        verify(episodeService, times(1)).getEpisodeForEncounter(e1);
+        assertThat(encounterReturned, is(nullValue()));
+    }
+
+    @Test
+    public void shouldRemoveAllEncountersAssociatedWithEpisodes(){
+        EncounterParameters encounterParameters = getEncounterParameters(null, location);
+        HashMap<String, Object> context = new HashMap<>();
+        context.put("patientProgramUuid", null);
+        encounterParameters.setContext(context);
+
+        encounterParameters.setEncounterDateTime(DateUtils.truncate(new Date(), Calendar.DATE));
+
+        Encounter e1 = new Encounter();
+        User creator1 = new User(1);
+        e1.setCreator(creator1);
+        Encounter e2 = new Encounter();
+        e2.setCreator(creator1);
+        List<Encounter> encounters = new ArrayList<>();
+        encounters.add(e1);
+        encounters.add(e2);
+
+        when(userContext.getAuthenticatedUser()).thenReturn(creator1);
+        when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false)))
+                .thenReturn(encounters);
+        when(episodeService.getEpisodeForEncounter(e1)).thenReturn(new Episode());
+
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(null, encounterParameters);
+
+        verify(episodeService, times(1)).getEpisodeForEncounter(e1);
+        verify(episodeService, times(1)).getEpisodeForEncounter(e2);
+        assertThat(encounterReturned, is(equalTo(e2)));
+    }
 
     private EncounterParameters getEncounterParameters(Set<Provider> providers, Location location) {
         return getEncounterParameters(providers, location, this.encounterType);
