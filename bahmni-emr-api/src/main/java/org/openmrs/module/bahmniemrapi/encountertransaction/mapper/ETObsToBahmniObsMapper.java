@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 public class ETObsToBahmniObsMapper {
@@ -45,6 +46,36 @@ public class ETObsToBahmniObsMapper {
                 false);
     }
 
+    private String getUsersLocale() {
+        User authenticatedUser = Context.getAuthenticatedUser();
+        return (authenticatedUser != null) ? authenticatedUser.getUserProperty("defaultLocale") : null;
+    }
+
+    private void fixConceptName(EncounterTransaction.Observation observation) {
+        if (!(observation.getValue() instanceof EncounterTransaction.Concept))
+            return;
+        EncounterTransaction.Concept etConcept = (EncounterTransaction.Concept) observation.getValue();
+        Concept omrsConcept = conceptService.getConceptByUuid(etConcept.getUuid());
+        String usersLocale = getUsersLocale();
+
+        if (usersLocale != null) {
+            Locale locale = LocaleUtility.fromSpecification(usersLocale);
+            ConceptName shortName = omrsConcept.getShortNameInLocale(locale);
+            ConceptName fullySpecifiedName = omrsConcept.getFullySpecifiedName(locale);
+            if (shortName == null) {
+                if (fullySpecifiedName != null) {
+                    etConcept.setShortName(fullySpecifiedName.toString());
+                } else {
+                    String defaultLocale = Context.getAdministrationService().getGlobalProperty("default_locale");
+                    if (defaultLocale != null) {
+                        Locale defLocale = LocaleUtility.fromSpecification(defaultLocale);
+                        etConcept.setShortName(omrsConcept.getFullySpecifiedName(defLocale).toString());
+                    }
+                }
+            }
+        }
+    }
+
     protected BahmniObservation map(EncounterTransaction.Observation observation, AdditionalBahmniObservationFields additionalBahmniObservationFields, List<Concept> rootConcepts, boolean flatten) {
 
         BahmniObservation bahmniObservation= createBahmniObservation(observation,additionalBahmniObservationFields,rootConcepts,flatten);
@@ -58,6 +89,7 @@ public class ETObsToBahmniObsMapper {
                 bahmniObservation.addGroupMember(map(groupMember, additionalFields, rootConcepts, flatten));
             }
         } else {
+            fixConceptName(observation);
             bahmniObservation.setValue(observation.getValue());
             bahmniObservation.setType(observation.getConcept().getDataType());
             bahmniObservation.setHiNormal(observation.getConcept().getHiNormal());
@@ -69,29 +101,6 @@ public class ETObsToBahmniObsMapper {
         }
         if (observation.getCreator() != null) {
             bahmniObservation.setCreatorName(observation.getCreator().getPersonName());
-        }
-
-
-        User authenticatedUser = Context.getAuthenticatedUser();
-        String defaultLocale = authenticatedUser != null ? authenticatedUser.getUserProperty("defaultLocale") : null;
-        for (Concept aConcept : rootConcepts) {
-            if (bahmniObservation.getConcept().getName().equalsIgnoreCase(aConcept.getName().getName())){
-                String shortName = null;
-
-                if (defaultLocale != null) {
-                    ConceptName shortNameInLocale = aConcept.getShortNameInLocale(LocaleUtility.fromSpecification(defaultLocale));
-                    if (shortNameInLocale != null) {
-                        shortName = shortNameInLocale.getName();
-                    }
-                    if (shortName == null) {
-                        ConceptName nameInLocale = aConcept.getName(LocaleUtility.fromSpecification(defaultLocale));
-                        if (nameInLocale != null) {
-                            shortName = nameInLocale.getName();
-                        }
-                    }
-                }
-                bahmniObservation.getConcept().setShortName(shortName);
-            }
         }
         return bahmniObservation;
     }
@@ -141,6 +150,7 @@ public class ETObsToBahmniObsMapper {
             } else if (member.getConcept().getConceptClass().equals(DURATION_CONCEPT_CLASS)) {
                 bahmniObservation.setDuration(new Double(member.getValue().toString()).longValue());
             } else {
+                fixConceptName(member);
                 setValueAndType(bahmniObservation, member);
                 bahmniObservation.getConcept().setUnits(member.getConcept().getUnits());
                 bahmniObservation.setHiNormal(member.getConcept().getHiNormal());

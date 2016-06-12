@@ -7,8 +7,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.User;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
@@ -24,7 +27,9 @@ import java.util.List;
 import java.util.Locale;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -36,12 +41,15 @@ import static org.powermock.api.mockito.PowerMockito.when;
 public class ETObsToBahmniObsMapperTest {
 
     @Mock
-    ConceptService conceptService;
+    private ConceptService conceptService;
+
+    @Mock
+    private AdministrationService administrationService;
 
     @Mock
     private User authenticatedUser;
 
-    ETObsToBahmniObsMapper etObsToBahmniObsMapper;
+    private ETObsToBahmniObsMapper etObsToBahmniObsMapper;
     private String person1name = "superman";
     private String person2name = "RajSingh";
     private String encounterUuid = "encounter-uuid";
@@ -56,9 +64,11 @@ public class ETObsToBahmniObsMapperTest {
         etObsToBahmniObsMapper = new ETObsToBahmniObsMapper(conceptService);
         mockStatic(LocaleUtility.class);
         mockStatic(Context.class);
+        mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
         Mockito.when(Context.getAuthenticatedUser()).thenReturn(authenticatedUser);
         Mockito.when(Context.getLocale()).thenReturn(Locale.ENGLISH);
+        Mockito.when(Context.getAdministrationService()).thenReturn(administrationService);
     }
 
     private EncounterTransaction.User createETUser(String personname) {
@@ -79,12 +89,12 @@ public class ETObsToBahmniObsMapperTest {
         return etConcept;
     }
 
-    private EncounterTransaction.Observation createETObservation(String UUID, EncounterTransaction.User user, String value, EncounterTransaction.Concept concept) {
+    private EncounterTransaction.Observation createETObservation(String UUID, EncounterTransaction.User user, Object value, EncounterTransaction.Concept concept) {
         EncounterTransaction.Observation observation = new EncounterTransaction.Observation();
         observation.setUuid(UUID);
         observation.setCreator(user);
         if (concept.getConceptClass().equals("Unknown")) {
-            observation.setValue(Boolean.parseBoolean(value));
+            observation.setValue(Boolean.parseBoolean((String)value));
         } else if (value != null) {
             observation.setValue(value);
         }
@@ -295,49 +305,61 @@ public class ETObsToBahmniObsMapperTest {
     }
 
     @Test
-    public void testObservationConceptShortNameWhenNoShortName() throws Exception {
+    public void shouldUseFullySpecifiedNameForCodedAnswerWhenShortNameIsNotAvailableInALocale() throws Exception {
+        Concept concept = createConcept("omrsConcpet", "N/A", "uuid", null, null);
+        ConceptName conceptName = new ConceptName("fullySpecifiedName", Locale.FRENCH);
+        conceptName.setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
+        concept.setFullySpecifiedName(conceptName);
 
-        EncounterTransaction.User user1 = createETUser(person1name);
+        when(administrationService.getGlobalProperty("default_locale")).thenReturn("en");
+        when(authenticatedUser.getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE)).thenReturn("fr");
+        when(conceptService.getConceptByUuid("valueUuid")).thenReturn(concept);
+        when(LocaleUtility.fromSpecification("fr")).thenReturn(Locale.FRENCH);
 
-        Mockito.when(authenticatedUser.getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE)).thenReturn("fr");
-
-        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, etParentConceptClass, "concept", "shortName" , null);
-
-
-        Concept parentConcept = createConcept("concept", "N/A", null, null, null);
-
-        EncounterTransaction.Observation observation1 = createETObservation("obs1-uuid", user1, null, etParentConcept);
+        EncounterTransaction.Concept valueConcept = createETConcept("answer", "Coded", null, null, "valueUuid");
+        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, etParentConceptClass, "concept", null, "uuid");
+        EncounterTransaction.User user = createETUser(person1name);
+        EncounterTransaction.Observation observation = createETObservation("obs1-uuid", user, valueConcept, etParentConcept);
 
         AdditionalBahmniObservationFields additionalBahmniObservationFields = new AdditionalBahmniObservationFields(encounterUuid, new Date(), new Date(), obsGroupUuid);
-        BahmniObservation actualObs = etObsToBahmniObsMapper.map(observation1, additionalBahmniObservationFields, asList(parentConcept), false);
+        Concept parentConcept = createConcept("concept", "Coded", null, null, null);
 
-        assertEquals(person1name, actualObs.getCreatorName());
-        assertEquals(encounterUuid, actualObs.getEncounterUuid());
-        assertEquals(obsGroupUuid, actualObs.getObsGroupUuid());
-        assertEquals("concept",actualObs.getConcept().getShortName());
+        BahmniObservation actualObs = etObsToBahmniObsMapper.map(observation, additionalBahmniObservationFields, asList(parentConcept), false);
+
+        EncounterTransaction.Concept etValueConcept = (EncounterTransaction.Concept) actualObs.getValue();
+
+        assertThat(actualObs.getCreatorName(), is(person1name));
+        assertThat(actualObs.getEncounterUuid(), is(encounterUuid));
+        assertThat(actualObs.getObsGroupUuid(), is(obsGroupUuid));
+        assertThat(etValueConcept.getShortName(), is("fullySpecifiedName"));
     }
 
     @Test
-    public void testObservationConceptShortNameWhenShortName() throws Exception {
+    public void shouldUseFullNameForCodedAnswerWhenShortNameIsNotSpecifiedInALocale() throws Exception {
+        Concept concept = createConcept("omrsConcpet", "N/A", "uuid", null, null);
+        ConceptName conceptName = new ConceptName("fullySpecifiedName", Locale.ENGLISH);
+        conceptName.setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
+        concept.setFullySpecifiedName(conceptName);
 
-        EncounterTransaction.User user1 = createETUser(person1name);
-
-        Mockito.when(authenticatedUser.getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE)).thenReturn("en");
+        when(administrationService.getGlobalProperty("default_locale")).thenReturn("en");
+        when(authenticatedUser.getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE)).thenReturn("fr");
+        when(conceptService.getConceptByUuid("valueUuid")).thenReturn(concept);
+        when(LocaleUtility.fromSpecification("fr")).thenReturn(Locale.FRENCH);
         when(LocaleUtility.fromSpecification("en")).thenReturn(Locale.ENGLISH);
 
-        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, etParentConceptClass, "concept", "shortName" , null);
-
-
-        Concept parentConcept = createConcept("concept", "N/A", null, null, "conceptShortName");
-
-        EncounterTransaction.Observation observation1 = createETObservation("obs1-uuid", user1, null, etParentConcept);
+        EncounterTransaction.Concept valueConcept = createETConcept("answer", "Coded", null, null, "valueUuid");
+        EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, etParentConceptClass, "concept", null, "uuid");
+        EncounterTransaction.User user = createETUser(person1name);
+        EncounterTransaction.Observation observation = createETObservation("obs1-uuid", user, valueConcept, etParentConcept);
 
         AdditionalBahmniObservationFields additionalBahmniObservationFields = new AdditionalBahmniObservationFields(encounterUuid, new Date(), new Date(), obsGroupUuid);
-        BahmniObservation actualObs = etObsToBahmniObsMapper.map(observation1, additionalBahmniObservationFields, asList(parentConcept), false);
+        Concept parentConcept = createConcept("concept", "Coded", null, null, null);
 
-        assertEquals(person1name, actualObs.getCreatorName());
-        assertEquals(encounterUuid, actualObs.getEncounterUuid());
-        assertEquals(obsGroupUuid, actualObs.getObsGroupUuid());
-        assertEquals("conceptShortName",actualObs.getConcept().getShortName());
+        BahmniObservation actualObs = etObsToBahmniObsMapper.map(observation, additionalBahmniObservationFields, asList(parentConcept), false);
+
+        assertThat(actualObs.getCreatorName(), is(person1name));
+        assertThat(actualObs.getEncounterUuid(), is(encounterUuid));
+        assertThat(actualObs.getObsGroupUuid(), is(obsGroupUuid));
+        assertThat(actualObs.getConceptNameToDisplay(), is("concept"));
     }
 }
