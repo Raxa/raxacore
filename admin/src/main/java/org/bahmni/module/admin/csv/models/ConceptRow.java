@@ -192,7 +192,7 @@ public class ConceptRow extends CSVEntity {
         addBlankSynonyms(maxSynonyms);
         addBlankAnswers(maxAnswers);
         addBlankReferenceTerms(maxReferenceTerms);
-        String[] aRow = {uuid, name, description, conceptClass, shortName, dataType, units, hiNormal, lowNormal, precise};
+        String[] aRow = {uuid, name, description, conceptClass, shortName, dataType, units, hiNormal, lowNormal, precise,locale};
         String[] synonymsRow = getStringArray(synonyms);
         String[] answersRow = getStringArray(answers);
         aRow = ArrayUtils.addAll(aRow, ArrayUtils.addAll(synonymsRow, answersRow));
