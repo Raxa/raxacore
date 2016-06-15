@@ -268,28 +268,49 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
     @Test
     public void shouldSearchPatientByNameWithSingleQuote() throws Exception {
         List<PatientResponse> patients = patientDao.getPatients(null, null, "na'me", null, null, null, 10, 0, null, null, null, null, null);
+
+        PatientResponse patient = patients.get(0);
+
         assertEquals(1, patients.size());
+        assertEquals("na'me",patient.getFamilyName());
 
-        PatientResponse patient1 = patients.get(0);
+    }
 
-        assertEquals("na'me",patient1.getFamilyName());
+    @Test
+    public void shouldSearchPatientByNameWithOneSingleQuoteInSearchString() throws Exception {
+        List<PatientResponse>  patients = patientDao.getPatients(null, null, "'", null, null, null, 10, 0, null, null, null, null, null);
+
+        PatientResponse patientSearchWithJustSingleQuote = patients.get(0);
+
+        assertEquals(1, patients.size());
+        assertEquals("na'me",patientSearchWithJustSingleQuote.getFamilyName());
+    }
+
+    @Test
+    public void shouldSearchPatientNameByMultipleSingleQuotesInSearchString() throws Exception {
+        List<PatientResponse>  patients = patientDao.getPatients(null, null, "'''", null, null, null, 10, 0, null, null, null, null, null);
+
+        assertEquals(0, patients.size());
     }
 
     @Test
     public void shouldGiveEmptyResultIfPatientDoesnotExistWithGivenPatientName() throws Exception {
         List<PatientResponse> patients = patientDao.getPatients(null, null, "ab'me", null, null, null, 10, 0, null, null, null, null, null);
+
         assertEquals(0, patients.size());
     }
 
     @Test
     public void shouldGiveAllThePatientsIfWeSearchWithPercentile() throws Exception {
         List<PatientResponse> patients = patientDao.getPatients(null, null, "%", null, null, null, 10, 0, null, null, null, null, null);
+
         assertEquals(10, patients.size());
     }
 
     @Test
-    public void shouldGiveThePatientsIfWeSearchSpaceSeperatedName() throws Exception {
+    public void shouldGiveThePatientsIfWeSearchBySpaceSeperatedString() throws Exception {
         List<PatientResponse> patients = patientDao.getPatients(null, null, "special character", null, null, null, 10, 0, null, null, null, null, null);
+
         assertEquals(2, patients.size());
     }
 
@@ -306,21 +327,73 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
         assertTrue("{ \"address3\" : \"Dindori\"}".equals(patients.get(0).getAddressFieldValue()));
 
+
+        patients = patientDao.getPatients("", null, "", "'", null, null, 100, 0, patientAttributes,null,null,addressResultFields, patientResultFields);
+
+        PatientResponse patientWithSingleQuoteInSearch = patients.get(0);
+
+        assertEquals(1, patients.size());
+        assertEquals("{\"caste\":\"go'nd\"}", patientWithSingleQuoteInSearch.getCustomAttribute());
+        assertTrue("{ \"address3\" : \"Dindori\"}".equals(patientWithSingleQuoteInSearch.getAddressFieldValue()));
+
+
+        patients = patientDao.getPatients("", null, "", "'''", null, null, 100, 0, patientAttributes,null,null,addressResultFields, patientResultFields);
+
+        assertEquals(0, patients.size());
     }
 
     @Test
     public void shouldFetchPatientsByProgramAttributesWhenThereIsSingleQuoteInProgramAttribute(){
         List<PatientResponse> patients = patientDao.getPatients("", null, "", "", null, null, 100, 0, null,"Stage'12","stage",null,null);
-        assertEquals(1, patients.size());
+
         PatientResponse response = patients.get(0);
+
+        assertEquals(1, patients.size());
         assertEquals("{\"stage\":\"Stage'12\"}",response.getPatientProgramAttributeValue());
+    }
+
+    @Test
+    public void shouldFetchPatientsByProgramAttributeWhenThereIsJustOneSingleQuoteInSearchString() throws Exception {
+        List<PatientResponse> patients = patientDao.getPatients("", null, "", "", null, null, 100, 0, null,"'","stage",null,null);
+
+        PatientResponse response = patients.get(0);
+
+        assertEquals(1, patients.size());
+        assertEquals("{\"stage\":\"Stage'12\"}",response.getPatientProgramAttributeValue());
+    }
+
+    @Test
+    public void shouldFetchPatientsByParogramAttributeWhenThreAreMultipleSingleQuotesInSearchString() throws Exception {
+        List<PatientResponse> patients = patientDao.getPatients("", null, "", "", null, null, 100, 0, null,"''''","stage",null,null);
+
+        assertEquals(0, patients.size());
     }
 
     @Test
     public void shouldFetchPatientsByPatientIdentifierWhenThereIsSingleQuoteInPatientIdentifier(){
         List<PatientResponse> patients = patientDao.getPatients("51'0003", "SEV", "", "", null, null, 100, 0, null,null, null,null,null);
-        assertEquals(1, patients.size());
+
         PatientResponse response = patients.get(0);
+
+        assertEquals(1, patients.size());
         assertEquals("SEV51'0003", response.getIdentifier());
+    }
+
+    @Test
+    public void shouldFetchPatientsByPatientIdentifierWhenThereIsJustOneSingleQuoteInPatientIdentifier() throws Exception {
+        List<PatientResponse> patients = patientDao.getPatients("'", "", "", "", null, null, 100, 0, null,null, null,null,null);
+
+        PatientResponse response = patients.get(0);
+
+        assertEquals(1, patients.size());
+        assertEquals("SEV51'0003", response.getIdentifier());
+    }
+
+    @Test
+    public void shouldSearchPatientsByPatientIdentifierWhenThereAreMultipleSinglesInSearchString() throws Exception {
+
+        List<PatientResponse> patients = patientDao.getPatients("'''", "", "", "", null, null, 100, 0, null,null, null,null,null);
+
+        assertEquals(0, patients.size());
     }
 }
