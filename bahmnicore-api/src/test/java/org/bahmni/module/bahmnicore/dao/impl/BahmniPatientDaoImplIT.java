@@ -284,13 +284,13 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
     @Test
     public void shouldGiveAllThePatientsIfWeSearchWithPercentile() throws Exception {
         List<PatientResponse> patients = patientDao.getPatients(null, null, "%", null, null, null, 10, 0, null, null, null, null, null);
-        assertEquals(9, patients.size());
+        assertEquals(10, patients.size());
     }
 
     @Test
     public void shouldGiveThePatientsIfWeSearchSpaceSeperatedName() throws Exception {
         List<PatientResponse> patients = patientDao.getPatients(null, null, "special character", null, null, null, 10, 0, null, null, null, null, null);
-        assertEquals(1, patients.size());
+        assertEquals(2, patients.size());
     }
 
     @Test
