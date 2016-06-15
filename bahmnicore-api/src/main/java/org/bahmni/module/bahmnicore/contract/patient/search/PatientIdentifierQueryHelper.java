@@ -1,5 +1,7 @@
 package org.bahmni.module.bahmnicore.contract.patient.search;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
 public class PatientIdentifierQueryHelper {
@@ -28,7 +30,7 @@ public class PatientIdentifierQueryHelper {
 
 
 	private String getIdentifierSearchCondition(String identifier, String identifierPrefix) {
-		return " identifier like  '" + identifierPrefix + "%" + identifier + "%'";
+		return " identifier like  '" + identifierPrefix + "%" + StringEscapeUtils.escapeSql(identifier) + "%'";
 	}
 
 }

@@ -315,4 +315,12 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
         PatientResponse response = patients.get(0);
         assertEquals("{\"stage\":\"Stage'12\"}",response.getPatientProgramAttributeValue());
     }
+
+    @Test
+    public void shouldFetchPatientsByPatientIdentifierWhenThereIsSingleQuoteInPatientIdentifier(){
+        List<PatientResponse> patients = patientDao.getPatients("51'0003", "SEV", "", "", null, null, 100, 0, null,null, null,null,null);
+        assertEquals(1, patients.size());
+        PatientResponse response = patients.get(0);
+        assertEquals("SEV51'0003", response.getIdentifier());
+    }
 }
