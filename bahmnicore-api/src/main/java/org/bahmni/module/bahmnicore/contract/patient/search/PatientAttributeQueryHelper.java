@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.contract.patient.search;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
@@ -43,7 +44,7 @@ public class PatientAttributeQueryHelper {
 		if(StringUtils.isEmpty(customAttribute) || personAttributeTypeIds.size() == 0){
 			return where;
 		}
-		return combine(where, "and", enclose(" pattrln.value like "+ "'%" + customAttribute + "%'"));
+		return combine(where, "and", enclose(" pattrln.value like "+ "'%" + StringEscapeUtils.escapeSql(customAttribute) + "%'"));
 	}
 
 	public Map<String,Type> addScalarQueryResult(){
