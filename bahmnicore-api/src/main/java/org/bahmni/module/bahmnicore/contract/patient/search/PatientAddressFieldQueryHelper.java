@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.contract.patient.search;
 
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
@@ -43,7 +44,7 @@ public class PatientAddressFieldQueryHelper {
 		if (isEmpty(addressFieldValue)) {
 			return where;
 		}
-		return combine(where, "and", enclose(" " +addressFieldName+ " like '%" + addressFieldValue + "%'"));
+		return combine(where, "and", enclose(" " +addressFieldName+ " like '%" + StringEscapeUtils.escapeSql(addressFieldValue) + "%'"));
 
 	}
 

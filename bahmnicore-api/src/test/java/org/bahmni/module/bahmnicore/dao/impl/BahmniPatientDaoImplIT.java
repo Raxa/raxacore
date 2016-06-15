@@ -265,6 +265,54 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
         assertTrue("{ \"address3\" : \"Dindori\"}".equals(patient200002.getAddressFieldValue()));
     }
 
+    @Test
+    public void shouldSearchPatientByNameWithSingleQuote() throws Exception {
+        List<PatientResponse> patients = patientDao.getPatients(null, null, "na'me", null, null, null, 10, 0, null, null, null, null, null);
+        assertEquals(1, patients.size());
 
+        PatientResponse patient1 = patients.get(0);
 
+        assertEquals("na'me",patient1.getFamilyName());
+    }
+
+    @Test
+    public void shouldGiveEmptyResultIfPatientDoesnotExistWithGivenPatientName() throws Exception {
+        List<PatientResponse> patients = patientDao.getPatients(null, null, "ab'me", null, null, null, 10, 0, null, null, null, null, null);
+        assertEquals(0, patients.size());
+    }
+
+    @Test
+    public void shouldGiveAllThePatientsIfWeSearchWithPercentile() throws Exception {
+        List<PatientResponse> patients = patientDao.getPatients(null, null, "%", null, null, null, 10, 0, null, null, null, null, null);
+        assertEquals(9, patients.size());
+    }
+
+    @Test
+    public void shouldGiveThePatientsIfWeSearchSpaceSeperatedName() throws Exception {
+        List<PatientResponse> patients = patientDao.getPatients(null, null, "special character", null, null, null, 10, 0, null, null, null, null, null);
+        assertEquals(1, patients.size());
+    }
+
+    @Test
+    public void shouldFetchBasedOnPatientAttributeTypesWhenThereIsSingleQuoteInPatientAttribute() throws Exception {
+        String[] patientAttributes = { "caste","address3"};
+        String[] patientResultFields = {"caste","address3"};
+        String[] addressResultFields = {"address3"};
+        List<PatientResponse> patients = patientDao.getPatients("", null, "", "go'nd", null, null, 100, 0, patientAttributes,null,null,addressResultFields, patientResultFields);
+
+        assertEquals(1, patients.size());
+
+        assertEquals("{\"caste\":\"go'nd\"}", patients.get(0).getCustomAttribute());
+
+        assertTrue("{ \"address3\" : \"Dindori\"}".equals(patients.get(0).getAddressFieldValue()));
+
+    }
+
+    @Test
+    public void shouldFetchPatientsByProgramAttributesWhenThereIsSingleQuoteInProgramAttribute(){
+        List<PatientResponse> patients = patientDao.getPatients("", null, "", "", null, null, 100, 0, null,"Stage'12","stage",null,null);
+        assertEquals(1, patients.size());
+        PatientResponse response = patients.get(0);
+        assertEquals("{\"stage\":\"Stage'12\"}",response.getPatientProgramAttributeValue());
+    }
 }
