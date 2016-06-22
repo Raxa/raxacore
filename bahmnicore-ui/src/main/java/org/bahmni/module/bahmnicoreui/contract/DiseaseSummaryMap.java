@@ -1,16 +1,17 @@
 package org.bahmni.module.bahmnicoreui.contract;
 
+import java.util.LinkedHashMap;
 import org.apache.commons.collections.MapUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class DiseaseSummaryMap extends HashMap<String, Map<String, ConceptValue>>{
+public class DiseaseSummaryMap extends LinkedHashMap<String, Map<String, ConceptValue>> {
 
     public Map<String, ConceptValue> get(String visitStartDateTime) {
         Map<String, ConceptValue> mapValue = super.get(visitStartDateTime);
         if(MapUtils.isEmpty(mapValue)){
-            put(visitStartDateTime, new HashMap<String, ConceptValue>());
+            put(visitStartDateTime, new LinkedHashMap<String, ConceptValue>());
         }
         return super.get(visitStartDateTime);
     }
