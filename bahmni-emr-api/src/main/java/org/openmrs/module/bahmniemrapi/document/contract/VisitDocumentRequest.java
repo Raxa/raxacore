@@ -15,13 +15,14 @@ public class VisitDocumentRequest {
     private List<Document> documents = new ArrayList<>();
     private String providerUuid;
     private String locationUuid;
+    private String visitLocationUuid;
 
     public VisitDocumentRequest() {
     }
 
     public VisitDocumentRequest(String patientUUID, String visitUuid, String visitTypeUUID, Date visitStartDate,
                                 Date visitEndDate, String encounterTypeUUID, Date encounterDateTime,
-                                List<Document> documents, String providerUuid, String locationUuid) {
+                                List<Document> documents, String providerUuid, String locationUuid, String visitLocationUuid) {
         this.patientUuid = patientUUID;
         this.visitUuid = visitUuid;
         this.visitTypeUuid = visitTypeUUID;
@@ -32,6 +33,7 @@ public class VisitDocumentRequest {
         this.providerUuid = providerUuid;
         this.documents = documents;
         this.locationUuid = locationUuid;
+        this.visitLocationUuid = visitLocationUuid;
     }
 
     public String getPatientUuid() {
@@ -113,4 +115,13 @@ public class VisitDocumentRequest {
     public void setLocationUuid(String locationUuid) {
         this.locationUuid = locationUuid;
     }
+
+    public String getVisitLocationUuid() {
+        return visitLocationUuid;
+    }
+
+    public void setVisitLocationUuid(String visitLocationUuid) {
+        this.visitLocationUuid = visitLocationUuid;
+    }
+
 }

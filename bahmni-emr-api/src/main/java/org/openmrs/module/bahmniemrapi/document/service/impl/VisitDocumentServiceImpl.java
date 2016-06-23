@@ -146,14 +146,16 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         return encounter;
     }
 
-    private Visit createVisit(String visitTypeUUID, Date visitStartDate, Date visitEndDate, Patient patient) {
+    private Visit createVisit(String visitTypeUUID, Date visitStartDate, Date visitEndDate, Patient patient, String visitLocationUuid) {
         VisitType visitType = Context.getVisitService().getVisitTypeByUuid(visitTypeUUID);
+        Location visitLocation = Context.getLocationService().getLocationByUuid(visitLocationUuid);
         Visit visit = new Visit();
         visit.setPatient(patient);
         visit.setVisitType(visitType);
         visit.setStartDatetime(visitStartDate);
         visit.setStopDatetime(visitEndDate);
         visit.setEncounters(new HashSet<Encounter>());
+        visit.setLocation(visitLocation);
         return visit;
     }
 
@@ -161,6 +163,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         if (request.getVisitUuid() != null) {
             return visitService.getVisitByUuid(request.getVisitUuid());
         }
-        return createVisit(request.getVisitTypeUuid(), request.getVisitStartDate(), request.getVisitEndDate(), patient);
+        return createVisit(request.getVisitTypeUuid(), request.getVisitStartDate(), request.getVisitEndDate(),
+                patient, request.getVisitLocationUuid());
     }
 }

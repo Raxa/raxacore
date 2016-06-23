@@ -10,6 +10,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentRequest;
 import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentResponse;
 import org.openmrs.module.bahmniemrapi.document.service.VisitDocumentService;
+import org.openmrs.module.bahmniemrapi.visitLocation.BahmniVisitLocationService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
@@ -26,8 +27,13 @@ public class VisitDocumentController extends BaseRestController {
     private final String baseVisitDocumentUrl = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/visitDocument";
     @Autowired
     private VisitDocumentService visitDocumentService;
+
     @Autowired
     private PatientImageService patientImageService;
+
+    @Autowired
+    private BahmniVisitLocationService bahmniVisitLocationService;
+
     @Autowired
     @Qualifier("adminService")
     private AdministrationService administrationService;
@@ -36,6 +42,8 @@ public class VisitDocumentController extends BaseRestController {
     @WSDoc("Save Patient Document")
     @ResponseBody
     public VisitDocumentResponse save(@RequestBody VisitDocumentRequest visitDocumentUpload) {
+        String visitLocation = bahmniVisitLocationService.getVisitLocationForLoginLocation(visitDocumentUpload.getLocationUuid());
+        visitDocumentUpload.setVisitLocationUuid(visitLocation);
         final Visit visit = visitDocumentService.upload(visitDocumentUpload);
         return new VisitDocumentResponse(visit.getUuid());
     }

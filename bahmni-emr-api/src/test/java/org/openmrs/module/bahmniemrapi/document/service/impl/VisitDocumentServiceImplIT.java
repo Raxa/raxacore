@@ -80,7 +80,7 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
                 firstEncounterTypeUUID,
                 encounterDate,
                 documents,
-                "331c6bf8-7846-11e3-a96a-0800271c1b75", null);
+                "331c6bf8-7846-11e3-a96a-0800271c1b75", null, null);
         visitDocumentService.upload(visitDocumentRequest);
 
         Encounter encounter = encounterService.getEncounterByUuid(firstEncounterUuid);
@@ -107,7 +107,7 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
                 secondEncounterTypeUUID,
                 encounterDate,
                 documents,
-                secondProviderUuid, secondLocationUuid);
+                secondProviderUuid, secondLocationUuid, null);
         visitDocumentService.upload(visitDocumentRequest);
 
         Encounter encounter = encounterService.getEncounterByUuid(secondEncounterUuid);
@@ -138,7 +138,7 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
                 secondEncounterTypeUUID,
                 encounterDate,
                 documents,
-                secondProviderUuid, secondLocationUuid);
+                secondProviderUuid, secondLocationUuid,null);
         visitDocumentService.upload(visitDocumentRequest);
 
         Encounter encounter = encounterService.getEncounterByUuid(secondEncounterUuid);
@@ -169,7 +169,7 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
                 secondEncounterTypeUUID,
                 encounterDate,
                 documents,
-                secondProviderUuid, secondLocationUuid);
+                secondProviderUuid, secondLocationUuid, null);
         executeDataSet("visitDocumentData.xml");
         visitDocumentService.upload(visitDocumentRequest);
 
@@ -205,7 +205,7 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
                 firstEncounterTypeUUID,
                 encounterDate,
                 documents,
-                firstProviderUuid, FIRST_LOCATION_UUID);
+                firstProviderUuid, FIRST_LOCATION_UUID, null);
 
         visitDocumentService.upload(visitDocumentRequest);
 
@@ -239,7 +239,7 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
                 firstEncounterTypeUUID,
                 encounterDate,
                 documents,
-                firstProviderUuid, FIRST_LOCATION_UUID);
+                firstProviderUuid, FIRST_LOCATION_UUID, null);
         visitDocumentService.upload(visitDocumentRequest);
 
         Context.flushSession();
@@ -278,7 +278,7 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
                 firstEncounterTypeUUID,
                 null,
                 documents,
-                secondProviderUuid, null);
+                secondProviderUuid, null, null);
         executeDataSet("visitDocumentData.xml");
 
 //        Date currentDate = new Date(System.currentTimeMillis() - 1000);
@@ -311,7 +311,7 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
                 secondEncounterTypeUUID,
                 encounterDate,
                 documents,
-                firstProviderUuid, null);
+                firstProviderUuid, null, null);
 
         Date currentDate = new Date(System.currentTimeMillis() - 1000);
         visitDocumentService.upload(visitDocumentRequest);

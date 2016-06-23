@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <location location_id="4" name="Ganiyari" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="e36006e5-9fbb-4f20-866b-0ece24561525"/>
+    <location location_id="1" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" parent_location="4" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
+    <location location_id="2" name="IPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" parent_location="4" uuid="d36006e5-9fbb-4f20-866b-0ece245615a1"/>
+    <location location_id="3" name="Reception" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"  parent_location="4" uuid="e36006e5-9fbb-4f20-866b-0ece245615a1"/>
+    <location location_id="5" name="Semeriya" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" parent_location="4"  uuid="e36006e5-9fwb-4f20-866b-0ece24561525"/>
+    <location location_id="6" name="CHW" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" parent_location="5"  uuid="e36023e5-9fwb-4f20-866b-0ece24561525"/>
+
+
+    <location location_id="7" name="Kaliganj" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"  uuid="l38923e5-9fhb-4f20-866b-0ece24561525"/>
+    <location location_id="8" name="Dhaka" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" parent_location="7"  uuid="l3602jn5-9fhb-4f20-866b-0ece24561525"/>
+    <location location_id="9" name="CHW1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" parent_location="8"  uuid="l36023e5-9fhb-4f20-866b-0ece24561525"/>
+
+    <location_tag location_tag_id="1" name="Visit Location" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-876b-0ece245615a1"/>
+    <location_tag_map location_id="4" location_tag_id="1" />
+</dataset>

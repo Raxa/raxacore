@@ -49,6 +49,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
         String visitTypeUUID = "b45ca846-c79a-11e2-b0c0-8e397087571c";
         String testUUID = "e340cf44-3d3d-11e3-bf2b-0800271c1b75";
         String imageConceptUuid = "e060cf44-3d3d-11e3-bf2b-0800271c1b75";
+        String locationUuid = "l3602jn5-9fhb-4f20-866b-0ece24561525";
 
         String json = "{" +
                 "\"patientUuid\":\"" + patientUUID + "\"," +
@@ -56,6 +57,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
                 "\"visitStartDate\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"visitEndDate\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"encounterTypeUuid\":\"" + encounterTypeUUID + "\"," +
+                "\"locationUuid\":\"" + locationUuid + "\"," +
                 "\"encounterDateTime\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"providerUuid\":\"331c6bf8-7846-11e3-a96a-0800271c1b75\"," +
                 "\"documents\": [{\"testUuid\": \"" + testUUID + "\", \"image\": \"" + image + "\", \"format\": \".jpeg\"}]" +
@@ -67,6 +69,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
 
         assertNotNull(visit);
         assertEquals(1, visit.getEncounters().size());
+        assertEquals(visit.getLocation().getUuid(), "l38923e5-9fhb-4f20-866b-0ece24561525");
         Encounter encounter = new ArrayList<>(visit.getEncounters()).get(0);
         assertEquals(1, encounter.getAllObs().size());
         assertEquals(1, encounter.getEncounterProviders().size());
@@ -77,6 +80,8 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
         assertEquals(1, parentObs.getGroupMembers().size());
         assertObservationWithImage(parentObs, testUUID, imageConceptUuid);
     }
+
+
 
     @Test
     public void shouldUploadDocumentsForExistingVisit() throws Exception {

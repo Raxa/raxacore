@@ -9,16 +9,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.Patient;
+import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentRequest;
+import org.openmrs.module.bahmniemrapi.document.service.VisitDocumentService;
+import org.openmrs.module.bahmniemrapi.visitLocation.BahmniVisitLocationService;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
@@ -31,6 +33,10 @@ public class VisitDocumentControllerTest {
     AdministrationService administrationService;
     @Mock
     PatientImageService patientImageService;
+    @Mock
+    VisitDocumentService visitDocumentService;
+    @Mock
+    BahmniVisitLocationService bahmniVisitLocationService;
 
     @Before
     public void setUp() throws Exception {
@@ -71,5 +77,20 @@ public class VisitDocumentControllerTest {
 
         verify(patientImageService).saveDocument(1, "radiology", "abcd", "jpeg");
         verifyZeroInteractions(administrationService);
+    }
+
+    @Test
+    public void shouldSetVisitLocationUuid() throws Exception {
+        Visit visit = new Visit();
+        visit.setUuid("visit-uuid");
+        VisitDocumentRequest visitDocumentRequest = new VisitDocumentRequest("patient-uuid", "visit-uuid", "visit-type-uuid",
+                null, null, "encounter-uuid", null,null,"provider-uuid","location-uuid",null);
+
+        when(visitDocumentService.upload(visitDocumentRequest)).thenReturn(visit);
+
+        when(bahmniVisitLocationService.getVisitLocationForLoginLocation("location-uuid")).thenReturn("VisitLocationuuid");
+        visitDocumentController.save(visitDocumentRequest);
+
+        verify(bahmniVisitLocationService).getVisitLocationForLoginLocation("location-uuid");
     }
 }

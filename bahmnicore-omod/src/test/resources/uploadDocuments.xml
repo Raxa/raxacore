@@ -1,5 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
+
+    <location location_id="7" name="Kaliganj" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"  uuid="l38923e5-9fhb-4f20-866b-0ece24561525"/>
+    <location location_id="8" name="Dhaka" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" parent_location="7"  uuid="l3602jn5-9fhb-4f20-866b-0ece24561525"/>
+
+    <location_tag location_tag_id="1" name="Visit Location" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-876b-0ece245615a1"/>
+    <location_tag_map location_id="7" location_tag_id="1" />
+
+
+
     <person person_id="1" gender="M" dead="false" creator="1" birthdate_estimated="0"
             date_created="2008-08-15 15:57:09.0" voided="false" void_reason=""
             uuid="75e04d42-3ca8-11e3-bf2b-0800271c1b75"/>
