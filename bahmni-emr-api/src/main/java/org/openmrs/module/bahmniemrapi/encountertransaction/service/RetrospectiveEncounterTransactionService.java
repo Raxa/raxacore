@@ -24,7 +24,7 @@ public class RetrospectiveEncounterTransactionService {
         }
 
         Visit matchingVisit = visitMatcher.getVisitFor(patient, bahmniEncounterTransaction.getVisitType(),
-                bahmniEncounterTransaction.getEncounterDateTime(), visitStartDate, visitEndDate);
+                bahmniEncounterTransaction.getEncounterDateTime(), visitStartDate, visitEndDate, bahmniEncounterTransaction.getLocationUuid());
         bahmniEncounterTransaction.setVisitUuid(matchingVisit.getUuid());
 
         // TODO : Mujir - this should not happen here. Just set the visitType. BahmniEncounterTransaction should handle string visitTypes.

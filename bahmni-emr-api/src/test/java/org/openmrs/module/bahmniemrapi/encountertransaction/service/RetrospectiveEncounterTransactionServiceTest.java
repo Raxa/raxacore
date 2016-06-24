@@ -37,7 +37,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
 
         Visit existingVisit = getExistingVisit();
 
-        when(mockVisitIdentificationHelper.getVisitFor(null, null, jan1_2011, null, null)).thenReturn(existingVisit);
+        when(mockVisitIdentificationHelper.getVisitFor(null, null, jan1_2011, null, null, null)).thenReturn(existingVisit);
 
         RetrospectiveEncounterTransactionService retrospectiveService = new RetrospectiveEncounterTransactionService(mockVisitIdentificationHelper);
         BahmniEncounterTransaction updatedEncounterTransaction = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, null, null, null);
@@ -57,7 +57,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
         Date jan1_2011 = new DateTime(2014, 1, 1, 10, 0, 0).toDate();
         bahmniEncounterTransaction.setEncounterDateTime(jan1_2011);
 
-        when(mockVisitIdentificationHelper.getVisitFor(null, null, jan1_2011, null, null)).thenReturn(getExistingVisit());
+        when(mockVisitIdentificationHelper.getVisitFor(null, null, jan1_2011, null, null, null)).thenReturn(getExistingVisit());
 
         BahmniEncounterTransaction updatedEncounter = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, null, null, null);
 
@@ -81,7 +81,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
         Date jan1_2011 = new DateTime(2014, 1, 1, 10, 0, 0).toDate();
         bahmniEncounterTransaction.setEncounterDateTime(jan1_2011);
 
-        when(mockVisitIdentificationHelper.getVisitFor(null, null, jan1_2011, null, null)).thenReturn(getExistingVisit());
+        when(mockVisitIdentificationHelper.getVisitFor(null, null, jan1_2011, null, null, null)).thenReturn(getExistingVisit());
 
         BahmniEncounterTransaction updatedEncounter = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, null, null, null);
 
@@ -100,7 +100,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
         Date jan1_2011 = new DateTime(2014, 1, 1, 10, 0, 0).toDate();
         bahmniEncounterTransaction.setEncounterDateTime(jan1_2011);
 
-        when(mockVisitIdentificationHelper.getVisitFor(null, null, jan1_2011, null, null)).thenReturn(getExistingVisit());
+        when(mockVisitIdentificationHelper.getVisitFor(null, null, jan1_2011, null, null, null)).thenReturn(getExistingVisit());
 
         BahmniEncounterTransaction updatedEncounter = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, null, null, null);
 
@@ -118,7 +118,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
         Date jan1_2011 = new DateTime(2014, 1, 1, 10, 0, 0).toDate();
         bahmniEncounterTransaction.setEncounterDateTime(jan1_2011);
 
-        when(mockVisitIdentificationHelper.getVisitFor(null, null, jan1_2011, null, null)).thenReturn(getExistingVisit());
+        when(mockVisitIdentificationHelper.getVisitFor(null, null, jan1_2011, null, null, null)).thenReturn(getExistingVisit());
 
         BahmniEncounterTransaction updatedEncounter = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, null, null, null);
 
@@ -136,7 +136,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
         Date jan1_2011 = new DateTime(2014, 1, 1, 10, 0, 0).toDate();
         bahmniEncounterTransaction.setEncounterDateTime(jan1_2011);
 
-        when(mockVisitIdentificationHelper.getVisitFor(null, null, jan1_2011, null, null)).thenReturn(getExistingVisit());
+        when(mockVisitIdentificationHelper.getVisitFor(null, null, jan1_2011, null, null, null)).thenReturn(getExistingVisit());
 
         BahmniEncounterTransaction updatedEncounter = retrospectiveService.updatePastEncounters(bahmniEncounterTransaction, null, null, null);
 

@@ -67,7 +67,7 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
     public Messages persist(LabResultsRow labResultsRow) {
         try {
             Patient patient = patientMatchService.getPatient(patientMatchingAlgorithmClassName, labResultsRow.getPatientAttributes(), labResultsRow.getPatientIdentifier(), shouldMatchExactPatientId);
-            Visit visit = visitIdentificationHelper.getVisitFor(patient, labResultsRow.getVisitType(), labResultsRow.getTestDate(), labResultsRow.getTestDate(), labResultsRow.getTestDate());
+            Visit visit = visitIdentificationHelper.getVisitFor(patient, labResultsRow.getVisitType(), labResultsRow.getTestDate(), labResultsRow.getTestDate(), labResultsRow.getTestDate(), null);
             Encounter encounter = new Encounter();
             visit.addEncounter(encounter);
             encounter.setPatient(patient);

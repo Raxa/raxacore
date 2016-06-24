@@ -7,6 +7,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
+import org.openmrs.module.bahmniemrapi.visitLocation.BahmniVisitLocationService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,6 +24,8 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
 
     @Autowired
     VisitService visitService;
+    @Autowired
+    BahmniVisitLocationService bahmniVisitLocationService;
     @Autowired
     PatientService patientService;
 
@@ -102,6 +105,16 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
 
         Date stopTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-05-20 04:00:00");
         assertEquals(stopTime, visit.getStopDatetime());
+    }
+    @Test
+    public void shouldSetVisitLocationWhileCreatingNewVisit() throws Exception {
+        executeDataSet("visitIdentificationHelper.xml");
+        Patient patient = patientService.getPatient(1);
+        Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-21 03:00:00");
+
+        Visit visit = visitIdentificationHelper.getVisitFor(patient,TEST_VISIT_TYPE,accessionDate,null,null,"l3602jn5-9fhb-4f20-866b-0ece24561525");
+
+        assertEquals(visit.getLocation().getUuid(),"l38923e5-9fhb-4f20-866b-0ece24561525");
     }
 //        V1	10-Feb	10:00		12-Feb	6:00
 //        V2	12-Feb	8:00		13-Feb	2:00

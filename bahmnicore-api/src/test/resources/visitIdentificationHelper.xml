@@ -12,6 +12,12 @@
                         identifier="GAN200000" identifier_type="1" creator="1"
                         uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0"/>
 
+    <location location_id="7" name="Kaliganj" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"  uuid="l38923e5-9fhb-4f20-866b-0ece24561525"/>
+    <location location_id="8" name="Dhaka" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" parent_location="7"  uuid="l3602jn5-9fhb-4f20-866b-0ece24561525"/>
+
+    <location_tag location_tag_id="1" name="Visit Location" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-876b-0ece245615a1"/>
+    <location_tag_map location_id="7" location_tag_id="1" />
+
 
     <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14"
                 changed_by="1" date_changed="2012-10-23 18:04:14"

@@ -4,11 +4,15 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.openmrs.Encounter;
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
+import org.openmrs.module.bahmniemrapi.visitLocation.BahmniVisitLocationService;
+import org.openmrs.module.bahmniemrapi.visitLocation.BahmniVisitLocationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,22 +27,23 @@ public class VisitIdentificationHelper implements VisitMatcher {
     protected VisitService visitService;
 
     @Autowired
-    public VisitIdentificationHelper(VisitService visitService) {
+    public VisitIdentificationHelper(VisitService visitService)  {
         this.visitService = visitService;
+
     }
 
-    public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate, Date visitStartDate, Date visitEndDate) {
+    public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate, Date visitStartDate, Date visitEndDate, String locationUuid) {
         Date nextDate = getEndOfTheDay(orderDate);
         List<Visit> visits = visitService.getVisits(null, Collections.singletonList(patient), null, null, null, nextDate, orderDate, null, null, true, false);
         if (matchingVisitsFound(visits)) {
             Visit matchingVisit = getVisit(orderDate, visits);
             return stretchVisits(orderDate, matchingVisit);
         }
-        return createNewVisit(patient, orderDate, visitTypeForNewVisit, visitStartDate, visitEndDate);
+        return createNewVisit(patient, orderDate, visitTypeForNewVisit, visitStartDate, visitEndDate, locationUuid);
     }
 
     public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate) {
-        return getVisitFor(patient, visitTypeForNewVisit, orderDate, null, null);
+        return getVisitFor(patient, visitTypeForNewVisit, orderDate, null, null, null);
     }
 
     public boolean hasActiveVisit(Patient patient) {
@@ -84,7 +89,10 @@ public class VisitIdentificationHelper implements VisitMatcher {
         return visits.get(visits.size() - 1);
     }
 
-    public Visit createNewVisit(Patient patient, Date date, String visitTypeForNewVisit, Date visitStartDate, Date visitEndDate) {
+    public Visit createNewVisit(Patient patient, Date date, String visitTypeForNewVisit, Date visitStartDate, Date visitEndDate, String locationUuid) {
+        BahmniVisitLocationService bahmniVisitLocationService = new BahmniVisitLocationServiceImpl();
+        String visitLocationUuid = bahmniVisitLocationService.getVisitLocationForLoginLocation(locationUuid);
+        Location location = Context.getLocationService().getLocationByUuid(visitLocationUuid);
         VisitType visitTypeByName = getVisitTypeByName(visitTypeForNewVisit);
         if (visitTypeByName == null) {
             throw new RuntimeException("Visit type:'" + visitTypeForNewVisit + "' not found.");
@@ -93,6 +101,7 @@ public class VisitIdentificationHelper implements VisitMatcher {
         Visit visit = new Visit();
         visit.setPatient(patient);
         visit.setVisitType(visitTypeByName);
+        visit.setLocation(location);
         visit.setStartDatetime(visitStartDate == null ? date : visitStartDate);
         if (!DateUtils.isSameDay(date, new Date())) {
             if (visitEndDate == null)

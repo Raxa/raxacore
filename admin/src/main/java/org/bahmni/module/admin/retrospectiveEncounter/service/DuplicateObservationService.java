@@ -26,7 +26,7 @@ public class DuplicateObservationService {
 
     public void filter(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
         Visit matchingVisit = visitIdentificationHelper.getVisitFor(patient, bahmniEncounterTransaction.getVisitType(),
-                bahmniEncounterTransaction.getEncounterDateTime(), visitStartDate, visitEndDate);
+                bahmniEncounterTransaction.getEncounterDateTime(), visitStartDate, visitEndDate,null);
 
         DuplicateObservationsMatcher duplicateObservationsMatcher = new DuplicateObservationsMatcher(matchingVisit, bahmniEncounterTransaction.getEncounterType());
         Collection<BahmniObservation> uniqueObservations = duplicateObservationsMatcher.getNewlyAddedBahmniObservations(bahmniEncounterTransaction.getObservations(), bahmniEncounterTransaction.getEncounterDateTime());
