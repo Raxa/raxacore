@@ -33,13 +33,15 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
     private UserContext userContext;
     private String patientMatchingAlgorithmClassName;
     private boolean shouldMatchExactPatientId;
+    private String loginUuid;
 
     private static final Logger log = Logger.getLogger(EncounterPersister.class);
 
-    public void init(UserContext userContext, String patientMatchingAlgorithmClassName, boolean shouldMatchExactPatientId) {
+    public void init(UserContext userContext, String patientMatchingAlgorithmClassName, boolean shouldMatchExactPatientId, String loginUuid) {
         this.userContext = userContext;
         this.patientMatchingAlgorithmClassName = patientMatchingAlgorithmClassName;
         this.shouldMatchExactPatientId = shouldMatchExactPatientId;
+        this.loginUuid = loginUuid;
     }
 
     @Override
@@ -67,6 +69,7 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
                 List<BahmniEncounterTransaction> bahmniEncounterTransactions = bahmniEncounterTransactionImportService.getBahmniEncounterTransaction(multipleEncounterRow, patient);
 
                 for (BahmniEncounterTransaction bahmniEncounterTransaction : bahmniEncounterTransactions) {
+                    bahmniEncounterTransaction.setLocationUuid(loginUuid);
                     duplicateObservationService.filter(bahmniEncounterTransaction, patient, multipleEncounterRow.getVisitStartDate(), multipleEncounterRow.getVisitEndDate());
                 }
 

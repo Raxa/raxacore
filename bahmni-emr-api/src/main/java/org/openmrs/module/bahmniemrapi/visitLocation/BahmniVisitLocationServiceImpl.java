@@ -1,7 +1,6 @@
 package org.openmrs.module.bahmniemrapi.visitLocation;
 
 
-import org.openmrs.module.bahmniemrapi.visitLocation.BahmniVisitLocationService;
 import org.openmrs.Location;
 import org.openmrs.LocationTag;
 import org.openmrs.api.context.Context;
@@ -14,24 +13,17 @@ import java.util.List;
 @Transactional
 public class BahmniVisitLocationServiceImpl implements BahmniVisitLocationService {
 
+    public static final String VISIT_LOCATION = "Visit Location";
+
     @Override
     public String getVisitLocationForLoginLocation(String loginLocationUuid) {
-        Location childLocation = Context.getLocationService().getLocationByUuid(loginLocationUuid);
-        LocationTag visitLocationTag = Context.getLocationService().getLocationTagByName("Visit Location");
-        List<Location> locationsTaggedToVisit = Context.getLocationService().getLocationsByTag(visitLocationTag);
-
-        while (childLocation != null) {
-            Location parentLocation = childLocation.getParentLocation();
-            if (parentLocation != null) {
-                for (Location taggedLocation : locationsTaggedToVisit) {
-                    if (taggedLocation.getUuid().equals(parentLocation.getUuid())) {
-                        return parentLocation.getUuid();
-                    }
-                }
-            } else {
-                return childLocation.getUuid();
+        Location location = Context.getLocationService().getLocationByUuid(loginLocationUuid);
+        while (location != null) {
+            if (location.hasTag(VISIT_LOCATION)) {
+                return location.getUuid();
             }
-            childLocation = parentLocation;
+            if(location.getParentLocation() == null) return location.getUuid();
+            location = location.getParentLocation();
         }
         return null;
     }

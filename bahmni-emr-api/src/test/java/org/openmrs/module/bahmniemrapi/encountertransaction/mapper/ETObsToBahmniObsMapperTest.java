@@ -315,11 +315,13 @@ public class ETObsToBahmniObsMapperTest {
         when(authenticatedUser.getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE)).thenReturn("fr");
         when(conceptService.getConceptByUuid("valueUuid")).thenReturn(concept);
         when(LocaleUtility.fromSpecification("fr")).thenReturn(Locale.FRENCH);
+        when(LocaleUtility.fromSpecification("en")).thenReturn(Locale.ENGLISH);
 
         EncounterTransaction.Concept valueConcept = createETConcept("answer", "Coded", null, null, "valueUuid");
         EncounterTransaction.Concept etParentConcept = createETConcept(etDataType, etParentConceptClass, "concept", null, "uuid");
         EncounterTransaction.User user = createETUser(person1name);
         EncounterTransaction.Observation observation = createETObservation("obs1-uuid", user, valueConcept, etParentConcept);
+
 
         AdditionalBahmniObservationFields additionalBahmniObservationFields = new AdditionalBahmniObservationFields(encounterUuid, new Date(), new Date(), obsGroupUuid);
         Concept parentConcept = createConcept("concept", "Coded", null, null, null);

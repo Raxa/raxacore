@@ -11,6 +11,7 @@ import org.bahmni.module.bahmnicoreui.helper.ObsDiseaseSummaryAggregator;
 import org.bahmni.module.referencedata.contract.ConceptDetails;
 import org.junit.Test;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.context.Context;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -363,6 +364,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
         ArrayList<String> obsConcepts = new ArrayList<String>() {{
             add("CodedConcept");
         }};
+        Context.getAuthenticatedUser().setUserProperty("defaultLocale", "en");
         diseaseDataParams.setObsConcepts(obsConcepts);
         DiseaseSummaryData diseaseSummary = bahmniDiseaseSummaryData.getDiseaseSummary("86526ed5-3c11-11de-a0ba-001e378eb67a", diseaseDataParams);
         assertEquals("CCAnswer1", diseaseSummary.getTabularData().get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2008-09-18"))).get("CodedConcept").getValue());

@@ -4156,8 +4156,24 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-201606291787" author="Pankaj, Hanisha">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM location_tag where name='Visit Location';
+            </sqlCheck>
+        </preConditions>
+        <comment>Add Visit Location Tag if not already added.</comment>
+        <sql>
+            set @current_date = 0;
+            select now() into @current_date;
 
-
-
+            INSERT INTO location_tag (name, description, creator, date_created, uuid) VALUES
+            ('Visit Location',
+            'Visit Location',
+            1,
+            @current_date,
+            uuid());
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

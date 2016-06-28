@@ -1,5 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
@@ -39,6 +41,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestControlle
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -125,14 +128,20 @@ public class AdminImportController extends BaseRestController {
 
     @RequestMapping(value = baseUrl + "/encounter", method = RequestMethod.POST)
     @ResponseBody
-    public boolean upload(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) throws IOException {
+    public boolean upload(@CookieValue(value="bahmni.user.location", required=true) String loginCookie,
+                          @RequestParam(value = "file") MultipartFile file,
+                          @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) throws IOException {
+
         try {
             String configuredExactPatientIdMatch = administrationService.getGlobalProperty(SHOULD_MATCH_EXACT_PATIENT_ID_CONFIG);
+            JsonParser jsonParser = new JsonParser();
+            JsonObject jsonObject = (JsonObject) jsonParser.parse(loginCookie);
+            String loginUuid =  jsonObject.get("uuid").getAsString();
             boolean shouldMatchExactPatientId = DEFAULT_SHOULD_MATCH_EXACT_PATIENT_ID;
             if (configuredExactPatientIdMatch != null)
                 shouldMatchExactPatientId = Boolean.parseBoolean(configuredExactPatientIdMatch);
 
-            encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm, shouldMatchExactPatientId);
+            encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm, shouldMatchExactPatientId, loginUuid);
             return importCsv(ENCOUNTER_FILES_DIRECTORY, file, encounterPersister, 5, true, MultipleEncounterRow.class);
         } catch (Throwable e) {
             logger.error("Could not upload file", e);

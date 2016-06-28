@@ -4,12 +4,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Person;
 import org.openmrs.User;
 import org.openmrs.Visit;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.builder.ConceptBuilder;
 import org.openmrs.module.bahmniemrapi.builder.EncounterBuilder;
@@ -24,6 +26,7 @@ import org.openmrs.module.emrapi.encounter.mapper.UserMapper;
 import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 import org.openmrs.test.TestUtil;
 import org.openmrs.util.LocaleUtility;
+import org.openmrs.util.OpenmrsConstants;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -53,6 +56,9 @@ public class OMRSObsToBahmniObsMapperTest {
     private User authenticatedUser;
     private ObservationMapper observationMapper;
 
+    @Mock
+    private AdministrationService administrationService;
+
     @Before
     public void setUp() throws Exception {
         initMocks(this);
@@ -67,6 +73,12 @@ public class OMRSObsToBahmniObsMapperTest {
 
     @Test
     public void return_mapped_observations_for_abnormal_observation_structure() throws Exception {
+
+        Mockito.when(authenticatedUser.getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE)).thenReturn("en");
+        Mockito.when(LocaleUtility.fromSpecification("en")).thenReturn(Locale.ENGLISH);
+        Mockito.when(administrationService.getGlobalProperty("default_locale")).thenReturn("en");
+        Mockito.when(LocaleUtility.fromSpecification("en")).thenReturn(Locale.ENGLISH);
+
         Date date = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse("January 2, 2010");
         Person person = new PersonBuilder().withUUID("puuid").withPersonName("testPersonName").build();
         User user = new User(person);

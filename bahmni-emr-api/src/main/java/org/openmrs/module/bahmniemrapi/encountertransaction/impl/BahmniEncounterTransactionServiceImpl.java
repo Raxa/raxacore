@@ -26,6 +26,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncoun
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.RetrospectiveEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitMatcher;
+import org.openmrs.module.bahmniemrapi.visitLocation.BahmniVisitLocationService;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.openmrs.module.emrapi.encounter.EncounterSearchParametersBuilder;
@@ -54,6 +55,7 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
     private LocationService locationService;
     private ProviderService providerService;
     private BaseEncounterMatcher encounterSessionMatcher;
+    private BahmniVisitLocationService bahmniVisitLocationService;
     private Map<String, VisitMatcher> visitMatchersMap = new HashMap<>();
 
     public BahmniEncounterTransactionServiceImpl(EncounterService encounterService,
@@ -67,7 +69,8 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
                                                  PatientService patientService,
                                                  LocationService locationService,
                                                  ProviderService providerService,
-                                                 BaseEncounterMatcher encounterSessionMatcher) {
+                                                 BaseEncounterMatcher encounterSessionMatcher,
+                                                 BahmniVisitLocationService bahmniVisitLocationService) {
 
         this.encounterService = encounterService;
         this.emrEncounterService = emrEncounterService;
@@ -81,6 +84,7 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
         this.locationService = locationService;
         this.providerService = providerService;
         this.encounterSessionMatcher = encounterSessionMatcher;
+        this.bahmniVisitLocationService = bahmniVisitLocationService;
     }
 
     @Override
@@ -129,6 +133,8 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
             setVisitTypeUuid(visitMatcher, bahmniEncounterTransaction);
         }
 
+        setVisitLocationToEncounterTransaction(bahmniEncounterTransaction);
+
         EncounterTransaction encounterTransaction = emrEncounterService.save(bahmniEncounterTransaction.toEncounterTransaction());
         //Get the saved encounter transaction from emr-api
         String encounterUuid = encounterTransaction.getEncounterUuid();
@@ -140,6 +146,14 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
             updatedEncounterTransaction = saveCommand.save(bahmniEncounterTransaction,currentEncounter, updatedEncounterTransaction);
         }
         return bahmniEncounterTransactionMapper.map(updatedEncounterTransaction, includeAll);
+    }
+
+    private EncounterTransaction setVisitLocationToEncounterTransaction(BahmniEncounterTransaction bahmniEncounterTransaction) {
+        if(bahmniEncounterTransaction.toEncounterTransaction().getLocationUuid() != null) {
+            String visitLocationUuid = bahmniVisitLocationService.getVisitLocationForLoginLocation(bahmniEncounterTransaction.toEncounterTransaction().getLocationUuid());
+            bahmniEncounterTransaction.toEncounterTransaction().setVisitLocationUuid(visitLocationUuid);
+        }
+        return bahmniEncounterTransaction.toEncounterTransaction();
     }
 
     private VisitMatcher getVisitMatcher() {

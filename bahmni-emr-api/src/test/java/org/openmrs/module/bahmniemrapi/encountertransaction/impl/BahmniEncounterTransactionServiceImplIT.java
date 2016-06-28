@@ -275,7 +275,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
     }
 
     @Test
-    public void shouldCreateANewVisitIfNoActiveVisit() {
+    public void shouldNotCreateANewVisitIfThereIsAnActiveVisit() {
         Date obsDate = new Date();
         String obsUuid = UUID.randomUUID().toString();
         String patientUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
@@ -298,6 +298,32 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
         assertNotNull(visitIdentificationHelper.hasActiveVisit(patientByUuid));
         assertNotNull(savedEncounterTransaction);
         assertEquals(savedEncounterTransaction.getObservations().iterator().next().getUuid(), bahmniObservation.getUuid());
+    }
+
+
+    @Test
+    public void shouldCreateANewVisitAndSetVisitLocationToVisitIfNoActiveVisit() throws Exception {
+        executeDataSet("VisitLocationDataSet.xml");
+        Date obsDate = new Date();
+        String obsUuid = UUID.randomUUID().toString();
+        String patientUuid = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
+        String visitType = "Emergency";
+
+        BahmniObservation bahmniObservation = createBahmniObservation(obsUuid, "obs-value",
+                createConcept("96408258-000b-424e-af1a-403919332938", "FAVORITE FOOD, NON-CODED"), obsDate, null);
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
+        bahmniEncounterTransaction.setPatientId("4");
+        bahmniEncounterTransaction.setLocationUuid("l3602jn5-9fhb-4f20-866b-0ece24561525");
+        bahmniEncounterTransaction.setPatientUuid(patientUuid);
+        bahmniEncounterTransaction.addObservation(bahmniObservation);
+        bahmniEncounterTransaction.setEncounterTypeUuid("02c533ab-b74b-4ee4-b6e5-ffb6d09a0ad1");
+        bahmniEncounterTransaction.setVisitType(visitType);
+
+              BahmniEncounterTransaction savedEncounterTransaction = bahmniEncounterTransactionService
+                .save(bahmniEncounterTransaction);
+
+        Visit visit = Context.getVisitService().getVisitByUuid(savedEncounterTransaction.toEncounterTransaction().getVisitUuid());
+        assertEquals("l38923e5-9fhb-4f20-866b-0ece24561525", visit.getLocation().getUuid());
     }
 
     @Test
