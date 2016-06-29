@@ -5,6 +5,7 @@ import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.NonUniqueObjectException;
+import org.hibernate.exception.DataException;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
@@ -34,6 +35,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.PersonRe
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.RelationShipTypeResource1_8;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_8.RelationshipResource1_8;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -103,16 +105,18 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         try {
             delegate = emrPatientProfileService.save(delegate);
             return new ResponseEntity<>(ConversionUtil.convertToRepresentation(delegate, Representation.FULL), HttpStatus.OK);
-        } catch (Exception e) {
-            if (e instanceof ContextAuthenticationException) {
-                return new ResponseEntity<Object>(e, HttpStatus.FORBIDDEN);
-            } else if (e instanceof NonUniqueObjectException) {
-                return new ResponseEntity<Object>(e, HttpStatus.OK);
-            }  else if (e instanceof ValidationException) {
-                return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, null), HttpStatus.BAD_REQUEST);
-            } else {
-                return new ResponseEntity<Object>(e, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+        } catch (ContextAuthenticationException e) {
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.FORBIDDEN);
+        } catch (NonUniqueObjectException e){
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (ValidationException e){
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (DataIntegrityViolationException e){
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getRootCause().getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (DataException e){
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -125,14 +129,16 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         try {
             delegate = emrPatientProfileService.save(delegate);
             return new ResponseEntity<>(ConversionUtil.convertToRepresentation(delegate, Representation.FULL), HttpStatus.OK);
+        } catch (ContextAuthenticationException e) {
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.FORBIDDEN);
+        } catch (ValidationException e) {
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getRootCause().getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (DataException e) {
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            if (e instanceof ContextAuthenticationException) {
-                return new ResponseEntity<Object>(e, HttpStatus.FORBIDDEN);
-            } else if (e instanceof ValidationException) {
-                return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, null), HttpStatus.BAD_REQUEST);
-            } else {
-                return new ResponseEntity<Object>(e, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
