@@ -1,13 +1,10 @@
-package org.openmrs.module.bahmniemrapi.visitLocation;
+package org.openmrs.module.bahmniemrapi.visitlocation;
 
 
 import org.openmrs.Location;
-import org.openmrs.LocationTag;
 import org.openmrs.api.context.Context;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Component
 @Transactional

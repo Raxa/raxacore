@@ -1,6 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.openmrs.module.bahmniemrapi.visitLocation.BahmniVisitLocationService;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -10,7 +10,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentRequest;
 import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentResponse;
 import org.openmrs.module.bahmniemrapi.document.service.VisitDocumentService;
-import org.openmrs.module.bahmniemrapi.visitLocation.BahmniVisitLocationService;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.WSDoc;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;

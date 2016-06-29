@@ -5,16 +5,14 @@ import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.openmrs.Encounter;
 import org.openmrs.Location;
-import org.openmrs.LocationTag;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
-import org.openmrs.api.LocationService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
-import org.openmrs.module.bahmniemrapi.visitLocation.BahmniVisitLocationService;
-import org.openmrs.module.bahmniemrapi.visitLocation.BahmniVisitLocationServiceImpl;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

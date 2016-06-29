@@ -1,4 +1,4 @@
-package org.openmrs.module.bahmniemrapi.visitLocation;
+package org.openmrs.module.bahmniemrapi.visitlocation;
 
 public interface BahmniVisitLocationService {
    String getVisitLocationForLoginLocation(String loginLocationUuid);
