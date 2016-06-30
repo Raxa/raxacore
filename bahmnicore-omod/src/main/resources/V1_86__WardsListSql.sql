@@ -43,7 +43,7 @@ FROM bed_location_map blm
   INNER JOIN (SELECT
                 patient_id,
                 max(encounter_datetime) AS max_encounter_datetime,
-                visit_id,
+                max(visit_id) as visit_id,
                 max(encounter_id) AS encounter_id
               FROM encounter
                 INNER JOIN encounter_type ON encounter_type.encounter_type_id = encounter.encounter_type
