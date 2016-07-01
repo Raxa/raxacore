@@ -13,6 +13,7 @@ import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -88,5 +89,38 @@ public class BahmniConceptServiceImplTest {
 
         verify(bahmniConceptDao, times(1)).getConceptByFullySpecifiedName(conceptName);
         assertEquals(expectedConcept, actualConcept);
+    }
+
+    @Test
+    public void shouldReturnEmptyConceptsListIfConceptNamesListIsEmpty() throws Exception {
+
+        List<Concept> concepts = bahmniConceptService.getConceptsByFullySpecifiedName(new ArrayList<String>());
+        assertEquals(0, concepts.size());
+    }
+
+    @Test
+    public void shouldGetListOfConceptsByTakingListOfNamesAsParameters() throws Exception {
+
+        List<String> conceptNames = new ArrayList<String>();
+        conceptNames.add("concept1");
+        conceptNames.add("concept2");
+        List<Concept> conceptList = new ArrayList<>();
+        conceptList.add(new Concept(1));
+        conceptList.add(new Concept(2));
+        when(bahmniConceptDao.getConceptsByFullySpecifiedName(conceptNames)).thenReturn(conceptList);
+
+        List<Concept> concepts = bahmniConceptService.getConceptsByFullySpecifiedName(conceptNames);
+
+        verify(bahmniConceptDao, times(1)).getConceptsByFullySpecifiedName(conceptNames);
+        assertEquals(2, concepts.size());
+        assertEquals(1, concepts.get(0).getConceptId().intValue());
+        assertEquals(2, concepts.get(1).getConceptId().intValue());
+    }
+
+    @Test
+    public void shouldGetEmptyListIfListOfNamesIsNull() throws Exception {
+        List<Concept> concepts = bahmniConceptService.getConceptsByFullySpecifiedName(null);
+
+        assertEquals(0, concepts.size());
     }
 }

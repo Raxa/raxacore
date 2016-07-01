@@ -13,4 +13,6 @@ public interface BahmniConceptDao {
     Concept getConceptByFullySpecifiedName(String fullySpecifiedConceptName);
     Collection<Drug> getDrugByListOfConcepts(Collection<Concept> conceptSet);
     List searchDrugsByDrugName(Integer conceptSetId, String searchTerm);
+
+    List getConceptsByFullySpecifiedName(List<String> conceptNames);
 }

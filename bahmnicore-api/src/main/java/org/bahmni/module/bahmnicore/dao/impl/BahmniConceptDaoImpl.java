@@ -91,6 +91,17 @@ public class BahmniConceptDaoImpl implements BahmniConceptDao {
         return getDrugsByDrugIds(drugIds);
     }
 
+    @Override
+    public List<Concept> getConceptsByFullySpecifiedName(List<String> conceptNames) {
+        List<String> lowerCaseConceptNames = getLowerCaseFor(conceptNames);
+        List<Concept> concepts = sessionFactory.getCurrentSession()
+                .createQuery("select concept " +
+                        "from ConceptName as conceptName " +
+                        "where conceptName.conceptNameType ='FULLY_SPECIFIED' and conceptName.voided = false" +
+                        " and lower(conceptName.name) in (:conceptNames)").setParameterList("conceptNames", lowerCaseConceptNames).list();
+        return concepts;
+    }
+
     private String getSqlForDrugsMatchingEitherConceptOrDrugName() {
         return getDrugIdsFrom("(SELECT DISTINCT csmembers.sort_weight as sortWeight,d.drug_id as drugId "
             + "FROM " + drugsWithConceptNamesForConceptSet
@@ -124,5 +135,13 @@ public class BahmniConceptDaoImpl implements BahmniConceptDao {
 
     private String searchBothSidesOf(String searchString) {
         return WILD_CARD + searchString.trim().toLowerCase() + WILD_CARD;
+    }
+
+    private List<String> getLowerCaseFor(List<String> conceptNames){
+        List<String> lowerCaseConceptNames = new ArrayList<>();
+        for (String concept : conceptNames) {
+            lowerCaseConceptNames.add(concept.toLowerCase());
+        }
+        return lowerCaseConceptNames;
     }
 }

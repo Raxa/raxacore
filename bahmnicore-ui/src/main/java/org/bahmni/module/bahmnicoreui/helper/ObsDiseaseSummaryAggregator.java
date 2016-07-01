@@ -3,6 +3,7 @@ package org.bahmni.module.bahmnicoreui.helper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang3.StringUtils;
+import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
@@ -23,17 +24,19 @@ public class ObsDiseaseSummaryAggregator {
 
     private final ConceptHelper conceptHelper;
     private BahmniObsService bahmniObsService;
+    private BahmniConceptService bahmniConceptService;
     private final DiseaseSummaryObsMapper diseaseSummaryObsMapper = new DiseaseSummaryObsMapper();
 
     @Autowired
-    public ObsDiseaseSummaryAggregator(ConceptHelper conceptHelper, BahmniObsService bahmniObsService) {
+    public ObsDiseaseSummaryAggregator(ConceptHelper conceptHelper, BahmniObsService bahmniObsService, BahmniConceptService bahmniConceptService) {
         this.bahmniObsService = bahmniObsService;
         this.conceptHelper = conceptHelper;
+        this.bahmniConceptService = bahmniConceptService;
     }
 
     public DiseaseSummaryData aggregate(Patient patient, DiseaseDataParams queryParams) {
         DiseaseSummaryData diseaseSummaryData = new DiseaseSummaryData();
-        List<Concept> concepts = conceptHelper.getConceptsForNames(queryParams.getObsConcepts());
+        List<Concept> concepts = bahmniConceptService.getConceptsByFullySpecifiedName(queryParams.getObsConcepts());
         Collection<BahmniObservation> bahmniObservations = fetchBahmniObservations(patient, queryParams, concepts);
         constructDiseaseSummaryData(bahmniObservations, concepts, queryParams.getGroupBy(), diseaseSummaryData);
         return diseaseSummaryData;

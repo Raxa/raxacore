@@ -213,4 +213,75 @@ public class BahmniConceptDaoImplIT extends BaseIntegrationTest{
         assertEquals(conceptService.getDrug(6001),drugs.get(2));
     }
 
+    @Test
+    public void shouldGetConceptsByFullySpecifiedName() throws Exception {
+        executeDataSet("sampleCodedConcept.xml");
+        List<String> conceptNames = new ArrayList<>();
+        conceptNames.add("List of Diagnoses");
+        conceptNames.add("Dengue Fever");
+
+        List<Concept> concepts = bahmniConceptDao.getConceptsByFullySpecifiedName(conceptNames);
+
+        assertEquals(2, concepts.size());
+        assertEquals(90,concepts.get(0).getConceptId().intValue());
+        assertEquals(901,concepts.get(1).getConceptId().intValue());
+    }
+
+    @Test
+    public void shouldReturnEmptyConceptsListIfConceptNamesNotExist() throws Exception {
+        executeDataSet("sampleCodedConcept.xml");
+        List<String> conceptNames = new ArrayList<>();
+        conceptNames.add("concept1");
+        conceptNames.add("concept2");
+
+        List<Concept> concepts = bahmniConceptDao.getConceptsByFullySpecifiedName(conceptNames);
+
+        assertEquals(0, concepts.size());
+    }
+
+    @Test
+    public void shouldReturnConceptsOnlyByFullySpecifiedName() throws Exception {
+        executeDataSet("sampleCodedConcept.xml");
+        List<String> conceptNames = new ArrayList<>();
+        conceptNames.add("acne");
+
+        List<Concept> concepts = bahmniConceptDao.getConceptsByFullySpecifiedName(conceptNames);
+
+        assertEquals(1, concepts.size());
+    }
+
+    @Test
+    public void shouldGetConceptsByUsingConceptNamesBasedOnCaseInsensitivity() throws Exception {
+        executeDataSet("sampleCodedConcept.xml");
+        List<String> conceptNames = new ArrayList<>();
+        conceptNames.add("List Of diagnoses");
+        conceptNames.add("Dengue fever");
+
+        List<Concept> concepts = bahmniConceptDao.getConceptsByFullySpecifiedName(conceptNames);
+
+        assertEquals(2, concepts.size());
+    }
+
+    @Test
+    public void shouldNotGetTheConceptsByShortName() throws Exception {
+        executeDataSet("sampleCodedConcept.xml");
+        List<String> conceptNames = new ArrayList<>();
+        conceptNames.add("Skin");
+
+        List<Concept> concepts = bahmniConceptDao.getConceptsByFullySpecifiedName(conceptNames);
+
+        assertEquals(0, concepts.size());
+    }
+
+    @Test
+    public void shouldNotReturnConceptIfConceptNameIsVoided() throws Exception {
+
+        executeDataSet("sampleCodedConcept.xml");
+        List<String> conceptNames = new ArrayList<>();
+        conceptNames.add("Acute Porphyria (voided)");
+
+        List<Concept> concepts = bahmniConceptDao.getConceptsByFullySpecifiedName(conceptNames);
+
+        assertEquals(0, concepts.size());
+    }
 }

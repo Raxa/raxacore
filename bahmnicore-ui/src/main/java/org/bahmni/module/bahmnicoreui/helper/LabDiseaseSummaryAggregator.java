@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicoreui.helper;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
+import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseDataParams;
 import org.bahmni.module.bahmnicoreui.contract.DiseaseSummaryData;
 import org.bahmni.module.bahmnicoreui.mapper.DiseaseSummaryLabMapper;
@@ -27,20 +28,22 @@ public class LabDiseaseSummaryAggregator {
     private LabOrderResultsService labOrderResultsService;
     private VisitService visitService;
     private VisitDao visitDao;
+    private BahmniConceptService bahmniConceptService;
     private final DiseaseSummaryLabMapper diseaseSummaryLabMapper = new DiseaseSummaryLabMapper();
 
 
     @Autowired
-    public LabDiseaseSummaryAggregator(ConceptHelper conceptHelper, LabOrderResultsService labOrderResultsService, VisitService visitService, VisitDao visitDao) {
+    public LabDiseaseSummaryAggregator(ConceptHelper conceptHelper, LabOrderResultsService labOrderResultsService, VisitService visitService, VisitDao visitDao,BahmniConceptService bahmniConceptService) {
         this.labOrderResultsService = labOrderResultsService;
         this.visitService = visitService;
         this.conceptHelper = conceptHelper;
         this.visitDao = visitDao;
+        this.bahmniConceptService = bahmniConceptService;
     }
 
     public DiseaseSummaryData aggregate(Patient patient, DiseaseDataParams diseaseDataParams) {
         DiseaseSummaryData diseaseSummaryData =  new DiseaseSummaryData();
-        List<Concept> concepts = conceptHelper.getConceptsForNames(diseaseDataParams.getLabConcepts());
+        List<Concept> concepts = bahmniConceptService.getConceptsByFullySpecifiedName(diseaseDataParams.getLabConcepts());
         if(!concepts.isEmpty()){
             List<LabOrderResult> labOrderResults = labOrderResultsService.getAllForConcepts(patient, diseaseDataParams.getLabConcepts(), getVisits(patient, diseaseDataParams), diseaseDataParams.getStartDate(), diseaseDataParams.getEndDate());
             diseaseSummaryData.addTabularData(diseaseSummaryLabMapper.map(labOrderResults, diseaseDataParams.getGroupBy()));
