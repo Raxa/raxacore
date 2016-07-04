@@ -6,6 +6,7 @@ import org.openmrs.Provider;
 import org.openmrs.Visit;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
+import org.springframework.stereotype.Component;
 
 
 public class EncounterProviderMatcher implements BaseEncounterMatcher {
