@@ -17,6 +17,7 @@ import java.util.Set;
 
 public class OpenElisAccession {
     private String accessionUuid;
+    private String labLocationUuid;
     private String patientUuid;
     private String patientFirstName;
     private String patientLastName;
@@ -24,6 +25,14 @@ public class OpenElisAccession {
     private String patientIdentifier;
     private List<OpenElisAccessionNote> accessionNotes;
     private Set<OpenElisTestDetail> testDetails = new HashSet<>();
+
+    public String getLabLocationUuid() {
+        return labLocationUuid;
+    }
+
+    public void setLabLocationUuid(String labLocationUuid) {
+        this.labLocationUuid = labLocationUuid;
+    }
 
     public void addTestDetail(OpenElisTestDetail testDetail) {
         getTestDetails().add(testDetail);

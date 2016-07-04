@@ -21,7 +21,7 @@ public class DuplicateObservationService {
 
     @Autowired
     public DuplicateObservationService(VisitService visitService) {
-        visitIdentificationHelper = new VisitIdentificationHelper(visitService);
+        visitIdentificationHelper = new VisitIdentificationHelper(visitService, null);
     }
 
     public void filter(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {

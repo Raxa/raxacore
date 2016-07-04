@@ -114,7 +114,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             throwPatientNotFoundException(patientId);
 
         this.systemUserName = systemUserName;
-        Visit visitForDrugOrders = new VisitIdentificationHelper(visitService).getVisitFor(patient, visitTypeName, orderDate);
+        Visit visitForDrugOrders = new VisitIdentificationHelper(visitService, null).getVisitFor(patient, visitTypeName, orderDate);
         addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visitForDrugOrders);
     }
 

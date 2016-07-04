@@ -1,9 +1,9 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 
 import org.joda.time.DateTime;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.Order;
@@ -24,23 +24,18 @@ import org.openmrs.module.bahmniemrapi.obsrelation.contract.ObsRelationship;
 import org.openmrs.module.emrapi.CareSettingType;
 import org.openmrs.module.emrapi.encounter.DrugMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 
 public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest {
 
@@ -58,6 +53,9 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private BaseEncounterMatcher baseEncounterMatcher;
 
     @Autowired
     @Qualifier("drugMapper")
@@ -281,7 +279,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
         String patientUuid = "da7f524f-27ce-4bb2-86d6-6d1d05312bd5";
         String visitType = "OPD";
         Patient patientByUuid = patientService.getPatientByUuid(patientUuid);
-        VisitIdentificationHelper visitIdentificationHelper = new VisitIdentificationHelper(visitService);
+        VisitIdentificationHelper visitIdentificationHelper = new VisitIdentificationHelper(visitService, null);
 
         BahmniObservation bahmniObservation = createBahmniObservation(obsUuid, "obs-value",
                 createConcept("96408258-000b-424e-af1a-403919332938", "FAVORITE FOOD, NON-CODED"), obsDate, null);
@@ -563,8 +561,6 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
         assertEquals(obsUuid, encounterTransaction.getObservations().iterator().next().getUuid());
 
     }
-
-
 
     private BahmniObservation getObservationByConceptUuid(Collection<BahmniObservation> bahmniObservations,
                                                           String conceptUuid) {
