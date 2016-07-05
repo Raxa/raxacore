@@ -47,7 +47,6 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
 
         Patient patient = patientService.getPatientByUuid(patientUuid);
 
-
         diseaseSummaryData.concat(obsDiseaseSummaryAggregator.aggregate(patient, queryParams));
         diseaseSummaryData.concat(labDiseaseSummaryAggregator.aggregate(patient, queryParams));
         diseaseSummaryData.concat(drugOrderDiseaseSummaryAggregator.aggregate(patient, queryParams));
@@ -56,7 +55,7 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
     }
 
     private DiseaseSummaryMap filterDataByCount(DiseaseSummaryMap diseaseSummaryMap, Integer initialCount, Integer latestCount) {
-        if(initialCount == null && latestCount == null) return diseaseSummaryMap;
+        if(initialCount == null && latestCount == null) return filter(diseaseSummaryMap, 0, diseaseSummaryMap.size());
         DiseaseSummaryMap summaryMap = new DiseaseSummaryMap();
         summaryMap.putAll(filter(diseaseSummaryMap, 0, getIntegerValue(latestCount)));
         summaryMap.putAll(filter(diseaseSummaryMap, diseaseSummaryMap.size() - getIntegerValue(initialCount), diseaseSummaryMap.size()));
@@ -71,7 +70,8 @@ public class BahmniDiseaseSummaryServiceImpl implements BahmniDiseaseSummaryServ
 
         List<String> summaryMapKeys = sortByDate(diseaseSummaryMap.keySet());
         for(int index=fromIndex; index<toIndex; index++) {
-            summaryMap.put(summaryMapKeys.get(index), diseaseSummaryMap.get(summaryMapKeys.get(index)));
+            String visitStartDateTime = summaryMapKeys.get(index);
+            summaryMap.put(visitStartDateTime, diseaseSummaryMap.get(visitStartDateTime));
         }
         return summaryMap;
     }
