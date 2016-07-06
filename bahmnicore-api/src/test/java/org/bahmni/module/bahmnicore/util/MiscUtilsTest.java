@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.util;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openmrs.Concept;
@@ -12,12 +11,8 @@ import java.util.Collection;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

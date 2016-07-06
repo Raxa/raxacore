@@ -7,7 +7,6 @@ import org.openmrs.Encounter;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.VisitService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
