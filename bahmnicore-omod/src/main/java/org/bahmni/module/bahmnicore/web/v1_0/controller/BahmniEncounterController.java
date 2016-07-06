@@ -28,6 +28,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
 
+import static org.bahmni.module.bahmnicore.util.MiscUtils.setUuidsForObservations;
+
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/bahmniencounter")
 public class BahmniEncounterController extends BaseRestController {
@@ -102,11 +104,4 @@ public class BahmniEncounterController extends BaseRestController {
         return bahmniEncounterTransactionMapper.map(encounterTransaction, includeAll);
     }
 
-    private void setUuidsForObservations(Collection<BahmniObservation> bahmniObservations) {
-        for (BahmniObservation bahmniObservation : bahmniObservations) {
-            if (org.apache.commons.lang3.StringUtils.isBlank(bahmniObservation.getUuid())) {
-                bahmniObservation.setUuid(UUID.randomUUID().toString());
-            }
-        }
-    }
 }

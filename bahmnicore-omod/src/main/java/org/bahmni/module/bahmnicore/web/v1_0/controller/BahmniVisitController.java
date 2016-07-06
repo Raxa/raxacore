@@ -8,16 +8,22 @@ import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
+import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+
+import static org.bahmni.module.bahmnicore.util.MiscUtils.setUuidsForObservations;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/visit")
@@ -28,18 +34,27 @@ public class BahmniVisitController extends BaseRestController {
     private VisitService visitService;
     private BahmniVisitService bahmniVisitService;
     private BahmniVisitSummaryMapper bahmniVisitSummaryMapper;
+    private BahmniEncounterTransactionService bahmniEncounterTransactionService;
+
+    public BahmniVisitController() {
+    }
 
     @Autowired
-    public BahmniVisitController(VisitService visitService, BahmniVisitService bahmniVisitService) {
+    public BahmniVisitController(VisitService visitService, BahmniVisitService bahmniVisitService, BahmniEncounterTransactionService bahmniEncounterTransactionService) {
         this.visitService = visitService;
         this.bahmniVisitService = bahmniVisitService;
+        this.bahmniEncounterTransactionService = bahmniEncounterTransactionService;
         this.bahmniVisitSummaryMapper = new BahmniVisitSummaryMapper();
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "endVisit")
     @ResponseBody
     public Visit endVisitNow(@RequestParam(value = "visitUuid") String visitUuid) {
-        Visit visit = Context.getVisitService().getVisitByUuid(visitUuid);
+        return endVisit(visitUuid);
+    }
+
+    private Visit endVisit(String visitUuid) {
+        Visit visit = visitService.getVisitByUuid(visitUuid);
         return visitService.endVisit(visit, null);
     }
 
@@ -57,5 +72,14 @@ public class BahmniVisitController extends BaseRestController {
             return bahmniVisitSummaryMapper.map(visit, admitAndDischargeEncounters);
         }
         return null;
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "endVisitAndCreateEncounter")
+    @ResponseBody
+    @Transactional
+    public BahmniEncounterTransaction endVisitAndCreateNewEncounter(@RequestParam(value = "visitUuid") String visitUuid, @RequestBody BahmniEncounterTransaction bahmniEncounterTransaction) {
+        endVisit(visitUuid);
+        setUuidsForObservations(bahmniEncounterTransaction.getObservations());
+        return bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
     }
 }
