@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0;
 
+import org.bahmni.module.bahmnicore.service.BahmniVisitService;
 import org.bahmni.module.bahmnicore.web.v1_0.controller.BahmniVisitController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +20,8 @@ import static org.mockito.Mockito.when;
 public class BahmniVisitControllerTest {
     @Mock
     private VisitService visitService;
-
+    @Mock
+    private BahmniVisitService bahmniVisitService;
     @Mock
     private BahmniEncounterTransactionService bahmniEncounterTransactionService;
 
