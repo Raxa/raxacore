@@ -5,12 +5,22 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 
 import java.util.Arrays;
 import java.util.Collection;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.notNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class MiscUtilsTest {
@@ -24,8 +34,21 @@ public class MiscUtilsTest {
         Concept sampleConcept = new Concept();
         when(conceptService.getConceptByName(sampleConceptName)).thenReturn(sampleConcept);
         Collection<Concept> concepts = MiscUtils.getConceptsForNames(Arrays.asList(sampleConceptName, nonExistantConceptName), conceptService);
-        Assert.assertThat(concepts.size(), is(equalTo(1)));
-        Assert.assertThat(concepts.iterator().next(), is(sampleConcept));
+        assertThat(concepts.size(), is(equalTo(1)));
+        assertThat(concepts.iterator().next(), is(sampleConcept));
+    }
+
+    @Test
+    public void shouldSetUuidForObservationNotHavingUuid() {
+        BahmniObservation observation1 = new BahmniObservation();
+        observation1.setUuid("123");
+        BahmniObservation observation2 = mock(BahmniObservation.class);
+        Collection<BahmniObservation> bahmniObservations = Arrays.asList(observation1, observation2);
+
+        MiscUtils.setUuidsForObservations(bahmniObservations);
+
+        assertThat(observation1.getUuid(), is("123"));
+        verify(observation2, times(1)).setUuid(anyString());
     }
 
 }

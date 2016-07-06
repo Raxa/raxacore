@@ -3,9 +3,12 @@ package org.bahmni.module.bahmnicore.util;
 import org.apache.commons.collections.CollectionUtils;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 public class MiscUtils {
     public static List<Concept> getConceptsForNames(List<String> conceptNames, ConceptService conceptService) {
@@ -21,5 +24,13 @@ public class MiscUtils {
             return rootConcepts;
         }
         return new ArrayList<>();
+    }
+
+    public static void setUuidsForObservations(Collection<BahmniObservation> bahmniObservations) {
+        for (BahmniObservation bahmniObservation : bahmniObservations) {
+            if (org.apache.commons.lang3.StringUtils.isBlank(bahmniObservation.getUuid())) {
+                bahmniObservation.setUuid(UUID.randomUUID().toString());
+            }
+        }
     }
 }
