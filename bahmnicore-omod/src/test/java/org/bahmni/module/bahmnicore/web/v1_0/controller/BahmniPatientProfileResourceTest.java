@@ -10,8 +10,11 @@ import org.mockito.MockitoAnnotations;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
+import org.openmrs.Person;
+import org.openmrs.Relationship;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
+import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.emrapi.patient.EmrPatientProfileService;
 import org.openmrs.module.emrapi.patient.PatientProfile;
@@ -27,9 +30,13 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import static java.util.Arrays.asList;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -60,6 +67,9 @@ public class BahmniPatientProfileResourceTest {
     private PatientService patientService;
 
     @Mock
+    private PersonService personService;
+
+    @Mock
     private IdentifierSourceServiceWrapper identifierSourceServiceWrapper;
 
     private BahmniPatientProfileResource bahmniPatientProfileResource;
@@ -76,6 +86,7 @@ public class BahmniPatientProfileResourceTest {
         patient.setGender("M");
         mockStatic(Context.class);
         PowerMockito.when(Context.getService(RestService.class)).thenReturn(restService);
+        PowerMockito.when(Context.getPersonService()).thenReturn(personService);
         PowerMockito.when(restService.getResourceBySupportedClass(Patient.class)).thenReturn(patientResource1_8);
         PowerMockito.when(patientResource1_8.getPatient(any(SimpleObject.class))).thenReturn(patient);
         PowerMockito.when(patientResource1_8.getPatientForUpdate(anyString(), any(SimpleObject.class))).thenReturn(patient);
@@ -95,12 +106,18 @@ public class BahmniPatientProfileResourceTest {
         PatientIdentifierType patientIdentifierType = new PatientIdentifierType();
         when(patientService.getPatientIdentifierTypeByUuid("dead-cafe")).thenReturn(patientIdentifierType);
         Patient patient = mock(Patient.class);
+        when(patient.getUuid()).thenReturn("patientUuid");
         when(delegate.getPatient()).thenReturn(patient);
         PatientIdentifier patientIdentifier = mock(PatientIdentifier.class);
         Set<PatientIdentifier> patientIdentifiers = new HashSet<>();
         patientIdentifiers.add(patientIdentifier);
         when(patient.getIdentifiers()).thenReturn(patientIdentifiers);
         doNothing().when(spy).setConvertedProperties(any(PatientProfile.class), any(SimpleObject.class), any(DelegatingResourceDescription.class), any(Boolean.class));
+        Person person = new Person();
+        person.setUuid("personUuid");
+        when(personService.getPersonByUuid("patientUuid")).thenReturn(person);
+        List<Relationship> relationships = Arrays.asList();
+        when(personService.getRelationshipsByPerson(person)).thenReturn(relationships);
 
         ResponseEntity<Object> response = spy.create(false, propertiesToCreate);
 
@@ -109,19 +126,32 @@ public class BahmniPatientProfileResourceTest {
         verify(patientService, times(1)).getPatientIdentifierTypeByUuid("dead-cafe");
         verify(identifierSourceServiceWrapper, times(1)).generateIdentifierUsingIdentifierSourceUuid("dead-cafe", "");
         verify(patientIdentifier, times(1)).setIdentifierType(patientIdentifierType);
+        verify(personService, times(1)).getPersonByUuid("patientUuid");
+        verify(delegate, times(1)).setRelationships(relationships);
     }
 
     @Test
     public void updatePatient() throws Exception {
         bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper);
         BahmniPatientProfileResource spy = spy(bahmniPatientProfileResource);
-        PatientProfile delegate = new PatientProfile();
+        PatientProfile delegate = mock(PatientProfile.class);
         doReturn(delegate).when(spy, "mapForUpdatePatient", anyString(), any(SimpleObject.class));
         when(emrPatientProfileService.save(delegate)).thenReturn(delegate);
         doNothing().when(spy).setConvertedProperties(any(PatientProfile.class), any(SimpleObject.class), any(DelegatingResourceDescription.class), any(Boolean.class));
-        ResponseEntity<Object> response = spy.update("someUuid", propertiesToCreate);
-        Assert.assertEquals(200, response.getStatusCode().value());
+        Person person = new Person();
+        person.setUuid("personUuid");
+        when(personService.getPersonByUuid("patientUuid")).thenReturn(person);
+        List<Relationship> relationships = Arrays.asList();
+        when(personService.getRelationshipsByPerson(person)).thenReturn(relationships);
+        Patient patient = mock(Patient.class);
+        when(patient.getUuid()).thenReturn("patientUuid");
+        when(delegate.getPatient()).thenReturn(patient);
 
+        ResponseEntity<Object> response = spy.update("someUuid", propertiesToCreate);
+
+        Assert.assertEquals(200, response.getStatusCode().value());
+        verify(personService, times(1)).getPersonByUuid("patientUuid");
+        verify(delegate, times(2)).setRelationships(relationships);
     }
 
 }

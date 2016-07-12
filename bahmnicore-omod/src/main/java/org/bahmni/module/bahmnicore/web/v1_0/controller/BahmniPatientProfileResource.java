@@ -46,7 +46,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Controller for REST web service access to
@@ -104,6 +108,7 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
         try {
             delegate = emrPatientProfileService.save(delegate);
+            setRelationships(delegate);
             return new ResponseEntity<>(ConversionUtil.convertToRepresentation(delegate, Representation.FULL), HttpStatus.OK);
         } catch (ContextAuthenticationException e) {
             return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.FORBIDDEN);
@@ -128,6 +133,7 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         delegate.setRelationships(getRelationships(propertiesToCreate, delegate.getPatient()));
         try {
             delegate = emrPatientProfileService.save(delegate);
+            setRelationships(delegate);
             return new ResponseEntity<>(ConversionUtil.convertToRepresentation(delegate, Representation.FULL), HttpStatus.OK);
         } catch (ContextAuthenticationException e) {
             return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.FORBIDDEN);
@@ -140,6 +146,12 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         } catch (Exception e) {
             return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private void setRelationships(PatientProfile patientProfile) {
+        Person person = Context.getPersonService().getPersonByUuid(patientProfile.getPatient().getUuid());
+        List<Relationship> relationships = Context.getPersonService().getRelationshipsByPerson(person);
+        patientProfile.setRelationships(relationships);
     }
 
     private PatientProfile mapForCreatePatient(SimpleObject propertiesToCreate) {
