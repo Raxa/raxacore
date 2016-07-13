@@ -36,7 +36,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Arrays.asList;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -44,7 +43,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.*;
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.spy;
 
 @PrepareForTest({Context.class, BahmniPatientProfileResource.class})
@@ -141,7 +141,7 @@ public class BahmniPatientProfileResourceTest {
         Person person = new Person();
         person.setUuid("personUuid");
         when(personService.getPersonByUuid("patientUuid")).thenReturn(person);
-        List<Relationship> relationships = Arrays.asList();
+        List<Relationship> relationships = Collections.emptyList();
         when(personService.getRelationshipsByPerson(person)).thenReturn(relationships);
         Patient patient = mock(Patient.class);
         when(patient.getUuid()).thenReturn("patientUuid");
