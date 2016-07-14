@@ -17,6 +17,7 @@ public class PatientSearchParameters {
     private String identifierPrefix;
     private String programAttributeFieldValue;
     private String programAttributeFieldName;
+    private String loginLocationUuid;
     private String[] addressSearchResultFields;
     private String[] patientSearchResultFields;
 
@@ -53,6 +54,11 @@ public class PatientSearchParameters {
         this.setProgramAttributeFieldName(context.getParameter("programAttributeFieldName"));
         this.setAddressSearchResultFields((String[]) parameterMap.get("addressSearchResultsConfig"));
         this.setPatientSearchResultFields((String[]) parameterMap.get("patientSearchResultsConfig"));
+        Boolean filterByLocation = Boolean.valueOf(context.getParameter("filterByLocation"));
+        if (filterByLocation) {
+            String loginLocationUuid = context.getParameter("loginLocationUuid");
+            this.setLoginLocationUuid(loginLocationUuid);
+        }
     }
 
     public String getIdentifier() {
@@ -153,5 +159,13 @@ public class PatientSearchParameters {
 
     public void setPatientSearchResultFields(String[] patientSearchResultFields) {
         this.patientSearchResultFields = patientSearchResultFields;
+    }
+
+    public String getLoginLocationUuid() {
+        return loginLocationUuid;
+    }
+
+    public void setLoginLocationUuid(String loginLocationUuid) {
+        this.loginLocationUuid = loginLocationUuid;
     }
 }
