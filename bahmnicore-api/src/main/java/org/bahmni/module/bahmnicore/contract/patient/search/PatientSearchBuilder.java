@@ -8,6 +8,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -157,4 +159,9 @@ public class PatientSearchBuilder {
 		return sqlQuery;
 	}
 
+	public PatientSearchBuilder withLocation(String loginLocationUuid) {
+		PatientVisitLocationQueryHelper patientVisitLocationQueryHelper = new PatientVisitLocationQueryHelper(loginLocationUuid);
+		where = patientVisitLocationQueryHelper.appendWhereClause(where);
+		return this;
+	}
 }
