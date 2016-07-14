@@ -20,8 +20,9 @@ public class BahmniOrderSetDaoImpl implements BahmniOrderSetDao {
     @Override
     public List<OrderSet> getOrderSetByQuery(String searchTerm) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(OrderSet.class);
-        criteria.add(Restrictions.or(Restrictions.like("name",searchTerm, MatchMode.ANYWHERE),
-                Restrictions.like("description",searchTerm, MatchMode.ANYWHERE)));
+        criteria.add(Restrictions.or(Restrictions.like("name", searchTerm, MatchMode.ANYWHERE),
+                Restrictions.like("description", searchTerm, MatchMode.ANYWHERE)));
+        criteria.add(Restrictions.eq("retired", Boolean.FALSE));
         return criteria.list();
     }
 }
