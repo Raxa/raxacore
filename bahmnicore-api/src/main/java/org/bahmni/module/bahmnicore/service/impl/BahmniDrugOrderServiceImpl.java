@@ -43,6 +43,7 @@ import org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosi
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
@@ -105,7 +106,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     @Override
-    public void add(String patientId, Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders, String systemUserName, String visitTypeName) {
+    public void add(String patientId, Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders, String systemUserName, String visitTypeName, String locationUuid) {
         if (StringUtils.isEmpty(patientId))
             throwPatientNotFoundException(patientId);
 
@@ -114,7 +115,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             throwPatientNotFoundException(patientId);
 
         this.systemUserName = systemUserName;
-        Visit visitForDrugOrders = new VisitIdentificationHelper(visitService, null).getVisitFor(patient, visitTypeName, orderDate);
+        Visit visitForDrugOrders = new VisitIdentificationHelper(visitService, new BahmniVisitLocationServiceImpl()).getVisitFor(patient, visitTypeName, orderDate, locationUuid);
         addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visitForDrugOrders);
     }
 

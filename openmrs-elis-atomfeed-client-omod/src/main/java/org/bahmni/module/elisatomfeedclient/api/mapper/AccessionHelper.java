@@ -55,10 +55,10 @@ public class AccessionHelper {
     private OrderType labOrderType;
 
     public AccessionHelper(ElisAtomFeedProperties properties) {
-        this(Context.getService(EncounterService.class), Context.getService(PatientService.class), Context.getService(VisitService.class), Context.getService(ConceptService.class), Context.getService(UserService.class), Context.getService(ProviderService.class), Context.getService(OrderService.class), properties, Context.getService(BahmniVisitLocationService.class));
+        this(Context.getService(EncounterService.class), Context.getService(PatientService.class), Context.getService(VisitService.class), Context.getService(ConceptService.class), Context.getService(UserService.class), Context.getService(ProviderService.class), Context.getService(OrderService.class), properties);
     }
 
-    AccessionHelper(EncounterService encounterService, PatientService patientService, VisitService visitService, ConceptService conceptService, UserService userService, ProviderService providerService, OrderService orderService, ElisAtomFeedProperties properties, BahmniVisitLocationService bahmniVisitLocationService) {
+    AccessionHelper(EncounterService encounterService, PatientService patientService, VisitService visitService, ConceptService conceptService, UserService userService, ProviderService providerService, OrderService orderService, ElisAtomFeedProperties properties) {
         this.encounterService = encounterService;
         this.patientService = patientService;
         this.visitService = visitService;
@@ -81,7 +81,8 @@ public class AccessionHelper {
 
         BahmniVisitLocationService bahmniVisitLocationService = new BahmniVisitLocationServiceImpl();
         Date accessionDate = openElisAccession.fetchDate();
-        Visit visit = new VisitIdentificationHelper(visitService, bahmniVisitLocationService).getVisitFor(patient, visitType, accessionDate, null, null, null);
+
+        Visit visit = new VisitIdentificationHelper(visitService, bahmniVisitLocationService).getVisitFor(patient, visitType, accessionDate, null, null, openElisAccession.getLabLocationUuid());
 
         Encounter encounter = newEncounterInstance(visit, patient, labSystemProvider, encounterType, accessionDate);
         encounter.setUuid(openElisAccession.getAccessionUuid());

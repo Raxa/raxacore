@@ -2,9 +2,12 @@ package org.openmrs.module.bahmniemrapi.visitlocation;
 
 
 import org.openmrs.Location;
+import org.openmrs.Visit;
 import org.openmrs.api.context.Context;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Component
 @Transactional
@@ -24,4 +27,23 @@ public class BahmniVisitLocationServiceImpl implements BahmniVisitLocationServic
         }
         return null;
     }
+
+    @Override
+    public Visit getMatchingVisitInLocation(List<Visit> visits, String locationUuid) {
+        String visitLocation = getVisitLocationForLoginLocation(locationUuid);
+        Visit visitWithoutLocation = null;
+        for(Visit visit : visits) {
+            if(visit.getLocation() == null) {
+                visitWithoutLocation = visit;
+            }
+            else if(visit.getLocation().getUuid().equals(visitLocation)){
+                return visit;
+            }
+        }
+        if(visitWithoutLocation != null) {
+            return visitWithoutLocation;
+        }
+        return null;
+    }
+
 }

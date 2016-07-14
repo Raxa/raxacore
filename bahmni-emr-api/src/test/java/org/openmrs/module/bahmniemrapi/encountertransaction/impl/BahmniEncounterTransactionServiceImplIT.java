@@ -311,17 +311,16 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
                 createConcept("96408258-000b-424e-af1a-403919332938", "FAVORITE FOOD, NON-CODED"), obsDate, null);
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         bahmniEncounterTransaction.setPatientId("4");
-        bahmniEncounterTransaction.setLocationUuid("l3602jn5-9fhb-4f20-866b-0ece24561525");
+        bahmniEncounterTransaction.setLocationUuid("l3602jn5-9fhb-4f20-866b-0ece24561526");
         bahmniEncounterTransaction.setPatientUuid(patientUuid);
         bahmniEncounterTransaction.addObservation(bahmniObservation);
         bahmniEncounterTransaction.setEncounterTypeUuid("02c533ab-b74b-4ee4-b6e5-ffb6d09a0ad1");
         bahmniEncounterTransaction.setVisitType(visitType);
 
-              BahmniEncounterTransaction savedEncounterTransaction = bahmniEncounterTransactionService
-                .save(bahmniEncounterTransaction);
+        BahmniEncounterTransaction savedEncounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
 
         Visit visit = Context.getVisitService().getVisitByUuid(savedEncounterTransaction.toEncounterTransaction().getVisitUuid());
-        assertEquals("l38923e5-9fhb-4f20-866b-0ece24561525", visit.getLocation().getUuid());
+        assertEquals("l3602jn5-9fhb-4f20-866b-0ece24561526", visit.getLocation().getUuid());
     }
 
     @Test
@@ -579,26 +578,29 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
         return concept;
     }
 
-    private BahmniObservation createBahmniObservation(String uuid, String value, EncounterTransaction.Concept concept,
-                                                      Date obsDate, BahmniObservation bahmniObservation) {
-        BahmniObservation bahmniObservation1 = new BahmniObservation();
-        bahmniObservation1.setUuid(uuid);
-        bahmniObservation1.setValue(value);
-        bahmniObservation1.setConcept(concept);
-        bahmniObservation1.setComment("comment");
-        bahmniObservation1.setObservationDateTime(obsDate);
-        bahmniObservation1.setTargetObsRelation(new ObsRelationship(bahmniObservation, null, "qualified-by"));
-        return bahmniObservation1;
+    private BahmniObservation createBahmniObservationWithoutValue(String uuid, EncounterTransaction.Concept concept,
+                                                      Date obsDate, BahmniObservation targetObs) {
+        BahmniObservation bahmniObservation = new BahmniObservation();
+        bahmniObservation.setUuid(uuid);
+        bahmniObservation.setConcept(concept);
+        bahmniObservation.setComment("comment");
+        bahmniObservation.setObservationDateTime(obsDate);
+        bahmniObservation.setTargetObsRelation(new ObsRelationship(targetObs, null, "qualified-by"));
+        return bahmniObservation;
     }
+
     private BahmniObservation createBahmniObservation(String uuid, double value, EncounterTransaction.Concept concept,
                                                       Date obsDate, BahmniObservation bahmniObservation) {
-        BahmniObservation bahmniObservation1 = new BahmniObservation();
-        bahmniObservation1.setUuid(uuid);
-        bahmniObservation1.setValue(value);
-        bahmniObservation1.setConcept(concept);
-        bahmniObservation1.setComment("comment");
-        bahmniObservation1.setObservationDateTime(obsDate);
-        bahmniObservation1.setTargetObsRelation(new ObsRelationship(bahmniObservation, null, "qualified-by"));
-        return bahmniObservation1;
+        BahmniObservation observation = createBahmniObservationWithoutValue(uuid, concept, obsDate, bahmniObservation);
+        observation.setValue(value);
+        return observation;
     }
+
+    private BahmniObservation createBahmniObservation(String uuid, String value, EncounterTransaction.Concept concept,
+                                                      Date obsDate, BahmniObservation bahmniObservation) {
+        BahmniObservation observation = createBahmniObservationWithoutValue(uuid, concept, obsDate, bahmniObservation);
+        observation.setValue(value);
+        return observation;
+    }
+
 }

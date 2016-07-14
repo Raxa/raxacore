@@ -1,6 +1,7 @@
 package org.openmrs.module.bahmniemrapi.builder;
 
 import org.openmrs.Encounter;
+import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.openmrs.Visit;
@@ -28,6 +29,11 @@ public class VisitBuilder {
 
     public VisitBuilder withStartDatetime(Date startDatetime) {
         visit.setStartDatetime(startDatetime);
+        return this;
+    }
+
+    public VisitBuilder withLocation(Location location) {
+        visit.setLocation(location);
         return this;
     }
 
