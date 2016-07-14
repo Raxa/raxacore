@@ -1,2 +1,2 @@
 #!/bin/sh -x
-sudo service openmrs start
+sudo service openmrs debug

@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.openmrs.*;
 import org.openmrs.api.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -50,9 +49,6 @@ public class AccessionHelperTest {
     @Mock
     private LocationService locationService;
 
-    @Mock
-    private BahmniVisitLocationService bahmniVisitLocationService;
-
     private AccessionHelper accessionHelper;
     private static final String VISIT_START_DATE = "2014-01-15 15:25:43+0530";
     private static final String ENCOUNTER_START_DATE = "2014-01-17T17:25:43Z";
@@ -63,7 +59,7 @@ public class AccessionHelperTest {
     @Before
     public void setUp() {
         initMocks(this);
-        accessionHelper = new AccessionHelper(encounterService, patientService, visitService, conceptService, userService, providerService, orderService, feedProperties, bahmniVisitLocationService);
+        accessionHelper = new AccessionHelper(encounterService, patientService, visitService, conceptService, userService, providerService, orderService, feedProperties);
         simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
     }
 
@@ -91,7 +87,6 @@ public class AccessionHelperTest {
         when(providerService.getProvidersByPerson(any(Person.class))).thenReturn(Arrays.asList(new Provider()));
         when(encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID)).thenReturn(new EncounterRole());
         when(orderService.getOrderTypes(true)).thenReturn(Arrays.asList(getOrderType()));
-        when(bahmniVisitLocationService.getVisitLocationForLoginLocation(anyString())).thenReturn(null);
         PowerMockito.mockStatic(Context.class);
         when(Context.getAuthenticatedUser()).thenReturn(provider);
         when(Context.getLocationService()).thenReturn(locationService);
@@ -131,7 +126,6 @@ public class AccessionHelperTest {
         when(providerService.getProvidersByPerson(any(Person.class))).thenReturn(Arrays.asList(new Provider()));
         when(encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID)).thenReturn(new EncounterRole());
         when(orderService.getOrderTypes(true)).thenReturn(Arrays.asList(getOrderType()));
-        when(bahmniVisitLocationService.getVisitLocationForLoginLocation(anyString())).thenReturn(null);
         when(visitService.saveVisit(any(Visit.class))).thenReturn(visits.get(0));
         PowerMockito.mockStatic(Context.class);
         when(Context.getAuthenticatedUser()).thenReturn(provider);

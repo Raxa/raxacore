@@ -42,8 +42,8 @@ public class VisitIdentificationHelper implements VisitMatcher {
         return createNewVisit(patient, orderDate, visitTypeForNewVisit, visitStartDate, visitEndDate, visitLocationUuid);
     }
 
-    public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate) {
-        return getVisitFor(patient, visitTypeForNewVisit, orderDate, null, null, null);
+    public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate, String locationUuid) {
+        return getVisitFor(patient, visitTypeForNewVisit, orderDate, null, null, locationUuid);
     }
 
     public boolean hasActiveVisit(Patient patient) {

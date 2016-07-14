@@ -66,7 +66,10 @@ public class OpenElisPatientFailedEventsFeedClientImpl extends OpenElisFeedClien
             try {
                 if (e != null && ExceptionUtils.getStackTrace(e).contains("HTTP response code: 401")) {
                     getAtomFeedClient();
+                }else{
+                    throw e;
                 }
+
             } catch (Exception ex) {
                 logger.error("openelisatomfeedclient:failed feed execution while running failed events" + e, e);
                 throw new RuntimeException(ex);

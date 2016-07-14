@@ -206,7 +206,7 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
         Visit visit = null;
         if(!BahmniEncounterTransaction.isRetrospectiveEntry(searchParametersBuilder.getEndDate())){
             List<Visit> visits = this.visitService.getActiveVisitsByPatient(searchParametersBuilder.getPatient());
-            visit = getMatchingVisitInLocation(visits, encounterSearchParameters.getLocationUuid());
+            visit = bahmniVisitLocationService.getMatchingVisitInLocation(visits, encounterSearchParameters.getLocationUuid());
         }
         Encounter encounter = encounterSessionMatcher.findEncounter(visit, mapEncounterParameters(searchParametersBuilder, encounterSearchParameters));
 
@@ -217,21 +217,6 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
                 return encounterTransactionMapper.map(encounter, encounterSearchParameters.getIncludeAll());
             }
         }
-        return null;
-    }
-
-    private Visit getMatchingVisitInLocation(List<Visit> visits, String locationUuid) {
-        String visitLocation = bahmniVisitLocationService.getVisitLocationForLoginLocation(locationUuid);
-       Visit visitWithoutLocation = null;
-        for(Visit visit : visits) {
-            if(visit.getLocation() == null) {
-                visitWithoutLocation = visit;
-            }
-            else if(visit.getLocation().getUuid().equals(visitLocation)){
-                return visit;
-            }
-        }
-        if(visitWithoutLocation != null) return  visitWithoutLocation;
         return null;
     }
 
