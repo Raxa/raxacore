@@ -4176,4 +4176,9 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-PatientSearch-Update-201607151835" author="Lavanya, Shashi">
+        <comment>update the search query to consider visit location</comment>
+        <sqlFile path="V1_93_PatientSearchSql.sql"/>
+    </changeSet>
+
 </databaseChangeLog>
