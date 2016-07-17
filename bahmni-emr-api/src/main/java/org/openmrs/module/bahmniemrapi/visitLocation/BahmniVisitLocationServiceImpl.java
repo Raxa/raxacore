@@ -16,27 +16,32 @@ public class BahmniVisitLocationServiceImpl implements BahmniVisitLocationServic
     public static final String VISIT_LOCATION = "Visit Location";
 
     @Override
-    public String getVisitLocationForLoginLocation(String loginLocationUuid) {
+    public String getVisitLocationUuid(String loginLocationUuid) {
+        Location location = getVisitLocation(loginLocationUuid);
+        if (location != null) {
+            return location.getUuid();
+        }
+        return null;
+    }
+
+    @Override
+    public Location getVisitLocation(String loginLocationUuid) {
         Location location = Context.getLocationService().getLocationByUuid(loginLocationUuid);
         while (location != null) {
             if (location.hasTag(VISIT_LOCATION)) {
-                return location.getUuid();
+                return location;
             }
-            if(location.getParentLocation() == null) return location.getUuid();
+            if(location.getParentLocation() == null) {
+                return location;
+            }
             location = location.getParentLocation();
         }
         return null;
     }
 
     @Override
-    public Location getVisitLocationForLoginLocation1(String loginLocationUuid) {
-        String visitLocationForLoginLocation = getVisitLocationForLoginLocation(loginLocationUuid);
-        return Context.getLocationService().getLocationByUuid(visitLocationForLoginLocation);
-    }
-
-    @Override
     public Visit getMatchingVisitInLocation(List<Visit> visits, String locationUuid) {
-        String visitLocation = getVisitLocationForLoginLocation(locationUuid);
+        String visitLocation = getVisitLocationUuid(locationUuid);
         for(Visit visit : visits) {
             if(visit.getLocation() != null) {
                 if(visit.getLocation().getUuid().equals(visitLocation)){

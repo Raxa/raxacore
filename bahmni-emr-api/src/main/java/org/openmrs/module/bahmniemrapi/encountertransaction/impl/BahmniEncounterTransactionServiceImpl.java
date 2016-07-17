@@ -1,7 +1,6 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -146,7 +145,7 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
 
     private EncounterTransaction setVisitLocationToEncounterTransaction(BahmniEncounterTransaction bahmniEncounterTransaction) {
         if(bahmniEncounterTransaction.toEncounterTransaction().getLocationUuid() != null) {
-            String visitLocationUuid = bahmniVisitLocationService.getVisitLocationForLoginLocation(bahmniEncounterTransaction.toEncounterTransaction().getLocationUuid());
+            String visitLocationUuid = bahmniVisitLocationService.getVisitLocationUuid(bahmniEncounterTransaction.toEncounterTransaction().getLocationUuid());
             bahmniEncounterTransaction.toEncounterTransaction().setVisitLocationUuid(visitLocationUuid);
         }
         return bahmniEncounterTransaction.toEncounterTransaction();
@@ -211,8 +210,8 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
         Encounter encounter = encounterSessionMatcher.findEncounter(visit, mapEncounterParameters(searchParametersBuilder, encounterSearchParameters));
 
         if(encounter != null){
-            String visitLocationForLoginLocation = bahmniVisitLocationService.getVisitLocationForLoginLocation(encounterSearchParameters.getLocationUuid());
-            String visitLocationForEncounter = bahmniVisitLocationService.getVisitLocationForLoginLocation(encounter.getLocation().getUuid());
+            String visitLocationForLoginLocation = bahmniVisitLocationService.getVisitLocationUuid(encounterSearchParameters.getLocationUuid());
+            String visitLocationForEncounter = bahmniVisitLocationService.getVisitLocationUuid(encounter.getLocation().getUuid());
             if (visitLocationForEncounter.equals(visitLocationForLoginLocation)) {
                 return encounterTransactionMapper.map(encounter, encounterSearchParameters.getIncludeAll());
             }

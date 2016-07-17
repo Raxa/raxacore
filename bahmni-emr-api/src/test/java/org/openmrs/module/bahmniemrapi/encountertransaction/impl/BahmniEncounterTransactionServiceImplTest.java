@@ -12,7 +12,6 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterSearchParameters;
-import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
@@ -88,7 +87,7 @@ public class BahmniEncounterTransactionServiceImplTest {
         when(baseEncounterMatcher.findEncounter(any(Visit.class), any(EncounterParameters.class))).thenReturn(null);
         when(visitService.getActiveVisitsByPatient(any(Patient.class))).thenReturn(Arrays.asList(visit));
         when(encounterService.getEncounterByUuid(anyString())).thenReturn(null);
-        when(bahmniVisitLocationService.getVisitLocationForLoginLocation(anyString())).thenReturn("visit-location");
+        when(bahmniVisitLocationService.getVisitLocationUuid(anyString())).thenReturn("visit-location");
 
         bahmniEncounterTransactionService.find(encounterSearchParameters);
         ArgumentCaptor<Visit> argumentCaptor = ArgumentCaptor.forClass(Visit.class);
@@ -123,7 +122,7 @@ public class BahmniEncounterTransactionServiceImplTest {
         List<Visit> visits = Arrays.asList(visit);
         when(visitService.getActiveVisitsByPatient(any(Patient.class))).thenReturn(visits);
         when(encounterService.getEncounterByUuid(anyString())).thenReturn(null);
-        when(bahmniVisitLocationService.getVisitLocationForLoginLocation(anyString())).thenReturn("visit-location-uuid");
+        when(bahmniVisitLocationService.getVisitLocationUuid(anyString())).thenReturn("visit-location-uuid");
         when(bahmniVisitLocationService.getMatchingVisitInLocation(visits, "login-location-uuid")).thenReturn(visit);
         when(encounterTransactionMapper.map(any(Encounter.class),anyBoolean())).thenReturn(encounterTransaction);
         bahmniEncounterTransactionService.find(encounterSearchParameters);
@@ -167,7 +166,7 @@ public class BahmniEncounterTransactionServiceImplTest {
         List<Visit> visits = Arrays.asList(visitOne, visitTwo);
         when(visitService.getActiveVisitsByPatient(any(Patient.class))).thenReturn(visits);
         when(encounterService.getEncounterByUuid(anyString())).thenReturn(null);
-        when(bahmniVisitLocationService.getVisitLocationForLoginLocation(anyString())).thenReturn("visit-location-uuid-two");
+        when(bahmniVisitLocationService.getVisitLocationUuid(anyString())).thenReturn("visit-location-uuid-two");
         when(bahmniVisitLocationService.getMatchingVisitInLocation(visits, "login-location-uuid")).thenReturn(visitTwo);
 
         bahmniEncounterTransactionService.find(encounterSearchParameters);
@@ -204,7 +203,7 @@ public class BahmniEncounterTransactionServiceImplTest {
         when(baseEncounterMatcher.findEncounter(any(Visit.class), any(EncounterParameters.class))).thenReturn(encounter);
         List<Visit> visits = Arrays.asList(visitOne, visitTwo);
         when(visitService.getActiveVisitsByPatient(any(Patient.class))).thenReturn(visits);
-        when(bahmniVisitLocationService.getVisitLocationForLoginLocation(anyString())).thenReturn("visit-location-uuid-two");
+        when(bahmniVisitLocationService.getVisitLocationUuid(anyString())).thenReturn("visit-location-uuid-two");
         when(encounterService.getEncounterByUuid(anyString())).thenReturn(null);
         when(bahmniVisitLocationService.getMatchingVisitInLocation(visits, "login-location-uuid")).thenReturn(visitTwo);
 
@@ -214,37 +213,6 @@ public class BahmniEncounterTransactionServiceImplTest {
         verify(baseEncounterMatcher).findEncounter(argumentCaptor.capture(), argument.capture());
         assertEquals(argumentCaptor.getValue().getUuid(), "visit-uuid-two");
     }
-
-
-//    @Test
-//    public void shouldReturnTheEncounterFromTheVisitWithoutLocationIfThereAreTwoActiveVisitsOneWithLocationNullAndOneWithDiffVisitLocationSet() throws Exception {
-//        Location location = new Location();
-//        location.setUuid("visit-location-uuid-one");
-//
-//        Visit visitOne = new Visit();
-//        visitOne.setLocation(location);
-//        visitOne.setUuid("visit-uuid-one");
-//
-//        Visit visitTwo = new Visit();
-//        visitTwo.setUuid("visit-uuid-two");
-//        visitTwo.setLocation(null);
-//
-//
-//        BahmniEncounterSearchParameters encounterSearchParameters = new BahmniEncounterSearchParameters();
-//        encounterSearchParameters.setLocationUuid("login-location-uuid");
-//        encounterSearchParameters.setPatientUuid("patient-uuid");
-//        encounterSearchParameters.setEncounterTypeUuids(Arrays.asList("encounter-type-uuid"));
-//        when(baseEncounterMatcher.findEncounter(any(Visit.class), any(EncounterParameters.class))).thenReturn(null);
-//        when(visitService.getActiveVisitsByPatient(any(Patient.class))).thenReturn(Arrays.asList(visitOne, visitTwo));
-//        when(encounterService.getEncounterByUuid(anyString())).thenReturn(null);
-//        when(bahmniVisitLocationService.getVisitLocationForLoginLocation(anyString())).thenReturn("visit-location-uuid");
-//
-//        bahmniEncounterTransactionService.find(encounterSearchParameters);
-//        ArgumentCaptor<Visit> argumentCaptor = ArgumentCaptor.forClass(Visit.class);
-//        ArgumentCaptor<EncounterParameters> argument = ArgumentCaptor.forClass(EncounterParameters.class);
-//        verify(baseEncounterMatcher).findEncounter(argumentCaptor.capture(), argument.capture());
-//        assertEquals(argumentCaptor.getValue().getUuid(), "visit-uuid-two");
-//    }
 
     @Test
     public void shouldReturnTheEncounterFromTheVisitThatIsOpenedInThatVisitLocationIfThereAreTwoVisitsOneWithLocationNullAndOneWithVisitLocationSet() throws Exception {
@@ -277,7 +245,7 @@ public class BahmniEncounterTransactionServiceImplTest {
         List<Visit> visits = Arrays.asList(visitOne, visitTwo);
         when(visitService.getActiveVisitsByPatient(any(Patient.class))).thenReturn(visits);
         when(encounterService.getEncounterByUuid(anyString())).thenReturn(null);
-        when(bahmniVisitLocationService.getVisitLocationForLoginLocation(anyString())).thenReturn("visit-location-uuid");
+        when(bahmniVisitLocationService.getVisitLocationUuid(anyString())).thenReturn("visit-location-uuid");
         when(bahmniVisitLocationService.getMatchingVisitInLocation(visits, "login-location-uuid")).thenReturn(visitOne);
         when(encounterTransactionMapper.map(any(Encounter.class),anyBoolean())).thenReturn(encounterTransaction);
 
@@ -314,7 +282,7 @@ public class BahmniEncounterTransactionServiceImplTest {
         when(visitService.getActiveVisitsByPatient(any(Patient.class))).thenReturn(Arrays.asList(visitOne));
         when(encounterService.getEncounterByUuid(anyString())).thenReturn(null);
         when(encounterTransactionMapper.map(any(Encounter.class),anyBoolean())).thenReturn(encounterTransaction);
-        when(bahmniVisitLocationService.getVisitLocationForLoginLocation("login-location-uuid")).thenReturn("visit-location-uuid");
+        when(bahmniVisitLocationService.getVisitLocationUuid("login-location-uuid")).thenReturn("visit-location-uuid");
 
         EncounterTransaction savedEncounterTransaction = bahmniEncounterTransactionService.find(encounterSearchParameters);
 
@@ -347,8 +315,8 @@ public class BahmniEncounterTransactionServiceImplTest {
         when(visitService.getActiveVisitsByPatient(any(Patient.class))).thenReturn(Arrays.asList(visitOne));
         when(encounterService.getEncounterByUuid(anyString())).thenReturn(null);
         when(encounterTransactionMapper.map(any(Encounter.class),anyBoolean())).thenReturn(encounterTransaction);
-        when(bahmniVisitLocationService.getVisitLocationForLoginLocation("encounter-location-uuid")).thenReturn("visit-location-uuid-one");
-        when(bahmniVisitLocationService.getVisitLocationForLoginLocation("login-location-uuid")).thenReturn("visit-location-uuid");
+        when(bahmniVisitLocationService.getVisitLocationUuid("encounter-location-uuid")).thenReturn("visit-location-uuid-one");
+        when(bahmniVisitLocationService.getVisitLocationUuid("login-location-uuid")).thenReturn("visit-location-uuid");
 
         EncounterTransaction savedEncounterTransaction = bahmniEncounterTransactionService.find(encounterSearchParameters);
 

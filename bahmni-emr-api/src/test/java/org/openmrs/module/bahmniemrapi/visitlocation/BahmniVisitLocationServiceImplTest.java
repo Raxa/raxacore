@@ -15,7 +15,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.openmrs.Location;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -43,7 +42,7 @@ public class BahmniVisitLocationServiceImplTest {
     public void shouldReturnNullWhenGetLocationByUuidReturnsNull() {
         when(locationService.getLocationByUuid("someLocationUuid")).thenReturn(null);
 
-        String locationUuid = bahmniVisitLocationService.getVisitLocationForLoginLocation("someLocationUuid");
+        String locationUuid = bahmniVisitLocationService.getVisitLocationUuid("someLocationUuid");
         Assert.assertEquals(null, locationUuid);
     }
 
@@ -58,7 +57,7 @@ public class BahmniVisitLocationServiceImplTest {
 
         when(locationService.getLocationByUuid("loginLocation")).thenReturn(location);
 
-        String locationUuid = bahmniVisitLocationService.getVisitLocationForLoginLocation("loginLocation");
+        String locationUuid = bahmniVisitLocationService.getVisitLocationUuid("loginLocation");
         Assert.assertEquals("loginLocation", locationUuid);
     }
 
@@ -69,7 +68,7 @@ public class BahmniVisitLocationServiceImplTest {
 
         when(locationService.getLocationByUuid("loginLocation")).thenReturn(location);
 
-        String locationUuid = bahmniVisitLocationService.getVisitLocationForLoginLocation("loginLocation");
+        String locationUuid = bahmniVisitLocationService.getVisitLocationUuid("loginLocation");
         Assert.assertEquals("loginLocation", locationUuid);
     }
 
@@ -89,12 +88,12 @@ public class BahmniVisitLocationServiceImplTest {
 
         when(locationService.getLocationByUuid("childLocationUuid")).thenReturn(childLocation);
 
-        String locationUuid = bahmniVisitLocationService.getVisitLocationForLoginLocation("childLocationUuid");
+        String locationUuid = bahmniVisitLocationService.getVisitLocationUuid("childLocationUuid");
         Assert.assertEquals("parentLocationUuid", locationUuid);
     }
 
     @Test
-    public void shouldGetMatchingVisitBasedInLocation() {
+    public void shouldGetMatchingVisitBasedOnLocation() {
         Location location1 = new Location();
         location1.setUuid("locationUuid1");
 
