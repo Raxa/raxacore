@@ -50,7 +50,7 @@ public class SqlSearchServiceImpl implements SqlSearchService {
         Map<String, String[]> updatedParams = new HashMap<>(params);
         if (params.containsKey("location_uuid")) {
             String locationUuid = params.get("location_uuid")[0];
-            String visitLocation = new BahmniVisitLocationServiceImpl().getVisitLocationForLoginLocation(locationUuid);
+            String visitLocation = new BahmniVisitLocationServiceImpl().getVisitLocationUuid(locationUuid);
             String[] visitLcoationValue = {visitLocation};
             updatedParams.put("visit_location_uuid", visitLcoationValue);
         }

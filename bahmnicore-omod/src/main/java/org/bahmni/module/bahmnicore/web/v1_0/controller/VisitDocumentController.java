@@ -42,7 +42,7 @@ public class VisitDocumentController extends BaseRestController {
     @WSDoc("Save Patient Document")
     @ResponseBody
     public VisitDocumentResponse save(@RequestBody VisitDocumentRequest visitDocumentUpload) {
-        String visitLocation = bahmniVisitLocationService.getVisitLocationForLoginLocation(visitDocumentUpload.getLocationUuid());
+        String visitLocation = bahmniVisitLocationService.getVisitLocationUuid(visitDocumentUpload.getLocationUuid());
         visitDocumentUpload.setVisitLocationUuid(visitLocation);
         final Visit visit = visitDocumentService.upload(visitDocumentUpload);
         return new VisitDocumentResponse(visit.getUuid());

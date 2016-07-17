@@ -88,9 +88,9 @@ public class VisitDocumentControllerTest {
 
         when(visitDocumentService.upload(visitDocumentRequest)).thenReturn(visit);
 
-        when(bahmniVisitLocationService.getVisitLocationForLoginLocation("location-uuid")).thenReturn("VisitLocationuuid");
+        when(bahmniVisitLocationService.getVisitLocationUuid("location-uuid")).thenReturn("VisitLocationuuid");
         visitDocumentController.save(visitDocumentRequest);
 
-        verify(bahmniVisitLocationService).getVisitLocationForLoginLocation("location-uuid");
+        verify(bahmniVisitLocationService).getVisitLocationUuid("location-uuid");
     }
 }

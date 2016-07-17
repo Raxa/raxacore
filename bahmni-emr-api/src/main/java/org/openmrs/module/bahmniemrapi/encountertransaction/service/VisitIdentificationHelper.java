@@ -30,7 +30,7 @@ public class VisitIdentificationHelper implements VisitMatcher {
     }
 
     public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate, Date visitStartDate, Date visitEndDate, String locationUuid) {
-        String visitLocationUuid = bahmniVisitLocationService.getVisitLocationForLoginLocation(locationUuid);
+        String visitLocationUuid = bahmniVisitLocationService.getVisitLocationUuid(locationUuid);
         Date nextDate = getEndOfTheDay(orderDate);
         List<Visit> visits = visitService.getVisits(null, Collections.singletonList(patient), null, null, null, nextDate, orderDate, null, null, true, false);
         List<Visit> matchingVisits = getMatchingVisitsFromLocation(visits, visitLocationUuid);

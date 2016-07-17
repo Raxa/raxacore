@@ -22,7 +22,7 @@ public class BahmniVisitLocationController extends BaseRestController {
     @RequestMapping(method = RequestMethod.GET, value = "/{loginLocationUuid}")
     @ResponseBody
     public String getVisitLocationInfo(@PathVariable("loginLocationUuid") String locationUuid ) {
-        return bahmniVisitLocationService.getVisitLocationForLoginLocation(locationUuid);
+        return bahmniVisitLocationService.getVisitLocationUuid(locationUuid);
     }
 
 }

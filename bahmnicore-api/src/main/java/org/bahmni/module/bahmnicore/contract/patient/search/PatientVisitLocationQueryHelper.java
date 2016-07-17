@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.contract.patient.search;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.openmrs.Location;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 
@@ -11,7 +10,7 @@ public class PatientVisitLocationQueryHelper {
     public PatientVisitLocationQueryHelper(String loginLocationUuid) {
 
         BahmniVisitLocationServiceImpl bahmniVisitLocationService = new BahmniVisitLocationServiceImpl();
-        this.visitLocation = bahmniVisitLocationService.getVisitLocationForLoginLocation1(loginLocationUuid);
+        this.visitLocation = bahmniVisitLocationService.getVisitLocation(loginLocationUuid);
 
     }
 
