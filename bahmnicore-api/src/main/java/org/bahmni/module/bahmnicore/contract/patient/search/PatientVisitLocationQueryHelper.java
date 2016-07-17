@@ -24,4 +24,12 @@ public class PatientVisitLocationQueryHelper {
         return String.format("%s %s %s", where, "and", condition);
 
     }
+
+    public String appendVisitJoinClause(String joinClause) {
+        if(visitLocation == null){
+            return joinClause;
+        }
+        String condition = "and v.location_id=" + visitLocation.getLocationId();
+        return joinClause + condition;
+    }
 }

@@ -6,6 +6,7 @@ import org.openmrs.module.webservices.rest.web.RequestContext;
 import java.util.Map;
 
 public class PatientSearchParameters {
+    private Boolean filterPatientsByLocation;
     private String identifier;
     private String name;
     private String addressFieldName;
@@ -49,16 +50,13 @@ public class PatientSearchParameters {
         }
         this.setAddressFieldValue(context.getParameter("addressFieldValue"));
         Map parameterMap = context.getRequest().getParameterMap();
-        this.patientAttributes = (String[]) parameterMap.get("patientAttributes");
-        this.setProgramAttributeFieldValue(context.getParameter("programAttributeFieldValue"));
-        this.setProgramAttributeFieldName(context.getParameter("programAttributeFieldName"));
         this.setAddressSearchResultFields((String[]) parameterMap.get("addressSearchResultsConfig"));
         this.setPatientSearchResultFields((String[]) parameterMap.get("patientSearchResultsConfig"));
-        Boolean filterByLocation = Boolean.valueOf(context.getParameter("filterByLocation"));
-        if (filterByLocation) {
-            String loginLocationUuid = context.getParameter("loginLocationUuid");
-            this.setLoginLocationUuid(loginLocationUuid);
-        }
+        this.setPatientAttributes((String[]) parameterMap.get("patientAttributes"));
+        this.setProgramAttributeFieldValue(context.getParameter("programAttributeFieldValue"));
+        this.setProgramAttributeFieldName(context.getParameter("programAttributeFieldName"));
+        this.setFilterPatientsByLocation(Boolean.valueOf(context.getParameter("filterPatientsByLocation")));
+        this.setLoginLocationUuid(context.getParameter("loginLocationUuid"));
     }
 
     public String getIdentifier() {
@@ -167,5 +165,13 @@ public class PatientSearchParameters {
 
     public void setLoginLocationUuid(String loginLocationUuid) {
         this.loginLocationUuid = loginLocationUuid;
+    }
+
+    public Boolean getFilterPatientsByLocation() {
+        return filterPatientsByLocation;
+    }
+
+    public void setFilterPatientsByLocation(Boolean filterPatientsByLocation) {
+        this.filterPatientsByLocation = filterPatientsByLocation;
     }
 }
