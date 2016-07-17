@@ -37,17 +37,12 @@ public class BahmniVisitLocationServiceImpl implements BahmniVisitLocationServic
     @Override
     public Visit getMatchingVisitInLocation(List<Visit> visits, String locationUuid) {
         String visitLocation = getVisitLocationForLoginLocation(locationUuid);
-        Visit visitWithoutLocation = null;
         for(Visit visit : visits) {
-            if(visit.getLocation() == null) {
-                visitWithoutLocation = visit;
+            if(visit.getLocation() != null) {
+                if(visit.getLocation().getUuid().equals(visitLocation)){
+                    return visit;
+                }
             }
-            else if(visit.getLocation().getUuid().equals(visitLocation)){
-                return visit;
-            }
-        }
-        if(visitWithoutLocation != null) {
-            return visitWithoutLocation;
         }
         return null;
     }
