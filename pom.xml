@@ -27,13 +27,13 @@
         <openMRSVersion>1.12.0</openMRSVersion>
         <openMRSWebServicesVersion>2.14</openMRSWebServicesVersion>
         <springVersion>3.2.7.RELEASE</springVersion>
-        <atomfeed.version>1.9.3-SNAPSHOT</atomfeed.version>
+        <atomfeed.version>1.9.3</atomfeed.version>
         <addressHierarchyVersion>2.8</addressHierarchyVersion>
         <reportingModuleVersion>0.9.1</reportingModuleVersion>
         <calculationModuleVersion>1.1</calculationModuleVersion>
         <serializationXstreamModuleVersion>0.2.7</serializationXstreamModuleVersion>
         <emrapi-omod.version>1.16-SNAPSHOT</emrapi-omod.version>
-        <openmrsAtomfeedVersion>2.5.3-SNAPSHOT</openmrsAtomfeedVersion>
+        <openmrsAtomfeedVersion>2.5.3</openmrsAtomfeedVersion>
         <lombokVersion>1.16.0</lombokVersion>
         <argLine>-Xmx1024m -XX:MaxPermSize=1024m</argLine>
     </properties>
