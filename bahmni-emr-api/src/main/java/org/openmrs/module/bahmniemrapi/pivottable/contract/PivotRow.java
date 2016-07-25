@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PivotRow {
-    Map<String, ArrayList<BahmniObservation>> columns = new HashMap<>();
+    private Map<String, ArrayList<BahmniObservation>> columns = new HashMap<>();
 
     public void addColumn(String name, BahmniObservation bahmniObservation) {
         ArrayList<BahmniObservation> bahmniObs;

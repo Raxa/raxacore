@@ -25,7 +25,7 @@ public class OrderSaveCommandImplTest {
     public static final String SNOMED_CT_DAYS_CODE = "258703001";
 
 
-    OrderSaveCommandImpl orderSaveCommand;
+    private OrderSaveCommandImpl orderSaveCommand;
 
     @Before
     public void setUp() throws Exception {

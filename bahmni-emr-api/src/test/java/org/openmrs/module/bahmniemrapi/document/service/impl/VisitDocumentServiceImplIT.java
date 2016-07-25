@@ -49,15 +49,15 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
     private final String conceptUuid = "4f596de5-5caa-11e3-a4c0-0800271c1b75";
 
     @Autowired
-    VisitDocumentService visitDocumentService;
+    private VisitDocumentService visitDocumentService;
     @Autowired
-    EncounterService encounterService;
+    private EncounterService encounterService;
     @Autowired
-    ObsService obsService;
+    private ObsService obsService;
     @Autowired
-    VisitService visitService;
+    private VisitService visitService;
 
-    VisitDocumentRequest visitDocumentRequest;
+    private VisitDocumentRequest visitDocumentRequest;
 
     @Before
     public void setUp() throws Exception {
@@ -256,10 +256,7 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
 
     private String getImageName(Obs obs) {
         Set<Obs> groupMembers = obs.getGroupMembers();
-        for (Obs member : groupMembers) {
-            return member.getValueText();
-        }
-        return null;
+        return groupMembers.iterator().hasNext()?groupMembers.iterator().next().getValueText():null;
     }
 
     @Test

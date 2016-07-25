@@ -24,13 +24,13 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class LabOrderResultsServiceImplTest {
 
     @Mock
-    EncounterTransaction encounterTransaction;
+    private EncounterTransaction encounterTransaction;
 
     @Mock
-    Encounter encounter;
+    private Encounter encounter;
 
     @InjectMocks
-    LabOrderResultsServiceImpl labOrderResultsServiceImpl;
+    private LabOrderResultsServiceImpl labOrderResultsServiceImpl;
 
     @Before
     public void init() {

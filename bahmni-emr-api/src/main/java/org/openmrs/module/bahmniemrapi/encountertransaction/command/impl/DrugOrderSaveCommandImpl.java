@@ -27,7 +27,7 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
     private OrderMetadataService orderMetadataService;
     private ConceptService conceptService;
 
-    Comparator<EncounterTransaction.DrugOrder> drugOrderStartDateComparator = new Comparator<EncounterTransaction.DrugOrder>() {
+    private Comparator<EncounterTransaction.DrugOrder> drugOrderStartDateComparator = new Comparator<EncounterTransaction.DrugOrder>() {
         @Override
         public int compare(EncounterTransaction.DrugOrder o1, EncounterTransaction.DrugOrder o2) {
             Date date1 = o1.getScheduledDate();
@@ -86,7 +86,7 @@ public class DrugOrderSaveCommandImpl implements EncounterDataPreSaveCommand {
             Date expectedStopDateForCurrentOrder = getExpectedStopDateForOrder(currentDateOrder, expectedStartDateForCurrentOrder);
 
             for (EncounterTransaction.DrugOrder order : orders) {
-                if(order!=currentDateOrder && !"DISCONTINUE".equals(order.getAction()) && DateUtils.isSameDay(getExpectedStartDateForOrder(order), expectedStopDateForCurrentOrder)){
+                if((!order.equals(currentDateOrder)) && !"DISCONTINUE".equals(order.getAction()) && DateUtils.isSameDay(getExpectedStartDateForOrder(order), expectedStopDateForCurrentOrder)){
                     currentDateOrder.setScheduledDate(expectedStartDateForCurrentOrder);
                     currentDateOrder.setAutoExpireDate(expectedStopDateForCurrentOrder);
 
