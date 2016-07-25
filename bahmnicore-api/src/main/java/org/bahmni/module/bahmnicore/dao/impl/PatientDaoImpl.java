@@ -95,18 +95,18 @@ public class PatientDaoImpl implements PatientDao {
     }
 
     @Override
-    public List<Patient> getPatients(String partialIdentifier, boolean shouldMatchExactPatientId) {
+    public List<Patient> getPatients(String patientIdentifier, boolean shouldMatchExactPatientId) {
         if (!shouldMatchExactPatientId) {
-            partialIdentifier = "%" + partialIdentifier;
+            String partialIdentifier = "%" + patientIdentifier;
             Query querytoGetPatients = sessionFactory.getCurrentSession().createQuery(
                     "select pi.patient " +
                             " from PatientIdentifier pi " +
                             " where pi.identifier like :partialIdentifier ");
-            querytoGetPatients.setString("partialIdentifier", partialIdentifier);
+            querytoGetPatients.setString("partialIdentifier",partialIdentifier);
             return querytoGetPatients.list();
         }
 
-        Patient patient = getPatient(partialIdentifier);
+        Patient patient = getPatient(patientIdentifier);
         List<Patient> result = (patient == null ? new ArrayList<Patient>(): Arrays.asList(patient));
         return result;
     }

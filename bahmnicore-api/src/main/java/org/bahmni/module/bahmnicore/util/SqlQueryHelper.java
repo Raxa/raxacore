@@ -41,12 +41,13 @@ public class SqlQueryHelper {
     }
 
     public PreparedStatement constructPreparedStatement(String queryString, Map<String, String[]> params, Connection conn) throws SQLException {
+       String finalQueryString = queryString;
         if (params.get("additionalParams") != null && params.get("additionalParams") != null) {
-            queryString = parseAdditionalParams(params.get("additionalParams")[0], queryString);
+            finalQueryString = parseAdditionalParams(params.get("additionalParams")[0], queryString);
         }
 
-        List<String> paramNamesFromPlaceHolders = getParamNamesFromPlaceHolders(queryString);
-        String statement = transformIntoPreparedStatementFormat(queryString);
+        List<String> paramNamesFromPlaceHolders = getParamNamesFromPlaceHolders(finalQueryString);
+        String statement = transformIntoPreparedStatementFormat(finalQueryString);
         PreparedStatement preparedStatement = conn.prepareStatement(statement);
         if(params != null ){
             int i=1;
@@ -59,15 +60,16 @@ public class SqlQueryHelper {
     }
 
     String parseAdditionalParams(String additionalParams, String queryString) {
+        String queryWithAdditionalParams = queryString;
         try {
             AdditionalSearchParam additionalSearchParams = new ObjectMapper().readValue(additionalParams, AdditionalSearchParam.class);
             String test = additionalSearchParams.getTests();
-            queryString = queryString.replaceAll("\\$\\{testName\\}", test);
+            queryWithAdditionalParams = queryString.replaceAll("\\$\\{testName\\}", test);
         } catch (IOException e) {
             log.error("Failed to parse Additional Search Parameters.");
             e.printStackTrace();
         }
-        return queryString;
+        return queryWithAdditionalParams;
     }
 
 

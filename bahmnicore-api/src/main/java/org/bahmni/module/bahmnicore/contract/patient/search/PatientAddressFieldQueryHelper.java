@@ -30,7 +30,7 @@ public class PatientAddressFieldQueryHelper {
 
 		if (addressSearchResultFields != null) {
 			for (String field : addressSearchResultFields)
-				if (!field.equals("{}")) columnValuePairs.add(String.format("\"%s\" : ' , '\"' , IFNULL(pa.%s ,''), '\"'", field, field));
+				if (!"{}".equals(field)) columnValuePairs.add(String.format("\"%s\" : ' , '\"' , IFNULL(pa.%s ,''), '\"'", field, field));
 
 			if(columnValuePairs.size() > 0)
 				selectClause = String.format(",CONCAT ('{ %s , '}') as addressFieldValue",
@@ -62,11 +62,8 @@ public class PatientAddressFieldQueryHelper {
 		return scalarQueryResult;
 	}
 
-	public String appendToGroupByClause(String groupBy) {
-		if(!isEmpty(groupBy)){
-			groupBy = groupBy + ",";
-		}
-		groupBy = groupBy + addressFieldName + ",p.person_id, p.uuid , pi.identifier , pn.given_name , pn.middle_name , pn.family_name , p.gender , p.birthdate , p.death_date , p.date_created , v.uuid";
-		return groupBy;
+	public String appendToGroupByClause(String fieldName) {
+		String groupByClause = addressFieldName + ",p.person_id, p.uuid , pi.identifier , pn.given_name , pn.middle_name , pn.family_name , p.gender , p.birthdate , p.death_date , p.date_created , v.uuid";
+		return isEmpty(fieldName)?fieldName+groupByClause: fieldName+","+ groupByClause;
 	}
 }

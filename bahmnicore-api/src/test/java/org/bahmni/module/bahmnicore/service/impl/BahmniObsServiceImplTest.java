@@ -52,14 +52,14 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest(LocaleUtility.class)
 public class BahmniObsServiceImplTest {
 
-    BahmniObsService bahmniObsService;
+    private BahmniObsService bahmniObsService;
 
     private String personUUID = "12345";
 
     @Mock
-    ObsDao obsDao;
+    private ObsDao obsDao;
     @Mock
-    VisitDao visitDao;
+    private VisitDao visitDao;
     @Mock
     private ObservationTypeMatcher observationTypeMatcher;
     @Mock

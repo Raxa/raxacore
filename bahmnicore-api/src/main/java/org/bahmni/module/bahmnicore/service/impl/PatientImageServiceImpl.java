@@ -22,6 +22,7 @@ import java.util.UUID;
 @Service
 @Lazy
 public class PatientImageServiceImpl implements PatientImageService {
+    private static final String PDF = "pdf";
     private Log log = LogFactory.getLog(PatientImageServiceImpl.class);
     private static final String patientImagesFormat = "jpeg";
     private final Integer NO_OF_PATIENT_FILE_IN_A_DIRECTORY = 100;
@@ -81,7 +82,7 @@ public class PatientImageServiceImpl implements PatientImageService {
     private void saveImageInFile(String image, String format, File outputFile) throws IOException {
         log.info(String.format("Creating patient image at %s", outputFile));
         byte[] decodedBytes = DatatypeConverter.parseBase64Binary(image);
-        if (format.equals("pdf")) {
+        if (PDF.equals(format)) {
             FileUtils.writeByteArrayToFile(outputFile, decodedBytes);
         } else {
             BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decodedBytes));

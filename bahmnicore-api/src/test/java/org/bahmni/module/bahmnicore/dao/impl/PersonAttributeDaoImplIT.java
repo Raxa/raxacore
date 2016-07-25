@@ -13,7 +13,7 @@ import static junit.framework.Assert.assertTrue;
 public class PersonAttributeDaoImplIT extends BaseIntegrationTest {
 	
 	@Autowired
-	PersonAttributeDaoImpl personAttributeDao;
+	private PersonAttributeDaoImpl personAttributeDao;
 	
 	@Test
     @Ignore

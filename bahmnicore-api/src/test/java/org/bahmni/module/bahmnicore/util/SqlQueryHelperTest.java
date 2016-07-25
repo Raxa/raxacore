@@ -15,7 +15,7 @@ public class SqlQueryHelperTest {
 
     @Mock
     private AdministrationService administrationService;
-    SqlQueryHelper sqlQueryHelper;
+    private SqlQueryHelper sqlQueryHelper;
 
     @Before
     public void setUp() throws Exception {

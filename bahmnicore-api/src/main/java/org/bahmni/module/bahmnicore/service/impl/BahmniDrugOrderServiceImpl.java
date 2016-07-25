@@ -186,7 +186,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
     @Override
     public List<DrugOrder> getPrescribedDrugOrdersForConcepts(Patient patient, Boolean includeActiveVisit, List<Visit> visits, List<Concept> concepts, Date startDate, Date endDate) {
-        if(concepts.isEmpty() || concepts == null){
+        if( concepts == null || concepts.isEmpty()){
             return new ArrayList<>();
         }
         return orderDao.getPrescribedDrugOrdersForConcepts(patient, includeActiveVisit, visits, concepts, startDate, endDate);
@@ -379,7 +379,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         return drugOrderType;
     }
 
-    List<DrugOrder> getActiveDrugOrders(String patientUuid, Date asOfDate, Set<Concept> conceptsToFilter,
+    private List<DrugOrder> getActiveDrugOrders(String patientUuid, Date asOfDate, Set<Concept> conceptsToFilter,
                                                 Set<Concept> conceptsToExclude, Date startDate, Date endDate, Collection<Encounter> encounters) {
         Patient patient = openmrsPatientService.getPatientByUuid(patientUuid);
         CareSetting careSettingByName = orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString());

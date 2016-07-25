@@ -1,10 +1,10 @@
 package org.bahmni.module.bahmnicore.model;
 
 public class DocumentImage {
-    String image;
-    String format;
-    String encounterTypeName;
-    String patientUuid;
+    private String image;
+    private String format;
+    private String encounterTypeName;
+    private String patientUuid;
 
     public DocumentImage() {
     }
