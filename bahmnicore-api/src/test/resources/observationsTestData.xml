@@ -107,6 +107,7 @@
     <visit visit_id="901" date_started="2008-08-18 00:00:00" date_created="2008-08-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-08-20 04:08:16" location_id="2" creator="1" changed_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5b" voided="0"/>
     <visit visit_id="902" date_started="2008-09-18 00:00:00" date_created="2008-09-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-09-20 04:08:16" location_id="2" creator="1" changed_by="1" uuid="e10186d8-1c8e-11e4-bb80-f18addb6f9bb" voided="0"/>
     <visit visit_id="903" date_started="2008-10-18 00:00:00" date_created="2008-09-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-09-20 04:08:16" location_id="2" creator="1" changed_by="1" uuid="e10186d8-1c8e-11e4-bb80-f18add123456" voided="0"/>
+    <visit visit_id="904" date_started="2008-10-21 00:00:00" date_created="2008-09-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-09-22 04:08:16" location_id="2" creator="1" changed_by="1" uuid="e10186d8-1c8e-11e4-bb80-f1badd123456" voided="0"/>
 
     <encounter_type encounter_type_id="1" name="Consultation" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
     <encounter encounter_id="38" encounter_type="1" patient_id="1024" visit_id="901" location_id="1" encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63ab0"/>

@@ -66,7 +66,7 @@ public class ObsDaoImpl implements ObsDao {
     }
 
     public List<Obs> getObsByPatientAndVisit(String patientUuid, List<String> conceptNames, List<Integer> listOfVisitIds,
-                     Integer limit, OrderBy sortOrder, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order, Date startDate, Date endDate) {
+                                             Integer limit, OrderBy sortOrder, List<String> obsIgnoreList, Boolean filterOutOrderObs, Order order, Date startDate, Date endDate) {
 
         StringBuilder query = new StringBuilder("select obs from Obs as obs, ConceptName as cn " +
                 " where obs.person.uuid = :patientUuid " +
@@ -75,13 +75,13 @@ public class ObsDaoImpl implements ObsDao {
                 " and cn.conceptNameType = :conceptNameType " +
                 " and cn.voided = false and obs.voided = false ");
 
-        if(CollectionUtils.isNotEmpty(listOfVisitIds)){
+        if (CollectionUtils.isNotEmpty(listOfVisitIds)) {
             query.append(" and obs.encounter.visit.visitId in (:listOfVisitIds) ");
         }
-        if(startDate != null){
+        if (startDate != null) {
             query.append(" and obs.obsDatetime >= :startDate ");
         }
-        if(endDate != null){
+        if (endDate != null) {
             query.append(" and obs.obsDatetime <= :endDate ");
         }
 
@@ -109,16 +109,16 @@ public class ObsDaoImpl implements ObsDao {
         if (null != obsIgnoreList && obsIgnoreList.size() > 0) {
             queryToGetObservations.setParameterList("obsIgnoreList", obsIgnoreList);
         }
-        if (null != listOfVisitIds && listOfVisitIds.size() > 0 ) {
+        if (null != listOfVisitIds && listOfVisitIds.size() > 0) {
             queryToGetObservations.setParameterList("listOfVisitIds", listOfVisitIds);
         }
         if (null != order) {
             queryToGetObservations.setParameter("order", order);
         }
-        if(startDate != null){
+        if (startDate != null) {
             queryToGetObservations.setParameter("startDate", startDate);
         }
-        if (endDate != null){
+        if (endDate != null) {
             queryToGetObservations.setParameter("endDate", endDate);
         }
         return queryToGetObservations.list();
@@ -193,12 +193,13 @@ public class ObsDaoImpl implements ObsDao {
     @Override
     public List<Obs> getObsForVisits(List<Person> persons, ArrayList<Encounter> encounters, List<Concept> conceptsForNames, Collection<Concept> obsIgnoreList, Boolean filterOutOrders, Order order) {
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Obs.class, "obs");
+        if (CollectionUtils.isEmpty(encounters)) {
+            return new ArrayList<>();
+        } else {
+            criteria.add(Restrictions.in("encounter", encounters));
+        }
         if (CollectionUtils.isNotEmpty(persons)) {
             criteria.add(Restrictions.in("person", persons));
-        }
-
-        if (CollectionUtils.isNotEmpty(encounters)) {
-            criteria.add(Restrictions.in("encounter", encounters));
         }
         if (CollectionUtils.isNotEmpty(conceptsForNames)) {
             criteria.add(Restrictions.in("concept", conceptsForNames));
@@ -243,8 +244,8 @@ public class ObsDaoImpl implements ObsDao {
                 "ON groupByConceptName.concept_id = groupByObs.concept_id AND groupByConceptName.name = :childConceptName AND " +
                 "groupByConceptName.concept_name_type = 'FULLY_SPECIFIED' ");
 
-        if(startDate != null) queryString.append("where groupByObs.obs_datetime >= :startDate ");
-        if(startDate != null && endDate != null) queryString.append("and groupByObs.obs_datetime <= :endDate ");
+        if (startDate != null) queryString.append("where groupByObs.obs_datetime >= :startDate ");
+        if (startDate != null && endDate != null) queryString.append("and groupByObs.obs_datetime <= :endDate ");
         queryString.append("group by groupByObs.obs_group_id order by obs_datetime asc ");
 
         Query queryToGetObs = sessionFactory.getCurrentSession()
@@ -253,8 +254,10 @@ public class ObsDaoImpl implements ObsDao {
         queryToGetObs.setParameter("patientUuid", patientUuid);
         queryToGetObs.setParameterList("visitIds", listOfVisitIds);
         queryToGetObs.setParameter("childConceptName", childConcept.getName().getName());
-        if(startDate != null) queryToGetObs.setParameter("startDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(startDate));
-        if(endDate != null) queryToGetObs.setParameter("endDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endDate));
+        if (startDate != null)
+            queryToGetObs.setParameter("startDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(startDate));
+        if (endDate != null)
+            queryToGetObs.setParameter("endDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endDate));
 
 
         return queryToGetObs.list();
@@ -262,7 +265,7 @@ public class ObsDaoImpl implements ObsDao {
 
     private String commaSeparatedEncounterIds(Collection<Encounter> encounters) {
         ArrayList<String> encounterIds = new ArrayList<>();
-        for(Encounter encounter: encounters) {
+        for (Encounter encounter : encounters) {
             encounterIds.add(encounter.getEncounterId().toString());
         }
         return StringUtils.join(encounterIds, COMMA);
@@ -275,7 +278,7 @@ public class ObsDaoImpl implements ObsDao {
         queryToGetObs.setParameter("parentObsUuid", parentObsUuid);
         queryToGetObs.setParameter("concept", childConcept);
         List<Obs> obsList = queryToGetObs.list();
-        if(obsList.size()>0){
+        if (obsList.size() > 0) {
             return (Obs) queryToGetObs.list().get(0);
         }
         return null;
@@ -284,31 +287,31 @@ public class ObsDaoImpl implements ObsDao {
 
     @Override
     public List<Obs> getObsByPatientProgramUuidAndConceptNames(String patientProgramUuid, List<String> conceptNames, Integer limit, OrderBy sortOrder) {
-            StringBuilder queryString =   new StringBuilder( "SELECT o.* " +
-                    "FROM patient_program pp " +
-                    "INNER JOIN episode_patient_program epp " +
-                    "ON pp.patient_program_id = epp.patient_program_id\n " +
-                    "INNER JOIN episode_encounter ee " +
-                    "ON epp.episode_id = ee.episode_id\n " +
-                    "INNER JOIN obs o " +
-                    "ON o.encounter_id = ee.encounter_id\n " +
-                    "INNER JOIN concept_name cn on o.concept_id = cn.concept_id\n " +
-                    "WHERE pp.uuid = (:patientProgramUuid) " +
-                    "AND o.voided = false " +
-                    "AND cn.concept_name_type='FULLY_SPECIFIED' " +
-                    "AND cn.name IN (:conceptNames)");
-            if (sortOrder == OrderBy.ASC) {
-                queryString.append(" ORDER by o.obs_datetime asc");
-            } else {
-                queryString.append(" ORDER by o.obs_datetime desc");
-            }
-            if (limit != null){
-                queryString.append(" limit " + limit);
-            }
-            Query queryToGetObs = sessionFactory.getCurrentSession().createSQLQuery(queryString.toString()).addEntity(Obs.class);
-            queryToGetObs.setParameterList("conceptNames", conceptNames);
-            queryToGetObs.setString("patientProgramUuid", patientProgramUuid);
-
-            return queryToGetObs.list();
+        StringBuilder queryString = new StringBuilder("SELECT o.* " +
+                "FROM patient_program pp " +
+                "INNER JOIN episode_patient_program epp " +
+                "ON pp.patient_program_id = epp.patient_program_id\n " +
+                "INNER JOIN episode_encounter ee " +
+                "ON epp.episode_id = ee.episode_id\n " +
+                "INNER JOIN obs o " +
+                "ON o.encounter_id = ee.encounter_id\n " +
+                "INNER JOIN concept_name cn on o.concept_id = cn.concept_id\n " +
+                "WHERE pp.uuid = (:patientProgramUuid) " +
+                "AND o.voided = false " +
+                "AND cn.concept_name_type='FULLY_SPECIFIED' " +
+                "AND cn.name IN (:conceptNames)");
+        if (sortOrder == OrderBy.ASC) {
+            queryString.append(" ORDER by o.obs_datetime asc");
+        } else {
+            queryString.append(" ORDER by o.obs_datetime desc");
         }
+        if (limit != null) {
+            queryString.append(" limit " + limit);
+        }
+        Query queryToGetObs = sessionFactory.getCurrentSession().createSQLQuery(queryString.toString()).addEntity(Obs.class);
+        queryToGetObs.setParameterList("conceptNames", conceptNames);
+        queryToGetObs.setString("patientProgramUuid", patientProgramUuid);
+
+        return queryToGetObs.list();
+    }
 }

@@ -63,9 +63,9 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
         Concept sittingConcept = conceptService.getConceptByName("Vitals");
         //Latest limited by last two visits.
         Collection<BahmniObservation> bahmniObservations = bahmniObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a",
-                Arrays.asList(sittingConcept), 1, null, false, null);
+                Arrays.asList(sittingConcept), 2, null, false, null);
         assertEquals(0, bahmniObservations.size());
-        bahmniObservations = bahmniObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(sittingConcept), 2, null, false, null);
+        bahmniObservations = bahmniObsService.getLatest("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList(sittingConcept), 3, null, false, null);
         assertEquals(1, bahmniObservations.size());
 
         BahmniObservation sittingObservation = bahmniObservations.iterator().next();
@@ -81,6 +81,16 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
         assertEquals(1, latestObsByVisit.size());
         BahmniObservation sittingObservation = latestObsByVisit.iterator().next();
         assertEquals("1.5", sittingObservation.getValueAsString());
+    }
+
+    @Test
+    public void shouldReturnEmptyListIfTheVisitDoesnotHaveData() throws Exception {
+        Concept sittingConcept = conceptService.getConceptByName("Sitting");
+        Visit visit = visitService.getVisitByUuid("e10186d8-1c8e-11e4-bb80-f1badd123456");
+
+        Collection<BahmniObservation> latestObsByVisit = bahmniObsService.getLatestObsByVisit(visit, Arrays.asList(sittingConcept), null, false);
+
+        assertEquals(0, latestObsByVisit.size());
     }
 
     @Test
