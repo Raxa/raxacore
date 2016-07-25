@@ -4,11 +4,11 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.exception.DataException;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
-import org.openmrs.PatientIdentifierType;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
@@ -47,6 +47,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,37 +74,49 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<Object> create(@RequestHeader(value = "Jump-Accepted", required = false) boolean jumpAccepted, @RequestBody SimpleObject propertiesToCreate) throws Exception {
-        LinkedHashMap identifierProperties = (LinkedHashMap) ((ArrayList) ((LinkedHashMap) propertiesToCreate.get("patient")).get("identifiers")).get(0);
-        String identifierPrefix = String.valueOf(identifierProperties.get("identifierPrefix"));
-        identifierProperties.remove("identifierPrefix");
-        String identifierSourceUuid = String.valueOf(identifierProperties.get("identifierSourceUuid"));
-        String identifier;
-        identifierProperties.remove("identifierSourceUuid");
-        boolean isRegistrationIDNumeric = String.valueOf(identifierProperties.get("identifier")).replace(identifierPrefix, "").matches("[0-9]+");
-        if (identifierProperties.get("identifier") != null && !Objects.equals(identifierPrefix, "") && isRegistrationIDNumeric) {
-            long givenRegistrationNumber = Long.parseLong(String.valueOf(identifierProperties.get("identifier")).replace(identifierPrefix, ""));
-            long latestRegistrationNumber = Long.parseLong(identifierSourceServiceWrapper.getSequenceValueUsingIdentifierSourceUuid(identifierSourceUuid));
-            if (!jumpAccepted) {
-                long sizeOfJump = givenRegistrationNumber - latestRegistrationNumber;
-                if (sizeOfJump > 0) {
-                    return new ResponseEntity<Object>("{\"sizeOfJump\":" + sizeOfJump + "}", HttpStatus.PRECONDITION_FAILED);
+        List identifiers = ((ArrayList) ((LinkedHashMap) propertiesToCreate.get("patient")).get("identifiers"));
+        List<Object> jumpSizes = new ArrayList<>();
+
+        for (final Object patientIdentifier : identifiers) {
+            LinkedHashMap identifierProperties = (LinkedHashMap) patientIdentifier;
+            Object identifierSource = identifierProperties.get("identifierSourceUuid");
+
+            if (identifierSource != null) {
+                String identifierPrefix = String.valueOf(identifierProperties.get("identifierPrefix"));
+                String identifierSourceUuid = String.valueOf(identifierProperties.get("identifierSourceUuid"));
+                identifierProperties.remove("identifierSourceUuid");
+                identifierProperties.remove("identifierPrefix");
+
+                final String identifier = String.valueOf(identifierProperties.get("identifier"));
+                boolean isRegistrationIDNumeric = identifier.replace(identifierPrefix, "").matches("[0-9]+");
+
+                if (identifierProperties.get("identifier") != null && !Objects.equals(identifierPrefix, "") && isRegistrationIDNumeric) {
+                    long givenRegistrationNumber = Long.parseLong(identifier.replace(identifierPrefix, ""));
+                    long latestRegistrationNumber = Long.parseLong(identifierSourceServiceWrapper.getSequenceValueUsingIdentifierSourceUuid(identifierSourceUuid));
+                    if (!jumpAccepted) {
+                        final long sizeOfJump = givenRegistrationNumber - latestRegistrationNumber;
+                        if (sizeOfJump > 0) {
+                            jumpSizes.add(new HashMap<String, Object>() {{
+                                put("identifierType", ((HashMap) patientIdentifier).get("identifierType"));
+                                put("sizeOfJump", sizeOfJump);
+                            }});
+                        }
+                    } else if (latestRegistrationNumber < (givenRegistrationNumber + 1)) {
+                        identifierSourceServiceWrapper.saveSequenceValueUsingIdentifierSourceUuid(givenRegistrationNumber + 1, identifierSourceUuid);
+                    }
+                } else if (identifierProperties.get("identifier") == null) {
+                    String generatedIdentifier = identifierSourceServiceWrapper.generateIdentifierUsingIdentifierSourceUuid(identifierSourceUuid, "");
+                    identifierProperties.put("identifier", generatedIdentifier);
                 }
             }
-            if (latestRegistrationNumber < (givenRegistrationNumber + 1 ))
-            identifierSourceServiceWrapper.saveSequenceValueUsingIdentifierSourceUuid(givenRegistrationNumber + 1, identifierSourceUuid);
-        } else if(identifierProperties.get("identifier") == null) {
-            identifier = identifierSourceServiceWrapper.generateIdentifierUsingIdentifierSourceUuid(identifierSourceUuid, "");
-            identifierProperties.put("identifier", identifier);
+
+        }
+
+        if (jumpSizes.size() > 0) {
+            return new ResponseEntity<Object>(new ObjectMapper().writeValueAsString(jumpSizes), HttpStatus.PRECONDITION_FAILED);
         }
 
         PatientProfile delegate = mapForCreatePatient(propertiesToCreate);
-
-        String primaryIdentifierTypeUuid = Context.getAdministrationService().getGlobalProperty("emr.primaryIdentifierType");
-        PatientIdentifierType primaryIdentifierType = Context.getPatientService().getPatientIdentifierTypeByUuid(primaryIdentifierTypeUuid);
-
-        for (PatientIdentifier patientIdentifier : delegate.getPatient().getIdentifiers()) {
-            patientIdentifier.setIdentifierType(primaryIdentifierType);
-        }
 
         setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
         try {
@@ -112,25 +125,25 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
             return new ResponseEntity<>(ConversionUtil.convertToRepresentation(delegate, Representation.FULL), HttpStatus.OK);
         } catch (ContextAuthenticationException e) {
             return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.FORBIDDEN);
-        } catch (NonUniqueObjectException e){
+        } catch (NonUniqueObjectException e) {
             return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.BAD_REQUEST);
-        } catch (ValidationException e){
+        } catch (ValidationException e) {
             return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.BAD_REQUEST);
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getRootCause().getMessage()), HttpStatus.BAD_REQUEST);
-        } catch (DataException e){
+        } catch (DataException e) {
             return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.BAD_REQUEST);
-        } catch (Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{uuid}")
     @ResponseBody
-    public ResponseEntity<Object> update(@PathVariable("uuid") String uuid, @RequestBody SimpleObject propertiesToCreate) throws Exception {
-        PatientProfile delegate = mapForUpdatePatient(uuid, propertiesToCreate);
-        setConvertedProperties(delegate, propertiesToCreate, getUpdatableProperties(), true);
-        delegate.setRelationships(getRelationships(propertiesToCreate, delegate.getPatient()));
+    public ResponseEntity<Object> update(@PathVariable("uuid") String uuid, @RequestBody SimpleObject propertiesToUpdate) throws Exception {
+        PatientProfile delegate = mapForUpdatePatient(uuid, propertiesToUpdate);
+        setConvertedProperties(delegate, propertiesToUpdate, getUpdatableProperties(), true);
+        delegate.setRelationships(getRelationships(propertiesToUpdate, delegate.getPatient()));
         try {
             delegate = emrPatientProfileService.save(delegate);
             setRelationships(delegate);
@@ -180,6 +193,11 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
 
         PatientResource1_8 patientResource1_9 = (PatientResource1_8) Context.getService(RestService.class).getResourceBySupportedClass(Patient.class);
         Patient patient = patientResource1_9.getPatientForUpdate(uuid, (Map<String, Object>) propertiesToUpdate.get("patient"));
+        List<Object> identifiers = (List<Object>) ((Map) propertiesToUpdate.get("patient")).get("identifiers");
+        for (Object identifier : identifiers) {
+            PatientIdentifier patientIdentifier = (PatientIdentifier) ConversionUtil.convert(identifier, PatientIdentifier.class);
+            patient.addIdentifier(patientIdentifier);
+        }
         delegate.setPatient(patient);
 
         propertiesToUpdate.removeProperty("patient");

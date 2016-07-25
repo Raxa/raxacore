@@ -4181,4 +4181,26 @@
         <sqlFile path="V1_93_PatientSearchSql.sql"/>
     </changeSet>
 
+    <changeSet id="201607281228" author="Preethi, Gaurav">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM  INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME='patient_identifier' AND CONSTRAINT_NAME='unique_patient_identifier';
+            </sqlCheck>
+        </preConditions>
+        <comment>Drop unique constraint on identifier column in patient_identifier table</comment>
+        <sql>
+            ALTER TABLE patient_identifier DROP INDEX unique_patient_identifier;
+        </sql>
+    </changeSet>
+    <changeSet id="201607291555" author="Preethi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from patient_identifier_type where name = 'Bahmni Id';
+            </sqlCheck>
+        </preConditions>
+        <comment>Renaming Bahmni Id to Patient Identifer in patient_identifier_type table</comment>
+        <sql>
+            update patient_identifier_type set name = 'Patient Identifier' where name = 'Bahmni Id'
+        </sql>
+    </changeSet>
 </databaseChangeLog>

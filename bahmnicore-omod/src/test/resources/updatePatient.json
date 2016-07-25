@@ -17,7 +17,13 @@
       "dead": false,
       "deathDate": null,
       "causeOfDeath": ""
-    }
+    },
+    "identifiers": [
+      {
+        "identifierType": "81433852-3f10-11e4-adec-0800271c1b76",
+        "identifier": "ABC123DEF"
+      }
+    ]
   },
   "relationships": []
 }

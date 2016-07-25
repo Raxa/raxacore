@@ -101,10 +101,7 @@ public class BahmniPatientProfileResourceTest {
         doReturn(delegate).when(spy, "mapForCreatePatient", propertiesToCreate);
         when(emrPatientProfileService.save(delegate)).thenReturn(delegate);
         when(Context.getAdministrationService()).thenReturn(administrationService);
-        when(administrationService.getGlobalProperty("emr.primaryIdentifierType")).thenReturn("dead-cafe");
         when(Context.getPatientService()).thenReturn(patientService);
-        PatientIdentifierType patientIdentifierType = new PatientIdentifierType();
-        when(patientService.getPatientIdentifierTypeByUuid("dead-cafe")).thenReturn(patientIdentifierType);
         Patient patient = mock(Patient.class);
         when(patient.getUuid()).thenReturn("patientUuid");
         when(delegate.getPatient()).thenReturn(patient);
@@ -122,10 +119,7 @@ public class BahmniPatientProfileResourceTest {
         ResponseEntity<Object> response = spy.create(false, propertiesToCreate);
 
         Assert.assertEquals(200, response.getStatusCode().value());
-        verify(administrationService, times(1)).getGlobalProperty("emr.primaryIdentifierType");
-        verify(patientService, times(1)).getPatientIdentifierTypeByUuid("dead-cafe");
         verify(identifierSourceServiceWrapper, times(1)).generateIdentifierUsingIdentifierSourceUuid("dead-cafe", "");
-        verify(patientIdentifier, times(1)).setIdentifierType(patientIdentifierType);
         verify(personService, times(1)).getPersonByUuid("patientUuid");
         verify(delegate, times(1)).setRelationships(relationships);
     }
