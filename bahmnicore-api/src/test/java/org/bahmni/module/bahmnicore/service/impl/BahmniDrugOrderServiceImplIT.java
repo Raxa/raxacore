@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
+import org.openmrs.Location;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -72,7 +73,8 @@ public class BahmniDrugOrderServiceImplIT extends BaseIntegrationTest {
         BahmniFeedDrugOrder cetzine = new BahmniFeedDrugOrder("f5bf0aa6-7855-11e3-bd53-328f386b70fa", 0.0, 0, 10.0, "mg", "order-uuid-3");
         List<BahmniFeedDrugOrder> drugOrders = Arrays.asList(calpol, cetrizine, cetzine);
 
-        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System", TEST_VISIT_TYPE);
+        Location location = Context.getLocationService().getLocation(1);
+        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System", TEST_VISIT_TYPE, location.getUuid());
 
         Visit visit = visitService.getVisit(activeVisit.getId());
         Encounter encounter = (Encounter) visit.getEncounters().toArray()[0];
@@ -101,7 +103,8 @@ public class BahmniDrugOrderServiceImplIT extends BaseIntegrationTest {
         Visit visit = createVisitForDate(patient, null, orderDate, false, DateUtils.addDays(orderDate, 1));
         assertNull(visit.getEncounters());
 
-        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System", TEST_VISIT_TYPE);
+        Location location = Context.getLocationService().getLocation(1);
+        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System", TEST_VISIT_TYPE, location.getUuid());
 
         Visit savedVisit = visitService.getVisit(visit.getId());
         Encounter encounter = (Encounter) savedVisit.getEncounters().toArray()[0];
@@ -131,7 +134,7 @@ public class BahmniDrugOrderServiceImplIT extends BaseIntegrationTest {
         Visit visit2 = createVisitForDate(patient, null, DateUtils.addDays(orderDate, -3), false, DateUtils.addDays(DateUtils.addDays(orderDate, -3), 1));
         assertNull(visit2.getEncounters());
 
-        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System", TEST_VISIT_TYPE);
+        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System", TEST_VISIT_TYPE, null);
 
         Visit savedVisit = visitService.getVisitsByPatient(patient).get(0);
 
@@ -166,7 +169,9 @@ public class BahmniDrugOrderServiceImplIT extends BaseIntegrationTest {
         Visit visit = createVisitForDate(patient, systemConsultationEncounter, visitStartDate, false, DateUtils.addDays(visitStartDate, 1));
         assertEquals(1, visit.getEncounters().size());
 
-        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System", TEST_VISIT_TYPE);
+        Location location = Context.getLocationService().getLocation(1);
+
+        bahmniDrugOrderService.add("GAN200000", orderDate, drugOrders, "System", TEST_VISIT_TYPE, location.getUuid());
 
         Visit savedVisit = visitService.getVisit(visit.getId());
         assertEquals(2, savedVisit.getEncounters().size());
@@ -184,13 +189,15 @@ public class BahmniDrugOrderServiceImplIT extends BaseIntegrationTest {
         Patient patient = patientService.getPatient(1);
         Visit visit = createVisitForDate(patient, null, firstOrderDate, false, firstOrderDate);
         int firstOrderNumberOfDays = 10;
+        Location location = Context.getLocationService().getLocation(1);
+
         BahmniFeedDrugOrder calpolFirstOrder = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, firstOrderNumberOfDays, firstOrderNumberOfDays * 2.0, "mg", "order-uuid");
-        bahmniDrugOrderService.add("GAN200000", firstOrderDate, Arrays.asList(calpolFirstOrder), "System", TEST_VISIT_TYPE);
+        bahmniDrugOrderService.add("GAN200000", firstOrderDate, Arrays.asList(calpolFirstOrder), "System", TEST_VISIT_TYPE, location.getUuid());
         Date secondOrderDate = DateUtils.addDays(firstOrderDate, 1);
         int secondOrderNumberOfDays = 20;
         BahmniFeedDrugOrder calpolSecondOrder = new BahmniFeedDrugOrder("3e4933ff-7799-11e3-a96a-0800271c1b75", 2.0, secondOrderNumberOfDays, secondOrderNumberOfDays * 2.0, "mg", "order-uuid-2");
 
-        bahmniDrugOrderService.add("GAN200000", secondOrderDate, Arrays.asList(calpolSecondOrder), "System", TEST_VISIT_TYPE);
+        bahmniDrugOrderService.add("GAN200000", secondOrderDate, Arrays.asList(calpolSecondOrder), "System", TEST_VISIT_TYPE, location.getUuid());
 
         Visit savedVisit = visitService.getVisit(visit.getId());
         assertEquals(1, savedVisit.getEncounters().size());
@@ -284,6 +291,9 @@ public class BahmniDrugOrderServiceImplIT extends BaseIntegrationTest {
             visit.addEncounter(encounter);
         if (!isActive)
             visit.setStopDatetime(stopDatetime);
+        Location location = Context.getLocationService().getLocation(1);
+        visit.setLocation(location);
+
         return visitService.saveVisit(visit);
     }
 

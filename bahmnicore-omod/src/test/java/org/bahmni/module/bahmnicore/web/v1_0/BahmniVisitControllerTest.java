@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 public class BahmniVisitControllerTest {
     @Mock
     private VisitService visitService;
-
     @Mock
     private BahmniEncounterTransactionService bahmniEncounterTransactionService;
 

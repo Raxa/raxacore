@@ -31,7 +31,7 @@ public class BahmniFeedDrugOrderServiceImplTest {
         List<BahmniFeedDrugOrder> drugOrders = Arrays.asList(calpol);
 
         BahmniDrugOrderService bahmniDrugOrderService = new BahmniDrugOrderServiceImpl(null, null, null, null, null, null, new PatientDaoImpl(null), null, null, null, null);
-        bahmniDrugOrderService.add("", orderDate, drugOrders, "System", TEST_VISIT_TYPE);
+        bahmniDrugOrderService.add("", orderDate, drugOrders, "System", TEST_VISIT_TYPE, null);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class BahmniFeedDrugOrderServiceImplTest {
         List<BahmniFeedDrugOrder> drugOrders = Arrays.asList(calpol);
 
         BahmniDrugOrderService bahmniDrugOrderService = new BahmniDrugOrderServiceImpl(null, null, null, null, null, null, new PatientDaoImpl(null), null, null, null, null);
-        bahmniDrugOrderService.add(null, orderDate, drugOrders, "System", TEST_VISIT_TYPE);
+        bahmniDrugOrderService.add(null, orderDate, drugOrders, "System", TEST_VISIT_TYPE, null);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class BahmniFeedDrugOrderServiceImplTest {
         when(patientDao.getPatient(patientId)).thenReturn(null);
 
         BahmniDrugOrderServiceImpl bahmniDrugOrderService = new BahmniDrugOrderServiceImpl(null, null, null, null, null, null, patientDao, null, null, null, null);
-        bahmniDrugOrderService.add(patientId, orderDate, drugOrders, "System", TEST_VISIT_TYPE);
+        bahmniDrugOrderService.add(patientId, orderDate, drugOrders, "System", TEST_VISIT_TYPE, null);
     }
 
 }

@@ -42,6 +42,10 @@ public class OpenElisAccessionBuilder {
         return this;
     }
 
+    public OpenElisAccessionBuilder withLabLocationUuid(String labLocationUuid) {
+        openElisAccession.setLabLocationUuid(labLocationUuid);
+        return this;
+    }
 
     public OpenElisAccessionBuilder withPatientIdentifier(String patientIdentifier) {
         openElisAccession.setPatientIdentifier(patientIdentifier);

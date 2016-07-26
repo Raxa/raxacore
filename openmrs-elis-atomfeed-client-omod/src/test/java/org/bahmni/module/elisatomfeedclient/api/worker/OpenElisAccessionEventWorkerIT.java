@@ -886,8 +886,6 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldUpdateLabNotesForAccession() throws Exception {
-
-
         EncounterService encounterService = Context.getEncounterService();
 
         String accessionUuid = "6g0bf6767-707a-4329-9850-f15206e63ab0";
@@ -914,6 +912,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withPatientUuid(patientUuidWithAccessionNotes)
                 .withAccessionNotes(new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"),
                         new OpenElisAccessionNote("Note2", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))
+                .withLabLocationUuid("be69741b-29e9-49a1-adc9-2a726e6610e4")
                 .build();
         openElisAccession.setAccessionUuid(accessionUuid);
         Encounter notesEncounter1 = encounterService.getEncounter(36);
@@ -959,6 +958,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withPatientUuid(patientUuidWithAccessionNotes)
                 .withAccessionNotes(new OpenElisAccessionNote("Note1", "non-existent-provider", "2014-01-30T11:50:18+0530"),
                         new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))
+                .withLabLocationUuid("be69741b-29e9-49a1-adc9-2a726e6610e4")
                 .build();
         openElisAccession.setAccessionUuid(accessionUuid);
         Encounter notesEncounter1 = encounterService.getEncounter(36);
@@ -997,6 +997,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withPatientUuid(patientUuidWithAccessionNotes)
                 .withAccessionNotes(new OpenElisAccessionNote("Note1", "331c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"),
                         new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))
+                .withLabLocationUuid("be69741b-29e9-49a1-adc9-2a726e6610e4")
                 .build();
         openElisAccession.setAccessionUuid(accessionUuid);
         Encounter notesEncounter1 = encounterService.getEncounter(36);

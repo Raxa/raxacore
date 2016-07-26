@@ -35,7 +35,7 @@ public class PatientDaoImpl implements PatientDao {
                                              String addressFieldName, String addressFieldValue, Integer length,
                                              Integer offset, String[] customAttributeFields, String programAttributeFieldValue,
                                              String programAttributeFieldName, String[] addressSearchResultFields,
-                                             String[] patientSearchResultFields) {
+                                             String[] patientSearchResultFields, String loginLocationUuid, Boolean filterPatientsByLocation) {
         if(isInValidSearchParams(customAttributeFields,programAttributeFieldName)){
             return new ArrayList<>();
         }
@@ -48,6 +48,7 @@ public class PatientDaoImpl implements PatientDao {
                 .withPatientIdentifier(identifier,identifierPrefix)
                 .withPatientAttributes(customAttribute, getPersonAttributeIds(customAttributeFields), getPersonAttributeIds(patientSearchResultFields))
                 .withProgramAttributes(programAttributeFieldValue, programAttributeType)
+                .withLocation(loginLocationUuid, filterPatientsByLocation)
                 .buildSqlQuery(length,offset);
         return sqlQuery.list();
     }

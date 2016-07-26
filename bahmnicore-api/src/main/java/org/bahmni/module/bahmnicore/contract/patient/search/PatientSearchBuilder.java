@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PatientSearchBuilder {
+
+	private String visitJoin = " left outer join visit v on v.patient_id = pat.patient_id and v.date_stopped is null ";
 	public static final String SELECT_STATEMENT = "select " +
 			"p.uuid as uuid, " +
 			"p.person_id as personId, " +
@@ -34,7 +36,7 @@ public class PatientSearchBuilder {
 			" left join person_name pn on pn.person_id = p.person_id" +
 			" left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
 			" inner join patient_identifier pi on pi.patient_id = p.person_id " +
-			" left outer join visit v on v.patient_id = pat.patient_id and v.date_stopped is null " +
+		 	"%s" +
 			" left outer join visit_attribute va on va.visit_id = v.visit_id " +
 			"   and va.attribute_type_id = (select visit_attribute_type_id from visit_attribute_type where name='Admission Status') " +
 			"   and va.voided = 0";
@@ -127,7 +129,8 @@ public class PatientSearchBuilder {
 	}
 
 	public SQLQuery buildSqlQuery(Integer limit, Integer offset){
-		String query = select + from + join + where + GROUP_BY_KEYWORD + groupBy  + orderBy;
+		String joinWithVisit = String.format(this.join, visitJoin);
+		String query = select + from + joinWithVisit + where + GROUP_BY_KEYWORD + groupBy  + orderBy;
 
 		SQLQuery sqlQuery = sessionFactory.getCurrentSession()
 				.createSQLQuery(query)
@@ -157,4 +160,12 @@ public class PatientSearchBuilder {
 		return sqlQuery;
 	}
 
+	public PatientSearchBuilder withLocation(String loginLocationUuid, Boolean filterPatientsByLocation) {
+		PatientVisitLocationQueryHelper patientVisitLocationQueryHelper = new PatientVisitLocationQueryHelper(loginLocationUuid);
+		visitJoin = patientVisitLocationQueryHelper.appendVisitJoinClause(visitJoin);
+		if (filterPatientsByLocation) {
+			where = patientVisitLocationQueryHelper.appendWhereClause(where);
+		}
+		return this;
+	}
 }

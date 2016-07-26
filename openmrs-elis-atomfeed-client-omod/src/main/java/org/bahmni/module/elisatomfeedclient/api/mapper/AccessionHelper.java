@@ -27,6 +27,8 @@ import org.openmrs.api.UserService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,8 +79,10 @@ public class AccessionHelper {
         Provider labSystemProvider = getLabSystemProvider();
         EncounterType encounterType = encounterService.getEncounterType(DEFAULT_INVESTIGATION_ENCOUNTER_TYPE);
 
+        BahmniVisitLocationService bahmniVisitLocationService = new BahmniVisitLocationServiceImpl();
         Date accessionDate = openElisAccession.fetchDate();
-        Visit visit = new VisitIdentificationHelper(visitService).getVisitFor(patient, visitType, accessionDate);
+
+        Visit visit = new VisitIdentificationHelper(visitService, bahmniVisitLocationService).getVisitFor(patient, visitType, accessionDate, null, null, openElisAccession.getLabLocationUuid());
 
         Encounter encounter = newEncounterInstance(visit, patient, labSystemProvider, encounterType, accessionDate);
         encounter.setUuid(openElisAccession.getAccessionUuid());
