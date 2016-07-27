@@ -75,6 +75,18 @@ public class BahmniHibernateProgramWorkflowDAOImpl extends HibernateProgramWorkf
         return super.savePatientProgram(patientProgram);
     }
 
+    @Override
+    public List<BahmniPatientProgram> getPatientProgramByAttributeNameAndValue(String attributeName, String attributeValue) {
+        return sessionFactory.getCurrentSession().createQuery(
+                "SELECT bpp FROM BahmniPatientProgram bpp " +
+                        "INNER JOIN bpp.attributes attr " +
+                        "INNER JOIN attr.attributeType attr_type " +
+                        "WHERE attr.valueReference = :attributeValue " +
+                        "AND attr_type.name = :attributeName")
+                .setParameter("attributeName", attributeName)
+                .setParameter("attributeValue", attributeValue).list();
+    }
+
     public List<PatientProgram> getPatientPrograms(Patient patient, Program program, Date minEnrollmentDate,
                                                    Date maxEnrollmentDate, Date minCompletionDate, Date maxCompletionDate, boolean includeVoided)
             throws DAOException {

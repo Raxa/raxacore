@@ -81,6 +81,11 @@ public class BahmniProgramWorkflowServiceImpl extends ProgramWorkflowServiceImpl
         return bahmniPatientProgram;
     }
 
+    @Override
+    public List<BahmniPatientProgram> getPatientProgramByAttributeNameAndValue(String attributeName, String attributeValue) {
+        return ((BahmniProgramWorkflowDAO)dao).getPatientProgramByAttributeNameAndValue(attributeName, attributeValue);
+    }
+
     private void createEpisodeIfRequired(BahmniPatientProgram bahmniPatientProgram) {
         if (episodeService.getEpisodeForPatientProgram(bahmniPatientProgram) != null) return;
         Episode episode = new Episode();

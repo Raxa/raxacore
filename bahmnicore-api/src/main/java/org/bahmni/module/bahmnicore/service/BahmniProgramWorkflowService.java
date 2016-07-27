@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.service;
 
+import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.PatientProgramAttribute;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
 import org.openmrs.Encounter;
@@ -37,4 +38,8 @@ public interface BahmniProgramWorkflowService extends ProgramWorkflowService {
     @Transactional(readOnly = true)
     @Authorized({"View Patient Programs"})
     Collection<Encounter> getEncountersByPatientProgramUuid(String patientProgramUuid);
+
+    @Transactional(readOnly = true)
+    @Authorized({"View Patient Programs"})
+    List<BahmniPatientProgram> getPatientProgramByAttributeNameAndValue(String attributeName, String attributeValue);
 }
