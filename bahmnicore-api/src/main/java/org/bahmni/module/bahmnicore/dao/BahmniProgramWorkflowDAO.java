@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.dao;
 
+import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.PatientProgramAttribute;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
 import org.openmrs.api.db.ProgramWorkflowDAO;
@@ -19,4 +20,6 @@ public interface BahmniProgramWorkflowDAO extends ProgramWorkflowDAO {
     PatientProgramAttribute getPatientProgramAttributeByUuid(String var1);
 
     void purgeProgramAttributeType(ProgramAttributeType var1);
+
+    List<BahmniPatientProgram> getPatientProgramByAttributeNameAndValue(String attributeName, String attributeValue);
 }
