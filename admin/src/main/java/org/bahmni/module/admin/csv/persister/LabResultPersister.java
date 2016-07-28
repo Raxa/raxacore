@@ -56,18 +56,20 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
     @Autowired
     private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
     private UserContext userContext;
+    private String loginLocationUuid;
 
-    public void init(UserContext userContext, String patientMatchingAlgorithmClassName, boolean shouldMatchExactPatientId) {
+    public void init(UserContext userContext, String patientMatchingAlgorithmClassName, boolean shouldMatchExactPatientId, String loginLocationUuid) {
         this.userContext = userContext;
         this.patientMatchingAlgorithmClassName = patientMatchingAlgorithmClassName;
         this.shouldMatchExactPatientId = shouldMatchExactPatientId;
+        this.loginLocationUuid = loginLocationUuid;
     }
 
     @Override
     public Messages persist(LabResultsRow labResultsRow) {
         try {
             Patient patient = patientMatchService.getPatient(patientMatchingAlgorithmClassName, labResultsRow.getPatientAttributes(), labResultsRow.getPatientIdentifier(), shouldMatchExactPatientId);
-            Visit visit = visitIdentificationHelper.getVisitFor(patient, labResultsRow.getVisitType(), labResultsRow.getTestDate(), labResultsRow.getTestDate(), labResultsRow.getTestDate(), null);
+            Visit visit = visitIdentificationHelper.getVisitFor(patient, labResultsRow.getVisitType(), labResultsRow.getTestDate(), labResultsRow.getTestDate(), labResultsRow.getTestDate(), loginLocationUuid);
             Encounter encounter = new Encounter();
             visit.addEncounter(encounter);
             encounter.setPatient(patient);

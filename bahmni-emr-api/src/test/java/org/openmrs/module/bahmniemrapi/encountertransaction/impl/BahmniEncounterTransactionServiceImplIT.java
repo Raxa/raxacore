@@ -137,6 +137,8 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
         bahmniEncounterTransaction.setEncounterTypeUuid("07000be2-26b6-4cce-8b40-866d8435b613");
         bahmniEncounterTransaction.setPatientUuid(patientUuid);
         bahmniEncounterTransaction.setVisitUuid(visitUuid);
+        bahmniEncounterTransaction.setLocationUuid("l3602jn5-9fhb-4f20-866b-0ece24561525");
+
 
         Date pastScheduledDateForDrugOrder = new DateTime().minusDays(2).toDate();
 
@@ -188,6 +190,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
         bahmniEncounterTransaction.setEncounterTypeUuid("07000be2-26b6-4cce-8b40-866d8435b613");
         bahmniEncounterTransaction.setPatientUuid(patientUuid);
         bahmniEncounterTransaction.setVisitUuid(visitUuid);
+        bahmniEncounterTransaction.setLocationUuid("l3602jn5-9fhb-4f20-866b-0ece24561525");
 
         Date pastScheduledDateForDrugOrder = new DateTime().minusYears(12).toDate();
 
@@ -538,6 +541,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
         bahmniEncounterTransaction.setEncounterTypeUuid("07000be2-26b6-4cce-8b40-866d8435b613");
         bahmniEncounterTransaction.setPatientUuid(patientUuid);
         bahmniEncounterTransaction.setVisitUuid(visitUuid);
+        bahmniEncounterTransaction.setLocationUuid("l3602jn5-9fhb-4f20-866b-0ece24561525");
 
         Date pastScheduledDateForDrugOrder = new DateTime().minusYears(12).toDate();
 

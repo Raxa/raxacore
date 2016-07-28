@@ -52,13 +52,19 @@ public class AccessionHelper {
     protected ElisAtomFeedProperties properties;
     private final UserService userService;
     private final ProviderService providerService;
+    private BahmniVisitLocationService bahmniVisitLocationService;
     private OrderType labOrderType;
 
     public AccessionHelper(ElisAtomFeedProperties properties) {
-        this(Context.getService(EncounterService.class), Context.getService(PatientService.class), Context.getService(VisitService.class), Context.getService(ConceptService.class), Context.getService(UserService.class), Context.getService(ProviderService.class), Context.getService(OrderService.class), properties);
+        this(Context.getService(EncounterService.class), Context.getService(PatientService.class),
+                Context.getService(VisitService.class), Context.getService(ConceptService.class),
+                Context.getService(UserService.class), Context.getService(ProviderService.class),
+                Context.getService(OrderService.class), properties, Context.getService(BahmniVisitLocationService.class));
     }
 
-    AccessionHelper(EncounterService encounterService, PatientService patientService, VisitService visitService, ConceptService conceptService, UserService userService, ProviderService providerService, OrderService orderService, ElisAtomFeedProperties properties) {
+    AccessionHelper(EncounterService encounterService, PatientService patientService, VisitService visitService, ConceptService conceptService,
+                    UserService userService, ProviderService providerService, OrderService orderService,
+                    ElisAtomFeedProperties properties, BahmniVisitLocationService bahmniVisitLocationService) {
         this.encounterService = encounterService;
         this.patientService = patientService;
         this.visitService = visitService;
@@ -67,7 +73,7 @@ public class AccessionHelper {
         this.properties = properties;
         this.userService = userService;
         this.providerService = providerService;
-
+        this.bahmniVisitLocationService = bahmniVisitLocationService;
     }
 
     public Encounter mapToNewEncounter(OpenElisAccession openElisAccession, String visitType) {
@@ -79,9 +85,7 @@ public class AccessionHelper {
         Provider labSystemProvider = getLabSystemProvider();
         EncounterType encounterType = encounterService.getEncounterType(DEFAULT_INVESTIGATION_ENCOUNTER_TYPE);
 
-        BahmniVisitLocationService bahmniVisitLocationService = new BahmniVisitLocationServiceImpl();
         Date accessionDate = openElisAccession.fetchDate();
-
         Visit visit = new VisitIdentificationHelper(visitService, bahmniVisitLocationService).getVisitFor(patient, visitType, accessionDate, null, null, openElisAccession.getLabLocationUuid());
 
         Encounter encounter = newEncounterInstance(visit, patient, labSystemProvider, encounterType, accessionDate);

@@ -43,7 +43,6 @@ import org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosi
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
-import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
@@ -62,20 +61,17 @@ import java.util.Set;
 
 @Service
 public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
-    private VisitService visitService;
     private ConceptService conceptService;
     private OrderService orderService;
     private EncounterService encounterService;
     private ProviderService providerService;
     private UserService userService;
-    private PatientDao patientDao;
     private PatientService openmrsPatientService;
     private OrderDao orderDao;
     private OrderType drugOrderType;
     private Provider systemProvider;
     private EncounterRole unknownEncounterRole;
     private EncounterType consultationEncounterType;
-    private String systemUserName;
     private ConceptMapper conceptMapper = new ConceptMapper();
     private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
     private BahmniProgramWorkflowService bahmniProgramWorkflowService;
@@ -87,17 +83,15 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
 
     @Autowired
-    public BahmniDrugOrderServiceImpl(VisitService visitService, ConceptService conceptService, OrderService orderService,
+    public BahmniDrugOrderServiceImpl(ConceptService conceptService, OrderService orderService,
                                       ProviderService providerService, EncounterService encounterService,
-                                      UserService userService, PatientDao patientDao,
+                                      UserService userService,
                                       PatientService patientService, OrderDao orderDao, BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand, BahmniProgramWorkflowService bahmniProgramWorkflowService) {
-        this.visitService = visitService;
         this.conceptService = conceptService;
         this.orderService = orderService;
         this.providerService = providerService;
         this.encounterService = encounterService;
         this.userService = userService;
-        this.patientDao = patientDao;
         this.openmrsPatientService = patientService;
         this.orderDao = orderDao;
         this.bahmniVisitAttributeSaveCommand = bahmniVisitAttributeSaveCommand;
@@ -105,19 +99,6 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         this.bahmniDrugOrderMapper = new BahmniDrugOrderMapper();
     }
 
-    @Override
-    public void add(String patientId, Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders, String systemUserName, String visitTypeName, String locationUuid) {
-        if (StringUtils.isEmpty(patientId))
-            throwPatientNotFoundException(patientId);
-
-        Patient patient = patientDao.getPatient(patientId);
-        if (patient == null)
-            throwPatientNotFoundException(patientId);
-
-        this.systemUserName = systemUserName;
-        Visit visitForDrugOrders = new VisitIdentificationHelper(visitService, new BahmniVisitLocationServiceImpl()).getVisitFor(patient, visitTypeName, orderDate, locationUuid);
-        addDrugOrdersToVisit(orderDate, bahmniDrugOrders, patient, visitForDrugOrders);
-    }
 
     @Override
     public List<DrugOrder> getActiveDrugOrders(String patientUuid) {
@@ -331,7 +312,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
     private Provider getSystemProvider() {
         if (systemProvider == null) {
-            User systemUser = userService.getUserByUsername(systemUserName);
+            User systemUser = userService.getUserByUsername(null);
             Collection<Provider> providers = providerService.getProvidersByPerson(systemUser.getPerson());
             systemProvider = providers == null ? null : providers.iterator().next();
         }

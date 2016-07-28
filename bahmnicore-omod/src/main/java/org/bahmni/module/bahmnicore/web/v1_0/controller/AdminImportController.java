@@ -198,9 +198,12 @@ public class AdminImportController extends BaseRestController {
 
     @RequestMapping(value = baseUrl + "/labResults", method = RequestMethod.POST)
     @ResponseBody
-    public boolean uploadLabResults(@RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) throws IOException {
+    public boolean uploadLabResults(@CookieValue(value="bahmni.user.location", required=true) String loginCookie, @RequestParam(value = "file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) throws IOException {
         try {
-            labResultPersister.init(Context.getUserContext(), patientMatchingAlgorithm, true);
+            JsonParser jsonParser = new JsonParser();
+            JsonObject jsonObject = (JsonObject) jsonParser.parse(loginCookie);
+            String loginUuid =  jsonObject.get("uuid").getAsString();
+            labResultPersister.init(Context.getUserContext(), patientMatchingAlgorithm, true,loginUuid);
             return importCsv(LAB_RESULTS_DIRECTORY, file, new DatabasePersister<>(labResultPersister), 1, false, LabResultsRow.class);
         } catch (Throwable e) {
             logger.error("Could not upload file", e);

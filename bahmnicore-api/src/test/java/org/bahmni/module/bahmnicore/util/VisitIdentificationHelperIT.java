@@ -2,10 +2,12 @@ package org.bahmni.module.bahmnicore.util;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.LocationTag;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -55,7 +57,7 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
         Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-18 03:00:00");
         Date stopTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-18 23:59:59");
 
-        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate, null);
+        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate, null, null,"l3602jn5-9fhb-4f20-866b-0ece24561525");
 
         assertTrue("Setup (visitIdentificationHelper.xml) creates visit ids 1-5. New visit id should be greater than 5", visit.getId() > 5);
         assertEquals(accessionDate, visit.getStartDatetime());
@@ -68,7 +70,7 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
         Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-21 03:00:00");
         Date stopTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-21 23:59:59");
 
-        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate, null);
+        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate, null,null,"l3602jn5-9fhb-4f20-866b-0ece24561525");
 
         assertTrue("Setup (visitIdentificationHelper.xml) creates visit ids 1-5. New visit id should be greater than 5", visit.getId() > 5);
         assertEquals(accessionDate, visit.getStartDatetime());
@@ -80,6 +82,7 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
         Patient patient = patientService.getPatient(1);
         Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-05-20 00:00:00");
 
+        Context.getLocationService().getLocationByUuid("9356400c-a5a2-4532-8f2b-2361b3446eb8").addTag(new LocationTag("Visit Location","Visit Location"));
         Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate,null,null, "9356400c-a5a2-4532-8f2b-2361b3446eb8");
 
         assertNotNull(visit);

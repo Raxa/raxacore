@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.openmrs.*;
 import org.openmrs.api.*;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -38,6 +39,10 @@ public class AccessionHelperTest {
     VisitService visitService;
     @Mock
     ConceptService conceptService;
+
+    @Mock
+    BahmniVisitLocationService bahmniVisitLocationService;
+
     @Mock
     private ElisAtomFeedProperties feedProperties;
     @Mock
@@ -59,7 +64,7 @@ public class AccessionHelperTest {
     @Before
     public void setUp() {
         initMocks(this);
-        accessionHelper = new AccessionHelper(encounterService, patientService, visitService, conceptService, userService, providerService, orderService, feedProperties);
+        accessionHelper = new AccessionHelper(encounterService, patientService, visitService, conceptService, userService, providerService, orderService, feedProperties,bahmniVisitLocationService);
         simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
     }
 

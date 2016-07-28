@@ -125,6 +125,7 @@
 
     <location_tag location_tag_id="1" name="Visit Location" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-876b-0ece245623a1"/>
     <location_tag_map location_id="6" location_tag_id="1" />
+    <location_tag_map location_id="2" location_tag_id="1" />
 
     <location_tag location_tag_id="2" name="Login Location" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-876b-0ece565623a1"/>
     <location_tag_map location_id="7" location_tag_id="2" />
@@ -240,6 +241,10 @@
     <!--<concept_name concept_id="1853" name="Facility1, City1, Country1" locale="en" creator="1" date_created="2015-01-01 00:00:00.0" concept_name_id="6" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb84093xyz" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>-->
 
     <location location_id="1" name="OPD Room 1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
+
+    <location_tag location_tag_id="1" name="Visit Location" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-876b-0ece245615a1"/>
+    <location_tag_map location_id="1" location_tag_id="1" />
+
     <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14" changed_by="1" date_changed="2012-10-23 18:04:14" retired="0" uuid="f01c54cb-2225-471a-9cd5-d348552c337c"/>
     <visit visit_id="901" date_started="2008-08-18 00:00:00" date_created="2008-08-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-08-20 04:08:16" location_id="2" creator="1" changed_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5b" voided="0"/>
 
