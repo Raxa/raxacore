@@ -88,6 +88,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
         executeDataSet("uploadDocuments.xml");
         Patient patient = Context.getPatientService().getPatientByUuid("75e04d42-3ca8-11e3-bf2b-0800271c1b75");
         Visit visit = createVisitForDate(patient, null, new Date(), true);
+        String locationUuid = "l3602jn5-9fhb-4f20-866b-0ece24561525";
 
         String json = "{" +
                     "\"patientUuid\":\"" + "75e04d42-3ca8-11e3-bf2b-0800271c1b75" + "\"," +
@@ -96,6 +97,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
                     "\"visitEndDate\":\"2019-12-31T18:30:00.000Z\"," +
                     "\"encounterTypeUuid\":\"" + "759799ab-c9a5-435e-b671-77773ada74e4" + "\"," +
                     "\"visitUuid\":\"" + visit.getUuid() + "\"," +
+                    "\"locationUuid\":\"" + locationUuid + "\"," +
                     "\"encounterDateTime\":\"2019-12-31T18:30:00.000Z\"," +
                     "\"providerUuid\":\"331c6bf8-7846-11e3-a96a-0800271c1b75\"," +
                     "\"documents\": [{\"testUuid\": \"" + "e340cf44-3d3d-11e3-bf2b-0800271c1b75" + "\", \"image\": \"" + image + "\", \"format\": \".jpeg\"}]" +
@@ -178,6 +180,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
         String encounterTypeUUID = "759799ab-c9a5-435e-b671-77773ada74e4";
         String visitTypeUUID = "b45ca846-c79a-11e2-b0c0-8e397087571c";
         String testUUID = "e340cf44-3d3d-11e3-bf2b-0800271c1b75";
+        String locationUuid = "l3602jn5-9fhb-4f20-866b-0ece24561525";
 
         Patient patient = Context.getPatientService().getPatientByUuid(patientUUID);
         Visit visit = createVisitForDate(patient, null, new Date(), true);
@@ -189,6 +192,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
                 "\"visitEndDate\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"encounterTypeUuid\":\"" + encounterTypeUUID + "\"," +
                 "\"visitUuid\":\"" + visit.getUuid() + "\"," +
+                "\"locationUuid\":\"" + locationUuid + "\"," +
                 "\"encounterDateTime\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"providerUuid\":\"331c6bf8-7846-11e3-a96a-0800271c1b75\"," +
                 "\"documents\": [{\"testUuid\": \"" + testUUID + "\", \"image\": \"" + image + "\", \"format\": \".jpeg\"}]" +
@@ -204,6 +208,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
                 "\"visitStartDate\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"visitEndDate\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"encounterTypeUuid\":\"" + encounterTypeUUID + "\"," +
+                "\"locationUuid\":\"" + locationUuid + "\"," +
                 "\"visitUuid\":\"" + visit.getUuid() + "\"," +
                 "\"encounterDateTime\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"providerUuid\":\"331c6bf8-7846-11e3-a96a-0800271c1b75\"," +
@@ -227,6 +232,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
         String visitTypeUUID = "b45ca846-c79a-11e2-b0c0-8e397087571c";
         String testUUID = "e340cf44-3d3d-11e3-bf2b-0800271c1b75";
         String otherTestUUID = "07a90a4b-0fca-42ff-8988-f5b519be06ab";
+        String locationUuid = "l3602jn5-9fhb-4f20-866b-0ece24561525";
 
         Patient patient = Context.getPatientService().getPatientByUuid(patientUUID);
         Visit visit = createVisitForDate(patient, null, new Date(), true);
@@ -237,6 +243,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
                 "\"visitStartDate\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"visitEndDate\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"encounterTypeUuid\":\"" + encounterTypeUUID + "\"," +
+                "\"locationUuid\":\"" + locationUuid + "\"," +
                 "\"visitUuid\":\"" + visit.getUuid() + "\"," +
                 "\"encounterDateTime\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"providerUuid\":\"331c6bf8-7846-11e3-a96a-0800271c1b75\"," +
@@ -253,6 +260,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
                 "\"visitStartDate\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"visitEndDate\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"encounterTypeUuid\":\"" + encounterTypeUUID + "\"," +
+                "\"locationUuid\":\"" + locationUuid + "\"," +
                 "\"visitUuid\":\"" + visit.getUuid() + "\"," +
                 "\"encounterDateTime\":\"2019-12-31T18:30:00.000Z\"," +
                 "\"providerUuid\":\"331c6bf8-7846-11e3-a96a-0800271c1b75\"," +

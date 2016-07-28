@@ -120,8 +120,6 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
         VisitMatcher visitMatcher = getVisitMatcher();
         if (BahmniEncounterTransaction.isRetrospectiveEntry(bahmniEncounterTransaction.getEncounterDateTime())) {
             bahmniEncounterTransaction = new RetrospectiveEncounterTransactionService(visitMatcher).updatePastEncounters(bahmniEncounterTransaction, patient, visitStartDate, visitEndDate);
-        } else {
-            visitMatcher.createOrStretchVisit(bahmniEncounterTransaction, patient, visitStartDate, visitEndDate);
         }
 
         if (!StringUtils.isBlank(bahmniEncounterTransaction.getVisitType())) {
@@ -206,17 +204,10 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
         if(!BahmniEncounterTransaction.isRetrospectiveEntry(searchParametersBuilder.getEndDate())){
             List<Visit> visits = this.visitService.getActiveVisitsByPatient(searchParametersBuilder.getPatient());
             visit = bahmniVisitLocationService.getMatchingVisitInLocation(visits, encounterSearchParameters.getLocationUuid());
+            if (visit == null) return null;
         }
         Encounter encounter = encounterSessionMatcher.findEncounter(visit, mapEncounterParameters(searchParametersBuilder, encounterSearchParameters));
-
-        if(encounter != null){
-            String visitLocationForLoginLocation = bahmniVisitLocationService.getVisitLocationUuid(encounterSearchParameters.getLocationUuid());
-            String visitLocationForEncounter = bahmniVisitLocationService.getVisitLocationUuid(encounter.getLocation().getUuid());
-            if (visitLocationForEncounter.equals(visitLocationForLoginLocation)) {
-                return encounterTransactionMapper.map(encounter, encounterSearchParameters.getIncludeAll());
-            }
-        }
-        return null;
+        return encounter != null ? encounterTransactionMapper.map(encounter, encounterSearchParameters.getIncludeAll()) : null;
     }
 
     private EncounterParameters mapEncounterParameters(EncounterSearchParametersBuilder encounterSearchParameters, BahmniEncounterSearchParameters searchParameters) {

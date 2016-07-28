@@ -9,6 +9,7 @@ import org.openmrs.LocationTag;
 import org.openmrs.Visit;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.builder.LocationBuilder;
 import org.openmrs.module.bahmniemrapi.builder.VisitBuilder;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -18,6 +19,8 @@ import org.openmrs.Location;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -35,62 +38,16 @@ public class BahmniVisitLocationServiceImplTest {
         PowerMockito.mockStatic(Context.class);
         when(Context.getLocationService()).thenReturn(locationService);
 
-        bahmniVisitLocationService = new BahmniVisitLocationServiceImpl();
+        bahmniVisitLocationService = new BahmniVisitLocationServiceImpl(locationService);
     }
 
-    @Test
-    public void shouldReturnNullWhenGetLocationByUuidReturnsNull() {
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionIfGetLocationByUuidReturnsNull() {
         when(locationService.getLocationByUuid("someLocationUuid")).thenReturn(null);
 
-        String locationUuid = bahmniVisitLocationService.getVisitLocationUuid("someLocationUuid");
-        Assert.assertEquals(null, locationUuid);
+        bahmniVisitLocationService.getVisitLocationUuid("someLocationUuid");
     }
 
-    @Test
-    public void shouldGetVisitLocationUuidIfTheLocationIsTaggedAsVisitLocation() {
-        LocationTag locationTag = new LocationTag("Visit Location", "some description");
-        Location location = new Location();
-        location.setUuid("loginLocation");
-        HashSet<LocationTag> tags = new HashSet<>();
-        tags.add(locationTag);
-        location.setTags(tags);
-
-        when(locationService.getLocationByUuid("loginLocation")).thenReturn(location);
-
-        String locationUuid = bahmniVisitLocationService.getVisitLocationUuid("loginLocation");
-        Assert.assertEquals("loginLocation", locationUuid);
-    }
-
-    @Test
-    public void shouldGetVisitLocationUuidIfTheLocationIsNotTaggedAsVisitLocationButHasNoParent() {
-        Location location = new Location();
-        location.setUuid("loginLocation");
-
-        when(locationService.getLocationByUuid("loginLocation")).thenReturn(location);
-
-        String locationUuid = bahmniVisitLocationService.getVisitLocationUuid("loginLocation");
-        Assert.assertEquals("loginLocation", locationUuid);
-    }
-
-    @Test
-    public void shouldGetParentLocationUuidIfParentIsTaggedAsVisitLocationButChildIsNot() {
-        Location parentLocation = new Location();
-        parentLocation.setUuid("parentLocationUuid");
-
-        HashSet<LocationTag> tags = new HashSet<>();
-        LocationTag locationTag = new LocationTag("Visit Location", "some description");
-        tags.add(locationTag);
-        parentLocation.setTags(tags);
-
-        Location childLocation = new Location();
-        childLocation.setParentLocation(parentLocation);
-        childLocation.setUuid("childLocationUuid");
-
-        when(locationService.getLocationByUuid("childLocationUuid")).thenReturn(childLocation);
-
-        String locationUuid = bahmniVisitLocationService.getVisitLocationUuid("childLocationUuid");
-        Assert.assertEquals("parentLocationUuid", locationUuid);
-    }
 
     @Test
     public void shouldGetMatchingVisitBasedOnLocation() {
@@ -109,16 +66,6 @@ public class BahmniVisitLocationServiceImplTest {
         Assert.assertEquals(visit1, matchingVisit);
     }
 
-    @Test
-    public void shouldGetNullIfVisitLocationIsNull() {
-        Location otherLocation = new Location();
-        otherLocation.setUuid("otherLocation");
-        Visit visit1 = new VisitBuilder().withUUID("visitUuid1").withLocation(otherLocation).build();
-        when(locationService.getLocationByUuid("locationUuid1")).thenReturn(null);
-
-        Visit matchingVisit = bahmniVisitLocationService.getMatchingVisitInLocation(Arrays.asList(visit1), "locationUuid1");
-        Assert.assertNull(matchingVisit);
-    }
 
     @Test
     public void shouldGetNullIfMatchingVisitNotFound() {
@@ -130,6 +77,7 @@ public class BahmniVisitLocationServiceImplTest {
 
         Location location3 = new Location();
         location3.setUuid("locationUuid3");
+        location3.addTag(new LocationTag("Visit Location", "Visit Location"));
 
         Visit visit1 = new VisitBuilder().withUUID("visitUuid1").withLocation(location1).build();
         Visit visit2 = new VisitBuilder().withUUID("visitUuid2").withLocation(location2).build();
@@ -138,5 +86,47 @@ public class BahmniVisitLocationServiceImplTest {
 
         Visit matchingVisit = bahmniVisitLocationService.getMatchingVisitInLocation(Arrays.asList(visit1, visit2), "locationUuid3");
         Assert.assertNull(matchingVisit);
+    }
+
+    @Test
+    public void shouldRetrievePassedInLocationIfItIsTaggedAsVisitLocation() {
+        Location location = visitLocation();
+
+        when(locationService.getLocationByUuid(location.getUuid())).thenReturn(location);
+
+        Location visitLocation = bahmniVisitLocationService.getVisitLocation(location.getUuid());
+
+        assertEquals(visitLocation, location);
+    }
+
+    @Test
+    public void shouldRetrieveParentTaggedWithVisitLocationIfPassedInLocationIsNotTagged() {
+        Location location = new LocationBuilder().withParent(visitLocation()).build();
+
+        when(locationService.getLocationByUuid(location.getUuid())).thenReturn(location);
+
+        Location actualVisitLocation = bahmniVisitLocationService.getVisitLocation(location.getUuid());
+
+        assertEquals(location.getParentLocation(), actualVisitLocation);
+    }
+
+    private Location visitLocation() {
+        return new LocationBuilder().withVisitLocationTag().build();
+    }
+
+    @Test(expected = VisitLocationNotFoundException.class)
+    public void shouldThrowErrorIfNoVisitLocationAvailableInHierarchy() {
+        Location location = new Location();
+
+        when(locationService.getLocationByUuid(location.getUuid())).thenReturn(location);
+
+        bahmniVisitLocationService.getVisitLocation(location.getUuid());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldThrowExceptionIfLocationNotFound() {
+        when(locationService.getLocationByUuid(any(String.class))).thenReturn(null);
+
+        bahmniVisitLocationService.getVisitLocation("non-existent location uuid");
     }
 }

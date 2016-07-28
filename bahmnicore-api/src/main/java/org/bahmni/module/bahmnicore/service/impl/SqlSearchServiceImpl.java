@@ -4,6 +4,7 @@ import org.bahmni.module.bahmnicore.service.RowMapper;
 import org.bahmni.module.bahmnicore.service.SqlSearchService;
 import org.bahmni.module.bahmnicore.util.SqlQueryHelper;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 import org.openmrs.module.webservices.rest.SimpleObject;
 import org.openmrs.util.DatabaseUpdater;
@@ -50,7 +51,7 @@ public class SqlSearchServiceImpl implements SqlSearchService {
         Map<String, String[]> updatedParams = new HashMap<>(params);
         if (params.containsKey("location_uuid")) {
             String locationUuid = params.get("location_uuid")[0];
-            String visitLocation = new BahmniVisitLocationServiceImpl().getVisitLocationUuid(locationUuid);
+            String visitLocation = new BahmniVisitLocationServiceImpl(Context.getLocationService()).getVisitLocationUuid(locationUuid);
             String[] visitLcoationValue = {visitLocation};
             updatedParams.put("visit_location_uuid", visitLcoationValue);
         }

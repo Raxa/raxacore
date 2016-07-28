@@ -50,7 +50,7 @@ public class VisitIdentificationHelper implements VisitMatcher {
         return CollectionUtils.isNotEmpty(visitService.getActiveVisitsByPatient(patient));
     }
 
-    protected List<Visit> getMatchingVisitsFromLocation(List<Visit> visits, String locationUuid) {
+    private List<Visit> getMatchingVisitsFromLocation(List<Visit> visits, String locationUuid) {
         List<Visit> matchingVisits = new ArrayList<>();
         for (Visit visit : visits) {
             Location location = visit.getLocation();
@@ -65,7 +65,7 @@ public class VisitIdentificationHelper implements VisitMatcher {
         return matchingVisits;
     }
 
-    protected Visit stretchVisits(Date orderDate, Visit matchingVisit) {
+    private Visit stretchVisits(Date orderDate, Visit matchingVisit) {
         if (matchingVisit.getStartDatetime().after(orderDate)) {
             matchingVisit.setStartDatetime(orderDate);
         }
@@ -75,7 +75,7 @@ public class VisitIdentificationHelper implements VisitMatcher {
         return matchingVisit;
     }
 
-    protected Visit getVisit(Date orderDate, List<Visit> visits) {
+    private Visit getVisit(Date orderDate, List<Visit> visits) {
         if (visits.size() > 1) {
             return getVisitMatchingOrderDate(orderDate, visits);
         } else {
@@ -128,12 +128,7 @@ public class VisitIdentificationHelper implements VisitMatcher {
         return visitTypes.isEmpty() ? null : visitTypes.get(0);
     }
 
-    @Override
-    public void createOrStretchVisit(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
-        //
-    }
-
-    protected static Date getEndOfTheDay(Date date) {
+    private static Date getEndOfTheDay(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.HOUR_OF_DAY, 23);
