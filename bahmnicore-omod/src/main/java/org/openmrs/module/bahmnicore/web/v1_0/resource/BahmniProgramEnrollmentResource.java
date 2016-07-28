@@ -107,6 +107,7 @@ public class BahmniProgramEnrollmentResource extends ProgramEnrollmentResource1_
     public DelegatingResourceDescription getUpdatableProperties() {
         DelegatingResourceDescription delegatingResourceDescription = super.getUpdatableProperties();
         delegatingResourceDescription.addProperty("attributes");
+        delegatingResourceDescription.addProperty("voidReason");
         return delegatingResourceDescription;
     }
 
