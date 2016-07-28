@@ -4,31 +4,17 @@ import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.test.builder.DiagnosisBuilder;
 import org.bahmni.test.builder.EncounterBuilder;
 import org.bahmni.test.builder.ObsBuilder;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.Obs;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.Visit;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.ObsService;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.VisitService;
+import org.mockito.*;
+import org.openmrs.*;
+import org.openmrs.api.*;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisMetadata;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
+import org.openmrs.module.emrapi.diagnosis.DiagnosisService;
 import org.openmrs.module.emrapi.encounter.DiagnosisMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.util.LocaleUtility;
@@ -36,45 +22,34 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyList;
-import static org.mockito.Mockito.anyListOf;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @PrepareForTest(LocaleUtility.class)
 @RunWith(PowerMockRunner.class)
-public class BahmniDiagnosisServiceTest {
+public class BahmniDiagnosisServiceImplTest {
     @Mock
     private EncounterService encounterService;
     @Mock
     private ObsService obsService;
-
     @Mock
     private PatientService patientService;
-
+    @Mock
+    private VisitService visitService;
     @Mock
     private BahmniDiagnosisMetadata bahmniDiagnosisMetadata;
-
     @Mock
-    ConceptService conceptService;
+    private ConceptService conceptService;
+    @Mock
+    private DiagnosisMapper diagnosisMapper;
+    @Mock
+    private DiagnosisService diagnosisService;
 
     @InjectMocks
-    @Spy
-    private BahmniDiagnosisServiceImpl bahmniDiagnosisService = new BahmniDiagnosisServiceImpl(encounterService, obsService);
+    private BahmniDiagnosisServiceImpl bahmniDiagnosisService = new BahmniDiagnosisServiceImpl(encounterService, obsService, visitService, patientService, diagnosisMapper, diagnosisService, bahmniDiagnosisMetadata, conceptService);
 
     private String initialDiagnosisObsUUID = "initialDiagnosisObsUUID";
     private String modifiedDiagnosisObsUUID = "modifiedDiagnosisObsUUID";
@@ -168,64 +143,75 @@ public class BahmniDiagnosisServiceTest {
     }
 
     @Test
-    public void shouldGetBahmniDiagnosisByPatientAndVisit(){
-
+    public void shouldGetBahmniDiagnosisByPatientAndVisit() {
         Patient patient = mock(Patient.class);
-        VisitService visitService = mock(VisitService.class);
-        Visit visit = mock(Visit.class);
+        Visit visit = new Visit();
+        visit.addEncounter(new Encounter());
         Concept diagnosisSetConcept = new ConceptBuilder().withUUID("uuid").build();
-        Diagnosis mockDiagnosis = mock(Diagnosis.class);
-        DiagnosisMapper diagnosisMapper = mock(DiagnosisMapper.class);
-
-        when(bahmniDiagnosisMetadata.getDiagnosisSetConcept()).thenReturn(diagnosisSetConcept);
-
-        when(visitService.getVisitByUuid("visitId")).thenReturn(visit);
-        when(visit.getEncounters()).thenReturn(new HashSet<Encounter>());
-        when(patientService.getPatientByUuid("patientId")).thenReturn(patient);
-
-        Obs diagnosisObs = new DiagnosisBuilder()
-                .withDefaults()
-                .withFirstObs("firstDiagnosisObsId")
-                .withUuid("firstDiagnosisObsId")
-                .build();
-
-
-        when(obsService.getObservations(eq(Arrays.asList((Person) patient)), anyList(), eq(Arrays.asList(diagnosisSetConcept)), anyListOf(Concept.class), anyList(), anyList(), anyList(),
-                anyInt(), anyInt(), Matchers.any(Date.class), Matchers.any(Date.class), eq(false)))
-                .thenReturn(Arrays.asList(diagnosisObs));
-        when(bahmniDiagnosisMetadata.buildDiagnosisFromObsGroup(diagnosisObs)).thenReturn(mockDiagnosis);
-        EncounterTransaction.Diagnosis etDiagnosis = mock(EncounterTransaction.Diagnosis.class);
-
-        Diagnosis latestDiagnosis = mock(Diagnosis.class);
-        EncounterTransaction.Diagnosis etLatestDiagnosis = mock(EncounterTransaction.Diagnosis.class);
-        when(diagnosisMapper.convert(mockDiagnosis)).thenReturn(etDiagnosis);
-
-        doReturn(diagnosisObs.getObsGroup()).when(bahmniDiagnosisService).getLatestObsGroupBasedOnAnyDiagnosis(mockDiagnosis);
-        when(bahmniDiagnosisMetadata.buildDiagnosisFromObsGroup(diagnosisObs.getObsGroup())).thenReturn(latestDiagnosis);
-        when(diagnosisMapper.convert(latestDiagnosis)).thenReturn(etLatestDiagnosis);
 
         BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
         BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
         bahmniDiagnosis.setExistingObs("existing");
         bahmniDiagnosisRequest.setFirstDiagnosis(bahmniDiagnosis);
-        when(bahmniDiagnosisMetadata.mapBahmniDiagnosis(etDiagnosis, etLatestDiagnosis, true, false)).thenReturn(bahmniDiagnosisRequest);
-        bahmniDiagnosisService.setPatientService(patientService);
-        bahmniDiagnosisService.setVisitService(visitService);
-        bahmniDiagnosisService.setBahmniDiagnosisMetadata(bahmniDiagnosisMetadata);
-        bahmniDiagnosisService.setDiagnosisMapper(diagnosisMapper);
+
+        Diagnosis diagnosis = getDiagnosis();
+        Diagnosis updatedDiagnosis = getUpdatedDiagnosis();
+
+        when(visitService.getVisitByUuid("visitId")).thenReturn(visit);
+        when(patientService.getPatientByUuid("patientId")).thenReturn(patient);
+        when(bahmniDiagnosisMetadata.getDiagnosisSetConcept()).thenReturn(diagnosisSetConcept);
+        when(obsService.getObservations(eq(Arrays.asList((Person) patient)), eq(new ArrayList<>(visit.getEncounters())), eq(Arrays.asList(diagnosisSetConcept)), anyListOf(Concept.class), anyList(), anyList(), anyList(),
+                anyInt(), anyInt(), Matchers.any(Date.class), Matchers.any(Date.class), eq(false)))
+                .thenReturn(Arrays.asList(diagnosis.getExistingObs()));
+        when(bahmniDiagnosisMetadata.buildDiagnosisFromObsGroup(diagnosis.getExistingObs())).thenReturn(diagnosis);
+        when(diagnosisMapper.convert(any(Diagnosis.class))).thenReturn(null);
+        when(bahmniDiagnosisMetadata.findInitialDiagnosisUuid(diagnosis.getExistingObs())).thenReturn("firstDiagnosisObsId");
+        when(bahmniDiagnosisMetadata.findInitialDiagnosis(updatedDiagnosis.getExistingObs())).thenReturn(diagnosis.getExistingObs());
+        when(bahmniDiagnosisMetadata.mapBahmniDiagnosis(any(EncounterTransaction.Diagnosis.class), any(EncounterTransaction.Diagnosis.class), eq(true), eq(false))).thenReturn(bahmniDiagnosisRequest);
 
         List<BahmniDiagnosisRequest> bahmniDiagnosisRequests = bahmniDiagnosisService.getBahmniDiagnosisByPatientAndVisit("patientId", "visitId");
-        assertEquals(1,bahmniDiagnosisRequests.size());
-        assertEquals(bahmniDiagnosisRequest,bahmniDiagnosisRequests.get(0));
+
+        assertEquals(1, bahmniDiagnosisRequests.size());
+        assertEquals(bahmniDiagnosisRequest, bahmniDiagnosisRequests.get(0));
+    }
+
+
+    @Test
+    public void ShouldNotReturnDiagnosisIfNoEncounterExists() throws Exception {
+
+        String visitId = "visitId";
+        Visit visit = new Visit();
+        when(visitService.getVisitByUuid(visitId)).thenReturn(visit);
+
+        List<BahmniDiagnosisRequest> bahmniDiagnosisRequests = bahmniDiagnosisService.getBahmniDiagnosisByPatientAndVisit("patientId", visitId);
+
+        assertEquals(0, bahmniDiagnosisRequests.size());
     }
 
     @Test
-    public void shouldGetLatestDiagnosisBasedOnCurrentDiagnosis(){
+    public void shouldReturnEmptyListIfNoVisitFound() throws Exception {
+        String visitId = "visitId";
+        when(visitService.getVisitByUuid(visitId)).thenReturn(null);
+
+        List<BahmniDiagnosisRequest> bahmniDiagnosisRequests = bahmniDiagnosisService.getBahmniDiagnosisByPatientAndVisit("patientId", visitId);
+
+        assertEquals(0, bahmniDiagnosisRequests.size());
+    }
+
+    private Diagnosis getDiagnosis() {
+        Diagnosis diagnosis = new Diagnosis();
         Obs diagnosisObs = new DiagnosisBuilder()
                 .withDefaults()
                 .withFirstObs("firstDiagnosisObsId")
                 .withUuid("firstDiagnosisObsId")
                 .build();
+        diagnosis.setExistingObs(diagnosisObs);
+
+        return diagnosis;
+    }
+
+    private Diagnosis getUpdatedDiagnosis() {
+        Diagnosis diagnosis = new Diagnosis();
 
         Obs updatedDiagnosisObs = new DiagnosisBuilder()
                 .withDefaults()
@@ -233,23 +219,8 @@ public class BahmniDiagnosisServiceTest {
                 .withUuid("finalDiagnosisUuid")
                 .build();
 
-        Obs bahmniDiagnosisRevised = new ObsBuilder().withConcept("Bahmni Diagnosis Revised",Locale.getDefault()).withValue("false").build();
-        bahmniDiagnosisRevised.setObsGroup(updatedDiagnosisObs);
-
-        when(obsService.getObservations(anyListOf(Person.class), anyList(),anyListOf(Concept.class),anyListOf(Concept.class), anyList(), anyList(), anyList(),
-                anyInt(), anyInt(),  Matchers.any(java.util.Date.class), Matchers.any(java.util.Date.class), eq(false)))
-                .thenReturn(Arrays.asList(bahmniDiagnosisRevised));
-
-        when(bahmniDiagnosisMetadata.findInitialDiagnosisUuid(diagnosisObs)).thenReturn("firstDiagnosisObsId");
-        diagnosisObs.setValueText("firstDiagnosisObsId");
-        when(bahmniDiagnosisMetadata.findInitialDiagnosis(updatedDiagnosisObs)).thenReturn(diagnosisObs);
-
-        Diagnosis diagnosis = new Diagnosis();
-        diagnosis.setExistingObs(diagnosisObs);
-
-        Obs actualDiagnosisObs = bahmniDiagnosisService.getLatestObsGroupBasedOnAnyDiagnosis(diagnosis);
-
-        assertEquals(updatedDiagnosisObs, actualDiagnosisObs);
+        diagnosis.setExistingObs(updatedDiagnosisObs);
+        return diagnosis;
     }
 
 
