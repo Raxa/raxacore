@@ -2,10 +2,12 @@ package org.bahmni.module.bahmnicore.util;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.LocationTag;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
@@ -14,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTest {
@@ -32,46 +32,32 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
     VisitIdentificationHelper visitIdentificationHelper;
 
     @Before
-    public void setUp() {
-        visitIdentificationHelper = new VisitIdentificationHelper(visitService);
-    }
-
-    @Test
-    public void shouldFetchTheExistingVisit() throws Exception {
+    public void setUp() throws Exception {
         executeDataSet("visitIdentificationHelper.xml");
-        Patient patient = patientService.getPatient(1);
-        Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-11 01:00:00");
 
-        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate);
-        assertEquals(1, visit.getId().intValue());
-
-        accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-13 01:00:00");
-        visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate);
-        assertEquals(2, visit.getId().intValue());
+        visitIdentificationHelper = new VisitIdentificationHelper(visitService, bahmniVisitLocationService);
     }
 
     @Test
     public void shouldInitializeNewVisitWhenNextVisitWithIn24Hours() throws Exception {
-        executeDataSet("visitIdentificationHelper.xml");
         Patient patient = patientService.getPatient(1);
         Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-13 03:00:00");
 
-        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate);
-        assertEquals(3, visit.getId().intValue());
+        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate, null, null,"l3602jn5-9fhb-4f20-866b-0ece24561525");
+        assertEquals(8, visit.getId().intValue());
 
-        Date stopTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-14 05:00:00");
+        Date stopTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-13 06:00:00");
         assertEquals(accessionDate, visit.getStartDatetime());
         assertEquals(stopTime, visit.getStopDatetime());
     }
 
     @Test
     public void shouldInitializeNewVisitWhenNextVisitNotWithIn24Hours() throws Exception {
-        executeDataSet("visitIdentificationHelper.xml");
         Patient patient = patientService.getPatient(1);
         Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-18 03:00:00");
         Date stopTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-18 23:59:59");
 
-        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate);
+        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate, null, null,"l3602jn5-9fhb-4f20-866b-0ece24561525");
 
         assertTrue("Setup (visitIdentificationHelper.xml) creates visit ids 1-5. New visit id should be greater than 5", visit.getId() > 5);
         assertEquals(accessionDate, visit.getStartDatetime());
@@ -80,12 +66,11 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
 
     @Test
     public void shouldInitializeNewVisitWhenNextVisitDoesNotExist() throws Exception {
-        executeDataSet("visitIdentificationHelper.xml");
         Patient patient = patientService.getPatient(1);
         Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-21 03:00:00");
         Date stopTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-21 23:59:59");
 
-        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate);
+        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate, null,null,"l3602jn5-9fhb-4f20-866b-0ece24561525");
 
         assertTrue("Setup (visitIdentificationHelper.xml) creates visit ids 1-5. New visit id should be greater than 5", visit.getId() > 5);
         assertEquals(accessionDate, visit.getStartDatetime());
@@ -93,12 +78,12 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
     }
 
     @Test
-    public void stretch_earlier_visit_when_multiple_visits_for_a_date() throws Exception {
-        executeDataSet("visitIdentificationHelper.xml");
+    public void stretchEarlierVisitWhenMultipleVisitsForADate() throws Exception {
         Patient patient = patientService.getPatient(1);
         Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-05-20 00:00:00");
 
-        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate);
+        Context.getLocationService().getLocationByUuid("9356400c-a5a2-4532-8f2b-2361b3446eb8").addTag(new LocationTag("Visit Location","Visit Location"));
+        Visit visit = visitIdentificationHelper.getVisitFor(patient, TEST_VISIT_TYPE, accessionDate,null,null, "9356400c-a5a2-4532-8f2b-2361b3446eb8");
 
         assertNotNull(visit);
         assertEquals(accessionDate, visit.getStartDatetime());
@@ -106,9 +91,9 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
         Date stopTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-05-20 04:00:00");
         assertEquals(stopTime, visit.getStopDatetime());
     }
+
     @Test
     public void shouldSetVisitLocationWhileCreatingNewVisit() throws Exception {
-        executeDataSet("visitIdentificationHelper.xml");
         Patient patient = patientService.getPatient(1);
         Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-21 03:00:00");
 
@@ -116,10 +101,39 @@ public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTe
 
         assertEquals(visit.getLocation().getUuid(),"l38923e5-9fhb-4f20-866b-0ece24561525");
     }
-//        V1	10-Feb	10:00		12-Feb	6:00
-//        V2	12-Feb	8:00		13-Feb	2:00
-//        V3	13-Feb	6:00		14-Feb	5:00
-//        v4  14th feb 6:00
-//        v6  20th May 3:00       20th May 4:00
-//        v7  20th May 6:00
+
+    @Test
+    public void shouldFetchTheExistingVisitForTheVisitLocation() throws Exception {
+
+        Patient patient = patientService.getPatient(1);
+
+        Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-13 01:00:00");
+        Visit visit = visitIdentificationHelper.getVisitFor(patient,TEST_VISIT_TYPE,accessionDate,null,null,"l3602jn5-9fhb-4f20-866b-0ece24561525");
+        assertNotEquals(2, visit.getId().intValue());
+        assertEquals(8, visit.getId().intValue());
+    }
+
+    @Test
+    public void shouldCreateNewVisitIfThereIsNoExistingVisitForThatVisitLocation() throws Exception {
+        Patient patient = patientService.getPatient(1);
+
+        Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2014-02-10 10:00:00");
+        Visit visit = visitIdentificationHelper.getVisitFor(patient,TEST_VISIT_TYPE,accessionDate,null,null,"l3602jn5-9fhb-4f20-866b-0ece24561525");
+        int existingActiveVisitIdInAnotherLocation = 1;
+        String locationUuidOfNewVisitCreated = "l38923e5-9fhb-4f20-866b-0ece24561525";
+        assertNotEquals(existingActiveVisitIdInAnotherLocation, visit.getId().intValue());
+        assertEquals(visit.getLocation().getUuid(), locationUuidOfNewVisitCreated);
+    }
+
+    @Test
+    public void shouldGetVisitAndUpdateLocationWhenThereIsActiveVisitWithoutLocationForPatient() throws Exception {
+        Patient patient = patientService.getPatient(1);
+
+        Date accessionDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2016-02-13 00:00:00");
+        Visit visit = visitIdentificationHelper.getVisitFor(patient,TEST_VISIT_TYPE,accessionDate,null,null,"l3602jn5-9fhb-4f20-866b-0ece24561525");
+        int existingActiveVisitIdWithLocationNull = 9;
+
+        assertEquals(existingActiveVisitIdWithLocationNull, visit.getId().intValue());
+        assertEquals(visit.getLocation().getUuid(), "l38923e5-9fhb-4f20-866b-0ece24561525");
+    }
 }

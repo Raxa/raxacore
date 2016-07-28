@@ -299,9 +299,8 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
         if (type != null ? !type.equals(that.type) : that.type != null) return false;
         if (visitStartDateTime != null ? !visitStartDateTime.equals(that.visitStartDateTime) : that.visitStartDateTime != null)
             return false;
-        if (isUnknown != null ? !isUnknown.equals(that.isUnknown) : that.isUnknown != null) return false;
+        return isUnknown != null && that.isUnknown != null && isUnknown.equals(that.isUnknown) ;
 
-        return true;
     }
 
     public String getParentConceptUuid() {

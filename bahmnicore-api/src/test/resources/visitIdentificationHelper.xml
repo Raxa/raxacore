@@ -44,5 +44,9 @@
     <visit visit_id="7" date_started="2014-05-20 06:00:00" date_stopped="2014-05-20 09:00:00" date_created="2014-05-20 06:00:00" patient_id="1"
            visit_type_id="1" location_id="2" creator="1" uuid="67433730-5d8a-4a3a-8e8d-1afcc33d5376" voided="0"/>
 
+    <visit visit_id="8" date_started="2014-02-13 10:00:00" date_stopped="2014-02-13 06:00:00" date_created="2014-02-10 10:00:00" patient_id="1"
+           visit_type_id="2" location_id="7" creator="1" uuid="v1efRs34-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
 
+    <visit visit_id="9" date_started="2016-02-13 00:00:00" date_stopped="2016-02-13 00:00:00" date_created="2016-02-13 00:00:00" patient_id="1"
+           visit_type_id="2"  creator="1" uuid="v1efRs34-a41a-4ad6-8995-2f59099acf5a" voided="0"/>
 </dataset>

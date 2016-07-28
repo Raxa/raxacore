@@ -8,6 +8,12 @@
     <person person_id="102" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-15 15:46:47.0" voided="false" uuid="df888447-6745-45be-b859-403241d991dd"/>
     <person person_id="103" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-15 15:46:47.0" voided="false" uuid="df888488-6745-45be-b859-403241d991ud"/>
     <person person_id="104" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-15 15:46:47.0" voided="false" uuid="df998488-6745-45be-b859-403241d991ud"/>
+    <person person_id="105" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-15 15:46:47.0" voided="false" uuid="df998488-6745-45be-b859-403241d99133"/>
+    <person person_id="106" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-16 15:46:47.0" voided="false" uuid="df998488-6745-45be-b859-403241d99144"/>
+    <person person_id="107" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-16 15:46:47.0" voided="false" uuid="df998488-6745-45be-b859-403241d99155"/>
+    <person person_id="108" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-16 15:46:47.0" voided="false" uuid="df998488-6745-45be-b859-403241d99165"/>
+    <person person_id="109" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-16 15:46:47.0" voided="false" uuid="df998488-6745-45be-b859-403241d99178"/>
+    <person person_id="110" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-16 15:46:47.0" voided="false" uuid="df998488-6745-45be-b859-403241d99179"/>
 
     <patient patient_id="1024" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
     <patient patient_id="1025" creator="1" date_created="2006-01-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:31.0" voided="false" void_reason=""/>
@@ -16,6 +22,12 @@
     <patient patient_id="102" creator="1" date_created="2006-01-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
     <patient patient_id="103" creator="1" date_created="2006-01-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
     <patient patient_id="104" creator="1" date_created="2006-01-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
+    <patient patient_id="105" creator="1" date_created="2006-01-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
+    <patient patient_id="106" creator="1" date_created="2006-01-19 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
+    <patient patient_id="107" creator="1" date_created="2006-01-19 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
+    <patient patient_id="108" creator="1" date_created="2006-01-19 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
+    <patient patient_id="109" creator="1" date_created="2006-01-19 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
+    <patient patient_id="110" creator="1" date_created="2006-01-19 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
 
     <person_name person_name_id="1024" preferred="true" person_id="1024" prefix="Mr." given_name="Horatio" middle_name="Test" family_name="Banka" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
     <person_name person_name_id="1025" preferred="true" person_id="1025" prefix="Mr." given_name="Horatio" middle_name="Peeter" family_name="Sinha" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3ccb"/>
@@ -51,6 +63,12 @@
     <person_name person_name_id="1053" preferred="false" person_id="102" prefix="Mr." given_name="Patient" middle_name="Number" family_name="2" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c072b3ca3c99"/>
     <person_name person_name_id="1054" preferred="true" person_id="103" prefix="Mr." given_name="special" middle_name="character" family_name="na'me" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="799e3a7b-6482-487d-94ce-c072b3ca3c99"/>
     <person_name person_name_id="1055" preferred="true" person_id="104" prefix="Mr." given_name="special" middle_name="character" family_name="id" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="799e3a7b-6002-487d-94ce-c072b3ca3c99"/>
+    <person_name person_name_id="1056" preferred="true" person_id="105" prefix="Ms." given_name="someUniqueName" middle_name="someUniqueMiddleName" family_name="someUniqueFamilyName" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="799e3a7b-6002-487d-94ce-asd2b3ca3c99"/>
+    <person_name person_name_id="1057" preferred="true" person_id="106" prefix="Ms." given_name="someUniqueOtherName" middle_name="someUniqueOtherMiddleName" family_name="someUniqueOtherFamilyName" family_name_suffix="Esq." creator="1" date_created="2005-09-23 00:00:00.0" voided="false" void_reason="" uuid="799e3a7b-6002-487d-94ce-asd2b3ca3c00"/>
+    <person_name person_name_id="1058" preferred="true" person_id="107" prefix="Ms." given_name="1058GivenName" middle_name="1058MiddleName" family_name="1058FamilyName" family_name_suffix="Esq." creator="1" date_created="2005-09-23 00:00:00.0" voided="false" void_reason="" uuid="799e3a7b-6002-487d-94ce-asd2b3ca3c23"/>
+    <person_name person_name_id="1059" preferred="true" person_id="108" prefix="Ms." given_name="1059NoVisit" middle_name="1059MN" family_name="1059FN" family_name_suffix="Esq." creator="1" date_created="2005-09-23 00:00:00.0" voided="false" void_reason="" uuid="799e3a7b-6002-487d-94ce-asd2b3ca4d23"/>
+    <person_name person_name_id="1060" preferred="true" person_id="109" prefix="Ms." given_name="1060NoVisitLocation" middle_name="1060MN" family_name="1060FN" family_name_suffix="Esq." creator="1" date_created="2005-09-23 00:00:00.0" voided="false" void_reason="" uuid="799e3a7b-6002-487d-94ce-asd2b3ca4d78"/>
+    <person_name person_name_id="1061" preferred="true" person_id="110" prefix="Ms." given_name="1061NoLocationHierarchy" middle_name="1061MN" family_name="1061FN" family_name_suffix="Esq." creator="1" date_created="2005-09-23 00:00:00.0" voided="false" void_reason="" uuid="799e3a7b-6002-487d-94ce-asd2b3ca4d79"/>
 
     <person_attribute_type person_attribute_type_id="1" name="caste" description="caste" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="b3b6d540-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
     <person_attribute_type person_attribute_type_id="201" name="givenNameLocal" description="caste" format="java.lang.String" searchable="true" creator="1" date_created="2007-05-04 09:59:23.0" retired="false" uuid="b3b6d900-a32e-44c7-91b3-292d976675ab" sort_weight="1"/>
@@ -95,6 +113,29 @@
     <location location_id="4" name="Shivtarai" description="Shivtarai subcentre" creator="1" retired="0" retired_by=" 0"  uuid="8d6c993e-c2cc-11de-8d13-0010cadffd0f" date_created="2005-09-22 00:00:00" />
     <location location_id="5" name="Bahmni" description="Bahmni subcentre" creator="1" retired="0" retired_by=" 0"  uuid="8d6c993e-c2cc-11de-8d13-0010c6affd0f" date_created="2005-09-22 00:00:00" />
 
+    <location location_id="6" name="Hospital1" description="Hospital 1" creator="1" retired="0" retired_by=" 0" uuid="8d6c993e-c2cc-11de-8d13-0010c6aff12f" date_created="2005-09-22 00:00:00" />
+    <location location_id="7" parent_location="6" name="Cardiology1" description="Cardiology Dept" creator="1" retired="0" retired_by=" 0" uuid="8d6c993e-c2cc-11de-8d13-0010c6addd0f" date_created="2005-09-22 00:00:00" />
+    <location location_id="8" parent_location="7" name="Ward1" description="Ward 1" creator="1" retired="0" retired_by=" 0" uuid="8d6c993e-c2cc-11de-8d34-0010c6affd0f" date_created="2005-09-22 00:00:00" />
+
+    <location location_id="9" name="Hospital2" description="Hospital 2" creator="1" retired="0" retired_by=" 0" uuid="8d6c993e-c2cc-11de-8d13-0010c6aff123" date_created="2005-09-22 00:00:00" />
+    <location location_id="10" parent_location="9" name="Cardiology 2" description="Cardiology Dept" creator="1" retired="0" retired_by=" 0" uuid="8d6c993e-c2cc-11de-8d13-0010c6addd12" date_created="2005-09-22 00:00:00" />
+    <location location_id="11" parent_location="10" name="Ward 2" description="Ward 2" creator="1" retired="0" retired_by=" 0" uuid="8d6c993e-c2cc-11de-8d34-0010c6affdwe" date_created="2005-09-22 00:00:00" />
+
+    <location location_id="12" name="Independent Location" description="Independent" creator="1" retired="0" retired_by=" 0" uuid="8d6c993e-c2cc-11de-8d34-0010c6affdrt" date_created="2005-09-22 00:00:00" />
+
+    <location_tag location_tag_id="1" name="Visit Location" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-876b-0ece245623a1"/>
+    <location_tag_map location_id="6" location_tag_id="1" />
+    <location_tag_map location_id="2" location_tag_id="1" />
+
+    <location_tag location_tag_id="2" name="Login Location" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-876b-0ece565623a1"/>
+    <location_tag_map location_id="7" location_tag_id="2" />
+    <location_tag_map location_id="8" location_tag_id="2" />
+    <location_tag_map location_id="9" location_tag_id="2" />
+    <location_tag_map location_id="10" location_tag_id="2" />
+    <location_tag_map location_id="11" location_tag_id="2" />
+
+    <location_tag_map location_id="12" location_tag_id="2" />
+
     <person_address person_address_id="1" person_id="1025" preferred="true" city_village="Ramgarh" state_province="Madhya Pradesh" creator="1" date_created="2006-11-24 10:50:16.0" voided="false" void_reason="" county_district="Dindori" address3="Dindori"/>
     <person_address person_address_id="2" person_id="1026" preferred="true" city_village="Bilaspur" state_province="Madhya Pradesh" creator="1" date_created="2006-11-24 10:50:16.0" voided="false" void_reason="" county_district="Dindori" address3="Dindori"/>
     <person_address person_address_id="3" person_id="103" preferred="true" city_village="Bilaspur" state_province="Madhya Pradesh" creator="1" date_created="2006-11-24 10:50:16.0" voided="false" void_reason="" county_district="Dindori" address3="Dindori"/>
@@ -114,6 +155,12 @@
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="13" patient_id ="102" identifier="SEV300001" identifier_type="1"  creator="1"  uuid="234b894d-6f47-41c7-8d65-2264026c00a6" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="14" patient_id ="103" identifier="SEV500003" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-2264026c00a6" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="15" patient_id ="104" identifier="SEV51'0003" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-0064026c00a6" preferred="1" voided="0" />
+    <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="16" patient_id ="105" identifier="HOS1223" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-0064026c00a7" preferred="1" voided="0" />
+    <patient_identifier date_created="2005-09-23 00:00:00" patient_identifier_id="17" patient_id ="106" identifier="HOS1224" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-0064026c00a8" preferred="1" voided="0" />
+    <patient_identifier date_created="2005-09-23 00:00:00" patient_identifier_id="18" patient_id ="107" identifier="HOS1225" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-0064026c00b8" preferred="1" voided="0" />
+    <patient_identifier date_created="2005-09-23 00:00:00" patient_identifier_id="19" patient_id ="108" identifier="HOS1227" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-0064026c11b8" preferred="1" voided="0" />
+    <patient_identifier date_created="2005-09-23 00:00:00" patient_identifier_id="20" patient_id ="109" identifier="HOS1228" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-0064026c22b8" preferred="1" voided="0" />
+    <patient_identifier date_created="2005-09-23 00:00:00" patient_identifier_id="21" patient_id ="110" identifier="HOS1229" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-0064026c22b9" preferred="1" voided="0" />
 
 
     <visit visit_id="1" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="2" visit_type_id="1" date_stopped="2013-05-08 04:08:16"  location_id="2" creator="1"  uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
@@ -129,6 +176,12 @@
     <visit visit_id="11" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="8" visit_type_id="1"  location_id="2" creator="1"  uuid="2eac608a-31bc-4c0e-b6b7-4ff9cd57646a" voided="0"/>
 
     <visit visit_id="12" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="1026" visit_type_id="1"  location_id="2" creator="1"  uuid="e2a7af0f-5ae4-40d5-9820-af907a459999" voided="0"/>
+    <visit visit_id="13" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="105" visit_type_id="1"  location_id="6" creator="1"  uuid="e2a7af0f-5ae4-40d5-9820-af907a451111" voided="0"/>
+    <visit visit_id="14" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="107" visit_type_id="1"  location_id="6" creator="1"  uuid="e2a7af0f-5ae4-40d5-9820-af907a452111" voided="0"/>
+    <visit visit_id="15" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="107" visit_type_id="1"  location_id="2" creator="1"  uuid="e2a7af0f-5ae4-40d5-9820-af907a453111" voided="0"/>
+    <visit visit_id="16" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="109" visit_type_id="1"  location_id="9" creator="1"  uuid="e2a7af0f-5ae4-40d5-9820-af907a453221" voided="0"/>
+    <visit visit_id="17" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="110" visit_type_id="1"  location_id="12" creator="1"  uuid="e2a7af0f-5ae4-40d5-9820-af907a455421" voided="0"/>
+
     <visit_attribute_type visit_attribute_type_id="1" name="Admission Status" datatype="org.openmrs.customdatatype.datatype.FreeTextDatatype" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="8770f6d6-7673-11e0-8f03-001e367eb6e7" />
     <visit_attribute visit_attribute_id="1" attribute_type_id="1" visit_id="12" value_reference="Admitted" uuid="8770f6d6-7673-11e0-8f03-001e367eb6iu" voided="0" creator="1" date_created="2005-09-22 00:00:00"/>
 
@@ -188,6 +241,10 @@
     <!--<concept_name concept_id="1853" name="Facility1, City1, Country1" locale="en" creator="1" date_created="2015-01-01 00:00:00.0" concept_name_id="6" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb84093xyz" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>-->
 
     <location location_id="1" name="OPD Room 1" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
+
+    <location_tag location_tag_id="1" name="Visit Location" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-876b-0ece245615a1"/>
+    <location_tag_map location_id="1" location_tag_id="1" />
+
     <visit_type visit_type_id="1" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14" changed_by="1" date_changed="2012-10-23 18:04:14" retired="0" uuid="f01c54cb-2225-471a-9cd5-d348552c337c"/>
     <visit visit_id="901" date_started="2008-08-18 00:00:00" date_created="2008-08-18 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2008-08-20 04:08:16" location_id="2" creator="1" changed_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5b" voided="0"/>
 

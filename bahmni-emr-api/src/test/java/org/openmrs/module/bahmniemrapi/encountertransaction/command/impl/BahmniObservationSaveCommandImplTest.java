@@ -33,7 +33,7 @@ public class BahmniObservationSaveCommandImplTest {
     @Mock
     private ObsRelationService obsRelationService;
 
-    BahmniObservationSaveCommandImpl bahmniObservationSaveCommand;
+    private BahmniObservationSaveCommandImpl bahmniObservationSaveCommand;
     @Before
     public void setUp() throws Exception {
         initMocks(this);

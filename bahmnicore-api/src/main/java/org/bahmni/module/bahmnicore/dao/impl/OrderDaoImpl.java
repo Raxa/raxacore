@@ -194,12 +194,12 @@ public class OrderDaoImpl implements OrderDao {
 
     public List<Visit> getVisitsWithActiveOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits) {
         Session currentSession = getCurrentSession();
-        String includevisit = includeActiveVisit == null || includeActiveVisit == false ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
+        String includevisit = includeActiveVisit == null || !includeActiveVisit ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
         Query queryVisitsWithDrugOrders = currentSession.createQuery("select v from " + orderType + " o, Encounter e, Visit v where o.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
                 "and o.voided = false and o.dateStopped = null and o.action != :discontinued " + includevisit + " group by v.visitId order by v.startDatetime desc");
         queryVisitsWithDrugOrders.setParameter("patientId", patient);
         queryVisitsWithDrugOrders.setParameter("discontinued", Order.Action.DISCONTINUE);
-        if (includeActiveVisit == null || includeActiveVisit == false) {
+        if (includeActiveVisit == null || !includeActiveVisit) {
             queryVisitsWithDrugOrders.setParameter("now", new Date());
         }
         if (numberOfVisits != null) {
@@ -210,11 +210,11 @@ public class OrderDaoImpl implements OrderDao {
 
     public List<Visit> getVisitsWithAllOrders(Patient patient, String orderType, Boolean includeActiveVisit, Integer numberOfVisits) {
         Session currentSession = getCurrentSession();
-        String includevisit = includeActiveVisit == null || includeActiveVisit == false ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
+        String includevisit = includeActiveVisit == null || !includeActiveVisit ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
         Query queryVisitsWithDrugOrders = currentSession.createQuery("select v from " + orderType + " o, Encounter e, Visit v where o.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
                 "and o.voided = false and o.dateStopped = null " + includevisit + " group by v.visitId order by v.startDatetime desc");
         queryVisitsWithDrugOrders.setParameter("patientId", patient);
-        if (includeActiveVisit == null || includeActiveVisit == false) {
+        if (includeActiveVisit == null || !includeActiveVisit) {
             queryVisitsWithDrugOrders.setParameter("now", new Date());
         }
         if (numberOfVisits != null) {

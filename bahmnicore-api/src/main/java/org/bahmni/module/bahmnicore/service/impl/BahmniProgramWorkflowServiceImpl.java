@@ -23,7 +23,7 @@ import java.util.List;
 public class BahmniProgramWorkflowServiceImpl extends ProgramWorkflowServiceImpl implements BahmniProgramWorkflowService {
 
     @Autowired
-    EpisodeService episodeService;
+    private EpisodeService episodeService;
 
     public BahmniProgramWorkflowServiceImpl(BahmniProgramWorkflowDAO programWorkflowDAO, EpisodeService episodeService) {
         this.episodeService = episodeService;

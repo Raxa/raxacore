@@ -81,7 +81,7 @@ public class BahmniDrugOrderServiceImplTest {
         when(orderDao.getActiveOrders(any(Patient.class), any(OrderType.class), any(CareSetting.class),
                 dateArgumentCaptor.capture(), anySet(), anySet(), any(Date.class), any(Date.class), anyCollection())).thenReturn(new ArrayList<Order>());
 
-        List<BahmniDrugOrder> drugOrderDetails = bahmniDrugOrderService.getDrugOrders(PATIENT_UUID, true, conceptsToFilter, null, PATIENT_PROGRAM_UUID);
+       bahmniDrugOrderService.getDrugOrders(PATIENT_UUID, true, conceptsToFilter, null, PATIENT_PROGRAM_UUID);
 
         final Date value = dateArgumentCaptor.getValue();
         verify(orderDao).getActiveOrders(mockPatient, mockOrderType, mockCareSetting, value, conceptsToFilter, null, null, null, encounters);
@@ -99,14 +99,14 @@ public class BahmniDrugOrderServiceImplTest {
 
     @Test
     public void shouldGetAllDrugOrdersOfAPatientProgram() throws ParseException {
-        List<BahmniDrugOrder> drugOrderDetails = bahmniDrugOrderService.getDrugOrders(PATIENT_UUID, null, conceptsToFilter, null, PATIENT_PROGRAM_UUID);
+        bahmniDrugOrderService.getDrugOrders(PATIENT_UUID, null, conceptsToFilter, null, PATIENT_PROGRAM_UUID);
 
         verify(orderDao).getAllOrders(mockPatient, mockOrderType, conceptsToFilter, null, encounters);
     }
 
     @Test
     public void shouldNotConsiderEncountersToFetchDrugOrdersIfPatientProgramUuidIsNull() throws Exception {
-        List<BahmniDrugOrder> drugOrderDetails = bahmniDrugOrderService.getDrugOrders(PATIENT_UUID, null, conceptsToFilter, null, null);
+        bahmniDrugOrderService.getDrugOrders(PATIENT_UUID, null, conceptsToFilter, null, null);
         List<Encounter> encounters = null ;
 
         verify(orderDao).getAllOrders(mockPatient, mockOrderType,conceptsToFilter, null, encounters);

@@ -20,9 +20,9 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class LabOrderResultMapperTest {
-    LabOrderResultMapper labOrderResultMapper;
+    private LabOrderResultMapper labOrderResultMapper;
     @Mock
-    ConceptService conceptService;
+    private ConceptService conceptService;
 
     @Before
     public void setUp() throws Exception {

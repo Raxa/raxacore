@@ -53,7 +53,7 @@ public class LabResultPersisterIT extends BaseIntegrationTest {
         executeDataSet("visitAttributeDataSet.xml");
         Context.authenticate("admin", "test");
         userContext = Context.getUserContext();
-        labResultPersister.init(userContext, null, true);
+        labResultPersister.init(userContext, null, true, "be69741b-29e9-49a1-adc9-2a726e6610e4");
     }
 
     @Rule

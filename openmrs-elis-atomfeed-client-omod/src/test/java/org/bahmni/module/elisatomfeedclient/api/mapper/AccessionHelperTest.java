@@ -11,51 +11,25 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.openmrs.Concept;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterRole;
-import org.openmrs.EncounterType;
-import org.openmrs.Order;
-import org.openmrs.OrderType;
-import org.openmrs.Patient;
-import org.openmrs.Person;
-import org.openmrs.Provider;
-import org.openmrs.User;
-import org.openmrs.Visit;
-import org.openmrs.api.ConceptService;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.OrderService;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.ProviderService;
-import org.openmrs.api.UserService;
-import org.openmrs.api.VisitService;
+import org.openmrs.*;
+import org.openmrs.api.*;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.anyBoolean;
-import static org.mockito.Mockito.anyCollection;
-import static org.mockito.Mockito.anyMap;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
+
 public class AccessionHelperTest {
     @Mock
     EncounterService encounterService;
@@ -65,6 +39,10 @@ public class AccessionHelperTest {
     VisitService visitService;
     @Mock
     ConceptService conceptService;
+
+    @Mock
+    BahmniVisitLocationService bahmniVisitLocationService;
+
     @Mock
     private ElisAtomFeedProperties feedProperties;
     @Mock
@@ -73,6 +51,8 @@ public class AccessionHelperTest {
     private ProviderService providerService;
     @Mock
     private OrderService orderService;
+    @Mock
+    private LocationService locationService;
 
     private AccessionHelper accessionHelper;
     private static final String VISIT_START_DATE = "2014-01-15 15:25:43+0530";
@@ -84,7 +64,7 @@ public class AccessionHelperTest {
     @Before
     public void setUp() {
         initMocks(this);
-        accessionHelper = new AccessionHelper(encounterService, patientService, visitService, conceptService, userService, providerService, orderService, feedProperties);
+        accessionHelper = new AccessionHelper(encounterService, patientService, visitService, conceptService, userService, providerService, orderService, feedProperties,bahmniVisitLocationService);
         simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
     }
 
@@ -98,12 +78,15 @@ public class AccessionHelperTest {
         testDetails.add(test2);
         Patient patient = new Patient();
         List<Visit> visits = createVisits(1);
+
         User provider = new User();
 
         when(patientService.getPatientByUuid(any(String.class))).thenReturn(patient);
         when(encounterService.getEncounterType("Consultation")).thenReturn(new EncounterType());
         when(conceptService.getConceptByUuid("panel1")).thenReturn(getConceptByUuid("panel1"));
         when(conceptService.getConceptByUuid("test2")).thenReturn(getConceptByUuid("test2"));
+        when(visitService.saveVisit(any(Visit.class))).thenReturn(visits.get(0));
+        when(visitService.getVisitTypes("LAB_RESULTS")).thenReturn(Arrays.asList(visits.get(0).getVisitType()));
         when(visitService.getVisits(anyCollection(), anyCollection(), anyCollection(), anyCollection(), any(Date.class), any(Date.class), any(Date.class), any(Date.class), anyMap(), anyBoolean(), anyBoolean())).thenReturn(visits);
         when(userService.getUserByUsername(anyString())).thenReturn(provider);
         when(providerService.getProvidersByPerson(any(Person.class))).thenReturn(Arrays.asList(new Provider()));
@@ -111,6 +94,8 @@ public class AccessionHelperTest {
         when(orderService.getOrderTypes(true)).thenReturn(Arrays.asList(getOrderType()));
         PowerMockito.mockStatic(Context.class);
         when(Context.getAuthenticatedUser()).thenReturn(provider);
+        when(Context.getLocationService()).thenReturn(locationService);
+        when(locationService.getLocationByUuid(anyString())).thenReturn(null);
 
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(testDetails).build();
         openElisAccession.setDateTime(ENCOUNTER_START_DATE);
@@ -140,13 +125,17 @@ public class AccessionHelperTest {
         when(encounterService.getEncounterType("Consultation")).thenReturn(new EncounterType());
         when(conceptService.getConceptByUuid("panel1")).thenReturn(getConceptByUuid("panel1"));
         when(conceptService.getConceptByUuid("test2")).thenReturn(getConceptByUuid("test2"));
+        when(visitService.getVisitTypes("LAB_RESULTS")).thenReturn(Arrays.asList(visits.get(0).getVisitType()));
         when(visitService.getVisits(anyCollection(), anyCollection(), anyCollection(), anyCollection(), any(Date.class), any(Date.class), any(Date.class), any(Date.class), anyMap(), anyBoolean(), anyBoolean())).thenReturn(visits);
         when(userService.getUserByUsername(anyString())).thenReturn(provider);
         when(providerService.getProvidersByPerson(any(Person.class))).thenReturn(Arrays.asList(new Provider()));
         when(encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID)).thenReturn(new EncounterRole());
         when(orderService.getOrderTypes(true)).thenReturn(Arrays.asList(getOrderType()));
+        when(visitService.saveVisit(any(Visit.class))).thenReturn(visits.get(0));
         PowerMockito.mockStatic(Context.class);
         when(Context.getAuthenticatedUser()).thenReturn(provider);
+        when(Context.getLocationService()).thenReturn(locationService);
+        when(locationService.getLocationByUuid(anyString())).thenReturn(null);
 
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(testDetails).build();
         openElisAccession.setDateTime(ENCOUNTER_START_DATE);
@@ -233,7 +222,11 @@ public class AccessionHelperTest {
             visit.setStartDatetime(datetime.getTime());
             datetime.add(Calendar.DAY_OF_MONTH, 1);
             visit.setStopDatetime(datetime.getTime());
+            VisitType visitType = new VisitType();
+            visitType.setName("LAB_RESULTS");
+            visit.setVisitType(visitType);
             visits.add(visit);
+
         }
         return visits;
     }

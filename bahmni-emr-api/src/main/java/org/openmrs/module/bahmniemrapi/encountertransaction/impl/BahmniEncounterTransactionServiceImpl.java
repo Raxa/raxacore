@@ -1,7 +1,6 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -35,11 +34,7 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Transactional
 public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService implements BahmniEncounterTransactionService {
@@ -125,8 +120,6 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
         VisitMatcher visitMatcher = getVisitMatcher();
         if (BahmniEncounterTransaction.isRetrospectiveEntry(bahmniEncounterTransaction.getEncounterDateTime())) {
             bahmniEncounterTransaction = new RetrospectiveEncounterTransactionService(visitMatcher).updatePastEncounters(bahmniEncounterTransaction, patient, visitStartDate, visitEndDate);
-        } else {
-            visitMatcher.createOrStretchVisit(bahmniEncounterTransaction, patient, visitStartDate, visitEndDate);
         }
 
         if (!StringUtils.isBlank(bahmniEncounterTransaction.getVisitType())) {
@@ -150,7 +143,7 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
 
     private EncounterTransaction setVisitLocationToEncounterTransaction(BahmniEncounterTransaction bahmniEncounterTransaction) {
         if(bahmniEncounterTransaction.toEncounterTransaction().getLocationUuid() != null) {
-            String visitLocationUuid = bahmniVisitLocationService.getVisitLocationForLoginLocation(bahmniEncounterTransaction.toEncounterTransaction().getLocationUuid());
+            String visitLocationUuid = bahmniVisitLocationService.getVisitLocationUuid(bahmniEncounterTransaction.toEncounterTransaction().getLocationUuid());
             bahmniEncounterTransaction.toEncounterTransaction().setVisitLocationUuid(visitLocationUuid);
         }
         return bahmniEncounterTransaction.toEncounterTransaction();
@@ -161,7 +154,7 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
         if(visitMatchersMap.get(globalProperty)!=null) {
             return visitMatchersMap.get(globalProperty);
         }
-        return new VisitIdentificationHelper(visitService);
+        return new VisitIdentificationHelper(visitService, bahmniVisitLocationService);
     }
 
     private void handleDrugOrders(BahmniEncounterTransaction bahmniEncounterTransaction,Patient patient) {
@@ -208,18 +201,13 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
                 this.patientService, this.encounterService, this.locationService, this.providerService, this.visitService);
 
         Visit visit = null;
-        if(! BahmniEncounterTransaction.isRetrospectiveEntry(searchParametersBuilder.getEndDate())){
+        if(!BahmniEncounterTransaction.isRetrospectiveEntry(searchParametersBuilder.getEndDate())){
             List<Visit> visits = this.visitService.getActiveVisitsByPatient(searchParametersBuilder.getPatient());
-            if(CollectionUtils.isNotEmpty(visits)){
-                visit = visits.get(0);
-            }
+            visit = bahmniVisitLocationService.getMatchingVisitInLocation(visits, encounterSearchParameters.getLocationUuid());
+            if (visit == null) return null;
         }
-
         Encounter encounter = encounterSessionMatcher.findEncounter(visit, mapEncounterParameters(searchParametersBuilder, encounterSearchParameters));
-        if(encounter != null){
-            return encounterTransactionMapper.map(encounter, encounterSearchParameters.getIncludeAll());
-        }
-        return null;
+        return encounter != null ? encounterTransactionMapper.map(encounter, encounterSearchParameters.getIncludeAll()) : null;
     }
 
     private EncounterParameters mapEncounterParameters(EncounterSearchParametersBuilder encounterSearchParameters, BahmniEncounterSearchParameters searchParameters) {

@@ -47,7 +47,7 @@ public class ObsRelationshipMapperTest {
     private ObsRelationshipMapper obsRelationshipMapper;
 
     @Mock
-    OMRSObsToBahmniObsMapper OMRSObsToBahmniObsMapper;
+    private OMRSObsToBahmniObsMapper OMRSObsToBahmniObsMapper;
 
     @Before
     public void setUp() throws Exception {

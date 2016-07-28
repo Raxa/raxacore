@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Set;
 
 public interface BahmniDrugOrderService {
-    void add(String patientId, Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders, String systemUserName, String visitTypeName);
     List<DrugOrder> getActiveDrugOrders(String patientUuid, Date startDate, Date endDate);
 
     List<DrugOrder> getActiveDrugOrders(String patientUuid);

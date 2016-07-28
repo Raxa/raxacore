@@ -39,7 +39,7 @@ public class DrugOrderSaveCommandImplTest {
     public static final String SNOMED_CT_DAYS_CODE = "258703001";
 
 
-    DrugOrderSaveCommandImpl drugOrderSaveCommand;
+    private DrugOrderSaveCommandImpl drugOrderSaveCommand;
 
     @Before
     public void setUp() throws Exception {

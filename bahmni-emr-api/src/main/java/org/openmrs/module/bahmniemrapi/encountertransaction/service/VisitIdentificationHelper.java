@@ -12,49 +12,60 @@ import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
-import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class VisitIdentificationHelper implements VisitMatcher {
     protected VisitService visitService;
 
-    @Autowired
-    public VisitIdentificationHelper(VisitService visitService)  {
-        this.visitService = visitService;
+    private BahmniVisitLocationService bahmniVisitLocationService;
 
+    @Autowired
+    public VisitIdentificationHelper(VisitService visitService, BahmniVisitLocationService bahmniVisitLocationService) {
+        this.visitService = visitService;
+        this.bahmniVisitLocationService = bahmniVisitLocationService;
     }
 
     public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate, Date visitStartDate, Date visitEndDate, String locationUuid) {
+        String visitLocationUuid = bahmniVisitLocationService.getVisitLocationUuid(locationUuid);
         Date nextDate = getEndOfTheDay(orderDate);
         List<Visit> visits = visitService.getVisits(null, Collections.singletonList(patient), null, null, null, nextDate, orderDate, null, null, true, false);
-        if (matchingVisitsFound(visits)) {
-            Visit matchingVisit = getVisit(orderDate, visits);
+        List<Visit> matchingVisits = getMatchingVisitsFromLocation(visits, visitLocationUuid);
+
+        if (!matchingVisits.isEmpty()) {
+            Visit matchingVisit = getVisitMatchingOrderDate(orderDate,matchingVisits);
             return stretchVisits(orderDate, matchingVisit);
         }
-        return createNewVisit(patient, orderDate, visitTypeForNewVisit, visitStartDate, visitEndDate, locationUuid);
+        return createNewVisit(patient, orderDate, visitTypeForNewVisit, visitStartDate, visitEndDate, visitLocationUuid);
     }
 
-    public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate) {
-        return getVisitFor(patient, visitTypeForNewVisit, orderDate, null, null, null);
+    public Visit getVisitFor(Patient patient, String visitTypeForNewVisit, Date orderDate, String locationUuid) {
+        return getVisitFor(patient, visitTypeForNewVisit, orderDate, null, null, locationUuid);
     }
 
     public boolean hasActiveVisit(Patient patient) {
         return CollectionUtils.isNotEmpty(visitService.getActiveVisitsByPatient(patient));
     }
 
-    protected boolean matchingVisitsFound(List<Visit> visits) {
-        return visits != null && !visits.isEmpty();
+    private List<Visit> getMatchingVisitsFromLocation(List<Visit> visits, String locationUuid) {
+        List<Visit> matchingVisits = new ArrayList<>();
+        for (Visit visit : visits) {
+            Location location = visit.getLocation();
+            if (location != null && locationUuid != null && location.getUuid().equals(locationUuid)) {
+                matchingVisits.add(visit);
+            }else if (location == null && locationUuid != null) {
+                Location visitLocation = Context.getLocationService().getLocationByUuid(locationUuid);
+                visit.setLocation(visitLocation);
+                matchingVisits.add(visit);
+            }
+        }
+        return matchingVisits;
     }
 
-    protected Visit stretchVisits(Date orderDate, Visit matchingVisit) {
+    private Visit stretchVisits(Date orderDate, Visit matchingVisit) {
         if (matchingVisit.getStartDatetime().after(orderDate)) {
             matchingVisit.setStartDatetime(orderDate);
         }
@@ -64,7 +75,7 @@ public class VisitIdentificationHelper implements VisitMatcher {
         return matchingVisit;
     }
 
-    protected Visit getVisit(Date orderDate, List<Visit> visits) {
+    private Visit getVisit(Date orderDate, List<Visit> visits) {
         if (visits.size() > 1) {
             return getVisitMatchingOrderDate(orderDate, visits);
         } else {
@@ -89,9 +100,8 @@ public class VisitIdentificationHelper implements VisitMatcher {
         return visits.get(visits.size() - 1);
     }
 
-    public Visit createNewVisit(Patient patient, Date date, String visitTypeForNewVisit, Date visitStartDate, Date visitEndDate, String locationUuid) {
-        BahmniVisitLocationService bahmniVisitLocationService = new BahmniVisitLocationServiceImpl();
-        String visitLocationUuid = bahmniVisitLocationService.getVisitLocationForLoginLocation(locationUuid);
+    public Visit createNewVisit(Patient patient, Date date, String visitTypeForNewVisit, Date visitStartDate, Date visitEndDate, String visitLocationUuid) {
+
         Location location = Context.getLocationService().getLocationByUuid(visitLocationUuid);
         VisitType visitTypeByName = getVisitTypeByName(visitTypeForNewVisit);
         if (visitTypeByName == null) {
@@ -118,12 +128,7 @@ public class VisitIdentificationHelper implements VisitMatcher {
         return visitTypes.isEmpty() ? null : visitTypes.get(0);
     }
 
-    @Override
-    public void createOrStretchVisit(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
-        //
-    }
-
-    protected static Date getEndOfTheDay(Date date) {
+    private static Date getEndOfTheDay(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.HOUR_OF_DAY, 23);

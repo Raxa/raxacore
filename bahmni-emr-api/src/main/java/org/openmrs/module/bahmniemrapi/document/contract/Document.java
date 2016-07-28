@@ -5,12 +5,12 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Date;
 
 public class Document {
-    String image;
-    String format;
-    String testUuid;
-    String obsUuid;
-    Date obsDateTime;
-    boolean voided;
+    private String image;
+    private String format;
+    private String testUuid;
+    private String obsUuid;
+    private Date obsDateTime;
+    private boolean voided;
 
     public Document() {
     }
