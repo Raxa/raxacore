@@ -221,6 +221,7 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
         context.put("patientProgramUuid", searchParameters.getPatientProgramUuid());
         encounterParameters.setContext(context);
         encounterParameters.setEncounterDateTime(encounterSearchParameters.getEndDate());
+        encounterParameters.setLocation(encounterSearchParameters.getLocation());
         return encounterParameters;
     }
 

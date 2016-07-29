@@ -7,11 +7,13 @@ import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
 import org.openmrs.Form;
+import org.openmrs.Location;
 import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTypeIdentifier;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 import org.openmrs.module.episodes.service.EpisodeService;
@@ -38,17 +40,19 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
     private EncounterService encounterService;
     private BahmniProgramWorkflowService bahmniProgramWorkflowService;
     private EpisodeService episodeService;
+    private BahmniVisitLocationService bahmniVisitLocationService;
 
     @Autowired
     public EncounterSessionMatcher(@Qualifier("adminService") AdministrationService administrationService,
                                    EncounterTypeIdentifier encounterTypeIdentifier,
                                    EncounterService encounterService,
-                                   BahmniProgramWorkflowService bahmniProgramWorkflowService, EpisodeService episodeService) {
+                                   BahmniProgramWorkflowService bahmniProgramWorkflowService, EpisodeService episodeService, BahmniVisitLocationService bahmniVisitLocationService) {
         this.adminService = administrationService;
         this.encounterTypeIdentifier = encounterTypeIdentifier;
         this.encounterService = encounterService;
         this.bahmniProgramWorkflowService = bahmniProgramWorkflowService;
         this.episodeService = episodeService;
+        this.bahmniVisitLocationService = bahmniVisitLocationService;
     }
 
     @Override
@@ -104,6 +108,8 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
             }
         }
 
+        matchingEncounters = encounterParameters.getLocation() != null ? checkEncounterIsInCurrentVisitLocation(matchingEncounters, encounterParameters.getLocation()) : new ArrayList<Encounter>();
+
         if (matchingEncounters.size() > 1) {
             throw new RuntimeException("More than one encounter matches the criteria");
         }
@@ -112,6 +118,21 @@ public class EncounterSessionMatcher implements BaseEncounterMatcher {
             return matchingEncounters.get(0);
         }
         return null;
+    }
+
+    private List<Encounter> checkEncounterIsInCurrentVisitLocation(List<Encounter> encounters, Location loginLocation) {
+        List<Encounter> matchingEncounters = new ArrayList<>();
+        Location encountersVisitLocation;
+        Location visitLocation = bahmniVisitLocationService.getVisitLocation(loginLocation.getUuid());
+        for (Encounter encounter : encounters) {
+            if (encounter.getLocation() != null) {
+                encountersVisitLocation = bahmniVisitLocationService.getVisitLocation(encounter.getLocation().getUuid());
+                if (visitLocation.equals(encountersVisitLocation)) {
+                    matchingEncounters.add(encounter);
+                }
+            }
+        }
+        return matchingEncounters;
     }
 
     private Collection<Encounter> filterByPatientProgram(Collection<Encounter> encounters, String patientProgramUuid) {
