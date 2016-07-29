@@ -9,6 +9,7 @@ import org.openmrs.Location;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
+import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterSearchParameters;
@@ -19,15 +20,11 @@ import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
@@ -42,6 +39,9 @@ public class BahmniEncounterTransactionServiceImplTest {
 
     @Mock
     private VisitService visitService;
+
+    @Mock
+    private LocationService locationService;
 
     @Mock
     private EncounterService encounterService;
@@ -62,7 +62,7 @@ public class BahmniEncounterTransactionServiceImplTest {
     public void setUp() throws Exception {
         initMocks(this);
         bahmniEncounterTransactionService = new BahmniEncounterTransactionServiceImpl(encounterService,null,encounterTransactionMapper,null,null,null,null,visitService,patientService
-                ,null,null,baseEncounterMatcher,bahmniVisitLocationService);
+                ,locationService,null,baseEncounterMatcher,bahmniVisitLocationService);
 
     }
 
@@ -70,6 +70,9 @@ public class BahmniEncounterTransactionServiceImplTest {
     public void shouldReturnTheEncounterFromTheVisitThatIsOpenedInThatVisitLocation() throws Exception {
         EncounterTransaction encounterTransaction = new EncounterTransaction();
         encounterTransaction.setEncounterUuid("encounter-uuid");
+
+        Location loginLocation = new Location();
+        loginLocation.setUuid("login-location-uuid");
 
         Location location = new Location();
         location.setUuid("visit-location-uuid");
@@ -85,11 +88,12 @@ public class BahmniEncounterTransactionServiceImplTest {
         visit.setEncounters(encounters);
 
         BahmniEncounterSearchParameters encounterSearchParameters = new BahmniEncounterSearchParameters();
-        encounterSearchParameters.setLocationUuid("login-location-uuid");
+        encounterSearchParameters.setLocationUuid(loginLocation.getUuid());
         encounterSearchParameters.setPatientUuid("patient-uuid");
         encounterSearchParameters.setEncounterTypeUuids(Arrays.asList("encounter-type-uuid"));
         when(baseEncounterMatcher.findEncounter(any(Visit.class), any(EncounterParameters.class))).thenReturn(encounter);
         List<Visit> visits = Arrays.asList(visit);
+        when(locationService.getLocationByUuid(loginLocation.getUuid())).thenReturn(loginLocation);
         when(visitService.getActiveVisitsByPatient(any(Patient.class))).thenReturn(visits);
         when(encounterService.getEncounterByUuid(anyString())).thenReturn(null);
         when(bahmniVisitLocationService.getVisitLocationUuid(anyString())).thenReturn("visit-location-uuid");
@@ -106,6 +110,9 @@ public class BahmniEncounterTransactionServiceImplTest {
     public void shouldReturnTheEncounterFromTheVisitThatIsOpenedInThatVisitLocationIfThereAreTwoVisitsInDiffLocations() throws Exception {
         EncounterTransaction encounterTransaction = new EncounterTransaction();
         encounterTransaction.setEncounterUuid("encounter-uuid");
+
+        Location loginLocation = new Location();
+        loginLocation.setUuid("login-location-uuid");
 
         Location location = new Location();
         location.setUuid("visit-location-uuid");
@@ -132,6 +139,7 @@ public class BahmniEncounterTransactionServiceImplTest {
         encounterSearchParameters.setLocationUuid("login-location-uuid");
         encounterSearchParameters.setPatientUuid("patient-uuid");
         encounterSearchParameters.setEncounterTypeUuids(Arrays.asList("encounter-type-uuid"));
+        when(locationService.getLocationByUuid(loginLocation.getUuid())).thenReturn(loginLocation);
         when(baseEncounterMatcher.findEncounter(any(Visit.class), any(EncounterParameters.class))).thenReturn(encounter);
         List<Visit> visits = Arrays.asList(visitOne, visitTwo);
         when(visitService.getActiveVisitsByPatient(any(Patient.class))).thenReturn(visits);

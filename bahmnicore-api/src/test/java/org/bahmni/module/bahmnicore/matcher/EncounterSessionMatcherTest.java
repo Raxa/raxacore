@@ -22,6 +22,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.api.impl.EncounterServiceImpl;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.EncounterTypeIdentifier;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.openmrs.module.episodes.Episode;
 import org.openmrs.module.episodes.service.EpisodeService;
@@ -85,12 +86,15 @@ public class EncounterSessionMatcherTest {
     private BahmniProgramWorkflowService bahmniProgramWorkflowService;
 
     @Mock
+    private BahmniVisitLocationService bahmniVisitLocationService;
+
+    @Mock
     private EpisodeService episodeService;
 
     @Before
     public void setUp(){
         initMocks(this);
-        encounterSessionMatcher = new EncounterSessionMatcher(administrationService, encounterTypeIdentifier, encounterService, bahmniProgramWorkflowService, episodeService);
+        encounterSessionMatcher = new EncounterSessionMatcher(administrationService, encounterTypeIdentifier, encounterService, bahmniProgramWorkflowService, episodeService, bahmniVisitLocationService);
         visit = new Visit();
         visit.setId(3);
 
@@ -107,15 +111,24 @@ public class EncounterSessionMatcherTest {
 
         encounterType = new EncounterType("Test", "Test");
 
+        location = new Location();
+        location.setUuid("location-uuid");
+
+        creator = new User(person);
+        creator.setId(1234);
+
         encounter = mock(Encounter.class);
+
+        Encounter encounterOne = new Encounter();
+        encounterOne.setLocation(location);
+        encounterOne.setCreator(creator);
+        encounterOne.setEncounterDatetime(new Date());
+
         person = new Person();
         person.setId(1234);
         provider.setPerson(person);
         location = new Location();
         location.setUuid("location");
-
-        creator = new User(person);
-        creator.setId(1234);
 
         patient = new Patient();
         patient.setId(1111);
@@ -133,7 +146,10 @@ public class EncounterSessionMatcherTest {
 
         when(userContext.getAuthenticatedUser()).thenReturn(creator);
 
-        when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false))).thenReturn(Arrays.asList(encounter));
+        when(encounterService.getEncounters(any(Patient.class), any(Location.class),
+                any(Date.class), any(Date.class), any(Collection.class),
+                any(Collection.class), any(Collection.class), any(Collection.class),
+                any(Collection.class), eq(false))).thenReturn(Arrays.asList(encounterOne));
         when(bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(null)).thenReturn(Collections.<Encounter>emptyList());
     }
 
@@ -148,8 +164,10 @@ public class EncounterSessionMatcherTest {
         when(encounter.getEncounterProviders()).thenReturn(encounterProviders);
         when(encounter.getCreator()).thenReturn(creator);
         when(encounterTypeIdentifier.getDefaultEncounterType()).thenReturn(defaultEncounterType);
+        when(bahmniVisitLocationService.getVisitLocation(any(String.class))).thenReturn(location);
 
-        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers, null, null));
+
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, getEncounterParameters(providers, location, null));
 
         assertNotNull(encounterReturned);
         assertTrue(encounter.getEncounterType().equals(defaultEncounterType));
@@ -160,7 +178,9 @@ public class EncounterSessionMatcherTest {
         EncounterParameters encounterParameters = getEncounterParameters(providers, location);
         Date encounterDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2015-05-21 13:05:00");
         encounterParameters.setEncounterDateTime(encounterDate);
+        encounterParameters.setLocation(new Location(1));
 
+        when(bahmniVisitLocationService.getVisitLocation(any(String.class))).thenReturn(location);
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
@@ -195,6 +215,7 @@ public class EncounterSessionMatcherTest {
         Date encounterDateTime = DateUtils.addMinutes(DateUtils.truncate(new Date(), Calendar.DATE), 15);
         encounterParameters.setEncounterDateTime(encounterDateTime);
 
+        when(bahmniVisitLocationService.getVisitLocation(any(String.class))).thenReturn(location);
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<Location> locationArgumentCaptor = ArgumentCaptor.forClass(Location.class);
@@ -212,6 +233,7 @@ public class EncounterSessionMatcherTest {
         EncounterParameters encounterParameters = getEncounterParameters(providers, location);
         encounterParameters.setEncounterDateTime(DateUtils.truncate(new Date(), Calendar.DATE));
 
+        when(bahmniVisitLocationService.getVisitLocation(any(String.class))).thenReturn(location);
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(visit, encounterParameters);
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
         ArgumentCaptor<Location> locationArgumentCaptor = ArgumentCaptor.forClass(Location.class);
@@ -233,13 +255,16 @@ public class EncounterSessionMatcherTest {
         Encounter e1 = new Encounter();
         User creator1 = new User(1);
         e1.setCreator(creator1);
+        e1.setLocation(location);
 
         Encounter e2 = new Encounter();
         User creator2 = new User(2);
         e2.setCreator(creator2);
+        e2.setLocation(location);
 
         when(userContext.getAuthenticatedUser()).thenReturn(creator1);
         when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false))).thenReturn(Arrays.asList(e1, e2));
+        when(bahmniVisitLocationService.getVisitLocation(any(String.class))).thenReturn(location);
 
         Encounter encounterReturned = encounterSessionMatcher.findEncounter(null, encounterParameters);
         assertNotNull(encounterReturned);
@@ -277,12 +302,15 @@ public class EncounterSessionMatcherTest {
         Encounter e1 = new Encounter();
         User creator1 = new User(1);
         e1.setCreator(creator1);
+        e1.setLocation(location);
 
         Encounter e2 = new Encounter();
         e2.setCreator(creator1);
+        e2.setLocation(location);
 
         when(userContext.getAuthenticatedUser()).thenReturn(creator1);
         when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false))).thenReturn(Arrays.asList(e1, e2));
+        when(bahmniVisitLocationService.getVisitLocation(any(String.class))).thenReturn(location);
 
         try {
             encounterSessionMatcher.findEncounter(null, encounterParameters);
@@ -330,12 +358,15 @@ public class EncounterSessionMatcherTest {
         Encounter e1 = new Encounter();
         User creator1 = new User(1);
         e1.setCreator(creator1);
+        e1.setLocation(location);
         Encounter e2 = new Encounter();
         e2.setCreator(creator1);
+        e2.setLocation(location);
         List<Encounter> encounters = new ArrayList<>();
         encounters.add(e1);
         encounters.add(e2);
 
+        when(bahmniVisitLocationService.getVisitLocation(any(String.class))).thenReturn(location);
         when(userContext.getAuthenticatedUser()).thenReturn(creator1);
         when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false)))
                 .thenReturn(encounters);
@@ -346,6 +377,97 @@ public class EncounterSessionMatcherTest {
         verify(episodeService, times(1)).getEpisodeForEncounter(e1);
         verify(episodeService, times(1)).getEpisodeForEncounter(e2);
         assertThat(encounterReturned, is(equalTo(e2)));
+    }
+
+    @Test
+    public void shouldReturnTheEncountersPresentInCurrentVisitLocation() {
+        EncounterParameters encounterParameters = getEncounterParameters(null, location);
+        Location loginLocation = new Location();
+        loginLocation.setUuid("login-location");
+        Location encounterLocation = new Location();
+        encounterLocation.setUuid("encounter-location");
+
+        encounterParameters.setContext(null);
+
+        encounterParameters.setEncounterDateTime(DateUtils.truncate(new Date(), Calendar.DATE));
+        encounterParameters.setLocation(loginLocation);
+
+        Encounter e1 = new Encounter();
+        User creator1 = new User(1);
+        e1.setCreator(creator1);
+        e1.setLocation(encounterLocation);
+
+        Location otherLocation = new Location();
+        otherLocation.setUuid("other-location-uuid");
+        Encounter e2 = new Encounter();
+        e2.setCreator(creator1);
+        e2.setLocation(otherLocation);
+
+
+        when(userContext.getAuthenticatedUser()).thenReturn(creator1);
+        when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false)))
+                .thenReturn(Arrays.asList(e1));
+        when(bahmniVisitLocationService.getVisitLocation(loginLocation.getUuid())).thenReturn(loginLocation);
+        when(bahmniVisitLocationService.getVisitLocation(encounterLocation.getUuid())).thenReturn(loginLocation);
+        when(bahmniVisitLocationService.getVisitLocation(otherLocation.getUuid())).thenReturn(otherLocation);
+
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(null, encounterParameters);
+        assertNotNull(encounterReturned);
+    }
+
+    @Test
+    public void shouldReturnNullIfThereIsNoEncounterInCurrentVisitLocation() {
+        EncounterParameters encounterParameters = getEncounterParameters(null, location);
+        Location loginLocation = new Location();
+        loginLocation.setUuid("login-location");
+        Location encounterLocation = new Location();
+        encounterLocation.setUuid("encounter-location");
+
+        encounterParameters.setContext(null);
+
+        encounterParameters.setEncounterDateTime(DateUtils.truncate(new Date(), Calendar.DATE));
+        encounterParameters.setLocation(loginLocation);
+
+        Encounter e1 = new Encounter();
+        User creator1 = new User(1);
+        e1.setCreator(creator1);
+        e1.setLocation(encounterLocation);
+
+
+        when(userContext.getAuthenticatedUser()).thenReturn(creator1);
+        when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false)))
+                .thenReturn(Arrays.asList(e1));
+        when(bahmniVisitLocationService.getVisitLocation(loginLocation.getUuid())).thenReturn(loginLocation);
+        when(bahmniVisitLocationService.getVisitLocation(encounterLocation.getUuid())).thenReturn(encounterLocation);
+
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(null, encounterParameters);
+        assertNull(encounterReturned);
+    }
+
+    @Test
+    public void shouldNotReturnEncouterIfItsLocationIsNull() {
+        EncounterParameters encounterParameters = getEncounterParameters(null, location);
+        Location loginLocation = new Location();
+        loginLocation.setUuid("login-location");
+
+        encounterParameters.setContext(null);
+
+        encounterParameters.setEncounterDateTime(DateUtils.truncate(new Date(), Calendar.DATE));
+        encounterParameters.setLocation(loginLocation);
+
+        Encounter e1 = new Encounter();
+        User creator1 = new User(1);
+        e1.setCreator(creator1);
+        e1.setLocation(null);
+
+
+        when(userContext.getAuthenticatedUser()).thenReturn(creator1);
+        when(encounterService.getEncounters(any(Patient.class), any(Location.class), any(Date.class), any(Date.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), any(Collection.class), eq(false)))
+                .thenReturn(Arrays.asList(e1));
+        when(bahmniVisitLocationService.getVisitLocation(loginLocation.getUuid())).thenReturn(loginLocation);
+
+        Encounter encounterReturned = encounterSessionMatcher.findEncounter(null, encounterParameters);
+        assertNull(encounterReturned);
     }
 
     private EncounterParameters getEncounterParameters(Set<Provider> providers, Location location) {
