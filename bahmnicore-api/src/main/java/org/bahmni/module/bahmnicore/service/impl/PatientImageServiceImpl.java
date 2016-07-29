@@ -8,15 +8,16 @@ import org.bahmni.module.bahmnicore.BahmniCoreException;
 import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
 import org.bahmni.module.bahmnicore.service.PatientImageService;
 import org.imgscalr.Scalr;
+import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.UUID;
 
 @Service
@@ -100,5 +101,32 @@ public class PatientImageServiceImpl implements PatientImageService {
         BufferedImage reSizedImage = Scalr.resize(image, 100);
         ImageIO.write(reSizedImage, extension, thumbnailFile);
         reSizedImage.flush();
+    }
+
+    @Override
+    public ResponseEntity<Object> retriveImage(String patientUuid) {
+        File file = getPatientImageFile(patientUuid);
+        return readImage(file);
+    }
+
+    private File getPatientImageFile(String patientUuid) {
+        File file = new File(String.format("%s/%s.%s", BahmniCoreProperties.getProperty("bahmnicore.images.directory"), patientUuid, patientImagesFormat));
+        if (file.exists() && file.isFile()){
+            return file;
+        }
+        return new File(BahmniCoreProperties.getProperty("bahmnicore.images.directory.defaultImage"));
+    }
+
+    private ResponseEntity<Object> readImage(File file) {
+        byte[] fileByteArray = new byte[(int) file.length()];
+        try {
+            FileInputStream fileInputStream = new FileInputStream(file);
+            fileInputStream.read(fileByteArray);
+            return new ResponseEntity<Object>(fileByteArray, HttpStatus.OK);
+        } catch (FileNotFoundException e) {
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (IOException e) {
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
