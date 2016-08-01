@@ -2,8 +2,6 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.apache.commons.io.FileUtils;
 import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -26,8 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.any;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
