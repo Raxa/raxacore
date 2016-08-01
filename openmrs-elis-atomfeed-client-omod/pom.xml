@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.bahmni.module</groupId>
         <artifactId>bahmni</artifactId>
-        <version>0.84-SNAPSHOT</version>
+        <version>0.83-SNAPSHOT</version>
     </parent>
     <artifactId>openelis-atomfeed-client-omod</artifactId>
     <packaging>jar</packaging>
@@ -346,7 +346,7 @@
         <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>web-clients</artifactId>
-            <version>0.84-SNAPSHOT</version>
+            <version>0.83-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
