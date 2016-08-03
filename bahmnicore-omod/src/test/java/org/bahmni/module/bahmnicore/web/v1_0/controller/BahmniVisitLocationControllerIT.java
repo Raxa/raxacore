@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.visitlocation.VisitLocationNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertEquals;
 
 public class BahmniVisitLocationControllerIT extends BaseIntegrationTest {
@@ -19,20 +21,20 @@ public class BahmniVisitLocationControllerIT extends BaseIntegrationTest {
         executeDataSet("locationData.xml");
     }
 
-    @Test
-    public void shouldGetImmediateParentLocationIdIfItIsTaggedToVisitLocation() throws Exception {
-        String locationUuid = bahmniLocationController.getVisitLocationInfo("c36006e5-9fbb-4f20-866b-0ece245615a1");
-        assertEquals("e36006e5-9fbb-4f20-866b-0ece24561525", locationUuid);
-    }
+        @Test
+        public void shouldGetImmediateParentLocationIdIfItIsTaggedToVisitLocation() throws Exception {
+            String locationUuid = bahmniLocationController.getVisitLocationInfo("c36006e5-9fbb-4f20-866b-0ece245615a1").get("uuid");
+            assertEquals("e36006e5-9fbb-4f20-866b-0ece24561525", locationUuid);
+        }
 
-    @Test
-    public void shouldTraverseTillItGetsParentLocationIdWhichIsTaggedToVisitLocation() throws Exception {
-        String locationUuid = bahmniLocationController.getVisitLocationInfo("e36023e5-9fwb-4f20-866b-0ece24561525");
-        assertEquals("e36006e5-9fbb-4f20-866b-0ece24561525", locationUuid);
-    }
+        @Test
+        public void shouldTraverseTillItGetsParentLocationIdWhichIsTaggedToVisitLocation() throws Exception {
+           String locationUuid= bahmniLocationController.getVisitLocationInfo("e36023e5-9fwb-4f20-866b-0ece24561525").get("uuid");
+            assertEquals("e36006e5-9fbb-4f20-866b-0ece24561525", locationUuid);
+        }
 
-    @Test(expected = VisitLocationNotFoundException.class)
-    public void shouldThrowExceptionIfNoLocationTaggedUntilRoot() throws Exception {
-        bahmniLocationController.getVisitLocationInfo("l36023e5-9fhb-4f20-866b-0ece24561525");
-    }
+        @Test(expected = VisitLocationNotFoundException.class)
+        public void shouldThrowExceptionIfNoLocationTaggedUntilRoot() throws Exception {
+            bahmniLocationController.getVisitLocationInfo("l36023e5-9fhb-4f20-866b-0ece24561525");
+        }
 }

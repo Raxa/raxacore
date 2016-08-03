@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/visitLocation")
 public class BahmniVisitLocationController extends BaseRestController {
@@ -21,8 +23,10 @@ public class BahmniVisitLocationController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/{loginLocationUuid}")
     @ResponseBody
-    public String getVisitLocationInfo(@PathVariable("loginLocationUuid") String locationUuid ) {
-        return bahmniVisitLocationService.getVisitLocationUuid(locationUuid);
+    public HashMap<String, String> getVisitLocationInfo(@PathVariable("loginLocationUuid") String locationUuid ) {
+        HashMap<String, String> visitLocation = new HashMap<>();
+        visitLocation.put("uuid",bahmniVisitLocationService.getVisitLocationUuid(locationUuid));
+        return visitLocation;
     }
 
 }
