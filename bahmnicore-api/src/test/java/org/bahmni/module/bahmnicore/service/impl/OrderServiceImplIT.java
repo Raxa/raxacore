@@ -96,7 +96,7 @@ public class OrderServiceImplIT extends BaseIntegrationTest {
 
         List<Order> allOrders = bahmniOrderService.getAllOrders(patientUuid, orderTypeUuid, 1, 1,locationUuids);
 
-        Assert.assertEquals(1, allOrders.size());
+        Assert.assertEquals(2, allOrders.size());
         Assert.assertEquals((Integer)26, allOrders.get(0).getId());
     }
 

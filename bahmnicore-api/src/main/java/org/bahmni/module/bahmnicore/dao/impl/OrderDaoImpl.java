@@ -69,7 +69,7 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public List<DrugOrder> getPrescribedDrugOrders(Patient patient, Boolean includeActiveVisit, Integer numberOfVisits, Date startDate, Date endDate, Boolean getEffectiveOrdersOnly) {
         Session currentSession = getCurrentSession();
-        List<Integer> visitWithDrugOrderIds = getVisitIds(getVisitsWithActiveOrders(patient, "DrugOrder", includeActiveVisit, numberOfVisits));
+        List<Integer> visitWithDrugOrderIds = getVisitIds(getVisitsWithAllOrders(patient, "DrugOrder", includeActiveVisit, numberOfVisits));
         if (visitWithDrugOrderIds.isEmpty()) {
             return new ArrayList<>();
         }
@@ -212,7 +212,7 @@ public class OrderDaoImpl implements OrderDao {
         Session currentSession = getCurrentSession();
         String includevisit = includeActiveVisit == null || !includeActiveVisit ? "and v.stopDatetime is not null and v.stopDatetime < :now" : "";
         Query queryVisitsWithDrugOrders = currentSession.createQuery("select v from " + orderType + " o, Encounter e, Visit v where o.encounter = e.encounterId and e.visit = v.visitId and v.patient = (:patientId) " +
-                "and o.voided = false and o.dateStopped = null " + includevisit + " group by v.visitId order by v.startDatetime desc");
+                "and o.voided = false " + includevisit + " group by v.visitId order by v.startDatetime desc");
         queryVisitsWithDrugOrders.setParameter("patientId", patient);
         if (includeActiveVisit == null || !includeActiveVisit) {
             queryVisitsWithDrugOrders.setParameter("now", new Date());

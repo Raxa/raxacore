@@ -106,8 +106,8 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         Patient patient = Context.getPatientService().getPatient(1001);
 
         List<DrugOrder> drugOrders = orderDao.getPrescribedDrugOrders(patient, true, null, null, null, false);
-        assertThat(drugOrders.size(), is(equalTo(8)));
-        assertThat(getOrderIds(drugOrders), hasItems(15, 16, 17, 19, 21, 23, 24, 26));
+        assertThat(drugOrders.size(), is(equalTo(9)));
+        assertThat(getOrderIds(drugOrders), hasItems(15, 16, 17, 19, 21, 23, 24, 26, 27));
 
 
         drugOrders = orderDao.getPrescribedDrugOrders(patient, null, null, null, null, false);
@@ -124,8 +124,8 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         Date endDate = BahmniDateUtil.convertToDate("2013-09-09T00:00:00.000", BahmniDateUtil.DateFormatType.UTC);
 
         List<DrugOrder> drugOrders = orderDao.getPrescribedDrugOrders(patient, true, null, startDate, null, false);
-        assertThat(drugOrders.size(), is(equalTo(8)));
-        assertThat(getOrderIds(drugOrders), hasItems(16, 15,21, 23, 24, 19, 17, 26));
+        assertThat(drugOrders.size(), is(equalTo(9)));
+        assertThat(getOrderIds(drugOrders), hasItems(16, 15,21, 23, 24, 19, 17, 26, 27));
 
         drugOrders = orderDao.getPrescribedDrugOrders(patient, true, null, startDate, endDate, false);
         assertThat(drugOrders.size(), is(equalTo(3)));
@@ -146,8 +146,8 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         Date endDate = BahmniDateUtil.convertToDate("2015-09-09T00:00:00.000", BahmniDateUtil.DateFormatType.UTC);
 
         List<DrugOrder> drugOrders = orderDao.getPrescribedDrugOrders(patient, true, null, startDate, endDate, false);
-        assertThat(drugOrders.size(), is(equalTo(8)));
-        assertThat(getOrderIds(drugOrders), hasItems(21, 23, 24, 19, 17 ,16, 15, 26));
+        assertThat(drugOrders.size(), is(equalTo(9)));
+        assertThat(getOrderIds(drugOrders), hasItems(21, 23, 24, 19, 17 ,16, 15, 26, 27));
     }
 
     @Test
@@ -292,7 +292,7 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         OrderType orderType = Context.getOrderService().getOrderType(1);
         List<Order> activeOrders = orderDao.getActiveOrders(patient, orderType, null, new Date(), null, null, null, null, null);
 
-        assertEquals(activeOrders.size(), 3);
+        assertEquals(3, activeOrders.size());
         assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f836");
         assertEquals(activeOrders.get(1).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f838");
         assertEquals(activeOrders.get(2).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f841");
@@ -342,9 +342,10 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
         OrderType orderType = Context.getOrderService().getOrderType(1);
         List<Order> activeOrders = orderDao.getInactiveOrders(patient, orderType, null, new Date(), null, null, null);
 
-        assertEquals(activeOrders.size(), 2);
-        assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f837");
-        assertEquals(activeOrders.get(1).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f839");
+        assertEquals(3, activeOrders.size());
+        assertEquals("cba00378-0c03-11e4-bb80-f18addb6f837", activeOrders.get(0).getUuid());
+        assertEquals("cba00378-0c03-11e4-bb80-f18addb6f839", activeOrders.get(1).getUuid());
+        assertEquals("cba00378-0c03-11e4-bb80-f18addb6f987", activeOrders.get(2).getUuid());
     }
 
     @Test
@@ -385,8 +386,9 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
 
         List<Order> activeOrders = orderDao.getInactiveOrders(patient, orderType, null, new Date(), concepts, null, null);
 
-        assertEquals(activeOrders.size(), 1);
-        assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f839");
+        assertEquals(activeOrders.size(), 2);
+        assertEquals("cba00378-0c03-11e4-bb80-f18addb6f839", activeOrders.get(0).getUuid());
+        assertEquals("cba00378-0c03-11e4-bb80-f18addb6f987", activeOrders.get(1).getUuid());
     }
 
     @Test
@@ -441,10 +443,11 @@ public class OrderDaoImplIT extends BaseIntegrationTest {
 
         List<Order> activeOrders = orderDao.getAllOrders(patient, orderType, null, null, locationUuids);
 
-        assertEquals(3, activeOrders.size());
-        assertEquals(activeOrders.get(0).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f836");
-        assertEquals(activeOrders.get(1).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f839");
-        assertEquals(activeOrders.get(2).getUuid(), "cba00378-0c03-11e4-bb80-f18addb6f841");
+        assertEquals(4, activeOrders.size());
+        assertEquals("cba00378-0c03-11e4-bb80-f18addb6f836", activeOrders.get(0).getUuid());
+        assertEquals("cba00378-0c03-11e4-bb80-f18addb6f839", activeOrders.get(1).getUuid());
+        assertEquals("cba00378-0c03-11e4-bb80-f18addb6f841", activeOrders.get(2).getUuid());
+        assertEquals("cba00378-0c03-11e4-bb80-f18addb6f987", activeOrders.get(3).getUuid());
     }
 
     @Test
