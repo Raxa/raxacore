@@ -33,7 +33,7 @@
         <calculationModuleVersion>1.1</calculationModuleVersion>
         <serializationXstreamModuleVersion>0.2.7</serializationXstreamModuleVersion>
         <emrapi-omod.version>1.16</emrapi-omod.version>
-        <openmrsAtomfeedVersion>2.5.3</openmrsAtomfeedVersion>
+        <openmrsAtomfeedVersion>2.5.4</openmrsAtomfeedVersion>
         <lombokVersion>1.16.0</lombokVersion>
         <argLine>-Xmx1024m -XX:MaxPermSize=1024m</argLine>
     </properties>
