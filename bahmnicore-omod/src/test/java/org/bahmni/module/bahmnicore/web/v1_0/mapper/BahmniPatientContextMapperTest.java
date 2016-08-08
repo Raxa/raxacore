@@ -3,20 +3,12 @@ package org.bahmni.module.bahmnicore.web.v1_0.mapper;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.PatientProgramAttribute;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
+import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.PersonAttribute;
-import org.openmrs.PersonAttributeType;
-import org.openmrs.PersonName;
+import org.openmrs.*;
 import org.openmrs.module.bahmniemrapi.patient.PatientContext;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -24,6 +16,13 @@ import static org.junit.Assert.assertNotNull;
 public class BahmniPatientContextMapperTest {
 
     private BahmniPatientContextMapper bahmniPatientContextMapper = new BahmniPatientContextMapper();
+    private PatientIdentifierType primaryIdentifierType;
+
+    @Before
+    public void setUp() throws Exception {
+        primaryIdentifierType = new PatientIdentifierType();
+        primaryIdentifierType.setName("Primary Identifier");
+    }
 
     @Test
     public void shouldMapPatientInformationToPatientContext() {
@@ -31,13 +30,13 @@ public class BahmniPatientContextMapperTest {
         patient.setBirthdate(new Date());
         patient.setGender("Male");
         patient.setNames(getPersonNames("GivenName", "MiddleName", "FamilyName"));
-        patient.setIdentifiers(getPatientIdentifiers("GAN20000"));
+        patient.addIdentifier(createPrimaryIdentifier("GAN20000"));
         Set<PersonAttribute> attributes = new LinkedHashSet<>();
         attributes.add(getPersonAttribute("Caste", "Caste", "Caste Value", "java.lang.String"));
         attributes.add(getPersonAttribute("Education", "Education", "Education Value", "java.lang.String"));
         patient.setAttributes(attributes);
 
-        PatientContext patientContext = bahmniPatientContextMapper.map(patient, new BahmniPatientProgram(), Collections.singletonList("Caste"), Collections.singletonList("IRDB Number"));
+        PatientContext patientContext = bahmniPatientContextMapper.map(patient, new BahmniPatientProgram(), Collections.singletonList("Caste"), Collections.singletonList("IRDB Number"), null, primaryIdentifierType);
 
         assertNotNull(patientContext);
         assertEquals(patient.getBirthdate(), patientContext.getBirthdate());
@@ -53,32 +52,39 @@ public class BahmniPatientContextMapperTest {
 
     @Test
     public void shouldNotReturnPersonAttributesIfTheConfiguredAttributesAreNotExists() {
-        Patient patient = new Patient();
-        Set<PersonName> names = getPersonNames("GivenName", "MiddleName", "FamilyName");
-        patient.setNames(names);
-        LinkedHashSet<PatientIdentifier> identifiers = getPatientIdentifiers("GAN20000");
-        patient.setIdentifiers(identifiers);
+        Patient patient = setUpPatient();
 
-        PatientContext patientContext = bahmniPatientContextMapper.map(patient, new BahmniPatientProgram(), Collections.singletonList("Caste"), Arrays.asList("IRDB Number"));
+        PatientContext patientContext = bahmniPatientContextMapper.map(patient, new BahmniPatientProgram(), Collections.singletonList("Caste"), Arrays.asList("IRDB Number"), null, primaryIdentifierType);
 
         assertNotNull(patientContext);
         assertEquals(0, patientContext.getPersonAttributes().size());
     }
 
-    @Test
-    public void shouldMapProgramAttributesToPatientContext() {
+    private Patient setUpPatient() {
         Patient patient = new Patient();
         Set<PersonName> names = getPersonNames("GivenName", "MiddleName", "FamilyName");
         patient.setNames(names);
-        LinkedHashSet<PatientIdentifier> identifiers = getPatientIdentifiers("GAN20000");
+        PatientIdentifier primaryIdentifier = createPrimaryIdentifier("GAN20000");
+        Set<PatientIdentifier> identifiers = new HashSet<>();
+        identifiers.addAll(Collections.singletonList(primaryIdentifier));
         patient.setIdentifiers(identifiers);
+        return patient;
+    }
+
+    private PatientIdentifier createPrimaryIdentifier(String value) {
+        return new PatientIdentifier(value, primaryIdentifierType, null);
+    }
+
+    @Test
+    public void shouldMapProgramAttributesToPatientContext() {
+        Patient patient = setUpPatient();
 
         BahmniPatientProgram patientProgram = new BahmniPatientProgram();
         HashSet<PatientProgramAttribute> patientProgramAttributes = new HashSet<>();
         patientProgramAttributes.add(getPatientProgramAttribute("IRDB Number", "IRDB Number Description", "1234", "String"));
         patientProgramAttributes.add(getPatientProgramAttribute("TSRT Number", "TSRT Number", "9876", "String"));
         patientProgram.setAttributes(patientProgramAttributes);
-        PatientContext patientContext = bahmniPatientContextMapper.map(patient, patientProgram, Collections.singletonList("Caste"), Collections.singletonList("IRDB Number"));
+        PatientContext patientContext = bahmniPatientContextMapper.map(patient, patientProgram, Collections.singletonList("Caste"), Collections.singletonList("IRDB Number"), null, primaryIdentifierType);
 
         assertNotNull(patientContext);
         assertEquals(1, patientContext.getProgramAttributes().size());
@@ -87,58 +93,87 @@ public class BahmniPatientContextMapperTest {
 
     @Test
     public void shouldNotReturnProgramAttributesIfTheConfiguredAttributesAreNotExists() {
-        Patient patient = new Patient();
-        Set<PersonName> names = getPersonNames("GivenName", "MiddleName", "FamilyName");
-        patient.setNames(names);
-        LinkedHashSet<PatientIdentifier> identifiers = getPatientIdentifiers("GAN20000");
-        patient.setIdentifiers(identifiers);
+        Patient patient = setUpPatient();
 
-        PatientContext patientContext = bahmniPatientContextMapper.map(patient, new BahmniPatientProgram(), Collections.singletonList("Caste"), Collections.singletonList("IRDB Number"));
+        PatientContext patientContext = bahmniPatientContextMapper.map(patient, new BahmniPatientProgram(), Collections.singletonList("Caste"), Collections.singletonList("IRDB Number"), null, primaryIdentifierType);
 
         assertNotNull(patientContext);
         assertEquals(0, patientContext.getProgramAttributes().size());
     }
 
     @Test
-    public void shouldNotReturnProgramAttributesIfTheProgramDoesntExists() {
-        Patient patient = new Patient();
-        Set<PersonName> names = getPersonNames("GivenName", "MiddleName", "FamilyName");
-        patient.setNames(names);
-        LinkedHashSet<PatientIdentifier> identifiers = getPatientIdentifiers("GAN20000");
-        patient.setIdentifiers(identifiers);
+    public void shouldNotReturnProgramAttributesIfTheProgramDoesNotExists() {
+        Patient patient = setUpPatient();
 
-        PatientContext patientContext = bahmniPatientContextMapper.map(patient, null, Collections.singletonList("Caste"), Collections.singletonList("IRDB Number"));
+        PatientContext patientContext = bahmniPatientContextMapper.map(patient, null, Collections.singletonList("Caste"), Collections.singletonList("IRDB Number"), null, primaryIdentifierType);
 
         assertNotNull(patientContext);
         assertEquals(0, patientContext.getProgramAttributes().size());
     }
 
     @Test
-    public void shouldNotReturnProgramAttributesIfNoConfiguredAttributesAreSent() {
-        Patient patient = new Patient();
-        Set<PersonName> names = getPersonNames("GivenName", "MiddleName", "FamilyName");
-        patient.setNames(names);
-        LinkedHashSet<PatientIdentifier> identifiers = getPatientIdentifiers("GAN20000");
-        patient.setIdentifiers(identifiers);
+    public void shouldNotReturnProgramAttributesIfNotConfigured() {
+        Patient patient = setUpPatient();
 
-        PatientContext patientContext = bahmniPatientContextMapper.map(patient, new BahmniPatientProgram(), Collections.singletonList("Caste"), null);
+        PatientContext patientContext = bahmniPatientContextMapper.map(patient, new BahmniPatientProgram(), Collections.singletonList("Caste"), null, null, primaryIdentifierType);
 
         assertNotNull(patientContext);
         assertEquals(0, patientContext.getProgramAttributes().size());
     }
 
     @Test
-    public void shouldNotReturnPersonAttributesIfNoConfiguredAttributesAreSent() {
-        Patient patient = new Patient();
-        Set<PersonName> names = getPersonNames("GivenName", "MiddleName", "FamilyName");
-        patient.setNames(names);
-        LinkedHashSet<PatientIdentifier> identifiers = getPatientIdentifiers("GAN20000");
-        patient.setIdentifiers(identifiers);
+    public void shouldNotReturnPersonAttributesIfNotConfigured() {
+        Patient patient = setUpPatient();
 
-        PatientContext patientContext = bahmniPatientContextMapper.map(patient, new BahmniPatientProgram(), null, Collections.singletonList("IRDTB Number"));
+        PatientContext patientContext = bahmniPatientContextMapper.map(patient, new BahmniPatientProgram(), null, Collections.singletonList("IRDTB Number"), null, primaryIdentifierType);
 
         assertNotNull(patientContext);
         assertEquals(0, patientContext.getProgramAttributes().size());
+    }
+
+    @Test
+    public void shouldReturnConfiguredExtraIdentifier() throws Exception {
+        Patient patient = setUpPatient();
+        PatientIdentifier nationalIdentifier = createIdentifier("National Identifier", "NAT10020");
+        patient.addIdentifier(nationalIdentifier);
+
+        PatientContext patientContext = bahmniPatientContextMapper.map(patient, new BahmniPatientProgram(), null, null, Collections.singletonList("National Identifier"), primaryIdentifierType);
+
+        assertNotNull(patientContext);
+        assertEquals("GAN20000", patientContext.getIdentifier());
+        assertEquals(1, patientContext.getAdditionalPatientIdentifiers().size());
+        assertEquals("NAT10020", patientContext.getAdditionalPatientIdentifiers().get("National Identifier"));
+    }
+
+    @Test
+    public void shouldNotReturnConfiguredExtraIdentifierIfDataIsNotCaptured() throws Exception {
+        Patient patient = setUpPatient();
+
+        PatientContext patientContext = bahmniPatientContextMapper.map(patient, new BahmniPatientProgram(), null, null, Collections.singletonList("National Identifier"), primaryIdentifierType);
+
+        assertNotNull(patientContext);
+        assertEquals("GAN20000", patientContext.getIdentifier());
+        assertEquals(0, patientContext.getAdditionalPatientIdentifiers().size());
+    }
+
+    @Test
+    public void shouldNotReturnPrimaryIdentifierInExtraIdentifiersListIfConfigured() throws Exception {
+        Patient patient = setUpPatient();
+
+        PatientContext patientContext = bahmniPatientContextMapper.map(patient, new BahmniPatientProgram(), null, null, Collections.singletonList("Primary Identifier"), primaryIdentifierType);
+
+        assertNotNull(patientContext);
+        assertEquals("GAN20000", patientContext.getIdentifier());
+        assertEquals(0, patientContext.getAdditionalPatientIdentifiers().size());
+    }
+
+
+
+
+    private PatientIdentifier createIdentifier(String type, String value) {
+        PatientIdentifierType patientIdentifierType = new PatientIdentifierType();
+        patientIdentifierType.setName(type);
+        return new PatientIdentifier(value, patientIdentifierType, null);
     }
 
     private Set<PersonName> getPersonNames(String givenName, String middleName, String familyName) {

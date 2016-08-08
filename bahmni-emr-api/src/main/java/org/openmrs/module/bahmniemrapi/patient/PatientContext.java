@@ -14,6 +14,7 @@ public class PatientContext {
     private String gender;
     private Map<String, Map<String, String>> personAttributes = new HashMap<>();
     private Map<String, Map<String, Object>> programAttributes = new HashMap<>();
+    private Map<String, String> additionalPatientIdentifiers = new HashMap<>();
 
     public Date getBirthdate() {
         return birthdate;
@@ -99,5 +100,17 @@ public class PatientContext {
         responseValue.put("value", value);
         responseValue.put("description", description);
         this.programAttributes.put(key, responseValue);
+    }
+
+    public Map<String, String> getAdditionalPatientIdentifiers() {
+        return additionalPatientIdentifiers;
+    }
+
+    public void setAdditionalPatientIdentifiers(Map<String, String> additionalPatientIdentifiers) {
+        this.additionalPatientIdentifiers = additionalPatientIdentifiers;
+    }
+
+    public void addAdditionalPatientIdentifier(String type, String value) {
+        this.additionalPatientIdentifiers.put(type, value);
     }
 }

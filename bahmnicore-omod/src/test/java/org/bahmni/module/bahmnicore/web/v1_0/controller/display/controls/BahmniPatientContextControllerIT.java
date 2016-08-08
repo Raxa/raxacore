@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 
 import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
+import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.patient.PatientContext;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -11,6 +12,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class BahmniPatientContextControllerIT extends BaseIntegrationTest {
+
+    @Before
+    public void setUp() throws Exception {
+        executeDataSet("patientContextDataSet.xml");
+
+    }
 
     @Test
     public void shouldFetchCorePatientInformation() throws Exception {
@@ -106,5 +113,36 @@ public class BahmniPatientContextControllerIT extends BaseIntegrationTest {
         assertEquals(1, patientContext.getPersonAttributes().size());
         assertEquals("MARRIED", patientContext.getPersonAttributes().get("Civil Status").get("value"));
         assertEquals("Marriage status of this person", patientContext.getPersonAttributes().get("Civil Status").get("description"));
+    }
+
+    @Test
+    public void shouldFetchExtraPatientIdentifiersIfConfigured() throws Exception {
+        MockHttpServletRequest request = newGetRequest("/rest/v1/bahmnicore/patientcontext",
+                new Parameter("patientUuid", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"),
+                new Parameter("patientIdentifiers", "Old Identification Number")
+        );
+
+        MockHttpServletResponse response = handle(request);
+        PatientContext patientContext = deserialize(response, PatientContext.class);
+
+        assertNotNull(patientContext);
+        assertEquals("101-6", patientContext.getIdentifier());
+        assertEquals(1, patientContext.getAdditionalPatientIdentifiers().size());
+        assertEquals("101", patientContext.getAdditionalPatientIdentifiers().get("Old Identification Number"));
+    }
+
+    @Test
+    public void shouldNotFetchPrimaryIdentifierAsExtraPatientIdentifiersIfConfigured() throws Exception {
+        MockHttpServletRequest request = newGetRequest("/rest/v1/bahmnicore/patientcontext",
+                new Parameter("patientUuid", "da7f524f-27ce-4bb2-86d6-6d1d05312bd5"),
+                new Parameter("patientIdentifiers", "OpenMRS Identification Number")
+        );
+
+        MockHttpServletResponse response = handle(request);
+        PatientContext patientContext = deserialize(response, PatientContext.class);
+
+        assertNotNull(patientContext);
+        assertEquals("101-6", patientContext.getIdentifier());
+        assertEquals(0, patientContext.getAdditionalPatientIdentifiers().size());
     }
 }

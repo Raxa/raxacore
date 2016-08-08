@@ -1,10 +1,9 @@
 package org.bahmni.module.bahmnicore.web.v1_0.mapper;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.PatientProgramAttribute;
-import org.openmrs.Concept;
-import org.openmrs.Patient;
-import org.openmrs.PersonAttribute;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.patient.PatientContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ public class BahmniPatientContextMapper {
     @Autowired
     private ConceptService conceptService;
 
-    public PatientContext map(Patient patient, BahmniPatientProgram patientProgram, List<String> configuredPersonAttributes, List<String> configuredProgramAttributes) {
+    public PatientContext map(Patient patient, BahmniPatientProgram patientProgram, List<String> configuredPersonAttributes, List<String> configuredProgramAttributes, List<String> configuredPatientIdentifiers, PatientIdentifierType primaryIdentifierType) {
         PatientContext patientContext = new PatientContext();
 
         patientContext.setBirthdate(patient.getBirthdate());
@@ -25,13 +24,25 @@ public class BahmniPatientContextMapper {
         patientContext.setGivenName(patient.getGivenName());
         patientContext.setMiddleName(patient.getMiddleName());
         patientContext.setGender(patient.getGender());
-        patientContext.setIdentifier(patient.getPatientIdentifier().getIdentifier());
+        patientContext.setIdentifier(patient.getPatientIdentifier(primaryIdentifierType).getIdentifier());
         patientContext.setUuid(patient.getUuid());
 
         mapConfiguredPersonAttributes(patient, configuredPersonAttributes, patientContext);
         mapConfiguredProgramAttributes(patientProgram, configuredProgramAttributes, patientContext);
-
+        mapConfiguredPatientIdentifier(patient, configuredPatientIdentifiers, patientContext,primaryIdentifierType);
         return patientContext;
+    }
+
+    private void mapConfiguredPatientIdentifier(Patient patient, List<String> configuredPatientIdentifiers, PatientContext patientContext, PatientIdentifierType primaryIdentifierType) {
+        if (CollectionUtils.isEmpty(configuredPatientIdentifiers)) {
+            return;
+        }
+        for (String configuredPatientIdentifier : configuredPatientIdentifiers) {
+            PatientIdentifier patientIdentifier = patient.getPatientIdentifier(configuredPatientIdentifier);
+            if (patientIdentifier != null && !configuredPatientIdentifier.equals(primaryIdentifierType.getName())) {
+                patientContext.addAdditionalPatientIdentifier(configuredPatientIdentifier, patientIdentifier.getIdentifier());
+            }
+        }
     }
 
     private void mapConfiguredProgramAttributes(BahmniPatientProgram patientProgram, List<String> configuredProgramAttributes, PatientContext patientContext) {

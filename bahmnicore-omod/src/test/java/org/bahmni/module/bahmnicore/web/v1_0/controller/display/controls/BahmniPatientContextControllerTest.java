@@ -10,6 +10,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.patient.PatientContext;
@@ -37,6 +39,9 @@ public class BahmniPatientContextControllerTest {
     private PatientService patientService;
 
     @Mock
+    private AdministrationService administrationService;
+
+    @Mock
     private BahmniProgramWorkflowService bahmniProgramWorkflowService;
 
     @Mock
@@ -62,16 +67,20 @@ public class BahmniPatientContextControllerTest {
         PatientContext expectedPatientContext = new PatientContext();
         List<String> configuredPersonAttributes = Collections.singletonList("Caste");
         List<String> configuredProgramAttributes = Collections.singletonList("IRDB Number");
+        List<String> configuredPatientIdentifiers = Collections.singletonList("National Identifier");
         BahmniPatientProgram bahmniPatientProgram = new BahmniPatientProgram();
+        PatientIdentifierType primaryIdentifierType = new PatientIdentifierType();
 
         when(patientService.getPatientByUuid(patientUuid)).thenReturn(patient);
-        when(bahmniPatientContextMapper.map(patient, bahmniPatientProgram, configuredPersonAttributes, configuredProgramAttributes)).thenReturn(expectedPatientContext);
+        when(administrationService.getGlobalProperty("emr.primaryIdentifierType")).thenReturn("primary-identifier-uuid");
+        when(patientService.getPatientIdentifierTypeByUuid("primary-identifier-uuid")).thenReturn(primaryIdentifierType);
+        when(bahmniPatientContextMapper.map(patient, bahmniPatientProgram, configuredPersonAttributes, configuredProgramAttributes, configuredPatientIdentifiers, primaryIdentifierType)).thenReturn(expectedPatientContext);
         when(bahmniProgramWorkflowService.getPatientProgramByUuid(programUuid)).thenReturn(bahmniPatientProgram);
 
-        PatientContext actualPatientContext = bahmniPatientContextController.getPatientContext(patientUuid, programUuid, configuredPersonAttributes, configuredProgramAttributes);
+        PatientContext actualPatientContext = bahmniPatientContextController.getPatientContext(patientUuid, programUuid, configuredPersonAttributes, configuredProgramAttributes, configuredPatientIdentifiers);
 
         verify(patientService, times(1)).getPatientByUuid(patientUuid);
-        verify(bahmniPatientContextMapper, times(1)).map(patient, bahmniPatientProgram, configuredPersonAttributes, configuredProgramAttributes);
+        verify(bahmniPatientContextMapper, times(1)).map(patient, bahmniPatientProgram, configuredPersonAttributes, configuredProgramAttributes, configuredPatientIdentifiers, primaryIdentifierType);
         verify(bahmniProgramWorkflowService, times(1)).getPatientProgramByUuid(programUuid);
         assertEquals(expectedPatientContext, actualPatientContext);
     }
