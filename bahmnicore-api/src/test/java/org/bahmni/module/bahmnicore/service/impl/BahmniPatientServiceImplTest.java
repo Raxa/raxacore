@@ -3,7 +3,7 @@ package org.bahmni.module.bahmnicore.service.impl;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientConfigResponse;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.bahmni.module.bahmnicore.mapper.PatientMapper;
-import org.bahmni.module.bahmnicore.service.PatientImageService;
+import org.bahmni.module.bahmnicore.service.PatientDocumentService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -28,7 +28,7 @@ public class BahmniPatientServiceImplTest {
     @Mock
     private PatientService patientService;
     @Mock
-    private PatientImageService patientImageService;
+    private PatientDocumentService patientDocumentService;
     @Mock
     private HttpServletResponse response;
     @Mock

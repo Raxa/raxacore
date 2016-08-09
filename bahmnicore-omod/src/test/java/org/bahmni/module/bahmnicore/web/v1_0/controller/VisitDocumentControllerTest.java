@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.model.DocumentImage;
-import org.bahmni.module.bahmnicore.service.PatientImageService;
+import org.bahmni.module.bahmnicore.service.PatientDocumentService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +32,7 @@ public class VisitDocumentControllerTest {
     @Mock
     AdministrationService administrationService;
     @Mock
-    PatientImageService patientImageService;
+    PatientDocumentService patientDocumentService;
     @Mock
     VisitDocumentService visitDocumentService;
     @Mock
@@ -55,9 +55,9 @@ public class VisitDocumentControllerTest {
 
         DocumentImage image = new DocumentImage("abcd", "jpeg", null, "patient-uuid");
 
-        visitDocumentController.saveImage(image);
+        visitDocumentController.saveDocument(image);
 
-        verify(patientImageService).saveDocument(1, "consultation", "abcd", "jpeg");
+        verify(patientDocumentService).saveDocument(1, "consultation", "abcd", "jpeg");
         verify(administrationService).getGlobalProperty("bahmni.encounterType.default");
     }
 
@@ -73,9 +73,9 @@ public class VisitDocumentControllerTest {
 
         DocumentImage image = new DocumentImage("abcd", "jpeg", "radiology", "patient-uuid");
 
-        visitDocumentController.saveImage(image);
+        visitDocumentController.saveDocument(image);
 
-        verify(patientImageService).saveDocument(1, "radiology", "abcd", "jpeg");
+        verify(patientDocumentService).saveDocument(1, "radiology", "abcd", "jpeg");
         verifyZeroInteractions(administrationService);
     }
 

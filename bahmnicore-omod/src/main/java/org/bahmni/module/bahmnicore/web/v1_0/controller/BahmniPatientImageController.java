@@ -1,6 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.service.PatientImageService;
+import org.bahmni.module.bahmnicore.service.PatientDocumentService;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -19,11 +19,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/patientImage")
 public class BahmniPatientImageController extends BaseRestController {
 
-    private PatientImageService patientImageService;
+    private PatientDocumentService patientDocumentService;
 
     @Autowired
-    public BahmniPatientImageController(PatientImageService patientImageService) {
-        this.patientImageService = patientImageService;
+    public BahmniPatientImageController(PatientDocumentService patientDocumentService) {
+        this.patientDocumentService = patientDocumentService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -31,7 +31,7 @@ public class BahmniPatientImageController extends BaseRestController {
     public ResponseEntity<Object> getImage(@RequestParam(value = "patientUuid", required = true) String patientUuid) {
         UserContext userContext = Context.getUserContext();
             if (userContext.isAuthenticated()) {
-            return patientImageService.retriveImage(patientUuid);
+            return patientDocumentService.retriveImage(patientUuid);
         }
         return new ResponseEntity<Object>(new Object(), HttpStatus.UNAUTHORIZED);
     }

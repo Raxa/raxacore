@@ -4212,4 +4212,21 @@
             update patient_identifier_type set name = 'Patient Identifier' where name = 'Bahmni Id'
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201608081535" author="Chethan, Yugesh">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept_class where name = 'Video';
+            </sqlCheck>
+        </preConditions>
+        <comment>Add Concept Class Video</comment>
+        <insert tableName="concept_class">
+            <column name="name" value="Video"/>
+            <column name="description" value="Video class"/>
+            <column name="creator" value="1"/>
+            <column name="date_created" valueComputed="curdate()"/>
+            <column name="retired" value="0"/>
+            <column name="uuid" valueComputed="uuid()"/>
+        </insert>
+    </changeSet>
+
 </databaseChangeLog>

@@ -28,6 +28,10 @@
                     <key><value>ImageUrlHandler</value></key>
                     <bean class="org.bahmni.module.bahmnicore.obs.handler.ImageUrlHandler"/>
                 </entry>
+                <entry>
+                    <key><value>VideoUrlHandler</value></key>
+                    <bean class="org.bahmni.module.bahmnicore.obs.handler.VideoUrlHandler"/>
+                </entry>
             </map>
         </property>
     </bean>

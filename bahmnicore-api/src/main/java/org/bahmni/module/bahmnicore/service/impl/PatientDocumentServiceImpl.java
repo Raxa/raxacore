@@ -6,7 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
 import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
-import org.bahmni.module.bahmnicore.service.PatientImageService;
+import org.bahmni.module.bahmnicore.service.PatientDocumentService;
 import org.imgscalr.Scalr;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.springframework.context.annotation.Lazy;
@@ -22,9 +22,11 @@ import java.util.UUID;
 
 @Service
 @Lazy
-public class PatientImageServiceImpl implements PatientImageService {
+public class PatientDocumentServiceImpl implements PatientDocumentService {
     private static final String PDF = "pdf";
-    private Log log = LogFactory.getLog(PatientImageServiceImpl.class);
+    private static final String _3GP = "3gp";
+    private static final String MP4 = "mp4";
+    private Log log = LogFactory.getLog(PatientDocumentServiceImpl.class);
     private static final String patientImagesFormat = "jpeg";
     private final Integer NO_OF_PATIENT_FILE_IN_A_DIRECTORY = 100;
 
@@ -35,7 +37,7 @@ public class PatientImageServiceImpl implements PatientImageService {
             if (image == null || image.isEmpty()) return;
 
             File outputFile = new File(String.format("%s/%s.%s", BahmniCoreProperties.getProperty("bahmnicore.images.directory"), patientIdentifier, patientImagesFormat));
-            saveImageInFile(image, patientImagesFormat, outputFile);
+            saveDocumentInFile(image, patientImagesFormat, outputFile);
         } catch (IOException e) {
             throw new BahmniCoreException("[%s] : Could not save patient image", e);
         }
@@ -50,7 +52,7 @@ public class PatientImageServiceImpl implements PatientImageService {
             String relativeFilePath = createFilePath(basePath, patientId, encounterTypeName, format);
 
             File outputFile = new File(String.format("%s/%s", basePath, relativeFilePath));
-            saveImageInFile(images, format, outputFile);
+            saveDocumentInFile(images, format, outputFile);
 
             return relativeFilePath;
 
@@ -80,10 +82,10 @@ public class PatientImageServiceImpl implements PatientImageService {
         return directory.toString();
     }
 
-    private void saveImageInFile(String image, String format, File outputFile) throws IOException {
-        log.info(String.format("Creating patient image at %s", outputFile));
-        byte[] decodedBytes = DatatypeConverter.parseBase64Binary(image);
-        if (PDF.equals(format)) {
+    private void saveDocumentInFile(String document, String format, File outputFile) throws IOException {
+        log.info(String.format("Creating patient document of format %s at %s", format, outputFile));
+        byte[] decodedBytes = DatatypeConverter.parseBase64Binary(document);
+        if (PDF.equals(format) || MP4.equals(format) || _3GP.equals(format)) {
             FileUtils.writeByteArrayToFile(outputFile, decodedBytes);
         } else {
             BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decodedBytes));

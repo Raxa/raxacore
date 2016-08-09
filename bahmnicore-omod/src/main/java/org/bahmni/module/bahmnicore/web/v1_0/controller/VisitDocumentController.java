@@ -2,7 +2,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.module.bahmnicore.model.DocumentImage;
-import org.bahmni.module.bahmnicore.service.PatientImageService;
+import org.bahmni.module.bahmnicore.service.PatientDocumentService;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
@@ -29,7 +29,7 @@ public class VisitDocumentController extends BaseRestController {
     private VisitDocumentService visitDocumentService;
 
     @Autowired
-    private PatientImageService patientImageService;
+    private PatientDocumentService patientDocumentService;
 
     @Autowired
     private BahmniVisitLocationService bahmniVisitLocationService;
@@ -48,14 +48,14 @@ public class VisitDocumentController extends BaseRestController {
         return new VisitDocumentResponse(visit.getUuid());
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = baseVisitDocumentUrl + "/uploadImage")
+    @RequestMapping(method = RequestMethod.POST, value = baseVisitDocumentUrl + "/uploadDocument")
     @ResponseBody
-    public String saveImage(@RequestBody DocumentImage image) {
+    public String saveDocument(@RequestBody DocumentImage image) {
         Patient patient = Context.getPatientService().getPatientByUuid(image.getPatientUuid());
         String encounterTypeName = image.getEncounterTypeName();
         if (StringUtils.isEmpty(encounterTypeName)) {
             encounterTypeName = administrationService.getGlobalProperty("bahmni.encounterType.default");
         }
-        return patientImageService.saveDocument(patient.getId(), encounterTypeName, image.getImage(), image.getFormat());
+        return patientDocumentService.saveDocument(patient.getId(), encounterTypeName, image.getImage(), image.getFormat());
     }
 }

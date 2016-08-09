@@ -2,7 +2,6 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -17,24 +16,22 @@ import java.io.FileInputStream;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BahmniCoreProperties.class, FileInputStream.class})
-public class PatientImageServiceImplTest {
+public class PatientDocumentServiceImplTest {
 
-    private PatientImageServiceImpl patientImageService;
+    private PatientDocumentServiceImpl patientDocumentService;
 
     @Test
     public void shouldCreateRightDirectoryAccordingToPatientId() {
         PowerMockito.mockStatic(BahmniCoreProperties.class);
         when(BahmniCoreProperties.getProperty("bahmnicore.documents.baseDirectory")).thenReturn("");
-        patientImageService = new PatientImageServiceImpl();
+        patientDocumentService = new PatientDocumentServiceImpl();
 
-        String url = patientImageService.createFilePath(".", 280, "Radiology", "jpeg");
+        String url = patientDocumentService.createFilePath(".", 280, "Radiology", "jpeg");
 
         assertFalse(url.isEmpty());
         assertTrue(url.startsWith("300/280-Radiology-"));
@@ -51,9 +48,9 @@ public class PatientImageServiceImplTest {
         PowerMockito.mockStatic(BahmniCoreProperties.class);
         when(BahmniCoreProperties.getProperty("bahmnicore.images.directory")).thenReturn("");
         when(BahmniCoreProperties.getProperty("bahmnicore.images.directory.defaultImage")).thenReturn("");
-        patientImageService = new PatientImageServiceImpl();
+        patientDocumentService = new PatientDocumentServiceImpl();
 
-        ResponseEntity<Object> responseEntity = patientImageService.retriveImage("patientUuid");
+        ResponseEntity<Object> responseEntity = patientDocumentService.retriveImage("patientUuid");
 
         Assert.assertEquals(404, responseEntity.getStatusCode().value());
     }
