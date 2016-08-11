@@ -49,15 +49,15 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
     }
 
     @Override
-    public String saveDocument(Integer patientId, String encounterTypeName, String images, String format, String fileType) {
+    public String saveDocument(Integer patientId, String encounterTypeName, String content, String format, String fileType) {
         try {
-            if (images == null || images.isEmpty()) return null;
+            if (content == null || content.isEmpty()) return null;
 
             String basePath = BahmniCoreProperties.getProperty("bahmnicore.documents.baseDirectory");
             String relativeFilePath = createFilePath(basePath, patientId, encounterTypeName, format);
 
             File outputFile = new File(String.format("%s/%s", basePath, relativeFilePath));
-            saveDocumentInFile(images, format, outputFile, fileType);
+            saveDocumentInFile(content, format, outputFile, fileType);
 
             return relativeFilePath;
 
@@ -87,10 +87,10 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
         return directory.toString();
     }
 
-    private void saveDocumentInFile(String document, String format, File outputFile, String fileType) throws IOException {
+    private void saveDocumentInFile(String content, String format, File outputFile, String fileType) throws IOException {
         log.info(String.format("Creating patient document of format %s at %s", format, outputFile));
-        byte[] decodedBytes = DatatypeConverter.parseBase64Binary(document);
-        if (fileType.equals(VIDEO_FILE_TYPE)) {
+        byte[] decodedBytes = DatatypeConverter.parseBase64Binary(content);
+        if (VIDEO_FILE_TYPE.equals(fileType)) {
             if (!isVideoFormatSupported(format)) {
                 throw new VideoFormatNotSupportedException(String.format("The video format '%s' is not supported. Supported formats are %s", format, Arrays.toString(VideoFormats.values())));
             }

@@ -59,7 +59,7 @@ public class VisitDocumentController extends BaseRestController {
             encounterTypeName = administrationService.getGlobalProperty("bahmni.encounterType.default");
         }
         HashMap<String, String> savedDocument = new HashMap<>();
-        String url = patientDocumentService.saveDocument(patient.getId(), encounterTypeName, document.getImage(),
+        String url = patientDocumentService.saveDocument(patient.getId(), encounterTypeName, document.getContent(),
                                                             document.getFormat(), document.getFileType());
         savedDocument.put("url", url);
         return savedDocument;
