@@ -195,7 +195,10 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         Patient patient = patientResource1_9.getPatientForUpdate(uuid, (Map<String, Object>) propertiesToUpdate.get("patient"));
         List<Object> identifiers = (List<Object>) ((Map) propertiesToUpdate.get("patient")).get("identifiers");
         for (Object identifier : identifiers) {
-            PatientIdentifier patientIdentifier = (PatientIdentifier) ConversionUtil.convert(identifier, PatientIdentifier.class);
+            LinkedHashMap identifierProperties = (LinkedHashMap) identifier;
+            identifierProperties.remove("identifierSourceUuid");
+            identifierProperties.remove("identifierPrefix");
+            PatientIdentifier patientIdentifier = (PatientIdentifier) ConversionUtil.convert(identifierProperties, PatientIdentifier.class);
             patient.addIdentifier(patientIdentifier);
         }
         delegate.setPatient(patient);
