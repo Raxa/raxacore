@@ -18,17 +18,10 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyByte;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
@@ -98,7 +91,7 @@ public class PatientDocumentServiceImplTest {
 
         expectedException.expect(VideoFormatNotSupportedException.class);
         expectedException.expectMessage(String.format("The video format '%s' is not supported. Supported formats are %s",
-                                        "xyz", Arrays.toString(VideoFormats.values())));
+                "xyz", Arrays.toString(VideoFormats.values())));
 
         patientDocumentService = new PatientDocumentServiceImpl();
         patientDocumentService.saveDocument(1, "Consultation", "videoContent", "xyz", "video");

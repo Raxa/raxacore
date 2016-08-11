@@ -20,7 +20,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
@@ -84,7 +86,7 @@ public class VisitDocumentControllerTest {
         Visit visit = new Visit();
         visit.setUuid("visit-uuid");
         VisitDocumentRequest visitDocumentRequest = new VisitDocumentRequest("patient-uuid", "visit-uuid", "visit-type-uuid",
-                null, null, "encounter-uuid", null,null,"provider-uuid","location-uuid",null);
+                null, null, "encounter-uuid", null, null, "provider-uuid", "location-uuid", null);
 
         when(visitDocumentService.upload(visitDocumentRequest)).thenReturn(visit);
 
