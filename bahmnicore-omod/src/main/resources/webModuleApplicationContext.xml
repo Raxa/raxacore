@@ -14,7 +14,6 @@
         <property name="moduleId" value="bahmnicore"/>
     </bean>
 
-
     <!--<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">-->
         <!--<property name="objectMapper">-->
             <!--<bean class="org.bahmni.module.bahmnicore.web.v1_0.mapper.CustomObjectMapper"/>-->

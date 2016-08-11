@@ -118,7 +118,14 @@
         <filter-name>LocaleFilter</filter-name>
         <url-pattern>/ws/rest/v1/concept</url-pattern>
     </filter-mapping>
-
+    <filter>
+        <filter-name>DrugDosageCalculatorFilter</filter-name>
+        <filter-class>org.bahmni.module.bahmnicore.web.filter.DrugDosageCalculatorFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>DrugDosageCalculatorFilter</filter-name>
+        <url-pattern>/ws/rest/v1/bahmnicore/calculateDose</url-pattern>
+    </filter-mapping>
     <mappingFiles>
         ObsRelationship.hbm.xml
         ObsRelationshipType.hbm.xml

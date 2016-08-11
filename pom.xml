@@ -179,7 +179,7 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>org.openmrs.module</groupId>
+                <groupId>org.bahmni.module</groupId>
                 <artifactId>bahmni-migrator</artifactId>
                 <version>0.84-SNAPSHOT</version>
                 <type>jar</type>
@@ -301,6 +301,12 @@
                 <version>${addressHierarchyVersion}</version>
                 <type>jar</type>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>rulesengine-api</artifactId>
+                <version>1.0-SNAPSHOT</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
 

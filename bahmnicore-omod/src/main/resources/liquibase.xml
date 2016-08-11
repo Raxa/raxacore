@@ -4228,5 +4228,8 @@
             <column name="uuid" valueComputed="uuid()"/>
         </insert>
     </changeSet>
-
+    <changeSet id="201608102555" author="Alagesan, Palani">
+        <comment>SQL query to create drug order rules name and global property for storing its concept uuid</comment>
+        <sqlFile path="V1_94__CreatingConceptForDrugOrderRuleAndItsGlobalProperty.sql"/>
+    </changeSet>
 </databaseChangeLog>

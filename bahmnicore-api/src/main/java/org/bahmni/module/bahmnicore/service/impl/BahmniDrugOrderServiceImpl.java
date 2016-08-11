@@ -79,6 +79,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
 
     private static final String GP_DOSING_INSTRUCTIONS_CONCEPT_UUID = "order.dosingInstructionsConceptUuid";
+    private static final String GP_DOSING_RULE_CONCEPT_UUID = "order.drugDosingRuleConceptUuid";
     private static Logger logger = Logger.getLogger(BahmniDrugOrderService.class);
 
 
@@ -183,6 +184,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         response.setDurationUnits(mapConcepts(orderService.getDurationUnits()));
         response.setDispensingUnits(mapConcepts(orderService.getDrugDispensingUnits()));
         response.setDosingInstructions(mapConcepts(getSetMembersOfConceptSetFromGP(GP_DOSING_INSTRUCTIONS_CONCEPT_UUID)));
+        response.setDosingRules(mapConcepts(getSetMembersOfConceptSetFromGP(GP_DOSING_RULE_CONCEPT_UUID)));
         response.setOrderAttributes(fetchOrderAttributeConcepts());
         return response;
     }

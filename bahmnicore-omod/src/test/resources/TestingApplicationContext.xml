@@ -55,5 +55,6 @@
             </list>
         </property>
     </bean>
-
+    <bean id="rulesEngine" class="org.openmrs.module.rulesengine">
+    </bean>
 </beans>
