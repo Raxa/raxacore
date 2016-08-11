@@ -1,16 +1,16 @@
 package org.bahmni.module.bahmnicore.model;
 
-public class DocumentImage {
+public class Document {
     private String image;
     private String format;
     private String encounterTypeName;
     private String patientUuid;
     private String fileType;
 
-    public DocumentImage() {
+    public Document() {
     }
 
-    public DocumentImage(String image, String format, String encounterTypeName, String patientUuid, String fileType) {
+    public Document(String image, String format, String encounterTypeName, String patientUuid, String fileType) {
         this.image = image;
         this.format = format;
         this.encounterTypeName = encounterTypeName;

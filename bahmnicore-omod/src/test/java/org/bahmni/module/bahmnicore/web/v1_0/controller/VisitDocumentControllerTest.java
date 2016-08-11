@@ -1,7 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.bahmniexceptions.VideoFormatNotSupportedException;
-import org.bahmni.module.bahmnicore.model.DocumentImage;
+import org.bahmni.module.bahmnicore.model.Document;
 import org.bahmni.module.bahmnicore.service.PatientDocumentService;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,11 +53,11 @@ public class VisitDocumentControllerTest {
         when(patientService.getPatientByUuid("patient-uuid")).thenReturn(patient);
         when(administrationService.getGlobalProperty("bahmni.encounterType.default")).thenReturn("consultation");
 
-        DocumentImage image = new DocumentImage("abcd", "jpeg", null, "patient-uuid", "image");
+        Document document = new Document("abcd", "jpeg", null, "patient-uuid", "image");
 
-        visitDocumentController.saveDocument(image);
+        visitDocumentController.saveDocument(document);
 
-        verify(patientDocumentService).saveDocument(1, "consultation", "abcd", "jpeg", image.getFileType());
+        verify(patientDocumentService).saveDocument(1, "consultation", "abcd", "jpeg", document.getFileType());
         verify(administrationService).getGlobalProperty("bahmni.encounterType.default");
     }
 
@@ -72,11 +71,11 @@ public class VisitDocumentControllerTest {
         when(patientService.getPatientByUuid("patient-uuid")).thenReturn(patient);
         when(administrationService.getGlobalProperty("bahmni.encounterType.default")).thenReturn("consultation");
 
-        DocumentImage image = new DocumentImage("abcd", "jpeg", "radiology", "patient-uuid", "image");
+        Document document = new Document("abcd", "jpeg", "radiology", "patient-uuid", "image");
 
-        visitDocumentController.saveDocument(image);
+        visitDocumentController.saveDocument(document);
 
-        verify(patientDocumentService).saveDocument(1, "radiology", "abcd", "jpeg", image.getFileType());
+        verify(patientDocumentService).saveDocument(1, "radiology", "abcd", "jpeg", document.getFileType());
         verifyZeroInteractions(administrationService);
     }
 

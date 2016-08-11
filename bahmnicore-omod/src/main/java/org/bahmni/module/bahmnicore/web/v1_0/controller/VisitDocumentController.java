@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.apache.commons.lang.StringUtils;
-import org.bahmni.module.bahmnicore.model.DocumentImage;
+import org.bahmni.module.bahmnicore.model.Document;
 import org.bahmni.module.bahmnicore.service.PatientDocumentService;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -52,16 +52,16 @@ public class VisitDocumentController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.POST, value = baseVisitDocumentUrl + "/uploadDocument")
     @ResponseBody
-    public HashMap<String, String> saveDocument(@RequestBody DocumentImage image) {
-        Patient patient = Context.getPatientService().getPatientByUuid(image.getPatientUuid());
-        String encounterTypeName = image.getEncounterTypeName();
+    public HashMap<String, String> saveDocument(@RequestBody Document document) {
+        Patient patient = Context.getPatientService().getPatientByUuid(document.getPatientUuid());
+        String encounterTypeName = document.getEncounterTypeName();
         if (StringUtils.isEmpty(encounterTypeName)) {
             encounterTypeName = administrationService.getGlobalProperty("bahmni.encounterType.default");
         }
-        HashMap<String, String> document = new HashMap<>();
-        String url = patientDocumentService.saveDocument(patient.getId(), encounterTypeName, image.getImage(),
-                                                            image.getFormat(), image.getFileType());
-        document.put("url", url);
-        return document;
+        HashMap<String, String> savedDocument = new HashMap<>();
+        String url = patientDocumentService.saveDocument(patient.getId(), encounterTypeName, document.getImage(),
+                                                            document.getFormat(), document.getFileType());
+        savedDocument.put("url", url);
+        return savedDocument;
     }
 }
