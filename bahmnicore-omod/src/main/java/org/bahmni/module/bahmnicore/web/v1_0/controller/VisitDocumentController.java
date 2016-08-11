@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
+
 @Controller
 public class VisitDocumentController extends BaseRestController {
     private final String baseVisitDocumentUrl = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/visitDocument";
@@ -50,12 +52,16 @@ public class VisitDocumentController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.POST, value = baseVisitDocumentUrl + "/uploadDocument")
     @ResponseBody
-    public String saveDocument(@RequestBody DocumentImage image) {
+    public HashMap<String, String> saveDocument(@RequestBody DocumentImage image) {
         Patient patient = Context.getPatientService().getPatientByUuid(image.getPatientUuid());
         String encounterTypeName = image.getEncounterTypeName();
         if (StringUtils.isEmpty(encounterTypeName)) {
             encounterTypeName = administrationService.getGlobalProperty("bahmni.encounterType.default");
         }
-        return patientDocumentService.saveDocument(patient.getId(), encounterTypeName, image.getImage(), image.getFormat());
+        HashMap<String, String> document = new HashMap<>();
+        String url = patientDocumentService.saveDocument(patient.getId(), encounterTypeName, image.getImage(),
+                                                            image.getFormat(), image.getFileType());
+        document.put("url", url);
+        return document;
     }
 }

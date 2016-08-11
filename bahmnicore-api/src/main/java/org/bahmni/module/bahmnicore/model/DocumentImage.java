@@ -5,15 +5,17 @@ public class DocumentImage {
     private String format;
     private String encounterTypeName;
     private String patientUuid;
+    private String fileType;
 
     public DocumentImage() {
     }
 
-    public DocumentImage(String image, String format, String encounterTypeName, String patientUuid) {
+    public DocumentImage(String image, String format, String encounterTypeName, String patientUuid, String fileType) {
         this.image = image;
         this.format = format;
         this.encounterTypeName = encounterTypeName;
         this.patientUuid = patientUuid;
+        this.fileType = fileType;
     }
 
     public String getImage() {
@@ -46,6 +48,14 @@ public class DocumentImage {
 
     public void setPatientUuid(String patientUuid) {
         this.patientUuid = patientUuid;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
     }
 }
 

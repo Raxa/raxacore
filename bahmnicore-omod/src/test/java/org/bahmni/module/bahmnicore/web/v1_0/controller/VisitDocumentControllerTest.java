@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.bahmni.module.bahmnicore.bahmniexceptions.VideoFormatNotSupportedException;
 import org.bahmni.module.bahmnicore.model.DocumentImage;
 import org.bahmni.module.bahmnicore.service.PatientDocumentService;
 import org.junit.Before;
@@ -53,11 +54,11 @@ public class VisitDocumentControllerTest {
         when(patientService.getPatientByUuid("patient-uuid")).thenReturn(patient);
         when(administrationService.getGlobalProperty("bahmni.encounterType.default")).thenReturn("consultation");
 
-        DocumentImage image = new DocumentImage("abcd", "jpeg", null, "patient-uuid");
+        DocumentImage image = new DocumentImage("abcd", "jpeg", null, "patient-uuid", "image");
 
         visitDocumentController.saveDocument(image);
 
-        verify(patientDocumentService).saveDocument(1, "consultation", "abcd", "jpeg");
+        verify(patientDocumentService).saveDocument(1, "consultation", "abcd", "jpeg", image.getFileType());
         verify(administrationService).getGlobalProperty("bahmni.encounterType.default");
     }
 
@@ -71,11 +72,11 @@ public class VisitDocumentControllerTest {
         when(patientService.getPatientByUuid("patient-uuid")).thenReturn(patient);
         when(administrationService.getGlobalProperty("bahmni.encounterType.default")).thenReturn("consultation");
 
-        DocumentImage image = new DocumentImage("abcd", "jpeg", "radiology", "patient-uuid");
+        DocumentImage image = new DocumentImage("abcd", "jpeg", "radiology", "patient-uuid", "image");
 
         visitDocumentController.saveDocument(image);
 
-        verify(patientDocumentService).saveDocument(1, "radiology", "abcd", "jpeg");
+        verify(patientDocumentService).saveDocument(1, "radiology", "abcd", "jpeg", image.getFileType());
         verifyZeroInteractions(administrationService);
     }
 
