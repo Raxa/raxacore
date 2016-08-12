@@ -1,27 +1,29 @@
 package org.bahmni.module.bahmnicore.model;
 
-public class DocumentImage {
-    private String image;
+public class Document {
+    private String content;
     private String format;
     private String encounterTypeName;
     private String patientUuid;
+    private String fileType;
 
-    public DocumentImage() {
+    public Document() {
     }
 
-    public DocumentImage(String image, String format, String encounterTypeName, String patientUuid) {
-        this.image = image;
+    public Document(String content, String format, String encounterTypeName, String patientUuid, String fileType) {
+        this.content = content;
         this.format = format;
         this.encounterTypeName = encounterTypeName;
         this.patientUuid = patientUuid;
+        this.fileType = fileType;
     }
 
-    public String getImage() {
-        return image;
+    public String getContent() {
+        return content;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getFormat() {
@@ -46,6 +48,14 @@ public class DocumentImage {
 
     public void setPatientUuid(String patientUuid) {
         this.patientUuid = patientUuid;
+    }
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
     }
 }
 

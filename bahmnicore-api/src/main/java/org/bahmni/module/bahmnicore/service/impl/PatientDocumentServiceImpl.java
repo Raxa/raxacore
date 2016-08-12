@@ -5,6 +5,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
+import org.bahmni.module.bahmnicore.bahmniexceptions.VideoFormatNotSupportedException;
+import org.bahmni.module.bahmnicore.model.VideoFormats;
 import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
 import org.bahmni.module.bahmnicore.service.PatientDocumentService;
 import org.imgscalr.Scalr;
@@ -17,19 +19,22 @@ import org.springframework.stereotype.Service;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.UUID;
 
 @Service
 @Lazy
 public class PatientDocumentServiceImpl implements PatientDocumentService {
     private static final String PDF = "pdf";
-    private static final String _3GP = "3gp";
-    private static final String MP4 = "mp4";
     private Log log = LogFactory.getLog(PatientDocumentServiceImpl.class);
     private static final String patientImagesFormat = "jpeg";
     private final Integer NO_OF_PATIENT_FILE_IN_A_DIRECTORY = 100;
-
+    private final String VIDEO_FILE_TYPE = "video";
 
     @Override
     public void saveImage(String patientIdentifier, String image) {
@@ -37,22 +42,22 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
             if (image == null || image.isEmpty()) return;
 
             File outputFile = new File(String.format("%s/%s.%s", BahmniCoreProperties.getProperty("bahmnicore.images.directory"), patientIdentifier, patientImagesFormat));
-            saveDocumentInFile(image, patientImagesFormat, outputFile);
+            saveDocumentInFile(image, patientImagesFormat, outputFile, "image");
         } catch (IOException e) {
             throw new BahmniCoreException("[%s] : Could not save patient image", e);
         }
     }
 
     @Override
-    public String saveDocument(Integer patientId, String encounterTypeName, String images, String format) {
+    public String saveDocument(Integer patientId, String encounterTypeName, String content, String format, String fileType) {
         try {
-            if (images == null || images.isEmpty()) return null;
+            if (content == null || content.isEmpty()) return null;
 
             String basePath = BahmniCoreProperties.getProperty("bahmnicore.documents.baseDirectory");
             String relativeFilePath = createFilePath(basePath, patientId, encounterTypeName, format);
 
             File outputFile = new File(String.format("%s/%s", basePath, relativeFilePath));
-            saveDocumentInFile(images, format, outputFile);
+            saveDocumentInFile(content, format, outputFile, fileType);
 
             return relativeFilePath;
 
@@ -74,7 +79,7 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
         if (!absoluteFileDirectory.exists()) {
             absoluteFileDirectory.mkdirs();
         }
-        return String.format("%s/%s", documentDirectory,fileName);
+        return String.format("%s/%s", documentDirectory, fileName);
     }
 
     private String findDirectoryForDocumentsByPatientId(Integer patientId) {
@@ -82,10 +87,15 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
         return directory.toString();
     }
 
-    private void saveDocumentInFile(String document, String format, File outputFile) throws IOException {
+    private void saveDocumentInFile(String content, String format, File outputFile, String fileType) throws IOException {
         log.info(String.format("Creating patient document of format %s at %s", format, outputFile));
-        byte[] decodedBytes = DatatypeConverter.parseBase64Binary(document);
-        if (PDF.equals(format) || MP4.equals(format) || _3GP.equals(format)) {
+        byte[] decodedBytes = DatatypeConverter.parseBase64Binary(content);
+        if (VIDEO_FILE_TYPE.equals(fileType)) {
+            if (!isVideoFormatSupported(format)) {
+                throw new VideoFormatNotSupportedException(String.format("The video format '%s' is not supported. Supported formats are %s", format, Arrays.toString(VideoFormats.values())));
+            }
+            FileUtils.writeByteArrayToFile(outputFile, decodedBytes);
+        } else if (PDF.equals(format)) {
             FileUtils.writeByteArrayToFile(outputFile, decodedBytes);
         } else {
             BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decodedBytes));
@@ -94,6 +104,10 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
             bufferedImage.flush();
             log.info(String.format("Successfully created patient image at %s", outputFile));
         }
+    }
+
+    private boolean isVideoFormatSupported(String format) {
+        return VideoFormats.isFormatSupported(format);
     }
 
     private void createThumbnail(BufferedImage image, File outputFile) throws IOException {
@@ -113,7 +127,7 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
 
     private File getPatientImageFile(String patientUuid) {
         File file = new File(String.format("%s/%s.%s", BahmniCoreProperties.getProperty("bahmnicore.images.directory"), patientUuid, patientImagesFormat));
-        if (file.exists() && file.isFile()){
+        if (file.exists() && file.isFile()) {
             return file;
         }
         return new File(BahmniCoreProperties.getProperty("bahmnicore.images.directory.defaultImage"));

@@ -139,6 +139,7 @@
     <person_address person_address_id="1" person_id="1025" preferred="true" city_village="Ramgarh" state_province="Madhya Pradesh" creator="1" date_created="2006-11-24 10:50:16.0" voided="false" void_reason="" county_district="Dindori" address3="Dindori"/>
     <person_address person_address_id="2" person_id="1026" preferred="true" city_village="Bilaspur" state_province="Madhya Pradesh" creator="1" date_created="2006-11-24 10:50:16.0" voided="false" void_reason="" county_district="Dindori" address3="Dindori"/>
     <person_address person_address_id="3" person_id="103" preferred="true" city_village="Bilaspur" state_province="Madhya Pradesh" creator="1" date_created="2006-11-24 10:50:16.0" voided="false" void_reason="" county_district="Dindori" address3="Dindori"/>
+    <global_property property="emr.primaryIdentifierType" property_value="1a339fe9-38bc-4ab3-b180-320988c0b968" uuid="9885827e-26fe-102b-80cb-2017a47871b3"/>
 
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="1" patient_id ="1024" identifier="GAN200000" identifier_type="1"  creator="1"  uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="2" patient_id="1025" identifier="GAN200001" identifier_type="1"  creator="1"  uuid="7facee27-82c0-4375-ae95-a90f129ea493" preferred="1" voided="0" />
@@ -147,10 +148,6 @@
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="5" patient_id ="6" identifier="GAN200004" identifier_type="1"  creator="1"  uuid="8387b8b6-9142-49da-8ac7-6e2b9a8dba19" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="6" patient_id ="7" identifier="GAN200005" identifier_type="1"  creator="1"  uuid="645bde33-dc92-4552-8533-790c8c7c48ad" preferred="1" voided="0"  />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="7" patient_id ="8" identifier="GAN200006" identifier_type="1"  creator="1"  uuid="58b20558-e598-4ace-bfbb-c7f8ffdd752c" preferred="1" voided="0" />
-    <!--<patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="8" patient_id ="9" identifier="GAN200007" identifier_type="1"  creator="1"  uuid="38e32e32-0a45-49f1-adf1-d1a0280a3065" preferred="1" voided="0" />-->
-    <!--<patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="9" patient_id ="10" identifier="GAN200008" identifier_type="1"  creator="1"  uuid="0f743697-3726-48f8-914e-af65010fa50b" preferred="1" voided="0" />-->
-    <!--<patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="10" patient_id ="11" identifier="GAN200009" identifier_type="1"  creator="1"  uuid="9bc2d57d-3fd4-4993-bf3b-d79ac1f8519f" preferred="1" voided="0" />-->
-    <!--<patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="11" patient_id ="12" identifier="GAN200010" identifier_type="1"  creator="1"  uuid="034b464d-6f47-41c7-8d5e-2264026c00a6" preferred="1" voided="0" />-->
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="12" patient_id ="101" identifier="GAN300001" identifier_type="1"  creator="1"  uuid="034b464d-6f47-41c7-8d65-2264026c00a6" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="13" patient_id ="102" identifier="SEV300001" identifier_type="1"  creator="1"  uuid="234b894d-6f47-41c7-8d65-2264026c00a6" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="14" patient_id ="103" identifier="SEV500003" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-2264026c00a6" preferred="1" voided="0" />

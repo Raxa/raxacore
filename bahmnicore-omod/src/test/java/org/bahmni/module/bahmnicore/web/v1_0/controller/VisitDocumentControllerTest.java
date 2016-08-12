@@ -1,6 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.model.DocumentImage;
+import org.bahmni.module.bahmnicore.model.Document;
 import org.bahmni.module.bahmnicore.service.PatientDocumentService;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
@@ -53,11 +55,11 @@ public class VisitDocumentControllerTest {
         when(patientService.getPatientByUuid("patient-uuid")).thenReturn(patient);
         when(administrationService.getGlobalProperty("bahmni.encounterType.default")).thenReturn("consultation");
 
-        DocumentImage image = new DocumentImage("abcd", "jpeg", null, "patient-uuid");
+        Document document = new Document("abcd", "jpeg", null, "patient-uuid", "image");
 
-        visitDocumentController.saveDocument(image);
+        visitDocumentController.saveDocument(document);
 
-        verify(patientDocumentService).saveDocument(1, "consultation", "abcd", "jpeg");
+        verify(patientDocumentService).saveDocument(1, "consultation", "abcd", "jpeg", document.getFileType());
         verify(administrationService).getGlobalProperty("bahmni.encounterType.default");
     }
 
@@ -71,11 +73,11 @@ public class VisitDocumentControllerTest {
         when(patientService.getPatientByUuid("patient-uuid")).thenReturn(patient);
         when(administrationService.getGlobalProperty("bahmni.encounterType.default")).thenReturn("consultation");
 
-        DocumentImage image = new DocumentImage("abcd", "jpeg", "radiology", "patient-uuid");
+        Document document = new Document("abcd", "jpeg", "radiology", "patient-uuid", "image");
 
-        visitDocumentController.saveDocument(image);
+        visitDocumentController.saveDocument(document);
 
-        verify(patientDocumentService).saveDocument(1, "radiology", "abcd", "jpeg");
+        verify(patientDocumentService).saveDocument(1, "radiology", "abcd", "jpeg", document.getFileType());
         verifyZeroInteractions(administrationService);
     }
 
@@ -84,7 +86,7 @@ public class VisitDocumentControllerTest {
         Visit visit = new Visit();
         visit.setUuid("visit-uuid");
         VisitDocumentRequest visitDocumentRequest = new VisitDocumentRequest("patient-uuid", "visit-uuid", "visit-type-uuid",
-                null, null, "encounter-uuid", null,null,"provider-uuid","location-uuid",null);
+                null, null, "encounter-uuid", null, null, "provider-uuid", "location-uuid", null);
 
         when(visitDocumentService.upload(visitDocumentRequest)).thenReturn(visit);
 
