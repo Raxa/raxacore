@@ -36,6 +36,8 @@ public class PatientSearchBuilder {
 			" left join person_name pn on pn.person_id = p.person_id" +
 			" left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
 			" inner join patient_identifier pi on pi.patient_id = p.person_id " +
+			" join patient_identifier_type pit on pi.identifier_type = pit.patient_identifier_type_id" +
+			" join global_property gp on gp.property='emr.primaryIdentifierType' and gp.property_value=pit.uuid" +
 		 	"%s" +
 			" left outer join visit_attribute va on va.visit_id = v.visit_id " +
 			"   and va.attribute_type_id = (select visit_attribute_type_id from visit_attribute_type where name='Admission Status') " +

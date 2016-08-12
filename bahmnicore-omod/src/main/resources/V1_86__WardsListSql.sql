@@ -39,6 +39,8 @@ FROM bed_location_map blm
   INNER JOIN person pv ON pv.person_id = bpam.patient_id
   INNER JOIN person_name pn ON pn.person_id = pv.person_id
   INNER JOIN patient_identifier pi ON pv.person_id = pi.patient_id
+  INNER JOIN patient_identifier_type pit on pi.identifier_type = pit.patient_identifier_type_id
+  INNER JOIN global_property gp on gp.property='emr.primaryIdentifierType' and gp.property_value=pit.uuid
   INNER JOIN person_address pa ON pa.person_id = pv.person_id
   INNER JOIN (SELECT
                 patient_id,
