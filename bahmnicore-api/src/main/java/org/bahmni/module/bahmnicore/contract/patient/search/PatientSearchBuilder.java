@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class PatientSearchBuilder {
 
-	private String visitJoin = " left outer join visit v on v.patient_id = pat.patient_id and v.date_stopped is null ";
+	private String visitJoin = " left outer join visit v on v.patient_id = p.person_id and v.date_stopped is null ";
 	public static final String SELECT_STATEMENT = "select " +
 			"p.uuid as uuid, " +
 			"p.person_id as personId, " +
@@ -31,9 +31,8 @@ public class PatientSearchBuilder {
 			"v.uuid as activeVisitUuid, " +
 			"(CASE va.value_reference WHEN 'Admitted' THEN TRUE ELSE FALSE END) as hasBeenAdmitted ";
 	public static final String WHERE_CLAUSE = " where p.voided = 'false' and pn.voided = 'false' and pn.preferred=true ";
-	public static final String FROM_TABLE = " from patient pat " ;
-	public static final String JOIN_CLAUSE =  " inner join person p on pat.patient_id=p.person_id " +
-			" left join person_name pn on pn.person_id = p.person_id" +
+	public static final String FROM_TABLE = " from person p ";
+	public static final String JOIN_CLAUSE = " left join person_name pn on pn.person_id = p.person_id" +
 			" left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
 			" inner join patient_identifier pi on pi.patient_id = p.person_id " +
 			" join patient_identifier_type pit on pi.identifier_type = pit.patient_identifier_type_id" +
