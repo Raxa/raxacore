@@ -2,6 +2,7 @@ package org.bahmni.module.referencedata.helper;
 
 
 import org.bahmni.module.referencedata.contract.ConceptDetails;
+import org.bahmni.module.referencedata.contract.ConceptName;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.test.builder.ConceptNumericBuilder;
 import org.junit.Before;
@@ -216,8 +217,8 @@ public class ConceptHelperTest {
 
     @Test
     public void shouldGetLeafConceptNames() throws Exception {
-        Concept weightConcept = new ConceptNumericBuilder().withName("Weight").withClass("N/A").withLowNormal(50.0).withHiNormal(100.0).build();
-        Concept heightConcept = new ConceptNumericBuilder().withName("Height").withClass("N/A").withUnit("Cms").withLowNormal(140.0).withHiNormal(180.0).build();
+        Concept weightConcept = new ConceptNumericBuilder().withName("Weight").withShortName("WeightShort").withClass("N/A").withLowNormal(50.0).withHiNormal(100.0).build();
+        Concept heightConcept = new ConceptNumericBuilder().withName("Height").withShortName("HeightShort").withClass("N/A").withUnit("Cms").withLowNormal(140.0).withHiNormal(180.0).build();
         Concept systolicConcept = new ConceptNumericBuilder().withName("Systolic").withClass("N/A").build();
         Concept diastolicConcept = new ConceptNumericBuilder().withName("Diastolic").withClass("N/A").build();
         Concept bpConcept = new ConceptBuilder().withName("BP").withSetMember(systolicConcept).withSetMember(diastolicConcept).withSet(true).withClass("N/A").build();
@@ -226,13 +227,13 @@ public class ConceptHelperTest {
         ArrayList<Concept> concepts = new ArrayList<>();
         concepts.add(vitalsConcept);
 
-        Set<String> leafConceptNames = conceptHelper.getLeafConceptNames(concepts);
+        Set<ConceptName> leafConceptNames = conceptHelper.getLeafConceptNames(concepts);
         assertNotNull("Leaf concept names should not be null", leafConceptNames);
         assertEquals(4, leafConceptNames.size());
-        assertTrue("Should contain height", leafConceptNames.contains("Height"));
-        assertTrue("Should contain weight", leafConceptNames.contains("Weight"));
-        assertTrue("Should contain systolic", leafConceptNames.contains("Systolic"));
-        assertTrue("Should contain diastolic", leafConceptNames.contains("Diastolic"));
+        assertTrue("Should contain height", leafConceptNames.contains(new ConceptName("Height", "HeightShort")));
+        assertTrue("Should contain weight", leafConceptNames.contains(new ConceptName("Weight", "WeightShort")));
+        assertTrue("Should contain systolic", leafConceptNames.contains(new ConceptName("Systolic", null)));
+        assertTrue("Should contain diastolic", leafConceptNames.contains(new ConceptName("Diastolic", null)));
     }
 
     @Test
@@ -247,12 +248,12 @@ public class ConceptHelperTest {
         ArrayList<Concept> concepts = new ArrayList<>();
         concepts.add(vitalsConcept);
 
-        Set<String> leafConceptNames = conceptHelper.getLeafConceptNames(concepts);
+        Set<ConceptName> leafConceptNames = conceptHelper.getLeafConceptNames(concepts);
         assertNotNull("Leaf concept names should not be null", leafConceptNames);
         assertEquals(3, leafConceptNames.size());
-        assertTrue("Should contain height", leafConceptNames.contains("Height"));
-        assertFalse("Should not contain weight", leafConceptNames.contains("Weight"));
-        assertTrue("Should contain systolic", leafConceptNames.contains("Systolic"));
-        assertTrue("Should contain diastolic", leafConceptNames.contains("Diastolic"));
+        assertTrue("Should contain height", leafConceptNames.contains(new ConceptName("Height", null)));
+        assertFalse("Should not contain weight", leafConceptNames.contains(new ConceptName("Weight", null)));
+        assertTrue("Should contain systolic", leafConceptNames.contains(new ConceptName("Systolic", null)));
+        assertTrue("Should contain diastolic", leafConceptNames.contains(new ConceptName("Diastolic", null)));
     }
 }

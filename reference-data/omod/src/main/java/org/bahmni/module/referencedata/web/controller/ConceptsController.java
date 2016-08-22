@@ -1,6 +1,7 @@
 package org.bahmni.module.referencedata.web.controller;
 
 import org.bahmni.module.referencedata.contract.ConceptDetails;
+import org.bahmni.module.referencedata.contract.ConceptName;
 import org.bahmni.module.referencedata.helper.ConceptHelper;
 import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
 import org.bahmni.module.referencedata.labconcepts.service.ReferenceDataConceptService;
@@ -54,9 +55,9 @@ public class ConceptsController extends BaseRestController {
 
     @RequestMapping(value = "/leafConceptNames", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<Set<String>> getLeafConcepts(@RequestParam(value = "conceptNames", required = true) List<String> conceptNames) {
+    public ResponseEntity<Set<ConceptName>> getLeafConcepts(@RequestParam(value = "conceptNames", required = true) List<String> conceptNames) {
         List<Concept> concepts = conceptHelper.getConceptsForNames(conceptNames);
-        Set<String> leafConceptDetails = conceptHelper.getLeafConceptNames(concepts);
+        Set<ConceptName> leafConceptDetails = conceptHelper.getLeafConceptNames(concepts);
         return new ResponseEntity<>(leafConceptDetails, HttpStatus.OK);
     }
 

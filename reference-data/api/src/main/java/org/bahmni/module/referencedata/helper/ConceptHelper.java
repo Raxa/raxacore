@@ -158,16 +158,18 @@ public class ConceptHelper {
         }
     }
 
-    public Set<String> getLeafConceptNames(List<Concept> concepts) {
-        Set<String> leafConcepts = new LinkedHashSet<>();
+    public Set<org.bahmni.module.referencedata.contract.ConceptName> getLeafConceptNames(List<Concept> concepts) {
+        Set<org.bahmni.module.referencedata.contract.ConceptName> leafConcepts = new LinkedHashSet<>();
         getLeafConceptName(leafConcepts, concepts);
         return leafConcepts;
     }
 
-    private void getLeafConceptName(Set<String> leafConcepts, List<Concept> concepts) {
+    private void getLeafConceptName(Set<org.bahmni.module.referencedata.contract.ConceptName> leafConcepts, List<Concept> concepts) {
         for (Concept concept : concepts) {
             if (!concept.isSet() && !concept.isRetired()) {
-                leafConcepts.add(getConceptName(concept, ConceptNameType.FULLY_SPECIFIED));
+                String fullySpecifiedName = getConceptName(concept, ConceptNameType.FULLY_SPECIFIED);
+                String shortName = getConceptName(concept, ConceptNameType.SHORT);
+                leafConcepts.add(new org.bahmni.module.referencedata.contract.ConceptName(fullySpecifiedName, shortName));
             } else if (concept.isSet() && !concept.isRetired()) {
                 getLeafConceptName(leafConcepts, concept.getSetMembers());
             }
