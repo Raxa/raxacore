@@ -63,6 +63,7 @@ public class PatientAddressFieldQueryHelper {
 	}
 
 	public String appendToGroupByClause(String fieldName) {
+		if(isEmpty(fieldName)) return  addressFieldName;
 		return addressFieldName + ", " + fieldName;
 	}
 }
