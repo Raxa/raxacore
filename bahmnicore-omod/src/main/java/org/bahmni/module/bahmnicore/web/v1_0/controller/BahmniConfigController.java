@@ -17,6 +17,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.VisitService;
+import org.openmrs.module.rulesengine.engine.RulesEngine;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,8 @@ public class BahmniConfigController extends BaseRestController {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private RulesEngine rulesEngine;
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
@@ -94,8 +97,11 @@ public class BahmniConfigController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/drugOrders")
     @ResponseBody
-    public DrugOrderConfigResponse getDrugOrderConfig() {
-        return drugOrderService.getConfig();
+    public DrugOrderConfigResponse getDrugOrderConfig() throws Exception {
+        String[] ruleNames=rulesEngine.getRuleNames();
+        DrugOrderConfigResponse configResponse=drugOrderService.getConfig();
+        configResponse.setDosingRules(ruleNames);
+        return configResponse;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/bahmniencounter")

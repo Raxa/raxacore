@@ -4,10 +4,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.openmrs.module.rulesengine.domain.DosageRequest;
 import org.openmrs.module.rulesengine.domain.Dose;
 import org.openmrs.module.rulesengine.engine.RulesEngine;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -16,14 +18,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class DoseCalculatorControllerTest {
-
-    @Mock
-    private RulesEngine rulesEngine;
 
     @InjectMocks
     DoseCalculatorController doseCalculatorController;
+
+    @Mock
+    RulesEngine rulesEngine;
 
     @Test
     public void shouldParseTheJsonDoseRequestAndReturnsConvertedDoseObject() throws Exception {
@@ -38,5 +40,4 @@ public class DoseCalculatorControllerTest {
         assertEquals("testdrug",dose.getDrugName());
         verify(rulesEngine, times(1)).calculateDose(any(DosageRequest.class));
     }
-
 }

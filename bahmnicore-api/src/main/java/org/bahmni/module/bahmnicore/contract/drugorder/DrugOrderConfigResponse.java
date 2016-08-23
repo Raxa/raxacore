@@ -11,7 +11,7 @@ public class DrugOrderConfigResponse {
     private List<ConceptData> routes;
     private List<ConceptData> durationUnits;
     private List<ConceptData> dispensingUnits;
-    private List<ConceptData> dosingRules;
+    private String[] dosingRules;
     private List<ConceptData> dosingInstructions;
     private List<EncounterTransaction.Concept> orderAttributes;
     private List<OrderFrequencyData> frequencies = new ArrayList<>();
@@ -64,13 +64,14 @@ public class DrugOrderConfigResponse {
         return dosingInstructions;
     }
 
-    public List<ConceptData> getDosingRules() {
+    public String[] getDosingRules() {
         return dosingRules;
     }
 
-    public void setDosingRules(List<ConceptData> dosingRules) {
+    public void setDosingRules(String[] dosingRules) {
         this.dosingRules = dosingRules;
     }
+
 
     public List<EncounterTransaction.Concept> getOrderAttributes() {
         return orderAttributes;
