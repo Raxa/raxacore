@@ -17,10 +17,10 @@ import java.util.Map;
 public class PatientSearchBuilder {
 
 	private String visitJoin = " left outer join visit v on v.patient_id = p.person_id and v.date_stopped is null ";
+	private static String VISIT_JOIN = "_VISIT_JOIN_";
 	public static final String SELECT_STATEMENT = "select " +
 			"p.uuid as uuid, " +
 			"p.person_id as personId, " +
-			"pi.identifier as identifier, " +
 			"pn.given_name as givenName, " +
 			"pn.middle_name as middleName, " +
 			"pn.family_name as familyName, " +
@@ -29,20 +29,30 @@ public class PatientSearchBuilder {
 			"p.death_date as deathDate, " +
 			"p.date_created as dateCreated, " +
 			"v.uuid as activeVisitUuid, " +
+			"primary_identifier.identifier as identifier, " +
+			"extra_identifiers.identifiers as extraIdentifiers, " +
 			"(CASE va.value_reference WHEN 'Admitted' THEN TRUE ELSE FALSE END) as hasBeenAdmitted ";
 	public static final String WHERE_CLAUSE = " where p.voided = 'false' and pn.voided = 'false' and pn.preferred=true ";
 	public static final String FROM_TABLE = " from person p ";
 	public static final String JOIN_CLAUSE = " left join person_name pn on pn.person_id = p.person_id" +
 			" left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
-			" inner join patient_identifier pi on pi.patient_id = p.person_id " +
-			" join patient_identifier_type pit on pi.identifier_type = pit.patient_identifier_type_id" +
-			" join global_property gp on gp.property='emr.primaryIdentifierType' and gp.property_value=pit.uuid" +
-		 	"%s" +
+			" JOIN (SELECT identifier, patient_id" +
+			"      FROM patient_identifier pi" +
+			" JOIN patient_identifier_type pit ON pi.identifier_type = pit.patient_identifier_type_id AND pi.voided IS FALSE AND pit.retired IS FALSE" +
+			" JOIN global_property gp ON gp.property = 'emr.primaryIdentifierType' AND gp.property_value = pit.uuid" +
+			"      GROUP BY pi.patient_id) as primary_identifier ON p.person_id = primary_identifier.patient_id" +
+			" LEFT JOIN (SELECT concat('{', group_concat((concat('\"', pit.name, '\":\"', pi.identifier, '\"')) SEPARATOR ','), '}') AS identifiers," +
+			"        patient_id" +
+			"      FROM patient_identifier pi" +
+			"        JOIN patient_identifier_type pit ON pi.identifier_type = pit.patient_identifier_type_id AND pi.voided IS FALSE AND pit.retired IS FALSE "+
+			" JOIN global_property gp ON gp.property = 'emr.primaryIdentifierType' AND gp.property_value != pit.uuid" +
+			"  GROUP BY pi.patient_id) as extra_identifiers ON p.person_id = extra_identifiers.patient_id" +
+			VISIT_JOIN +
 			" left outer join visit_attribute va on va.visit_id = v.visit_id " +
 			"   and va.attribute_type_id = (select visit_attribute_type_id from visit_attribute_type where name='Admission Status') " +
 			"   and va.voided = 0";
 	private static final String GROUP_BY_KEYWORD = " group by ";
-	public static final String ORDER_BY = " order by p.date_created desc LIMIT :limit OFFSET :offset";
+	public static final String ORDER_BY = " order by primary_identifier.identifier asc LIMIT :limit OFFSET :offset";
 	private static final String LIMIT_PARAM = "limit";
 	private static final String OFFSET_PARAM = "offset";
 
@@ -62,7 +72,7 @@ public class PatientSearchBuilder {
 		from  = FROM_TABLE;
 		join = JOIN_CLAUSE;
 		orderBy = ORDER_BY;
-		groupBy = "";
+		groupBy = " p.person_id";
 		this.sessionFactory = sessionFactory;
 		types = new HashMap<>();
 
@@ -83,9 +93,9 @@ public class PatientSearchBuilder {
 		return this;
 	}
 
-	public PatientSearchBuilder withPatientIdentifier(String identifier,String identifierPrefix){
-		PatientIdentifierQueryHelper patientIdentifierQueryHelper = new PatientIdentifierQueryHelper(identifier,identifierPrefix);
-		where = patientIdentifierQueryHelper.appendToWhereClause(where);
+	public PatientSearchBuilder withPatientIdentifier(String identifier, Boolean filterOnAllIdentifiers){
+		PatientIdentifierQueryHelper patientIdentifierQueryHelper = new PatientIdentifierQueryHelper(identifier, filterOnAllIdentifiers);
+		join = patientIdentifierQueryHelper.appendToJoinClause(join);
 		return this;
 	}
 
@@ -97,7 +107,6 @@ public class PatientSearchBuilder {
 		PatientAttributeQueryHelper patientAttributeQueryHelper = new PatientAttributeQueryHelper(customAttribute,personAttributeIds,attributeIds);
 		select = patientAttributeQueryHelper.selectClause(select);
 		join = patientAttributeQueryHelper.appendToJoinClause(join);
-		groupBy = patientAttributeQueryHelper.appendToGroupByClause(groupBy);
 		where = patientAttributeQueryHelper.appendToWhereClause(where);
 		types.putAll(patientAttributeQueryHelper.addScalarQueryResult());
 		return this;
@@ -123,14 +132,13 @@ public class PatientSearchBuilder {
 
 		select = programAttributeQueryHelper.selectClause(select);
 		join = programAttributeQueryHelper.appendToJoinClause(join);
-		groupBy = programAttributeQueryHelper.appendToGroupByClause(groupBy);
 		where = programAttributeQueryHelper.appendToWhereClause(where);
 		types.putAll(programAttributeQueryHelper.addScalarQueryResult());
 		return this;
 	}
 
 	public SQLQuery buildSqlQuery(Integer limit, Integer offset){
-		String joinWithVisit = String.format(this.join, visitJoin);
+		String joinWithVisit = join.replace(VISIT_JOIN, visitJoin);
 		String query = select + from + joinWithVisit + where + GROUP_BY_KEYWORD + groupBy  + orderBy;
 
 		SQLQuery sqlQuery = sessionFactory.getCurrentSession()
@@ -146,7 +154,8 @@ public class PatientSearchBuilder {
 				.addScalar("deathDate", StandardBasicTypes.DATE)
 				.addScalar("dateCreated", StandardBasicTypes.TIMESTAMP)
 				.addScalar("activeVisitUuid", StandardBasicTypes.STRING)
-				.addScalar("hasBeenAdmitted", StandardBasicTypes.BOOLEAN);
+				.addScalar("hasBeenAdmitted", StandardBasicTypes.BOOLEAN)
+				.addScalar("extraIdentifiers", StandardBasicTypes.STRING);
 
 		Iterator<Map.Entry<String,Type>> iterator = types.entrySet().iterator();
 

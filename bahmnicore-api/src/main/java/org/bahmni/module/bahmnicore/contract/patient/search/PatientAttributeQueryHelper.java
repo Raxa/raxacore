@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-
 public class PatientAttributeQueryHelper {
 	private String customAttribute;
 	private List<Integer> personAttributeTypeIds;
@@ -61,10 +59,5 @@ public class PatientAttributeQueryHelper {
 
 	private String enclose(String value) {
 		return String.format("(%s)", value);
-	}
-
-	public String appendToGroupByClause(String fieldName) {
-		String groupByClause = "p.person_id, p.uuid , pi.identifier , pn.given_name , pn.middle_name , pn.family_name , p.gender , p.birthdate , p.death_date , p.date_created , v.uuid";
-		return isEmpty(fieldName)?fieldName+groupByClause: fieldName+","+ groupByClause;
 	}
 }

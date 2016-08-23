@@ -63,7 +63,6 @@ public class PatientAddressFieldQueryHelper {
 	}
 
 	public String appendToGroupByClause(String fieldName) {
-		String groupByClause = addressFieldName + ",p.person_id, p.uuid , pi.identifier , pn.given_name , pn.middle_name , pn.family_name , p.gender , p.birthdate , p.death_date , p.date_created , v.uuid";
-		return isEmpty(fieldName)?fieldName+groupByClause: fieldName+","+ groupByClause;
+		return addressFieldName + ", " + fieldName;
 	}
 }

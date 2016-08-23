@@ -140,6 +140,8 @@
     <person_address person_address_id="2" person_id="1026" preferred="true" city_village="Bilaspur" state_province="Madhya Pradesh" creator="1" date_created="2006-11-24 10:50:16.0" voided="false" void_reason="" county_district="Dindori" address3="Dindori"/>
     <person_address person_address_id="3" person_id="103" preferred="true" city_village="Bilaspur" state_province="Madhya Pradesh" creator="1" date_created="2006-11-24 10:50:16.0" voided="false" void_reason="" county_district="Dindori" address3="Dindori"/>
     <global_property property="emr.primaryIdentifierType" property_value="1a339fe9-38bc-4ab3-b180-320988c0b968" uuid="9885827e-26fe-102b-80cb-2017a47871b3"/>
+    <global_property property="emr.extraPatientIdentifierTypes" property_value="b0d10dc0-d8ce-11e3-9c1a-080020zd9a66" uuid="9885827e-26fe-102b-80cb-2017a4ls71b3"/>
+    <patient_identifier_type patient_identifier_type_id="6" name="National ID" description="National ID card No" format="" check_digit="false" creator="1" date_created="2008-08-15 15:59:20.0" required="false" format_description="" validator="" retired="false" uuid="b0d10dc0-d8ce-11e3-9c1a-080020zd9a66"/>
 
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="1" patient_id ="1024" identifier="GAN200000" identifier_type="1"  creator="1"  uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="2" patient_id="1025" identifier="GAN200001" identifier_type="1"  creator="1"  uuid="7facee27-82c0-4375-ae95-a90f129ea493" preferred="1" voided="0" />
@@ -158,6 +160,7 @@
     <patient_identifier date_created="2005-09-23 00:00:00" patient_identifier_id="19" patient_id ="108" identifier="HOS1227" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-0064026c11b8" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-23 00:00:00" patient_identifier_id="20" patient_id ="109" identifier="HOS1228" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-0064026c22b8" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-23 00:00:00" patient_identifier_id="21" patient_id ="110" identifier="HOS1229" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-0064026c22b9" preferred="1" voided="0" />
+    <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="22" patient_id="1025" identifier="NAT100010" identifier_type="6"  creator="1"  uuid="7facee27-82c0-4375-ae95-a90lk29ea493" preferred="0" voided="0" />
 
 
     <visit visit_id="1" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="2" visit_type_id="1" date_stopped="2013-05-08 04:08:16"  location_id="2" creator="1"  uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>

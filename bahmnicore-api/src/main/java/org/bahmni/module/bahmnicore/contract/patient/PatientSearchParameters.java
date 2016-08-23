@@ -15,26 +15,21 @@ public class PatientSearchParameters {
     private Integer length;
     private String customAttribute;
     private String[] patientAttributes;
-    private String identifierPrefix;
     private String programAttributeFieldValue;
     private String programAttributeFieldName;
     private String loginLocationUuid;
     private String[] addressSearchResultFields;
     private String[] patientSearchResultFields;
+    private Boolean filterOnAllIdentifiers;
 
     public PatientSearchParameters(RequestContext context) {
         String query = context.getParameter("q");
         String identifier = context.getParameter("identifier");
-        String identifierPrefix = context.getParameter("identifierPrefix");
-        if (identifierPrefix == null)
-            identifierPrefix = "";
         if (identifier != null) {
             this.setIdentifier(identifier);
-            this.setIdentifierPrefix(identifierPrefix);
         } else if (query != null) {
             if (query.matches(".*\\d+.*")) {
                 this.setIdentifier(query);
-                this.setIdentifierPrefix("");
             } else {
                 this.setName(query);
             }
@@ -43,7 +38,7 @@ public class PatientSearchParameters {
         this.setLength(context.getLimit());
         this.setCustomAttribute(context.getParameter("customAttribute"));
         String addressFieldNameFromRequest = context.getParameter("addressFieldName");
-        if  (StringUtils.isNotEmpty(addressFieldNameFromRequest)){
+        if (StringUtils.isNotEmpty(addressFieldNameFromRequest)) {
             this.setAddressFieldName(addressFieldNameFromRequest);
         } else {
             this.setAddressFieldName("city_village");
@@ -56,6 +51,7 @@ public class PatientSearchParameters {
         this.setProgramAttributeFieldValue(context.getParameter("programAttributeFieldValue"));
         this.setProgramAttributeFieldName(context.getParameter("programAttributeFieldName"));
         this.setFilterPatientsByLocation(Boolean.valueOf(context.getParameter("filterPatientsByLocation")));
+        this.setFilterOnAllIdentifiers(Boolean.valueOf(context.getParameter("filterOnAllIdentifiers")));
         this.setLoginLocationUuid(context.getParameter("loginLocationUuid"));
     }
 
@@ -66,10 +62,6 @@ public class PatientSearchParameters {
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
-
-    public String getIdentifierPrefix() {return identifierPrefix;}
-
-    public void setIdentifierPrefix(String identifierPrefix) {this.identifierPrefix = identifierPrefix;}
 
     public String getName() {
         return name;
@@ -173,5 +165,13 @@ public class PatientSearchParameters {
 
     public void setFilterPatientsByLocation(Boolean filterPatientsByLocation) {
         this.filterPatientsByLocation = filterPatientsByLocation;
+    }
+
+    public void setFilterOnAllIdentifiers(Boolean filterOnAllIdentifiers) {
+        this.filterOnAllIdentifiers = filterOnAllIdentifiers;
+    }
+
+    public Boolean getFilterOnAllIdentifiers() {
+        return filterOnAllIdentifiers;
     }
 }

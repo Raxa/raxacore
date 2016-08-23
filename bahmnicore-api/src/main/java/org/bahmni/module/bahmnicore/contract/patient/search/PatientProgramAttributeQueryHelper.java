@@ -8,8 +8,6 @@ import org.hibernate.type.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-
 public class PatientProgramAttributeQueryHelper {
 	protected String patientProgramAttributeValue;
 	protected Integer programAttributeTypeId;
@@ -51,10 +49,4 @@ public class PatientProgramAttributeQueryHelper {
 	protected String enclose(String value) {
 		return String.format("(%s)", value);
 	}
-
-	public String appendToGroupByClause(String fieldName) {
-		String groupByClause = "p.person_id, p.uuid , pi.identifier , pn.given_name , pn.middle_name , pn.family_name , p.gender , p.birthdate , p.death_date , p.date_created , v.uuid";
-		return isEmpty(fieldName)?fieldName+groupByClause: fieldName+","+ groupByClause;
-	}
-
 }
