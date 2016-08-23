@@ -35,6 +35,7 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
     private Double hiNormal;
     private Double lowNormal;
     private Boolean isUnknown;
+    private String formNamespace;
 
     public BahmniObservation() {
         encounterTransactionObservation = new EncounterTransaction.Observation();
@@ -308,7 +309,6 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
     }
 
     public void setParentConceptUuid(String parentConceptUuid) {
-        this.encounterTransactionObservation.setFormNamespace(parentConceptUuid);
         this.parentConceptUuid = parentConceptUuid;
     }
 
@@ -362,5 +362,15 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
 
     public Boolean isUnknown() {
         return isUnknown;
+    }
+
+    public String getFormNamespace() {
+        return encounterTransactionObservation.getFormNamespace();
+    }
+
+    public BahmniObservation setFormNamespace(String formNamespace) {
+        encounterTransactionObservation.setFormNamespace(formNamespace);
+        this.formNamespace = formNamespace;
+        return this;
     }
 }
