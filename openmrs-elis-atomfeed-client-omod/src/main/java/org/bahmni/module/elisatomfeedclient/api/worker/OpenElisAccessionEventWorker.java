@@ -9,6 +9,8 @@ import org.bahmni.module.elisatomfeedclient.api.domain.AccessionDiff;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccession;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisAccessionNote;
 import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
+import org.bahmni.module.elisatomfeedclient.api.elisFeedInterceptor.ElisFeedAccessionInterceptor;
+import org.bahmni.module.elisatomfeedclient.api.elisFeedInterceptor.ElisFeedEncounterInterceptor;
 import org.bahmni.module.elisatomfeedclient.api.exception.OpenElisFeedException;
 import org.bahmni.module.elisatomfeedclient.api.mapper.AccessionHelper;
 import org.bahmni.webclients.HttpClient;
@@ -25,7 +27,6 @@ import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
-import org.openmrs.module.bahmniemrapi.elisFeedInterceptor.ElisFeedInterceptor;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -81,7 +82,13 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         logger.info("Processing event : " + accessionUrl);
         try {
             OpenElisAccession openElisAccession = httpClient.get(accessionUrl, OpenElisAccession.class);
+            runInterceptor(ElisFeedAccessionInterceptor.class, openElisAccession);
 
+            for(OpenElisTestDetail openElisTestDetail : openElisAccession.getTestDetails()) {
+                if(openElisTestDetail.getTestUuid() == null) {
+                    throw new RuntimeException("Concept for lab test'"+openElisTestDetail.getTestName()+"' not found in openmrs");
+                }
+            }
             Encounter orderEncounter = encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid());
 
             boolean shouldSaveOrderEncounter = false;
@@ -108,7 +115,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 processAccessionNotes(openElisAccession, orderEncounter);
             }
             Set<Encounter> updatedEncounters = associateTestResultsToOrder(openElisAccession);
-            runInterceptors(updatedEncounters);
+            runInterceptor(ElisFeedEncounterInterceptor.class, updatedEncounters);
 
             saveUpdatedEncounters(updatedEncounters);
         } catch (IOException e) {
@@ -120,13 +127,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         }
     }
 
-    private void saveUpdatedEncounters(Set<Encounter> updatedEncounters) {
-        for (Encounter updatedEncounter : updatedEncounters) {
-            encounterService.saveEncounter(updatedEncounter);
-        }
-    }
-
-    private void runInterceptors(Set<Encounter> encounters) {
+     void runInterceptor(Class className, Object object) {
         GroovyClassLoader gcl = new GroovyClassLoader();
         File directory = new File(OpenmrsUtil.getApplicationDataDirectory() + "elisFeedInterceptor");
         File[] files = directory.listFiles();
@@ -135,16 +136,34 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 Class clazz;
                 try {
                     clazz = gcl.parseClass(file);
-                    logger.info("BahmniEncounterTransactionUpdateAdvice : Using rules in " + clazz.getName());
-                    ElisFeedInterceptor elisFeedInterceptor = (ElisFeedInterceptor) clazz.newInstance();
-                    elisFeedInterceptor.run(encounters);
-                    logger.info("BahmniEncounterTransactionUpdateAdvice : Done");
+                    if (className.equals(ElisFeedEncounterInterceptor.class)
+                            && ElisFeedEncounterInterceptor.class.isAssignableFrom(clazz)) {
+                        logger.info("BahmniEncounterTransactionUpdateAdvice : Using rules in " + clazz.getName());
+                        ElisFeedEncounterInterceptor elisFeedEncounterInterceptor = (ElisFeedEncounterInterceptor) clazz.newInstance();
+                        Set<Encounter> encounters = (HashSet<Encounter>) object;
+                        elisFeedEncounterInterceptor.run(encounters);
+                        logger.info("BahmniEncounterTransactionUpdateAdvice : Done");
+                    } else if (className.equals(ElisFeedAccessionInterceptor.class)
+                            && ElisFeedAccessionInterceptor.class.isAssignableFrom(clazz)) {
+                        logger.info("BahmniEncounterTransactionUpdateAdvice : Using rules in " + clazz.getName());
+                        ElisFeedAccessionInterceptor elisFeedAccessionInterceptor = (ElisFeedAccessionInterceptor) clazz.newInstance();
+                        elisFeedAccessionInterceptor.run((OpenElisAccession) object);
+                        logger.info("BahmniEncounterTransactionUpdateAdvice : Done");
+                    }
                 } catch (IOException | IllegalAccessException | InstantiationException e) {
                     logger.error(e);
                 }
             }
         }
+
     }
+
+    private void saveUpdatedEncounters(Set<Encounter> updatedEncounters) {
+        for (Encounter updatedEncounter : updatedEncounters) {
+            encounterService.saveEncounter(updatedEncounter);
+        }
+    }
+
 
     private void processAccessionNotes(OpenElisAccession openElisAccession, Encounter orderEncounter) throws ParseException {
 
