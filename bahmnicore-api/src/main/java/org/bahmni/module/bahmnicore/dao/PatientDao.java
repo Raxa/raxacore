@@ -8,10 +8,10 @@ import java.util.List;
 
 public interface PatientDao {
 
-    public List<PatientResponse> getPatients(String identifier, String identifierPrefix, String name, String customAttribute,
+    public List<PatientResponse> getPatients(String identifier, String name, String customAttribute,
                                              String addressFieldName, String addressFieldValue, Integer length, Integer offset,
                                              String[] patientAttributes, String programAttribute, String programAttributeField,
-                                             String[] addressSearchResultFields, String[] patientSearchResultFields, String loginLocationUuid, Boolean filterPatientsByLocation);
+                                             String[] addressSearchResultFields, String[] patientSearchResultFields, String loginLocationUuid, Boolean filterPatientsByLocation, Boolean filterOnAllIdentifiers);
 
     public Patient getPatient(String identifier);
 

@@ -8,6 +8,7 @@ public class PatientResponse {
 
     private String uuid;
     private Date birthDate;
+    private String extraIdentifiers;
 
     public int getPersonId() {
         return personId;
@@ -179,4 +180,11 @@ public class PatientResponse {
         this.hasBeenAdmitted = hasBeenAdmitted;
     }
 
+    public String getExtraIdentifiers() {
+        return extraIdentifiers;
+    }
+
+    public void setExtraIdentifiers(String extraIdentifiers) {
+        this.extraIdentifiers = extraIdentifiers;
+    }
 }

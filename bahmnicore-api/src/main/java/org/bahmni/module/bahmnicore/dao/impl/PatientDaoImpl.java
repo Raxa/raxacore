@@ -31,11 +31,11 @@ public class PatientDaoImpl implements PatientDao {
     }
 
     @Override
-    public List<PatientResponse> getPatients(String identifier, String identifierPrefix, String name, String customAttribute,
+    public List<PatientResponse> getPatients(String identifier, String name, String customAttribute,
                                              String addressFieldName, String addressFieldValue, Integer length,
                                              Integer offset, String[] customAttributeFields, String programAttributeFieldValue,
                                              String programAttributeFieldName, String[] addressSearchResultFields,
-                                             String[] patientSearchResultFields, String loginLocationUuid, Boolean filterPatientsByLocation) {
+                                             String[] patientSearchResultFields, String loginLocationUuid, Boolean filterPatientsByLocation, Boolean filterOnAllIdentifiers) {
         if(isInValidSearchParams(customAttributeFields,programAttributeFieldName)){
             return new ArrayList<>();
         }
@@ -45,7 +45,7 @@ public class PatientDaoImpl implements PatientDao {
         SQLQuery sqlQuery = new PatientSearchBuilder(sessionFactory)
                 .withPatientName(name)
                 .withPatientAddress(addressFieldName,addressFieldValue, addressSearchResultFields)
-                .withPatientIdentifier(identifier,identifierPrefix)
+                .withPatientIdentifier(identifier, filterOnAllIdentifiers)
                 .withPatientAttributes(customAttribute, getPersonAttributeIds(customAttributeFields), getPersonAttributeIds(patientSearchResultFields))
                 .withProgramAttributes(programAttributeFieldValue, programAttributeType)
                 .withLocation(loginLocationUuid, filterPatientsByLocation)

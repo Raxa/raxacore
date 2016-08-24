@@ -6,6 +6,7 @@ import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.api.ConceptNameType;
+import org.openmrs.api.context.Context;
 import org.openmrs.util.LocaleUtility;
 
 public class ConceptNumericBuilder {
@@ -69,6 +70,11 @@ public class ConceptNumericBuilder {
 
     public ConceptNumericBuilder withId(Integer id) {
         concept.setId(id);
+        return this;
+    }
+
+    public ConceptNumericBuilder withShortName(String name) {
+        concept.setShortName(name != null ? new ConceptName(name, Context.getLocale()) : null);
         return this;
     }
 

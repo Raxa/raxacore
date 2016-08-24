@@ -8,8 +8,6 @@ import org.hibernate.type.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-
 public class PatientProgramAttributeQueryHelper {
 	protected String patientProgramAttributeValue;
 	protected Integer programAttributeTypeId;
@@ -25,7 +23,7 @@ public class PatientProgramAttributeQueryHelper {
 	}
 
 	public String appendToJoinClause(String join){
-		return join + " left outer join patient_program pp on pat.patient_id = pp.patient_id and pp.voided=0"
+		return join + " left outer join patient_program pp on p.person_id = pp.patient_id and pp.voided=0"
 				+ " left outer join patient_program_attribute ppa on pp.patient_program_id = ppa.patient_program_id and ppa.voided=0"
 				+ " left outer join program_attribute_type ppt on ppa.attribute_type_id = ppt.program_attribute_type_id and ppa.attribute_type_id ="+programAttributeTypeId.intValue();
 	}
@@ -51,10 +49,4 @@ public class PatientProgramAttributeQueryHelper {
 	protected String enclose(String value) {
 		return String.format("(%s)", value);
 	}
-
-	public String appendToGroupByClause(String fieldName) {
-		String groupByClause = "p.person_id, p.uuid , pi.identifier , pn.given_name , pn.middle_name , pn.family_name , p.gender , p.birthdate , p.death_date , p.date_created , v.uuid";
-		return isEmpty(fieldName)?fieldName+groupByClause: fieldName+","+ groupByClause;
-	}
-
 }

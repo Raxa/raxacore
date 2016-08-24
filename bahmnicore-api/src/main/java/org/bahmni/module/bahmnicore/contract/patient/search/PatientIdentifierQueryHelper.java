@@ -7,30 +7,26 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 public class PatientIdentifierQueryHelper {
 
 	private String identifier;
-	private String identifierPrefix;
+	private final Boolean filterOnAllIdentifiers;
 
-	public PatientIdentifierQueryHelper(String identifier, String identifierPrefix){
+	public PatientIdentifierQueryHelper(String identifier, Boolean filterOnAllIdentifiers) {
 		this.identifier = identifier;
-		this.identifierPrefix = identifierPrefix;
+		this.filterOnAllIdentifiers = filterOnAllIdentifiers;
 	}
 
-	public String appendToWhereClause(String where){
-		String identifierSearchCondition = getIdentifierSearchCondition(identifier, identifierPrefix);
-		where = isEmpty(identifier) ? where : combine(where, "and", enclose(identifierSearchCondition));
-		return where;
+	public String appendToJoinClause(String join) {
+		if (isEmpty(identifier)) {
+			return join;
+		}
+		String extraIdentifierQuery = filterOnAllIdentifiers ? ", 'emr.extraPatientIdentifierTypes'":"";
+		String query = " JOIN (" +
+				"SELECT pi.patient_id " +
+				"FROM patient_identifier pi " +
+				" JOIN patient_identifier_type pit ON pi.identifier_type = pit.patient_identifier_type_id " +
+				" JOIN global_property gp ON gp.property IN ('emr.primaryIdentifierType' "+extraIdentifierQuery+")" +
+				" AND gp.property_value LIKE concat('%', pit.uuid, '%')" +
+				" AND pi.identifier LIKE '%" +StringEscapeUtils.escapeSql(identifier)+ "%' GROUP BY pi.patient_id) " +
+				" AS matched_patient ON matched_patient.patient_id = p.person_id";
+		return join + query;
 	}
-
-	private String combine(String query, String operator, String condition) {
-		return String.format("%s %s %s", query, operator, condition);
-	}
-
-	private String enclose(String value) {
-		return String.format("(%s)", value);
-	}
-
-
-	private String getIdentifierSearchCondition(String identifier, String identifierPrefix) {
-		return " identifier like  '" + identifierPrefix + "%" + StringEscapeUtils.escapeSql(identifier) + "%'";
-	}
-
 }

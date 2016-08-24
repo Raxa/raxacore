@@ -37,14 +37,14 @@ public class PatientAddressFieldQueryHelperTest {
 	public void ensureThatGroupByClauseIsConfiguredAndIsNotEmpty(){
 		PatientAddressFieldQueryHelper patientAddressFieldQueryHelper = new PatientAddressFieldQueryHelper("city_village", "Bilaspur",null);
 		String groupBy = patientAddressFieldQueryHelper.appendToGroupByClause("something");
-		assertEquals("something,city_village,p.person_id, p.uuid , pi.identifier , pn.given_name , pn.middle_name , pn.family_name , p.gender , p.birthdate , p.death_date , p.date_created , v.uuid",groupBy);
+		assertEquals("city_village, something",groupBy);
 	}
 
 	@Test
 	public void ensureThatGroupByClauseIsConfiguredAndIsEmpty(){
 		PatientAddressFieldQueryHelper patientAddressFieldQueryHelper = new PatientAddressFieldQueryHelper("city_village", "Bilaspur",null);
 		String groupBy = patientAddressFieldQueryHelper.appendToGroupByClause("");
-		assertEquals("city_village,p.person_id, p.uuid , pi.identifier , pn.given_name , pn.middle_name , pn.family_name , p.gender , p.birthdate , p.death_date , p.date_created , v.uuid",groupBy);
+		assertEquals("city_village",groupBy);
 	}
 
 	@Test
