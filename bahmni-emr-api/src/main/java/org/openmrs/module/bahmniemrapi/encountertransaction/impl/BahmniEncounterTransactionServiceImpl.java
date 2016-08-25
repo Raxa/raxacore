@@ -7,11 +7,7 @@ import org.openmrs.EncounterType;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
-import org.openmrs.api.EncounterService;
-import org.openmrs.api.LocationService;
-import org.openmrs.api.PatientService;
-import org.openmrs.api.ProviderService;
-import org.openmrs.api.VisitService;
+import org.openmrs.api.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.bahmniemrapi.BahmniEmrAPIException;
@@ -34,6 +30,8 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Transactional
@@ -157,8 +155,15 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
         return new VisitIdentificationHelper(visitService, bahmniVisitLocationService);
     }
 
-    private void handleDrugOrders(BahmniEncounterTransaction bahmniEncounterTransaction,Patient patient) {
-
+    private void handleDrugOrders(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient) throws APIException {
+        try {
+            String drugOrderInvalidMessage = getFirstInvalidDrugOrder(bahmniEncounterTransaction.getDrugOrders());
+            if (StringUtils.isNotEmpty(drugOrderInvalidMessage)) {
+                throw new APIException(drugOrderInvalidMessage);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         bahmniEncounterTransaction.updateDrugOrderIfScheduledDateNotSet(new Date());
 
         if(bahmniEncounterTransaction.hasPastDrugOrders()){
@@ -166,6 +171,20 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
             save(pastEncounterTransaction,patient,null,null);
             bahmniEncounterTransaction.clearDrugOrders();
         }
+    }
+
+    private String getFirstInvalidDrugOrder(List<EncounterTransaction.DrugOrder> drugOrders) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        for (EncounterTransaction.DrugOrder drugOrder : drugOrders) {
+            if ("DISCONTINUE".equals(drugOrder.getAction()) &&
+                    (drugOrder.getEffectiveStartDate().before(new Date()) &&
+                            (drugOrder.getDateActivated() == null ||
+                                    drugOrder.getDateActivated().before(drugOrder.getEffectiveStartDate()) ||
+                                    drugOrder.getDateActivated().after(new Date())))) {
+                return String.format("%s has an invalid stop date. Stop date should be between %s and %s", drugOrder.getDrug().getName(), simpleDateFormat.format(drugOrder.getEffectiveStartDate()), simpleDateFormat.format(new Date()));
+            }
+        }
+        return null;
     }
 
     private void setVisitType(BahmniEncounterTransaction bahmniEncounterTransaction) {
