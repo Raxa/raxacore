@@ -291,13 +291,13 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>rulesengine-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>0.84-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>rulesengine-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>0.84-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
