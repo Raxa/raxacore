@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.mapper;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.Predicate;
 import org.bahmni.module.bahmnicoreui.mapper.DoseInstructionMapper;
 import org.openmrs.Concept;
@@ -206,6 +207,7 @@ public class DrugOrderToTreatmentRegimenMapper {
 			String drugName = drugOrder1.getConcept().getName().getName();
 			String dosage = getDose(drugOrder1);
 			Date startDate = drugOrder1.getScheduledDate() != null ? drugOrder1.getScheduledDate(): drugOrder1.getDateActivated();
+			if(MapUtils.isNotEmpty(regimenRow.getDrugs()) && regimenRow.getDrugs().keySet().contains(drugName) && !"Stop".equals(regimenRow.getDrugs().get(drugName)) && !drugOrder1.getAction().equals(Order.Action.REVISE)) return;
 			if (stoppedDate == null && (startDate.before(regimenRow.getDate()) || startDate.equals(regimenRow.getDate()) ))
 				regimenRow.addDrugs(drugName, dosage);
 			else if (stoppedDate != null && getOnlyDate(stoppedDate).equals(regimenRow.getDate()))
@@ -232,6 +234,7 @@ public class DrugOrderToTreatmentRegimenMapper {
 		String drugName = drugOrder1.getConcept().getName().getName();
 
 		String dosage = getDose(drugOrder1);
+		if(MapUtils.isNotEmpty(regimenRow.getDrugs()) && regimenRow.getDrugs().keySet().contains(drugName) && !"Stop".equals(regimenRow.getDrugs().get(drugName)) && !drugOrder1.getAction().equals(Order.Action.REVISE)) return;
 		if (dateStopped == null && (dateActivated.before(regimenRow.getDate()) || dateActivated.equals(regimenRow.getDate())) ) {
 			regimenRow.addDrugs(drugName, dosage);
 		}

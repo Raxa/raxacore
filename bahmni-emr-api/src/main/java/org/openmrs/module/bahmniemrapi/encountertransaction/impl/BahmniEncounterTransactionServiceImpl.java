@@ -155,15 +155,7 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
         return new VisitIdentificationHelper(visitService, bahmniVisitLocationService);
     }
 
-    private void handleDrugOrders(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient) throws APIException {
-        try {
-            String drugOrderInvalidMessage = getFirstInvalidDrugOrder(bahmniEncounterTransaction.getDrugOrders());
-            if (StringUtils.isNotEmpty(drugOrderInvalidMessage)) {
-                throw new APIException(drugOrderInvalidMessage);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    private void handleDrugOrders(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient) {
         bahmniEncounterTransaction.updateDrugOrderIfScheduledDateNotSet(new Date());
 
         if(bahmniEncounterTransaction.hasPastDrugOrders()){
@@ -171,20 +163,6 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
             save(pastEncounterTransaction,patient,null,null);
             bahmniEncounterTransaction.clearDrugOrders();
         }
-    }
-
-    private String getFirstInvalidDrugOrder(List<EncounterTransaction.DrugOrder> drugOrders) throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        for (EncounterTransaction.DrugOrder drugOrder : drugOrders) {
-            if ("DISCONTINUE".equals(drugOrder.getAction()) &&
-                    (drugOrder.getEffectiveStartDate().before(new Date()) &&
-                            (drugOrder.getDateActivated() == null ||
-                                    drugOrder.getDateActivated().before(drugOrder.getEffectiveStartDate()) ||
-                                    drugOrder.getDateActivated().after(new Date())))) {
-                return String.format("%s has an invalid stop date. Stop date should be between %s and %s", drugOrder.getDrug().getName(), simpleDateFormat.format(drugOrder.getEffectiveStartDate()), simpleDateFormat.format(new Date()));
-            }
-        }
-        return null;
     }
 
     private void setVisitType(BahmniEncounterTransaction bahmniEncounterTransaction) {
