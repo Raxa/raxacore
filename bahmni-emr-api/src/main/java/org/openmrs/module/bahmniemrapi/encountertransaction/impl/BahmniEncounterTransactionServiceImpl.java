@@ -2,11 +2,7 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 
 
 import org.apache.commons.lang3.StringUtils;
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Patient;
-import org.openmrs.Visit;
-import org.openmrs.VisitType;
+import org.openmrs.*;
 import org.openmrs.api.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.impl.BaseOpenmrsService;
@@ -30,8 +26,6 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Transactional
