@@ -4232,4 +4232,8 @@
         <comment>update the search query to consider multiple identifiers</comment>
         <sqlFile path="V1_94_PatientSearchSql.sql"/>
     </changeSet>
+    <changeSet id="bahmni-WardsList-Update-201609011124" author="Jaswanth">
+        <comment>Update the wards list sql to use left join for patient address</comment>
+        <sqlFile path="V1_95_WardsListSql.sql"/>
+    </changeSet>
 </databaseChangeLog>
