@@ -175,7 +175,7 @@ public class BahmniObsServiceImplTest {
 
         bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, conceptNames);
 
-        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), null, ObsDaoImpl.OrderBy.DESC);
+        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), null, ObsDaoImpl.OrderBy.DESC, null, null);
     }
 
     @Test
@@ -186,7 +186,7 @@ public class BahmniObsServiceImplTest {
 
         bahmniObsService.getLatestObservationsForPatientProgram(patientProgramUuid, conceptNames);
 
-        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), 1, ObsDaoImpl.OrderBy.DESC);
+        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), 1, ObsDaoImpl.OrderBy.DESC, null, null);
     }
 
     @Test
@@ -197,7 +197,7 @@ public class BahmniObsServiceImplTest {
 
         bahmniObsService.getInitialObservationsForPatientProgram(patientProgramUuid, conceptNames);
 
-        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), 1, ObsDaoImpl.OrderBy.ASC);
+        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), 1, ObsDaoImpl.OrderBy.ASC, null, null);
     }
 
     @Test

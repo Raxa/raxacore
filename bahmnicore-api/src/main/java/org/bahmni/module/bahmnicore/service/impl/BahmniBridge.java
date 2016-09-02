@@ -129,7 +129,7 @@ public class BahmniBridge {
         List<String> conceptNames = new ArrayList<>();
         conceptNames.add(conceptName);
         if (patientProgramUuid != null) {
-            obsList = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, 1,  ObsDaoImpl.OrderBy.DESC);
+            obsList = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, 1,  ObsDaoImpl.OrderBy.DESC, null, null);
         } else {
             obsList = obsDao.getLatestObsFor(patientUuid, conceptName, 1);
         }
