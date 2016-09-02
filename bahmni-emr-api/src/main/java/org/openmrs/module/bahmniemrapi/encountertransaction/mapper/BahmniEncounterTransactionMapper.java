@@ -66,7 +66,9 @@ public class BahmniEncounterTransactionMapper {
         Patient patient = patientService.getPatientByUuid(encounterTransaction.getPatientUuid());
         if (patient != null) {
             PatientIdentifier patientIdentifier = patient.getPatientIdentifier();
-            bahmniEncounterTransaction.setPatientId(patientIdentifier.getIdentifier());
+            if(patientIdentifier != null){
+                bahmniEncounterTransaction.setPatientId(patientIdentifier.getIdentifier());
+            }
         }
     }
 }
