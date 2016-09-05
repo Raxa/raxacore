@@ -53,7 +53,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     private HttpClient httpClient;
     private EncounterService encounterService;
     private ConceptService conceptService;
-    private AccessionHelper accessionMapper;
+    private AccessionHelper accessionHelper;
     private ProviderService providerService;
     private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
 
@@ -62,14 +62,14 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                                         HttpClient httpClient,
                                         EncounterService encounterService,
                                         ConceptService conceptService,
-                                        AccessionHelper accessionMapper,
+                                        AccessionHelper accessionHelper,
                                         ProviderService providerService, BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand) {
 
         this.atomFeedProperties = atomFeedProperties;
         this.httpClient = httpClient;
         this.encounterService = encounterService;
         this.conceptService = conceptService;
-        this.accessionMapper = accessionMapper;
+        this.accessionHelper = accessionHelper;
         this.providerService = providerService;
         this.bahmniVisitAttributeSaveCommand = bahmniVisitAttributeSaveCommand;
         this.encounterHelper = new EncounterHelper(encounterService);
@@ -82,6 +82,10 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         logger.info("Processing event : " + accessionUrl);
         try {
             OpenElisAccession openElisAccession = httpClient.get(accessionUrl, OpenElisAccession.class);
+            if (accessionHelper.shouldIgnoreAccession(openElisAccession)) {
+                logger.warn(String.format("Ignoring accession event. Patient with UUID %s is not present in OpenMRS.", openElisAccession.getPatientUuid()));
+                return;
+            }
             runInterceptor(ElisFeedAccessionInterceptor.class, openElisAccession);
 
             for(OpenElisTestDetail openElisTestDetail : openElisAccession.getTestDetails()) {
@@ -96,12 +100,12 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 AccessionDiff diff = openElisAccession.getDiff(orderEncounter);
                 if (diff.hasDifference()) {
                     logger.info("updating encounter for accession : " + accessionUrl);
-                    accessionMapper.addOrDiscontinueOrderDifferences(openElisAccession, diff, orderEncounter);
+                    accessionHelper.addOrDiscontinueOrderDifferences(openElisAccession, diff, orderEncounter);
                     shouldSaveOrderEncounter = true;
                 }
             } else {
                 logger.info("creating new encounter for accession : " + accessionUrl);
-                orderEncounter = accessionMapper.mapToNewEncounter(openElisAccession, LAB_VISIT);
+                orderEncounter = accessionHelper.mapToNewEncounter(openElisAccession, LAB_VISIT);
                 shouldSaveOrderEncounter = true;
             }
 
@@ -127,7 +131,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         }
     }
 
-     void runInterceptor(Class className, Object object) {
+    void runInterceptor(Class className, Object object) {
         GroovyClassLoader gcl = new GroovyClassLoader();
         File directory = new File(OpenmrsUtil.getApplicationDataDirectory() + "elisFeedInterceptor");
         File[] files = directory.listFiles();
@@ -359,10 +363,6 @@ public class OpenElisAccessionEventWorker implements EventWorker {
 
         labResultProviders.add(provider);
         return provider;
-    }
-
-    private boolean isSameDate(Date date1, Date date2) {
-        return date1.getTime() == date2.getTime();
     }
 
     @Override

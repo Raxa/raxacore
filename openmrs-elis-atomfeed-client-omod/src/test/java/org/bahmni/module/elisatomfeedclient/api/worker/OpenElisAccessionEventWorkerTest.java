@@ -27,6 +27,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniV
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -164,6 +165,34 @@ public class OpenElisAccessionEventWorkerTest {
 
         verify(encounterService, times(2)).getEncounterByUuid(openElisAccession.getAccessionUuid());
         verify(encounterService, never()).saveEncounter(previousEncounter);
+    }
+
+    @Test
+    public void shouldIgnoreAccessionEventIfPatientIsNotPresentInOpenMRS() throws IOException {
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().build();
+        when(accessionMapper.shouldIgnoreAccession(openElisAccession)).thenReturn(true);
+        stubAccession(openElisAccession);
+
+        accessionEventWorker.process(event);
+
+        verify(encounterService, times(0)).saveEncounter(any(Encounter.class));
+    }
+
+    @Test
+    public void shouldNotIgnoreAccessionEventIfPatientIsPresentInOpenMRS() throws IOException {
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().build();
+        Encounter encounter = getEncounterWithTests("test1");
+        Visit visit = new Visit();
+        visit.setId(1);
+        encounter.setVisit(visit);
+        visit.setEncounters(new HashSet<>(Collections.singletonList(encounter)));
+        stubAccession(openElisAccession);
+        when(accessionMapper.shouldIgnoreAccession(openElisAccession)).thenReturn(false);
+        when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(null).thenReturn(encounter);
+
+        accessionEventWorker.process(event);
+
+        verify(encounterService, times(1)).saveEncounter(any(Encounter.class));
     }
 
     private Encounter getEncounterWithTests(String... testUuids) {

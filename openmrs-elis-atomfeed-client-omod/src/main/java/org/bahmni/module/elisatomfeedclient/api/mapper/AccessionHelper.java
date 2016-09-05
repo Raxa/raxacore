@@ -28,7 +28,6 @@ import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
-import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -242,4 +241,7 @@ public class AccessionHelper {
         return visitTypes.isEmpty() ? null : visitTypes.get(0);
     }
 
+    public boolean shouldIgnoreAccession(OpenElisAccession openElisAccession) {
+        return patientService.getPatientByUuid(openElisAccession.getPatientUuid()) == null;
+    }
 }

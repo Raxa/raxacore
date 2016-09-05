@@ -23,6 +23,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -195,6 +197,19 @@ public class AccessionHelperTest {
                 Assert.assertTrue(order.getPreviousOrder().getConcept().getUuid().endsWith(order.getConcept().getUuid()));
             }
         }
+    }
+
+    @Test
+    public void shouldReturnTrueIfPatientWithTheGivenUuidIsNotPresent() {
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withPatientUuid("uuid1").build();
+        when(patientService.getPatientByUuid("uuid1")).thenReturn(new Patient());
+        assertThat(accessionHelper.shouldIgnoreAccession(openElisAccession), is(false));
+    }
+
+    @Test
+    public void shouldReturnFalseIfPatientWithTheGivenUuidIsNotPresent() {
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withPatientUuid("uuid2").build();
+        assertThat(accessionHelper.shouldIgnoreAccession(openElisAccession), is(true));
     }
 
     private Order getOrderWithConceptUuid(String conceptUuid) {
