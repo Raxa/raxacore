@@ -647,7 +647,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withTestUuid(esrConceptUuid)
                 .build();
 
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(hbTest, esrTest))).withDateTime("2014-01-30T11:50:18+0530").build();
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(hbTest, esrTest))).withDateTime("2014-01-30T11:50:18+0530").withPatientUuid("75e04d42-3ca8-11e3-bf2b-0800271c1b75").build();
         String accessionUuid = "6d0af4567-707a-4629-9850-f15206e63ab0";
         openElisAccession.setAccessionUuid(accessionUuid);
 
@@ -698,7 +698,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withResultType("N")
                 .build();
 
-        openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(hbTestUpdated, esrTestUpdated))).withDateTime("2014-01-30T11:50:18+0530").build();
+        openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(hbTestUpdated, esrTestUpdated))).withDateTime("2014-01-30T11:50:18+0530").withPatientUuid("75e04d42-3ca8-11e3-bf2b-0800271c1b75").build();
         openElisAccession.setAccessionUuid(accessionUuid);
         firstEvent = stubHttpClientToGetOpenElisAccession(accessionUuid, openElisAccession);
         openElisAccessionEventWorker.process(firstEvent);
