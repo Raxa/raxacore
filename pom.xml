@@ -37,9 +37,11 @@
         <openmrsAtomfeedVersion>2.5.4</openmrsAtomfeedVersion>
         <lombokVersion>1.16.0</lombokVersion>
         <junitVersion>4.12</junitVersion>
+        <powerMockVersion>1.6.5</powerMockVersion>
+        <mockitoVersion>1.10.19</mockitoVersion>
         <idgenVersion>4.4-SNAPSHOT</idgenVersion>
         <legacyuiVersion>1.0</legacyuiVersion>
-        <argLine>-Xmx1024m -XX:MaxPermSize=1024m</argLine>
+        <argLine>-Xmx1024m</argLine>
     </properties>
 
     <distributionManagement>
@@ -87,6 +89,30 @@
                 <scope>test</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-module-junit4</artifactId>
+                <version>${powerMockVersion}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-api-mockito</artifactId>
+                <version>${powerMockVersion}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${mockitoVersion}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockitoVersion}</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>org.apache.velocity</groupId>
                 <artifactId>velocity</artifactId>
@@ -403,7 +429,7 @@
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
-                                    <argLine>-Xmx512m -XX:MaxPermSize=512m</argLine>
+                                    <argLine>-Xmx512m</argLine>
                                     <includes>
                                         <include>**/*IT.java</include>
                                     </includes>

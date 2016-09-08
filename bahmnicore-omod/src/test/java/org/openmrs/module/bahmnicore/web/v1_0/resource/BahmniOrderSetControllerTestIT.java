@@ -145,7 +145,7 @@ public class BahmniOrderSetControllerTestIT extends BahmniMainResourceController
 
     @Test
     public void shouldRetireAnOrderSet() throws Exception {
-        assertEquals(false, orderSetService.getOrderSetByUuid(getUuid()).isRetired());
+        assertEquals(false, orderSetService.getOrderSetByUuid(getUuid()).getRetired());
 
         MockHttpServletRequest req = request(RequestMethod.DELETE, getURI() + "/" + getUuid());
         req.addParameter("!purge", "");
