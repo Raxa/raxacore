@@ -37,7 +37,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-@Resource(name = RestConstants.VERSION_1 + "/bahmniprogramenrollment", supportedClass = BahmniPatientProgram.class, supportedOpenmrsVersions = {"1.12.*,2.*"}, order = 0)
+@Resource(name = RestConstants.VERSION_1 + "/bahmniprogramenrollment", supportedClass = BahmniPatientProgram.class, supportedOpenmrsVersions = {"1.12.*","2.0.*"}, order = 0)
 public class BahmniProgramEnrollmentResource extends ProgramEnrollmentResource1_10 {
 
     @PropertySetter("attributes")

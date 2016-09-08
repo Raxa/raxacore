@@ -5,7 +5,7 @@ import org.bahmni.module.bahmnicore.model.BahmniAddressHierarchyEntry;
 import org.bahmni.module.bahmnicore.model.BahmniAddressHierarchyLevel;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
+import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;

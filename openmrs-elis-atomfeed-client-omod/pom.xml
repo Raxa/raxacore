@@ -284,27 +284,8 @@
             <version>1.4</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${springVersion}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${springVersion}</version>
-            <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -312,12 +293,6 @@
             <artifactId>log4j</artifactId>
             <version>1.2.15</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${springVersion}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -383,11 +358,15 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
+            <artifactId>reportingcompatibility-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
             <artifactId>calculation-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>serialization.xstream-api</artifactId>
+            <artifactId>serialization.xstream-api-2.0</artifactId>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
@@ -413,6 +392,11 @@
             <version>${addressHierarchyVersion}</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>legacyui-omod</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

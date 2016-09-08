@@ -112,12 +112,16 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
+            <artifactId>reportingcompatibility-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
             <artifactId>calculation-api</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>serialization.xstream-api</artifactId>
+            <artifactId>serialization.xstream-api-2.0</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -147,6 +151,10 @@
             <groupId>org.openmrs.module</groupId>
             <artifactId>addresshierarchy-omod</artifactId>
             <version>${addressHierarchyVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>legacyui-omod</artifactId>
         </dependency>
     </dependencies>
 

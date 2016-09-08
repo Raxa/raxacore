@@ -8,7 +8,7 @@ import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeT
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
+import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;

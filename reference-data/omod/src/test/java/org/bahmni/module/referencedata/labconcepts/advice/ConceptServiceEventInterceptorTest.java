@@ -94,7 +94,7 @@ public class ConceptServiceEventInterceptorTest {
 
     @Test
     public void shouldPublishUpdateEventToFeedAfterUpdateConceptOperation() throws Throwable {
-        Method method = ConceptService.class.getMethod("updateConcept", Concept.class);
+        Method method = ConceptService.class.getMethod("saveConcept", Concept.class);
         Object[] objects = new Object[]{concept};
 
         publishedFeed.afterReturning(null, method, objects, null);
@@ -103,7 +103,7 @@ public class ConceptServiceEventInterceptorTest {
 
     @Test
     public void shouldPublishUpdateEventToFeedAfterEveryUpdateConceptOperation() throws Throwable {
-        Method method = ConceptService.class.getMethod("updateConcept", Concept.class);
+        Method method = ConceptService.class.getMethod("saveConcept", Concept.class);
         Object[] objects = new Object[]{concept};
         int updates = 2;
         for (int i = 0; i < updates; i++) {
@@ -135,7 +135,7 @@ public class ConceptServiceEventInterceptorTest {
 
     @Test
     public void shouldSaveEventInTheSameTransactionAsTheTrigger() throws Throwable {
-        Method method = ConceptService.class.getMethod("updateConcept", Concept.class);
+        Method method = ConceptService.class.getMethod("saveConcept", Concept.class);
         Object[] objects = new Object[]{concept};
 
         publishedFeed.afterReturning(null, method, objects, null);

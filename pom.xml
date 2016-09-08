@@ -24,17 +24,21 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <openMRSVersion>1.12.0</openMRSVersion>
+        <openMRSVersion>2.0.0</openMRSVersion>
         <openMRSWebServicesVersion>2.14</openMRSWebServicesVersion>
         <springVersion>3.2.7.RELEASE</springVersion>
         <atomfeed.version>1.9.3</atomfeed.version>
-        <addressHierarchyVersion>2.8</addressHierarchyVersion>
-        <reportingModuleVersion>0.9.1</reportingModuleVersion>
-        <calculationModuleVersion>1.1</calculationModuleVersion>
-        <serializationXstreamModuleVersion>0.2.7</serializationXstreamModuleVersion>
+        <addressHierarchyVersion>2.9</addressHierarchyVersion>
+        <reportingModuleVersion>0.9.10-SNAPSHOT</reportingModuleVersion>
+        <reportingCompatiblityModuleVersion>2.0.1-SNAPSHOT</reportingCompatiblityModuleVersion>
+        <calculationModuleVersion>1.3-SNAPSHOT</calculationModuleVersion>
+        <serializationXstreamModuleVersion>0.2.12-SNAPSHOT</serializationXstreamModuleVersion>
         <emrapi-omod.version>1.17</emrapi-omod.version>
         <openmrsAtomfeedVersion>2.5.4</openmrsAtomfeedVersion>
         <lombokVersion>1.16.0</lombokVersion>
+        <junitVersion>4.12</junitVersion>
+        <idgenVersion>4.4-SNAPSHOT</idgenVersion>
+        <legacyuiVersion>1.0</legacyuiVersion>
         <argLine>-Xmx1024m -XX:MaxPermSize=1024m</argLine>
     </properties>
 
@@ -77,6 +81,13 @@
             <!--End of child modules-->
 
             <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junitVersion}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>org.apache.velocity</groupId>
                 <artifactId>velocity</artifactId>
                 <scope>provided</scope>
@@ -86,24 +97,6 @@
                 <groupId>commons-httpclient</groupId>
                 <artifactId>commons-httpclient</artifactId>
                 <version>3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${springVersion}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${springVersion}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test-mvc</artifactId>
-                <version>1.0.0.M1</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.openmrs.api</groupId>
@@ -206,13 +199,19 @@
             </dependency>
             <dependency>
                 <groupId>org.openmrs.module</groupId>
+                <artifactId>reportingcompatibility-api</artifactId>
+                <version>${reportingCompatiblityModuleVersion}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
                 <artifactId>calculation-api</artifactId>
                 <version>${calculationModuleVersion}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.openmrs.module</groupId>
-                <artifactId>serialization.xstream-api</artifactId>
+                <artifactId>serialization.xstream-api-2.0</artifactId>
                 <version>${serializationXstreamModuleVersion}</version>
                 <scope>test</scope>
             </dependency>
@@ -226,7 +225,7 @@
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>idgen-api</artifactId>
-                <version>2.6</version>
+                <version>${idgenVersion}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -299,6 +298,13 @@
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>addresshierarchy-omod</artifactId>
                 <version>${addressHierarchyVersion}</version>
+                <type>jar</type>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>legacyui-omod</artifactId>
+                <version>${legacyuiVersion}</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
