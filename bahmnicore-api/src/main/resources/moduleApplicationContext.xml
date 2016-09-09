@@ -81,6 +81,15 @@
         </property>
     </bean>
 
+    <bean parent="serviceContext">
+        <property name="moduleService">
+            <list merge="true">
+                <value>org.bahmni.module.bahmnicore.service.BahmniObsService</value>
+                <ref bean="bahmniObsServiceImpl"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="bahmniEncounterTransactionService" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="transactionManager">
             <ref bean="transactionManager"/>
