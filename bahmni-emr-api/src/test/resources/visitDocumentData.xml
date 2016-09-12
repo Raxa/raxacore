@@ -27,14 +27,10 @@
     <visit visit_id="1" date_started="2010-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="1024" visit_type_id="1" date_stopped="2013-05-08 04:08:16" location_id="2" creator="1"  uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
     <visit visit_id="2" date_started="2014-06-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="1024" visit_type_id="1" location_id="2" creator="1" uuid="d794516f-210d-4c4e-8978-467d97969f31" voided="0"/>
 
-    <concept_datatype concept_datatype_id="1" name="numeric" hl7_abbreviation="NM" description="foo" date_created="2013-12-04 11:36:42" retired="0"/>
-    <concept_datatype concept_datatype_id="2" name="text" hl7_abbreviation="ST" description="bar" date_created="2013-12-04 11:36:42" retired="0"/>
-
-    <concept concept_id="111" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="3f596de5-5caa-11e3-a4c0-0800271c1b75" />
-    <concept concept_id="222" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="4f596de5-5caa-11e3-a4c0-0800271c1b75" />
-    <concept concept_id="333" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="5f596de5-5caa-11e3-a4c0-0800271c1b75" />
-    <concept concept_id="444" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="6f596de5-5caa-11e3-a4c0-0800271c1b75" />
-
+    <concept concept_id="111" retired="0" datatype_id="3" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="3f596de5-5caa-11e3-a4c0-0800271c1b75" />
+    <concept concept_id="222" retired="0" datatype_id="3" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="4f596de5-5caa-11e3-a4c0-0800271c1b75" />
+    <concept concept_id="333" retired="0" datatype_id="3" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="5f596de5-5caa-11e3-a4c0-0800271c1b75" />
+    <concept concept_id="444" retired="0" datatype_id="3" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="6f596de5-5caa-11e3-a4c0-0800271c1b75" />
     <concept_name concept_name_id="6" concept_id="444" name="Document" locale="en" creator="1" date_created="2005-01-01 00:00:00.0"  voided="false" uuid="ae2910c0-8346-13e3-baf7-0800220c9a63" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
 
@@ -55,12 +51,12 @@
     <encounter_provider encounter_provider_id="3" encounter_id="16" provider_id="23" creator="1" date_created="2008-07-01 14:09:05.0"
                         voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63333"/>
 
-    <obs obs_id="1024" person_id="1024" concept_id="111" obs_datetime="2013-12-04 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15206e63j8s"/>
-    <obs obs_id="1025" person_id="1024" concept_id="222" obs_datetime="2013-12-04 11:36:42" encounter_id="16" creator="1" voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15206e63kj0"/>
-    <obs obs_id="1026" person_id="1024" concept_id="333" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63ab0"/>
+    <obs obs_id="1024" person_id="1024" concept_id="111" obs_datetime="2013-12-04 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" location_id="2" uuid="6d0ae386-707a-4629-9850-f15206e63j8s"/>
+    <obs obs_id="1025" person_id="1024" concept_id="222" obs_datetime="2013-12-04 11:36:42" encounter_id="16" creator="1" voided="0" date_created="2013-12-04 11:36:42" location_id="2" uuid="6d0ae386-707a-4629-9850-f15206e63kj0"/>
+    <obs obs_id="1026" person_id="1024" concept_id="333" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" location_id="2" uuid="6d0ae386-707a-4629-9850-f15606e63ab0"/>
 
-    <obs obs_id="1028" obs_group_id="1024" person_id="1024" concept_id="444" value_text="/patient_file" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63555"/>
-    <obs obs_id="1029" obs_group_id="1025" person_id="1024" concept_id="444" value_text="/radiology/foo.jpg" obs_datetime="2014-06-24 11:36:42" encounter_id="16" creator="1" voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63666"/>
-    <obs obs_id="1030" obs_group_id="1026" person_id="1024" concept_id="444" value_text="/radiology/bar.jpg" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63777"/>
+    <obs obs_id="1028" obs_group_id="1024" person_id="1024" concept_id="444" location_id="2" value_text="/patient_file" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63555"/>
+    <obs obs_id="1029" obs_group_id="1025" person_id="1024" concept_id="444" location_id="2" value_text="/radiology/foo.jpg" obs_datetime="2014-06-24 11:36:42" encounter_id="16" creator="1" voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63666"/>
+    <obs obs_id="1030" obs_group_id="1026" person_id="1024" concept_id="444" location_id="2" value_text="/radiology/bar.jpg" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63777"/>
 
 </dataset>

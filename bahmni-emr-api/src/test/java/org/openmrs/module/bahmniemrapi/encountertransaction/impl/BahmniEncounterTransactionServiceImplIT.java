@@ -2,6 +2,7 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.openmrs.DrugOrder;
@@ -25,6 +26,8 @@ import org.openmrs.module.emrapi.CareSettingType;
 import org.openmrs.module.emrapi.encounter.DrugMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
+import org.openmrs.parameter.EncounterSearchCriteria;
+import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -167,7 +170,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
     }
 
     @Test
-    public void shouldSavePastDrugOrdersInEncounterTransactionWhenThereIsNoRetrospectiveVisit() {
+    public void shouldSavePastDrugOrdersInEncounterTransactionWhenThereIsNoRetrospectiveVisit() throws ParseException {
         Date obsDate = new Date();
         String obsUuid = UUID.randomUUID().toString();
         String visitUuid = "4e663d66-6b78-11e0-93c3-18a905e044dc";
@@ -201,16 +204,21 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
         BahmniEncounterTransaction encounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
 
         //Ensure that two encounters are created.
+        EncounterSearchCriteria encounterSearchCriteria = new EncounterSearchCriteriaBuilder()
+                .setPatient(patient)
+                .setFromDate(pastScheduledDateForDrugOrder)
+                .setToDate(pastScheduledDateForDrugOrder)
+                .setIncludeVoided(false).createEncounterSearchCriteria();
         List<Encounter> encounters = encounterService
-                .getEncounters(patient, null, pastScheduledDateForDrugOrder, pastScheduledDateForDrugOrder, null, null, null,
-                        null, null, false);
+                .getEncounters(encounterSearchCriteria);
 
         assertEquals(1, encounters.size());
         assertEquals(1, encounters.get(0).getOrders().size());
         DrugOrder order = (DrugOrder) encounters.get(0).getOrders().iterator().next();
         assertEquals("1ce527b5-d6de-43f0-bc62-4616abacd77e", order.getDrug().getUuid());
         assertEquals(1, encounterTransaction.getObservations().size());
-        assertEquals(obsUuid, encounterTransaction.getObservations().iterator().next().getUuid());
+        BahmniObservation next = encounterTransaction.getObservations().iterator().next();
+        assertEquals(obsUuid, next.getUuid());
 
     }
 
@@ -585,7 +593,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
     private BahmniObservation createBahmniObservationWithoutValue(String uuid, EncounterTransaction.Concept concept,
                                                       Date obsDate, BahmniObservation targetObs) {
         BahmniObservation bahmniObservation = new BahmniObservation();
-        bahmniObservation.setUuid(uuid);
+        bahmniObservation.setUuid(null);
         bahmniObservation.setConcept(concept);
         bahmniObservation.setComment("comment");
         bahmniObservation.setObservationDateTime(obsDate);

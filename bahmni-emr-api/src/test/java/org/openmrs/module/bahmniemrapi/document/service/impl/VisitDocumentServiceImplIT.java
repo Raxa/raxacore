@@ -1,6 +1,32 @@
 package org.openmrs.module.bahmniemrapi.document.service.impl;
 
+import org.hibernate.CacheMode;
+import org.hibernate.Criteria;
+import org.hibernate.Filter;
+import org.hibernate.FlushMode;
+import org.hibernate.HibernateException;
+import org.hibernate.IdentifierLoadAccess;
+import org.hibernate.LobHelper;
+import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
+import org.hibernate.NaturalIdLoadAccess;
+import org.hibernate.Query;
+import org.hibernate.ReplicationMode;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.SessionEventListener;
+import org.hibernate.SessionFactory;
+import org.hibernate.SharedSessionBuilder;
+import org.hibernate.SimpleNaturalIdLoadAccess;
+import org.hibernate.Transaction;
+import org.hibernate.TypeHelper;
+import org.hibernate.UnknownProfileException;
+import org.hibernate.jdbc.ReturningWork;
+import org.hibernate.jdbc.Work;
+import org.hibernate.procedure.ProcedureCall;
+import org.hibernate.stat.SessionStatistics;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -15,6 +41,8 @@ import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentRequest;
 import org.openmrs.module.bahmniemrapi.document.service.VisitDocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.Serializable;
+import java.sql.Connection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -70,7 +98,10 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
         Date encounterDate = getDateFromString("2014-06-23 00:00:00");
 
         List<Document> documents = new ArrayList<>();
-        documents.add(new Document("/patient_file", null, "3f596de5-5caa-11e3-a4c0-0800271c1b75", "6d0ae386-707a-4629-9850-f15206e63j8s", encounterDate, true));
+        String testUuid = "3f596de5-5caa-11e3-a4c0-0800271c1b75";
+        String obsUuid = "6d0ae386-707a-4629-9850-f15206e63j8s";
+        String providerUuid = "331c6bf8-7846-11e3-a96a-0800271c1b75";
+        documents.add(new Document("/patient_file", null, testUuid, obsUuid, encounterDate, true));
 
         visitDocumentRequest = new VisitDocumentRequest(patientUUID,
                 secondVisitUuid,
@@ -80,13 +111,18 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
                 firstEncounterTypeUUID,
                 encounterDate,
                 documents,
-                "331c6bf8-7846-11e3-a96a-0800271c1b75", null, null);
+                providerUuid, null, null);
         visitDocumentService.upload(visitDocumentRequest);
 
+        Context.flushSession();
+        Context.clearSession();
+
         Encounter encounter = encounterService.getEncounterByUuid(firstEncounterUuid);
-        for (Obs obs : encounter.getAllObs()) {
-            if (obs.getUuid().equals("6d0ae386-707a-4629-9850-f15206e63j8s"))
+        for (Obs obs : encounter.getAllObs(true)) {
+            if (obs.getUuid().equals(obsUuid)) {
                 assertThat(obs.getVoided(), is(true));
+                assertThat(obs.getGroupMembers(true).iterator().next().getVoided(), is(true));
+            }
         }
     }
 
@@ -110,6 +146,9 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
                 secondProviderUuid, secondLocationUuid, null);
         visitDocumentService.upload(visitDocumentRequest);
 
+        Context.flushSession();
+        Context.clearSession();
+
         Encounter encounter = encounterService.getEncounterByUuid(secondEncounterUuid);
 
         Obs savedDoc = getSavedDocument(encounter.getAllObs(), conceptUuid);
@@ -127,7 +166,8 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
         Date encounterDate = getDateFromString("2014-06-23 00:00:00");
 
         List<Document> documents = new ArrayList<>();
-        documents.add(new Document("/radiology/foo.jpg", null, "3f596de5-5caa-11e3-a4c0-0800271c1b75", "6d0ae386-707a-4629-9850-f15206e63kj0", encounterDate, true));
+        String obsUuid = "6d0ae386-707a-4629-9850-f15206e63kj0";
+        documents.add(new Document("/radiology/foo.jpg", null, "3f596de5-5caa-11e3-a4c0-0800271c1b75", obsUuid, encounterDate, true));
 
 
         VisitDocumentRequest visitDocumentRequest = new VisitDocumentRequest(patientUUID,
@@ -141,10 +181,14 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
                 secondProviderUuid, secondLocationUuid,null);
         visitDocumentService.upload(visitDocumentRequest);
 
+        Context.flushSession();
+        Context.clearSession();
+
         Encounter encounter = encounterService.getEncounterByUuid(secondEncounterUuid);
 
-        Boolean isObservationVoided = obsService.getObsByUuid("6d0ae386-707a-4629-9850-f15206e63kj0").isVoided();
-        assertTrue("Observation is not voided", isObservationVoided);
+        Obs savedObs = obsService.getObsByUuid(obsUuid);
+        assertTrue("Observation is not voided", savedObs.getVoided());
+        assertTrue("Observation is not voided", savedObs.getGroupMembers(true).iterator().next().getVoided());
 
 
         Obs savedDoc = getSavedDocument(encounter.getAllObs(), "3f596de5-5caa-11e3-a4c0-0800271c1b75");
@@ -158,7 +202,8 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
         Date encounterDate = getDateFromString("2014-06-23 00:00:00");
 
         List<Document> documents = new ArrayList<>();
-        documents.add(new Document("/radiology/foo.jpg", null, "5f596de5-5caa-11e3-a4c0-0800271c1b75", "6d0ae386-707a-4629-9850-f15206e63kj0", encounterDate, false));
+        documents.add(new Document("/radiology/foo.jpg", null, "5f596de5-5caa-11e3-a4c0-0800271c1b75",
+                "6d0ae386-707a-4629-9850-f15206e63kj0", encounterDate, false));
 
 
         VisitDocumentRequest visitDocumentRequest = new VisitDocumentRequest(patientUUID,
@@ -173,9 +218,13 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
         executeDataSet("visitDocumentData.xml");
         visitDocumentService.upload(visitDocumentRequest);
 
+        Context.flushSession();
+        Context.clearSession();
+
         Encounter encounter = encounterService.getEncounterByUuid(secondEncounterUuid);
-        for (Obs obs : encounter.getAllObs()) {
-            if (obs.getUuid().equals("6d0ae386-707a-4629-9850-f15606e63666")) {
+        for (Obs obs : encounter.getAllObs(true)) {
+            if (obs.getUuid().equals("6d0ae386-707a-4629-9850-f15606e63666") ||
+                    obs.getUuid().equals("6d0ae386-707a-4629-9850-f15206e63kj0")) {
                 assertThat(obs.getVoided(), is(true));
             }
         }
@@ -208,6 +257,9 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
                 firstProviderUuid, FIRST_LOCATION_UUID, null);
 
         visitDocumentService.upload(visitDocumentRequest);
+
+        Context.flushSession();
+        Context.clearSession();
 
         Encounter encounter = encounterService.getEncounterByUuid(firstEncounterUuid);
 
@@ -280,6 +332,9 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
 
 //        Date currentDate = new Date(System.currentTimeMillis() - 1000);
         visitDocumentService.upload(visitDocumentRequest);
+        Context.flushSession();
+        Context.clearSession();
+
         Visit visit = visitService.getVisit(1);
         Set<Encounter> encounters = visit.getEncounters();
         Encounter encounter = getEncounterByTypeUuid(encounters, firstEncounterTypeUUID);
@@ -312,6 +367,9 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
 
         Date currentDate = new Date(System.currentTimeMillis() - 1000);
         visitDocumentService.upload(visitDocumentRequest);
+        Context.flushSession();
+        Context.clearSession();
+
         Visit visit = visitService.getVisit(2);
         Set<Encounter> encounters = visit.getEncounters();
         Encounter encounter = getEncounterByTypeUuid(encounters, secondEncounterTypeUUID);
