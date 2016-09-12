@@ -47,8 +47,8 @@ public class OpenElisAccession {
                     accessionDiff.addRemovedTestDetails(testDetail);
                 }
             } else {
-                Order order = getOrderByTestUuid(previousEncounter.getOrders(),orderableUuid);
-                if (order==null) {
+                Order order = getOrderByTestUuid(previousEncounter.getOrders(), orderableUuid);
+                if (order == null) {
                     accessionDiff.addAddedTestDetail(testDetail);
                 }
             }
@@ -65,7 +65,7 @@ public class OpenElisAccession {
         return false;
     }
 
-    private Order getOrderByTestUuid(Set<Order> orders, String testUuid){
+    private Order getOrderByTestUuid(Set<Order> orders, String testUuid) {
         for (Order order : orders) {
             if (order.getConcept() != null && order.getConcept().getUuid().equals(testUuid))
                 return order;
@@ -81,13 +81,15 @@ public class OpenElisAccession {
         return patientIdentifier.substring(0, 3);
     }
 
-    public AccessionDiff getAccessionNoteDiff(Set<Encounter> encounters, Concept labManagerNoteConcept,Provider defaultLabManagerProvider) {
+    public AccessionDiff getAccessionNoteDiff(Set<Encounter> encounters, Concept labManagerNoteConcept,
+                                              Provider defaultLabManagerProvider) {
         AccessionDiff accessionNotesDiff = new AccessionDiff();
         if (accessionNotes != null) {
             ArrayList<OpenElisAccessionNote> accessionNotesCopy = new ArrayList<>(accessionNotes);
-            if(encounters != null){
-                for(Encounter labManagerEncounter : encounters){
-                    filterOutAlreadyAddedAccessionNotes(labManagerEncounter, labManagerNoteConcept, accessionNotesCopy,defaultLabManagerProvider);
+            if (encounters != null) {
+                for (Encounter labManagerEncounter : encounters) {
+                    filterOutAlreadyAddedAccessionNotes(labManagerEncounter, labManagerNoteConcept,
+                            accessionNotesCopy, defaultLabManagerProvider);
                 }
             }
             accessionNotesDiff.setAccessionNotesToBeAdded(accessionNotesCopy);

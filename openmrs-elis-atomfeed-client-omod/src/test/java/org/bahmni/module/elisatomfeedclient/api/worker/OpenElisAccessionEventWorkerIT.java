@@ -647,11 +647,15 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withTestUuid(esrConceptUuid)
                 .build();
 
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(hbTest, esrTest))).withDateTime("2014-01-30T11:50:18+0530").withPatientUuid("75e04d42-3ca8-11e3-bf2b-0800271c1b75").build();
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder()
+                .withTestDetails(new HashSet<>(Arrays.asList(hbTest, esrTest)))
+                .withDateTime("2014-01-30T11:50:18+0530")
+                .withPatientUuid("75e04d42-3ca8-11e3-bf2b-0800271c1b75").build();
         String accessionUuid = "6d0af4567-707a-4629-9850-f15206e63ab0";
         openElisAccession.setAccessionUuid(accessionUuid);
 
         Event firstEvent = stubHttpClientToGetOpenElisAccession(accessionUuid, openElisAccession);
+
         openElisAccessionEventWorker.process(firstEvent);
 
         Visit visit = Context.getVisitService().getVisit(2);
@@ -906,12 +910,13 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withResultType("N")
                 .build();
 
+        String providerUuid = "aa1c6bf8-7846-11e3-a96a-09xD371c1b75";
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder()
                 .withDateTime("2014-01-30T11:50:18+0530")
                 .withTestDetails(new HashSet<>(Arrays.asList(test1)))
                 .withPatientUuid(patientUuidWithAccessionNotes)
-                .withAccessionNotes(new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"),
-                        new OpenElisAccessionNote("Note2", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))
+                .withAccessionNotes(new OpenElisAccessionNote("Note1", providerUuid, "2014-01-30T11:50:18+0530"),
+                        new OpenElisAccessionNote("Note2", providerUuid, "2014-01-30T11:50:18+0530"))
                 .withLabLocationUuid("be69741b-29e9-49a1-adc9-2a726e6610e4")
                 .build();
         openElisAccession.setAccessionUuid(accessionUuid);
