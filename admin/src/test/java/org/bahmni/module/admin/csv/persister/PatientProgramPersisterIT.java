@@ -53,7 +53,7 @@ public class PatientProgramPersisterIT extends BaseIntegrationTest {
 
         Context.openSession();
         Context.authenticate("admin", "test");
-        Patient patient = patientService.getPatients(null, "GAN200000", null, true).get(0);
+        Patient patient = patientService.getPatients("GAN200000").get(0);
         List<PatientProgram> patientPrograms = programWorkflowService.getPatientPrograms(patient, null, null, null, null, null, false);
 
         assertTrue("patient should have been enrolled in a program", !patientPrograms.isEmpty());

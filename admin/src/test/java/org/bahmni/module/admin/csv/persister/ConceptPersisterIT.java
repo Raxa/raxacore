@@ -69,10 +69,11 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldPersistNewConceptWithNameAndClassInputOnly() throws Exception {
+    public void shouldPersistNewConceptWithNameClassAndDescriptionInputOnly() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "New concept";
         conceptRow.conceptClass = "New Class";
+        conceptRow.description = "New concept description";
         Messages errorMessages = conceptPersister.persist(conceptRow);
         assertTrue(errorMessages.isEmpty());
         Context.openSession();
@@ -81,7 +82,7 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
         assertNotNull(persistedConcept);
         assertEquals(conceptRow.name, persistedConcept.getName(Context.getLocale()).getName());
         assertEquals(conceptRow.conceptClass, persistedConcept.getConceptClass().getName());
-        assertNull(persistedConcept.getDescription());
+        assertEquals("New concept description", persistedConcept.getDescription().getDescription());
         assertEquals(0, persistedConcept.getSynonyms().size());
         Context.flushSession();
         Context.closeSession();

@@ -60,10 +60,11 @@ public class ConceptSetPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldPersistNewConceptSetWithNameAndClassInputOnly() throws Exception {
+    public void shouldPersistNewConceptSetWithNameClassDescriptionInputOnly() throws Exception {
         ConceptSetRow conceptRow = new ConceptSetRow();
         conceptRow.name = "New concept";
         conceptRow.conceptClass = "New Class";
+        conceptRow.description = "some description";
         Messages persistErrorMessages = conceptSetPersister.persist(conceptRow);
         assertTrue(persistErrorMessages.isEmpty());
         Context.openSession();
@@ -72,7 +73,7 @@ public class ConceptSetPersisterIT extends BaseIntegrationTest {
         assertNotNull(persistedConcept);
         assertEquals(conceptRow.name, persistedConcept.getName(Context.getLocale()).getName());
         assertEquals(conceptRow.conceptClass, persistedConcept.getConceptClass().getName());
-        assertNull(persistedConcept.getDescription());
+        assertEquals("some description", persistedConcept.getDescription().getDescription());
         assertEquals(0, persistedConcept.getSynonyms().size());
         assertTrue(persistedConcept.isSet());
         Context.flushSession();
@@ -85,6 +86,8 @@ public class ConceptSetPersisterIT extends BaseIntegrationTest {
         ConceptSetRow conceptRow = new ConceptSetRow();
         conceptRow.name = "New concept";
         conceptRow.conceptClass = "New Class";
+        conceptRow.description = "some description";
+
         List<KeyValue> children = new ArrayList<>();
         children.add(new KeyValue("1", "Child1"));
         children.add(new KeyValue("2", "Child2"));
@@ -97,8 +100,10 @@ public class ConceptSetPersisterIT extends BaseIntegrationTest {
         assertNotNull(persistedConcept);
         assertEquals(conceptRow.name, persistedConcept.getName(Context.getLocale()).getName());
         assertEquals(conceptRow.conceptClass, persistedConcept.getConceptClass().getName());
+        assertEquals("some description", persistedConcept.getDescription().getDescription());
+
         assertEquals(2, persistedConcept.getSetMembers().size());
-        assertNull(persistedConcept.getDescription());
+        assertEquals("some description", persistedConcept.getDescription().getDescription());
         assertEquals(0, persistedConcept.getSynonyms().size());
         assertTrue(persistedConcept.isSet());
         Context.flushSession();
@@ -124,6 +129,7 @@ public class ConceptSetPersisterIT extends BaseIntegrationTest {
         ConceptSetRow row1 = new ConceptSetRow();
         row1.name = "ConceptA";
         row1.conceptClass = "New Class";
+        row1.description = "some description";
         List<KeyValue> children = new ArrayList<>();
         children.add(new KeyValue("1", "Child1"));
         children.add(new KeyValue("2", "Child2"));
@@ -139,6 +145,7 @@ public class ConceptSetPersisterIT extends BaseIntegrationTest {
         ConceptSetRow row2 = new ConceptSetRow();
         row2.name = "Child2";
         row2.conceptClass = "New Class";
+        row2.description = "some description";
         List<KeyValue> children1 = new ArrayList<>();
         children1.add(new KeyValue("1", "ConceptA"));
         children1.add(new KeyValue("2", "Child3"));
