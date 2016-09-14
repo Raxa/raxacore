@@ -6,13 +6,13 @@ import org.openmrs.*;
 import org.openmrs.api.*;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisMetadata;
+import org.openmrs.module.emrapi.EmrApiProperties;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
 import org.openmrs.module.emrapi.diagnosis.DiagnosisService;
 import org.openmrs.module.emrapi.encounter.DiagnosisMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,9 +28,10 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
     private DiagnosisService diagnosisService;
     private BahmniDiagnosisMetadata bahmniDiagnosisMetadata;
     private ConceptService conceptService;
+    private EmrApiProperties emrApiProperties;
 
     @Autowired
-    public BahmniDiagnosisServiceImpl(EncounterService encounterService, ObsService obsService, VisitService visitService, PatientService patientService, DiagnosisMapper diagnosisMapper, DiagnosisService diagnosisService, BahmniDiagnosisMetadata bahmniDiagnosisMetadata, ConceptService conceptService) {
+    public BahmniDiagnosisServiceImpl(EncounterService encounterService, ObsService obsService, VisitService visitService, PatientService patientService, DiagnosisMapper diagnosisMapper, DiagnosisService diagnosisService, BahmniDiagnosisMetadata bahmniDiagnosisMetadata, ConceptService conceptService, EmrApiProperties emrApiProperties) {
         this.encounterService = encounterService;
         this.obsService = obsService;
         this.visitService = visitService;
@@ -39,6 +40,7 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
         this.diagnosisService = diagnosisService;
         this.bahmniDiagnosisMetadata = bahmniDiagnosisMetadata;
         this.conceptService = conceptService;
+        this.emrApiProperties = emrApiProperties;
     }
 
     @Override
@@ -69,8 +71,11 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
                 Arrays.asList(bahmniDiagnosisMetadata.getDiagnosisSetConcept()), null, null, null, Arrays.asList("obsDatetime"),
                 null, null, null, null, false);
 
+        Collection<Concept> nonDiagnosisConcepts = emrApiProperties.getSuppressedDiagnosisConcepts();
+        Collection<Concept> nonDiagnosisConceptSets = emrApiProperties.getNonDiagnosisConceptSets();
+
         for (Obs obs : observations) {
-            Diagnosis diagnosis = bahmniDiagnosisMetadata.buildDiagnosisFromObsGroup(obs);
+            Diagnosis diagnosis = bahmniDiagnosisMetadata.buildDiagnosisFromObsGroup(obs, nonDiagnosisConcepts, nonDiagnosisConceptSets);
             if (diagnosis != null) {
                 diagnoses.add(diagnosis);
             }
@@ -110,24 +115,28 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
         List<Diagnosis> diagnosisByVisit = getDiagnosisByPatient(patient, visit);
 
         List<BahmniDiagnosisRequest> bahmniDiagnosisRequests = new ArrayList<>();
+        boolean diagnosisSchemaContainsStatus = bahmniDiagnosisMetadata.diagnosisSchemaContainsStatus();
+        Concept bahmniDiagnosisRevised = bahmniDiagnosisMetadata.getBahmniDiagnosisRevised();
+        Collection<Concept> nonDiagnosisConcepts = emrApiProperties.getSuppressedDiagnosisConcepts();
+        Collection<Concept> nonDiagnosisConceptSets = emrApiProperties.getNonDiagnosisConceptSets();
 
         for (Diagnosis diagnosis : diagnosisByVisit) {
 
             EncounterTransaction.Diagnosis etDiagnosis = diagnosisMapper.convert(diagnosis);
-            Obs latestObsGroup = getLatestObsGroupBasedOnAnyDiagnosis(diagnosis);
-            Diagnosis latestDiagnosis = bahmniDiagnosisMetadata.buildDiagnosisFromObsGroup(latestObsGroup); //buildDiagnosisFromObsGroup(getBahmniDiagnosisHelper().getLatestBasedOnAnyDiagnosis(diagnosis));
+            Obs latestObsGroup = getLatestObsGroupBasedOnAnyDiagnosis(diagnosis, bahmniDiagnosisRevised);
+            Diagnosis latestDiagnosis = bahmniDiagnosisMetadata.buildDiagnosisFromObsGroup(latestObsGroup, nonDiagnosisConcepts, nonDiagnosisConceptSets); //buildDiagnosisFromObsGroup(getBahmniDiagnosisHelper().getLatestBasedOnAnyDiagnosis(diagnosis));
             EncounterTransaction.Diagnosis etLatestDiagnosis = diagnosisMapper.convert(latestDiagnosis);
-            addDiagnosisToCollectionIfRecent(bahmniDiagnosisRequests, bahmniDiagnosisMetadata.mapBahmniDiagnosis(etDiagnosis, etLatestDiagnosis, true, false));
+            addDiagnosisToCollectionIfRecent(bahmniDiagnosisRequests, bahmniDiagnosisMetadata.mapBahmniDiagnosis(etDiagnosis, etLatestDiagnosis, true, false, diagnosisSchemaContainsStatus, true));
         }
 
         return bahmniDiagnosisRequests;
     }
 
-    private Obs getLatestObsGroupBasedOnAnyDiagnosis(Diagnosis diagnosis) {
+    private Obs getLatestObsGroupBasedOnAnyDiagnosis(Diagnosis diagnosis, Concept bahmniDiagnosisRevised) {
         String initialDiagnosisUuid = bahmniDiagnosisMetadata.findInitialDiagnosisUuid(diagnosis.getExistingObs());
 
         List<Obs> observations = obsService.getObservations(Arrays.asList(diagnosis.getExistingObs().getPerson()), null,
-                Arrays.asList(bahmniDiagnosisMetadata.getBahmniDiagnosisRevised()),
+                Arrays.asList(bahmniDiagnosisRevised),
                 Arrays.asList(conceptService.getFalseConcept()), null, null, null,
                 null, null, null, null, false);
 
@@ -150,12 +159,13 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
         List<Diagnosis> diagnosisByPatientAndDate = diagnosisService.getDiagnoses(patient, fromDate);
 
         List<BahmniDiagnosisRequest> bahmniDiagnosisRequests = new ArrayList<>();
+        boolean diagnosisSchemaContainsStatus = bahmniDiagnosisMetadata.diagnosisSchemaContainsStatus();
 
         for (Diagnosis diagnosis : diagnosisByPatientAndDate) {
             EncounterTransaction.Diagnosis etDiagnosis = diagnosisMapper.convert(diagnosis);
-            BahmniDiagnosisRequest bahmniDiagnosisRequest = bahmniDiagnosisMetadata.mapBahmniDiagnosis(etDiagnosis, null, true, false);
+            BahmniDiagnosisRequest bahmniDiagnosisRequest = bahmniDiagnosisMetadata.mapBahmniDiagnosis(etDiagnosis, null, true, false, diagnosisSchemaContainsStatus,false);
 
-            if (!bahmniDiagnosisRequest.isRevised()) {
+            if (bahmniDiagnosisRequest != null) {
                 bahmniDiagnosisRequests.add(bahmniDiagnosisRequest);
             }
         }
