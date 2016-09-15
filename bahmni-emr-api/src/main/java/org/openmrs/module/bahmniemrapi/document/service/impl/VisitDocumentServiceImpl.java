@@ -66,7 +66,6 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
 
     private void updateEncounter(Encounter encounter, Date encounterDateTime, List<Document> documents) {
         Concept imageConcept = conceptService.getConceptByName(DOCUMENT_OBS_GROUP_CONCEPT_NAME);
-        LinkedHashSet<Obs> observations = new LinkedHashSet<>(encounter.getAllObs());
 
         for (Document document : documents) {
             Concept testConcept = conceptService.getConceptByUuid(document.getTestUuid());
@@ -75,18 +74,15 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
 
             if (document.isNew()) {
                 parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), imageConcept, url, null, encounter));
-                observations.add(parentObservation);
             }
             if (document.shouldVoidDocument()) {
                 Context.getObsService().voidObs(parentObservation, "voided");
-                observations.remove(parentObservation);
             } else if (document.hasConceptChanged(parentObservation.getConcept().getUuid())) {
                 parentObservation.setConcept(testConcept);
-                observations.add(parentObservation);
             }
+            encounter.addObs(parentObservation);
         }
 
-        encounter.setObs(observations);
     }
 
     private Obs findOrCreateParentObs(Encounter encounter, Date observationDateTime, Concept testConcept, String obsUuid) {

@@ -25,7 +25,6 @@
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.openmrs.api</groupId>
             <artifactId>openmrs-api</artifactId>

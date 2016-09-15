@@ -198,7 +198,9 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
                 "\"documents\": [{\"testUuid\": \"" + testUUID + "\", \"image\": \"" + image + "\", \"format\": \".jpeg\"}]" +
                 "}";
 
-        VisitDocumentResponse documentAddedResponse = deserialize(handle(newPostRequest("/rest/v1/bahmnicore/visitDocument", addDocumentJSON)), VisitDocumentResponse.class);
+        VisitDocumentResponse documentAddedResponse = deserialize(
+                handle(newPostRequest("/rest/v1/bahmnicore/visitDocument", addDocumentJSON)),
+                VisitDocumentResponse.class);
         Visit addedVisit = visitService.getVisitByUuid(documentAddedResponse.getVisitUuid());
         String obsUuid = addedVisit.getEncounters().iterator().next().getAllObs().iterator().next().getUuid();
 
@@ -215,7 +217,9 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
                 "\"documents\": [{\"testUuid\": \"" + testUUID + "\", \"image\": \"" + image + "\", \"format\": \".jpeg\", \"voided\" : true, \"obsUuid\" : \""+obsUuid+"\"}]" +
                 "}";
 
-        VisitDocumentResponse response = deserialize(handle(newPostRequest("/rest/v1/bahmnicore/visitDocument", deleteDocumentJSON)), VisitDocumentResponse.class);
+        VisitDocumentResponse response = deserialize(
+                handle(newPostRequest("/rest/v1/bahmnicore/visitDocument", deleteDocumentJSON)),
+                VisitDocumentResponse.class);
         Visit updatedVisit = visitService.getVisitByUuid(response.getVisitUuid());
 
         assertEquals(1, updatedVisit.getEncounters().size());

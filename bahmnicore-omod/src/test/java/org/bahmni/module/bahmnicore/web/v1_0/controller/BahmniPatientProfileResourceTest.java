@@ -16,6 +16,7 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.context.Context;
+import org.openmrs.messagesource.MessageSourceService;
 import org.openmrs.module.emrapi.patient.EmrPatientProfileService;
 import org.openmrs.module.emrapi.patient.PatientProfile;
 import org.openmrs.module.idgen.webservices.services.IdentifierSourceServiceWrapper;
@@ -47,6 +48,7 @@ import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.spy;
 
+// TODO: 13/09/16 This is wrong way of writing test. We should mock the external dependency in resource but we ended up mocking all internal dependencies. For eg: MessageSourceService
 @PrepareForTest({Context.class, BahmniPatientProfileResource.class})
 @RunWith(PowerMockRunner.class)
 public class BahmniPatientProfileResourceTest {
@@ -68,6 +70,8 @@ public class BahmniPatientProfileResourceTest {
 
     @Mock
     private PersonService personService;
+    @Mock
+    private MessageSourceService messageSourceService;
 
     @Mock
     private IdentifierSourceServiceWrapper identifierSourceServiceWrapper;
@@ -87,6 +91,7 @@ public class BahmniPatientProfileResourceTest {
         mockStatic(Context.class);
         PowerMockito.when(Context.getService(RestService.class)).thenReturn(restService);
         PowerMockito.when(Context.getPersonService()).thenReturn(personService);
+        PowerMockito.when(Context.getMessageSourceService()).thenReturn(messageSourceService);
         PowerMockito.when(restService.getResourceBySupportedClass(Patient.class)).thenReturn(patientResource1_8);
         PowerMockito.when(patientResource1_8.getPatient(any(SimpleObject.class))).thenReturn(patient);
         PowerMockito.when(patientResource1_8.getPatientForUpdate(anyString(), any(SimpleObject.class))).thenReturn(patient);
@@ -95,10 +100,10 @@ public class BahmniPatientProfileResourceTest {
     @Test
     public void createPatient() throws Exception {
         bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper);
-        BahmniPatientProfileResource spy = spy(bahmniPatientProfileResource);
+        BahmniPatientProfileResource bahmniPatientProfileResourceSpy = spy(this.bahmniPatientProfileResource);
         PatientProfile delegate = mock(PatientProfile.class);
         when(identifierSourceServiceWrapper.generateIdentifierUsingIdentifierSourceUuid("dead-cafe", "")).thenReturn("BAH300010");
-        doReturn(delegate).when(spy, "mapForCreatePatient", propertiesToCreate);
+        doReturn(delegate).when(bahmniPatientProfileResourceSpy, "mapForCreatePatient", propertiesToCreate);
         when(emrPatientProfileService.save(delegate)).thenReturn(delegate);
         when(Context.getAdministrationService()).thenReturn(administrationService);
         when(Context.getPatientService()).thenReturn(patientService);
@@ -109,14 +114,14 @@ public class BahmniPatientProfileResourceTest {
         Set<PatientIdentifier> patientIdentifiers = new HashSet<>();
         patientIdentifiers.add(patientIdentifier);
         when(patient.getIdentifiers()).thenReturn(patientIdentifiers);
-        doNothing().when(spy).setConvertedProperties(any(PatientProfile.class), any(SimpleObject.class), any(DelegatingResourceDescription.class), any(Boolean.class));
+        doNothing().when(bahmniPatientProfileResourceSpy).setConvertedProperties(any(PatientProfile.class), any(SimpleObject.class), any(DelegatingResourceDescription.class), any(Boolean.class));
         Person person = new Person();
         person.setUuid("personUuid");
         when(personService.getPersonByUuid("patientUuid")).thenReturn(person);
         List<Relationship> relationships = Arrays.asList();
         when(personService.getRelationshipsByPerson(person)).thenReturn(relationships);
 
-        ResponseEntity<Object> response = spy.create(false, propertiesToCreate);
+        ResponseEntity<Object> response = bahmniPatientProfileResourceSpy.create(false, propertiesToCreate);
 
         Assert.assertEquals(200, response.getStatusCode().value());
         verify(identifierSourceServiceWrapper, times(1)).generateIdentifierUsingIdentifierSourceUuid("dead-cafe", "");
