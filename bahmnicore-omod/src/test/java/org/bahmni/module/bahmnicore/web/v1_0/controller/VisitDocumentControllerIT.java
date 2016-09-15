@@ -54,11 +54,11 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
         String json = "{" +
                 "\"patientUuid\":\"" + patientUUID + "\"," +
                 "\"visitTypeUuid\":\"" + visitTypeUUID + "\"," +
-                "\"visitStartDate\":\"2019-12-31T18:30:00.000Z\"," +
-                "\"visitEndDate\":\"2019-12-31T18:30:00.000Z\"," +
+                "\"visitStartDate\":\"2015-12-31T18:30:00.000Z\"," +
+                "\"visitEndDate\":\"2015-12-31T18:30:00.000Z\"," +
                 "\"encounterTypeUuid\":\"" + encounterTypeUUID + "\"," +
                 "\"locationUuid\":\"" + locationUuid + "\"," +
-                "\"encounterDateTime\":\"2019-12-31T18:30:00.000Z\"," +
+                "\"encounterDateTime\":\"2015-12-31T18:30:00.000Z\"," +
                 "\"providerUuid\":\"331c6bf8-7846-11e3-a96a-0800271c1b75\"," +
                 "\"documents\": [{\"testUuid\": \"" + testUUID + "\", \"image\": \"" + image + "\", \"format\": \".jpeg\"}]" +
                 "}";
