@@ -76,7 +76,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
                 parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), imageConcept, url, null, encounter));
             }
             if (document.shouldVoidDocument()) {
-                Context.getObsService().voidObs(parentObservation, "voided");
+                voidDocumentObservationTree(parentObservation);
             } else if (document.hasConceptChanged(parentObservation.getConcept().getUuid())) {
                 parentObservation.setConcept(testConcept);
             }

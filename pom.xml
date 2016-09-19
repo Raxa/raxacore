@@ -24,7 +24,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <openMRSVersion>2.0.0</openMRSVersion>
+        <openMRSVersion>2.0.1-SNAPSHOT</openMRSVersion>
         <openMRSWebServicesVersion>2.16</openMRSWebServicesVersion>
         <springVersion>3.2.7.RELEASE</springVersion>
         <atomfeed.version>1.9.3</atomfeed.version>
@@ -34,7 +34,7 @@
         <calculationModuleVersion>1.3-SNAPSHOT</calculationModuleVersion>
         <serializationXstreamModuleVersion>0.2.12-SNAPSHOT</serializationXstreamModuleVersion>
         <emrapi-omod.version>1.17</emrapi-omod.version>
-        <openmrsAtomfeedVersion>2.5.4</openmrsAtomfeedVersion>
+        <openmrsAtomfeedVersion>2.5.5-SNAPSHOT</openmrsAtomfeedVersion>
         <lombokVersion>1.16.0</lombokVersion>
         <junitVersion>4.12</junitVersion>
         <powerMockVersion>1.6.5</powerMockVersion>
