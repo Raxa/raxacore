@@ -10,7 +10,6 @@ import org.openmrs.Visit;
 import org.openmrs.VisitType;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -73,14 +72,6 @@ public class VisitIdentificationHelper implements VisitMatcher {
             matchingVisit.setStopDatetime(orderDate);
         }
         return matchingVisit;
-    }
-
-    private Visit getVisit(Date orderDate, List<Visit> visits) {
-        if (visits.size() > 1) {
-            return getVisitMatchingOrderDate(orderDate, visits);
-        } else {
-            return visits.get(0);
-        }
     }
 
     private Visit getVisitMatchingOrderDate(Date orderDate, List<Visit> visits) {

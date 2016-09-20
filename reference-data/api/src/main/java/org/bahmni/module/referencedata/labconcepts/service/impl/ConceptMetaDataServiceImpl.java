@@ -25,9 +25,6 @@ public class ConceptMetaDataServiceImpl implements ConceptMetaDataService {
     private ConceptService conceptService;
 
 
-    private AdministrationService administrationService;
-
-
     @Override
     public ConceptMetaData getConceptMetaData(ConceptCommon conceptCommon) {
         ConceptClass conceptClass = conceptService.getConceptClassByName(conceptCommon.getClassName());
@@ -46,7 +43,7 @@ public class ConceptMetaDataServiceImpl implements ConceptMetaDataService {
             return conceptByName;
         }
 
-        administrationService = Context.getAdministrationService();
+        AdministrationService administrationService = Context.getAdministrationService();
         List<Locale> locales = administrationService.getAllowedLocales();
         List<ConceptSearchResult> conceptSearchResults = conceptService.getConcepts(uniqueName, locales, false, null, null, null, null, null, null, null);
         if (conceptSearchResults.isEmpty())

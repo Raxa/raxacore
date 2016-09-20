@@ -22,11 +22,8 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncoun
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.openmrs.module.bahmniemrapi.obsrelation.contract.ObsRelationship;
 import org.openmrs.module.emrapi.CareSettingType;
-import org.openmrs.module.emrapi.encounter.DrugMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,12 +51,6 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private BaseEncounterMatcher baseEncounterMatcher;
-
-    @Autowired
-    @Qualifier("drugMapper")
-    private DrugMapper drugMapper;
 
     @Before
     public void setUp() throws Exception {

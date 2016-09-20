@@ -1,6 +1,5 @@
 package org.bahmni.module.admin.csv.exporter;
 
-import org.apache.log4j.Logger;
 import org.bahmni.module.admin.concepts.mapper.ConceptSetMapper;
 import org.bahmni.module.admin.csv.models.ConceptRows;
 import org.bahmni.module.referencedata.labconcepts.contract.Concepts;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ConceptSetExporter {
 
-    private static final org.apache.log4j.Logger log = Logger.getLogger(ConceptSetExporter.class);
     @Autowired
     private ReferenceDataConceptService conceptService;
     private final ConceptSetMapper conceptSetMapper;

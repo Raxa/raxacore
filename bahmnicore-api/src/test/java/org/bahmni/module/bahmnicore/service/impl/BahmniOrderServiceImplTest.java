@@ -19,7 +19,6 @@ import org.openmrs.Provider;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.order.contract.BahmniOrder;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
-import org.openmrs.module.emrapi.encounter.ObservationMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 import org.openmrs.util.LocaleUtility;
@@ -47,18 +46,13 @@ public class BahmniOrderServiceImplTest {
     private String visitUUID = "54321";
     private Order order;
     private Concept concept;
-    private ConceptName conceptName;
-    private OrderType orderType;
     private Provider provider;
     private Patient patient;
-    private EncounterTransaction.Concept  encounterTransactionconcept;
 
     @Mock
     ObsDao obsDao;
     @Mock
     private ObservationTypeMatcher observationTypeMatcher;
-    @Mock
-    private ObservationMapper observationMapper;
     @Mock
     private BahmniObsService bahmniObsService;
     @Mock
@@ -76,7 +70,7 @@ public class BahmniOrderServiceImplTest {
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
         concept= new org.bahmni.test.builder.ConceptBuilder().withUUID("otUUID").build();
-        encounterTransactionconcept = new EncounterTransaction.Concept();
+        EncounterTransaction.Concept encounterTransactionconcept = new EncounterTransaction.Concept();
         encounterTransactionconcept.setName("Concept for order");
         encounterTransactionconcept.setConceptClass("otClass");
         encounterTransactionconcept.setDataType("N/A");
@@ -141,9 +135,8 @@ public class BahmniOrderServiceImplTest {
         patient = new Patient();
         patient.setId(1);
         patient.setUuid(personUUID);
-        orderType = new OrderType();
+        OrderType orderType = new OrderType();
         provider = new Provider();
-        conceptName = new ConceptName();
         orderType.setId(1);
         orderType.setUuid("someOrderTypeUuid");
         order.setOrderType(orderType);

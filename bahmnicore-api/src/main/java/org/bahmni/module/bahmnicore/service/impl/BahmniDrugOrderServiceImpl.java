@@ -1,14 +1,12 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.contract.drugorder.ConceptData;
 import org.bahmni.module.bahmnicore.contract.drugorder.DrugOrderConfigResponse;
 import org.bahmni.module.bahmnicore.contract.drugorder.OrderFrequencyData;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
-import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
@@ -42,7 +40,6 @@ import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniOrderAttribute;
 import org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
-import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
@@ -233,10 +230,6 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
             listOfFrequencyData.add(new OrderFrequencyData(orderFrequency));
         }
         return listOfFrequencyData;
-    }
-
-    private void throwPatientNotFoundException(String patientId) {
-        throw new RuntimeException("Patient Id is null or empty. PatientId='" + patientId + "'. Patient may have been directly created in billing system.");
     }
 
     private void addDrugOrdersToVisit(Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {

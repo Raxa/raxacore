@@ -19,10 +19,6 @@ public class BahmniOrder {
     private Collection<BahmniObservation> bahmniObservations;
     private String commentToFulfiller;
 
-    public BahmniOrder(){
-
-    }
-
     public String getOrderNumber() {
         return orderNumber;
     }

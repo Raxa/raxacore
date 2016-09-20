@@ -13,7 +13,6 @@ import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.encounter.EncounterProviderMapper;
-import org.openmrs.module.emrapi.encounter.ObservationMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.util.LocaleUtility;
 import org.powermock.api.mockito.PowerMockito;
@@ -39,8 +38,6 @@ public class ObsRelationshipMapperTest {
 
     @Mock
     private ObsRelationService obsrelationService;
-    @Mock
-    private ObservationMapper observationMapper;
     @Mock
     private EncounterProviderMapper encounterProviderMapper;
 
