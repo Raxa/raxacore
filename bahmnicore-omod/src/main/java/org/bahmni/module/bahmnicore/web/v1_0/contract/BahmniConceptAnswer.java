@@ -8,9 +8,6 @@ public class BahmniConceptAnswer {
     private Drug drug;
     private Concept concept;
 
-    public BahmniConceptAnswer() {
-    }
-
     public static BahmniConceptAnswer create(ConceptAnswer answer) {
         BahmniConceptAnswer bahmniConceptAnswer = new BahmniConceptAnswer();
         if(answer.getAnswerDrug() != null){

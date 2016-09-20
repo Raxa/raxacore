@@ -32,9 +32,6 @@ public class PatientResponse {
     private String patientProgramAttributeValue;
     private Boolean hasBeenAdmitted;
 
-    public PatientResponse() {
-    }
-
     public String getAge() {
         if (birthDate == null)
             return null;

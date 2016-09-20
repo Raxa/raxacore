@@ -3,7 +3,6 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;
 import org.openmrs.Order;
@@ -27,12 +26,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
 
 public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest {
 
@@ -50,7 +53,6 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
 
     @Autowired
     private OrderService orderService;
-
 
     @Before
     public void setUp() throws Exception {

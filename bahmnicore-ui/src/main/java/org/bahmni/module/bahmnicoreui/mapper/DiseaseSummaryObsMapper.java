@@ -28,7 +28,7 @@ public class DiseaseSummaryObsMapper {
                 for (BahmniObservation leafObservation : observationsFromConceptSet) {
                     String startDateTime = getGroupByDate(leafObservation, groupBy);
                         String conceptName = leafObservation.getConcept().getName();
-                    String observationValue = computeValueForLeafObservation(leafObservation, observationsByEncounter, diseaseSummaryMap);
+                    String observationValue = computeValueForLeafObservation(leafObservation, observationsByEncounter);
                     diseaseSummaryMap.put(startDateTime, conceptName, observationValue, leafObservation.isAbnormal(), false);
                 }
             }
@@ -73,7 +73,7 @@ public class DiseaseSummaryObsMapper {
         }
     }
 
-    private String computeValueForLeafObservation(BahmniObservation observation, Map<String, List<BahmniObservation>> observationsByEncounter, DiseaseSummaryMap diseaseSummaryMap) {
+    private String computeValueForLeafObservation(BahmniObservation observation, Map<String, List<BahmniObservation>> observationsByEncounter) {
         String observationValue = null;
         if (observationsByEncounter.containsKey(observation.getEncounterUuid())) {
             List<BahmniObservation> observationsInEncounter = observationsByEncounter.get(observation.getEncounterUuid());

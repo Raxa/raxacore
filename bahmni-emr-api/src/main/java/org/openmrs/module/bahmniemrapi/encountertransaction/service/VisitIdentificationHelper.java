@@ -14,7 +14,12 @@ import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 @Component
 public class VisitIdentificationHelper implements VisitMatcher {
@@ -35,7 +40,7 @@ public class VisitIdentificationHelper implements VisitMatcher {
         List<Visit> matchingVisits = getMatchingVisitsFromLocation(visits, visitLocationUuid);
 
         if (!matchingVisits.isEmpty()) {
-            Visit matchingVisit = getVisitMatchingOrderDate(orderDate,matchingVisits);
+            Visit matchingVisit = getVisitMatchingOrderDate(orderDate, matchingVisits);
             return stretchVisits(orderDate, matchingVisit);
         }
         return createNewVisit(patient, orderDate, visitTypeForNewVisit, visitStartDate, visitEndDate, visitLocationUuid);
@@ -55,7 +60,7 @@ public class VisitIdentificationHelper implements VisitMatcher {
             Location location = visit.getLocation();
             if (location != null && locationUuid != null && location.getUuid().equals(locationUuid)) {
                 matchingVisits.add(visit);
-            }else if (location == null && locationUuid != null) {
+            } else if (location == null && locationUuid != null) {
                 Location visitLocation = Context.getLocationService().getLocationByUuid(locationUuid);
                 visit.setLocation(visitLocation);
                 matchingVisits.add(visit);
@@ -78,13 +83,12 @@ public class VisitIdentificationHelper implements VisitMatcher {
         for (Visit visit : visits) {
             Date visitStartDatetime = visit.getStartDatetime();
             Date visitStopDatetime = visit.getStopDatetime();
-            if(visitStopDatetime!=null) {
+            if (visitStopDatetime != null) {
                 if ((orderDate.equals(visitStartDatetime) || visitStartDatetime.before(orderDate)) &&
                         (orderDate.equals(visitStopDatetime) || visitStopDatetime.after(orderDate)))
                     return visit;
-            }
-            else {
-                if(orderDate.equals(visitStartDatetime) || visitStartDatetime.before(orderDate))
+            } else {
+                if (orderDate.equals(visitStartDatetime) || visitStartDatetime.before(orderDate))
                     return visit;
             }
         }

@@ -24,9 +24,6 @@ public class ObsRelationshipController extends BaseRestController{
     @Autowired
     private ObsRelationshipMapper obsRelationshipMapper;
 
-    public ObsRelationshipController() {
-    }
-
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public List<BahmniObservation> find(@RequestParam(value = "targetObsUuid", required = true) String targetObsUuid){

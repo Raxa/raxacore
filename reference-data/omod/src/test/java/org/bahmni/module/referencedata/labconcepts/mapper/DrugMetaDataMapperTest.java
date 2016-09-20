@@ -19,14 +19,13 @@ public class DrugMetaDataMapperTest {
 
     private DrugMetaDataMapper drugMetaDataMapper;
     private ConceptClass drugConceptClass;
-    private ConceptDatatype naDatatype;
 
     @Before
     public void setUp() throws Exception {
         drugMetaDataMapper = new DrugMetaDataMapper();
         drugConceptClass = new ConceptClass();
         drugConceptClass.setUuid(ConceptClass.DRUG_UUID);
-        naDatatype = new ConceptDatatype();
+        ConceptDatatype naDatatype = new ConceptDatatype();
         naDatatype.setUuid(ConceptDatatype.N_A_UUID);
     }
 

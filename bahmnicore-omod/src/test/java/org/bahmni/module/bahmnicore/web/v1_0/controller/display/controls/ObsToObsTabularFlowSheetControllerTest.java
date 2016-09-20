@@ -42,9 +42,7 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -152,7 +150,6 @@ public class ObsToObsTabularFlowSheetControllerTest {
 
         PivotTable pivotTable = new PivotTable();
         List<String> conceptNames = Arrays.asList("GroupByConcept");
-        Set<String> leafConcepts = new HashSet<>(Arrays.asList("GroupByConcept"));
 
         when(bahmniObservationsToTabularViewMapper.constructTable(Matchers.<Set<EncounterTransaction.Concept>>any(), eq(bahmniObservations), anyString())).thenReturn(pivotTable);
 

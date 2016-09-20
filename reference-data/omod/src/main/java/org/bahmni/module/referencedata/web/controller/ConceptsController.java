@@ -30,9 +30,6 @@ public class ConceptsController extends BaseRestController {
     @Autowired
     ConceptHelper conceptHelper;
 
-    public ConceptsController() {
-    }
-
     @RequestMapping(value = "/concepts", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<Concepts> create(@RequestParam(value = "conceptName", required = true) String conceptName) {
