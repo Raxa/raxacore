@@ -50,7 +50,7 @@ public class BahmniOrderServiceImplTest {
     private Patient patient;
 
     @Mock
-    ObsDao obsDao;
+    private ObsDao obsDao;
     @Mock
     private ObservationTypeMatcher observationTypeMatcher;
     @Mock

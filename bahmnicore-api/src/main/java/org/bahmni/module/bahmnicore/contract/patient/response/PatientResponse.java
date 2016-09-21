@@ -10,14 +10,6 @@ public class PatientResponse {
     private Date birthDate;
     private String extraIdentifiers;
 
-    public int getPersonId() {
-        return personId;
-    }
-
-    public void setPersonId(int personId) {
-        this.personId = personId;
-    }
-
     private int personId;
     private Date deathDate;
     private String identifier;
@@ -184,4 +176,13 @@ public class PatientResponse {
     public void setExtraIdentifiers(String extraIdentifiers) {
         this.extraIdentifiers = extraIdentifiers;
     }
+
+    public int getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(int personId) {
+        this.personId = personId;
+    }
+
 }

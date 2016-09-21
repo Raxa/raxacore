@@ -180,7 +180,7 @@ public class BahmniDiagnosisServiceImplTest {
 
 
     @Test
-    public void ShouldNotReturnDiagnosisIfNoEncounterExists() throws Exception {
+    public void shouldNotReturnDiagnosisIfNoEncounterExists() throws Exception {
 
         String visitId = "visitId";
         Visit visit = new Visit();

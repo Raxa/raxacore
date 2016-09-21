@@ -246,12 +246,4 @@ public class BahmniBridge {
         Concept childConcept = conceptService.getConceptByName(childConceptName);
         return omrsObsToBahmniObsMapper.map(obsDao.getChildObsFromParent(parentObsGroupUuid, childConcept));
     }
-
-    public BahmniObservation getLatestBahmniObservationFor(String conceptName){
-        Obs obs = latestObs(conceptName);
-        if(obs != null) {
-            return omrsObsToBahmniObsMapper.map(obs);
-        }
-        return null;
-    }
 }

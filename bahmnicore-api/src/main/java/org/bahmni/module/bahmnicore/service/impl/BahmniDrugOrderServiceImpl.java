@@ -1,45 +1,29 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.contract.drugorder.ConceptData;
 import org.bahmni.module.bahmnicore.contract.drugorder.DrugOrderConfigResponse;
 import org.bahmni.module.bahmnicore.contract.drugorder.OrderFrequencyData;
 import org.bahmni.module.bahmnicore.dao.OrderDao;
-import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrder;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.openmrs.CareSetting;
 import org.openmrs.Concept;
-import org.openmrs.Drug;
 import org.openmrs.DrugOrder;
-import org.openmrs.Duration;
 import org.openmrs.Encounter;
-import org.openmrs.EncounterRole;
-import org.openmrs.EncounterType;
 import org.openmrs.Order;
 import org.openmrs.OrderFrequency;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
-import org.openmrs.Provider;
-import org.openmrs.User;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
-import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.ProviderService;
-import org.openmrs.api.UserService;
-import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniOrderAttribute;
-import org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
-import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
@@ -60,17 +44,9 @@ import java.util.Set;
 public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     private ConceptService conceptService;
     private OrderService orderService;
-    private EncounterService encounterService;
-    private ProviderService providerService;
-    private UserService userService;
     private PatientService openmrsPatientService;
     private OrderDao orderDao;
-    private OrderType drugOrderType;
-    private Provider systemProvider;
-    private EncounterRole unknownEncounterRole;
-    private EncounterType consultationEncounterType;
     private ConceptMapper conceptMapper = new ConceptMapper();
-    private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
     private BahmniProgramWorkflowService bahmniProgramWorkflowService;
     private BahmniDrugOrderMapper bahmniDrugOrderMapper;
 
@@ -81,17 +57,11 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
     @Autowired
     public BahmniDrugOrderServiceImpl(ConceptService conceptService, OrderService orderService,
-                                      ProviderService providerService, EncounterService encounterService,
-                                      UserService userService,
-                                      PatientService patientService, OrderDao orderDao, BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand, BahmniProgramWorkflowService bahmniProgramWorkflowService) {
+                                      PatientService patientService, OrderDao orderDao, BahmniProgramWorkflowService bahmniProgramWorkflowService) {
         this.conceptService = conceptService;
         this.orderService = orderService;
-        this.providerService = providerService;
-        this.encounterService = encounterService;
-        this.userService = userService;
         this.openmrsPatientService = patientService;
         this.orderDao = orderDao;
-        this.bahmniVisitAttributeSaveCommand = bahmniVisitAttributeSaveCommand;
         this.bahmniProgramWorkflowService = bahmniProgramWorkflowService;
         this.bahmniDrugOrderMapper = new BahmniDrugOrderMapper();
     }
@@ -232,127 +202,6 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
         return listOfFrequencyData;
     }
 
-    private void addDrugOrdersToVisit(Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders, Patient patient, Visit visit) {
-        List<DrugOrder> drugOrders = createOrders(patient, orderDate, bahmniDrugOrders);
-        List<DrugOrder> remainingNewDrugOrders = checkOverlappingOrderAndUpdate(drugOrders, patient.getUuid(), orderDate);
-        if (remainingNewDrugOrders.isEmpty()) return;
-
-        Encounter systemConsultationEncounter = createNewSystemConsultationEncounter(orderDate, patient);
-        for (Order drugOrder : remainingNewDrugOrders) {
-            drugOrder.setEncounter(systemConsultationEncounter);
-            systemConsultationEncounter.addOrder(drugOrder);
-        }
-        visit.addEncounter(systemConsultationEncounter);
-        Encounter savedEncounter = encounterService.saveEncounter(systemConsultationEncounter);
-        bahmniVisitAttributeSaveCommand.save(savedEncounter);
-    }
-
-    private List<DrugOrder> checkOverlappingOrderAndUpdate(List<DrugOrder> newDrugOrders, String patientUuid, Date orderDate) {
-        List<DrugOrder> activeDrugOrders = getActiveDrugOrders(patientUuid, orderDate, null, null, null, null, null);
-        List<DrugOrder> drugOrdersToRemove = new ArrayList<>();
-        for (DrugOrder newDrugOrder : newDrugOrders) {
-            for (DrugOrder activeDrugOrder : activeDrugOrders) {
-                if (newDrugOrder.hasSameOrderableAs(activeDrugOrder)) {
-                    Encounter encounter = activeDrugOrder.getEncounter();
-                    newDrugOrder.setEncounter(encounter);
-                    encounter.addOrder(newDrugOrder);
-                    int totalNumberOfDays = getNumberOfDays(activeDrugOrder) + getNumberOfDays(newDrugOrder);
-                    newDrugOrder.setDateActivated(activeDrugOrder.getDateActivated());
-                    setDuration(newDrugOrder, totalNumberOfDays);
-                    newDrugOrder.setQuantity(activeDrugOrder.getQuantity() + newDrugOrder.getQuantity());
-                    activeDrugOrder.setVoided(true);
-                    activeDrugOrder.setVoidReason("To create a new drug order of same concept");
-                    encounterService.saveEncounter(encounter);
-                    drugOrdersToRemove.add(newDrugOrder);
-                }
-            }
-        }
-        newDrugOrders.removeAll(drugOrdersToRemove);
-        return newDrugOrders;
-    }
-
-    private int getNumberOfDays(DrugOrder activeDrugOrder) {
-        return Days.daysBetween(new DateTime(activeDrugOrder.getDateActivated()), new DateTime(activeDrugOrder.getAutoExpireDate())).getDays();
-    }
-
-    private Encounter createNewSystemConsultationEncounter(Date orderDate, Patient patient) {
-        Encounter systemConsultationEncounter;
-        systemConsultationEncounter = new Encounter();
-        systemConsultationEncounter.setProvider(getEncounterRole(), getSystemProvider());
-        systemConsultationEncounter.setEncounterType(getConsultationEncounterType());
-        systemConsultationEncounter.setPatient(patient);
-        systemConsultationEncounter.setEncounterDatetime(orderDate);
-        return systemConsultationEncounter;
-    }
-
-    private EncounterType getConsultationEncounterType() {
-        if (consultationEncounterType == null) {
-            consultationEncounterType = encounterService.getEncounterType("Consultation");
-        }
-        return consultationEncounterType;
-    }
-
-    private EncounterRole getEncounterRole() {
-        if (unknownEncounterRole == null) {
-            for (EncounterRole encounterRole : encounterService.getAllEncounterRoles(false)) {
-                if (encounterRole.getName().equalsIgnoreCase("unknown")) {
-                    unknownEncounterRole = encounterRole;
-                }
-            }
-        }
-        return unknownEncounterRole;
-    }
-
-    private Provider getSystemProvider() {
-        if (systemProvider == null) {
-            User systemUser = userService.getUserByUsername(null);
-            Collection<Provider> providers = providerService.getProvidersByPerson(systemUser.getPerson());
-            systemProvider = providers == null ? null : providers.iterator().next();
-        }
-        return systemProvider;
-    }
-
-    private List<DrugOrder> createOrders(Patient patient, Date orderDate, List<BahmniFeedDrugOrder> bahmniDrugOrders) {
-        List<DrugOrder> orders = new ArrayList<>();
-        for (BahmniFeedDrugOrder bahmniDrugOrder : bahmniDrugOrders) {
-            DrugOrder drugOrder = new DrugOrder();
-            Drug drug = conceptService.getDrugByUuid(bahmniDrugOrder.getProductUuid());
-            drugOrder.setDrug(drug);
-            drugOrder.setConcept(drug.getConcept());
-            drugOrder.setDateActivated(orderDate);
-            drugOrder.setPatient(patient);
-            drugOrder.setAsNeeded(false);
-            drugOrder.setOrderType(getDrugOrderType());
-            drugOrder.setOrderer(getSystemProvider());
-            drugOrder.setCareSetting(orderService.getCareSettingByName(CareSetting.CareSettingType.OUTPATIENT.toString()));
-            drugOrder.setDosingType(FlexibleDosingInstructions.class);
-            drugOrder.setDosingInstructions(createInstructions(bahmniDrugOrder, drugOrder));
-            drugOrder.setQuantity(bahmniDrugOrder.getQuantity());
-            drugOrder.setQuantityUnits(conceptService.getConceptByName("Unit(s)"));
-            drugOrder.setNumRefills(0);
-            drugOrder.setUuid(bahmniDrugOrder.getOrderUuid());
-            setDuration(drugOrder, bahmniDrugOrder.getNumberOfDays());
-            orders.add(drugOrder);
-        }
-        return orders;
-    }
-
-    private void setDuration(DrugOrder drugOrder, int numberOfDays) {
-        drugOrder.setAutoExpireDate(DateUtils.addDays(drugOrder.getDateActivated(), numberOfDays));
-        drugOrder.setDuration(numberOfDays);
-        drugOrder.setDurationUnits(conceptService.getConceptByMapping(Duration.SNOMED_CT_DAYS_CODE, Duration.SNOMED_CT_CONCEPT_SOURCE_HL7_CODE));
-    }
-
-    private String createInstructions(BahmniFeedDrugOrder bahmniDrugOrder, DrugOrder drugOrder) {
-        return "{\"dose\":\"" + bahmniDrugOrder.getDosage() + "\", \"doseUnits\":\"" + drugOrder.getDrug().getDosageForm().getDisplayString() + "\"}";
-    }
-
-    private OrderType getDrugOrderType() {
-        if (drugOrderType == null) {
-            drugOrderType = orderService.getOrderTypeByName("Drug order");
-        }
-        return drugOrderType;
-    }
 
     private List<DrugOrder> getActiveDrugOrders(String patientUuid, Date asOfDate, Set<Concept> conceptsToFilter,
                                                 Set<Concept> conceptsToExclude, Date startDate, Date endDate, Collection<Encounter> encounters) {

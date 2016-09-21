@@ -251,7 +251,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         topLevelConceptNamesWithoutCase.addAll(topLevelConceptNames);
         for (Obs o : observations) {
             if (o.getObsGroup() == null || topLevelConceptNamesWithoutCase.contains(o.getConcept().getName().getName().toLowerCase())) {
-                if (!removeIgnoredObsOrIgnoreParentItself(o, obsIgnoreList) && !topLevelObservations.contains(o)) {
+                if (!(removeIgnoredObsOrIgnoreParentItself(o, obsIgnoreList) || topLevelObservations.contains(o))) {
                     topLevelObservations.add(o);
                 }
             }
