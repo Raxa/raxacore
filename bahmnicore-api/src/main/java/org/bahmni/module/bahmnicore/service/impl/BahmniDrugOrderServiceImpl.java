@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
@@ -155,7 +156,8 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     @Override
-    public List<Order> getAllDrugOrders(String patientUuid, String patientProgramUuid, Set<Concept> conceptsForDrugs,Set<Concept> drugConceptsToBeExcluded, Collection<Encounter> encounters) throws ParseException {
+    public List<Order> getAllDrugOrders(String patientUuid, String patientProgramUuid, Set<Concept> conceptsForDrugs,
+                                        Set<Concept> drugConceptsToBeExcluded, Collection<Encounter> encounters) throws ParseException {
         Patient patientByUuid = openmrsPatientService.getPatientByUuid(patientUuid);
         OrderType orderTypeByUuid = orderService.getOrderTypeByUuid(OrderType.DRUG_ORDER_TYPE_UUID);
         if (patientProgramUuid != null) {
@@ -187,19 +189,14 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
     }
 
     private List<ConceptData> mapConcepts(List<Concept> drugDosingUnits) {
-        List<ConceptData> listOfDoseUnits = new ArrayList<>();
-        for (Concept drugDosingUnit : drugDosingUnits) {
-            listOfDoseUnits.add(new ConceptData(drugDosingUnit));
-        }
-        return listOfDoseUnits;
+        return drugDosingUnits.stream().map((concept) -> new ConceptData(concept))
+                .collect(Collectors.toList());
     }
 
     private List<OrderFrequencyData> getFrequencies() {
-        List<OrderFrequencyData> listOfFrequencyData = new ArrayList<>();
-        for (OrderFrequency orderFrequency : orderService.getOrderFrequencies(false)) {
-            listOfFrequencyData.add(new OrderFrequencyData(orderFrequency));
-        }
-        return listOfFrequencyData;
+        List<OrderFrequency> orderFrequencies = orderService.getOrderFrequencies(false);
+        return orderFrequencies.stream().map((orderFrequency) -> new OrderFrequencyData(orderFrequency))
+                .collect(Collectors.toList());
     }
 
 
