@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.impl;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +26,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentif
 import org.openmrs.module.bahmniemrapi.obsrelation.contract.ObsRelationship;
 import org.openmrs.module.emrapi.CareSettingType;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.parameter.EncounterSearchCriteria;
 import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -89,7 +92,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
 
         EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
         provider.setUuid(Context.getProviderService().getProvider(1).getUuid());
-        Set<EncounterTransaction.Provider> providerSet = new HashSet<EncounterTransaction.Provider>();
+        Set<EncounterTransaction.Provider> providerSet = new HashSet<>();
         providerSet.add(provider);
 
         EncounterTransaction.Concept concept = new ETConceptBuilder()
@@ -98,7 +101,6 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
                 .build();
         BahmniObservation bahmniObservation = new BahmniObservationBuilder().withUuid(obsUuid).withConcept(concept)
                 .withObsDateTime(obsDate)
-                .withComment("comment")
                 .withValue("obs-value")
                 .build();
         EncounterTransaction.DrugOrder etDrugOrder = createETDrugOrder("1ce527b5-d6de-43f0-bc62-4616abacd77e", null, null,
@@ -124,7 +126,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
     }
 
     @Test
-    public void shouldSavePastDrugOrdersInEncounterTransaction() {
+    public void shouldSavePastDrugOrdersInEncounterTransaction() throws ParseException {
         Date obsDate = new Date();
         String obsUuid = UUID.randomUUID().toString();
 
@@ -143,7 +145,6 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
                 .build();
         BahmniObservation bahmniObservation = new BahmniObservationBuilder().withUuid(obsUuid).withConcept(concept)
                 .withObsDateTime(obsDate)
-                .withComment("comment")
                 .withValue("obs-value")
                 .build();
         Date pastScheduledDateForDrugOrder = new DateTime().minusDays(2).toDate();
@@ -169,9 +170,16 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
         assertEquals(Order.Action.NEW, latestOrders.get(originalOrders.size()).getAction());
         assertEquals(0, encounterTransaction.getDrugOrders().size());
 
+        //we are dropping millis here because DropMillisecondsHibernateInterceptor drops the milliseconds of objects before saving
+        Date pastScheduledDateWithoutMillis = DateUtils.setMilliseconds(pastScheduledDateForDrugOrder, 0);
         //Ensure that two encounters are created.
-        List<Encounter> encounters = encounterService
-                .getEncounters(patient, null, pastScheduledDateForDrugOrder, null, null, null, null, null, null, false);
+        EncounterSearchCriteria encounterSearchCriteria = new EncounterSearchCriteriaBuilder()
+                .setPatient(patient)
+                .setFromDate(pastScheduledDateWithoutMillis)
+                .setIncludeVoided(false)
+                .createEncounterSearchCriteria();
+        List<Encounter> encounters = encounterService.getEncounters(encounterSearchCriteria);
+
 
         assertEquals(2, encounters.size());
         assertEquals(1, encounters.get(0).getOrders().size());
@@ -199,10 +207,9 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
                 .build();
         BahmniObservation bahmniObservation = new BahmniObservationBuilder().withUuid(obsUuid).withConcept(concept)
                 .withObsDateTime(obsDate)
-                .withComment("comment")
                 .withValue("obs-value")
                 .build();
-        Date pastScheduledDateForDrugOrder = new SimpleDateFormat("yyyy-MM-dd").parse("2001-12-23");
+        Date pastScheduledDateForDrugOrder = new DateTime().minusYears(12).toDate();
         EncounterTransaction.DrugOrder etDrugOrder = createETDrugOrder("1ce527b5-d6de-43f0-bc62-4616abacd77e", null, null, pastScheduledDateForDrugOrder);
 
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransactionBuilder().withObservation(bahmniObservation)
@@ -216,12 +223,14 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
                 .build();
 
         BahmniEncounterTransaction encounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
+        //we are dropping millis here because DropMillisecondsHibernateInterceptor drops the milliseconds of objects before saving
+        Date pastScheduledDateWithoutMillis = DateUtils.setMilliseconds(pastScheduledDateForDrugOrder, 0);
 
         //Ensure that two encounters are created.
         EncounterSearchCriteria encounterSearchCriteria = new EncounterSearchCriteriaBuilder()
                 .setPatient(patient)
-                .setFromDate(pastScheduledDateForDrugOrder)
-                .setToDate(pastScheduledDateForDrugOrder)
+                .setFromDate(pastScheduledDateWithoutMillis)
+                .setToDate(pastScheduledDateWithoutMillis)
                 .setIncludeVoided(false)
                 .createEncounterSearchCriteria();
         List<Encounter> encounters = encounterService.getEncounters(encounterSearchCriteria);
@@ -248,7 +257,6 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
                 .build();
         BahmniObservation bahmniObservation = new BahmniObservationBuilder().withUuid(obsUuid).withConcept(build)
                 .withObsDateTime(obsDate)
-                .withComment("comment")
                 .withValue("obs-value")
                 .build();
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransactionBuilder()
@@ -283,7 +291,6 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
                 .build();
         BahmniObservation bahmniObservation = new BahmniObservationBuilder().withUuid(obsUuid).withConcept(concept)
                 .withObsDateTime(obsDate)
-                .withComment("comment")
                 .withValue("obs-value")
                 .build();
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransactionBuilder()
@@ -319,7 +326,6 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
                 .build();
         BahmniObservation bahmniObservation = new BahmniObservationBuilder().withUuid(obsUuid).withConcept(concept)
                 .withObsDateTime(obsDate)
-                .withComment("comment")
                 .withValue("obs-value")
                 .build();
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransactionBuilder().withPatientId("4")
@@ -555,7 +561,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
     }
 
     @Test
-    public void shouldSavePastDrugOrdersInEncounterTransactionWhenThereIsNoRetrospectiveVisitWithNoVisitTypeUuid() {
+    public void shouldSavePastDrugOrdersInEncounterTransactionWhenThereIsNoRetrospectiveVisitWithNoVisitTypeUuid() throws ParseException {
         Date obsDate = new Date();
         String obsUuid = UUID.randomUUID().toString();
 
@@ -592,15 +598,24 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
 
 
         BahmniEncounterTransaction encounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
+        //we are dropping millis here because DropMillisecondsHibernateInterceptor drops the milliseconds of objects before saving
+        Date pastScheduledDateWithoutMillis = DateUtils.setMilliseconds(pastScheduledDateForDrugOrder, 0);
 
         //Ensure that two encounters are created.
-        List<Encounter> encounters = encounterService
-                .getEncounters(patient, null, pastScheduledDateForDrugOrder, pastScheduledDateForDrugOrder, null, null, null,
-                        null, null, false);
+        EncounterSearchCriteria encounterSearchCriteria = new EncounterSearchCriteriaBuilder()
+                .setPatient(patient)
+                .setFromDate(pastScheduledDateWithoutMillis)
+                .setToDate(pastScheduledDateWithoutMillis)
+                .setIncludeVoided(false)
+                .createEncounterSearchCriteria();
+        List<Encounter> encounters = encounterService.getEncounters(encounterSearchCriteria);
+
 
         assertEquals(1, encounters.size());
-        assertEquals(1, encounters.get(0).getOrders().size());
-        DrugOrder order = (DrugOrder) encounters.get(0).getOrders().iterator().next();
+        Encounter encounter = encounters.get(0);
+
+        assertEquals(1, encounter.getOrders().size());
+        DrugOrder order = (DrugOrder) encounter.getOrders().iterator().next();
         assertEquals("1ce527b5-d6de-43f0-bc62-4616abacd77e", order.getDrug().getUuid());
         assertEquals(1, encounterTransaction.getObservations().size());
         assertEquals(obsUuid, encounterTransaction.getObservations().iterator().next().getUuid());
