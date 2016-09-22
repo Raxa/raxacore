@@ -129,13 +129,6 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>webservices.rest-omod</artifactId>
-            <version>${openMRSWebServicesVersion}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
             <artifactId>episodes-api</artifactId>
             <version>0.1-SNAPSHOT</version>
             <scope>provided</scope>
