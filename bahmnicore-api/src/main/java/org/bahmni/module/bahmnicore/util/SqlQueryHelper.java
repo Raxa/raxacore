@@ -36,7 +36,7 @@ public class SqlQueryHelper {
         return text.replaceAll("[${}]", "");
     }
 
-    String transformIntoPreparedStatementFormat(String queryString){
+    public String transformIntoPreparedStatementFormat(String queryString){
         return  queryString.replaceAll(PARAM_PLACE_HOLDER_REGEX,"?");
     }
 

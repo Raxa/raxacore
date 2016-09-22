@@ -46,7 +46,6 @@ public class BahmniTrendsControllerTest {
         when(bahmniObsService.getObsForPerson("foo")).thenReturn(obs);
 
         BahmniTrendsController controller = new BahmniTrendsController(bahmniObsService);
-        List<PersonObservationData> observationDataList = controller.get("foo");
         verify(bahmniObsService).getObsForPerson("foo");
 
     }
@@ -68,7 +67,6 @@ public class BahmniTrendsControllerTest {
         when(bahmniObsService.getNumericConceptsForPerson("foo")).thenReturn(concepts);
 
         BahmniTrendsController controller = new BahmniTrendsController(bahmniObsService);
-        List<ConceptData> observationDataList = controller.getConceptsfor("foo");
         verify(bahmniObsService).getObsForPerson("foo");
 
     }

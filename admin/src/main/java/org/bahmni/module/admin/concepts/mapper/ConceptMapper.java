@@ -19,10 +19,6 @@ import static org.bahmni.module.admin.csv.utils.CSVUtils.getKeyValueList;
 
 public class ConceptMapper {
 
-
-    public ConceptMapper() {
-    }
-
     public Concept map(ConceptRow conceptRow) {
         Concept concept = new Concept();
         concept.setUuid(conceptRow.getUuid());
@@ -34,10 +30,9 @@ public class ConceptMapper {
         concept.setUnits(conceptRow.getUnits());
         concept.setHiNormal(conceptRow.getHiNormal());
         concept.setLowNormal(conceptRow.getLowNormal());
-        if(Objects.equals(conceptRow.getPrecise(), "") || conceptRow.getPrecise() == null){
+        if (Objects.equals(conceptRow.getPrecise(), "") || conceptRow.getPrecise() == null) {
             concept.setPrecise("true");
-        }
-        else{
+        } else {
             concept.setPrecise(conceptRow.getPrecise());
         }
         concept.setLocale(conceptRow.getLocale());
@@ -61,32 +56,32 @@ public class ConceptMapper {
     private void addAnswers(ConceptRow conceptRow, Concept concept) {
         List<String> answers = new ArrayList<>();
         List<Map.Entry<Integer, String>> sortedAnswers = sortAnswersAccordingToNumericValueOfKey(conceptRow.getAnswers());
-        for (Map.Entry<Integer,String> answer : sortedAnswers) {
-            if(!StringUtils.isEmpty(answer.getValue())) {
+        for (Map.Entry<Integer, String> answer : sortedAnswers) {
+            if (!StringUtils.isEmpty(answer.getValue())) {
                 answers.add(answer.getValue());
             }
         }
         concept.setAnswers(answers);
     }
+
     private List<Map.Entry<Integer, String>> sortAnswersAccordingToNumericValueOfKey(List<KeyValue> answers) {
         HashMap<Integer, String> answersMap = new HashMap<Integer, String>();
         for (KeyValue answer : answers) {
             answersMap.put(Integer.parseInt(answer.getKey()), answer.getValue());
         }
-        List<Map.Entry<Integer,String>> sortedAnswers = new ArrayList<Map.Entry<Integer,String>>(
+        List<Map.Entry<Integer, String>> sortedAnswers = new ArrayList<Map.Entry<Integer, String>>(
                 answersMap.entrySet()
         );
         Collections.sort(
                 sortedAnswers
-                ,   new Comparator<Map.Entry<Integer,String>>() {
-                    public int compare(Map.Entry<Integer,String> a, Map.Entry<Integer,String> b) {
+                , new Comparator<Map.Entry<Integer, String>>() {
+                    public int compare(Map.Entry<Integer, String> a, Map.Entry<Integer, String> b) {
                         return Integer.compare(a.getKey(), b.getKey());
                     }
                 }
         );
         return sortedAnswers;
     }
-
 
 
     private void addConceptReferenceTerms(ConceptRow conceptRow, Concept concept) {
@@ -118,6 +113,6 @@ public class ConceptMapper {
         String lowNormal = concept.getLowNormal();
         String precise = concept.getPrecise();
         return new ConceptRow(uuid, name, description, conceptClass, shortName, conceptDatatype, units, hiNormal,
-                lowNormal, precise, referenceTermRows, conceptSynonyms, conceptAnswers,locale);
+                lowNormal, precise, referenceTermRows, conceptSynonyms, conceptAnswers, locale);
     }
 }

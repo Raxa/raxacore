@@ -36,7 +36,6 @@ public class DepartmentMapperTest {
     private Concept departmentConcept;
     private Date dateCreated;
     private Date dateChanged;
-    private Concept allDepartmentsConcept;
     @Mock
     private ConceptService conceptService;
 
@@ -51,7 +50,7 @@ public class DepartmentMapperTest {
         PowerMockito.mockStatic(Context.class);
         when(Context.getLocale()).thenReturn(defaultLocale);
         departmentConcept = new ConceptBuilder().forDepartment().build();
-        allDepartmentsConcept = new ConceptBuilder().withUUID("Laboratory UUID")
+        Concept allDepartmentsConcept = new ConceptBuilder().withUUID("Laboratory UUID")
                 .withName(Department.DEPARTMENT_PARENT_CONCEPT_NAME).withClass(Department.DEPARTMENT_CONCEPT_CLASS)
                 .withSetMember(departmentConcept).build();
         ConceptSet conceptSet = createConceptSet(allDepartmentsConcept, departmentConcept);

@@ -186,7 +186,7 @@ public class BahmniBridgeTest {
         conceptNames.add("conceptName");
         bahmniBridge.latestObs("conceptName");
 
-        verify(obsDao, times(1)).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, 1, ObsDaoImpl.OrderBy.DESC);
+        verify(obsDao, times(1)).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, 1, ObsDaoImpl.OrderBy.DESC, null, null);
     }
 
     public Date addDays(Date now, int days) {

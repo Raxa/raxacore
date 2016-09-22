@@ -129,7 +129,7 @@ public class BahmniBridge {
         List<String> conceptNames = new ArrayList<>();
         conceptNames.add(conceptName);
         if (patientProgramUuid != null) {
-            obsList = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, 1,  ObsDaoImpl.OrderBy.DESC);
+            obsList = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, conceptNames, 1,  ObsDaoImpl.OrderBy.DESC, null, null);
         } else {
             obsList = obsDao.getLatestObsFor(patientUuid, conceptName, 1);
         }
@@ -245,13 +245,5 @@ public class BahmniBridge {
     public BahmniObservation getChildObsFromParentObs(String parentObsGroupUuid, String childConceptName){
         Concept childConcept = conceptService.getConceptByName(childConceptName);
         return omrsObsToBahmniObsMapper.map(obsDao.getChildObsFromParent(parentObsGroupUuid, childConcept));
-    }
-
-    public BahmniObservation getLatestBahmniObservationFor(String conceptName){
-        Obs obs = latestObs(conceptName);
-        if(obs != null) {
-            return omrsObsToBahmniObsMapper.map(obs);
-        }
-        return null;
     }
 }

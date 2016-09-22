@@ -825,7 +825,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withTestDetails(new HashSet<>(Arrays.asList(test1)))
                 .withPatientUuid(patientUuidWithNoOrders)
                 .withAccessionNotes(new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"),
-                                    new OpenElisAccessionNote("Note2", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))
+                        new OpenElisAccessionNote("Note2", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))
                 .build();
         openElisAccession.setAccessionUuid(accessionUuid);
 
@@ -842,8 +842,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         for (Encounter encounter : encounters) {
             if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
                 labEncounter = encounter;
-            }
-            else if (encounter.getEncounterType().getName().equals(VALIDATION_NOTES)) {
+            } else if (encounter.getEncounterType().getName().equals(VALIDATION_NOTES)) {
                 notesEncounter = encounter;
             }
         }
@@ -868,20 +867,19 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         assertNotNull(testResultObs);
         assertEquals(3, testResultObs.getGroupMembers().size());
         assertNotNull(notesEncounter);
-        assertEquals("aa1c6bf8-7846-11e3-a96a-09xD371c1b75",ProviderHelper.getProviderFrom(notesEncounter).getUuid());
+        assertEquals("aa1c6bf8-7846-11e3-a96a-09xD371c1b75", ProviderHelper.getProviderFrom(notesEncounter).getUuid());
         Set<Obs> notesObservations = notesEncounter.getObs();
 
         assertEquals(3, notesObservations.size());
         boolean containsAccessionUuidObservation = false;
         for (Obs notesObservation : notesObservations) {
 
-            if(notesObservation.getConcept().getName().getName().equals(OpenElisAccessionEventWorker.ACCESSION_UUID_CONCEPT)){
+            if (notesObservation.getConcept().getName().getName().equals(OpenElisAccessionEventWorker.ACCESSION_UUID_CONCEPT)) {
                 containsAccessionUuidObservation = true;
                 assertEquals("6xfe4567-707a-4629-9850-f15206e9b0eX", notesObservation.getValueText());
-            }
-            else{
+            } else {
                 assertEquals(OpenElisAccessionEventWorker.LAB_MANAGER_NOTES, notesObservation.getConcept().getName().getName());
-                assertTrue(Arrays.asList("Note1", "6xfe4567-707a-4629-9850-f15206e9b0eX","Note2").contains(notesObservation.getValueText()));
+                assertTrue(Arrays.asList("Note1", "6xfe4567-707a-4629-9850-f15206e9b0eX", "Note2").contains(notesObservation.getValueText()));
             }
         }
         assertTrue(containsAccessionUuidObservation);
@@ -1014,7 +1012,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         Event firstEvent = stubHttpClientToGetOpenElisAccession(accessionUuid, openElisAccession);
         openElisAccessionEventWorker.process(firstEvent);
         List<Visit> visitsByPatient = visitService.getVisitsByPatient(notesEncounter1.getPatient());
-        assertEquals(1,visitsByPatient.size());
+        assertEquals(1, visitsByPatient.size());
 
         encounters = encounterService.getEncountersByPatientId(3);
         notesEncounter1 = encounterService.getEncounter(36);
@@ -1022,8 +1020,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         assertEquals(2, notesEncounter1.getObs().size());
 
         Encounter newNoteEncounter = null;
-        for(Encounter encounter : encounters){
-            if(encounter.getEncounterType().getName().equals(VALIDATION_NOTES) && encounter.getId()!= 36 && encounter.getId()!= 38 ){
+        for (Encounter encounter : encounters) {
+            if (encounter.getEncounterType().getName().equals(VALIDATION_NOTES) && encounter.getId() != 36 && encounter.getId() != 38) {
                 newNoteEncounter = encounter;
                 break;
             }
@@ -1133,16 +1131,6 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         assertNotNull(testResultObs);
         assertEquals(3, testResultObs.getGroupMembers().size());
 
-    }
-
-    private Visit getVisitByStartDate(List<Visit> visits, Date date) {
-        for (Visit visit : visits) {
-            if ((visit.getStartDatetime().compareTo(date) <= 0) &&
-                    ((visit.getStopDatetime() == null) || (visit.getStopDatetime().compareTo(date) >= 0))) {
-                return visit;
-            }
-        }
-        return null;
     }
 
     private Event stubHttpClientToGetOpenElisAccession(String accessionUuid, OpenElisAccession openElisAccession) throws java.io.IOException {

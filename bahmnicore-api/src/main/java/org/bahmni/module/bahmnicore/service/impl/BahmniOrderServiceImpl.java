@@ -1,7 +1,6 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.service.BahmniOrderService;
 import org.bahmni.module.bahmnicore.service.OrderService;
@@ -24,10 +23,6 @@ public class BahmniOrderServiceImpl implements BahmniOrderService {
     private ConceptMapper conceptMapper;
     private OrderService orderService;
     private BahmniObsService bahmniObsService;
-    private static final Logger log = Logger.getLogger(BahmniOrderServiceImpl.class);
-
-    public  BahmniOrderServiceImpl(){
-    }
 
     @Autowired
     public BahmniOrderServiceImpl(OrderService orderService, BahmniObsService bahmniObsService, ConceptMapper conceptMapper) {

@@ -2,18 +2,14 @@ package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientConfigResponse;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
-import org.bahmni.module.bahmnicore.mapper.PatientMapper;
-import org.bahmni.module.bahmnicore.service.PatientDocumentService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.ConceptService;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,15 +20,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class BahmniPatientServiceImplTest {
-
-    @Mock
-    private PatientService patientService;
-    @Mock
-    private PatientDocumentService patientDocumentService;
-    @Mock
-    private HttpServletResponse response;
-    @Mock
-    private PatientMapper patientMapper;
     @Mock
     private PersonService personService;
     @Mock

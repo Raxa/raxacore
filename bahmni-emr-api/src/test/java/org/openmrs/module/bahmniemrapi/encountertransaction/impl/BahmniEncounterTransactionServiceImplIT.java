@@ -26,7 +26,6 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentif
 import org.openmrs.module.bahmniemrapi.obsrelation.contract.ObsRelationship;
 import org.openmrs.module.emrapi.CareSettingType;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.parameter.EncounterSearchCriteria;
 import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -43,9 +41,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest {
 

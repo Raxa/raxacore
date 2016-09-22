@@ -91,7 +91,6 @@ public class ConceptMetaDataServiceImplTest {
         conceptCommon.setLocale("en");
 
         List<Locale> locales =  new ArrayList<>();
-        List<ConceptSearchResult> conceptSearchResults = new ArrayList<>();
 
         when(Context.getAdministrationService()).thenReturn(administrationService);
         when(conceptService.getConceptClassByName("ConceptClass")).thenReturn(conceptClass);
@@ -100,9 +99,6 @@ public class ConceptMetaDataServiceImplTest {
         Locale locale = new Locale("en");
         when(org.openmrs.util.LocaleUtility.fromSpecification("en")).thenReturn(locale);
         when(org.openmrs.util.LocaleUtility.isValid(locale)).thenReturn(true);
-        List<Concept> conceptList = new ArrayList<>();
-
-
 
         ConceptMetaData conceptMetadata = conceptMetaDataService.getConceptMetaData(conceptCommon);
 

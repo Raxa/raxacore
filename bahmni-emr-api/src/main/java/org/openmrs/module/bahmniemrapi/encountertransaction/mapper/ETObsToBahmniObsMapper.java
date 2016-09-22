@@ -1,22 +1,17 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 
 import org.openmrs.Concept;
-import org.openmrs.ConceptName;
 import org.openmrs.ConceptNumeric;
-import org.openmrs.User;
 import org.openmrs.api.ConceptService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.AdditionalBahmniObservationFields;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.openmrs.util.LocaleUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 @Component
 public class ETObsToBahmniObsMapper {
@@ -48,7 +43,7 @@ public class ETObsToBahmniObsMapper {
 
     protected BahmniObservation map(EncounterTransaction.Observation observation, AdditionalBahmniObservationFields additionalBahmniObservationFields, List<Concept> rootConcepts, boolean flatten) {
 
-        BahmniObservation bahmniObservation= createBahmniObservation(observation,additionalBahmniObservationFields,rootConcepts,flatten);
+        BahmniObservation bahmniObservation= createBahmniObservation(observation,additionalBahmniObservationFields,rootConcepts);
 
         if (CONCEPT_DETAILS_CONCEPT_CLASS.equals(observation.getConcept().getConceptClass()) && flatten) {
             handleFlattenedConceptDetails(observation,bahmniObservation);
@@ -140,7 +135,7 @@ public class ETObsToBahmniObsMapper {
         }
     }
 
-    private BahmniObservation createBahmniObservation(EncounterTransaction.Observation observation, AdditionalBahmniObservationFields additionalBahmniObservationFields, List<Concept> rootConcepts, boolean flatten) {
+    private BahmniObservation createBahmniObservation(EncounterTransaction.Observation observation, AdditionalBahmniObservationFields additionalBahmniObservationFields, List<Concept> rootConcepts) {
         BahmniObservation bahmniObservation = new BahmniObservation();
         bahmniObservation.setEncounterTransactionObservation(observation);
         bahmniObservation.setEncounterDateTime(additionalBahmniObservationFields.getEncounterDateTime());

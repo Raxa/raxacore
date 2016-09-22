@@ -11,9 +11,6 @@ public class DiseaseTemplatesConfig {
     private Date startDate;
     private Date endDate;
 
-    public DiseaseTemplatesConfig() {
-    }
-
     public List<DiseaseTemplateConfig> getDiseaseTemplateConfigList() {
         return diseaseTemplateConfigList;
     }

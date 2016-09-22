@@ -31,7 +31,7 @@ public class ObsDaoIT extends BaseIntegrationTest {
 	}
 
     @Test
-    public void retrieve_all_observations_when_no_visit_ids_are_specified() throws Exception {
+    public void retrieveAllObservationsWhenNoVisitIdsAreSpecified() throws Exception {
         List<Obs> allObs = obsDao.getObsByPatientAndVisit("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), new ArrayList<Integer>(), -1, ObsDaoImpl.OrderBy.ASC, null, false, null, null, null);
 
         assertEquals(1, allObs.size());
@@ -62,7 +62,7 @@ public class ObsDaoIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void retrieve_only_orphaned_observation() throws Exception {
+    public void retrieveOnlyOrphanedObservation() throws Exception {
         List<Obs> allObs = obsDao.getObsByPatientAndVisit("341b4e41-790c-484f-b6ed-71dc8da222db", Arrays.asList("Diastolic"), new ArrayList<Integer>(), -1, ObsDaoImpl.OrderBy.ASC, null, false, null, null, null);
         assertEquals(1, allObs.size());
         assertEquals("Diastolic", allObs.get(0).getConcept().getName().getName());

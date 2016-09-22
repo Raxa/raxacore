@@ -3,7 +3,6 @@ package org.openmrs.module.bahmniemrapi.disposition.service;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Visit;
-import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.disposition.contract.BahmniDisposition;
 import org.openmrs.module.bahmniemrapi.disposition.mapper.BahmniDispositionMapper;
@@ -32,18 +31,15 @@ public class BahmniDispositionServiceImpl implements BahmniDispositionService {
 
     private BahmniDispositionMapper bahmniDispositionMapper;
 
-    private PatientService patientService;
-
     @Autowired
     public BahmniDispositionServiceImpl(VisitService visitService, DispositionMapper dispositionMapper,
                                         ObservationTypeMatcher observationTypeMatcher, EncounterProviderMapper encounterProviderMapper,
-                                        BahmniDispositionMapper bahmniDispositionMapper, PatientService patientService){
+                                        BahmniDispositionMapper bahmniDispositionMapper){
         this.visitService = visitService;
         this.dispositionMapper = dispositionMapper;
         this.observationTypeMatcher = observationTypeMatcher;
         this.encounterProviderMapper = encounterProviderMapper;
         this.bahmniDispositionMapper = bahmniDispositionMapper;
-        this.patientService = patientService;
     }
 
     @Override

@@ -30,7 +30,6 @@ public class ObservationTemplateMapperTest {
     private Concept observationTemplateConcept;
     @Mock
     private ConceptMapper conceptMapper;
-    private EncounterTransaction.Concept conceptData;
 
     @Before
     public void setUp() throws Exception {
@@ -41,7 +40,7 @@ public class ObservationTemplateMapperTest {
         bahmniObservation4 = new BahmniObservation();
         bahmniObservation5 = new BahmniObservation();
         observationTemplateConcept = new ConceptBuilder().withUUID("otUUID").build();
-        conceptData = new EncounterTransaction.Concept();
+        EncounterTransaction.Concept conceptData = new EncounterTransaction.Concept();
         conceptData.setName("Observation Template");
         conceptData.setConceptClass("otClass");
         conceptData.setDataType("N/A");
