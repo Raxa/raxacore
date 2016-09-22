@@ -1,13 +1,10 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
-import org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls.BahmniLabOrderResultController;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openmrs.api.PatientService;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
@@ -17,11 +14,7 @@ import static org.junit.Assert.assertNotNull;
 @Ignore
 public class BahmniLabOrderResultControllerIT extends BaseIntegrationTest {
 
-    @Autowired
-    private BahmniLabOrderResultController labResultController;
 
-    @Autowired
-    private PatientService patientService;
     private String LAB_ORDER_URL = "/rest/v1/bahmnicore/labOrderResults";
     private String PERSON_UUID = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
 

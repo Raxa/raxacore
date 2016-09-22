@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.service.BahmniOrderService;
 import org.bahmni.module.bahmnicore.service.OrderService;
@@ -11,16 +10,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openmrs.CareSetting;
 import org.openmrs.Concept;
-import org.openmrs.ConceptName;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
-import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.order.contract.BahmniOrder;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.openmrs.module.emrapi.encounter.matcher.ObservationTypeMatcher;
 import org.openmrs.util.LocaleUtility;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -50,15 +46,9 @@ public class BahmniOrderServiceImplTest {
     private Patient patient;
 
     @Mock
-    private ObsDao obsDao;
-    @Mock
-    private ObservationTypeMatcher observationTypeMatcher;
-    @Mock
     private BahmniObsService bahmniObsService;
     @Mock
     private OrderService orderService;
-    @Mock
-    private ConceptService conceptService;
     @Mock
     private ConceptMapper conceptMapper;
 

@@ -8,8 +8,6 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_10.DrugRes
 @org.openmrs.module.webservices.rest.web.annotation.Resource(name = "v1/drug", supportedClass = org.openmrs.Drug.class, supportedOpenmrsVersions = {"1.10.*", "1.11.*", "1.12.*"}, order=1)
 public class BahmniDrugResource extends DrugResource1_10 {
 
-    public BahmniDrugResource() {
-    }
 
     @Override
     public DelegatingResourceDescription getRepresentationDescription(Representation rep) {

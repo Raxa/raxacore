@@ -52,17 +52,6 @@ public class DrugOrderToTreatmentRegimenMapper {
 		return treatmentRegimen;
 	}
 
-	private void filterDrugsWhichDoesntHaveDose(List<Order> drugOrders) {
-		CollectionUtils.filter(drugOrders, new Predicate() {
-
-			@Override
-			public boolean evaluate(Object o) {
-				DrugOrder drugOrder = (DrugOrder) o;
-				return drugOrder.getDose() != null;
-			}
-		});
-	}
-
 	private void filterDrugsWhichAreStoppedBeforeScheduledDate(List<Order> drugOrders) {
 		CollectionUtils.filter(drugOrders, new Predicate() {
 

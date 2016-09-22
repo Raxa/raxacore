@@ -179,7 +179,6 @@ public class BahmniDrugOrderMapperTest {
 
         Date dateActivated, visitDate;
         dateActivated = visitDate = new Date();
-        Date dateScheduled = DateUtils.addDays(dateActivated, 2);
         Date expireDate = DateUtils.addDays(dateActivated, 20);
         Person person = new PersonBuilder().withUUID("puuid").build();
         Encounter encounter = new EncounterBuilder().build();
