@@ -1,6 +1,5 @@
 package org.bahmni.module.referencedata.addresshierarchy;
 
-import org.ict4h.atomfeed.server.service.EventService;
 import org.ict4h.atomfeed.transaction.AFTransactionWorkWithoutResult;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,8 +31,6 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 public class AddressHierarchyEntryEventInterceptorTest {
     @Mock
     private AtomFeedSpringTransactionManager atomFeedSpringTransactionManager;
-    @Mock
-    private EventService eventService;
 
     private AddressHierarchyEntryEventInterceptor publishedFeed;
     private AddressHierarchyEntry addressHierarchyEntry;

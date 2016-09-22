@@ -17,6 +17,7 @@ import org.openmrs.api.ConceptNameType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -286,7 +287,8 @@ public class ObsDaoImpl implements ObsDao {
     }
 
     @Override
-    public List<Obs> getObsByPatientProgramUuidAndConceptNames(String patientProgramUuid, List<String> conceptNames, Integer limit, OrderBy sortOrder) {
+    public List<Obs> getObsByPatientProgramUuidAndConceptNames(String patientProgramUuid, List<String> conceptNames, Integer limit, OrderBy sortOrder, Date startDate, Date endDate) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         StringBuilder queryString = new StringBuilder("SELECT o.* " +
                 "FROM patient_program pp " +
                 "INNER JOIN episode_patient_program epp " +
@@ -300,6 +302,12 @@ public class ObsDaoImpl implements ObsDao {
                 "AND o.voided = false " +
                 "AND cn.concept_name_type='FULLY_SPECIFIED' " +
                 "AND cn.name IN (:conceptNames)");
+        if(null != startDate) {
+            queryString.append(" AND o.obs_datetime >= STR_TO_DATE(:startDate, '%Y-%m-%d')");
+        }
+        if(null != endDate) {
+            queryString.append(" AND o.obs_datetime <= STR_TO_DATE(:endDate, '%Y-%m-%d')");
+        }
         if (sortOrder == OrderBy.ASC) {
             queryString.append(" ORDER by o.obs_datetime asc");
         } else {
@@ -311,6 +319,12 @@ public class ObsDaoImpl implements ObsDao {
         Query queryToGetObs = sessionFactory.getCurrentSession().createSQLQuery(queryString.toString()).addEntity(Obs.class);
         queryToGetObs.setParameterList("conceptNames", conceptNames);
         queryToGetObs.setString("patientProgramUuid", patientProgramUuid);
+        if(null != startDate) {
+            queryToGetObs.setString("startDate", dateFormat.format(startDate));
+        }
+        if(null != endDate) {
+            queryToGetObs.setString("endDate", dateFormat.format(endDate));
+        }
 
         return queryToGetObs.list();
     }

@@ -5,7 +5,7 @@ public class SimpleObjectExtractor {
 
     private LinkedHashMap post;
 
-    public SimpleObjectExtractor(java.util.LinkedHashMap post) {
+    public SimpleObjectExtractor(LinkedHashMap post) {
         this.post = post;
     }
 

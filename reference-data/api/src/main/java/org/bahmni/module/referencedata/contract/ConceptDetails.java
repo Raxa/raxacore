@@ -11,9 +11,6 @@ public class ConceptDetails {
     private Double lowNormal;
     private Map<String, Object> attributes = new HashMap<>();
 
-    public ConceptDetails() {
-    }
-
     public String getName() {
         return name;
     }

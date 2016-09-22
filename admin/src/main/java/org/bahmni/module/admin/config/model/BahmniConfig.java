@@ -23,9 +23,6 @@ public class BahmniConfig extends BaseOpenmrsObject implements Auditable, Serial
 
     private Date dateChanged;
 
-    public BahmniConfig() {
-    }
-
     private String config;
 
     public Integer getConfigId() {

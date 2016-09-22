@@ -27,7 +27,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 public class LabOrderResultsServiceIT extends BaseIntegrationTest {
-    
+
     @Autowired
     private LabOrderResultsService labOrderResultsService;
 
@@ -50,7 +50,7 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
         assertOrderPresent(labOrderResults, "HIV ELISA", null, 16, null, null, null, null, null, null, false, null);
         assertOrderPresent(labOrderResults, "PS for Malaria", null, 16, "System OpenMRS", null, null, null, null, null, true, null);
         assertOrderPresent(labOrderResults, "PS for Malaria", null, 17, "System OpenMRS", "Result for PS Malaria", null, null, null, null, false, null);
-        assertFalse(isOrderPresent(labOrderResults, "Chest X-Ray",16));
+        assertFalse(isOrderPresent(labOrderResults, "Chest X-Ray", 16));
     }
 
     @Test
@@ -58,7 +58,6 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("labOrderTestData.xml");
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         Patient patient = Context.getPatientService().getPatient(1000000);
         Visit visit = Context.getVisitService().getVisit(4);
@@ -79,7 +78,7 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldGetLabOrdersForParticularConcepts() throws Exception{
+    public void shouldGetLabOrdersForParticularConcepts() throws Exception {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("labOrderTestData.xml");
@@ -98,7 +97,7 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldGetLabOrdersForParticularConceptsWithinGivenDateRange() throws Exception{
+    public void shouldGetLabOrdersForParticularConceptsWithinGivenDateRange() throws Exception {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("labOrderTestData.xml");
@@ -140,7 +139,7 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldGetLabOrdersWithResultsEvenIfItIsDiscontinued()throws Exception{
+    public void shouldGetLabOrdersWithResultsEvenIfItIsDiscontinued() throws Exception {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("dispositionMetadata.xml");
         executeDataSet("labOrderTestData.xml");
@@ -157,7 +156,7 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
     private void assertOrderPresent(List<LabOrderResult> labOrderResults, String testName, String panelName, Integer accessionEncounterId, String provider, String value, Double minNormal, Double maxNormal, Boolean abnormal, String notes, Boolean referredOut, String uploadedFileName) {
         Encounter accessionEncounter = Context.getEncounterService().getEncounter(accessionEncounterId);
         for (LabOrderResult labOrderResult : labOrderResults) {
-            if(labOrderResult.getTestName().equals(testName) && labOrderResult.getAccessionUuid().equals(accessionEncounter.getUuid())) {
+            if (labOrderResult.getTestName().equals(testName) && labOrderResult.getAccessionUuid().equals(accessionEncounter.getUuid())) {
                 assertEquals(panelName, labOrderResult.getPanelName());
                 assertEquals(accessionEncounter.getEncounterDatetime(), labOrderResult.getAccessionDateTime());
                 assertEquals(value, labOrderResult.getResult());
@@ -174,11 +173,11 @@ public class LabOrderResultsServiceIT extends BaseIntegrationTest {
         fail();
     }
 
-    private boolean isOrderPresent(List<LabOrderResult> labOrderResults, String testName, Integer accessionEncounterId){
+    private boolean isOrderPresent(List<LabOrderResult> labOrderResults, String testName, Integer accessionEncounterId) {
         Encounter accessionEncounter = Context.getEncounterService().getEncounter(accessionEncounterId);
         for (LabOrderResult labOrderResult : labOrderResults) {
-            if(labOrderResult.getTestName().equals(testName) && labOrderResult.getAccessionUuid().equals(accessionEncounter.getUuid())) {
-               return true;
+            if (labOrderResult.getTestName().equals(testName) && labOrderResult.getAccessionUuid().equals(accessionEncounter.getUuid())) {
+                return true;
             }
         }
         return false;

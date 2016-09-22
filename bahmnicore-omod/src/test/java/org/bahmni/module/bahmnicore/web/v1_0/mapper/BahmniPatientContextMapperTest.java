@@ -182,12 +182,6 @@ public class BahmniPatientContextMapperTest {
         return names;
     }
 
-    private LinkedHashSet<PatientIdentifier> getPatientIdentifiers(String identifier) {
-        LinkedHashSet<PatientIdentifier> identifiers = new LinkedHashSet<>();
-        identifiers.add(new PatientIdentifier(identifier, null, null));
-        return identifiers;
-    }
-
     private PatientProgramAttribute getPatientProgramAttribute(String typeName, String typeDescription, String value, String dataTypeClassName) {
         PatientProgramAttribute patientProgramAttribute = new PatientProgramAttribute();
         ProgramAttributeType attributeType = new ProgramAttributeType();

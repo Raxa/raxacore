@@ -13,6 +13,7 @@ import org.openmrs.api.*;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisMetadata;
+import org.openmrs.module.emrapi.EmrApiProperties;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
 import org.openmrs.module.emrapi.diagnosis.DiagnosisService;
 import org.openmrs.module.emrapi.encounter.DiagnosisMapper;
@@ -47,9 +48,11 @@ public class BahmniDiagnosisServiceImplTest {
     private DiagnosisMapper diagnosisMapper;
     @Mock
     private DiagnosisService diagnosisService;
+    @Mock
+    private EmrApiProperties emrApiProperties;
 
     @InjectMocks
-    private BahmniDiagnosisServiceImpl bahmniDiagnosisService = new BahmniDiagnosisServiceImpl(encounterService, obsService, visitService, patientService, diagnosisMapper, diagnosisService, bahmniDiagnosisMetadata, conceptService);
+    private BahmniDiagnosisServiceImpl bahmniDiagnosisService = new BahmniDiagnosisServiceImpl(encounterService, obsService, visitService, patientService, diagnosisMapper, diagnosisService, bahmniDiagnosisMetadata, conceptService, emrApiProperties);
 
     private String initialDiagnosisObsUUID = "initialDiagnosisObsUUID";
     private String modifiedDiagnosisObsUUID = "modifiedDiagnosisObsUUID";
@@ -163,11 +166,11 @@ public class BahmniDiagnosisServiceImplTest {
         when(obsService.getObservations(eq(Arrays.asList((Person) patient)), eq(new ArrayList<>(visit.getEncounters())), eq(Arrays.asList(diagnosisSetConcept)), anyListOf(Concept.class), anyList(), anyList(), anyList(),
                 anyInt(), anyInt(), Matchers.any(Date.class), Matchers.any(Date.class), eq(false)))
                 .thenReturn(Arrays.asList(diagnosis.getExistingObs()));
-        when(bahmniDiagnosisMetadata.buildDiagnosisFromObsGroup(diagnosis.getExistingObs())).thenReturn(diagnosis);
+        when(bahmniDiagnosisMetadata.buildDiagnosisFromObsGroup(diagnosis.getExistingObs(), new ArrayList<Concept>(), new ArrayList<Concept>())).thenReturn(diagnosis);
         when(diagnosisMapper.convert(any(Diagnosis.class))).thenReturn(null);
         when(bahmniDiagnosisMetadata.findInitialDiagnosisUuid(diagnosis.getExistingObs())).thenReturn("firstDiagnosisObsId");
         when(bahmniDiagnosisMetadata.findInitialDiagnosis(updatedDiagnosis.getExistingObs())).thenReturn(diagnosis.getExistingObs());
-        when(bahmniDiagnosisMetadata.mapBahmniDiagnosis(any(EncounterTransaction.Diagnosis.class), any(EncounterTransaction.Diagnosis.class), eq(true), eq(false))).thenReturn(bahmniDiagnosisRequest);
+        when(bahmniDiagnosisMetadata.mapBahmniDiagnosis(any(EncounterTransaction.Diagnosis.class), any(EncounterTransaction.Diagnosis.class), eq(true), eq(false), eq(false), eq(true))).thenReturn(bahmniDiagnosisRequest);
 
         List<BahmniDiagnosisRequest> bahmniDiagnosisRequests = bahmniDiagnosisService.getBahmniDiagnosisByPatientAndVisit("patientId", "visitId");
 
@@ -177,7 +180,7 @@ public class BahmniDiagnosisServiceImplTest {
 
 
     @Test
-    public void ShouldNotReturnDiagnosisIfNoEncounterExists() throws Exception {
+    public void shouldNotReturnDiagnosisIfNoEncounterExists() throws Exception {
 
         String visitId = "visitId";
         Visit visit = new Visit();

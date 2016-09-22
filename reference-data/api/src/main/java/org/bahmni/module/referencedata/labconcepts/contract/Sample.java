@@ -9,9 +9,6 @@ public class Sample extends Resource {
     private List<ResourceReference> tests;
     private List<ResourceReference> panels;
 
-    public Sample() {
-    }
-
     public List<ResourceReference> getTests() {
         return tests;
     }

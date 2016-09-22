@@ -6,7 +6,6 @@ import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
 import org.codehaus.jackson.type.TypeReference;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.api.ObsService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -19,8 +18,6 @@ public class DiseaseTemplateControllerIT extends BaseIntegrationTest {
     @Autowired
     DiseaseTemplateController diseaseTemplateController;
 
-    @Autowired
-    private ObsService obsService;
 
     @Before
     public void setUp() throws Exception {

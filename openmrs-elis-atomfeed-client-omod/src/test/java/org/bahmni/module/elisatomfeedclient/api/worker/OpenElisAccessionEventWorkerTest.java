@@ -20,9 +20,7 @@ import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
-import org.openmrs.api.OrderService;
 import org.openmrs.api.ProviderService;
-import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
 
 import java.io.IOException;
@@ -57,10 +55,6 @@ public class OpenElisAccessionEventWorkerTest {
     private OpenElisAccessionEventWorker accessionEventWorker;
     private String openElisUrl;
     private Event event;
-    @Mock
-    private OrderService orderService;
-    @Mock
-    private VisitService visitService;
 
     @Before
     public void setUp() {

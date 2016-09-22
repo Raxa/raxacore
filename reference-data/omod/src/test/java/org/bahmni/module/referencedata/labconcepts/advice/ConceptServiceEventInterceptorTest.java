@@ -49,7 +49,6 @@ public class ConceptServiceEventInterceptorTest {
     private ConceptServiceEventInterceptor publishedFeed;
 
     private Concept concept;
-    private Concept parentConcept;
 
 
     @Before
@@ -58,7 +57,7 @@ public class ConceptServiceEventInterceptorTest {
 
         concept = new ConceptBuilder().withClass(Sample.SAMPLE_CONCEPT_CLASS).withUUID(SampleEventTest.SAMPLE_CONCEPT_UUID).build();
 
-        parentConcept = new ConceptBuilder().withName(AllSamples.ALL_SAMPLES).withSetMember(concept).build();
+        Concept parentConcept = new ConceptBuilder().withName(AllSamples.ALL_SAMPLES).withSetMember(concept).build();
 
         List<ConceptSet> conceptSets = getConceptSets(parentConcept, concept);
 

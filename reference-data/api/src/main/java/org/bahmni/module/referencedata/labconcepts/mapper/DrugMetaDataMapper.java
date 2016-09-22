@@ -5,9 +5,6 @@ import org.openmrs.Drug;
 
 public class DrugMetaDataMapper {
 
-    public DrugMetaDataMapper() {
-    }
-
     public org.openmrs.Drug map(DrugMetaData drugMetaData) {
         Drug drug = null;
 
