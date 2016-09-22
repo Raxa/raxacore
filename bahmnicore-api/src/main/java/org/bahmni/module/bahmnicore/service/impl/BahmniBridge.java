@@ -7,11 +7,7 @@ import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
 import org.joda.time.LocalDate;
 import org.joda.time.Years;
-import org.openmrs.Concept;
-import org.openmrs.DrugOrder;
-import org.openmrs.Obs;
-import org.openmrs.Order;
-import org.openmrs.PersonAttributeType;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
@@ -20,18 +16,13 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObser
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahmniObsMapper;
 import org.openmrs.module.emrapi.encounter.OrderMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
-import org.openmrs.module.emrapi.encounter.mapper.OrderMapper1_12;
+import org.openmrs.module.emrapi.encounter.mapper.OrderMapper2_0;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Bridge between extension scripts of Bahmni and Bahmni core as well as OpenMRS core.
@@ -53,7 +44,7 @@ public class BahmniBridge {
     private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
     private BahmniConceptService bahmniConceptService;
 
-    OrderMapper drugOrderMapper = new OrderMapper1_12();
+    OrderMapper drugOrderMapper = new OrderMapper2_0();
     /**
      * Factory method to construct objects of <code>BahmniBridge</code>.
      * <p/>
