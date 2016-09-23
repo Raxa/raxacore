@@ -402,6 +402,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
         org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
         concept.setUuid("kf2d4cb7-t3tb-oo37-70f7-0dmimmm22222");
         concept.setClassName("Finding");
+        concept.setDescription("some description");
         concept.setDataType("Numeric");
         concept.setUnits("unit");
         concept.setHiNormal("99");
