@@ -88,7 +88,7 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>emrapi-api-2.0</artifactId>
+            <artifactId>emrapi-api-1.12</artifactId>
             <version>${emrapi-omod.version}</version>
         </dependency>
         <dependency>
@@ -142,6 +142,11 @@
             <groupId>org.openmrs.module</groupId>
             <artifactId>legacyui-omod</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

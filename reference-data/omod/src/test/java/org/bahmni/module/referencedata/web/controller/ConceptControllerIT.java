@@ -190,25 +190,6 @@ public class ConceptControllerIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldCreateConceptWithoutDescription() throws Exception {
-        String uniqueName = "uniqueName";
-        String displayName = "uniqueName";
-        String className = "Misc";
-        String dataType = "N/A";
-
-        String conceptDataJson = "{" +
-                "\"uniqueName\":\"" + uniqueName + "\"," +
-                "\"displayName\":\"" + displayName + "\"," +
-                "\"className\":\"" + className + "\"," +
-                "\"dataType\":\"" + dataType + "\"" +
-                "}";
-
-        MockHttpServletRequest request = newPostRequest("/rest/v1/reference-data/concept", conceptDataJson);
-        MockHttpServletResponse response = handle(request);
-        assertEquals(response.getStatus(), HttpStatus.CREATED.value());
-    }
-
-    @Test
     public void shouldCreateConceptWithoutShortName() throws Exception {
         String uniqueName = "uniqueName";
         String description = "Sample basic concept being created";
