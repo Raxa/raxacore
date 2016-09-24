@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.Arrays;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -60,7 +61,7 @@ public class PatientDocumentServiceImplTest {
 
         ResponseEntity<Object> responseEntity = patientDocumentService.retriveImage("patientUuid");
 
-        Assert.assertEquals(404, responseEntity.getStatusCode().value());
+        assertEquals(404, responseEntity.getStatusCode().value());
     }
 
     @Test
@@ -76,7 +77,7 @@ public class PatientDocumentServiceImplTest {
         patientDocumentService = new PatientDocumentServiceImpl();
         String url = patientDocumentService.saveDocument(1, "Consultation", "videoContent", "mp4", "video");
 
-        Assert.assertTrue(url.matches(".*1-Consultation-.*.mp4"));
+        assertTrue(url.matches(".*1-Consultation-.*.mp4"));
     }
 
     @Test

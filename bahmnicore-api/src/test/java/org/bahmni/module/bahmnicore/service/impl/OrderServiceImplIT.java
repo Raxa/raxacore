@@ -4,7 +4,6 @@ import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.service.OrderService;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mozilla.javascript.EcmaError;
 import org.openmrs.CareSetting;
 import org.openmrs.Order;
 import org.openmrs.OrderType;

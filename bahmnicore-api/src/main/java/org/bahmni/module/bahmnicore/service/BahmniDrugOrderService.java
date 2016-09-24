@@ -1,7 +1,6 @@
 package org.bahmni.module.bahmnicore.service;
 
 import org.bahmni.module.bahmnicore.contract.drugorder.DrugOrderConfigResponse;
-import org.bahmni.module.bahmnicore.model.BahmniFeedDrugOrder;
 import org.openmrs.Concept;
 import org.openmrs.DrugOrder;
 import org.openmrs.Encounter;

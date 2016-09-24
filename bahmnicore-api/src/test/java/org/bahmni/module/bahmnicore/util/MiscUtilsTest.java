@@ -22,7 +22,7 @@ public class MiscUtilsTest {
 
     @Test
     public void shouldReturnConceptsWhenTheyAreAvailable() {
-        ConceptService conceptService = Mockito.mock(ConceptService.class);
+        ConceptService conceptService = mock(ConceptService.class);
         String nonExistantConceptName = "doesNotExist";
         String sampleConceptName = "sampleConcept";
         when(conceptService.getConceptByName(nonExistantConceptName)).thenReturn(null);
