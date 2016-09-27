@@ -4,6 +4,7 @@ import org.bahmni.module.bahmnicore.dao.BahmniProgramWorkflowDAO;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.PatientProgramAttribute;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
+import org.bahmni.module.bahmnicore.service.BahmniProgramServiceValidator;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.openmrs.Encounter;
 import org.openmrs.PatientProgram;
@@ -24,6 +25,8 @@ public class BahmniProgramWorkflowServiceImpl extends ProgramWorkflowServiceImpl
 
     @Autowired
     private EpisodeService episodeService;
+    @Autowired
+    private List<BahmniProgramServiceValidator> bahmniProgramServiceValidators;
 
     public BahmniProgramWorkflowServiceImpl(BahmniProgramWorkflowDAO programWorkflowDAO, EpisodeService episodeService) {
         this.episodeService = episodeService;
@@ -73,6 +76,9 @@ public class BahmniProgramWorkflowServiceImpl extends ProgramWorkflowServiceImpl
 
     @Override
     public PatientProgram savePatientProgram(PatientProgram patientProgram) throws APIException {
+        for (BahmniProgramServiceValidator bahmniProgramServiceValidator : bahmniProgramServiceValidators) {
+            bahmniProgramServiceValidator.validate(patientProgram);
+        }
         if (patientProgram.getOutcome() != null && patientProgram.getDateCompleted() == null) {
             patientProgram.setDateCompleted(new Date());
         }

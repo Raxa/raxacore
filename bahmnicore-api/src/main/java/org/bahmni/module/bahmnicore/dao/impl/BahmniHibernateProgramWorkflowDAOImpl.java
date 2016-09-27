@@ -82,7 +82,8 @@ public class BahmniHibernateProgramWorkflowDAOImpl extends HibernateProgramWorkf
                         "INNER JOIN bpp.attributes attr " +
                         "INNER JOIN attr.attributeType attr_type " +
                         "WHERE attr.valueReference = :attributeValue " +
-                        "AND attr_type.name = :attributeName")
+                        "AND attr_type.name = :attributeName " +
+                        "AND bpp.voided = 0")
                 .setParameter("attributeName", attributeName)
                 .setParameter("attributeValue", attributeValue).list();
     }
