@@ -36,9 +36,9 @@ public class PatientDaoImpl implements PatientDao {
                                              Integer offset, String[] customAttributeFields, String programAttributeFieldValue,
                                              String programAttributeFieldName, String[] addressSearchResultFields,
                                              String[] patientSearchResultFields, String loginLocationUuid, Boolean filterPatientsByLocation, Boolean filterOnAllIdentifiers) {
-        if(isInValidSearchParams(customAttributeFields,programAttributeFieldName)){
-            return new ArrayList<>();
-        }
+
+        validateSearchParams(customAttributeFields, programAttributeFieldName);
+
 
         ProgramAttributeType programAttributeType = getProgramAttributeType(programAttributeFieldName);
 
@@ -53,14 +53,16 @@ public class PatientDaoImpl implements PatientDao {
         return sqlQuery.list();
     }
 
-    private boolean isInValidSearchParams(String[] customAttributeFields, String programAttributeFieldName) {
+    private void validateSearchParams(String[] customAttributeFields, String programAttributeFieldName) {
         List<Integer> personAttributeIds = getPersonAttributeIds(customAttributeFields);
-        if(customAttributeFields != null && personAttributeIds.size() == 0){
-            return true;
+        if (customAttributeFields != null && personAttributeIds.size() != customAttributeFields.length) {
+            throw new IllegalArgumentException(String.format("Invalid Attribute In Patient Attributes [%s]", StringUtils.join(customAttributeFields, ", ")));
         }
 
         ProgramAttributeType programAttributeTypeId = getProgramAttributeType(programAttributeFieldName);
-        return programAttributeFieldName != null && programAttributeTypeId == null;
+        if (programAttributeFieldName != null && programAttributeTypeId == null) {
+            throw new IllegalArgumentException(String.format("Invalid Program Attribute %s", programAttributeFieldName));
+        }
     }
 
     private ProgramAttributeType getProgramAttributeType(String programAttributeField) {

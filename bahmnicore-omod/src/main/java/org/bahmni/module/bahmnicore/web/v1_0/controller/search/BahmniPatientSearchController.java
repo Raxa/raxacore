@@ -10,13 +10,19 @@ import org.openmrs.module.webservices.rest.web.resource.impl.AlreadyPaged;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -37,11 +43,16 @@ public class BahmniPatientSearchController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public AlreadyPaged<PatientResponse> search(HttpServletRequest request,
-                                                HttpServletResponse response) throws ResponseException {
+    public ResponseEntity<AlreadyPaged<PatientResponse>> search(HttpServletRequest request,
+                                                  HttpServletResponse response) throws ResponseException{
         RequestContext requestContext = RestUtil.getRequestContext(request, response);
         PatientSearchParameters searchParameters = new PatientSearchParameters(requestContext);
-        List<PatientResponse> patients = bahmniPatientService.search(searchParameters);
-        return new AlreadyPaged<>(requestContext, patients, false);
+        try {
+            List<PatientResponse> patients = bahmniPatientService.search(searchParameters);
+            AlreadyPaged alreadyPaged = new AlreadyPaged(requestContext, patients, false);
+            return new ResponseEntity(alreadyPaged,HttpStatus.OK);
+        }catch (IllegalArgumentException e){
+            return new ResponseEntity(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
     }
 }
