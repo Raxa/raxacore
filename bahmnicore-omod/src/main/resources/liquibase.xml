@@ -4175,7 +4175,6 @@
             uuid());
         </sql>
     </changeSet>
-
     <changeSet id="bahmni-core-201608011234" author="Hanisha, Vinay">
         <preConditions onFail="HALT">
             <sqlCheck expectedResult="0">
@@ -4235,5 +4234,21 @@
     <changeSet id="bahmni-WardsList-Update-201609011124" author="Jaswanth">
         <comment>Update the wards list sql to use left join for patient address</comment>
         <sqlFile path="V1_95_WardsListSql.sql"/>
+    </changeSet>
+    <changeSet id="bahmni-core-2016092714-possible-75" author="Panakaj, Hanisha">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from concept_name where name='Cured Diagnosis' AND concept_name_type = 'FULLY_SPECIFIED';
+            </sqlCheck>
+        </preConditions>
+        <comment>Add new concept for Cured Diagnosis</comment>
+        <sql>
+            set @concept_id = 0;
+            set @answer_concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Cured Diagnosis', 'Cured Diagnosis', 'N/A', 'Misc', true);
+        </sql>
     </changeSet>
 </databaseChangeLog>
