@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.dao.BahmniProgramWorkflowDAO;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.PatientProgramAttribute;
@@ -76,9 +77,7 @@ public class BahmniProgramWorkflowServiceImpl extends ProgramWorkflowServiceImpl
 
     @Override
     public PatientProgram savePatientProgram(PatientProgram patientProgram) throws APIException {
-        for (BahmniProgramServiceValidator bahmniProgramServiceValidator : bahmniProgramServiceValidators) {
-            bahmniProgramServiceValidator.validate(patientProgram);
-        }
+        preSaveValidation(patientProgram);
         if (patientProgram.getOutcome() != null && patientProgram.getDateCompleted() == null) {
             patientProgram.setDateCompleted(new Date());
         }
@@ -90,6 +89,14 @@ public class BahmniProgramWorkflowServiceImpl extends ProgramWorkflowServiceImpl
     @Override
     public List<BahmniPatientProgram> getPatientProgramByAttributeNameAndValue(String attributeName, String attributeValue) {
         return ((BahmniProgramWorkflowDAO)dao).getPatientProgramByAttributeNameAndValue(attributeName, attributeValue);
+    }
+
+    private void preSaveValidation(PatientProgram patientProgram) {
+        if(CollectionUtils.isNotEmpty(bahmniProgramServiceValidators)) {
+            for (BahmniProgramServiceValidator bahmniProgramServiceValidator : bahmniProgramServiceValidators) {
+                bahmniProgramServiceValidator.validate(patientProgram);
+            }
+        }
     }
 
     private void createEpisodeIfRequired(BahmniPatientProgram bahmniPatientProgram) {
