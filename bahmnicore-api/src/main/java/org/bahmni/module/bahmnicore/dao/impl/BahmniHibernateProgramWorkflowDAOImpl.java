@@ -94,7 +94,6 @@ public class BahmniHibernateProgramWorkflowDAOImpl extends HibernateProgramWorkf
                             "AND bpp.voided = 0")
                     .setParameter("attributeName", attributeName)
                     .setParameter("attributeValue", attributeValue);
-            query.setFlushMode(FlushMode.COMMIT);
             return query.list();
         } finally {
             session.setFlushMode(flushMode);
