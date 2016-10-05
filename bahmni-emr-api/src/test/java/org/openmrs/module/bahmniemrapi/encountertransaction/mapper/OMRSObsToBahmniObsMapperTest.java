@@ -72,7 +72,7 @@ public class OMRSObsToBahmniObsMapperTest {
     }
 
     @Test
-    public void return_mapped_observations_for_abnormal_observation_structure() throws Exception {
+    public void returnMappedObservationsForAbnormalObservationStructure() throws Exception {
 
         Mockito.when(authenticatedUser.getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE)).thenReturn("en");
         Mockito.when(LocaleUtility.fromSpecification("en")).thenReturn(Locale.ENGLISH);

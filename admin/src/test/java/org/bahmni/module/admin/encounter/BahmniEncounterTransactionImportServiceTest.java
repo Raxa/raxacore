@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 
 public class BahmniEncounterTransactionImportServiceTest {
     @Test
-    public void return_empty_encounterTransaction_for_empty_encounter_row() throws ParseException {
+    public void returnEmptyEncounterTransactionForEmptyEncounterRow() throws ParseException {
         EncounterService mockEncounterService = mock(EncounterService.class);
         when(mockEncounterService.getEncounterType("Consultation")).thenReturn(new EncounterType());
 

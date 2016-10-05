@@ -60,7 +60,7 @@ public class DepartmentMapperTest {
     }
 
     @Test
-    public void map_all_sample_fields_from_concept() throws Exception {
+    public void mapAllSampleFieldsFromConcept() throws Exception {
         Department departmentData = departmentMapper.map(departmentConcept);
         assertEquals("Department UUID", departmentData.getId());
         assertEquals(departmentData.getDateCreated(), departmentData.getDateCreated());
@@ -69,7 +69,7 @@ public class DepartmentMapperTest {
     }
 
     @Test
-    public void map_if_no_parent_concept() throws Exception {
+    public void mapIfNoParentConcept() throws Exception {
         Concept departmentConcept = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withName("DepartmentName").build();
         Department departmentData = departmentMapper.map(departmentConcept);
@@ -77,13 +77,13 @@ public class DepartmentMapperTest {
     }
 
     @Test
-    public void is_active_true_by_default() throws Exception {
+    public void isActiveTrueByDefault() throws Exception {
         Department departmentData = departmentMapper.map(departmentConcept);
         assertTrue(departmentData.getIsActive());
     }
 
     @Test
-    public void should_set_name_if_description_is_null() throws Exception {
+    public void shouldSetNameIfDescriptionIsNull() throws Exception {
 
         Concept departmentConceptWithOutDescription = new ConceptBuilder().withUUID("Department UUID").withDateCreated(dateCreated).
                 withDateChanged(dateChanged).withName("DepartmentName").build();
@@ -92,7 +92,7 @@ public class DepartmentMapperTest {
     }
 
     @Test
-    public void should_map_tests() throws Exception {
+    public void shouldMapTests() throws Exception {
         Concept testConcept = new ConceptBuilder().forTest().build();
         departmentConcept.addSetMember(testConcept);
 

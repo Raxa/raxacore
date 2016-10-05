@@ -45,7 +45,7 @@ public class DiseaseTemplateControllerIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void get_shouldReturnEmptyObservationTemplatesForIncorrectTemplateName() throws Exception {
+    public void getShouldReturnEmptyObservationTemplatesForIncorrectTemplateName() throws Exception {
         String dataJson = "{\n" +
                 "  \"diseaseTemplateConfigList\" : [{" +
                                                     "\"templateName\": \"Does not exist\"" + "}],\n" +

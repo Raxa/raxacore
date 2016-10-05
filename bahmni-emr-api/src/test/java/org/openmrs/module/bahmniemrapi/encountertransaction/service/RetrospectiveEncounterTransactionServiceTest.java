@@ -29,7 +29,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
     }
 
     @Test
-    public void update_a_past_encounter_with_matching_visit_details_if_exists() {
+    public void updateAPastEncounterWithMatchingVisitDetailsIfExists() {
         Date jan1_2011 = new DateTime(2014, 1, 1, 10, 0, 0).toDate();
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         bahmniEncounterTransaction.setEncounterDateTime(jan1_2011);
@@ -46,7 +46,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
     }
 
     @Test
-    public void update_observation_dates_at_all_levels_to_encounter_date_for_past_encounters() {
+    public void updateObservationDatesAtAllLevelsToEncounterDateForPastEncounters() {
         RetrospectiveEncounterTransactionService retrospectiveService = new RetrospectiveEncounterTransactionService(mockVisitIdentificationHelper);
 
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
@@ -65,7 +65,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
     }
 
     @Test
-    public void do_not_update_observation_dates_when_set() {
+    public void doNotUpdateObservationDatesWhenSet() {
         RetrospectiveEncounterTransactionService retrospectiveService = new RetrospectiveEncounterTransactionService(mockVisitIdentificationHelper);
 
         Date now = new Date();
@@ -89,7 +89,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
     }
 
     @Test
-    public void update_diagnosis_dates_to_encounter_date_for_past_encounters() {
+    public void updateDiagnosisDatesToEncounterDateForPastEncounters() {
         RetrospectiveEncounterTransactionService retrospectiveService = new RetrospectiveEncounterTransactionService(mockVisitIdentificationHelper);
 
         BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
@@ -107,7 +107,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
     }
 
     @Test
-    public void update_drugOrder_activation_date_to_encounter_date_for_past_encounters() {
+    public void updateDrugOrderActivationDateToEncounterDateForPastEncounters() {
         RetrospectiveEncounterTransactionService retrospectiveService = new RetrospectiveEncounterTransactionService(mockVisitIdentificationHelper);
 
         EncounterTransaction.DrugOrder drugOrder = new EncounterTransaction.DrugOrder();
@@ -125,7 +125,7 @@ public class RetrospectiveEncounterTransactionServiceTest {
     }
 
     @Test
-    public void update_disposition_date_to_encounter_date_for_past_encounters() {
+    public void updateDispositionDateToEncounterDateForPastEncounters() {
         RetrospectiveEncounterTransactionService retrospectiveService = new RetrospectiveEncounterTransactionService(mockVisitIdentificationHelper);
 
         EncounterTransaction.Disposition disposition = new EncounterTransaction.Disposition();

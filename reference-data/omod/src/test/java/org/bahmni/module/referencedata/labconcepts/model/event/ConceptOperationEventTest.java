@@ -59,7 +59,7 @@ public class ConceptOperationEventTest {
 
 
     @Test
-    public void trigger_atomfeed_event() throws Exception {
+    public void triggerAtomfeedEvent() throws Exception {
         Event event = conceptOperationEvent.asAtomFeedEvent(arguments);
         assertEquals(CATEGORY, event.getCategory());
         assertEquals(TITLE, event.getTitle());
@@ -67,12 +67,12 @@ public class ConceptOperationEventTest {
     }
 
     @Test
-    public void is_concept_child_of_parent_concept() throws Exception {
+    public void isConceptChildOfParentConcept() throws Exception {
         assertTrue(isChildOf(childConcept, "Parent"));
     }
 
     @Test
-    public void is_concept_not_a_child_of_parent_concept() throws Exception {
+    public void isConceptNotAChildOfParentConcept() throws Exception {
         assertFalse(isChildOf(childConcept, "Not Parent"));
     }
 

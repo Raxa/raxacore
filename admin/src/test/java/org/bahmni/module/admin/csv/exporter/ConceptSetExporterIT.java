@@ -19,6 +19,9 @@ import static org.junit.Assert.assertNull;
 
 public class ConceptSetExporterIT extends BaseIntegrationTest {
 
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
     @Autowired
     private ConceptSetExporter conceptSetExporter;
 
@@ -27,11 +30,8 @@ public class ConceptSetExporterIT extends BaseIntegrationTest {
         executeDataSet("conceptExportSetup.xml");
     }
 
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     @Test
-    public void throw_exception_if_concept_does_not_exist() throws Exception {
+    public void throwExceptionIfConceptDoesNotExist() throws Exception {
         exception.expect(APIException.class);
         exception.expectMessage("Concept Does not exist not found");
         conceptSetExporter.exportConcepts("Does not exist");
@@ -39,7 +39,7 @@ public class ConceptSetExporterIT extends BaseIntegrationTest {
 
     @Test
     @Ignore
-    public void get_list_of_conceptRows() throws Exception {
+    public void getListOfConceptRows() throws Exception {
         ConceptRows result = conceptSetExporter.exportConcepts("Big Concept");
         List<ConceptRow> conceptRows = result.getConceptRows();
         List<ConceptSetRow> conceptSetRows = result.getConceptSetRows();

@@ -1,7 +1,6 @@
 package org.bahmni.module.bahmnicore.util;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;

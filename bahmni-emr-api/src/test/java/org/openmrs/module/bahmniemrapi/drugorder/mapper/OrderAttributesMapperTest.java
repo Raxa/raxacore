@@ -1,6 +1,5 @@
 package org.openmrs.module.bahmniemrapi.drugorder.mapper;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.builder.BahmniObservationBuilder;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
@@ -13,11 +12,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class OrderAttributesMapperTest {
-
-    @Before
-    public void setUp() throws Exception {
-
-    }
 
     @Test
     public void shouldMapRelatedObservationsWithOrders(){

@@ -75,7 +75,7 @@ public class ObsDaoIT extends BaseIntegrationTest {
 	}
 
     @Test
-    public void do_not_fetch_voided_observations() throws Exception {
+    public void doNotFetchVoidedObservations() throws Exception {
         List<Obs> allObs = obsDao.getObsByPatientAndVisit("86526ed5-3c11-11de-a0ba-001e378eb67a", Arrays.asList("Blood Pressure"), new ArrayList<Integer>(), -1, ObsDaoImpl.OrderBy.ASC, null, false, null, null, null);
         assertEquals(1, allObs.size());
     }

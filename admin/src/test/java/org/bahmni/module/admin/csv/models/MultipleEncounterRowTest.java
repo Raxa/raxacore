@@ -10,7 +10,7 @@ import java.util.List;
 
 public class MultipleEncounterRowTest {
     @Test
-    public void isEmpty_returns_true_for_empty_row() {
+    public void isEmptyReturnsTrueForEmptyRow() {
         Assert.isTrue(new MultipleEncounterRow().getNonEmptyEncounterRows().isEmpty(), "No data in encounter");
 
         MultipleEncounterRow emptyEncounterRow = new MultipleEncounterRowBuilder().getEmptyMultipleEncounterRow("GAN12345");

@@ -21,7 +21,7 @@ public class ReferenceDataConceptReferenceTermServiceImplIT extends BaseIntegrat
     }
 
     @Test
-    public void should_get_concept_mapping() throws Exception {
+    public void shouldGetConceptMapping() throws Exception {
         ConceptReferenceTerm referenceTerm = referenceDataConceptReferenceTermService.getConceptReferenceTerm("New Code", "org.openmrs.module.emrapi");
         assertNotNull(referenceTerm);
         assertEquals("New Code", referenceTerm.getCode());

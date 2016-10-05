@@ -3,7 +3,6 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.BahmniPatientContextMapper;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,11 +51,6 @@ public class BahmniPatientContextControllerTest {
         initMocks(this);
         PowerMockito.mockStatic(Context.class);
         when(Context.getService(BahmniProgramWorkflowService.class)).thenReturn(bahmniProgramWorkflowService);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-
     }
 
     @Test

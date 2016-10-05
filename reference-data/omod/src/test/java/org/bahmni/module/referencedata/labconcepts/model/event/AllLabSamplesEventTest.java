@@ -45,7 +45,7 @@ public class AllLabSamplesEventTest {
     }
 
     @Test
-    public void should_create_one_event_for_All_Lab_Samples_and_set_members() throws Exception {
+    public void shouldCreateOneEventForAllLabSamplesAndSetMembers() throws Exception {
 
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{parentConcept});
         assertEquals(events.size(), 1);

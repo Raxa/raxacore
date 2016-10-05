@@ -16,13 +16,12 @@ public class ReferenceTermPersister implements EntityPersister<ReferenceTermRow>
     private UserContext userContext;
     private static final Logger log = Logger.getLogger(PatientPersister.class);
 
+    @Autowired
+    private ReferenceDataConceptReferenceTermService referenceDataConceptReferenceTermService;
 
     public void init(UserContext userContext) {
         this.userContext = userContext;
     }
-
-    @Autowired
-    private ReferenceDataConceptReferenceTermService referenceDataConceptReferenceTermService;
 
     @Override
     public Messages persist(ReferenceTermRow referenceTermRow) {

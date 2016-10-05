@@ -42,7 +42,7 @@ public class BahmniEncounterControllerTest {
     }
 
     @Test
-    public void returns_multiple_encounterTransactions_if_exists() throws Exception {
+    public void returnsMultipleEncounterTransactionsIfExists() throws Exception {
         EncounterTransaction et1 = new EncounterTransaction();
         et1.setEncounterUuid("et1");
 
@@ -60,7 +60,7 @@ public class BahmniEncounterControllerTest {
     }
 
     @Test
-    public void should_return_empty_encounter_transaction_if_there_are_no_encounters_exists() throws Exception {
+    public void shouldReturnEmptyEncounterTransactionIfThereAreNoEncountersExists() throws Exception {
         BahmniEncounterSearchParameters encounterSearchParameters = new BahmniEncounterSearchParameters();
         encounterSearchParameters.setIncludeAll(false);
 
@@ -74,7 +74,7 @@ public class BahmniEncounterControllerTest {
     }
 
     @Test(expected=VisitClosedException.class)
-    public void should_throw_visit_closed_exception_if_encounter_visit_is_closed() throws Exception{
+    public void shouldThrowVisitClosedExceptionIfEncounterVisitIsClosed() throws Exception{
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Visit visit = new Visit();
         visit.setId(123);

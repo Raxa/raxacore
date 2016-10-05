@@ -23,7 +23,7 @@ public class BahmniConfigControllerIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void deserialization_to_json_of_config() throws Exception {
+    public void deserializationToJsonOfConfig() throws Exception {
         HashMap<String, String> headers = new HashMap<>();
         BahmniConfig bahmniConfig = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/config", headers, new Parameter("appName", "clinical"), new Parameter("configName", "app.json"))), new TypeReference<BahmniConfig>() {
         });
@@ -32,14 +32,14 @@ public class BahmniConfigControllerIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void get_config_by_path() throws Exception {
+    public void getConfigByPath() throws Exception {
         String bahmniConfig = handle(newGetRequest("/rest/v1/bahmnicore/config/clinical/app.json")).getContentAsString();
         assertFalse(bahmniConfig.isEmpty());
         assertTrue(bahmniConfig.contains("bahmni.registration"));
     }
 
     @Test
-    public void stripped_down_json_of_all_configs_under_an_app() throws Exception {
+    public void strippedDownJsonOfAllConfigsUnderAnApp() throws Exception {
         HashMap<String, String> headers = new HashMap<>();
         List<BahmniConfig> bahmniConfigs = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/config/all", headers, new Parameter("appName", "clinical"))), new TypeReference<List<BahmniConfig>>() {
         });
@@ -49,7 +49,7 @@ public class BahmniConfigControllerIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void create_new_config() throws Exception {
+    public void createNewConfig() throws Exception {
         BahmniConfig bahmniConfig = new BahmniConfig();
         bahmniConfig.setConfig("New Config");
         bahmniConfig.setAppName("registration");
@@ -62,7 +62,7 @@ public class BahmniConfigControllerIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void update_existing_config() throws Exception {
+    public void updateExistingConfig() throws Exception {
         BahmniConfig getConfig = deserialize(handle(newGetRequest("/rest/v1/bahmnicore/config", new Parameter("appName", "clinical"), new Parameter("configName", "app.json"))), BahmniConfig.class);
         getConfig.setConfig("Updated Config");
         BahmniConfig savedConfig = deserialize(handle(newPutRequest("/rest/v1/bahmnicore/config", getConfig)), BahmniConfig.class);

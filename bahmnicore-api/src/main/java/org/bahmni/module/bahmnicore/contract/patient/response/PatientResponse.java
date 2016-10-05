@@ -9,7 +9,6 @@ public class PatientResponse {
     private String uuid;
     private Date birthDate;
     private String extraIdentifiers;
-
     private int personId;
     private Date deathDate;
     private String identifier;
