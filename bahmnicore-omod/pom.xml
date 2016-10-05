@@ -161,12 +161,6 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>reportingcompatibility-api</artifactId>
-            <version>${reportingCompatiblityModuleVersion}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
             <artifactId>calculation-api</artifactId>
             <version>${calculationModuleVersion}</version>
             <scope>test</scope>

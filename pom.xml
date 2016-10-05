@@ -29,7 +29,7 @@
         <springVersion>3.2.7.RELEASE</springVersion>
         <atomfeed.version>1.9.3</atomfeed.version>
         <addressHierarchyVersion>2.9</addressHierarchyVersion>
-        <reportingModuleVersion>0.9.10-SNAPSHOT</reportingModuleVersion>
+        <reportingModuleVersion>0.10.4</reportingModuleVersion>
         <reportingCompatiblityModuleVersion>2.0.1-SNAPSHOT</reportingCompatiblityModuleVersion>
         <calculationModuleVersion>1.3-SNAPSHOT</calculationModuleVersion>
         <serializationXstreamModuleVersion>0.2.12-SNAPSHOT</serializationXstreamModuleVersion>
@@ -223,12 +223,12 @@
                 <version>${reportingModuleVersion}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>org.openmrs.module</groupId>
-                <artifactId>reportingcompatibility-api</artifactId>
-                <version>${reportingCompatiblityModuleVersion}</version>
-                <scope>test</scope>
-            </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.openmrs.module</groupId>-->
+                <!--<artifactId>reportingcompatibility-api</artifactId>-->
+                <!--<version>${reportingCompatiblityModuleVersion}</version>-->
+                <!--<scope>test</scope>-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>calculation-api</artifactId>
