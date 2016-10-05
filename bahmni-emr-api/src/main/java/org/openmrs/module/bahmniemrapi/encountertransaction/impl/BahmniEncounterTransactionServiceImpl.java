@@ -234,15 +234,14 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
     }
 
     private void setEncounterType(BahmniEncounterTransaction bahmniEncounterTransaction) {
-        if(StringUtils.isBlank(bahmniEncounterTransaction.getEncounterTypeUuid())){
-            return;
+        if(StringUtils.isBlank(bahmniEncounterTransaction.getEncounterTypeUuid())) {
+            EncounterType encounterType = encounterTypeIdentifier.getEncounterTypeFor(bahmniEncounterTransaction.getEncounterType(),
+                    bahmniEncounterTransaction.getLocationUuid());
+            if (encounterType == null) {
+                throw new RuntimeException("Encounter type not found.");
+            }
+            bahmniEncounterTransaction.setEncounterTypeUuid(encounterType.getUuid());
         }
-        EncounterType encounterType = encounterTypeIdentifier.getEncounterTypeFor(bahmniEncounterTransaction.getEncounterType(),
-                bahmniEncounterTransaction.getLocationUuid());
-        if (encounterType == null) {
-            throw new RuntimeException("Encounter type not found.");
-        }
-        bahmniEncounterTransaction.setEncounterTypeUuid(encounterType.getUuid());
     }
 
 }
