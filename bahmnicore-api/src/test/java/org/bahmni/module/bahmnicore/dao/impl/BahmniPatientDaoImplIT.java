@@ -172,13 +172,21 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
     @Test
     public void shouldThrowErrorWhenPatientAttributesIsNotPresent() throws Exception {
         String[] patientAttributes = {"caste","nonExistingAttribute"};
-//        String[] patientResultFields = {"caste","existD"};
         expectedEx.expect(IllegalArgumentException.class);
         expectedEx.expectMessage("Invalid Attribute In Patient Attributes [caste, nonExistingAttribute]");
         List<PatientResponse> patients = patientDao.getPatients("", "", "testCaste1", "city_village", null, 100, 0, patientAttributes, "", null, null, null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, false);
 
     }
 
+    @Test
+    public void shouldThrowErrorWhenPatientAddressIsNotPresent() throws Exception {
+        String[] patientAttributes = {"caste"};
+        String addressField = "nonExistingAddressFiled";
+        expectedEx.expect(IllegalArgumentException.class);
+        expectedEx.expectMessage("Invalid Address Filed nonExistingAddressFiled");
+        List<PatientResponse> patients = patientDao.getPatients("", "", "testCaste1", addressField, null, 100, 0, patientAttributes, "", null, null, null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, false);
+
+    }
     @Test
     public void shouldFetchPatientsWithPartialIdentifierMatch() throws Exception {
         String partialIdentifier = "300001";

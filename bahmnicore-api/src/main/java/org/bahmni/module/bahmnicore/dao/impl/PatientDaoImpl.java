@@ -12,6 +12,7 @@ import org.hibernate.classic.Session;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
+import org.openmrs.PersonAddress;
 import org.openmrs.RelationshipType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -37,7 +38,7 @@ public class PatientDaoImpl implements PatientDao {
                                              String programAttributeFieldName, String[] addressSearchResultFields,
                                              String[] patientSearchResultFields, String loginLocationUuid, Boolean filterPatientsByLocation, Boolean filterOnAllIdentifiers) {
 
-        validateSearchParams(customAttributeFields, programAttributeFieldName);
+        validateSearchParams(customAttributeFields, programAttributeFieldName,addressFieldName);
 
 
         ProgramAttributeType programAttributeType = getProgramAttributeType(programAttributeFieldName);
@@ -53,7 +54,7 @@ public class PatientDaoImpl implements PatientDao {
         return sqlQuery.list();
     }
 
-    private void validateSearchParams(String[] customAttributeFields, String programAttributeFieldName) {
+    private void validateSearchParams(String[] customAttributeFields, String programAttributeFieldName, String addressFieldName) {
         List<Integer> personAttributeIds = getPersonAttributeIds(customAttributeFields);
         if (customAttributeFields != null && personAttributeIds.size() != customAttributeFields.length) {
             throw new IllegalArgumentException(String.format("Invalid Attribute In Patient Attributes [%s]", StringUtils.join(customAttributeFields, ", ")));
@@ -63,6 +64,22 @@ public class PatientDaoImpl implements PatientDao {
         if (programAttributeFieldName != null && programAttributeTypeId == null) {
             throw new IllegalArgumentException(String.format("Invalid Program Attribute %s", programAttributeFieldName));
         }
+
+
+        if(!isValidAddressField(addressFieldName)){
+            throw new IllegalArgumentException(String.format("Invalid Address Filed %s", addressFieldName));
+        }
+    }
+
+    private boolean isValidAddressField(String addressFieldName) {
+        if(addressFieldName==null)return true;
+        String query = "SELECT DISTINCT COLUMN_NAME FROM information_schema.columns WHERE\n" +
+                "LOWER (TABLE_NAME) ='person_address' and LOWER(COLUMN_NAME) IN "+
+                "( :personAddressField)";
+        Query queryToGetAddressFields = sessionFactory.getCurrentSession().createSQLQuery( query);
+        queryToGetAddressFields.setParameterList("personAddressField", Arrays.asList(addressFieldName.toLowerCase()));
+        List list = queryToGetAddressFields.list();
+        return list.size()>0;
     }
 
     private ProgramAttributeType getProgramAttributeType(String programAttributeField) {
