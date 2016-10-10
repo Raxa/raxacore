@@ -4,7 +4,6 @@ import org.apache.commons.lang.time.DateUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.DateTime;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.obsrelation.contract.ObsRelationship;
@@ -28,251 +27,246 @@ import static org.junit.Assert.assertTrue;
 
 public class BahmniEncounterTransactionTest {
 
-	private final Date obsDate = new Date();
+    private final Date obsDate = new Date();
 
-	@Before
-	public void setUp() throws Exception {
+    @Test
+    public void shouldConvertBahmniEncounterTransactionToET() {
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
+        bahmniEncounterTransaction.setBahmniDiagnoses(createBahmniDiagnoses());
+        bahmniEncounterTransaction.setObservations(createBahmniObservations());
+        bahmniEncounterTransaction.setExtensions(createExtensions());
+        EncounterTransaction encounterTransaction = bahmniEncounterTransaction.toEncounterTransaction();
 
-	}
+        assertEquals(2, encounterTransaction.getDiagnoses().size());
 
-	@Test
-	public void shouldConvertBahmniEncounterTransactionToET() {
-		BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-		bahmniEncounterTransaction.setBahmniDiagnoses(createBahmniDiagnoses());
-		bahmniEncounterTransaction.setObservations(createBahmniObservations());
-		bahmniEncounterTransaction.setExtensions(createExtensions());
-		EncounterTransaction encounterTransaction = bahmniEncounterTransaction.toEncounterTransaction();
+        EncounterTransaction.Diagnosis diagnosis1 = encounterTransaction.getDiagnoses().get(0);
+        assertEquals(Diagnosis.Certainty.CONFIRMED.name(), diagnosis1.getCertainty());
+        assertEquals(Diagnosis.Order.PRIMARY.name(), diagnosis1.getOrder());
+        assertEquals("d102c80f-1yz9-4da3-bb88-8122ce8868dh", diagnosis1.getCodedAnswer().getUuid());
 
-		assertEquals(2, encounterTransaction.getDiagnoses().size());
+        EncounterTransaction.Diagnosis diagnosis2 = encounterTransaction.getDiagnoses().get(1);
+        assertEquals(Diagnosis.Certainty.PRESUMED.name(), diagnosis2.getCertainty());
+        assertEquals(Diagnosis.Order.SECONDARY.name(), diagnosis2.getOrder());
+        assertEquals("e102c80f-1yz9-4da3-bb88-8122ce8868dh", diagnosis2.getCodedAnswer().getUuid());
 
-		EncounterTransaction.Diagnosis diagnosis1 = encounterTransaction.getDiagnoses().get(0);
-		assertEquals(Diagnosis.Certainty.CONFIRMED.name(), diagnosis1.getCertainty());
-		assertEquals(Diagnosis.Order.PRIMARY.name(), diagnosis1.getOrder());
-		assertEquals("d102c80f-1yz9-4da3-bb88-8122ce8868dh", diagnosis1.getCodedAnswer().getUuid());
+        assertEquals(2, encounterTransaction.getObservations().size());
 
-		EncounterTransaction.Diagnosis diagnosis2 = encounterTransaction.getDiagnoses().get(1);
-		assertEquals(Diagnosis.Certainty.PRESUMED.name(), diagnosis2.getCertainty());
-		assertEquals(Diagnosis.Order.SECONDARY.name(), diagnosis2.getOrder());
-		assertEquals("e102c80f-1yz9-4da3-bb88-8122ce8868dh", diagnosis2.getCodedAnswer().getUuid());
+        EncounterTransaction.Observation observation1 = encounterTransaction.getObservations().get(0);
+        assertEquals("comment", observation1.getComment());
+        assertEquals("obs-uuid", observation1.getUuid());
+        assertEquals("concept-uuid", observation1.getConceptUuid());
+        assertEquals("order-uuid", observation1.getOrderUuid());
+        assertEquals(obsDate, observation1.getObservationDateTime());
+        assertEquals("obs-value1", observation1.getValue());
+        assertEquals(true, observation1.getVoided());
+        assertEquals("chumma", observation1.getVoidReason());
 
-		assertEquals(2, encounterTransaction.getObservations().size());
+        EncounterTransaction.Observation observation2 = encounterTransaction.getObservations().get(1);
+        assertEquals("comment", observation2.getComment());
+        assertEquals("obs-uuid-1", observation2.getUuid());
+        assertEquals("concept-uuid-2", observation2.getConceptUuid());
+        assertEquals("order-uuid", observation2.getOrderUuid());
+        assertEquals(obsDate, observation2.getObservationDateTime());
+        assertEquals("obs-value2", observation2.getValue());
+        assertEquals(true, observation2.getVoided());
+        assertEquals("chumma", observation2.getVoidReason());
 
-		EncounterTransaction.Observation observation1 = encounterTransaction.getObservations().get(0);
-		assertEquals("comment", observation1.getComment());
-		assertEquals("obs-uuid", observation1.getUuid());
-		assertEquals("concept-uuid", observation1.getConceptUuid());
-		assertEquals("order-uuid", observation1.getOrderUuid());
-		assertEquals(obsDate, observation1.getObservationDateTime());
-		assertEquals("obs-value1", observation1.getValue());
-		assertEquals(true, observation1.getVoided());
-		assertEquals("chumma", observation1.getVoidReason());
+        assertNotNull(encounterTransaction.getExtensions());
+        assertEquals(1, encounterTransaction.getExtensions().size());
+        assertTrue(encounterTransaction.getExtensions().containsKey("extension"));
+        assertEquals("Any Object Here", encounterTransaction.getExtensions().get("extension"));
+    }
 
-		EncounterTransaction.Observation observation2 = encounterTransaction.getObservations().get(1);
-		assertEquals("comment", observation2.getComment());
-		assertEquals("obs-uuid-1", observation2.getUuid());
-		assertEquals("concept-uuid-2", observation2.getConceptUuid());
-		assertEquals("order-uuid", observation2.getOrderUuid());
-		assertEquals(obsDate, observation2.getObservationDateTime());
-		assertEquals("obs-value2", observation2.getValue());
-		assertEquals(true, observation2.getVoided());
-		assertEquals("chumma", observation2.getVoidReason());
+    private Map<String, Object> createExtensions() {
+        Map<String, Object> test = new HashMap<>();
+        test.put("extension", "Any Object Here");
+        return test;
+    }
 
-		assertNotNull(encounterTransaction.getExtensions());
-		assertEquals(1, encounterTransaction.getExtensions().size());
-		assertTrue(encounterTransaction.getExtensions().containsKey("extension"));
-		assertEquals("Any Object Here", encounterTransaction.getExtensions().get("extension"));
-	}
+    @Test
+    public void isRetrospectiveEntryShouldReturnTrueIfTheEncounterDateTimeIsBeforeToday() throws Exception {
+        assertEquals(true, BahmniEncounterTransaction.isRetrospectiveEntry(DateUtils.addDays(new Date(), -2)));
+    }
 
-	private Map<String, Object> createExtensions() {
-		Map<String, Object> test = new HashMap<>();
-		test.put("extension", "Any Object Here");
-		return test;
-	}
+    @Test
+    public void isRetrospectiveEntryShouldReturnFalseIfTheEncounterDateTimeIsNull() throws Exception {
+        assertEquals(false, BahmniEncounterTransaction.isRetrospectiveEntry(null));
+    }
 
-	@Test
-	public void isRetrospectiveEntryShouldReturnTrueIfTheEncounterDateTimeIsBeforeToday() throws Exception {
-		assertEquals(true, BahmniEncounterTransaction.isRetrospectiveEntry(DateUtils.addDays(new Date(), -2)));
-	}
+    @Test
+    public void isRetrospectiveEntryShouldReturnFalseIfTheEncounterDateTimeSameAsToday() throws Exception {
+        assertEquals(false, BahmniEncounterTransaction.isRetrospectiveEntry(new Date()));
+    }
 
-	@Test
-	public void isRetrospectiveEntryShouldReturnFalseIfTheEncounterDateTimeIsNull() throws Exception {
-		assertEquals(false, BahmniEncounterTransaction.isRetrospectiveEntry(null));
-	}
+    @Test
+    public void shouldClearDrugOrderFromExistingET() {
+        EncounterTransaction.DrugOrder firstDrugOrder = new EncounterTransaction.DrugOrder();
+        EncounterTransaction.DrugOrder secondDrugOrder = new EncounterTransaction.DrugOrder();
+        List<EncounterTransaction.DrugOrder> drugOrders = Arrays.asList(firstDrugOrder, secondDrugOrder);
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
+        bahmniEncounterTransaction.setDrugOrders(drugOrders);
 
-	@Test
-	public void isRetrospectiveEntryShouldReturnFalseIfTheEncounterDateTimeSameAsToday() throws Exception {
-		assertEquals(false, BahmniEncounterTransaction.isRetrospectiveEntry(new Date()));
-	}
+        bahmniEncounterTransaction.clearDrugOrders();
 
-	@Test
-	public void shouldClearDrugOrderFromExistingET() {
-		EncounterTransaction.DrugOrder firstDrugOrder = new EncounterTransaction.DrugOrder();
-		EncounterTransaction.DrugOrder secondDrugOrder = new EncounterTransaction.DrugOrder();
-		List<EncounterTransaction.DrugOrder> drugOrders = Arrays.asList(firstDrugOrder, secondDrugOrder);
-		BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-		bahmniEncounterTransaction.setDrugOrders(drugOrders);
+        assertEquals(new ArrayList<EncounterTransaction.DrugOrder>(), bahmniEncounterTransaction.getDrugOrders());
+    }
 
-		bahmniEncounterTransaction.clearDrugOrders();
+    @Test
+    public void shouldReturnTrueIfThereAreAnyPastDrugOrders() {
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.plusDays(-2);
+        EncounterTransaction.DrugOrder drugOrder = new EncounterTransaction.DrugOrder();
+        drugOrder.setScheduledDate(dateTime.toDate()); //This is a past drug order
 
-		assertEquals(new ArrayList<EncounterTransaction.DrugOrder>(), bahmniEncounterTransaction.getDrugOrders());
-	}
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
+        bahmniEncounterTransaction.setEncounterDateTime(new Date());
+        bahmniEncounterTransaction.setDrugOrders(Arrays.asList(drugOrder));
+        Assert.assertEquals(true, bahmniEncounterTransaction.hasPastDrugOrders());
+    }
 
-	@Test
-	public void shouldReturnTrueIfThereAreAnyPastDrugOrders() {
-		DateTime dateTime = new DateTime();
-		dateTime = dateTime.plusDays(-2);
-		EncounterTransaction.DrugOrder drugOrder = new EncounterTransaction.DrugOrder();
-		drugOrder.setScheduledDate(dateTime.toDate()); //This is a past drug order
+    @Test
+    public void shouldReturnTrueIfThereAreSomePastAndSomeFutureDrugOrders() {
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.plusDays(-2);
 
-		BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-		bahmniEncounterTransaction.setEncounterDateTime(new Date());
-		bahmniEncounterTransaction.setDrugOrders(Arrays.asList(drugOrder));
-		Assert.assertEquals(true, bahmniEncounterTransaction.hasPastDrugOrders());
-	}
+        DateTime scheduledDate = new DateTime();
+        scheduledDate = scheduledDate.plusDays(2);
 
-	@Test
-	public void shouldReturnTrueIfThereAreSomePastAndSomeFutureDrugOrders() {
-		DateTime dateTime = new DateTime();
-		dateTime = dateTime.plusDays(-2);
+        EncounterTransaction.DrugOrder drugOrder = new EncounterTransaction.DrugOrder();
+        drugOrder.setScheduledDate(dateTime.toDate()); //This is a past drug order
 
-		DateTime scheduledDate = new DateTime();
-		scheduledDate = scheduledDate.plusDays(2);
+        EncounterTransaction.DrugOrder drugOrder1 = new EncounterTransaction.DrugOrder();
+        drugOrder1.setScheduledDate(scheduledDate.toDate());
 
-		EncounterTransaction.DrugOrder drugOrder = new EncounterTransaction.DrugOrder();
-		drugOrder.setScheduledDate(dateTime.toDate()); //This is a past drug order
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
+        bahmniEncounterTransaction.setEncounterDateTime(new Date());
+        bahmniEncounterTransaction.setDrugOrders(Arrays.asList(drugOrder, drugOrder1));
+        Assert.assertEquals(true, bahmniEncounterTransaction.hasPastDrugOrders());
+    }
 
-		EncounterTransaction.DrugOrder drugOrder1 = new EncounterTransaction.DrugOrder();
-		drugOrder1.setScheduledDate(scheduledDate.toDate());
+    private ArrayList<BahmniObservation> createBahmniObservations() {
+        final BahmniObservation targetObs = createBahmniObservation("target-uuid", "target-value",
+                createConcept("target-concept-uuid", "target-obs-concept"), obsDate, null);
+        final BahmniObservation targetObs2 = createBahmniObservation("target-uuid-2", "target-value-2",
+                createConcept("target-concept-uuid", "target-obs-concept"), obsDate, null);
+        return new ArrayList<BahmniObservation>() {{
+            this.add(createBahmniObservation("obs-uuid", "obs-value1", createConcept("concept-uuid", "obs-concept"), obsDate,
+                    createObsRelationShip("obs-relation", targetObs)));
+            this.add(createBahmniObservation("obs-uuid-1", "obs-value2", createConcept("concept-uuid-2", "obs-concept-2"),
+                    obsDate, createObsRelationShip("obs-relation-2", targetObs2)));
+        }};
+    }
 
-		BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-		bahmniEncounterTransaction.setEncounterDateTime(new Date());
-		bahmniEncounterTransaction.setDrugOrders(Arrays.asList(drugOrder, drugOrder1));
-		Assert.assertEquals(true, bahmniEncounterTransaction.hasPastDrugOrders());
-	}
+    @Test
+    public void shouldReturnFalseIfThereAreNoDrugs() {
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
 
-	private ArrayList<BahmniObservation> createBahmniObservations() {
-		final BahmniObservation targetObs = createBahmniObservation("target-uuid", "target-value",
-				createConcept("target-concept-uuid", "target-obs-concept"), obsDate, null);
-		final BahmniObservation targetObs2 = createBahmniObservation("target-uuid-2", "target-value-2",
-				createConcept("target-concept-uuid", "target-obs-concept"), obsDate, null);
-		return new ArrayList<BahmniObservation>() {{
-			this.add(createBahmniObservation("obs-uuid", "obs-value1", createConcept("concept-uuid", "obs-concept"), obsDate,
-					createObsRelationShip("obs-relation", targetObs)));
-			this.add(createBahmniObservation("obs-uuid-1", "obs-value2", createConcept("concept-uuid-2", "obs-concept-2"),
-					obsDate, createObsRelationShip("obs-relation-2", targetObs2)));
-		}};
-	}
+        assertEquals(false, bahmniEncounterTransaction.hasPastDrugOrders());
+    }
 
-	@Test
-	public void shouldReturnFalseIfThereAreNoDrugs() {
-		BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
+    @Test
+    public void shouldCopyRequiredFieldsOnCloneForDrugOrders() {
+        String PATIENT_PROGRAM_UUID = "patientProgramUuid";
 
-		assertEquals(false, bahmniEncounterTransaction.hasPastDrugOrders());
-	}
+        Set<EncounterTransaction.Provider> providers = new HashSet<EncounterTransaction.Provider>();
+        EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
+        provider.setUuid("providerUuid");
+        providers.add(provider);
 
-	@Test
-	public void shouldCopyRequiredFieldsOnCloneForDrugOrders() {
-		String PATIENT_PROGRAM_UUID = "patientProgramUuid";
+        DateTime pastDateActivated = new DateTime();
+        pastDateActivated.plusDays(-2);
+        DateTime futureDateActivated = new DateTime();
+        futureDateActivated.plusDays(2);
 
-		Set<EncounterTransaction.Provider> providers = new HashSet<EncounterTransaction.Provider>();
-		EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
-		provider.setUuid("providerUuid");
-		providers.add(provider);
+        EncounterTransaction.DrugOrder drugOrder = new EncounterTransaction.DrugOrder();
+        drugOrder.setScheduledDate(futureDateActivated.toDate());
+        EncounterTransaction.DrugOrder drugOrder1 = new EncounterTransaction.DrugOrder();
+        drugOrder1.setScheduledDate(pastDateActivated.toDate());
 
-		DateTime pastDateActivated = new DateTime();
-		pastDateActivated.plusDays(-2);
-		DateTime futureDateActivated = new DateTime();
-		futureDateActivated.plusDays(2);
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
+        bahmniEncounterTransaction.setDrugOrders(Arrays.asList(drugOrder, drugOrder1));
+        bahmniEncounterTransaction.setEncounterTypeUuid("encounterTypeUuid");
+        bahmniEncounterTransaction.setLocationUuid("locationUuid");
+        bahmniEncounterTransaction.setPatientUuid("patientUuid");
+        bahmniEncounterTransaction.setPatientProgramUuid(PATIENT_PROGRAM_UUID);
+        bahmniEncounterTransaction.setProviders(providers);
 
-		EncounterTransaction.DrugOrder drugOrder = new EncounterTransaction.DrugOrder();
-		drugOrder.setScheduledDate(futureDateActivated.toDate());
-		EncounterTransaction.DrugOrder drugOrder1 = new EncounterTransaction.DrugOrder();
-		drugOrder1.setScheduledDate(pastDateActivated.toDate());
+        BahmniEncounterTransaction clonedEncounterTransaction = bahmniEncounterTransaction.cloneForPastDrugOrders();
+        List<EncounterTransaction.DrugOrder> drugOrders = clonedEncounterTransaction.getDrugOrders();
 
-		BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-		bahmniEncounterTransaction.setDrugOrders(Arrays.asList(drugOrder, drugOrder1));
-		bahmniEncounterTransaction.setEncounterTypeUuid("encounterTypeUuid");
-		bahmniEncounterTransaction.setLocationUuid("locationUuid");
-		bahmniEncounterTransaction.setPatientUuid("patientUuid");
-		bahmniEncounterTransaction.setPatientProgramUuid(PATIENT_PROGRAM_UUID);
-		bahmniEncounterTransaction.setProviders(providers);
+        assertEquals(drugOrder, drugOrders.get(0));
+        assertEquals(drugOrder1, drugOrders.get(1));
 
-		BahmniEncounterTransaction clonedEncounterTransaction = bahmniEncounterTransaction.cloneForPastDrugOrders();
-		List<EncounterTransaction.DrugOrder> drugOrders = clonedEncounterTransaction.getDrugOrders();
+        assertEquals(pastDateActivated.toDate(), clonedEncounterTransaction.getEncounterDateTime());
+        assertEquals("encounterTypeUuid", clonedEncounterTransaction.getEncounterTypeUuid());
+        assertEquals("locationUuid", clonedEncounterTransaction.getLocationUuid());
+        assertEquals("patientUuid", clonedEncounterTransaction.getPatientUuid());
+        assertEquals(PATIENT_PROGRAM_UUID, clonedEncounterTransaction.getPatientProgramUuid());
+        assertEquals(providers, clonedEncounterTransaction.getProviders());
+    }
 
-		assertEquals(drugOrder, drugOrders.get(0));
-		assertEquals(drugOrder1, drugOrders.get(1));
+    @Test
+    public void shouldDeserializeBahmniEncounterTransactionFromJson() throws IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("sampleEncounterTransaction.json").getFile());
 
-		assertEquals(pastDateActivated.toDate(), clonedEncounterTransaction.getEncounterDateTime());
-		assertEquals("encounterTypeUuid", clonedEncounterTransaction.getEncounterTypeUuid());
-		assertEquals("locationUuid", clonedEncounterTransaction.getLocationUuid());
-		assertEquals("patientUuid", clonedEncounterTransaction.getPatientUuid());
-		assertEquals(PATIENT_PROGRAM_UUID, clonedEncounterTransaction.getPatientProgramUuid());
-		assertEquals(providers, clonedEncounterTransaction.getProviders());
-	}
+        BahmniEncounterTransaction encounterTransaction = new ObjectMapper().readValue(file, BahmniEncounterTransaction.class);
+        assertNotNull(encounterTransaction);
+        assertEquals("253a5353-46b6-4668-97bb-8d1967ef3418", encounterTransaction.getPatientProgramUuid());
+    }
 
-	@Test
-	public void shouldDeserializeBahmniEncounterTransactionFromJson() throws IOException {
-		ClassLoader classLoader = getClass().getClassLoader();
-		File file = new File(classLoader.getResource("sampleEncounterTransaction.json").getFile());
+    private ArrayList<BahmniDiagnosisRequest> createBahmniDiagnoses() {
+        return new ArrayList<BahmniDiagnosisRequest>() {
 
-		BahmniEncounterTransaction encounterTransaction = new ObjectMapper().readValue(file, BahmniEncounterTransaction.class);
-		assertNotNull(encounterTransaction);
-		assertEquals("253a5353-46b6-4668-97bb-8d1967ef3418", encounterTransaction.getPatientProgramUuid());
-	}
+            {
+                this.add(new BahmniDiagnosisRequest() {{
+                    this.setCertainty(Diagnosis.Certainty.CONFIRMED.name());
+                    this.setOrder(Diagnosis.Order.PRIMARY.name());
+                    this.setCodedAnswer(new EncounterTransaction.Concept("d102c80f-1yz9-4da3-bb88-8122ce8868dh"));
+                    this.setDiagnosisStatusConcept(new EncounterTransaction.Concept(null, "Ruled Out"));
+                    this.setComments("comments");
+                    this.setEncounterUuid("enc-uuid");
 
-	private ArrayList<BahmniDiagnosisRequest> createBahmniDiagnoses() {
-		return new ArrayList<BahmniDiagnosisRequest>() {
+                }});
 
-			{
-				this.add(new BahmniDiagnosisRequest() {{
-					this.setCertainty(Diagnosis.Certainty.CONFIRMED.name());
-					this.setOrder(Diagnosis.Order.PRIMARY.name());
-					this.setCodedAnswer(new EncounterTransaction.Concept("d102c80f-1yz9-4da3-bb88-8122ce8868dh"));
-					this.setDiagnosisStatusConcept(new EncounterTransaction.Concept(null, "Ruled Out"));
-					this.setComments("comments");
-					this.setEncounterUuid("enc-uuid");
+                this.add(new BahmniDiagnosisRequest() {{
+                    this.setCertainty(Diagnosis.Certainty.PRESUMED.name());
+                    this.setOrder(Diagnosis.Order.SECONDARY.name());
+                    this.setCodedAnswer(new EncounterTransaction.Concept("e102c80f-1yz9-4da3-bb88-8122ce8868dh"));
+                    this.setDiagnosisStatusConcept(new EncounterTransaction.Concept(null, "Ruled Out"));
+                    this.setEncounterUuid("enc-uuid");
+                }});
 
-				}});
+            }
+        };
+    }
 
-				this.add(new BahmniDiagnosisRequest() {{
-					this.setCertainty(Diagnosis.Certainty.PRESUMED.name());
-					this.setOrder(Diagnosis.Order.SECONDARY.name());
-					this.setCodedAnswer(new EncounterTransaction.Concept("e102c80f-1yz9-4da3-bb88-8122ce8868dh"));
-					this.setDiagnosisStatusConcept(new EncounterTransaction.Concept(null, "Ruled Out"));
-					this.setEncounterUuid("enc-uuid");
-				}});
+    private BahmniObservation createBahmniObservation(String uuid, String value, EncounterTransaction.Concept concept,
+                                                      Date obsDate, ObsRelationship targetObs) {
+        BahmniObservation bahmniObservation = new BahmniObservation();
+        bahmniObservation.setUuid(uuid);
+        bahmniObservation.setValue(value);
+        bahmniObservation.setConcept(concept);
+        bahmniObservation.setComment("comment");
+        bahmniObservation.setObservationDateTime(obsDate);
+        bahmniObservation.setOrderUuid("order-uuid");
+        bahmniObservation.setVoided(true);
+        bahmniObservation.setVoidReason("chumma");
+        bahmniObservation.setTargetObsRelation(targetObs);
+        return bahmniObservation;
+    }
 
-			}
-		};
-	}
+    private ObsRelationship createObsRelationShip(String relationTypeName, BahmniObservation bahmniObservation) {
+        ObsRelationship obsRelationship = new ObsRelationship();
+        obsRelationship.setRelationshipType(relationTypeName);
+        obsRelationship.setTargetObs(bahmniObservation);
+        return obsRelationship;
+    }
 
-	private BahmniObservation createBahmniObservation(String uuid, String value, EncounterTransaction.Concept concept,
-	                                                  Date obsDate, ObsRelationship targetObs) {
-		BahmniObservation bahmniObservation = new BahmniObservation();
-		bahmniObservation.setUuid(uuid);
-		bahmniObservation.setValue(value);
-		bahmniObservation.setConcept(concept);
-		bahmniObservation.setComment("comment");
-		bahmniObservation.setObservationDateTime(obsDate);
-		bahmniObservation.setOrderUuid("order-uuid");
-		bahmniObservation.setVoided(true);
-		bahmniObservation.setVoidReason("chumma");
-		bahmniObservation.setTargetObsRelation(targetObs);
-		return bahmniObservation;
-	}
-
-	private ObsRelationship createObsRelationShip(String relationTypeName, BahmniObservation bahmniObservation) {
-		ObsRelationship obsRelationship = new ObsRelationship();
-		obsRelationship.setRelationshipType(relationTypeName);
-		obsRelationship.setTargetObs(bahmniObservation);
-		return obsRelationship;
-	}
-
-	private EncounterTransaction.Concept createConcept(String conceptUuid, String conceptName) {
-		EncounterTransaction.Concept concept = new EncounterTransaction.Concept();
-		concept.setUuid(conceptUuid);
-		concept.setName(conceptName);
-		return concept;
-	}
+    private EncounterTransaction.Concept createConcept(String conceptUuid, String conceptName) {
+        EncounterTransaction.Concept concept = new EncounterTransaction.Concept();
+        concept.setUuid(conceptUuid);
+        concept.setName(conceptName);
+        return concept;
+    }
 }

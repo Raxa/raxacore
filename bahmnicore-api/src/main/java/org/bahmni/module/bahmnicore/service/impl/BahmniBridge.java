@@ -44,7 +44,7 @@ public class BahmniBridge {
     private OMRSObsToBahmniObsMapper omrsObsToBahmniObsMapper;
     private BahmniConceptService bahmniConceptService;
 
-    OrderMapper drugOrderMapper = new OrderMapper1_12();
+    private OrderMapper drugOrderMapper = new OrderMapper1_12();
     /**
      * Factory method to construct objects of <code>BahmniBridge</code>.
      * <p/>
@@ -236,5 +236,13 @@ public class BahmniBridge {
     public BahmniObservation getChildObsFromParentObs(String parentObsGroupUuid, String childConceptName){
         Concept childConcept = conceptService.getConceptByName(childConceptName);
         return omrsObsToBahmniObsMapper.map(obsDao.getChildObsFromParent(parentObsGroupUuid, childConcept));
+    }
+
+    public BahmniObservation getLatestBahmniObservationFor(String conceptName){
+        Obs obs = latestObs(conceptName);
+        if(obs != null) {
+            return omrsObsToBahmniObsMapper.map(obs);
+        }
+        return null;
     }
 }

@@ -29,7 +29,7 @@ public class CSVAddressServiceTest {
     }
 
     @Test
-    public void map_through_address_hierarchy_levels() {
+    public void mapThroughAddressHierarchyLevels() {
         List<KeyValue> addressParts = new ArrayList<KeyValue>() {{
             add(new KeyValue("Cities", "zhumri tallayya"));
             add(new KeyValue("States", "Timbaktu"));
@@ -70,7 +70,7 @@ public class CSVAddressServiceTest {
     }
 
     @Test
-    public void throw_error_when_address_level_not_found() {
+    public void throwErrorWhenAddressLevelNotFound() {
         List<KeyValue> addressParts = new ArrayList<KeyValue>() {{
             add(new KeyValue("Cities", "zhumri tallayya"));
         }};
@@ -92,7 +92,7 @@ public class CSVAddressServiceTest {
     }
 
     @Test
-    public void map_other_address_hierarchy_levels() {
+    public void mapOtherAddressHierarchyLevels() {
         List<KeyValue> addressParts = new ArrayList<KeyValue>() {{
             add(new KeyValue("tehsil", "zhumri tallayya"));
             add(new KeyValue("gram panchayat", "Timbaktu"));

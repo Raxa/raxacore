@@ -17,7 +17,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.openmrs.Location;
 
 import java.util.Arrays;
-import java.util.HashSet;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;

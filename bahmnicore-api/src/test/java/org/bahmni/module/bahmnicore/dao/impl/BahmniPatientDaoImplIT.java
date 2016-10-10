@@ -5,7 +5,9 @@ import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.openmrs.Patient;
 import org.openmrs.Person;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,8 @@ import static junit.framework.Assert.*;
 public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
     @Autowired
     private PatientDao patientDao;
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
@@ -166,6 +170,24 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
+    public void shouldThrowErrorWhenPatientAttributesIsNotPresent() throws Exception {
+        String[] patientAttributes = {"caste","nonExistingAttribute"};
+        expectedEx.expect(IllegalArgumentException.class);
+        expectedEx.expectMessage("Invalid Attribute In Patient Attributes [caste, nonExistingAttribute]");
+        List<PatientResponse> patients = patientDao.getPatients("", "", "testCaste1", "city_village", null, 100, 0, patientAttributes, "", null, null, null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, false);
+
+    }
+
+    @Test
+    public void shouldThrowErrorWhenPatientAddressIsNotPresent() throws Exception {
+        String[] patientAttributes = {"caste"};
+        String addressField = "nonExistingAddressFiled";
+        expectedEx.expect(IllegalArgumentException.class);
+        expectedEx.expectMessage("Invalid Address Filed nonExistingAddressFiled");
+        List<PatientResponse> patients = patientDao.getPatients("", "", "testCaste1", addressField, null, 100, 0, patientAttributes, "", null, null, null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, false);
+
+    }
+    @Test
     public void shouldFetchPatientsWithPartialIdentifierMatch() throws Exception {
         String partialIdentifier = "300001";
         boolean shouldMatchExactPatientId = false;
@@ -198,6 +220,15 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
         assertEquals("GAN200002",response.getIdentifier());
         assertEquals("John",response.getGivenName());
         assertEquals("{\"stage\":\"Stage1\"}",response.getPatientProgramAttributeValue());
+    }
+
+    @Test
+    public void shouldThrowErrorWhenProgramAttributesIsNotPresent() {
+        String nonExistingAttribute = "nonExistingAttribute";
+        expectedEx.expect(IllegalArgumentException.class);
+        expectedEx.expectMessage("Invalid Program Attribute nonExistingAttribute");
+        patientDao.getPatients("", "", "", "city_village", null, 100, 0, null, "Stage1",nonExistingAttribute, null, null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, false);
+
     }
 
     @Test
@@ -347,8 +378,8 @@ public class BahmniPatientDaoImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldFetchBasedOnPatientAttributeTypesWhenThereIsSingleQuoteInPatientAttribute() throws Exception {
-        String[] patientAttributes = { "caste","address3"};
-        String[] patientResultFields = {"caste","address3"};
+        String[] patientAttributes = { "caste"};
+        String[] patientResultFields = {"caste"};
         String[] addressResultFields = {"address3"};
         List<PatientResponse> patients = patientDao.getPatients("", "", "go'nd", null, null, 100, 0, patientAttributes,null,null,addressResultFields, patientResultFields, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, false);
 

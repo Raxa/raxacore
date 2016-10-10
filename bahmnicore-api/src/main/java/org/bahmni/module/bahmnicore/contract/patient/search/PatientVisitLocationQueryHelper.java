@@ -1,7 +1,6 @@
 package org.bahmni.module.bahmnicore.contract.patient.search;
 
 import org.openmrs.Location;
-import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 

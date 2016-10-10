@@ -17,7 +17,6 @@ import org.openmrs.Order;
 import org.openmrs.Person;
 import org.openmrs.SimpleDosingInstructions;
 import org.openmrs.Visit;
-import org.openmrs.api.AdministrationService;
 import org.openmrs.module.bahmniemrapi.drugorder.contract.BahmniDrugOrder;
 import org.openmrs.module.bahmniemrapi.drugorder.dosinginstructions.FlexibleDosingInstructions;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniDrugOrderMapper;
@@ -78,7 +77,8 @@ public class BahmniDrugOrderMapperTest {
     @Test
     public void shouldMapToResponseForFreeTextOrderDetails() throws Exception {
         DrugOrderBuilder drugBuilder = new DrugOrderBuilder();
-        Date visitDate, dateActivated;
+        Date visitDate;
+        Date dateActivated;
         visitDate = dateActivated = new Date();
         Date dateScheduled = DateUtils.addDays(dateActivated, 2);
         Date expireDate = DateUtils.addDays(dateActivated, 20);
@@ -125,7 +125,8 @@ public class BahmniDrugOrderMapperTest {
     public void shouldMapToResponseForSimpleOrderDetails() throws Exception {
         DrugOrderBuilder drugBuilder = new DrugOrderBuilder();
 
-        Date dateActivated, visitDate;
+        Date dateActivated;
+        Date visitDate;
         dateActivated = visitDate = new Date();
         Date expireDate = DateUtils.addDays(dateActivated, 20);
         Person person = new PersonBuilder().withUUID("puuid").build();

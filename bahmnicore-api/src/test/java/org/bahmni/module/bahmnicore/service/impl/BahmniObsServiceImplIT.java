@@ -106,7 +106,7 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void return_orphaned_obs_for_patient() throws Exception {
+    public void returnOrphanedObsForPatient() throws Exception {
         Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
         Collection<BahmniObservation> obsForConceptSet = bahmniObsService.observationsFor("86526ed5-3c11-11de-a0ba-001e378eb67a",
                 Arrays.asList(bloodPressureConcept), null, null, false, null, null, null);

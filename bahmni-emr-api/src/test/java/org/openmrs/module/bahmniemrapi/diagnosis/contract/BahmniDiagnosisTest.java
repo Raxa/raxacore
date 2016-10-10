@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
 
 public class BahmniDiagnosisTest {
     @Test
-    public void isSame_Returns_True_If_CodedAnswers_Are_Same() {
+    public void isSameReturnsTrueIfCodedAnswersAreSame() {
         EncounterTransaction.Concept malariaDiagnosis = new EncounterTransaction.Concept("uuid", "Malaria");
 
         BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
@@ -21,7 +21,7 @@ public class BahmniDiagnosisTest {
     }
 
     @Test
-    public void isSame_Returns_False_If_CodedAnswers_Are_Not_Same() {
+    public void isSameReturnsFalseIfCodedAnswersAreNotSame() {
         EncounterTransaction.Concept malariaDiagnosis = new EncounterTransaction.Concept("uuid1", "Malaria");
         EncounterTransaction.Concept tbDiagnosis = new EncounterTransaction.Concept("uuid2", "TB");
 
@@ -35,7 +35,7 @@ public class BahmniDiagnosisTest {
     }
 
     @Test
-    public void isSame_Returns_True_If_FreeTextAnswers_Are_Same() {
+    public void isSameReturnsTrueIfFreeTextAnswersAreSame() {
         BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
         bahmniDiagnosis.setFreeTextAnswer("Malaria");
 
@@ -46,7 +46,7 @@ public class BahmniDiagnosisTest {
     }
 
     @Test
-    public void isSame_Returns_False_If_FreeTextAnswers_Are_Not_Same() {
+    public void isSameReturnsFalseIfFreeTextAnswersAreNotSame() {
         BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
         bahmniDiagnosis.setFreeTextAnswer("Malaria");
 
@@ -57,7 +57,7 @@ public class BahmniDiagnosisTest {
     }
 
     @Test
-    public void isSame_Returns_False_When_Coded_Answer_Is_Null() {
+    public void isSameReturnsFalseWhenCodedAnswerIsNull() {
         EncounterTransaction.Concept malariaDiagnosis = new EncounterTransaction.Concept("uuid", "Malaria");
 
         BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
@@ -70,7 +70,7 @@ public class BahmniDiagnosisTest {
     }
 
     @Test
-    public void isSame_Returns_False_When_FreeTextAnswer_Is_Null() {
+    public void isSameReturnsFalseWhenFreeTextAnswerIsNull() {
         EncounterTransaction.Concept malariaDiagnosis = new EncounterTransaction.Concept("uuid", "Malaria");
 
         BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
@@ -83,7 +83,7 @@ public class BahmniDiagnosisTest {
     }
 
     @Test
-    public void isSame_Returns_False_When_Both_Are_Null() {
+    public void isSameReturnsFalseWhenBothAreNull() {
         BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
         EncounterTransaction.Diagnosis diagnosis = new EncounterTransaction.Diagnosis();
 

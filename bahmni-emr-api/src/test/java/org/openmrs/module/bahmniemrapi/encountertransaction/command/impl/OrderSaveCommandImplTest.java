@@ -34,7 +34,7 @@ public class OrderSaveCommandImplTest {
     }
 
     @Test
-    public void ShouldSetAutoExpireDateForTestOrders(){
+    public void shouldSetAutoExpireDateForTestOrders(){
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         List<EncounterTransaction.Order> testOrders = Arrays.asList(new EncounterTransaction.Order());
         bahmniEncounterTransaction.setOrders(testOrders);

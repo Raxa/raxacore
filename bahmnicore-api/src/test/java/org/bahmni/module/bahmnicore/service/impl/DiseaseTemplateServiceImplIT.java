@@ -31,7 +31,7 @@ public class DiseaseTemplateServiceImplIT extends BaseIntegrationTest {
     private DiseaseTemplateService diseaseTemplateService;
 
     @Test
-    public void get_disease_template_for_observation_template_concept() throws Exception {
+    public void getDiseaseTemplateForObservationTemplateConcept() throws Exception {
         DiseaseTemplatesConfig diseaseTemplatesConfig = new DiseaseTemplatesConfig();
         List<DiseaseTemplateConfig> diseaseTemplateConfigList = new ArrayList<>();
         DiseaseTemplateConfig diseaseTemplateConfig = new DiseaseTemplateConfig();
@@ -51,7 +51,7 @@ public class DiseaseTemplateServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void get_disease_template_ignores_invalid_template_name() throws Exception {
+    public void getDiseaseTemplateIgnoresInvalidTemplateName() throws Exception {
         DiseaseTemplatesConfig diseaseTemplatesConfig = new DiseaseTemplatesConfig();
         List<DiseaseTemplateConfig> diseaseTemplateConfigList = new ArrayList<>();
         DiseaseTemplateConfig diseaseTemplateConfig = new DiseaseTemplateConfig();
@@ -68,7 +68,7 @@ public class DiseaseTemplateServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void get_all_disease_template_for_specified_observation_template_for_disease() throws Exception {
+    public void getAllDiseaseTemplateForSpecifiedObservationTemplateForDisease() throws Exception {
         ArrayList<String> showOnly = new ArrayList<>();
         showOnly.add("Breast Cancer Intake");
 
@@ -90,7 +90,7 @@ public class DiseaseTemplateServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void get_all_disease_template_for_specified_concept_for_disease() throws Exception {
+    public void getAllDiseaseTemplateForSpecifiedConceptForDisease() throws Exception {
         ArrayList<String> showOnly = new ArrayList<>();
         showOnly.add("Receptor Status");
 
@@ -115,7 +115,7 @@ public class DiseaseTemplateServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void get_all_disease_template_for_specified_concept_for_disease_exists_in_both_intake_and_progress() throws Exception {
+    public void getAllDiseaseTemplateForSpecifiedConceptForDiseaseExistsInBothIntakeAndProgress() throws Exception {
         ArrayList<String> showOnly = new ArrayList<>();
         showOnly.add("Histopathology");
 
@@ -144,7 +144,7 @@ public class DiseaseTemplateServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void get_all_disease_template_should_get_latest_across_all_visits_for_class_case_intake() throws Exception {
+    public void getAllDiseaseTemplateShouldGetLatestAcrossAllVisitsForClassCaseIntake() throws Exception {
         executeDataSet("diseaseTemplateScopeLatest.xml");
         ArrayList<String> showOnly = new ArrayList<>();
 
@@ -180,7 +180,7 @@ public class DiseaseTemplateServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void get_all_disease_template_should_not_fail_when_invalid_showonly_provided() throws Exception {
+    public void getAllDiseaseTemplateShouldNotFailWhenInvalidShowonlyProvided() throws Exception {
         ArrayList<String> showOnly = new ArrayList<>();
         showOnly.add("Breast Cancer Intake");
         showOnly.add("Non existing concept");

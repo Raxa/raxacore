@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 public class DiagnosisMapperTest {
     @Test
-    public void ignore_empty_diagnosis() throws ParseException {
+    public void ignoreEmptyDiagnosis() throws ParseException {
         List<KeyValue> diagnosesKeyValues = Arrays.asList(new KeyValue("diagnosis", " "));
 
         ConceptService mockConceptService = mock(ConceptService.class);
@@ -32,7 +32,7 @@ public class DiagnosisMapperTest {
     }
 
     @Test
-    public void diagnosis_with_unknown_concepts() throws ParseException {
+    public void diagnosisWithUnknownConcepts() throws ParseException {
         List<KeyValue> diagnosesKeyValues = Arrays.asList(new KeyValue("diagnosis", "ABCD"));
 
         ConceptService mockConceptService = mock(ConceptService.class);

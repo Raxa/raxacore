@@ -52,11 +52,8 @@ public class Age {
 
         Age age = (Age) o;
 
-        if (days != age.days) return false;
-        if (months != age.months) return false;
-        if (years != age.years) return false;
+        return days == age.days && months == age.months && years == age.years;
 
-        return true;
     }
 
     @Override

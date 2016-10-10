@@ -65,7 +65,7 @@ public class AllSamplesMapperTest {
     }
 
     @Test
-    public void map_all_sample_fields_from_concept() throws Exception {
+    public void mapAllSampleFieldsFromConcept() throws Exception {
 
         AllSamples labSamplesData = allSamplesMapper.map(labSampleConceptSet);
         Sample sampleData = sampleMapper.map(sampleConcept);

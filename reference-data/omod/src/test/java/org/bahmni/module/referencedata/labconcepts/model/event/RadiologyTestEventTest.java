@@ -60,7 +60,7 @@ public class RadiologyTestEventTest {
 
 
     @Test
-    public void create_event_for_sample_event() throws Exception {
+    public void createEventForSampleEvent() throws Exception {
         Event event = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept}).get(0);
         Event anotherEvent = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept}).get(0);
         assertNotNull(event);
@@ -71,14 +71,14 @@ public class RadiologyTestEventTest {
     }
 
     @Test
-    public void should_not_create_event_for_radiology_event_if_there_is_different_concept_class() throws Exception {
+    public void shouldNotCreateEventForRadiologyEventIfThereIsDifferentConceptClass() throws Exception {
         concept = new ConceptBuilder().withClassUUID("some").withUUID(RADIOLOGY_TEST_CONCEPT_UUID).build();
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         assertTrue(events.isEmpty());
     }
 
     @Test
-    public void should_create_event_for_radiology_test_if_parent_concept_is_missing() throws Exception {
+    public void shouldCreateEventForRadiologyTestIfParentConceptIsMissing() throws Exception {
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(new ArrayList<ConceptSet>());
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         Event event = events.get(0);
@@ -89,7 +89,7 @@ public class RadiologyTestEventTest {
 
 
     @Test
-    public void should_create_event_for_radiology_test_if_parent_concept_is_wrong() throws Exception {
+    public void shouldCreateEventForRadiologyTestIfParentConceptIsWrong() throws Exception {
         parentConcept = new ConceptBuilder().withName("Some wrong name").withSetMember(concept).build();
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(getConceptSets(parentConcept, concept));
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
@@ -100,7 +100,7 @@ public class RadiologyTestEventTest {
     }
 
     @Test
-    public void create_event_for_radiology_test_with_parent_concept_missing() throws Exception {
+    public void createEventForRadiologyTestWithParentConceptMissing() throws Exception {
         Concept sampleConcept = new ConceptBuilder().withClass("Radiology").withUUID("RadiologyTestUUID").build();
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{sampleConcept});
         Event event = events.get(0);

@@ -191,7 +191,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void create_concept_with_units() throws Exception {
+    public void createConceptWithUnits() throws Exception {
         org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
         concept.setUuid("5d2d4cb7-mm3b-0037-70k7-0dmimtm22222");
         String uniqueName = "Some Numeric Concept";
@@ -217,7 +217,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void create_concept_with_high_normal_and_low_normal() throws Exception {
+    public void createConceptWithHighNormalAndLowNormal() throws Exception {
         org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
         concept.setUuid("5d2d4cb7-mm3b-0037-70k7-0dmimtm22222");
         String uniqueName = "Some Numeric Concept";
@@ -247,7 +247,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void update_existing_concept_shortname() throws Exception {
+    public void updateExistingConceptShortname() throws Exception {
         org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
         concept.setUuid("5d2d4cb7-feet-0037-70f7-0dmimmm22222");
         String uniqueName = "Existing Numeric Concept";
@@ -274,7 +274,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void update_existing_concept_numeric_with_high_normal_and_low_normal() throws Exception {
+    public void updateExistingConceptNumericWithHighNormalAndLowNormal() throws Exception {
         org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
         concept.setUuid("5d2d4cb7-feet-0037-70f7-0dmimmm22222");
         String uniqueName = "Existing Numeric Concept";
@@ -322,7 +322,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void update_existing_concept_with_short_name() throws Exception {
+    public void updateExistingConceptWithShortName() throws Exception {
         org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
         String uniqueName = "Existing Concept with obs";
         concept.setUniqueName(uniqueName);
@@ -342,7 +342,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void update_existing_concept_set_with_child_members() throws Exception {
+    public void updateExistingConceptSetWithChildMembers() throws Exception {
         ConceptSet conceptSet = new ConceptSet();
         String uniqueName = "Existing Concept With Children";
         conceptSet.setUniqueName(uniqueName);
@@ -370,7 +370,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
 
 
     @Test
-    public void update_existing_concept_with_answers() throws Exception {
+    public void updateExistingConceptWithAnswers() throws Exception {
         org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
         String uniqueName = "Existing Concept With Answer";
         concept.setUniqueName(uniqueName);
@@ -398,7 +398,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void migrate_concept_datatype_to_numeric() throws Exception {
+    public void migrateConceptDatatypeToNumeric() throws Exception {
         org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
         concept.setUuid("kf2d4cb7-t3tb-oo37-70f7-0dmimmm22222");
         concept.setClassName("Finding");

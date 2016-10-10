@@ -60,7 +60,7 @@ public class DepartmentEventTest {
 
 
     @Test
-    public void create_event_for_department_event() throws Exception {
+    public void createEventForDepartmentEvent() throws Exception {
         Event event = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept}).get(0);
         Event anotherEvent = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept}).get(0);
         assertNotNull(event);
@@ -70,14 +70,14 @@ public class DepartmentEventTest {
     }
 
     @Test
-    public void should_not_create_event_for_department_event_if_there_is_different_concept_class() throws Exception {
+    public void shouldNotCreateEventForDepartmentEventIfThereIsDifferentConceptClass() throws Exception {
         concept = new ConceptBuilder().withClassUUID("some").withUUID(DEPARTMENT_CONCEPT_UUID).build();
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         assertTrue(events.isEmpty());
     }
 
     @Test
-    public void should_create_event_for_department_event_if_parent_concept_is_missing() throws Exception {
+    public void shouldCreateEventForDepartmentEventIfParentConceptIsMissing() throws Exception {
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(new ArrayList<ConceptSet>());
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         Event event = events.get(0);
@@ -88,7 +88,7 @@ public class DepartmentEventTest {
 
 
     @Test
-    public void should_create_event_for_department_event_if_parent_concept_is_wrong() throws Exception {
+    public void shouldCreateEventForDepartmentEventIfParentConceptIsWrong() throws Exception {
         parentConcept = new ConceptBuilder().withName("Some wrong name").withSetMember(concept).build();
         when(conceptService.getSetsContainingConcept(any(Concept.class))).thenReturn(getConceptSets(parentConcept, concept));
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
@@ -99,7 +99,7 @@ public class DepartmentEventTest {
     }
 
     @Test
-    public void create_event_for_department_with_parent_concept_missing() throws Exception {
+    public void createEventForDepartmentWithParentConceptMissing() throws Exception {
         Concept departmentConcept = new ConceptBuilder().withClass("Department").withUUID("departmentUUID").build();
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{departmentConcept});
         Event event = events.get(0);

@@ -5,6 +5,9 @@ import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProg
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.PatientProgramAttribute;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
 import org.hibernate.Criteria;
+import org.hibernate.FlushMode;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
@@ -77,14 +80,24 @@ public class BahmniHibernateProgramWorkflowDAOImpl extends HibernateProgramWorkf
 
     @Override
     public List<BahmniPatientProgram> getPatientProgramByAttributeNameAndValue(String attributeName, String attributeValue) {
-        return sessionFactory.getCurrentSession().createQuery(
-                "SELECT bpp FROM BahmniPatientProgram bpp " +
-                        "INNER JOIN bpp.attributes attr " +
-                        "INNER JOIN attr.attributeType attr_type " +
-                        "WHERE attr.valueReference = :attributeValue " +
-                        "AND attr_type.name = :attributeName")
-                .setParameter("attributeName", attributeName)
-                .setParameter("attributeValue", attributeValue).list();
+        Session session = sessionFactory.getCurrentSession();
+        FlushMode flushMode = session.getFlushMode();
+        session.setFlushMode(FlushMode.MANUAL);
+        Query query;
+        try {
+            query = session.createQuery(
+                    "SELECT bpp FROM BahmniPatientProgram bpp " +
+                            "INNER JOIN bpp.attributes attr " +
+                            "INNER JOIN attr.attributeType attr_type " +
+                            "WHERE attr.valueReference = :attributeValue " +
+                            "AND attr_type.name = :attributeName " +
+                            "AND bpp.voided = 0")
+                    .setParameter("attributeName", attributeName)
+                    .setParameter("attributeValue", attributeValue);
+            return query.list();
+        } finally {
+            session.setFlushMode(flushMode);
+        }
     }
 
     public List<PatientProgram> getPatientPrograms(Patient patient, Program program, Date minEnrollmentDate,

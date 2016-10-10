@@ -34,6 +34,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class CSVPatientServiceTest {
 
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
     @Mock
     private PatientService mockPatientService;
     @Mock
@@ -51,9 +53,6 @@ public class CSVPatientServiceTest {
     public void setUp() throws Exception {
         initMocks(this);
     }
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     @Test
     public void savePatientName() throws ParseException {

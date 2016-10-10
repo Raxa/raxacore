@@ -42,7 +42,7 @@ public class DrugMapperTest {
     }
 
     @Test
-    public void create_new_drug_with_name_and_generic_name_and_dosage_form() throws Exception {
+    public void createNewDrugWithNameAndGenericNameAndDosageForm() throws Exception {
         Concept tablet = new ConceptBuilder().withName("Tablet").build();
         Concept existingConcept = new ConceptBuilder().withClassUUID(ConceptClass.DRUG_UUID).withName("Existing Concept").build();
 
@@ -66,7 +66,7 @@ public class DrugMapperTest {
     }
 
     @Test
-    public void create_new_drug_with_all_fields() throws Exception {
+    public void createNewDrugWithAllFields() throws Exception {
         Concept existingConcept = new ConceptBuilder().withClassUUID(ConceptClass.DRUG_UUID).withName("Existing Concept").build();
 
         Drug drug = new Drug();
@@ -91,7 +91,7 @@ public class DrugMapperTest {
     }
 
     @Test
-    public void existing_drug_old_concept_new_dosage_form() throws Exception {
+    public void existingDrugOldConceptNewDosageForm() throws Exception {
         Drug drug = new Drug();
         Concept existingConcept = new ConceptBuilder().withClassUUID(ConceptClass.DRUG_UUID).withName("Existing Concept").build();
         Concept capsule = new ConceptBuilder().withName("Capsule").build();
@@ -121,7 +121,7 @@ public class DrugMapperTest {
     }
 
     @Test
-    public void existing_drug_new_concept_new_dosage_form() throws Exception {
+    public void existingDrugNewConceptNewDosageForm() throws Exception {
         Drug drug = new Drug();
         Concept existingConcept = new ConceptBuilder().withClassUUID(ConceptClass.DRUG_UUID).withName("Existing Concept").build();
         Concept capsule = new ConceptBuilder().withName("Capsule").build();
@@ -153,7 +153,7 @@ public class DrugMapperTest {
     }
 
     @Test
-    public void existing_drug_new_drug_name() throws Exception {
+    public void existingDrugNewDrugName() throws Exception {
         Drug drug = new Drug();
         Concept existingConcept = new ConceptBuilder().withClassUUID(ConceptClass.DRUG_UUID).withName("Existing Concept").build();
         Concept capsule = new ConceptBuilder().withName("Capsule").build();
@@ -185,7 +185,7 @@ public class DrugMapperTest {
     }
 
     @Test
-    public void test_openmrs_drug_to_bahmni_drug(){
+    public void testOpenmrsDrugToBahmniDrug(){
         Concept existingConcept = new ConceptBuilder().withClassUUID(ConceptClass.DRUG_UUID).withName("Existing Concept").withShortName("short").build();
         org.openmrs.Drug existingDrug = new DrugBuilder().withName("Existing Drug").withConcept(existingConcept).withDosageForm("Tablet").withStrength("Very Strong").build();
 

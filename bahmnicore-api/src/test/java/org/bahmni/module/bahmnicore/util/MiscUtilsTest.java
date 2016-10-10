@@ -1,7 +1,6 @@
 package org.bahmni.module.bahmnicore.util;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
@@ -22,7 +21,7 @@ public class MiscUtilsTest {
 
     @Test
     public void shouldReturnConceptsWhenTheyAreAvailable() {
-        ConceptService conceptService = Mockito.mock(ConceptService.class);
+        ConceptService conceptService = mock(ConceptService.class);
         String nonExistantConceptName = "doesNotExist";
         String sampleConceptName = "sampleConcept";
         when(conceptService.getConceptByName(nonExistantConceptName)).thenReturn(null);

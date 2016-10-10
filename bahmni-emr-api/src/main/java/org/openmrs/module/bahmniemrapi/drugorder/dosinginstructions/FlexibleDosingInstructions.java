@@ -11,6 +11,8 @@ import java.util.Locale;
 
 public class FlexibleDosingInstructions implements DosingInstructions {
 
+    public DrugOrderUtil drugOrderUtil;
+
     @Override
     public String getDosingInstructionsAsString(Locale locale) {
         return null;
@@ -21,7 +23,6 @@ public class FlexibleDosingInstructions implements DosingInstructions {
         order.setDosingType(this.getClass());
     }
 
-    public DrugOrderUtil drugOrderUtil;
 
     @Override
     public DosingInstructions getDosingInstructions(DrugOrder order) {

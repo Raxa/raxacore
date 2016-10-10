@@ -74,7 +74,7 @@ public class LabResultPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void test_persist() throws Exception {
+    public void testPersist() throws Exception {
         String visitType = "LAB RESULT IMPORT VISIT";
         LabResultsRow labResultsRow = new LabResultsRow();
         labResultsRow.setPatientIdentifier("GAN200001").setTestDateString("2014-10-11").setVisitType(visitType);

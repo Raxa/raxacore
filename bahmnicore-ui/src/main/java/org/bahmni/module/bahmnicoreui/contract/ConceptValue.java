@@ -3,6 +3,8 @@ package org.bahmni.module.bahmnicoreui.contract;
 public class ConceptValue {
     private String value;
 
+    private Boolean abnormal;
+
     public Boolean getAbnormal() {
         return abnormal;
     }
@@ -10,8 +12,6 @@ public class ConceptValue {
     public void setAbnormal(Boolean abnormal) {
         this.abnormal = abnormal;
     }
-
-    private Boolean abnormal;
 
     public String getValue() {
         return value;

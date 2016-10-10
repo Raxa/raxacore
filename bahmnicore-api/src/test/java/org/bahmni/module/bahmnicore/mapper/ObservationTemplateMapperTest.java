@@ -50,7 +50,7 @@ public class ObservationTemplateMapperTest {
     }
 
     @Test
-    public void map_obs_to_observation_templates_group_by_visit_date() throws Exception {
+    public void mapObsToObservationTemplatesGroupByVisitDate() throws Exception {
         bahmniObservation1.setVisitStartDateTime(TestUtil.createDateTime("2012-01-01"));
         bahmniObservation2.setVisitStartDateTime(TestUtil.createDateTime("2012-01-01"));
         bahmniObservation3.setVisitStartDateTime(TestUtil.createDateTime("2012-03-01"));

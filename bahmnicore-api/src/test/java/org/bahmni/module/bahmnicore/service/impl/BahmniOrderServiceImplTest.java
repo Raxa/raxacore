@@ -36,7 +36,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest(LocaleUtility.class)
 public class BahmniOrderServiceImplTest {
 
-    BahmniOrderService bahmniOrderService;
+    private BahmniOrderService bahmniOrderService;
 
     private String personUUID = "12345";
     private String visitUUID = "54321";

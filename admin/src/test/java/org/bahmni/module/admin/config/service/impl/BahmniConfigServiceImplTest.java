@@ -64,7 +64,7 @@ public class BahmniConfigServiceImplTest {
     }
 
     @Test
-    public void update_changed_audit_fields_and_config_for_existing_configs() throws Exception {
+    public void updateChangedAuditFieldsAndConfigForExistingConfigs() throws Exception {
         existingConfig.setConfig("Modified Config");
         assertNull(existingConfig.getChangedBy());
         assertNull(existingConfig.getDateChanged());
@@ -75,7 +75,7 @@ public class BahmniConfigServiceImplTest {
     }
 
     @Test
-    public void create_new_config_with_creator() throws Exception {
+    public void createNewConfigWithCreator() throws Exception {
         newConfig.setConfig("Yo Config");
         assertNull(newConfig.getDateCreated());
         assertNull(newConfig.getCreator());
