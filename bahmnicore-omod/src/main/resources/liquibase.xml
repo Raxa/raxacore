@@ -4236,4 +4236,18 @@
         <comment>Update the wards list sql to use left join for patient address</comment>
         <sqlFile path="V1_95_WardsListSql.sql"/>
     </changeSet>
+    <changeSet id="bahmni-core-201610101525" author="Bharat">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) != 0 FROM concept WHERE datatype_id = 1 AND concept_id NOT IN (SELECT concept_id FROM concept_numeric);
+            </sqlCheck>
+        </preConditions>
+        <comment>add concept numeric row to all numeric concepts</comment>
+        <sql>
+            INSERT INTO concept_numeric (concept_id,precise) (SELECT concept_id,0 FROM concept WHERE
+            datatype_id  = (SELECT concept_datatype_id FROM concept_datatype WHERE name = 'Numeric')
+            AND concept_id NOT IN (SELECT concept_id FROM concept_numeric));
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
