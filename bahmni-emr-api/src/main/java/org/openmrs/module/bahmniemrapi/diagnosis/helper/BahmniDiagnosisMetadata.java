@@ -217,12 +217,11 @@ public class BahmniDiagnosisMetadata {
 
     private void updateStatusConcept(Obs diagnosisObs, BahmniDiagnosis bahmniDiagnosis) {
         Obs obs = findOrCreateObs(diagnosisObs, getBahmniDiagnosisStatus());
-        Concept statusConcept = null;
         if (bahmniDiagnosis.getDiagnosisStatusConcept() != null) {
-            statusConcept = conceptService.getConcept(bahmniDiagnosis.getDiagnosisStatusConcept().getName());
+            Concept statusConcept = conceptService.getConcept(bahmniDiagnosis.getDiagnosisStatusConcept().getName());
+            obs.setValueCoded(statusConcept);
+            addToObsGroup(diagnosisObs, obs);
         }
-        obs.setValueCoded(statusConcept);
-        addToObsGroup(diagnosisObs, obs);
     }
 
     private void updateRevisedConcept(Obs diagnosisObs) {
