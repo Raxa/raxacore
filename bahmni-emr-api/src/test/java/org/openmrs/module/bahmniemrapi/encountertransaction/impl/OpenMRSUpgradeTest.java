@@ -30,69 +30,50 @@ public class OpenMRSUpgradeTest extends BaseModuleContextSensitiveTest {
 	public void setUp() throws Exception {
 		executeDataSet("openmrsUpgradeTestData.xml");
 
-		Encounter encounter = Context.getEncounterService().getEncounter(7);
-		vitals = createObs(Context.getConceptService().getConcept(61), null);
-		bp = createObs(Context.getConceptService().getConcept(63), null);
-		systolic = createObs(Context.getConceptService().getConcept(64), 120.0);
-		pulse = createObs(Context.getConceptService().getConcept(62), 72.0);
-
-		bp.addGroupMember(systolic);
-
-		vitals.addGroupMember(pulse);
-		vitals.addGroupMember(bp);
-
-		encounter.addObs(vitals);
-		Context.getEncounterService().saveEncounter(encounter);
+//		Encounter encounter = Context.getEncounterService().getEncounter(7);
+//		vitals = createObs(Context.getConceptService().getConcept(61), null);
+//		bp = createObs(Context.getConceptService().getConcept(63), null);
+//		systolic = createObs(Context.getConceptService().getConcept(64), 120.0);
+//		pulse = createObs(Context.getConceptService().getConcept(62), 72.0);
+//
+//		bp.addGroupMember(systolic);
+//
+//		vitals.addGroupMember(pulse);
+//		vitals.addGroupMember(bp);
+//
+//		encounter.addObs(vitals);
+//		Context.getEncounterService().saveEncounter(encounter);
 	}
 
 	@Test
-	public void reproduceInconsistencyInGettingAllObsFromEncounter() throws ParseException {
-
-		Encounter encounter = Context.getEncounterService().getEncounter(7);
-		int beforeEviction = encounter.getAllObs(true).size();
-		assertEquals(1, beforeEviction);
-
-		Context.evictFromSession(encounter);
-
-		encounter = Context.getEncounterService().getEncounter(7);
-		int afterEviction = encounter.getAllObs(true).size();
-		assertEquals(4, afterEviction);
-	}
-
-	@Test
-	public void shouldUpdateTopLevelObsAndValidateCount() throws ParseException {
+	public void shouldAddGroupMemberToTopLevelObsAndValidateCount() throws ParseException {
 		Encounter encounter = Context.getEncounterService().getEncounter(7);
 
 		Obs exisitingVitalsObs = encounter.getAllObs().iterator().next();
 		Obs diastolicObs = createObs(Context.getConceptService().getConcept(65), 80.0);
-		diastolicObs.setPerson(new Person(2));
+		diastolicObs.setPerson(Context.getPersonService().getPerson(2));
 		diastolicObs.setObsDatetime(new Date());
 		exisitingVitalsObs.addGroupMember(diastolicObs); //Added a new obs to the top level obs.
+		encounter.addObs(exisitingVitalsObs);
 
 		Context.getEncounterService().saveEncounter(encounter);
-
-		encounter = Context.getEncounterService().getEncounter(7);
-
-		Set<Obs> allObs = encounter.getAllObs(true);
-		int afterEditing = encounter.getAllObs(true).size();
-
-		//Full Obs hirearchy is re-created as there is change at the parent level.
-		assertEquals(8, afterEditing);
-	}
-
-	@Test
-	public void shouldUpdateChildLevelObsAndValidateCount() throws ParseException {
 		Context.flushSession();
 		Context.clearSession();
 
-
-		Encounter encounter = Context.getEncounterService().getEncounter(7);
-
-		int after = Context.getEncounterService().getEncounter(7).getAllObs(true).size();
-
-		assertEquals(4, after);
-
 		encounter = Context.getEncounterService().getEncounter(7);
+
+		int afterEditing = encounter.getAllObs(true).size();
+
+		//Full Obs hirearchy should not be re-created
+		assertEquals(5, afterEditing);
+	}
+
+	@Test
+	public void shouldAddGroupMemberToChildLevelObsAndValidateCount() throws ParseException {
+		Encounter encounter = Context.getEncounterService().getEncounter(7);
+		int before = encounter.getAllObs(true).size();
+		assertEquals(4, before);
+
 		Obs bpObsInEncounter = Context.getObsService().getObservations(null, Arrays.asList(encounter),Arrays.asList(
 				Context.getConceptService().getConcept(63)),null,null,null,null,1,null,null,null,false).get(0);
 
@@ -100,17 +81,38 @@ public class OpenMRSUpgradeTest extends BaseModuleContextSensitiveTest {
 		diastolicObs.setPerson(new Person(2));
 		diastolicObs.setObsDatetime(new Date());
 		bpObsInEncounter.addGroupMember(diastolicObs); //Added a new diastolic obs to the bpObsInEncounter
+		encounter.addObs(bpObsInEncounter);
 
-		encounter = Context.getEncounterService().saveEncounter(encounter);
-		Context.evictFromSession(encounter);
+		Context.getEncounterService().saveEncounter(encounter);
+		Context.flushSession();
+		Context.clearSession();
 
 		encounter = Context.getEncounterService().getEncounter(7);
 		int afterEditing = encounter.getAllObs(true).size();
 
-		//Full Obs hirearchy is re-created eventhough the change is at a child level
-		assertEquals(1, afterEditing);
+		//Full Obs hirearchy should not be re-created
+		assertEquals(5, afterEditing);
 	}
 
+	@Test
+	public void shouldUpdateValueOfLeafObsAndValidateCount() throws Exception {
+
+		Encounter encounter = Context.getEncounterService().getEncounter(7);
+		Obs vitalObs = encounter.getObsAtTopLevel(true).iterator().next();
+		Obs pulseObs = vitalObs.getGroupMembers().stream().filter(obs -> obs.getId().equals(19)).findFirst().get();
+		pulseObs.setValueNumeric(90.0);
+		encounter.addObs(vitalObs);
+
+		Context.getEncounterService().saveEncounter(encounter);
+		Context.flushSession();
+		Context.clearSession();
+
+		encounter = Context.getEncounterService().getEncounter(7);
+		//only pulse obs should be voided and recreated
+		assertEquals(5, encounter.getAllObs(true).size());
+		assertEquals(4, encounter.getAllObs().size());
+
+	}
 
 	private Obs createObs(Concept concept, Double value) throws ParseException {
 		Obs obs = new Obs();
