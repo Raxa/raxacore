@@ -92,7 +92,8 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
     }
 
     @Override
-    public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient, Date visitStartDate, Date visitEndDate) {
+    public BahmniEncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Patient patient,
+                                           Date visitStartDate, Date visitEndDate) {
 
         if (bahmniEncounterTransaction.getEncounterDateTime() == null) {
             bahmniEncounterTransaction.setEncounterDateTime(new Date());

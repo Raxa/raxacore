@@ -116,7 +116,7 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
 
         List<BahmniDiagnosisRequest> bahmniDiagnosisRequests = new ArrayList<>();
         boolean diagnosisSchemaContainsStatus = bahmniDiagnosisMetadata.diagnosisSchemaContainsStatus();
-        Concept bahmniDiagnosisRevised = bahmniDiagnosisMetadata.getBahmniDiagnosisRevised();
+        Concept bahmniDiagnosisRevised = bahmniDiagnosisMetadata.getBahmniDiagnosisRevisedConcept();
         Collection<Concept> nonDiagnosisConcepts = emrApiProperties.getSuppressedDiagnosisConcepts();
         Collection<Concept> nonDiagnosisConceptSets = emrApiProperties.getNonDiagnosisConceptSets();
 

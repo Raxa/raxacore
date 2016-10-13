@@ -10,7 +10,6 @@ public class BahmniDiagnosis extends EncounterTransaction.Diagnosis {
     private BahmniDiagnosis firstDiagnosis;
     private BahmniDiagnosis latestDiagnosis;
     private boolean revised;
-    private String comments;
 
     public EncounterTransaction.Concept getDiagnosisStatusConcept() {
         return diagnosisStatusConcept;
@@ -62,14 +61,6 @@ public class BahmniDiagnosis extends EncounterTransaction.Diagnosis {
             return false;
 
         return getCodedAnswer().getUuid().equals(diagnosis.getCodedAnswer().getUuid());
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
     }
 
     public BahmniDiagnosis getLatestDiagnosis() {
