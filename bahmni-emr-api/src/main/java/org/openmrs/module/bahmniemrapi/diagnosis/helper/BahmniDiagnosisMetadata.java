@@ -220,7 +220,7 @@ public class BahmniDiagnosisMetadata {
         return obs;
     }
 
-    private void updateStatusConcept(Obs diagnosisObs, BahmniDiagnosis bahmniDiagnosis) {
+    void updateStatusConcept(Obs diagnosisObs, BahmniDiagnosis bahmniDiagnosis) {
         Obs obs = findOrCreateObs(diagnosisObs, getBahmniDiagnosisStatusConcept());
         if (bahmniDiagnosis.getDiagnosisStatusConcept() != null) {
             Concept statusConcept = conceptService.getConcept(bahmniDiagnosis.getDiagnosisStatusConcept().getName());
