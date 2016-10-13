@@ -4264,6 +4264,21 @@
             AND concept_id NOT IN (SELECT concept_id FROM concept_numeric));
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201610131157" author="Preethi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from obs o join concept_name cn on o.concept_id = cn.concept_id
+                        and cn.concept_name_type='FULLY_SPECIFIED' and cn.name='Bahmni Diagnosis Status'
+                        and o.value_coded is null;
+            </sqlCheck>
+        </preConditions>
+        <comment>Delete empty diagnosis status obs</comment>
+        <sql>
+            set @diagnosis_status_concept_id = 0;
+            select concept_id from concept_name where concept_name_type='FULLY_SPECIFIED' and name='Bahmni Diagnosis Status' into @diagnosis_status_concept_id;
+            delete from obs where concept_id = @diagnosis_status_concept_id and value_coded is null;
+        </sql>
+    </changeSet>
 
 
 </databaseChangeLog>
