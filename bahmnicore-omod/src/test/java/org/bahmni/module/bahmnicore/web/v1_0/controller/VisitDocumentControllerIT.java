@@ -64,19 +64,22 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
                 "}";
 
 
-        VisitDocumentResponse visitDocumentResponse = deserialize(handle(newPostRequest("/rest/v1/bahmnicore/visitDocument", json)), VisitDocumentResponse.class);
-        Visit visit = visitService.getVisitByUuid(visitDocumentResponse.getVisitUuid());
+        VisitDocumentResponse visitDocumentResponse = deserialize(handle(
+                newPostRequest("/rest/v1/bahmnicore/visitDocument", json)), VisitDocumentResponse.class);
+        Context.flushSession();
+        Context.clearSession();
 
+        Visit visit = visitService.getVisitByUuid(visitDocumentResponse.getVisitUuid());
         assertNotNull(visit);
         assertEquals(1, visit.getEncounters().size());
         assertEquals(visit.getLocation().getUuid(), "l38923e5-9fhb-4f20-866b-0ece24561525");
         Encounter encounter = new ArrayList<>(visit.getEncounters()).get(0);
-        assertEquals(1, encounter.getAllObs().size());
+        assertEquals(2, encounter.getAllObs().size());
         assertEquals(1, encounter.getEncounterProviders().size());
         EncounterProvider encounterProvider = encounter.getEncounterProviders().iterator().next();
         assertEquals("Jane Doe", encounterProvider.getProvider().getName());
         assertEquals("Unknown", encounterProvider.getEncounterRole().getName());
-        Obs parentObs = new ArrayList<>(encounter.getAllObs()).get(0);
+        Obs parentObs = new ArrayList<>(encounter.getObsAtTopLevel(false)).get(0);
         assertEquals(1, parentObs.getGroupMembers().size());
         assertObservationWithImage(parentObs, testUUID, imageConceptUuid);
     }

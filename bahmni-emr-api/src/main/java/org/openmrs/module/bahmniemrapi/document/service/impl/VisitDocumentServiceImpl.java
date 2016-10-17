@@ -50,17 +50,16 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         Patient patient = Context.getPatientService().getPatientByUuid(visitDocumentRequest.getPatientUuid());
 
         Visit visit = findOrCreateVisit(visitDocumentRequest, patient);
-
         Date encounterDate = (visit.getStopDatetime() != null) ? visit.getStartDatetime() : new Date();
-
         Encounter encounter = findOrCreateEncounter(visit, visitDocumentRequest.getEncounterTypeUuid(), encounterDate,
                 patient, visitDocumentRequest.getProviderUuid(), visitDocumentRequest.getLocationUuid());
         visit.addEncounter(encounter);
 
         updateEncounter(encounter, encounterDate, visitDocumentRequest.getDocuments());
 
-        Context.getVisitService().saveVisit(visit);
         Context.getEncounterService().saveEncounter(encounter);
+        Context.getVisitService().saveVisit(visit);
+
         return visit;
     }
 
