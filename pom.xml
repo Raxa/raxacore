@@ -200,7 +200,7 @@
             <dependency>
                 <groupId>org.bahmni.module</groupId>
                 <artifactId>bahmni-migrator</artifactId>
-                <version>0.86-SNAPSHOT</version>
+                <version>0.87-SNAPSHOT</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
