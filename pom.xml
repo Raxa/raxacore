@@ -30,9 +30,8 @@
         <atomfeed.version>1.9.3</atomfeed.version>
         <addressHierarchyVersion>2.9</addressHierarchyVersion>
         <reportingModuleVersion>0.10.4</reportingModuleVersion>
-        <reportingCompatiblityModuleVersion>2.0.1-SNAPSHOT</reportingCompatiblityModuleVersion>
         <calculationModuleVersion>1.3-SNAPSHOT</calculationModuleVersion>
-        <serializationXstreamModuleVersion>0.2.12-SNAPSHOT</serializationXstreamModuleVersion>
+        <serializationXstreamModuleVersion>0.2.12</serializationXstreamModuleVersion>
         <emrapi-omod.version>1.19-SNAPSHOT</emrapi-omod.version>
         <openmrsAtomfeedVersion>2.5.5-SNAPSHOT</openmrsAtomfeedVersion>
         <lombokVersion>1.16.0</lombokVersion>
