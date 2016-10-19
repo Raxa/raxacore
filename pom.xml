@@ -37,6 +37,7 @@
         <lombokVersion>1.16.0</lombokVersion>
         <idgenVersion>4.4-SNAPSHOT</idgenVersion>
         <legacyuiVersion>1.0</legacyuiVersion>
+        <episodes.version>1.0-SNAPSHOT</episodes.version>
         <!--test dependencies-->
         <junitVersion>4.12</junitVersion>
         <powerMockVersion>1.6.5</powerMockVersion>

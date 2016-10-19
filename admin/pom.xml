@@ -126,7 +126,7 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>episodes-api</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${episodes.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
