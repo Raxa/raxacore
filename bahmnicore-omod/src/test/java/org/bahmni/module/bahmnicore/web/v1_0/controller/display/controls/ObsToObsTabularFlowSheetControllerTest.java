@@ -5,7 +5,6 @@ import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.web.v1_0.mapper.BahmniObservationsToTabularViewMapper;
 import org.bahmni.test.builder.ConceptBuilder;
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,6 +39,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.*;
@@ -206,7 +206,7 @@ public class ObsToObsTabularFlowSheetControllerTest {
         String conceptSetName = "ConceptSetName";
         when(conceptService.getConceptByName(conceptSetName)).thenReturn(null);
         exception.expect(RuntimeException.class);
-        exception.expectMessage(CoreMatchers.containsString("Root concept not found for the name:  " + conceptSetName));
+        exception.expectMessage(containsString("Root concept not found for the name:  " + conceptSetName));
 
         obsToObsPivotTableController.constructPivotTableFor("patientUuid", 1, conceptSetName, "GroupByConcept", Collections.EMPTY_LIST, null, null, null, null, null, null);
     }
@@ -217,7 +217,7 @@ public class ObsToObsTabularFlowSheetControllerTest {
         Concept conceptSet = new ConceptBuilder().withName(conceptSetName).withSetMember(new ConceptBuilder().withName("GroupByConcept").build()).build();
         when(conceptService.getConceptByName(conceptSetName)).thenReturn(conceptSet);
         exception.expect(RuntimeException.class);
-        exception.expectMessage(CoreMatchers.containsString("null doesn't belong to the Root concept:  " + conceptSetName));
+        exception.expectMessage(containsString("null doesn't belong to the Root concept:  " + conceptSetName));
 
         obsToObsPivotTableController.constructPivotTableFor("patientUuid", 1, conceptSetName, null, Collections.EMPTY_LIST, null, null, null, null, null, null);
     }
@@ -228,7 +228,7 @@ public class ObsToObsTabularFlowSheetControllerTest {
         Concept conceptSet = new ConceptBuilder().withName(conceptSetName).withSetMember(new ConceptBuilder().withName("NotGroupByConcept").build()).build();
         when(conceptService.getConceptByName(conceptSetName)).thenReturn(conceptSet);
         exception.expect(RuntimeException.class);
-        exception.expectMessage(CoreMatchers.containsString("GroupByConcept doesn't belong to the Root concept:  " + conceptSetName));
+        exception.expectMessage(containsString("GroupByConcept doesn't belong to the Root concept:  " + conceptSetName));
 
         obsToObsPivotTableController.constructPivotTableFor("patientUuid", 1, conceptSetName, "GroupByConcept", Collections.EMPTY_LIST, null, null, null, null, null, null);
     }
