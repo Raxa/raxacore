@@ -272,6 +272,7 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void shouldUploadImagesInOrderOfRequest() throws Exception {
         Date visitStartDate = getDateFromString("2014-06-22 00:00:00");
         Date encounterDate = getDateFromString("2014-06-23 00:00:00");
