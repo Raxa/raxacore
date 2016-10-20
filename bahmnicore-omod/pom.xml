@@ -274,13 +274,13 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>bacteriology-omod</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${bacteriology.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>bacteriology-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${bacteriology.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

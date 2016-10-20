@@ -42,12 +42,10 @@ public class BacteriologySpecimenSearchHandler implements SearchHandler {
     private ObsService obsService;
 
     @Autowired
-    public BacteriologySpecimenSearchHandler(
-        @Qualifier("bahmniProgramWorkflowService")
-        BahmniProgramWorkflowService bahmniProgramWorkflowService,
-        ConceptService conceptService,
-        ObsService obsService
-    ) {
+    public BacteriologySpecimenSearchHandler(@Qualifier("bahmniProgramWorkflowService")
+                                                     BahmniProgramWorkflowService bahmniProgramWorkflowService,
+                                             ConceptService conceptService,
+                                             ObsService obsService) {
         this.bahmniProgramWorkflowService = bahmniProgramWorkflowService;
         this.conceptService = conceptService;
         this.obsService = obsService;
@@ -56,7 +54,7 @@ public class BacteriologySpecimenSearchHandler implements SearchHandler {
     @Override
     public SearchConfig getSearchConfig() {
         SearchQuery searchQuery = new SearchQuery.Builder(QUERY_INFORMATION).withRequiredParameters("patientProgramUuid").build();
-        return new SearchConfig("byPatientProgram", RestConstants.VERSION_1 + "/specimen", asList("1.10.*", "1.11.*", "1.12.*","2.0.*"), searchQuery);
+        return new SearchConfig("byPatientProgram", RestConstants.VERSION_1 + "/specimen", asList("1.10.*", "1.11.*", "1.12.*", "2.0.*"), searchQuery);
     }
 
     @Override
@@ -65,7 +63,7 @@ public class BacteriologySpecimenSearchHandler implements SearchHandler {
         BacteriologyService bacteriologyService = Context.getService(BacteriologyService.class);
         String patientProgramUuid = requestContext.getParameter("patientProgramUuid");
         Collection<Encounter> encounters = bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid);
-        if(CollectionUtils.isEmpty(encounters)){
+        if (CollectionUtils.isEmpty(encounters)) {
             return new EmptySearchResult();
         }
         List<Encounter> encountersAsList = new ArrayList<>(encounters);
