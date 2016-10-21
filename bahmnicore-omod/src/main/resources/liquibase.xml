@@ -3537,4 +3537,17 @@
             INSERT INTO `user_role` VALUES (@id,'Provider'),(@id,'System Developer'), (@id, 'SuperAdmin');
         </sql>
     </changeSet>
+    <changeSet id="assign-role-to-automation-user" author="Jaswanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from users where username = 'automation'
+            </sqlCheck>
+        </preConditions>
+        <comment>Assign role to automation user</comment>
+        <sql>
+            set @id = NULL;
+            select user_id from users where username='automation' into @id;
+            INSERT INTO `user_role` VALUES (@id, 'SuperAdmin');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
