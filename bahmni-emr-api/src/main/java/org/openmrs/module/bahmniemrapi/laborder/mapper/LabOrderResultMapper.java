@@ -48,7 +48,7 @@ public class LabOrderResultMapper {
                 }
             }
             if (labOrderResult.getReferredOut() != null && labOrderResult.getReferredOut()) {
-                labObs.addGroupMember(newObs(testOrder, obsDate, getConceptByName(REFERRED_OUT), null));
+                labObs.addGroupMember(newObs(testOrder, obsDate, getConceptByName(REFERRED_OUT), labOrderResult.getReferredOut().toString()));
             }
             if (StringUtils.isNotBlank(labOrderResult.getNotes())) {
                 labObs.addGroupMember(newObs(testOrder, obsDate, getConceptByName(LAB_NOTES), labOrderResult.getNotes()));

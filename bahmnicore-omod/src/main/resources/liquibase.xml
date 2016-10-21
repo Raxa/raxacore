@@ -3579,4 +3579,18 @@
             INSERT INTO `user_role` VALUES (@id, 'SuperAdmin');
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201610211440" author="Gaurav">
+
+        <comment>Change data type of REFERRED_OUT concept to boolean</comment>
+        <sql>
+            UPDATE concept
+            SET datatype_id =
+            (SELECT concept_datatype_id
+            FROM concept_datatype
+            WHERE name = 'Boolean')
+            WHERE concept_id IN (SELECT concept_id
+            FROM concept_name
+            WHERE name = 'REFERRED_OUT');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
