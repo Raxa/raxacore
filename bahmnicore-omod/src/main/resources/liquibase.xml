@@ -434,13 +434,7 @@
             update global_property set property_value = (select uuid from patient_identifier_type where name = 'Bahmni Id') where property = 'emr.primaryIdentifierType';
         </sql>
     </changeSet>
-    <changeSet id="bahmni-clinical-201402201700" author="D3" context="rel3">
-        <comment>Remove unused app:documents privilege</comment>
-        <sql>
-            DELETE from role_privilege where privilege = 'app:documents';
-            DELETE from privilege where privilege = 'app:documents';
-        </sql>
-    </changeSet>
+
     <changeSet id="bahmni-clinical-201402251700" author="Mihir,Vinay">
         <validCheckSum>3:da4167ac93f082b79d4c3af1807fc7f7</validCheckSum>
         <comment>Add new concept to mark referred out tests</comment>
@@ -1388,16 +1382,7 @@
             call add_concept_set_members (@labresults_concept_id,@set_concept_id,1);
         </sql>
     </changeSet>
-    <changeSet id="bahmni-core-201409041224" author="Banka">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">SELECT count(*) from role_privilege where role='Anonymous' and privilege='View Locations'</sqlCheck>
-        </preConditions>
-        <comment>Add View Location privilege to Anonymous</comment>
-        <insert tableName="role_privilege">
-            <column name="role" value="Anonymous"/>
-            <column name="privilege" value="View Locations"/>
-        </insert>
-    </changeSet>
+
     <changeSet id="bahmni-core-201409241028" author="Hemanth">
         <validCheckSum>3:48db15b4c8ef5eb006f8bb9a82854735</validCheckSum>
         <preConditions onFail="MARK_RAN">
@@ -2030,28 +2015,7 @@
             delete from scheduler_task_config WHERE name = 'Reference Data Failed Event Task';
         </sql>
     </changeSet>
-    <changeSet id="bahmni-core-201410101436" author="banka">
-        <validCheckSum>3:28348ce478fb4680742c031590de5548</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Clinical:ReadOnly'</sqlCheck>
-        </preConditions>
-        <comment>Add role for clinical read only access</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Clinical:ReadOnly', 'Will have read only access to clinical app', @uuid);
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-core-201410101440" author="banka">
-        <validCheckSum>3:b0491f30ba36025f2ed8212b775b8722</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Clinical:FullAccess'</sqlCheck>
-        </preConditions>
-        <comment>Add role for clinical full access</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Clinical:FullAccess', 'Will have full access to clinical app', @uuid);
-        </sql>
-    </changeSet>
+
     <changeSet id="bahmni-core-201410151525" author="Rohan, Hemanth">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from privilege where privilege='app:clinical:history'</sqlCheck>
@@ -2151,57 +2115,6 @@
         </sql>
     </changeSet>
 
-
-    <changeSet id="bahmni-core-201410101446" author="banka">
-        <comment>Add privileges for clinical read only</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'app:clinical');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'app:clinical:consultationTab');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'app:clinical:diagnosisTab');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'app:clinical:dispositionTab');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'app:clinical:history');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'app:clinical:observationTab');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Get Care Settings');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Get Order Frequencies');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Demographics Section');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Encounters Section');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Forms Section');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Graphs Section');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Overview Section');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Patient Summary');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Regimen Section');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'Patient Dashboard - View Visits Section');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Concepts');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Encounters');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Locations');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Observations');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Order Types');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Orders');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Patient Programs');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Patients');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Privileges');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Providers');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Users');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Visit Types');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:ReadOnly', 'View Visits');
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-core-201410101530" author="banka">
-        <comment>Add privileges for clinical full access</comment>
-        <sql>
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Clinical:ReadOnly', 'Clinical:FullAccess');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Add Encounters');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Add Observations');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Add Orders');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Add Visits');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Edit Encounters');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Edit Orders');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Edit Visits');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Get Care Settings');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'Manage Encounter Roles');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'View Visit Attribute Types');
-        </sql>
-    </changeSet>
     <changeSet id="bahmni-core-201410151040" author="Mihir, Bharti">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="1">
@@ -3074,181 +2987,6 @@
         </sql>
     </changeSet>
 
-    <changeSet id="bahmni-clinical-201521091403" author="Banka,Sravanthi" context="rel0.76">
-        <validCheckSum>3:f80b42404035832f37d3e49969040ad8</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Patient-Listing'</sqlCheck>
-        </preConditions>
-        <comment>Add Patient-Listing role</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Patient-Listing', 'Will have access to all patient queues', @uuid);
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-core-201521091408" author="Banka,Sravanthi" context="rel0.76">
-        <comment>Add privileges for patient listing</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Listing', 'Get Users');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Listing', 'Get Providers');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Listing', 'Get Concepts');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Listing', 'Get Visit Types');
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-clinical-201521091410" author="Banka,Sravanthi" context="rel0.76">
-        <validCheckSum>3:f59bf18aa0180b197d66809f8d044045</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Clinical-Read-Only'</sqlCheck>
-        </preConditions>
-        <comment>Add clinical read only role</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Clinical-Read-Only', 'Will have read only access to all clinical', @uuid);
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-core-201521091414" author="Banka,Sravanthi" context="rel0.76">
-        <comment>Add privileges for clinical read only</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Patients');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Visits');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Add Users');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Edit Users');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Observations');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Encounters');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Care Settings');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Patient Programs');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get People');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Orders');
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-clinical-201522091112" author="Banka,Sravanthi" context="rel0.76">
-        <validCheckSum>3:c545deeb45605141fe0541d9d34d86af</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Save'</sqlCheck>
-        </preConditions>
-        <comment>Add consultation save</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Consultation-Save', 'Will have basic access to save consultation', @uuid);
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-core-201522091114" author="Banka,Sravanthi" context="rel0.76">
-        <comment>Add privileges consultation save</comment>
-        <sql>
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Clinical-Read-Only', 'Consultation-Save');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'Edit Visits');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'Add Visits');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'Get Visit Attribute Types');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'Get Encounter Roles');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'Add Encounters');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'Edit Encounters');
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-clinical-201522091116" author="Banka,Sravanthi" context="rel0.76">
-        <validCheckSum>3:967ec329a7e61ba5b8cbe38506e168b0</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Observation'</sqlCheck>
-        </preConditions>
-        <comment>Add consultation observation role</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Consultation-Observation', 'Will have access to consultation observation and save in both normal and retrospective mode', @uuid);
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-core-201522091118" author="Banka,Sravanthi" context="rel0.76">
-        <comment>Add privileges consultation observation</comment>
-        <sql>
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Consultation-Save', 'Consultation-Observation');
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-clinical-201522091120" author="Banka,Sravanthi" context="rel0.76">
-        <validCheckSum>3:0c9e9e7903837d6926b32a972c5faf8e</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Diagnosis'</sqlCheck>
-        </preConditions>
-        <comment>Add consultation diagnosis role</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Consultation-Diagnosis', 'Will have access to consultation diagnosis and save in both normal and retrospective mode', @uuid);
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-core-201522091122" author="Banka,Sravanthi" context="rel0.76">
-        <comment>Add privileges consultation diagnosis</comment>
-        <sql>
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Consultation-Save', 'Consultation-Diagnosis');
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-clinical-201522091124" author="Banka,Sravanthi" context="rel0.76">
-        <validCheckSum>3:d302c1e82e1f31aea89338314fa13a47</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Disposition'</sqlCheck>
-        </preConditions>
-        <comment>Add consultation disposition role</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Consultation-Disposition', 'Will have access to consultation disposition and save in both normal and retrospective mode', @uuid);
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-core-201522091126" author="Banka,Sravanthi" context="rel0.76">
-        <comment>Add privileges consultation disposition</comment>
-        <sql>
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Consultation-Save', 'Consultation-Disposition');
-        </sql>
-    </changeSet>
-
-
-    <changeSet id="bahmni-clinical-201522091128" author="Banka,Sravanthi" context="rel0.76">
-        <validCheckSum>3:5b2f666ec5a56a0758016bd976c4ad04</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Treatment'</sqlCheck>
-        </preConditions>
-        <comment>Add consultation treatment role</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Consultation-Treatment', 'Will have access to consultation treatment and save in both normal and retrospective mode', @uuid);
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-core-201522091130" author="Banka,Sravanthi" context="rel0.76">
-        <comment>Add privileges consultation treatment</comment>
-        <sql>
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Consultation-Save', 'Consultation-Treatment');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Treatment', 'Edit Orders');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Treatment', 'Add Orders');
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-clinical-201522091132" author="Banka,Sravanthi" context="rel0.76">
-        <validCheckSum>3:193c893d18677a71d5c3f4d05af00004</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Consultation-Orders'</sqlCheck>
-        </preConditions>
-        <comment>Add consultation orders role</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Consultation-Orders', 'Will have access to consultation orders and save in both normal and retrospective mode', @uuid);
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-core-201522091134" author="Banka,Sravanthi" context="rel0.76">
-        <comment>Add privileges consultation orders</comment>
-        <sql>
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Consultation-Save', 'Consultation-Orders');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Orders', 'Edit Orders');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Orders', 'Add Orders');
-        </sql>
-    </changeSet>
-
     <changeSet id="bahmni-core-201509301203" author="Chethan, Sourav" context="rel0.76">
         <sql>
             set @concept_source_id = 0;
@@ -3288,99 +3026,6 @@
             <column name="category"/>
         </createIndex>
     </changeSet>
-    <changeSet id="bahmni-registration-201507101741" author="Shan,Sourav" context="rel0.77">
-        <validCheckSum>3:f8aec9024ab069f3dc3a79bf4aa6592c</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Registration'</sqlCheck>
-        </preConditions>
-        <comment>Add Registration Role</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Registration', 'Will have access to all registration roles', @uuid);
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-registration-201507101742" author="Shan,Sourav" context="rel0.77">
-        <validCheckSum>3:5c336c2dec0e96eb935aa83ca6a651c5</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Registration-Read'</sqlCheck>
-        </preConditions>
-        <comment>Add Registration Read Role</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Registration-Read', 'Will have access to search patients', @uuid);
-        </sql>
-    </changeSet>
-
-
-    <changeSet id="bahmni-registration-201507101744" author="Shan,Sourav" context="rel0.77">
-        <comment>Add privileges registration read</comment>
-        <sql>
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Read', 'Registration');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Read', 'View Patients');
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-registration-201507101747" author="Shan,Sourav" context="rel0.77">
-        <validCheckSum>3:114b8a6393c1e0dd45fb76587ac9d0b4</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Registration-Write'</sqlCheck>
-        </preConditions>
-        <comment>Add Registration Write Role</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Registration-Write', 'Will have access to update patient information', @uuid);
-        </sql>
-    </changeSet>
-
-
-    <changeSet id="bahmni-registration-201507101748" author="Shan,Sourav" context="rel0.77">
-        <comment>Add privileges registration write</comment>
-        <sql>
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Write', 'Registration');
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Read', 'Registration-Write');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Write', 'Add Patients');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Write', 'Edit Patients');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Write', 'Edit Patient Identifiers');
-        </sql>
-    </changeSet>
-
-
-    <changeSet id="bahmni-registration-201507101749" author="Shan,Sourav" context="rel0.77">
-        <validCheckSum>3:871f7655c54461883fc852ebb7fb4ac2</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Registration-Visit-Action'</sqlCheck>
-        </preConditions>
-        <comment>Add Registration Visit Action Role</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Registration-Visit-Action', 'Will have access to open and close visit', @uuid);
-        </sql>
-    </changeSet>
-
-
-    <changeSet id="bahmni-registration-201507101753" author="Shan,Sourav" context="rel0.77">
-        <comment>Add privileges registration visit action</comment>
-        <sql>
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Visit-Action', 'Registration');
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Write', 'Registration-Visit-Action');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Visit-Action', 'Add Visits');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Visit-Action', 'Delete Visits');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Visit-Action', 'Edit Visits');
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-registration-201507101755" author="Shan,Sourav" context="rel0.77">
-        <validCheckSum>3:7f34dabe1072f0b87cde58f693b02a28</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Registration-Additional'</sqlCheck>
-        </preConditions>
-        <comment>Add role for additional actions for registration app.</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Registration-Additional', 'Will have access to additional actions like encounter', @uuid);
-        </sql>
-    </changeSet>
 
     <changeSet id="bahmni-reg-201401171330" author="banka-tw" context="rel3">
         <preConditions onFail="MARK_RAN">
@@ -3397,171 +3042,6 @@
         <comment>Add emrgency app role</comment>
         <sql>
             INSERT INTO privilege(privilege, description, uuid) VALUES('app:emergency', 'bahmni emergency app access privilege', uuid()) ON DUPLICATE KEY UPDATE privilege = 'app:emergency';
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-registration-201507101757" author="Shan,Sourav" context="rel0.77">
-        <comment>Add privileges for additional action required for registration app like encounter etc.</comment>
-        <sql>
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Additional', 'Registration');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Add Encounters');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'app:registration');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Edit Encounters');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Get Encounter Roles');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Get Encounters');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Get Patients');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Get People');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Get Visit Attribute Types');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Get Visits');
-        </sql>
-    </changeSet>
-
-
-    <changeSet id="bahmni-registration-201507101808" author="Shan,Sourav" context="rel0.77">
-        <comment>Add patient listing role to registration</comment>
-        <sql>
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Patient-Listing', 'Registration');
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-inpatient-read-201513101438" author="Banka,Padma" context="rel0.77">
-        <validCheckSum>3:2f8220ed4381a71f1fff9ad046c56877</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='InPatient-Read'</sqlCheck>
-        </preConditions>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role(role, description, uuid) VALUES('InPatient-Read','Ability to view the Inpatient dashboard', @uuid);
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-inpatient-patient-movement-201513101455" author="Banka,Padma" context="rel0.77">
-        <validCheckSum>3:81c62a25ae700462be75dff46f86bc4d</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Inpatient-Patient-Movement'</sqlCheck>
-        </preConditions>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role(role, description, uuid) VALUES('InPatient-Patient-Movement','Ability to admit, discharge and transfer the patient', @uuid);
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-inpatient-patient-movement-201513101524" author="Banka,Padma" context="release-0.77">
-        <validCheckSum>3:3c282da97bb8e0b9adab7d3f4fba68fb</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Patient-Documents-Upload'</sqlCheck>
-        </preConditions>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role(role, description, uuid) VALUES('Patient-Documents-Upload', 'Ability to upload patient documents and radiology uploads', @uuid);
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-admin-role-201513101528" author="Banka,Padma" context="release-0.77">
-        <validCheckSum>3:42d2bc95cd1ac3045c5a01a36f22892f</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Admin-Role'</sqlCheck>
-        </preConditions>
-        <sql>
-            select uuid() into @uuid;
-            INSERT into role(role, description, uuid) VALUES('Admin-Role', 'Ability to upload and download csvs', @uuid);
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-orders-role-201513101532" author="Banka,Padma" context="release-0.77">
-        <validCheckSum>3:fb813933154056d8a4f895238e2150cb</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Orders-Role'</sqlCheck>
-        </preConditions>
-        <sql>
-            select uuid() into @uuid;
-            INSERT into role(role,description, uuid) VALUES('Orders-Role', 'Ability to view and fulfill orders', @uuid);
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-emr-reports-201513101535" author="Banka,Padma" context="release-0.77">
-        <validCheckSum>3:657717602f3b21d62ffbdf2090349027</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Emr-Reports'</sqlCheck>
-        </preConditions>
-        <sql>
-            select uuid() into @uuid;
-            INSERT into role(role, description, uuid) VALUES('Emr-Reports','Ability to run reports', @uuid);
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-orders-role-201523111314" author="Chethan,Shashi" context="release-0.77">
-        <validCheckSum>3:41981a3f2794678c672a10fd47a4d683</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Privilege Level: Full'</sqlCheck>
-        </preConditions>
-        <sql>
-            select uuid() into @uuid;
-            INSERT into role(role, description, uuid) VALUES('Privilege Level: Full', 'A role that has all API privileges', @uuid);
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-add-privileges-to-inpatient-read-201514101540" author="Banka,Padma" context="release-0.77">
-        <comment>Relating roles and adding privileges</comment>
-        <sql>
-            INSERT into role_role(parent_role, child_role) VALUES('Patient-Listing', 'InPatient-Read');
-            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Patients');
-            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get People');
-            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Encounters');
-            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Observations');
-            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Locations');
-            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Visits');
-            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Orders');
-            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Global Properties');
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-addpreviliges-201514101844" author="Banka,Padma" context="release-0.77">
-        <preConditions onFail="CONTINUE">
-            <sqlCheck expectedResult="4">
-                select count(*) from privilege where privilege in ('Get Beds', 'Assign Beds', 'Get Admission Locations', 'Edit Admission Locations');
-            </sqlCheck>
-        </preConditions>
-        <comment>Relating roles and adding privileges for bed management</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Admission Locations');
-            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Read', 'Get Beds');
-            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Patient-Movement', 'Assign Beds');
-            INSERT INTO role_privilege (role, privilege) VALUES ('InPatient-Patient-Movement', 'Edit Admission Locations');
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-add-previliges-toinpatient-move-201514101850" author="Banka,Padma" context="release-0.77">
-        <comment>Adding privileges to Inpatient-patient-movement</comment>
-        <sql>
-            INSERT into role_role(parent_role, child_role) VALUES('InPatient-Read', 'InPatient-Patient-Movement');
-            INSERT into role_role(parent_role, child_role) VALUES('Consultation-Save', 'InPatient-Patient-Movement');
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-add-privileges-to-patient-document-upload-201515101234" author="Banka,Padma" context="release-0.77">
-        <comment>Adding privileges to patient document upload role</comment>
-        <sql>
-            INSERT into role_role(parent_role, child_role) VALUES('Patient-Listing', 'Patient-Documents-Upload');
-            INSERT into role_role(parent_role, child_role) VALUES('Consultation-Save', 'Patient-Documents-Upload');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Documents-Upload', 'Get Global Properties');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Documents-Upload', 'Get Visits');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Documents-Upload', 'Get Patients');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Patient-Documents-Upload', 'Get Encounters');
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-add-privileges-to-orders-role-201515101441" author="Banka,Padma" context="release-0.77">
-        <comment>Adding privileges to orders role</comment>
-        <sql>
-            INSERT into role_role(parent_role, child_role) VALUES('Consultation-Save', 'Orders-Role');
-            INSERT into role_role(parent_role, child_role) VALUES('Patient-Listing', 'Orders-Role');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Orders-Role', 'Get Global Properties');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Orders-Role', 'Get Encounters');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Orders-Role', 'Get Orders');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Orders-Role', 'Get Visits');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Orders-Role', 'Get Patients');
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-addprevileges-admin-role-201516101234" author="Jaswanth,Padma" context="release-0.77">
-        <comment>Adding privileges to admin role</comment>
-        <sql>
-            INSERT into role_role(parent_role, child_role) VALUES('Privilege Level: Full', 'Admin-Role');
-        </sql>
-    </changeSet>
-    <changeSet id="bahmni-add-privilege-reports-role-201528101218" author="Jaswanth, Padma" context="release-0.77">
-        <comment>Adding privileges to emr-reports role</comment>
-        <sql>
-            INSERT into role_role(parent_role, child_role) VALUES('Patient-Listing', 'Emr-Reports');
         </sql>
     </changeSet>
 
@@ -3583,35 +3063,6 @@
             DELETE FROM global_property WHERE property IN ('emrapi.sqlSearch.activePatientsByLocation');
         </sql>
     </changeSet>
-
-    <changeSet id="bahmni-core-201510292222" author="Shan" context="rel0.77">
-        <comment>Adding privileges to Registration-Additional role</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Add Users');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Additional', 'Edit Users');
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-registration-201511041808" author="Vikash" context="rel0.77">
-        <comment>Modifying patient listing role, Registration additional role and giving relationship role to registration</comment>
-        <sql>
-            DELETE FROM role_role WHERE parent_role='Patient-Listing' AND child_role='Registration';
-            DELETE FROM role_role WHERE parent_role='Registration-Additional' AND child_role='Registration';
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Patient-Listing', 'Registration-Read');
-            INSERT INTO role_role(parent_role, child_role) VALUES ('Registration-Additional', 'Registration-Read');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Write', 'Add Relationships');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Write', 'Edit Relationships');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Registration-Write', 'Delete Relationships');
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-clinical-201511091150" author="Vikash, Achinta" context="rel0.77">
-        <comment>Adding Programs privilege to clinical-read only role</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical-Read-Only', 'Get Programs');
-        </sql>
-    </changeSet>
-
 
     <changeSet id="bahmni-reg-1" author="tw" context="rel2">
         <comment>rel2</comment>
@@ -3666,28 +3117,6 @@
         <sql>
             select uuid into @uuid from concept where concept_id in (select concept_id from concept_name where name='DrugOther' and concept_name_type='FULLY_SPECIFIED');
             UPDATE global_property set property_value = @uuid where property='drugOrder.drugOther';
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-core-201518111152" author="JP,Sravanthi" context="rel0.77">
-        <validCheckSum>3:64d89e89d5f248daa9c489a02904deed</validCheckSum>
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Bahmni-User'</sqlCheck>
-        </preConditions>
-        <comment>Add bahmni user role</comment>
-        <sql>
-            select uuid() into @uuid;
-            INSERT INTO role (role, description, uuid) VALUES ('Bahmni-User', 'Ability to login and save user preferences', @uuid);
-        </sql>
-    </changeSet>
-
-    <changeSet id="bahmni-core-201518111156" author="JP,Sravanthi" context="rel0.77">
-        <comment>Add privileges bahmni user</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Bahmni-User', 'Get Users');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Bahmni-User', 'Get Providers');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Bahmni-User', 'Add Users');
-            INSERT INTO role_privilege (role, privilege) VALUES ('Bahmni-User', 'Edit Users');
         </sql>
     </changeSet>
 
@@ -3885,16 +3314,6 @@
         </sql>
     </changeSet>
 
-    <changeSet id="20160226-0222" author="Shan,Hanisha">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">select count(*) from role where role='Program-Enrollment'</sqlCheck>
-        </preConditions>
-        <comment>Add role for Enrolling patient to program </comment>
-        <sql>
-            INSERT INTO role (role, description,uuid) VALUES ('Program-Enrollment', 'Can manage patient programs', uuid());
-        </sql>
-    </changeSet>
-
     <changeSet id="20160302-1225" author="Shan,Hanisha">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">select count(*) from privilege where privilege = 'Manage Program Attribute Types'</sqlCheck>
@@ -3925,59 +3344,6 @@
             <column name="privilege" value="Purge Program Attribute Types"/>
             <column name="description" value="Access to purge program attribute types"/>
             <column name="uuid" valueComputed="uuid()"/>
-        </insert>
-    </changeSet>
-
-    <changeSet id="20160302-1231" author="Shan,Hanisha">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">SELECT count(*) from role_privilege where role='Program-Enrollment'</sqlCheck>
-        </preConditions>
-        <comment>Add Manage Program Attribute Type privilege to Program-Enrollment role</comment>
-        <insert tableName="role_privilege">
-            <column name="role" value="Program-Enrollment"/>
-            <column name="privilege" value="Manage Program Attribute Types"/>
-        </insert>
-
-        <comment>Add View Program Attribute Types privilege to Program-Enrollment role</comment>
-        <insert tableName="role_privilege">
-            <column name="role" value="Program-Enrollment"/>
-            <column name="privilege" value="View Program Attribute Types"/>
-        </insert>
-
-        <comment>Add Purge Program Attribute Types privilege to Program-Enrollment role</comment>
-        <insert tableName="role_privilege">
-            <column name="role" value="Program-Enrollment"/>
-            <column name="privilege" value="Purge Program Attribute Types"/>
-        </insert>
-
-        <comment>Add (Add Patient Programs) privilege to Program-Enrollment role</comment>
-        <insert tableName="role_privilege">
-            <column name="role" value="Program-Enrollment"/>
-            <column name="privilege" value="Add Patient Programs"/>
-        </insert>
-
-        <comment>Add (View Patient Programs) privilege to Program-Enrollment role</comment>
-        <insert tableName="role_privilege">
-            <column name="role" value="Program-Enrollment"/>
-            <column name="privilege" value="View Patient Programs"/>
-        </insert>
-
-        <comment>Add (Edit Patient Programs) privilege to Program-Enrollment role</comment>
-        <insert tableName="role_privilege">
-            <column name="role" value="Program-Enrollment"/>
-            <column name="privilege" value="Edit Patient Programs"/>
-        </insert>
-
-        <comment>Add (Get Programs) privilege to Program-Enrollment role</comment>
-        <insert tableName="role_privilege">
-            <column name="role" value="Program-Enrollment"/>
-            <column name="privilege" value="Get Programs"/>
-        </insert>
-
-        <comment>Add (Get People) privilege to Clinical:FullAccess role</comment>
-        <insert tableName="role_privilege">
-            <column name="role" value="Clinical:FullAccess"/>
-            <column name="privilege" value="Get People"/>
         </insert>
     </changeSet>
 
@@ -4045,114 +3411,6 @@
         <comment>Creating On Behalf Of Privilege</comment>
         <sql>
             INSERT INTO privilege (privilege, description, uuid) VALUES ('app:clinical:onbehalf', 'View On behalf of option', uuid());
-        </sql>
-    </changeSet>
-
-    <changeSet author="Pankaj, Achinta" id="201605101713-999">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                select count(*) from privilege, role where privilege.privilege='app:clinical:retrospective' and role.role = 'Clinical:FullAccess';
-            </sqlCheck>
-        </preConditions>
-        <comment>Adding Retrospective Picker Privileges To Clinical:FullAccess Role</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'app:clinical:retrospective');
-        </sql>
-    </changeSet>
-
-    <changeSet author="Pankaj, Achinta" id="201605101613-999">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                select count(*) from privilege, role where privilege.privilege='app:clinical:locationpicker' and role.role = 'Clinical:FullAccess';
-            </sqlCheck>
-        </preConditions>
-        <comment>Adding Location Picker Privileges To Clinical:FullAccess Role</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'app:clinical:locationpicker');
-        </sql>
-    </changeSet>
-
-    <changeSet author="Pankaj, Achinta" id="201605101616-999">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                select count(*) from privilege, role where privilege.privilege='app:clinical:onbehalf' and role.role = 'Clinical:FullAccess';
-            </sqlCheck>
-        </preConditions>
-        <comment>Adding On Behalf Of Privileges To Clinical:FullAccess Role</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Clinical:FullAccess', 'app:clinical:onbehalf');
-        </sql>
-    </changeSet>
-
-    <changeSet author="Pankaj, Achinta" id="201605101750-999">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                select count(*) from privilege, role where privilege.privilege='app:clinical:retrospective' and role.role = 'Consultation-Save';
-            </sqlCheck>
-        </preConditions>
-        <comment>Adding Retrospective Picker Privileges To Consultation-Save Role</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'app:clinical:retrospective');
-        </sql>
-    </changeSet>
-
-    <changeSet author="Pankaj, Achinta" id="201605101618-999">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                select count(*) from privilege, role where privilege.privilege='app:clinical:locationpicker' and role.role = 'Consultation-Save';
-            </sqlCheck>
-        </preConditions>
-        <comment>Adding Location Picker Privileges To Consultation-Save Role</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'app:clinical:locationpicker');
-        </sql>
-    </changeSet>
-
-    <changeSet author="Pankaj, Achinta" id="201605101619-999">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                select count(*) from privilege, role where privilege.privilege='app:clinical:onbehalf' and role.role = 'Consultation-Save';
-            </sqlCheck>
-        </preConditions>
-        <comment>Adding On Behalf Of Privileges To Consultation-Save Role</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Consultation-Save', 'app:clinical:onbehalf');
-        </sql>
-    </changeSet>
-
-    <changeSet author="Pankaj, Achinta" id="201605101751-999">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                select count(*) from privilege, role where privilege.privilege='app:clinical:retrospective' and role.role = 'Program-Enrollment';
-            </sqlCheck>
-        </preConditions>
-        <comment>Adding Retrospective Picker Privileges To Program-Enrollment Role</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Program-Enrollment', 'app:clinical:retrospective');
-        </sql>
-    </changeSet>
-
-    <changeSet author="Pankaj, Achinta" id="201605101622-999">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                select count(*) from privilege, role where privilege.privilege='app:clinical:locationpicker' and role.role = 'Program-Enrollment';
-            </sqlCheck>
-        </preConditions>
-        <comment>Adding Location Picker Privileges To Program-Enrollment Role</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Program-Enrollment', 'app:clinical:locationpicker');
-        </sql>
-    </changeSet>
-
-    <changeSet author="Pankaj, Achinta" id="201605101623-999">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="1">
-                select count(*) from privilege, role where privilege.privilege='app:clinical:onbehalf' and role.role = 'Program-Enrollment';
-            </sqlCheck>
-        </preConditions>
-        <comment>Adding On Behalf Of Privileges To Program-Enrollment Role</comment>
-        <sql>
-            INSERT INTO role_privilege (role, privilege) VALUES ('Program-Enrollment', 'app:clinical:onbehalf');
         </sql>
     </changeSet>
 
@@ -4280,5 +3538,45 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-new-roles-and-privileges" author="Jaswanth, Ravindra">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from role where role = 'Bahmni-App-User-Login'
+            </sqlCheck>
+        </preConditions>
+        <comment>New roles and privileges for bahmni</comment>
+        <sqlFile path="V1_96_NewRolesAndPrivileges.sql"/>
+    </changeSet>
+    <changeSet id="map-users-to-new-roles" author="Jaswanth, Ravindra">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from role where role = 'Bahmni-User'
+            </sqlCheck>
+        </preConditions>
+        <comment>Map users to new roles</comment>
+        <sql>
+            set @id = NULL;
+            select user_id from users where username='admin' into @id;
+            INSERT INTO `user_role` VALUES (@id, 'bypass2FA'),(@id,'Provider'),(@id,'System Developer');
 
+            select user_id from users where username='reports-user' into @id;
+            INSERT INTO `user_role` VALUES (@id, 'Reports-App');
+
+            select user_id from users where username='superman' into @id;
+            INSERT INTO `user_role` VALUES (@id,'Provider'),(@id,'System Developer'), (@id, 'SuperAdmin');
+        </sql>
+    </changeSet>
+    <changeSet id="assign-role-to-automation-user" author="Jaswanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from users where username = 'automation'
+            </sqlCheck>
+        </preConditions>
+        <comment>Assign role to automation user</comment>
+        <sql>
+            set @id = NULL;
+            select user_id from users where username='automation' into @id;
+            INSERT INTO `user_role` VALUES (@id, 'SuperAdmin');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
