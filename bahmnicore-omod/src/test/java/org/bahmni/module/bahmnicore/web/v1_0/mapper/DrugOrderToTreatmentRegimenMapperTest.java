@@ -38,7 +38,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 @PrepareForTest({LocaleUtility.class})
 public class DrugOrderToTreatmentRegimenMapperTest {
 
-    private DrugOrderToTreatmentRegimenMapper drugOrderToTreatmentRegimenMapper;
+    private DrugOrderToRegimenMapper drugOrderToTreatmentRegimenMapper;
 
     public static final String DAY_DURATION_UNIT = "Day";
 
@@ -49,7 +49,7 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
         Context.setUserContext(new UserContext());
-        drugOrderToTreatmentRegimenMapper = new DrugOrderToTreatmentRegimenMapper();
+        drugOrderToTreatmentRegimenMapper = new DrugOrderToRegimenMapper();
     }
 
     @Test
@@ -198,7 +198,7 @@ public class DrugOrderToTreatmentRegimenMapperTest {
     }
 
     @Test
-    public void shouldMapTo2RowsIfTheDrugIsStartedAndStoppedOnTheSameDay() throws Exception {
+    public void shouldSetErrorWhenDrugIsStartedAndStoppedOnTheSameDay() throws Exception {
         ArrayList<Order> drugOrders = new ArrayList<>();
         Date now = new Date();
         DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(now).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
@@ -210,71 +210,14 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         assertEquals(1, treatmentRegimen.getHeaders().size());
         Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("Ibeprofen", headerIterator.next().getName());
-        assertEquals(2, treatmentRegimen.getRows().size());
+        assertEquals(1, treatmentRegimen.getRows().size());
         Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow startDateRow = rowIterator.next();
         assertEquals(getOnlyDate(now), startDateRow.getDate());
-        assertEquals("1000.0", startDateRow.getDrugs().get("Ibeprofen"));
-
-        RegimenRow stoppedDateRow = rowIterator.next();
-        assertEquals(getOnlyDate(now), stoppedDateRow.getDate());
-        assertEquals("Stop", stoppedDateRow.getDrugs().get("Ibeprofen"));
+        assertEquals("Error", startDateRow.getDrugs().get("Ibeprofen"));
     }
 
-    @Test
-    public void shouldMapTo2RowsIf2DrugsAreStartedAndStoppedOnTheSameDay() throws Exception {
-        ArrayList<Order> drugOrders = new ArrayList<>();
-        Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(now).withConcept(new ConceptBuilder().withName("Ibeprofen").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder paracetamol = new DrugOrderBuilder().withDrugName("Paracetamol").withDateActivated(now).withDose(500.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(now).withConcept(new ConceptBuilder().withName("Paracetamol").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder lignocaine = new DrugOrderBuilder().withDrugName("Lignocaine").withDateActivated(now).withDose(300.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 3)).withConcept(new ConceptBuilder().withName("Lignocaine").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder magnesium = new DrugOrderBuilder().withDrugName("Magnesium").withDateActivated(now).withDose(5000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 10)).withConcept(new ConceptBuilder().withName("Magnesium").withSet(false).withDataType("N/A").build()).build();
-        drugOrders.add(ibeprofen);
-        drugOrders.add(paracetamol);
-        drugOrders.add(lignocaine);
-        drugOrders.add(magnesium);
-
-        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
-
-        assertNotNull(treatmentRegimen);
-        assertEquals(4, treatmentRegimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
-        assertEquals("Ibeprofen", headerIterator.next().getName());
-        assertEquals("Paracetamol", headerIterator.next().getName());
-        assertEquals("Lignocaine", headerIterator.next().getName());
-        assertEquals("Magnesium", headerIterator.next().getName());
-        assertEquals(4, treatmentRegimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
-
-        RegimenRow firstRow = rowIterator.next();
-        assertEquals(getOnlyDate(now), firstRow.getDate());
-        assertEquals("1000.0", firstRow.getDrugs().get("Ibeprofen"));
-        assertEquals("500.0", firstRow.getDrugs().get("Paracetamol"));
-        assertEquals("300.0", firstRow.getDrugs().get("Lignocaine"));
-        assertEquals("5000.0", firstRow.getDrugs().get("Magnesium"));
-
-        RegimenRow secondRow = rowIterator.next();
-        assertEquals(getOnlyDate(now), secondRow.getDate());
-        assertEquals("Stop", secondRow.getDrugs().get("Ibeprofen"));
-        assertEquals("Stop", secondRow.getDrugs().get("Paracetamol"));
-        assertEquals("300.0", secondRow.getDrugs().get("Lignocaine"));
-        assertEquals("5000.0", secondRow.getDrugs().get("Magnesium"));
-
-        RegimenRow thirdRow = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 3)), thirdRow.getDate());
-        assertEquals(null, thirdRow.getDrugs().get("Ibeprofen"));
-        assertEquals(null, thirdRow.getDrugs().get("Paracetamol"));
-        assertEquals("Stop", thirdRow.getDrugs().get("Lignocaine"));
-        assertEquals("5000.0", thirdRow.getDrugs().get("Magnesium"));
-
-        RegimenRow fourthRow = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 10)), fourthRow.getDate());
-        assertEquals(null, fourthRow.getDrugs().get("Ibeprofen"));
-        assertEquals(null, fourthRow.getDrugs().get("Paracetamol"));
-        assertEquals(null, fourthRow.getDrugs().get("Lignocaine"));
-        assertEquals("Stop", fourthRow.getDrugs().get("Magnesium"));
-    }
 
     @Test
     public void shouldMapTo2RowsIf2DrugsAreStartedAndStoppedOnTheSameDayButOnDifferentDays() throws Exception {
@@ -293,28 +236,19 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("Ibeprofen", headerIterator.next().getName());
         assertEquals("Paracetamol", headerIterator.next().getName());
-        assertEquals(4, treatmentRegimen.getRows().size());
+        assertEquals(2, treatmentRegimen.getRows().size());
         Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(now), firstRow.getDate());
-        assertEquals("1000.0", firstRow.getDrugs().get("Ibeprofen"));
+        assertEquals("Error", firstRow.getDrugs().get("Ibeprofen"));
         assertEquals(null, firstRow.getDrugs().get("Paracetamol"));
 
         RegimenRow secondRow = rowIterator.next();
-        assertEquals(getOnlyDate(now), secondRow.getDate());
-        assertEquals("Stop", secondRow.getDrugs().get("Ibeprofen"));
-        assertEquals(null, secondRow.getDrugs().get("Paracetamol"));
+        assertEquals(getOnlyDate(addDays(now,2)), secondRow.getDate());
+        assertEquals(null, secondRow.getDrugs().get("Ibeprofen"));
+        assertEquals("Error", secondRow.getDrugs().get("Paracetamol"));
 
-        RegimenRow thirdRow = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 2)), thirdRow.getDate());
-        assertEquals(null, thirdRow.getDrugs().get("Ibeprofen"));
-        assertEquals("500.0", thirdRow.getDrugs().get("Paracetamol"));
-
-        RegimenRow fourthRow = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 2)), fourthRow.getDate());
-        assertEquals(null, fourthRow.getDrugs().get("Ibeprofen"));
-        assertEquals("Stop", fourthRow.getDrugs().get("Paracetamol"));
     }
 
     @Test
@@ -328,40 +262,11 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
 
         assertNotNull(treatmentRegimen);
-        assertEquals(0, treatmentRegimen.getHeaders().size());
-        assertEquals(0, treatmentRegimen.getRows().size());
-    }
-
-    @Test
-    public void shouldMapRevisedDrugOrders() throws Exception {
-        ArrayList<Order> drugOrders = new ArrayList<>();
-        Date now = new Date();
-        DrugOrder ibeprofen = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(now).withDose(1000.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.NEW).withConcept(new ConceptBuilder().withName("Ibeprofen").withUUID("uuid").withSet(false).withDataType("N/A").build()).build();
-        DrugOrder ibeprofenRevised = new DrugOrderBuilder().withDrugName("Ibeprofen").withDateActivated(addDays(now, 5)).withDose(500.0).withFrequency(DAY_DURATION_UNIT).withAutoExpireDate(addDays(now, 10)).withOrderAction(Order.Action.REVISE).withConcept(new ConceptBuilder().withName("Ibeprofen").withUUID("uuid").withSet(false).withDataType("N/A").build()).build();
-        drugOrders.add(ibeprofen);
-        drugOrders.add(ibeprofenRevised);
-
-        TreatmentRegimen treatmentRegimen = drugOrderToTreatmentRegimenMapper.map(drugOrders, null);
-
-        assertNotNull(treatmentRegimen);
         assertEquals(1, treatmentRegimen.getHeaders().size());
-        Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
-        assertEquals("Ibeprofen", headerIterator.next().getName());
-        assertEquals(3, treatmentRegimen.getRows().size());
-        Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
-
-        RegimenRow startDateRow = rowIterator.next();
-        assertEquals(getOnlyDate(now), startDateRow.getDate());
-        assertEquals("1000.0", startDateRow.getDrugs().get("Ibeprofen"));
-
-        RegimenRow revisedDateRow = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 5)), revisedDateRow.getDate());
-        assertEquals("500.0", revisedDateRow.getDrugs().get("Ibeprofen"));
-
-        RegimenRow stoppedDateRow = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 10)), stoppedDateRow.getDate());
-        assertEquals("Stop", stoppedDateRow.getDrugs().get("Ibeprofen"));
+        assertEquals(2, treatmentRegimen.getRows().size());
     }
+
+
 
     @Test
     public void shouldMapScheduledDrugOrders() throws Exception {
@@ -382,38 +287,32 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         assertEquals("P 500mg", headerIterator.next().getName());
         assertEquals("Caffeine", headerIterator.next().getName());
         assertEquals("Lajvanti", headerIterator.next().getName());
-        assertEquals(5, treatmentRegimen.getRows().size());
+        assertEquals(4, treatmentRegimen.getRows().size());
         Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(now), firstRow.getDate());
-        assertEquals("1000.0", firstRow.getDrugs().get("P 500mg"));
+        assertEquals("Error", firstRow.getDrugs().get("P 500mg"));
         assertEquals("500.0", firstRow.getDrugs().get("Caffeine"));
         assertEquals(null, firstRow.getDrugs().get("Lajvanti"));
 
         RegimenRow secondRow = rowIterator.next();
-        assertEquals(getOnlyDate(now), secondRow.getDate());
-        assertEquals("Stop", secondRow.getDrugs().get("P 500mg"));
+        assertEquals(getOnlyDate(addDays(now, 2)), secondRow.getDate());
+        assertEquals(null, secondRow.getDrugs().get("P 500mg"));
         assertEquals("500.0", secondRow.getDrugs().get("Caffeine"));
-        assertEquals(null, secondRow.getDrugs().get("Lajvanti"));
+        assertEquals("3.0", secondRow.getDrugs().get("Lajvanti"));
 
         RegimenRow thirdRow = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 2)), thirdRow.getDate());
+        assertEquals(getOnlyDate(addDays(now, 3)), thirdRow.getDate());
         assertEquals(null, thirdRow.getDrugs().get("P 500mg"));
-        assertEquals("500.0", thirdRow.getDrugs().get("Caffeine"));
+        assertEquals("Stop", thirdRow.getDrugs().get("Caffeine"));
         assertEquals("3.0", thirdRow.getDrugs().get("Lajvanti"));
 
         RegimenRow fourthRow = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 3)), fourthRow.getDate());
+        assertEquals(getOnlyDate(addDays(now, 5)), fourthRow.getDate());
         assertEquals(null, fourthRow.getDrugs().get("P 500mg"));
-        assertEquals("Stop", fourthRow.getDrugs().get("Caffeine"));
-        assertEquals("3.0", fourthRow.getDrugs().get("Lajvanti"));
-
-        RegimenRow fifthRow = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 5)), fifthRow.getDate());
-        assertEquals(null, fifthRow.getDrugs().get("P 500mg"));
-        assertEquals(null, fifthRow.getDrugs().get("Caffeine"));
-        assertEquals("Stop", fifthRow.getDrugs().get("Lajvanti"));
+        assertEquals(null, fourthRow.getDrugs().get("Caffeine"));
+        assertEquals("Stop", fourthRow.getDrugs().get("Lajvanti"));
     }
 
     @Test
@@ -432,9 +331,9 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         assertNotNull(treatmentRegimen);
         assertEquals(2, treatmentRegimen.getHeaders().size());
         Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
-        assertEquals("Caffeine", headerIterator.next().getName());
         assertEquals("P 500mg", headerIterator.next().getName());
-        assertEquals(4, treatmentRegimen.getRows().size());
+        assertEquals("Caffeine", headerIterator.next().getName());
+        assertEquals(3, treatmentRegimen.getRows().size());
         Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
@@ -445,17 +344,12 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         RegimenRow secondRow = rowIterator.next();
         assertEquals(getOnlyDate(addDays(now, 2)), secondRow.getDate());
         assertEquals("10.0", secondRow.getDrugs().get("P 500mg"));
-        assertEquals("600.0", secondRow.getDrugs().get("Caffeine"));
+        assertEquals("Error", secondRow.getDrugs().get("Caffeine"));
 
         RegimenRow thirdRow = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 2)), thirdRow.getDate());
-        assertEquals("10.0", thirdRow.getDrugs().get("P 500mg"));
-        assertEquals("Stop", thirdRow.getDrugs().get("Caffeine"));
-
-        RegimenRow fourthRow = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 10)), fourthRow.getDate());
-        assertEquals("Stop", fourthRow.getDrugs().get("P 500mg"));
-        assertEquals(null, fourthRow.getDrugs().get("Caffeine"));
+        assertEquals(getOnlyDate(addDays(now, 10)), thirdRow.getDate());
+        assertEquals("Stop", thirdRow.getDrugs().get("P 500mg"));
+        assertEquals(null, thirdRow.getDrugs().get("Caffeine"));
     }
 
     @Test
@@ -520,23 +414,18 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         Iterator<EncounterTransaction.Concept> headerIterator = treatmentRegimen.getHeaders().iterator();
         assertEquals("P 500mg", headerIterator.next().getName());
         assertEquals("Caffeine", headerIterator.next().getName());
-        assertEquals(4, treatmentRegimen.getRows().size());
+        assertEquals(3, treatmentRegimen.getRows().size());
         Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(now), firstRow.getDate());
-        assertEquals("500.0", firstRow.getDrugs().get("P 500mg"));
+        assertEquals("Error", firstRow.getDrugs().get("P 500mg"));
         assertEquals(null, firstRow.getDrugs().get("Caffeine"));
 
         RegimenRow secondRow = rowIterator.next();
         assertEquals(getOnlyDate(addDays(now, 10)), secondRow.getDate());
         assertEquals("Stop", secondRow.getDrugs().get("P 500mg"));
-        assertEquals("800.0", secondRow.getDrugs().get("Caffeine"));
-
-        RegimenRow secondRow1 = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 10)), secondRow1.getDate());
-        assertEquals("500.0", secondRow1.getDrugs().get("P 500mg"));
-        assertEquals("800.0", secondRow1.getDrugs().get("Caffeine"));
+        assertEquals("Error", secondRow.getDrugs().get("Caffeine"));
 
         RegimenRow thirdRow = rowIterator.next();
         assertEquals(getOnlyDate(addDays(now, 12)), thirdRow.getDate());
@@ -807,7 +696,7 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         assertEquals("Paracetemol", headerIterator.next().getName());
         assertEquals("Ibeprofen", headerIterator.next().getName());
         assertEquals(false, headerIterator.hasNext());
-        assertEquals(4, treatmentRegimen.getRows().size());
+        assertEquals(3, treatmentRegimen.getRows().size());
 
         Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
@@ -819,16 +708,11 @@ public class DrugOrderToTreatmentRegimenMapperTest {
         RegimenRow secondRow = rowIterator.next();
         assertEquals(getOnlyDate(addDays(now, 3)), secondRow.getDate());
         assertEquals("1-2-3", secondRow.getDrugs().get("Ibeprofen"));
-        assertEquals("1-2-3", secondRow.getDrugs().get("Paracetemol"));
+        assertEquals("Error", secondRow.getDrugs().get("Paracetemol"));
 
         RegimenRow thirdRow = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 3)), thirdRow.getDate());
-        assertEquals("1-2-3", thirdRow.getDrugs().get("Ibeprofen"));
-        assertEquals("Stop", thirdRow.getDrugs().get("Paracetemol"));
-
-        RegimenRow stoppedDateRow = rowIterator.next();
-        assertEquals(getOnlyDate(addDays(now, 5)), stoppedDateRow.getDate());
-        assertEquals("Stop", stoppedDateRow.getDrugs().get("Ibeprofen"));
-        assertEquals(null, stoppedDateRow.getDrugs().get("Paracetemol"));
+        assertEquals(getOnlyDate(addDays(now, 5)), thirdRow.getDate());
+        assertEquals("Stop", thirdRow.getDrugs().get("Ibeprofen"));
+        assertEquals(null, thirdRow.getDrugs().get("Paracetemol"));
     }
 }

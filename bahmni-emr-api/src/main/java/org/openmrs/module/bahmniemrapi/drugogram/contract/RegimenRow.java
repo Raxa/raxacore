@@ -24,6 +24,18 @@ public class RegimenRow{
     public RegimenRow() {
     }
 
+    public RegimenRow(Date date) {
+        this.date = date;
+    }
+
+
+    public String getDrugValue(String conceptName) {
+        if(drugs.containsKey(conceptName))
+            return drugs.get(conceptName);
+        else
+            return "";
+    }
+
     public RegimenRow(Date date, Map<String, String> drugs) {
         this.date = date;
         this.drugs = drugs;

@@ -130,28 +130,23 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
         assertNotNull(treatmentRegimen);
         assertEquals(2, treatmentRegimen.getHeaders().size());
-        assertEquals(4, treatmentRegimen.getRows().size());
+        assertEquals(3, treatmentRegimen.getRows().size());
         Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
 
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(stringToDate("2005-09-23 08:00:00")), firstRow.getDate());
-        assertEquals("1000.0", firstRow.getDrugs().get("Ibuprofen"));
+        assertEquals("Error", firstRow.getDrugs().get("Ibuprofen"));
         assertEquals(null, firstRow.getDrugs().get("Crocin"));
 
         RegimenRow secondRow = rowIterator.next();
-        assertEquals(getOnlyDate(stringToDate("2005-09-23 08:00:00")), secondRow.getDate());
-        assertEquals("Stop", secondRow.getDrugs().get("Ibuprofen"));
-        assertEquals(null, secondRow.getDrugs().get("Crocin"));
+        assertEquals(getOnlyDate(stringToDate("2005-09-25 00:00:00.0")), secondRow.getDate());
+        assertEquals(null, secondRow.getDrugs().get("Ibuprofen"));
+        assertEquals("450.0", secondRow.getDrugs().get("Crocin"));
 
         RegimenRow thirdRow = rowIterator.next();
-        assertEquals(getOnlyDate(stringToDate("2005-09-25 00:00:00.0")), thirdRow.getDate());
+        assertEquals(getOnlyDate(stringToDate("2005-09-26 00:00:00.0")), thirdRow.getDate());
         assertEquals(null, thirdRow.getDrugs().get("Ibuprofen"));
-        assertEquals("450.0", thirdRow.getDrugs().get("Crocin"));
-
-        RegimenRow fourthRow = rowIterator.next();
-        assertEquals(getOnlyDate(stringToDate("2005-09-26 00:00:00.0")), fourthRow.getDate());
-        assertEquals(null, fourthRow.getDrugs().get("Ibuprofen"));
-        assertEquals("Stop", fourthRow.getDrugs().get("Crocin"));
+        assertEquals("Stop", thirdRow.getDrugs().get("Crocin"));
     }
 
     @Test
@@ -160,37 +155,33 @@ public class DrugOGramControllerIT extends BaseIntegrationTest {
 
         assertNotNull(treatmentRegimen);
         assertEquals(3, treatmentRegimen.getHeaders().size());
-        assertEquals(5, treatmentRegimen.getRows().size());
+        assertEquals(4, treatmentRegimen.getRows().size());
         Iterator<RegimenRow> rowIterator = treatmentRegimen.getRows().iterator();
         RegimenRow firstRow = rowIterator.next();
         assertEquals(getOnlyDate(stringToDate("2005-09-23 08:00:00")), firstRow.getDate());
-        assertEquals("1000.0", firstRow.getDrugs().get("Ibuprofen"));
+        assertEquals("Error", firstRow.getDrugs().get("Ibuprofen"));
         assertEquals("450.0", firstRow.getDrugs().get("Crocin"));
         assertEquals(null, firstRow.getDrugs().get("Paracetamol"));
 
+
+
         RegimenRow secondRow = rowIterator.next();
-        assertEquals(getOnlyDate(stringToDate("2005-09-23 08:00:00")), secondRow.getDate());
-        assertEquals("Stop", secondRow.getDrugs().get("Ibuprofen"));
+        assertEquals(getOnlyDate(stringToDate("2005-09-24 09:00:00")), secondRow.getDate());
+        assertEquals(null, secondRow.getDrugs().get("Ibuprofen"));
         assertEquals("450.0", secondRow.getDrugs().get("Crocin"));
-        assertEquals(null, secondRow.getDrugs().get("Paracetamol"));
+        assertEquals("40.0", secondRow.getDrugs().get("Paracetamol"));
 
         RegimenRow thirdRow = rowIterator.next();
-        assertEquals(getOnlyDate(stringToDate("2005-09-24 09:00:00")), thirdRow.getDate());
+        assertEquals(getOnlyDate(stringToDate("2005-09-25 00:00:00.0")), thirdRow.getDate());
         assertEquals(null, thirdRow.getDrugs().get("Ibuprofen"));
-        assertEquals("450.0", thirdRow.getDrugs().get("Crocin"));
+        assertEquals("Stop", thirdRow.getDrugs().get("Crocin"));
         assertEquals("40.0", thirdRow.getDrugs().get("Paracetamol"));
 
         RegimenRow fourthRow = rowIterator.next();
-        assertEquals(getOnlyDate(stringToDate("2005-09-25 00:00:00.0")), fourthRow.getDate());
+        assertEquals(getOnlyDate(stringToDate("2005-09-28 00:00:00.0")), fourthRow.getDate());
         assertEquals(null, fourthRow.getDrugs().get("Ibuprofen"));
-        assertEquals("Stop", fourthRow.getDrugs().get("Crocin"));
-        assertEquals("40.0", fourthRow.getDrugs().get("Paracetamol"));
-
-        RegimenRow fifthRow = rowIterator.next();
-        assertEquals(getOnlyDate(stringToDate("2005-09-28 00:00:00.0")), fifthRow.getDate());
-        assertEquals(null, fifthRow.getDrugs().get("Ibuprofen"));
-        assertEquals(null, fifthRow.getDrugs().get("Crocin"));
-        assertEquals("Stop", fifthRow.getDrugs().get("Paracetamol"));
+        assertEquals(null, fourthRow.getDrugs().get("Crocin"));
+        assertEquals("Stop", fourthRow.getDrugs().get("Paracetamol"));
     }
 
     @Test
