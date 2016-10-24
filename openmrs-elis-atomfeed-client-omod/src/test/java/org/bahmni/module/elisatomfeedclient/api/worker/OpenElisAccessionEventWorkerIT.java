@@ -35,6 +35,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -115,14 +116,21 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withTestUuid("7923d0e0-8734-11e3-baa7-0800200c9a66")
                 .withStatus("referred out")
                 .build();
+        String patientUuid = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
+
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530")
-                .withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
-        openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
+                .withPatientUuid(patientUuid).withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
+        String accessionUuid = "6d0af4567-707a-4629-9850-f15206e63ab0";
+        openElisAccession.setAccessionUuid(accessionUuid);
+
+        Event event = new Event("id", "openelis/accession/" + accessionUuid, "title", "feedUri", new Date());
 
         when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
 
-        openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
+        openElisAccessionEventWorker.process(event);
 
+        Context.flushSession();
+        Context.clearSession();
 
         Visit visit = Context.getVisitService().getVisit(2);
         Encounter labEncounter = null;
@@ -135,7 +143,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
         assertEquals(2, encounters.size());
         assertNotNull(labEncounter);
-        Set<Obs> topLevelObs = labEncounter.getAllObs();
+        Set<Obs> topLevelObs = labEncounter.getObsAtTopLevel(false);
         assertEquals(1, topLevelObs.size());
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
@@ -143,6 +151,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         assertEquals(1, resultMembers.size());
         Obs status = resultMembers.iterator().next();
         assertEquals("Ensure the concept is Referred Out", status.getConcept(), Context.getConceptService().getConcept(108));
+        assertTrue(status.getValueBoolean());
     }
 
     @Test

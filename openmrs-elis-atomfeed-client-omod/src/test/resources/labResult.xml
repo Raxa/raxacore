@@ -152,7 +152,7 @@
     <!--test Urea Nitorgen-->
 
 
-    <concept concept_id="108" retired="false" datatype_id="3" class_id="8" is_set="true" creator="1"
+    <concept concept_id="108" retired="false" datatype_id="10" class_id="8" is_set="true" creator="1"
              date_created="2005-01-01 00:00:00.0" uuid="dc8ac8c0-8716-11e3-baa7-0800f00c9a66"/>
     <concept_name concept_name_id="9" concept_id="108" name="REFERRED_OUT" locale="en" creator="1"
                   date_created="2005-01-01 00:00:00.0" voided="false" uuid="ea291cc0-e716-11e3-baa7-0800200c9a66"
