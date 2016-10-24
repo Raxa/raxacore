@@ -3,7 +3,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller.display.controls;
 import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
 import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
-import org.bahmni.module.bahmnicore.web.v1_0.mapper.DrugOrderToTreatmentRegimenMapper;
+import org.bahmni.module.bahmnicore.web.v1_0.mapper.DrugOrderToRegimenMapper;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.test.builder.DrugOrderBuilder;
 import org.junit.Before;
@@ -17,25 +17,17 @@ import org.openmrs.module.bahmniemrapi.drugogram.contract.BaseTableExtension;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 public class DrugOGramControllerTest {
     @Mock
     private BahmniDrugOrderService bahmniDrugOrderService;
     @Mock
-    private DrugOrderToTreatmentRegimenMapper drugOrderToTreatmentRegimenMapper;
+    private DrugOrderToRegimenMapper drugOrderToTreatmentRegimenMapper;
     @Mock
     private BahmniExtensions bahmniExtensions;
     @Mock

@@ -4,7 +4,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.bahmnicore.extensions.BahmniExtensions;
 import org.bahmni.module.bahmnicore.service.BahmniConceptService;
 import org.bahmni.module.bahmnicore.service.BahmniDrugOrderService;
-import org.bahmni.module.bahmnicore.web.v1_0.mapper.DrugOrderToTreatmentRegimenMapper;
+import org.bahmni.module.bahmnicore.web.v1_0.mapper.DrugOrderToRegimenMapper;
 import org.openmrs.Concept;
 import org.openmrs.Order;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.BaseTableExtension;
@@ -27,12 +27,12 @@ import java.util.Set;
 public class DrugOGramController {
 
     private BahmniDrugOrderService bahmniDrugOrderService;
-    private DrugOrderToTreatmentRegimenMapper drugOrderToTreatmentRegimenMapper;
+    private DrugOrderToRegimenMapper drugOrderToTreatmentRegimenMapper;
     private BahmniConceptService bahmniConceptService;
     private BahmniExtensions bahmniExtensions;
 
     @Autowired
-    public DrugOGramController(BahmniDrugOrderService bahmniDrugOrderService, DrugOrderToTreatmentRegimenMapper drugOrderToTreatmentRegimenMapper, BahmniConceptService bahmniConceptService, BahmniExtensions bahmniExtensions) {
+    public DrugOGramController(BahmniDrugOrderService bahmniDrugOrderService, DrugOrderToRegimenMapper drugOrderToTreatmentRegimenMapper, BahmniConceptService bahmniConceptService, BahmniExtensions bahmniExtensions) {
         this.bahmniDrugOrderService = bahmniDrugOrderService;
         this.drugOrderToTreatmentRegimenMapper = drugOrderToTreatmentRegimenMapper;
         this.bahmniConceptService = bahmniConceptService;

@@ -8,6 +8,11 @@ import java.util.Map;
 
 public class RegimenRow{
 
+    private String month;
+    private Date date;
+    private Map<String, String> drugs = new HashMap<>();
+
+
     public static class RegimenComparator implements Comparator<RegimenRow>{
         @Override
         public int compare(RegimenRow o1, RegimenRow o2) {
@@ -16,11 +21,20 @@ public class RegimenRow{
             return o1.drugs.equals(o2.drugs) ? 0 : 1;
         }
     }
-    private String month;
-    private Date date;
-    private Map<String, String> drugs = new HashMap<>();
 
     public RegimenRow() {
+    }
+
+    public RegimenRow(Date date) {
+        this.date = date;
+    }
+
+
+    public String getDrugValue(String conceptName) {
+        if(drugs.containsKey(conceptName))
+            return drugs.get(conceptName);
+        else
+            return "";
     }
 
     public RegimenRow(Date date, Map<String, String> drugs) {
