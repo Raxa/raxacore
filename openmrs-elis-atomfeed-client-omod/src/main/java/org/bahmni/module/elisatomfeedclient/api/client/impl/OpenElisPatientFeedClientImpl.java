@@ -58,7 +58,7 @@ public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements
         } catch (Exception e) {
             try {
                 if (e != null && isUnauthorised(e)) {
-                    getAtomFeedClient();
+                    createAtomFeedClient();
                 }
             } catch (Exception ex) {
                 logger.error("openelisatomfeedclient:failed feed execution " + e, e);
@@ -69,7 +69,8 @@ public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements
 
     private boolean isUnauthorised(Exception e) {
         return ExceptionUtils.getStackTrace(e).contains("HTTP response code: 401")
-                || ExceptionUtils.getStackTrace(e).contains("HTTP response code: 403");
+                || ExceptionUtils.getStackTrace(e).contains("HTTP response code: 403")
+                || ExceptionUtils.getStackTrace(e).contains("User not authorized");
     }
 
 }
