@@ -3550,4 +3550,19 @@
             INSERT INTO `user_role` VALUES (@id, 'SuperAdmin');
         </sql>
     </changeSet>
+    <changeSet id="add-correct-description-for-internal-roles" author="Jaswanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from role where role = 'Bahmni-App-User-Login'
+            </sqlCheck>
+        </preConditions>
+        <comment>Add correct description for internal roles</comment>
+        <sql>
+           update role set description = 'Will give ability to login to the application and used internally, should not be assigned to user directly.' where role = 'Bahmni-App-User-Login';
+           update role set description = 'Will have save privileges used by other Clinical roles and used internally, should not be assigned to user directly.' where role = 'Clinical-App-Save';
+           update role set description = 'Will have common privileges used by other Clinical roles and used internally, should not be assigned to user directly.' where role = 'Clinical-App-Common';
+           update role set description = 'Role if assigned disables two factor authentication for that user and used internally, should not be assigned to user directly.' where role = 'bypass2FA';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
