@@ -12,8 +12,6 @@ public class VideoUrlHandler extends AbstractHandler implements ComplexObsHandle
 
     @Override
     public Obs saveObs(Obs obs) throws APIException {
-        //doing this just to satisfy openmrs obsService.save - it will fail if complex obs does not complex data
-        obs.setComplexData(new ComplexData(obs.getValueComplex(), null));
         return obs;
     }
 
