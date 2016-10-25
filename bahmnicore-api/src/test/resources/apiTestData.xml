@@ -161,6 +161,7 @@
     <patient_identifier date_created="2005-09-23 00:00:00" patient_identifier_id="20" patient_id ="109" identifier="HOS1228" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-0064026c22b8" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-23 00:00:00" patient_identifier_id="21" patient_id ="110" identifier="HOS1229" identifier_type="1"  creator="1"  uuid="434b894d-6f68-41c7-8d65-0064026c22b9" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="22" patient_id="1025" identifier="NAT100010" identifier_type="6"  creator="1"  uuid="7facee27-82c0-4375-ae95-a90lk29ea493" preferred="0" voided="0" />
+    <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="23" patient_id="1024" identifier="GAN00011" identifier_type="1"  creator="1"  uuid="7facee27-82c0-4375-fg95-b90lk29ea493" preferred="0" voided="1" />
 
 
     <visit visit_id="1" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="2" visit_type_id="1" date_stopped="2013-05-08 04:08:16"  location_id="2" creator="1"  uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
