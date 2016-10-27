@@ -3565,4 +3565,16 @@
         </sql>
     </changeSet>
 
+    <changeSet id="add-clincal-app-role-for-program-app-201610261552" author="Kaustav, Hanisha">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="2">
+                select count(*) from role where role in ('Clinical-App','Programs-App')
+            </sqlCheck>
+        </preConditions>
+        <comment>Add Clinical-app role as sub role to Programs-app role</comment>
+        <sql>
+            insert into role_role values('Clinical-App', 'Programs-App');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
