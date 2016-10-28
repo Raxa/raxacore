@@ -21,6 +21,7 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterPro
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.Date;
@@ -71,16 +72,39 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
             String url = document.getImage();
 
             if (document.isNew()) {
-                parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), imageConcept, url, null, encounter));
+                Obs member = newObs(parentObservation.getObsDatetime(), imageConcept, url, null, encounter);
+                setComment(member, document);
+                parentObservation.addGroupMember(member);
             }
             if (document.shouldVoidDocument()) {
                 voidDocumentObservationTree(parentObservation);
-            } else if (document.hasConceptChanged(parentObservation.getConcept().getUuid())) {
-                parentObservation.setConcept(testConcept);
+            } else if (document.hasConceptChanged(parentObservation.getConcept().getUuid()) || hasCommentsChanged(document, parentObservation)) {
+                voidDocumentObservationTree(parentObservation);
+                parentObservation = newObs(parentObservation.getObsDatetime(), testConcept, null, parentObservation.getLocation(), encounter);
+                Obs member = newObs(parentObservation.getObsDatetime(), imageConcept, url, null, encounter);
+                setComment(member, document);
+                parentObservation.addGroupMember(member);
             }
             encounter.addObs(parentObservation);
         }
 
+    }
+
+    private boolean hasCommentsChanged(Document document, Obs parentObs) {
+        if (parentObs.getUuid().equals(document.getObsUuid())) {
+            for (Obs member : parentObs.getGroupMembers()) {
+                if (member.getComment() == null || !member.getComment().equals(document.getComment())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void setComment(Obs observation, Document document) {
+        if(!StringUtils.isEmpty(document.getComment())) {
+            observation.setComment(document.getComment());
+        }
     }
 
     private Obs findOrCreateParentObs(Encounter encounter, Date observationDateTime, Concept testConcept, String obsUuid) {
