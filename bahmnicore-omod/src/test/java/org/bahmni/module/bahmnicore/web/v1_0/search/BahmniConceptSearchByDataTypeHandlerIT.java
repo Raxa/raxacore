@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.web.v1_0.search;
 
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,8 +9,13 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertTrue;
 
 public class BahmniConceptSearchByDataTypeHandlerIT extends BahmniMainResourceControllerTest {
     @Override
@@ -54,9 +58,14 @@ public class BahmniConceptSearchByDataTypeHandlerIT extends BahmniMainResourceCo
 
         Assert.assertEquals(4, concepts.size());
 
-        HashMap bahmniConcept = (HashMap) concepts.get(0);
-        String conceptUuid = (String) bahmniConcept.get("uuid");
-        Assert.assertEquals("89ca642a-dab6-4f20-b712-e12ca4f-5000",conceptUuid);
+        List<String> expectedConceptDisplayNames = Arrays.asList("Temperature-2", "Temperature notes", "Temperature Abnormal", "Temperature");
+
+        Iterator<Map<String,String>> iterator = concepts.iterator();
+
+        while(iterator.hasNext()){
+            String actualConceptDisplayName = iterator.next().get("display").toString();
+            assertTrue(expectedConceptDisplayNames.contains(actualConceptDisplayName));
+        }
     }
 
     @Test
