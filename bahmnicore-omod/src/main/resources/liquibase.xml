@@ -3539,11 +3539,7 @@
     </changeSet>
 
     <changeSet id="bahmni-new-roles-and-privileges" author="Jaswanth, Ravindra">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">
-                select count(*) from role where role = 'Bahmni-App-User-Login'
-            </sqlCheck>
-        </preConditions>
+        <validCheckSum>3:14239025d1eeb1a927e6ab5e0bb85e08</validCheckSum>
         <comment>New roles and privileges for bahmni</comment>
         <sqlFile path="V1_96_NewRolesAndPrivileges.sql"/>
     </changeSet>
@@ -3605,6 +3601,18 @@
            update role set description = 'Will have save privileges used by other Clinical roles and used internally, should not be assigned to user directly.' where role = 'Clinical-App-Save';
            update role set description = 'Will have common privileges used by other Clinical roles and used internally, should not be assigned to user directly.' where role = 'Clinical-App-Common';
            update role set description = 'Role if assigned disables two factor authentication for that user and used internally, should not be assigned to user directly.' where role = 'bypass2FA';
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-clincal-app-role-for-program-app-201610261552" author="Kaustav, Hanisha">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="2">
+                select count(*) from role where role in ('Clinical-App','Programs-App')
+            </sqlCheck>
+        </preConditions>
+        <comment>Add Clinical-app role as sub role to Programs-app role</comment>
+        <sql>
+            insert into role_role values('Clinical-App', 'Programs-App');
         </sql>
     </changeSet>
 

@@ -11,6 +11,7 @@ import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.BaseTableExtension;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.module.bahmniemrapi.pivottable.contract.PivotRow;
 import org.openmrs.module.bahmniemrapi.pivottable.contract.PivotTable;
 import org.openmrs.module.emrapi.encounter.ConceptMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
@@ -23,12 +24,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/observations/flowSheet")
@@ -61,6 +66,7 @@ public class ObsToObsTabularFlowSheetController {
             @RequestParam(value = "numberOfVisits", required = false) Integer numberOfVisits,
             @RequestParam(value = "conceptSet", required = true) String conceptSet,
             @RequestParam(value = "groupByConcept", required = true) String groupByConcept,
+            @RequestParam(value = "orderByConcept", required = false) String orderByConcept,
             @RequestParam(value = "conceptNames", required = false) List<String> conceptNames,
             @RequestParam(value = "initialCount", required = false) Integer initialCount,
             @RequestParam(value = "latestCount", required = false) Integer latestCount,
@@ -94,6 +100,9 @@ public class ObsToObsTabularFlowSheetController {
         PivotTable pivotTable = bahmniObservationsToTabularViewMapper.constructTable(leafConcepts, bahmniObservations, groupByConcept);
         setNormalRangeAndUnits(pivotTable.getHeaders());
 
+        if(orderByConcept != null) {
+            orderPivotTableByGivenConcept(pivotTable, orderByConcept);
+        }
         if(StringUtils.isEmpty(groovyExtension)){
             return pivotTable;
         }
@@ -208,6 +217,59 @@ public class ObsToObsTabularFlowSheetController {
         if (!rootConcept.getSetMembers().contains(childConcept)) {
             logger.error("GroupByConcept: " + groupByConcept + " doesn't belong to the Root concept:  " + conceptSet);
             throw new RuntimeException("GroupByConcept: " + groupByConcept + " doesn't belong to the Root concept:  " + conceptSet);
+        }
+    }
+
+    private void orderPivotTableByGivenConcept(PivotTable pivotTable, String orderByConcept) throws ParseException {
+        TreeMap<Object, List<PivotRow>> orderConceptToPivotRowMap = new TreeMap<>();
+        List<String> allowedDataTypesForOrdering = Arrays.asList("Date", "Numeric", "Coded", "Text");
+        Concept orderConcept = conceptService.getConceptByName(orderByConcept);
+        if(allowedDataTypesForOrdering.contains(orderConcept.getDatatype().getName())) {
+            List<PivotRow> orderedRows = new ArrayList<>();
+            for(PivotRow pivotRow : pivotTable.getRows()) {
+                List<BahmniObservation> bahmniObservations = pivotRow.getColumns().get(orderByConcept);
+                Object value = null;
+                if(CollectionUtils.isEmpty(bahmniObservations)) {
+                    value = getValueForNull(orderConcept.getDatatype().getName());
+                } else {
+                    value = getValue(bahmniObservations.get(0));
+                }
+                if(orderConceptToPivotRowMap.containsKey(value)) {
+                    orderConceptToPivotRowMap.get(value).add(pivotRow);
+                } else {
+                    List<PivotRow> pivotRows = new ArrayList<>();
+                    pivotRows.add(pivotRow);
+                    orderConceptToPivotRowMap.put(value, pivotRows);
+                }
+            }
+            for(Entry<Object, List<PivotRow>> entry : orderConceptToPivotRowMap.entrySet()) {
+                orderedRows.addAll(entry.getValue());
+            }
+            pivotTable.setRows(orderedRows);
+        }
+    }
+
+    private Object getValue(BahmniObservation bahmniObservation) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        if("Date".equals(bahmniObservation.getType())) {
+            return simpleDateFormat.parse(bahmniObservation.getValueAsString());
+        } else if("Coded".equals(bahmniObservation.getType())) {
+            return ((EncounterTransaction.Concept)bahmniObservation.getValue()).getName();
+        } else if("Text".equals(bahmniObservation.getType())) {
+            return bahmniObservation.getValue();
+        } else if("Numeric".equals(bahmniObservation.getType())) {
+            return bahmniObservation.getValue();
+        }
+        return null;
+    }
+
+    private Object getValueForNull(String type) {
+        if ("Date".equals(type)) {
+            return new Date();
+        } else if ("Numeric".equals(type)) {
+            return new Double(0);
+        } else {
+            return "";
         }
     }
 }
