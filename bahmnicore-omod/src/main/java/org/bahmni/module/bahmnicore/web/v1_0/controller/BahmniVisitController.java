@@ -3,8 +3,6 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 import org.bahmni.module.bahmnicore.contract.visit.VisitSummary;
 import org.bahmni.module.bahmnicore.mapper.BahmniVisitSummaryMapper;
 import org.bahmni.module.bahmnicore.service.BahmniVisitService;
-import org.hibernate.Query;
-import org.hibernate.SessionFactory;
 import org.openmrs.Encounter;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
@@ -54,7 +52,7 @@ public class BahmniVisitController extends BaseRestController {
     @ResponseBody
     public VisitSummary endVisitNow(@RequestParam(value = "visitUuid") String visitUuid) {
         Visit visit = endVisit(visitUuid);
-        return bahmniVisitSummaryMapper.map(visit, new ArrayList<>());
+        return bahmniVisitSummaryMapper.map(visit, new ArrayList<Encounter>());
     }
 
     private Visit endVisit(String visitUuid) {
