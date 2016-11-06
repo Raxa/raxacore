@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.bahmni.module.bahmnicore.util.MiscUtils.setUuidsForObservations;
@@ -48,8 +49,9 @@ public class BahmniVisitController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.POST, value = "endVisit")
     @ResponseBody
-    public Visit endVisitNow(@RequestParam(value = "visitUuid") String visitUuid) {
-        return endVisit(visitUuid);
+    public VisitSummary endVisitNow(@RequestParam(value = "visitUuid") String visitUuid) {
+        Visit visit = endVisit(visitUuid);
+        return bahmniVisitSummaryMapper.map(visit, Collections.emptyList());
     }
 
     private Visit endVisit(String visitUuid) {
