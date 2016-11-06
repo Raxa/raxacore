@@ -3,6 +3,8 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 import org.bahmni.module.bahmnicore.contract.visit.VisitSummary;
 import org.bahmni.module.bahmnicore.mapper.BahmniVisitSummaryMapper;
 import org.bahmni.module.bahmnicore.service.BahmniVisitService;
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
 import org.openmrs.Encounter;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,7 +54,7 @@ public class BahmniVisitController extends BaseRestController {
     @ResponseBody
     public VisitSummary endVisitNow(@RequestParam(value = "visitUuid") String visitUuid) {
         Visit visit = endVisit(visitUuid);
-        return bahmniVisitSummaryMapper.map(visit, Collections.emptyList());
+        return bahmniVisitSummaryMapper.map(visit, new ArrayList<>());
     }
 
     private Visit endVisit(String visitUuid) {
