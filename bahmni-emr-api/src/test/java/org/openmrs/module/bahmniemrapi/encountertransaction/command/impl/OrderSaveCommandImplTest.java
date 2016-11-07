@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
-import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.OrderWithUrgency;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +36,7 @@ public class OrderSaveCommandImplTest {
     @Test
     public void shouldSetAutoExpireDateForTestOrders(){
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
-        List<EncounterTransaction.Order> testOrders = Arrays.asList(new EncounterTransaction.Order());
+        List<OrderWithUrgency> testOrders = Arrays.asList(new OrderWithUrgency());
         bahmniEncounterTransaction.setOrders(testOrders);
         when(adminService.getGlobalProperty("bahmni.encountersession.duration")).thenReturn("60");
 
