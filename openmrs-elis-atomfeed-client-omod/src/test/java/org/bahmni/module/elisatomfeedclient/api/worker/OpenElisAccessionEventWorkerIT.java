@@ -35,6 +35,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -115,13 +116,21 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withTestUuid("7923d0e0-8734-11e3-baa7-0800200c9a66")
                 .withStatus("referred out")
                 .build();
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
-        openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
+        String patientUuid = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
+
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530")
+                .withPatientUuid(patientUuid).withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
+        String accessionUuid = "6d0af4567-707a-4629-9850-f15206e63ab0";
+        openElisAccession.setAccessionUuid(accessionUuid);
+
+        Event event = new Event("id", "openelis/accession/" + accessionUuid, "title", "feedUri", new Date());
 
         when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
 
-        openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
+        openElisAccessionEventWorker.process(event);
 
+        Context.flushSession();
+        Context.clearSession();
 
         Visit visit = Context.getVisitService().getVisit(2);
         Encounter labEncounter = null;
@@ -134,7 +143,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
         assertEquals(2, encounters.size());
         assertNotNull(labEncounter);
-        Set<Obs> topLevelObs = labEncounter.getAllObs();
+        Set<Obs> topLevelObs = labEncounter.getObsAtTopLevel(false);
         assertEquals(1, topLevelObs.size());
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
@@ -142,6 +151,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         assertEquals(1, resultMembers.size());
         Obs status = resultMembers.iterator().next();
         assertEquals("Ensure the concept is Referred Out", status.getConcept(), Context.getConceptService().getConcept(108));
+        assertTrue(status.getValueBoolean());
     }
 
     @Test
@@ -155,7 +165,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withDateTime("2014-01-30T11:50:18+0530")
                 .withResultType("N")
                 .build();
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530")
+                .withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
         openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
 
         when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
@@ -201,7 +212,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withUploadedFileName("8834dedb-dc15-4afe-a491-ea3ca4150bce_sample.jpeg")
                 .build();
 
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530")
+                .withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
         openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
 
         when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
@@ -258,7 +270,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withUploadedFileName("8834dedb-dc15-4afe-a491-ea3ca4150bce_sample.jpeg")
                 .build();
 
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530")
+                .withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
         openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
 
         when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
@@ -332,7 +345,9 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withResultType("N")
                 .build();
 
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2))).withDateTime("2014-01-30T11:50:18+0530").build();
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder()
+                .withTestDetails(new HashSet<>(Arrays.asList(test1, test2)))
+                .withDateTime("2014-01-30T11:50:18+0530").build();
         openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
 
         when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
@@ -401,7 +416,9 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withResultType("N")
                 .build();
 
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(test1, test2))).withDateTime("2014-01-30T11:50:18+0530").build();
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder()
+                .withTestDetails(new HashSet<>(Arrays.asList(test1, test2)))
+                .withDateTime("2014-01-30T11:50:18+0530").build();
         openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
 
         when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
@@ -446,10 +463,15 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         final String nitroUreaConceptUuid = "7923d0e0-8734-11e3-baa7-0800200c9a66";
         final String accessionUuid = "6d0af4567-707a-4629-9850-f15206e63ab0";
         final String documentConceptUuid = "a5909c8e-332e-464c-a0d7-ca36828672d6";
+        String patientUuid = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
 
-        OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
+        Visit visit = Context.getVisitService().getVisit(2);
+        int encounterBeforeSize = visit.getEncounters().size();
+
+
+        OpenElisTestDetail initialTestResult = new OpenElisTestDetailBuilder()
                 .withTestUuid(nitroUreaConceptUuid)
-                .withResult("10.5")
+                .withResult("10")
                 .withProviderUuid("331c6bf8-7846-11e3-a96a-09xD371c1b75")
                 .withMinNormal("10")
                 .withMaxNormal("20.2")
@@ -458,15 +480,14 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withResultType("N")
                 .withUploadedFileName("8834dedb-dc15-4afe-a491-ea3ca4150bce_sample.jpeg")
                 .build();
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
-        openElisAccession.setAccessionUuid(accessionUuid);
+        OpenElisAccession initialAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530")
+                .withPatientUuid(patientUuid).withTestDetails(new HashSet<>(Arrays.asList(initialTestResult))).build();
+        initialAccession.setAccessionUuid(accessionUuid);
 
-        when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
-
-        openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
+        Event event = new Event("id", "openelis/accession/" + accessionUuid, "title", "feedUri", new Date());
 
         // on update of value new openElisAccession response
-        test1 = new OpenElisTestDetailBuilder()
+        OpenElisTestDetail updatedTest = new OpenElisTestDetailBuilder()
                 .withTestUuid(nitroUreaConceptUuid)
                 .withResult("20")
                 .withProviderUuid("331c6bf8-7846-11e3-a96a-09xD371c1b75")
@@ -477,32 +498,38 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withResultType("N")
                 .withUploadedFileName("8834dedb-dc15-4afe-a491-ea3ca4150bce_sample1.jpeg")
                 .build();
-        openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
-        openElisAccession.setAccessionUuid(accessionUuid);
+        OpenElisAccession updatedAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530")
+                .withPatientUuid(patientUuid).withTestDetails(new HashSet<>(Arrays.asList(updatedTest))).build();
+        updatedAccession.setAccessionUuid(accessionUuid);
 
-        when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
+        when(httpClient.get(properties.getOpenElisUri() + event.getContent(), OpenElisAccession.class))
+                .thenReturn(initialAccession)
+                .thenReturn(updatedAccession);
+        openElisAccessionEventWorker.process(event); //first time
+        Context.flushSession();
+        Context.clearSession();
 
-        openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
+        openElisAccessionEventWorker.process(event);// second time
+        Context.flushSession();
+        Context.clearSession();
 
-        Visit visit = Context.getVisitService().getVisit(2);
-        Encounter labEncounter = null;
+        visit = Context.getVisitService().getVisit(2);
         Set<Encounter> encounters = visit.getEncounters();
-        for (Encounter encounter : encounters) {
-            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
-                labEncounter = encounter;
-            }
-        }
+        Encounter labEncounter = encounters.stream()
+                .filter(encounter -> encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT))
+                .findFirst().get();
 
-        assertEquals(2, encounters.size());
+        assertEquals(encounterBeforeSize+1, encounters.size());
         assertNotNull(labEncounter);
+        final Set<Obs> obsAtTopLevel = labEncounter.getObsAtTopLevel(true);
+        assertEquals(2, obsAtTopLevel.size());
         final Set<Obs> allObs = labEncounter.getAllObs(true);
-        assertEquals(2, allObs.size());
+        assertEquals(12, allObs.size());
 
         ArrayList<Obs> voidedObservations = getVoidedObservations(allObs);
-        assertEquals(1, voidedObservations.size());
+        assertEquals(6, voidedObservations.size());
 
-
-        Set<Obs> nonVoidedObs = labEncounter.getAllObs(false);
+        Set<Obs> nonVoidedObs = labEncounter.getObsAtTopLevel(false);
         assertEquals(1, nonVoidedObs.size());
 
         Obs nitroTestResultObs = getObsByConceptUuid(nonVoidedObs, nitroUreaConceptUuid);
@@ -521,10 +548,14 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldUpdateResultForPanelWithMultipleTests() throws Exception {
-
         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
         String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
+        String esrConceptUuid = "a04c36be-3f90-11e3-968c-0800271c1b75";
         String providerUuid = "331c6bf8-7846-11e3-a96a-09xD371c1b75";
+        String accessionUuid = "6d0af4567-707a-4629-9850-f15206e63ab0";
+        String patientUuid = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
+
+
         OpenElisTestDetail hbTest = new OpenElisTestDetailBuilder()
                 .withPanelUuid(panelConceptUuid)
                 .withTestUuid(haemoglobinConceptUuid)
@@ -537,36 +568,15 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withResultType("N")
                 .build();
 
-        String esrConceptUuid = "a04c36be-3f90-11e3-968c-0800271c1b75";
         OpenElisTestDetail esrTest = new OpenElisTestDetailBuilder()
                 .withPanelUuid(panelConceptUuid)
                 .withTestUuid(esrConceptUuid)
                 .build();
 
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(hbTest, esrTest))).withDateTime("2014-01-30T11:50:18+0530").build();
-        openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
-
-        when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
-
-        openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
-
-        Visit visit = Context.getVisitService().getVisit(2);
-        Encounter labEncounter = null;
-        Set<Encounter> encounters = visit.getEncounters();
-        for (Encounter encounter : encounters) {
-            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
-                labEncounter = encounter;
-            }
-        }
-
-        assertEquals(2, encounters.size());
-        assertNotNull(labEncounter);
-        Set<Obs> obs = labEncounter.getAllObs();
-        assertEquals(1, obs.size());
-        Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
-        assertNotNull(panelResultObs);
-        Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
-        assertEquals(1, panel1ResultMembers.size()); //only one test has results
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder()
+                .withTestDetails(new HashSet<>(Arrays.asList(hbTest, esrTest))).withDateTime("2014-01-30T11:50:18+0530")
+                .withPatientUuid(patientUuid).build();
+        openElisAccession.setAccessionUuid(accessionUuid);
 
 
         OpenElisTestDetail hbTestUpdated = new OpenElisTestDetailBuilder()
@@ -593,10 +603,37 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withResultType("N")
                 .build();
 
-        openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(hbTestUpdated, esrTestUpdated))).withDateTime("2014-01-30T11:50:18+0530").build();
-        openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
-        when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
-        openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
+        OpenElisAccession openElisAccessionUpdated = new OpenElisAccessionBuilder()
+                .withTestDetails(new HashSet<>(Arrays.asList(hbTestUpdated, esrTestUpdated)))
+                .withPatientUuid(patientUuid).withDateTime("2014-01-30T11:50:18+0530").build();
+        openElisAccessionUpdated.setAccessionUuid(accessionUuid);
+
+        when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class))
+                .thenReturn(openElisAccession) //when called first time
+                 .thenReturn(openElisAccessionUpdated); //when called second time
+
+        openElisAccessionEventWorker.process(event); //first time
+
+        Visit visit = Context.getVisitService().getVisit(2);
+        Encounter labEncounter = null;
+        Set<Encounter> encounters = visit.getEncounters();
+        for (Encounter encounter : encounters) {
+            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
+                labEncounter = encounter;
+            }
+        }
+
+        assertEquals(2, encounters.size());
+        assertNotNull(labEncounter);
+        Set<Obs> obs = labEncounter.getAllObs();
+        assertEquals(1, obs.size());
+        Obs panelResultObs = getObsByConceptUuid(obs, panelConceptUuid);
+        assertNotNull(panelResultObs);
+        Set<Obs> panel1ResultMembers = panelResultObs.getGroupMembers();
+        assertEquals(1, panel1ResultMembers.size()); //only one test has results
+
+
+        openElisAccessionEventWorker.process(event); //second time
 
         visit = Context.getVisitService().getVisit(2);
         labEncounter = null;
@@ -647,11 +684,15 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withTestUuid(esrConceptUuid)
                 .build();
 
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withTestDetails(new HashSet<>(Arrays.asList(hbTest, esrTest))).withDateTime("2014-01-30T11:50:18+0530").withPatientUuid("75e04d42-3ca8-11e3-bf2b-0800271c1b75").build();
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder()
+                .withTestDetails(new HashSet<>(Arrays.asList(hbTest, esrTest)))
+                .withDateTime("2014-01-30T11:50:18+0530")
+                .withPatientUuid("75e04d42-3ca8-11e3-bf2b-0800271c1b75").build();
         String accessionUuid = "6d0af4567-707a-4629-9850-f15206e63ab0";
         openElisAccession.setAccessionUuid(accessionUuid);
 
         Event firstEvent = stubHttpClientToGetOpenElisAccession(accessionUuid, openElisAccession);
+
         openElisAccessionEventWorker.process(firstEvent);
 
         Visit visit = Context.getVisitService().getVisit(2);
@@ -741,11 +782,11 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldNotVoidObsIfTimeDidntChange() throws Exception {
-
-
-        OpenElisTestDetail test1 = new OpenElisTestDetailBuilder()
+        String patientUuid = "75e04d42-3ca8-11e3-bf2b-0800271c1b75";
+        int beforeEncounterSize = Context.getVisitService().getVisit(2).getEncounters().size();
+        OpenElisTestDetail initialTestResult = new OpenElisTestDetailBuilder()
                 .withTestUuid("7923d0e0-8734-11e3-baa7-0800200c9a66")
-                .withResult("10.5")
+                .withResult("10")
                 .withProviderUuid("331c6bf8-7846-11e3-a96a-09xD371c1b75")
                 .withMinNormal("10")
                 .withMaxNormal("20.2")
@@ -753,50 +794,48 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withDateTime("2014-01-30T11:50:18+0530")
                 .withResultType("N")
                 .build();
-        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530").withTestDetails(new HashSet<>(Arrays.asList(test1))).build();
-        openElisAccession.setAccessionUuid("6d0af4567-707a-4629-9850-f15206e63ab0");
+        OpenElisAccession openElisAccession = new OpenElisAccessionBuilder().withDateTime("2014-01-30T11:50:18+0530")
+                .withPatientUuid(patientUuid).withTestDetails(new HashSet<>(Arrays.asList(initialTestResult))).build();
+        String accessionUuid = "6d0af4567-707a-4629-9850-f15206e63ab0";
+        openElisAccession.setAccessionUuid(accessionUuid);
 
-        when(httpClient.get(openElisUrl + event.getContent(), OpenElisAccession.class)).thenReturn(openElisAccession);
-
-        openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
+        //first time
+        Event event = stubHttpClientToGetOpenElisAccession(accessionUuid, openElisAccession);
+        openElisAccessionEventWorker.process(event);
+        Context.flushSession();
+        Context.clearSession();
 
         Visit visit = Context.getVisitService().getVisit(2);
-        Encounter labEncounter = null;
         Set<Encounter> encounters = visit.getEncounters();
-        for (Encounter encounter : encounters) {
-            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
-                labEncounter = encounter;
-            }
-        }
+        Encounter labEncounter = encounters.stream()
+                .filter(encounter -> encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT))
+                .findFirst().get();
 
-        assertEquals(2, encounters.size());
+        assertEquals(beforeEncounterSize+1, encounters.size());
         assertNotNull(labEncounter);
         Set<Obs> obs = labEncounter.getAllObs();
-        assertEquals(1, obs.size());
+        assertEquals(5, obs.size());
 
-        openElisAccessionEventWorker.associateTestResultsToOrder(openElisAccession);
+        //second time
+        openElisAccessionEventWorker.process(event);
+        Context.flushSession();
+        Context.clearSession();
         visit = Context.getVisitService().getVisit(2);
-        labEncounter = null;
         encounters = visit.getEncounters();
-        for (Encounter encounter : encounters) {
-            if (encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT)) {
-                labEncounter = encounter;
-            }
-        }
+        labEncounter = encounters.stream()
+                .filter(encounter -> encounter.getEncounterType().getName().equals(ENCOUNTER_TYPE_LAB_RESULT))
+                .findFirst().get();
 
-        assertEquals(2, encounters.size());
+        assertEquals(beforeEncounterSize+1, encounters.size());
         assertNotNull(labEncounter);
         obs = labEncounter.getAllObs(true);
         assertEquals(0, getVoidedObservations(obs).size());
-        assertEquals(1, obs.size());
+        assertEquals(5, obs.size());
     }
 
     @Test
     public void shouldCreateOrderEncounterAndAssociateResultsAndLabNotesForNewAccession() throws Exception {
-
-
         EncounterService encounterService = Context.getEncounterService();
-
         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
         String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
         String accessionUuid = "6xfe4567-707a-4629-9850-f15206e9b0eX";
@@ -885,10 +924,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
     @Test
     public void shouldUpdateLabNotesForAccession() throws Exception {
         EncounterService encounterService = Context.getEncounterService();
-
         String accessionUuid = "6g0bf6767-707a-4329-9850-f15206e63ab0";
         String patientUuidWithAccessionNotes = "86e04d42-3ca8-11e3-bf2b-0x7009861b97";
-
         String panelConceptUuid = "cfc5056c-3f8e-11e3-968c-0800271c1b75";
         String haemoglobinConceptUuid = "7f7379ba-3ca8-11e3-bf2b-0800271c1b75";
 
@@ -904,12 +941,13 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
                 .withResultType("N")
                 .build();
 
+        String providerUuid = "aa1c6bf8-7846-11e3-a96a-09xD371c1b75";
         OpenElisAccession openElisAccession = new OpenElisAccessionBuilder()
                 .withDateTime("2014-01-30T11:50:18+0530")
                 .withTestDetails(new HashSet<>(Arrays.asList(test1)))
                 .withPatientUuid(patientUuidWithAccessionNotes)
-                .withAccessionNotes(new OpenElisAccessionNote("Note1", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"),
-                        new OpenElisAccessionNote("Note2", "aa1c6bf8-7846-11e3-a96a-09xD371c1b75", "2014-01-30T11:50:18+0530"))
+                .withAccessionNotes(new OpenElisAccessionNote("Note1", providerUuid, "2014-01-30T11:50:18+0530"),
+                        new OpenElisAccessionNote("Note2", providerUuid, "2014-01-30T11:50:18+0530"))
                 .withLabLocationUuid("be69741b-29e9-49a1-adc9-2a726e6610e4")
                 .build();
         openElisAccession.setAccessionUuid(accessionUuid);
@@ -928,10 +966,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldMatchLabNotesForAccessionWithDefaultProvider() throws Exception {
-
-
         EncounterService encounterService = Context.getEncounterService();
-
         String accessionUuid = "6g0bf6767-707a-4329-9850-f15206e63ab0";
         String patientUuidWithAccessionNotes = "86e04d42-3ca8-11e3-bf2b-0x7009861b97";
 
@@ -1032,7 +1067,6 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
 
     @Test
     public void shouldCreateOrderEncounterAndAssociateResultsForNewAccessionWhenTheVisitToOrderEncounterIsClosed() throws Exception {
-
 
         EncounterService encounterService = Context.getEncounterService();
 
@@ -1135,14 +1169,8 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
     }
 
     private Obs getObsByConceptUuid(Set<Obs> panel1ResultMembers, String conceptUuid) {
-        Obs testResultObs = null;
-        for (Obs testObs : panel1ResultMembers) {
-            if (testObs.getConcept().getUuid().equals(conceptUuid)) {
-                testResultObs = testObs;
-                break;
-            }
-        }
-        return testResultObs;
+        return panel1ResultMembers.stream().filter(obs -> obs.getConcept().getUuid().equals(conceptUuid))
+                .findFirst().get();
     }
 
     private List<Encounter> findEncountersForProvider(List<Encounter> labEncounters, String providerUuid) {

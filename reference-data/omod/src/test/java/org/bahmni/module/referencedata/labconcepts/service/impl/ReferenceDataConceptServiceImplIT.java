@@ -63,7 +63,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
 
         Concept concept = referenceDataConceptService.saveConcept(conceptSet);
 
-        assertTrue(concept.isSet());
+        assertTrue(concept.getSet());
         assertEquals(uniqueName, concept.getFullySpecifiedName(Context.getLocale()).getName());
         assertEquals(displayName, concept.getShortNames().iterator().next().getName());
         assertEquals("Finding", concept.getConceptClass().getName());
@@ -99,6 +99,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
         String displayName = "displayName";
         conceptSet.setDisplayName(displayName);
         conceptSet.setClassName("Finding");
+        conceptSet.setDescription("concept set");
         List<String> children = new ArrayList<>();
         children.add("Child1");
         children.add("Child2");
@@ -149,7 +150,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
         conceptSet.setChildren(children);
         Concept concept = referenceDataConceptService.saveConcept(conceptSet);
 
-        assertTrue(concept.isSet());
+        assertTrue(concept.getSet());
         assertEquals(uniqueName, concept.getName(Context.getLocale()).getName());
         assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
         assertEquals("Finding", concept.getConceptClass().getName());
@@ -179,7 +180,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
         conceptSet.setChildren(children);
         Concept concept = referenceDataConceptService.saveConcept(conceptSet);
 
-        assertTrue(concept.isSet());
+        assertTrue(concept.getSet());
         assertEquals(uniqueName, concept.getName(Context.getLocale()).getName());
         assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
         assertEquals("Finding", concept.getConceptClass().getName());
@@ -256,6 +257,8 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
         concept.setClassName("Finding");
         concept.setDataType("Numeric");
         concept.setUnits("unit");
+        concept.setDescription("description");
+
         assertEquals(2, conceptService.getConceptByUuid("5d2d4cb7-mm3b-0037-70f7-0dmimmm22222").getNames().size());
         Concept savedConcept = referenceDataConceptService.saveConcept(concept);
 
@@ -283,6 +286,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
         concept.setUnits("unit");
         concept.setHiNormal("99");
         concept.setLowNormal("10");
+        concept.setDescription("existing numeric concept");
         Concept savedConcept = referenceDataConceptService.saveConcept(concept);
 
         assertEquals(uniqueName, savedConcept.getName(Context.getLocale()).getName());
@@ -308,6 +312,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
         concept.setUnits("unit");
         concept.setHiNormal("99");
         concept.setLowNormal("10");
+        concept.setDescription("description");
         Concept existingConcept = conceptService.getConceptByUuid(concept.getUuid());
         assertNotEquals(ConceptDatatype.N_A_UUID, existingConcept.getDatatype().getUuid());
 
@@ -324,6 +329,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
         String displayName = "NewShortName";
         concept.setDisplayName(displayName);
         concept.setClassName("Finding");
+        concept.setDescription("description");
         concept.setDataType("Coded");
         Concept existingConcept = conceptService.getConceptByName("Existing Concept with obs");
         assertEquals(1, existingConcept.getNames().size());
@@ -342,6 +348,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
         conceptSet.setUniqueName(uniqueName);
         String displayName = "NewSName";
         conceptSet.setDisplayName(displayName);
+        conceptSet.setDescription("description");
         conceptSet.setClassName("Finding");
         List<String> children = new ArrayList<>();
 
@@ -352,7 +359,7 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
         assertEquals(1, existingConceptSet.getSetMembers().size());
         Concept concept = referenceDataConceptService.saveConcept(conceptSet);
 
-        assertTrue(concept.isSet());
+        assertTrue(concept.getSet());
         assertEquals(uniqueName, concept.getName(Context.getLocale()).getName());
         assertEquals(displayName, concept.getShortestName(Context.getLocale(), false).getName());
         assertEquals("Finding", concept.getConceptClass().getName());
@@ -371,6 +378,8 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
         concept.setDisplayName(displayName);
         concept.setClassName("Finding");
         concept.setDataType("Coded");
+        concept.setDescription("description");
+
         List<String> answers = new ArrayList<>();
 
         answers.add("Answer1");
@@ -393,10 +402,12 @@ public class ReferenceDataConceptServiceImplIT extends BaseIntegrationTest {
         org.bahmni.module.referencedata.labconcepts.contract.Concept concept = new org.bahmni.module.referencedata.labconcepts.contract.Concept();
         concept.setUuid("kf2d4cb7-t3tb-oo37-70f7-0dmimmm22222");
         concept.setClassName("Finding");
+        concept.setDescription("some description");
         concept.setDataType("Numeric");
         concept.setUnits("unit");
         concept.setHiNormal("99");
         concept.setLowNormal("10");
+
         Concept existingConcept = conceptService.getConceptByUuid("kf2d4cb7-t3tb-oo37-70f7-0dmimmm22222");
         assertNotEquals(ConceptDatatype.NUMERIC_UUID, existingConcept.getDatatype().getUuid());
         Concept savedConcept = referenceDataConceptService.saveConcept(concept);

@@ -36,7 +36,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -64,7 +63,7 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>serialization.xstream-api</artifactId>
+            <artifactId>serialization.xstream-api-2.0</artifactId>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
@@ -126,15 +125,8 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>webservices.rest-omod</artifactId>
-            <version>${openMRSWebServicesVersion}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
             <artifactId>episodes-api</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${episodes.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -184,6 +176,10 @@
             <artifactId>addresshierarchy-omod</artifactId>
             <version>${addressHierarchyVersion}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>legacyui-omod</artifactId>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>

@@ -16,7 +16,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttr
 import java.util.Collection;
 import java.util.List;
 
-@SubResource(parent = BahmniProgramEnrollmentResource.class, path = "attribute", supportedClass = PatientProgramAttribute.class, supportedOpenmrsVersions = {"1.12.*","2.*"})
+@SubResource(parent = BahmniProgramEnrollmentResource.class, path = "attribute", supportedClass = PatientProgramAttribute.class, supportedOpenmrsVersions = {"1.12.*","2.0.*"})
 public class PatientProgramAttributeResource  extends BaseAttributeCrudResource1_9<PatientProgramAttribute, BahmniPatientProgram, BahmniProgramEnrollmentResource> {
 
 

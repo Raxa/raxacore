@@ -109,7 +109,8 @@ public class AccessionHelper {
         return encounter;
     }
 
-    public Encounter addOrDiscontinueOrderDifferences(OpenElisAccession openElisAccession, AccessionDiff diff, Encounter previousEncounter) {
+    public Encounter addOrDiscontinueOrderDifferences(OpenElisAccession openElisAccession, AccessionDiff diff,
+                                                      Encounter previousEncounter) {
         if (diff.getAddedTestDetails().size() > 0) {
             Set<String> addedOrders = groupOrders(diff.getAddedTestDetails());
             Set<Order> newOrders = createOrders(openElisAccession, addedOrders, previousEncounter.getPatient());
@@ -160,7 +161,9 @@ public class AccessionHelper {
         List<Order> newOrdersForDiscontinue = new ArrayList<>();
         for (String removedOrder : removedOrders) {
             for (Order order : previousEncounter.getOrders()) {
-                if (!order.getAction().equals(Order.Action.DISCONTINUE) && order.isActive() && removedOrder.equals(order.getConcept().getUuid())) {
+                if (!order.getAction().equals(Order.Action.DISCONTINUE)
+                        && order.isActive()
+                        && removedOrder.equals(order.getConcept().getUuid())) {
                     Order newOrder = order.cloneForDiscontinuing();
                     newOrder.setOrderer(order.getOrderer());
                     newOrdersForDiscontinue.add(newOrder);

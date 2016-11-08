@@ -217,6 +217,7 @@ public class AccessionHelperTest {
         Concept concept = new Concept();
         concept.setUuid(conceptUuid);
         order.setConcept(concept);
+        order.setDateActivated(new Date());
         return order;
     }
 

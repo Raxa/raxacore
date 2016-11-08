@@ -139,6 +139,8 @@
     <concept_name concept_id="4141" name="First Child" locale="en" creator="1" date_created="2005-01-01 00:00:00.0"
                   concept_name_id="4141" voided="false" uuid="ctrc4cb7-hfgb-4007-lkcc-otbb94022222"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_description concept_description_id="4141" concept_id="4141" date_created="2013-12-04 11:36:42"
+                    creator="1" locale="en_GB" description="some description"/>
 
     <concept_set concept_id="4141" concept_set="414" concept_set_id="919" creator="1" sort_weight="2"
                  date_created="2005-01-01 00:00:00.0"/>

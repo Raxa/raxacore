@@ -17,7 +17,6 @@ import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisMetadata;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -50,7 +49,7 @@ public class BahmniDiagnosisSaveCommandImplTest {
     }
 
     @Test
-    public void shouldSaveWithExistingObs () {
+    public void shouldSaveWithExistingObs() {
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
         bahmniDiagnosisRequest.setEncounterUuid("encounterUuid");
@@ -68,7 +67,7 @@ public class BahmniDiagnosisSaveCommandImplTest {
     }
 
     @Test
-    public void shouldSaveNewObs () {
+    public void shouldSaveNewObs() {
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
         bahmniDiagnosisRequest.setEncounterUuid("encounterUuid");
@@ -77,17 +76,19 @@ public class BahmniDiagnosisSaveCommandImplTest {
         bahmniEncounterTransaction.setBahmniDiagnoses(Collections.singletonList(bahmniDiagnosisRequest));
 
         EncounterTransaction updatedEncounterTransaction = new EncounterTransaction("visitUUid", "encounterUuid");
-        updatedEncounterTransaction.setDiagnoses(Collections.singletonList(new EncounterTransaction.Diagnosis().setFreeTextAnswer("new Obs").setExistingObs("existingUuid")));
+        updatedEncounterTransaction.setDiagnoses(Collections.singletonList(new EncounterTransaction.Diagnosis()
+                .setFreeTextAnswer("new Obs").setExistingObs("existingUuid")));
 
         Encounter currentEncounter = setUpData();
-        EncounterTransaction transaction = bahmniDiagnosisSaveCommand.save(bahmniEncounterTransaction, currentEncounter, updatedEncounterTransaction);
+        EncounterTransaction transaction = bahmniDiagnosisSaveCommand.save(bahmniEncounterTransaction, currentEncounter,
+                updatedEncounterTransaction);
         verify(encounterService).saveEncounter(currentEncounter);
         assertEquals(transaction, updatedEncounterTransaction);
 
     }
 
     @Test(expected = BahmniEmrAPIException.class)
-    public void shouldThrowErrorForNotFindingAMatchingObservation () {
+    public void shouldThrowErrorForNotFindingAMatchingObservation() {
         BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();
         BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
         bahmniDiagnosisRequest.setEncounterUuid("encounterUuid");

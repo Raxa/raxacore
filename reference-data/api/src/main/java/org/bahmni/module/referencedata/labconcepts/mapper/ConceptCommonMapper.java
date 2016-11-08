@@ -16,21 +16,21 @@ import static org.bahmni.module.referencedata.labconcepts.mapper.ConceptExtensio
 public class ConceptCommonMapper {
 
     public org.openmrs.Concept map(ConceptCommon conceptCommon, ConceptMetaData conceptMetaData) {
-        org.openmrs.Concept concept = new org.openmrs.Concept();
+        org.openmrs.Concept openmrsConcept = new org.openmrs.Concept();
         if (conceptMetaData.getExistingConcept() != null) {
-            concept = conceptMetaData.getExistingConcept();
+            openmrsConcept = conceptMetaData.getExistingConcept();
         }
         String displayName = conceptCommon.getDisplayName();
-        concept = addConceptName(concept, getConceptName(conceptCommon.getUniqueName(), ConceptNameType.FULLY_SPECIFIED, conceptMetaData.getLocale()));
+        openmrsConcept = addConceptName(openmrsConcept, getConceptName(conceptCommon.getUniqueName(), ConceptNameType.FULLY_SPECIFIED, conceptMetaData.getLocale()));
         if (displayName != null) {
-            concept = addConceptName(concept, getConceptName(conceptCommon.getDisplayName(), ConceptNameType.SHORT, conceptMetaData.getLocale()));
+            openmrsConcept = addConceptName(openmrsConcept, getConceptName(conceptCommon.getDisplayName(), ConceptNameType.SHORT, conceptMetaData.getLocale()));
         }
 
         if (!StringUtils.isBlank(conceptCommon.getDescription())) {
-            setDescriptionWithLocale(conceptCommon.getDescription(), conceptMetaData.getLocale(), concept);
+            setDescriptionWithLocale(conceptCommon.getDescription(), conceptMetaData.getLocale(), openmrsConcept);
         }
-        concept.setConceptClass(conceptMetaData.getConceptClass());
-        return concept;
+        openmrsConcept.setConceptClass(conceptMetaData.getConceptClass());
+        return openmrsConcept;
     }
 
 

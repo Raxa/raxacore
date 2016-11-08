@@ -54,29 +54,32 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
         String json = "{" +
                 "\"patientUuid\":\"" + patientUUID + "\"," +
                 "\"visitTypeUuid\":\"" + visitTypeUUID + "\"," +
-                "\"visitStartDate\":\"2019-12-31T18:30:00.000Z\"," +
-                "\"visitEndDate\":\"2019-12-31T18:30:00.000Z\"," +
+                "\"visitStartDate\":\"2015-12-31T18:30:00.000Z\"," +
+                "\"visitEndDate\":\"2015-12-31T18:30:00.000Z\"," +
                 "\"encounterTypeUuid\":\"" + encounterTypeUUID + "\"," +
                 "\"locationUuid\":\"" + locationUuid + "\"," +
-                "\"encounterDateTime\":\"2019-12-31T18:30:00.000Z\"," +
+                "\"encounterDateTime\":\"2015-12-31T18:30:00.000Z\"," +
                 "\"providerUuid\":\"331c6bf8-7846-11e3-a96a-0800271c1b75\"," +
                 "\"documents\": [{\"testUuid\": \"" + testUUID + "\", \"image\": \"" + image + "\", \"format\": \".jpeg\"}]" +
                 "}";
 
 
-        VisitDocumentResponse visitDocumentResponse = deserialize(handle(newPostRequest("/rest/v1/bahmnicore/visitDocument", json)), VisitDocumentResponse.class);
-        Visit visit = visitService.getVisitByUuid(visitDocumentResponse.getVisitUuid());
+        VisitDocumentResponse visitDocumentResponse = deserialize(handle(
+                newPostRequest("/rest/v1/bahmnicore/visitDocument", json)), VisitDocumentResponse.class);
+        Context.flushSession();
+        Context.clearSession();
 
+        Visit visit = visitService.getVisitByUuid(visitDocumentResponse.getVisitUuid());
         assertNotNull(visit);
         assertEquals(1, visit.getEncounters().size());
         assertEquals(visit.getLocation().getUuid(), "l38923e5-9fhb-4f20-866b-0ece24561525");
         Encounter encounter = new ArrayList<>(visit.getEncounters()).get(0);
-        assertEquals(1, encounter.getAllObs().size());
+        assertEquals(2, encounter.getAllObs().size());
         assertEquals(1, encounter.getEncounterProviders().size());
         EncounterProvider encounterProvider = encounter.getEncounterProviders().iterator().next();
         assertEquals("Jane Doe", encounterProvider.getProvider().getName());
         assertEquals("Unknown", encounterProvider.getEncounterRole().getName());
-        Obs parentObs = new ArrayList<>(encounter.getAllObs()).get(0);
+        Obs parentObs = new ArrayList<>(encounter.getObsAtTopLevel(false)).get(0);
         assertEquals(1, parentObs.getGroupMembers().size());
         assertObservationWithImage(parentObs, testUUID, imageConceptUuid);
     }
@@ -198,7 +201,9 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
                 "\"documents\": [{\"testUuid\": \"" + testUUID + "\", \"image\": \"" + image + "\", \"format\": \".jpeg\"}]" +
                 "}";
 
-        VisitDocumentResponse documentAddedResponse = deserialize(handle(newPostRequest("/rest/v1/bahmnicore/visitDocument", addDocumentJSON)), VisitDocumentResponse.class);
+        VisitDocumentResponse documentAddedResponse = deserialize(
+                handle(newPostRequest("/rest/v1/bahmnicore/visitDocument", addDocumentJSON)),
+                VisitDocumentResponse.class);
         Visit addedVisit = visitService.getVisitByUuid(documentAddedResponse.getVisitUuid());
         String obsUuid = addedVisit.getEncounters().iterator().next().getAllObs().iterator().next().getUuid();
 
@@ -215,7 +220,9 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
                 "\"documents\": [{\"testUuid\": \"" + testUUID + "\", \"image\": \"" + image + "\", \"format\": \".jpeg\", \"voided\" : true, \"obsUuid\" : \""+obsUuid+"\"}]" +
                 "}";
 
-        VisitDocumentResponse response = deserialize(handle(newPostRequest("/rest/v1/bahmnicore/visitDocument", deleteDocumentJSON)), VisitDocumentResponse.class);
+        VisitDocumentResponse response = deserialize(
+                handle(newPostRequest("/rest/v1/bahmnicore/visitDocument", deleteDocumentJSON)),
+                VisitDocumentResponse.class);
         Visit updatedVisit = visitService.getVisitByUuid(response.getVisitUuid());
 
         assertEquals(1, updatedVisit.getEncounters().size());

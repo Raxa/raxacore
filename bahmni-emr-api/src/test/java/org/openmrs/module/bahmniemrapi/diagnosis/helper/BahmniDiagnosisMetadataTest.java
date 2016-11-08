@@ -13,6 +13,8 @@ import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.builder.ConceptBuilder;
+import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.emrapi.EmrApiProperties;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
@@ -20,6 +22,8 @@ import org.openmrs.util.LocaleUtility;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -46,41 +50,36 @@ public class BahmniDiagnosisMetadataTest {
     }
 
     @Test
-    public void shouldUpdateComments() {
-        String comments = "High fever and condition implies Pneumonia";
-        BahmniDiagnosisRequest bahmniDiagnosis = new BahmniDiagnosisRequest();
-        bahmniDiagnosis.setComments(comments);
+    public void shouldNotAddStatusAsGroupMemberIfStatusIsNotSpecified() throws Exception {
 
-        Encounter encounter = new Encounter(){{
-            this.addObs(new Obs(){{
-                setUuid("Diagnosis-Uuid");
-                addGroupMember(new Obs());
-            }});
-        }};
-
-        EncounterTransaction.Diagnosis diagnosis = new EncounterTransaction.Diagnosis(){{
-            this.setExistingObs("Diagnosis-Uuid");
-        }};
-
-        when(conceptService.getConceptByName(BAHMNI_INITIAL_DIAGNOSIS)).thenReturn(new Concept());
+        BahmniDiagnosisMetadata bahmniDiagnosisMetadata = new BahmniDiagnosisMetadata(obsService, conceptService,properties, null);
         when(conceptService.getConceptByName(BAHMNI_DIAGNOSIS_STATUS)).thenReturn(new Concept());
-        when(conceptService.getConceptByName(BAHMNI_DIAGNOSIS_REVISED)).thenReturn(new Concept() {{
-            this.setDatatype(new ConceptDatatype() {{
-                setUuid(BOOLEAN_UUID);
-            }});
-        }});
+        Obs diagnosisObs = new Obs();
+        diagnosisObs.setGroupMembers(Collections.emptySet());
+        BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
+        bahmniDiagnosis.setDiagnosisStatusConcept(null);
 
-        when(conceptService.getTrueConcept()).thenReturn(new Concept());
-        when(conceptService.getFalseConcept()).thenReturn(new Concept());
+        bahmniDiagnosisMetadata.updateStatusConcept(diagnosisObs, bahmniDiagnosis);
 
+        assertEquals(0, diagnosisObs.getGroupMembers().size());
 
-        BahmniDiagnosisMetadata diagnosisHelper = new BahmniDiagnosisMetadata(obsService, conceptService,properties, null);
+    }
 
-        PowerMockito.mockStatic(Context.class);
-        when(Context.getConceptService()).thenReturn(conceptService);
+    @Test
+    public void shouldAddStatusAsGroupMemberIfStatusIsSpecified() throws Exception {
+        BahmniDiagnosisMetadata bahmniDiagnosisMetadata = new BahmniDiagnosisMetadata(obsService, conceptService,properties, null);
+        when(conceptService.getConceptByName(BAHMNI_DIAGNOSIS_STATUS)).thenReturn(new Concept());
+        Obs diagnosisObs = new Obs();
+        diagnosisObs.setGroupMembers(Collections.emptySet());
+        BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
+        Concept inactiveStatus = new ConceptBuilder().withName("Inactive").build();
+        when(conceptService.getConcept("Inactive")).thenReturn(inactiveStatus);
+        EncounterTransaction.Concept etInactiveStatusConcept = new EncounterTransaction.Concept();
+        etInactiveStatusConcept.setName("Inactive");
+        bahmniDiagnosis.setDiagnosisStatusConcept(etInactiveStatusConcept);
 
-        diagnosisHelper.update(bahmniDiagnosis, diagnosis, encounter);
+        bahmniDiagnosisMetadata.updateStatusConcept(diagnosisObs, bahmniDiagnosis);
 
-        assertEquals(encounter.getAllObs().iterator().next().getComment(), comments);
+        assertEquals(1, diagnosisObs.getGroupMembers().size());
     }
 }

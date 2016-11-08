@@ -45,7 +45,7 @@ public class ConceptOperationControllersIT extends BaseIntegrationTest {
         assertEquals(sampleConcept.getUuid(), sampleData.getId());
         assertEquals(sampleConcept.getName(Context.getLocale()).getName(), sampleData.getShortName());
         assertEquals(sampleConcept.getName(Context.getLocale()).getName(), sampleData.getName());
-        assertNotEquals(sampleConcept.isRetired(), sampleData.getIsActive());
+        assertNotEquals(sampleConcept.getRetired(), sampleData.getIsActive());
     }
 
 
@@ -57,7 +57,7 @@ public class ConceptOperationControllersIT extends BaseIntegrationTest {
         assertEquals(departmentConcept.getUuid(), departmentResponse.getId());
         assertEquals(departmentConcept.getName(Context.getLocale()).getName(), departmentResponse.getDescription());
         assertEquals(departmentConcept.getName(Context.getLocale()).getName(), departmentResponse.getName());
-        assertNotEquals(departmentConcept.isRetired(), departmentResponse.getIsActive());
+        assertNotEquals(departmentConcept.getRetired(), departmentResponse.getIsActive());
     }
 
     @Test
@@ -68,7 +68,7 @@ public class ConceptOperationControllersIT extends BaseIntegrationTest {
         assertEquals(testConcept.getUuid(), testResponse.getId());
         assertEquals(testConcept.getName(Context.getLocale()).getName(), testResponse.getDescription());
         assertEquals(testConcept.getName(Context.getLocale()).getName(), testResponse.getName());
-        assertNotEquals(testConcept.isRetired(), testResponse.getIsActive());
+        assertNotEquals(testConcept.getRetired(), testResponse.getIsActive());
         assertEquals("Numeric", testResponse.getResultType());
     }
 
@@ -79,6 +79,6 @@ public class ConceptOperationControllersIT extends BaseIntegrationTest {
         RadiologyTest testResponse = deserialize(response, RadiologyTest.class);
         assertEquals(radiologyTestConcept.getUuid(), testResponse.getId());
         assertEquals(radiologyTestConcept.getName(Context.getLocale()).getName(), testResponse.getName());
-        assertNotEquals(radiologyTestConcept.isRetired(), testResponse.getIsActive());
+        assertNotEquals(radiologyTestConcept.getRetired(), testResponse.getIsActive());
     }
 }

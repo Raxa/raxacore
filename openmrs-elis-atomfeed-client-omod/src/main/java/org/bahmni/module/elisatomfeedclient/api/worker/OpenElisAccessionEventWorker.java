@@ -258,7 +258,8 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 }
 
                 if (isResultUpdated) {
-                    resultEncounterForTest = encounterHelper.findOrInitializeEncounter(resultVisit, testProvider, labResultEncounterType, orderEncounter.getEncounterDatetime());
+                    resultEncounterForTest = encounterHelper.findOrInitializeEncounter(resultVisit, testProvider,
+                            labResultEncounterType, orderEncounter.getEncounterDatetime());
                     resultEncounterForTest.addObs(resultObsHelper.createNewObsForOrder(testDetail, testOrder, resultEncounterForTest));
                     resultVisit.addEncounter(resultEncounterForTest);
                     updatedEncounters.add(resultEncounterForTest);

@@ -1,12 +1,12 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.matcher;
 
-import org.openmrs.Encounter;
-import org.openmrs.EncounterType;
-import org.openmrs.Provider;
-import org.openmrs.Visit;
+import org.openmrs.*;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
+import java.util.Set;
 
 
 public class EncounterProviderMatcher implements BaseEncounterMatcher {
@@ -33,10 +33,18 @@ public class EncounterProviderMatcher implements BaseEncounterMatcher {
     }
 
     private boolean isSameProvider(Provider provider, Encounter encounter) {
-        if (provider == null || encounter.getProvider() == null) {
+        final Map<EncounterRole, Set<Provider>> providersByRoles = encounter.getProvidersByRoles();
+        if (provider == null || providersByRoles.isEmpty()) {
             return false;
         }
 
-        return encounter.getProvider().getId().equals(provider.getPerson().getId());
+        for (Set<Provider> providers : providersByRoles.values()) {
+            for (Provider encounterProvider : providers) {
+                if(encounterProvider.getPerson().getId().equals(provider.getPerson().getId())){
+                    return  true;
+                }
+            }
+        }
+        return false;
     }
 }

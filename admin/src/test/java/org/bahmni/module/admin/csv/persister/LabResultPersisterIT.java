@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openmrs.CareSetting;
 import org.openmrs.Encounter;
+import org.openmrs.EncounterProvider;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
@@ -96,7 +97,8 @@ public class LabResultPersisterIT extends BaseIntegrationTest {
         assertEquals(1, encounter.getEncounterProviders().size());
         assertEquals(LabResultPersister.LAB_RESULT_ENCOUNTER_TYPE, encounter.getEncounterType().getName());
         assertEquals(TestUtil.createDateTime("2014-10-11"), encounter.getEncounterDatetime());
-        assertEquals(userContext.getAuthenticatedUser().getId(), encounter.getProvider().getId());
+        final EncounterProvider provider = encounter.getEncounterProviders().iterator().next();
+        assertEquals(userContext.getAuthenticatedUser().getId(), provider.getProvider().getPerson().getId());
         // Assert tests orders data
         assertEquals(1, encounter.getOrders().size());
         Order order = encounter.getOrders().iterator().next();

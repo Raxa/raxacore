@@ -16,11 +16,10 @@
         <MODULE_VERSION>${project.version}</MODULE_VERSION>
         <MODULE_PACKAGE>${project.groupId}.${MODULE_ID}</MODULE_PACKAGE>
 
-        <reportingModuleVersion>0.9.1</reportingModuleVersion>
         <gem.home>${basedir}/.rubygems</gem.home>
         <gem.path>${basedir}/.rubygems</gem.path>
         <uiframeworkVersion>3.3.1</uiframeworkVersion>
-        <bedManagementVersion>5.5-SNAPSHOT</bedManagementVersion>
+        <bedManagementVersion>5.6-SNAPSHOT</bedManagementVersion>
     </properties>
 
     <dependencies>
@@ -44,7 +43,7 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>episodes-api</artifactId>
-            <version>0.1-SNAPSHOT</version>
+            <version>${episodes.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -168,20 +167,13 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>serialization.xstream-api</artifactId>
+            <artifactId>serialization.xstream-api-2.0</artifactId>
             <version>${serializationXstreamModuleVersion}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>webservices.rest-omod-common</artifactId>
-            <version>${openMRSWebServicesVersion}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>webservices.rest-omod</artifactId>
             <version>${openMRSWebServicesVersion}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
@@ -212,7 +204,6 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>idgen-api</artifactId>
-            <version>2.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -262,6 +253,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>legacyui-omod</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.bahmni.module</groupId>
             <artifactId>bahmnicore-ui</artifactId>
             <version>${project.version}</version>
@@ -279,13 +274,13 @@
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>bacteriology-omod</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${bacteriology.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>bacteriology-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${bacteriology.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -309,7 +304,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -322,11 +316,11 @@
             <artifactId>jackson-core-asl</artifactId>
             <version>1.9.13</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.hamcrest</groupId>-->
-            <!--<artifactId>hamcrest-core</artifactId>-->
-            <!--<version>1.3</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

@@ -77,7 +77,7 @@ public class ObsBuilder {
     private void setValueCodedName(Obs anObs) {
         Concept concept = anObs.getConcept();
         if (concept != null)
-            anObs.setValueCodedName(concept.getName(LocaleUtility.getDefaultLocale()));
+            anObs.setValueCodedName(concept.getName());
     }
 
     public ObsBuilder withDatetime(Date datetime) {

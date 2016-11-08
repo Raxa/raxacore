@@ -18,7 +18,7 @@ import org.openmrs.module.webservices.rest.web.response.ResponseException;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.BaseAttributeTypeCrudResource1_9;
 import org.openmrs.util.OpenmrsUtil;
 
-@Resource(name = RestConstants.VERSION_1 + "/programattributetype", supportedClass = ProgramAttributeType.class, supportedOpenmrsVersions = {"1.12.*","2.*"})
+@Resource(name = RestConstants.VERSION_1 + "/programattributetype", supportedClass = ProgramAttributeType.class, supportedOpenmrsVersions = {"1.12.*","2.0.*"})
 public class ProgramAttributeTypeResource extends BaseAttributeTypeCrudResource1_9<ProgramAttributeType> {
 
     @Override

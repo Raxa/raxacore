@@ -15,7 +15,7 @@ package org.openmrs.module.bahmnimapping.dao.impl;
 
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
+import org.hibernate.Session;
 import org.openmrs.EncounterType;
 import org.openmrs.module.bahmnimapping.dao.LocationEncounterTypeMapDao;
 import org.springframework.beans.factory.annotation.Autowired;

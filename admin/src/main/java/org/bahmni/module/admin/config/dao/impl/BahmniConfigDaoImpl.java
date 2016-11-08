@@ -5,7 +5,7 @@ import org.bahmni.module.admin.config.dao.BahmniConfigDao;
 import org.bahmni.module.admin.config.model.BahmniConfig;
 import org.hibernate.Query;
 import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

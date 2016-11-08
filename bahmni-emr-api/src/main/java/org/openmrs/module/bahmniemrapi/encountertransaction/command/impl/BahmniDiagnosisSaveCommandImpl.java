@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
 @Component
 public class BahmniDiagnosisSaveCommandImpl implements EncounterDataPostSaveCommand {
     private ObsService obsService;
@@ -29,25 +30,30 @@ public class BahmniDiagnosisSaveCommandImpl implements EncounterDataPostSaveComm
     }
 
     @Override
-    public EncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Encounter currentEncounter, EncounterTransaction updatedEncounterTransaction) {
-        if(bahmniEncounterTransaction.getBahmniDiagnoses().size() == 0){
+    public EncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction,
+                                     Encounter currentEncounter, EncounterTransaction updatedEncounterTransaction) {
+        if (bahmniEncounterTransaction.getBahmniDiagnoses().size() == 0) {
             return updatedEncounterTransaction;
         }
-        return saveDiagnoses(bahmniEncounterTransaction,currentEncounter,updatedEncounterTransaction);
+        return saveDiagnoses(bahmniEncounterTransaction, currentEncounter, updatedEncounterTransaction);
     }
 
-    private EncounterTransaction saveDiagnoses(BahmniEncounterTransaction bahmniEncounterTransaction, Encounter currentEncounter,EncounterTransaction updatedEncounterTransaction) {
+    private EncounterTransaction saveDiagnoses(BahmniEncounterTransaction bahmniEncounterTransaction,
+                                               Encounter currentEncounter,
+                                               EncounterTransaction updatedEncounterTransaction) {
         //Update the diagnosis information with Meta Data managed by Bahmni
         for (BahmniDiagnosisRequest bahmniDiagnosis : bahmniEncounterTransaction.getBahmniDiagnoses()) {
-            EncounterTransaction.Diagnosis diagnosis = getMatchingEncounterTransactionDiagnosis(bahmniDiagnosis, updatedEncounterTransaction.getDiagnoses());
-            bahmniDiagnosisMetadata.update(bahmniDiagnosis, diagnosis, currentEncounter);
+            EncounterTransaction.Diagnosis etDiagnosis = getMatchingUpdatedETDiagnosis(bahmniDiagnosis,
+                    updatedEncounterTransaction.getDiagnoses());
+            bahmniDiagnosisMetadata.update(bahmniDiagnosis, etDiagnosis, currentEncounter);
         }
         encounterService.saveEncounter(currentEncounter);
         markPreviousDiagnosisAsRevised(bahmniEncounterTransaction, currentEncounter);
         return updatedEncounterTransaction;
     }
 
-    private void markPreviousDiagnosisAsRevised(BahmniEncounterTransaction bahmniEncounterTransaction, Encounter currentEncounter) {
+    private void markPreviousDiagnosisAsRevised(BahmniEncounterTransaction bahmniEncounterTransaction,
+                                                Encounter currentEncounter) {
         for (BahmniDiagnosisRequest bahmniDiagnosis : bahmniEncounterTransaction.getBahmniDiagnoses()) {
             String previousDiagnosisObs = bahmniDiagnosis.getPreviousObs();
             if (previousDiagnosisObs == null) continue;
@@ -61,7 +67,8 @@ public class BahmniDiagnosisSaveCommandImpl implements EncounterDataPostSaveComm
         }
     }
 
-    private EncounterTransaction.Diagnosis getMatchingEncounterTransactionDiagnosis(BahmniDiagnosis bahmniDiagnosis, List<EncounterTransaction.Diagnosis> encounterTransactionDiagnoses) {
+    private EncounterTransaction.Diagnosis getMatchingUpdatedETDiagnosis(BahmniDiagnosis bahmniDiagnosis,
+                                                                         List<EncounterTransaction.Diagnosis> encounterTransactionDiagnoses) {
         for (EncounterTransaction.Diagnosis diagnosis : encounterTransactionDiagnoses) {
             boolean isMatching = bahmniDiagnosis.getExistingObs() != null ?
                     bahmniDiagnosis.isDiagnosisWithSameExistingObs(diagnosis) : bahmniDiagnosis.isSame(diagnosis);

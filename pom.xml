@@ -24,18 +24,27 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <openMRSVersion>1.12.0</openMRSVersion>
-        <openMRSWebServicesVersion>2.14</openMRSWebServicesVersion>
+        <openMRSVersion>2.0.1-SNAPSHOT</openMRSVersion>
+        <openMRSWebServicesVersion>2.16</openMRSWebServicesVersion>
         <springVersion>3.2.7.RELEASE</springVersion>
         <atomfeed.version>1.9.3</atomfeed.version>
-        <addressHierarchyVersion>2.8</addressHierarchyVersion>
-        <reportingModuleVersion>0.9.1</reportingModuleVersion>
-        <calculationModuleVersion>1.1</calculationModuleVersion>
-        <serializationXstreamModuleVersion>0.2.7</serializationXstreamModuleVersion>
-        <emrapi-omod.version>1.17</emrapi-omod.version>
-        <openmrsAtomfeedVersion>2.5.4</openmrsAtomfeedVersion>
+        <addressHierarchyVersion>2.9</addressHierarchyVersion>
+        <reportingModuleVersion>0.10.4</reportingModuleVersion>
+        <calculationModuleVersion>1.3-SNAPSHOT</calculationModuleVersion>
+        <serializationXstreamModuleVersion>0.2.12</serializationXstreamModuleVersion>
+        <emrapi-omod.version>1.19-SNAPSHOT</emrapi-omod.version>
+        <openmrsAtomfeedVersion>2.5.5-SNAPSHOT</openmrsAtomfeedVersion>
         <lombokVersion>1.16.0</lombokVersion>
-        <argLine>-Xmx1024m -XX:MaxPermSize=1024m</argLine>
+        <idgenVersion>4.4-SNAPSHOT</idgenVersion>
+        <legacyuiVersion>1.0</legacyuiVersion>
+        <episodes.version>1.0-SNAPSHOT</episodes.version>
+        <!--test dependencies-->
+        <junitVersion>4.12</junitVersion>
+        <powerMockVersion>1.6.5</powerMockVersion>
+        <hamcrestVersion>1.3</hamcrestVersion>
+        <mockitoVersion>1.10.19</mockitoVersion>
+        <argLine>-Xmx1024m</argLine>
+        <bacteriology.version>1.1-SNAPSHOT</bacteriology.version>
     </properties>
 
     <distributionManagement>
@@ -86,24 +95,6 @@
                 <groupId>commons-httpclient</groupId>
                 <artifactId>commons-httpclient</artifactId>
                 <version>3.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${springVersion}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test</artifactId>
-                <version>${springVersion}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-test-mvc</artifactId>
-                <version>1.0.0.M1</version>
-                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.openmrs.api</groupId>
@@ -204,6 +195,12 @@
                 <version>${reportingModuleVersion}</version>
                 <scope>test</scope>
             </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.openmrs.module</groupId>-->
+                <!--<artifactId>reportingcompatibility-api</artifactId>-->
+                <!--<version>${reportingCompatiblityModuleVersion}</version>-->
+                <!--<scope>test</scope>-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>calculation-api</artifactId>
@@ -212,7 +209,7 @@
             </dependency>
             <dependency>
                 <groupId>org.openmrs.module</groupId>
-                <artifactId>serialization.xstream-api</artifactId>
+                <artifactId>serialization.xstream-api-2.0</artifactId>
                 <version>${serializationXstreamModuleVersion}</version>
                 <scope>test</scope>
             </dependency>
@@ -226,7 +223,7 @@
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>idgen-api</artifactId>
-                <version>2.6</version>
+                <version>${idgenVersion}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -302,7 +299,73 @@
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>legacyui-omod</artifactId>
+                <version>${legacyuiVersion}</version>
+                <type>jar</type>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>3.0.1</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <!--test libraries-->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junitVersion}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-core</artifactId>
+                    </exclusion>
+                </exclusions>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-module-junit4</artifactId>
+                <version>${powerMockVersion}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-all</artifactId>
+                <version>${hamcrestVersion}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-api-mockito</artifactId>
+                <version>${powerMockVersion}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+                <version>${mockitoVersion}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.hamcrest</groupId>
+                        <artifactId>hamcrest-core</artifactId>
+                    </exclusion>
+                </exclusions>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockitoVersion}</version>
+                <scope>test</scope>
+            </dependency>
+
         </dependencies>
+
 
     </dependencyManagement>
     
@@ -321,8 +384,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <target>1.7</target>
-                        <source>1.7</source>
+                        <target>1.8</target>
+                        <source>1.8</source>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -397,7 +460,7 @@
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
-                                    <argLine>-Xmx512m -XX:MaxPermSize=512m</argLine>
+                                    <argLine>-Xmx512m</argLine>
                                     <includes>
                                         <include>**/*IT.java</include>
                                     </includes>

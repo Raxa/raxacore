@@ -32,8 +32,8 @@ import org.bahmni.module.admin.csv.persister.RelationshipPersister;
 import org.bahmni.module.common.db.JDBCConnectionProvider;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.engine.SessionImplementor;
-import org.hibernate.impl.SessionImpl;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.internal.SessionImpl;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RestConstants;
@@ -298,7 +298,7 @@ public class AdminImportController extends BaseRestController {
             if (session.get() == null || !session.get().isOpen())
                 session.set(sessionFactory.openSession());
 
-            return session.get().connection();
+            return ((SessionImpl)session.get()).connection();
         }
 
         @Override

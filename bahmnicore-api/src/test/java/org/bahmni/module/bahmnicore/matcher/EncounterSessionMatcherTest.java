@@ -156,7 +156,6 @@ public class EncounterSessionMatcherTest {
     @Test
     public void shouldReturnEncounterOfDefaultTypeIfEncounterParameterDoesNotHaveEncounterTypeAndLocationIsNotSet(){
         visit.addEncounter(encounter);
-        when(encounter.getProvider()).thenReturn(person);
         EncounterType defaultEncounterType = new EncounterType();
         when(encounter.getEncounterType()).thenReturn(defaultEncounterType);
         when(encounter.getDateChanged()).thenReturn(new Date());

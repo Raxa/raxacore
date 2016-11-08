@@ -50,20 +50,21 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         Patient patient = Context.getPatientService().getPatientByUuid(visitDocumentRequest.getPatientUuid());
 
         Visit visit = findOrCreateVisit(visitDocumentRequest, patient);
-
         Date encounterDate = (visit.getStopDatetime() != null) ? visit.getStartDatetime() : new Date();
-
-        Encounter encounter = findOrCreateEncounter(visit, visitDocumentRequest.getEncounterTypeUuid(), encounterDate, patient, visitDocumentRequest.getProviderUuid(), visitDocumentRequest.getLocationUuid());
+        Encounter encounter = findOrCreateEncounter(visit, visitDocumentRequest.getEncounterTypeUuid(), encounterDate,
+                patient, visitDocumentRequest.getProviderUuid(), visitDocumentRequest.getLocationUuid());
         visit.addEncounter(encounter);
 
         updateEncounter(encounter, encounterDate, visitDocumentRequest.getDocuments());
 
-        return Context.getVisitService().saveVisit(visit);
+        Context.getEncounterService().saveEncounter(encounter);
+        Context.getVisitService().saveVisit(visit);
+
+        return visit;
     }
 
     private void updateEncounter(Encounter encounter, Date encounterDateTime, List<Document> documents) {
         Concept imageConcept = conceptService.getConceptByName(DOCUMENT_OBS_GROUP_CONCEPT_NAME);
-        LinkedHashSet<Obs> observations = new LinkedHashSet<>(encounter.getAllObs());
 
         for (Document document : documents) {
             Concept testConcept = conceptService.getConceptByUuid(document.getTestUuid());
@@ -76,14 +77,11 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
             if (document.shouldVoidDocument()) {
                 voidDocumentObservationTree(parentObservation);
             } else if (document.hasConceptChanged(parentObservation.getConcept().getUuid())) {
-                voidDocumentObservationTree(parentObservation);
-                parentObservation = newObs(parentObservation.getObsDatetime(), testConcept, null, parentObservation.getLocation(), encounter);
-                parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), imageConcept, url, null, encounter));
+                parentObservation.setConcept(testConcept);
             }
-            observations.add(parentObservation);
+            encounter.addObs(parentObservation);
         }
 
-        encounter.setObs(observations);
     }
 
     private Obs findOrCreateParentObs(Encounter encounter, Date observationDateTime, Concept testConcept, String obsUuid) {
@@ -129,7 +127,9 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         Provider provider = Context.getProviderService().getProviderByUuid(providerUuid);
 
         EncounterParameters encounterParameters = EncounterParameters.instance();
-        encounterParameters.setEncounterType(encounterType).setProviders(new HashSet<>(Collections.singletonList(provider))).setLocation(location);
+        encounterParameters.setEncounterType(encounterType)
+                .setProviders(new HashSet<>(Collections.singletonList(provider)))
+                .setLocation(location);
 
         Encounter existingEncounter = new EncounterProviderMatcher().findEncounter(visit, encounterParameters);
         if (existingEncounter != null) {
