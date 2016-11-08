@@ -114,7 +114,6 @@
                 <ref bean="bahmniObservationSaveCommandImpl"/>
                 <ref bean="bahmniVisitAttributeSaveCommandImpl"/>
                 <ref bean="episodeEncounterCreateCommand"/>
-                <ref bean="orderPostSaveCommandImpl"/>
             </list>
         </constructor-arg>
         <constructor-arg>

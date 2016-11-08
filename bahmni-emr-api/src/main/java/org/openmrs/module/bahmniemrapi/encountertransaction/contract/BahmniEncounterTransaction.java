@@ -24,7 +24,6 @@ public class BahmniEncounterTransaction {
     private EncounterTransaction encounterTransaction = new EncounterTransaction();
 
     private List<BahmniDiagnosisRequest> bahmniDiagnoses = new ArrayList<>();
-    private List<OrderWithUrgency> orders = new ArrayList<>();
     private Collection<BahmniObservation> observations = new TreeSet<>();
     private List<AccessionNote> accessionNotes;
     private String encounterType;
@@ -167,19 +166,9 @@ public class BahmniEncounterTransaction {
         return encounterTransaction.getOrders();
     }
 
-    public List<OrderWithUrgency> getOrdersWithUrgency() {
-        return orders;
-    }
 
-    public void setOrders(List<OrderWithUrgency> orders) {
-        this.orders = orders;
-        List<EncounterTransaction.Order> ordersList = new ArrayList<>();
-        ordersList.addAll(orders);
-        encounterTransaction.setOrders(ordersList);
-    }
-
-    public void setOrdersWithUrgency(List<OrderWithUrgency> ordersWithUrgency) {
-        this.orders = ordersWithUrgency;
+    public void setOrders(List<EncounterTransaction.Order> orders) {
+        encounterTransaction.setOrders(orders);
     }
 
 
