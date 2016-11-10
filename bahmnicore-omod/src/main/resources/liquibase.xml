@@ -3616,4 +3616,17 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-201611101133" author="Gaurav">
+
+        <comment>Updating Referred out obs to have value coded as true </comment>
+        <sql>
+            UPDATE obs
+            SET value_coded = (SELECT concept_id
+            FROM concept_name
+            WHERE name = 'True' AND concept_name_type = 'FULLY_SPECIFIED')
+            WHERE concept_id IN (SELECT concept_id
+            FROM concept_name
+            WHERE name = 'REFERRED_OUT' AND concept_name_type = 'FULLY_SPECIFIED') AND value_coded IS NULL;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
