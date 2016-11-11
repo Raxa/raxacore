@@ -27,7 +27,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
-import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.openmrs.util.OpenmrsUtil;
 
 import java.io.File;
@@ -55,7 +55,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     private ConceptService conceptService;
     private AccessionHelper accessionHelper;
     private ProviderService providerService;
-    private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
+    private BahmniVisitAttributeService bahmniVisitAttributeSaveCommand;
 
     //TODO : add the new service classes to bean initialization
     public OpenElisAccessionEventWorker(ElisAtomFeedProperties atomFeedProperties,
@@ -63,7 +63,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                                         EncounterService encounterService,
                                         ConceptService conceptService,
                                         AccessionHelper accessionHelper,
-                                        ProviderService providerService, BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand) {
+                                        ProviderService providerService, BahmniVisitAttributeService bahmniVisitAttributeSaveCommand) {
 
         this.atomFeedProperties = atomFeedProperties;
         this.httpClient = httpClient;

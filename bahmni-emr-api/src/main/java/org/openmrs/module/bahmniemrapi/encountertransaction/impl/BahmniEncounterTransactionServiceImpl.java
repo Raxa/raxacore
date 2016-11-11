@@ -17,6 +17,7 @@ import org.openmrs.api.impl.BaseOpenmrsService;
 import org.openmrs.module.bahmniemrapi.BahmniEmrAPIException;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPostSaveCommand;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPreSaveCommand;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterSearchParameters;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
@@ -38,12 +39,13 @@ import java.util.*;
 
 @Transactional
 public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService implements BahmniEncounterTransactionService {
+
+    private BahmniVisitAttributeService bahmniVisitAttributeService;
     private EncounterService encounterService;
     private EmrEncounterService emrEncounterService;
     private EncounterTransactionMapper encounterTransactionMapper;
     private EncounterTypeIdentifier encounterTypeIdentifier;
     private List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands;
-    private List<EncounterDataPostSaveCommand> encounterDataPostDeleteCommands;
     private BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper;
     private VisitService visitService;
     private PatientService patientService;
@@ -58,21 +60,20 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
                                                  EncounterTransactionMapper encounterTransactionMapper,
                                                  EncounterTypeIdentifier encounterTypeIdentifier,
                                                  List<EncounterDataPostSaveCommand> encounterDataPostSaveCommands,
-                                                 List<EncounterDataPostSaveCommand> encounterDataPostDeleteCommands,
                                                  BahmniEncounterTransactionMapper bahmniEncounterTransactionMapper,
                                                  VisitService visitService,
                                                  PatientService patientService,
                                                  LocationService locationService,
                                                  ProviderService providerService,
                                                  BaseEncounterMatcher encounterSessionMatcher,
-                                                 BahmniVisitLocationService bahmniVisitLocationService) {
+                                                 BahmniVisitLocationService bahmniVisitLocationService,
+                                                 BahmniVisitAttributeService bahmniVisitAttributeService) {
 
         this.encounterService = encounterService;
         this.emrEncounterService = emrEncounterService;
         this.encounterTransactionMapper = encounterTransactionMapper;
         this.encounterTypeIdentifier = encounterTypeIdentifier;
         this.encounterDataPostSaveCommands = encounterDataPostSaveCommands;
-        this.encounterDataPostDeleteCommands = encounterDataPostDeleteCommands;
         this.bahmniEncounterTransactionMapper = bahmniEncounterTransactionMapper;
         this.visitService = visitService;
         this.patientService = patientService;
@@ -80,6 +81,7 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
         this.providerService = providerService;
         this.encounterSessionMatcher = encounterSessionMatcher;
         this.bahmniVisitLocationService = bahmniVisitLocationService;
+        this.bahmniVisitAttributeService = bahmniVisitAttributeService;
     }
 
     @Override
@@ -128,6 +130,7 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
         for (EncounterDataPostSaveCommand saveCommand : encounterDataPostSaveCommands) {
             updatedEncounterTransaction = saveCommand.save(bahmniEncounterTransaction, currentEncounter, updatedEncounterTransaction);
         }
+        bahmniVisitAttributeService.save(currentEncounter);
         return bahmniEncounterTransactionMapper.map(updatedEncounterTransaction, includeAll);
     }
 
@@ -229,9 +232,7 @@ public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService im
     public void delete(BahmniEncounterTransaction bahmniEncounterTransaction) {
         Encounter encounter = encounterService.getEncounterByUuid(bahmniEncounterTransaction.getEncounterUuid());
         encounterService.voidEncounter(encounter, bahmniEncounterTransaction.getReason());
-        for (EncounterDataPostSaveCommand saveCommand : encounterDataPostDeleteCommands) {
-            saveCommand.save(bahmniEncounterTransaction, encounter, null);
-        }
+        bahmniVisitAttributeService.save(encounter);
     }
 
     private void setEncounterType(BahmniEncounterTransaction bahmniEncounterTransaction) {

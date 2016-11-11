@@ -20,7 +20,7 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.UserContext;
-import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
 import org.openmrs.module.bahmniemrapi.laborder.mapper.LabOrderResultMapper;
@@ -54,7 +54,7 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
     @Autowired
     private LabOrderResultMapper labOrderResultMapper;
     @Autowired
-    private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
+    private BahmniVisitAttributeService bahmniVisitAttributeSaveCommand;
     private UserContext userContext;
     private String loginLocationUuid;
 

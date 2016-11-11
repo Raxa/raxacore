@@ -15,20 +15,20 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Component("openElisPatientFeedClient")
 public class OpenElisPatientFeedClientImpl extends OpenElisFeedClient implements OpenElisPatientFeedClient {
-    private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
+    private BahmniVisitAttributeService bahmniVisitAttributeSaveCommand;
     private Logger logger = Logger.getLogger(OpenElisPatientFeedClientImpl.class);
 
 
     @Autowired
     public OpenElisPatientFeedClientImpl(ElisAtomFeedProperties properties,
-                                         PlatformTransactionManager transactionManager, BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand) {
+                                         PlatformTransactionManager transactionManager, BahmniVisitAttributeService bahmniVisitAttributeSaveCommand) {
         super(properties, transactionManager);
         this.bahmniVisitAttributeSaveCommand = bahmniVisitAttributeSaveCommand;
     }

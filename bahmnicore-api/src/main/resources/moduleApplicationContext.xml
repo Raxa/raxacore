@@ -111,13 +111,7 @@
         <constructor-arg>
             <list>
                 <ref bean="bahmniObservationSaveCommandImpl"/>
-                <ref bean="bahmniVisitAttributeSaveCommandImpl"/>
                 <ref bean="episodeEncounterCreateCommand"/>
-            </list>
-        </constructor-arg>
-        <constructor-arg>
-            <list>
-                <ref bean="bahmniVisitAttributeSaveCommandImpl"/>
             </list>
         </constructor-arg>
         <constructor-arg ref="bahmniEncounterTransactionMapper" />
@@ -125,6 +119,8 @@
         <constructor-arg ref="patientService" />
         <constructor-arg ref="locationService" />
         <constructor-arg ref="providerService" />
+        <constructor-arg ref="bahmniVisitAttributeService"/>
+
     </bean>
 
     <bean parent="serviceContext">

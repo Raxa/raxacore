@@ -12,6 +12,7 @@ import org.openmrs.api.EncounterService;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterSearchParameters;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
@@ -55,14 +56,16 @@ public class BahmniEncounterTransactionServiceImplTest {
     @Mock
     private BahmniVisitLocationService bahmniVisitLocationService;
 
+    @Mock
+    private BahmniVisitAttributeService bahmniVisitAttributeService;
 
     private BahmniEncounterTransactionService bahmniEncounterTransactionService;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        bahmniEncounterTransactionService = new BahmniEncounterTransactionServiceImpl(encounterService,null,encounterTransactionMapper,null,null,null,null,visitService,patientService
-                ,locationService,null,baseEncounterMatcher,bahmniVisitLocationService);
+        bahmniEncounterTransactionService = new BahmniEncounterTransactionServiceImpl(encounterService,null,encounterTransactionMapper,null,null, null,visitService,patientService
+                ,locationService,null,baseEncounterMatcher,bahmniVisitLocationService, bahmniVisitAttributeService);
 
     }
 

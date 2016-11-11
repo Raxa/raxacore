@@ -21,7 +21,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
-import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -50,7 +50,7 @@ public class OpenElisAccessionEventWorkerTest {
     @Mock
     private ProviderService providerService;
     @Mock
-    private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
+    private BahmniVisitAttributeService bahmniVisitAttributeSaveCommand;
 
     private OpenElisAccessionEventWorker accessionEventWorker;
     private String openElisUrl;

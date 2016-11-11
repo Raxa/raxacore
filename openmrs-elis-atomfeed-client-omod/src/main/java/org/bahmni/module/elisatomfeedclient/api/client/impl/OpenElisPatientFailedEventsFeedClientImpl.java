@@ -15,7 +15,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -24,7 +24,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class OpenElisPatientFailedEventsFeedClientImpl extends OpenElisFeedClient implements OpenElisPatientFailedEventsFeedClient {
     private ProviderService providerService;
     private ConceptService conceptService;
-    private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
+    private BahmniVisitAttributeService bahmniVisitAttributeSaveCommand;
     private Logger logger = Logger.getLogger(OpenElisPatientFailedEventsFeedClientImpl.class);
 
 
@@ -32,7 +32,7 @@ public class OpenElisPatientFailedEventsFeedClientImpl extends OpenElisFeedClien
     public OpenElisPatientFailedEventsFeedClientImpl(ElisAtomFeedProperties properties,
                                                      ProviderService providerService,
                                                      ConceptService conceptService,
-                                                     PlatformTransactionManager transactionManager, BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand) {
+                                                     PlatformTransactionManager transactionManager, BahmniVisitAttributeService bahmniVisitAttributeSaveCommand) {
         super(properties, transactionManager);
         this.providerService = providerService;
         this.conceptService = conceptService;

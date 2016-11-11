@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BahmniVisitAttributeSaveCommandImpl implements EncounterDataPostSaveCommand {
+public class BahmniVisitAttributeService {
     public static final String VISIT_STATUS_ATTRIBUTE_TYPE = "Visit Status";
     public static final String ADMISSION_STATUS_ATTRIBUTE_TYPE = "Admission Status";
     public static final String OPD_VISIT_TYPE = "OPD";
@@ -22,15 +22,10 @@ public class BahmniVisitAttributeSaveCommandImpl implements EncounterDataPostSav
     private VisitService visitService;
 
     @Autowired
-    public BahmniVisitAttributeSaveCommandImpl(VisitService visitService) {
+    public BahmniVisitAttributeService(VisitService visitService) {
         this.visitService = visitService;
     }
 
-    @Override
-    public EncounterTransaction save(BahmniEncounterTransaction bahmniEncounterTransaction, Encounter currentEncounter, EncounterTransaction updatedEncounterTransaction) {
-        save(currentEncounter);
-        return updatedEncounterTransaction;
-    }
 
     public void save(Encounter currentEncounter) {
         Visit updatedVisit = createOrUpdateVisitAttribute(currentEncounter);

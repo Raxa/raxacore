@@ -21,7 +21,7 @@ import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeSaveCommandImpl;
+import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -51,7 +51,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
     @Autowired
     private ElisAtomFeedProperties properties;
     @Autowired
-    private BahmniVisitAttributeSaveCommandImpl bahmniVisitAttributeSaveCommand;
+    private BahmniVisitAttributeService bahmniVisitAttributeSaveCommand;
     private OpenElisAccessionEventWorker openElisAccessionEventWorker;
     private String openElisUrl = "http://localhost:8080/";
     private Event event = new Event("id", "openelis/accession/12-34-56-78", "title", "feedUri", new Date());
