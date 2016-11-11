@@ -1,7 +1,6 @@
 package org.openmrs.module.bahmniemrapi.diagnosis.helper;
 
 import org.openmrs.Concept;
-import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
@@ -18,10 +17,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -120,131 +117,9 @@ public class BahmniDiagnosisMetadata {
         return bahmniDiagnosis;
     }
 
-    private HashMap<String, Obs> getRequiredObs(Obs diagnosisObsGroup) {
-        HashMap<String, Obs> requiredObs = new HashMap<>();
-        for (Obs o : diagnosisObsGroup.getGroupMembers()) {
-            Concept concept = o.getConcept();
-            if (concept.hasName(BAHMNI_DIAGNOSIS_STATUS, null)) {
-                requiredObs.put(BAHMNI_DIAGNOSIS_STATUS, o);
-            } else if (concept.hasName(BAHMNI_DIAGNOSIS_REVISED, null)) {
-                requiredObs.put(BAHMNI_DIAGNOSIS_REVISED, o);
-            } else if (concept.hasName(BAHMNI_INITIAL_DIAGNOSIS, null)) {
-                requiredObs.put(BAHMNI_INITIAL_DIAGNOSIS, o);
-            }
-        }
-        return requiredObs;
-    }
-
-    private BahmniDiagnosisRequest mapBasicDiagnosis(EncounterTransaction.Diagnosis diagnosis) {
-        BahmniDiagnosisRequest bahmniDiagnosis = new BahmniDiagnosisRequest();
-        bahmniDiagnosis.setCertainty(diagnosis.getCertainty());
-        bahmniDiagnosis.setCodedAnswer(diagnosis.getCodedAnswer());
-        bahmniDiagnosis.setFreeTextAnswer(diagnosis.getFreeTextAnswer());
-        bahmniDiagnosis.setOrder(diagnosis.getOrder());
-        bahmniDiagnosis.setExistingObs(diagnosis.getExistingObs());
-        bahmniDiagnosis.setDiagnosisDateTime(diagnosis.getDiagnosisDateTime());
-        bahmniDiagnosis.setProviders(diagnosis.getProviders());
-        return bahmniDiagnosis;
-    }
-
-    private EncounterTransaction.Diagnosis findInitialDiagnosis(EncounterTransaction encounterTransactionWithInitialDiagnosis, Obs initialDiagnosisObs) {
-        for (EncounterTransaction.Diagnosis diagnosis : encounterTransactionWithInitialDiagnosis.getDiagnoses()) {
-            if (diagnosis.getExistingObs().equals(initialDiagnosisObs.getUuid()))
-                return diagnosis;
-        }
-        throw new AssertionError(String.format("Initial Diagnosis not found for: %s", initialDiagnosisObs.getUuid()));
-    }
-
-    public void update(BahmniDiagnosisRequest bahmniDiagnosis, EncounterTransaction.Diagnosis etDiagnosis,
-                       Encounter encounter) {
-        Obs matchingDiagnosisObs = findDiagnosisObsGroup(encounter, etDiagnosis.getExistingObs());
-
-        updateFirstDiagnosis(matchingDiagnosisObs, bahmniDiagnosis);
-        if (diagnosisSchemaContainsStatus()) {
-            updateStatusConcept(matchingDiagnosisObs, bahmniDiagnosis);
-        }
-        updateRevisedConcept(matchingDiagnosisObs);
-    }
-
     public boolean diagnosisSchemaContainsStatus() {
         Concept diagnosisSetConcept = getDiagnosisSetConcept();
         return diagnosisSetConcept.getSetMembers().contains(getBahmniDiagnosisStatusConcept());
-    }
-
-    private void updateFirstDiagnosis(Obs diagnosisObs, BahmniDiagnosisRequest bahmniDiagnosis) {
-        Obs obs = findOrCreateObs(diagnosisObs, getBahmniInitialDiagnosisConcept());
-        if (bahmniDiagnosis.getPreviousObs() == null && obs.getId() == null) { //Diagnosis captured for first time in this encounter
-            obs.setValueText(diagnosisObs.getUuid());
-        } else { //Diagnosis update in the same encounter it was created in AND Diagnosis updated from another encounter
-            Obs firstDiagnosisObs = obsService.getObsByUuid(bahmniDiagnosis.getFirstDiagnosis().getExistingObs());
-            obs.setValueText(firstDiagnosisObs.getUuid());
-        }
-        addToObsGroup(diagnosisObs, obs);
-    }
-
-    public void markAsRevised(Encounter encounter, String diagnosisObsUUID) {
-        Obs diagnosisObs = null;
-        for (Obs obs : encounter.getAllObs()) {
-            if (obs.getUuid().equals(diagnosisObsUUID)) {
-                diagnosisObs = obs;
-                break;
-            }
-        }
-        if (diagnosisObs == null)
-            throw new AssertionError(String.format("Cannot find revised obs in the diagnosis obs group %s", diagnosisObsUUID));
-        Obs revisedObs = findObs(diagnosisObs, BAHMNI_DIAGNOSIS_REVISED);
-        revisedObs.setValueBoolean(true);
-    }
-
-
-    private Obs findDiagnosisObsGroup(Encounter encounter, String obsUUID) {
-        return encounter.getAllObs().stream()
-                .filter(obs -> obs.getUuid().equals(obsUUID))
-                .findFirst()
-                .get();
-    }
-
-    private Obs findObs(Obs diagnosisObs, String conceptName) {
-        for (Obs o : diagnosisObs.getGroupMembers()) {
-            if (o.getConcept().hasName(conceptName, null)) {
-                return o;
-            }
-        }
-        return null;
-    }
-
-    private Obs findOrCreateObs(Obs diagnosisObs, Concept concept) {
-        for (Obs o : diagnosisObs.getGroupMembers()) {
-            if (concept.equals(o.getConcept())) {
-                return o;
-            }
-        }
-        Obs obs = new Obs();
-        obs.setConcept(concept);
-        return obs;
-    }
-
-    void updateStatusConcept(Obs diagnosisObs, BahmniDiagnosis bahmniDiagnosis) {
-        Obs obs = findOrCreateObs(diagnosisObs, getBahmniDiagnosisStatusConcept());
-        if (bahmniDiagnosis.getDiagnosisStatusConcept() != null) {
-            Concept statusConcept = conceptService.getConcept(bahmniDiagnosis.getDiagnosisStatusConcept().getName());
-            obs.setValueCoded(statusConcept);
-            addToObsGroup(diagnosisObs, obs);
-        }
-    }
-
-    private void updateRevisedConcept(Obs diagnosisObs) {
-        Obs obs = findOrCreateObs(diagnosisObs, getBahmniDiagnosisRevisedConcept());
-        obs.setValueBoolean(false);
-        addToObsGroup(diagnosisObs, obs);
-    }
-
-    private void addToObsGroup(Obs obsGroup, Obs member) {
-        member.setPerson(obsGroup.getPerson());
-        member.setObsDatetime(obsGroup.getObsDatetime());
-        member.setLocation(obsGroup.getLocation());
-        member.setEncounter(obsGroup.getEncounter());
-        obsGroup.addGroupMember(member);
     }
 
     public Obs findInitialDiagnosis(Obs diagnosisObsGroup) {
@@ -285,7 +160,15 @@ public class BahmniDiagnosisMetadata {
         return emrApiProperties.getDiagnosisMetadata().getNonCodedDiagnosisConcept();
     }
 
-    public boolean isDiagnosisMatching(Obs obs, EncounterTransaction.Diagnosis diagnosis) {
+    public Obs findMatchingDiagnosis(Collection<Obs> observations, BahmniDiagnosis bahmniDiagnosis) {
+        List<Obs> matchingObs = observations.stream()
+                .filter(obs -> isDiagnosis(obs))
+                .filter(obs -> isDiagnosisMatching(obs, bahmniDiagnosis)).collect(toList());
+        if (matchingObs.size() > 1) throw new RuntimeException("The same diagnosis cannot be saved more than once");
+        return matchingObs.isEmpty()? null: matchingObs.get(0);
+    }
+
+    private boolean isDiagnosisMatching(Obs obs, EncounterTransaction.Diagnosis diagnosis) {
         return obs.getGroupMembers().stream()
                 .anyMatch(groupMember -> {
                             if (diagnosis.getCodedAnswer() != null &&
@@ -301,14 +184,6 @@ public class BahmniDiagnosisMetadata {
                 );
     }
 
-    public Obs findMatchingDiagnosis(Collection<Obs> observations, BahmniDiagnosis bahmniDiagnosis) {
-        List<Obs> matchingObs = observations.stream()
-                .filter(obs -> isDiagnosis(obs))
-                .filter(obs -> isDiagnosisMatching(obs, bahmniDiagnosis)).collect(toList());
-        if (matchingObs.size() > 1) throw new RuntimeException("The same diagnosis cannot be saved more than once");
-        return matchingObs.isEmpty()? null: matchingObs.get(0);
-    }
-
     private boolean textAnswersMatch(EncounterTransaction.Diagnosis diagnosis, Obs obs1) {
         return obs1.getValueText().equals(diagnosis.getFreeTextAnswer());
     }
@@ -318,5 +193,47 @@ public class BahmniDiagnosisMetadata {
                 || obs1.getValueCoded().getName().equals(diagnosis.getCodedAnswer().getName());
     }
 
+    private HashMap<String, Obs> getRequiredObs(Obs diagnosisObsGroup) {
+        HashMap<String, Obs> requiredObs = new HashMap<>();
+        for (Obs o : diagnosisObsGroup.getGroupMembers()) {
+            Concept concept = o.getConcept();
+            if (concept.hasName(BAHMNI_DIAGNOSIS_STATUS, null)) {
+                requiredObs.put(BAHMNI_DIAGNOSIS_STATUS, o);
+            } else if (concept.hasName(BAHMNI_DIAGNOSIS_REVISED, null)) {
+                requiredObs.put(BAHMNI_DIAGNOSIS_REVISED, o);
+            } else if (concept.hasName(BAHMNI_INITIAL_DIAGNOSIS, null)) {
+                requiredObs.put(BAHMNI_INITIAL_DIAGNOSIS, o);
+            }
+        }
+        return requiredObs;
+    }
 
+    private BahmniDiagnosisRequest mapBasicDiagnosis(EncounterTransaction.Diagnosis diagnosis) {
+        BahmniDiagnosisRequest bahmniDiagnosis = new BahmniDiagnosisRequest();
+        bahmniDiagnosis.setCertainty(diagnosis.getCertainty());
+        bahmniDiagnosis.setCodedAnswer(diagnosis.getCodedAnswer());
+        bahmniDiagnosis.setFreeTextAnswer(diagnosis.getFreeTextAnswer());
+        bahmniDiagnosis.setOrder(diagnosis.getOrder());
+        bahmniDiagnosis.setExistingObs(diagnosis.getExistingObs());
+        bahmniDiagnosis.setDiagnosisDateTime(diagnosis.getDiagnosisDateTime());
+        bahmniDiagnosis.setProviders(diagnosis.getProviders());
+        return bahmniDiagnosis;
+    }
+
+    private EncounterTransaction.Diagnosis findInitialDiagnosis(EncounterTransaction encounterTransactionWithInitialDiagnosis, Obs initialDiagnosisObs) {
+        for (EncounterTransaction.Diagnosis diagnosis : encounterTransactionWithInitialDiagnosis.getDiagnoses()) {
+            if (diagnosis.getExistingObs().equals(initialDiagnosisObs.getUuid()))
+                return diagnosis;
+        }
+        throw new AssertionError(String.format("Initial Diagnosis not found for: %s", initialDiagnosisObs.getUuid()));
+    }
+
+    private Obs findObs(Obs diagnosisObs, String conceptName) {
+        for (Obs o : diagnosisObs.getGroupMembers()) {
+            if (o.getConcept().hasName(conceptName, null)) {
+                return o;
+            }
+        }
+        return null;
+    }
 }

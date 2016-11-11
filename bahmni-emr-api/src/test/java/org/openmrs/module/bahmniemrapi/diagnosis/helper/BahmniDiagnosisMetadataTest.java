@@ -63,40 +63,6 @@ public class BahmniDiagnosisMetadataTest {
         PowerMockito.when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
     }
 
-    @Test
-    public void shouldNotAddStatusAsGroupMemberIfStatusIsNotSpecified() throws Exception {
-
-        BahmniDiagnosisMetadata bahmniDiagnosisMetadata = new BahmniDiagnosisMetadata(obsService, conceptService,properties, null);
-        when(conceptService.getConceptByName(BAHMNI_DIAGNOSIS_STATUS)).thenReturn(new Concept());
-        Obs diagnosisObs = new Obs();
-        diagnosisObs.setGroupMembers(Collections.emptySet());
-        BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
-        bahmniDiagnosis.setDiagnosisStatusConcept(null);
-
-        bahmniDiagnosisMetadata.updateStatusConcept(diagnosisObs, bahmniDiagnosis);
-
-        assertEquals(0, diagnosisObs.getGroupMembers().size());
-
-    }
-
-    @Test
-    public void shouldAddStatusAsGroupMemberIfStatusIsSpecified() throws Exception {
-        BahmniDiagnosisMetadata bahmniDiagnosisMetadata = new BahmniDiagnosisMetadata(obsService, conceptService,properties, null);
-        when(conceptService.getConceptByName(BAHMNI_DIAGNOSIS_STATUS)).thenReturn(new Concept());
-        Obs diagnosisObs = new Obs();
-        diagnosisObs.setGroupMembers(Collections.emptySet());
-        BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
-        Concept inactiveStatus = new ConceptBuilder().withName("Inactive").build();
-        when(conceptService.getConcept("Inactive")).thenReturn(inactiveStatus);
-        EncounterTransaction.Concept etInactiveStatusConcept = new EncounterTransaction.Concept();
-        etInactiveStatusConcept.setName("Inactive");
-        bahmniDiagnosis.setDiagnosisStatusConcept(etInactiveStatusConcept);
-
-        bahmniDiagnosisMetadata.updateStatusConcept(diagnosisObs, bahmniDiagnosis);
-
-        assertEquals(1, diagnosisObs.getGroupMembers().size());
-    }
-
 
     @Test
     public void shouldMatchCodedDiagnosis() {
