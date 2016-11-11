@@ -18,8 +18,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 @Component
 public class BahmniDiagnosisMetadata {
@@ -268,5 +272,51 @@ public class BahmniDiagnosisMetadata {
     public Concept getDiagnosisSetConcept() {
         return emrApiProperties.getDiagnosisMetadata().getDiagnosisSetConcept();
     }
+
+    public boolean isDiagnosis(Obs obs) {
+        return obs.getConcept().equals(getDiagnosisSetConcept());
+    }
+
+    public Concept getCodedDiagnosisConcept() {
+        return emrApiProperties.getDiagnosisMetadata().getCodedDiagnosisConcept();
+    }
+
+    public Concept getNonCodedDiagnosisConcept() {
+        return emrApiProperties.getDiagnosisMetadata().getNonCodedDiagnosisConcept();
+    }
+
+    public boolean isDiagnosisMatching(Obs obs, EncounterTransaction.Diagnosis diagnosis) {
+        return obs.getGroupMembers().stream()
+                .anyMatch(groupMember -> {
+                            if (diagnosis.getCodedAnswer() != null &&
+                                    groupMember.getConcept().equals(getCodedDiagnosisConcept())) {
+                                return codedAnswersMatch(diagnosis, groupMember);
+                            }
+                            if (diagnosis.getFreeTextAnswer() != null &&
+                                    groupMember.getConcept().equals(getNonCodedDiagnosisConcept())) {
+                                return textAnswersMatch(diagnosis, groupMember);
+                            }
+                            return false;
+                        }
+                );
+    }
+
+    public Obs findMatchingDiagnosis(Collection<Obs> observations, BahmniDiagnosis bahmniDiagnosis) {
+        List<Obs> matchingObs = observations.stream()
+                .filter(obs -> isDiagnosis(obs))
+                .filter(obs -> isDiagnosisMatching(obs, bahmniDiagnosis)).collect(toList());
+        if (matchingObs.size() > 1) throw new RuntimeException("The same diagnosis cannot be saved more than once");
+        return matchingObs.isEmpty()? null: matchingObs.get(0);
+    }
+
+    private boolean textAnswersMatch(EncounterTransaction.Diagnosis diagnosis, Obs obs1) {
+        return obs1.getValueText().equals(diagnosis.getFreeTextAnswer());
+    }
+
+    private boolean codedAnswersMatch(EncounterTransaction.Diagnosis diagnosis, Obs obs1) {
+        return obs1.getValueCoded().getUuid().equals(diagnosis.getCodedAnswer().getUuid())
+                || obs1.getValueCoded().getName().equals(diagnosis.getCodedAnswer().getName());
+    }
+
 
 }

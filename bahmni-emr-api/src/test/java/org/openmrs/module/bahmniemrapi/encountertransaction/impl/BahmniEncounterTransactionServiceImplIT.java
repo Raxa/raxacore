@@ -16,9 +16,12 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.BaseIntegrationTest;
+import org.openmrs.module.bahmniemrapi.builder.BahmniDiagnosisRequestBuilder;
 import org.openmrs.module.bahmniemrapi.builder.BahmniEncounterTransactionBuilder;
 import org.openmrs.module.bahmniemrapi.builder.BahmniObservationBuilder;
 import org.openmrs.module.bahmniemrapi.builder.ETConceptBuilder;
+import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
+import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
@@ -41,6 +44,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest {
@@ -68,6 +73,9 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private MockEncounterTransactionHandler mockEncounterTransactionHandler;
+
     @Before
     public void setUp() throws Exception {
         executeDataSet("diagnosisMetadata.xml");
@@ -75,6 +83,7 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
         executeDataSet("obsRelationshipDataset.xml");
         executeDataSet("visitAttributeDataSet.xml");
         executeDataSet("drugOrderTestData.xml");
+        executeDataSet("concepts.xml");
     }
 
     @Test
@@ -618,6 +627,88 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
 
     }
 
+    @Test
+    public void shouldSaveDiagnoses(){
+        EncounterTransaction.Concept feverConcept = new ETConceptBuilder().withName("Fever")
+                .withUuid("9169366f-3c7f-11e3-8f4c-005056823ee3")
+                .build();
+        BahmniDiagnosisRequest bahmniDiagnosis = new BahmniDiagnosisRequestBuilder()
+                .withCodedAnswer(feverConcept)
+                .withOrder("PRIMARY")
+                .withCertainty("PRESUMED")
+                .withStatus(new ETConceptBuilder()
+                        .withUuid("d102c80f-1yz9-4da3-bb88-8122ce8868eg")
+                        .withName("Ruled Out").build())
+                .build();
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransactionBuilder()
+                .withDiagnoses(bahmniDiagnosis)
+                .withVisitTypeUuid(VISIT_TYPE_UUID)
+                .withEncounterTypeUuid(ENCOUNTER_TYPE_UUID)
+                .withPatientUuid(PATIENT_UUID)
+                .withVisitUuid(VISIT_UUID)
+                .build();
+
+        BahmniEncounterTransaction encounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
+        Context.flushSession();
+        Context.clearSession();
+
+        assertThat(encounterTransaction.getBahmniDiagnoses().size(), is(equalTo(1)));
+        BahmniDiagnosis diagnosis = encounterTransaction.getBahmniDiagnoses().get(0);
+        assertThat(diagnosis.getCertainty(), is(equalTo("PRESUMED")));
+        assertThat(diagnosis.getOrder(), is(equalTo("PRIMARY")));
+        assertThat(diagnosis.getCodedAnswer().getName(), is(equalTo("Fever")));
+        Encounter savedEncounter = Context.getEncounterService().getEncounterByUuid(encounterTransaction
+                .getEncounterUuid());
+        assertThat(savedEncounter.getObsAtTopLevel(true).size(), is(equalTo(1)));
+        assertThat(savedEncounter.getAllObs(true).size(), is(equalTo(6)));
+
+        encounterTransaction.getBahmniDiagnoses().get(0).setCertainty("CONFIRMED");
+
+
+        encounterTransaction = bahmniEncounterTransactionService.save(encounterTransaction);
+        Context.flushSession();
+        Context.clearSession();
+
+        assertThat(encounterTransaction.getBahmniDiagnoses().size(), is(equalTo(1)));
+        diagnosis = encounterTransaction.getBahmniDiagnoses().get(0);
+        assertThat(diagnosis.getCertainty(), is(equalTo("CONFIRMED")));
+        assertThat(diagnosis.getOrder(), is(equalTo("PRIMARY")));
+        assertThat(diagnosis.getCodedAnswer().getName(), is(equalTo("Fever")));
+        savedEncounter = Context.getEncounterService().getEncounterByUuid(encounterTransaction
+                .getEncounterUuid());
+        assertThat(savedEncounter.getObsAtTopLevel(true).size(), is(equalTo(1)));
+        assertThat(savedEncounter.getAllObs(true).size(), is(equalTo(7)));
+        assertThat(savedEncounter.getAllObs(false).size(), is(equalTo(6)));
+    }
+
+    @Test
+    public void shouldRunAllRegisteredHandlers() {
+        Date obsDate = new Date();
+        String obsUuid = UUID.randomUUID().toString();
+
+        EncounterTransaction.Concept build = new ETConceptBuilder()
+                .withUuid("96408258-000b-424e-af1a-403919332938")
+                .withName("FAVORITE FOOD, NON-CODED")
+                .build();
+        BahmniObservation bahmniObservation = new BahmniObservationBuilder().withUuid(obsUuid).withConcept(build)
+                .withObsDateTime(obsDate)
+                .withValue("obs-value")
+                .build();
+        BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransactionBuilder()
+                .withObservation(bahmniObservation)
+                .withVisitTypeUuid(VISIT_TYPE_UUID)
+                .withEncounterTypeUuid(ENCOUNTER_TYPE_UUID)
+                .withPatientUuid(PATIENT_UUID)
+                .withVisitUuid(VISIT_UUID)
+                .build();
+
+        int numberOfTimesSaveWasCalled = mockEncounterTransactionHandler.numberOfTimesSaveWasCalled;
+        bahmniEncounterTransactionService.save(bahmniEncounterTransaction);
+
+        assertThat(mockEncounterTransactionHandler.numberOfTimesSaveWasCalled, is(equalTo(numberOfTimesSaveWasCalled +
+                1)));
+    }
+
     private BahmniObservation getObservationByConceptUuid(Collection<BahmniObservation> bahmniObservations,
                                                           String conceptUuid) {
         for (BahmniObservation bahmniObservation : bahmniObservations) {
@@ -662,5 +753,4 @@ public class BahmniEncounterTransactionServiceImplIT extends BaseIntegrationTest
 
         return drugOrder;
     }
-
 }

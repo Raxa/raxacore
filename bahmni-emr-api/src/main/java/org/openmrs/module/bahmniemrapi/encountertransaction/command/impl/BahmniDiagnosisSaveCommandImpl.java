@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
+//@Component
 public class BahmniDiagnosisSaveCommandImpl implements EncounterDataPostSaveCommand {
     private ObsService obsService;
     private EncounterService encounterService;

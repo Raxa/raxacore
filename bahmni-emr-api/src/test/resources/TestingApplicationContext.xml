@@ -28,7 +28,6 @@
         <constructor-arg  ref="encounterTypeIdentifier"/>
         <constructor-arg>
             <list>
-                <ref bean="bahmniDiagnosisSaveCommandImpl"/>
                 <ref bean="bahmniObservationSaveCommandImpl"/>
                 <ref bean="bahmniVisitAttributeSaveCommandImpl"/>
             </list>

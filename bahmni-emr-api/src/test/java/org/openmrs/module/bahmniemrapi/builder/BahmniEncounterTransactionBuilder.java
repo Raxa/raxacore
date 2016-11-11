@@ -1,9 +1,11 @@
 package org.openmrs.module.bahmniemrapi.builder;
 
+import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -73,6 +75,11 @@ public class BahmniEncounterTransactionBuilder {
 
     public BahmniEncounterTransactionBuilder withReason(String reason) {
         bahmniEncounterTransaction.setReason(reason);
+        return this;
+    }
+
+    public BahmniEncounterTransactionBuilder withDiagnoses(BahmniDiagnosisRequest... bahmniDiagnosisRequests){
+        bahmniEncounterTransaction.setBahmniDiagnoses(Arrays.asList(bahmniDiagnosisRequests));
         return this;
     }
 }

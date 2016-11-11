@@ -13,8 +13,8 @@ public class ETConceptBuilder {
         return concept;
     }
 
-    public ETConceptBuilder withName(String height) {
-        concept.setName(height);
+    public ETConceptBuilder withName(String name) {
+        concept.setName(name);
         return this;
     }
 

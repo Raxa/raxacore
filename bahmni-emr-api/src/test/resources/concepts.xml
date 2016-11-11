@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <concept concept_id="1120" retired="false" datatype_id="4" class_id="4" is_set="false" creator="501"
+             date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0"
+             uuid="9169366f-3c7f-11e3-8f4c-005056823ee3"/>
+    <concept_name concept_id="1120" concept_name_id="1120" name="Fever" locale="en" creator="1"
+                  date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"
+                  voided="false" uuid="9169366f-3c7f-11e3-8f4c-005056823ee0"/>
+</dataset>
