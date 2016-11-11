@@ -3573,4 +3573,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="add-privileges-to-roles-20161111" author="Ravindra">
+        <comment>Add privileges to roles Clinical-App-Common(Get Order Sets), Registration-App(Delete Visits) </comment>
+        <sql>
+            INSERT IGNORE INTO role_privilege (role, privilege) SELECT * FROM (SELECT 'Clinical-App-Common', 'Get Order Sets') AS tmp WHERE EXISTS ( SELECT role FROM role WHERE role = 'Clinical-App-Common' );
+            INSERT IGNORE INTO role_privilege (role, privilege) SELECT * FROM (SELECT 'Registration-App', 'Delete Visits') AS tmp WHERE EXISTS ( SELECT role FROM role WHERE role = 'Registration-App' );
+        </sql>
+    </changeSet>
 </databaseChangeLog>
