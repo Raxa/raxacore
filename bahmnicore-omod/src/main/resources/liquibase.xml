@@ -3617,7 +3617,6 @@
     </changeSet>
 
     <changeSet id="bahmni-core-201611101133" author="Gaurav">
-
         <comment>Updating Referred out obs to have value coded as true </comment>
         <sql>
             UPDATE obs
@@ -3627,6 +3626,14 @@
             WHERE concept_id IN (SELECT concept_id
             FROM concept_name
             WHERE name = 'REFERRED_OUT' AND concept_name_type = 'FULLY_SPECIFIED') AND value_coded IS NULL;
+        </sql>
+    </changeSet>
+
+    <changeSet id="add-privileges-to-roles-20161111" author="Ravindra">
+        <comment>Add privileges to roles Clinical-App-Common(Get Order Sets), Registration-App(Delete Visits) </comment>
+        <sql>
+            INSERT IGNORE INTO role_privilege (role, privilege) SELECT * FROM (SELECT 'Clinical-App-Common', 'Get Order Sets') AS tmp WHERE EXISTS ( SELECT role FROM role WHERE role = 'Clinical-App-Common' );
+            INSERT IGNORE INTO role_privilege (role, privilege) SELECT * FROM (SELECT 'Registration-App', 'Delete Visits') AS tmp WHERE EXISTS ( SELECT role FROM role WHERE role = 'Registration-App' );
         </sql>
     </changeSet>
 </databaseChangeLog>
