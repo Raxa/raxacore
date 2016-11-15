@@ -8,6 +8,7 @@ import org.openmrs.OrderSetMember;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.RestConstants;
+import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.PropertySetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.representation.DefaultRepresentation;
@@ -54,6 +55,11 @@ public class BahmniOrderSetResource extends MetadataDelegatingCrudResource<Order
     @PropertySetter("orderSetMembers")
     public static void setOrderSetMembers(OrderSet instance, List<OrderSetMember> orderSetMembers){
         instance.setOrderSetMembers(orderSetMembers);
+    }
+
+    @PropertyGetter("orderSetMembers")
+    public static List<OrderSetMember> getOrderSetMembers(OrderSet instance){
+        return instance.getUnRetiredOrderSetMembers();
     }
 
     @Override
