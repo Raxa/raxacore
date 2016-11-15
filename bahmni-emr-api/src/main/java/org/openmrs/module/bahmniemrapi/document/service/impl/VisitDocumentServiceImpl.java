@@ -78,12 +78,13 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
             }
             if (document.shouldVoidDocument()) {
                 voidDocumentObservationTree(parentObservation);
-            } else if (document.hasConceptChanged(parentObservation.getConcept().getUuid()) || hasCommentsChanged(document, parentObservation)) {
+            } else if (document.hasConceptChanged(parentObservation.getConcept().getUuid())) {
                 voidDocumentObservationTree(parentObservation);
                 parentObservation = newObs(parentObservation.getObsDatetime(), testConcept, null, parentObservation.getLocation(), encounter);
                 Obs member = newObs(parentObservation.getObsDatetime(), imageConcept, url, null, encounter);
-                setComment(member, document);
                 parentObservation.addGroupMember(member);
+            } else if (hasCommentsChanged(document, parentObservation)) {
+                setComment(parentObservation.getGroupMembers().iterator().next(), document);
             }
             encounter.addObs(parentObservation);
         }
@@ -102,9 +103,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
     }
 
     private void setComment(Obs observation, Document document) {
-        if(!StringUtils.isEmpty(document.getComment())) {
-            observation.setComment(document.getComment());
-        }
+        observation.setComment(document.getComment());
     }
 
     private Obs findOrCreateParentObs(Encounter encounter, Date observationDateTime, Concept testConcept, String obsUuid) {

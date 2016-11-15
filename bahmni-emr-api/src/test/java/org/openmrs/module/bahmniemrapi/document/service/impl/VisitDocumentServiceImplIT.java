@@ -412,7 +412,7 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
         Set<Obs> allObs = encounter.getAllObs();
         Obs savedDocument = getSavedDocument(allObs, conceptUuid);
         String obsUuid = savedDocument.getUuid();
-
+        Obs member = savedDocument.getGroupMembers().iterator().next();
 
         List<Document> modifiedDocuments = new ArrayList<>();
         modifiedDocuments.add(new Document("/radiology/fooo-bar.jpg", null, conceptUuid, obsUuid, obsDate, false, "something went wrong modified"));
@@ -435,6 +435,7 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
         Set<Obs> finalAllObs = finalEncounter.getAllObs();
         Obs finalSavedDocument = getSavedDocument(finalAllObs, conceptUuid);
         assertEquals("something went wrong modified", finalSavedDocument.getGroupMembers().iterator().next().getComment());
+        assertEquals(member.getUuid(), finalSavedDocument.getGroupMembers().iterator().next().getUuid());
     }
 
     @Test
