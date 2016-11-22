@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.openmrs.Concept;
 import org.openmrs.Patient;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttributeType;
@@ -27,7 +28,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -192,6 +195,39 @@ public class CSVPatientServiceTest {
         Patient patient = patientArgumentCaptor.getValue();
         assertEquals(patient.getAttribute("familyNameLocal").getValue(), "ram");
         assertEquals(patient.getAttribute("caste").getValue(), "gond");
+    }
+
+    @Test
+    public void shouldOnlyAddPersonAttributesOfFormatOpenMrsConceptAndJavaDataTypes() throws ParseException {
+        when(mockPersonService.getAllPersonAttributeTypes(false)).thenReturn(Arrays.asList(
+                createPersonAttributeType("education", "org.openmrs.Concept"),
+                createPersonAttributeType("isUrban", "java.lang.Boolean"),
+                createPersonAttributeType("visitDate", "org.openmrs.util.AttributableDate"),
+                createPersonAttributeType("landHolding", "java.lang.Integer")
+        ));
+
+        Concept concept = new Concept();
+        concept.setId(123);
+        when(conceptService.getConcept("123")).thenReturn(concept);
+        PatientRow patientRow = new PatientRow();
+        patientRow.attributes = new ArrayList<KeyValue>() {{
+            add(new KeyValue("education", "123"));
+            add(new KeyValue("isUrban", "true"));
+            add(new KeyValue("visitDate", "2016-11-22"));
+            add(new KeyValue("landHolding", "222"));
+        }};
+
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
+        csvPatientService.save(patientRow);
+
+        ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
+        verify(mockPatientService).savePatient(patientArgumentCaptor.capture());
+
+        Patient patient = patientArgumentCaptor.getValue();
+        assertThat(patient.getAttributes().size(), is(3));
+        assertThat(patient.getAttribute("education").getValue(), is("123"));
+        assertThat(patient.getAttribute("isUrban").getValue(), is("true"));
+        assertThat(patient.getAttribute("landHolding").getValue(), is("222"));
     }
 
     @Test

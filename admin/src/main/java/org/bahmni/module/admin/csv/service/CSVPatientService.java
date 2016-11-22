@@ -79,7 +79,7 @@ public class CSVPatientService {
                 } else {
                     throw new RuntimeException("Invalid value for Attribute." + attribute.getKey());
                 }
-            } else if (personAttributeType.getFormat().equalsIgnoreCase("java.lang.String")) {
+            } else if (personAttributeType.getFormat().startsWith("java.lang.")) {
                 patient.addAttribute(new PersonAttribute(findAttributeType(attribute.getKey()), attribute.getValue()));
             }
         }
