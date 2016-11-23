@@ -10,10 +10,12 @@ import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.Patient;
 import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttributeType;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.api.ConceptNameType;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
@@ -25,6 +27,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -207,8 +210,12 @@ public class CSVPatientServiceTest {
         ));
 
         Concept concept = new Concept();
+        ConceptName conceptNameFullySpecified = new ConceptName();
+        conceptNameFullySpecified.setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
+        conceptNameFullySpecified.setName("123");
+        concept.setNames(Collections.singleton(conceptNameFullySpecified));
         concept.setId(123);
-        when(conceptService.getConcept("123")).thenReturn(concept);
+        when(conceptService.getConceptsByName("123")).thenReturn(Collections.singletonList(concept));
         PatientRow patientRow = new PatientRow();
         patientRow.attributes = new ArrayList<KeyValue>() {{
             add(new KeyValue("education", "123"));
@@ -228,6 +235,99 @@ public class CSVPatientServiceTest {
         assertThat(patient.getAttribute("education").getValue(), is("123"));
         assertThat(patient.getAttribute("isUrban").getValue(), is("true"));
         assertThat(patient.getAttribute("landHolding").getValue(), is("222"));
+    }
+
+    @Test
+    public void shouldOnlyUseTheConceptIfItsFullySpecifiedOrShortNameMatchesTheCodedAnswer() throws ParseException {
+        when(mockPersonService.getAllPersonAttributeTypes(false)).thenReturn(Collections.singletonList(
+                createPersonAttributeType("confirmedByChw", "org.openmrs.Concept")
+        ));
+
+        Concept concept = new Concept();
+        ConceptName conceptNameFullySpecified = new ConceptName();
+        conceptNameFullySpecified.setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
+        conceptNameFullySpecified.setName("Yes");
+        ConceptName conceptNameShort = new ConceptName();
+        conceptNameShort.setConceptNameType(ConceptNameType.SHORT);
+        conceptNameShort.setName("yes");
+        concept.setId(123);
+        concept.setNames(Arrays.asList(conceptNameFullySpecified, conceptNameShort));
+
+        Concept secondConcept = new Concept();
+        ConceptName secondConceptNameFullySpecified = new ConceptName();
+        secondConceptNameFullySpecified.setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
+        secondConceptNameFullySpecified.setName("True");
+        ConceptName secondConceptName = new ConceptName();
+        secondConceptName.setName("Yes");
+        secondConcept.setNames(Arrays.asList(secondConceptNameFullySpecified, secondConceptName));
+        secondConcept.setId(321);
+
+        when(conceptService.getConceptsByName("Yes")).thenReturn(Arrays.asList(concept, secondConcept));
+        PatientRow patientRow = new PatientRow();
+        patientRow.attributes = new ArrayList<KeyValue>() {{
+            add(new KeyValue("confirmedByChw", "Yes"));
+        }};
+
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
+        csvPatientService.save(patientRow);
+
+        ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
+        verify(mockPatientService).savePatient(patientArgumentCaptor.capture());
+
+        Patient patient = patientArgumentCaptor.getValue();
+        assertThat(patient.getAttributes().size(), is(1));
+        assertThat(patient.getAttribute("confirmedByChw").getValue(), is("123"));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldThrowExceptionIfTheCodedAttributeValueGivenIsInvalid() throws ParseException {
+        when(mockPersonService.getAllPersonAttributeTypes(false)).thenReturn(Collections.singletonList(
+                createPersonAttributeType("confirmedByChw", "org.openmrs.Concept")
+        ));
+
+        when(conceptService.getConceptsByName("Yes")).thenReturn(null);
+        PatientRow patientRow = new PatientRow();
+        patientRow.attributes = new ArrayList<KeyValue>() {{
+            add(new KeyValue("confirmedByChw", "Yes"));
+        }};
+
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
+        csvPatientService.save(patientRow);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void shouldThrowAnExceptionIfNoFullySpecifiedNameMatches() throws ParseException {
+        when(mockPersonService.getAllPersonAttributeTypes(false)).thenReturn(Collections.singletonList(
+                createPersonAttributeType("confirmedByChw", "org.openmrs.Concept")
+        ));
+
+        Concept concept = new Concept();
+        ConceptName conceptNameFullySpecified = new ConceptName();
+        conceptNameFullySpecified.setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
+        conceptNameFullySpecified.setName("Nope");
+        ConceptName conceptNameShort = new ConceptName();
+        conceptNameShort.setConceptNameType(ConceptNameType.SHORT);
+        conceptNameShort.setName("nope");
+        concept.setId(123);
+        concept.setNames(Arrays.asList(conceptNameFullySpecified, conceptNameShort));
+
+        Concept secondConcept = new Concept();
+        ConceptName secondConceptNameFullySpecified = new ConceptName();
+        secondConceptNameFullySpecified.setConceptNameType(ConceptNameType.FULLY_SPECIFIED);
+        secondConceptNameFullySpecified.setName("True");
+        ConceptName secondConceptName = new ConceptName();
+        secondConceptName.setName("Yes");
+        secondConcept.setNames(Arrays.asList(secondConceptNameFullySpecified, secondConceptName));
+        secondConcept.setId(321);
+
+        when(conceptService.getConceptsByName("Yes")).thenReturn(Arrays.asList(concept, secondConcept));
+        PatientRow patientRow = new PatientRow();
+        patientRow.attributes = new ArrayList<KeyValue>() {{
+            add(new KeyValue("confirmedByChw", "Yes"));
+        }};
+
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
+        csvPatientService.save(patientRow);
     }
 
     @Test

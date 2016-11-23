@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.PatientRow;
 import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.PatientIdentifierType;
@@ -17,6 +18,7 @@ import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
 
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -73,7 +75,7 @@ public class CSVPatientService {
         for (KeyValue attribute : patientRow.attributes) {
             PersonAttributeType personAttributeType = findAttributeType(attribute.getKey());
             if (personAttributeType.getFormat().equalsIgnoreCase("org.openmrs.Concept")) {
-                Concept concept = conceptService.getConcept(attribute.getValue());
+                Concept concept = getConceptByName(attribute.getValue());
                 if (concept != null) {
                     patient.addAttribute(new PersonAttribute(personAttributeType, concept.getId().toString()));
                 } else {
@@ -83,6 +85,21 @@ public class CSVPatientService {
                 patient.addAttribute(new PersonAttribute(findAttributeType(attribute.getKey()), attribute.getValue()));
             }
         }
+    }
+
+    private Concept getConceptByName(String name) {
+        List<Concept> concepts = conceptService.getConceptsByName(name);
+        if (concepts != null) {
+            for (Concept concept : concepts) {
+                Collection<ConceptName> nameCollection = concept.getNames();
+                for (ConceptName conceptName : nameCollection) {
+                    if (conceptName.getName().equalsIgnoreCase(name) && (conceptName.isPreferred() || conceptName.isFullySpecifiedName() || conceptName.isShort())) {
+                        return concept;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private PersonAttributeType findAttributeType(String key) {
