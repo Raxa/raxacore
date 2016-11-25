@@ -21,6 +21,10 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
+            <artifactId>metadatamapping-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
             <artifactId>emrapi-api-1.12</artifactId>
             <version>${emrapi-omod.version}</version>
             <type>test-jar</type>
