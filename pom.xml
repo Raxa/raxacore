@@ -45,7 +45,6 @@
         <mockitoVersion>1.10.19</mockitoVersion>
         <argLine>-Xmx1024m</argLine>
         <bacteriology.version>1.1-SNAPSHOT</bacteriology.version>
-        <metadatamapping-api.version>1.2.1</metadatamapping-api.version>
     </properties>
 
     <distributionManagement>
@@ -196,6 +195,12 @@
                 <version>${reportingModuleVersion}</version>
                 <scope>test</scope>
             </dependency>
+            <!--<dependency>-->
+                <!--<groupId>org.openmrs.module</groupId>-->
+                <!--<artifactId>reportingcompatibility-api</artifactId>-->
+                <!--<version>${reportingCompatiblityModuleVersion}</version>-->
+                <!--<scope>test</scope>-->
+            <!--</dependency>-->
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>calculation-api</artifactId>
@@ -231,12 +236,6 @@
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>emrapi-api-1.12</artifactId>
                 <version>${emrapi-omod.version}</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.openmrs.module</groupId>
-                <artifactId>metadatamapping-api</artifactId>
-                <version>${metadatamapping-api.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
