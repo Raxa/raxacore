@@ -9,8 +9,6 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.Concept;
-import org.openmrs.ConceptDatatype;
-import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
@@ -26,15 +24,12 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Locale;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.isNull;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
@@ -61,6 +56,8 @@ public class BahmniDiagnosisMetadataTest {
         mockStatic(Context.class);
         PowerMockito.when(Context.getLocale()).thenReturn(Locale.ENGLISH);
         PowerMockito.when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
+        PowerMockito.when(Context.getConceptService()).thenReturn(conceptService);
+
     }
 
 
@@ -192,6 +189,52 @@ public class BahmniDiagnosisMetadataTest {
         thrown.expectMessage("The same diagnosis cannot be saved more than once");
         bahmniDiagnosisMetadata.findMatchingDiagnosis(
                 Arrays.asList(aCodedDiagnosisObs, anotherCodedDiagnosisObs, randomObs), bahmniDiagnosis);
+    }
+
+    @Test
+    public void shouldNotConsiderRevisedObsWhileFindingMatchingObs() throws Exception {
+        Concept diagnosisSetConcept = conceptForName("Diagnosis Concept Set");
+        Concept codedDiagnosisConcept = conceptForName("Coded Diagnosis");
+        Concept nonCodedDiagnosisConcept = conceptForName("Non Coded Diagnosis");
+        Concept conceptTrue = conceptForName("TRUE");
+        Concept revised = conceptForName("Revised");
+        when(properties.getDiagnosisMetadata().getDiagnosisSetConcept()).thenReturn(diagnosisSetConcept);
+        when(properties.getDiagnosisMetadata().getCodedDiagnosisConcept()).thenReturn(codedDiagnosisConcept);
+        when(properties.getDiagnosisMetadata().getNonCodedDiagnosisConcept()).thenReturn(nonCodedDiagnosisConcept);
+        when(conceptService.getTrueConcept()).thenReturn(conceptTrue);
+        when(conceptService.getConceptByName(BAHMNI_DIAGNOSIS_REVISED)).thenReturn(revised);
+        Concept feverConcept = conceptForName("Fever");
+        Obs aCodedDiagnosisObs =
+                new ObsBuilder().withConcept(diagnosisSetConcept)
+                        .withGroupMembers(
+                                new ObsBuilder().withConcept(codedDiagnosisConcept)
+                                        .withValue(feverConcept).build(),
+                                new ObsBuilder().withConcept(conceptForName("Diagnosis Order"))
+                                        .withValue(conceptForName("Primary")).build(),
+                                new ObsBuilder().withConcept(conceptForName("Diagnosis Certainty"))
+                                        .withValue(conceptForName("Confirmed")).build(),
+                                new ObsBuilder().withConcept(revised)
+                                        .withValue(conceptTrue).build()).build();
+        Obs anotherCodedDiagnosisObs =
+                new ObsBuilder().withConcept(diagnosisSetConcept)
+                        .withGroupMembers(
+                                new ObsBuilder().withConcept(codedDiagnosisConcept)
+                                        .withValue(feverConcept).build(),
+                                new ObsBuilder().withConcept(conceptForName("Diagnosis Order"))
+                                        .withValue(conceptForName("Primary")).build(),
+                                new ObsBuilder().withConcept(conceptForName("Diagnosis Certainty"))
+                                        .withValue(conceptForName("Confirmed")).build()
+                        ).build();
+        Obs randomObs = new ObsBuilder().withConcept(conceptForName("Random Concept")).withValue("Hello World").build();
+
+        BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
+        bahmniDiagnosis.setCodedAnswer(new EncounterTransaction.Concept(feverConcept.getUuid(), feverConcept.getName
+                ().getName(), false));
+
+        BahmniDiagnosisMetadata bahmniDiagnosisMetadata = new BahmniDiagnosisMetadata(obsService, conceptService, properties, null);
+        Obs matchingDiagnosis = bahmniDiagnosisMetadata.findMatchingDiagnosis(
+                Arrays.asList(aCodedDiagnosisObs, anotherCodedDiagnosisObs, randomObs), bahmniDiagnosis);
+        assertNotNull(matchingDiagnosis);
     }
 
     public Concept conceptForName(String conceptName) {

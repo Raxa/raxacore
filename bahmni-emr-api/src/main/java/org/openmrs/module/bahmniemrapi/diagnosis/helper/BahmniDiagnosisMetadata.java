@@ -13,12 +13,7 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -163,9 +158,17 @@ public class BahmniDiagnosisMetadata {
     public Obs findMatchingDiagnosis(Collection<Obs> observations, BahmniDiagnosis bahmniDiagnosis) {
         List<Obs> matchingObs = observations.stream()
                 .filter(obs -> isDiagnosis(obs))
+                .filter(obs -> isDiagnosisNotRevised(obs))
                 .filter(obs -> isDiagnosisMatching(obs, bahmniDiagnosis)).collect(toList());
         if (matchingObs.size() > 1) throw new RuntimeException("The same diagnosis cannot be saved more than once");
         return matchingObs.isEmpty()? null: matchingObs.get(0);
+    }
+
+    private boolean isDiagnosisNotRevised(Obs obs) {
+        return !obs.getGroupMembers(false).stream()
+                .anyMatch(groupMember -> {
+                   return groupMember.getConcept().equals(getBahmniDiagnosisRevisedConcept())
+                        && groupMember.getValueAsBoolean();});
     }
 
     private boolean isDiagnosisMatching(Obs obs, EncounterTransaction.Diagnosis diagnosis) {
