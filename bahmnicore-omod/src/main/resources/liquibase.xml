@@ -3629,4 +3629,38 @@
             delete from obs where concept_id = @diagnosis_status_concept_id and value_coded is null;
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201611291417" author="Preethi">
+        <comment>Add 'Add Observations' privilege to all roles containing 'Add Encounters' and 'Edit Encounters'
+            privilege
+        </comment>
+        <sql>
+            INSERT INTO role_privilege (
+            SELECT DISTINCT
+            role,
+            'Add Observations'
+            FROM
+            ( SELECT DISTINCT role
+            FROM role_privilege
+            WHERE privilege IN ('Add Encounters', 'Edit Encounters')) tmp
+            WHERE (role, 'Add Observations') NOT IN ( SELECT *
+            FROM role_privilege));
+        </sql>
+    </changeSet>
+    <changeSet id="bahmni-core-201611291503" author="Preethi">
+        <comment>Add 'Edit Observations' privilege to all roles containing 'Add Encounters' and 'Edit Encounters'
+            privilege
+        </comment>
+        <sql>
+            INSERT INTO role_privilege (
+            SELECT DISTINCT
+            role,
+            'Edit Observations'
+            FROM
+            ( SELECT DISTINCT role
+            FROM role_privilege
+            WHERE privilege IN ('Add Encounters', 'Edit Encounters')) tmp
+            WHERE (role, 'Edit Observations') NOT IN ( SELECT *
+            FROM role_privilege));
+        </sql>
+    </changeSet>
 </databaseChangeLog>
