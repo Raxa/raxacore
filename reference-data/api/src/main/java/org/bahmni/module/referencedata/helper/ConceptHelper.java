@@ -139,6 +139,16 @@ public class ConceptHelper {
         return conceptDetails;
     }
 
+    public Set<Integer> getConceptIds(List<Concept> conceptNames) {
+        Set<Integer> conceptIds = new LinkedHashSet<>();
+        for (Concept concept : conceptNames) {
+            if (concept != null) {
+                conceptIds.add(concept.getConceptId());
+            }
+        }
+        return conceptIds;
+    }
+
     public List<Concept> getParentConcepts(Concept concept) {
         return conceptService.getConceptsByAnswer(concept);
     }

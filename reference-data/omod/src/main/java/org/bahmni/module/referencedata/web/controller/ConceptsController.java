@@ -65,4 +65,12 @@ public class ConceptsController extends BaseRestController {
         Set<String> childConceptNames = conceptHelper.getChildConceptNames(conceptsForNames);
         return new ResponseEntity<>(childConceptNames, HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/getConceptId", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Set<Integer>> getConceptId(@RequestParam(value = "conceptNames", required = true) List<String> conceptNames) {
+        List<Concept> conceptsForNames = conceptHelper.getConceptsForNames(conceptNames);
+        Set<Integer> conceptIds=conceptHelper.getConceptIds(conceptsForNames);
+        return new ResponseEntity<>(conceptIds, HttpStatus.OK);
+    }
 }
