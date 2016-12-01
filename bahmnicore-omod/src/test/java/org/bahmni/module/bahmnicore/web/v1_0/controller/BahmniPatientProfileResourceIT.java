@@ -2,6 +2,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.apache.commons.io.FileUtils;
 import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
+import org.hibernate.exception.DataException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -24,7 +25,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
@@ -57,7 +60,7 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
         classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("patient.json").getFile());
         String jsonString = FileUtils.readFileToString(file);
-        propertiesToCreate = new SimpleObject().parseJson(jsonString);
+        propertiesToCreate = SimpleObject.parseJson(jsonString);
     }
 
     @Test
@@ -134,7 +137,7 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
     public void shouldUpdatePatient() throws Exception {
         File file = new File(classLoader.getResource("updatePatient.json").getFile());
         String jsonString = FileUtils.readFileToString(file);
-        propertiesToCreate = new SimpleObject().parseJson(jsonString);
+        propertiesToCreate = SimpleObject.parseJson(jsonString);
         String uuid = "592b29e1-b3f5-423e-83cb-0d2c9b80867f";
         ResponseEntity<Object> response = bahmniPatientProfileResource.update(uuid, propertiesToCreate);
         assertEquals(200, response.getStatusCode().value());
@@ -148,12 +151,22 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
     public void shouldReturnBadRequestForLongPatientName() throws Exception {
         File file = new File(classLoader.getResource("updatePatient.json").getFile());
         String jsonString = FileUtils.readFileToString(file);
-        propertiesToCreate = new SimpleObject().parseJson(jsonString);
+        propertiesToCreate = SimpleObject.parseJson(jsonString);
         LinkedHashMap name = (LinkedHashMap) ((ArrayList) ((LinkedHashMap) ((LinkedHashMap) propertiesToCreate.get("patient")).get("person")).get("names")).get(0);
         name.put("givenName", "LongStringLongStringLongStringLongStringLongStringLongString");
         String uuid = "592b29e1-b3f5-423e-83cb-0d2c9b80867f";
         ResponseEntity<Object> response = bahmniPatientProfileResource.update(uuid, propertiesToCreate);
         assertEquals(400, response.getStatusCode().value());
+    }
+
+    @Test
+    public void shouldReturnBadRequestForLongNumericPatientIdentifier() throws Exception {
+        LinkedHashMap identifier = (LinkedHashMap) ((ArrayList) ((LinkedHashMap) propertiesToCreate.get("patient")).get("identifiers")).get(0);
+        identifier.put("identifier", "BAH12345678912345678");
+        when(identifierSourceServiceWrapper.saveSequenceValueUsingIdentifierSourceUuid(12345678912345679L, "dead-cafe")).thenThrow(DataException.class);
+        ResponseEntity<Object> response = bahmniPatientProfileResource.create(true, propertiesToCreate);
+        assertThat(response.getStatusCode().value(), is(400));
+        assertThat(response.getBody().toString(), is("{\"error\":{\"message\":\"Entered numeric patient identifier is too large\"}}"));
     }
 
     @Test

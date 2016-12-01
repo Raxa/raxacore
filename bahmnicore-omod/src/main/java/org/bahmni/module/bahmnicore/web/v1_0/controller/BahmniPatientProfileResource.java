@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -102,14 +103,17 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
                             }});
                         }
                     } else if (latestRegistrationNumber < (givenRegistrationNumber + 1)) {
-                        identifierSourceServiceWrapper.saveSequenceValueUsingIdentifierSourceUuid(givenRegistrationNumber + 1, identifierSourceUuid);
+                        try {
+                            identifierSourceServiceWrapper.saveSequenceValueUsingIdentifierSourceUuid(givenRegistrationNumber + 1, identifierSourceUuid);
+                        } catch (DataException e) {
+                            return getIdentifierErrorMessageResponseEntity();
+                        }
                     }
                 } else if (identifierProperties.get("identifier") == null) {
                     String generatedIdentifier = identifierSourceServiceWrapper.generateIdentifierUsingIdentifierSourceUuid(identifierSourceUuid, "");
                     identifierProperties.put("identifier", generatedIdentifier);
                 }
             }
-
         }
 
         if (jumpSizes.size() > 0) {
@@ -136,6 +140,14 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         } catch (Exception e) {
             return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private ResponseEntity<Object> getIdentifierErrorMessageResponseEntity() throws IOException {
+        Map<String, Object> message = new LinkedHashMap<>();
+        message.put("message", "Entered numeric patient identifier is too large");
+        Map<String, Object> error = new LinkedHashMap<>();
+        error.put("error", message);
+        return new ResponseEntity<>(new ObjectMapper().writeValueAsString(error), HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/{uuid}")
