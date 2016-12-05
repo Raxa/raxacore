@@ -112,10 +112,13 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     public Collection<BahmniObservation> getLatest(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits, List<String> obsIgnoreList,
                                                    Boolean filterOutOrderObs, Order order) {
         List<Obs> latestObs = new ArrayList<>();
+        if (concepts == null)
+            return new ArrayList<>();
         for (Concept concept : concepts) {
-            if (null != concept) {
-                latestObs.addAll(obsDao.getObsByPatientAndVisit(patientUuid, Arrays.asList(concept.getName().getName()),
-                        visitDao.getVisitIdsFor(patientUuid, numberOfVisits), 1, ObsDaoImpl.OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order, null, null));
+            List<Obs> observations = obsDao.getObsByPatientAndVisit(patientUuid, Arrays.asList(concept.getName().getName()),
+                        visitDao.getVisitIdsFor(patientUuid, numberOfVisits), -1, ObsDaoImpl.OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order, null, null);
+            if(CollectionUtils.isNotEmpty(observations)) {
+                latestObs.addAll(getAllLatestObsForAConcept(observations));
             }
         }
 
@@ -203,7 +206,8 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         if (conceptNames == null)
             return new ArrayList<>();
         for (String conceptName : conceptNames) {
-            List<Obs> obsList = getAllLatestObsForConceptName(patientProgramUuid, conceptName);
+            List<Obs> obsByPatientProgramUuidAndConceptName = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList(conceptName), null, OrderBy.DESC, null, null);
+            List<Obs> obsList = getAllLatestObsForAConcept(obsByPatientProgramUuidAndConceptName);
             if (CollectionUtils.isNotEmpty(obsList)) {
                 observations.addAll(obsList);
             }
@@ -319,10 +323,9 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         return filteredObservations;
     }
 
-    private List<Obs> getAllLatestObsForConceptName(String patientProgramUuid, String conceptName) {
-        List<Obs> obsByPatientProgramUuidAndConceptNames = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList(conceptName), null, OrderBy.DESC, null, null);
+    private List<Obs> getAllLatestObsForAConcept(List<Obs> observations) {
         Map<Date, List<Obs>> obsToEncounterDateTimeMap = new TreeMap<>(Collections.<Date>reverseOrder());
-        for (Obs obs : obsByPatientProgramUuidAndConceptNames) {
+        for (Obs obs : observations) {
             if (obsToEncounterDateTimeMap.get(obs.getEncounter().getEncounterDatetime()) != null) {
                 obsToEncounterDateTimeMap.get(obs.getEncounter().getEncounterDatetime()).add(obs);
             } else {
