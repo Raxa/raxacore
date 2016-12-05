@@ -1,11 +1,13 @@
 package org.openmrs.module.bahmnicore.web.v1_0.resource;
 
+import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
@@ -19,6 +21,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -35,7 +38,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.when;
-@Ignore
+
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
@@ -50,6 +53,8 @@ public class BahmniProgramEnrollmentResourceTest {
     HttpServletRequest httpServletRequest;
     @Mock
     private PatientService patientService;
+    @Mock
+    private BahmniPatientProgram bahmniPatientProgram;
 
     @Before
     public void before() throws Exception {
@@ -150,5 +155,19 @@ public class BahmniProgramEnrollmentResourceTest {
         verify(requestContext, never()).getIncludeAll();
         verify(patientService, never()).getPatientByUuid(anyString());
         verify(bahmniProgramWorkflowService, never()).getPatientPrograms(any(Patient.class), any(Program.class), any(Date.class), any(Date.class), any(Date.class), any(Date.class), anyBoolean());
+    }
+
+    @Test
+    public void shouldReturnTheEncountersSpecificToGivenPatientProgram() {
+        String patientProgramUuid = "patientProgramUuid";
+        Collection<Encounter> encounters = new ArrayList<>();
+        when(Context.getService(BahmniProgramWorkflowService.class)).thenReturn(bahmniProgramWorkflowService);
+        when(bahmniPatientProgram.getUuid()).thenReturn(patientProgramUuid);
+        when(bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid)).thenReturn(encounters);
+
+        Collection<Encounter> response = bahmniProgramEnrollmentResource.getEncounters(bahmniPatientProgram);
+
+        assertNotNull(response);
+        verify(bahmniProgramWorkflowService, times(1)).getEncountersByPatientProgramUuid(patientProgramUuid);
     }
 }

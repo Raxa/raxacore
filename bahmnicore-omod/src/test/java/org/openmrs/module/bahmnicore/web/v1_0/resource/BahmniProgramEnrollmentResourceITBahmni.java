@@ -6,6 +6,7 @@ import org.bahmni.module.bahmnicore.web.v1_0.search.BahmniMainResourceController
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.api.PatientService;
@@ -15,8 +16,9 @@ import org.openmrs.module.webservices.rest.test.Util;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 public class BahmniProgramEnrollmentResourceITBahmni extends BahmniMainResourceControllerTest {
 
@@ -25,9 +27,10 @@ public class BahmniProgramEnrollmentResourceITBahmni extends BahmniMainResourceC
     private PatientService patientService;
 
     @Before
-    public void before() {
+    public void before() throws Exception {
         this.service = Context.getService(BahmniProgramWorkflowService.class);
         this.patientService = Context.getPatientService();
+        executeDataSet("patientProgramTestData.xml");
     }
 
 
@@ -41,10 +44,27 @@ public class BahmniProgramEnrollmentResourceITBahmni extends BahmniMainResourceC
 
         Patient patient = patientService.getPatientByUuid(PATIENT_IN_A_PROGRAM_UUID);
         List<PatientProgram> patientPrograms = service.getPatientPrograms(patient, null, null, null, null, null, true);
-        Assert.assertEquals(patientPrograms.size(), Util.getResultsSize(result));
+        assertEquals(patientPrograms.size(), Util.getResultsSize(result));
         BahmniPatientProgram bahmniPatientProgram = (BahmniPatientProgram) patientPrograms.get(0);
         List results = (List) result.get("results");
-        Assert.assertEquals(bahmniPatientProgram.getUuid(), ((HashMap) results.get(0)).get("uuid"));
+        assertEquals(bahmniPatientProgram.getUuid(), ((HashMap) results.get(0)).get("uuid"));
+    }
+
+    @Test
+    public void shouldReturnTheEncountersSpecificToGivenPatientProgram() throws Exception {
+        String patientProgramUuid = "dfdfoifo-dkcd-475d-b939-6d82327f36a3";
+        MockHttpServletRequest req = request(RequestMethod.GET, getURI());
+        req.setParameter("patientProgramUuid", patientProgramUuid);
+        req.setParameter("v", "custom:(encounter)");
+        SimpleObject result = deserialize(handle(req));
+
+        assertNotNull(result);
+        List results = (List) result.get("results");
+        assertNotNull(result.get("results"));
+        Map<String, ArrayList<Encounter>> map = (Map<String, ArrayList<Encounter>>) results.get(0);
+        ArrayList<Encounter> encounters = map.get("encounter");
+        assertNotNull(encounters);
+        assertEquals(1, encounters.size());
     }
 
 
