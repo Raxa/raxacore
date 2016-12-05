@@ -3629,7 +3629,80 @@
             delete from obs where concept_id = @diagnosis_status_concept_id and value_coded is null;
         </sql>
     </changeSet>
-    <changeSet id="bahmni-core-201611291417" author="Preethi">
+
+    <changeSet id="bahmni-core-201612051010" author="Gaurav">
+        <comment>Add 'Get Concept Sources' privilege to all roles containing 'Get Concepts'
+            privilege
+        </comment>
+        <sql>
+            INSERT INTO role_privilege (
+            SELECT DISTINCT
+            role,
+            'Get Concept Sources'
+            FROM
+            ( SELECT DISTINCT role
+            FROM role_privilege
+            WHERE privilege IN ('Get Concepts')) tmp
+            WHERE (role, 'Get Concept Sources') NOT IN ( SELECT *
+            FROM role_privilege));
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201612051015" author="Gaurav">
+        <comment>Add 'Add Encounters' privilege to all roles containing 'Add Visits' or 'Edit Visits'
+            privilege
+        </comment>
+        <sql>
+            INSERT INTO role_privilege (
+            SELECT DISTINCT
+            role,
+            'Add Encounters'
+            FROM
+            ( SELECT DISTINCT role
+            FROM role_privilege
+            WHERE privilege IN ('Add Visits','Edit Visits')) tmp
+            WHERE (role, 'Add Encounters') NOT IN ( SELECT *
+            FROM role_privilege));
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201612051020" author="Gaurav">
+        <comment>Add 'Edit Encounters' privilege to all roles containing 'Add Visits'or 'Edit Visits'
+            privilege
+        </comment>
+        <sql>
+            INSERT INTO role_privilege (
+            SELECT DISTINCT
+            role,
+            'Edit Encounters'
+            FROM
+            ( SELECT DISTINCT role
+            FROM role_privilege
+            WHERE privilege IN ('Add Visits','Edit Visits')) tmp
+            WHERE (role, 'Edit Encounters') NOT IN ( SELECT *
+            FROM role_privilege));
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201612051725" author="Gaurav">
+        <comment>Add 'Get Observations' privilege to all roles containing 'Add Encounters' and 'Edit Encounters'
+            privilege
+        </comment>
+        <sql>
+            INSERT INTO role_privilege (
+            SELECT DISTINCT
+            role,
+            'Get Observations'
+            FROM
+            ( SELECT DISTINCT role
+            FROM role_privilege
+            WHERE privilege IN ('Add Encounters', 'Edit Encounters')) tmp
+            WHERE (role, 'Get Observations') NOT IN ( SELECT *
+            FROM role_privilege));
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201612051350" author="Preethi,Gaurav">
         <comment>Add 'Add Observations' privilege to all roles containing 'Add Encounters' and 'Edit Encounters'
             privilege
         </comment>
@@ -3646,7 +3719,8 @@
             FROM role_privilege));
         </sql>
     </changeSet>
-    <changeSet id="bahmni-core-201611291503" author="Preethi">
+
+    <changeSet id="bahmni-core-201612051355" author="Preethi,Gaurav">
         <comment>Add 'Edit Observations' privilege to all roles containing 'Add Encounters' and 'Edit Encounters'
             privilege
         </comment>
