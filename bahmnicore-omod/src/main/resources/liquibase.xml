@@ -3621,15 +3621,6 @@
         </sql>
     </changeSet>
 
-    <changeSet id="bahmni-core-201611241116" author="Preethi, Gaurav">
-        <comment>Delete empty diagnosis status obs</comment>
-        <sql>
-            set @diagnosis_status_concept_id = 0;
-            select concept_id from concept_name where concept_name_type='FULLY_SPECIFIED' and name='Bahmni Diagnosis Status' into @diagnosis_status_concept_id;
-            delete from obs where concept_id = @diagnosis_status_concept_id and value_coded is null;
-        </sql>
-    </changeSet>
-
     <changeSet id="bahmni-core-201612051010" author="Gaurav">
         <comment>Add 'Get Concept Sources' privilege to all roles containing 'Get Concepts'
             privilege
@@ -3737,4 +3728,14 @@
             FROM role_privilege));
         </sql>
     </changeSet>
+    <changeSet id="bahmni-core-201612071518" author="Preethi, Gaurav">
+        <comment>Delete empty diagnosis status obs</comment>
+        <sql>
+            set @diagnosis_status_concept_id = 0;
+            select concept_id from concept_name where concept_name_type='FULLY_SPECIFIED' and name='Bahmni Diagnosis Status' into @diagnosis_status_concept_id;
+            update obs o1 join obs o2 on o1.previous_version = o2.obs_id and o2.concept_id = @diagnosis_status_concept_id and o2.value_coded is null set o1.previous_version = null;
+            delete from obs where concept_id = @diagnosis_status_concept_id and value_coded is null;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
