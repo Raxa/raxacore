@@ -3738,4 +3738,16 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-201612081800" author="Jaswanth">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from role_privilege where role = 'Clinical-App' and privilege = 'app:clinical:deleteDiagnosis'
+            </sqlCheck>
+        </preConditions>
+        <comment>Add delete diagnosis privilege to Clinical App role</comment>
+        <sql>
+            insert into role_privilege values('Clinical-App', 'app:clinical:deleteDiagnosis');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
