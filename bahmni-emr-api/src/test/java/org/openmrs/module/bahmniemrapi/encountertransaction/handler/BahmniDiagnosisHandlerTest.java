@@ -13,6 +13,7 @@ import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.builder.BahmniDiagnosisRequestBuilder;
 import org.openmrs.module.bahmniemrapi.builder.ConceptBuilder;
 import org.openmrs.module.bahmniemrapi.builder.EncounterBuilder;
 import org.openmrs.module.bahmniemrapi.builder.ObsBuilder;
@@ -72,6 +73,10 @@ public class BahmniDiagnosisHandlerTest {
         statusConcept.setUuid(String.valueOf(UUID.randomUUID()));
         revisedConcept.setUuid(String.valueOf(UUID.randomUUID()));
         initialDiagnosisConcept.setUuid(String.valueOf(UUID.randomUUID()));
+
+        when(bahmniDiagnosisMetadata.getBahmniDiagnosisStatusConcept()).thenReturn(statusConcept);
+        when(bahmniDiagnosisMetadata.getBahmniDiagnosisRevisedConcept()).thenReturn(revisedConcept);
+        when(bahmniDiagnosisMetadata.getBahmniInitialDiagnosisConcept()).thenReturn(initialDiagnosisConcept);
     }
 
     @Test
@@ -99,9 +104,7 @@ public class BahmniDiagnosisHandlerTest {
 
         when(bahmniDiagnosisMetadata.findMatchingDiagnosis(encounter.getObs(), bahmniDiagnosisRequest)).thenReturn
                 (diagnosisObs);
-        when(bahmniDiagnosisMetadata.getBahmniDiagnosisStatusConcept()).thenReturn(statusConcept);
-        when(bahmniDiagnosisMetadata.getBahmniDiagnosisRevisedConcept()).thenReturn(revisedConcept);
-        when(bahmniDiagnosisMetadata.getBahmniInitialDiagnosisConcept()).thenReturn(initialDiagnosisConcept);
+
         when(bahmniDiagnosisMetadata.diagnosisSchemaContainsStatus()).thenReturn(true);
         Concept ruledOutConcept = new Concept();
         when(conceptService.getConcept(RULED_OUT_CONCEPT)).thenReturn(ruledOutConcept);
@@ -148,9 +151,6 @@ public class BahmniDiagnosisHandlerTest {
 
         when(bahmniDiagnosisMetadata.findMatchingDiagnosis(encounter.getObs(), bahmniDiagnosisRequest)).thenReturn
                 (diagnosisObs);
-        when(bahmniDiagnosisMetadata.getBahmniDiagnosisStatusConcept()).thenReturn(statusConcept);
-        when(bahmniDiagnosisMetadata.getBahmniDiagnosisRevisedConcept()).thenReturn(revisedConcept);
-        when(bahmniDiagnosisMetadata.getBahmniInitialDiagnosisConcept()).thenReturn(initialDiagnosisConcept);
         when(bahmniDiagnosisMetadata.diagnosisSchemaContainsStatus()).thenReturn(true);
         Concept ruledOutConcept = new Concept();
         when(conceptService.getConcept(RULED_OUT_CONCEPT)).thenReturn(ruledOutConcept);
@@ -174,6 +174,37 @@ public class BahmniDiagnosisHandlerTest {
                 bahmniDiagnosisRequest.getFirstDiagnosis().getExistingObs())));
         assertThat(nonRevisedConcept.getValueCoded(), is(equalTo(conceptService.getTrueConcept())));
         verify(obsService).saveObs(previousObs, "Diagnosis is revised");
+    }
+
+    @Test
+    public void shouldHaveTheSameInitialDiagnosisAcrossMultipleSave() {
+        EncounterTransaction encounterTransaction = new EncounterTransaction();
+        String existingObsUUid = "ExistingObsUUID";
+
+        BahmniDiagnosisRequest bahmniDiagnosisRequest = new BahmniDiagnosisRequest();
+        BahmniDiagnosis firstDiagnosis = new BahmniDiagnosis();
+        firstDiagnosis.setExistingObs(existingObsUUid);
+        bahmniDiagnosisRequest.setFirstDiagnosis(firstDiagnosis);
+        encounterTransaction.addDiagnosis(bahmniDiagnosisRequest);
+        Encounter encounter = new EncounterBuilder().build();
+        Obs initialObs =new ObsBuilder().withConcept(initialDiagnosisConcept).withGroupMembers(new Obs[]{}).build();
+        initialObs.setId(123);
+        Obs diagnosisObs = new ObsBuilder()
+                .withConcept(new ConceptBuilder().withName("Diagnosis Concept Set").build())
+                .withGroupMembers(initialObs)
+                .build();
+        encounter.addObs(diagnosisObs);
+
+        when(bahmniDiagnosisMetadata.findMatchingDiagnosis(encounter.getObsAtTopLevel(false), bahmniDiagnosisRequest)).thenReturn
+                (diagnosisObs);
+
+        new BahmniDiagnosisHandler(bahmniDiagnosisMetadata, obsService, conceptService).forSave(encounter,
+                encounterTransaction);
+
+        Set<Obs> groupMembers = diagnosisObs.getGroupMembers();
+        assertEquals(2, groupMembers.size());
+        assertThat(groupMembers, hasItem(containsObsWith(revisedConcept, conceptService.getFalseConcept())));
+        assertThat(groupMembers, hasItem(containsObsWith(initialDiagnosisConcept, existingObsUUid)));
     }
 
     private Matcher<Iterable<? extends Obs>> containsObsWith(Concept concept, Concept value) {

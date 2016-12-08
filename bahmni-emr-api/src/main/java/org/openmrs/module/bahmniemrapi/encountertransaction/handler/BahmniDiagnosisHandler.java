@@ -78,7 +78,7 @@ public class BahmniDiagnosisHandler implements EncounterTransactionHandler {
 
     private void updateInitialDiagnosis(Obs diagnosisObs, BahmniDiagnosisRequest bahmniDiagnosis) {
         Obs obs = findOrCreateObs(diagnosisObs, bahmniDiagnosisMetadata.getBahmniInitialDiagnosisConcept());
-        String initialDiagnosisUuid = bahmniDiagnosis.getPreviousObs() == null
+        String initialDiagnosisUuid = bahmniDiagnosis.getPreviousObs() == null && obs.getId() == null
                 ? diagnosisObs.getUuid() :
                 bahmniDiagnosis.getFirstDiagnosis().getExistingObs();
 
