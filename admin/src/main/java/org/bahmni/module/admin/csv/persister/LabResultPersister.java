@@ -71,7 +71,6 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
             Patient patient = patientMatchService.getPatient(patientMatchingAlgorithmClassName, labResultsRow.getPatientAttributes(), labResultsRow.getPatientIdentifier(), shouldMatchExactPatientId);
             Visit visit = visitIdentificationHelper.getVisitFor(patient, labResultsRow.getVisitType(), labResultsRow.getTestDate(), labResultsRow.getTestDate(), labResultsRow.getTestDate(), loginLocationUuid);
             Encounter encounter = new Encounter();
-            visit.addEncounter(encounter);
             encounter.setPatient(patient);
             encounter.setEncounterDatetime(labResultsRow.getTestDate());
             encounter.setEncounterType(encounterService.getEncounterType(LAB_RESULT_ENCOUNTER_TYPE));
@@ -90,6 +89,7 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
                 encounter.addOrder(testOrder);
                 resultObservations.add(getResultObs(labResultRow, testOrder));
             }
+            visit.addEncounter(encounter);
             Encounter savedEncounter = encounterService.saveEncounter(encounter);
             bahmniVisitAttributeSaveCommand.save(savedEncounter);
             saveResults(encounter, resultObservations);
