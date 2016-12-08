@@ -126,7 +126,9 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
             Obs latestObsGroup = getLatestObsGroupBasedOnAnyDiagnosis(diagnosis, bahmniDiagnosisRevised);
             Diagnosis latestDiagnosis = bahmniDiagnosisMetadata.buildDiagnosisFromObsGroup(latestObsGroup, nonDiagnosisConcepts, nonDiagnosisConceptSets); //buildDiagnosisFromObsGroup(getBahmniDiagnosisHelper().getLatestBasedOnAnyDiagnosis(diagnosis));
             EncounterTransaction.Diagnosis etLatestDiagnosis = diagnosisMapper.convert(latestDiagnosis);
-            addDiagnosisToCollectionIfRecent(bahmniDiagnosisRequests, bahmniDiagnosisMetadata.mapBahmniDiagnosis(etDiagnosis, etLatestDiagnosis, true, false, diagnosisSchemaContainsStatus, true));
+            BahmniDiagnosisRequest bahmniDiagnosisRequestNew = bahmniDiagnosisMetadata.mapBahmniDiagnosis(etDiagnosis,
+                    etLatestDiagnosis, true, false, diagnosisSchemaContainsStatus, true);
+            addDiagnosisToCollectionIfRecent(bahmniDiagnosisRequests, bahmniDiagnosisRequestNew);
         }
 
         return bahmniDiagnosisRequests;

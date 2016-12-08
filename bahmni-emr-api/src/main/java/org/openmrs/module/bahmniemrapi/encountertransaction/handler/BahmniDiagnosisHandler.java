@@ -13,8 +13,8 @@ import org.openmrs.module.emrapi.encounter.postprocessor.EncounterTransactionHan
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class BahmniDiagnosisHandler implements EncounterTransactionHandler {
@@ -38,36 +38,46 @@ public class BahmniDiagnosisHandler implements EncounterTransactionHandler {
     @Override
     public void forSave(Encounter encounter, EncounterTransaction encounterTransaction) {
         List<EncounterTransaction.Diagnosis> diagnoses = encounterTransaction.getDiagnoses();
+        if (!diagnoses.isEmpty()) {
+            Set<Obs> obsAtTopLevel = encounter.getObsAtTopLevel(false);
+            Concept bahmniDiagnosisStatusConcept = bahmniDiagnosisMetadata.diagnosisSchemaContainsStatus() ?
+                    bahmniDiagnosisMetadata.getBahmniDiagnosisStatusConcept() : null;
+            Concept bahmniInitialDiagnosisConcept = bahmniDiagnosisMetadata.getBahmniInitialDiagnosisConcept();
+            Concept bahmniDiagnosisRevisedConcept = bahmniDiagnosisMetadata.getBahmniDiagnosisRevisedConcept();
 
-        for (EncounterTransaction.Diagnosis diagnosis : diagnoses) {
-            BahmniDiagnosisRequest bahmniDiagnosisRequest = (BahmniDiagnosisRequest) diagnosis;
-            addExtraMetadata(encounter.getObsAtTopLevel(false), bahmniDiagnosisRequest);
-            updateRevisedFlagOfPreviousDiagnosis(bahmniDiagnosisRequest);
+            for (EncounterTransaction.Diagnosis diagnosis : diagnoses) {
+                BahmniDiagnosisRequest bahmniDiagnosisRequest = (BahmniDiagnosisRequest) diagnosis;
+                addExtraMetadata(obsAtTopLevel, bahmniDiagnosisRequest, bahmniInitialDiagnosisConcept,
+                        bahmniDiagnosisStatusConcept, bahmniDiagnosisRevisedConcept);
+                updateRevisedFlagOfPreviousDiagnosis(bahmniDiagnosisRequest, bahmniDiagnosisRevisedConcept);
+            }
         }
     }
 
-    private void updateRevisedFlagOfPreviousDiagnosis(BahmniDiagnosisRequest bahmniDiagnosisRequest) {
+    private void addExtraMetadata(Set<Obs> obsAtTopLevel, BahmniDiagnosisRequest bahmniDiagnosisRequest,
+                                  Concept bahmniInitialDiagnosisConcept, Concept bahmniDiagnosisStatusConcept,
+                                  Concept bahmniDiagnosisRevisedConcept) {
+        Obs matchingDiagnosisObs = bahmniDiagnosisMetadata.findMatchingDiagnosis(obsAtTopLevel, bahmniDiagnosisRequest);
+
+        updateInitialDiagnosis(matchingDiagnosisObs, bahmniDiagnosisRequest, bahmniInitialDiagnosisConcept);
+        if (bahmniDiagnosisStatusConcept != null) {
+            updateDiagnosisStatus(matchingDiagnosisObs, bahmniDiagnosisRequest, bahmniDiagnosisStatusConcept);
+        }
+        updateRevisedFlag(matchingDiagnosisObs, false, bahmniDiagnosisRevisedConcept);
+    }
+
+    private void updateRevisedFlagOfPreviousDiagnosis(BahmniDiagnosisRequest bahmniDiagnosisRequest,
+                                                      Concept bahmniDiagnosisRevisedConcept) {
         if(bahmniDiagnosisRequest.getPreviousObs() ==null){
             return;
         }
         Obs previousObs = obsService.getObsByUuid(bahmniDiagnosisRequest.getPreviousObs());
-        updateRevisedConcept(previousObs, true);
+        updateRevisedFlag(previousObs, true, bahmniDiagnosisRevisedConcept);
         obsService.saveObs(previousObs, "Diagnosis is revised");
     }
 
-    public void addExtraMetadata(Collection<Obs> observations, BahmniDiagnosisRequest bahmniDiagnosis) {
-        Obs matchingDiagnosisObs = bahmniDiagnosisMetadata
-                .findMatchingDiagnosis(observations, bahmniDiagnosis);
-
-        updateInitialDiagnosis(matchingDiagnosisObs, bahmniDiagnosis);
-        if (bahmniDiagnosisMetadata.diagnosisSchemaContainsStatus()) {
-            updateStatusConcept(matchingDiagnosisObs, bahmniDiagnosis);
-        }
-        updateRevisedConcept(matchingDiagnosisObs, false);
-    }
-
-    void updateStatusConcept(Obs diagnosisObs, BahmniDiagnosis bahmniDiagnosis) {
-        Obs obs = findOrCreateObs(diagnosisObs, bahmniDiagnosisMetadata.getBahmniDiagnosisStatusConcept());
+    void updateDiagnosisStatus(Obs diagnosisObs, BahmniDiagnosis bahmniDiagnosis, Concept bahmniDiagnosisStatusConcept) {
+        Obs obs = findOrCreateObs(diagnosisObs, bahmniDiagnosisStatusConcept);
         if (bahmniDiagnosis.getDiagnosisStatusConcept() != null) {
             Concept statusConcept = conceptService.getConcept(bahmniDiagnosis.getDiagnosisStatusConcept().getName());
             obs.setValueCoded(statusConcept);
@@ -76,9 +86,10 @@ public class BahmniDiagnosisHandler implements EncounterTransactionHandler {
     }
 
 
-    private void updateInitialDiagnosis(Obs diagnosisObs, BahmniDiagnosisRequest bahmniDiagnosis) {
-        Obs obs = findOrCreateObs(diagnosisObs, bahmniDiagnosisMetadata.getBahmniInitialDiagnosisConcept());
-        String initialDiagnosisUuid = bahmniDiagnosis.getPreviousObs() == null && obs.getId() == null
+    private void updateInitialDiagnosis(Obs diagnosisObs, BahmniDiagnosisRequest bahmniDiagnosis,
+                                        Concept bahmniInitialDiagnosisConcept) {
+        Obs obs = findOrCreateObs(diagnosisObs, bahmniInitialDiagnosisConcept);
+            String initialDiagnosisUuid = bahmniDiagnosis.getPreviousObs() == null && obs.getId() == null
                 ? diagnosisObs.getUuid() :
                 bahmniDiagnosis.getFirstDiagnosis().getExistingObs();
 
@@ -87,8 +98,8 @@ public class BahmniDiagnosisHandler implements EncounterTransactionHandler {
     }
 
 
-    private void updateRevisedConcept(Obs diagnosisObs, boolean value) {
-        Obs obs = findOrCreateObs(diagnosisObs, bahmniDiagnosisMetadata.getBahmniDiagnosisRevisedConcept());
+    private void updateRevisedFlag(Obs diagnosisObs, boolean value, Concept bahmniDiagnosisRevisedConcept) {
+        Obs obs = findOrCreateObs(diagnosisObs, bahmniDiagnosisRevisedConcept);
         obs.setValueBoolean(value);
         addToObsGroup(diagnosisObs, obs);
     }
