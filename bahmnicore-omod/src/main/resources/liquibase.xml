@@ -3750,4 +3750,11 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-201612091038" author="Preethi">
+        <comment>Update log level of org.openmrs.api to WARN</comment>
+        <sql>
+            update global_property set property_value='org.openmrs.api:warn' where property = 'log.level' and property_value like '%org.openmrs.api%';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
