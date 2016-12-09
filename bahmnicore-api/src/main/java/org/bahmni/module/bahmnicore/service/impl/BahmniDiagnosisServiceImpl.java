@@ -165,7 +165,8 @@ public class BahmniDiagnosisServiceImpl implements BahmniDiagnosisService {
 
         for (Diagnosis diagnosis : diagnosisByPatientAndDate) {
             EncounterTransaction.Diagnosis etDiagnosis = diagnosisMapper.convert(diagnosis);
-            BahmniDiagnosisRequest bahmniDiagnosisRequest = bahmniDiagnosisMetadata.mapBahmniDiagnosis(etDiagnosis, null, true, false, diagnosisSchemaContainsStatus,false);
+            BahmniDiagnosisRequest bahmniDiagnosisRequest = bahmniDiagnosisMetadata.mapBahmniDiagnosis(etDiagnosis,
+                    null, true, false, diagnosisSchemaContainsStatus,false);
 
             if (bahmniDiagnosisRequest != null) {
                 bahmniDiagnosisRequests.add(bahmniDiagnosisRequest);

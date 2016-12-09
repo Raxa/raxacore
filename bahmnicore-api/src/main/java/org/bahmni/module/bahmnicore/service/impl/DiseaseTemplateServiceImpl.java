@@ -68,9 +68,11 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         List<DiseaseTemplate> diseaseTemplates = new ArrayList<>();
 
         for (DiseaseTemplateConfig diseaseTemplateConfig : diseaseTemplatesConfig.getDiseaseTemplateConfigList()) {
-            Concept diseaseTemplateConcept = conceptService.getConceptByName(diseaseTemplateConfig.getTemplateName());
-            DiseaseTemplate diseaseTemplate = new DiseaseTemplate(getConcept(diseaseTemplateConfig.getTemplateName()));
-            diseaseTemplate.addObservationTemplates(createObservationTemplates(diseaseTemplatesConfig.getPatientUuid(), diseaseTemplateConcept, diseaseTemplatesConfig.getStartDate(), diseaseTemplatesConfig.getEndDate()));
+            String templateName = diseaseTemplateConfig.getTemplateName();
+            Concept diseaseTemplateConcept = conceptService.getConceptByName(templateName);
+            DiseaseTemplate diseaseTemplate = new DiseaseTemplate(mapToETConcept(diseaseTemplateConcept, templateName));
+            diseaseTemplate.addObservationTemplates(createObservationTemplates(diseaseTemplatesConfig.getPatientUuid(),
+                    diseaseTemplateConcept, diseaseTemplatesConfig.getStartDate(), diseaseTemplatesConfig.getEndDate()));
             List<String> showOnlyConceptsForTheDisease = getShowOnlyConceptsForTheDisease(diseaseTemplate, diseaseTemplatesConfig);
             if (CollectionUtils.isNotEmpty(showOnlyConceptsForTheDisease)) {
                 filterObs(diseaseTemplate, showOnlyConceptsForTheDisease);
@@ -86,10 +88,11 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         if(CollectionUtils.isEmpty(diseaseTemplatesConfig.getDiseaseTemplateConfigList())){
             throw new BahmniCoreException("Disease template not found");
         }
-        Concept diseaseTemplateConcept = conceptService.getConceptByName(diseaseTemplatesConfig.getDiseaseTemplateConfigList().get(0).getTemplateName());
-        DiseaseTemplate diseaseTemplate = new DiseaseTemplate(getConcept(diseaseTemplatesConfig.getDiseaseTemplateConfigList().get(0).getTemplateName()));
+        String templateName = diseaseTemplatesConfig.getDiseaseTemplateConfigList().get(0).getTemplateName();
+        Concept diseaseTemplateConcept = conceptService.getConceptByName(templateName);
+        DiseaseTemplate diseaseTemplate = new DiseaseTemplate(mapToETConcept(diseaseTemplateConcept, templateName));
         if (diseaseTemplateConcept == null) {
-            log.warn("Disease template concept " + diseaseTemplatesConfig.getDiseaseTemplateConfigList().get(0).getTemplateName() + " not found. Please check your configuration");
+            log.warn("Disease template concept " + templateName + " not found. Please check your configuration");
             return diseaseTemplate;
         }
         List<Concept> observationTemplateConcepts = diseaseTemplateConcept.getSetMembers();
@@ -103,8 +106,11 @@ public class DiseaseTemplateServiceImpl implements DiseaseTemplateService {
         return diseaseTemplate;
     }
 
-    private EncounterTransaction.Concept getConcept(String conceptName) {
-        return bahmniConceptService.getConceptByName(conceptName);
+    private EncounterTransaction.Concept mapToETConcept(Concept concept, String conceptName) {
+        if (concept == null) {
+            return new EncounterTransaction.Concept(null, conceptName, false, null, null, null, null,null);
+        }
+        return conceptMapper.map(concept);
     }
 
     private List<String> getShowOnlyConceptsForTheDisease(DiseaseTemplate diseaseTemplate, DiseaseTemplatesConfig diseaseTemplatesConfig) {
