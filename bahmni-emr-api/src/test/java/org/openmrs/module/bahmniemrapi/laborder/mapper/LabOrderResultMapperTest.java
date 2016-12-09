@@ -1,5 +1,6 @@
 package org.openmrs.module.bahmniemrapi.laborder.mapper;
 
+import org.databene.commons.CollectionUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -13,9 +14,9 @@ import org.openmrs.module.emrapi.test.builder.ConceptDataTypeBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -27,6 +28,10 @@ public class LabOrderResultMapperTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
+        ConceptDatatype coded = new ConceptDataTypeBuilder().text();
+        Concept labReportConcept = new Concept();
+        labReportConcept.setDatatype(coded);
+        when(conceptService.getConceptByName(LabOrderResultMapper.LAB_REPORT)).thenReturn(labReportConcept);
         labOrderResultMapper = new LabOrderResultMapper(conceptService);
     }
 
@@ -62,8 +67,8 @@ public class LabOrderResultMapperTest {
         assertNull(resultObs.get(0).getValueText());
     }
 
-    @Test(expected = RuntimeException.class)
-    public void shouldThrowExceptionIfResultIsNotAnswerForCodedConcept() throws Exception {
+    @Test
+    public void shouldNotAddObsIfResultIsNotAnswerForCodedConcept() throws Exception {
         LabOrderResult labOrderResult = new LabOrderResult();
         labOrderResult.setResultUuid(null);
         labOrderResult.setResult("A+ve");
@@ -75,7 +80,12 @@ public class LabOrderResultMapperTest {
         testConcept.setDatatype(coded);
         Order testOrder = new Order(1);
 
-       labOrderResultMapper.map(labOrderResult, testOrder, testConcept);
+        Obs topLevelObs = labOrderResultMapper.map(labOrderResult, testOrder, testConcept);
+
+        List<Obs> testObs = new ArrayList<>(topLevelObs.getGroupMembers());
+        Set<Obs> resultObs = testObs.get(0).getGroupMembers();
+        assertEquals(1, testObs.size());
+        assertTrue(CollectionUtil.isEmpty(resultObs));
 
     }
 
@@ -102,6 +112,57 @@ public class LabOrderResultMapperTest {
         assertEquals(testConcept, resultObs.get(0).getConcept());
         assertEquals(testOrder, resultObs.get(0).getOrder());
         assertEquals(new Double(15), resultObs.get(0).getValueNumeric());
+    }
+
+    @Test
+    public void shouldNotAddEmptyObsWhenResultIsNotPresent() throws Exception {
+        LabOrderResult labOrderResult = new LabOrderResult();
+        labOrderResult.setResultUuid(null);
+        labOrderResult.setResult(null);
+        labOrderResult.setAccessionUuid("accession-uuid");
+        labOrderResult.setTestName("Haemoglobin");
+
+        ConceptDatatype coded = new ConceptDataTypeBuilder().numeric();
+        Concept testConcept = new Concept(1);
+        testConcept.setDatatype(coded);
+        Order testOrder = new Order(1);
+
+        Obs topLevelObs = labOrderResultMapper.map(labOrderResult, testOrder, testConcept);
+
+        assertEquals(testConcept, topLevelObs.getConcept());
+        assertEquals(testOrder, topLevelObs.getOrder());
+        List<Obs> testObs = new ArrayList<>(topLevelObs.getGroupMembers());
+        Set<Obs> resultObs = testObs.get(0).getGroupMembers();
+        assertEquals(1, testObs.size());
+        assertTrue(CollectionUtil.isEmpty(resultObs));
+
+    }
+
+    @Test
+    public void shouldMapFileNameEvenEvenWhenResultIsNotPresent() throws Exception {
+        String uploadedFileName = "ResultsDoc";
+        LabOrderResult labOrderResult = new LabOrderResult();
+        labOrderResult.setResultUuid(null);
+        labOrderResult.setResult(null);
+        labOrderResult.setUploadedFileName(uploadedFileName);
+        labOrderResult.setAccessionUuid("accession-uuid");
+        labOrderResult.setTestName("Haemoglobin");
+
+        ConceptDatatype coded = new ConceptDataTypeBuilder().numeric();
+        Concept testConcept = new Concept(1);
+        testConcept.setDatatype(coded);
+        Order testOrder = new Order(1);
+
+        Obs topLevelObs = labOrderResultMapper.map(labOrderResult, testOrder, testConcept);
+
+        assertEquals(testConcept, topLevelObs.getConcept());
+        assertEquals(testOrder, topLevelObs.getOrder());
+        List<Obs> testObs = new ArrayList<>(topLevelObs.getGroupMembers());
+        List<Obs> resultObs = new ArrayList<>(testObs.get(0).getGroupMembers());
+
+        assertEquals(1, testObs.size());
+        assertEquals(1, resultObs.size());
+        assertEquals(uploadedFileName, resultObs.get(0).getValueText());
     }
 
 }
