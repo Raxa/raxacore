@@ -71,6 +71,11 @@ public class ObsBuilder {
         return this;
     }
 
+    public ObsBuilder withVoided() {
+        obs.setVoided(true);
+        return this;
+    }
+
     public Obs build() {
         return obs;
     }

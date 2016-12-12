@@ -5,18 +5,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
-import org.mockito.Answers;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.openmrs.Concept;
-import org.openmrs.Obs;
+import org.mockito.*;
+import org.mockito.internal.invocation.CapturesArgumensFromInvocation;
+import org.mockito.internal.matchers.CapturesArguments;
+import org.openmrs.*;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.builder.ConceptBuilder;
 import org.openmrs.module.bahmniemrapi.builder.ObsBuilder;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
+import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.emrapi.EmrApiProperties;
+import org.openmrs.module.emrapi.encounter.EncounterTransactionMapper;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.util.LocaleUtility;
 import org.powermock.api.mockito.PowerMockito;
@@ -26,10 +27,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.Arrays;
 import java.util.Locale;
 
+import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
@@ -40,10 +44,11 @@ public class BahmniDiagnosisMetadataTest {
     private ObsService obsService;
     @Mock
     private ConceptService conceptService;
+    @Mock
+    private EncounterTransactionMapper eTMapper;
 
     @Mock(answer= Answers.RETURNS_DEEP_STUBS)
     private EmrApiProperties properties;
-
     public static final String BOOLEAN_UUID = "8d4a5cca-c2cc-11de-8d13-0010c6dffd0f";
     private static final String BAHMNI_DIAGNOSIS_STATUS = "Bahmni Diagnosis Status";
     private static final String BAHMNI_DIAGNOSIS_REVISED = "Bahmni Diagnosis Revised";
@@ -237,8 +242,59 @@ public class BahmniDiagnosisMetadataTest {
         assertNotNull(matchingDiagnosis);
     }
 
+    @Test
+    public void shouldUpdateInitialDiagnosisAsCurrentDiagnosisWhenInitialDiagnosisIsVoided() throws Exception {
+        Concept initialDiagnosisConcept = conceptForName(BAHMNI_INITIAL_DIAGNOSIS);
+        String initialDiagnosisUuid = "initial-obs-uuid";
+        String existingObsUuid = "existing-obs-uuid";
+        Obs initialDiagnosisObs = new ObsBuilder().
+                withConcept(conceptForName("Dehydration")).withVoided().build();
+        Concept diagnosisSetConcept = conceptForName("Diagnosis Concept Set");
+        Concept revised = conceptForName(BAHMNI_DIAGNOSIS_REVISED);
+        Concept falseConcept = conceptForName("FALSE");
+        when(conceptService.getConceptByName(BAHMNI_DIAGNOSIS_REVISED)).thenReturn(revised);
+        when(conceptService.getFalseConcept()).thenReturn(falseConcept);
+        when(conceptService.getConceptByName(BAHMNI_INITIAL_DIAGNOSIS)).thenReturn(initialDiagnosisConcept);
+        when(obsService.getObsByUuid(initialDiagnosisUuid)).thenReturn(initialDiagnosisObs);
+        EncounterTransaction encounterTransaction = new EncounterTransaction();
+        encounterTransaction.addDiagnosis(new EncounterTransaction.Diagnosis().setExistingObs(existingObsUuid));
+        when(eTMapper.map(Matchers.any(Encounter.class),eq(false))).thenReturn(encounterTransaction);
+        Obs diagnosisObs =
+                new ObsBuilder().withConcept(diagnosisSetConcept)
+                        .withGroupMembers(
+
+                                new ObsBuilder().withConcept(conceptForName("Diagnosis Order"))
+                                        .withValue(conceptForName("Primary")).build(),
+                                new ObsBuilder().withConcept(conceptForName("Diagnosis Certainty"))
+                                        .withValue(conceptForName("Confirmed")).build(),
+                                new ObsBuilder().withConcept(initialDiagnosisConcept)
+                                        .withValue(initialDiagnosisUuid).build(),
+                                new ObsBuilder().withConcept(revised)
+                                        .withValue(falseConcept).build())
+                        .withEncounter(new Encounter())
+                        .withCreator(createUser("Ram")).build();
+        diagnosisObs.setUuid(existingObsUuid);
+        when(obsService.getObsByUuid(existingObsUuid)).thenReturn(diagnosisObs);
+
+        BahmniDiagnosis bahmniDiagnosis = new BahmniDiagnosis();
+        bahmniDiagnosis.setExistingObs(existingObsUuid);
+        BahmniDiagnosisMetadata bahmniDiagnosisMetadata = new BahmniDiagnosisMetadata(obsService, conceptService, properties, eTMapper);
+        BahmniDiagnosisRequest bahmniDiagnosisRequest = bahmniDiagnosisMetadata.mapBahmniDiagnosis(bahmniDiagnosis, null, true, false, true, true);
+
+        ArgumentCaptor<Obs> obsArgumentCaptor = ArgumentCaptor.forClass(Obs.class);
+        verify(obsService).saveObs(obsArgumentCaptor.capture(), eq("Initial obs got voided"));
+        Obs obs = obsArgumentCaptor.getValue();
+        assertThat(obs.getValueText(),is(existingObsUuid));
+        assertThat(bahmniDiagnosisRequest.getFirstDiagnosis().getExistingObs(),is(existingObsUuid));
+    }
+
     public Concept conceptForName(String conceptName) {
         return new ConceptBuilder().withName(conceptName).build();
     }
 
+    private User createUser(String name){
+        Person person = new Person();
+        person.addName(new PersonName(name,null,null));
+        return new User(person);
+    }
 }

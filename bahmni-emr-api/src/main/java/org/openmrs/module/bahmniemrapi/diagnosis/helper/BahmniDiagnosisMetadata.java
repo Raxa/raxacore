@@ -94,7 +94,14 @@ public class BahmniDiagnosisMetadata {
         }
 
         if (mapFirstDiagnosis) {
-            Obs initialDiagnosisObsGroup = obsService.getObsByUuid(requiredObs.get(BAHMNI_INITIAL_DIAGNOSIS).getValueText());
+            Obs initialObs = requiredObs.get(BAHMNI_INITIAL_DIAGNOSIS);
+            Obs initialDiagnosisObsGroup = obsService.getObsByUuid(initialObs.getValueText());
+
+            if(initialDiagnosisObsGroup.getVoided()){
+                initialDiagnosisObsGroup = diagnosisObsGroup;
+                initialObs.setValueText(diagnosisObsGroup.getUuid());
+                obsService.saveObs(initialObs,"Initial obs got voided");
+            }
             EncounterTransaction encounterTransactionWithInitialDiagnosis = encounterTransactionMapper.map(initialDiagnosisObsGroup.getEncounter(), includeAll);
             EncounterTransaction.Diagnosis initialDiagnosis = findInitialDiagnosis(encounterTransactionWithInitialDiagnosis, initialDiagnosisObsGroup);
             bahmniDiagnosis.setFirstDiagnosis(mapBahmniDiagnosis(initialDiagnosis, null, false, includeAll, diagnosisSchemaContainsStatus, true));
