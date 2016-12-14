@@ -5,10 +5,20 @@ import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.PatientProgramAtt
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
 import org.junit.Before;
 import org.junit.Test;
-import org.openmrs.*;
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonAttribute;
+import org.openmrs.PersonAttributeType;
+import org.openmrs.PersonName;
 import org.openmrs.module.bahmniemrapi.patient.PatientContext;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

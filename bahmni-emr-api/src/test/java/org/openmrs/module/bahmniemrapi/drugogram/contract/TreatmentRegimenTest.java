@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 public class TreatmentRegimenTest {

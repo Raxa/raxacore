@@ -13,7 +13,6 @@ import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.bahmniemrapi.builder.BahmniDiagnosisRequestBuilder;
 import org.openmrs.module.bahmniemrapi.builder.ConceptBuilder;
 import org.openmrs.module.bahmniemrapi.builder.EncounterBuilder;
 import org.openmrs.module.bahmniemrapi.builder.ObsBuilder;

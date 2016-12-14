@@ -1,9 +1,12 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.matcher;
 
-import org.openmrs.*;
+import org.openmrs.Encounter;
+import org.openmrs.EncounterRole;
+import org.openmrs.EncounterType;
+import org.openmrs.Provider;
+import org.openmrs.Visit;
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Set;

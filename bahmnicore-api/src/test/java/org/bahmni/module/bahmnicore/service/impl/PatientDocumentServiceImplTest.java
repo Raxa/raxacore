@@ -4,7 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.bahmni.module.bahmnicore.bahmniexceptions.VideoFormatNotSupportedException;
 import org.bahmni.module.bahmnicore.model.VideoFormats;
 import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

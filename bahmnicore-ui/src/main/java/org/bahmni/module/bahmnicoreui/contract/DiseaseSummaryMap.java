@@ -1,9 +1,8 @@
 package org.bahmni.module.bahmnicoreui.contract;
 
-import java.util.LinkedHashMap;
 import org.apache.commons.collections.MapUtils;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DiseaseSummaryMap extends LinkedHashMap<String, Map<String, ConceptValue>> {

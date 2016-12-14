@@ -12,7 +12,7 @@ import org.openmrs.ConceptSource;
 import org.openmrs.api.APIException;
 import org.openmrs.api.ConceptService;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;

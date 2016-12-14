@@ -1,8 +1,8 @@
 package org.bahmni.module.bahmnicore.web.v1_0.contract;
 
-import org.openmrs.Drug;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
+import org.openmrs.Drug;
 
 public class BahmniConceptAnswer {
     private Drug drug;

@@ -3,7 +3,6 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.service;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
-import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 
 import java.util.Date;
 

@@ -9,7 +9,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.Concept;
-import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.powermock.api.mockito.PowerMockito;

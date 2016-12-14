@@ -16,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class VisitIdentificationHelperIT extends BaseModuleWebContextSensitiveTest {

@@ -17,10 +17,18 @@ import org.openmrs.module.bahmniemrapi.drugogram.contract.BaseTableExtension;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.TreatmentRegimen;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 public class DrugOGramControllerTest {

@@ -6,7 +6,6 @@ import org.openmrs.Visit;
 import org.openmrs.api.EncounterService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterSearchParameters;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
-import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.BahmniEncounterTransactionMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.emrapi.encounter.EmrEncounterService;
@@ -24,9 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.UUID;
 
 import static org.bahmni.module.bahmnicore.util.MiscUtils.setUuidsForObservations;
 

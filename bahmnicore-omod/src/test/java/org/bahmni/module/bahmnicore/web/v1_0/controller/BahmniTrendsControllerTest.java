@@ -1,7 +1,5 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.contract.encounter.data.ConceptData;
-import org.bahmni.module.bahmnicore.contract.encounter.data.PersonObservationData;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -15,7 +13,6 @@ import org.openmrs.api.AdministrationService;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import static org.mockito.Mockito.verify;

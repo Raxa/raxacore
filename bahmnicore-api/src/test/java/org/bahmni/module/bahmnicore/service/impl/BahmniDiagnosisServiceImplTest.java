@@ -7,9 +7,22 @@ import org.bahmni.test.builder.ObsBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
-import org.openmrs.*;
-import org.openmrs.api.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.openmrs.Concept;
+import org.openmrs.Encounter;
+import org.openmrs.Obs;
+import org.openmrs.Patient;
+import org.openmrs.Person;
+import org.openmrs.Visit;
+import org.openmrs.api.ConceptService;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.ObsService;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.VisitService;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.diagnosis.helper.BahmniDiagnosisMetadata;
@@ -23,11 +36,25 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyList;
+import static org.mockito.Mockito.anyListOf;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @PrepareForTest(LocaleUtility.class)
 @RunWith(PowerMockRunner.class)

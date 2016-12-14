@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.openmrs.Location;
 import org.openmrs.LocationTag;
 import org.openmrs.Visit;
 import org.openmrs.api.LocationService;
@@ -14,7 +15,6 @@ import org.openmrs.module.bahmniemrapi.builder.VisitBuilder;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.openmrs.Location;
 
 import java.util.Arrays;
 

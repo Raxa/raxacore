@@ -7,8 +7,6 @@ import org.junit.Test;
 import org.openmrs.module.bahmniemrapi.visitlocation.VisitLocationNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
-
 import static org.junit.Assert.assertEquals;
 
 public class BahmniVisitLocationControllerIT extends BaseIntegrationTest {

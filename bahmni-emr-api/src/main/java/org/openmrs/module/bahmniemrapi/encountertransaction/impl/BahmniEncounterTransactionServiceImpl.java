@@ -35,7 +35,11 @@ import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.matcher.BaseEncounterMatcher;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 @Transactional
 public class BahmniEncounterTransactionServiceImpl extends BaseOpenmrsService implements BahmniEncounterTransactionService {

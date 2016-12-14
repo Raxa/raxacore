@@ -3,13 +3,11 @@ package org.openmrs.module.bahmnicore.web.v1_0.resource;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterProvider;
 import org.openmrs.Person;
-import org.openmrs.Provider;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.annotation.PropertyGetter;
 import org.openmrs.module.webservices.rest.web.annotation.Resource;
 import org.openmrs.module.webservices.rest.web.v1_0.resource.openmrs1_9.EncounterResource1_9;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Resource(name = RestConstants.VERSION_1 + "/encounter", supportedClass = Encounter.class, supportedOpenmrsVersions = {"1.9.*", "1.10.*", "1.11.*", "1.12.*", "2.0.*"},order=2)

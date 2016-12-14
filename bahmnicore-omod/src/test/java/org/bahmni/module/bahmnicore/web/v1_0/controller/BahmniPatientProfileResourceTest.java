@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
-import org.openmrs.PatientIdentifierType;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.api.AdministrationService;

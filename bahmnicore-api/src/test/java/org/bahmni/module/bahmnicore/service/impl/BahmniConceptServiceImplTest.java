@@ -10,10 +10,10 @@ import org.openmrs.Drug;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.ArrayList;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;

@@ -5,9 +5,6 @@ import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
 import org.openmrs.VisitAttributeType;
 import org.openmrs.api.VisitService;
-import org.openmrs.module.bahmniemrapi.encountertransaction.command.EncounterDataPostSaveCommand;
-import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
-import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

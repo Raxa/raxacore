@@ -1,6 +1,9 @@
 package org.bahmni.module.referencedata.web.contract.mapper;
 
-import org.bahmni.module.referencedata.labconcepts.contract.*;
+import org.bahmni.module.referencedata.labconcepts.contract.AllTestsAndPanels;
+import org.bahmni.module.referencedata.labconcepts.contract.LabTest;
+import org.bahmni.module.referencedata.labconcepts.contract.Panel;
+import org.bahmni.module.referencedata.labconcepts.contract.Sample;
 import org.bahmni.module.referencedata.labconcepts.mapper.PanelMapper;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Before;

@@ -12,7 +12,6 @@ import org.openmrs.test.BaseModuleContextSensitiveTest;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 

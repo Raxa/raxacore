@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.bahmni.module.bahmnicore.util.MiscUtils.setUuidsForObservations;

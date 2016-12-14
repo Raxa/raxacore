@@ -4,7 +4,6 @@ package org.openmrs.module.bahmniemrapi.visitlocation;
 import org.openmrs.Location;
 import org.openmrs.Visit;
 import org.openmrs.api.LocationService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.emrapi.EmrApiConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
