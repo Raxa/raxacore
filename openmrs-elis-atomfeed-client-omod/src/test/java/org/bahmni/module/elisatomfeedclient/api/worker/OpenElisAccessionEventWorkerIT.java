@@ -302,11 +302,11 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         final Set<Obs> testLevelObs = getGroupMembersForObs(topLevelObs);
         assertEquals(1, testLevelObs.size());
         final Set<Obs> resultMembers = getGroupMembersForObs(testLevelObs);
-        assertEquals(4, resultMembers.size());
+        assertEquals(3, resultMembers.size());
 
         Obs testResultObs = getObsByConceptUuid(testLevelObs, haemoglobinConceptUuid);
         assertNotNull(testResultObs);
-        assertEquals(4, testResultObs.getGroupMembers().size());
+        assertEquals(3, testResultObs.getGroupMembers().size());
 
         Obs documentUploadedObs = getObsByConceptUuid(resultMembers, documentConceptUuid);
         assertNotNull(documentUploadedObs);
