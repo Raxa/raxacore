@@ -47,13 +47,14 @@
         <bacteriology.version>1.1-SNAPSHOT</bacteriology.version>
     </properties>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>bahmni-artifactory</id>
-            <name>bahmni-artifactory-snapshots</name>
-            <url>http://bahmnirepo.thoughtworks.com/artifactory/libs-snapshot-local</url>
-        </snapshotRepository>
-    </distributionManagement>
+   
+<distributionManagement>
+       <snapshotRepository>
+           <id>repo.mybahmni.org</id>
+           <name>bahmni-artifactory-snapshots</name>
+           <url>s3://repo.mybahmni.org/artifactory/snapshot</url>
+       </snapshotRepository>
+   </distributionManagement>
 
     <dependencyManagement>
         <dependencies>
@@ -442,6 +443,13 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <extensions>
+           <extension>
+               <groupId>org.kuali.maven.wagons</groupId>
+               <artifactId>maven-s3-wagon</artifactId>
+               <version>1.2.1</version>
+           </extension>
+       </extensions>
     </build>
 
     <profiles>
@@ -552,19 +560,19 @@
                 <updatePolicy>always</updatePolicy>
             </releases>
         </repository>
-        <repository>
-            <id>bahmni-artifactory</id>
-            <name>bahmni-artifactory-snapshots</name>
-            <url>http://bahmnirepo.thoughtworks.com/artifactory/libs-snapshot-local</url>
-            <snapshots>
-                <updatePolicy>always</updatePolicy>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>bahmni-artifactory-releases</id>
-            <name>bahmni-artifactory-releases</name>
-            <url>http://bahmnirepo.thoughtworks.com/artifactory/libs-release-local</url>
-        </repository>        
+       <repository>
+           <id>repo.mybahmni.org</id>
+           <name>bahmni-artifactory-snapshots</name>
+           <url>s3://repo.mybahmni.org/artifactory/snapshot</url>
+           <snapshots>
+               <updatePolicy>always</updatePolicy>
+           </snapshots>
+       </repository>
+    <repository>
+          <id>repo.mybahmni.org</id>
+          <name>bahmni-artifactory-release</name>
+          <url>s3://repo.mybahmni.org/artifactory/release</url>
+      </repository>      
         <repository>
             <id>rubygems-releases</id>
             <url>http://rubygems-proxy.torquebox.org/releases</url>
