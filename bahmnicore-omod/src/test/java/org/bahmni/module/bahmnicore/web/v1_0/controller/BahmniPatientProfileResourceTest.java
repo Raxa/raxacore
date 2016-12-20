@@ -11,6 +11,7 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
+import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.PersonService;
@@ -46,6 +47,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.powermock.api.mockito.PowerMockito.doThrow;
 
 // TODO: 13/09/16 This is wrong way of writing test. We should mock the external dependency in resource but we ended up mocking all internal dependencies. For eg: MessageSourceService
 @PrepareForTest({Context.class, BahmniPatientProfileResource.class})
@@ -152,4 +154,13 @@ public class BahmniPatientProfileResourceTest {
         verify(delegate, times(2)).setRelationships(relationships);
     }
 
+    @Test
+    public void shouldThrowExceptionWhenPatientIsNotHavingProperPrivilege() throws Exception {
+        bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper);
+        BahmniPatientProfileResource spy = spy(bahmniPatientProfileResource);
+        doThrow(new APIAuthenticationException()).when(spy, "mapForUpdatePatient", anyString(), any(SimpleObject.class));
+
+        ResponseEntity<Object> response = spy.update("someUuid", propertiesToCreate);
+        Assert.assertEquals(403,response.getStatusCode().value());
+    }
 }

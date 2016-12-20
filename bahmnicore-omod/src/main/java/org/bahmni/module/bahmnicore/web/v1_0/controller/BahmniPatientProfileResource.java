@@ -12,6 +12,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.Person;
 import org.openmrs.Relationship;
 import org.openmrs.RelationshipType;
+import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.ValidationException;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
@@ -153,7 +154,12 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
     @RequestMapping(method = RequestMethod.POST, value = "/{uuid}")
     @ResponseBody
     public ResponseEntity<Object> update(@PathVariable("uuid") String uuid, @RequestBody SimpleObject propertiesToUpdate) throws Exception {
-        PatientProfile delegate = mapForUpdatePatient(uuid, propertiesToUpdate);
+        PatientProfile delegate = null;
+        try {
+            delegate = mapForUpdatePatient(uuid, propertiesToUpdate);
+        } catch (APIAuthenticationException e) {
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.FORBIDDEN);
+        }
         setConvertedProperties(delegate, propertiesToUpdate, getUpdatableProperties(), true);
         delegate.setRelationships(getRelationships(propertiesToUpdate, delegate.getPatient()));
         try {
