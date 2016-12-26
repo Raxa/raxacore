@@ -17,11 +17,8 @@
     <patient_program patient_program_id = "456" patient_id="5190"  program_id="1078" date_enrolled="2015-08-24 12:03:38" date_created="2015-08-24 12:03:38" creator="1" voided="0" uuid="dfdfoifo-dkcd-475d-b939-6d82327f36a3"/>
     <patient_program patient_program_id = "459" patient_id="5190"  program_id="1078" date_enrolled="2015-08-24 12:03:38" date_created="2015-08-24 12:03:38" creator="1" voided="0" uuid="df0foifo-dkcd-475d-b939-6d82327f36a3"/>
 
-    <!--<visit_type visit_type_id="1" name="REG" uuid="b45ca846-c79a-11e2-b0c0-8e397087571c"/>-->
-    <visit visit_id="901" date_started="2008-06-22 00:00:00" date_created="2008-06-22 00:00:00" patient_id="5190" visit_type_id="1" location_id="2" creator="1" uuid="d794516f-210d-4c4e-8978-467d97969f31" voided="0"/>
-
-    <encounter_type encounter_type_id="909" name="Consultation" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-430e-b671-323323ada74e4"/>
-    <encounter encounter_id="890" encounter_type="909" patient_id="5190" visit_id="901"  encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 14:09:05.0" voided="false" uuid="bb0af6222-707a-9029-9859-f15206e63ab1"/>
+    <encounter_type encounter_type_id="909" name="Consultatttttion" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-430e-b671-323323ada74e4"/>
+    <encounter encounter_id="890" encounter_type="909" patient_id="7" visit_id="901"  encounter_datetime="2008-08-19 00:00:00.0" creator="1" date_created="2008-08-19 14:09:05.0" voided="false" uuid="bb0af6222-707a-9029-9859-f15206e63ab1"/>
 
     <obs obs_id="999" concept_id="4019" person_id="5190" encounter_id="890" value_numeric="100" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb899-11e3-bb80-996addb6f9we" creator="1" voided="0" />
     <obs obs_id="998" concept_id="1023" person_id="5190" encounter_id="890" value_numeric="100" obs_datetime="2016-08-18 15:09:05.0" date_created="2016-08-18 15:09:05.0" uuid="6d8f507a-fb899-11e3-0000-996addb6f9we" creator="1" voided="0" />

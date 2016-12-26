@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResourceTest;
-
+@Ignore
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class PatientProgramAttributeResourceTest extends BaseDelegatingResourceTest<PatientProgramAttributeResource, PatientProgramAttribute> {
 

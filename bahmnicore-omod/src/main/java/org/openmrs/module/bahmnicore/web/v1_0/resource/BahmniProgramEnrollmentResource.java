@@ -8,7 +8,6 @@ import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.PatientState;
 import org.openmrs.Program;
-import org.openmrs.Encounter;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.webservices.rest.SimpleObject;
@@ -51,11 +50,6 @@ public class BahmniProgramEnrollmentResource extends ProgramEnrollmentResource1_
     @PropertyGetter("attributes")
     public static Collection<PatientProgramAttribute> getAttributes(BahmniPatientProgram instance) {
         return instance.getActiveAttributes();
-    }
-
-    @PropertyGetter("encounter")
-    public static Collection<Encounter> getEncounters(BahmniPatientProgram instance) {
-        return Context.getService(BahmniProgramWorkflowService.class).getEncountersByPatientProgramUuid(instance.getUuid());
     }
 
     @PropertyGetter("states")

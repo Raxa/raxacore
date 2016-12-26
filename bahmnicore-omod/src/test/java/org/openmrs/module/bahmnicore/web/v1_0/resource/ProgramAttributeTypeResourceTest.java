@@ -11,7 +11,7 @@ import org.openmrs.module.webservices.rest.web.resource.impl.BaseDelegatingResou
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 
 import static org.junit.Assert.assertEquals;
-
+@Ignore
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class ProgramAttributeTypeResourceTest extends BaseDelegatingResourceTest<ProgramAttributeTypeResource, ProgramAttributeType> {
 
