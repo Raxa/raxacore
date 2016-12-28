@@ -22,7 +22,7 @@ public class GlobalPropertySearchController extends BaseRestController {
 
     @Autowired
     @Qualifier("adminService")
-    AdministrationService administrationService;
+    private AdministrationService administrationService;
 
     @RequestMapping(method = RequestMethod.GET, value = "passwordPolicyProperties")
     @ResponseBody

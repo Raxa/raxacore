@@ -23,10 +23,10 @@ import static org.mockito.Mockito.when;
 public class GlobalPropertySearchControllerTest {
 
     @Mock
-    AdministrationService administrationService;
+    private AdministrationService administrationService;
 
     @InjectMocks
-    GlobalPropertySearchController globalPropertySearchController;
+    private GlobalPropertySearchController globalPropertySearchController;
 
     private List<GlobalProperty> globalPropertyList = new ArrayList<GlobalProperty>();
 
