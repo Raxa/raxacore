@@ -36,6 +36,7 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
     private Double lowNormal;
     private Boolean isUnknown;
     private String formNamespace;
+    private String formFieldPath;
 
     public BahmniObservation() {
         encounterTransactionObservation = new EncounterTransaction.Observation();
@@ -372,5 +373,15 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
         encounterTransactionObservation.setFormNamespace(formNamespace);
         this.formNamespace = formNamespace;
         return this;
+    }
+
+    public BahmniObservation setFormFieldPath(String formFieldPath) {
+        encounterTransactionObservation.setFormFieldPath(formFieldPath);
+        this.formFieldPath = formFieldPath;
+        return this;
+    }
+
+    public String getFormFieldPath() {
+        return encounterTransactionObservation.getFormFieldPath();
     }
 }

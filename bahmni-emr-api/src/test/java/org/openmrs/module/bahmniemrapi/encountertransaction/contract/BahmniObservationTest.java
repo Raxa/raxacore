@@ -113,6 +113,7 @@ public class BahmniObservationTest {
         assertEquals("child-uuid", observation.getGroupMembers().get(0).getUuid());
         assertEquals("child-value", observation.getGroupMembers().get(0).getValue());
         assertEquals("formUuid", observation.getFormNamespace());
+        assertEquals("formFieldPath", observation.getFormFieldPath());
     }
 
     @Test
@@ -123,6 +124,7 @@ public class BahmniObservationTest {
 
         assertEquals("concept-name", bahmniObservation.getConceptNameToDisplay());
         assertEquals("formUuid", bahmniObservation.getFormNamespace());
+        assertEquals("formFieldPath", bahmniObservation.getFormFieldPath());
     }
 
     private EncounterTransaction.Concept createConcept(String conceptUuid, String conceptName) {
@@ -144,6 +146,7 @@ public class BahmniObservationTest {
         bahmniObservation1.setVoidReason("void reason");
         bahmniObservation1.setParentConceptUuid(parentConceptUuid);
         bahmniObservation1.setFormNamespace("formUuid");
+        bahmniObservation1.setFormFieldPath("formFieldPath");
         return bahmniObservation1;
     }
 
