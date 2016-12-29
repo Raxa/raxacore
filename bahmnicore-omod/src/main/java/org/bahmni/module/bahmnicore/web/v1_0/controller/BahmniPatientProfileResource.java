@@ -158,7 +158,7 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         try {
             delegate = mapForUpdatePatient(uuid, propertiesToUpdate);
         } catch (APIAuthenticationException e) {
-            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e,""), HttpStatus.FORBIDDEN);
         }
         setConvertedProperties(delegate, propertiesToUpdate, getUpdatableProperties(), true);
         delegate.setRelationships(getRelationships(propertiesToUpdate, delegate.getPatient()));
