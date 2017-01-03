@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -142,7 +143,8 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
         ResponseEntity<Object> response = bahmniPatientProfileResource.update(uuid, propertiesToCreate);
         assertEquals(200, response.getStatusCode().value());
         final Patient patient = ((PatientProfile) response.getBody()).getPatient();
-        assertEquals("Wed Mar 07 00:00:00 UTC 1984", patient.getBirthdate().toString());
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd hh:mm:ss yyyy");
+        assertEquals("Wed Mar 07 00:00:00 1984", formatter.format(patient.getBirthdate()));
         assertEquals(2, patient.getIdentifiers().size());
         assertEquals("ABC123DEF", patient.getActiveIdentifiers().get(1).getIdentifier());
     }
