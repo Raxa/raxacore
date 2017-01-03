@@ -142,7 +142,7 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
         ResponseEntity<Object> response = bahmniPatientProfileResource.update(uuid, propertiesToCreate);
         assertEquals(200, response.getStatusCode().value());
         final Patient patient = ((PatientProfile) response.getBody()).getPatient();
-        assertEquals("Wed Mar 07 00:00:00 IST 1984", patient.getBirthdate().toString());
+        assertEquals("Wed Mar 07 00:00:00 UTC 1984", patient.getBirthdate().toString());
         assertEquals(2, patient.getIdentifiers().size());
         assertEquals("ABC123DEF", patient.getActiveIdentifiers().get(1).getIdentifier());
     }
