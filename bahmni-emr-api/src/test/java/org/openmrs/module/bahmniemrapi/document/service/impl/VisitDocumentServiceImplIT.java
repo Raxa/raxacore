@@ -1,11 +1,15 @@
 package org.openmrs.module.bahmniemrapi.document.service.impl;
 
+import org.bahmni.module.obsrelationship.api.ObsRelationService;
+import org.bahmni.module.obsrelationship.model.ObsRelationship;
+import org.bahmni.module.obsrelationship.model.ObsRelationshipType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Visit;
+import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.VisitService;
@@ -57,6 +61,10 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
     private ObsService obsService;
     @Autowired
     private VisitService visitService;
+    @Autowired
+    private ConceptService conceptService;
+    @Autowired
+    private ObsRelationService obsRelationService;
 
     private VisitDocumentRequest visitDocumentRequest;
 
@@ -387,58 +395,6 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldUpdateTheCommentsOnTheObservationIfDocumentContainsDifferetCommentOtherThanTheCommentsOnTheObservation() throws Exception {
-        Date visitStartDate = getDateFromString("2014-06-22 00:00:00");
-        Date encounterDate = getDateFromString("2014-06-23 00:00:00");
-        Date obsDate = getDateFromString("2014-06-24 00:10:00");
-
-        List<Document> documents = new ArrayList<>();
-        documents.add(new Document("/radiology/fooo-bar.jpg", null, conceptUuid, null, obsDate, false, "something went wrong"));
-
-        visitDocumentRequest = new VisitDocumentRequest(patientUUID,
-                secondVisitUuid,
-                visitTypeUUID,
-                visitStartDate,
-                null,
-                secondEncounterTypeUUID,
-                encounterDate,
-                documents,
-                firstProviderUuid, null, null);
-
-        visitDocumentService.upload(visitDocumentRequest);
-        Visit visit = visitService.getVisit(2);
-        Set<Encounter> encounters = visit.getEncounters();
-        Encounter encounter = getEncounterByTypeUuid(encounters, secondEncounterTypeUUID);
-        Set<Obs> allObs = encounter.getAllObs();
-        Obs savedDocument = getSavedDocument(allObs, conceptUuid);
-        String obsUuid = savedDocument.getUuid();
-        Obs member = savedDocument.getGroupMembers().iterator().next();
-
-        List<Document> modifiedDocuments = new ArrayList<>();
-        modifiedDocuments.add(new Document("/radiology/fooo-bar.jpg", null, conceptUuid, obsUuid, obsDate, false, "something went wrong modified"));
-
-        visitDocumentRequest = new VisitDocumentRequest(patientUUID,
-                secondVisitUuid,
-                visitTypeUUID,
-                visitStartDate,
-                null,
-                secondEncounterTypeUUID,
-                encounterDate,
-                modifiedDocuments,
-                firstProviderUuid, null, null);
-
-        visitDocumentService.upload(visitDocumentRequest);
-        Visit finalVisit = visitService.getVisit(2);
-        Set<Encounter> finalVisitEncounters = finalVisit.getEncounters();
-        Encounter finalEncounter = getEncounterByTypeUuid(finalVisitEncounters, secondEncounterTypeUUID);
-
-        Set<Obs> finalAllObs = finalEncounter.getAllObs();
-        Obs finalSavedDocument = getSavedDocument(finalAllObs, conceptUuid);
-        assertEquals("something went wrong modified", finalSavedDocument.getGroupMembers().iterator().next().getComment());
-        assertEquals(member.getUuid(), finalSavedDocument.getGroupMembers().iterator().next().getUuid());
-    }
-
-    @Test
     public void shouldUpdateTheCommentsOnTheObservationIfDocumentContainsCommentsAndSavedObservationDoesntHaveComments() throws Exception {
         Date visitStartDate = getDateFromString("2014-06-22 00:00:00");
         Date encounterDate = getDateFromString("2014-06-23 00:00:00");
@@ -487,6 +443,73 @@ public class VisitDocumentServiceImplIT extends BaseIntegrationTest {
         Set<Obs> finalAllObs = finalEncounter.getAllObs();
         Obs finalSavedDocument = getSavedDocument(finalAllObs, conceptUuid);
         assertEquals("comment on second save", finalSavedDocument.getGroupMembers().iterator().next().getComment());
+    }
+
+    @Test
+    public void shouldUpdateTheCommentsAndObsRelationshipOnTheObservationIfDocumentContainsCommentsAndSavedObservationDoesntHaveComments() throws Exception {
+        Date visitStartDate = getDateFromString("2014-06-22 00:00:00");
+        Date encounterDate = getDateFromString("2014-06-23 00:00:00");
+        Date obsDate = getDateFromString("2014-06-24 00:10:00");
+
+        List<Document> documents = new ArrayList<>();
+        documents.add(new Document("/radiology/fooo-bar.jpg", null, conceptUuid, null, obsDate, false));
+
+        visitDocumentRequest = new VisitDocumentRequest(patientUUID,
+                secondVisitUuid,
+                visitTypeUUID,
+                visitStartDate,
+                null,
+                secondEncounterTypeUUID,
+                encounterDate,
+                documents,
+                firstProviderUuid, null, null);
+
+        visitDocumentService.upload(visitDocumentRequest);
+        Visit visit = visitService.getVisit(2);
+        Set<Encounter> encounters = visit.getEncounters();
+        Encounter encounter = getEncounterByTypeUuid(encounters, secondEncounterTypeUUID);
+        Set<Obs> allObs = encounter.getAllObs();
+        Obs savedDocument = getSavedDocument(allObs, conceptUuid);
+        String obsUuid = savedDocument.getUuid();
+
+        Obs impressionObs = obsService.getObs(1031);
+        ObsRelationshipType obsRelationshipType = obsRelationService.getRelationshipTypeByName("qualified-by");
+        ObsRelationship obsRelationship = new ObsRelationship();
+        obsRelationship.setObsRelationshipType(obsRelationshipType);
+        obsRelationship.setTargetObs(savedDocument.getGroupMembers().iterator().next());
+        obsRelationship.setSourceObs(impressionObs);
+        ObsRelationship savedObsRelation = obsRelationService.saveOrUpdate(obsRelationship);
+
+        assertEquals(1031, savedObsRelation.getSourceObs().getObsId().intValue());
+
+        assertEquals(savedDocument.getGroupMembers().iterator().next().getId(), savedObsRelation.getTargetObs().getObsId());
+        List<Document> modifiedDocuments = new ArrayList<>();
+        modifiedDocuments.add(new Document("/radiology/fooo-bar.jpg", null, conceptUuid, obsUuid, obsDate, false, "comment on second save"));
+
+        visitDocumentRequest = new VisitDocumentRequest(patientUUID,
+                secondVisitUuid,
+                visitTypeUUID,
+                visitStartDate,
+                null,
+                secondEncounterTypeUUID,
+                encounterDate,
+                modifiedDocuments,
+                firstProviderUuid, null, null);
+
+        visitDocumentService.upload(visitDocumentRequest);
+
+        Visit finalVisit = visitService.getVisit(2);
+        Set<Encounter> finalVisitEncounters = finalVisit.getEncounters();
+        Encounter finalEncounter = getEncounterByTypeUuid(finalVisitEncounters, secondEncounterTypeUUID);
+
+        Set<Obs> finalAllObs = finalEncounter.getAllObs();
+        Obs finalSavedDocument = getSavedDocument(finalAllObs, conceptUuid);
+        assertEquals("comment on second save", finalSavedDocument.getGroupMembers().iterator().next().getComment());
+
+        ObsRelationship editedObsRelation = obsRelationService.getRelationByUuid(savedObsRelation.getUuid());
+
+        assertEquals(1031, editedObsRelation.getSourceObs().getObsId().intValue());
+        assertEquals(finalSavedDocument.getGroupMembers().iterator().next().getId(), editedObsRelation.getTargetObs().getId());
     }
 
     private Encounter getEncounterByTypeUuid(Set<Encounter> encounters, String encounterUuid) {

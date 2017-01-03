@@ -1,5 +1,7 @@
 package org.openmrs.module.bahmniemrapi.document.service.impl;
 
+import org.bahmni.module.obsrelationship.api.ObsRelationService;
+import org.bahmni.module.obsrelationship.model.ObsRelationship;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterRole;
@@ -21,7 +23,6 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.matcher.EncounterPro
 import org.openmrs.module.emrapi.encounter.EncounterParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.Date;
@@ -37,12 +38,15 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
     private VisitService visitService;
     private ConceptService conceptService;
     private EncounterService encounterService;
+    private ObsRelationService obsRelationService;
 
     @Autowired
-    public VisitDocumentServiceImpl(VisitService visitService, ConceptService conceptService, EncounterService encounterService) {
+    public VisitDocumentServiceImpl(VisitService visitService, ConceptService conceptService,
+                                    EncounterService encounterService, ObsRelationService obsRelationService) {
         this.visitService = visitService;
         this.conceptService = conceptService;
         this.encounterService = encounterService;
+        this.obsRelationService = obsRelationService;
     }
 
     @Override
@@ -59,8 +63,28 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
 
         Context.getEncounterService().saveEncounter(encounter);
         Context.getVisitService().saveVisit(visit);
+        linkDocumentAndImpressionObs(visitDocumentRequest);
 
         return visit;
+    }
+
+    private void linkDocumentAndImpressionObs(VisitDocumentRequest visitDocumentRequest) {
+        for (Document document : visitDocumentRequest.getDocuments()) {
+            if (document.getObsUuid() != null) {
+                Obs parentObs = Context.getObsService().getObsByUuid(document.getObsUuid());
+                Set<Obs> groupMembers = parentObs.getGroupMembers();
+                if (groupMembers.size() > 0) {
+                    Obs documentObs = groupMembers.iterator().next();
+                    if (documentObs.getPreviousVersion() != null) {
+                        List<ObsRelationship> obsRelations = obsRelationService.getRelationsBy(null, documentObs.getPreviousVersion());
+                        for (ObsRelationship obsRelationship : obsRelations) {
+                            obsRelationship.setTargetObs(documentObs);
+                            obsRelationService.saveOrUpdate(obsRelationship);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void updateEncounter(Encounter encounter, Date encounterDateTime, List<Document> documents) {
