@@ -144,7 +144,7 @@ public class BahmniPatientProfileResourceIT extends BaseIntegrationTest {
         assertEquals(200, response.getStatusCode().value());
         final Patient patient = ((PatientProfile) response.getBody()).getPatient();
         SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd hh:mm:ss yyyy");
-        assertEquals("Wed Mar 07 00:00:00 1984", formatter.format(patient.getBirthdate()));
+        assertEquals("Wed Mar 07 12:00:00 1984", formatter.format(patient.getBirthdate()));
         assertEquals(2, patient.getIdentifiers().size());
         assertEquals("ABC123DEF", patient.getActiveIdentifiers().get(1).getIdentifier());
     }
