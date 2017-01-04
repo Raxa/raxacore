@@ -106,6 +106,7 @@ public class AccessionHelper {
         EncounterRole encounterRole = encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
         encounter.setProvider(encounterRole, labSystemProvider);
         encounter.setVisit(visit);
+        encounter.setLocation(visit.getLocation());
         return encounter;
     }
 
