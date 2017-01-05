@@ -54,6 +54,7 @@ public class EncounterHelper {
         encounter.setEncounterType(encounterType);
         encounter.setEncounterDatetime(encounterDate);
         encounter.setVisit(visit);
+        encounter.setLocation(visit.getLocation());
         return encounter;
 
     }
