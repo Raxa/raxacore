@@ -51,4 +51,19 @@ public class BahmniPatientSearchController extends BaseRestController {
             return new ResponseEntity(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @RequestMapping(value="lucene", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<AlreadyPaged<PatientResponse>> luceneSearch(HttpServletRequest request,
+                                                  HttpServletResponse response) throws ResponseException{
+        RequestContext requestContext = RestUtil.getRequestContext(request, response);
+        PatientSearchParameters searchParameters = new PatientSearchParameters(requestContext);
+        try {
+            List<PatientResponse> patients = bahmniPatientService.luceneSearch(searchParameters);
+            AlreadyPaged alreadyPaged = new AlreadyPaged(requestContext, patients, false);
+            return new ResponseEntity(alreadyPaged,HttpStatus.OK);
+        }catch (IllegalArgumentException e){
+            return new ResponseEntity(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

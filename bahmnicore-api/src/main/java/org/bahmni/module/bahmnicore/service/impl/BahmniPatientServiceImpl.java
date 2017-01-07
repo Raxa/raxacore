@@ -66,6 +66,24 @@ public class BahmniPatientServiceImpl implements BahmniPatientService {
     }
 
     @Override
+    public List<PatientResponse> luceneSearch(PatientSearchParameters searchParameters) {
+        return patientDao.getPatientsUsingLuceneSearch(searchParameters.getIdentifier(),
+                searchParameters.getName(),
+                searchParameters.getCustomAttribute(),
+                searchParameters.getAddressFieldName(),
+                searchParameters.getAddressFieldValue(),
+                searchParameters.getLength(),
+                searchParameters.getStart(),
+                searchParameters.getPatientAttributes(),
+                searchParameters.getProgramAttributeFieldValue(),
+                searchParameters.getProgramAttributeFieldName(),
+                searchParameters.getAddressSearchResultFields(),
+                searchParameters.getPatientSearchResultFields(),
+                searchParameters.getLoginLocationUuid(),
+                searchParameters.getFilterPatientsByLocation(), searchParameters.getFilterOnAllIdentifiers());
+    }
+
+    @Override
     public List<Patient> get(String partialIdentifier, boolean shouldMatchExactPatientId) {
         return patientDao.getPatients(partialIdentifier, shouldMatchExactPatientId);
     }
