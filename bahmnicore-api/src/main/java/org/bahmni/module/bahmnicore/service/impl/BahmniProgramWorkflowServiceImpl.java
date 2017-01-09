@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Transactional
 public class BahmniProgramWorkflowServiceImpl extends ProgramWorkflowServiceImpl implements BahmniProgramWorkflowService {
@@ -86,6 +87,10 @@ public class BahmniProgramWorkflowServiceImpl extends ProgramWorkflowServiceImpl
         return bahmniPatientProgram;
     }
 
+    @Override
+    public Map<Object, Object> getPatientProgramAttributeByAttributeName(List<Integer> patients, String attributeName){
+        return ((BahmniProgramWorkflowDAO) dao).getPatientProgramAttributeByAttributeName(patients, attributeName);
+    }
     @Override
     public List<BahmniPatientProgram> getPatientProgramByAttributeNameAndValue(String attributeName, String attributeValue) {
         return ((BahmniProgramWorkflowDAO)dao).getPatientProgramByAttributeNameAndValue(attributeName, attributeValue);

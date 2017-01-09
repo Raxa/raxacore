@@ -20,7 +20,7 @@ public class PatientResponse {
     private Date dateCreated;
     private String activeVisitUuid;
     private String customAttribute;
-    private String patientProgramAttributeValue;
+    private Object patientProgramAttributeValue;
     private Boolean hasBeenAdmitted;
 
     public String getAge() {
@@ -152,11 +152,11 @@ public class PatientResponse {
         this.customAttribute = customAttribute;
     }
 
-    public String getPatientProgramAttributeValue() {
+    public Object getPatientProgramAttributeValue() {
         return patientProgramAttributeValue;
     }
 
-    public void setPatientProgramAttributeValue(String patientProgramAttributeValue) {
+    public void setPatientProgramAttributeValue(Object patientProgramAttributeValue) {
         this.patientProgramAttributeValue = patientProgramAttributeValue;
     }
 

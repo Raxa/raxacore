@@ -1,7 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.lucene.analysis.core.LowerCaseFilter;
 import org.apache.lucene.search.FieldValueFilter;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
@@ -10,6 +9,7 @@ import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
 import org.bahmni.module.bahmnicore.contract.patient.search.PatientSearchBuilder;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
+import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -22,12 +22,14 @@ import org.hibernate.search.query.dsl.QueryBuilder;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.RelationshipType;
+import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
@@ -73,10 +75,13 @@ public class PatientDaoImpl implements PatientDao {
                                                               Boolean filterPatientsByLocation, Boolean filterOnAllIdentifiers) {
 
         validateSearchParams(customAttributeFields, programAttributeFieldName, addressFieldName);
+
         FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.getCurrentSession());
         QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(PatientIdentifier.class).get();
+
         org.apache.lucene.search.Query identifierQuery = queryBuilder.keyword()
                 .wildcard().onField("identifier").matching("*" + identifier.toLowerCase() + "*").createQuery();
+
         Sort sort = new Sort( new SortField( "identifier", SortField.Type.STRING, false ) );
         FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(identifierQuery, PatientIdentifier.class);
         fullTextQuery.setSort(sort);
@@ -85,9 +90,15 @@ public class PatientDaoImpl implements PatientDao {
         fullTextQuery.setMaxResults(length);
         List<PatientIdentifier> patientIdentifiers = fullTextQuery.list();
 
+        List<Integer> patientIds = patientIdentifiers.stream().map(patientIdentifier -> patientIdentifier.getPatient().getPatientId()).collect(toList());
+        Map<Object, Object> programAttributes = Context.getService(BahmniProgramWorkflowService.class).getPatientProgramAttributeByAttributeName(patientIds, programAttributeFieldName);
         PatientResponseMapper patientResponseMapper = new PatientResponseMapper();
         List<PatientResponse> patientResponses = patientIdentifiers.stream()
-                .map(patientIdentifier -> patientResponseMapper.map(patientIdentifier.getPatient(), patientSearchResultFields, addressSearchResultFields))
+                .map(patientIdentifier -> {
+                    PatientResponse patient = patientResponseMapper.map(patientIdentifier.getPatient(), patientSearchResultFields, addressSearchResultFields);
+                    patient.setPatientProgramAttributeValue(programAttributes.get(patient.getPersonId()));
+                    return patient;
+                })
                 .collect(toList());
         return patientResponses;
     }

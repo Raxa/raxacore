@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.dao.BahmniProgramWorkflowDAO;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.PatientProgramAttribute;
@@ -10,6 +11,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.type.StandardBasicTypes;
 import org.openmrs.Patient;
 import org.openmrs.PatientProgram;
 import org.openmrs.Program;
@@ -18,7 +20,9 @@ import org.openmrs.api.db.hibernate.HibernateProgramWorkflowDAO;
 import org.openmrs.customdatatype.CustomDatatypeUtil;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BahmniHibernateProgramWorkflowDAOImpl extends HibernateProgramWorkflowDAO implements BahmniProgramWorkflowDAO {
 
@@ -64,17 +68,17 @@ public class BahmniHibernateProgramWorkflowDAOImpl extends HibernateProgramWorkf
     @Override
     public PatientProgram getPatientProgramByUuid(String uuid) {
         return (BahmniPatientProgram) sessionFactory.getCurrentSession().createCriteria(BahmniPatientProgram.class).add(
-                        Restrictions.eq("uuid", uuid)).uniqueResult();
+                Restrictions.eq("uuid", uuid)).uniqueResult();
     }
 
     @Override
     public PatientProgram getPatientProgram(Integer patientProgramId) throws DAOException {
-        return (BahmniPatientProgram)sessionFactory.getCurrentSession().get(BahmniPatientProgram.class, patientProgramId);
+        return (BahmniPatientProgram) sessionFactory.getCurrentSession().get(BahmniPatientProgram.class, patientProgramId);
     }
 
     @Override
     public PatientProgram savePatientProgram(PatientProgram patientProgram) throws DAOException {
-        CustomDatatypeUtil.saveAttributesIfNecessary((BahmniPatientProgram)patientProgram);
+        CustomDatatypeUtil.saveAttributesIfNecessary((BahmniPatientProgram) patientProgram);
         return super.savePatientProgram(patientProgram);
     }
 
@@ -128,4 +132,34 @@ public class BahmniHibernateProgramWorkflowDAOImpl extends HibernateProgramWorkf
         }
         return crit.list();
     }
+
+    @Override
+    public Map<Object, Object> getPatientProgramAttributeByAttributeName(List<Integer> patientIds, String attributeName) {
+        Map<Object, Object> patientProgramAttributes = new HashMap<>();
+        if (patientIds.isEmpty() || attributeName == null) {
+            return patientProgramAttributes;
+        }
+        String commaSeperatedPatientIds = StringUtils.join(patientIds, ",");
+        List list = sessionFactory.getCurrentSession().createSQLQuery(
+                "SELECT p.patient_id as person_id, " +
+                        " concat('{',group_concat(DISTINCT (coalesce(concat('\"',ppt.name,'\":\"', COALESCE (cn.name, ppa.value_reference),'\"'))) SEPARATOR ','),'}') AS patientProgramAttributeValue  " +
+                        " from patient p " +
+                        " join patient_program pp on p.patient_id = pp.patient_id and p.patient_id in (" + commaSeperatedPatientIds + ")" +
+                        " join patient_program_attribute ppa on pp.patient_program_id = ppa.patient_program_id and ppa.voided=0" +
+                        " join program_attribute_type ppt on ppa.attribute_type_id = ppt.program_attribute_type_id and ppt.name ='" + attributeName + "' "+
+                        " LEFT OUTER JOIN concept_name cn on ppa.value_reference = cn.concept_id and cn.concept_name_type= 'FULLY_SPECIFIED' and cn.voided=0 and ppt.datatype like '%ConceptDataType%'" +
+                        " group by p.patient_id")
+                .addScalar("person_id", StandardBasicTypes.INTEGER)
+                .addScalar("patientProgramAttributeValue", StandardBasicTypes.STRING)
+                .list();
+
+        for (Object o : list) {
+            Object[] arr = (Object[]) o;
+            patientProgramAttributes.put(arr[0], arr[1]);
+        }
+
+        return patientProgramAttributes;
+
+    }
+
 }
