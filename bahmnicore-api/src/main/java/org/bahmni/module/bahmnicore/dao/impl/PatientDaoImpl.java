@@ -1,6 +1,8 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FieldValueFilter;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
@@ -21,8 +23,10 @@ import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
+import org.openmrs.PersonName;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.db.hibernate.search.TermsFilterFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -81,11 +85,19 @@ public class PatientDaoImpl implements PatientDao {
 
         org.apache.lucene.search.Query identifierQuery = queryBuilder.keyword()
                 .wildcard().onField("identifier").matching("*" + identifier.toLowerCase() + "*").createQuery();
+        org.apache.lucene.search.Query nonVoidedIdentifiers = queryBuilder.keyword().onField("voided").matching(false).createQuery();
+        org.apache.lucene.search.Query nonVoidedPatients = queryBuilder.keyword().onField("patient.voided").matching(false).createQuery();
+//        org.apache.lucene.search.Query identifierTypes = queryBuilder.keyword().onField("identifierType.patientIdentifierTypeId").matching(2).createQuery();
+        org.apache.lucene.search.Query booleanQuery = queryBuilder.bool()
+                .must(identifierQuery)
+                .must(nonVoidedIdentifiers)
+                .must(nonVoidedPatients)
+//                .must(identifierTypes)
+                .createQuery();
 
         Sort sort = new Sort( new SortField( "identifier", SortField.Type.STRING, false ) );
-        FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(identifierQuery, PatientIdentifier.class);
+        FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(booleanQuery, PatientIdentifier.class);
         fullTextQuery.setSort(sort);
-        fullTextQuery.setFilter(new FieldValueFilter("voided", false));
         fullTextQuery.setFirstResult(offset);
         fullTextQuery.setMaxResults(length);
         List<PatientIdentifier> patientIdentifiers = fullTextQuery.list();
