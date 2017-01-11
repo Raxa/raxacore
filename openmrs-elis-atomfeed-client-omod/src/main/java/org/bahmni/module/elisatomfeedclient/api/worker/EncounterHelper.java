@@ -3,6 +3,7 @@ package org.bahmni.module.elisatomfeedclient.api.worker;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterRole;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Provider;
@@ -46,7 +47,7 @@ public class EncounterHelper {
         return false;
     }
 
-    public Encounter createNewEncounter(Visit visit, EncounterType encounterType, Date encounterDate, Patient patient, Provider provider) {
+    public Encounter createNewEncounter(Visit visit, EncounterType encounterType, Date encounterDate, Patient patient, Provider provider, Location location) {
         Encounter encounter = new Encounter();
         encounter.setPatient(patient);
         EncounterRole encounterRole = encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
@@ -54,7 +55,7 @@ public class EncounterHelper {
         encounter.setEncounterType(encounterType);
         encounter.setEncounterDatetime(encounterDate);
         encounter.setVisit(visit);
-        encounter.setLocation(visit.getLocation());
+        encounter.setLocation(location);
         return encounter;
 
     }
@@ -91,10 +92,10 @@ public class EncounterHelper {
         return null;
     }
 
-    public Encounter findOrInitializeEncounter(Visit visit, Provider testProvider, EncounterType encounterType, Date encounterDate) {
+    public Encounter findOrInitializeEncounter(Visit visit, Provider testProvider, EncounterType encounterType, Date encounterDate, Location location) {
         Encounter encounter = getEncounterByProviderAndEncounterType(testProvider, encounterType, visit.getEncounters());
         if (encounter == null) {
-            encounter = createNewEncounter(visit, encounterType,  encounterDate, visit.getPatient(), testProvider);
+            encounter = createNewEncounter(visit, encounterType,  encounterDate, visit.getPatient(), testProvider, location);
         }
         return encounter;
     }

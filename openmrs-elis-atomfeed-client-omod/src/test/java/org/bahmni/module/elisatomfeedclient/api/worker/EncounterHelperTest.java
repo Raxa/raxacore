@@ -68,7 +68,7 @@ public class EncounterHelperTest {
     public void shouldCreateEncounterWithGivenParameters() throws Exception {
         Visit visit = new Visit();
         visit.setEncounters(new HashSet<>(getEncounters()));
-        Encounter newEncounter = encounterHelper.createNewEncounter(visit, encounterType, new Date(), patient, provider);
+        Encounter newEncounter = encounterHelper.createNewEncounter(visit, encounterType, new Date(), patient, provider, null);
         assertEquals(encounterType, newEncounter.getEncounterType());
         assertEquals(provider.getIdentifier(), newEncounter.getEncounterProviders().iterator().next().getProvider().getIdentifier());
         assertEquals(patient.getId(), newEncounter.getPatient().getId());

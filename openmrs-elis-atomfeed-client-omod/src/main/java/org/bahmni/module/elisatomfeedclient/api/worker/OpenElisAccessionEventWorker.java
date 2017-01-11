@@ -204,7 +204,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 }
             }
         }
-        return encounterWithDefaultProvider != null ? encounterWithDefaultProvider : encounterHelper.createNewEncounter(orderEncounter.getVisit(), encounterType, orderEncounter.getEncounterDatetime(), orderEncounter.getPatient(), provider);
+        return encounterWithDefaultProvider != null ? encounterWithDefaultProvider : encounterHelper.createNewEncounter(orderEncounter.getVisit(), encounterType, orderEncounter.getEncounterDatetime(), orderEncounter.getPatient(), provider, orderEncounter.getLocation());
     }
 
     private Concept getAccessionConcept() {
@@ -259,7 +259,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
 
                 if (isResultUpdated) {
                     resultEncounterForTest = encounterHelper.findOrInitializeEncounter(resultVisit, testProvider,
-                            labResultEncounterType, orderEncounter.getEncounterDatetime());
+                            labResultEncounterType, orderEncounter.getEncounterDatetime(), orderEncounter.getLocation());
                     resultEncounterForTest.addObs(resultObsHelper.createNewObsForOrder(testDetail, testOrder, resultEncounterForTest));
                     resultVisit.addEncounter(resultEncounterForTest);
                     updatedEncounters.add(resultEncounterForTest);
