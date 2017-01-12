@@ -11,6 +11,7 @@ import org.openmrs.CareSetting;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterRole;
 import org.openmrs.EncounterType;
+import org.openmrs.Location;
 import org.openmrs.Order;
 import org.openmrs.OrderType;
 import org.openmrs.Patient;
@@ -86,8 +87,9 @@ public class AccessionHelper {
 
         Date accessionDate = openElisAccession.fetchDate();
         Visit visit = new VisitIdentificationHelper(visitService, bahmniVisitLocationService).getVisitFor(patient, visitType, accessionDate, null, null, openElisAccession.getLabLocationUuid());
+        Location location = Context.getLocationService().getLocationByUuid(openElisAccession.getLabLocationUuid());
 
-        Encounter encounter = newEncounterInstance(visit, patient, labSystemProvider, encounterType, accessionDate);
+        Encounter encounter = newEncounterInstance(visit, patient, labSystemProvider, encounterType, accessionDate, location);
         encounter.setUuid(openElisAccession.getAccessionUuid());
 
         Set<String> groupedOrders = groupOrders(openElisAccession.getTestDetails());
@@ -98,7 +100,7 @@ public class AccessionHelper {
         return encounter;
     }
 
-    public Encounter newEncounterInstance(Visit visit, Patient patient, Provider labSystemProvider, EncounterType encounterType, Date date) {
+    private Encounter newEncounterInstance(Visit visit, Patient patient, Provider labSystemProvider, EncounterType encounterType, Date date, Location labLocation) {
         Encounter encounter = new Encounter();
         encounter.setEncounterType(encounterType);
         encounter.setPatient(patient);
@@ -106,7 +108,7 @@ public class AccessionHelper {
         EncounterRole encounterRole = encounterService.getEncounterRoleByUuid(EncounterRole.UNKNOWN_ENCOUNTER_ROLE_UUID);
         encounter.setProvider(encounterRole, labSystemProvider);
         encounter.setVisit(visit);
-        encounter.setLocation(visit.getLocation());
+        encounter.setLocation(labLocation);
         return encounter;
     }
 
