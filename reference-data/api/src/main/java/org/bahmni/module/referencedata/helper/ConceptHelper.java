@@ -10,6 +10,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
 import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
+import org.openmrs.util.LocaleUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -116,9 +117,13 @@ public class ConceptHelper {
 
     private String getConceptName(Concept rootConcept, ConceptNameType conceptNameType) {
         String conceptName = null;
-        ConceptName name = rootConcept.getName(Context.getLocale(), conceptNameType, null);
+        String locale = Context.getAuthenticatedUser().getUserProperty("defaultLocale");
+        ConceptName name = rootConcept.getName(LocaleUtility.fromSpecification(locale), conceptNameType, null);
         if (name != null) {
             conceptName = name.getName();
+        }
+        if(conceptNameType == ConceptNameType.FULLY_SPECIFIED && conceptName == null){
+            conceptName = rootConcept.getName().getName();
         }
         return conceptName;
     }
