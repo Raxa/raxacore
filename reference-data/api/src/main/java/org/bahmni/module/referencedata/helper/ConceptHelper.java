@@ -122,9 +122,6 @@ public class ConceptHelper {
         if (name != null) {
             conceptName = name.getName();
         }
-        if(conceptNameType == ConceptNameType.FULLY_SPECIFIED && conceptName == null){
-            conceptName = rootConcept.getName().getName();
-        }
         return conceptName;
     }
 
