@@ -3774,4 +3774,17 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-201702061413" author="Preethi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from roles where role = 'HubConnect';
+            </sqlCheck>
+        </preConditions>
+        <comment>Create HubConnect Role with location and provider privileges</comment>
+        <sql>
+            insert into role(role, description, uuid) values( 'HubConnect', 'Will have privileges required to sync resources from parent Bahmni server to child Bahmni server', uuid());
+            insert into role_privilege(role, privilege) values ('HubConnect', 'Get Locations');
+            insert into role_privilege(role, privilege) values ('HubConnect', 'Get Location Attribute Types');
+        </sql>
+    </changeSet>
 </databaseChangeLog>
