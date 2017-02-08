@@ -25,7 +25,7 @@ public class PatientAttributeQueryHelper {
 
 		if(personAttributeResultsIds.size() > 0)
 			selectClause =
-				"concat('{',group_concat(DISTINCT (coalesce(concat('\"',attrt_results.name,'\":\"', pattr_results.value,'\"'))) SEPARATOR ','),'}')";
+		"concat('{',group_concat(DISTINCT (coalesce(concat('\"',attrt_results.name,'\":\"', REPLACE(pattr_results.value,'\"','\\\\\"'),'\"'))) SEPARATOR ','),'}')";
 
 		return String.format("%s,%s as customAttribute", select, selectClause);
 	}
