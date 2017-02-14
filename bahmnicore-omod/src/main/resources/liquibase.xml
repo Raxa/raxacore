@@ -3777,7 +3777,7 @@
     <changeSet id="bahmni-core-201702061413" author="Preethi">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
-                select count(*) from roles where role = 'HubConnect';
+                select count(*) from role where role = 'HubConnect';
             </sqlCheck>
         </preConditions>
         <comment>Create HubConnect Role with location and provider privileges</comment>
