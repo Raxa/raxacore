@@ -1,5 +1,6 @@
 package org.bahmni.module.referencedata.helper;
 
+import java.util.Locale;
 import org.apache.commons.collections.CollectionUtils;
 import org.bahmni.module.referencedata.contract.ConceptDetails;
 import org.openmrs.Concept;
@@ -10,6 +11,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.ETObsToBahmniObsMapper;
 import org.openmrs.module.emrapi.utils.HibernateLazyLoader;
+import org.openmrs.util.LocaleUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -99,12 +101,17 @@ public class ConceptHelper {
 
     private ConceptDetails createConceptDetails(Concept conceptToAdd) {
         Concept concept = new HibernateLazyLoader().load(conceptToAdd);
-
-        String fullName = getConceptName(concept, ConceptNameType.FULLY_SPECIFIED);
-        String shortName = getConceptName(concept, ConceptNameType.SHORT);
+        String fullNameInLocale = getConceptNameInLocale(concept, ConceptNameType.FULLY_SPECIFIED, false);
+        String shortNameInLocale = getConceptNameInLocale(concept, ConceptNameType.SHORT, false);
+        String conceptFullName = (fullNameInLocale != null) ? fullNameInLocale : getConceptNameInLocale(concept, ConceptNameType.FULLY_SPECIFIED, true);
+        String conceptShortName = (shortNameInLocale != null) ? shortNameInLocale : fullNameInLocale;
+        if (conceptShortName == null) {
+            String defaultLocaleShortName = getConceptNameInLocale(concept, ConceptNameType.SHORT, true);
+            conceptShortName = (defaultLocaleShortName != null) ? defaultLocaleShortName : conceptFullName;
+        }
         ConceptDetails conceptDetails = new ConceptDetails();
-        conceptDetails.setName(shortName == null ? fullName : shortName);
-        conceptDetails.setFullName(fullName);
+        conceptDetails.setName(conceptShortName);
+        conceptDetails.setFullName(conceptFullName);
         if (concept.isNumeric()) {
             ConceptNumeric numericConcept = (ConceptNumeric) concept;
             conceptDetails.setUnits(numericConcept.getUnits());
@@ -113,14 +120,18 @@ public class ConceptHelper {
         }
         return conceptDetails;
     }
-
-    private String getConceptName(Concept rootConcept, ConceptNameType conceptNameType) {
-        String conceptName = null;
-        ConceptName name = rootConcept.getName(Context.getLocale(), conceptNameType, null);
-        if (name != null) {
-            conceptName = name.getName();
-        }
-        return conceptName;
+    
+    private String getConceptName(Concept concept, ConceptNameType conceptNameType){
+        String conceptNameInLocale = getConceptNameInLocale(concept, conceptNameType, false);
+        return (conceptNameInLocale != null) ? conceptNameInLocale : getConceptNameInLocale(concept, conceptNameType, true);
+    }
+    
+    private String getConceptNameInLocale(Concept concept, ConceptNameType conceptNameType, boolean isDefaultLocale) {
+        Locale locale;
+        locale = isDefaultLocale ? LocaleUtility.getDefaultLocale() :
+                LocaleUtility.fromSpecification(Context.getAuthenticatedUser().getUserProperty("defaultLocale"));
+        ConceptName conceptName = concept.getName(locale, conceptNameType, null);
+        return (conceptName != null) ? conceptName.getName() : null;
     }
 
     private boolean shouldBeExcluded(Concept rootConcept) {

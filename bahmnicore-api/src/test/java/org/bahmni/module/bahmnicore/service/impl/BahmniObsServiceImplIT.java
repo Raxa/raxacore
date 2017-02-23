@@ -185,4 +185,17 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
         assertNotNull("BahmniObservation should not be null", bahmniObservation);
         assertEquals("633dc076-1c8f-11e4-bkk0-f18addb6fmtb", bahmniObservation.getUuid());
     }
+
+    @Test
+    public void shouldRetrieveAllLatestObservationsForMultiSelectConcept() {
+        List<BahmniObservation> observations = (List<BahmniObservation>) bahmniObsService.getLatestObservationsForPatientProgram("df0foif1-dkcd-475d-b939-6d82327f36a3", Arrays.asList("Systolic"));
+        assertEquals(3, observations.size());
+    }
+
+    @Test
+    public void shouldRetrieveAllLatestObservationSingleValueConcept() {
+        List<BahmniObservation> observations = (List<BahmniObservation>) bahmniObsService.getLatestObservationsForPatientProgram("df0foif1-dkcd-475d-b939-6d82327f36a3", Arrays.asList("Diastolic"));
+        assertEquals(1, observations.size());
+        assertEquals(100.0, observations.get(0).getValue());
+    }
 }

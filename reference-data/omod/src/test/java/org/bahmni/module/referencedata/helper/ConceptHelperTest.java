@@ -1,14 +1,17 @@
 package org.bahmni.module.referencedata.helper;
 
 
+import java.util.Locale;
 import org.bahmni.module.referencedata.contract.ConceptDetails;
 import org.bahmni.module.referencedata.contract.ConceptName;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.bahmni.test.builder.ConceptNumericBuilder;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openmrs.Concept;
+import org.openmrs.User;
 import org.openmrs.api.ConceptService;
 
 import java.util.ArrayList;
@@ -21,7 +24,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
+import org.openmrs.api.context.Context;
+import org.openmrs.util.LocaleUtility;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+@PrepareForTest({Context.class,LocaleUtility.class})
+@RunWith(PowerMockRunner.class)
 public class ConceptHelperTest {
     @Mock
     private ConceptService conceptService;
@@ -34,6 +45,17 @@ public class ConceptHelperTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
+        User mockUser = new User();
+        mockUser.setUserProperty("defaultLocale","en");
+
+        mockStatic(Context.class);
+        when(Context.getAuthenticatedUser()).thenReturn(mockUser);
+        when(Context.getLocale()).thenReturn(Locale.ENGLISH);
+
+        mockStatic(LocaleUtility.class);
+        when(LocaleUtility.fromSpecification("en")).thenReturn(Locale.ENGLISH);
+        when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
+
         conceptHelper = new ConceptHelper(conceptService);
     }
 

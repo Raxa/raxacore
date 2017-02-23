@@ -183,7 +183,7 @@ public class BahmniObsServiceImplTest {
 
         bahmniObsService.getLatestObservationsForPatientProgram(patientProgramUuid, conceptNames);
 
-        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), 1, ObsDaoImpl.OrderBy.DESC, null, null);
+        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), null, ObsDaoImpl.OrderBy.DESC, null, null);
     }
 
     @Test

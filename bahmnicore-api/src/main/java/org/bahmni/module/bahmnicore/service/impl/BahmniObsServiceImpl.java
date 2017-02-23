@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
 import org.bahmni.module.bahmnicore.dao.VisitDao;
 import org.bahmni.module.bahmnicore.dao.impl.ObsDaoImpl;
+import org.bahmni.module.bahmnicore.dao.impl.ObsDaoImpl.OrderBy;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.module.bahmnicore.util.MiscUtils;
@@ -32,6 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 @Service
@@ -110,10 +112,13 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     public Collection<BahmniObservation> getLatest(String patientUuid, Collection<Concept> concepts, Integer numberOfVisits, List<String> obsIgnoreList,
                                                    Boolean filterOutOrderObs, Order order) {
         List<Obs> latestObs = new ArrayList<>();
+        if (concepts == null)
+            return new ArrayList<>();
         for (Concept concept : concepts) {
-            if (null != concept) {
-                latestObs.addAll(obsDao.getObsByPatientAndVisit(patientUuid, Arrays.asList(concept.getName().getName()),
-                        visitDao.getVisitIdsFor(patientUuid, numberOfVisits), 1, ObsDaoImpl.OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order, null, null));
+            List<Obs> observations = obsDao.getObsByPatientAndVisit(patientUuid, Arrays.asList(concept.getName().getName()),
+                        visitDao.getVisitIdsFor(patientUuid, numberOfVisits), -1, ObsDaoImpl.OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order, null, null);
+            if(CollectionUtils.isNotEmpty(observations)) {
+                latestObs.addAll(getAllLatestObsForAConcept(observations));
             }
         }
 
@@ -201,7 +206,11 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         if (conceptNames == null)
             return new ArrayList<>();
         for (String conceptName : conceptNames) {
-                observations.addAll(obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList(conceptName), 1, ObsDaoImpl.OrderBy.DESC, null, null));
+            List<Obs> obsByPatientProgramUuidAndConceptName = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList(conceptName), null, OrderBy.DESC, null, null);
+            List<Obs> obsList = getAllLatestObsForAConcept(obsByPatientProgramUuidAndConceptName);
+            if (CollectionUtils.isNotEmpty(obsList)) {
+                observations.addAll(obsList);
+            }
         }
 
         return omrsObsToBahmniObsMapper.map(observations, getConceptsByName(conceptNames));
@@ -312,6 +321,24 @@ public class BahmniObsServiceImpl implements BahmniObsService {
             }
         }
         return filteredObservations;
+    }
+
+    private List<Obs> getAllLatestObsForAConcept(List<Obs> observations) {
+        Map<Date, List<Obs>> obsToEncounterDateTimeMap = new TreeMap<>(Collections.<Date>reverseOrder());
+        for (Obs obs : observations) {
+            if (obsToEncounterDateTimeMap.get(obs.getEncounter().getEncounterDatetime()) != null) {
+                obsToEncounterDateTimeMap.get(obs.getEncounter().getEncounterDatetime()).add(obs);
+            } else {
+                List<Obs> obsList = new ArrayList<>();
+                obsList.add(obs);
+                obsToEncounterDateTimeMap.put(obs.getEncounter().getEncounterDatetime(), obsList);
+            }
+        }
+        if (CollectionUtils.isNotEmpty(obsToEncounterDateTimeMap.entrySet())) {
+            return obsToEncounterDateTimeMap.entrySet().iterator().next().getValue();
+        } else {
+            return null;
+        }
     }
 
 }

@@ -4,7 +4,7 @@
 
     <groupId>org.bahmni.module</groupId>
     <artifactId>bahmni</artifactId>
-    <version>0.88-SNAPSHOT</version>
+    <version>0.89-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>BahmniEMR Core</name>
 
@@ -25,14 +25,14 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <openMRSVersion>2.1.0-SNAPSHOT</openMRSVersion>
-        <openMRSWebServicesVersion>2.16</openMRSWebServicesVersion>
+        <openMRSWebServicesVersion>2.17</openMRSWebServicesVersion>
         <springVersion>3.2.7.RELEASE</springVersion>
         <atomfeed.version>1.9.4</atomfeed.version>
         <addressHierarchyVersion>2.9</addressHierarchyVersion>
         <reportingModuleVersion>0.10.4</reportingModuleVersion>
         <calculationModuleVersion>1.3-SNAPSHOT</calculationModuleVersion>
         <serializationXstreamModuleVersion>0.2.12</serializationXstreamModuleVersion>
-        <emrapi-omod.version>1.19</emrapi-omod.version>
+        <emrapi-omod.version>1.20</emrapi-omod.version>
         <metadatamapping.version>1.2.1</metadatamapping.version>
         <openmrsAtomfeedVersion>2.5.5-SNAPSHOT</openmrsAtomfeedVersion>
         <lombokVersion>1.16.0</lombokVersion>
@@ -174,7 +174,7 @@
             <dependency>
                 <groupId>org.bahmni.module</groupId>
                 <artifactId>bahmni-migrator</artifactId>
-                <version>0.88-SNAPSHOT</version>
+                <version>0.89-SNAPSHOT</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>

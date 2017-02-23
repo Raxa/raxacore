@@ -11,6 +11,7 @@ public class Document {
     private String obsUuid;
     private Date obsDateTime;
     private boolean voided;
+    private String comment;
 
     public Document() {
     }
@@ -22,6 +23,16 @@ public class Document {
         this.obsUuid = obsUuid;
         this.obsDateTime = obsDateTime;
         this.voided = voided;
+    }
+
+    public Document(String image, String format, String testUuid, String obsUuid, Date obsDateTime, boolean voided, String comment) {
+        this.image = image;
+        this.format = format;
+        this.testUuid = testUuid;
+        this.obsUuid = obsUuid;
+        this.obsDateTime = obsDateTime;
+        this.voided = voided;
+        this.comment = comment;
     }
 
     public boolean isNew() {
@@ -82,5 +93,13 @@ public class Document {
 
     public void setVoided(boolean voided) {
         this.voided = voided;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }

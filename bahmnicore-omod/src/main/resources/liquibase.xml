@@ -3757,4 +3757,51 @@
         </sql>
     </changeSet>
 
+    <changeSet id="bahmni-core-201701241540" author="Padma">
+        <preConditions onFail="HALT">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) from global_property WHERE property = 'concept.true' and property_value is not null;
+            </sqlCheck>
+        </preConditions>
+        <comment>Set value coded for referred out concepts</comment>
+        <sql>
+            UPDATE obs
+            SET value_coded = (SELECT property_value
+            FROM global_property where property = 'concept.true')
+            WHERE concept_id IN (SELECT concept_id
+            FROM concept_name
+            WHERE name = 'REFERRED_OUT' AND concept_name_type = 'FULLY_SPECIFIED') AND value_coded IS NULL;
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201702061413" author="Preethi">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from role where role = 'HubConnect';
+            </sqlCheck>
+        </preConditions>
+        <comment>Create HubConnect Role with location and provider privileges</comment>
+        <sql>
+            insert into role(role, description, uuid) values( 'HubConnect', 'Will have privileges required to sync resources from parent Bahmni server to child Bahmni server', uuid());
+            insert into role_privilege(role, privilege) values ('HubConnect', 'Get Locations');
+            insert into role_privilege(role, privilege) values ('HubConnect', 'Get Location Attribute Types');
+    </sql>
+    </changeSet>
+
+    <changeSet id="obsRelationship-ForeignKey-Update-201611151430" author="Santhosh, Chethan">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="obs_relationship"/>
+            <foreignKeyConstraintExists foreignKeyName="obs_relationship_ibfk_4"/>
+        </preConditions>
+        <comment>Update the foreign key constrain on obs_relationship, Consider user_id(users) for foreign key reference instead of person_id(person)</comment>
+        <sql>
+            ALTER TABLE obs_relationship
+            DROP FOREIGN KEY obs_relationship_ibfk_4;
+
+            ALTER TABLE obs_relationship
+            ADD CONSTRAINT obs_relationship_ibfk_4
+            FOREIGN KEY (creator)
+            REFERENCES users(user_id);
+        </sql>
+    </changeSet>
 </databaseChangeLog>

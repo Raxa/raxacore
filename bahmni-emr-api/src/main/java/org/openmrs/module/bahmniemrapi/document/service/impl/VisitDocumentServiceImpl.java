@@ -1,5 +1,7 @@
 package org.openmrs.module.bahmniemrapi.document.service.impl;
 
+import org.bahmni.module.obsrelationship.api.ObsRelationService;
+import org.bahmni.module.obsrelationship.model.ObsRelationship;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterRole;
@@ -27,7 +29,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+//comment
 @Service
 public class VisitDocumentServiceImpl implements VisitDocumentService {
 
@@ -36,12 +38,15 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
     private VisitService visitService;
     private ConceptService conceptService;
     private EncounterService encounterService;
+    private ObsRelationService obsRelationService;
 
     @Autowired
-    public VisitDocumentServiceImpl(VisitService visitService, ConceptService conceptService, EncounterService encounterService) {
+    public VisitDocumentServiceImpl(VisitService visitService, ConceptService conceptService,
+                                    EncounterService encounterService, ObsRelationService obsRelationService) {
         this.visitService = visitService;
         this.conceptService = conceptService;
         this.encounterService = encounterService;
+        this.obsRelationService = obsRelationService;
     }
 
     @Override
@@ -58,8 +63,28 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
 
         Context.getEncounterService().saveEncounter(encounter);
         Context.getVisitService().saveVisit(visit);
+        linkDocumentAndImpressionObs(visitDocumentRequest);
 
         return visit;
+    }
+
+    private void linkDocumentAndImpressionObs(VisitDocumentRequest visitDocumentRequest) {
+        for (Document document : visitDocumentRequest.getDocuments()) {
+            if (document.getObsUuid() != null) {
+                Obs parentObs = Context.getObsService().getObsByUuid(document.getObsUuid());
+                Set<Obs> groupMembers = parentObs.getGroupMembers();
+                if (groupMembers.size() > 0) {
+                    Obs documentObs = groupMembers.iterator().next();
+                    if (documentObs.getPreviousVersion() != null) {
+                        List<ObsRelationship> obsRelations = obsRelationService.getRelationsBy(null, documentObs.getPreviousVersion());
+                        for (ObsRelationship obsRelationship : obsRelations) {
+                            obsRelationship.setTargetObs(documentObs);
+                            obsRelationService.saveOrUpdate(obsRelationship);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void updateEncounter(Encounter encounter, Date encounterDateTime, List<Document> documents) {
@@ -71,16 +96,38 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
             String url = document.getImage();
 
             if (document.isNew()) {
-                parentObservation.addGroupMember(newObs(parentObservation.getObsDatetime(), imageConcept, url, null, encounter));
+                Obs member = newObs(parentObservation.getObsDatetime(), imageConcept, url, null, encounter);
+                setComment(member, document);
+                parentObservation.addGroupMember(member);
             }
             if (document.shouldVoidDocument()) {
                 voidDocumentObservationTree(parentObservation);
             } else if (document.hasConceptChanged(parentObservation.getConcept().getUuid())) {
-                parentObservation.setConcept(testConcept);
+                voidDocumentObservationTree(parentObservation);
+                parentObservation = newObs(parentObservation.getObsDatetime(), testConcept, null, parentObservation.getLocation(), encounter);
+                Obs member = newObs(parentObservation.getObsDatetime(), imageConcept, url, null, encounter);
+                parentObservation.addGroupMember(member);
+            } else if (hasCommentsChanged(document, parentObservation)) {
+                setComment(parentObservation.getGroupMembers().iterator().next(), document);
             }
             encounter.addObs(parentObservation);
         }
 
+    }
+
+    private boolean hasCommentsChanged(Document document, Obs parentObs) {
+        if (parentObs.getUuid().equals(document.getObsUuid())) {
+            for (Obs member : parentObs.getGroupMembers()) {
+                if (member.getComment() == null || !member.getComment().equals(document.getComment())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void setComment(Obs observation, Document document) {
+        observation.setComment(document.getComment());
     }
 
     private Obs findOrCreateParentObs(Encounter encounter, Date observationDateTime, Concept testConcept, String obsUuid) {

@@ -335,7 +335,7 @@ public class BahmniDiseaseSummaryServiceImplIT extends BaseModuleContextSensitiv
     @Test
     public void shouldReturnLeafConceptsNames() throws Exception {
         setUpObservationTestData();
-
+        Context.getAuthenticatedUser().setUserProperty("defaultLocale","en");
         DiseaseDataParams diseaseDataParams = new DiseaseDataParams();
         diseaseDataParams.setNumberOfVisits(3);
         List<String> obsConcepts = new ArrayList<String>() {{

@@ -133,7 +133,7 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         } catch (NonUniqueObjectException e) {
             return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (ValidationException e) {
-            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, ""), HttpStatus.BAD_REQUEST);
         } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, e.getRootCause().getMessage()), HttpStatus.BAD_REQUEST);
         } catch (DataException e) {
@@ -158,7 +158,7 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         try {
             delegate = mapForUpdatePatient(uuid, propertiesToUpdate);
         } catch (APIAuthenticationException e) {
-            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e,""), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<Object>(RestUtil.wrapErrorResponse(e, "User is logged in but doesn't have the relevant privilege "), HttpStatus.FORBIDDEN);
         }
         setConvertedProperties(delegate, propertiesToUpdate, getUpdatableProperties(), true);
         delegate.setRelationships(getRelationships(propertiesToUpdate, delegate.getPatient()));

@@ -72,12 +72,12 @@ public class DiseaseSummaryMapperTest {
         assertEquals(3, obsTable.size());
         Map<String, ConceptValue> firstDayValue = obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse(date1)));
         assertEquals(2, firstDayValue.size());
-        assertEquals("101", firstDayValue.get("Temperature").getValue());
-        assertEquals("90", firstDayValue.get("Pulse").getValue());
+        assertEquals("101", firstDayValue.get("temperature").getValue());
+        assertEquals("90", firstDayValue.get("pulse").getValue());
 
         Map<String, ConceptValue> secondDayValue = obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse(date2)));
         assertEquals(1, secondDayValue.size());
-        assertEquals("100", secondDayValue.get("Pulse").getValue());
+        assertEquals("100", secondDayValue.get("pulse").getValue());
 
         Map<String, ConceptValue> thirdDayValue = obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse(date3)));
         assertEquals(1, thirdDayValue.size());
@@ -94,16 +94,16 @@ public class DiseaseSummaryMapperTest {
 
         Map<String, ConceptValue> visit1Encounter1Map = obsTable.get(frameDiseaseSummaryMapKey(simpleDateTimeFormat.parse(visit1Encounter1Date)));
         assertEquals(2, visit1Encounter1Map.size());
-        assertEquals("101",visit1Encounter1Map.get("Temperature").getValue());
-        assertEquals("90",visit1Encounter1Map.get("Pulse").getValue());
+        assertEquals("101",visit1Encounter1Map.get("temperature").getValue());
+        assertEquals("90",visit1Encounter1Map.get("pulse").getValue());
 
         Map<String, ConceptValue> visit1Encounter2Map = obsTable.get(frameDiseaseSummaryMapKey(simpleDateTimeFormat.parse(visit1Encounter2Date)));
         assertEquals(1, visit1Encounter2Map.size());
-        assertEquals("102",visit1Encounter2Map.get("Temperature").getValue());
+        assertEquals("102",visit1Encounter2Map.get("temperature").getValue());
 
         Map<String, ConceptValue> visit1Encounter3Map = obsTable.get(frameDiseaseSummaryMapKey(simpleDateTimeFormat.parse(visit1Encounter3Date)));
         assertEquals(1, visit1Encounter3Map.size());
-        assertEquals("103",visit1Encounter3Map.get("Temperature").getValue());
+        assertEquals("103",visit1Encounter3Map.get("temperature").getValue());
 
     }
 
@@ -112,12 +112,12 @@ public class DiseaseSummaryMapperTest {
         DiseaseSummaryObsMapper diseaseSummaryObsMapper = new DiseaseSummaryObsMapper();
         Collection<BahmniObservation> bahmniObsListWithMultiselectObs = createBahmniObsListWithMultiselectObs();
         Map<String, Map<String, ConceptValue>> obsTable = diseaseSummaryObsMapper.map(bahmniObsListWithMultiselectObs, null);
-        Assert.assertEquals("2-3days,5-6days", obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2014-09-12"))).get("M/C days").getValue());
-        Assert.assertEquals("102", obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2014-09-12"))).get("Temperature").getValue());
-        Assert.assertEquals("90", obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2014-09-12"))).get("Pulse").getValue());
-        Assert.assertEquals("100", obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2014-09-13"))).get("Pulse").getValue());
+        Assert.assertEquals("2-3days,5-6days", obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2014-09-12"))).get("m/c days").getValue());
+        Assert.assertEquals("102", obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2014-09-12"))).get("temperature").getValue());
+        Assert.assertEquals("90", obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2014-09-12"))).get("pulse").getValue());
+        Assert.assertEquals("100", obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2014-09-13"))).get("pulse").getValue());
 
-        Assert.assertEquals("Child_value2,Child_value1", obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2014-09-12"))).get("ChildObservation").getValue());
+        Assert.assertEquals("Child_value2,Child_value1", obsTable.get(frameDiseaseSummaryMapKey(simpleDateFormat.parse("2014-09-12"))).get("childobservation").getValue());
 
     }
 
@@ -163,7 +163,7 @@ public class DiseaseSummaryMapperTest {
 
         Map<String, ConceptValue> dayValue = obsTable.get(frameDiseaseSummaryMapKey(visit1));
         assertEquals(1, dayValue.size());
-        assertEquals("very high pulse", dayValue.get("Pulse").getValue());
+        assertEquals("very high pulse", dayValue.get("pulse").getValue());
 
     }
 
@@ -390,7 +390,9 @@ public class DiseaseSummaryMapperTest {
         BahmniObservation bahmniObservation = new BahmniObservation();
         bahmniObservation.setVisitStartDateTime(visitStartTime);
         bahmniObservation.setEncounterDateTime(encounterDateTime);
-        bahmniObservation.setConcept(new EncounterTransaction.Concept("uuid-"+conceptName,conceptName));
+        EncounterTransaction.Concept concept = new EncounterTransaction.Concept("uuid-"+conceptName,conceptName);
+        concept.setShortName(conceptName.toLowerCase());
+        bahmniObservation.setConcept(concept);
         bahmniObservation.setValue(value);
         bahmniObservation.setEncounterUuid("uuid-"+encounterDateTime);
         bahmniObservation.setUuid("uuid-obs-"+conceptName+Math.random());
