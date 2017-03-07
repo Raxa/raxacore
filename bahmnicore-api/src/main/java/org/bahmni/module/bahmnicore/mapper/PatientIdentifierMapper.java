@@ -17,14 +17,14 @@ import java.util.List;
 
 @Component
 public class PatientIdentifierMapper {
-
-    public static final String EMR_PRIMARY_IDENTIFIER_TYPE = "bahmni.primaryIdentifierType";
+    
+    public static final String BAHMNI_PRIMARY_IDENTIFIER_TYPE = "bahmni.primaryIdentifierType";
     private PatientService patientService;
     private AdministrationService administrationService;
 
     @Autowired
     public PatientIdentifierMapper(PatientService patientService,
-                                   @Qualifier("adminService") AdministrationService administrationService) {
+                                    @Qualifier("adminService") AdministrationService administrationService) {
         this.patientService = patientService;
         this.administrationService = administrationService;
     }
@@ -67,7 +67,7 @@ public class PatientIdentifierMapper {
 	}
 
     private PatientIdentifierType getPatientIdentifierType() {
-        String globalProperty = administrationService.getGlobalProperty(EMR_PRIMARY_IDENTIFIER_TYPE);
+        String globalProperty = administrationService.getGlobalProperty(BAHMNI_PRIMARY_IDENTIFIER_TYPE);
         PatientIdentifierType patientIdentifierByUuid = patientService.getPatientIdentifierTypeByUuid(globalProperty);
         return patientIdentifierByUuid;
     }
