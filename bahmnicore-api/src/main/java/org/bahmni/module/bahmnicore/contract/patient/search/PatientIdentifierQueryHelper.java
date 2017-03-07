@@ -18,12 +18,12 @@ public class PatientIdentifierQueryHelper {
 		if (isEmpty(identifier)) {
 			return join;
 		}
-		String extraIdentifierQuery = filterOnAllIdentifiers ? ", 'emr.extraPatientIdentifierTypes'":"";
+		String extraIdentifierQuery = filterOnAllIdentifiers ? ", 'bahmni.extraPatientIdentifierTypes'":"";
 		String query = " JOIN (" +
 				"SELECT pi.patient_id " +
 				"FROM patient_identifier pi " +
 				" JOIN patient_identifier_type pit ON pi.identifier_type = pit.patient_identifier_type_id AND pi.voided IS FALSE " +
-				" JOIN global_property gp ON gp.property IN ('emr.primaryIdentifierType' "+extraIdentifierQuery+")" +
+				" JOIN global_property gp ON gp.property IN ('bahmni.primaryIdentifierType' "+extraIdentifierQuery+")" +
 				" AND gp.property_value LIKE concat('%', pit.uuid, '%')" +
 				" AND pi.identifier LIKE '%" +StringEscapeUtils.escapeSql(identifier)+ "%' GROUP BY pi.patient_id) " +
 				" AS matched_patient ON matched_patient.patient_id = p.person_id";

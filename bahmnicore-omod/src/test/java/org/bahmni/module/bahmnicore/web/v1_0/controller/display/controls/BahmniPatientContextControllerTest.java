@@ -66,7 +66,7 @@ public class BahmniPatientContextControllerTest {
         PatientIdentifierType primaryIdentifierType = new PatientIdentifierType();
 
         when(patientService.getPatientByUuid(patientUuid)).thenReturn(patient);
-        when(administrationService.getGlobalProperty("emr.primaryIdentifierType")).thenReturn("primary-identifier-uuid");
+        when(administrationService.getGlobalProperty("bahmni.primaryIdentifierType")).thenReturn("primary-identifier-uuid");
         when(patientService.getPatientIdentifierTypeByUuid("primary-identifier-uuid")).thenReturn(primaryIdentifierType);
         when(bahmniPatientContextMapper.map(patient, bahmniPatientProgram, configuredPersonAttributes, configuredProgramAttributes, configuredPatientIdentifiers, primaryIdentifierType)).thenReturn(expectedPatientContext);
         when(bahmniProgramWorkflowService.getPatientProgramByUuid(programUuid)).thenReturn(bahmniPatientProgram);
