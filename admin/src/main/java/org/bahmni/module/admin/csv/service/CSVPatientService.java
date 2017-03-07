@@ -26,7 +26,7 @@ import static org.bahmni.module.admin.csv.utils.CSVUtils.getDateFromString;
 
 public class CSVPatientService {
 
-    private static final String EMR_PRIMARY_IDENTIFIER_TYPE = "bahmni.primaryIdentifierType";
+    private static final String BAHMNI_PRIMARY_IDENTIFIER_TYPE = "bahmni.primaryIdentifierType";
 
     private PatientService patientService;
     private PersonService personService;
@@ -113,7 +113,7 @@ public class CSVPatientService {
     }
 
     private PatientIdentifierType getPatientIdentifierType() {
-        String globalProperty = administrationService.getGlobalProperty(EMR_PRIMARY_IDENTIFIER_TYPE);
+        String globalProperty = administrationService.getGlobalProperty(BAHMNI_PRIMARY_IDENTIFIER_TYPE);
         return patientService.getPatientIdentifierTypeByUuid(globalProperty);
     }
 
