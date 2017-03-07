@@ -23,7 +23,7 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/patientcontext")
 public class BahmniPatientContextController {
-    private static final String EMR_PRIMARY_IDENTIFIER_TYPE = "emr.primaryIdentifierType";
+    private static final String EMR_PRIMARY_IDENTIFIER_TYPE = "bahmni.primaryIdentifierType";
     @Autowired
     private PatientService patientService;
     @Autowired

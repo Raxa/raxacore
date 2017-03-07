@@ -39,13 +39,13 @@ public class PatientSearchBuilder {
 			" JOIN (SELECT identifier, patient_id" +
 			"      FROM patient_identifier pi" +
 			" JOIN patient_identifier_type pit ON pi.identifier_type = pit.patient_identifier_type_id AND pi.voided IS FALSE AND pit.retired IS FALSE" +
-			" JOIN global_property gp ON gp.property = 'emr.primaryIdentifierType' AND gp.property_value = pit.uuid" +
+			" JOIN global_property gp ON gp.property = 'bahmni.primaryIdentifierType' AND gp.property_value = pit.uuid" +
 			"      GROUP BY pi.patient_id) as primary_identifier ON p.person_id = primary_identifier.patient_id" +
 			" LEFT JOIN (SELECT concat('{', group_concat((concat('\"', pit.name, '\":\"', pi.identifier, '\"')) SEPARATOR ','), '}') AS identifiers," +
 			"        patient_id" +
 			"      FROM patient_identifier pi" +
 			"        JOIN patient_identifier_type pit ON pi.identifier_type = pit.patient_identifier_type_id AND pi.voided IS FALSE AND pit.retired IS FALSE "+
-			" JOIN global_property gp ON gp.property = 'emr.primaryIdentifierType' AND gp.property_value != pit.uuid" +
+			" JOIN global_property gp ON gp.property = 'bahmni.primaryIdentifierType' AND gp.property_value != pit.uuid" +
 			"  GROUP BY pi.patient_id) as extra_identifiers ON p.person_id = extra_identifiers.patient_id" +
 			VISIT_JOIN +
 			" left outer join visit_attribute va on va.visit_id = v.visit_id " +

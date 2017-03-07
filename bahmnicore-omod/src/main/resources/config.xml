@@ -141,4 +141,16 @@
         <description>Relationship Type Map format Eg:{ "patient": ["Sibling", "Parent"],"provider": ["Doctor"]}.If no value is specified default is  patient relationship.</description>
     </globalProperty>
 
+    <globalProperty>
+        <property>bahmni.primaryIdentifierType</property>
+        <defaultValue></defaultValue>
+        <description>Primary identifier type for looking up patients</description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>bahmni.extraPatientIdentifierTypes</property>
+        <defaultValue></defaultValue>
+        <description>A list of UUIDs indicating extra Patient Identifier Types that should be displayed</description>
+    </globalProperty>
+
 </module>

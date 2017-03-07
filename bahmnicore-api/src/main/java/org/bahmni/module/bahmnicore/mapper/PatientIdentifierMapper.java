@@ -18,7 +18,7 @@ import java.util.List;
 @Component
 public class PatientIdentifierMapper {
 
-    public static final String EMR_PRIMARY_IDENTIFIER_TYPE = "emr.primaryIdentifierType";
+    public static final String EMR_PRIMARY_IDENTIFIER_TYPE = "bahmni.primaryIdentifierType";
     private PatientService patientService;
     private AdministrationService administrationService;
 

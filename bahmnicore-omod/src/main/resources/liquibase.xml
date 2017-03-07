@@ -3804,4 +3804,24 @@
             REFERENCES users(user_id);
         </sql>
     </changeSet>
+
+    <changeSet id="bahmni-clinical-201703071203" author="Shruthi P, Pushpa" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from patient_identifier_type where name = 'Bahmni Id'</sqlCheck>
+        </preConditions>
+        <comment>set global property value for bahmni primary identifier type</comment>
+        <sql>
+            update global_property set property_value = (select uuid from patient_identifier_type where name = 'Bahmni Id') where property = 'bahmni.primaryIdentifierType';
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-PatientSearch-Update-201703071203" author="Shruthi P, Pushpa">
+        <comment>update the search query to use bahmni.primaryIdentifierType global property instead of emr.primaryIdentifierType</comment>
+        <sqlFile path="V1_97_PatientSearchSql.sql"/>
+    </changeSet>
+
+    <changeSet id="bahmni-WardsList-Update-201703071203" author="Shruthi P, Pushpa">
+        <comment>Update the wards list sql to use bahmni.primaryIdentifierType global property instead of emr.primaryIdentifierType</comment>
+        <sqlFile path="V1_98_WardsListSql.sql"/>
+    </changeSet>
 </databaseChangeLog>

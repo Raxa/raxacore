@@ -26,7 +26,7 @@ import static org.bahmni.module.admin.csv.utils.CSVUtils.getDateFromString;
 
 public class CSVPatientService {
 
-    private static final String EMR_PRIMARY_IDENTIFIER_TYPE = "emr.primaryIdentifierType";
+    private static final String EMR_PRIMARY_IDENTIFIER_TYPE = "bahmni.primaryIdentifierType";
 
     private PatientService patientService;
     private PersonService personService;
