@@ -3848,6 +3848,7 @@
             update global_property set property='bahmni.extraPatientIdentifierTypes' where property='emr.extraPatientIdentifierTypes';
         </sql>
     </changeSet>
+
     <changeSet id="create-auditlogtable-201703211430" author="Shruthi,Salauddin">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -3871,4 +3872,28 @@
 
         </sql>
     </changeSet>
+    
+    <changeSet id="20170308-1000" author="Sidtharthan, Gaurav">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept where concept_id in (select concept_id from concept_name where
+                name = 'Non-Coded Condition' AND concept_name_type = 'FULLY_SPECIFIED' AND voided = FALSE)
+                and retired = FALSE;
+            </sqlCheck>
+        </preConditions>
+        <comment>Add new concept for Non-Coded Condition</comment>
+        <sql>
+            set @concept_id = 0;
+            set @answer_concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+            
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Non-Coded Condition',
+            'Non-Coded Condition', 'Text', 'Question', false);
+    
+            update global_property set property_value = (select uuid from concept where concept_id = @concept_id)
+            where property = 'conditionList.nonCodedUuid';
+        </sql>
+    </changeSet>
+    
 </databaseChangeLog>
