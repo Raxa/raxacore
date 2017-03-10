@@ -389,16 +389,16 @@
 
 
     <encounter_provider encounter_provider_id="4" encounter_id="30" provider_id="24" creator="1" date_created="2008-07-01 14:09:05.0"
-                        voided="false" uuid="226f61a7-164b-11e4-9f26-005056823b95"/>
+                        encounter_role_id="1" voided="false" uuid="226f61a7-164b-11e4-9f26-005056823b95"/>
 
     <encounter_provider encounter_provider_id="2" encounter_id="36" provider_id="25" creator="1" date_created="2008-07-01 14:09:05.0"
-                        voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63ab0"/>
+                        encounter_role_id="1" voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63ab0"/>
 
     <encounter_provider encounter_provider_id="1" encounter_id="38" provider_id="24" creator="1" date_created="2008-07-01 14:09:05.0"
-                        voided="false" uuid="990bf6767-707a-4329-9850-f15206e63ab0"/>
+                        encounter_role_id="1"  voided="false" uuid="990bf6767-707a-4329-9850-f15206e63ab0"/>
 
     <encounter_provider encounter_provider_id="3" encounter_id="50" provider_id="24" creator="1" date_created="2008-07-01 14:09:05.0"
-                        voided="false" uuid="3645f99a-0c0d-11e4-bb80-f18addb6f9bb"/>
+                        encounter_role_id="1" voided="false" uuid="3645f99a-0c0d-11e4-bb80-f18addb6f9bb"/>
 
     <!-- Add accession notes -->
     <encounter encounter_id="51" encounter_type="5" patient_id="1000000" visit_id="4" location_id="2"
@@ -406,7 +406,7 @@
                voided="false" uuid="1293cc38-0c0d-11e4-bb80-f18accb3f9bb"/>
 
     <encounter_provider encounter_provider_id="5" encounter_id="51" provider_id="24" creator="1" date_created="2008-07-01 14:09:05.0"
-                        voided="false" uuid="3645f99a-0c0d-11e4-bb80-f18addb6feee"/>
+                        encounter_role_id="1" voided="false" uuid="3645f99a-0c0d-11e4-bb80-f18addb6feee"/>
 
     <obs obs_id="1104" encounter_id="51" person_id="1000000" obs_datetime="2013-08-19 15:09:05.0" date_created="2013-08-19 15:09:05.0"
          uuid="884585ac-1a0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="703" value_text="b0a81566-0c0c-11e4-bb80-f18addb6f9bb" voided="0" />
