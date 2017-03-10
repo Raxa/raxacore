@@ -220,9 +220,21 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public BahmniObservation getBahmniObservationByUuid(String observationUuid) {
+    public BahmniObservation getBahmniObservationByUuid(String observationUuid, boolean getRevision) {
         Obs obs = obsService.getObsByUuid(observationUuid);
+        if (getRevision && obs.getVoided()) {
+            obs = getRevisionObs(obs);
+        }
         return omrsObsToBahmniObsMapper.map(obs);
+    }
+
+    @Override
+    public Obs getRevisionObs(Obs initialObs) {
+        Obs revisedObs = obsDao.getRevisionObs(initialObs);
+        if (revisedObs != null && revisedObs.getVoided()) {
+            revisedObs = getRevisionObs(revisedObs);
+        }
+        return revisedObs;
     }
 
     @Override

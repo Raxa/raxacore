@@ -163,11 +163,11 @@ public class BahmniObservationsControllerTest {
     public void shouldGetBahmniObservationWithTheGivenObservationUuid() throws Exception {
         String observationUuid = "observationUuid";
         BahmniObservation expectedBahmniObservation = new BahmniObservation();
-        when(bahmniObsService.getBahmniObservationByUuid(observationUuid)).thenReturn(expectedBahmniObservation);
+        when(bahmniObsService.getBahmniObservationByUuid(observationUuid, true)).thenReturn(expectedBahmniObservation);
 
         BahmniObservation actualBahmniObservation = bahmniObservationsController.get(observationUuid);
 
-        verify(bahmniObsService, times(1)).getBahmniObservationByUuid("observationUuid");
+        verify(bahmniObsService, times(1)).getBahmniObservationByUuid("observationUuid", true);
         assertNotNull("BahmniObservation should not be null", actualBahmniObservation);
         assertEquals(expectedBahmniObservation, actualBahmniObservation);
     }

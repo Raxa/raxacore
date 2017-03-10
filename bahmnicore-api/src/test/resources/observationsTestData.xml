@@ -148,4 +148,9 @@
     <obs obs_id="99997" obs_group_id="99995" concept_id="19012" person_id="1024" value_numeric="300" encounter_id="39" obs_datetime="2008-09-18 15:09:05.0" date_created="2008-09-18 15:09:05.0" uuid="633dc076-1c8f-11e4-bkk0-f18addb6fmtb" creator="1" voided="0" />
 
     <obs obs_id="111111" concept_id="9011" person_id="1024" value_numeric="110" encounter_id="39" obs_datetime="2008-09-18 15:09:05.0" date_created="2008-09-18 15:09:05.0" uuid="633dc076-1c8f-11e4-bb80-f18addmujir" creator="1" voided="0" />
+
+    <obs obs_id="99998" concept_id="19012" person_id="1024" value_numeric="300" encounter_id="39" obs_datetime="2008-09-18 15:09:05.0" date_created="2008-09-18 15:09:05.0" uuid="uuid99998" creator="1" voided="1" />
+    <obs obs_id="999981" concept_id="19012" person_id="1024" value_numeric="300" encounter_id="39" obs_datetime="2008-09-18 15:09:05.0" date_created="2008-09-18 15:09:05.0" uuid="uuid999981" creator="1" voided="1" previous_version="99998"/>
+    <obs obs_id="999982" concept_id="19012" person_id="1024" value_numeric="300" encounter_id="39" obs_datetime="2008-09-18 15:09:05.0" date_created="2008-09-18 15:09:05.0" uuid="uuid999982" creator="1" voided="0" previous_version="999981"/>
+
 </dataset>

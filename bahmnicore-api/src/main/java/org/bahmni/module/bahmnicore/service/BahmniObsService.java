@@ -31,5 +31,6 @@ public interface BahmniObsService {
     public Collection<BahmniObservation> getLatestObservationsForPatientProgram(String patientProgramUuid, List<String> conceptNames);
     public Collection<BahmniObservation> getInitialObservationsForPatientProgram(String patientProgramUuid, List<String> conceptNames);
 
-    BahmniObservation getBahmniObservationByUuid(String observationUuid);
+    BahmniObservation getBahmniObservationByUuid(String observationUuid, boolean getRevision);
+    Obs getRevisionObs(Obs initialObs);
 }
