@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.apache.commons.io.FileUtils;
+import org.bahmni.module.bahmnicore.bahmniexceptions.FileTypeNotSupportedException;
 import org.bahmni.module.bahmnicore.bahmniexceptions.VideoFormatNotSupportedException;
 import org.bahmni.module.bahmnicore.model.VideoFormats;
 import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
@@ -15,6 +16,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.http.ResponseEntity;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Arrays;
@@ -22,10 +26,11 @@ import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({BahmniCoreProperties.class, FileInputStream.class, FileUtils.class})
+@PrepareForTest({BahmniCoreProperties.class, FileInputStream.class, FileUtils.class, ImageIO.class})
 public class PatientDocumentServiceImplTest {
 
     private PatientDocumentServiceImpl patientDocumentService;
@@ -95,5 +100,56 @@ public class PatientDocumentServiceImplTest {
 
         patientDocumentService = new PatientDocumentServiceImpl();
         patientDocumentService.saveDocument(1, "Consultation", "videoContent", "xyz", "video");
+    }
+
+    @Test
+    public void shouldSavePDF() throws Exception {
+        PowerMockito.mockStatic(BahmniCoreProperties.class);
+        when(BahmniCoreProperties.getProperty("bahmnicore.documents.baseDirectory")).thenReturn("");
+        PowerMockito.mockStatic(FileUtils.class);
+
+        Patient patient = new Patient();
+        patient.setId(1);
+        patient.setUuid("patient-uuid");
+
+        patientDocumentService = new PatientDocumentServiceImpl();
+        String url = patientDocumentService.saveDocument(1, "Consultation", "pdfContent", "pdf", "file");
+
+        assertTrue(url.matches(".*1-Consultation-.*.pdf"));
+    }
+    @Test
+    public void shouldSaveImage() throws Exception {
+        PowerMockito.mockStatic(BahmniCoreProperties.class);
+        PowerMockito.mockStatic(ImageIO.class);
+        when(BahmniCoreProperties.getProperty("bahmnicore.documents.baseDirectory")).thenReturn("");
+        BufferedImage bufferedImage = new BufferedImage(1,2, 2);
+        when(ImageIO.read(Matchers.any(ByteArrayInputStream.class))).thenReturn(bufferedImage);
+        when(ImageIO.write(eq(bufferedImage),eq("jpg"), Matchers.any(File.class))).thenReturn(true);
+
+        Patient patient = new Patient();
+        patient.setId(1);
+        patient.setUuid("patient-uuid");
+
+        patientDocumentService = new PatientDocumentServiceImpl();
+        String url = patientDocumentService.saveDocument(1, "Consultation", "imageContent", "jpg", "image");
+
+        assertTrue(url.matches(".*1-Consultation-.*.jpg"));
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenFileTypeIsNotSupported() throws Exception {
+        PowerMockito.mockStatic(BahmniCoreProperties.class);
+        when(BahmniCoreProperties.getProperty("bahmnicore.documents.baseDirectory")).thenReturn("");
+        PowerMockito.mockStatic(FileUtils.class);
+
+        Patient patient = new Patient();
+        patient.setId(1);
+        patient.setUuid("patient-uuid");
+
+        expectedException.expect(FileTypeNotSupportedException.class);
+        expectedException.expectMessage("The file type is not supported. Supported types are image/video/pdf");
+
+        patientDocumentService = new PatientDocumentServiceImpl();
+        patientDocumentService.saveDocument(1, "Consultation", "otherfileContent", "xyz", "csv");
     }
 }

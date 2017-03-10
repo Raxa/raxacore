@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bahmni.module.bahmnicore.BahmniCoreException;
+import org.bahmni.module.bahmnicore.bahmniexceptions.FileTypeNotSupportedException;
 import org.bahmni.module.bahmnicore.bahmniexceptions.VideoFormatNotSupportedException;
 import org.bahmni.module.bahmnicore.model.VideoFormats;
 import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
@@ -35,6 +36,7 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
     private static final String patientImagesFormat = "jpeg";
     private final Integer NO_OF_PATIENT_FILE_IN_A_DIRECTORY = 100;
     private final String VIDEO_FILE_TYPE = "video";
+    private final String IMAGE_FILE_TYPE = "image";
 
     @Override
     public void saveImage(String patientIdentifier, String image) {
@@ -97,12 +99,14 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
             FileUtils.writeByteArrayToFile(outputFile, decodedBytes);
         } else if (PDF.equals(format)) {
             FileUtils.writeByteArrayToFile(outputFile, decodedBytes);
-        } else {
+        } else if (IMAGE_FILE_TYPE.equals(fileType)){
             BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decodedBytes));
             ImageIO.write(bufferedImage, format, outputFile);
             createThumbnail(bufferedImage, outputFile);
             bufferedImage.flush();
             log.info(String.format("Successfully created patient image at %s", outputFile));
+        } else {
+            throw new FileTypeNotSupportedException(String.format("The file type is not supported. Supported types are %s/%s/%s", IMAGE_FILE_TYPE, VIDEO_FILE_TYPE, PDF));
         }
     }
 
