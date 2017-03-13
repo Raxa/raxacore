@@ -44,7 +44,7 @@ public class BahmniPatientContextControllerIT extends BaseIntegrationTest {
         assertEquals("101-6", patientContext.getIdentifier());
         assertEquals(1, patientContext.getPersonAttributes().size());
         assertTrue(patientContext.getPersonAttributes().keySet().contains("Birthplace"));
-        assertEquals("NULL", patientContext.getPersonAttributes().get("Birthplace").get("value"));
+        assertEquals("London", patientContext.getPersonAttributes().get("Birthplace").get("value"));
         assertEquals(0, patientContext.getProgramAttributes().size());
     }
 
