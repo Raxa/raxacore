@@ -1,9 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.FieldValueFilter;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.bahmni.module.bahmnicore.contract.patient.mapper.PatientResponseMapper;
@@ -21,19 +18,12 @@ import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.PersonName;
-import org.openmrs.RelationshipType;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
-import org.openmrs.api.db.hibernate.search.TermsFilterFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -55,7 +45,6 @@ public class PatientDaoImpl implements PatientDao {
                                              String[] patientSearchResultFields, String loginLocationUuid, Boolean filterPatientsByLocation, Boolean filterOnAllIdentifiers) {
 
         validateSearchParams(customAttributeFields, programAttributeFieldName, addressFieldName);
-
 
         ProgramAttributeType programAttributeType = getProgramAttributeType(programAttributeFieldName);
 
@@ -80,11 +69,31 @@ public class PatientDaoImpl implements PatientDao {
 
         validateSearchParams(customAttributeFields, programAttributeFieldName, addressFieldName);
 
+        List<PatientIdentifier> patientIdentifiers = getPatientIdentifiers(identifier, length, offset);
+        List<Integer> patientIds = patientIdentifiers.stream().map(patientIdentifier -> patientIdentifier.getPatient().getPatientId()).collect(toList());
+        Map<Object, Object> programAttributes = Context.getService(BahmniProgramWorkflowService.class).getPatientProgramAttributeByAttributeName(patientIds, programAttributeFieldName);
+        PatientResponseMapper patientResponseMapper = new PatientResponseMapper();
+        List<PatientResponse> patientResponses = patientIdentifiers.stream()
+                .map(patientIdentifier -> {
+                    Patient patient = patientIdentifier.getPatient();
+                    PatientResponse patientResponse = patientResponseMapper.map(patient, loginLocationUuid, patientSearchResultFields, addressSearchResultFields,
+                                                                                programAttributes.get(patient.getPatientId()), filterPatientsByLocation);
+                    return patientResponse;
+                })
+                .filter(Objects::nonNull)
+                .skip((long) offset)
+                .limit(((long) length))
+                .collect(toList());
+
+        return patientResponses;
+    }
+
+    private List<PatientIdentifier> getPatientIdentifiers(String identifier, Integer length, Integer offset) {
         FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.getCurrentSession());
         QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(PatientIdentifier.class).get();
 
         org.apache.lucene.search.Query identifierQuery = queryBuilder.keyword()
-                .wildcard().onField("identifier").matching("*" + identifier.toLowerCase() + "*").createQuery();
+                .wildcard().onField("identifierAnywhere").matching("*" + identifier.toLowerCase() + "*").createQuery();
         org.apache.lucene.search.Query nonVoidedIdentifiers = queryBuilder.keyword().onField("voided").matching(false).createQuery();
         org.apache.lucene.search.Query nonVoidedPatients = queryBuilder.keyword().onField("patient.voided").matching(false).createQuery();
 //        org.apache.lucene.search.Query identifierTypes = queryBuilder.keyword().onField("identifierType.patientIdentifierTypeId").matching(2).createQuery();
@@ -100,19 +109,7 @@ public class PatientDaoImpl implements PatientDao {
         fullTextQuery.setSort(sort);
         fullTextQuery.setFirstResult(offset);
         fullTextQuery.setMaxResults(length);
-        List<PatientIdentifier> patientIdentifiers = fullTextQuery.list();
-
-        List<Integer> patientIds = patientIdentifiers.stream().map(patientIdentifier -> patientIdentifier.getPatient().getPatientId()).collect(toList());
-        Map<Object, Object> programAttributes = Context.getService(BahmniProgramWorkflowService.class).getPatientProgramAttributeByAttributeName(patientIds, programAttributeFieldName);
-        PatientResponseMapper patientResponseMapper = new PatientResponseMapper();
-        List<PatientResponse> patientResponses = patientIdentifiers.stream()
-                .map(patientIdentifier -> {
-                    PatientResponse patient = patientResponseMapper.map(patientIdentifier.getPatient(), patientSearchResultFields, addressSearchResultFields);
-                    patient.setPatientProgramAttributeValue(programAttributes.get(patient.getPersonId()));
-                    return patient;
-                })
-                .collect(toList());
-        return patientResponses;
+        return (List<PatientIdentifier>) fullTextQuery.list();
     }
 
     private void validateSearchParams(String[] customAttributeFields, String programAttributeFieldName, String addressFieldName) {
