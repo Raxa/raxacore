@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
+import java.util.Comparator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
@@ -18,13 +19,17 @@ import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
-import org.openmrs.*;
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import static java.util.stream.Collectors.toList;
 
 @Repository
@@ -69,7 +74,7 @@ public class PatientDaoImpl implements PatientDao {
 
         validateSearchParams(customAttributeFields, programAttributeFieldName, addressFieldName);
 
-        List<PatientIdentifier> patientIdentifiers = getPatientIdentifiers(identifier, length, offset);
+        List<PatientIdentifier> patientIdentifiers = getPatientIdentifiers(identifier);
         List<Integer> patientIds = patientIdentifiers.stream().map(patientIdentifier -> patientIdentifier.getPatient().getPatientId()).collect(toList());
         Map<Object, Object> programAttributes = Context.getService(BahmniProgramWorkflowService.class).getPatientProgramAttributeByAttributeName(patientIds, programAttributeFieldName);
         PatientResponseMapper patientResponseMapper = new PatientResponseMapper();
@@ -81,14 +86,11 @@ public class PatientDaoImpl implements PatientDao {
                     return patientResponse;
                 })
                 .filter(Objects::nonNull)
-                .skip((long) offset)
-                .limit(((long) length))
                 .collect(toList());
-
-        return patientResponses;
+        return patientResponses.stream().sorted(Comparator.comparing(PatientResponse::getDateCreated).reversed()).skip((long) offset).limit(((long) length)).collect(toList());
     }
 
-    private List<PatientIdentifier> getPatientIdentifiers(String identifier, Integer length, Integer offset) {
+    private List<PatientIdentifier> getPatientIdentifiers(String identifier) {
         FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.getCurrentSession());
         QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(PatientIdentifier.class).get();
 
@@ -107,8 +109,6 @@ public class PatientDaoImpl implements PatientDao {
         Sort sort = new Sort( new SortField( "identifier", SortField.Type.STRING, false ) );
         FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(booleanQuery, PatientIdentifier.class);
         fullTextQuery.setSort(sort);
-        fullTextQuery.setFirstResult(offset);
-        fullTextQuery.setMaxResults(length);
         return (List<PatientIdentifier>) fullTextQuery.list();
     }
 

@@ -3,16 +3,22 @@ package org.bahmni.module.bahmnicore.contract.patient.mapper;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
-import org.openmrs.*;
+import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
+import org.openmrs.PersonAddress;
+import org.openmrs.PersonAttribute;
+import org.openmrs.Visit;
+import org.openmrs.VisitAttribute;
 import org.openmrs.api.APIException;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
-import org.openmrs.util.DateUtil;
-
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PatientResponseMapper {
@@ -24,7 +30,15 @@ public class PatientResponseMapper {
     public PatientResponse map(Patient patient, String loginLocationUuid, String[] searchResultFields, String[] addressResultFields, Object programAttributeValue, Boolean filterPatientsByLocation) {
         List<String> patientSearchResultFields = searchResultFields != null ? Arrays.asList(searchResultFields) : new ArrayList<>();
         List<String> addressSearchResultFields = addressResultFields != null ? Arrays.asList(addressResultFields) : new ArrayList<>();
-
+    
+        BahmniVisitLocationServiceImpl bahmniVisitLocationService = new BahmniVisitLocationServiceImpl(Context.getLocationService());
+        Integer visitLocationId = bahmniVisitLocationService.getVisitLocation(loginLocationUuid).getLocationId();
+        VisitService visitService = Context.getVisitService();
+        List<Visit> activeVisitsByPatient = visitService.getActiveVisitsByPatient(patient);
+        if(activeVisitsByPatient.isEmpty() && filterPatientsByLocation) {
+            return null;
+        }
+        
         patientResponse = new PatientResponse();
         patientResponse.setUuid(patient.getUuid());
         patientResponse.setPersonId(patient.getPatientId());
@@ -41,14 +55,6 @@ public class PatientResponseMapper {
         mapExtraIdentifiers(patient, primaryIdentifier);
         mapPersonAttributes(patient, patientSearchResultFields);
         mapPersonAddress(patient, programAttributeValue, addressSearchResultFields);
-
-        BahmniVisitLocationServiceImpl bahmniVisitLocationService = new BahmniVisitLocationServiceImpl(Context.getLocationService());
-        Integer visitLocationId = bahmniVisitLocationService.getVisitLocation(loginLocationUuid).getLocationId();
-        VisitService visitService = Context.getVisitService();
-        List<Visit> activeVisitsByPatient = visitService.getActiveVisitsByPatient(patient);
-        if(activeVisitsByPatient.isEmpty() && filterPatientsByLocation) {
-            return null;
-        }
         mapVisitSummary(visitLocationId, activeVisitsByPatient);
 
         return patientResponse;
@@ -56,14 +62,11 @@ public class PatientResponseMapper {
 
     private void mapExtraIdentifiers(Patient patient, PatientIdentifier primaryIdentifier) {
         String extraIdentifiers = patient.getActiveIdentifiers().stream()
+                .filter(patientIdentifier -> (patientIdentifier != primaryIdentifier))
                 .map(patientIdentifier -> {
-                    if (patientIdentifier != primaryIdentifier) {
-                        String identifier = patientIdentifier.getIdentifier();
-                        return identifier == null ? ""
-                                : formKeyPair(patientIdentifier.getIdentifierType().getName(), identifier);
-
-                    }
-                    return "";
+                    String identifier = patientIdentifier.getIdentifier();
+                    return identifier == null ? ""
+                                              : formKeyPair(patientIdentifier.getIdentifierType().getName(), identifier);
                 })
                 .collect(Collectors.joining(","));
         patientResponse.setExtraIdentifiers(formJsonString(extraIdentifiers));
@@ -108,8 +111,7 @@ public class PatientResponseMapper {
     }
 
     private String formJsonString(String keyPairs) {
-
-        return "{" + keyPairs + "}";
+        return "".equals(keyPairs) ? null :"{" + keyPairs + "}";
     }
 
     private String formKeyPair(String Key, String value) {
