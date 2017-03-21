@@ -93,7 +93,7 @@ public class PatientDaoImpl implements PatientDao {
     private List<PatientIdentifier> getPatientIdentifiers(String identifier) {
         FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.getCurrentSession());
         QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(PatientIdentifier.class).get();
-
+        identifier = identifier.replace('%','*');
         org.apache.lucene.search.Query identifierQuery = queryBuilder.keyword()
                 .wildcard().onField("identifierAnywhere").matching("*" + identifier.toLowerCase() + "*").createQuery();
         org.apache.lucene.search.Query nonVoidedIdentifiers = queryBuilder.keyword().onField("voided").matching(false).createQuery();
