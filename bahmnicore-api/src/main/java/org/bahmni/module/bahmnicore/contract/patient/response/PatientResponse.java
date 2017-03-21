@@ -1,6 +1,15 @@
 package org.bahmni.module.bahmnicore.contract.patient.response;
 
 
+
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -64,6 +73,7 @@ public class PatientResponse {
         this.uuid = uuid;
     }
 
+    @JsonSerialize(using=JsonDateSerializer.class)
     public Date getBirthDate() {
         return birthDate;
     }
@@ -184,4 +194,18 @@ public class PatientResponse {
         this.personId = personId;
     }
 
+    /**
+     * Used to serialize Java.util.Date, which is not a common JSON
+     * type, so we have to create a custom serialize method;
+     */
+    @Component
+    public static  class JsonDateSerializer extends JsonSerializer<Date> {
+        private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        @Override
+        public void serialize(Date date, JsonGenerator gen, SerializerProvider provider)
+                throws IOException {
+            String formattedDate = dateFormat.format(date);
+            gen.writeString(formattedDate);
+        }
+    }
 }
