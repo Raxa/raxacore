@@ -9,7 +9,7 @@
         <!-- <property name="show_sql">true</property>
          <property name="format_sql">true</property>-->
         <!--<property name="use_sql_comments">true</property>-->
-
+        <mapping resource="BahmniAuditLog.hbm.xml"/>
         <mapping resource="org/bahmni/module/db/hibernate/ObsRelationship.hbm.xml"/>
         <mapping resource="org/bahmni/module/db/hibernate/ObsRelationshipType.hbm.xml"/>
         <mapping resource="BahmniConfig.hbm.xml"/>
