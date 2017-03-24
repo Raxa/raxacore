@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.contract.patient.mapper;
 
+import java.util.Objects;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
@@ -77,7 +78,7 @@ public class PatientResponseMapper {
                 .map(attributeName -> {
                     PersonAttribute attribute = patient.getAttribute(attributeName);
                     return attribute == null ? null : formKeyPair(attributeName, attribute.getValue());
-                })
+                }).filter(Objects::nonNull)
                 .collect(Collectors.joining(","));
         patientResponse.setCustomAttribute(formJsonString(queriedPersonAttributes));
     }
@@ -88,6 +89,7 @@ public class PatientResponseMapper {
                     String address = getPersonAddressFieldValue(addressField, patient.getPersonAddress());
                     return address == null ? null : formKeyPair(addressField, address);
                 })
+                .filter(Objects::nonNull)
                 .collect(Collectors.joining(","));
         patientResponse.setAddressFieldValue(formJsonString(queriedAddressFields));
         patientResponse.setPatientProgramAttributeValue(programAttributeValue);
