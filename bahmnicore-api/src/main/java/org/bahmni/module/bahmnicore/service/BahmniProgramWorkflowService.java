@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface BahmniProgramWorkflowService extends ProgramWorkflowService {
 
@@ -38,6 +39,8 @@ public interface BahmniProgramWorkflowService extends ProgramWorkflowService {
     @Transactional(readOnly = true)
     @Authorized({"View Patient Programs"})
     Collection<Encounter> getEncountersByPatientProgramUuid(String patientProgramUuid);
+
+    Map<Object, Object> getPatientProgramAttributeByAttributeName(List<Integer> patients, String attributeName);
 
     @Transactional(readOnly = true)
     @Authorized({"View Patient Programs"})

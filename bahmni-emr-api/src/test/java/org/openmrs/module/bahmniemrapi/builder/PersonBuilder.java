@@ -22,6 +22,7 @@ public class PersonBuilder {
     public PersonBuilder withPersonName(String personNameValue) {
         PersonName personName = new PersonName();
         personName.setGivenName(personNameValue);
+        personName.setId(2);
         Set<PersonName> personNames = new HashSet<>();
         personNames.add(personName);
         person.setNames(personNames);

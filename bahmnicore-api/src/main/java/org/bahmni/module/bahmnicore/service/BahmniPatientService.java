@@ -10,7 +10,12 @@ import java.util.List;
 
 public interface BahmniPatientService {
     public PatientConfigResponse getConfig();
+
     public List<PatientResponse> search(PatientSearchParameters searchParameters);
+
+    List<PatientResponse> luceneSearch(PatientSearchParameters searchParameters);
+
     public List<Patient> get(String partialIdentifier, boolean shouldMatchExactPatientId);
+
     public List<RelationshipType> getByAIsToB(String aIsToB);
 }

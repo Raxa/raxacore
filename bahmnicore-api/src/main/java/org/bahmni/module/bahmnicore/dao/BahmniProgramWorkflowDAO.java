@@ -6,6 +6,7 @@ import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeT
 import org.openmrs.api.db.ProgramWorkflowDAO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BahmniProgramWorkflowDAO extends ProgramWorkflowDAO {
 
@@ -22,4 +23,6 @@ public interface BahmniProgramWorkflowDAO extends ProgramWorkflowDAO {
     void purgeProgramAttributeType(ProgramAttributeType var1);
 
     List<BahmniPatientProgram> getPatientProgramByAttributeNameAndValue(String attributeName, String attributeValue);
+
+    Map<Object, Object> getPatientProgramAttributeByAttributeName(List<Integer> patientIds, String attributeName);
 }

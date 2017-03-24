@@ -1,24 +1,36 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
+import java.util.Comparator;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
+import org.bahmni.module.bahmnicore.contract.patient.mapper.PatientResponseMapper;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
 import org.bahmni.module.bahmnicore.contract.patient.search.PatientSearchBuilder;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
+import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.search.FullTextQuery;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.RelationshipType;
+import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import static java.util.stream.Collectors.toList;
 
 @Repository
 public class PatientDaoImpl implements PatientDao {
@@ -37,20 +49,67 @@ public class PatientDaoImpl implements PatientDao {
                                              String programAttributeFieldName, String[] addressSearchResultFields,
                                              String[] patientSearchResultFields, String loginLocationUuid, Boolean filterPatientsByLocation, Boolean filterOnAllIdentifiers) {
 
-        validateSearchParams(customAttributeFields, programAttributeFieldName,addressFieldName);
-
+        validateSearchParams(customAttributeFields, programAttributeFieldName, addressFieldName);
 
         ProgramAttributeType programAttributeType = getProgramAttributeType(programAttributeFieldName);
 
         SQLQuery sqlQuery = new PatientSearchBuilder(sessionFactory)
                 .withPatientName(name)
-                .withPatientAddress(addressFieldName,addressFieldValue, addressSearchResultFields)
+                .withPatientAddress(addressFieldName, addressFieldValue, addressSearchResultFields)
                 .withPatientIdentifier(identifier, filterOnAllIdentifiers)
                 .withPatientAttributes(customAttribute, getPersonAttributeIds(customAttributeFields), getPersonAttributeIds(patientSearchResultFields))
                 .withProgramAttributes(programAttributeFieldValue, programAttributeType)
                 .withLocation(loginLocationUuid, filterPatientsByLocation)
-                .buildSqlQuery(length,offset);
+                .buildSqlQuery(length, offset);
         return sqlQuery.list();
+    }
+
+    @Override
+    public List<PatientResponse> getPatientsUsingLuceneSearch(String identifier, String name, String customAttribute,
+                                                              String addressFieldName, String addressFieldValue, Integer length,
+                                                              Integer offset, String[] customAttributeFields, String programAttributeFieldValue,
+                                                              String programAttributeFieldName, String[] addressSearchResultFields,
+                                                              String[] patientSearchResultFields, String loginLocationUuid,
+                                                              Boolean filterPatientsByLocation, Boolean filterOnAllIdentifiers) {
+
+        validateSearchParams(customAttributeFields, programAttributeFieldName, addressFieldName);
+
+        List<PatientIdentifier> patientIdentifiers = getPatientIdentifiers(identifier);
+        List<Integer> patientIds = patientIdentifiers.stream().map(patientIdentifier -> patientIdentifier.getPatient().getPatientId()).collect(toList());
+        Map<Object, Object> programAttributes = Context.getService(BahmniProgramWorkflowService.class).getPatientProgramAttributeByAttributeName(patientIds, programAttributeFieldName);
+        PatientResponseMapper patientResponseMapper = new PatientResponseMapper();
+        List<PatientResponse> patientResponses = patientIdentifiers.stream()
+                .map(patientIdentifier -> {
+                    Patient patient = patientIdentifier.getPatient();
+                    PatientResponse patientResponse = patientResponseMapper.map(patient, loginLocationUuid, patientSearchResultFields, addressSearchResultFields,
+                                                                                programAttributes.get(patient.getPatientId()), filterPatientsByLocation);
+                    return patientResponse;
+                })
+                .filter(Objects::nonNull)
+                .collect(toList());
+        return patientResponses.stream().sorted(Comparator.comparing(PatientResponse::getDateCreated).reversed()).skip((long) offset).limit(((long) length)).collect(toList());
+    }
+
+    private List<PatientIdentifier> getPatientIdentifiers(String identifier) {
+        FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.getCurrentSession());
+        QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(PatientIdentifier.class).get();
+        identifier = identifier.replace('%','*');
+        org.apache.lucene.search.Query identifierQuery = queryBuilder.keyword()
+                .wildcard().onField("identifierAnywhere").matching("*" + identifier.toLowerCase() + "*").createQuery();
+        org.apache.lucene.search.Query nonVoidedIdentifiers = queryBuilder.keyword().onField("voided").matching(false).createQuery();
+        org.apache.lucene.search.Query nonVoidedPatients = queryBuilder.keyword().onField("patient.voided").matching(false).createQuery();
+//        org.apache.lucene.search.Query identifierTypes = queryBuilder.keyword().onField("identifierType.patientIdentifierTypeId").matching(2).createQuery();
+        org.apache.lucene.search.Query booleanQuery = queryBuilder.bool()
+                .must(identifierQuery)
+                .must(nonVoidedIdentifiers)
+                .must(nonVoidedPatients)
+//                .must(identifierTypes)
+                .createQuery();
+
+        Sort sort = new Sort( new SortField( "identifier", SortField.Type.STRING, false ) );
+        FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(booleanQuery, PatientIdentifier.class);
+        fullTextQuery.setSort(sort);
+        return (List<PatientIdentifier>) fullTextQuery.list();
     }
 
     private void validateSearchParams(String[] customAttributeFields, String programAttributeFieldName, String addressFieldName) {
@@ -65,39 +124,39 @@ public class PatientDaoImpl implements PatientDao {
         }
 
 
-        if(!isValidAddressField(addressFieldName)){
+        if (!isValidAddressField(addressFieldName)) {
             throw new IllegalArgumentException(String.format("Invalid Address Filed %s", addressFieldName));
         }
     }
 
     private boolean isValidAddressField(String addressFieldName) {
-        if(addressFieldName==null)return true;
+        if (addressFieldName == null) return true;
         String query = "SELECT DISTINCT COLUMN_NAME FROM information_schema.columns WHERE\n" +
-                "LOWER (TABLE_NAME) ='person_address' and LOWER(COLUMN_NAME) IN "+
+                "LOWER (TABLE_NAME) ='person_address' and LOWER(COLUMN_NAME) IN " +
                 "( :personAddressField)";
-        Query queryToGetAddressFields = sessionFactory.getCurrentSession().createSQLQuery( query);
+        Query queryToGetAddressFields = sessionFactory.getCurrentSession().createSQLQuery(query);
         queryToGetAddressFields.setParameterList("personAddressField", Arrays.asList(addressFieldName.toLowerCase()));
         List list = queryToGetAddressFields.list();
-        return list.size()>0;
+        return list.size() > 0;
     }
 
     private ProgramAttributeType getProgramAttributeType(String programAttributeField) {
-        if(StringUtils.isEmpty(programAttributeField)){
+        if (StringUtils.isEmpty(programAttributeField)) {
             return null;
         }
 
         return (ProgramAttributeType) sessionFactory.getCurrentSession().createCriteria(ProgramAttributeType.class).
-                add(Restrictions.eq("name",programAttributeField)).uniqueResult();
+                add(Restrictions.eq("name", programAttributeField)).uniqueResult();
     }
 
     private List<Integer> getPersonAttributeIds(String[] patientAttributes) {
-        if (patientAttributes == null || patientAttributes.length == 0 ){
+        if (patientAttributes == null || patientAttributes.length == 0) {
             return new ArrayList<>();
         }
 
         String query = "select person_attribute_type_id from person_attribute_type where name in " +
                 "( :personAttributeTypeNames)";
-        Query queryToGetAttributeIds = sessionFactory.getCurrentSession().createSQLQuery( query);
+        Query queryToGetAttributeIds = sessionFactory.getCurrentSession().createSQLQuery(query);
         queryToGetAttributeIds.setParameterList("personAttributeTypeNames", Arrays.asList(patientAttributes));
         List list = queryToGetAttributeIds.list();
         return (List<Integer>) list;
@@ -121,12 +180,12 @@ public class PatientDaoImpl implements PatientDao {
                     "select pi.patient " +
                             " from PatientIdentifier pi " +
                             " where pi.identifier like :partialIdentifier ");
-            querytoGetPatients.setString("partialIdentifier",partialIdentifier);
+            querytoGetPatients.setString("partialIdentifier", partialIdentifier);
             return querytoGetPatients.list();
         }
 
         Patient patient = getPatient(patientIdentifier);
-        List<Patient> result = (patient == null ? new ArrayList<Patient>(): Arrays.asList(patient));
+        List<Patient> result = (patient == null ? new ArrayList<Patient>() : Arrays.asList(patient));
         return result;
     }
 
