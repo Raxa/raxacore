@@ -86,8 +86,10 @@ public class PatientDaoImpl implements PatientDao {
                     return patientResponse;
                 })
                 .filter(Objects::nonNull)
+                .skip((long) offset)
+                .limit((long) length)
                 .collect(toList());
-        return patientResponses.stream().sorted(Comparator.comparing(PatientResponse::getDateCreated).reversed()).skip((long) offset).limit(((long) length)).collect(toList());
+        return patientResponses;
     }
 
     private List<PatientIdentifier> getPatientIdentifiers(String identifier) {

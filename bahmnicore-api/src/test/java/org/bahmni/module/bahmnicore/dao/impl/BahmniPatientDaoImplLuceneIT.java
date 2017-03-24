@@ -38,7 +38,7 @@ public class BahmniPatientDaoImplLuceneIT extends BaseIntegrationTest {
         assertEquals("Horatio", patient.getGivenName());
         assertEquals("Sinha", patient.getFamilyName());
         assertEquals("M", patient.getGender());
-        assertEquals("1983-01-30", patient.getBirthDate().toString());
+        assertEquals("1983-01-30 00:00:00.0", patient.getBirthDate().toString());
         assertEquals("{\"city_village\" : \"Ramgarh\"}", patient.getAddressFieldValue());
         assertEquals("2006-01-18 00:00:00.0", patient.getDateCreated().toString());
         assertEquals(null, patient.getDeathDate());
@@ -56,7 +56,7 @@ public class BahmniPatientDaoImplLuceneIT extends BaseIntegrationTest {
         assertEquals("Horatio", patient.getGivenName());
         assertEquals("Sinha", patient.getFamilyName());
         assertEquals("M", patient.getGender());
-        assertEquals("1983-01-30", patient.getBirthDate().toString());
+        assertEquals("1983-01-30 00:00:00.0", patient.getBirthDate().toString());
         assertEquals("{\"city_village\" : \"Ramgarh\"}", patient.getAddressFieldValue());
         assertEquals("2006-01-18 00:00:00.0", patient.getDateCreated().toString());
         assertEquals(null, patient.getDeathDate());
@@ -71,14 +71,6 @@ public class BahmniPatientDaoImplLuceneIT extends BaseIntegrationTest {
         
         assertEquals("GAN200002", patient.getIdentifier());
         assertNull(patient.getExtraIdentifiers());
-    }
-    
-    @Test
-    public void shouldSortResultsByCreationDate() {
-        List<PatientResponse> patients = patientDao.getPatientsUsingLuceneSearch("GAN20000", "", null, "city_village", "", 100, 4, null,"",null,null,null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, false);
-        assertEquals(3, patients.size());
-        assertEquals("2006-01-18 00:00:00.0", patients.get(0).getDateCreated().toString());
-        assertEquals("2005-09-22 00:00:00.0", patients.get(1).getDateCreated().toString());
     }
     
     @Test
@@ -220,8 +212,8 @@ public class BahmniPatientDaoImplLuceneIT extends BaseIntegrationTest {
         
         PatientResponse patient1 = patients.get(0);
         PatientResponse patient2 = patients.get(1);
-        assertEquals("someUniqueOtherName", patient1.getGivenName());
-        assertEquals("1058GivenName", patient2.getGivenName());
+        assertEquals("someUniqueName", patient1.getGivenName());
+        assertEquals("someUniqueOtherName", patient2.getGivenName());
     }
     
     @Test
@@ -230,7 +222,7 @@ public class BahmniPatientDaoImplLuceneIT extends BaseIntegrationTest {
         assertEquals(4, patients.size());
         
         PatientResponse patient = patients.get(0);
-        assertEquals("1058GivenName", patient.getGivenName());
+        assertEquals("someUniqueName", patient.getGivenName());
     }
     
     @Test
@@ -239,7 +231,7 @@ public class BahmniPatientDaoImplLuceneIT extends BaseIntegrationTest {
         assertEquals(4, patients.size());
         
         PatientResponse patient = patients.get(0);
-        assertEquals("1058GivenName", patient.getGivenName());
+        assertEquals("someUniqueName", patient.getGivenName());
     }
     
 }
