@@ -69,6 +69,29 @@ public class AuditLogDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
+    public void shouldGivePreviousLogsFromGivenIndexEvenIfSomeEventsAreDeletedInBetween() throws Exception {
+        List<AuditLog> logs = auditLogDao.getLogs(null, null, null, 4, true);
+        assertEquals(2, logs.size());
+        AuditLog auditLog_1 = logs.get(0);
+        AuditLog auditLog_2 = logs.get(1);
+
+        assertEquals("VIEWED_CLINICAL_DASHBOARD message", auditLog_1.getMessage());
+        assertEquals("VIEWED_CLINICAL", auditLog_1.getEventType());
+        assertEquals(Integer.valueOf(1), auditLog_1.getAuditLogId());
+        assertEquals(Integer.valueOf(2), auditLog_1.getUserId());
+        assertEquals(Integer.valueOf(9), auditLog_1.getPatientId());
+        assertEquals("86526ed5-3c11-11de-a0ba-001e378eb67a", auditLog_1.getUuid());
+
+        assertEquals("EDIT_CLINICAL message", auditLog_2.getMessage());
+        assertEquals("EDIT_CLINICAL", auditLog_2.getEventType());
+        assertEquals(Integer.valueOf(3), auditLog_2.getAuditLogId());
+        assertEquals(Integer.valueOf(3), auditLog_2.getUserId());
+        assertEquals(Integer.valueOf(11), auditLog_2.getPatientId());
+        assertEquals("86526ed5-3c11-11de-a0ba-001e378eb87c", auditLog_2.getUuid());
+
+    }
+
+    @Test
     public void shouldGiveNextLogsFromGivenIndex() throws Exception {
         List<AuditLog> logs = auditLogDao.getLogs(null, null, null, 2, false);
         assertEquals(2, logs.size());
@@ -91,8 +114,8 @@ public class AuditLogDaoImplIT extends BaseIntegrationTest {
     }
 
     @Test
-    public void shouldGiveResentLogsInDescendingOrder() throws Exception {
-        List<AuditLog> logs = auditLogDao.getLogs(null, null, null, null, null);
+    public void shouldGiveRecentLogsInDescendingOrder() throws Exception {
+        List<AuditLog> logs = auditLogDao.getLogs(null, null, null, null, false);
         assertEquals(2, logs.size());
         AuditLog auditLog_1 = logs.get(0);
         AuditLog auditLog_2 = logs.get(1);
