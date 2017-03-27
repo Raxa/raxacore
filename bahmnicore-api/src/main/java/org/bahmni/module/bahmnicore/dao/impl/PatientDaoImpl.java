@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import java.util.Comparator;
+import java.util.*;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
@@ -25,11 +26,7 @@ import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+
 import static java.util.stream.Collectors.toList;
 
 @Repository
@@ -74,7 +71,7 @@ public class PatientDaoImpl implements PatientDao {
 
         validateSearchParams(customAttributeFields, programAttributeFieldName, addressFieldName);
 
-        List<PatientIdentifier> patientIdentifiers = getPatientIdentifiers(identifier);
+        List<PatientIdentifier> patientIdentifiers = getPatientIdentifiers(identifier, offset, length);
         List<Integer> patientIds = patientIdentifiers.stream().map(patientIdentifier -> patientIdentifier.getPatient().getPatientId()).collect(toList());
         Map<Object, Object> programAttributes = Context.getService(BahmniProgramWorkflowService.class).getPatientProgramAttributeByAttributeName(patientIds, programAttributeFieldName);
         PatientResponseMapper patientResponseMapper = new PatientResponseMapper();
@@ -82,17 +79,14 @@ public class PatientDaoImpl implements PatientDao {
                 .map(patientIdentifier -> {
                     Patient patient = patientIdentifier.getPatient();
                     PatientResponse patientResponse = patientResponseMapper.map(patient, loginLocationUuid, patientSearchResultFields, addressSearchResultFields,
-                                                                                programAttributes.get(patient.getPatientId()), filterPatientsByLocation);
+                                                                                programAttributes.get(patient.getPatientId()));
                     return patientResponse;
                 })
-                .filter(Objects::nonNull)
-                .skip((long) offset)
-                .limit((long) length)
                 .collect(toList());
         return patientResponses;
     }
 
-    private List<PatientIdentifier> getPatientIdentifiers(String identifier) {
+    private List<PatientIdentifier> getPatientIdentifiers(String identifier, Integer offset, Integer length) {
         FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.getCurrentSession());
         QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(PatientIdentifier.class).get();
         identifier = identifier.replace('%','*');
@@ -100,17 +94,17 @@ public class PatientDaoImpl implements PatientDao {
                 .wildcard().onField("identifierAnywhere").matching("*" + identifier.toLowerCase() + "*").createQuery();
         org.apache.lucene.search.Query nonVoidedIdentifiers = queryBuilder.keyword().onField("voided").matching(false).createQuery();
         org.apache.lucene.search.Query nonVoidedPatients = queryBuilder.keyword().onField("patient.voided").matching(false).createQuery();
-//        org.apache.lucene.search.Query identifierTypes = queryBuilder.keyword().onField("identifierType.patientIdentifierTypeId").matching(2).createQuery();
         org.apache.lucene.search.Query booleanQuery = queryBuilder.bool()
                 .must(identifierQuery)
                 .must(nonVoidedIdentifiers)
                 .must(nonVoidedPatients)
-//                .must(identifierTypes)
                 .createQuery();
 
         Sort sort = new Sort( new SortField( "identifier", SortField.Type.STRING, false ) );
         FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(booleanQuery, PatientIdentifier.class);
         fullTextQuery.setSort(sort);
+        fullTextQuery.setFirstResult(offset);
+        fullTextQuery.setMaxResults(length);
         return (List<PatientIdentifier>) fullTextQuery.list();
     }
 

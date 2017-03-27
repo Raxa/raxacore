@@ -28,7 +28,7 @@ public class PatientResponseMapper {
     public PatientResponseMapper() {
     }
 
-    public PatientResponse map(Patient patient, String loginLocationUuid, String[] searchResultFields, String[] addressResultFields, Object programAttributeValue, Boolean filterPatientsByLocation) {
+    public PatientResponse map(Patient patient, String loginLocationUuid, String[] searchResultFields, String[] addressResultFields, Object programAttributeValue) {
         List<String> patientSearchResultFields = searchResultFields != null ? Arrays.asList(searchResultFields) : new ArrayList<>();
         List<String> addressSearchResultFields = addressResultFields != null ? Arrays.asList(addressResultFields) : new ArrayList<>();
     
@@ -36,9 +36,6 @@ public class PatientResponseMapper {
         Integer visitLocationId = bahmniVisitLocationService.getVisitLocation(loginLocationUuid).getLocationId();
         VisitService visitService = Context.getVisitService();
         List<Visit> activeVisitsByPatient = visitService.getActiveVisitsByPatient(patient);
-        if(activeVisitsByPatient.isEmpty() && filterPatientsByLocation) {
-            return null;
-        }
         
         patientResponse = new PatientResponse();
         patientResponse.setUuid(patient.getUuid());
