@@ -1,6 +1,6 @@
-package org.bahmni.module.admin.auditLog.service;
+package org.bahmni.module.admin.auditlog.service;
 
-import org.bahmni.module.admin.auditLog.model.AuditLog;
+import org.bahmni.module.admin.auditlog.model.AuditLog;
 
 import java.util.Date;
 import java.util.List;

@@ -1,8 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.apache.commons.lang.StringUtils;
-import org.bahmni.module.admin.auditLog.model.AuditLog;
-import org.bahmni.module.admin.auditLog.service.AuditLogDaoService;
+import org.bahmni.module.admin.auditlog.model.AuditLog;
+import org.bahmni.module.admin.auditlog.service.AuditLogDaoService;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.APIException;

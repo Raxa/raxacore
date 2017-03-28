@@ -1,7 +1,7 @@
-package org.bahmni.module.admin.auditLog.dao.impl;
+package org.bahmni.module.admin.auditlog.dao.impl;
 
-import org.bahmni.module.admin.auditLog.dao.AuditLogDao;
-import org.bahmni.module.admin.auditLog.model.AuditLog;
+import org.bahmni.module.admin.auditlog.dao.AuditLogDao;
+import org.bahmni.module.admin.auditlog.model.AuditLog;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
@@ -28,7 +28,7 @@ public class AuditLogDaoImpl implements AuditLogDao {
         List<AuditLog> logs = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AuditLog.class);
         criteria.setMaxResults(LIMIT);
-        if ((startDateTime == null && lastAuditLogId == null) || prev) {
+        if ( prev) {
             criteria.addOrder(Order.desc("auditLogId"));
         }
         if (lastAuditLogId != null) {

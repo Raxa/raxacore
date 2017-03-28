@@ -1,8 +1,8 @@
-package org.bahmni.module.admin.auditLog.service.impl;
+package org.bahmni.module.admin.auditlog.service.impl;
 
-import org.bahmni.module.admin.auditLog.dao.AuditLogDao;
-import org.bahmni.module.admin.auditLog.model.AuditLog;
-import org.bahmni.module.admin.auditLog.service.AuditLogDaoService;
+import org.bahmni.module.admin.auditlog.dao.AuditLogDao;
+import org.bahmni.module.admin.auditlog.model.AuditLog;
+import org.bahmni.module.admin.auditlog.service.AuditLogDaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

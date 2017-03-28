@@ -1,4 +1,4 @@
-package org.bahmni.module.admin.auditLog.model;
+package org.bahmni.module.admin.auditlog.model;
 
 import java.io.Serializable;
 import java.util.Date;

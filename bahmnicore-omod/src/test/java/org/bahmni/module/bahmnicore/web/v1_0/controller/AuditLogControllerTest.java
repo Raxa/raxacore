@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.admin.auditLog.model.AuditLog;
-import org.bahmni.module.admin.auditLog.service.AuditLogDaoService;
+import org.bahmni.module.admin.auditlog.model.AuditLog;
+import org.bahmni.module.admin.auditlog.service.AuditLogDaoService;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
 import org.junit.Before;
 import org.junit.Rule;
@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -58,6 +59,7 @@ public class AuditLogControllerTest {
         thrown.expectMessage("User is not logged in");
         auditLogController.getLogs("username", "patientId",
                 "2017-03-22T18:30:00.000Z", 1, null);
+        fail();
     }
 
     @Test
@@ -69,6 +71,7 @@ public class AuditLogControllerTest {
         thrown.expectMessage("User is logged in but does not have sufficient privileges");
         auditLogController.getLogs("username", "patientId",
                 "2017-03-22T18:30:00.000Z", 1, null);
+        fail();
     }
 
     @Test
