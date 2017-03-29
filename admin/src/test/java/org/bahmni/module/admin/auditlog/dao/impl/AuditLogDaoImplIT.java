@@ -112,4 +112,26 @@ public class AuditLogDaoImplIT extends BaseIntegrationTest {
         assertEquals(Integer.valueOf(10), auditLog_2.getPatientId());
         assertEquals("86526ed5-3c11-11de-a0ba-001e378eb87d", auditLog_2.getUuid());
     }
+
+    @Test
+    public void getLogs_shouldGiveLogsInDescendingIfLastLogIdIsNull() throws Exception {
+        List<AuditLog> logs = auditLogDao.getLogs(null, null, null, null, false);
+        assertEquals(2, logs.size());
+        AuditLog auditLog_1 = logs.get(0);
+        AuditLog auditLog_2 = logs.get(1);
+
+        assertEquals("VIEWED_CLINICAL_DASHBOARD message", auditLog_1.getMessage());
+        assertEquals("VIEWED_CLINICAL", auditLog_1.getEventType());
+        assertEquals(Integer.valueOf(5), auditLog_1.getAuditLogId());
+        assertEquals(Integer.valueOf(4), auditLog_1.getUserId());
+        assertEquals(Integer.valueOf(9), auditLog_1.getPatientId());
+        assertEquals("86526ed5-3c11-11de-a0ba-001e378eb87e", auditLog_1.getUuid());
+
+        assertEquals("VIEWED_DASHBOARD message", auditLog_2.getMessage());
+        assertEquals("VIEWED_DASHBOARD", auditLog_2.getEventType());
+        assertEquals(Integer.valueOf(4), auditLog_2.getAuditLogId());
+        assertEquals(Integer.valueOf(1), auditLog_2.getUserId());
+        assertEquals(Integer.valueOf(10), auditLog_2.getPatientId());
+        assertEquals("86526ed5-3c11-11de-a0ba-001e378eb87d", auditLog_2.getUuid());
+    }
 }

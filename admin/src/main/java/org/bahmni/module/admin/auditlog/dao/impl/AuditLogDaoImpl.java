@@ -28,7 +28,7 @@ public class AuditLogDaoImpl implements AuditLogDao {
         List<AuditLog> logs = new ArrayList<>();
         Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AuditLog.class);
         criteria.setMaxResults(LIMIT);
-        if ( prev) {
+        if ( prev || lastAuditLogId == null) {
             criteria.addOrder(Order.desc("auditLogId"));
         }
         if (lastAuditLogId != null) {
