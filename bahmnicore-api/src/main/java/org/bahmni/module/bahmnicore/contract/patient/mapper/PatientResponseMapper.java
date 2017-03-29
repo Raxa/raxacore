@@ -56,7 +56,9 @@ public class PatientResponseMapper {
 
         mapExtraIdentifiers(patient, primaryIdentifier);
         mapPersonAttributes(patient, patientSearchResultFields);
-        mapPersonAddress(patient, addressSearchResultFields);
+        if(null != patient.getPersonAddress()) {
+            mapPersonAddress(patient, addressSearchResultFields);
+        }
         mapVisitSummary(visitLocationId, activeVisitsByPatient);
 
         return patientResponse;
