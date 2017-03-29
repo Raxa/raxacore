@@ -1,6 +1,7 @@
 package org.bahmni.module.admin.auditlog.model;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 
 public class AuditLog implements Serializable {
@@ -69,12 +70,3 @@ public class AuditLog implements Serializable {
         this.uuid = uuid;
     }
 }
-
-//    audit_log_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-//    user_id INT(11),
-//    patient_id INT(11) NOT NULL,
-//
-//    event_type VARCHAR(20) NOT NULL,
-//    message LONGBLOB NOT NULL,
-//    date_created DATETIME NOT NULL,
-//    uuid VARCHAR(38) NOT NULL UNIQUE,

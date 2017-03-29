@@ -35,7 +35,7 @@ public class AuditLogController {
         UserContext userContext = Context.getUserContext();
         if (userContext.isAuthenticated()) {
             if (userContext.hasPrivilege("admin")) {
-                Date startDateTime = BahmniDateUtil.convertToDate(startFrom, BahmniDateUtil.DateFormatType.UTC);
+                Date startDateTime = BahmniDateUtil.convertToLocalDateFromUTC(startFrom);
                 if (prev == null) {
                     prev = false;
                 }

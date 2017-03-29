@@ -76,8 +76,7 @@ public class AuditLogControllerTest {
 
     @Test
     public void shouldGiveAuditLogs() throws Exception {
-        Date startDateTime = BahmniDateUtil.convertToDate("2017-03-22T18:30:00.000Z",
-                BahmniDateUtil.DateFormatType.UTC);
+        Date startDateTime = BahmniDateUtil.convertToLocalDateFromUTC("2017-03-22T18:30:00.000Z");
         when(userContext.isAuthenticated()).thenReturn(true);
         when(userContext.hasPrivilege("admin")).thenReturn(true);
         when(auditLogDaoService.getLogs("username", "patientId", startDateTime,
