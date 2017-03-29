@@ -24,6 +24,7 @@ import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -74,7 +75,7 @@ public class PatientDaoImpl implements PatientDao {
         List<PatientIdentifier> patientIdentifiers = getPatientIdentifiers(identifier, offset, length);
         List<Integer> patientIds = patientIdentifiers.stream().map(patientIdentifier -> patientIdentifier.getPatient().getPatientId()).collect(toList());
         Map<Object, Object> programAttributes = Context.getService(BahmniProgramWorkflowService.class).getPatientProgramAttributeByAttributeName(patientIds, programAttributeFieldName);
-        PatientResponseMapper patientResponseMapper = new PatientResponseMapper();
+        PatientResponseMapper patientResponseMapper = new PatientResponseMapper(Context.getVisitService(),new BahmniVisitLocationServiceImpl(Context.getLocationService()));
         List<PatientResponse> patientResponses = patientIdentifiers.stream()
                 .map(patientIdentifier -> {
                     Patient patient = patientIdentifier.getPatient();

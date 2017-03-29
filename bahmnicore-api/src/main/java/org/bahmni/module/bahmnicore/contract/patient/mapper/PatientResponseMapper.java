@@ -12,9 +12,9 @@ import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
 import org.openmrs.api.APIException;
 import org.openmrs.api.VisitService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,17 +24,20 @@ import java.util.stream.Collectors;
 
 public class PatientResponseMapper {
     private PatientResponse patientResponse;
+    private VisitService visitService;
+    private BahmniVisitLocationServiceImpl bahmniVisitLocationService;
 
-    public PatientResponseMapper() {
+
+    public PatientResponseMapper(VisitService visitService, BahmniVisitLocationServiceImpl bahmniVisitLocationService) {
+        this.visitService = visitService;
+        this.bahmniVisitLocationService = bahmniVisitLocationService;
     }
 
     public PatientResponse map(Patient patient, String loginLocationUuid, String[] searchResultFields, String[] addressResultFields, Object programAttributeValue) {
         List<String> patientSearchResultFields = searchResultFields != null ? Arrays.asList(searchResultFields) : new ArrayList<>();
         List<String> addressSearchResultFields = addressResultFields != null ? Arrays.asList(addressResultFields) : new ArrayList<>();
-    
-        BahmniVisitLocationServiceImpl bahmniVisitLocationService = new BahmniVisitLocationServiceImpl(Context.getLocationService());
+
         Integer visitLocationId = bahmniVisitLocationService.getVisitLocation(loginLocationUuid).getLocationId();
-        VisitService visitService = Context.getVisitService();
         List<Visit> activeVisitsByPatient = visitService.getActiveVisitsByPatient(patient);
         
         patientResponse = new PatientResponse();
@@ -49,10 +52,11 @@ public class PatientResponseMapper {
         patientResponse.setGender(patient.getGender());
         PatientIdentifier primaryIdentifier = patient.getPatientIdentifier();
         patientResponse.setIdentifier(primaryIdentifier.getIdentifier());
+        patientResponse.setPatientProgramAttributeValue(programAttributeValue);
 
         mapExtraIdentifiers(patient, primaryIdentifier);
         mapPersonAttributes(patient, patientSearchResultFields);
-        mapPersonAddress(patient, programAttributeValue, addressSearchResultFields);
+        mapPersonAddress(patient, addressSearchResultFields);
         mapVisitSummary(visitLocationId, activeVisitsByPatient);
 
         return patientResponse;
@@ -80,7 +84,7 @@ public class PatientResponseMapper {
         patientResponse.setCustomAttribute(formJsonString(queriedPersonAttributes));
     }
 
-    private void mapPersonAddress(Patient patient, Object programAttributeValue, List<String> addressSearchResultFields) {
+    private void mapPersonAddress(Patient patient, List<String> addressSearchResultFields) {
         String queriedAddressFields = addressSearchResultFields.stream()
                 .map(addressField -> {
                     String address = getPersonAddressFieldValue(addressField, patient.getPersonAddress());
@@ -89,7 +93,6 @@ public class PatientResponseMapper {
                 .filter(Objects::nonNull)
                 .collect(Collectors.joining(","));
         patientResponse.setAddressFieldValue(formJsonString(queriedAddressFields));
-        patientResponse.setPatientProgramAttributeValue(programAttributeValue);
     }
 
     private void mapVisitSummary(Integer visitLocationId, List<Visit> activeVisitsByPatient) {
