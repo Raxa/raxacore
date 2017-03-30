@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.openmrs.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -177,6 +178,39 @@ public class BahmniPatientDaoImplLuceneIT extends BaseIntegrationTest {
         PatientResponse patient1 = patients.get(0);
         
         assertEquals("1058GivenName", patient1.getGivenName());
+    }
+    
+    @Test
+    public void shouldNotSearchExtraIdentifiersIfFilterOnAllIdenfiersIsFalse() {
+        List<PatientResponse> patients = patientDao.getPatientsUsingLuceneSearch("100010", "", null, "city_village", "", 100, 0, null,"", null, null, null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, false);
+        
+        assertEquals(0, patients.size());
+    }
+    
+    @Test
+    public void shouldSearchAllIdentifiersIfFilterOnAllIdentifiersIsTrue() {
+        List<PatientResponse> patients = patientDao.getPatientsUsingLuceneSearch("0001", "", null, "city_village", "", 100, 0, null,"", null, null, null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, true);
+        
+        assertEquals(3, patients.size());
+        assertEquals("{\"National ID\" : \"NAT100010\"}", patients.get(0).getExtraIdentifiers());
+        assertEquals("GAN300001",patients.get(1).getIdentifier());
+    }
+    
+    @Test
+    public void shouldNotReturnPatientsIfFilterOnAllIdenfiersIsTrueButNotAnExtraIdentifier() {
+        List<PatientResponse> patients = patientDao.getPatientsUsingLuceneSearch("DLF200001", "", null, "city_village", "", 100, 0, null,"", null, null, null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, true);
+        
+        assertEquals(0, patients.size());
+    }
+    
+    @Test
+    public void shouldNotReturnDuplicatePatientsEvenIfTwoIdentifiersMatches() {
+        List<PatientResponse> patients = patientDao.getPatientsUsingLuceneSearch("200006", "", null, "city_village", "", 100, 0, null,"", null, null, null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, true);
+        
+        assertEquals(1, patients.size());
+        PatientResponse patient = patients.get(0);
+        assertTrue(patient.getIdentifier().contains("200006"));
+        assertTrue(patient.getExtraIdentifiers().contains("200006"));
     }
 
 }

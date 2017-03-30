@@ -1,7 +1,5 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import java.util.*;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
@@ -19,6 +17,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.search.FullTextQuery;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
@@ -27,6 +26,13 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
@@ -72,22 +78,27 @@ public class PatientDaoImpl implements PatientDao {
 
         validateSearchParams(customAttributeFields, programAttributeFieldName, addressFieldName);
 
-        List<PatientIdentifier> patientIdentifiers = getPatientIdentifiers(identifier, offset, length);
+        List<PatientIdentifier> patientIdentifiers = getPatientIdentifiers(identifier, filterOnAllIdentifiers, offset, length);
         List<Integer> patientIds = patientIdentifiers.stream().map(patientIdentifier -> patientIdentifier.getPatient().getPatientId()).collect(toList());
         Map<Object, Object> programAttributes = Context.getService(BahmniProgramWorkflowService.class).getPatientProgramAttributeByAttributeName(patientIds, programAttributeFieldName);
         PatientResponseMapper patientResponseMapper = new PatientResponseMapper(Context.getVisitService(),new BahmniVisitLocationServiceImpl(Context.getLocationService()));
+        Set<Integer> uniquePatientIds = new HashSet<>();
         List<PatientResponse> patientResponses = patientIdentifiers.stream()
                 .map(patientIdentifier -> {
                     Patient patient = patientIdentifier.getPatient();
-                    PatientResponse patientResponse = patientResponseMapper.map(patient, loginLocationUuid, patientSearchResultFields, addressSearchResultFields,
-                                                                                programAttributes.get(patient.getPatientId()));
-                    return patientResponse;
-                })
+                    if(!uniquePatientIds.contains(patient.getPatientId())) {
+                        PatientResponse patientResponse = patientResponseMapper.map(patient, loginLocationUuid, patientSearchResultFields, addressSearchResultFields,
+                                programAttributes.get(patient.getPatientId()));
+                        uniquePatientIds.add(patient.getPatientId());
+                        return patientResponse;
+                    }else
+                        return null;
+                }).filter(Objects::nonNull)
                 .collect(toList());
         return patientResponses;
     }
 
-    private List<PatientIdentifier> getPatientIdentifiers(String identifier, Integer offset, Integer length) {
+    private List<PatientIdentifier> getPatientIdentifiers(String identifier, Boolean filterOnAllIdentifiers, Integer offset, Integer length) {
         FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.getCurrentSession());
         QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(PatientIdentifier.class).get();
         identifier = identifier.replace('%','*');
@@ -95,10 +106,21 @@ public class PatientDaoImpl implements PatientDao {
                 .wildcard().onField("identifierAnywhere").matching("*" + identifier.toLowerCase() + "*").createQuery();
         org.apache.lucene.search.Query nonVoidedIdentifiers = queryBuilder.keyword().onField("voided").matching(false).createQuery();
         org.apache.lucene.search.Query nonVoidedPatients = queryBuilder.keyword().onField("patient.voided").matching(false).createQuery();
+    
+        List<String> identifierTypeNames = getIdentifierTypeNames(filterOnAllIdentifiers);
+
+        BooleanJunction identifierTypeShouldJunction = queryBuilder.bool();
+        for (String identifierTypeName:
+                identifierTypeNames) {
+            org.apache.lucene.search.Query identifierTypeQuery = queryBuilder.phrase().onField("identifierType.name").sentence(identifierTypeName).createQuery();
+            identifierTypeShouldJunction.should(identifierTypeQuery);
+        }
+
         org.apache.lucene.search.Query booleanQuery = queryBuilder.bool()
                 .must(identifierQuery)
                 .must(nonVoidedIdentifiers)
                 .must(nonVoidedPatients)
+                .must(identifierTypeShouldJunction.createQuery())
                 .createQuery();
 
         Sort sort = new Sort( new SortField( "identifier", SortField.Type.STRING, false ) );
@@ -108,7 +130,22 @@ public class PatientDaoImpl implements PatientDao {
         fullTextQuery.setMaxResults(length);
         return (List<PatientIdentifier>) fullTextQuery.list();
     }
-
+    
+    private List<String> getIdentifierTypeNames(Boolean filterOnAllIdentifiers) {
+        String primaryIdentifierUuid = Context.getAdministrationService().getGlobalProperty("bahmni.primaryIdentifierType");
+        List<String> identifierTypeNames = new ArrayList<>();
+        identifierTypeNames.add(Context.getPatientService().getPatientIdentifierTypeByUuid(primaryIdentifierUuid).getName());
+        if(filterOnAllIdentifiers) {
+            String extraIdentifiers = Context.getAdministrationService().getGlobalProperty("bahmni.extraPatientIdentifierTypes");
+            String[] extraIdentifierUuids = extraIdentifiers.split(",");
+            for (String extraIdentifierUuid :
+                    extraIdentifierUuids) {
+                identifierTypeNames.add(Context.getPatientService().getPatientIdentifierTypeByUuid(extraIdentifierUuid).getName());
+            }
+        }
+        return identifierTypeNames;
+    }
+    
     private void validateSearchParams(String[] customAttributeFields, String programAttributeFieldName, String addressFieldName) {
         List<Integer> personAttributeIds = getPersonAttributeIds(customAttributeFields);
         if (customAttributeFields != null && personAttributeIds.size() != customAttributeFields.length) {
