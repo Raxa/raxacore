@@ -1,7 +1,7 @@
-package org.bahmni.module.admin.auditlog.dao.impl;
+package org.bahmni.module.bahmnicore.dao.impl;
 
-import org.bahmni.module.admin.auditlog.dao.AuditLogDao;
-import org.bahmni.module.admin.auditlog.model.AuditLog;
+import org.bahmni.module.bahmnicore.dao.AuditLogDao;
+import org.bahmni.module.bahmnicore.model.AuditLog;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.CriteriaSpecification;

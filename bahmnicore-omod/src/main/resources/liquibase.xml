@@ -3848,4 +3848,27 @@
             update global_property set property='bahmni.extraPatientIdentifierTypes' where property='emr.extraPatientIdentifierTypes';
         </sql>
     </changeSet>
+    <changeSet id="create-auditlogtable-201703211430" author="Shruthi,Salauddin">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="audit_log" />
+            </not>
+        </preConditions>
+
+        <sql>
+            CREATE TABLE audit_log (
+            audit_log_id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+            user_id INT(11) NOT NULL,
+            patient_id INT(11),
+            event_type VARCHAR(100) NOT NULL,
+            message LONGBLOB NOT NULL,
+            date_created DATETIME NOT NULL,
+            uuid VARCHAR(38) NOT NULL UNIQUE,
+
+            FOREIGN KEY fk_patient_id(patient_id) REFERENCES patient(patient_id),
+            FOREIGN KEY fk_user_id(user_id) REFERENCES users(user_id)
+            );
+
+        </sql>
+    </changeSet>
 </databaseChangeLog>

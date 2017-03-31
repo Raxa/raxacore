@@ -1,8 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.admin.auditlog.mapper.AuditLogMapper;
-import org.bahmni.module.admin.auditlog.model.AuditLog;
-import org.bahmni.module.admin.auditlog.service.AuditLogDaoService;
+import org.bahmni.module.bahmnicore.contract.auditLog.AuditLogResponse;
+import org.bahmni.module.bahmnicore.service.AuditLogService;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
 import org.junit.Before;
 import org.junit.Rule;
@@ -21,7 +20,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -40,7 +38,7 @@ public class AuditLogControllerTest {
     UserContext userContext;
 
     @Mock
-    AuditLogDaoService auditLogDaoService;
+    AuditLogService auditLogService;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -80,13 +78,13 @@ public class AuditLogControllerTest {
         Date startDateTime = BahmniDateUtil.convertToLocalDateFromUTC("2017-03-22T18:30:00.000Z");
         when(userContext.isAuthenticated()).thenReturn(true);
         when(userContext.hasPrivilege("admin")).thenReturn(true);
-        when(auditLogDaoService.getLogs("username", "patientId", startDateTime,
+        when(auditLogService.getLogs("username", "patientId", startDateTime,
                 1, null, false)).thenReturn(new ArrayList<>());
 
-        ArrayList<AuditLogMapper> logs = auditLogController.getLogs("username", "patientId",
+        ArrayList<AuditLogResponse> logs = auditLogController.getLogs("username", "patientId",
                 "2017-03-22T18:30:00.000Z", 1, null, null);
         assertEquals(0, logs.size());
-        verify(auditLogDaoService, times(1))
+        verify(auditLogService, times(1))
                 .getLogs("username", "patientId", startDateTime, 1, false, false);
     }
 }

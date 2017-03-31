@@ -1,4 +1,4 @@
-package org.bahmni.module.admin.auditlog.model;
+package org.bahmni.module.bahmnicore.model;
 
 import org.openmrs.Patient;
 import org.openmrs.User;

@@ -1,8 +1,9 @@
-package org.bahmni.module.admin.auditlog.dao.impl;
+package org.bahmni.module.bahmnicore.dao.impl;
 
-import org.bahmni.module.admin.auditlog.dao.AuditLogDao;
-import org.bahmni.module.admin.auditlog.model.AuditLog;
 import org.bahmni.module.bahmnicore.BaseIntegrationTest;
+import org.bahmni.module.bahmnicore.dao.AuditLogDao;
+import org.bahmni.module.bahmnicore.dao.impl.AuditLogDaoImpl;
+import org.bahmni.module.bahmnicore.model.AuditLog;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
 import org.junit.Before;
 import org.junit.Test;

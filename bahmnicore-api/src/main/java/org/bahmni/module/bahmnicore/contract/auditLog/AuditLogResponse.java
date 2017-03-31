@@ -1,11 +1,11 @@
-package org.bahmni.module.admin.auditlog.mapper;
+package org.bahmni.module.bahmnicore.contract.auditLog;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 import java.util.Date;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AuditLogMapper {
+public class AuditLogResponse {
     private Integer auditLogId;
     private Date dateCreated;
     private String eventType;
@@ -13,7 +13,7 @@ public class AuditLogMapper {
     private String userId;
     private String message;
 
-    public AuditLogMapper(Integer auditLogId, Date dateCreated, String eventType, String patientId, String userId, String message) {
+    public AuditLogResponse(Integer auditLogId, Date dateCreated, String eventType, String patientId, String userId, String message) {
         this.auditLogId = auditLogId;
         this.dateCreated = dateCreated;
         this.eventType = eventType;
@@ -22,7 +22,7 @@ public class AuditLogMapper {
         this.message = message;
     }
 
-    public AuditLogMapper() {
+    public AuditLogResponse() {
     }
 
     public Date getDateCreated() {
