@@ -4,6 +4,9 @@ This module provides necessary services for running Bahmni
 
 ## Build
 
+
+[![Build Status](https://travis-ci.org/Bahmni/bahmni-core.svg?branch=master)](https://travis-ci.org/Bahmni/bahmni-core)
+
 Clone the repository and build the omod
    
     git clone https://github.com/bahmni/bahmni-core
