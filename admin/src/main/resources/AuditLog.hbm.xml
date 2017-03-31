@@ -12,8 +12,9 @@
         <property name="dateCreated" type="java.util.Date" column="date_created"/>
         <property name="eventType" type="java.lang.String" column="event_type"/>
         <property name="message" type="java.lang.String" column="message"/>
-        <property name="patientId" type="java.lang.Integer" column="patient_id"/>
-        <property name="userId" type="java.lang.Integer" column="user_id"/>
         <property name="uuid" type="java.lang.String" column="uuid"/>
+
+        <many-to-one name="user" class="org.openmrs.User" column="user_id"/>
+        <many-to-one name="patient" class="org.openmrs.Patient" column="patient_id"/>
     </class>
 </hibernate-mapping>

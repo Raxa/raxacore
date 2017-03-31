@@ -1,14 +1,16 @@
 package org.bahmni.module.admin.auditlog.model;
 
+import org.openmrs.Patient;
+import org.openmrs.User;
+
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.Date;
 
 public class AuditLog implements Serializable {
 
     private Integer auditLogId;
-    private Integer userId;
-    private Integer patientId;
+    private User user;
+    private Patient patient;
     private String eventType;
     private String message;
     private Date dateCreated;
@@ -22,21 +24,6 @@ public class AuditLog implements Serializable {
         this.auditLogId = auditLogId;
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getPatientId() {
-        return patientId;
-    }
-
-    public void setPatientId(Integer patientId) {
-        this.patientId = patientId;
-    }
 
     public String getEventType() {
         return eventType;
@@ -68,5 +55,21 @@ public class AuditLog implements Serializable {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User provider) {
+        this.user = provider;
     }
 }

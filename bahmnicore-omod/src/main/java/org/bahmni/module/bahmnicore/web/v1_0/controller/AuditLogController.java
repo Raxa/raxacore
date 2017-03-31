@@ -1,6 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.admin.auditlog.model.AuditLog;
+import org.bahmni.module.admin.auditlog.mapper.AuditLogMapper;
 import org.bahmni.module.admin.auditlog.service.AuditLogDaoService;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
 import org.openmrs.api.APIAuthenticationException;
@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/admin")
@@ -27,11 +27,12 @@ public class AuditLogController {
 
     @RequestMapping(value = "/auditLog", method = RequestMethod.GET)
     @ResponseBody
-    public List<AuditLog> getLogs(@RequestParam(value = "username", required = false) String username,
-                                  @RequestParam(value = "patientId", required = false) String patientId,
-                                  @RequestParam(value = "startFrom", required = false) String startFrom,
-                                  @RequestParam(value = "lastAuditLogId", required = false) Integer lastAuditLogId,
-                                  @RequestParam(value = "prev", required = false) Boolean prev) throws ParseException {
+    public ArrayList<AuditLogMapper> getLogs(@RequestParam(value = "username", required = false) String username,
+                                             @RequestParam(value = "patientId", required = false) String patientId,
+                                             @RequestParam(value = "startFrom", required = false) String startFrom,
+                                             @RequestParam(value = "lastAuditLogId", required = false) Integer lastAuditLogId,
+                                             @RequestParam(value = "prev", required = false) Boolean prev,
+                                             @RequestParam(value = "defaultView", required = false) Boolean defaultView) throws ParseException {
         UserContext userContext = Context.getUserContext();
         if (userContext.isAuthenticated()) {
             if (userContext.hasPrivilege("admin")) {
@@ -39,7 +40,10 @@ public class AuditLogController {
                 if (prev == null) {
                     prev = false;
                 }
-                return auditLogDaoService.getLogs(username, patientId, startDateTime, lastAuditLogId, prev);
+                if(defaultView == null){
+                    defaultView = false;
+                }
+                return auditLogDaoService.getLogs(username, patientId, startDateTime, lastAuditLogId, prev, defaultView);
             } else {
                 throw new APIException("User is logged in but does not have sufficient privileges");
             }

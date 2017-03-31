@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
+import org.bahmni.module.admin.auditlog.mapper.AuditLogMapper;
 import org.bahmni.module.admin.auditlog.model.AuditLog;
 import org.bahmni.module.admin.auditlog.service.AuditLogDaoService;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
@@ -58,7 +59,7 @@ public class AuditLogControllerTest {
         thrown.expect(APIAuthenticationException.class);
         thrown.expectMessage("User is not logged in");
         auditLogController.getLogs("username", "patientId",
-                "2017-03-22T18:30:00.000Z", 1, null);
+                "2017-03-22T18:30:00.000Z", 1, null, null);
         fail();
     }
 
@@ -70,7 +71,7 @@ public class AuditLogControllerTest {
         thrown.expect(APIException.class);
         thrown.expectMessage("User is logged in but does not have sufficient privileges");
         auditLogController.getLogs("username", "patientId",
-                "2017-03-22T18:30:00.000Z", 1, null);
+                "2017-03-22T18:30:00.000Z", 1, null, null);
         fail();
     }
 
@@ -80,12 +81,12 @@ public class AuditLogControllerTest {
         when(userContext.isAuthenticated()).thenReturn(true);
         when(userContext.hasPrivilege("admin")).thenReturn(true);
         when(auditLogDaoService.getLogs("username", "patientId", startDateTime,
-                1, null)).thenReturn(new ArrayList<>());
+                1, null, false)).thenReturn(new ArrayList<>());
 
-        List<AuditLog> logs = auditLogController.getLogs("username", "patientId",
-                "2017-03-22T18:30:00.000Z", 1, null);
+        ArrayList<AuditLogMapper> logs = auditLogController.getLogs("username", "patientId",
+                "2017-03-22T18:30:00.000Z", 1, null, null);
         assertEquals(0, logs.size());
         verify(auditLogDaoService, times(1))
-                .getLogs("username", "patientId", startDateTime, 1, false);
+                .getLogs("username", "patientId", startDateTime, 1, false, false);
     }
 }

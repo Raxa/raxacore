@@ -4,15 +4,13 @@ import org.bahmni.module.admin.auditlog.dao.AuditLogDao;
 import org.bahmni.module.admin.auditlog.model.AuditLog;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class AuditLogDaoImpl implements AuditLogDao {
@@ -23,12 +21,12 @@ public class AuditLogDaoImpl implements AuditLogDao {
 
     @Override
     public List<AuditLog> getLogs(String username, String patientId, Date startDateTime,
-                                  Integer lastAuditLogId, Boolean prev) {
+                                  Integer lastAuditLogId, Boolean prev, Boolean defaultView) {
         // prev will be always not null boolean value
         List<AuditLog> logs = new ArrayList<>();
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AuditLog.class);
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(AuditLog.class, "auditLog");
         criteria.setMaxResults(LIMIT);
-        if ( prev || lastAuditLogId == null) {
+        if ( prev || defaultView) {
             criteria.addOrder(Order.desc("auditLogId"));
         }
         if (lastAuditLogId != null) {

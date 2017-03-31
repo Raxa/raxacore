@@ -1,11 +1,10 @@
 package org.bahmni.module.admin.auditlog.service;
 
-import org.bahmni.module.admin.auditlog.model.AuditLog;
+import org.bahmni.module.admin.auditlog.mapper.AuditLogMapper;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public interface AuditLogDaoService {
-    public List<AuditLog> getLogs(String username, String query, Date startDateTime, Integer lastAuditLogId, Boolean prev);
-
+    public ArrayList<AuditLogMapper> getLogs(String username, String query, Date startDateTime, Integer lastAuditLogId, Boolean prev, Boolean defaultView);
 }
