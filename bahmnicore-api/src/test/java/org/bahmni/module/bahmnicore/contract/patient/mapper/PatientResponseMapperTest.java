@@ -85,6 +85,17 @@ public class PatientResponseMapperTest {
     }
 
     @Test
+    public void shouldAddSlashToSupportSpecialCharactersInJSON() throws Exception {
+        PersonAttributeType personAttributeType = new PersonAttributeType();
+        personAttributeType.setName("familyNameLocal");
+        patient.setAttributes(Sets.newSet(new PersonAttribute(personAttributeType,"so\"me\\Name")));
+        String[] patientResultFields = {"familyNameLocal"};
+        PatientResponse patientResponse = patientResponseMapper.map(patient, null, patientResultFields, null, null);
+
+        Assert.assertEquals(patientResponse.getCustomAttribute(),"{\"familyNameLocal\" : \"so\\\"me\\\\Name\"}");
+    }
+
+    @Test
     public void shouldMapPatientAddress() throws Exception {
         PersonAddress personAddress= new PersonAddress(2);
         personAddress.setAddress2("someAddress");

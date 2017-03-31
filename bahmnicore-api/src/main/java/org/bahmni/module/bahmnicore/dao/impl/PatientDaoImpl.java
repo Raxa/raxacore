@@ -21,6 +21,7 @@ import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
+import org.openmrs.PatientIdentifierType;
 import org.openmrs.RelationshipType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
@@ -34,6 +35,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import static java.util.stream.Collectors.reducing;
 import static java.util.stream.Collectors.toList;
 
 @Repository
@@ -132,20 +134,28 @@ public class PatientDaoImpl implements PatientDao {
     }
     
     private List<String> getIdentifierTypeNames(Boolean filterOnAllIdentifiers) {
-        String primaryIdentifierUuid = Context.getAdministrationService().getGlobalProperty("bahmni.primaryIdentifierType");
         List<String> identifierTypeNames = new ArrayList<>();
-        identifierTypeNames.add(Context.getPatientService().getPatientIdentifierTypeByUuid(primaryIdentifierUuid).getName());
-        if(filterOnAllIdentifiers) {
-            String extraIdentifiers = Context.getAdministrationService().getGlobalProperty("bahmni.extraPatientIdentifierTypes");
-            String[] extraIdentifierUuids = extraIdentifiers.split(",");
-            for (String extraIdentifierUuid :
-                    extraIdentifierUuids) {
-                identifierTypeNames.add(Context.getPatientService().getPatientIdentifierTypeByUuid(extraIdentifierUuid).getName());
-            }
+        addIdentifierTypeName(identifierTypeNames,"bahmni.primaryIdentifierType");
+        if(filterOnAllIdentifiers){
+            addIdentifierTypeName(identifierTypeNames,"bahmni.extraPatientIdentifierTypes");
         }
         return identifierTypeNames;
     }
-    
+
+    private void addIdentifierTypeName(List<String> identifierTypeNames,String identifierProperty) {
+        String identifierTypes = Context.getAdministrationService().getGlobalProperty(identifierProperty);
+        if(StringUtils.isNotEmpty(identifierTypes)) {
+            String[] identifierUuids = identifierTypes.split(",");
+            for (String identifierUuid :
+                    identifierUuids) {
+                PatientIdentifierType patientIdentifierType = Context.getPatientService().getPatientIdentifierTypeByUuid(identifierUuid);
+                if (patientIdentifierType != null) {
+                    identifierTypeNames.add(patientIdentifierType.getName());
+                }
+            }
+        }
+    }
+
     private void validateSearchParams(String[] customAttributeFields, String programAttributeFieldName, String addressFieldName) {
         List<Integer> personAttributeIds = getPersonAttributeIds(customAttributeFields);
         if (customAttributeFields != null && personAttributeIds.size() != customAttributeFields.length) {

@@ -119,7 +119,7 @@ public class PatientResponseMapper {
     }
 
     private String formKeyPair(String Key, String value) {
-        return "\"" + Key + "\" : \"" + value + "\"";
+        return (value== null) ? value : "\"" + Key + "\" : \"" + value.replace("\\","\\\\").replace("\"","\\\"") + "\"";
     }
 
     private String getPersonAddressFieldValue(String addressField, PersonAddress personAddress) {
