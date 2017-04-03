@@ -1,26 +1,35 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.bahmni.module.bahmnicore.contract.auditLog.AuditLogPayload;
 import org.bahmni.module.bahmnicore.contract.auditLog.AuditLogResponse;
 import org.bahmni.module.bahmnicore.dao.impl.AuditLogDaoImpl;
 import org.bahmni.module.bahmnicore.model.AuditLog;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openmrs.Patient;
 import org.openmrs.PatientIdentifier;
 import org.openmrs.User;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.context.Context;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 @RunWith(PowerMockRunner.class)
+@PrepareForTest(Context.class)
 public class AuditLogServiceImplTest {
     @InjectMocks
     private AuditLogServiceImpl auditLogService;
@@ -42,6 +51,11 @@ public class AuditLogServiceImplTest {
     private Date dateCreated_1;
     private Date dateCreated_2;
     private ArrayList<AuditLog> mockAuditLogs;
+
+    @Mock
+    PatientService patientService;
+
+
 
     @Before
     public void setUp() throws Exception {
@@ -102,5 +116,28 @@ public class AuditLogServiceImplTest {
         assertEquals("event_type_2", AuditLogResponse_2.getEventType());
         assertEquals(dateCreated_2, AuditLogResponse_2.getDateCreated());
         assertEquals(Integer.valueOf(2), AuditLogResponse_2.getAuditLogId());
+    }
+    @Test
+    public void shouldCreateAuditLog() throws Exception {
+        String patientUuid = "patientUuid";
+        AuditLogPayload log = new AuditLogPayload(patientUuid, "message" ,"eventType");
+        mockStatic(Context.class);
+        User user = new User();
+        user.setName("auditlogger");
+        when(Context.getAuthenticatedUser()).thenReturn(user);
+        when(Context.getPatientService()).thenReturn(patientService);
+        Patient patient= new Patient();
+        patient.setUuid(patientUuid);
+        when(patientService.getPatientByUuid(patientUuid)).thenReturn(patient);
+
+        ArgumentCaptor<AuditLog> argument = ArgumentCaptor.forClass(AuditLog.class);
+
+        auditLogService.createAuditLog(log);
+
+        verify(auditLogDao).saveAuditLog(argument.capture());
+        Assert.assertEquals(patientUuid,argument.getValue().getPatient().getUuid());
+        Assert.assertEquals(log.getMessage(),argument.getValue().getMessage());
+        Assert.assertEquals(log.getEventType(),argument.getValue().getEventType());
+
     }
 }

@@ -143,6 +143,12 @@
     </globalProperty>
 
     <globalProperty>
+        <property>bahmni.enableAuditLog</property>
+        <defaultValue>true</defaultValue>
+        <description>Enable or disable audit log</description>
+    </globalProperty>
+
+    <globalProperty>
         <property>bahmni.primaryIdentifierType</property>
         <defaultValue></defaultValue>
         <description>Primary identifier type for looking up patients</description>

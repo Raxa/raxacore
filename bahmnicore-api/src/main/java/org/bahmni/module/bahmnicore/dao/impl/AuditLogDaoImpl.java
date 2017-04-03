@@ -5,12 +5,12 @@ import org.bahmni.module.bahmnicore.model.AuditLog;
 import org.bahmni.module.bahmnicore.service.BahmniPatientService;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.openmrs.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -24,7 +24,7 @@ public class AuditLogDaoImpl implements AuditLogDao {
     protected static Integer LIMIT = 50;
 
     @Override
-    public List<AuditLog> getLogs(String username, String patientId, Date startDateTime,
+    public List<AuditLog> getLogs(String username, String patientIdentifier, Date startDateTime,
                                   Integer lastAuditLogId, Boolean prev, Boolean defaultView) {
         // prev will be always not null boolean value
         List<AuditLog> logs = new ArrayList<>();
@@ -45,8 +45,8 @@ public class AuditLogDaoImpl implements AuditLogDao {
         if (username != null) {
             criteria.add(Restrictions.eq("user.username", username));
         }
-        if (patientId != null) {
-            List<Patient> patients = bahmniPatientService.get(patientId, true);
+        if (patientIdentifier != null) {
+            List<Patient> patients = bahmniPatientService.get(patientIdentifier, true);
             if(patients.size() == 0){
                 return logs;
             }
@@ -59,4 +59,12 @@ public class AuditLogDaoImpl implements AuditLogDao {
         }
         return logs;
     }
+
+    @Transactional
+    @Override
+    public void saveAuditLog(AuditLog auditLog) {
+        sessionFactory.getCurrentSession().saveOrUpdate(auditLog);
+    }
+
+
 }

@@ -2,11 +2,15 @@ package org.bahmni.module.bahmnicore.dao.impl;
 
 import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.dao.AuditLogDao;
-import org.bahmni.module.bahmnicore.dao.impl.AuditLogDaoImpl;
 import org.bahmni.module.bahmnicore.model.AuditLog;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
+import org.joda.time.DateTimeUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.openmrs.Patient;
+import org.openmrs.User;
+import org.openmrs.api.PatientService;
+import org.openmrs.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -17,6 +21,12 @@ import static org.junit.Assert.assertEquals;
 public class AuditLogDaoImplIT extends BaseIntegrationTest {
     @Autowired
     AuditLogDao auditLogDao;
+
+    @Autowired
+    PatientService patientService;
+
+    @Autowired
+    UserService userService;
 
     @Before
     public void setUp() throws Exception {
@@ -182,5 +192,25 @@ public class AuditLogDaoImplIT extends BaseIntegrationTest {
     public void getLogs_shouldGiveEmptyListIfTheGiveUsernameIsInvalid() throws Exception {
         List<AuditLog> logs = auditLogDao.getLogs("antman", "GAN200000", null, null, false, false);
         assertEquals(0, logs.size());
+    }
+
+
+    @Test
+    public void shouldPersistLogs() throws Exception {
+        AuditLog auditLog = new AuditLog();
+        auditLog.setUuid("uuid");
+        auditLog.setMessage("message");
+        Patient patient = patientService.getPatientByUuid("75e04d42-3ca8-11e3-bf2b-0800271c1b81");
+        auditLog.setPatient(patient);
+        User user = userService.getUserByUuid("Z9fd3a7b-6482-487d-87eR-c07b123MxF99");
+        auditLog.setUser(user);
+        auditLog.setEventType("event1");
+        Date now = new Date();
+        auditLog.setDateCreated(now);
+
+        int countBefore = auditLogDao.getLogs(user.getUsername(), "SEM200000",null,null,false,false).size();
+        auditLogDao.saveAuditLog(auditLog);
+        int countAfter = auditLogDao.getLogs(user.getUsername(), "SEM200000", null, null, false, false).size();
+        assertEquals(1, countAfter-countBefore);
     }
 }

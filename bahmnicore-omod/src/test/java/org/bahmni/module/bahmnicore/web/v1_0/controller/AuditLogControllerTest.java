@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.contract.auditLog.AuditLogResponse;
+import org.bahmni.module.bahmnicore.contract.auditLog.AuditLogPayload;
 import org.bahmni.module.bahmnicore.service.AuditLogService;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
 import org.junit.Before;
@@ -81,10 +82,17 @@ public class AuditLogControllerTest {
         when(auditLogService.getLogs("username", "patientId", startDateTime,
                 1, null, false)).thenReturn(new ArrayList<>());
 
-        ArrayList<AuditLogResponse> logs = auditLogController.getLogs("username", "patientId",
-                "2017-03-22T18:30:00.000Z", 1, null, null);
+        ArrayList<AuditLogResponse> logs = auditLogController.getLogs("username", "patientId", "2017-03-22T18:30:00.000Z", 1, null, false);
         assertEquals(0, logs.size());
         verify(auditLogService, times(1))
                 .getLogs("username", "patientId", startDateTime, 1, false, false);
+
+    }
+
+    @Test
+    public void shouldSaveAuditLog() throws Exception{
+        AuditLogPayload log = new AuditLogPayload("patientUuid", "message" ,"eventType");
+        auditLogController.createAuditLog(log);
+        verify(auditLogService, times(1)).createAuditLog(log);
     }
 }

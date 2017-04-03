@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.contract.auditLog.AuditLogResponse;
-import org.bahmni.module.bahmnicore.contract.auditLog.BahmniAuditLog;
+import org.bahmni.module.bahmnicore.contract.auditLog.AuditLogPayload;
 import org.bahmni.module.bahmnicore.service.AuditLogService;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
 import org.openmrs.api.APIAuthenticationException;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 @Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/auditLog")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/auditlog")
 public class AuditLogController {
 
     @Autowired
@@ -50,11 +50,12 @@ public class AuditLogController {
         } else {
             throw new APIAuthenticationException("User is not logged in");
         }
+
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping( method = RequestMethod.POST)
     @ResponseBody
-    public void upload(@RequestBody BahmniAuditLog log) throws IOException {
-        auditLogService.log(log);
+    public void createAuditLog(@RequestBody AuditLogPayload log) throws IOException {
+         auditLogService.createAuditLog(log);
     }
 }
