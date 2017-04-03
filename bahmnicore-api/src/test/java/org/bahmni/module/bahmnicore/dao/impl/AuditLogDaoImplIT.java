@@ -135,4 +135,52 @@ public class AuditLogDaoImplIT extends BaseIntegrationTest {
         assertEquals("GAN200000", auditLog_2.getPatient().getPatientIdentifier().getIdentifier());
         assertEquals("86526ed5-3c11-11de-a0ba-001e378eb87d", auditLog_2.getUuid());
     }
+
+    @Test
+    public void getLogs_shouldGiveAuditLogsFilterByGivenUsername() throws Exception {
+        List<AuditLog> logs = auditLogDao.getLogs("batman", null, null, null, false, false);
+        assertEquals(1, logs.size());
+        AuditLog auditLog = logs.get(0);
+
+        assertEquals("VIEWED_CLINICAL_DASHBOARD message", auditLog.getMessage());
+        assertEquals("VIEWED_CLINICAL", auditLog.getEventType());
+        assertEquals(Integer.valueOf(1), auditLog.getAuditLogId());
+        assertEquals("batman", auditLog.getUser().getUsername());
+        assertEquals("GAN200000", auditLog.getPatient().getPatientIdentifier().getIdentifier());
+        assertEquals("86526ed5-3c11-11de-a0ba-001e378eb67a", auditLog.getUuid());
+    }
+
+    @Test
+    public void getLogs_shouldGiveAuditLogsFilterByGivenPatientId() throws Exception {
+        List<AuditLog> logs = auditLogDao.getLogs(null, "GAN200000", null, null, false, false);
+        assertEquals(2, logs.size());
+        AuditLog auditLog_1 = logs.get(0);
+        AuditLog auditLog_2 = logs.get(1);
+
+        assertEquals("VIEWED_CLINICAL_DASHBOARD message", auditLog_1.getMessage());
+        assertEquals("VIEWED_CLINICAL", auditLog_1.getEventType());
+        assertEquals(Integer.valueOf(1), auditLog_1.getAuditLogId());
+        assertEquals("batman", auditLog_1.getUser().getUsername());
+        assertEquals("GAN200000", auditLog_1.getPatient().getPatientIdentifier().getIdentifier());
+        assertEquals("86526ed5-3c11-11de-a0ba-001e378eb67a", auditLog_1.getUuid());
+
+        assertEquals("VIEWED_DASHBOARD message", auditLog_2.getMessage());
+        assertEquals("VIEWED_DASHBOARD", auditLog_2.getEventType());
+        assertEquals(Integer.valueOf(4), auditLog_2.getAuditLogId());
+        assertEquals("superuser", auditLog_2.getUser().getUsername());
+        assertEquals("GAN200000", auditLog_2.getPatient().getPatientIdentifier().getIdentifier());
+        assertEquals("86526ed5-3c11-11de-a0ba-001e378eb87d", auditLog_2.getUuid());
+    }
+
+    @Test
+    public void getLogs_shouldGiveEmptyListIfTheGivePatientIdentifierIsInvalid() throws Exception {
+        List<AuditLog> logs = auditLogDao.getLogs(null, "GAN200100", null, null, false, false);
+        assertEquals(0, logs.size());
+    }
+
+    @Test
+    public void getLogs_shouldGiveEmptyListIfTheGiveUsernameIsInvalid() throws Exception {
+        List<AuditLog> logs = auditLogDao.getLogs("antman", "GAN200000", null, null, false, false);
+        assertEquals(0, logs.size());
+    }
 }
