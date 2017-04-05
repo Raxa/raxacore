@@ -205,7 +205,7 @@ public class BahmniObsServiceImplTest {
         when(obsService.getObsByUuid(observationUuid)).thenReturn(obs);
         when(omrsObsToBahmniObsMapper.map(obs)).thenReturn(expectedBahmniObservation);
 
-        BahmniObservation actualBahmniObservation = bahmniObsService.getBahmniObservationByUuid(observationUuid);
+        BahmniObservation actualBahmniObservation = bahmniObsService.getBahmniObservationByUuid(observationUuid, false);
 
         verify(obsService, times(1)).getObsByUuid(observationUuid);
         verify(omrsObsToBahmniObsMapper, times(1)).map(obs);

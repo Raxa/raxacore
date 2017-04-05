@@ -180,7 +180,7 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldRetrieveBahmniObservationByObservationUuid() throws Exception {
-        BahmniObservation bahmniObservation = bahmniObsService.getBahmniObservationByUuid("633dc076-1c8f-11e4-bkk0-f18addb6fmtb");
+        BahmniObservation bahmniObservation = bahmniObsService.getBahmniObservationByUuid("633dc076-1c8f-11e4-bkk0-f18addb6fmtb", false);
 
         assertNotNull("BahmniObservation should not be null", bahmniObservation);
         assertEquals("633dc076-1c8f-11e4-bkk0-f18addb6fmtb", bahmniObservation.getUuid());
@@ -197,5 +197,12 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
         List<BahmniObservation> observations = (List<BahmniObservation>) bahmniObsService.getLatestObservationsForPatientProgram("df0foif1-dkcd-475d-b939-6d82327f36a3", Arrays.asList("Diastolic"));
         assertEquals(1, observations.size());
         assertEquals(100.0, observations.get(0).getValue());
+    }
+
+    public void shouldRetrieveRevisionBahmniObservationByObservationUuid() throws Exception {
+        BahmniObservation bahmniObservation = bahmniObsService.getBahmniObservationByUuid("uuid99998", true);
+
+        assertNotNull("BahmniObservation should not be null", bahmniObservation);
+        assertEquals("uuid999982", bahmniObservation.getUuid());
     }
 }
