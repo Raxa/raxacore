@@ -329,11 +329,4 @@ public class ObsDaoImpl implements ObsDao {
         return queryToGetObs.list();
     }
 
-    @Override
-    public Obs getRevisionObs(Obs initialObs) {
-        return (Obs) sessionFactory.getCurrentSession()
-                .createQuery("from Obs o where o.previousVersion = :id")
-                .setString("id",initialObs.getId().toString())
-                .uniqueResult();
-    }
 }

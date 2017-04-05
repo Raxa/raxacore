@@ -239,7 +239,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
     @Override
     public Obs getRevisionObs(Obs initialObs) {
-        Obs revisedObs = obsDao.getRevisionObs(initialObs);
+        Obs revisedObs = obsService.getRevisionObs(initialObs);
         if (revisedObs != null && revisedObs.getVoided()) {
             revisedObs = getRevisionObs(revisedObs);
         }

@@ -131,7 +131,7 @@ public class BahmniObservationsControllerTest {
         String patientProgramUuid = null;
         when(bahmniExtensions.getExtension("observationsAdder","CurrentMonthOfTreatment.groovy")).thenReturn(null);
 
-        bahmniObservationsController.get(patientProgramUuid);
+        bahmniObservationsController.get(patientProgramUuid, null, null);
 
         verify(bahmniObsService, times(0)).getObservationsForPatientProgram(patientProgramUuid, conceptNames);
     }
@@ -165,7 +165,7 @@ public class BahmniObservationsControllerTest {
         BahmniObservation expectedBahmniObservation = new BahmniObservation();
         when(bahmniObsService.getBahmniObservationByUuid(observationUuid, true)).thenReturn(expectedBahmniObservation);
 
-        BahmniObservation actualBahmniObservation = bahmniObservationsController.get(observationUuid);
+        BahmniObservation actualBahmniObservation = bahmniObservationsController.get(observationUuid, "latest");
 
         verify(bahmniObsService, times(1)).getBahmniObservationByUuid("observationUuid", true);
         assertNotNull("BahmniObservation should not be null", actualBahmniObservation);

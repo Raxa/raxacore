@@ -35,5 +35,4 @@ public interface ObsDao {
 
     List<Obs> getObsByPatientProgramUuidAndConceptNames(String patientProgramUuid, List<String> conceptNames, Integer limit, ObsDaoImpl.OrderBy sortOrder, Date startDate, Date endDate);
 
-    Obs getRevisionObs(Obs initialObs);
 }
