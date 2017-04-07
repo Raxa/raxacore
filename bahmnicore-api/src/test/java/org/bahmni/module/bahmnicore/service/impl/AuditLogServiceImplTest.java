@@ -1,7 +1,6 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
 import org.bahmni.module.bahmnicore.contract.auditLog.AuditLogPayload;
-import org.bahmni.module.bahmnicore.contract.auditLog.AuditLogResponse;
 import org.bahmni.module.bahmnicore.dao.impl.AuditLogDaoImpl;
 import org.bahmni.module.bahmnicore.model.AuditLog;
 import org.bahmni.module.bahmnicore.util.BahmniDateUtil;
@@ -17,6 +16,7 @@ import org.openmrs.PatientIdentifier;
 import org.openmrs.User;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.webservices.rest.SimpleObject;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -47,14 +47,13 @@ public class AuditLogServiceImplTest {
     private PatientIdentifier patientIdentifier_1;
     @Mock
     private PatientIdentifier patientIdentifier_2;
-    
+
     private Date dateCreated_1;
     private Date dateCreated_2;
     private ArrayList<AuditLog> mockAuditLogs;
 
     @Mock
     PatientService patientService;
-
 
 
     @Before
@@ -97,36 +96,37 @@ public class AuditLogServiceImplTest {
 
         when(auditLogDao.getLogs("username", "patientId", null, 1,
                 false, false)).thenReturn(mockAuditLogs);
-        ArrayList<AuditLogResponse> logs = auditLogService.getLogs("username", "patientId",
+        ArrayList<SimpleObject> logs = auditLogService.getLogs("username", "patientId",
                 null, 1, false, false);
         assertEquals(2, logs.size());
-        AuditLogResponse AuditLogResponse_1 = logs.get(0);
-        AuditLogResponse AuditLogResponse_2 = logs.get(1);
+        SimpleObject auditLogResponse_1 = logs.get(0);
+        SimpleObject auditLogResponse_2 = logs.get(1);
 
-        assertEquals("message 1", AuditLogResponse_1.getMessage());
-        assertEquals("GAN2000", AuditLogResponse_1.getPatientId());
-        assertEquals("superman", AuditLogResponse_1.getUserId());
-        assertEquals("event_type_1", AuditLogResponse_1.getEventType());
-        assertEquals(dateCreated_1, AuditLogResponse_1.getDateCreated());
-        assertEquals(Integer.valueOf(1), AuditLogResponse_1.getAuditLogId());
+        assertEquals("message 1", auditLogResponse_1.get("message"));
+        assertEquals("GAN2000", auditLogResponse_1.get("patientId"));
+        assertEquals("superman", auditLogResponse_1.get("userId"));
+        assertEquals("event_type_1", auditLogResponse_1.get("eventType"));
+        assertEquals(dateCreated_1, auditLogResponse_1.get("dateCreated"));
+        assertEquals(Integer.valueOf(1), auditLogResponse_1.get("auditLogId"));
 
-        assertEquals("message 2", AuditLogResponse_2.getMessage());
-        assertEquals("GAN2001", AuditLogResponse_2.getPatientId());
-        assertEquals("batman", AuditLogResponse_2.getUserId());
-        assertEquals("event_type_2", AuditLogResponse_2.getEventType());
-        assertEquals(dateCreated_2, AuditLogResponse_2.getDateCreated());
-        assertEquals(Integer.valueOf(2), AuditLogResponse_2.getAuditLogId());
+        assertEquals("message 2", auditLogResponse_2.get("message"));
+        assertEquals("GAN2001", auditLogResponse_2.get("patientId"));
+        assertEquals("batman", auditLogResponse_2.get("userId"));
+        assertEquals("event_type_2", auditLogResponse_2.get("eventType"));
+        assertEquals(dateCreated_2, auditLogResponse_2.get("dateCreated"));
+        assertEquals(Integer.valueOf(2), auditLogResponse_2.get("auditLogId"));
     }
+
     @Test
     public void shouldCreateAuditLog() throws Exception {
         String patientUuid = "patientUuid";
-        AuditLogPayload log = new AuditLogPayload(patientUuid, "message" ,"eventType");
+        AuditLogPayload log = new AuditLogPayload(patientUuid, "message", "eventType");
         mockStatic(Context.class);
         User user = new User();
         user.setName("auditlogger");
         when(Context.getAuthenticatedUser()).thenReturn(user);
         when(Context.getPatientService()).thenReturn(patientService);
-        Patient patient= new Patient();
+        Patient patient = new Patient();
         patient.setUuid(patientUuid);
         when(patientService.getPatientByUuid(patientUuid)).thenReturn(patient);
 
@@ -135,9 +135,9 @@ public class AuditLogServiceImplTest {
         auditLogService.createAuditLog(log);
 
         verify(auditLogDao).saveAuditLog(argument.capture());
-        Assert.assertEquals(patientUuid,argument.getValue().getPatient().getUuid());
-        Assert.assertEquals(log.getMessage(),argument.getValue().getMessage());
-        Assert.assertEquals(log.getEventType(),argument.getValue().getEventType());
+        Assert.assertEquals(patientUuid, argument.getValue().getPatient().getUuid());
+        Assert.assertEquals(log.getMessage(), argument.getValue().getMessage());
+        Assert.assertEquals(log.getEventType(), argument.getValue().getEventType());
 
     }
 }

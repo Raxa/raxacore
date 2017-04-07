@@ -1,7 +1,9 @@
 package org.bahmni.module.bahmnicore.model;
 
 import org.openmrs.Patient;
+import org.openmrs.PatientIdentifier;
 import org.openmrs.User;
+import org.openmrs.module.webservices.rest.SimpleObject;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -71,5 +73,18 @@ public class AuditLog implements Serializable {
 
     public void setUser(User provider) {
         this.user = provider;
+    }
+
+    public SimpleObject map() {
+        PatientIdentifier patientIdentifier = patient != null ? patient.getPatientIdentifier() : null;
+        String identifier = patientIdentifier != null ? patientIdentifier.getIdentifier() : null;
+        SimpleObject response = new SimpleObject();
+        response.add("patientId", identifier);
+        response.add("auditLogId", auditLogId);
+        response.add("dateCreated", dateCreated);
+        response.add("eventType", eventType);
+        response.add("userId", user.getUsername());
+        response.add("message", message);
+        return response;
     }
 }
