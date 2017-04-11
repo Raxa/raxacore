@@ -114,8 +114,12 @@ public class BahmniObservationsController extends BaseRestController {
 
     @RequestMapping(method = RequestMethod.GET, params = {"observationUuid"})
     @ResponseBody
-    public BahmniObservation get(@RequestParam(value = "observationUuid", required = true) String observationUuid) {
-        return bahmniObsService.getBahmniObservationByUuid(observationUuid, true);
+    public BahmniObservation get(@RequestParam(value = "observationUuid") String observationUuid,
+                                 @RequestParam(value = "revision", required = false) String revision) {
+        if (ObjectUtils.equals(revision, LATEST)) {
+            return bahmniObsService.getRevisedBahmniObservationByUuid(observationUuid);
+        }
+        return bahmniObsService.getBahmniObservationByUuid(observationUuid);
     }
 
     private void sendObsToGroovyScript(List<String> questions, Collection<BahmniObservation> observations) throws ParseException {
