@@ -52,12 +52,12 @@
     <concept_name concept_id="201" name="Absconding22" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="12" voided="false" uuid="6e2d4cb7-955b-4837-80f7-0ebb94092afi" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
 
-    <obs obs_id="1" person_id="4444" concept_id="1116" encounter_id="1001" obs_datetime="2008-08-01 00:00:00.0" location_id="1"  creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9a"/>
+    <obs obs_id="1" person_id="4444" concept_id="1116" encounter_id="1001" obs_datetime="2008-08-01 00:00:00.0" location_id="1"  creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9a" status="FINAL" />
 
     <obs obs_id="11" obs_group_id="1" encounter_id="1001" person_id="4444" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="c558b3c5-164b-11e4-9f26-005056823b95" creator="1" concept_id="1117" voided="1" /> <!-- Voided Disposition Concept needs to be ignored -->
+         uuid="c558b3c5-164b-11e4-9f26-005056823b95" creator="1" concept_id="1117" voided="1" status="FINAL" /> <!-- Voided Disposition Concept needs to be ignored -->
 
     <obs obs_id="12" obs_group_id="1" encounter_id="1001" person_id="1" value_coded="200" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="c973ba6a-164b-11e4-9f26-005056823b95" creator="1" concept_id="1117" voided="0" />
+         uuid="c973ba6a-164b-11e4-9f26-005056823b95" creator="1" concept_id="1117" voided="0" status="FINAL" />
 
 </dataset>
