@@ -117,6 +117,7 @@ public class PatientDocumentServiceImplTest {
 
         assertTrue(url.matches(".*1-Consultation-.*.pdf"));
     }
+
     @Test
     public void shouldSaveImage() throws Exception {
         PowerMockito.mockStatic(BahmniCoreProperties.class);
@@ -151,5 +152,26 @@ public class PatientDocumentServiceImplTest {
 
         patientDocumentService = new PatientDocumentServiceImpl();
         patientDocumentService.saveDocument(1, "Consultation", "otherfileContent", "xyz", "csv");
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenImageTypeOtherThanPngJpegGif() throws Exception {
+        PowerMockito.mockStatic(BahmniCoreProperties.class);
+        when(BahmniCoreProperties.getProperty("bahmnicore.documents.baseDirectory")).thenReturn("");
+        PowerMockito.mockStatic(FileUtils.class);
+        PowerMockito.mockStatic(ImageIO.class);
+        BufferedImage bufferedImage = new BufferedImage(1,2, 2);
+        when(ImageIO.read(Matchers.any(ByteArrayInputStream.class))).thenReturn(bufferedImage);
+        when(ImageIO.write(eq(bufferedImage),eq("bmp"), Matchers.any(File.class))).thenReturn(false);
+
+        Patient patient = new Patient();
+        patient.setId(1);
+        patient.setUuid("patient-uuid");
+
+        expectedException.expect(FileTypeNotSupportedException.class);
+        expectedException.expectMessage("The image format 'bmp' is not supported. Supported formats are [png, jpeg, gif]");
+
+        patientDocumentService = new PatientDocumentServiceImpl();
+        patientDocumentService.saveDocument(1, "Consultation", "otherfileContent", "bmp", "image");
     }
 }

@@ -100,11 +100,18 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
         } else if (PDF.equals(format)) {
             FileUtils.writeByteArrayToFile(outputFile, decodedBytes);
         } else if (IMAGE_FILE_TYPE.equals(fileType)){
-            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decodedBytes));
-            ImageIO.write(bufferedImage, format, outputFile);
-            createThumbnail(bufferedImage, outputFile);
-            bufferedImage.flush();
-            log.info(String.format("Successfully created patient image at %s", outputFile));
+            try {
+                BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(decodedBytes));
+                boolean results = ImageIO.write(bufferedImage, format, outputFile);
+                if(!results) {
+                    throw new FileTypeNotSupportedException(String.format("The image format '%s' is not supported. Supported formats are %s", format, Arrays.toString(new String[]{"png", "jpeg", "gif"})));
+                }
+                createThumbnail(bufferedImage, outputFile);
+                bufferedImage.flush();
+                log.info(String.format("Successfully created patient image at %s", outputFile));
+            } catch (Exception exception) {
+                throw new FileTypeNotSupportedException(String.format("The image format '%s' is not supported. Supported formats are %s", format, Arrays.toString(new String[]{"png", "jpeg", "gif"})));
+            }
         } else {
             throw new FileTypeNotSupportedException(String.format("The file type is not supported. Supported types are %s/%s/%s", IMAGE_FILE_TYPE, VIDEO_FILE_TYPE, PDF));
         }
