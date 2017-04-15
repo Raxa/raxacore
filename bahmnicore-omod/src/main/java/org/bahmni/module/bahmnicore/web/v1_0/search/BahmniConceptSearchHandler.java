@@ -14,7 +14,6 @@ import org.openmrs.module.webservices.rest.web.resource.api.SearchQuery;
 import org.openmrs.module.webservices.rest.web.resource.impl.EmptySearchResult;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.openmrs.module.webservices.rest.web.response.ResponseException;
-import org.openmrs.util.LocaleUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -40,7 +39,7 @@ public class BahmniConceptSearchHandler implements SearchHandler {
     public PageableResult search(RequestContext context) throws ResponseException {
         String conceptName = context.getParameter("name");
 
-        List<Concept> conceptsByName = conceptService.getConceptsByName(conceptName, LocaleUtility.getDefaultLocale(), true);
+        List<Concept> conceptsByName = conceptService.getConceptsByName(conceptName);
 
         if (CollectionUtils.isEmpty(conceptsByName)) {
             return new EmptySearchResult();
