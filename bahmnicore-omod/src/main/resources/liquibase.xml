@@ -3907,5 +3907,47 @@
             update global_property set property_value='en, es, fr, it, pt_BR' where property_value='en, es, fr, it, pt';
         </sql>
     </changeSet>
+
+    <changeSet id="bahmni-core-201704191128" author="Shashi, Gautam">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege='Edit conditions'</sqlCheck>
+        </preConditions>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            insert into privilege(privilege, description, uuid) values('Edit conditions', 'Privilege to add or edit conditions', @uuid);
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201704191135" author="Shashi, Gautam">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from privilege where privilege='Get conditions'</sqlCheck>
+        </preConditions>
+        <sql>
+            set @uuid = '';
+            select uuid() into @uuid;
+            insert into privilege(privilege, description, uuid) values('Get conditions', 'Privilege to view conditions', @uuid);
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201704191140" author="Shashi, Gautam">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT count(privilege) FROM role_privilege WHERE privilege = 'Edit conditions' and role = 'Clinical-App-Save'</sqlCheck>
+        </preConditions>
+        <comment>Add privileges to roles Clinical-App-Save(Edit Conditions)</comment>
+        <sql>
+            INSERT IGNORE INTO role_privilege (role, privilege) SELECT * FROM (SELECT 'Clinical-App-Save', 'Edit conditions') AS tmp WHERE EXISTS ( SELECT role FROM role WHERE role = 'Clinical-App-Save' );
+        </sql>
+    </changeSet>
+
+    <changeSet id="bahmni-core-201704191145" author="Shashi, Gautam">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT count(privilege) FROM role_privilege WHERE privilege = 'Get conditions' and role = 'Clinical-App-Read-Only'</sqlCheck>
+        </preConditions>
+        <comment>Add privileges to roles Clinical-App-Read-Only(Get conditions) </comment>
+        <sql>
+            INSERT IGNORE INTO role_privilege (role, privilege) SELECT * FROM (SELECT 'Clinical-App-Read-Only', 'Get conditions') AS tmp WHERE EXISTS ( SELECT role FROM role WHERE role = 'Clinical-App-Read-Only' );
+        </sql>
+    </changeSet>
     
 </databaseChangeLog>
