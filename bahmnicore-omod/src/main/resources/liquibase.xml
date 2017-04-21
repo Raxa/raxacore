@@ -3949,5 +3949,15 @@
             INSERT IGNORE INTO role_privilege (role, privilege) SELECT * FROM (SELECT 'Clinical-App-Read-Only', 'Get conditions') AS tmp WHERE EXISTS ( SELECT role FROM role WHERE role = 'Clinical-App-Read-Only' );
         </sql>
     </changeSet>
+
+    <changeSet id="bahmni-core-201704211500" author="Shashi, Sicong">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT count(privilege) FROM role_privilege WHERE privilege = 'Get Forms' and role = 'Clinical-App-Read-Only'</sqlCheck>
+        </preConditions>
+        <comment>Add privileges to roles Clinical-App-Read-Only(Get Forms) </comment>
+        <sql>
+            INSERT IGNORE INTO role_privilege (role, privilege) SELECT * FROM (SELECT 'Clinical-App-Read-Only', 'Get Forms') AS tmp WHERE EXISTS ( SELECT role FROM role WHERE role = 'Clinical-App-Read-Only' );
+        </sql>
+    </changeSet>
     
 </databaseChangeLog>
