@@ -3960,4 +3960,23 @@
         </sql>
     </changeSet>
     
+    <changeSet author="sidtharthanan, Darius" id="20170302-1225">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM concept where concept_id in (select concept_id from concept_name where
+                name = 'Follow-up Condition' AND concept_name_type = 'FULLY_SPECIFIED' AND voided = FALSE) and
+                retired = FALSE;
+            </sqlCheck>
+        </preConditions>
+        <comment>Add new concept for Follow-up Condition</comment>
+        <sql>
+            set @concept_id = 0;
+            set @answer_concept_id = 0;
+            set @concept_name_short_id = 0;
+            set @concept_name_full_id = 0;
+            
+            call add_concept(@concept_id, @concept_name_short_id, @concept_name_full_id, 'Follow-up Condition',
+            'Follow-up Condition', 'Text', 'Misc', false);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
