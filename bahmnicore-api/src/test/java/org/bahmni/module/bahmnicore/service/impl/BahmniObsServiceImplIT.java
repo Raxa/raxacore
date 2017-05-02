@@ -189,7 +189,7 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
     @Test
     public void shouldRetrieveAllLatestObservationsForMultiSelectConcept() {
         List<BahmniObservation> observations = (List<BahmniObservation>) bahmniObsService.getLatestObservationsForPatientProgram("df0foif1-dkcd-475d-b939-6d82327f36a3", Arrays.asList("Systolic"));
-        assertEquals(1, observations.size());
+        assertEquals(3, observations.size());
     }
 
     @Test

@@ -77,6 +77,6 @@ public class DiseaseTemplateControllerIT extends BaseIntegrationTest {
         DiseaseTemplate diseaseTemplates = deserialize(handle(newPostRequest("/rest/v1/bahmnicore/diseaseTemplate", dataJson)), new TypeReference<DiseaseTemplate>() {});
         assertNotNull(diseaseTemplates);
         assertEquals("Breast Cancer", diseaseTemplates.getConcept().getName());
-        assertEquals(2, diseaseTemplates.getObservationTemplates().size());
+        assertEquals(4, diseaseTemplates.getObservationTemplates().size());
     }
 }

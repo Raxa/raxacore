@@ -23,7 +23,18 @@ import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.OMRSObsToBahm
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 @Service
 public class BahmniObsServiceImpl implements BahmniObsService {
@@ -58,19 +69,12 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         if (CollectionUtils.isNotEmpty(concepts)) {
             List<String> conceptNames = getConceptNames(concepts);
 
-            List<Obs> obs = obsDao.getObsByPatientAndVisit(patientUuid, conceptNames,
+            List<Obs> observations = obsDao.getObsByPatientAndVisit(patientUuid, conceptNames,
                     visitDao.getVisitIdsFor(patientUuid, numberOfVisits), -1, ObsDaoImpl.OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order, startDate, endDate);
-            return omrsObsToBahmniObsMapper.map(getObs(obs), concepts);
+
+            return omrsObsToBahmniObsMapper.map(observations, concepts);
         }
         return Collections.EMPTY_LIST;
-    }
-
-    private ArrayList<Obs> getObs(List<Obs> obs) {
-        ArrayList<Obs> observations = new ArrayList<>();
-        for (Map.Entry<Date, List<Obs>> dateListEntry : getUniqueConceptInObs(obs).entrySet()) {
-            observations.addAll(dateListEntry.getValue());
-        }
-        return observations;
     }
 
     private List<String> getConceptNames(Collection<Concept> concepts) {
@@ -82,7 +86,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public Collection<BahmniObservation> observationsFor(String patientUuid, Concept rootConcept, Concept childConcept, Integer numberOfVisits, Date startDate, Date endDate, String patientProgramUuid) {
+    public Collection<BahmniObservation> observationsFor(String patientUuid, Concept rootConcept, Concept childConcept, Integer numberOfVisits, Date startDate, Date endDate, String patientProgramUuid)  {
         Collection<Encounter> encounters = programWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid);
         if (programDoesNotHaveEncounters(patientProgramUuid, encounters)) return Collections.EMPTY_LIST;
 
@@ -112,8 +116,8 @@ public class BahmniObsServiceImpl implements BahmniObsService {
             return new ArrayList<>();
         for (Concept concept : concepts) {
             List<Obs> observations = obsDao.getObsByPatientAndVisit(patientUuid, Arrays.asList(concept.getName().getName()),
-                    visitDao.getVisitIdsFor(patientUuid, numberOfVisits), -1, ObsDaoImpl.OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order, null, null);
-            if (CollectionUtils.isNotEmpty(observations)) {
+                        visitDao.getVisitIdsFor(patientUuid, numberOfVisits), -1, ObsDaoImpl.OrderBy.DESC, obsIgnoreList, filterOutOrderObs, order, null, null);
+            if(CollectionUtils.isNotEmpty(observations)) {
                 latestObs.addAll(getAllLatestObsForAConcept(observations));
             }
         }
@@ -163,7 +167,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
     @Override
     public Collection<BahmniObservation> getLatestObsForConceptSetByVisit(String patientUuid, String conceptName, Integer visitId) {
-        List<Obs> obs = withUniqueConcepts(filterByRootConcept(obsDao.getLatestObsForConceptSetByVisit(patientUuid, conceptName, visitId), conceptName));
+        List<Obs> obs =  withUniqueConcepts(filterByRootConcept(obsDao.getLatestObsForConceptSetByVisit(patientUuid, conceptName, visitId), conceptName));
         return omrsObsToBahmniObsMapper.map(obs, Arrays.asList(getConceptByName(conceptName)));
     }
 
@@ -218,7 +222,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         if (conceptNames == null)
             return new ArrayList<>();
         for (String conceptName : conceptNames) {
-            observations.addAll(obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList(conceptName), 1, ObsDaoImpl.OrderBy.ASC, null, null));
+                observations.addAll(obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList(conceptName), 1, ObsDaoImpl.OrderBy.ASC, null, null));
         }
 
         return omrsObsToBahmniObsMapper.map(observations, getConceptsByName(conceptNames));
@@ -337,39 +341,21 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     private List<Obs> getAllLatestObsForAConcept(List<Obs> observations) {
-        Map<Date, List<Obs>> obsToEncounterDateTimeMap = getUniqueConceptInObs(observations);
+        Map<Date, List<Obs>> obsToEncounterDateTimeMap = new TreeMap<>(Collections.<Date>reverseOrder());
+        for (Obs obs : observations) {
+            if (obsToEncounterDateTimeMap.get(obs.getEncounter().getEncounterDatetime()) != null) {
+                obsToEncounterDateTimeMap.get(obs.getEncounter().getEncounterDatetime()).add(obs);
+            } else {
+                List<Obs> obsList = new ArrayList<>();
+                obsList.add(obs);
+                obsToEncounterDateTimeMap.put(obs.getEncounter().getEncounterDatetime(), obsList);
+            }
+        }
         if (CollectionUtils.isNotEmpty(obsToEncounterDateTimeMap.entrySet())) {
             return obsToEncounterDateTimeMap.entrySet().iterator().next().getValue();
         } else {
             return null;
         }
-    }
-
-    private Map<Date, List<Obs>> getUniqueConceptInObs(List<Obs> observations) {
-        Map<Date, List<Obs>> obsToEncounterDateTimeMap = new TreeMap<>(Collections.<Date>reverseOrder());
-        for (Obs obs : observations) {
-            Date encounterDatetime = obs.getEncounter().getEncounterDatetime();
-            List<Obs> observationsList = obsToEncounterDateTimeMap.get(encounterDatetime);
-            if (observationsList != null) {
-                int index = getIndex(observationsList, obs);
-                if (index != -1)
-                    observationsList.remove(index);
-                observationsList.add(obs);
-            } else {
-                List<Obs> obsList = new ArrayList<>();
-                obsList.add(obs);
-                obsToEncounterDateTimeMap.put(encounterDatetime, obsList);
-            }
-        }
-        return obsToEncounterDateTimeMap;
-    }
-
-    private int getIndex(List<Obs> observations, Obs obs) {
-        for (int index = 0, observationsSize = observations.size(); index < observationsSize; index++) {
-            if (observations.get(index).getConcept() == obs.getConcept())
-                return index;
-        }
-        return -1;
     }
 
 }
