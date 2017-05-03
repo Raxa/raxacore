@@ -13,7 +13,6 @@ public class Activator extends BaseModuleActivator {
 	@Override
 	public void started() {
 		log.info("Started the Bahmni Core module");
-        Context.updateSearchIndex();
 		BahmniCoreProperties.load();
     }
 
