@@ -128,8 +128,7 @@
         ProgramAttributeType.hbm.xml
         PatientProgramAttribute.hbm.xml
         PatientProgram.hbm.xml
-        AuditLog.hbm.xml
-    </mappingFiles>
+        </mappingFiles>
     <!-- Internationalization -->
     <!-- All message codes should start with moduleId.* -->
     <messages>

@@ -21,6 +21,5 @@
         <mapping resource="PatientProgramAttribute.hbm.xml"/>
         <mapping resource="PatientProgram.hbm.xml"/>
         <mapping resource="Episode.hbm.xml"/>
-        <mapping resource="AuditLog.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

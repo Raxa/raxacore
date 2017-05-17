@@ -17,6 +17,5 @@
         <mapping resource="EntityMappingType.hbm.xml"></mapping>
         <mapping resource="EntityMapping.hbm.xml"></mapping>
         <mapping resource="Episode.hbm.xml"/>
-        <mapping resource="AuditLog.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>
