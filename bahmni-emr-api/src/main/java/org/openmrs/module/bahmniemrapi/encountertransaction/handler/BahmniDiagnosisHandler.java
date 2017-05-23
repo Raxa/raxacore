@@ -83,6 +83,19 @@ public class BahmniDiagnosisHandler implements EncounterTransactionHandler {
             obs.setValueCoded(statusConcept);
             addToObsGroup(diagnosisObs, obs);
         }
+        else {
+            removeStatusFromObsGroup(diagnosisObs, bahmniDiagnosisStatusConcept);
+        }
+    }
+
+    private void removeStatusFromObsGroup(Obs diagnosisObs, Concept bahmniDiagnosisStatusConcept) {
+
+        Obs statusObs = diagnosisObs.getGroupMembers().stream()
+                .filter(member -> member.getConcept().equals(bahmniDiagnosisStatusConcept))
+                .findFirst().orElse(null);
+
+        if (statusObs != null)
+            diagnosisObs.removeGroupMember(statusObs);
     }
 
 
