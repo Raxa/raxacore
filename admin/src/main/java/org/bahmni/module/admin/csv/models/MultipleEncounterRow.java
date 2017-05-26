@@ -24,6 +24,9 @@ public class MultipleEncounterRow extends CSVEntity {
     @CSVHeader(name = "visitType")
     public String visitType;
 
+    @CSVHeader(name = "providerName", optional = true)
+    public String providerName;
+
     @CSVHeader(name = "Visit Start Date", optional = true)
     public String visitStartDate;
 

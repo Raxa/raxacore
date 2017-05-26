@@ -9,14 +9,18 @@ import org.bahmni.module.admin.csv.service.PatientMatchService;
 import org.bahmni.module.admin.encounter.BahmniEncounterTransactionImportService;
 import org.bahmni.module.admin.retrospectiveEncounter.service.DuplicateObservationService;
 import org.openmrs.Patient;
+import org.openmrs.Provider;
+import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
+import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniProviderMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.*;
 
 @Component
 public class EncounterPersister implements EntityPersister<MultipleEncounterRow> {
@@ -66,10 +70,17 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
                     return noMatchingPatients(multipleEncounterRow);
                 }
 
+                Set<EncounterTransaction.Provider> providers = getProviders(multipleEncounterRow.providerName);
+
+                if(providers.isEmpty()) {
+                    return noMatchingProviders(multipleEncounterRow);
+                }
+
                 List<BahmniEncounterTransaction> bahmniEncounterTransactions = bahmniEncounterTransactionImportService.getBahmniEncounterTransaction(multipleEncounterRow, patient);
 
                 for (BahmniEncounterTransaction bahmniEncounterTransaction : bahmniEncounterTransactions) {
                     bahmniEncounterTransaction.setLocationUuid(loginUuid);
+                    bahmniEncounterTransaction.setProviders(providers);
                     duplicateObservationService.filter(bahmniEncounterTransaction, patient, multipleEncounterRow.getVisitStartDate(), multipleEncounterRow.getVisitEndDate());
                 }
 
@@ -89,7 +100,39 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
         }
     }
 
+
+    private Set<EncounterTransaction.Provider> getProviders(String providerName) {
+        Set<EncounterTransaction.Provider> encounterTransactionProviders = new HashSet<>();
+
+        if (StringUtils.isEmpty(providerName)) {
+            providerName = userContext.getAuthenticatedUser().getUsername();
+        }
+
+        User user = Context.getUserService().getUserByUsername(providerName);
+
+        if (user == null){
+            return encounterTransactionProviders;
+        }
+
+        Collection<Provider> providers = Context.getProviderService().getProvidersByPerson(user.getPerson());
+
+        Set<Provider> providerSet = new HashSet<>(providers);
+
+        BahmniProviderMapper bahmniProviderMapper = new BahmniProviderMapper();
+
+        Iterator iterator = providerSet.iterator();
+        while (iterator.hasNext()) {
+            encounterTransactionProviders.add(bahmniProviderMapper.map((Provider) iterator.next()));
+        }
+
+        return encounterTransactionProviders;
+    }
+
     private Messages noMatchingPatients(MultipleEncounterRow multipleEncounterRow) {
         return new Messages("No matching patients found with ID:'" + multipleEncounterRow.patientIdentifier + "'");
+    }
+
+    private Messages noMatchingProviders(MultipleEncounterRow multipleEncounterRow) {
+        return new Messages("No matching providers found with username:'" + multipleEncounterRow.providerName + "'");
     }
 }
