@@ -1,5 +1,7 @@
 package org.bahmni.module.admin.csv.persister;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.bahmni.csv.EntityPersister;
 import org.bahmni.csv.Messages;
 import org.bahmni.module.admin.csv.models.LabResultRow;
@@ -19,7 +21,9 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.OrderService;
 import org.openmrs.api.ProviderService;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
+import org.openmrs.module.auditlog.service.AuditLogService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.VisitIdentificationHelper;
 import org.openmrs.module.bahmniemrapi.laborder.contract.LabOrderResult;
@@ -55,6 +59,8 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
     private LabOrderResultMapper labOrderResultMapper;
     @Autowired
     private BahmniVisitAttributeService bahmniVisitAttributeSaveCommand;
+    @Autowired
+    private AuditLogService auditLogService;
     private UserContext userContext;
     private String loginLocationUuid;
 
@@ -92,6 +98,13 @@ public class LabResultPersister implements EntityPersister<LabResultsRow> {
             visit.addEncounter(encounter);
             Encounter savedEncounter = encounterService.saveEncounter(encounter);
             bahmniVisitAttributeSaveCommand.save(savedEncounter);
+            Boolean isAuditLogEnabled = Boolean.valueOf(Context.getAdministrationService().getGlobalProperty("bahmni.enableAuditLog"));
+            if (isAuditLogEnabled) {
+                Map<String, String> params = new HashMap<>();
+                params.put("encounterUuid", savedEncounter.getUuid());
+                params.put("encounterType", savedEncounter.getEncounterType().getName());
+                auditLogService.createAuditLog(patient.getUuid(), "EDIT_ENCOUNTER", "EDIT_ENCOUNTER_MESSAGE", params, "MODULE_LABEL_ADMIN_KEY");
+            }
             saveResults(encounter, resultObservations);
             return new Messages();
         } catch (Exception e) {

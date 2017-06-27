@@ -50,7 +50,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
     }
 
     @Override
-    public Visit upload(VisitDocumentRequest visitDocumentRequest) {
+    public Encounter upload(VisitDocumentRequest visitDocumentRequest) {
         Patient patient = Context.getPatientService().getPatientByUuid(visitDocumentRequest.getPatientUuid());
 
         Visit visit = findOrCreateVisit(visitDocumentRequest, patient);
@@ -65,7 +65,7 @@ public class VisitDocumentServiceImpl implements VisitDocumentService {
         Context.getVisitService().saveVisit(visit);
         linkDocumentAndImpressionObs(visitDocumentRequest);
 
-        return visit;
+        return encounter;
     }
 
     private void linkDocumentAndImpressionObs(VisitDocumentRequest visitDocumentRequest) {

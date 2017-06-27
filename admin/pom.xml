@@ -19,6 +19,11 @@
             <version>0.90-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>auditlog-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>net.sf.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>2.0</version>

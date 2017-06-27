@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
@@ -86,10 +87,13 @@ public class VisitDocumentControllerTest {
     public void shouldSetVisitLocationUuid() throws Exception {
         Visit visit = new Visit();
         visit.setUuid("visit-uuid");
+        Encounter encounter = new Encounter();
+        encounter.setUuid("encounterUuid");
+        encounter.setVisit(visit);
         VisitDocumentRequest visitDocumentRequest = new VisitDocumentRequest("patient-uuid", "visit-uuid", "visit-type-uuid",
                 null, null, "encounter-uuid", null, null, "provider-uuid", "location-uuid", null);
 
-        when(visitDocumentService.upload(visitDocumentRequest)).thenReturn(visit);
+        when(visitDocumentService.upload(visitDocumentRequest)).thenReturn(encounter);
 
         when(bahmniVisitLocationService.getVisitLocationUuid("location-uuid")).thenReturn("VisitLocationuuid");
         visitDocumentController.save(visitDocumentRequest);

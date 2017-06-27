@@ -1,5 +1,8 @@
 package org.bahmni.module.elisatomfeedclient.api.worker;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.bahmni.module.elisatomfeedclient.api.Constants;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisAccessionBuilder;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisTestDetailBuilder;
@@ -11,6 +14,7 @@ import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openmrs.Concept;
 import org.openmrs.Encounter;
@@ -18,9 +22,12 @@ import org.openmrs.EncounterType;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.auditlog.service.AuditLogService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 
 import java.io.IOException;
@@ -35,7 +42,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import org.openmrs.util.OpenmrsUtil;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({Context.class, OpenmrsUtil.class})
 public class OpenElisAccessionEventWorkerTest {
     @Mock
     private HttpClient httpClient;
@@ -51,6 +64,10 @@ public class OpenElisAccessionEventWorkerTest {
     private ProviderService providerService;
     @Mock
     private BahmniVisitAttributeService bahmniVisitAttributeSaveCommand;
+    @Mock
+    private AuditLogService auditLogService;
+    @Mock
+    private AdministrationService administrationService;
 
     private OpenElisAccessionEventWorker accessionEventWorker;
     private String openElisUrl;
@@ -59,16 +76,23 @@ public class OpenElisAccessionEventWorkerTest {
     @Before
     public void setUp() {
         initMocks(this);
+        PowerMockito.mockStatic(Context.class);
         accessionEventWorker = new OpenElisAccessionEventWorker(feedProperties, httpClient, encounterService,
-                conceptService, accessionMapper, providerService, bahmniVisitAttributeSaveCommand);
+                conceptService, accessionMapper, providerService, bahmniVisitAttributeSaveCommand, auditLogService);
         openElisUrl = "http://localhost:8080";
         event = new Event("id", "/openelis/accession/12-34-56-78", "title", "feedUri", new Date());
         when(feedProperties.getOpenElisUri()).thenReturn(openElisUrl);
+        when(administrationService.getGlobalProperty("bahmni.enableAuditLog")).thenReturn("true");
+        when(Context.getAdministrationService()).thenReturn(administrationService);
+        PowerMockito.mockStatic(OpenmrsUtil.class);
+        PowerMockito.when(OpenmrsUtil.getApplicationDataDirectory()).thenReturn(getClass().getClassLoader().getResource("").getPath());
     }
 
     @Test
     public void shouldSaveEncounterWhenEncounterForGivenAccessionDoesNotExists() throws Exception {
         final Encounter encounter = getEncounterWithTests("test1");
+        EncounterType encounterType = new EncounterType(Constants.DEFAULT_INVESTIGATION_ENCOUNTER_TYPE, "OpenElis Order Encounter");
+        encounter.setEncounterType(encounterType);
         final Visit visit = new Visit();
         visit.setId(1);
         encounter.setVisit(visit);
@@ -85,6 +109,10 @@ public class OpenElisAccessionEventWorkerTest {
 
         verify(encounterService).saveEncounter(encounter);
         verify(bahmniVisitAttributeSaveCommand).save(encounter);
+        Map<String, String> params = new HashMap<>();
+        params.put("encounterUuid", encounter.getUuid());
+        params.put("encounterType", encounter.getEncounterType().getName());
+        verify(auditLogService).createAuditLog(encounter.getPatient().getUuid(),"EDIT_ENCOUNTER", "EDIT_ENCOUNTER_MESSAGE", params, "OpenElis");
     }
 
     @Test
@@ -183,6 +211,7 @@ public class OpenElisAccessionEventWorkerTest {
         stubAccession(openElisAccession);
         when(accessionMapper.shouldIgnoreAccession(openElisAccession)).thenReturn(false);
         when(encounterService.getEncounterByUuid(openElisAccession.getAccessionUuid())).thenReturn(null).thenReturn(encounter);
+        when(encounterService.saveEncounter(any(Encounter.class))).thenReturn(encounter);
 
         accessionEventWorker.process(event);
 
@@ -198,6 +227,9 @@ public class OpenElisAccessionEventWorkerTest {
             order.setConcept(concept);
             encounter.addOrder(order);
             encounter.setEncounterType(new EncounterType());
+            Patient patient = new Patient();
+            patient.setUuid("patientUuid");
+            encounter.setPatient(patient);
         }
         return encounter;
     }

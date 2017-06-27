@@ -13,14 +13,20 @@ import org.openmrs.Provider;
 import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.api.context.UserContext;
+import org.openmrs.module.auditlog.service.AuditLogService;
 import org.openmrs.module.bahmniemrapi.drugorder.mapper.BahmniProviderMapper;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
 import org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public class EncounterPersister implements EntityPersister<MultipleEncounterRow> {
@@ -33,6 +39,8 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
     private DuplicateObservationService duplicateObservationService;
     @Autowired
     private BahmniEncounterTransactionImportService bahmniEncounterTransactionImportService;
+    @Autowired
+    private AuditLogService auditLogService;
 
     private UserContext userContext;
     private String patientMatchingAlgorithmClassName;
@@ -83,9 +91,15 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
                     bahmniEncounterTransaction.setProviders(providers);
                     duplicateObservationService.filter(bahmniEncounterTransaction, patient, multipleEncounterRow.getVisitStartDate(), multipleEncounterRow.getVisitEndDate());
                 }
-
+                Boolean isAuditLogEnabled = Boolean.valueOf(Context.getAdministrationService().getGlobalProperty("bahmni.enableAuditLog"));
                 for (BahmniEncounterTransaction bahmniEncounterTransaction : bahmniEncounterTransactions) {
-                    bahmniEncounterTransactionService.save(bahmniEncounterTransaction, patient, multipleEncounterRow.getVisitStartDate(), multipleEncounterRow.getVisitEndDate());
+                    BahmniEncounterTransaction updatedBahmniEncounterTransaction = bahmniEncounterTransactionService.save(bahmniEncounterTransaction, patient, multipleEncounterRow.getVisitStartDate(), multipleEncounterRow.getVisitEndDate());
+                    if (isAuditLogEnabled) {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("encounterUuid", updatedBahmniEncounterTransaction.getEncounterUuid());
+                        params.put("encounterType", updatedBahmniEncounterTransaction.getEncounterType());
+                        auditLogService.createAuditLog(patient.getUuid(), "EDIT_ENCOUNTER", "EDIT_ENCOUNTER_MESSAGE", params, "MODULE_LABEL_ADMIN_KEY");
+                    }
                 }
 
                 return new Messages();
@@ -99,7 +113,6 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
             }
         }
     }
-
 
     private Set<EncounterTransaction.Provider> getProviders(String providerName) {
         Set<EncounterTransaction.Provider> encounterTransactionProviders = new HashSet<>();

@@ -14,6 +14,7 @@ import org.openmrs.EncounterProvider;
 import org.openmrs.Order;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;

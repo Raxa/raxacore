@@ -1,5 +1,13 @@
 package org.bahmni.module.elisatomfeedclient.api.worker;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.builder.OpenElisAccessionBuilder;
@@ -10,9 +18,14 @@ import org.bahmni.module.elisatomfeedclient.api.domain.OpenElisTestDetail;
 import org.bahmni.module.elisatomfeedclient.api.mapper.AccessionHelper;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.domain.Event;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.openmrs.Encounter;
 import org.openmrs.EncounterType;
@@ -24,21 +37,6 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.openmrs.web.test.BaseModuleWebContextSensitiveTest;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 @org.springframework.test.context.ContextConfiguration(locations = {"classpath:TestingApplicationContext.xml"}, inheritLocations = true)
 public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiveTest {
@@ -67,7 +65,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         this.openElisAccessionEventWorker = new OpenElisAccessionEventWorker(this.properties, httpClient,
                 Context.getEncounterService(), Context.getConceptService(), new AccessionHelper(this.properties),
                 Context.getProviderService(),
-                bahmniVisitAttributeSaveCommand);
+                bahmniVisitAttributeSaveCommand, null);
     }
 
     @Test
@@ -870,7 +868,7 @@ public class OpenElisAccessionEventWorkerIT extends BaseModuleWebContextSensitiv
         Visit visit = orderEncounter.getVisit();
         Encounter labEncounter = null;
         Encounter notesEncounter = null;
-        List<Encounter> encounters = encounterService.getEncountersByPatient(visit.getPatient());
+            List<Encounter> encounters = encounterService.getEncountersByPatient(visit.getPatient());
 
 
         for (Encounter encounter : encounters) {

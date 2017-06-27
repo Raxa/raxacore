@@ -15,6 +15,7 @@ import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.auditlog.service.AuditLogService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,17 +27,21 @@ public class OpenElisPatientFailedEventsFeedClientImpl extends OpenElisFeedClien
     private ConceptService conceptService;
     private BahmniVisitAttributeService bahmniVisitAttributeSaveCommand;
     private Logger logger = Logger.getLogger(OpenElisPatientFailedEventsFeedClientImpl.class);
+    private AuditLogService auditLogService;
 
 
     @Autowired
     public OpenElisPatientFailedEventsFeedClientImpl(ElisAtomFeedProperties properties,
                                                      ProviderService providerService,
                                                      ConceptService conceptService,
-                                                     PlatformTransactionManager transactionManager, BahmniVisitAttributeService bahmniVisitAttributeSaveCommand) {
+                                                     PlatformTransactionManager transactionManager,
+                                                     BahmniVisitAttributeService bahmniVisitAttributeSaveCommand,
+                                                     AuditLogService auditLogService) {
         super(properties, transactionManager);
         this.providerService = providerService;
         this.conceptService = conceptService;
         this.bahmniVisitAttributeSaveCommand = bahmniVisitAttributeSaveCommand;
+        this.auditLogService = auditLogService;
     }
 
     @Override
@@ -53,7 +58,7 @@ public class OpenElisPatientFailedEventsFeedClientImpl extends OpenElisFeedClien
                 encounterService,
                 conceptService,
                 new AccessionHelper(properties),
-                providerService, bahmniVisitAttributeSaveCommand);
+                providerService, bahmniVisitAttributeSaveCommand, auditLogService);
         return new OpenElisPatientFeedWorker(accessionEventWorker);
     }
 

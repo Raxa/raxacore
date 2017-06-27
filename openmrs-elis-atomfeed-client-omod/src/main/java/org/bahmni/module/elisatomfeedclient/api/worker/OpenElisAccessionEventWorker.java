@@ -1,6 +1,8 @@
 package org.bahmni.module.elisatomfeedclient.api.worker;
 
 import groovy.lang.GroovyClassLoader;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.bahmni.module.elisatomfeedclient.api.Constants;
@@ -27,6 +29,8 @@ import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.EncounterService;
 import org.openmrs.api.ProviderService;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.auditlog.service.AuditLogService;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.openmrs.util.OpenmrsUtil;
 
@@ -56,6 +60,8 @@ public class OpenElisAccessionEventWorker implements EventWorker {
     private AccessionHelper accessionHelper;
     private ProviderService providerService;
     private BahmniVisitAttributeService bahmniVisitAttributeSaveCommand;
+    private AuditLogService auditLogService;
+
 
     //TODO : add the new service classes to bean initialization
     public OpenElisAccessionEventWorker(ElisAtomFeedProperties atomFeedProperties,
@@ -63,7 +69,9 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                                         EncounterService encounterService,
                                         ConceptService conceptService,
                                         AccessionHelper accessionHelper,
-                                        ProviderService providerService, BahmniVisitAttributeService bahmniVisitAttributeSaveCommand) {
+                                        ProviderService providerService,
+                                        BahmniVisitAttributeService bahmniVisitAttributeSaveCommand,
+                                        AuditLogService auditLogService) {
 
         this.atomFeedProperties = atomFeedProperties;
         this.httpClient = httpClient;
@@ -74,6 +82,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         this.bahmniVisitAttributeSaveCommand = bahmniVisitAttributeSaveCommand;
         this.encounterHelper = new EncounterHelper(encounterService);
         this.providerHelper = new ProviderHelper(providerService);
+        this.auditLogService = auditLogService;
     }
 
     @Override
@@ -113,7 +122,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 //will save new visit as well
                 Encounter encounter = encounterService.saveEncounter(orderEncounter);
                 bahmniVisitAttributeSaveCommand.save(encounter);
-
+                logEncounter(encounter);
             }
             if (openElisAccession.getAccessionNotes() != null && !openElisAccession.getAccessionNotes().isEmpty()) {
                 processAccessionNotes(openElisAccession, orderEncounter);
@@ -164,10 +173,20 @@ public class OpenElisAccessionEventWorker implements EventWorker {
 
     private void saveUpdatedEncounters(Set<Encounter> updatedEncounters) {
         for (Encounter updatedEncounter : updatedEncounters) {
-            encounterService.saveEncounter(updatedEncounter);
+            Encounter savedEncounter = encounterService.saveEncounter(updatedEncounter);
+            logEncounter(savedEncounter);
         }
     }
 
+    private void logEncounter(Encounter savedEncounter) {
+        Boolean isAuditLogEnabled = Boolean.valueOf(Context.getAdministrationService().getGlobalProperty("bahmni.enableAuditLog"));
+        if (isAuditLogEnabled) {
+            Map<String, String> params = new HashMap<>();
+            params.put("encounterUuid", savedEncounter.getUuid());
+            params.put("encounterType", savedEncounter.getEncounterType().getName());
+            auditLogService.createAuditLog(savedEncounter.getPatient().getUuid(), "EDIT_ENCOUNTER", "EDIT_ENCOUNTER_MESSAGE", params, "OpenElis");
+        }
+    }
 
     private void processAccessionNotes(OpenElisAccession openElisAccession, Encounter orderEncounter) throws ParseException {
 
@@ -186,6 +205,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
                 }
                 noteEncounter.addObs(createObsWith(note.getNote(), labNotesConcept, note.getDateTimeAsDate()));
                 Encounter newEncounter = encounterService.saveEncounter(noteEncounter);
+                logEncounter(newEncounter);
                 encountersForAccession.add(newEncounter);
             }
         }

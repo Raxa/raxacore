@@ -39,6 +39,7 @@
         <idgenVersion>4.4-SNAPSHOT</idgenVersion>
         <legacyuiVersion>1.3.3-SNAPSHOT</legacyuiVersion>
         <episodes.version>1.0-SNAPSHOT</episodes.version>
+        <auditLogVersion>1.0-SNAPSHOT</auditLogVersion>
         <!--test dependencies-->
         <junitVersion>4.12</junitVersion>
         <powerMockVersion>1.6.5</powerMockVersion>
@@ -84,6 +85,11 @@
                 <groupId>org.bahmni.module</groupId>
                 <artifactId>bahmnicore-omod</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>auditlog-api</artifactId>
+                <version>${auditLogVersion}</version>
             </dependency>
             <!--End of child modules-->
 

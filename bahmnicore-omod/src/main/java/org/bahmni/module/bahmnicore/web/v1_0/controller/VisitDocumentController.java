@@ -3,6 +3,7 @@ package org.bahmni.module.bahmnicore.web.v1_0.controller;
 import org.apache.commons.lang.StringUtils;
 import org.bahmni.module.bahmnicore.model.Document;
 import org.bahmni.module.bahmnicore.service.PatientDocumentService;
+import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.api.AdministrationService;
@@ -43,8 +44,8 @@ public class VisitDocumentController extends BaseRestController {
     public VisitDocumentResponse save(@RequestBody VisitDocumentRequest visitDocumentUpload) {
         String visitLocation = bahmniVisitLocationService.getVisitLocationUuid(visitDocumentUpload.getLocationUuid());
         visitDocumentUpload.setVisitLocationUuid(visitLocation);
-        final Visit visit = visitDocumentService.upload(visitDocumentUpload);
-        return new VisitDocumentResponse(visit.getUuid());
+        final Encounter encounter = visitDocumentService.upload(visitDocumentUpload);
+        return new VisitDocumentResponse(encounter.getVisit().getUuid(), encounter.getUuid());
     }
 
     @RequestMapping(method = RequestMethod.POST, value = baseVisitDocumentUrl + "/uploadDocument")
