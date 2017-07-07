@@ -24,7 +24,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <openMRSVersion>2.1.0</openMRSVersion>
+        <openMRSVersion>2.1.1-SNAPSHOT</openMRSVersion>
         <openMRSWebServicesVersion>2.17</openMRSWebServicesVersion>
         <springVersion>3.2.7.RELEASE</springVersion>
         <atomfeed.version>1.9.4</atomfeed.version>
