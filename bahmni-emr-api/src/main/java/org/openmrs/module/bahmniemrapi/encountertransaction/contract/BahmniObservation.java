@@ -422,4 +422,5 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
     public void setComplexData(Serializable complexData) {
         this.complexData = complexData;
     }
+
 }
