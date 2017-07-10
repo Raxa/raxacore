@@ -20,7 +20,7 @@
     <encounter_provider encounter_provider_id="1000" encounter_id="10001" provider_id="1" encounter_role_id="1" creator="1" date_created="2006-03-11 15:57:35.0" voided="false" uuid="19e0aae8-20ee-46b7-ade6-9e68f897b7b9" />
     <encounter_provider encounter_provider_id="1001" encounter_id="10002" provider_id="1" encounter_role_id="1" creator="1" date_created="2006-03-11 15:57:35.0" voided="false" uuid="19e0aae8-20ee-46b7-ade6-9e68f897b7c9" />
 
-    <obs obs_id="1000" person_id="2" concept_id="3" encounter_id="10001" obs_datetime="2008-08-01 00:00:00.0" location_id="1"  creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9b" status="FINAL" />
-    <obs obs_id="1001" person_id="2" concept_id="3" encounter_id="10002" obs_datetime="2008-08-01 00:00:00.0" location_id="1"  creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9c" status="FINAL" />
+    <obs obs_id="1000" person_id="2" concept_id="3" encounter_id="10001" obs_datetime="2008-08-01 00:00:00.0" location_id="1"  creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9b"/>
+    <obs obs_id="1001" person_id="2" concept_id="3" encounter_id="10002" obs_datetime="2008-08-01 00:00:00.0" location_id="1"  creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9c"/>
 
 </dataset>

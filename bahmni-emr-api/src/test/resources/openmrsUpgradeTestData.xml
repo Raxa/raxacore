@@ -53,15 +53,15 @@
 
     <obs obs_id="16" person_id="2" concept_id="61" encounter_id="7" obs_datetime="2015-08-19 00:00:00.0"
          location_id="1" comments="" creator="1" date_created="2015-08-19 12:35:30.0"
-         voided="false" uuid="2ed1e57d-9f18-41d3-b067-2eeaf4b30fb0" status="FINAL"/>
+         voided="false" uuid="2ed1e57d-9f18-41d3-b067-2eeaf4b30fb0"/>
     <obs obs_id="17" person_id="2" concept_id="63" obs_group_id="16" encounter_id="7"
-         obs_datetime="2015-08-19 00:00:00.0" location_id="1" comments="" creator="1" status="FINAL"
+         obs_datetime="2015-08-19 00:00:00.0" location_id="1" comments="" creator="1"
          date_created="2015-08-19 12:35:30.0" voided="false" uuid="2ed1e57d-9f18-41d3-b067-2eeaf4b30fb2"/>
-    <obs obs_id="18" person_id="2" concept_id="64" obs_group_id="17" encounter_id="7" status="FINAL"
+    <obs obs_id="18" person_id="2" concept_id="64" obs_group_id="17" encounter_id="7"
          value_numeric="115" obs_datetime="2015-08-19 00:00:00.0" location_id="1" comments="" creator="1"
          date_created="2015-08-19 12:35:30.0" voided="false" uuid="2ed1e57d-9f18-41d3-b067-2eeaf4b30fb3"/>
     <obs obs_id="19" person_id="2" concept_id="62" obs_group_id="16" encounter_id="7" value_numeric="72"
-         obs_datetime="2015-08-19 00:00:00.0" location_id="1" comments="" creator="1" status="FINAL"
+         obs_datetime="2015-08-19 00:00:00.0" location_id="1" comments="" creator="1"
          date_created="2015-08-19 12:35:30.0" voided="false" uuid="2ed1e57d-9f18-41d3-b067-2eeaf4b30fb4"/>
 
 </dataset>
