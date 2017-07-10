@@ -32,7 +32,7 @@
         <reportingModuleVersion>0.10.4</reportingModuleVersion>
         <calculationModuleVersion>1.3-SNAPSHOT</calculationModuleVersion>
         <serializationXstreamModuleVersion>0.2.12</serializationXstreamModuleVersion>
-        <emrapi-omod.version>1.20</emrapi-omod.version>
+        <emrapi-omod.version>1.23.0-SNAPSHOT</emrapi-omod.version>
         <metadatamapping.version>1.2.1</metadatamapping.version>
         <openmrsAtomfeedVersion>2.5.5-SNAPSHOT</openmrsAtomfeedVersion>
         <lombokVersion>1.16.0</lombokVersion>

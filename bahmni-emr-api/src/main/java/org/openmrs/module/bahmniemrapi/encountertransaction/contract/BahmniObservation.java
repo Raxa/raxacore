@@ -37,6 +37,8 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
     private Boolean isUnknown;
     private String formNamespace;
     private String formFieldPath;
+    private String interpretation;
+    private String status;
 
     public BahmniObservation() {
         encounterTransactionObservation = new EncounterTransaction.Observation();
@@ -383,5 +385,25 @@ public class BahmniObservation implements Comparable<BahmniObservation>{
 
     public String getFormFieldPath() {
         return encounterTransactionObservation.getFormFieldPath();
+    }
+
+    public String getInterpretation() {
+        return encounterTransactionObservation.getInterpretation();
+    }
+
+    public BahmniObservation setInterpretation(String interpretation) {
+        encounterTransactionObservation.setInterpretation(interpretation);
+        this.interpretation = interpretation;
+        return this;
+    }
+
+    public String getStatus() {
+        return encounterTransactionObservation.getStatus();
+    }
+
+    public BahmniObservation setStatus(String status) {
+        encounterTransactionObservation.setStatus(status);
+        this.status = status;
+        return this;
     }
 }
