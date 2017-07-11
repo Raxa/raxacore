@@ -6,6 +6,7 @@ import org.bahmni.module.admin.BaseIntegrationTest;
 import org.bahmni.module.admin.csv.models.ConceptReferenceTermRow;
 import org.bahmni.module.admin.csv.models.ConceptRow;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.ConceptAnswer;
@@ -210,6 +211,7 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void shouldUpdateDetailsOnExistingConcepts() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "Existing Concept";
@@ -239,6 +241,7 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void shouldCreateNewMappingForExistingConcept() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "Existing Concept";
@@ -279,6 +282,7 @@ public class ConceptPersisterIT extends BaseIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void shouldCreateNewMappingsForExistingConcept() throws Exception {
         ConceptRow conceptRow = new ConceptRow();
         conceptRow.name = "Existing Concept";

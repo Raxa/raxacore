@@ -206,6 +206,12 @@
             <version>2.5.3</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
+            <artifactId>metadatamapping-api</artifactId>
+            <version>${metadatamapping.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
