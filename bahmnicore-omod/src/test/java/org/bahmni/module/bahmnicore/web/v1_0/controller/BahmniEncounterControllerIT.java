@@ -1,21 +1,32 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openmrs.Concept;
+import org.openmrs.Location;
 import org.openmrs.Visit;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.bahmniemrapi.builder.BahmniObservationBuilder;
+import org.openmrs.module.bahmniemrapi.builder.ETConceptBuilder;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosis;
 import org.openmrs.module.bahmniemrapi.diagnosis.contract.BahmniDiagnosisRequest;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
+import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.emrapi.diagnosis.Diagnosis;
+import org.openmrs.module.emrapi.encounter.EmrEncounterService;
+import org.openmrs.module.emrapi.encounter.EmrEncounterServiceImpl;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.module.emrapi.encounter.postprocessor.EncounterTransactionHandler;
+import org.openmrs.obs.ComplexData;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -24,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-@Ignore
+//@Ignore
 public class BahmniEncounterControllerIT extends BaseIntegrationTest {
     
     @Autowired
@@ -36,6 +47,34 @@ public class BahmniEncounterControllerIT extends BaseIntegrationTest {
     public void setUp() throws Exception {
         executeDataSet("diagnosisMetadata.xml");
         executeDataSet("setup.xml");
+    }
+
+    @Test
+    public void shouldSaveNewEncounterWithLocationComplexObsHandler() throws Exception {
+        BahmniEncounterTransaction bahmniEncounterTransaction = bahmniEncounterTransaction();
+        Concept weight = Context.getConceptService().getConceptByName("Weight");
+        //EncounterTransaction.Concept weightConcept = new ETConceptBuilder().withName("Weight").withUuid("5d2d4cb7-955b-4837-80f7-0ebb94044444").withSet(false).withClass("Finding").build();
+        EncounterTransaction.Concept locationConcept = new ETConceptBuilder().withName("Location Name").withUuid("edd25bd1-56ef-4382-afda-4e15a33ad33a").withSet(false).withClass("Finding").build();
+
+        System.out.println(weight.getDatatype());
+        bahmniEncounterTransaction.setObservations(new ArrayList<BahmniObservation>() {{
+            //this.add(new org.openmrs.module.bahmniemrapi.builder.BahmniObservationBuilder().withConcept(weightConcept).withValue("71").withObsDateTime(new Date()).build());
+            this.add(new org.openmrs.module.bahmniemrapi.builder.BahmniObservationBuilder().withConcept(locationConcept).withValue("12").withObsDateTime(new Date()).build());
+        }});
+        BahmniEncounterTransaction encounterTransaction = bahmniEncounterController.update(bahmniEncounterTransaction);
+        Collection<BahmniObservation> bahmniObservations = encounterTransaction.getObservations();
+        Assert.assertEquals(1, bahmniObservations.size());
+        BahmniObservation observation = bahmniObservations.iterator().next();
+        Serializable obsData = observation.getComplexData();
+        Assert.assertEquals(HashMap.class, obsData.getClass());
+        Assert.assertEquals("Location", ((Map)obsData).get("dataType"));
+
+        Object locationData = ((Map) obsData).get("data");
+        Assert.assertEquals(HashMap.class, locationData.getClass());
+
+        Assert.assertEquals("LAB", ((Map)locationData).get("name"));
+        Assert.assertEquals(Integer.valueOf("12"), ((Map)locationData).get("id"));
+
     }
 
     @Test

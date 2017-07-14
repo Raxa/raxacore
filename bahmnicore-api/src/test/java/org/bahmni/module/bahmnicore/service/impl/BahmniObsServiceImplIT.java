@@ -1,21 +1,30 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.BaseIntegrationTest;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
+import org.bahmni.module.bahmnicore.obs.handler.LocationObsHandler;
 import org.bahmni.module.bahmnicore.service.BahmniObsService;
 import org.bahmni.test.builder.ConceptBuilder;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Concept;
+import org.openmrs.Location;
+import org.openmrs.Obs;
 import org.openmrs.Visit;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.ObsService;
 import org.openmrs.api.VisitService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
+import org.openmrs.obs.ComplexObsHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,12 +43,42 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
     @Autowired
     ObsDao obsDao;
 
+    private HashMap<String, String> metaDataSet = new HashMap<String, String>() {
+        {
+            put("diagnosis", "diagnosisMetadata.xml");
+            put("disposition", "dispositionMetadata.xml");
+            put("observation", "observationsTestData.xml");
+            put("program", "patientProgramTestData.xml");
+            put("complexObs", "complexObsData.xml");
+        }
+    };
+
     @Before
     public void setUp() throws Exception {
-        executeDataSet("diagnosisMetadata.xml");
-        executeDataSet("dispositionMetadata.xml");
-        executeDataSet("observationsTestData.xml");
-        executeDataSet("patientProgramTestData.xml");
+        setupMetaData(new String[] {"diagnosis", "disposition", "observation", "program" } );
+    }
+
+    private void setupMetaData(String[] list) throws Exception {
+        for (String item : list) {
+            String xmlFile = metaDataSet.get(item);
+            if (!StringUtils.isBlank(xmlFile)) {
+                executeDataSet(xmlFile);
+            }
+        }
+    }
+
+    @Test
+    public void shouldGetComplexObsLocationData() throws Exception {
+        setupMetaData(new String[] {"complexObs"});
+        ObsService os = Context.getObsService();
+        //TODO: this need to changed. os.getObs() should be called once the fix in core is in
+        Obs complexObs = os.getComplexObs(44, ComplexObsHandler.RAW_VIEW);
+        Assert.assertNotNull(complexObs);
+        Assert.assertTrue(complexObs.isComplex());
+        Assert.assertNotNull(complexObs.getValueComplex());
+        Assert.assertNotNull(complexObs.getComplexData());
+        Assert.assertEquals(Location.class, complexObs.getComplexData().getData().getClass());
+        Assert.assertEquals(LocationObsHandler.class, os.getHandler(complexObs).getClass());
     }
 
     @Test

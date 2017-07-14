@@ -2,13 +2,19 @@ package org.openmrs.module.bahmniemrapi.encountertransaction.mapper;
 
 import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
+import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
+import org.openmrs.api.ObsService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
 import org.openmrs.module.bahmniemrapi.encountertransaction.mapper.parameters.AdditionalBahmniObservationFields;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.openmrs.obs.ComplexData;
+import org.openmrs.obs.ComplexObsHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,11 +26,16 @@ public class ETObsToBahmniObsMapper {
     public static final String ABNORMAL_CONCEPT_CLASS = "Abnormal";
     public static final String DURATION_CONCEPT_CLASS = "Duration";
     public static final String UNKNOWN_CONCEPT_CLASS = "Unknown" ;
+    public static final String COMPLEX_DATATYPE = "Complex";
     private ConceptService conceptService;
+    private ObsService obsService;
+
+    List<BahmniComplexDataMapper> complexDataMappers = new ArrayList<>();
 
     @Autowired
-    public ETObsToBahmniObsMapper(ConceptService conceptService) {
+    public ETObsToBahmniObsMapper(ConceptService conceptService, List<BahmniComplexDataMapper> complexDataMappers) {
         this.conceptService = conceptService;
+        this.complexDataMappers = complexDataMappers;
     }
 
     public List<BahmniObservation> create(List<EncounterTransaction.Observation> allObservations, AdditionalBahmniObservationFields additionalBahmniObservationFields) {
@@ -55,6 +66,10 @@ public class ETObsToBahmniObsMapper {
             }
         } else {
             bahmniObservation.setValue(observation.getValue());
+            if (isComplexObs(bahmniObservation)) {
+                bahmniObservation.setComplexData(getComplexObsValue(bahmniObservation));
+            }
+
             bahmniObservation.setType(observation.getConcept().getDataType());
             bahmniObservation.setHiNormal(observation.getConcept().getHiNormal());
             bahmniObservation.setLowNormal(observation.getConcept().getLowNormal());
@@ -67,6 +82,41 @@ public class ETObsToBahmniObsMapper {
             bahmniObservation.setCreatorName(observation.getCreator().getPersonName());
         }
         return bahmniObservation;
+    }
+
+    private Serializable getComplexObsValue(BahmniObservation bahmniObservation) {
+        if (complexDataMappers.isEmpty()) {
+            return null;
+        }
+
+        Obs obs = getObsService().getComplexObs(
+                getObsService().getObsByUuid(bahmniObservation.getUuid()).getId(), ComplexObsHandler.RAW_VIEW);
+        ComplexData complexData = obs.getComplexData();
+
+        BahmniComplexDataMapper dataMapper = null;
+        for (BahmniComplexDataMapper complexDataMapper : complexDataMappers) {
+            if (complexDataMapper.canHandle(obs.getConcept(), complexData)) {
+                dataMapper = complexDataMapper;
+                break;
+            }
+        }
+
+        return dataMapper!=null ? dataMapper.map(complexData) : complexData;
+    }
+
+    private ObsService getObsService() {
+        if (this.obsService == null) {
+            this.obsService = Context.getObsService();
+        }
+        return obsService;
+    }
+
+    private boolean isComplexObs(BahmniObservation bahmniObservation) {
+        String conceptDataType = bahmniObservation.getConcept().getDataType();
+        if (conceptDataType != null && !conceptDataType.isEmpty()) {
+            return conceptDataType.equalsIgnoreCase(COMPLEX_DATATYPE);
+        }
+        return false;
     }
 
     private void setValueAndType(BahmniObservation bahmniObservation, EncounterTransaction.Observation member) {
@@ -146,4 +196,5 @@ public class ETObsToBahmniObsMapper {
         bahmniObservation.setUnknown(false);
         return bahmniObservation;
     }
+
 }

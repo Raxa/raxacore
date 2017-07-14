@@ -32,6 +32,14 @@
                     <key><value>VideoUrlHandler</value></key>
                     <bean class="org.bahmni.module.bahmnicore.obs.handler.VideoUrlHandler"/>
                 </entry>
+                <entry>
+                    <key><value>LocationObsHandler</value></key>
+                    <bean class="org.bahmni.module.bahmnicore.obs.handler.LocationObsHandler"/>
+                </entry>
+                <entry>
+                    <key><value>ProviderObsHandler</value></key>
+                    <bean class="org.bahmni.module.bahmnicore.obs.handler.ProviderObsHandler"/>
+                </entry>
             </map>
         </property>
     </bean>

@@ -20,6 +20,7 @@ import org.openmrs.util.OpenmrsConstants;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -57,7 +58,7 @@ public class ETObsToBahmniObsMapperTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        etObsToBahmniObsMapper = new ETObsToBahmniObsMapper(conceptService);
+        etObsToBahmniObsMapper = new ETObsToBahmniObsMapper(conceptService, Arrays.asList());
         mockStatic(LocaleUtility.class);
         mockStatic(Context.class);
         mockStatic(LocaleUtility.class);
