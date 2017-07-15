@@ -124,7 +124,7 @@
                voided="false" uuid="bb0af6767-j07a-4629-9850-f15206e63ab0"/>
 
     <obs obs_id="4003" encounter_id="88" person_id="1" order_id="1" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="5243aebc-164c-kke4-9f26-005056823b95" creator="1" concept_id="699" voided="1" />
+         uuid="5243aebc-164c-kke4-9f26-005056823b95" creator="1" concept_id="699" voided="1" status="FINAL" />
 
     <!--concept with children-->
 

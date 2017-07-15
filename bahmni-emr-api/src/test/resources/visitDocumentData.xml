@@ -53,14 +53,22 @@
     <encounter_provider encounter_provider_id="3" encounter_id="16" provider_id="23" creator="1" date_created="2008-07-01 14:09:05.0"
                         voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63333"/>
 
-    <obs obs_id="1024" person_id="1024" concept_id="111" obs_datetime="2013-12-04 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" location_id="2" uuid="6d0ae386-707a-4629-9850-f15206e63j8s"/>
-    <obs obs_id="1025" person_id="1024" concept_id="222" obs_datetime="2013-12-04 11:36:42" encounter_id="16" creator="1" voided="0" date_created="2013-12-04 11:36:42" location_id="2" uuid="6d0ae386-707a-4629-9850-f15206e63kj0"/>
-    <obs obs_id="1026" person_id="1024" concept_id="333" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" location_id="2" uuid="6d0ae386-707a-4629-9850-f15606e63ab0"/>
+    <obs obs_id="1024" person_id="1024" concept_id="111" obs_datetime="2013-12-04 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" location_id="2" uuid="6d0ae386-707a-4629-9850-f15206e63j8s" status="FINAL"/>
+    <obs obs_id="1025" person_id="1024" concept_id="222" obs_datetime="2013-12-04 11:36:42" encounter_id="16" creator="1" voided="0" date_created="2013-12-04 11:36:42" location_id="2" uuid="6d0ae386-707a-4629-9850-f15206e63kj0" status="FINAL"/>
+    <obs obs_id="1026" person_id="1024" concept_id="333" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" location_id="2" uuid="6d0ae386-707a-4629-9850-f15606e63ab0" status="FINAL"/>
 
-    <obs obs_id="1028" obs_group_id="1024" person_id="1024" concept_id="444" location_id="2" value_text="/patient_file" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63555"/>
-    <obs obs_id="1029" obs_group_id="1025" person_id="1024" concept_id="444" location_id="2" value_text="/radiology/foo.jpg" obs_datetime="2014-06-24 11:36:42" encounter_id="16" creator="1" voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63666"/>
-    <obs obs_id="1030" obs_group_id="1026" person_id="1024" concept_id="444" location_id="2" value_text="/radiology/bar.jpg" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63777"/>
-    <obs obs_id="1031" person_id="1024" concept_id="555" location_id="2" value_text="Impression 1" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1" voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63888"/>
+    <obs obs_id="1028" obs_group_id="1024" person_id="1024" concept_id="444" location_id="2"
+         value_text="/patient_file" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1"
+         voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63555" status="FINAL" />
+    <obs obs_id="1029" obs_group_id="1025" person_id="1024" concept_id="444" location_id="2"
+         value_text="/radiology/foo.jpg" obs_datetime="2014-06-24 11:36:42" encounter_id="16" creator="1"
+         voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63666" status="FINAL" />
+    <obs obs_id="1030" obs_group_id="1026" person_id="1024" concept_id="444" location_id="2"
+         value_text="/radiology/bar.jpg" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1"
+         voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63777" status="FINAL"/>
+    <obs obs_id="1031" person_id="1024" concept_id="555" location_id="2"
+         value_text="Impression 1" obs_datetime="2014-06-24 11:36:42" encounter_id="15" creator="1"
+         voided="0" date_created="2013-12-04 11:36:42" uuid="6d0ae386-707a-4629-9850-f15606e63888" status="FINAL" />
 
     <obs_relationship_type obs_relationship_type_id="1" name="qualified-by" description="target is qualified by source" uuid="dbde17aa-3d7e-11e4-8782-164230d1df67" creator="1" date_created="2014-09-18 14:19:42" retired="0"/>
 </dataset>
