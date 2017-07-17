@@ -60,19 +60,19 @@
 
     <obs obs_id="4999" person_id="7777" concept_id="299" encounter_id="1111" obs_datetime="2008-08-01 00:00:00.0"
          location_id="1" creator="1" date_created="2008-08-18 14:11:13.0" voided="false"
-         uuid="8888cdcb-6a76-47e3-9f2e-2oz50zxpfa9a" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-9f2e-2oz50zxpfa9a"/>
 
     <obs obs_id="5000" person_id="7777" concept_id="300" encounter_id="1111" obs_datetime="2008-08-01 00:00:00.0"
          location_id="1" creator="1" date_created="2008-08-18 14:11:13.0" voided="false" obs_group_id="4999"
-         uuid="8888cdcb-6a76-47e3-9f2e-26350zxpfa9a" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-9f2e-26350zxpfa9a"/>
 
     <obs obs_id="5001" obs_group_id="5000" encounter_id="1111" person_id="7777" obs_datetime="2008-08-18 15:09:05.0"
          value_numeric="98" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-164b-1op4-9f26-005056823b95"
-         creator="1" concept_id="301" voided="0" status="FINAL" />
+         creator="1" concept_id="301" voided="0"/>
 
     <obs obs_id="5002" obs_group_id="5000" encounter_id="1111" person_id="7777" obs_datetime="2008-08-18 15:09:05.0"
          value_coded="7" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-164b-11e4-9f26-0a8056823b95"
-         creator="1" concept_id="302" voided="0" status="FINAL" />
+         creator="1" concept_id="302" voided="0"/>
 
 
 </dataset>
