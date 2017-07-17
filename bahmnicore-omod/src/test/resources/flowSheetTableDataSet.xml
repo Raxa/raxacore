@@ -29,17 +29,17 @@
 
     <obs obs_id="1000" person_id="4444" concept_id="23" encounter_id="1001" obs_datetime="2008-08-01 00:00:00.0"
          location_id="1" creator="1" date_created="2008-08-18 14:11:13.0" voided="false"
-         uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9a" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9a"/>
 
     <obs obs_id="1001" obs_group_id="1000" encounter_id="1001" person_id="4444" obs_datetime="2008-08-18 15:09:05.0"
          value_coded="7" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-164b-11e4-9f26-005056823b95"
-         creator="1" concept_id="18" voided="0" status="FINAL" />
+         creator="1" concept_id="18" voided="0"/>
     <obs obs_id="1002" obs_group_id="1000" encounter_id="1001" person_id="4444" obs_datetime="2008-08-18 15:09:05.0"
          value_text="Favorite" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-164b-11e4-9fbs-005056823b95"
-         creator="1" concept_id="19" voided="0" status="FINAL" />
+         creator="1" concept_id="19" voided="0"/>
     <obs obs_id="1003" obs_group_id="1000" encounter_id="1001" person_id="4444" obs_datetime="2008-08-18 15:09:05.0"
          value_datetime="2008-08-14 00:00:00" date_created="2008-08-18 15:09:05.0" creator="1" concept_id="20"
-         uuid="c558b3c5-164b-19z4-9f26-005056823b95" voided="0" status="FINAL" />
+         uuid="c558b3c5-164b-19z4-9f26-005056823b95" voided="0"/>
 
 <!--patient which data is not completely filled-->
     <person person_id="5555" gender="M" dead="false" creator="1" birthdate_estimated="0"
@@ -64,28 +64,28 @@
 
     <obs obs_id="2000" person_id="5555" concept_id="23" encounter_id="2001" obs_datetime="2008-08-01 00:00:00.0"
          location_id="1" creator="1" date_created="2008-08-18 14:11:13.0" voided="false"
-         uuid="8888cdcb-6a76-47e3-9f2e-263503cv3a9a" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-9f2e-263503cv3a9a"/>
 
     <obs obs_id="2001" obs_group_id="2000" encounter_id="2001" person_id="5555" obs_datetime="2008-08-18 15:09:05.0"
          value_coded="7" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-1pzb-pae4-9f26-005056823b95"
-         creator="1" concept_id="18" voided="0" status="FINAL" />
+         creator="1" concept_id="18" voided="0"/>
     <obs obs_id="2002" obs_group_id="2000" encounter_id="2001" person_id="5555" obs_datetime="2008-08-18 15:09:05.0"
          value_text="Favorite" date_created="2008-08-18 15:09:05.0" uuid="c55013c5-16zo-11e4-9fbs-005056823b95"
-         creator="1" concept_id="19" voided="0" status="FINAL" />
+         creator="1" concept_id="19" voided="0"/>
 
     <obs obs_id="3000" person_id="5555" concept_id="23" encounter_id="2001" obs_datetime="2008-08-01 00:00:00.0"
          location_id="1" creator="1" date_created="2008-08-18 14:11:13.0" voided="false"
-         uuid="8888cdcb-6a76-47e3-9cpe-2xs5032f3a9a" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-9cpe-2xs5032f3a9a"/>
 
     <obs obs_id="3001" obs_group_id="3000" encounter_id="2001" person_id="5555" obs_datetime="2008-08-18 15:09:05.0"
          value_coded="7" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-1mzb-1014-9f26-005056823b95"
-         creator="1" concept_id="18" voided="0" status="FINAL" />
+         creator="1" concept_id="18" voided="0"/>
     <obs obs_id="3002" obs_group_id="3000" encounter_id="2001" person_id="5555" obs_datetime="2008-08-18 15:09:05.0"
          value_text="Favorite" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-164b-oze4-9qms-005056823b95"
-         creator="1" concept_id="19" voided="0" status="FINAL" />
+         creator="1" concept_id="19" voided="0"/>
     <obs obs_id="3003" obs_group_id="3000" encounter_id="2001" person_id="5555" obs_datetime="2008-08-18 15:09:05.0"
          value_datetime="2008-08-14 00:00:00" date_created="2008-08-18 15:09:05.0" creator="1" concept_id="20"
-         uuid="c558b3c5-164b-19z4-9f26-pa5056pz3b95" voided="0" status="FINAL" />
+         uuid="c558b3c5-164b-19z4-9f26-pa5056pz3b95" voided="0"/>
 
     <!--patient which group by conept is not filled-->
     <person person_id="9999" gender="M" dead="false" creator="1" birthdate_estimated="0"
@@ -110,13 +110,13 @@
 
     <obs obs_id="9000" person_id="9999" concept_id="23" encounter_id="9001" obs_datetime="2008-08-01 00:00:00.0"
          location_id="1" creator="1" date_created="2008-08-18 14:11:13.0" voided="false"
-         uuid="8888cdcb-6a76-47e3-9f2e-263503op3a9a" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-9f2e-263503op3a9a"/>
 
     <obs obs_id="9001" obs_group_id="9000" encounter_id="9001" person_id="9999" obs_datetime="2008-08-18 15:09:05.0"
          value_coded="7" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-1pzb-plq4-9f26-005056823b95"
-         creator="1" concept_id="18" voided="0" status="FINAL" />
+         creator="1" concept_id="18" voided="0"/>
     <obs obs_id="9002" obs_group_id="9000" encounter_id="9001" person_id="9999" obs_datetime="2008-08-18 15:09:05.0"
          value_text="Favorite" date_created="2008-08-18 15:09:05.0" uuid="c55013c5-16zo-11e4-9fzy-005056823b95"
-         creator="1" concept_id="19" voided="0" status="FINAL" />
+         creator="1" concept_id="19" voided="0"/>
 
 </dataset>

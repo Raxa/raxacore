@@ -55,6 +55,6 @@
     <!--order attributes-->
 
     <!--<obs obs_id="2001" person_id="1024" concept_id="2005" encounter_id="1001" obs_datetime="2008-08-01 00:00:00.0" location_id="1"  creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9a"/>-->
-    <obs obs_id="2002" person_id="1024" concept_id="2006" encounter_id="1001" obs_datetime="2008-08-01 00:00:00.0" order_id="1005" location_id="1" value_coded="7" comments="" creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="be48cdcb-6666-47e3-9f2e-2635032f3a9a" status="FINAL" />
+    <obs obs_id="2002" person_id="1024" concept_id="2006" encounter_id="1001" obs_datetime="2008-08-01 00:00:00.0" order_id="1005" location_id="1" value_coded="7" comments="" creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="be48cdcb-6666-47e3-9f2e-2635032f3a9a"/>
 
 </dataset>

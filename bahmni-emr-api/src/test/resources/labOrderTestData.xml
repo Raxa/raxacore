@@ -317,75 +317,75 @@
 
     <!-- Blood Panel -->
     <obs obs_id="1" encounter_id="30" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="49f1b989-164b-11e4-9f26-005056823b95" creator="1" concept_id="302" voided="0" status="FINAL" />
+         uuid="49f1b989-164b-11e4-9f26-005056823b95" creator="1" concept_id="302" voided="0" />
 
     <!-- Referred out Haemoglobin in Blood panel -->
     <obs obs_id="2" obs_group_id="1" encounter_id="30" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="c558b3c5-164b-11e4-9f26-005056823b95" creator="1" concept_id="303" voided="1" status="FINAL" />
+         uuid="c558b3c5-164b-11e4-9f26-005056823b95" creator="1" concept_id="303" voided="1" />
     <obs obs_id="3" obs_group_id="2" encounter_id="30" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="c973ba6a-164b-11e4-9f26-005056823b95" creator="1" concept_id="303" voided="1" status="FINAL" />
+         uuid="c973ba6a-164b-11e4-9f26-005056823b95" creator="1" concept_id="303" voided="1" />
     <obs obs_id="4003" obs_group_id="3" encounter_id="30" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="5243aebc-164c-11e4-9f26-005056823b95" creator="1" concept_id="108" voided="1" status="FINAL" />
+         uuid="5243aebc-164c-11e4-9f26-005056823b95" creator="1" concept_id="108" voided="1" />
 
 
     <!-- updated Blood Panel -->
     <obs obs_id="5000" encounter_id="36" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bb" creator="1" concept_id="302" voided="0" status="FINAL" />
+         uuid="6d8f507a-fb89-11e3-bb80-f18addb6f9bb" creator="1" concept_id="302" voided="0" />
 
     <!-- updated Haemoglobin in Blood panel -->
     <obs obs_id="5001" obs_group_id="5000" encounter_id="36" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="ef4554cb-2225-471a-9cd7-1434552c337c" creator="1" concept_id="303" voided="0" status="FINAL" />
+         uuid="ef4554cb-2225-471a-9cd7-1434552c337c" creator="1" concept_id="303" voided="0" />
     <obs obs_id="5002" obs_group_id="5001" encounter_id="36" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="ac51bde8-fb89-11e3-bb80-f18addb6f9bb" creator="1" concept_id="303" voided="0" status="FINAL" />
+         uuid="ac51bde8-fb89-11e3-bb80-f18addb6f9bb" creator="1" concept_id="303" voided="0" />
     <obs obs_id="5003" obs_group_id="5002" encounter_id="36" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="b2b08d40-fb89-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="99" concept_id="303" voided="0" status="FINAL" />
+         uuid="b2b08d40-fb89-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="99" concept_id="303" voided="0" />
     <obs obs_id="5004" obs_group_id="5002" encounter_id="36" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="12107e26-fd15-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="200" concept_id="104" voided="0" status="FINAL" />
+         uuid="12107e26-fd15-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="200" concept_id="104" voided="0" />
     <obs obs_id="5005" obs_group_id="5002" encounter_id="36" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="950ab026-fd15-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="300" concept_id="105" voided="0" status="FINAL" />
+         uuid="950ab026-fd15-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="300" concept_id="105" voided="0" />
     <obs obs_id="5006" obs_group_id="5002" encounter_id="36" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="994156f4-fd15-11e3-bb80-f18addb6f9bb" creator="1" value_coded="7" concept_id="106" voided="0" status="FINAL" />
+         uuid="994156f4-fd15-11e3-bb80-f18addb6f9bb" creator="1" value_coded="7" concept_id="106" voided="0" />
     <obs obs_id="5007" obs_group_id="5002" encounter_id="36" person_id="1000000" order_id="16" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="65393513-163c-11e4-9f26-005056823b95" creator="1" concept_id="108" voided="0" status="FINAL" />
+         uuid="65393513-163c-11e4-9f26-005056823b95" creator="1" concept_id="108" voided="0" />
 
     <!-- ESR in Blood panel -->
     <obs obs_id="5" obs_group_id="1" encounter_id="36" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="f2c10157-facd-11e3-8525-0800271c1b75" creator="1"  concept_id="304" voided="0" status="FINAL" />
+         uuid="f2c10157-facd-11e3-8525-0800271c1b75" creator="1"  concept_id="304" voided="0" />
     <obs obs_id="6" obs_group_id="5" encounter_id="36" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="c7ae0524-fb89-11e3-bb80-f18addb6f9bb" creator="1" concept_id="304" voided="0" status="FINAL" />
+         uuid="c7ae0524-fb89-11e3-bb80-f18addb6f9bb" creator="1" concept_id="304" voided="0" />
     <obs obs_id="7" obs_group_id="6" encounter_id="36" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="cd66e29c-fb89-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="10" concept_id="304" voided="0" status="FINAL" />
+         uuid="cd66e29c-fb89-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="10" concept_id="304" voided="0" />
     <obs obs_id="7000" obs_group_id="6" encounter_id="36" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="8199a406-fd1b-11e3-bb80-f18addb6f9bb" creator="1" value_text="Some Notes" concept_id="103" voided="0" status="FINAL" />
+         uuid="8199a406-fd1b-11e3-bb80-f18addb6f9bb" creator="1" value_text="Some Notes" concept_id="103" voided="0" />
     <obs obs_id="7001" obs_group_id="6" encounter_id="36" person_id="1000000" order_id="16" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="2c9c903d-fd2a-11e3-be87-005056821db0" creator="1" value_coded="8" concept_id="106" voided="0" status="FINAL" />
+         uuid="2c9c903d-fd2a-11e3-be87-005056821db0" creator="1" value_coded="8" concept_id="106" voided="0" />
 
 
     <!-- Urea Nitrogen -->
     <obs obs_id="8" encounter_id="38" person_id="1000000" order_id="17" obs_datetime="2008-08-25 15:09:05.0" date_created="2008-08-19 15:09:05.0"
-         uuid="eee554cb-2225-471a-9cd7-1434552c337c" creator="1" concept_id="107" voided="0" status="FINAL" />
+         uuid="eee554cb-2225-471a-9cd7-1434552c337c" creator="1" concept_id="107" voided="0" />
     <obs obs_id="9" obs_group_id="8" encounter_id="38" person_id="1000000" order_id="17" obs_datetime="2008-08-25 15:09:05.0" date_created="2008-08-19 15:09:05.0"
-         uuid="0f929e0e-fb8a-11e3-bb80-f18addb6f9bb" creator="1" concept_id="107" voided="0" status="FINAL" />
+         uuid="0f929e0e-fb8a-11e3-bb80-f18addb6f9bb" creator="1" concept_id="107" voided="0" />
     <obs obs_id="19" obs_group_id="9" encounter_id="38" person_id="1000000" order_id="17" obs_datetime="2008-08-25 15:09:05.0" date_created="2008-08-19 15:09:05.0"
-         uuid="16645826-fb8a-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="20" concept_id="107" voided="0" status="FINAL" />
+         uuid="16645826-fb8a-11e3-bb80-f18addb6f9bb" creator="1" value_numeric="20" concept_id="107" voided="0" />
     <obs obs_id="20" obs_group_id="9" encounter_id="38" person_id="1000000" order_id="17" obs_datetime="2008-08-25 15:09:05.0" date_created="2008-08-19 15:09:05.0"
-         uuid="0784c619-ef6a-4e81-a498-ab339894f92b" creator="1" value_text="8834dedb-dc15-4afe-a491-ea3ca4150bce_sample.jpeg" concept_id="109" voided="0" status="FINAL" />
+         uuid="0784c619-ef6a-4e81-a498-ab339894f92b" creator="1" value_text="8834dedb-dc15-4afe-a491-ea3ca4150bce_sample.jpeg" concept_id="109" voided="0" />
 
     <!-- PS for Malaria -->
     <obs obs_id="100" encounter_id="38" person_id="1000000" order_id="19" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-19 15:09:05.0"
-         uuid="036fba02-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="1008" voided="0" status="FINAL" />
+         uuid="036fba02-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="1008" voided="0" />
     <obs obs_id="101" obs_group_id="100" encounter_id="38" person_id="1000000" order_id="19" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-19 15:09:05.0"
-         uuid="082ef57b-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="1008" voided="0" status="FINAL" />
+         uuid="082ef57b-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="1008" voided="0" />
     <obs obs_id="102" obs_group_id="101" encounter_id="38" person_id="1000000" order_id="19" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-19 15:09:05.0"
-         uuid="0c3b51f5-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="108" voided="0" status="FINAL" />
+         uuid="0c3b51f5-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="108" voided="0" />
 
     <!-- Observations for Radiology Order -->
     <obs obs_id="200" encounter_id="38" person_id="1000000" order_id="20" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-19 15:09:05.0"
-         uuid="536fba02-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="1008" voided="0" status="FINAL" />
+         uuid="536fba02-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="1008" voided="0" />
     <obs obs_id="201" obs_group_id="200" encounter_id="38" person_id="1000000" order_id="20" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-19 15:09:05.0"
-         uuid="582ef57b-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="1008" voided="0" status="FINAL" />
+         uuid="582ef57b-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="1008" voided="0" />
     <obs obs_id="202" obs_group_id="201" encounter_id="38" person_id="1000000" order_id="20" obs_datetime="2008-08-19 15:09:05.0" date_created="2008-08-19 15:09:05.0"
-         uuid="5c3b51f5-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="108" voided="0" status="FINAL" />
+         uuid="5c3b51f5-01c2-11e4-aa39-0800271c1b75" creator="1" concept_id="108" voided="0" />
 
 
     <encounter_provider encounter_provider_id="4" encounter_id="30" provider_id="24" creator="1" date_created="2008-07-01 14:09:05.0"
@@ -409,9 +409,9 @@
                         encounter_role_id="1" voided="false" uuid="3645f99a-0c0d-11e4-bb80-f18addb6feee"/>
 
     <obs obs_id="1104" encounter_id="51" person_id="1000000" obs_datetime="2013-08-19 15:09:05.0" date_created="2013-08-19 15:09:05.0"
-         uuid="884585ac-1a0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="703" value_text="b0a81566-0c0c-11e4-bb80-f18addb6f9bb" voided="0" status="FINAL" />
+         uuid="884585ac-1a0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="703" value_text="b0a81566-0c0c-11e4-bb80-f18addb6f9bb" voided="0" />
     <obs obs_id="1105" encounter_id="51" person_id="1000000" obs_datetime="2008-08-19 15:09:05.0" date_created="2013-08-19 15:09:05.0"
-         uuid="45f885df-0c0d-11e4-bb80-f112ddb6f9bb" creator="1" concept_id="702" value_text="Notes from Lab Manager" voided="0" status="FINAL" />
+         uuid="45f885df-0c0d-11e4-bb80-f112ddb6f9bb" creator="1" concept_id="702" value_text="Notes from Lab Manager" voided="0" />
 
     <!-- Another visit -->
     <visit visit_id="4" date_started="2013-09-26 00:00:00" date_created="2013-09-22 00:00:00" patient_id="1000000"
@@ -432,13 +432,13 @@
                voided="false" uuid="1d93cc38-0c0d-11e4-bb80-f18addb6f9bb"/>
     <!-- PS for Malaria -->
     <obs obs_id="1100" encounter_id="50" person_id="1000000" order_id="100" obs_datetime="2013-08-19 15:09:05.0" date_created="2013-08-19 15:09:05.0"
-         uuid="3c6ce608-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="1008" voided="0" status="FINAL" />
+         uuid="3c6ce608-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="1008" voided="0" />
     <obs obs_id="1101" obs_group_id="1100" encounter_id="50" person_id="1000000" order_id="100" obs_datetime="2013-08-19 15:09:05.0" date_created="2013-08-19 15:09:05.0"
-         uuid="411fa8ac-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="1008" voided="0" status="FINAL" />
+         uuid="411fa8ac-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="1008" voided="0" />
     <obs obs_id="1102" obs_group_id="1101" encounter_id="50" person_id="1000000" order_id="100" obs_datetime="2013-08-19 15:09:05.0" date_created="2013-08-19 15:09:05.0"
-         uuid="88458526-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="1008" value_text="Result for PS Malaria" voided="0" status="FINAL" />
+         uuid="88458526-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="1008" value_text="Result for PS Malaria" voided="0" />
     <obs obs_id="1103" obs_group_id="1101" encounter_id="50" person_id="1000000" order_id="100" obs_datetime="2008-08-19 15:09:05.0" date_created="2013-08-19 15:09:05.0"
-         uuid="45f88574-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="103" value_text=" - " voided="0" status="FINAL" />
+         uuid="45f88574-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="103" value_text=" - " voided="0" />
 
 
 
@@ -467,17 +467,17 @@
                voided="false" uuid="2d93cc38-0c0d-11e4-bb80-f18addb6f9bb"/>
 
     <obs obs_id="2100" encounter_id="52" person_id="1000001" order_id="200" obs_datetime="2014-08-19 15:09:05.0" date_created="2014-08-19 15:09:05.0"
-         uuid="4c6ce608-0c0d-11e4-bb80-f18addb6f9bc" creator="1" concept_id="1008" voided="0" status="FINAL" />
+         uuid="4c6ce608-0c0d-11e4-bb80-f18addb6f9bc" creator="1" concept_id="1008" voided="0" />
     <obs obs_id="2101"  encounter_id="52" person_id="1000001" order_id="200" obs_datetime="2014-08-19 15:09:05.0" date_created="2014-08-19 15:09:05.0"
-         uuid="511fa8ac-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="1008" voided="0" status="FINAL" />
+         uuid="511fa8ac-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="1008" voided="0" />
     <obs obs_id="2102"  encounter_id="52" person_id="1000001" order_id="200" obs_datetime="2014-08-19 15:09:05.0" date_created="2014-08-19 15:09:05.0"
-         uuid="98458526-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="1008" value_text="Result for PS Malaria" voided="0" status="FINAL" />
+         uuid="98458526-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="1008" value_text="Result for PS Malaria" voided="0" />
     <obs obs_id="2103" encounter_id="52" person_id="1000001" order_id="200" obs_datetime="2014-08-19 15:09:05.0" date_created="2014-08-19 15:09:05.0"
-         uuid="65f88574-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="103" value_text="7878" voided="0" status="FINAL" />
+         uuid="65f88574-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="103" value_text="7878" voided="0" />
     <obs obs_id="2104" encounter_id="52" person_id="1000001" order_id="200" obs_datetime="2014-08-19 15:09:05.0" date_created="2014-08-19 15:09:05.0"
-         uuid="75f88574-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="103" voided="0" status="FINAL" />
+         uuid="75f88574-0c0d-11e4-bb80-f18addb6f9bb" creator="1" concept_id="103" voided="0" />
     <obs obs_id="2105" encounter_id="52" person_id="1000001" order_id="200" obs_datetime="2014-08-20 15:09:05.0" date_created="2014-08-20 15:09:05.0"
-         uuid="75f88574-0c0d-11e4-bb80-f18addb6f977" creator="1" concept_id="103" voided="0" status="FINAL" />
+         uuid="75f88574-0c0d-11e4-bb80-f18addb6f977" creator="1" concept_id="103" voided="0" />
 
 
 </dataset>

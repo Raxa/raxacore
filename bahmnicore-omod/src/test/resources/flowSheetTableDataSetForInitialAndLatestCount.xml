@@ -69,70 +69,70 @@
 
     <obs obs_id="4999" person_id="9898" concept_id="299" encounter_id="5678" obs_datetime="2008-08-01 00:00:00.0"
          location_id="1" creator="1" date_created="2008-08-18 14:11:13.0" voided="false"
-         uuid="8888cdcb-6a76-47e3-9f2e-2oz50z0pfa9a" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-9f2e-2oz50z0pfa9a"/>
 
     <obs obs_id="5000" person_id="9898" concept_id="300" encounter_id="5678" obs_datetime="2008-08-01 00:00:00.0"
          location_id="1" creator="1" date_created="2008-08-18 14:11:13.0" voided="false" obs_group_id="4999"
-         uuid="8888cdcb-6a76-47e3-9f2e-263508xpfa9a" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-9f2e-263508xpfa9a"/>
 
     <obs obs_id="5001" obs_group_id="5000" encounter_id="5678" person_id="9898" obs_datetime="2008-08-18 15:09:05.0"
          value_numeric="98" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-164b-1op4-9f26-005756823b95"
-         creator="1" concept_id="301" voided="0" status="FINAL" />
+         creator="1" concept_id="301" voided="0"/>
 
     <obs obs_id="5002" obs_group_id="5000" encounter_id="5678" person_id="9898" obs_datetime="2008-08-18 15:09:05.0"
          value_coded="7" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-164b-11e4-9f26-0a8056823b77"
-         creator="1" concept_id="302" voided="0" status="FINAL" />
+         creator="1" concept_id="302" voided="0"/>
 
 
     <obs obs_id="5003" person_id="9898" concept_id="299" encounter_id="5678" obs_datetime="2008-08-01 00:00:00.0"
          location_id="1" creator="1" date_created="2008-08-22 14:11:13.0" voided="false"
-         uuid="8888cdcb-6a76-47e3-9f2e-2oz50z0pfa9p" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-9f2e-2oz50z0pfa9p"/>
 
     <obs obs_id="5004" person_id="9898" concept_id="300" encounter_id="5678" obs_datetime="2008-08-01 00:00:00.0"
          location_id="1" creator="1" date_created="2008-08-22 14:11:13.0" voided="false" obs_group_id="5003"
-         uuid="8888cdcb-6a76-47e3-9f2e-263508xpfa9q" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-9f2e-263508xpfa9q"/>
 
     <obs obs_id="5005" obs_group_id="5004" encounter_id="5678" person_id="9898" obs_datetime="2008-08-22 15:09:05.0"
          value_numeric="77" date_created="2008-08-22 15:09:05.0" uuid="c558b3c5-164b-1op4-9f26-005756823b9s"
-         creator="1" concept_id="301" voided="0" status="FINAL" />
+         creator="1" concept_id="301" voided="0"/>
 
     <obs obs_id="5006" obs_group_id="5004" encounter_id="5678" person_id="9898" obs_datetime="2008-08-22 15:09:05.0"
          value_coded="7" date_created="2008-08-22 15:09:05.0" uuid="c558b3c5-164b-11e4-9f26-0a8056823b7t"
-         creator="1" concept_id="302" voided="0" status="FINAL" />
+         creator="1" concept_id="302" voided="0"/>
 
 
     <obs obs_id="5007" person_id="9898" concept_id="299" encounter_id="5679" obs_datetime="2008-08-01 00:00:00.0"
          location_id="1" creator="1" date_created="2008-08-22 14:11:13.0" voided="false"
-         uuid="8888cdcb-6a76-47e3-ef2e-2oz50z0pfa9u" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-ef2e-2oz50z0pfa9u"/>
 
     <obs obs_id="5008" person_id="9898" concept_id="300" encounter_id="5679" obs_datetime="2008-08-01 00:00:00.0"
          location_id="1" creator="1" date_created="2008-08-22 14:11:13.0" voided="false" obs_group_id="5007"
-         uuid="8888cdcb-6a76-47e3-ef2e-263508xpfa9v" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-ef2e-263508xpfa9v"/>
 
     <obs obs_id="5009" obs_group_id="5008" encounter_id="5679" person_id="9898" obs_datetime="2008-08-22 15:09:06.0"
          value_numeric="78" date_created="2008-08-22 15:09:05.0" uuid="c558bec5-164b-1op4-9f26-005756823bws"
-         creator="1" concept_id="301" voided="0" status="FINAL" />
+         creator="1" concept_id="301" voided="0"/>
 
     <obs obs_id="5010" obs_group_id="5008" encounter_id="5679" person_id="9898" obs_datetime="2008-08-22 15:09:06.0"
          value_coded="7" date_created="2008-08-22 15:09:05.0" uuid="c558bec5-164b-11e4-9f26-0a8056823byz"
-         creator="1" concept_id="302" voided="0" status="FINAL" />
+         creator="1" concept_id="302" voided="0"/>
 
 
     <obs obs_id="5011" person_id="9898" concept_id="299" encounter_id="5679" obs_datetime="2008-08-22 15:09:06.0"
          location_id="1" creator="1" date_created="2008-08-22 14:11:13.0" voided="false"
-         uuid="8888cdcb-6a76-47e3-ef2e-2oz51z0pfa9u" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-ef2e-2oz51z0pfa9u"/>
 
     <obs obs_id="5012" person_id="9898" concept_id="300" encounter_id="5679" obs_datetime="2008-08-01 00:00:00.0"
          location_id="1" creator="1" date_created="2008-08-22 14:11:13.0" voided="false" obs_group_id="5011"
-         uuid="8888cdcb-6a76-47e3-ef2e-263518x3pfa9v" status="FINAL" />
+         uuid="8888cdcb-6a76-47e3-ef2e-263518x3pfa9v"/>
 
     <obs obs_id="5013" obs_group_id="5012" encounter_id="5679" person_id="9898" obs_datetime="2008-08-22 15:09:06.0"
          value_numeric="60" date_created="2008-08-22 15:09:05.0" uuid="c558bec23-164b-1op4-9f26-005756823bws"
-         creator="1" concept_id="301" voided="0" status="FINAL" />
+         creator="1" concept_id="301" voided="0"/>
 
     <obs obs_id="5014" obs_group_id="5012" encounter_id="5679" person_id="9898" obs_datetime="2008-08-22 15:09:06.0"
          value_coded="7" date_created="2008-08-22 15:09:05.0" uuid="c558bec32-164b-11e4-9f26-0a8056823byz"
-         creator="1" concept_id="302" voided="0" status="FINAL" />
+         creator="1" concept_id="302" voided="0"/>
 
 
 </dataset>
