@@ -52,11 +52,11 @@
                voided="false" uuid="vb0ai67s7-7i7a-4t29-9850-f15206e63ab1"/>
 
     <obs obs_id="3000" concept_id="90112" person_id="1024" encounter_id="77" obs_datetime="2015-01-01 00:00:00.0"
-         date_created="2015-01-01 00:00:00.0" uuid="7dkf507a-fb89-11e3-bb8l-f18allb6f9a4" creator="1" voided="0"/>
+         date_created="2015-01-01 00:00:00.0" uuid="7dkf507a-fb89-11e3-bb8l-f18allb6f9a4" creator="1" voided="0" status="FINAL" />
 
     <obs obs_id="30001" obs_group_id="3000" concept_id="90115" person_id="1024" encounter_id="77" value_numeric="100"
          obs_datetime="2015-01-03 00:00:00.0" date_created="2015-01-03 00:00:00.0"
-         uuid="6d8f507a-fb89-11e3-bb80-f18addr6f9we" creator="1" voided="0"/>
+         uuid="6d8f507a-fb89-11e3-bb80-f18addr6f9we" creator="1" voided="0" status="FINAL" />
 
     <visit_type visit_type_id="2" name="Doctor" creator="1" date_created="2015-01-12 00:00:00"
                 changed_by="1" date_changed="2015-01-12 18:04:14" retired="0"
@@ -71,9 +71,9 @@
 
     <obs obs_id="3001" obs_group_id="3000" concept_id="90113" person_id="1024" encounter_id="78"
          obs_datetime="2015-01-01 00:00:00.0" date_created="2008-08-18 15:09:05.0"
-         uuid="7def507a-fbr9-11e3-bb80-f18astb6f9a4" creator="1" voided="0"/>
+         uuid="7def507a-fbr9-11e3-bb80-f18astb6f9a4" creator="1" voided="0" status="FINAL" />
     <obs obs_id="30012" obs_group_id="3001" concept_id="90114" person_id="1024" encounter_id="78" value_numeric="584"
          obs_datetime="2015-01-13 15:09:05.0" date_created="2015-01-13 15:09:05.0"
-         uuid="6d8i50sv-fbt9-11e3-bb80-f18addbcf9we" creator="1" voided="0"/>
+         uuid="6d8i50sv-fbt9-11e3-bb80-f18addbcf9we" creator="1" voided="0" status="FINAL" />
 
 </dataset>

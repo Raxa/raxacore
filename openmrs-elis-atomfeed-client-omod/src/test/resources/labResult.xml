@@ -271,13 +271,13 @@
                voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63ab0"/>
 
     <obs obs_id="1" encounter_id="36" person_id="3" order_id="17" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="ef4554cb-2225-471a-9cd7-1434552c337c" creator="1" location_id="2" value_text="Note1" concept_id="702" voided="0" />
+         uuid="ef4554cb-2225-471a-9cd7-1434552c337c" creator="1" location_id="2" value_text="Note1" concept_id="702" voided="0" status="FINAL" />
     <obs obs_id="2" encounter_id="36" person_id="3" order_id="17" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="eee554cb-2225-471a-9cd7-1434552c337c" creator="1" location_id="2" value_text="6g0bf6767-707a-4329-9850-f15206e63ab0" concept_id="703" voided="0" />
+         uuid="eee554cb-2225-471a-9cd7-1434552c337c" creator="1" location_id="2" value_text="6g0bf6767-707a-4329-9850-f15206e63ab0" concept_id="703" voided="0" status="FINAL" />
 
 
     <obs obs_id="3" encounter_id="38" person_id="3" order_id="17" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
-         uuid="eee554cb-2225-471a-9cd7-1434552c33aa" creator="1" location_id="2" value_text="6g0bf6767-707a-4329-9850-f15206e63ab0" concept_id="703" voided="0" />
+         uuid="eee554cb-2225-471a-9cd7-1434552c33aa" creator="1" location_id="2" value_text="6g0bf6767-707a-4329-9850-f15206e63ab0" concept_id="703" voided="0" status="FINAL" />
 
     <encounter_provider encounter_provider_id="2" encounter_id="36" provider_id="25" creator="1" date_created="2008-07-01 14:09:05.0"
                         voided="false" uuid="6g0bf6767-707a-4329-9850-f15206e63ab0"/>
