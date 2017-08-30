@@ -37,7 +37,7 @@
         <openmrsAtomfeedVersion>2.5.5-SNAPSHOT</openmrsAtomfeedVersion>
         <lombokVersion>1.16.0</lombokVersion>
         <idgenVersion>4.4-SNAPSHOT</idgenVersion>
-        <legacyuiVersion>1.3.2</legacyuiVersion>
+        <legacyuiVersion>1.3.3-SNAPSHOT</legacyuiVersion>
         <episodes.version>1.0-SNAPSHOT</episodes.version>
         <!--test dependencies-->
         <junitVersion>4.12</junitVersion>
