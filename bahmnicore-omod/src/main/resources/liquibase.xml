@@ -3979,4 +3979,13 @@
             'Follow-up Condition', 'Text', 'Misc', false);
         </sql>
     </changeSet>
+
+    <changeSet id="20170829-1138" author="Suman M">
+        <comment>Update global property to handle null for family name</comment>
+        <sql>
+            UPDATE global_property
+            SET property_value = REPLACE(property_value, "pn.family_name", "ifnull(pn.family_name,'')")
+            WHERE global_property.property_value LIKE '%pn.family_name%';
+        </sql>
+    </changeSet>
 </databaseChangeLog>
