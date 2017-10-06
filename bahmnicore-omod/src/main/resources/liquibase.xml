@@ -4019,6 +4019,28 @@
         </sql>
     </changeSet>
 
+    <changeSet id="create-readonly-role-appointments-201709201830" author="Santhosh, Pramida">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM role WHERE role = 'Appointments:ReadOnly';
+            </sqlCheck>
+        </preConditions>
+        <comment>Creating new role Appointments: ReadOnly for Appointments module</comment>
+        <sql>
+            INSERT INTO role(role, description, uuid) VALUES ("Appointments:ReadOnly", "Ability to view appointments in appointments module", uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="create-manage-role-appointments-201709201838" author="Santhosh, Pramida">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM role WHERE role = 'Appointments:ManageAppointments';
+            </sqlCheck>
+        </preConditions>
+        <comment>Creating new role Appointments: Manage for Appointments module</comment>
+        <sql>
+            INSERT INTO role(role, description, uuid) VALUES ("Appointments:ManageAppointments", "Ability to manage appointments in appointments module", uuid());
+        </sql>
+    </changeSet>
     <changeSet id="create-fullaccess-role-appointments-201709201815" author="Santhosh, Pramida">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
@@ -4031,68 +4053,42 @@
         </sql>
     </changeSet>
 
-    <changeSet id="201709201822" author="Santhosh, Pramida" context="rel3.2">
-        <preConditions onFail="CONTINUE">
-            <sqlCheck expectedResult="1">
-                SELECT count(*) FROM privilege WHERE privilege = "app:appointments";
-            </sqlCheck>
-            <sqlCheck expectedResult="1">
-                SELECT count(*) FROM privilege WHERE privilege = "app:appointments:manageAppointmentsTab";
-            </sqlCheck>
-            <sqlCheck expectedResult="1">
-                SELECT count(*) FROM privilege WHERE privilege = "app:appointments:adminTab";
-            </sqlCheck>
-            <sqlCheck expectedResult="1">
-                SELECT count(*) FROM privilege WHERE privilege = "View Appointments";
-            </sqlCheck>
-            <sqlCheck expectedResult="1">
-                SELECT count(*) FROM privilege WHERE privilege = "Manage Appointments";
-            </sqlCheck>
-            <sqlCheck expectedResult="1">
-                SELECT count(*) FROM privilege WHERE privilege = "View Appointment Services";
-            </sqlCheck>
-            <sqlCheck expectedResult="1">
-                SELECT count(*) FROM privilege WHERE privilege = "Manage Appointment Services";
-            </sqlCheck>
-            <sqlCheck expectedResult="1">
-                SELECT count(*) FROM role WHERE role = "Appointments:FullAccess";
-            </sqlCheck>
-            <sqlCheck expectedResult="0">
-                SELECT count(*) FROM role_privilege WHERE role = "Appointments:FullAccess";
-            </sqlCheck>
-        </preConditions>
-        <comment>Adding all the privileges to Appointments:FullAccess</comment>
-        <sql>
-            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:FullAccess", "app:appointments");
-            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:FullAccess", "app:appointments:manageAppointmentsTab");
-            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:FullAccess", "app:appointments:adminTab");
-            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:FullAccess", "View Appointments");
-            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:FullAccess", "Manage Appointments");
-            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:FullAccess", "View Appointment Services");
-            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:FullAccess", "Manage Appointment Services");
-        </sql>
-    </changeSet>
-
-    <changeSet id="create-readonly-role-appointments-201709201830" author="Santhosh, Pramida">
+    <changeSet id="201710061600" author="Santhosh, Pramida">
         <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">
-                SELECT count(*) FROM role WHERE role = 'Appointments:ReadOnly';
-            </sqlCheck>
-        </preConditions>
-        <comment>Creating new role Appointments: ReadOnly for Appointments module</comment>
-        <sql>
-            INSERT INTO role(role, description, uuid) VALUES ("Appointments:ReadOnly", "Ability to view appointments in appointments module", uuid());
-        </sql>
-    </changeSet>
-
-    <changeSet id="201709201833" author="Santhosh, Pramida" context="rel3.2">
-        <preConditions onFail="CONTINUE">
             <sqlCheck expectedResult="1">
                 SELECT count(*) FROM privilege WHERE privilege = "app:appointments";
             </sqlCheck>
             <sqlCheck expectedResult="1">
+                SELECT count(*) FROM role WHERE role = "Appointments:ReadOnly";
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM role_privilege WHERE role = "Appointments:ReadOnly" AND privilege = "app:appointments";
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding app:appointments privilege to Appointments: ReadOnly role</comment>
+        <sql>
+            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:ReadOnly", "app:appointments");
+        </sql>
+    </changeSet>
+    <changeSet id="201710061610" author="Santhosh, Pramida">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="1">
                 SELECT count(*) FROM privilege WHERE privilege = "View Appointments";
             </sqlCheck>
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM role WHERE role = "Appointments:ReadOnly";
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM role_privilege WHERE role = "Appointments:ReadOnly" AND privilege="View Appointments";
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding View Appointments privilege to Appointments: ReadOnly role</comment>
+        <sql>
+            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:ReadOnly", "View Appointments");
+        </sql>
+    </changeSet>
+    <changeSet id="201710061620" author="Santhosh, Pramida">
+        <preConditions onFail="CONTINUE">
             <sqlCheck expectedResult="1">
                 SELECT count(*) FROM privilege WHERE privilege = "View Appointment Services";
             </sqlCheck>
@@ -4100,60 +4096,162 @@
                 SELECT count(*) FROM role WHERE role = "Appointments:ReadOnly";
             </sqlCheck>
             <sqlCheck expectedResult="0">
-                SELECT count(*) FROM role_privilege WHERE role = "Appointments:ReadOnly";
+                SELECT count(*) FROM role_privilege WHERE role = "Appointments:ReadOnly" AND privilege ="View Appointment Services";
             </sqlCheck>
         </preConditions>
         <comment>Adding all the privileges to Appointments: ReadOnly</comment>
         <sql>
-            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:ReadOnly", "app:appointments");
-            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:ReadOnly", "View Appointments");
             INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:ReadOnly", "View Appointment Services");
         </sql>
     </changeSet>
-
-    <changeSet id="create-manage-role-appointments-201709201838" author="Santhosh, Pramida">
+    <changeSet id="201710061630" author="Santhosh, Pramida">
         <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM role WHERE role = "Appointments:ReadOnly";
+            </sqlCheck>
             <sqlCheck expectedResult="0">
-                SELECT count(*) FROM role WHERE role = 'Appointments:ManageAppointments';
+                SELECT COUNT(*) FROM role_privilege WHERE role = 'Appointments:ReadOnly' AND privilege = 'Get Locations';
             </sqlCheck>
         </preConditions>
-        <comment>Creating new role Appointments: Manage for Appointments module</comment>
+        <comment>adding Get Locations privilege to Appointments:ReadOnly role</comment>
         <sql>
-            INSERT INTO role(role, description, uuid) VALUES ("Appointments:ManageAppointments", "Ability to manage appointments in appointments module", uuid());
+            INSERT INTO role_privilege(role, privilege) VALUES ('Appointments:ReadOnly', 'Get Locations');
+        </sql>
+    </changeSet>
+    <changeSet id="201710061640" author="Santhosh, Pramida">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM role WHERE role = "Appointments:ReadOnly";
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM role_privilege WHERE role = 'Appointments:ReadOnly' AND privilege = 'Get Patients';
+            </sqlCheck>
+        </preConditions>
+        <comment>adding Get Patients privilege to Appointments:ReadOnly role</comment>
+        <sql>
+            INSERT INTO role_privilege(role, privilege) VALUES ('Appointments:ReadOnly', 'Get Patients');
+        </sql>
+    </changeSet>
+    <changeSet id="201710061650" author="Santhosh, Pramida">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM role WHERE role = "Appointments:ReadOnly";
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM role_privilege WHERE role = 'Appointments:ReadOnly' AND privilege = 'Get Patient Identifiers';
+            </sqlCheck>
+        </preConditions>
+        <comment>adding Get Patient Identifiers privilege to Appointments:ReadOnly role</comment>
+        <sql>
+            INSERT INTO role_privilege(role, privilege) VALUES ('Appointments:ReadOnly', 'Get Patient Identifiers');
+        </sql>
+    </changeSet>
+    <changeSet id="201710061700" author="Santhosh, Pramida">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM role WHERE role = "Appointments:ReadOnly";
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM role_privilege WHERE role = 'Appointments:ReadOnly' AND privilege = 'Get Providers';
+            </sqlCheck>
+        </preConditions>
+        <comment>adding Get Providers privilege to Appointments:ReadOnly role</comment>
+        <sql>
+            INSERT INTO role_privilege(role, privilege) VALUES ('Appointments:ReadOnly', 'Get Providers');
         </sql>
     </changeSet>
 
-    <changeSet id="201709201839" author="Santhosh, Pramida" context="rel3.2">
-        <preConditions onFail="CONTINUE">
-            <sqlCheck expectedResult="1">
-                SELECT count(*) FROM privilege WHERE privilege = "app:appointments";
-            </sqlCheck>
+
+    <changeSet id="201710061710" author="Santhosh, Pramida">
+        <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="1">
                 SELECT count(*) FROM privilege WHERE privilege = "app:appointments:manageAppointmentsTab";
-            </sqlCheck>
-            <sqlCheck expectedResult="1">
-                SELECT count(*) FROM privilege WHERE privilege = "View Appointments";
-            </sqlCheck>
-            <sqlCheck expectedResult="1">
-                SELECT count(*) FROM privilege WHERE privilege = "Manage Appointments";
-            </sqlCheck>
-            <sqlCheck expectedResult="1">
-                SELECT count(*) FROM privilege WHERE privilege = "View Appointment Services";
             </sqlCheck>
             <sqlCheck expectedResult="1">
                 SELECT count(*) FROM role WHERE role = "Appointments:ManageAppointments";
             </sqlCheck>
             <sqlCheck expectedResult="0">
-                SELECT count(*) FROM role_privilege WHERE role = "Appointments:ManageAppointments";
+                SELECT count(*) FROM role_privilege WHERE role = "Appointments:ManageAppointments" AND privilege = "app:appointments:manageAppointmentsTab";
             </sqlCheck>
         </preConditions>
-        <comment>Adding all the privileges to Appointments: Manage</comment>
+        <comment>Adding app:appointments:manageAppointmentsTab privilege to Appointments:ManageAppointments role</comment>
         <sql>
-            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:ManageAppointments", "app:appointments");
             INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:ManageAppointments", "app:appointments:manageAppointmentsTab");
-            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:ManageAppointments", "View Appointments");
+        </sql>
+    </changeSet>
+    <changeSet id="201710061720" author="Santhosh, Pramida">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM privilege WHERE privilege = "Manage Appointments";
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM role WHERE role = "Appointments:ManageAppointments";
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM role_privilege WHERE role = "Appointments:ManageAppointments" AND privilege = "Manage Appointments";
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding Manage Appointments privilege to Appointments:ManageAppointments role</comment>
+        <sql>
             INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:ManageAppointments", "Manage Appointments");
-            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:ManageAppointments", "View Appointment Services");
+        </sql>
+    </changeSet>
+
+    <changeSet id="201710061730" author="Santhosh, Pramida">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM privilege WHERE privilege = "app:appointments:adminTab";
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM role WHERE role = "Appointments:FullAccess";
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM role_privilege WHERE role = "Appointments:FullAccess" AND privilege = "app:appointments:adminTab";
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding app:appointments:adminTab privilege to Appointments:FullAccess</comment>
+        <sql>
+            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:FullAccess", "app:appointments:adminTab");
+        </sql>
+    </changeSet>
+    <changeSet id="201710061740" author="Santhosh, Pramida">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM privilege WHERE privilege = "Manage Appointment Services";
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM role WHERE role = "Appointments:FullAccess";
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM role_privilege WHERE role = "Appointments:FullAccess" AND privilege = "Manage Appointment Services";
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding Manage Appointment Services privilege to Appointments:FullAccess</comment>
+        <sql>
+            INSERT INTO role_privilege(role, privilege) VALUES ("Appointments:FullAccess", "Manage Appointment Services");
+        </sql>
+    </changeSet>
+
+    <changeSet id="201710061750" author="Santhosh, Pramida">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM role_role WHERE child_role = 'Appointments:ManageAppointments' AND parent_role = 'Appointments:ReadOnly';
+            </sqlCheck>
+        </preConditions>
+        <comment>adding Appointments:ReadOnly as parent role for Appointments:ManageAppointments role to inherit all privileges from Appointments:ReadOnly</comment>
+        <sql>
+            INSERT INTO role_role(child_role, parent_role) VALUES ('Appointments:ManageAppointments', 'Appointments:ReadOnly');
+        </sql>
+    </changeSet>
+    <changeSet id="201710061800" author="Santhosh, Pramida">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM role_role WHERE child_role = 'Appointments:FullAccess' AND parent_role = 'Appointments:ManageAppointments';
+            </sqlCheck>
+        </preConditions>
+        <comment>adding Appointments:ManageAppointments as parent role for Appointments:FullAccess role to inherit all privileges from Appointments:ManageAppointments</comment>
+        <sql>
+            INSERT INTO role_role(child_role, parent_role) VALUES ('Appointments:FullAccess', 'Appointments:ManageAppointments');
         </sql>
     </changeSet>
 </databaseChangeLog>
