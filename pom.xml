@@ -321,6 +321,17 @@
                 <scope>provided</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.jcodec</groupId>
+                <artifactId>jcodec</artifactId>
+                <version>0.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jcodec</groupId>
+                <artifactId>jcodec-javase</artifactId>
+                <version>0.2.1</version>
+            </dependency>
+
             <!--test libraries-->
             <dependency>
                 <groupId>junit</groupId>

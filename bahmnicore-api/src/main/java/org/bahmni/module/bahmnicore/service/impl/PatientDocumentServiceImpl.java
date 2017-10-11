@@ -11,6 +11,10 @@ import org.bahmni.module.bahmnicore.model.VideoFormats;
 import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
 import org.bahmni.module.bahmnicore.service.PatientDocumentService;
 import org.imgscalr.Scalr;
+import org.jcodec.api.FrameGrab;
+import org.jcodec.api.JCodecException;
+import org.jcodec.common.model.Picture;
+import org.jcodec.scale.AWTUtil;
 import org.openmrs.module.webservices.rest.web.RestUtil;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -96,7 +100,10 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
             if (!isVideoFormatSupported(format)) {
                 throw new VideoFormatNotSupportedException(String.format("The video format '%s' is not supported. Supported formats are %s", format, Arrays.toString(VideoFormats.values())));
             }
+
             FileUtils.writeByteArrayToFile(outputFile, decodedBytes);
+            createThumbnailForVideo(outputFile);
+
         } else if (PDF.equals(format)) {
             FileUtils.writeByteArrayToFile(outputFile, decodedBytes);
         } else if (IMAGE_FILE_TYPE.equals(fileType)){
@@ -106,7 +113,7 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
                 if(!results) {
                     throw new FileTypeNotSupportedException(String.format("The image format '%s' is not supported. Supported formats are %s", format, Arrays.toString(new String[]{"png", "jpeg", "gif"})));
                 }
-                createThumbnail(bufferedImage, outputFile);
+                createThumbnail(bufferedImage, outputFile, null, 100);
                 bufferedImage.flush();
                 log.info(String.format("Successfully created patient image at %s", outputFile));
             } catch (Exception exception) {
@@ -121,12 +128,26 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
         return VideoFormats.isFormatSupported(format);
     }
 
-    private void createThumbnail(BufferedImage image, File outputFile) throws IOException {
+
+    private void createThumbnailForVideo(File outputVideoFile) throws IOException {
+        try {
+            Picture picture = FrameGrab.getFrameFromFile(outputVideoFile,0);
+            BufferedImage bufferedImage = AWTUtil.toBufferedImage(picture);
+            createThumbnail(bufferedImage, outputVideoFile, "jpg", 300);
+        }
+        catch (JCodecException e) {
+           throw new RuntimeException(e);
+        }
+    }
+
+    private void createThumbnail(BufferedImage image, File outputFile, String imageFileType, int imageSize) throws IOException {
         String nameWithoutExtension = FilenameUtils.removeExtension(outputFile.getAbsolutePath());
-        String extension = FilenameUtils.getExtension(outputFile.getAbsolutePath());
-        File thumbnailFile = new File(String.format("%s_thumbnail.%s", nameWithoutExtension, extension));
-        BufferedImage reSizedImage = Scalr.resize(image, 100);
-        ImageIO.write(reSizedImage, extension, thumbnailFile);
+        if(imageFileType == null){
+        imageFileType = FilenameUtils.getExtension(outputFile.getAbsolutePath());
+        }
+        File thumbnailFile = new File(String.format("%s_thumbnail.%s", nameWithoutExtension, imageFileType));
+        BufferedImage reSizedImage = Scalr.resize(image, imageSize);
+        ImageIO.write(reSizedImage, imageFileType, thumbnailFile);
         reSizedImage.flush();
     }
 
