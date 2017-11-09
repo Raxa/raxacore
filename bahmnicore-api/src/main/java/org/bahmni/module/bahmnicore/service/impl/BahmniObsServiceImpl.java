@@ -99,29 +99,44 @@ public class BahmniObsServiceImpl implements BahmniObsService {
 
 
     private List<Obs> filterIgnoredObs(List<String> obsIgnoreList, List<Obs> observations) {
-        if (null != obsIgnoreList && obsIgnoreList.size() > 0) {
-            ArrayList<Obs> filteredObs = new ArrayList<>();
-            for (Obs observation : observations) {
-                Obs filteredGroupMembers = filterGroupMembers(observation, obsIgnoreList);
-                if(filteredGroupMembers.getGroupMembers().size()>0)
-                    filteredObs.add(filteredGroupMembers);
+        return null != obsIgnoreList && obsIgnoreList.size() > 0 ? filterObs(obsIgnoreList, observations) : observations;
+    }
+
+    private List<Obs> filterObs(List<String> obsIgnoreList, List<Obs> observations) {
+        ArrayList<Obs> filteredObs = new ArrayList<>();
+        for (Obs observation : observations) {
+            if(!isContains(obsIgnoreList, observation)) {
+                if(hasGroupMembers(observation)) {
+                    Obs filteredGroupMembers = filterGroupMembers(observation, obsIgnoreList);
+                    if (hasGroupMembers(filteredGroupMembers))
+                        filteredObs.add(filteredGroupMembers);
+                } else {
+                    filteredObs.add(observation);
+                }
             }
-            return filteredObs;
         }
-        return observations;
+        return filteredObs;
+    }
+
+    private boolean hasGroupMembers(Obs observation) {
+        return observation.getGroupMembers().size() > 0;
     }
 
     private Obs filterGroupMembers(Obs observation, List<String> obsIgnoreList) {
         HashSet<Obs> filteredGroup = new HashSet<>();
         for (Obs groupMember : observation.getGroupMembers()) {
-            if (!obsIgnoreList.contains(groupMember.getConcept().getName().toString())) {
-                if (groupMember.getGroupMembers().size() > 0)
+            if (!isContains(obsIgnoreList, groupMember)) {
+                if (hasGroupMembers(groupMember))
                     groupMember = filterGroupMembers(groupMember, obsIgnoreList);
                 filteredGroup.add(groupMember);
             }
         }
         observation.setGroupMembers(filteredGroup);
         return observation;
+    }
+
+    private boolean isContains(List<String> obsIgnoreList, Obs obs) {
+        return obsIgnoreList.contains(obs.getConcept().getName().toString());
     }
 
     @Override
@@ -205,7 +220,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
     }
 
     @Override
-    public Collection<BahmniObservation> getObservationsForPatientProgram(String patientProgramUuid, List<String> conceptNames) {
+    public Collection<BahmniObservation> getObservationsForPatientProgram(String patientProgramUuid, List<String> conceptNames, List<String> obsIgnoreList) {
         List<Obs> observations = new ArrayList<>();
         if (conceptNames == null)
             return new ArrayList<>();
@@ -213,27 +228,27 @@ public class BahmniObsServiceImpl implements BahmniObsService {
             observations.addAll(obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList(conceptName), null, ObsDaoImpl.OrderBy.DESC, null, null));
         }
 
-        return omrsObsToBahmniObsMapper.map(observations, getConceptsByName(conceptNames));
+        return omrsObsToBahmniObsMapper.map(filterIgnoredObs(obsIgnoreList,observations), getConceptsByName(conceptNames));
     }
 
     @Override
-    public Collection<BahmniObservation> getLatestObservationsForPatientProgram(String patientProgramUuid, List<String> conceptNames) {
+    public Collection<BahmniObservation> getLatestObservationsForPatientProgram(String patientProgramUuid, List<String> conceptNames, List<String> obsIgnoreList) {
         List<Obs> observations = new ArrayList<>();
         if (conceptNames == null)
             return new ArrayList<>();
         for (String conceptName : conceptNames) {
-            List<Obs> obsByPatientProgramUuidAndConceptName = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList(conceptName), null, OrderBy.DESC, null, null);
+            List<Obs> obsByPatientProgramUuidAndConceptName = obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList(conceptName),  null, OrderBy.DESC, null, null);
             List<Obs> obsList = getAllLatestObsForAConcept(obsByPatientProgramUuidAndConceptName);
             if (CollectionUtils.isNotEmpty(obsList)) {
                 observations.addAll(obsList);
             }
         }
 
-        return omrsObsToBahmniObsMapper.map(observations, getConceptsByName(conceptNames));
+        return omrsObsToBahmniObsMapper.map(filterIgnoredObs(obsIgnoreList,observations), getConceptsByName(conceptNames));
     }
 
     @Override
-    public Collection<BahmniObservation> getInitialObservationsForPatientProgram(String patientProgramUuid, List<String> conceptNames) {
+    public Collection<BahmniObservation> getInitialObservationsForPatientProgram(String patientProgramUuid, List<String> conceptNames, List<String> obsIgnoreList) {
         List<Obs> observations = new ArrayList<>();
         if (conceptNames == null)
             return new ArrayList<>();
@@ -241,7 +256,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
             observations.addAll(obsDao.getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList(conceptName), 1, ObsDaoImpl.OrderBy.ASC, null, null));
         }
 
-        return omrsObsToBahmniObsMapper.map(observations, getConceptsByName(conceptNames));
+        return omrsObsToBahmniObsMapper.map(filterIgnoredObs(obsIgnoreList,observations), getConceptsByName(conceptNames));
     }
 
     @Override

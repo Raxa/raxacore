@@ -168,11 +168,14 @@ public class BahmniObsServiceImplTest {
     public void shouldGetObsbyPatientProgramUuid() throws Exception {
         String patientProgramUuid = "patientProgramUuid";
         ArrayList<String> conceptNames = new ArrayList<>();
+        List<Obs> obs = new ArrayList<>();
         conceptNames.add("Paracetamol");
+        Collection<Concept> names = new ArrayList<Concept>() {{add(null);}};
 
-        bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, conceptNames);
+        bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, conceptNames, null);
 
-        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), null, ObsDaoImpl.OrderBy.DESC, null, null);
+        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"),  null, ObsDaoImpl.OrderBy.DESC, null, null);
+        verify(omrsObsToBahmniObsMapper, times(1)).map(obs, names);
     }
 
     @Test
@@ -180,10 +183,13 @@ public class BahmniObsServiceImplTest {
         String patientProgramUuid = "patientProgramUuid";
         List<String> conceptNames = new ArrayList<>();
         conceptNames.add("Paracetamol");
+        List<Obs> obs = new ArrayList<>();
+        Collection<Concept> names = new ArrayList<Concept>() {{add(null);}};
 
-        bahmniObsService.getLatestObservationsForPatientProgram(patientProgramUuid, conceptNames);
+        bahmniObsService.getLatestObservationsForPatientProgram(patientProgramUuid, conceptNames, null);
 
-        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), null, ObsDaoImpl.OrderBy.DESC, null, null);
+        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"),  null, ObsDaoImpl.OrderBy.DESC, null, null);
+        verify(omrsObsToBahmniObsMapper, times(1)).map(obs, names);
     }
 
     @Test
@@ -191,10 +197,13 @@ public class BahmniObsServiceImplTest {
         String patientProgramUuid = "patientProgramUuid";
         List<String> conceptNames = new ArrayList<>();
         conceptNames.add("Paracetamol");
+        List<Obs> obs = new ArrayList<>();
+        Collection<Concept> names = new ArrayList<Concept>() {{add(null);}};
 
-        bahmniObsService.getInitialObservationsForPatientProgram(patientProgramUuid, conceptNames);
+        bahmniObsService.getInitialObservationsForPatientProgram(patientProgramUuid, conceptNames, null);
 
         verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), 1, ObsDaoImpl.OrderBy.ASC, null, null);
+        verify(omrsObsToBahmniObsMapper, times(1)).map(obs, names);
     }
 
     @Test

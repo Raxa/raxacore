@@ -3,6 +3,25 @@
     <concept concept_id="1023" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="613232wew-dkcd-475d-b939-6d82327f36a3" />
     <concept_name concept_id="1023" name="DiagnosisProgram" locale="en" creator="1" date_created="2013-12-04 11:36:42" concept_name_id="9766" voided="false" uuid="4f596de5-0987-11e3-a4c0-0800271c1b75" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
+    <concept concept_id="1719" retired="0" datatype_id="4" class_id="10" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="613232wew-dkcd-475d-b939-6d82327f36a4" />
+    <concept_name concept_id="1719" name="Health Education" locale="en" creator="1" date_created="2013-12-04 11:36:42" concept_name_id="2603" voided="false" uuid="4f596de5-0987-11e3-a4c0-0800271c1b76" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+    <concept concept_id="1237" retired="false" datatype_id="6" class_id="7" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce889090"/>
+    <concept_name concept_id="1237" name="HE, Date of consultation" locale="en" creator="1" date_created="2013-12-04 11:36:42" concept_name_id="1942" voided="false" uuid="4f596de5-0987-11e3-a4c0-0800271c1b77" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+    <concept concept_id="1215" retired="false" datatype_id="2" class_id="7" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce889091"/>
+    <concept_name concept_id="1215" name="HE, Marital status" locale="en" creator="1" date_created="2013-12-04 11:36:42" concept_name_id="1898" voided="false" uuid="4f596de5-0987-11e3-a4c0-0800271c1b78" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+    <concept concept_id="1216" retired="false" datatype_id="6" class_id="7" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce889092"/>
+    <concept_name concept_id="1216" name="HE, Date Of Marriage" locale="en" creator="1" date_created="2013-12-04 11:36:42" concept_name_id="1899" voided="false" uuid="4f596de5-0987-11e3-a4c0-0800271c1b79" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+    <concept concept_id="846" retired="false" datatype_id="4" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce889093"/>
+    <concept_name concept_id="846" name="Married" locale="en" creator="1" date_created="2013-12-04 11:36:42" concept_name_id="1475" voided="false" uuid="4f596de5-0987-11e3-a4c0-0800271c1b80" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+    <concept_set concept_set_id="1" concept_id="1237" concept_set="1719" sort_weight="1" creator="1" date_created="2017-11-08 11:36:42" uuid="7e255669-e42f-11e5-8c3e-08002715d519"/>
+    <concept_set concept_set_id="2" concept_id="1215" concept_set="1719" sort_weight="2" creator="1" date_created="2017-11-08 11:36:43" uuid="7e255669-e42f-11e5-8c3e-08002715d520"/>
+    <concept_set concept_set_id="3" concept_id="1216" concept_set="1215" sort_weight="3" creator="1" date_created="2017-11-08 11:36:43" uuid="7e255669-e42f-11e5-8c3e-08002715d521"/>
+
     <concept concept_id="4019" retired="false" datatype_id="4" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce889089"/>
     <concept_name concept_id="4019" concept_name_id="1419" name="conceptABC" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-0099-8122ce8868eg"/>
 
@@ -23,6 +42,10 @@
     <obs obs_id="999" concept_id="4019" person_id="5190" encounter_id="890" value_numeric="100" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0" uuid="6d8f507a-fb899-11e3-bb80-996addb6f9we" creator="1" voided="0" status="FINAL" />
     <obs obs_id="998" concept_id="1023" person_id="5190" encounter_id="890" value_numeric="100" obs_datetime="2016-08-18 15:09:05.0" date_created="2016-08-18 15:09:05.0" uuid="6d8f507a-fb899-11e3-0000-996addb6f9we" creator="1" voided="0" status="FINAL" />
     <obs obs_id="997" concept_id="1023" person_id="5190" encounter_id="890" value_numeric="100" obs_datetime="2015-08-18 15:09:05.0" date_created="2015-08-18 15:09:05.0" uuid="6d8f507a-fb899-11e3-1111-996addb6f9we" creator="1" voided="0" status="FINAL" />
+    <obs obs_id="996" concept_id="1719" person_id="5190" encounter_id="890" obs_datetime="2015-08-18 15:09:05.0" date_created="2015-08-18 15:09:05.0" uuid="6d8f507a-fb899-11e3-1111-996addb6f9wf" creator="1" voided="0" status="FINAL" />
+    <obs obs_id="995" concept_id="1215" person_id="5190" encounter_id="890" obs_group_id="996" value_coded="846" obs_datetime="2015-08-18 15:09:05.0" date_created="2015-08-18 15:09:05.0" uuid="6d8f507a-fb899-11e3-1111-996addb6f9a0" creator="1" voided="0" status="FINAL" />
+    <obs obs_id="994" concept_id="1237" person_id="5190" encounter_id="890" obs_group_id="996" value_datetime="2017-11-08 00:00:00" obs_datetime="2015-08-18 15:09:05.0" date_created="2015-08-18 15:09:05.0" uuid="6d8f507a-fb899-11e3-1111-996addb6f9a1" creator="1" voided="0" status="FINAL" />
+    <obs obs_id="993" concept_id="1216" person_id="5190" encounter_id="890" obs_group_id="995" value_datetime="2016-11-08 00:00:00" obs_datetime="2015-08-18 15:09:05.0" date_created="2015-08-18 15:09:05.0" uuid="6d8f507a-fb899-11e3-1111-996addb6f9a2" creator="1" voided="0" status="FINAL" />
 
     <episode episode_id="100" creator="1" date_created="2015-08-24 12:03:38" voided="0" uuid="23255323d-e887-4485-bc19-756cdbf22660"/>
     <episode_patient_program episode_id="100" patient_program_id="456"/>
