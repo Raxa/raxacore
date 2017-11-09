@@ -120,9 +120,9 @@ public class BahmniObservationsControllerTest {
         List<String> conceptNames = Arrays.asList("Weight");
         when(bahmniExtensions.getExtension("observationsAdder","CurrentMonthOfTreatment.groovy")).thenReturn(null);
 
-        bahmniObservationsController.get(patientProgramUuid, conceptNames, null);
+        bahmniObservationsController.get(patientProgramUuid, conceptNames, null, null);
 
-        verify(bahmniObsService, times(1)).getObservationsForPatientProgram(patientProgramUuid, conceptNames);
+        verify(bahmniObsService, times(1)).getObservationsForPatientProgram(patientProgramUuid, conceptNames, null);
     }
 
     @Test
@@ -131,32 +131,34 @@ public class BahmniObservationsControllerTest {
         String patientProgramUuid = null;
         when(bahmniExtensions.getExtension("observationsAdder","CurrentMonthOfTreatment.groovy")).thenReturn(null);
 
-        bahmniObservationsController.get(patientProgramUuid, null, null);
+        bahmniObservationsController.get(patientProgramUuid, null, null, null);
 
-        verify(bahmniObsService, times(0)).getObservationsForPatientProgram(patientProgramUuid, conceptNames);
+        verify(bahmniObsService, times(0)).getObservationsForPatientProgram(patientProgramUuid, conceptNames, null);
     }
 
     @Test
     public void shouldGetLatestObsForPatientProgramWhenPatientProgramUuidAndScopeLatestIsSpecified() throws Exception {
         List<String> conceptNames = new ArrayList<String>();
+        List<String> ignoreObsList = new ArrayList<>();
         String patientProgramUuid = "patientProgramUuid";
         String scope = "latest";
 
-        bahmniObservationsController.get(patientProgramUuid, conceptNames, scope);
+        bahmniObservationsController.get(patientProgramUuid, conceptNames, scope, ignoreObsList);
 
-        verify(bahmniObsService, times(1)).getLatestObservationsForPatientProgram(patientProgramUuid, conceptNames);
+        verify(bahmniObsService, times(1)).getLatestObservationsForPatientProgram(patientProgramUuid, conceptNames, ignoreObsList);
     }
 
     @Test
     public void shouldGetInitialObsForPatientProgramWhenPatientProgramUuidAndScopeLatestIsSpecified() throws Exception {
         List<String> conceptNames = new ArrayList<String>();
+        List<String> ignoreObsList = new ArrayList<String>();
         String patientProgramUuid = "patientProgramUuid";
         String scope = "initial";
         when(bahmniExtensions.getExtension("observationsAdder","CurrentMonthOfTreatment.groovy")).thenReturn(null);
 
-        bahmniObservationsController.get(patientProgramUuid, conceptNames, scope);
+        bahmniObservationsController.get(patientProgramUuid, conceptNames, scope, ignoreObsList);
 
-        verify(bahmniObsService, times(1)).getInitialObservationsForPatientProgram(patientProgramUuid, conceptNames);
+        verify(bahmniObsService, times(1)).getInitialObservationsForPatientProgram(patientProgramUuid, conceptNames, ignoreObsList);
     }
 
     @Test
