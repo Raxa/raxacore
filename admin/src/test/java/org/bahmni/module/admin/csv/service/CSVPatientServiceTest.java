@@ -231,7 +231,7 @@ public class CSVPatientServiceTest {
         verify(mockPatientService).savePatient(patientArgumentCaptor.capture());
 
         Patient patient = patientArgumentCaptor.getValue();
-        assertThat(patient.getAttributes().size(), is(3));
+        assertThat(patient.getAttributes().size(), is(4));
         assertThat(patient.getAttribute("education").getValue(), is("123"));
         assertThat(patient.getAttribute("isUrban").getValue(), is("true"));
         assertThat(patient.getAttribute("landHolding").getValue(), is("222"));
