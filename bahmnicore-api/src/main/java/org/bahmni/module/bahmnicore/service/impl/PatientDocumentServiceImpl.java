@@ -10,12 +10,12 @@ import org.bahmni.module.bahmnicore.bahmniexceptions.VideoFormatNotSupportedExce
 import org.bahmni.module.bahmnicore.model.VideoFormats;
 import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
 import org.bahmni.module.bahmnicore.service.PatientDocumentService;
+import org.bahmni.module.bahmnicore.service.ThumbnailGenerator;
 import org.imgscalr.Scalr;
-import org.jcodec.api.FrameGrab;
-import org.jcodec.api.JCodecException;
 import org.jcodec.common.model.Picture;
 import org.jcodec.scale.AWTUtil;
 import org.openmrs.module.webservices.rest.web.RestUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +26,8 @@ import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -37,6 +39,15 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
     private final Integer NO_OF_PATIENT_FILE_IN_A_DIRECTORY = 100;
     private final String VIDEO_FILE_TYPE = "video";
     private final String IMAGE_FILE_TYPE = "image";
+
+    protected void setThumbnailGenerators(List<ThumbnailGenerator> thumbnailGenerators) {
+        this.thumbnailGenerators = thumbnailGenerators;
+    }
+
+    @Autowired
+    List<ThumbnailGenerator> thumbnailGenerators;
+
+
 
     @Override
     public void saveImage(String patientIdentifier, String image) {
@@ -102,7 +113,7 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
             }
 
             FileUtils.writeByteArrayToFile(outputFile, decodedBytes);
-            createThumbnailForVideo(outputFile);
+            createAndSaveThumbnailForVideo(outputFile, format);
 
         } else if (PDF.equals(format)) {
             FileUtils.writeByteArrayToFile(outputFile, decodedBytes);
@@ -113,7 +124,7 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
                 if(!results) {
                     throw new FileTypeNotSupportedException(String.format("The image format '%s' is not supported. Supported formats are %s", format, Arrays.toString(new String[]{"png", "jpeg", "gif"})));
                 }
-                createThumbnail(bufferedImage, outputFile, null, 100);
+                saveThumbnail(bufferedImage, outputFile, null, 100);
                 bufferedImage.flush();
                 log.info(String.format("Successfully created patient image at %s", outputFile));
             } catch (Exception exception) {
@@ -129,18 +140,25 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
     }
 
 
-    private void createThumbnailForVideo(File outputVideoFile) throws IOException {
-        try {
-            Picture picture = FrameGrab.getFrameFromFile(outputVideoFile,0);
-            BufferedImage bufferedImage = AWTUtil.toBufferedImage(picture);
-            createThumbnail(bufferedImage, outputVideoFile, "jpg", 300);
-        }
-        catch (JCodecException e) {
-           throw new RuntimeException(e);
+    private void createAndSaveThumbnailForVideo(File outputVideoFile, String format) throws IOException {
+        ThumbnailGenerator thumbnailGenerator = getSupportedThumbnailGenerator(format);
+        BufferedImage bufferedImage = null;
+        if(thumbnailGenerator != null) {
+            bufferedImage = thumbnailGenerator.generateThumbnail(outputVideoFile);
+            saveThumbnail(bufferedImage, outputVideoFile, "jpg", 300);
         }
     }
 
-    private void createThumbnail(BufferedImage image, File outputFile, String imageFileType, int imageSize) throws IOException {
+    private ThumbnailGenerator getSupportedThumbnailGenerator(String format) throws IOException {
+        for(ThumbnailGenerator thumbnailGenerator: thumbnailGenerators) {
+            if (thumbnailGenerator.isFormatSupported(format)) {
+             return thumbnailGenerator;
+            }
+        }
+        return null;
+    }
+
+    private void saveThumbnail(BufferedImage image, File outputFile, String imageFileType, int imageSize) throws IOException {
         String nameWithoutExtension = FilenameUtils.removeExtension(outputFile.getAbsolutePath());
         if(imageFileType == null){
         imageFileType = FilenameUtils.getExtension(outputFile.getAbsolutePath());
