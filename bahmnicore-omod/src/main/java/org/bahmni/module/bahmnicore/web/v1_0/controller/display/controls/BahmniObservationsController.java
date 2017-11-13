@@ -98,15 +98,16 @@ public class BahmniObservationsController extends BaseRestController {
     @ResponseBody
     public Collection<BahmniObservation> get(@RequestParam(value = "patientProgramUuid", required = true) String patientProgramUuid,
                                              @RequestParam(value = "concept", required = false) List<String> rootConceptNames,
-                                             @RequestParam(value = "scope", required = false) String scope) throws ParseException {
+                                             @RequestParam(value = "scope", required = false) String scope,
+                                             @RequestParam(value = "obsIgnoreList", required = false) List<String> obsIgnoreList) throws ParseException {
         
         Collection<BahmniObservation> observations;
         if (ObjectUtils.equals(scope, LATEST)) {
-            observations = bahmniObsService.getLatestObservationsForPatientProgram(patientProgramUuid, rootConceptNames);
+            observations = bahmniObsService.getLatestObservationsForPatientProgram(patientProgramUuid, rootConceptNames, obsIgnoreList);
         } else if (ObjectUtils.equals(scope, INITIAL)) {
-            observations = bahmniObsService.getInitialObservationsForPatientProgram(patientProgramUuid, rootConceptNames);
+            observations = bahmniObsService.getInitialObservationsForPatientProgram(patientProgramUuid, rootConceptNames, obsIgnoreList);
         } else {
-            observations = bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, rootConceptNames);
+            observations = bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, rootConceptNames, obsIgnoreList);
         }
         sendObsToGroovyScript(rootConceptNames, observations);
         return observations;

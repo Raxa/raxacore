@@ -190,7 +190,7 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
         ArrayList<String> conceptNames = new ArrayList<>();
         conceptNames.add("conceptABC");
 
-        Collection<BahmniObservation> observations = bahmniObsService.getObservationsForPatientProgram("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames);
+        Collection<BahmniObservation> observations = bahmniObsService.getObservationsForPatientProgram("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames, null);
 
         assertEquals(1, observations.size());
         assertEquals("6d8f507a-fb899-11e3-bb80-996addb6f9we", observations.iterator().next().getUuid());
@@ -202,7 +202,7 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
         ArrayList<String> conceptNames = new ArrayList<>();
         conceptNames.add("conceptABC");
 
-        Collection<BahmniObservation> observations = bahmniObsService.getObservationsForPatientProgram("patientProgramUuid", conceptNames);
+        Collection<BahmniObservation> observations = bahmniObsService.getObservationsForPatientProgram("patientProgramUuid", conceptNames, null);
 
         assertEquals(0, observations.size());
     }
@@ -212,7 +212,7 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
         ArrayList<String> conceptNames = new ArrayList<>();
         conceptNames.add("conceptABC");
 
-        Collection<BahmniObservation> observations = bahmniObsService.getObservationsForPatientProgram("df0foifo-dkcd-475d-b939-6d82327f36a3", conceptNames);
+        Collection<BahmniObservation> observations = bahmniObsService.getObservationsForPatientProgram("df0foifo-dkcd-475d-b939-6d82327f36a3", conceptNames, null);
 
         assertEquals(0, observations.size());
     }
@@ -227,21 +227,99 @@ public class BahmniObsServiceImplIT extends BaseIntegrationTest {
 
     @Test
     public void shouldRetrieveAllLatestObservationsForMultiSelectConcept() {
-        List<BahmniObservation> observations = (List<BahmniObservation>) bahmniObsService.getLatestObservationsForPatientProgram("df0foif1-dkcd-475d-b939-6d82327f36a3", Arrays.asList("Systolic"));
+        List<BahmniObservation> observations = (List<BahmniObservation>) bahmniObsService.getLatestObservationsForPatientProgram("df0foif1-dkcd-475d-b939-6d82327f36a3", Arrays.asList("Systolic"), null);
         assertEquals(3, observations.size());
     }
 
     @Test
     public void shouldRetrieveAllLatestObservationSingleValueConcept() {
-        List<BahmniObservation> observations = (List<BahmniObservation>) bahmniObsService.getLatestObservationsForPatientProgram("df0foif1-dkcd-475d-b939-6d82327f36a3", Arrays.asList("Diastolic"));
+        List<BahmniObservation> observations = (List<BahmniObservation>) bahmniObsService.getLatestObservationsForPatientProgram("df0foif1-dkcd-475d-b939-6d82327f36a3", Arrays.asList("Diastolic"), null);
         assertEquals(1, observations.size());
         assertEquals(100.0, observations.get(0).getValue());
     }
 
+    @Test
     public void shouldRetrieveRevisionBahmniObservationByObservationUuid() throws Exception {
         BahmniObservation bahmniObservation = bahmniObsService.getRevisedBahmniObservationByUuid("uuid99998");
 
         assertNotNull("BahmniObservation should not be null", bahmniObservation);
         assertEquals("uuid999982", bahmniObservation.getUuid());
+    }
+
+    @Test
+    public void shouldNotRetrieveIgnoreObsAndItsChildrenForPatientProgram() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("Health Education");
+        List<String> obsIgnoreList = new ArrayList<>();
+        obsIgnoreList.add("HE, Marital status");
+
+        Collection<BahmniObservation> observations = bahmniObsService.getObservationsForPatientProgram("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames, obsIgnoreList);
+
+        assertEquals(1, observations.size());
+        assertEquals(1, observations.iterator().next().getGroupMembers().size());
+        assertEquals("HE, Date of consultation", observations.iterator().next().getGroupMembers().iterator().next().getConceptNameToDisplay());
+    }
+
+    @Test
+    public void shouldRetrieveAllObsIncludingChildrenForPatientProgram() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("Health Education");
+        List<String> obsIgnoreList = new ArrayList<>();
+        obsIgnoreList.add("HE, Date of consultation");
+
+        Collection<BahmniObservation> observations = bahmniObsService.getObservationsForPatientProgram("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames, obsIgnoreList);
+
+        Collection<BahmniObservation> groupMembers = observations.iterator().next().getGroupMembers();
+        Iterator<BahmniObservation> iterator = groupMembers.iterator();
+        BahmniObservation observationOne = iterator.next();
+        Collection<BahmniObservation> childMembers = observationOne.getGroupMembers();
+
+        assertEquals(1, observations.size());
+        assertEquals(1, groupMembers.size());
+        assertEquals("HE, Marital status",observationOne.getConceptNameToDisplay());
+        assertEquals(1, childMembers.size());
+        assertEquals("HE, Date Of Marriage", childMembers.iterator().next().getConceptNameToDisplay());
+    }
+
+    @Test
+    public void shouldReturnEmptyArrayIfConceptNameIsSameAsIgnoreListForPatientProgram() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("Health Education");
+        List<String> obsIgnoreList = new ArrayList<>();
+        obsIgnoreList.add("Health Education");
+
+        Collection<BahmniObservation> observations = bahmniObsService.getObservationsForPatientProgram("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames, obsIgnoreList);
+
+        assertEquals(0, observations.size());
+    }
+
+    @Test
+    public void shouldReturnAllObsInConceptNamesIfThereAreNoMatchesInObsIgnoreListForPatientProgram() throws Exception {
+        ArrayList<String> conceptNames = new ArrayList<>();
+        conceptNames.add("HE, Date Of Marriage");
+        List<String> obsIgnoreList = new ArrayList<>();
+        obsIgnoreList.add("HE, Da Of Marriage");
+
+        Collection<BahmniObservation> observations = bahmniObsService.getObservationsForPatientProgram("dfdfoifo-dkcd-475d-b939-6d82327f36a3", conceptNames, obsIgnoreList);
+
+        assertEquals(1, observations.size());
+    }
+
+    @Test
+    public void shouldRetrieveLatestObservationsNotInIgnoreListForMultiSelectConcept() {
+        List<BahmniObservation> observations = (List<BahmniObservation>) bahmniObsService.getLatestObservationsForPatientProgram("df0foif1-dkcd-475d-b939-6d82327f36a3", Arrays.asList("Systolic"), Arrays.asList("Systolic"));
+        assertEquals(0, observations.size());
+    }
+
+    @Test
+    public void shouldRetrieveInitalObservationsNotInIgnoreListForPatientProgram() throws Exception {
+        List<BahmniObservation> observations = (List<BahmniObservation>) bahmniObsService.getInitialObservationsForPatientProgram("df0foif1-dkcd-475d-b939-6d82327f36a3", Arrays.asList("Systolic"), Arrays.asList("Systolic"));
+        assertEquals(0, observations.size());
+    }
+
+    @Test
+    public void shouldRetrieveAllInitalObservationsForPatientProgram() throws Exception {
+        List<BahmniObservation> observations = (List<BahmniObservation>) bahmniObsService.getInitialObservationsForPatientProgram("df0foif1-dkcd-475d-b939-6d82327f36a3", Arrays.asList("Systolic"), null);
+        assertEquals(1, observations.size());
     }
 }
