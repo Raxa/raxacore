@@ -4,7 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.bahmni.module.bahmnicore.properties.BahmniCoreProperties;
 import org.bahmni.module.bahmnicore.web.v1_0.BaseIntegrationTest;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -14,12 +13,14 @@ import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
+import org.openmrs.api.APIException;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentResponse;
 import org.openmrs.util.OpenmrsUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -305,6 +306,56 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
                 new Parameter("filename", "testFileName.png")));
         assertFalse(file.exists());
         assertFalse(thumbnailFile.exists());
+    }
+
+    @Test
+    public void shouldNotDeleteGivenPatientDocumentFromFileSystemIfFilenameIsEmpty() throws Exception {
+        File file = new File(TMP_DOCUMENT_IMAGES + "/testFileName.png");
+        File thumbnailFile = new File(TMP_DOCUMENT_IMAGES + "/testFileName_thumbnail.png");
+        file.getParentFile().mkdirs();
+        file.createNewFile();
+        thumbnailFile.createNewFile();
+
+        OpenmrsUtil.setApplicationDataDirectory(TMP_DOCUMENT_IMAGES);
+        FileUtils.writeStringToFile(new File(TMP_DOCUMENT_IMAGES + "/bahmnicore.properties"),
+                "bahmnicore.documents.baseDirectory=" + TMP_DOCUMENT_IMAGES);
+        BahmniCoreProperties.load();
+
+        try{
+            MockHttpServletResponse response = handle(newDeleteRequest("/rest/v1/bahmnicore/visitDocument",
+                    new Parameter("filename", "")));
+            fail();
+        } catch (APIException exception){
+            assertEquals("[Required String parameter 'filename' is not present]",exception.getMessage());
+            assertTrue(file.exists());
+            assertTrue(thumbnailFile.exists());
+            assertTrue(new File(TMP_DOCUMENT_IMAGES).exists());
+        }
+    }
+
+    @Test
+    public void shouldNotDeleteGivenPatientDocumentFromFileSystemIfFilenameIsNull() throws Exception {
+        File file = new File(TMP_DOCUMENT_IMAGES + "/testFileName.png");
+        File thumbnailFile = new File(TMP_DOCUMENT_IMAGES + "/testFileName_thumbnail.png");
+        file.getParentFile().mkdirs();
+        file.createNewFile();
+        thumbnailFile.createNewFile();
+
+        OpenmrsUtil.setApplicationDataDirectory(TMP_DOCUMENT_IMAGES);
+        FileUtils.writeStringToFile(new File(TMP_DOCUMENT_IMAGES + "/bahmnicore.properties"),
+                "bahmnicore.documents.baseDirectory=" + TMP_DOCUMENT_IMAGES);
+        BahmniCoreProperties.load();
+
+        try{
+            MockHttpServletResponse response = handle(newDeleteRequest("/rest/v1/bahmnicore/visitDocument",
+                    new Parameter("filename", null)));
+            fail();
+        } catch (MissingServletRequestParameterException exception){
+            assertEquals("Required String parameter 'filename' is not present",exception.getMessage());
+            assertTrue(file.exists());
+            assertTrue(thumbnailFile.exists());
+            assertTrue(new File(TMP_DOCUMENT_IMAGES).exists());
+        }
     }
 
     private Visit createVisitForDate(Patient patient, Encounter encounter, Date orderDate, boolean isActive) {
