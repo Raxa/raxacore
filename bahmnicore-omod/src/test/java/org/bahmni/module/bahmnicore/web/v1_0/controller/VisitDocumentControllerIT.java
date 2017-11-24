@@ -326,7 +326,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
                     new Parameter("filename", "")));
             fail();
         } catch (APIException exception){
-            assertEquals("[Required String parameter 'filename' is not present]",exception.getMessage());
+            assertEquals("[Required String parameter 'filename' is empty]",exception.getMessage());
             assertTrue(file.exists());
             assertTrue(thumbnailFile.exists());
             assertTrue(new File(TMP_DOCUMENT_IMAGES).exists());

@@ -71,7 +71,7 @@ public class VisitDocumentController extends BaseRestController {
             if (StringUtils.isNotEmpty(fileName)) {
                 patientDocumentService.delete(fileName);
             } else {
-                throw new APIException("[Required String parameter 'filename' is either empty or not present]");
+                throw new APIException("[Required String parameter 'filename' is empty]");
             }
         }
     }

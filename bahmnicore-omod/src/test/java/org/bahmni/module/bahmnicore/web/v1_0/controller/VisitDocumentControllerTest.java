@@ -131,7 +131,7 @@ public class VisitDocumentControllerTest {
         when(Context.getUserContext()).thenReturn(userContext);
         when(userContext.isAuthenticated()).thenReturn(true);
         expectedException.expect(APIException.class);
-        expectedException.expectMessage("[Required String parameter 'filename' is either empty or not present]");
+        expectedException.expectMessage("[Required String parameter 'filename' is empty]");
         visitDocumentController.deleteDocument(null);
         verifyZeroInteractions(patientDocumentService);
     }
@@ -142,7 +142,7 @@ public class VisitDocumentControllerTest {
         when(Context.getUserContext()).thenReturn(userContext);
         when(userContext.isAuthenticated()).thenReturn(true);
         expectedException.expect(APIException.class);
-        expectedException.expectMessage("[Required String parameter 'filename' is either empty or not present]");
+        expectedException.expectMessage("[Required String parameter 'filename' is empty]");
         visitDocumentController.deleteDocument("");
         verifyZeroInteractions(patientDocumentService);
     }

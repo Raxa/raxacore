@@ -70,6 +70,5 @@ public class PatientDocumentServiceImplIT extends BaseIntegrationTest{
 		String thumbnailUrl  = BahmniCoreProperties.getProperty("bahmnicore.documents.baseDirectory")  + "/" + url.split("\\.")[0] + "_thumbnail.jpg";
 		assertTrue(Files.exists(Paths.get(videoUrl)));
 		assertTrue(Files.exists(Paths.get(thumbnailUrl)));
-		verifyStatic(times(1));
 	}
 }
