@@ -166,6 +166,7 @@ public class PatientDocumentServiceImpl implements PatientDocumentService {
         File thumbnailFile = new File(String.format("%s_thumbnail.%s", nameWithoutExtension, imageFileType));
         BufferedImage reSizedImage = Scalr.resize(image, imageSize);
         ImageIO.write(reSizedImage, imageFileType, thumbnailFile);
+        image.flush();
         reSizedImage.flush();
     }
 
