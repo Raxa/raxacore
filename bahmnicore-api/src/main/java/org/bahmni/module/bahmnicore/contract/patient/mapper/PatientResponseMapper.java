@@ -10,11 +10,8 @@ import org.openmrs.PersonAddress;
 import org.openmrs.PersonAttribute;
 import org.openmrs.Visit;
 import org.openmrs.VisitAttribute;
-import org.openmrs.Concept;
-import org.openmrs.ConceptName;
 import org.openmrs.api.APIException;
 import org.openmrs.api.VisitService;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 
@@ -23,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class PatientResponseMapper {
@@ -84,18 +80,7 @@ public class PatientResponseMapper {
         String queriedPersonAttributes = patientSearchResultFields.stream()
                 .map(attributeName -> {
                     PersonAttribute attribute = patient.getAttribute(attributeName);
-                    if(attribute != null) {
-                        if("org.openmrs.Concept".equals(attribute.getAttributeType().getFormat())) {
-                            Concept concept = Context.getConceptService().getConcept(attribute.getValue());
-                            ConceptName shortNameInLocale = concept.getShortNameInLocale(Context.getLocale());
-                            ConceptName conceptShortName = (shortNameInLocale == null) ? concept.getShortNameInLocale(new Locale("en", "GB")) : concept.getShortNameInLocale(Context.getLocale());
-                            return formKeyPair(attributeName, conceptShortName != null ? conceptShortName.getName() : null);
-                        }
-                        else {
-                            return formKeyPair(attributeName, attribute.getValue());
-                        }
-                    }
-                    return null;
+                    return attribute == null ? null : formKeyPair(attributeName, attribute.getValue());
                 }).filter(Objects::nonNull)
                 .collect(Collectors.joining(","));
         patientResponse.setCustomAttribute(formJsonString(queriedPersonAttributes));
