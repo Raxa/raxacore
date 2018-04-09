@@ -17,13 +17,13 @@ import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.encountertransaction.command.impl.BahmniVisitAttributeService;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
-import org.openmrs.util.LocaleUtility;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class PatientResponseMapper {
@@ -88,7 +88,7 @@ public class PatientResponseMapper {
                         if("org.openmrs.Concept".equals(attribute.getAttributeType().getFormat())) {
                             Concept concept = Context.getConceptService().getConcept(attribute.getValue());
                             ConceptName shortNameInLocale = concept.getShortNameInLocale(Context.getLocale());
-                            ConceptName conceptShortName = (shortNameInLocale == null) ? concept.getShortNameInLocale(LocaleUtility.getDefaultLocale()) : shortNameInLocale;
+                            ConceptName conceptShortName = (shortNameInLocale == null) ? concept.getShortNameInLocale(new Locale("en", "GB")) : concept.getShortNameInLocale(Context.getLocale());
                             return formKeyPair(attributeName, conceptShortName != null ? conceptShortName.getName() : null);
                         }
                         else {
