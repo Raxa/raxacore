@@ -4254,4 +4254,80 @@
             INSERT INTO role_role(child_role, parent_role) VALUES ('Appointments:FullAccess', 'Appointments:ManageAppointments');
         </sql>
     </changeSet>
+    <changeSet id="Amman-201707101139" author="Shireesha, Pramida" context="rel3.2">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM role where role = "OT: FullAccess";
+            </sqlCheck>
+        </preConditions>
+        <comment> Creating a role for OT: FullAccess</comment>
+        <sql>
+            INSERT INTO role(role, description, uuid) VALUES ("OT: FullAccess", "Ability to access and modify OT schedules", uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="Amman-201707101152" author="Shireesha, Pramida" context="rel3.2">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM role where role = "OT: ReadOnly";
+            </sqlCheck>
+        </preConditions>
+        <comment> Creating a role for OT- ReadOnly</comment>
+        <sql>
+            INSERT INTO role(role, description, uuid) VALUES ("OT: ReadOnly", "Ability to access and modify OT schedules", uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="Amman-201707101154" author="Shireesha, Pramida" context="rel3.2">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM privilege where privilege = "app:ot";
+            </sqlCheck>
+        </preConditions>
+        <comment> Creating a privilege for viewing the OT module</comment>
+        <sql>
+            INSERT INTO privilege(privilege, description, uuid) VALUES ("app:ot", "Ability to view OT module", uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="Amman-201707101156" author="Shireesha, Pramida" context="rel3.2">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM privilege where privilege = "app:ot:write";
+            </sqlCheck>
+        </preConditions>
+        <comment> Creating a privilege for viewing the OT module</comment>
+        <sql>
+            INSERT INTO privilege(privilege, description, uuid) VALUES ("app:ot:write", "Ability to view new surgical block and other buttons to edit on OT module", uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="Amman-201707101106" author="Shireesha, Pramida" context="rel3.2">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM privilege WHERE privilege = "Manage OT Schedules";
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM role_privilege WHERE role = "OT: FullAccess" AND privilege = "Manage OT Schedules";
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding Manage OT Schedules privilege to OT: FullAccess role</comment>
+        <sql>
+            INSERT INTO role_privilege(role, privilege) VALUES ("OT: FullAccess", "Manage OT Schedules");
+            INSERT INTO role_privilege(role, privilege) VALUES ("OT: FullAccess", "View OT Schedules");
+            INSERT INTO role_privilege(role, privilege) VALUES ("OT: FullAccess", "app:ot");
+            INSERT INTO role_privilege(role, privilege) VALUES ("OT: FullAccess", "app:ot:write");
+        </sql>
+    </changeSet>
+    <changeSet id="Amman-201707101159" author="Shireesha, Pramida" context="rel3.2">
+        <preConditions onFail="CONTINUE">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM privilege WHERE privilege = "View OT Schedules";
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM role_privilege WHERE role = "OT: ReadOnly" AND privilege = "View OT Schedules";
+            </sqlCheck>
+        </preConditions>
+        <comment>Adding view OT Schedules privilege to OT: ReadOnly role</comment>
+        <sql>
+            INSERT INTO role_privilege(role, privilege) VALUES ("OT: ReadOnly", "View OT Schedules");
+            INSERT INTO role_privilege(role, privilege) VALUES ("OT: ReadOnly", "app:ot");
+        </sql>
+    </changeSet>
 </databaseChangeLog>
