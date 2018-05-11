@@ -1,4 +1,9 @@
 language: java
 jdk:
- - oraclejdk8
-script: mvn clean install -P IT
+  - oraclejdk8
+install:
+  - mvn install -Dmaven.javadoc.skip=true -V -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn
+script:
+  - mvn verify -P IT -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -pl bahmni-emr-api/
+  - mvn verify -P IT -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -pl bahmnicore-api/
+  - mvn verify -P IT -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -pl bahmnicore-omod/
