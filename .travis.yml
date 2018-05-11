@@ -1,10 +1,4 @@
 language: java
 jdk:
  - oraclejdk8
-script: mvn clean install
-branches:
-  only:
-    - master
-notifications:
-  email: false
-sudo: false
+script: mvn clean install -P IT
