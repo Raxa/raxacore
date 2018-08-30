@@ -4393,4 +4393,8 @@
             UPDATE concept SET is_set = FALSE WHERE concept_id = @concept_id;
         </sql>
     </changeSet>
+    <changeSet id="BAM-20180830150635" author="Angshu" runOnChange="true" context="release0.91">
+        <comment>Override SQL query for Get Patient Details in Ward</comment>
+        <sqlFile path="BahmniBMPatientListInWard.sql"/>
+    </changeSet>
 </databaseChangeLog>
