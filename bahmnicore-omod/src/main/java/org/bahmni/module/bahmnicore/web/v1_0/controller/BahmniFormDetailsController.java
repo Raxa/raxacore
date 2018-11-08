@@ -6,6 +6,7 @@ import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,7 +16,7 @@ import java.util.Collection;
 
 
 @Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/forms")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/patient/{patientUuid}/forms")
 public class BahmniFormDetailsController extends BaseRestController {
 
     private BahmniFormDetailsService bahmniFormDetailsService;
@@ -40,7 +41,7 @@ public class BahmniFormDetailsController extends BaseRestController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public Collection<FormDetails> getFormDetails(
-            @RequestParam(value = "patientUuid") String patientUuid,
+            @PathVariable(value = "patientUuid") String patientUuid,
             @RequestParam(value = "formType", required = false) String formType,
             @RequestParam(value = "numberOfVisits", defaultValue = "-1") int numberOfVisits) {
 
