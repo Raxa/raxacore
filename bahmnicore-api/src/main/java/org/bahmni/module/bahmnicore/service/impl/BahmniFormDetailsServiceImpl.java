@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.contract.form.data.FormDetails;
 import org.bahmni.module.bahmnicore.contract.form.helper.FormType;
@@ -24,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.bahmni.module.bahmnicore.contract.form.mapper.FormDetailsMapper.createFormDetails;
 
 @Service
@@ -44,19 +44,23 @@ public class BahmniFormDetailsServiceImpl implements BahmniFormDetailsService {
     }
 
     @Override
-    public Collection<FormDetails> getFormDetails(String patientUuid, String formType) {
+    public Collection<FormDetails> getFormDetails(String patientUuid, String formType, int numberOfVisits) {
         Patient patient = patientService.getPatientByUuid(patientUuid);
         if (patient == null) {
             return Collections.emptyList();
         }
         List<Visit> visits = visitService.getVisitsByPatient(patient);
+        List<Visit> limitedVisits = limitVisits(visits, numberOfVisits);
 
-        EncounterSearchCriteria encounterSearchCriteria = new EncounterSearchCriteriaBuilder().setPatient(patient)
-                .setVisits(visits).createEncounterSearchCriteria();
+        EncounterSearchCriteria encounterSearchCriteria = new EncounterSearchCriteriaBuilder()/*.setPatient(patient)*/
+                .setVisits(limitedVisits).createEncounterSearchCriteria();
         List<Encounter> encounters = encounterService.getEncounters(encounterSearchCriteria);
 
-        List<Obs> observations = obsService.getObservations(Collections.singletonList(patient.getPerson()), encounters,
-                null, null, null, null, null, null, null, null, null, false);
+        List<Obs> observations = new ArrayList<>();
+        if (isNotEmpty(encounters) && isNotEmpty(limitedVisits)) {
+            observations = obsService.getObservations(Collections.singletonList(patient.getPerson()), encounters,
+                    null, null, null, null, null, null, null, null, null, false);
+        }
 
         Collection<FormDetails> formDetails = new ArrayList<>();
 
@@ -66,6 +70,12 @@ public class BahmniFormDetailsServiceImpl implements BahmniFormDetailsService {
         return formDetails;
     }
 
+    private List<Visit> limitVisits(List<Visit> visits, int numberOfVisits) {
+        if (numberOfVisits <= -1) {
+            return visits;
+        }
+        return visits.size() > numberOfVisits ? visits.subList(0, numberOfVisits) : visits;
+    }
+
 
 }
-

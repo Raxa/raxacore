@@ -10,6 +10,8 @@ import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class BahmniFormDetailsControllerTest {
@@ -28,11 +30,13 @@ public class BahmniFormDetailsControllerTest {
         FormDetails formDetails = mock(FormDetails.class);
         String patientUuid = "provider-uuid";
         String formType = "v2";
-        when(bahmniFormDetailsService.getFormDetails(patientUuid, formType))
+        when(bahmniFormDetailsService.getFormDetails(patientUuid, formType, -1))
                 .thenReturn(Collections.singletonList(formDetails));
 
-        Collection<FormDetails> actualFormDetails = bahmniFormDetailsController.getFormDetails(patientUuid, formType);
+        Collection<FormDetails> actualFormDetails = bahmniFormDetailsController.getFormDetails(patientUuid, formType, -1);
+
         assertEquals(1, actualFormDetails.size());
         assertEquals(formDetails, actualFormDetails.iterator().next());
+        verify(bahmniFormDetailsService, times(1)).getFormDetails(patientUuid, formType, -1);
     }
 }
