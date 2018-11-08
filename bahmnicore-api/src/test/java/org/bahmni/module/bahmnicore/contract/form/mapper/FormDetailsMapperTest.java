@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.verification.VerificationModeFactory;
+import org.openmrs.Concept;
+import org.openmrs.ConceptName;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.PersonName;
@@ -17,10 +19,13 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,11 +37,11 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 @RunWith(PowerMockRunner.class)
 public class FormDetailsMapperTest {
 
-    private String obsFormFieldPath = "FormName.2/1-0";
+    private String formFieldPath = "FormName.2/1-0";
     private String encounterUuid = "encounter-Uuid";
     private String visitUuid = "visitUuid";
     private String providerName = "Super Man";
-    private String providerUuid = "providerName-uuid";
+    private String providerUuid = "provider-uuid";
     private String formName = "formName";
     private int formVersion = 2;
     private Date encounterDateTime = new Date();
@@ -45,7 +50,7 @@ public class FormDetailsMapperTest {
     private Obs obs = mock(Obs.class);
     private Encounter encounter = mock(Encounter.class);
     private Visit visit = mock(Visit.class);
-    private User creator = mock(User.class);
+    private User anotherCreator = mock(User.class);
     private PersonName personName = mock(PersonName.class);
 
     @Before
@@ -54,11 +59,11 @@ public class FormDetailsMapperTest {
         mockStatic(FormUtil.class);
 
         when(obs.getEncounter()).thenReturn(encounter);
-        when(obs.getCreator()).thenReturn(creator);
-        when(obs.getFormFieldPath()).thenReturn(obsFormFieldPath);
+        when(obs.getCreator()).thenReturn(anotherCreator);
+        when(obs.getFormFieldPath()).thenReturn(formFieldPath);
         when(encounter.getVisit()).thenReturn(visit);
-        when(FormUtil.getFormNameFromFieldPath(obsFormFieldPath)).thenReturn(formName);
-        when(FormUtil.getFormVersionFromFieldPath(obsFormFieldPath)).thenReturn(formVersion);
+        when(FormUtil.getFormNameFromFieldPath(formFieldPath)).thenReturn(formName);
+        when(FormUtil.getFormVersionFromFieldPath(formFieldPath)).thenReturn(formVersion);
 
         when(encounter.getUuid()).thenReturn(encounterUuid);
         when(encounter.getEncounterDatetime()).thenReturn(encounterDateTime);
@@ -66,9 +71,9 @@ public class FormDetailsMapperTest {
         when(visit.getUuid()).thenReturn(visitUuid);
         when(visit.getStartDatetime()).thenReturn(visitStartDateTime);
 
-        when(creator.getPersonName()).thenReturn(personName);
+        when(anotherCreator.getPersonName()).thenReturn(personName);
         when(personName.getFullName()).thenReturn(providerName);
-        when(creator.getUuid()).thenReturn(providerUuid);
+        when(anotherCreator.getUuid()).thenReturn(providerUuid);
     }
 
     @Test
@@ -78,19 +83,25 @@ public class FormDetailsMapperTest {
         Whitebox.setInternalState(FormType.class, "FORM_BUILDER_FORMS", formType);
         when(formType.get()).thenReturn("v2");
 
-        FormDetails formDetails = FormDetailsMapper.map(obs, formType);
+        Collection<FormDetails> formDetailsCollection = FormDetailsMapper
+                .createFormDetails(singletonList(obs), formType);
 
+        assertEquals(1, formDetailsCollection.size());
+
+        FormDetails formDetails = formDetailsCollection.iterator().next();
         assertEquals("v2", formDetails.getFormType());
         assertEquals(formName, formDetails.getFormName());
         assertEquals(formVersion, formDetails.getFormVersion());
+
         verifyCommonData(formDetails);
 
         verify(obs, times(2)).getFormFieldPath();
         verifyStatic(VerificationModeFactory.times(1));
-        FormUtil.getFormNameFromFieldPath(obsFormFieldPath);
+        FormUtil.getFormNameFromFieldPath(formFieldPath);
         verifyStatic(VerificationModeFactory.times(1));
-        FormUtil.getFormVersionFromFieldPath(obsFormFieldPath);
+        FormUtil.getFormVersionFromFieldPath(formFieldPath);
         verify(formType, times(1)).get();
+
         verifyCommonMockCalls();
 
     }
@@ -102,10 +113,22 @@ public class FormDetailsMapperTest {
         Whitebox.setInternalState(FormType.class, "ALL_OBSERVATION_TEMPLATE_FORMS", formType);
         when(formType.get()).thenReturn("v1");
 
-        FormDetails formDetails = FormDetailsMapper.map(obs, formType);
+        Concept concept = mock(Concept.class);
+        when(obs.getConcept()).thenReturn(concept);
+        ConceptName conceptName = mock(ConceptName.class);
+        when(concept.getName()).thenReturn(conceptName);
+        String obsName = "some obs name";
+        when(conceptName.getName()).thenReturn(obsName);
+
+        Collection<FormDetails> formDetailsCollection = FormDetailsMapper
+                .createFormDetails(singletonList(obs), formType);
+
+        assertEquals(1, formDetailsCollection.size());
+
+        FormDetails formDetails = formDetailsCollection.iterator().next();
 
         assertEquals("v1", formDetails.getFormType());
-        assertNull(formDetails.getFormName());
+        assertEquals(formDetails.getFormName(), obsName);
         assertEquals(0, formDetails.getFormVersion());
         verifyCommonData(formDetails);
 
@@ -114,16 +137,90 @@ public class FormDetailsMapperTest {
 
     }
 
+    @Test
+    public void shouldReturnFormDetailsWithTwoProvidersFromGivenTwoObsAndFormTypeOfFormBuilder() {
+
+        String anotherObsFormFieldPath = "FormName.2/2-0";
+        String anotherProviderName = "Another Super Man";
+        String anotherProviderUuid = "Another provider-uuid";
+
+        Obs anotherObs = mock(Obs.class);
+        User anotherCreator = mock(User.class);
+        PersonName anotherPersonName = mock(PersonName.class);
+
+        when(anotherObs.getEncounter()).thenReturn(encounter);
+        when(anotherObs.getCreator()).thenReturn(anotherCreator);
+        when(anotherObs.getFormFieldPath()).thenReturn(anotherObsFormFieldPath);
+        when(FormUtil.getFormNameFromFieldPath(anotherObsFormFieldPath)).thenReturn(formName);
+        when(FormUtil.getFormVersionFromFieldPath(anotherObsFormFieldPath)).thenReturn(formVersion);
+
+        when(anotherCreator.getPersonName()).thenReturn(anotherPersonName);
+        when(anotherPersonName.getFullName()).thenReturn(anotherProviderName);
+        when(anotherCreator.getUuid()).thenReturn(anotherProviderUuid);
+
+        FormType formType = mock(FormType.class);
+        Whitebox.setInternalState(FormType.class, "FORM_BUILDER_FORMS", formType);
+        when(formType.get()).thenReturn("v2");
+
+        FormDetails formDetails = mock(FormDetails.class);
+        when(formDetails.getFormName()).thenReturn(formName);
+        when(formDetails.getFormVersion()).thenReturn(2);
+        when(formDetails.getEncounterUuid()).thenReturn(encounterUuid);
+        Provider provider = mock(Provider.class);
+        when(provider.getProviderName()).thenReturn(providerName);
+        when(provider.getUuid()).thenReturn(providerUuid);
+        when(formDetails.getProviders()).thenReturn(new HashSet<>(singletonList(provider)));
+
+        FormDetails anotherFormDetails = mock(FormDetails.class);
+        when(anotherFormDetails.getFormName()).thenReturn(formName);
+        when(anotherFormDetails.getFormVersion()).thenReturn(2);
+        when(anotherFormDetails.getEncounterUuid()).thenReturn(encounterUuid);
+        Provider anotherProvider = mock(Provider.class);
+        when(anotherProvider.getProviderName()).thenReturn(anotherProviderName);
+        when(anotherProvider.getUuid()).thenReturn(anotherProviderUuid);
+        when(anotherFormDetails.getProviders()).thenReturn(new HashSet<>(singletonList(anotherProvider)));
+
+
+        Collection<FormDetails> formDetailsCollection = FormDetailsMapper
+                .createFormDetails(Arrays.asList(obs, anotherObs), formType);
+
+        assertEquals(1, formDetailsCollection.size());
+
+        FormDetails actualFormDetails = formDetailsCollection.iterator().next();
+        assertEquals("v2", actualFormDetails.getFormType());
+        assertEquals(formName, actualFormDetails.getFormName());
+        assertEquals(formVersion, actualFormDetails.getFormVersion());
+
+        verifyVisitAndEncounterData(actualFormDetails);
+
+        verify(obs, times(2)).getFormFieldPath();
+        verify(anotherObs, times(2)).getFormFieldPath();
+        verifyStatic(VerificationModeFactory.times(1));
+        FormUtil.getFormNameFromFieldPath(formFieldPath);
+        verifyStatic(VerificationModeFactory.times(1));
+        FormUtil.getFormNameFromFieldPath(anotherObsFormFieldPath);
+        verifyStatic(VerificationModeFactory.times(1));
+        FormUtil.getFormVersionFromFieldPath(formFieldPath);
+        verifyStatic(VerificationModeFactory.times(1));
+        FormUtil.getFormVersionFromFieldPath(anotherObsFormFieldPath);
+        verify(formType, times(2)).get();
+    }
+
     private void verifyCommonData(FormDetails formDetails) {
-        assertEquals(visitStartDateTime, formDetails.getVisitStartDateTime());
-        assertEquals(visitUuid, formDetails.getVisitUuid());
-        assertEquals(encounterDateTime, formDetails.getEncounterDateTime());
-        assertEquals(encounterUuid, formDetails.getEncounterUuid());
+
+        verifyVisitAndEncounterData(formDetails);
 
         assertEquals(1, formDetails.getProviders().size());
         Provider provider = formDetails.getProviders().iterator().next();
         assertEquals(providerName, provider.getProviderName());
         assertEquals(providerUuid, provider.getUuid());
+    }
+
+    private void verifyVisitAndEncounterData(FormDetails formDetails) {
+        assertEquals(visitStartDateTime, formDetails.getVisitStartDateTime());
+        assertEquals(visitUuid, formDetails.getVisitUuid());
+        assertEquals(encounterDateTime, formDetails.getEncounterDateTime());
+        assertEquals(encounterUuid, formDetails.getEncounterUuid());
     }
 
     private void verifyCommonMockCalls() {
@@ -134,8 +231,8 @@ public class FormDetailsMapperTest {
         verify(encounter, times(1)).getEncounterDatetime();
         verify(visit, times(1)).getUuid();
         verify(visit, times(1)).getStartDatetime();
-        verify(creator, times(1)).getPersonName();
-        verify(creator, times(1)).getUuid();
+        verify(anotherCreator, times(1)).getPersonName();
+        verify(anotherCreator, times(1)).getUuid();
         verify(personName, times(1)).getFullName();
     }
 }
