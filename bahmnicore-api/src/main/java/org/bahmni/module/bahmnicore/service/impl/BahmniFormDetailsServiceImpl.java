@@ -5,6 +5,8 @@ import org.bahmni.module.bahmnicore.contract.form.data.FormDetails;
 import org.bahmni.module.bahmnicore.contract.form.helper.FormType;
 import org.bahmni.module.bahmnicore.contract.form.helper.ObsUtil;
 import org.bahmni.module.bahmnicore.service.BahmniFormDetailsService;
+import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
+import org.bahmni.module.bahmnicore.service.BahmniVisitService;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
@@ -18,11 +20,14 @@ import org.openmrs.parameter.EncounterSearchCriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.bahmni.module.bahmnicore.contract.form.mapper.FormDetailsMapper.createFormDetails;
 
@@ -33,41 +38,80 @@ public class BahmniFormDetailsServiceImpl implements BahmniFormDetailsService {
     private final PatientService patientService;
     private final EncounterService encounterService;
     private final ObsService obsService;
+    private BahmniVisitService bahmniVisitService;
+    private BahmniProgramWorkflowService bahmniProgramWorkflowService;
 
     @Autowired
     public BahmniFormDetailsServiceImpl(PatientService patientService, VisitService visitService,
-                                        EncounterService encounterService, ObsService obsService) {
+                                        EncounterService encounterService, ObsService obsService,
+                                        BahmniVisitService bahmniVisitService,
+                                        BahmniProgramWorkflowService bahmniProgramWorkflowService) {
         this.visitService = visitService;
         this.patientService = patientService;
         this.encounterService = encounterService;
         this.obsService = obsService;
+        this.bahmniVisitService = bahmniVisitService;
+        this.bahmniProgramWorkflowService = bahmniProgramWorkflowService;
     }
 
     @Override
     public Collection<FormDetails> getFormDetails(String patientUuid, String formType, int numberOfVisits) {
-        Patient patient = patientService.getPatientByUuid(patientUuid);
-        if (patient == null) {
-            return Collections.emptyList();
-        }
+        Patient patient = getPatient(patientUuid);
         List<Visit> visits = visitService.getVisitsByPatient(patient);
         List<Visit> limitedVisits = limitVisits(visits, numberOfVisits);
 
-        EncounterSearchCriteria encounterSearchCriteria = new EncounterSearchCriteriaBuilder()/*.setPatient(patient)*/
-                .setVisits(limitedVisits).createEncounterSearchCriteria();
-        List<Encounter> encounters = encounterService.getEncounters(encounterSearchCriteria);
+        List<Encounter> encounters = getEncounters(limitedVisits);
 
-        List<Obs> observations = new ArrayList<>();
         if (isNotEmpty(encounters) && isNotEmpty(limitedVisits)) {
-            observations = obsService.getObservations(Collections.singletonList(patient.getPerson()), encounters,
-                    null, null, null, null, null, null, null, null, null, false);
+            return getFormDetails(patient, encounters, formType);
         }
+        return Collections.emptyList();
+    }
 
+    private Patient getPatient(String patientUuid) {
+        Patient patient = patientService.getPatientByUuid(patientUuid);
+        if (patient == null) {
+            throw new InvalidParameterException("Patient does not exist");
+        }
+        return patient;
+    }
+
+    private List<Encounter> getEncounters(List<Visit> visits) {
+        EncounterSearchCriteria encounterSearchCriteria = new EncounterSearchCriteriaBuilder()
+                .setVisits(visits).createEncounterSearchCriteria();
+        return encounterService.getEncounters(encounterSearchCriteria);
+    }
+
+    private Collection<FormDetails> getFormDetails(Patient patient, List<Encounter> encounters, String formType) {
         Collection<FormDetails> formDetails = new ArrayList<>();
-
+        List<Obs> observations = obsService.getObservations(singletonList(patient.getPerson()), encounters,
+                null, null, null, null, null, null, null, null, null, false);
         if (FormType.FORM_BUILDER_FORMS.get().equals(formType) || StringUtils.isBlank(formType)) {
             formDetails = createFormDetails(ObsUtil.filterFormBuilderObs(observations), FormType.FORM_BUILDER_FORMS);
         }
         return formDetails;
+    }
+
+    @Override
+    public Collection<FormDetails> getFormDetails(String patientUuid, String formType, String visitUuid,
+                                                  String patientProgramUuid) {
+        Patient patient = getPatient(patientUuid);
+        Visit visit = bahmniVisitService.getVisitSummary(visitUuid);
+        List<Encounter> encountersByVisitUuid = getEncounters(singletonList(visit));
+
+        Collection<Encounter> encountersByPatientProgramUuid = bahmniProgramWorkflowService
+                .getEncountersByPatientProgramUuid(patientProgramUuid);
+
+        if (isNotEmpty(encountersByVisitUuid) && isNotEmpty(encountersByPatientProgramUuid)) {
+            List<Encounter> encountersByPatientProgramUuidAndVisitUuid = encountersByPatientProgramUuid.stream()
+                    .filter(encounter -> encounter.getVisit().equals(visit)).collect(Collectors.toList());
+            return getFormDetails(patient, encountersByPatientProgramUuidAndVisitUuid, formType);
+        } else if (isNotEmpty(encountersByVisitUuid)) {
+            return getFormDetails(patient, encountersByVisitUuid, formType);
+        } else if (isNotEmpty(encountersByPatientProgramUuid)) {
+            return getFormDetails(patient, new ArrayList<>(encountersByPatientProgramUuid), formType);
+        }
+        return Collections.emptyList();
     }
 
     private List<Visit> limitVisits(List<Visit> visits, int numberOfVisits) {

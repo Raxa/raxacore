@@ -6,4 +6,6 @@ import java.util.Collection;
 
 public interface BahmniFormDetailsService {
     Collection<FormDetails> getFormDetails(String patientUuid, String formType, int numberOfVisits);
+
+    Collection<FormDetails> getFormDetails(String patientUuid, String formType, String visitUuid, String patientProgramUuid);
 }

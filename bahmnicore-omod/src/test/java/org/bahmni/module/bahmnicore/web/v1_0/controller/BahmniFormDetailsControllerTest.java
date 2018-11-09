@@ -20,23 +20,43 @@ public class BahmniFormDetailsControllerTest {
 
     private BahmniFormDetailsService bahmniFormDetailsService = mock(BahmniFormDetailsService.class);
 
+    private String patientUuid = "provider-uuid";
+    private String formType = "v2";
+    private String visitUuid = "visitUuid";
+    private String patientProgramUuid = "patientProgramUuid";
+
     @Before
     public void setUp() {
         bahmniFormDetailsController = new BahmniFormDetailsController(bahmniFormDetailsService);
     }
 
     @Test
-    public void shouldReturnCollectionOfFormDetails() {
+    public void shouldReturnCollectionOfFormDetailsGivenPatienUuidFormTypeAndNumberOfVisits() {
         FormDetails formDetails = mock(FormDetails.class);
-        String patientUuid = "provider-uuid";
-        String formType = "v2";
         when(bahmniFormDetailsService.getFormDetails(patientUuid, formType, -1))
                 .thenReturn(Collections.singletonList(formDetails));
 
-        Collection<FormDetails> actualFormDetails = bahmniFormDetailsController.getFormDetails(patientUuid, formType, -1);
+        Collection<FormDetails> actualFormDetails = bahmniFormDetailsController.getFormDetails(patientUuid, formType, -1, null, null);
 
+        assertFormDetails(formDetails, actualFormDetails);
+        verify(bahmniFormDetailsService, times(1)).getFormDetails(patientUuid, formType, -1);
+    }
+
+    private void assertFormDetails(FormDetails formDetails, Collection<FormDetails> actualFormDetails) {
         assertEquals(1, actualFormDetails.size());
         assertEquals(formDetails, actualFormDetails.iterator().next());
-        verify(bahmniFormDetailsService, times(1)).getFormDetails(patientUuid, formType, -1);
+    }
+
+    @Test
+    public void shouldReturnCollectionOfFormDetailsGivenPatientUuidFormTypeVisitUuidAndPatientProgramUuid() {
+        FormDetails formDetails = mock(FormDetails.class);
+
+        when(bahmniFormDetailsService.getFormDetails(patientUuid, formType, visitUuid, patientProgramUuid))
+                .thenReturn(Collections.singletonList(formDetails));
+
+        Collection<FormDetails> actualFormDetails = bahmniFormDetailsController.getFormDetails(patientUuid, formType, -1, visitUuid, patientProgramUuid);
+
+        assertFormDetails(formDetails, actualFormDetails);
+        verify(bahmniFormDetailsService, times(1)).getFormDetails(patientUuid, formType, visitUuid, patientProgramUuid);
     }
 }
