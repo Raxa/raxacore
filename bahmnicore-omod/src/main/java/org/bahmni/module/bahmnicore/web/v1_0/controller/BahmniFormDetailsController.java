@@ -18,7 +18,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
 @Controller
-@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/patient/{patientUuid}/forms")
+@RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/patient/{patientUuid}/forms")
 public class BahmniFormDetailsController extends BaseRestController {
 
     private BahmniFormDetailsService bahmniFormDetailsService;
@@ -47,7 +47,7 @@ public class BahmniFormDetailsController extends BaseRestController {
     public Collection<FormDetails> getFormDetails(
             @PathVariable(value = "patientUuid") String patientUuid,
             @RequestParam(value = "formType", required = false) String formType,
-            @RequestParam(value = "numberOfVisits", defaultValue = "-1") int numberOfVisits,
+            @RequestParam(value = "numberOfVisits", defaultValue = "-1") Integer numberOfVisits,
             @RequestParam(value = "visitUuid", required = false) String visitUuid,
             @RequestParam(value = "patientProgramUuid", required = false) String patientProgramUuid) {
 
