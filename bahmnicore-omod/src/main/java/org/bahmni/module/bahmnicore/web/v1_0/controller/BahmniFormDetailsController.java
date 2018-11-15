@@ -46,7 +46,7 @@ public class BahmniFormDetailsController extends BaseRestController {
     @ResponseBody
     public Collection<FormDetails> getFormDetails(
             @PathVariable(value = "patientUuid") String patientUuid,
-            @RequestParam(value = "formType", required = false) String formType,
+            @RequestParam(value = "formType", defaultValue = "v2") String formType,
             @RequestParam(value = "numberOfVisits", defaultValue = "-1") Integer numberOfVisits,
             @RequestParam(value = "visitUuid", required = false) String visitUuid,
             @RequestParam(value = "patientProgramUuid", required = false) String patientProgramUuid) {
