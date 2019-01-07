@@ -1,4 +1,6 @@
-package org.bahmni.module.bahmnicore.contract.form.data;
+package org.bahmni.module.bahmnicore.forms2.contract.form.data;
+
+import org.bahmni.module.bahmnicore.model.Provider;
 
 import java.util.Date;
 import java.util.HashSet;

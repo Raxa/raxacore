@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.contract.form.helper;
+package org.bahmni.module.bahmnicore.forms2.util;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 

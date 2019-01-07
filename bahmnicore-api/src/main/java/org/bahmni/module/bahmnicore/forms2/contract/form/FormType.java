@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.contract.form.helper;
+package org.bahmni.module.bahmnicore.forms2.contract.form;
 
 public enum FormType {
 

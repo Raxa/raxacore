@@ -1,8 +1,8 @@
-package org.bahmni.module.bahmnicore.contract.form.mapper;
+package org.bahmni.module.bahmnicore.forms2.mapper;
 
-import org.bahmni.module.bahmnicore.contract.form.data.FormDetails;
-import org.bahmni.module.bahmnicore.contract.form.helper.FormType;
-import org.bahmni.module.bahmnicore.contract.form.helper.FormUtil;
+import org.bahmni.module.bahmnicore.forms2.contract.form.FormType;
+import org.bahmni.module.bahmnicore.forms2.contract.form.data.FormDetails;
+import org.bahmni.module.bahmnicore.forms2.util.FormUtil;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
 import org.openmrs.User;

@@ -1,10 +1,10 @@
-package org.bahmni.module.bahmnicore.service.impl;
+package org.bahmni.module.bahmnicore.forms2.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bahmni.module.bahmnicore.contract.form.data.FormDetails;
-import org.bahmni.module.bahmnicore.contract.form.helper.FormType;
-import org.bahmni.module.bahmnicore.contract.form.helper.ObsUtil;
-import org.bahmni.module.bahmnicore.service.BahmniFormDetailsService;
+import org.bahmni.module.bahmnicore.forms2.contract.form.FormType;
+import org.bahmni.module.bahmnicore.forms2.contract.form.data.FormDetails;
+import org.bahmni.module.bahmnicore.forms2.service.BahmniFormDetailsService;
+import org.bahmni.module.bahmnicore.forms2.util.Form2ObsUtil;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.module.bahmnicore.service.BahmniVisitService;
 import org.openmrs.Encounter;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
-import static org.bahmni.module.bahmnicore.contract.form.mapper.FormDetailsMapper.createFormDetails;
+import static org.bahmni.module.bahmnicore.forms2.mapper.FormDetailsMapper.createFormDetails;
 
 @Service
 public class BahmniFormDetailsServiceImpl implements BahmniFormDetailsService {
@@ -87,7 +87,7 @@ public class BahmniFormDetailsServiceImpl implements BahmniFormDetailsService {
         List<Obs> observations = obsService.getObservations(singletonList(patient.getPerson()), encounters,
                 null, null, null, null, null, null, null, null, null, false);
         if (FormType.FORM_BUILDER_FORMS.get().equals(formType) || StringUtils.isBlank(formType)) {
-            formDetails = createFormDetails(ObsUtil.filterFormBuilderObs(observations), FormType.FORM_BUILDER_FORMS);
+            formDetails = createFormDetails(Form2ObsUtil.filterFormBuilderObs(observations), FormType.FORM_BUILDER_FORMS);
         }
         return formDetails;
     }

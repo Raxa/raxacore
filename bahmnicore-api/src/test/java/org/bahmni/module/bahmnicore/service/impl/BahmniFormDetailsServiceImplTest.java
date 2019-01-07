@@ -1,9 +1,10 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-import org.bahmni.module.bahmnicore.contract.form.data.FormDetails;
-import org.bahmni.module.bahmnicore.contract.form.helper.FormType;
-import org.bahmni.module.bahmnicore.contract.form.helper.ObsUtil;
-import org.bahmni.module.bahmnicore.contract.form.mapper.FormDetailsMapper;
+import org.bahmni.module.bahmnicore.forms2.contract.form.FormType;
+import org.bahmni.module.bahmnicore.forms2.contract.form.data.FormDetails;
+import org.bahmni.module.bahmnicore.forms2.mapper.FormDetailsMapper;
+import org.bahmni.module.bahmnicore.forms2.service.impl.BahmniFormDetailsServiceImpl;
+import org.bahmni.module.bahmnicore.forms2.util.Form2ObsUtil;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.module.bahmnicore.service.BahmniVisitService;
 import org.junit.Before;
@@ -44,7 +45,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
-@PrepareForTest({FormType.class, ObsUtil.class, FormDetailsMapper.class})
+@PrepareForTest({FormType.class, Form2ObsUtil.class, FormDetailsMapper.class})
 @RunWith(PowerMockRunner.class)
 public class BahmniFormDetailsServiceImplTest {
 
@@ -328,12 +329,12 @@ public class BahmniFormDetailsServiceImplTest {
 
     private void verifyFilterFormBuilderObsMockCall(int wantedNumberOfInvocations) {
         verifyStatic(VerificationModeFactory.times(wantedNumberOfInvocations));
-        ObsUtil.filterFormBuilderObs(obs);
+        Form2ObsUtil.filterFormBuilderObs(obs);
     }
 
     private void mockFilterFormBuilderObs() {
-        mockStatic(ObsUtil.class);
-        when(ObsUtil.filterFormBuilderObs(obs)).thenReturn(obs);
+        mockStatic(Form2ObsUtil.class);
+        when(Form2ObsUtil.filterFormBuilderObs(obs)).thenReturn(obs);
     }
 
     private void verifyCommonMockCalls() {

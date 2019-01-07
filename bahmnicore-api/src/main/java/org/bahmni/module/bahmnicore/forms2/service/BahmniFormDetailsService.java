@@ -1,6 +1,6 @@
-package org.bahmni.module.bahmnicore.service;
+package org.bahmni.module.bahmnicore.forms2.service;
 
-import org.bahmni.module.bahmnicore.contract.form.data.FormDetails;
+import org.bahmni.module.bahmnicore.forms2.contract.form.data.FormDetails;
 
 import java.util.Collection;
 

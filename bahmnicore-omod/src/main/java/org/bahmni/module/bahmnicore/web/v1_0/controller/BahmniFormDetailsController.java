@@ -1,7 +1,8 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.contract.form.data.FormDetails;
-import org.bahmni.module.bahmnicore.service.BahmniFormDetailsService;
+import org.bahmni.module.bahmnicore.forms2.contract.form.FormType;
+import org.bahmni.module.bahmnicore.forms2.contract.form.data.FormDetails;
+import org.bahmni.module.bahmnicore.forms2.service.BahmniFormDetailsService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class BahmniFormDetailsController extends BaseRestController {
      * @param formType           optional parameter to fetch type of forms. "v1" fetches AllObservationTemplate Forms
      *                           whereas "v2" fetches form builder forms. The default is "v2". API needs to be implemented
      *                           for "v1"
-     *                           Refer {@link org.bahmni.module.bahmnicore.contract.form.helper.FormType}
+     *                           Refer {@link FormType}
      * @param numberOfVisits     optional parameter to limit form details to recent number of visits. Negative number will
      *                           consider all visits
      * @param visitUuid          optional parameter to fetch forms filled under that visit(it takes precedence over numbersOfVisits)

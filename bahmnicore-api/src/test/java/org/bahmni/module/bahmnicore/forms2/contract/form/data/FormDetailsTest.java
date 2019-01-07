@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.contract.form.data;
+package org.bahmni.module.bahmnicore.forms2.contract.form.data;
 
 import org.junit.Before;
 import org.junit.Test;
