@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.service.impl;
 
-import org.bahmni.module.bahmnicore.forms2.contract.form.FormType;
-import org.bahmni.module.bahmnicore.forms2.contract.form.data.FormDetails;
+import org.bahmni.module.bahmnicore.forms2.contract.FormType;
+import org.bahmni.module.bahmnicore.forms2.contract.FormDetails;
 import org.bahmni.module.bahmnicore.forms2.mapper.FormDetailsMapper;
 import org.bahmni.module.bahmnicore.forms2.service.impl.BahmniFormDetailsServiceImpl;
 import org.bahmni.module.bahmnicore.forms2.util.Form2ObsUtil;
@@ -93,7 +93,7 @@ public class BahmniFormDetailsServiceImplTest {
         expectedException.expect(InvalidParameterException.class);
         expectedException.expectMessage("Patient does not exist");
 
-        Collection<FormDetails> formDetailsCollection = bahmniFormDetailsService.getFormDetails("patient uuid", "v1", -1);
+        Collection<FormDetails> formDetailsCollection = bahmniFormDetailsService.getFormDetails("patient uuid", FormType.FORMS1, -1);
 
         assertEquals(0, formDetailsCollection.size());
 
@@ -101,31 +101,24 @@ public class BahmniFormDetailsServiceImplTest {
 
     @Test
     public void shouldReturnFormDetailsForGivenPatientUuidAndFormTypeIsV2() {
-
-        FormType formType = mockFormBuilderFormType();
-
         mockFilterFormBuilderObs();
 
         mockStatic(FormDetailsMapper.class);
         List<FormDetails> expectedFormDetails = Arrays.asList(formDetails, anotherFormDetails);
         when(FormDetailsMapper.createFormDetails(anyListOf(Obs.class), any(FormType.class)))
                 .thenReturn(expectedFormDetails);
-        Collection<FormDetails> formBuilderFormDetails = bahmniFormDetailsService.getFormDetails("patient-uuid", "v2", -1);
+        Collection<FormDetails> formBuilderFormDetails = bahmniFormDetailsService.getFormDetails("patient-uuid", FormType.FORMS2, -1);
 
         assertEquals(2, formBuilderFormDetails.size());
         containsInAnyOrder(expectedFormDetails, formBuilderFormDetails.toArray());
 
         verifyCommonMockCalls();
-        verify(formType, times(1)).get();
         verifyFilterFormBuilderObsMockCall(1);
         verifyCreateFormDetailsMockCall(1);
     }
 
     @Test
     public void shouldReturnFormDetailsOfTypeV2ForGivenPatientUuidAndNoFormTypeIsProvided() {
-
-        FormType formType = mockFormBuilderFormType();
-
         mockFilterFormBuilderObs();
 
         mockStatic(FormDetailsMapper.class);
@@ -138,20 +131,15 @@ public class BahmniFormDetailsServiceImplTest {
         containsInAnyOrder(expectedFormDetails, formBuilderFormDetails.toArray());
 
         verifyCommonMockCalls();
-        verify(formType, times(1)).get();
         verifyFilterFormBuilderObsMockCall(1);
         verifyCreateFormDetailsMockCall(1);
     }
 
     @Test
     public void shouldReturnEmptyCollectionOfFormDetailsIfFormTypeIsAvailableButNotV2() {
-
-        FormType formType = mockFormBuilderFormType();
-
-        Collection<FormDetails> formBuilderFormDetails = bahmniFormDetailsService.getFormDetails("patient-uuid", "v1", -1);
+        Collection<FormDetails> formBuilderFormDetails = bahmniFormDetailsService.getFormDetails("patient-uuid", FormType.FORMS1, -1);
 
         assertEquals(0, formBuilderFormDetails.size());
-        verify(formType, times(1)).get();
     }
 
     @Test
@@ -161,18 +149,15 @@ public class BahmniFormDetailsServiceImplTest {
 
         mockFilterFormBuilderObs();
 
-        FormType formType = mockFormBuilderFormType();
-
         mockStatic(FormDetailsMapper.class);
         when(FormDetailsMapper.createFormDetails(anyListOf(Obs.class), any(FormType.class)))
                 .thenReturn(singletonList(formDetails));
-        Collection<FormDetails> formBuilderFormDetails = bahmniFormDetailsService.getFormDetails("patient-uuid", "v2", 1);
+        Collection<FormDetails> formBuilderFormDetails = bahmniFormDetailsService.getFormDetails("patient-uuid", FormType.FORMS2, 1);
 
         assertEquals(1, formBuilderFormDetails.size());
         assertEquals(formDetails, formBuilderFormDetails.iterator().next());
 
         verifyCommonMockCalls();
-        verify(formType, times(1)).get();
 
         verifyFilterFormBuilderObsMockCall(1);
 
@@ -200,13 +185,12 @@ public class BahmniFormDetailsServiceImplTest {
                 .thenReturn(Collections.emptyList());
 
         mockFilterFormBuilderObs();
-        FormType formType = mockFormBuilderFormType();
 
         mockStatic(FormDetailsMapper.class);
         when(FormDetailsMapper.createFormDetails(anyListOf(Obs.class), any(FormType.class)))
                 .thenReturn(singletonList(formDetails));
 
-        Collection<FormDetails> actualFormDetailsCollection = bahmniFormDetailsService.getFormDetails(patientUuid, "v2", visitUuid, null);
+        Collection<FormDetails> actualFormDetailsCollection = bahmniFormDetailsService.getFormDetails(patientUuid, FormType.FORMS2, visitUuid, null);
 
         assertEquals(1, actualFormDetailsCollection.size());
         assertEquals(formDetails, actualFormDetailsCollection.iterator().next());
@@ -219,8 +203,6 @@ public class BahmniFormDetailsServiceImplTest {
                 any(Boolean.class));
         verify(bahmniVisitService, times(1)).getVisitSummary(visitUuid);
         verify(bahmniProgramWorkflowService, times(1)).getEncountersByPatientProgramUuid(null);
-
-        verify(formType, times(1)).get();
 
         verifyFilterFormBuilderObsMockCall(1);
 
@@ -235,13 +217,12 @@ public class BahmniFormDetailsServiceImplTest {
                 .thenReturn(singletonList(encounter));
 
         mockFilterFormBuilderObs();
-        FormType formType = mockFormBuilderFormType();
 
         mockStatic(FormDetailsMapper.class);
         when(FormDetailsMapper.createFormDetails(anyListOf(Obs.class), any(FormType.class)))
                 .thenReturn(singletonList(formDetails));
 
-        Collection<FormDetails> actualFormDetailsCollection = bahmniFormDetailsService.getFormDetails(patientUuid, "v2", null, patientProgramUuid);
+        Collection<FormDetails> actualFormDetailsCollection = bahmniFormDetailsService.getFormDetails(patientUuid, FormType.FORMS2, null, patientProgramUuid);
 
         assertEquals(1, actualFormDetailsCollection.size());
         assertEquals(formDetails, actualFormDetailsCollection.iterator().next());
@@ -254,8 +235,6 @@ public class BahmniFormDetailsServiceImplTest {
                 any(Boolean.class));
         verify(bahmniVisitService, times(1)).getVisitSummary(null);
         verify(bahmniProgramWorkflowService, times(1)).getEncountersByPatientProgramUuid(patientProgramUuid);
-
-        verify(formType, times(1)).get();
 
         verifyFilterFormBuilderObsMockCall(1);
 
@@ -270,13 +249,12 @@ public class BahmniFormDetailsServiceImplTest {
         when(encounter.getVisit()).thenReturn(visit);
 
         mockFilterFormBuilderObs();
-        FormType formType = mockFormBuilderFormType();
 
         mockStatic(FormDetailsMapper.class);
         when(FormDetailsMapper.createFormDetails(anyListOf(Obs.class), any(FormType.class)))
                 .thenReturn(singletonList(formDetails));
 
-        Collection<FormDetails> actualFormDetailsCollection = bahmniFormDetailsService.getFormDetails(patientUuid, "v2", visitUuid, patientProgramUuid);
+        Collection<FormDetails> actualFormDetailsCollection = bahmniFormDetailsService.getFormDetails(patientUuid, FormType.FORMS2, visitUuid, patientProgramUuid);
 
         assertEquals(1, actualFormDetailsCollection.size());
         assertEquals(formDetails, actualFormDetailsCollection.iterator().next());
@@ -289,8 +267,6 @@ public class BahmniFormDetailsServiceImplTest {
                 any(Boolean.class));
         verify(bahmniVisitService, times(1)).getVisitSummary(visitUuid);
         verify(bahmniProgramWorkflowService, times(1)).getEncountersByPatientProgramUuid(patientProgramUuid);
-
-        verify(formType, times(1)).get();
 
         verifyFilterFormBuilderObsMockCall(1);
 
@@ -305,7 +281,7 @@ public class BahmniFormDetailsServiceImplTest {
                 .thenReturn(null);
 
         Collection<FormDetails> actualFormDetailsCollection = bahmniFormDetailsService
-                .getFormDetails(patientUuid, "v2", visitUuid, patientProgramUuid);
+                .getFormDetails(patientUuid, FormType.FORMS2, visitUuid, patientProgramUuid);
 
         assertEquals(0, actualFormDetailsCollection.size());
 
@@ -318,13 +294,6 @@ public class BahmniFormDetailsServiceImplTest {
     private void verifyCreateFormDetailsMockCall(int wantedNumberOfInvocations) {
         verifyStatic(VerificationModeFactory.times(wantedNumberOfInvocations));
         FormDetailsMapper.createFormDetails(anyListOf(Obs.class), any(FormType.class));
-    }
-
-    private FormType mockFormBuilderFormType() {
-        FormType formType = mock(FormType.class);
-        Whitebox.setInternalState(FormType.class, "FORM_BUILDER_FORMS", formType);
-        when(formType.get()).thenReturn("v2");
-        return formType;
     }
 
     private void verifyFilterFormBuilderObsMockCall(int wantedNumberOfInvocations) {
@@ -349,7 +318,7 @@ public class BahmniFormDetailsServiceImplTest {
 
     private void shouldReturnEmptyCollectionsOfFormDetailsIfPatientDoesNotHaveVisitsOrEncounters() {
 
-        Collection<FormDetails> formDetailsCollection = bahmniFormDetailsService.getFormDetails(patientUuid, "v2", -1);
+        Collection<FormDetails> formDetailsCollection = bahmniFormDetailsService.getFormDetails(patientUuid, FormType.FORMS2, -1);
 
         assertEquals(0, formDetailsCollection.size());
 

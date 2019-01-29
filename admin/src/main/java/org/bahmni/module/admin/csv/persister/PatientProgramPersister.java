@@ -42,7 +42,7 @@ public class PatientProgramPersister implements EntityPersister<PatientProgramRo
 
     @Override
     public Messages persist(PatientProgramRow patientProgramRow) {
-        // This validation is needed as patientservice get returns all patients for empty patient identifier
+        // This validation is needed as patientservice toString returns all patients for empty patient identifier
         if (StringUtils.isEmpty(patientProgramRow.patientIdentifier)) {
             return noMatchingPatients(patientProgramRow);
         }

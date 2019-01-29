@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.forms2.contract.form.FormType;
-import org.bahmni.module.bahmnicore.forms2.contract.form.data.FormDetails;
+import org.bahmni.module.bahmnicore.forms2.contract.FormType;
+import org.bahmni.module.bahmnicore.forms2.contract.FormDetails;
 import org.bahmni.module.bahmnicore.forms2.service.BahmniFormDetailsService;
 import org.openmrs.module.webservices.rest.web.RestConstants;
 import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestController;
@@ -52,9 +52,10 @@ public class BahmniFormDetailsController extends BaseRestController {
             @RequestParam(value = "visitUuid", required = false) String visitUuid,
             @RequestParam(value = "patientProgramUuid", required = false) String patientProgramUuid) {
 
+        FormType typeOfForm = FormType.valueOfType(formType);
         if (isNotBlank(visitUuid) || isNotBlank(patientProgramUuid)) {
-            return bahmniFormDetailsService.getFormDetails(patientUuid, formType, visitUuid, patientProgramUuid);
+            return bahmniFormDetailsService.getFormDetails(patientUuid, typeOfForm, visitUuid, patientProgramUuid);
         }
-        return bahmniFormDetailsService.getFormDetails(patientUuid, formType, numberOfVisits);
+        return bahmniFormDetailsService.getFormDetails(patientUuid, typeOfForm, numberOfVisits);
     }
 }

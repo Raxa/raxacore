@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
-import org.bahmni.module.bahmnicore.forms2.contract.form.data.FormDetails;
+import org.bahmni.module.bahmnicore.forms2.contract.FormDetails;
+import org.bahmni.module.bahmnicore.forms2.contract.FormType;
 import org.bahmni.module.bahmnicore.forms2.service.BahmniFormDetailsService;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,13 +34,13 @@ public class BahmniFormDetailsControllerTest {
     @Test
     public void shouldReturnCollectionOfFormDetailsGivenPatienUuidFormTypeAndNumberOfVisits() {
         FormDetails formDetails = mock(FormDetails.class);
-        when(bahmniFormDetailsService.getFormDetails(patientUuid, formType, -1))
+        when(bahmniFormDetailsService.getFormDetails(patientUuid, FormType.FORMS2, -1))
                 .thenReturn(Collections.singletonList(formDetails));
 
         Collection<FormDetails> actualFormDetails = bahmniFormDetailsController.getFormDetails(patientUuid, formType, -1, null, null);
 
         assertFormDetails(formDetails, actualFormDetails);
-        verify(bahmniFormDetailsService, times(1)).getFormDetails(patientUuid, formType, -1);
+        verify(bahmniFormDetailsService, times(1)).getFormDetails(patientUuid, FormType.FORMS2, -1);
     }
 
     private void assertFormDetails(FormDetails formDetails, Collection<FormDetails> actualFormDetails) {
@@ -51,12 +52,12 @@ public class BahmniFormDetailsControllerTest {
     public void shouldReturnCollectionOfFormDetailsGivenPatientUuidFormTypeVisitUuidAndPatientProgramUuid() {
         FormDetails formDetails = mock(FormDetails.class);
 
-        when(bahmniFormDetailsService.getFormDetails(patientUuid, formType, visitUuid, patientProgramUuid))
+        when(bahmniFormDetailsService.getFormDetails(patientUuid, FormType.FORMS2, visitUuid, patientProgramUuid))
                 .thenReturn(Collections.singletonList(formDetails));
 
         Collection<FormDetails> actualFormDetails = bahmniFormDetailsController.getFormDetails(patientUuid, formType, -1, visitUuid, patientProgramUuid);
 
         assertFormDetails(formDetails, actualFormDetails);
-        verify(bahmniFormDetailsService, times(1)).getFormDetails(patientUuid, formType, visitUuid, patientProgramUuid);
+        verify(bahmniFormDetailsService, times(1)).getFormDetails(patientUuid, FormType.FORMS2, visitUuid, patientProgramUuid);
     }
 }

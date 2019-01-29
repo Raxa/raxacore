@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.forms2.mapper;
 
-import org.bahmni.module.bahmnicore.forms2.contract.form.FormType;
-import org.bahmni.module.bahmnicore.forms2.contract.form.data.FormDetails;
+import org.bahmni.module.bahmnicore.forms2.contract.FormType;
+import org.bahmni.module.bahmnicore.forms2.contract.FormDetails;
 import org.bahmni.module.bahmnicore.forms2.util.FormUtil;
 import org.openmrs.Encounter;
 import org.openmrs.Obs;
@@ -31,11 +31,11 @@ public class FormDetailsMapper {
 
         FormDetails formDetails = new FormDetails();
 
-        formDetails.setFormType(formType.get());
-        if (formType.equals(FormType.FORM_BUILDER_FORMS)) {
+        formDetails.setFormType(formType.toString());
+        if (formType.equals(FormType.FORMS2)) {
             formDetails.setFormName(FormUtil.getFormNameFromFieldPath(obs.getFormFieldPath()));
             formDetails.setFormVersion(FormUtil.getFormVersionFromFieldPath(obs.getFormFieldPath()));
-        } else if (formType.equals(FormType.ALL_OBSERVATION_TEMPLATE_FORMS)) {
+        } else if (formType.equals(FormType.FORMS1)) {
             formDetails.setFormName(obs.getConcept().getName().getName());
         }
         formDetails.setEncounterUuid(encounter.getUuid());

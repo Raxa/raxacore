@@ -1,8 +1,8 @@
 package org.bahmni.module.bahmnicore.forms2.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bahmni.module.bahmnicore.forms2.contract.form.FormType;
-import org.bahmni.module.bahmnicore.forms2.contract.form.data.FormDetails;
+import org.bahmni.module.bahmnicore.forms2.contract.FormType;
+import org.bahmni.module.bahmnicore.forms2.contract.FormDetails;
 import org.bahmni.module.bahmnicore.forms2.service.BahmniFormDetailsService;
 import org.bahmni.module.bahmnicore.forms2.util.Form2ObsUtil;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
@@ -55,7 +55,7 @@ public class BahmniFormDetailsServiceImpl implements BahmniFormDetailsService {
     }
 
     @Override
-    public Collection<FormDetails> getFormDetails(String patientUuid, String formType, int numberOfVisits) {
+    public Collection<FormDetails> getFormDetails(String patientUuid, FormType formType, int numberOfVisits) {
         Patient patient = getPatient(patientUuid);
         List<Visit> visits = visitService.getVisitsByPatient(patient);
         List<Visit> limitedVisits = limitVisits(visits, numberOfVisits);
@@ -82,18 +82,18 @@ public class BahmniFormDetailsServiceImpl implements BahmniFormDetailsService {
         return encounterService.getEncounters(encounterSearchCriteria);
     }
 
-    private Collection<FormDetails> getFormDetails(Patient patient, List<Encounter> encounters, String formType) {
+    private Collection<FormDetails> getFormDetails(Patient patient, List<Encounter> encounters, FormType formType) {
         Collection<FormDetails> formDetails = new ArrayList<>();
         List<Obs> observations = obsService.getObservations(singletonList(patient.getPerson()), encounters,
                 null, null, null, null, null, null, null, null, null, false);
-        if (FormType.FORM_BUILDER_FORMS.get().equals(formType) || StringUtils.isBlank(formType)) {
-            formDetails = createFormDetails(Form2ObsUtil.filterFormBuilderObs(observations), FormType.FORM_BUILDER_FORMS);
+        if (FormType.FORMS2.equals(formType) || (formType == null)) {
+            formDetails = createFormDetails(Form2ObsUtil.filterFormBuilderObs(observations), FormType.FORMS2);
         }
         return formDetails;
     }
 
     @Override
-    public Collection<FormDetails> getFormDetails(String patientUuid, String formType, String visitUuid,
+    public Collection<FormDetails> getFormDetails(String patientUuid, FormType formType, String visitUuid,
                                                   String patientProgramUuid) {
         Patient patient = getPatient(patientUuid);
         Visit visit = bahmniVisitService.getVisitSummary(visitUuid);

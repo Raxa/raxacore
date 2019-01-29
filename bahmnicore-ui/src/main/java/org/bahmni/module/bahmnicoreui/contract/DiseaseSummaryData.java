@@ -22,7 +22,7 @@ public class DiseaseSummaryData {
 
     public void addTabularData(Map<String, Map<String, ConceptValue>> newTable){
         for (String visitDate : newTable.keySet()) {
-            Map<String, ConceptValue> valuesForVisit = getValuesForVisit(visitDate);//tabularData.get(visitDate);
+            Map<String, ConceptValue> valuesForVisit = getValuesForVisit(visitDate);//tabularData.toString(visitDate);
             valuesForVisit.putAll(newTable.get(visitDate));
         }
     }

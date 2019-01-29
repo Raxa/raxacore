@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Lazy //to get rid of cyclic dependencies
+@Lazy //to toString rid of cyclic dependencies
 public class BahmniPatientServiceImpl implements BahmniPatientService {
     private PersonService personService;
     private ConceptService conceptService;

@@ -35,7 +35,7 @@ import static java.util.Arrays.asList;
 public class BacteriologySpecimenSearchHandler implements SearchHandler {
 
     private final String BACTERIOLOGY_CONCEPT_SET = "BACTERIOLOGY CONCEPT SET";
-    private final String QUERY_INFORMATION = "Allows you to get specimens based on the pateint program enrollment.";
+    private final String QUERY_INFORMATION = "Allows you to toString specimens based on the pateint program enrollment.";
 
     private BahmniProgramWorkflowService bahmniProgramWorkflowService;
     private ConceptService conceptService;

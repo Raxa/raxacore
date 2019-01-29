@@ -1,7 +1,7 @@
 package org.bahmni.module.bahmnicore.forms2.mapper;
 
-import org.bahmni.module.bahmnicore.forms2.contract.form.FormType;
-import org.bahmni.module.bahmnicore.forms2.contract.form.data.FormDetails;
+import org.bahmni.module.bahmnicore.forms2.contract.FormType;
+import org.bahmni.module.bahmnicore.forms2.contract.FormDetails;
 import org.bahmni.module.bahmnicore.forms2.util.FormUtil;
 import org.bahmni.module.bahmnicore.model.Provider;
 import org.junit.Before;
@@ -37,7 +37,7 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 @RunWith(PowerMockRunner.class)
 public class FormDetailsMapperTest {
 
-    private String formFieldPath = "FormName.2/1-0";
+    private String formFieldPath = "formName.2/1-0";
     private String encounterUuid = "encounter-Uuid";
     private String visitUuid = "visitUuid";
     private String providerName = "Super Man";
@@ -56,14 +56,14 @@ public class FormDetailsMapperTest {
     @Before
     public void setUp() {
 
-        mockStatic(FormUtil.class);
+        //mockStatic(FormUtil.class);
 
         when(obs.getEncounter()).thenReturn(encounter);
         when(obs.getCreator()).thenReturn(anotherCreator);
         when(obs.getFormFieldPath()).thenReturn(formFieldPath);
         when(encounter.getVisit()).thenReturn(visit);
-        when(FormUtil.getFormNameFromFieldPath(formFieldPath)).thenReturn(formName);
-        when(FormUtil.getFormVersionFromFieldPath(formFieldPath)).thenReturn(formVersion);
+//        when(FormUtil.getFormNameFromFieldPath(formFieldPath)).thenReturn(formName);
+//        when(FormUtil.getFormVersionFromFieldPath(formFieldPath)).thenReturn(formVersion);
 
         when(encounter.getUuid()).thenReturn(encounterUuid);
         when(encounter.getEncounterDatetime()).thenReturn(encounterDateTime);
@@ -80,8 +80,8 @@ public class FormDetailsMapperTest {
     public void shouldReturnFormDetailsFromGivenObsAndFormTypeOfFormBuilder() {
 
         FormType formType = mock(FormType.class);
-        Whitebox.setInternalState(FormType.class, "FORM_BUILDER_FORMS", formType);
-        when(formType.get()).thenReturn("v2");
+        Whitebox.setInternalState(FormType.class, "FORMS2", formType);
+        when(formType.toString()).thenReturn("v2");
 
         Collection<FormDetails> formDetailsCollection = FormDetailsMapper
                 .createFormDetails(singletonList(obs), formType);
@@ -96,12 +96,10 @@ public class FormDetailsMapperTest {
         verifyCommonData(formDetails);
 
         verify(obs, times(2)).getFormFieldPath();
-        verifyStatic(VerificationModeFactory.times(1));
-        FormUtil.getFormNameFromFieldPath(formFieldPath);
-        verifyStatic(VerificationModeFactory.times(1));
-        FormUtil.getFormVersionFromFieldPath(formFieldPath);
-        verify(formType, times(1)).get();
-
+        //verifyStatic(VerificationModeFactory.times(1));
+        assertEquals(formName, FormUtil.getFormNameFromFieldPath(formFieldPath));
+        //verifyStatic(VerificationModeFactory.times(1));
+        assertEquals(formVersion, FormUtil.getFormVersionFromFieldPath(formFieldPath));
         verifyCommonMockCalls();
 
     }
@@ -110,8 +108,8 @@ public class FormDetailsMapperTest {
     public void shouldReturnFormDetailsFromGivenObsAndFormTypeOfAllObservationTemplates() {
 
         FormType formType = mock(FormType.class);
-        Whitebox.setInternalState(FormType.class, "ALL_OBSERVATION_TEMPLATE_FORMS", formType);
-        when(formType.get()).thenReturn("v1");
+        Whitebox.setInternalState(FormType.class, "FORMS1", formType);
+        when(formType.toString()).thenReturn("v1");
 
         Concept concept = mock(Concept.class);
         when(obs.getConcept()).thenReturn(concept);
@@ -131,8 +129,6 @@ public class FormDetailsMapperTest {
         assertEquals(formDetails.getFormName(), obsName);
         assertEquals(0, formDetails.getFormVersion());
         verifyCommonData(formDetails);
-
-        verify(formType, times(1)).get();
         verifyCommonMockCalls();
 
     }
@@ -140,7 +136,7 @@ public class FormDetailsMapperTest {
     @Test
     public void shouldReturnFormDetailsWithTwoProvidersFromGivenTwoObsAndFormTypeOfFormBuilder() {
 
-        String anotherObsFormFieldPath = "FormName.2/2-0";
+        String anotherObsFormFieldPath = "formName.2/2-0";
         String anotherProviderName = "Another Super Man";
         String anotherProviderUuid = "Another provider-uuid";
 
@@ -151,16 +147,17 @@ public class FormDetailsMapperTest {
         when(anotherObs.getEncounter()).thenReturn(encounter);
         when(anotherObs.getCreator()).thenReturn(anotherCreator);
         when(anotherObs.getFormFieldPath()).thenReturn(anotherObsFormFieldPath);
-        when(FormUtil.getFormNameFromFieldPath(anotherObsFormFieldPath)).thenReturn(formName);
-        when(FormUtil.getFormVersionFromFieldPath(anotherObsFormFieldPath)).thenReturn(formVersion);
+//        when(FormUtil.getFormNameFromFieldPath(anotherObsFormFieldPath)).thenReturn(formName);
+//        when(FormUtil.getFormVersionFromFieldPath(anotherObsFormFieldPath)).thenReturn(formVersion);
 
         when(anotherCreator.getPersonName()).thenReturn(anotherPersonName);
         when(anotherPersonName.getFullName()).thenReturn(anotherProviderName);
         when(anotherCreator.getUuid()).thenReturn(anotherProviderUuid);
 
-        FormType formType = mock(FormType.class);
-        Whitebox.setInternalState(FormType.class, "FORM_BUILDER_FORMS", formType);
-        when(formType.get()).thenReturn("v2");
+//        FormType formType = mock(FormType.class);
+//        Whitebox.setInternalState(FormType.class, "FORMS2", formType);
+//        when(formType.toString()).thenReturn("v2");
+        FormType formType = FormType.FORMS2;
 
         FormDetails formDetails = mock(FormDetails.class);
         when(formDetails.getFormName()).thenReturn(formName);
@@ -195,15 +192,15 @@ public class FormDetailsMapperTest {
 
         verify(obs, times(2)).getFormFieldPath();
         verify(anotherObs, times(2)).getFormFieldPath();
-        verifyStatic(VerificationModeFactory.times(1));
+        //verifyStatic(VerificationModeFactory.times(1));
         FormUtil.getFormNameFromFieldPath(formFieldPath);
-        verifyStatic(VerificationModeFactory.times(1));
+        //verifyStatic(VerificationModeFactory.times(1));
         FormUtil.getFormNameFromFieldPath(anotherObsFormFieldPath);
-        verifyStatic(VerificationModeFactory.times(1));
+        //verifyStatic(VerificationModeFactory.times(1));
         FormUtil.getFormVersionFromFieldPath(formFieldPath);
-        verifyStatic(VerificationModeFactory.times(1));
+        //verifyStatic(VerificationModeFactory.times(1));
         FormUtil.getFormVersionFromFieldPath(anotherObsFormFieldPath);
-        verify(formType, times(2)).get();
+        //verify(formType, times(2)).toString();
     }
 
     private void verifyCommonData(FormDetails formDetails) {

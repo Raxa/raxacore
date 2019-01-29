@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.forms2.contract.form.data;
 
+import org.bahmni.module.bahmnicore.forms2.contract.FormDetails;
 import org.junit.Before;
 import org.junit.Test;
 

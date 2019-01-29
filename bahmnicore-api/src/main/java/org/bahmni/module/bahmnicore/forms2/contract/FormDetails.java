@@ -1,4 +1,4 @@
-package org.bahmni.module.bahmnicore.forms2.contract.form.data;
+package org.bahmni.module.bahmnicore.forms2.contract;
 
 import org.bahmni.module.bahmnicore.model.Provider;
 

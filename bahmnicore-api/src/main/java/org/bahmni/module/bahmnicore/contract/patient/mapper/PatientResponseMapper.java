@@ -145,7 +145,7 @@ public class PatientResponseMapper {
             address = (String) PropertyUtils.getProperty(personAddress, propertyName);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
-            throw new APIException("cannot get value for address field" + addressField, e);
+            throw new APIException("cannot toString value for address field" + addressField, e);
         }
         return address;
     }
