@@ -1,10 +1,9 @@
-package org.bahmni.module.bahmnicore.service.impl;
+package org.bahmni.module.bahmnicore.forms2.service.impl;
 
 import org.bahmni.module.bahmnicore.forms2.contract.FormType;
 import org.bahmni.module.bahmnicore.forms2.contract.FormDetails;
 import org.bahmni.module.bahmnicore.forms2.mapper.FormDetailsMapper;
-import org.bahmni.module.bahmnicore.forms2.service.impl.BahmniFormDetailsServiceImpl;
-import org.bahmni.module.bahmnicore.forms2.util.Form2ObsUtil;
+import org.bahmni.module.bahmnicore.forms2.util.FormUtil;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.module.bahmnicore.service.BahmniVisitService;
 import org.junit.Before;
@@ -25,7 +24,6 @@ import org.openmrs.api.VisitService;
 import org.openmrs.parameter.EncounterSearchCriteria;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 
 import java.security.InvalidParameterException;
 import java.util.Arrays;
@@ -45,7 +43,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
-@PrepareForTest({FormType.class, Form2ObsUtil.class, FormDetailsMapper.class})
+@PrepareForTest({FormType.class, FormUtil.class, FormDetailsMapper.class})
 @RunWith(PowerMockRunner.class)
 public class BahmniFormDetailsServiceImplTest {
 
@@ -102,7 +100,6 @@ public class BahmniFormDetailsServiceImplTest {
     @Test
     public void shouldReturnFormDetailsForGivenPatientUuidAndFormTypeIsV2() {
         mockFilterFormBuilderObs();
-
         mockStatic(FormDetailsMapper.class);
         List<FormDetails> expectedFormDetails = Arrays.asList(formDetails, anotherFormDetails);
         when(FormDetailsMapper.createFormDetails(anyListOf(Obs.class), any(FormType.class)))
@@ -298,12 +295,12 @@ public class BahmniFormDetailsServiceImplTest {
 
     private void verifyFilterFormBuilderObsMockCall(int wantedNumberOfInvocations) {
         verifyStatic(VerificationModeFactory.times(wantedNumberOfInvocations));
-        Form2ObsUtil.filterFormBuilderObs(obs);
+        FormUtil.filterFormBuilderObs(obs);
     }
 
     private void mockFilterFormBuilderObs() {
-        mockStatic(Form2ObsUtil.class);
-        when(Form2ObsUtil.filterFormBuilderObs(obs)).thenReturn(obs);
+        mockStatic(FormUtil.class);
+        when(FormUtil.filterFormBuilderObs(obs)).thenReturn(obs);
     }
 
     private void verifyCommonMockCalls() {

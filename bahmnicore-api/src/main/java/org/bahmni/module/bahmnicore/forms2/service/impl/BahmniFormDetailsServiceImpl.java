@@ -1,10 +1,9 @@
 package org.bahmni.module.bahmnicore.forms2.service.impl;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.forms2.contract.FormType;
 import org.bahmni.module.bahmnicore.forms2.contract.FormDetails;
 import org.bahmni.module.bahmnicore.forms2.service.BahmniFormDetailsService;
-import org.bahmni.module.bahmnicore.forms2.util.Form2ObsUtil;
+import org.bahmni.module.bahmnicore.forms2.util.FormUtil;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.bahmni.module.bahmnicore.service.BahmniVisitService;
 import org.openmrs.Encounter;
@@ -87,7 +86,7 @@ public class BahmniFormDetailsServiceImpl implements BahmniFormDetailsService {
         List<Obs> observations = obsService.getObservations(singletonList(patient.getPerson()), encounters,
                 null, null, null, null, null, null, null, null, null, false);
         if (FormType.FORMS2.equals(formType) || (formType == null)) {
-            formDetails = createFormDetails(Form2ObsUtil.filterFormBuilderObs(observations), FormType.FORMS2);
+            formDetails = createFormDetails(FormUtil.filterFormBuilderObs(observations), FormType.FORMS2);
         }
         return formDetails;
     }
