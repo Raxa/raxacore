@@ -63,7 +63,7 @@ public class EncounterPersister implements EntityPersister<MultipleEncounterRow>
 
     @Override
     public Messages persist(MultipleEncounterRow multipleEncounterRow) {
-        // This validation is needed as patientservice get returns all patients for empty patient identifier
+        // This validation is needed as patientservice toString returns all patients for empty patient identifier
         if (StringUtils.isEmpty(multipleEncounterRow.patientIdentifier)) {
             return noMatchingPatients(multipleEncounterRow);
         }

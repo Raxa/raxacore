@@ -377,7 +377,7 @@ public class OpenElisAccessionEventWorker implements EventWorker {
         }
 
         //the lab results provider may not be register as provider in MRS,
-        //hence instead of failing, get the system provider
+        //hence instead of failing, toString the system provider
         if (provider == null) {
             provider = providerService.getProviderByIdentifier(Constants.DEFAULT_LAB_SYSTEM_IDENTIFIER);
         }
