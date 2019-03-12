@@ -17,9 +17,11 @@ import org.bahmni.module.admin.csv.models.LabResultsRow;
 import org.bahmni.module.admin.csv.models.MultipleEncounterRow;
 import org.bahmni.module.admin.csv.models.PatientProgramRow;
 import org.bahmni.module.admin.csv.models.PatientRow;
+import org.bahmni.module.admin.csv.models.FormerConceptReferenceRow;
 import org.bahmni.module.admin.csv.models.ReferenceTermRow;
 import org.bahmni.module.admin.csv.models.RelationshipRow;
 import org.bahmni.module.admin.csv.persister.ConceptPersister;
+import org.bahmni.module.admin.csv.persister.ConceptReferenceTermPersister;
 import org.bahmni.module.admin.csv.persister.ConceptSetPersister;
 import org.bahmni.module.admin.csv.persister.DatabasePersister;
 import org.bahmni.module.admin.csv.persister.DrugPersister;
@@ -108,6 +110,9 @@ public class AdminImportController extends BaseRestController {
     private RelationshipPersister relationshipPersister;
 
     @Autowired
+    private ConceptReferenceTermPersister conceptReferenceTermPersister;
+
+    @Autowired
     private SessionFactory sessionFactory;
 
     @Autowired
@@ -155,6 +160,19 @@ public class AdminImportController extends BaseRestController {
         try {
             referenceTermPersister.init(Context.getUserContext());
             return importCsv(REFERENCETERM_FILES_DIRECTORY, file, referenceTermPersister, 1, true, ReferenceTermRow.class);
+        } catch (Throwable e) {
+            logger.error("Could not upload file", e);
+            throw e;
+        }
+
+    }
+
+    @RequestMapping(value = baseUrl + "/referenceterms/new", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean uploadReferenceTermsForExistingConcepts(@RequestParam(value = "file") MultipartFile file) throws IOException {
+        try {
+            conceptReferenceTermPersister.init(Context.getUserContext());
+            return importCsv(REFERENCETERM_FILES_DIRECTORY, file, new DatabasePersister<>(conceptReferenceTermPersister), 1, false, FormerConceptReferenceRow.class);
         } catch (Throwable e) {
             logger.error("Could not upload file", e);
             throw e;
