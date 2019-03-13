@@ -11,13 +11,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping(value = "/rest/v1/reference-data/resources")
 public class ResourcesController extends BaseRestController {
     public static final String UNIDENTIFIED_RESOURCE = "No resource was found for specified uuid";
     private ConceptService conceptService;
-    AttributableResourceMapper attributeResourceMapper;
+    private AttributableResourceMapper attributeResourceMapper;
 
     @Autowired
     public ResourcesController(ConceptService conceptService) {
@@ -26,6 +27,7 @@ public class ResourcesController extends BaseRestController {
     }
 
     @RequestMapping(value = "/{uuid}", method = RequestMethod.GET)
+    @ResponseBody
     public Resource getResourceFromConcept(@PathVariable("uuid") String uuid) {
         final Concept concept = conceptService.getConceptByUuid(uuid);
         if (concept == null) {

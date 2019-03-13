@@ -16,6 +16,7 @@ public class SellableTypeEvent implements ConceptServiceOperationEvent {
 
     public static final String RESOURCE_TITLE = "reference data";
     public static final String SELLABLE_ATTR_NAME = "sellable";
+    public static final String RESOURCES = "resources";
     private final String url;
     private final String category;
     private List<String> supportedOperations = Arrays.asList("saveConcept", "updateConcept", "retireConcept", "purgeConcept");
@@ -28,7 +29,7 @@ public class SellableTypeEvent implements ConceptServiceOperationEvent {
     @Override
     public Event asAtomFeedEvent(Object[] arguments) throws URISyntaxException {
         Concept concept = (Concept) arguments[0];
-        String url = String.format(this.url, "resources", concept.getUuid());
+        String url = String.format(this.url, RESOURCES, concept.getUuid());
         return new Event(UUID.randomUUID().toString(), RESOURCE_TITLE, DateTime.now(), new URI(url), url, this.category);
     }
 
