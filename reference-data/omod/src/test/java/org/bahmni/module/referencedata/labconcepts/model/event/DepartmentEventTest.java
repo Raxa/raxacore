@@ -71,7 +71,7 @@ public class DepartmentEventTest {
 
     @Test
     public void shouldNotCreateEventForDepartmentEventIfThereIsDifferentConceptClass() throws Exception {
-        concept = new ConceptBuilder().withClassUUID("some").withUUID(DEPARTMENT_CONCEPT_UUID).build();
+        concept = new ConceptBuilder().withClassUUID("some").withClass("some").withUUID(DEPARTMENT_CONCEPT_UUID).build();
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         assertTrue(events.isEmpty());
     }

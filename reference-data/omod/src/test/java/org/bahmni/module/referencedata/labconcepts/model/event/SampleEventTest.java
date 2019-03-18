@@ -71,7 +71,7 @@ public class SampleEventTest {
 
     @Test
     public void shouldNotCreateEventForSampleEventIfThereIsDifferentConceptClass() throws Exception {
-        concept = new ConceptBuilder().withClassUUID("some").withUUID(SAMPLE_CONCEPT_UUID).build();
+        concept = new ConceptBuilder().withClass("procedure").withClassUUID("some").withUUID(SAMPLE_CONCEPT_UUID).build();
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         assertTrue(events.isEmpty());
     }

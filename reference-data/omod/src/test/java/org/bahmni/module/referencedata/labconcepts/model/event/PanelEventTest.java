@@ -46,7 +46,7 @@ public class PanelEventTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        concept = new ConceptBuilder().withName("abc").withClassUUID(ConceptClass.LABSET_UUID).withUUID(PANEL_CONCEPT_UUID).build();
+        concept = new ConceptBuilder().withName("abc").withClass("LabSet").withClassUUID(ConceptClass.LABSET_UUID).withUUID(PANEL_CONCEPT_UUID).build();
 
         parentConcept = new ConceptBuilder().withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(concept).build();
 
@@ -73,7 +73,7 @@ public class PanelEventTest {
 
     @Test
     public void shouldNotCreateEventForPanelEventIfThereIsDifferentConceptClass() throws Exception {
-        concept = new ConceptBuilder().withClassUUID("some").withUUID(PANEL_CONCEPT_UUID).build();
+        concept = new ConceptBuilder().withClass("LabSet").withClassUUID("some").withUUID(PANEL_CONCEPT_UUID).build();
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         assertTrue(events.isEmpty());
     }

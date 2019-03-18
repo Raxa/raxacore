@@ -24,6 +24,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 public class ConceptReferenceTermPersisterIT extends BaseIntegrationTest {
 
@@ -175,9 +176,10 @@ public class ConceptReferenceTermPersisterIT extends BaseIntegrationTest {
         concept = conceptService.getConceptByName("Existing Concept");
         conceptMappings =  new ArrayList<>(concept.getConceptMappings());
         assertEquals(2, conceptMappings.size());
-        ConceptMap conceptMap1 = conceptMappings.get(0);
-        ConceptMap conceptMap2 = conceptMappings.get(1);
-
+        ConceptMap conceptMap1 = getConceptMapForSourceAndCode(conceptMappings, "org.openmrs.module.emrapi", "New Code");
+        assertNotNull("Should Have found Concept Map with the code [New Code]", conceptMap1);
+        ConceptMap conceptMap2 = getConceptMapForSourceAndCode(conceptMappings, "IT", "New Code 1");
+        assertNotNull("Should Have found Concept Map with the code [New Code 1]", conceptMap1);
         assertEquals("SAME-AS", StringUtils.upperCase(conceptMap1.getConceptMapType().getName()));
         assertEquals("TEST", StringUtils.upperCase(conceptMap2.getConceptMapType().getName()));
         assertEquals(conceptMap, conceptMap1);
@@ -189,6 +191,10 @@ public class ConceptReferenceTermPersisterIT extends BaseIntegrationTest {
 
         Context.flushSession();
         Context.closeSession();
+    }
+
+    private ConceptMap getConceptMapForSourceAndCode(ArrayList<ConceptMap> conceptMappings, String source, String code) {
+        return conceptMappings.stream().filter(conceptMap -> conceptMap.getConceptReferenceTerm().getConceptSource().getName().equals(source) && conceptMap.getConceptReferenceTerm().getCode().equals(code)).findFirst().get();
     }
 
     @Test

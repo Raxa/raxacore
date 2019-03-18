@@ -72,7 +72,7 @@ public class RadiologyTestEventTest {
 
     @Test
     public void shouldNotCreateEventForRadiologyEventIfThereIsDifferentConceptClass() throws Exception {
-        concept = new ConceptBuilder().withClassUUID("some").withUUID(RADIOLOGY_TEST_CONCEPT_UUID).build();
+        concept = new ConceptBuilder().withClass("random").withClassUUID("some").withUUID(RADIOLOGY_TEST_CONCEPT_UUID).build();
         List<Event> events = new Operation(ConceptService.class.getMethod("saveConcept", Concept.class)).apply(new Object[]{concept});
         assertTrue(events.isEmpty());
     }

@@ -43,7 +43,7 @@ public class AllTestsPanelsConceptSetEventTest {
         when(Context.getConceptService()).thenReturn(conceptService);
         testConcept = new ConceptBuilder().withClass(LabTest.LAB_TEST_CONCEPT_CLASS).build();
         panelConcept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).build();
-        parentConcept = new ConceptBuilder().withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withSetMember(testConcept).withSetMember(panelConcept).build();
+        parentConcept = new ConceptBuilder().withName(AllTestsAndPanels.ALL_TESTS_AND_PANELS).withClass("ConvSet").withSetMember(testConcept).withSetMember(panelConcept).build();
     }
 
     @Test

@@ -40,7 +40,7 @@ public class AllLabSamplesEventTest {
         when(Context.getConceptService()).thenReturn(conceptService);
         Concept concept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).build();
         Concept anotherConcept = new ConceptBuilder().withClassUUID(ConceptClass.LABSET_UUID).build();
-        parentConcept = new ConceptBuilder().withName(AllSamples.ALL_SAMPLES).withSetMember(concept).withSetMember(anotherConcept).build();
+        parentConcept = new ConceptBuilder().withName(AllSamples.ALL_SAMPLES).withClass("ConvSet").withSetMember(concept).withSetMember(anotherConcept).build();
 
     }
 
