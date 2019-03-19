@@ -81,7 +81,7 @@ public class BahmniFormDetailsControllerIT extends BaseIntegrationTest {
     }
 
     private void verifyBloodSampleFormDetails(FormDetails bloodSampleFormDetails) {
-        assertEquals("FORMS2", bloodSampleFormDetails.getFormType());
+        assertEquals("v2", bloodSampleFormDetails.getFormType());
         assertEquals("BloodSample", bloodSampleFormDetails.getFormName());
         assertEquals(2, bloodSampleFormDetails.getFormVersion());
         assertEquals("fcf11e2c-e59c-11e8-9f32-f2801f1b9fd1", bloodSampleFormDetails.getEncounterUuid());
@@ -94,7 +94,7 @@ public class BahmniFormDetailsControllerIT extends BaseIntegrationTest {
     }
 
     private void verifyVitalFormDetails(FormDetails vitalsFormDetails) {
-        assertEquals("FORMS2", vitalsFormDetails.getFormType());
+        assertEquals("v2", vitalsFormDetails.getFormType());
         assertEquals("Vitals", vitalsFormDetails.getFormName());
         assertEquals(1, vitalsFormDetails.getFormVersion());
         assertEquals("66f59ecc-e59a-11e8-9f32-f2801f1b9fd1", vitalsFormDetails.getEncounterUuid());

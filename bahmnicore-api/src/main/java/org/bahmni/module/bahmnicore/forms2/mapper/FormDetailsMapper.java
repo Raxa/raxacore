@@ -31,7 +31,7 @@ public class FormDetailsMapper {
 
         FormDetails formDetails = new FormDetails();
 
-        formDetails.setFormType(formType.toString());
+        formDetails.setFormType(formType.getType());
         if (formType.equals(FormType.FORMS2)) {
             formDetails.setFormName(FormUtil.getFormNameFromFieldPath(obs.getFormFieldPath()));
             formDetails.setFormVersion(FormUtil.getFormVersionFromFieldPath(obs.getFormFieldPath()));

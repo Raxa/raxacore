@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
-@PrepareForTest({FormUtil.class, FormType.class})
+@PrepareForTest({FormUtil.class})
 @RunWith(PowerMockRunner.class)
 public class FormDetailsMapperTest {
 
@@ -79,12 +79,8 @@ public class FormDetailsMapperTest {
     @Test
     public void shouldReturnFormDetailsFromGivenObsAndFormTypeOfFormBuilder() {
 
-        FormType formType = mock(FormType.class);
-        Whitebox.setInternalState(FormType.class, "FORMS2", formType);
-        when(formType.toString()).thenReturn("v2");
-
         Collection<FormDetails> formDetailsCollection = FormDetailsMapper
-                .createFormDetails(singletonList(obs), formType);
+                .createFormDetails(singletonList(obs), FormType.FORMS2);
 
         assertEquals(1, formDetailsCollection.size());
 
@@ -106,11 +102,6 @@ public class FormDetailsMapperTest {
 
     @Test
     public void shouldReturnFormDetailsFromGivenObsAndFormTypeOfAllObservationTemplates() {
-
-        FormType formType = mock(FormType.class);
-        Whitebox.setInternalState(FormType.class, "FORMS1", formType);
-        when(formType.toString()).thenReturn("v1");
-
         Concept concept = mock(Concept.class);
         when(obs.getConcept()).thenReturn(concept);
         ConceptName conceptName = mock(ConceptName.class);
@@ -119,7 +110,7 @@ public class FormDetailsMapperTest {
         when(conceptName.getName()).thenReturn(obsName);
 
         Collection<FormDetails> formDetailsCollection = FormDetailsMapper
-                .createFormDetails(singletonList(obs), formType);
+                .createFormDetails(singletonList(obs), FormType.FORMS1);
 
         assertEquals(1, formDetailsCollection.size());
 
