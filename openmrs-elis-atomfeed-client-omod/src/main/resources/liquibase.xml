@@ -104,4 +104,34 @@
             INSERT INTO visit_type (name, description, creator, uuid, date_created) VALUES ('LAB VISIT', 'Visits for lab visit by patient when the tests are not ordered through OpenMRS', 1, uuid(), curdate());
         </sql>
     </changeSet>
+
+    <changeSet id="elis-atomfeed-5-201905101200" author="Angshu,Bindu" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from scheduler_task_config where schedulable_class= "org.bahmni.module.elisatomfeedclient.api.task.OpenElisPatientFeedTask" and name = "OpenElis Patient Atom Feed Task";
+            </sqlCheck>
+        </preConditions>
+        <comment>rel3</comment>
+        <sqlFile path="V1_65__AddOpenElisPatientFeedTask.sql"/>
+    </changeSet>
+    <changeSet id="openmrs-atomfeed-offset-marker-201905101200" author="Angshu,Bindu">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from scheduler_task_config where schedulable_class= "org.openmrs.module.atomfeed.scheduler.tasks.EventPublisherTask" and name = "OpenMRS event publisher task";
+            </sqlCheck>
+        </preConditions>
+        <comment>adding OpenMRS event publisher task scheduler</comment>
+            <insert tableName="scheduler_task_config">
+                <column name="name" value="OpenMRS event publisher task"/>
+                <column name="schedulable_class" value="org.openmrs.module.atomfeed.scheduler.tasks.EventPublisherTask"/>
+                <column name="start_time" valueDate=" now() "/>
+                <column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss"/>
+                <column name="repeat_interval" value="2"/>
+                <column name="start_on_startup" value="1"/>
+                <column name="started" value="1"/>
+                <column name="created_by" value="1"/>
+                <column name="date_created" valueDate=" now() "/>
+                <column name="uuid" valueComputed=" uuid() "/>
+            </insert>
+    </changeSet>
 </databaseChangeLog>
