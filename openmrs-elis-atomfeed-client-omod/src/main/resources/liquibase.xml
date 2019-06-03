@@ -105,33 +105,16 @@
         </sql>
     </changeSet>
 
-    <changeSet id="elis-atomfeed-5-201905101200" author="Angshu,Bindu" context="rel3">
+    <changeSet id="elis-atomfeed-5-201906032010" author="Angshu,Bindu" context="r0.92">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 select count(*) from scheduler_task_config where schedulable_class= "org.bahmni.module.elisatomfeedclient.api.task.OpenElisPatientFeedTask" and name = "OpenElis Patient Atom Feed Task";
             </sqlCheck>
         </preConditions>
         <comment>rel3</comment>
-        <sqlFile path="V1_65__AddOpenElisPatientFeedTask.sql"/>
-    </changeSet>
-    <changeSet id="openmrs-atomfeed-offset-marker-201905101200" author="Angshu,Bindu">
-        <preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">
-                select count(*) from scheduler_task_config where schedulable_class= "org.openmrs.module.atomfeed.scheduler.tasks.EventPublisherTask" and name = "OpenMRS event publisher task";
-            </sqlCheck>
-        </preConditions>
-        <comment>adding OpenMRS event publisher task scheduler</comment>
-            <insert tableName="scheduler_task_config">
-                <column name="name" value="OpenMRS event publisher task"/>
-                <column name="schedulable_class" value="org.openmrs.module.atomfeed.scheduler.tasks.EventPublisherTask"/>
-                <column name="start_time" valueDate=" now() "/>
-                <column name="start_time_pattern" value="MM/dd/yyyy HH:mm:ss"/>
-                <column name="repeat_interval" value="2"/>
-                <column name="start_on_startup" value="1"/>
-                <column name="started" value="1"/>
-                <column name="created_by" value="1"/>
-                <column name="date_created" valueDate=" now() "/>
-                <column name="uuid" valueComputed=" uuid() "/>
-            </insert>
+        <sql>
+            INSERT INTO scheduler_task_config(name, schedulable_class, start_time, start_time_pattern, repeat_interval, start_on_startup, started, created_by, date_created, uuid)
+            VALUES ('OpenElis Patient Atom Feed Task', 'org.bahmni.module.elisatomfeedclient.api.task.OpenElisPatientFeedTask', now(), 'MM/dd/yyyy HH:mm:ss', 15, 1, 1, 1,  curdate(), uuid());
+        </sql>
     </changeSet>
 </databaseChangeLog>
