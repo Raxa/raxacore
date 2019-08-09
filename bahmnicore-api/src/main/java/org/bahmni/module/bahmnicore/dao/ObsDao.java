@@ -19,6 +19,8 @@ public interface ObsDao {
 
     List<Obs> getObsFor(String patientUuid, Concept rootConcept, Concept childConcept, List<Integer> visitIdsFor, Collection<Encounter> encounters, Date startDate, Date endDate);
 
+    List<Obs> getObsForFormBuilderForms(String patientUuid, List<String> formNames, List<Integer> visitIdsFor, Collection<Encounter> encounters, Date startDate, Date endDate);
+
     List<Obs> getLatestObsFor(String patientUuid, String conceptName, Integer limit);
 
     List<Obs> getLatestObsForConceptSetByVisit(String patientUuid, String conceptNames, Integer visitId);

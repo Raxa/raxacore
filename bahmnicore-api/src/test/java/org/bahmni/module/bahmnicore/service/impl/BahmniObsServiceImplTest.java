@@ -34,6 +34,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.EMPTY_LIST;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -41,6 +44,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -98,8 +102,8 @@ public class BahmniObsServiceImplTest {
     public void shouldGetObsByPatientUuidConceptNameAndNumberOfVisits() throws Exception {
         Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
         Integer numberOfVisits = 3;
-        bahmniObsService.observationsFor(personUUID, Arrays.asList(bloodPressureConcept), numberOfVisits, null, false, null, null, null);
-        verify(obsDao).getObsByPatientAndVisit(personUUID, Arrays.asList("Blood Pressure"),
+        bahmniObsService.observationsFor(personUUID, asList(bloodPressureConcept), numberOfVisits, null, false, null, null, null);
+        verify(obsDao).getObsByPatientAndVisit(personUUID, asList("Blood Pressure"),
                 visitDao.getVisitIdsFor(personUUID, numberOfVisits), -1, ObsDaoImpl.OrderBy.DESC, null, false, null, null, null);
     }
 
@@ -110,9 +114,9 @@ public class BahmniObsServiceImplTest {
         VisitBuilder visitBuilder = new VisitBuilder();
         Visit visit = visitBuilder.withUUID("visitId").withEncounter(new Encounter(1)).withPerson(new Person()).build();
         List<String> obsIgnoreList = new ArrayList<>();
-        bahmniObsService.getInitialObsByVisit(visit, Arrays.asList(weightConcept), obsIgnoreList, true);
-        verify(obsDao).getObsByPatientAndVisit(visit.getPatient().getUuid(), Arrays.asList("Weight"),
-                Arrays.asList(visit.getVisitId()), limit, ObsDaoImpl.OrderBy.ASC, obsIgnoreList, true, null, null, null);
+        bahmniObsService.getInitialObsByVisit(visit, asList(weightConcept), obsIgnoreList, true);
+        verify(obsDao).getObsByPatientAndVisit(visit.getPatient().getUuid(), asList("Weight"),
+                asList(visit.getVisitId()), limit, ObsDaoImpl.OrderBy.ASC, obsIgnoreList, true, null, null, null);
     }
 
     @Test
@@ -123,7 +127,7 @@ public class BahmniObsServiceImplTest {
 
     @Test
     public void shouldGetObsForPatientProgram() {
-        Collection<Encounter> encounters = Arrays.asList(new Encounter(), new Encounter());
+        Collection<Encounter> encounters = asList(new Encounter(), new Encounter());
         when(bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(any(String.class))).thenReturn(encounters);
         Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
         Integer numberOfVisits = 3;
@@ -145,7 +149,7 @@ public class BahmniObsServiceImplTest {
 
     @Test
     public void shouldReturnEmptyObservationListIfProgramDoesNotHaveEncounters() {
-        when(bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(any(String.class))).thenReturn(Collections.EMPTY_LIST);
+        when(bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(any(String.class))).thenReturn(EMPTY_LIST);
         Concept bloodPressureConcept = new ConceptBuilder().withName("Blood Pressure").build();
 
         Collection<BahmniObservation> observations = bahmniObsService.observationsFor(personUUID, bloodPressureConcept, bloodPressureConcept, 3, null, null, "patientProgramUuid");
@@ -174,7 +178,7 @@ public class BahmniObsServiceImplTest {
 
         bahmniObsService.getObservationsForPatientProgram(patientProgramUuid, conceptNames, null);
 
-        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"),  null, ObsDaoImpl.OrderBy.DESC, null, null);
+        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, asList("Paracetamol"),  null, ObsDaoImpl.OrderBy.DESC, null, null);
         verify(omrsObsToBahmniObsMapper, times(1)).map(obs, names);
     }
 
@@ -188,7 +192,7 @@ public class BahmniObsServiceImplTest {
 
         bahmniObsService.getLatestObservationsForPatientProgram(patientProgramUuid, conceptNames, null);
 
-        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"),  null, ObsDaoImpl.OrderBy.DESC, null, null);
+        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, asList("Paracetamol"),  null, ObsDaoImpl.OrderBy.DESC, null, null);
         verify(omrsObsToBahmniObsMapper, times(1)).map(obs, names);
     }
 
@@ -202,7 +206,7 @@ public class BahmniObsServiceImplTest {
 
         bahmniObsService.getInitialObservationsForPatientProgram(patientProgramUuid, conceptNames, null);
 
-        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, Arrays.asList("Paracetamol"), 1, ObsDaoImpl.OrderBy.ASC, null, null);
+        verify(obsDao).getObsByPatientProgramUuidAndConceptNames(patientProgramUuid, asList("Paracetamol"), 1, ObsDaoImpl.OrderBy.ASC, null, null);
         verify(omrsObsToBahmniObsMapper, times(1)).map(obs, names);
     }
 
@@ -220,5 +224,52 @@ public class BahmniObsServiceImplTest {
         verify(omrsObsToBahmniObsMapper, times(1)).map(obs);
         assertNotNull(actualBahmniObservation);
         assertEquals(expectedBahmniObservation, actualBahmniObservation);
+    }
+
+    @Test
+    public void shouldCallGetObsForFormBuilderFormsWithEncountersAndVisits() {
+        String patientUuid = "patient-uuid";
+        String patientProgramUuid = "patient-program-uuid";
+        int numberOfVisits = 2;
+        List<Integer> visitIds = asList(100, 101);
+        List<String> formNames = singletonList("First Aid Form");
+        List<Encounter> encounters = singletonList(mock(Encounter.class));
+
+        when(bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid))
+                .thenReturn(encounters);
+        when(visitDao.getVisitIdsFor(patientUuid, numberOfVisits)).thenReturn(visitIds);
+        when(obsDao.getObsForFormBuilderForms(patientUuid, formNames, visitIds, encounters, null, null))
+                .thenReturn(EMPTY_LIST);
+
+        bahmniObsService.getObsForFormBuilderForms(patientUuid, formNames, numberOfVisits, null, null, patientProgramUuid);
+
+        verify(bahmniProgramWorkflowService).getEncountersByPatientProgramUuid(patientProgramUuid);
+        verify(visitDao).getVisitIdsFor(patientUuid, numberOfVisits);
+        verify(obsDao).getObsForFormBuilderForms(patientUuid, formNames, visitIds, encounters, null, null);
+    }
+
+    @Test
+    public void shouldReturnBahmniObservationWhenGetObsForFormBuilderFormsCalled() {
+        String patientUuid = "patient-uuid";
+        String patientProgramUuid = "patient-program-uuid";
+        int numberOfVisits = 2;
+        List<Integer> visitIds = asList(100, 101);
+        List<String> formNames = singletonList("First Aid Form");
+        List<Encounter> encounters = singletonList(mock(Encounter.class));
+        Obs observation = mock(Obs.class);
+        BahmniObservation bahmniObservation = mock(BahmniObservation.class);
+
+        when(bahmniProgramWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid))
+                .thenReturn(encounters);
+        when(visitDao.getVisitIdsFor(patientUuid, numberOfVisits)).thenReturn(visitIds);
+        when(obsDao.getObsForFormBuilderForms(patientUuid, formNames, visitIds, encounters, null, null))
+                .thenReturn(singletonList(observation));
+        when(omrsObsToBahmniObsMapper.map(observation)).thenReturn(bahmniObservation);
+
+        Collection<BahmniObservation> bahmniObservations = bahmniObsService.getObsForFormBuilderForms(patientUuid,
+                formNames, numberOfVisits, null, null, patientProgramUuid);
+
+        assertEquals(1, bahmniObservations.size());
+        assertEquals(bahmniObservation, bahmniObservations.iterator().next());
     }
 }

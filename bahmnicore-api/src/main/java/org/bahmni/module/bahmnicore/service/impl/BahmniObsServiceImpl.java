@@ -274,6 +274,18 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         return omrsObsToBahmniObsMapper.map(obs);
     }
 
+    @Override
+    public Collection<BahmniObservation> getObsForFormBuilderForms(String patientUuid, List<String> formNames,
+                                                                   Integer numberOfVisits, Date startDate, Date endDate, String patientProgramUuid) {
+        Collection<Encounter> encounters = programWorkflowService.getEncountersByPatientProgramUuid(patientProgramUuid);
+        if (programDoesNotHaveEncounters(patientProgramUuid, encounters)) {
+            return Collections.EMPTY_LIST;
+        }
+        List<Obs> obsList = obsDao.getObsForFormBuilderForms(patientUuid, formNames,
+                visitDao.getVisitIdsFor(patientUuid, numberOfVisits), encounters, startDate, endDate);
+        return convertToBahmniObservation(obsList);
+    }
+
     private Obs getRevisionObs(Obs initialObs) {
         Obs revisedObs = obsService.getRevisionObs(initialObs);
         if (revisedObs != null && revisedObs.getVoided()) {

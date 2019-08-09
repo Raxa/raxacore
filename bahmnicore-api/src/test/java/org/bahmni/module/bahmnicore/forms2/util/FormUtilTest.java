@@ -98,4 +98,25 @@ public class FormUtilTest {
         assertEquals(1, obs.size());
         assertEquals(observation, obs.get(0));
     }
+
+    @Test
+    public void shouldReturnFormNameAlongWithVersionForGivenFormFieldPath() {
+        String expectedFormNameWithVersion = "FormName.1";
+        String actualFormNameWithVersion = FormUtil.getFormNameAlongWithVersion("FormName.1/1-0");
+        assertEquals(expectedFormNameWithVersion, actualFormNameWithVersion);
+    }
+
+    @Test
+    public void shouldReturnFormNameAlongWithVersionIfGivenFormFieldPathDoesNotHaveSlash() {
+        String expectedFormNameWithVersion = "";
+        String actualFormNameWithVersion = FormUtil.getFormNameAlongWithVersion("FormName.1");
+        assertEquals(expectedFormNameWithVersion, actualFormNameWithVersion);
+    }
+
+    @Test
+    public void shouldReturnEmptyStringWhenFormFieldPathIsNull() {
+        String expectedFormNameWithVersion = "";
+        String actualFormNameWithVersion = FormUtil.getFormNameAlongWithVersion(null);
+        assertEquals(expectedFormNameWithVersion, actualFormNameWithVersion);
+    }
 }

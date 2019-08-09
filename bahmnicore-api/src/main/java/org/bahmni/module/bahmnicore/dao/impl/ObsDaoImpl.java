@@ -1,13 +1,5 @@
 package org.bahmni.module.bahmnicore.dao.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bahmni.module.bahmnicore.dao.ObsDao;
@@ -26,10 +18,20 @@ import org.openmrs.api.context.Context;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+
+import static java.util.Objects.nonNull;
+
 @Repository
 public class ObsDaoImpl implements ObsDao {
 
     public static final String COMMA = ",";
+    private static final String OR = "|";
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -148,7 +150,7 @@ public class ObsDaoImpl implements ObsDao {
         queryToGetObservations.setParameter("conceptName", conceptName);
         queryToGetObservations.setParameter("conceptNameType", ConceptNameType.FULLY_SPECIFIED);
         queryToGetObservations.setString("locale", Context.getLocale().getLanguage());
-        
+
         return queryToGetObservations.list();
     }
 
@@ -170,14 +172,14 @@ public class ObsDaoImpl implements ObsDao {
         queryToGetObs.setString("patientUuid", patientUuid);
         queryToGetObs.setInteger("visitId", visitId);
         queryToGetObs.setString("locale", Context.getLocale().getLanguage());
-        
+
         return queryToGetObs.list();
     }
 
     @Override
     public List<Obs> getObsForConceptsByEncounter(String encounterUuid, List<String> conceptNames) {
         if (encounterUuid == null) return new ArrayList<>();
-        
+
         String queryString =
                 "select obs\n" +
                         "from Obs obs, ConceptName cn \n" +
@@ -274,6 +276,44 @@ public class ObsDaoImpl implements ObsDao {
 
 
         return queryToGetObs.list();
+    }
+
+    @Override
+    public List<Obs> getObsForFormBuilderForms(String patientUuid, List<String> formNames, List<Integer> listOfVisitIds,
+                                               Collection<Encounter> encounters, Date startDate, Date endDate) {
+        if (listOfVisitIds == null || listOfVisitIds.isEmpty())
+            return new ArrayList<>();
+        String encounterFilter = "";
+        if (encounters != null && encounters.size() > 0) {
+            encounterFilter = "AND encounter.encounter_id in (" + commaSeparatedEncounterIds(encounters) + ")";
+        }
+        StringBuilder queryString = new StringBuilder("SELECT obs.* " +
+                "FROM obs " +
+                "JOIN person ON person.person_id = obs.person_id AND person.uuid = :patientUuid AND " +
+                "obs.voided = 0 AND person.voided = 0 " +
+                "JOIN encounter ON encounter.encounter_id = obs.encounter_id AND encounter.voided = 0 " +
+                encounterFilter +
+                "JOIN visit ON visit.visit_id = encounter.visit_id AND visit.visit_id IN :visitIds ");
+        queryString.append(String.format("where obs.form_namespace_and_path REGEXP '%s' ", commaSeparatedFormNamesPattern(formNames)));
+        if (startDate != null) queryString.append("and obs.obs_datetime >= :startDate ");
+        if (startDate != null && endDate != null) queryString.append("and obs.obs_datetime <= :endDate ");
+        queryString.append("order by obs_datetime asc ");
+        Query queryToGetObs = sessionFactory.getCurrentSession()
+                .createSQLQuery(queryString.toString()).addEntity(Obs.class);
+        queryToGetObs.setParameter("patientUuid", patientUuid);
+        queryToGetObs.setParameterList("visitIds", listOfVisitIds);
+        if (nonNull(startDate))
+            queryToGetObs.setParameter("startDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(startDate));
+        if (nonNull(endDate))
+            queryToGetObs.setParameter("endDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(endDate));
+
+        return queryToGetObs.list();
+    }
+
+    private String commaSeparatedFormNamesPattern(List<String> formNames) {
+        ArrayList<String> formPatterns = new ArrayList<>();
+        formNames.forEach(form -> formPatterns.add("\\\\^" + form + "\\\\."));
+        return StringUtils.join(formPatterns, OR);
     }
 
     private String commaSeparatedEncounterIds(Collection<Encounter> encounters) {
