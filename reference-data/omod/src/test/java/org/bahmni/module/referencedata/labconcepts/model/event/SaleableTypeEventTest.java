@@ -8,15 +8,15 @@ import org.openmrs.ConceptAttribute;
 import org.openmrs.ConceptAttributeType;
 
 import static org.bahmni.module.referencedata.labconcepts.model.event.ConceptServiceEventFactory.CONCEPT_URL;
-import static org.bahmni.module.referencedata.labconcepts.model.event.ConceptServiceEventFactory.SELLABLE;
+import static org.bahmni.module.referencedata.labconcepts.model.event.ConceptServiceEventFactory.SALEABLE;
 
-public class SellableTypeEventTest {
+public class SaleableTypeEventTest {
 
     @Test
-    public void shouldRaiseEventForConceptWithSellableAttribute() throws Exception {
+    public void shouldRaiseEventForConceptWithSaleableAttribute() throws Exception {
         ConceptAttributeType cat = new ConceptAttributeType();
         cat.setDatatypeClassname("org.openmrs.customdatatype.datatype.BooleanDatatype");
-        cat.setName("sellable");
+        cat.setName(SaleableTypeEvent.SALEABLE_ATTR_NAME);
 
         Concept procedureConcept = new org.bahmni.test.builder.ConceptBuilder()
                 .withClass("Procedure")
@@ -30,20 +30,20 @@ public class SellableTypeEventTest {
         ca.setValue(true);
         procedureConcept.addAttribute(ca);
 
-        SellableTypeEvent sellableTypeEvent = new SellableTypeEvent(CONCEPT_URL, SELLABLE);
-        Assert.assertEquals(true, sellableTypeEvent.isApplicable("saveConcept", new Object[]{procedureConcept}));
+        SaleableTypeEvent saleableTypeEvent = new SaleableTypeEvent(CONCEPT_URL, SALEABLE);
+        Assert.assertEquals(true, saleableTypeEvent.isApplicable("saveConcept", new Object[]{procedureConcept}));
 
-        Event event = sellableTypeEvent.asAtomFeedEvent(new Object[]{procedureConcept});
+        Event event = saleableTypeEvent.asAtomFeedEvent(new Object[]{procedureConcept});
         Assert.assertNotNull(event);
-        Assert.assertEquals(SELLABLE, event.getCategory());
+        Assert.assertEquals(SALEABLE, event.getCategory());
         Assert.assertEquals("/openmrs/ws/rest/v1/reference-data/resources/9d583329-5fb1-4e50-9420-dcbbf6991fbc", event.getContents());
     }
 
     @Test
-    public void shouldNotRaiseEventForConceptWithSellableAttributeIfOfRadiologyClass() throws Exception {
+    public void shouldNotRaiseEventForConceptWithSaleableAttributeIfOfRadiologyClass() throws Exception {
         ConceptAttributeType cat = new ConceptAttributeType();
         cat.setDatatypeClassname("org.openmrs.customdatatype.datatype.BooleanDatatype");
-        cat.setName("sellable");
+        cat.setName(SaleableTypeEvent.SALEABLE_ATTR_NAME);
 
         Concept procedureConcept = new org.bahmni.test.builder.ConceptBuilder()
                                            .withClass("Radiology")
@@ -57,16 +57,16 @@ public class SellableTypeEventTest {
         ca.setValue(true);
         procedureConcept.addAttribute(ca);
 
-        SellableTypeEvent sellableTypeEvent = new SellableTypeEvent(CONCEPT_URL, SELLABLE);
-        Assert.assertEquals(false, sellableTypeEvent.isApplicable("saveConcept", new Object[]{procedureConcept}));
+        SaleableTypeEvent saleableTypeEvent = new SaleableTypeEvent(CONCEPT_URL, SALEABLE);
+        Assert.assertEquals(false, saleableTypeEvent.isApplicable("saveConcept", new Object[]{procedureConcept}));
 
     }
 
     @Test
-    public void shouldNotRaiseEventForReservedConceptsWithSellableAttribute() throws Exception {
+    public void shouldNotRaiseEventForReservedConceptsWithSaleableAttribute() throws Exception {
         ConceptAttributeType cat = new ConceptAttributeType();
         cat.setDatatypeClassname("org.openmrs.customdatatype.datatype.BooleanDatatype");
-        cat.setName("sellable");
+        cat.setName(SaleableTypeEvent.SALEABLE_ATTR_NAME);
 
         Concept procedureConcept = new org.bahmni.test.builder.ConceptBuilder()
                                            .withClass("ConvSet")
@@ -80,8 +80,8 @@ public class SellableTypeEventTest {
         ca.setValue(true);
         procedureConcept.addAttribute(ca);
 
-        SellableTypeEvent sellableTypeEvent = new SellableTypeEvent(CONCEPT_URL, SELLABLE);
-        Assert.assertEquals(false, sellableTypeEvent.isApplicable("saveConcept", new Object[]{procedureConcept}));
+        SaleableTypeEvent saleableTypeEvent = new SaleableTypeEvent(CONCEPT_URL, SALEABLE);
+        Assert.assertEquals(false, saleableTypeEvent.isApplicable("saveConcept", new Object[]{procedureConcept}));
 
     }
 }

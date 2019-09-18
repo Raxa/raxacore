@@ -22,10 +22,10 @@ import static org.bahmni.module.referencedata.labconcepts.contract.Panel.LAB_SET
 import static org.bahmni.module.referencedata.labconcepts.contract.RadiologyTest.RADIOLOGY_TEST_CONCEPT_CLASS;
 import static org.bahmni.module.referencedata.labconcepts.contract.Sample.SAMPLE_CONCEPT_CLASS;
 
-public class SellableTypeEvent implements ConceptServiceOperationEvent {
+public class SaleableTypeEvent implements ConceptServiceOperationEvent {
 
     public static final String RESOURCE_TITLE = "reference data";
-    public static final String SELLABLE_ATTR_NAME = "sellable";
+    public static final String SALEABLE_ATTR_NAME = "saleable";
     public static final String RESOURCES = "resources";
     private final String url;
     private final String category;
@@ -34,7 +34,7 @@ public class SellableTypeEvent implements ConceptServiceOperationEvent {
     private List<String> unhandledClasses = Arrays.asList(LAB_TEST_CONCEPT_CLASS, LAB_SET_CONCEPT_CLASS, SAMPLE_CONCEPT_CLASS, DEPARTMENT_CONCEPT_CLASS, RADIOLOGY_TEST_CONCEPT_CLASS);
     private List<String> unhandledConcepsByName = Arrays.asList(ALL_SAMPLES, ALL_TESTS_AND_PANELS);
 
-    public SellableTypeEvent(String url, String category) {
+    public SaleableTypeEvent(String url, String category) {
         this.url = url;
         this.category = category;
     }
@@ -55,7 +55,7 @@ public class SellableTypeEvent implements ConceptServiceOperationEvent {
                 return false;
             }
             Collection<ConceptAttribute> activeAttributes = concept.getActiveAttributes();
-            return activeAttributes.stream().filter(a -> a.getAttributeType().getName().equalsIgnoreCase(SELLABLE_ATTR_NAME)).findFirst().isPresent();
+            return activeAttributes.stream().filter(a -> a.getAttributeType().getName().equalsIgnoreCase(SALEABLE_ATTR_NAME)).findFirst().isPresent();
         }
         return false;
     }

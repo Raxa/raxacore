@@ -11,7 +11,7 @@ public class ConceptServiceEventFactory {
     public static final String TESTS_AND_PANEL = "all-tests-and-panels";
     public static final String DRUG = "drug";
     public static final String RADIOLOGY = "radiology";
-    public static final String SELLABLE = "sellable";
+    public static final String SALEABLE = "saleable";
 
     public static ConceptServiceOperationEvent sampleEvent() {
         return new SampleEvent(CONCEPT_URL, LAB, SAMPLE);
@@ -40,7 +40,7 @@ public class ConceptServiceEventFactory {
         return new RadiologyTestEvent(CONCEPT_URL, LAB, RADIOLOGY);
     }
 
-    public static ConceptServiceOperationEvent sellableTypeEvent() {
-        return new SellableTypeEvent(CONCEPT_URL, SELLABLE);
+    public static ConceptServiceOperationEvent saleableTypeEvent() {
+        return new SaleableTypeEvent(CONCEPT_URL, SALEABLE);
     }
 }

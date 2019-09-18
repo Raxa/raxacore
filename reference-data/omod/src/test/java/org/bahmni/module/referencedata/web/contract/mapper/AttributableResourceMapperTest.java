@@ -2,6 +2,7 @@ package org.bahmni.module.referencedata.web.contract.mapper;
 
 import org.bahmni.module.referencedata.labconcepts.contract.Resource;
 import org.bahmni.module.referencedata.labconcepts.mapper.AttributableResourceMapper;
+import org.bahmni.module.referencedata.labconcepts.model.event.SaleableTypeEvent;
 import org.bahmni.test.builder.ConceptBuilder;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,15 +31,15 @@ public class AttributableResourceMapperTest {
                                            .withDescription("Sample Procedure")
                                            .withDataType("N/A").build();
 
-        ConceptAttributeType sellableAttributeType = new ConceptAttributeType();
-        sellableAttributeType.setDatatypeClassname("org.openmrs.customdatatype.datatype.BooleanDatatype");
-        sellableAttributeType.setName("sellable");
+        ConceptAttributeType saleableAttributeType = new ConceptAttributeType();
+        saleableAttributeType.setDatatypeClassname("org.openmrs.customdatatype.datatype.BooleanDatatype");
+        saleableAttributeType.setName(SaleableTypeEvent.SALEABLE_ATTR_NAME);
 
-        ConceptAttribute sellableAttribute = new ConceptAttribute();
-        sellableAttribute.setAttributeType(sellableAttributeType);
-        sellableAttribute.setVoided(false);
-        sellableAttribute.setValueReferenceInternal("true");
-        procedureConcept.addAttribute(sellableAttribute);
+        ConceptAttribute saleableAttribute = new ConceptAttribute();
+        saleableAttribute.setAttributeType(saleableAttributeType);
+        saleableAttribute.setVoided(false);
+        saleableAttribute.setValueReferenceInternal("true");
+        procedureConcept.addAttribute(saleableAttribute);
 
 
         ConceptAttributeType attributeUnderTest = new ConceptAttributeType();
@@ -53,7 +54,7 @@ public class AttributableResourceMapperTest {
 
 
         Resource resource = resourceMapper.map(procedureConcept);
-        Assert.assertEquals("true", resource.getProperties().get("sellable"));
+        Assert.assertEquals("true", resource.getProperties().get(SaleableTypeEvent.SALEABLE_ATTR_NAME));
         Assert.assertEquals("Dental", resource.getProperties().get("product_category"));
 
     }

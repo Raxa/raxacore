@@ -17,7 +17,7 @@ import static org.bahmni.module.referencedata.labconcepts.model.event.ConceptSer
 import static org.bahmni.module.referencedata.labconcepts.model.event.ConceptServiceEventFactory.radiologyTestEvent;
 import static org.bahmni.module.referencedata.labconcepts.model.event.ConceptServiceEventFactory.sampleEvent;
 import static org.bahmni.module.referencedata.labconcepts.model.event.ConceptServiceEventFactory.testEvent;
-import static org.bahmni.module.referencedata.labconcepts.model.event.ConceptServiceEventFactory.sellableTypeEvent;
+import static org.bahmni.module.referencedata.labconcepts.model.event.ConceptServiceEventFactory.saleableTypeEvent;
 
 public class Operation {
 
@@ -31,7 +31,7 @@ public class Operation {
             allTestsAndPanelsConceptSetEvent(),
             drugEvent(),
             radiologyTestEvent(),
-            sellableTypeEvent()
+            saleableTypeEvent()
     );
 
     public Operation(Method method) {
