@@ -27,6 +27,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -35,12 +36,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static java.util.stream.Collectors.reducing;
 import static java.util.stream.Collectors.toList;
 
 @Repository
 public class PatientDaoImpl implements PatientDao {
 
+    public static final int MAX_NGRAM_SIZE = 20;
     private SessionFactory sessionFactory;
 
     @Autowired
@@ -104,8 +105,14 @@ public class PatientDaoImpl implements PatientDao {
         FullTextSession fullTextSession = Search.getFullTextSession(sessionFactory.getCurrentSession());
         QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(PatientIdentifier.class).get();
         identifier = identifier.replace('%','*');
-        org.apache.lucene.search.Query identifierQuery = queryBuilder.keyword()
-                .wildcard().onField("identifierAnywhere").matching("*" + identifier.toLowerCase() + "*").createQuery();
+        org.apache.lucene.search.Query identifierQuery;
+        if(identifier.length() <= MAX_NGRAM_SIZE) {
+            identifierQuery = queryBuilder.keyword()
+                    .wildcard().onField("identifierAnywhere").matching("*" + identifier.toLowerCase() + "*").createQuery();
+        } else {
+            identifierQuery = queryBuilder.keyword()
+                    .onField("identifierExact").matching(identifier.toLowerCase()).createQuery();
+        }
         org.apache.lucene.search.Query nonVoidedIdentifiers = queryBuilder.keyword().onField("voided").matching(false).createQuery();
         org.apache.lucene.search.Query nonVoidedPatients = queryBuilder.keyword().onField("patient.voided").matching(false).createQuery();
     

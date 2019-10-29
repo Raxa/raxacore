@@ -14,6 +14,7 @@
     <person person_id="108" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-16 15:46:47.0" voided="false" uuid="df998488-6745-45be-b859-403241d99165"/>
     <person person_id="109" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-16 15:46:47.0" voided="false" uuid="df998488-6745-45be-b859-403241d99178"/>
     <person person_id="110" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-16 15:46:47.0" voided="false" uuid="df998488-6745-45be-b859-403241d99179"/>
+    <person person_id="161" gender="F" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-16 15:46:47.0" voided="false" uuid="8387b8b6-9142-49da-8ac7-6e2b9a8dba20"/>
 
     <patient patient_id="1024" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
     <patient patient_id="1025" creator="1" date_created="2006-01-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:31.0" voided="false" void_reason=""/>
@@ -28,6 +29,7 @@
     <patient patient_id="108" creator="1" date_created="2006-01-19 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
     <patient patient_id="109" creator="1" date_created="2006-01-19 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
     <patient patient_id="110" creator="1" date_created="2006-01-19 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
+    <patient patient_id="161" creator="1" date_created="2006-01-19 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:25:57.0" voided="false" void_reason=""/>
 
     <person_name person_name_id="1024" preferred="true" person_id="1024" prefix="Mr." given_name="Horatio" middle_name="Test" family_name="Banka" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
     <person_name person_name_id="1025" preferred="true" person_id="1025" prefix="Mr." given_name="Horatio" middle_name="Peeter" family_name="Sinha" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3ccb"/>
@@ -151,7 +153,7 @@
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="2" patient_id="1025" identifier="GAN200001" identifier_type="1"  creator="1"  uuid="7facee27-82c0-4375-ae95-a90f129ea493" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="3" patient_id ="1026" identifier="GAN200002" identifier_type="1"  creator="1"  uuid="0957df8c-624c-4c19-9055-a359660f0878" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="4" patient_id ="2" identifier="GAN200003" identifier_type="1"  creator="1"  uuid="2496a170-4dc9-43ec-bdbd-1a0caa7498f7" preferred="1" voided="0" />
-    <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="5" patient_id ="6" identifier="GAN200004" identifier_type="1"  creator="1"  uuid="8387b8b6-9142-49da-8ac7-6e2b9a8dba19" preferred="1" voided="0" />
+    <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="5" patient_id ="6" identifier="GAN200004-2005-09-22-00-00" identifier_type="1"  creator="1"  uuid="8387b8b6-9142-49da-8ac7-6e2b9a8dba19" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="6" patient_id ="7" identifier="GAN200005" identifier_type="1"  creator="1"  uuid="645bde33-dc92-4552-8533-790c8c7c48ad" preferred="1" voided="0"  />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="7" patient_id ="8" identifier="GAN200006" identifier_type="1"  creator="1"  uuid="58b20558-e598-4ace-bfbb-c7f8ffdd752c" preferred="1" voided="0" />
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="12" patient_id ="101" identifier="GAN300001" identifier_type="1"  creator="1"  uuid="034b464d-6f47-41c7-8d65-2264026c00a6" preferred="1" voided="0" />
@@ -168,6 +170,8 @@
     <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="23" patient_id="1024" identifier="GAN00011" identifier_type="1"  creator="1"  uuid="7facee27-82c0-4375-fg95-b90lk29ea493" preferred="0" voided="1" />
     <patient_identifier date_created="2009-09-22 00:00:00" patient_identifier_id="24" patient_id="103" identifier="DLF200001" identifier_type="7"  creator="1"  uuid="7facee27-82c0-4375-ae95-a90lk29ea495" preferred="0" voided="0" />
     <patient_identifier date_created="2009-09-22 00:00:00" patient_identifier_id="25" patient_id="8" identifier="PAN200006" identifier_type="8"  creator="1"  uuid="7facee27-82c0-4375-ae95-a90lk29ea496" preferred="0" voided="0" />
+    <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="126" patient_id ="161" identifier="GAN200004-2005-09-22-00-00-123" identifier_type="1"  creator="1"  uuid="8387b8b6-9142-49da-8ac7-6e2b9a8dba20" preferred="1" voided="0" />
+
 
 
     <visit visit_id="1" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="2" visit_type_id="1" date_stopped="2013-05-08 04:08:16"  location_id="2" creator="1"  uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>

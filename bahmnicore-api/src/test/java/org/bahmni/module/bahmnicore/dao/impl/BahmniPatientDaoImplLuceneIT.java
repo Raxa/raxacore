@@ -7,10 +7,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.openmrs.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
@@ -44,6 +44,15 @@ public class BahmniPatientDaoImplLuceneIT extends BaseIntegrationTest {
         assertEquals("2006-01-18 00:00:00.0", patient.getDateCreated().toString());
         assertEquals(null, patient.getDeathDate());
         assertEquals("{\"National ID\" : \"NAT100010\"}", patient.getExtraIdentifiers());
+    }
+
+    @Test
+    public void shouldSearchByExactPatientIdentifierWhenLengthIsGreaterThanMaxNGramLength() {
+        String[] addressResultFields = {"city_village"};
+        List<PatientResponse> patients = patientDao.getPatientsUsingLuceneSearch("GAN200004-2005-09-22-00-00", "", null, "city_village", "", 100, 0, null,"",null,addressResultFields,null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, false);
+        assertEquals(1, patients.size());
+        PatientResponse patient = patients.get(0);
+        assertEquals("GAN200004-2005-09-22-00-00", patient.getIdentifier());
     }
     
     @Test
