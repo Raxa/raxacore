@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.bahmni.module.bahmnicore.forms2.util.FormUtil.getFormNameAlongWithVersion;
+import static org.bahmni.module.bahmnicore.forms2.util.FormUtil.getParentFormFieldPath;
 
 @Component
 public class BahmniFormBuilderObsToTabularViewMapper extends BahmniObservationsToTabularViewMapper {
@@ -31,13 +31,13 @@ public class BahmniFormBuilderObsToTabularViewMapper extends BahmniObservationsT
         return pivotTable;
     }
 
-    public List<PivotRow> getNonEmptyRows(List<PivotRow> rows, String groupByConceptName){
+    public List<PivotRow> getNonEmptyRows(List<PivotRow> rows, String groupByConceptName) {
         return rows.stream().filter(row -> isNonNullRow(groupByConceptName, row)).collect(Collectors.toList());
     }
 
     private List<PivotRow> constructRows(Set<EncounterTransaction.Concept> concepts,
                                          Collection<BahmniObservation> bahmniObservations, String groupByConceptName) {
-        Map<String, List<BahmniObservation>> rowsMapper = getRowsMapper(bahmniObservations);
+        Map<String, List<BahmniObservation>> rowsMapper = getRowsMapper(bahmniObservations, groupByConceptName);
         List<PivotRow> rows = new ArrayList<>();
         rowsMapper.forEach((rowIdentifier, rowObservations) -> {
             PivotRow row = new PivotRow();
@@ -49,19 +49,42 @@ public class BahmniFormBuilderObsToTabularViewMapper extends BahmniObservationsT
         return rows;
     }
 
-    private Map<String, List<BahmniObservation>> getRowsMapper(Collection<BahmniObservation> bahmniObservations) {
+    private Map<String, List<BahmniObservation>> getRowsMapper(Collection<BahmniObservation> bahmniObservations,
+                                                               String groupByConceptName) {
+        final Map<String, List<BahmniObservation>> obsRows = prepareMapWithRowIdentifier(bahmniObservations,
+                groupByConceptName);
+        for (BahmniObservation observation : bahmniObservations) {
+            final String currentObsRowIdentifier = getRowIdentifier(observation);
+            for (String rowIdentifier : obsRows.keySet()) {
+                if (currentObsRowIdentifier.startsWith(rowIdentifier)) {
+                    obsRows.get(rowIdentifier).add(observation);
+                    break;
+                }
+            }
+        }
+        return obsRows;
+    }
+
+    // Observation rows are distinguished by encounter uuid and obs parent formFieldPath
+    private String getRowIdentifier(BahmniObservation bahmniObservation) {
+        return bahmniObservation.getEncounterUuid() + getParentFormFieldPath(bahmniObservation.getFormFieldPath());
+    }
+
+
+    private Map<String, List<BahmniObservation>> prepareMapWithRowIdentifier(Collection<BahmniObservation> bahmniObservations,
+                                                                             String groupByConceptName) {
+        List<BahmniObservation> groupByConceptObservations = getGroupByConceptObservations(bahmniObservations,
+                groupByConceptName);
         Map<String, List<BahmniObservation>> rowsMapper = new LinkedHashMap<>();
-        bahmniObservations.forEach(bahmniObservation -> {
-            String rowIdentifier = getRowIdentifier(bahmniObservation);
-            List<BahmniObservation> bahmniObs;
-            bahmniObs = rowsMapper.containsKey(rowIdentifier) ? rowsMapper.get(rowIdentifier) : new ArrayList<>();
-            bahmniObs.add(bahmniObservation);
-            rowsMapper.put(rowIdentifier, bahmniObs);
-        });
+        groupByConceptObservations.forEach(observation
+                -> rowsMapper.put(getRowIdentifier(observation), new ArrayList<>()));
         return rowsMapper;
     }
 
-    private String getRowIdentifier(BahmniObservation bahmniObservation) {
-        return bahmniObservation.getEncounterUuid() + getFormNameAlongWithVersion(bahmniObservation.getFormFieldPath());
+    private List<BahmniObservation> getGroupByConceptObservations(Collection<BahmniObservation> bahmniObservations,
+                                                                  String groupByConceptName) {
+        return bahmniObservations.stream()
+                .filter(observation -> observation.getConcept().getName().equals(groupByConceptName))
+                .collect(Collectors.toList());
     }
 }

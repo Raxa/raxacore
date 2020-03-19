@@ -250,4 +250,128 @@ public class BahmniFormBuilderObsToTabularViewMapperTest {
         assertThat(firstRowColumns.get(multiSelectConceptName),
                 containsInAnyOrder(multiSelectFirstObs, multiSelectSecondObs));
     }
+
+    @Test
+    public void shouldReturnPivotTableWithTwoRowsDifferentiatedByEncounterUUIDAndParentFormFieldPathsWhenAddMoreSectionHasAllConceptsIncludingGroupByConcept() {
+
+        String groupByConceptName = "id";
+        String weightConceptName = "weight";
+
+        Concept groupByConcept = new Concept();
+        Concept weightConcept = new Concept();
+        groupByConcept.setUuid("group-concept-uuid");
+        groupByConcept.setName(groupByConceptName);
+        weightConcept.setUuid("weight-concept-uuid");
+        weightConcept.setName(weightConceptName);
+
+        BahmniObservation idObservation = new BahmniObservation();
+        BahmniObservation weightObservation = new BahmniObservation();
+        idObservation.setConcept(groupByConcept);
+        weightObservation.setConcept(weightConcept);
+        weightObservation.setValue("obs value");
+        idObservation.setValue("1");
+        String encounterUuid = "encounter-uuid";
+        idObservation.setEncounterUuid(encounterUuid);
+        idObservation.setFormFieldPath("MedicalForm.10/1-0/2-0");
+        weightObservation.setEncounterUuid(encounterUuid);
+        weightObservation.setFormFieldPath("MedicalForm.10/1-0/3-0");
+
+        BahmniObservation anotherIdObservation = new BahmniObservation();
+        BahmniObservation anotherWeightObservation = new BahmniObservation();
+        anotherIdObservation.setConcept(groupByConcept);
+        anotherWeightObservation.setConcept(weightConcept);
+        anotherWeightObservation.setValue("another obs value");
+        anotherIdObservation.setValue(1);
+        anotherIdObservation.setEncounterUuid(encounterUuid);
+        anotherIdObservation.setFormFieldPath("MedicalForm.10/1-1/2-0");
+        anotherWeightObservation.setUuid(encounterUuid);
+        anotherWeightObservation.setFormFieldPath("MedicalForm.10/1-1/3-0");
+        anotherIdObservation.setEncounterUuid(encounterUuid);
+        anotherWeightObservation.setEncounterUuid(encounterUuid);
+
+        HashSet<Concept> concepts = new HashSet<>(asList(groupByConcept, weightConcept));
+        List<BahmniObservation> bahmniObservations = asList(idObservation, weightObservation, anotherIdObservation,
+                anotherWeightObservation);
+
+        PivotTable pivotTable = bahmniFormBuilderObsToTabularViewMapper.constructTable(concepts, bahmniObservations,
+                groupByConceptName);
+
+        assertEquals(2, pivotTable.getHeaders().size());
+        final List<PivotRow> rows = pivotTable.getRows();
+        assertEquals(2, rows.size());
+        assertEquals(2, rows.get(0).getColumns().size());
+        assertEquals(2, rows.get(1).getColumns().size());
+
+        final Map<String, ArrayList<BahmniObservation>> firstColumn = rows.get(0).getColumns();
+        final Map<String, ArrayList<BahmniObservation>> secondColumn = rows.get(1).getColumns();
+
+        final List<Object> actualFirstRow = asList(firstColumn.get(groupByConceptName).get(0),
+                firstColumn.get(weightConceptName).get(0));
+
+        final List<Object> actualSecondRow = asList(secondColumn.get(groupByConceptName).get(0),
+                secondColumn.get(weightConceptName).get(0));
+
+        List expectedFirstRow = asList(idObservation, weightObservation);
+        List expectedSecondRow = asList(anotherIdObservation, anotherWeightObservation);
+
+
+        assertTrue(expectedFirstRow.containsAll(actualFirstRow)
+                || expectedFirstRow.containsAll(actualSecondRow));
+        assertTrue(expectedSecondRow.containsAll(actualFirstRow)
+                || expectedSecondRow.containsAll(actualSecondRow));
+    }
+
+    @Test
+    public void shouldReturnPivotTableWithOneRowWhenAddMoreSectionHasAllConceptsExceptGroupByConcept() {
+        String groupByConceptName = "id";
+        String weightConceptName = "weight";
+
+        Concept groupByConcept = new Concept();
+        Concept weightConcept = new Concept();
+        groupByConcept.setUuid("group-concept-uuid");
+        groupByConcept.setName(groupByConceptName);
+        weightConcept.setUuid("weight-concept-uuid");
+        weightConcept.setName(weightConceptName);
+
+        BahmniObservation idObservation = new BahmniObservation();
+        BahmniObservation weightObservation = new BahmniObservation();
+        idObservation.setConcept(groupByConcept);
+        weightObservation.setConcept(weightConcept);
+        weightObservation.setValue("obs value");
+        idObservation.setValue("1");
+        String encounterUuid = "encounter-uuid";
+        idObservation.setEncounterUuid(encounterUuid);
+        idObservation.setFormFieldPath("MedicalForm.10/1-0");
+        weightObservation.setEncounterUuid(encounterUuid);
+        weightObservation.setFormFieldPath("MedicalForm.10/2-0/3-0");
+
+        BahmniObservation anotherWeightObservation = new BahmniObservation();
+        anotherWeightObservation.setConcept(weightConcept);
+        anotherWeightObservation.setValue("another obs value");
+        anotherWeightObservation.setUuid(encounterUuid);
+        anotherWeightObservation.setFormFieldPath("MedicalForm.10/2-1/3-0");
+        anotherWeightObservation.setEncounterUuid(encounterUuid);
+
+        HashSet<Concept> concepts = new HashSet<>(asList(groupByConcept, weightConcept));
+        List<BahmniObservation> bahmniObservations = asList(idObservation, weightObservation,
+                anotherWeightObservation);
+
+        PivotTable pivotTable = bahmniFormBuilderObsToTabularViewMapper.constructTable(concepts, bahmniObservations,
+                groupByConceptName);
+
+        assertEquals(2, pivotTable.getHeaders().size());
+        final List<PivotRow> rows = pivotTable.getRows();
+        assertEquals(1, rows.size());
+        assertEquals(2, rows.get(0).getColumns().size());
+
+        final Map<String, ArrayList<BahmniObservation>> columns = rows.get(0).getColumns();
+
+        final List<Object> actualRow = asList(columns.get(groupByConceptName).get(0),
+                columns.get(weightConceptName).get(0), columns.get(weightConceptName).get(1));
+
+        List expectedRow = asList(idObservation, weightObservation, anotherWeightObservation);
+
+
+        assertTrue(expectedRow.containsAll(actualRow));
+    }
 }
