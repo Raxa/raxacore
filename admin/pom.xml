@@ -135,6 +135,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+                <groupId>org.bahmni.module</groupId>
+                <artifactId>form2-utils</artifactId>
+                <version>0.93-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.openmrs.web</groupId>
             <artifactId>openmrs-web</artifactId>
             <scope>test</scope>
@@ -233,6 +238,15 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
+
+        <extensions>
+            <extension>
+                <groupId>com.gkatzioura.maven.cloud</groupId>
+                <artifactId>s3-storage-wagon</artifactId>
+                <version>1.0</version>
+            </extension>
+        </extensions>
+
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>
