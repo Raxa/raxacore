@@ -6,22 +6,24 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.api.APIException;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction.Observation;
 import org.openmrs.module.emrapi.encounter.exception.ConceptNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.security.InvalidParameterException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -29,14 +31,19 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Component
 public class CSVObservationHelper {
+    private static final String FORM2_TYPE = "form2";
+    private static final String OBS_PATH_SPLITTER_PROPERTY = "bahmni.admin.csv.upload.obsPath.splitter";
+    private static final String DEFAULT_OBSPATH_SPLITTER = ".";
     private final ConceptCache conceptCache;
     private final ConceptService conceptService;
-    private final String FORM2_TYPE = "form2";
+    private AdministrationService administrationService;
 
     @Autowired
-    CSVObservationHelper(ConceptService conceptService) {
+    CSVObservationHelper(ConceptService conceptService,
+                         @Qualifier("adminService") AdministrationService administrationService) {
         this.conceptCache = new ConceptCache(conceptService);
         this.conceptService = conceptService;
+        this.administrationService = administrationService;
     }
 
     public static <T> T getLastItem(List<T> items) {
@@ -143,13 +150,19 @@ public class CSVObservationHelper {
 
     public List<String> getCSVHeaderParts(KeyValue csvObservation) {
         String key = csvObservation.getKey();
-        return isNotBlank(key) ? new ArrayList<>(asList(key.split("\\."))) : new ArrayList<>();
+        return isNotBlank(key) ? new ArrayList<>(asList(key.split(String.format("\\%s", getObsPathSplitter()))))
+                : new ArrayList<>();
+    }
+
+    private String getObsPathSplitter() {
+        final String obsPathSplitter = administrationService.getGlobalProperty(OBS_PATH_SPLITTER_PROPERTY);
+        return isNotBlank(obsPathSplitter) ? obsPathSplitter : DEFAULT_OBSPATH_SPLITTER;
     }
 
     public boolean isForm2Type(KeyValue obsRow) {
         String key = obsRow.getKey();
         if (StringUtils.isNotBlank(key)) {
-            String[] csvHeaderParts = key.split("\\.");
+            String[] csvHeaderParts = key.split((String.format("\\%s", getObsPathSplitter())));
             return csvHeaderParts[0].equalsIgnoreCase(FORM2_TYPE);
         }
         return false;

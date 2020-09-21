@@ -74,6 +74,7 @@ public class Form2CSVObsHandler implements CSVObsHandler {
 
     private List<String> getCSVHeaderPartsByIgnoringForm2KeyWord(KeyValue csvObservation) {
         final List<String> csvHeaderParts = csvObservationHelper.getCSVHeaderParts(csvObservation);
+        // removes form2 keyword
         csvHeaderParts.remove(0);
         return csvHeaderParts;
     }

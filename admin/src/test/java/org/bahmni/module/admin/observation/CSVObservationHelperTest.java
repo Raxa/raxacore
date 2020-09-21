@@ -12,6 +12,7 @@ import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptName;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.api.APIException;
+import org.openmrs.api.AdministrationService;
 import org.openmrs.api.ConceptService;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
@@ -19,9 +20,9 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.bahmni.module.admin.observation.CSVObservationHelper.getLastItem;
@@ -46,6 +47,9 @@ public class CSVObservationHelperTest {
     @Mock
     private ConceptName heightConceptName;
 
+    @Mock
+    private AdministrationService administrationService;
+
     @Before
     public void setUp() {
         initMocks(this);
@@ -58,6 +62,7 @@ public class CSVObservationHelperTest {
         when(heightConceptName.getName()).thenReturn("Height");
         conceptDatatype = mock(ConceptDatatype.class);
         when(heightConcept.getDatatype()).thenReturn(conceptDatatype);
+        when(administrationService.getGlobalProperty("bahmni.admin.csv.upload.obsPath.splitter")).thenReturn(".");
     }
 
 
@@ -66,7 +71,7 @@ public class CSVObservationHelperTest {
         KeyValue heightObsRow = new KeyValue("Height", "100");
         conceptNames.add("Height");
 
-        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService);
+        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
         Date encounterDate = new Date();
         csvObservationHelper.createObservations(observations, encounterDate, heightObsRow, conceptNames);
 
@@ -91,7 +96,7 @@ public class CSVObservationHelperTest {
         when(bmiDataConcept.getName()).thenReturn(bmiConceptName);
         when(bmiConceptName.getName()).thenReturn("BMI Data");
 
-        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService);
+        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
         Date encounterDate = new Date();
         csvObservationHelper.createObservations(observations, encounterDate, heightObsRow, conceptNames);
 
@@ -136,7 +141,7 @@ public class CSVObservationHelperTest {
         ConceptDatatype conceptDatatype = mock(ConceptDatatype.class);
         when(weightConcept.getDatatype()).thenReturn(conceptDatatype);
 
-        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService);
+        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
         Date encounterDate = new Date();
         csvObservationHelper.createObservations(observations, encounterDate, heightObsRow, conceptNames);
         csvObservationHelper.createObservations(observations, encounterDate, weightObsRow, bmiAndWeightConcepts);
@@ -176,7 +181,7 @@ public class CSVObservationHelperTest {
         when(bmiDataConcept.getName()).thenReturn(bmiConceptName);
         when(bmiConceptName.getName()).thenReturn(bmiData);
 
-        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService);
+        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
         Date encounterDate = new Date();
         csvObservationHelper.createObservations(observations, encounterDate, heightObsRow, conceptNames);
         csvObservationHelper.createObservations(observations, encounterDate, secondHeightObsRow, heightConcepts);
@@ -210,7 +215,7 @@ public class CSVObservationHelperTest {
         when(valueConcept.getName().getUuid()).thenReturn("108abe5c-555e-40d2-ba16-5645a7ad45237");
 
 
-        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService);
+        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
         Date encounterDate = new Date();
         csvObservationHelper.createObservations(observations, encounterDate, heightObsRow, conceptNames);
 
@@ -231,7 +236,7 @@ public class CSVObservationHelperTest {
 
         when(conceptDatatype.isCoded()).thenReturn(true);
 
-        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService);
+        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
         Date encounterDate = new Date();
 
         exception.expect(Exception.class);
@@ -257,7 +262,7 @@ public class CSVObservationHelperTest {
         exception.expect(APIException.class);
         exception.expectMessage("Decimal is not allowed for BMI concept");
 
-        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService);
+        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
         csvObservationHelper.verifyNumericConceptValue(csvHeightObs, conceptNames);
 
     }
@@ -267,7 +272,7 @@ public class CSVObservationHelperTest {
         KeyValue csvObservation = new KeyValue();
         csvObservation.setKey("BMI Data.Height");
 
-        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService);
+        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
         List<String> csvHeaderParts = csvObservationHelper.getCSVHeaderParts(csvObservation);
 
         assertEquals(csvHeaderParts.get(0), "BMI Data");
@@ -278,7 +283,7 @@ public class CSVObservationHelperTest {
     public void shouldReturnEmptyListIfKeyIsEmpty() {
         KeyValue csvObservation = new KeyValue();
 
-        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService);
+        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
         List<String> csvHeaderParts = csvObservationHelper.getCSVHeaderParts(csvObservation);
 
         assertTrue(csvHeaderParts.isEmpty());
@@ -289,17 +294,33 @@ public class CSVObservationHelperTest {
         KeyValue csvObservation = new KeyValue();
         csvObservation.setKey("BMI Data.Height");
 
-        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService);
+        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
 
         assertTrue(csvObservationHelper.isForm1Type(csvObservation));
     }
 
     @Test
-    public void shouldReturnTrueIfCSVObsIsOfForm2Type() {
+    public void shouldReturnTrueIfCSVObsIsOfForm2TypeWithDefaultObsPathSplitter() {
         KeyValue csvObservation = new KeyValue();
         csvObservation.setKey("Form2.BMI Data.Height");
 
-        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService);
+        when(administrationService.getGlobalProperty("bahmni.admin.csv.upload.obsPath.splitter"))
+                .thenReturn("");
+
+        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
+
+        assertTrue(csvObservationHelper.isForm2Type(csvObservation));
+    }
+
+    @Test
+    public void shouldReturnTrueIfCSVObsIsOfForm2TypeWithConfiguredObsPathSplitter() {
+        KeyValue csvObservation = new KeyValue();
+        csvObservation.setKey("Form2$BMI Data$Height");
+
+        when(administrationService.getGlobalProperty("bahmni.admin.csv.upload.obsPath.splitter"))
+                .thenReturn("$");
+
+        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
 
         assertTrue(csvObservationHelper.isForm2Type(csvObservation));
     }
@@ -316,6 +337,39 @@ public class CSVObservationHelperTest {
         exception.expectMessage("Empty items");
 
         getLastItem(new ArrayList<>());
+
+    }
+
+    @Test
+    public void shouldSplitCSVHeaderPartsBasedOnConfiguredValue() throws Exception {
+        String csvHeaderKey = "Vitals$BMI$Patient.Height";
+        String value = "100";
+        final KeyValue csvObservation = new KeyValue(csvHeaderKey, value);
+
+        when(administrationService.getGlobalProperty("bahmni.admin.csv.upload.obsPath.splitter"))
+                .thenReturn("$");
+
+        final CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
+
+        final List<String> csvHeaderParts = csvObservationHelper.getCSVHeaderParts(csvObservation);
+
+        assertEquals(3, csvHeaderParts.size());
+    }
+
+    @Test
+    public void shouldSplitCSVHeaderPartsWithDotIfNoValueIsConfigured() {
+        String csvHeaderKey = "Vitals.BMI.Patient.Height";
+        String value = "100";
+        final KeyValue csvObservation = new KeyValue(csvHeaderKey, value);
+
+        when(administrationService.getGlobalProperty("bahmni.admin.csv.upload.obsPath.splitter"))
+                .thenReturn("");
+
+        final CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
+
+        final List<String> csvHeaderParts = csvObservationHelper.getCSVHeaderParts(csvObservation);
+
+        assertEquals(4, csvHeaderParts.size());
 
     }
 }
