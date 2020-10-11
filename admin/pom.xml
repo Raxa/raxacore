@@ -238,15 +238,7 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
-
-        <extensions>
-            <extension>
-                <groupId>com.gkatzioura.maven.cloud</groupId>
-                <artifactId>s3-storage-wagon</artifactId>
-                <version>1.0</version>
-            </extension>
-        </extensions>
-
+        
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>
