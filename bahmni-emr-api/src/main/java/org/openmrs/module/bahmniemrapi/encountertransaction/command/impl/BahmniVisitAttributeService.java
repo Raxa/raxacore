@@ -16,6 +16,7 @@ public class BahmniVisitAttributeService {
     public static final String ADMISSION_ENCOUNTER_TYPE = "ADMISSION";
     private static final String DISCHARGE_ENCOUNTER_TYPE = "DISCHARGE";
     public static final String IPD_VISIT_TYPE = "IPD";
+    private static final String CONSULTATION_ENCOUNTER_TYPE = "CONSULTATION";
     private VisitService visitService;
 
     @Autowired
@@ -31,9 +32,14 @@ public class BahmniVisitAttributeService {
 
     private Visit createOrUpdateVisitAttribute(Encounter currentEncounter) {
         Visit visit = currentEncounter.getVisit();
+        if (findVisitAttribute(visit, ADMISSION_STATUS_ATTRIBUTE_TYPE) != null
+                && findVisitAttribute(visit, VISIT_STATUS_ATTRIBUTE_TYPE) != null
+                && currentEncounter.getEncounterType().getName().equalsIgnoreCase(CONSULTATION_ENCOUNTER_TYPE))
+        {
+            return visit;
+        }
         setVisitStatus(currentEncounter, visit);
         setAdmissionStatus(currentEncounter, visit);
-
         return visitService.saveVisit(visit);
     }
 
