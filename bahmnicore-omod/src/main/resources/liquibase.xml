@@ -4523,4 +4523,28 @@
     		INSERT INTO role_privilege (role, privilege) VALUES ('Anonymous', 'Get Locations');
     	</sql>
     </changeSet>
+    <changeSet id="bahmni-core-202011150948" author="Buvaneswari">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="form_privilege"/></not>
+        </preConditions>
+        <comment>Introducing form_privilege table as part of BAH_790 Privilege based access to forms</comment>
+        <sql>
+            CREATE TABLE form_privilege (
+            form_privilege_id int(11) NOT NULL AUTO_INCREMENT,
+            formId int(11) NOT NULL DEFAULT '0',
+            formVersion varchar(50) NOT NULL DEFAULT '0',
+            privilegeName varchar(50) NOT NULL DEFAULT '',
+            editable tinyint(1) DEFAULT '0',
+            viewable tinyint(1) DEFAULT '0',
+            creator int(11) NOT NULL DEFAULT '0',
+            date_created datetime NOT NULL,
+            date_changed datetime DEFAULT NULL,
+            changed_by int(11) DEFAULT NULL,
+            uuid char(38) NOT NULL,
+            PRIMARY KEY (form_privilege_id),
+            UNIQUE KEY form_privilege_uuid_index (uuid),
+            KEY defines_parent_form_id (formId),
+            CONSTRAINT defines_parent_form_id` FOREIGN KEY (formId) REFERENCES form (form_id));
+        </sql>
+    </changeSet>
 </databaseChangeLog>
