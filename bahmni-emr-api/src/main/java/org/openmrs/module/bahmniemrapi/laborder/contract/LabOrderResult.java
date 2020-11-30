@@ -27,6 +27,8 @@ public class LabOrderResult {
     private Boolean referredOut;
     private Date resultDateTime;
     private String uploadedFileName;
+    private String preferredTestName;
+    private String preferredPanelName;
 
     public LabOrderResult() {
     }
@@ -213,5 +215,21 @@ public class LabOrderResult {
 
     public void setUploadedFileName(String uploadedFileName) {
         this.uploadedFileName = uploadedFileName;
+    }
+
+    public String getPreferredTestName() {
+        return preferredTestName;
+    }
+
+    public void setPreferredTestName(String preferredTestName) {
+        this.preferredTestName = preferredTestName;
+    }
+
+    public String getPreferredPanelName() {
+        return preferredPanelName;
+    }
+
+    public void setPreferredPanelName(String preferredPanelName) {
+        this.preferredPanelName = preferredPanelName;
     }
 }

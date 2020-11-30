@@ -123,6 +123,10 @@ public class BahmniDrugOrder implements Comparable<BahmniDrugOrder>{
         this.drugOrder = drugOrder;
     }
 
+    public EncounterTransaction.DrugOrder getDrugOrder() {
+        return this.drugOrder;
+    }
+
     public void setProvider(EncounterTransaction.Provider provider) {
         this.provider = provider;
     }

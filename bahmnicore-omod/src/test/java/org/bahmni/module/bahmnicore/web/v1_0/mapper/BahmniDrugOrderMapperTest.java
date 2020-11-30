@@ -105,7 +105,7 @@ public class BahmniDrugOrderMapperTest {
         List<DrugOrder> drugOrderList = new ArrayList<>();
         drugOrderList.add(drugOrder1);
 
-        List<BahmniDrugOrder> mappedDrugOrders = bahmniDrugOrderMapper.mapToResponse(drugOrderList, null, new HashMap<String, DrugOrder>());
+        List<BahmniDrugOrder> mappedDrugOrders = bahmniDrugOrderMapper.mapToResponse(drugOrderList, null, new HashMap<String, DrugOrder>(), null);
         assertEquals(1, mappedDrugOrders.size());
         BahmniDrugOrder mappedOrder = mappedDrugOrders.get(0);
 
@@ -155,7 +155,7 @@ public class BahmniDrugOrderMapperTest {
         List<DrugOrder> drugOrderList = new ArrayList<>();
         drugOrderList.add(drugOrder1);
 
-        List<BahmniDrugOrder> mappedDrugOrders = bahmniDrugOrderMapper.mapToResponse(drugOrderList, null, new HashMap<String, DrugOrder>());
+        List<BahmniDrugOrder> mappedDrugOrders = bahmniDrugOrderMapper.mapToResponse(drugOrderList, null, new HashMap<String, DrugOrder>(),"en");
         assertEquals(1, mappedDrugOrders.size());
         BahmniDrugOrder mappedOrder = mappedDrugOrders.get(0);
 
@@ -234,7 +234,7 @@ public class BahmniDrugOrderMapperTest {
         Map<String, DrugOrder> discontinuedOrders = new HashMap<>();
         discontinuedOrders.put("1234", drugOrderDiscontinued);
 
-        List<BahmniDrugOrder> mappedDrugOrders = bahmniDrugOrderMapper.mapToResponse(drugOrderList, null, discontinuedOrders);
+        List<BahmniDrugOrder> mappedDrugOrders = bahmniDrugOrderMapper.mapToResponse(drugOrderList, null, discontinuedOrders,"en");
         assertEquals(1, mappedDrugOrders.size());
         BahmniDrugOrder mappedOrder = mappedDrugOrders.get(0);
 

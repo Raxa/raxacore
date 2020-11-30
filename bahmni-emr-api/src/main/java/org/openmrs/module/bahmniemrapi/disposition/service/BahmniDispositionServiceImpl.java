@@ -16,6 +16,7 @@ import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 @Service
@@ -43,6 +44,18 @@ public class BahmniDispositionServiceImpl implements BahmniDispositionService {
     }
 
     @Override
+    public List<BahmniDisposition> getDispositionByVisitUuid(String visitUuid , Locale locale) {
+        Assert.notNull(visitUuid);
+
+        Visit visit = visitService.getVisitByUuid(visitUuid);
+
+        if(visit == null){
+            return new ArrayList<>();
+        }
+
+        return getDispositionByVisit(visit, locale);
+    }
+    @Override
     public List<BahmniDisposition> getDispositionByVisitUuid(String visitUuid) {
         Assert.notNull(visitUuid);
 
@@ -52,20 +65,28 @@ public class BahmniDispositionServiceImpl implements BahmniDispositionService {
             return new ArrayList<>();
         }
 
-        return getDispositionByVisit(visit);
+        return getDispositionByVisit(visit , new Locale("en"));
     }
 
-    public List<BahmniDisposition> getDispositionByVisits(List<Visit> visits){
+    public List<BahmniDisposition> getDispositionByVisits(List<Visit> visits , Locale locale){
         List<BahmniDisposition> dispositions = new ArrayList<>();
 
         for(Visit visit: visits){
-            dispositions.addAll(getDispositionByVisit(visit));
+            dispositions.addAll(getDispositionByVisit(visit , locale));
         }
 
         return  dispositions;
     }
+    public List<BahmniDisposition> getDispositionByVisits(List<Visit> visits){
+        List<BahmniDisposition> dispositions = new ArrayList<>();
 
-    private List<BahmniDisposition> getDispositionByVisit(Visit visit) {
+        for(Visit visit: visits){
+            dispositions.addAll(getDispositionByVisit(visit , new Locale("en")));
+        }
+
+        return  dispositions;
+    }
+    private List<BahmniDisposition> getDispositionByVisit(Visit visit , Locale locale) {
         List<BahmniDisposition> dispositions = new ArrayList<>();
         for (Encounter encounter : visit.getEncounters()) {
             Set<Obs> observations = encounter.getObsAtTopLevel(false);
@@ -73,17 +94,20 @@ public class BahmniDispositionServiceImpl implements BahmniDispositionService {
 
             for (Obs observation : observations) {
                 if(ObservationTypeMatcher.ObservationType.DISPOSITION.equals(observationTypeMatcher.getObservationType(observation))){
-                    addBahmniDisposition(dispositions, eTProvider, observation);
+                    addBahmniDisposition(dispositions, eTProvider, observation , locale);
                 }
             }
         }
         return dispositions;
     }
 
-    private void addBahmniDisposition(List<BahmniDisposition> dispositions, Set<EncounterTransaction.Provider> eTProvider, Obs observation) {
+    private void addBahmniDisposition(List<BahmniDisposition> dispositions,
+                                      Set<EncounterTransaction.Provider> eTProvider,
+                                      Obs observation ,
+                                      Locale locale) {
         EncounterTransaction.Disposition eTDisposition = dispositionMapper.getDisposition(observation);
         if(eTDisposition!=null){
-            dispositions.add(bahmniDispositionMapper.map(eTDisposition, eTProvider, observation.getCreator()));
+            dispositions.add(bahmniDispositionMapper.map(eTDisposition, eTProvider, observation.getCreator(),locale));
         }
     }
 }

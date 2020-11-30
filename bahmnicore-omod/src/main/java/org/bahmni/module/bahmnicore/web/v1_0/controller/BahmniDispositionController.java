@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequestMapping(value = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/disposition")
@@ -37,6 +38,12 @@ public class BahmniDispositionController extends BaseRestController {
         return bahmniDispositionService.getDispositionByVisitUuid(visitUuid);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "visitWithLocale")
+    @ResponseBody
+    public List<BahmniDisposition> getDispositionByVisitUuid(@RequestParam(value = "visitUuid") String visitUuid, @RequestParam(value = "locale") String locale) {
+        return bahmniDispositionService.getDispositionByVisitUuid(visitUuid , new Locale(locale));
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "patient")
     @ResponseBody
     public List<BahmniDisposition> getDispositionByPatientUuid(@RequestParam(value = "patientUuid") String patientUuid, @RequestParam(value = "numberOfVisits") int numberOfVisits){
@@ -48,6 +55,18 @@ public class BahmniDispositionController extends BaseRestController {
 
         List<Visit> visits = visitDao.getVisitsByPatient(patient,numberOfVisits);
         return bahmniDispositionService.getDispositionByVisits(visits);
+    }
+    @RequestMapping(method = RequestMethod.GET, value = "patientWithLocale")
+    @ResponseBody
+    public List<BahmniDisposition> getDispositionByPatientUuid(@RequestParam(value = "patientUuid") String patientUuid, @RequestParam(value = "numberOfVisits") int numberOfVisits, @RequestParam(value = "locale") String locale){
+        Patient patient = patientService.getPatientByUuid(patientUuid);
+
+        if(patient == null){
+            return new ArrayList<>();
+        }
+
+        List<Visit> visits = visitDao.getVisitsByPatient(patient,numberOfVisits);
+        return bahmniDispositionService.getDispositionByVisits(visits, new Locale(locale));
     }
 
 }

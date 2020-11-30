@@ -168,7 +168,7 @@ public class BahmniDrugOrderController extends BaseRestController {
         Map<String, DrugOrder> drugOrderMap = drugOrderService.getDiscontinuedDrugOrders(drugOrders);
         try {
             Collection<BahmniObservation> orderAttributeObs = bahmniObsService.observationsFor(patientUuid, getOrdAttributeConcepts(), null, null, false, null, null, null);
-            List<BahmniDrugOrder> bahmniDrugOrders = bahmniDrugOrderMapper.mapToResponse(drugOrders, orderAttributeObs, drugOrderMap);
+            List<BahmniDrugOrder> bahmniDrugOrders = bahmniDrugOrderMapper.mapToResponse(drugOrders, orderAttributeObs, drugOrderMap , null);
             return sortDrugOrdersAccordingToTheirSortWeight(bahmniDrugOrders);
         } catch (IOException e) {
             logger.error("Could not parse drug order", e);

@@ -126,7 +126,7 @@ public class BahmniDrugOrderServiceImpl implements BahmniDrugOrderService {
 
         Map<String, DrugOrder> discontinuedDrugOrderMap = getDiscontinuedDrugOrders(drugOrders);
         try {
-            return bahmniDrugOrderMapper.mapToResponse(drugOrders, null, discontinuedDrugOrderMap);
+            return bahmniDrugOrderMapper.mapToResponse(drugOrders, null, discontinuedDrugOrderMap, null);
         } catch (IOException e) {
             logger.error("Could not parse dosing instructions", e);
             throw new RuntimeException("Could not parse dosing instructions", e);

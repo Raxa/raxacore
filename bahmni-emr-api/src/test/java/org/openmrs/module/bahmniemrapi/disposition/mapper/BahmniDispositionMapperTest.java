@@ -3,6 +3,9 @@ package org.openmrs.module.bahmniemrapi.disposition.mapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.openmrs.*;
+import org.openmrs.api.ConceptService;
 import org.openmrs.Person;
 import org.openmrs.PersonName;
 import org.openmrs.User;
@@ -13,14 +16,33 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Locale;
+
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class BahmniDispositionMapperTest {
 
     private BahmniDispositionMapper bahmniDispositionMapper;
+    @Mock
+    private ConceptService conceptService;
+    @Mock
+    private EncounterTransaction.Disposition mockDisposition;
+    @Mock
+    private Concept dispositionConcept;
+    @Mock
+    private ConceptName conceptName;
 
     @Before
     public void setUp(){
-        bahmniDispositionMapper = new BahmniDispositionMapper();
+        initMocks(this);
+
+        Locale locale = new Locale("en");
+        String conceptNameString = "Absconding";
+        when(conceptService.getConcept(conceptNameString)).thenReturn(dispositionConcept);
+        when(dispositionConcept.getPreferredName(locale)).thenReturn(conceptName);
+        when(conceptName.getName()).thenReturn(conceptNameString);
+        bahmniDispositionMapper = new BahmniDispositionMapper(conceptService);
     }
 
     @Test
@@ -54,7 +76,7 @@ public class BahmniDispositionMapperTest {
         User user = new User(person);
 
 
-        BahmniDisposition bahmniDisposition = bahmniDispositionMapper.map(disposition, providers, user);
+        BahmniDisposition bahmniDisposition = bahmniDispositionMapper.map(disposition, providers, user , new Locale("en"));
 
         Assert.assertEquals("1234",bahmniDisposition.getCode());
         Assert.assertEquals("a26a8c32-6fc1-4f5e-8a96-f5f5b05b87d",bahmniDisposition.getExistingObs());

@@ -205,6 +205,9 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
                 EncounterTransaction.Concept orderConcept = testOrder.getConcept();
                 Encounter orderEncounter = encounterTestOrderMap.get(testOrder.getUuid());
                 LabOrderResult labOrderResult = new LabOrderResult(testOrder.getUuid(), testOrder.getAction(), orderEncounter.getUuid(), orderEncounter.getEncounterDatetime(), orderConcept.getName(), orderConcept.getUnits(), null, null, null, null, false, null, null);
+                if(testOrder.getConcept().getShortName() != null) {
+                    labOrderResult.setPreferredTestName(testOrder.getConcept().getShortName());
+                }
                 labOrderResult.setVisitStartTime(orderEncounter.getVisit().getStartDatetime());
                 labOrderResults.add(labOrderResult);
             }
@@ -218,7 +221,11 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
             for (EncounterTransaction.Observation observation : obsGroup.getGroupMembers()) {
                 LabOrderResult order = createLabOrderResult(observation, testOrder, encounterTestOrderMap, encounterObservationMap, encounterToAccessionNotesMap);
                 order.setPanelUuid(obsGroup.getConceptUuid());
-                order.setPanelName(obsGroup.getConcept().getName());
+                if(obsGroup.getConcept().getShortName() != null) {
+                    order.setPanelName(obsGroup.getConcept().getShortName());
+                }else{
+                    order.setPanelName(obsGroup.getConcept().getName());
+                }
                 labOrderResults.add(order);
             }
         } else {
