@@ -25,6 +25,9 @@ public class BahmniCoreProperties {
     }
 
     public static String getProperty(String key){
+        if(properties == null){
+            load();
+        }
         return properties.getProperty(key);
     }
 
