@@ -56,35 +56,58 @@ public class BahmniConceptResource extends ConceptResource2_0 {
 
         DelegatingResourceDescription representationDescription = super.getRepresentationDescription(rep);
         if (representationDescription == null) {
-            if (rep instanceof NamedRepresentation && rep.getRepresentation().equals("bahmni")) {
-                DelegatingResourceDescription description = new DelegatingResourceDescription();
-                description.addProperty("uuid");
-                description.addProperty("name",Representation.DEFAULT);
-                description.addProperty("names",Representation.DEFAULT);
-                description.addProperty("set");
-                description.addProperty("datatype",Representation.DEFAULT);
-                description.addProperty("conceptClass",Representation.DEFAULT);
-                description.addProperty("hiNormal");
-                description.addProperty("hiAbsolute");
-                description.addProperty("hiCritical");
-                description.addProperty("lowNormal");
-                description.addProperty("lowAbsolute");
-                description.addProperty("lowCritical");
-                description.addProperty("units");
-                description.addProperty("precise");
-                description.addProperty("allowDecimal");
-                description.addProperty("handler");
-                description.addProperty("descriptions", Representation.DEFAULT);
-                description.addProperty("answers", new NamedRepresentation("bahmniAnswer"));
-                description.addProperty("setMembers", new NamedRepresentation("bahmni"));
-                return description;
-            } else if (rep instanceof NamedRepresentation && rep.getRepresentation().equals("bahmniAnswer")) {
-                DelegatingResourceDescription description = new DelegatingResourceDescription();
-                description.addProperty("uuid", Representation.DEFAULT);
-                description.addProperty("name", Representation.DEFAULT);
-                description.addProperty("names", Representation.DEFAULT);
-                description.addProperty("displayString");
-                return description;
+            if (rep instanceof NamedRepresentation) {
+                if (rep.getRepresentation().equals("bahmni")) {
+                    DelegatingResourceDescription description = new DelegatingResourceDescription();
+                    description.addProperty("uuid");
+                    description.addProperty("name",Representation.DEFAULT);
+                    description.addProperty("names",Representation.DEFAULT);
+                    description.addProperty("set");
+                    description.addProperty("datatype",Representation.DEFAULT);
+                    description.addProperty("conceptClass",Representation.DEFAULT);
+                    description.addProperty("hiNormal");
+                    description.addProperty("hiAbsolute");
+                    description.addProperty("hiCritical");
+                    description.addProperty("lowNormal");
+                    description.addProperty("lowAbsolute");
+                    description.addProperty("lowCritical");
+                    description.addProperty("units");
+                    description.addProperty("precise");
+                    description.addProperty("allowDecimal");
+                    description.addProperty("handler");
+                    description.addProperty("descriptions", Representation.DEFAULT);
+                    description.addProperty("answers", new NamedRepresentation("bahmniAnswer"));
+                    description.addProperty("setMembers", new NamedRepresentation("bahmni"));
+                    return description;
+                } else if (rep.getRepresentation().equals("bahmniAnswer")) {
+                    DelegatingResourceDescription description = new DelegatingResourceDescription();
+                    description.addProperty("uuid", Representation.DEFAULT);
+                    description.addProperty("name", Representation.DEFAULT);
+                    description.addProperty("names", Representation.DEFAULT);
+                    description.addProperty("displayString");
+                    return description;
+                } else if (rep.getRepresentation().equals("bahmniFullAnswers")) {
+                    DelegatingResourceDescription description = new DelegatingResourceDescription();
+                    description.addProperty("uuid");
+                    description.addProperty("display");
+                    description.addProperty("name", Representation.DEFAULT);
+                    description.addProperty("datatype", Representation.DEFAULT);
+                    description.addProperty("conceptClass", Representation.DEFAULT);
+                    description.addProperty("set");
+                    description.addProperty("version");
+                    description.addProperty("retired");
+
+                    description.addProperty("names", Representation.DEFAULT);
+                    description.addProperty("descriptions", Representation.DEFAULT);
+
+                    description.addProperty("mappings", Representation.DEFAULT);
+
+                    description.addProperty("answers", new NamedRepresentation("bahmniAnswer"));
+                    description.addProperty("setMembers", Representation.DEFAULT);
+                    description.addProperty("auditInfo");
+                    description.addSelfLink();
+                    return description;
+                }
             }
         }
         return representationDescription;
@@ -93,10 +116,12 @@ public class BahmniConceptResource extends ConceptResource2_0 {
 
     @PropertyGetter("names")
     public static Object getNames(Concept concept) {
+        Locale globalDefaultLocale = LocaleUtility.getDefaultLocale();
         Locale userDefaultLocale = LocaleUtility.fromSpecification(Context.getAuthenticatedUser().getUserProperty(OpenmrsConstants.USER_PROPERTY_DEFAULT_LOCALE));
+
         Collection<ConceptName> names = concept.getNames(userDefaultLocale);
-        if(names.isEmpty()) {
-            names.addAll(concept.getNames(LocaleUtility.getDefaultLocale()));
+        if (globalDefaultLocale != userDefaultLocale) {
+            names.addAll(concept.getNames(globalDefaultLocale));
         }
         return names;
     }
@@ -111,4 +136,5 @@ public class BahmniConceptResource extends ConceptResource2_0 {
         }
         return conceptDescriptions;
     }
+
 }
