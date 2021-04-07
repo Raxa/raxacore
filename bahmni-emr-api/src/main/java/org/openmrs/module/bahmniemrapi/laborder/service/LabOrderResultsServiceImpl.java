@@ -262,6 +262,11 @@ public class LabOrderResultsServiceImpl implements LabOrderResultsService {
         labOrderResult.setAccessionNotes(encounterToAccessionNotesMap.get(orderEncounter.getUuid()));
         labOrderResult.setAction(testOrder.getAction());
         labOrderResult.setOrderUuid(testOrder.getUuid());
+        if(observation.getConcept().getShortName() != null) {
+            labOrderResult.setPreferredTestName(observation.getConcept().getShortName());
+        }else{
+            labOrderResult.setTestName(observation.getConcept().getName());
+        }
         return labOrderResult;
     }
 
