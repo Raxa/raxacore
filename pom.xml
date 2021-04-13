@@ -4,7 +4,7 @@
 
     <groupId>org.bahmni.module</groupId>
     <artifactId>bahmni</artifactId>
-    <version>0.93-SNAPSHOT</version>
+    <version>0.94-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Bahmni EMR Core</name>
 
@@ -42,7 +42,7 @@
         <auditLogVersion>1.0-SNAPSHOT</auditLogVersion>
         <bacteriology.version>1.1-SNAPSHOT</bacteriology.version>
         <rulesEngineVersion>0.92-SNAPSHOT</rulesEngineVersion>
-        <bahmniJavaUtilsVersion>0.93-SNAPSHOT</bahmniJavaUtilsVersion>
+        <bahmniJavaUtilsVersion>0.94-SNAPSHOT</bahmniJavaUtilsVersion>
 
         <!--test dependencies-->
 
