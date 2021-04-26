@@ -398,4 +398,28 @@ public class CSVObservationHelperTest {
         assertEquals(4, csvHeaderParts.size());
 
     }
+
+    @Test
+    public void shouldCreateMultipleObservationsForTheGivenObsRowHavingMultiSelectConcept() throws ParseException {
+        KeyValue obs1 = new KeyValue("Height", "173");
+        KeyValue obs2 = new KeyValue("Height", "174");
+        conceptNames.add("Height");
+
+        CSVObservationHelper csvObservationHelper = new CSVObservationHelper(conceptService, administrationService);
+        Date encounterDate = new Date();
+        csvObservationHelper.createObservations(observations, encounterDate, asList(obs1, obs2), conceptNames);
+
+
+        assertEquals(2, observations.size());
+        EncounterTransaction.Observation heightObservation1 = observations.get(0);
+        assertEquals("Height", heightObservation1.getConcept().getName());
+        assertEquals("173", heightObservation1.getValue());
+        assertEquals(encounterDate, heightObservation1.getObservationDateTime());
+
+        EncounterTransaction.Observation heightObservation2 = observations.get(1);
+        assertEquals("Height", heightObservation2.getConcept().getName());
+        assertEquals("174", heightObservation2.getValue());
+        assertEquals(encounterDate, heightObservation2.getObservationDateTime());
+
+    }
 }

@@ -137,6 +137,19 @@ public class AdminImportController extends BaseRestController {
                           @RequestParam(value = "file") MultipartFile file,
                           @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) throws IOException {
 
+        return uploadEncounter(loginCookie, file, patientMatchingAlgorithm, false);
+    }
+
+    @RequestMapping(value = baseUrl + "/form2encounter", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean uploadForm2EncountersWithValidations(@CookieValue(value="bahmni.user.location", required=true) String loginCookie,
+                          @RequestParam(value = "file") MultipartFile file,
+                          @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm) throws IOException {
+
+        return uploadEncounter(loginCookie, file, patientMatchingAlgorithm, true);
+    }
+
+    private boolean uploadEncounter(@CookieValue(value = "bahmni.user.location", required = true) String loginCookie, @RequestParam("file") MultipartFile file, @RequestParam(value = "patientMatchingAlgorithm", required = false) String patientMatchingAlgorithm, boolean performForm2Validations) throws IOException {
         try {
             String configuredExactPatientIdMatch = administrationService.getGlobalProperty(SHOULD_MATCH_EXACT_PATIENT_ID_CONFIG);
             JsonParser jsonParser = new JsonParser();
@@ -146,7 +159,7 @@ public class AdminImportController extends BaseRestController {
             if (configuredExactPatientIdMatch != null)
                 shouldMatchExactPatientId = Boolean.parseBoolean(configuredExactPatientIdMatch);
 
-            encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm, shouldMatchExactPatientId, loginUuid);
+            encounterPersister.init(Context.getUserContext(), patientMatchingAlgorithm, shouldMatchExactPatientId, loginUuid, performForm2Validations);
             return importCsv(ENCOUNTER_FILES_DIRECTORY, file, encounterPersister, 5, true, MultipleEncounterRow.class);
         } catch (Throwable e) {
             logger.error("Could not upload file", e);

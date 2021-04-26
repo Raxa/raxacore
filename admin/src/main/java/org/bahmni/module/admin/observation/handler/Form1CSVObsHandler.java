@@ -46,4 +46,9 @@ public class Form1CSVObsHandler implements CSVObsHandler {
         return observations;
     }
 
+    @Override
+    public List<EncounterTransaction.Observation> handle(EncounterRow encounterRow, boolean shouldPerformForm2Validations) throws ParseException {
+        return null;
+    }
+
 }

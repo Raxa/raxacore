@@ -23,10 +23,10 @@ public class BahmniEncounterTransactionImportServiceTest {
         BahmniEncounterTransactionImportService bahmniEncounterTransactionImportService = new BahmniEncounterTransactionImportService(mockEncounterService, null, null, null);
         MultipleEncounterRow emptyEncounterRow = new MultipleEncounterRowBuilder().getEmptyMultipleEncounterRow("GAN12345");
         emptyEncounterRow.encounterType = "Consultation";
-        List<BahmniEncounterTransaction> bahmniEncounterTransaction = bahmniEncounterTransactionImportService.getBahmniEncounterTransaction(emptyEncounterRow, null);
+        List<BahmniEncounterTransaction> bahmniEncounterTransaction = bahmniEncounterTransactionImportService.getBahmniEncounterTransaction(emptyEncounterRow, null, false);
         Assert.isTrue(bahmniEncounterTransaction.isEmpty(), "Should ignore empty encounters");
 
-        bahmniEncounterTransaction = bahmniEncounterTransactionImportService.getBahmniEncounterTransaction(new MultipleEncounterRow(), null);
+        bahmniEncounterTransaction = bahmniEncounterTransactionImportService.getBahmniEncounterTransaction(new MultipleEncounterRow(), null, false);
         Assert.isTrue(bahmniEncounterTransaction.isEmpty(), "Should ignore empty encounters");
     }
 }

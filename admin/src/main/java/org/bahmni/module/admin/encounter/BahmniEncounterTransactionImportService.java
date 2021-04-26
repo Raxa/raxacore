@@ -37,7 +37,7 @@ public class BahmniEncounterTransactionImportService {
         this.fromETObsToBahmniObs = fromETObsToBahmniObs;
     }
 
-    public List<BahmniEncounterTransaction> getBahmniEncounterTransaction(MultipleEncounterRow multipleEncounterRow, Patient patient) throws ParseException {
+    public List<BahmniEncounterTransaction> getBahmniEncounterTransaction(MultipleEncounterRow multipleEncounterRow, Patient patient, boolean shouldPerformForm2Validations) throws ParseException {
         if (multipleEncounterRow.encounterRows == null || multipleEncounterRow.encounterRows.isEmpty())
             return new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class BahmniEncounterTransactionImportService {
         String visitType = multipleEncounterRow.visitType;
 
         for (EncounterRow encounterRow : multipleEncounterRow.getNonEmptyEncounterRows()) {
-            List<EncounterTransaction.Observation> allObservations = observationMapper.getObservations(encounterRow);
+            List<EncounterTransaction.Observation> allObservations = observationMapper.getObservations(encounterRow, shouldPerformForm2Validations);
             List<BahmniDiagnosisRequest> allDiagnosis = diagnosisMapper.getBahmniDiagnosis(encounterRow);
 
             BahmniEncounterTransaction bahmniEncounterTransaction = new BahmniEncounterTransaction();

@@ -61,7 +61,8 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
         Context.authenticate("admin", "test");
         userContext = Context.getUserContext();
         boolean shouldMatchExactPatientId = false;
-        encounterPersister.init(userContext, null, shouldMatchExactPatientId, null);
+        boolean shouldPerformForm2Validations = false;
+        encounterPersister.init(userContext, null, shouldMatchExactPatientId, null, shouldPerformForm2Validations);
     }
 
     @Test
@@ -597,7 +598,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "GAN200001";
 
-        encounterPersister.init(userContext, "NoMatch.groovy", shouldMatchExactPatientId, null);
+        encounterPersister.init(userContext, "NoMatch.groovy", shouldMatchExactPatientId, null, false);
 
         Messages errorMessages = encounterPersister.persist(multipleEncounterRow);
         assertThat(errorMessages.size(), is(Matchers.greaterThan(0)));
@@ -610,7 +611,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "200000";
-        encounterPersister.init(userContext, "MultipleMatchPatient.groovy", shouldMatchExactPatientId, null);
+        encounterPersister.init(userContext, "MultipleMatchPatient.groovy", shouldMatchExactPatientId, null, false);
 
         Messages errorMessages = encounterPersister.persist(multipleEncounterRow);
 
@@ -625,7 +626,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
         multipleEncounterRow.encounterType = "Consultation";
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = patientId;
-        encounterPersister.init(userContext, "GANIdentifier.groovy", shouldMatchExactPatientId, null);
+        encounterPersister.init(userContext, "GANIdentifier.groovy", shouldMatchExactPatientId, null, false);
 
         EncounterRow anEncounter = new EncounterRow();
         anEncounter.obsRows = new ArrayList<>();
@@ -654,7 +655,7 @@ public class EncounterPersisterIT extends BaseIntegrationTest {
         multipleEncounterRow.visitType = "OPD";
         multipleEncounterRow.patientIdentifier = "GAN200000";
         multipleEncounterRow.patientAttributes = getPatientAttributes();
-        encounterPersister.init(userContext, "IdAndNameMatch.groovy", shouldMatchExactPatientId, null);
+        encounterPersister.init(userContext, "IdAndNameMatch.groovy", shouldMatchExactPatientId, null, false);
 
         EncounterRow anEncounter = new EncounterRow();
         anEncounter.obsRows = new ArrayList<>();

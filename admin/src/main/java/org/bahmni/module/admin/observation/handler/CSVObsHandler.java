@@ -13,4 +13,6 @@ public interface CSVObsHandler {
     List<KeyValue> getRelatedCSVObs(EncounterRow encounterRow);
 
     List<EncounterTransaction.Observation> handle(EncounterRow encounterRow) throws ParseException;
+
+    List<EncounterTransaction.Observation> handle(EncounterRow encounterRow, boolean shouldPerformForm2Validations) throws ParseException;
 }

@@ -37,6 +37,11 @@ public class CSVObservationHelper {
     private static final String FORM2_TYPE = "form2";
     private static final String OBS_PATH_SPLITTER_PROPERTY = "bahmni.admin.csv.upload.obsPath.splitter";
     private static final String DEFAULT_OBSPATH_SPLITTER = ".";
+    private static final String MULTI_SELECT_OBS_SPLITTER_PROPERTY = "bahmni.admin.csv.upload.obs.multiSelect.splitter";
+    private static final String DEFAULT_MULTI_SELECT_OBS_SPLITTER = "|";
+    private static final String ADDMORE_OBS_SPLITTER_PROPERTY = "bahmni.admin.csv.upload.obs.addmore.splitter";
+    private static final String DEFAULT_ADDMORE_OBS_SPLITTER = "|";
+    private static final String DATE = "Date";
     private final ConceptCache conceptCache;
     private final ConceptService conceptService;
     private AdministrationService administrationService;
@@ -58,6 +63,18 @@ public class CSVObservationHelper {
 
     protected Concept getConcept(String conceptName) {
         return conceptCache.getConcept(conceptName);
+    }
+
+    public void createObservations(List<Observation> observations, Date encounterDate,
+                                   List<KeyValue> obsRows, List<String> conceptNames) throws ParseException {
+        Observation existingObservation = getRootObservationIfExists(observations, conceptNames, null);
+        if (existingObservation == null) {
+            for(KeyValue obsRow : obsRows)
+                observations.add(createObservation(conceptNames, encounterDate, obsRow));
+        } else {
+            for(KeyValue obsRow : obsRows)
+                updateObservation(conceptNames, existingObservation, encounterDate, obsRow);
+        }
     }
 
     public void createObservations(List<Observation> observations, Date encounterDate,
@@ -115,6 +132,8 @@ public class CSVObservationHelper {
             observation.setValue(getValue(obsRow, obsConcept));
             if (obsConcept.getDatatype().isNumeric()) {
                 validateAndUpdateObservationInterpretation(obsRow, obsConcept, observation);
+            } else if(obsConcept.getDatatype().isDate()) {
+                observation.getConcept().setDataType(DATE);
             }
         } else {
             conceptNames.remove(0);
@@ -173,6 +192,28 @@ public class CSVObservationHelper {
     private String getObsPathSplitter() {
         final String obsPathSplitter = administrationService.getGlobalProperty(OBS_PATH_SPLITTER_PROPERTY);
         return isNotBlank(obsPathSplitter) ? obsPathSplitter : DEFAULT_OBSPATH_SPLITTER;
+    }
+
+    public List<String> getMultiSelectObs(KeyValue csvObservation) {
+        String multiSelectRawValue = csvObservation.getValue();
+        return isNotBlank(multiSelectRawValue) ? new ArrayList<>(asList(multiSelectRawValue.split(String.format("\\%s", getMultiSelectObsSplitter()))))
+                : new ArrayList<>();
+    }
+
+    public List<String> getAddmoreObs(KeyValue csvObservation) {
+        String addmoreRawValue = csvObservation.getValue();
+        return isNotBlank(addmoreRawValue) ? new ArrayList<>(asList(addmoreRawValue.split(String.format("\\%s", getAddmoreObsSplitter()))))
+                : new ArrayList<>();
+    }
+
+    private String getMultiSelectObsSplitter() {
+        final String multiSelectObsSplitter = administrationService.getGlobalProperty(MULTI_SELECT_OBS_SPLITTER_PROPERTY);
+        return isNotBlank(multiSelectObsSplitter) ? multiSelectObsSplitter : DEFAULT_MULTI_SELECT_OBS_SPLITTER;
+    }
+
+    private String getAddmoreObsSplitter() {
+        final String addmoreObsSplitter = administrationService.getGlobalProperty(ADDMORE_OBS_SPLITTER_PROPERTY);
+        return isNotBlank(addmoreObsSplitter) ? addmoreObsSplitter : DEFAULT_ADDMORE_OBS_SPLITTER;
     }
 
     public boolean isForm2Type(KeyValue obsRow) {

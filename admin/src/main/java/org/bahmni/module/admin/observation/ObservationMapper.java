@@ -30,4 +30,13 @@ public class ObservationMapper {
         return observations;
     }
 
+    public List<EncounterTransaction.Observation> getObservations(EncounterRow encounterRow, boolean shouldPerformForm2Validations) throws ParseException {
+        final List<EncounterTransaction.Observation> observations = new ArrayList<>();
+        for (CSVObsHandler csvObsHandler : csvObsHandlers) {
+            final List<EncounterTransaction.Observation> allObs = csvObsHandler.handle(encounterRow, shouldPerformForm2Validations);
+            if(allObs != null)
+                observations.addAll(allObs);
+        }
+        return observations;
+    }
 }

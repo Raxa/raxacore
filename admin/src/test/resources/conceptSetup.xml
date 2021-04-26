@@ -95,4 +95,24 @@
                   concept_name_id="304" voided="false" uuid="5d2d4cb7-955b-yyyz-mmm7-0ecc9415555"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
+    <!--Concepts for form2 encounter validation-->
+    <concept concept_id="152" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2020-08-08 20:31:00" uuid="5d2d4cb7-955b-4837-yyyz-0ccc78701112"/>
+    <concept_name concept_id="152" name="Asymptomatic" locale="en" creator="1" date_created="2020-08-08 20:31:00"
+                  concept_name_id="306" voided="false" uuid="5d2d4cb7-955b-yyyz-mmm7-0ecc9415556"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept concept_id="153" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
+             date_created="2020-08-08 20:31:00" uuid="5d2d4cb7-955b-4837-yyyz-0ccc78701113"/>
+    <concept_name concept_id="153" name="Herpes Zoster" locale="en" creator="1" date_created="2020-08-08 20:31:00"
+                  concept_name_id="307" voided="false" uuid="5d2d4cb7-955b-yyyz-mmm7-0ecc9415557"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="154" retired="0" datatype_id="5" class_id="11" is_set="0" creator="1"
+             date_created="2020-08-08 20:31:00" uuid="5d2d4cb7-955b-4837-yyyz-0ccc78701114"/>
+    <concept_name concept_id="154" name="WHO Stage Conditions" locale="en" creator="1" date_created="2020-08-08 20:31:00"
+                  concept_name_id="308" voided="false" uuid="5d2d4cb7-955b-yyyz-mmm7-0ecc9415558"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_answer concept_answer_id="2000" concept_id="154" answer_concept="152" creator="1" date_created="2020-08-08 20:31:00"/>
+    <concept_answer concept_answer_id="2001" concept_id="154" answer_concept="153" creator="1" date_created="2020-08-08 20:31:00"/>
+
 </dataset>
