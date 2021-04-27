@@ -1,6 +1,7 @@
 package org.bahmni.module.admin.csv.service;
 
 import org.apache.commons.lang.StringUtils;
+import org.bahmni.common.config.registration.service.RegistrationPageService;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.PatientRow;
 import org.openmrs.Concept;
@@ -27,19 +28,23 @@ import static org.bahmni.module.admin.csv.utils.CSVUtils.getDateFromString;
 public class CSVPatientService {
 
     private static final String BAHMNI_PRIMARY_IDENTIFIER_TYPE = "bahmni.primaryIdentifierType";
+    private static final String REGISTRATION_PAGE_VALIDATION_MANDATORY_FIELD = "bahmni.registration.validation.mandatoryField";
+    private boolean DEFAULT_MANDATORY_FIELD_VALIDATION = true;
 
     private PatientService patientService;
     private PersonService personService;
     private ConceptService conceptService;
     private AdministrationService administrationService;
     private CSVAddressService csvAddressService;
+    private RegistrationPageService registrationPageService;
 
-    public CSVPatientService(PatientService patientService, PersonService personService, ConceptService conceptService, AdministrationService administrationService, CSVAddressService csvAddressService) {
+    public CSVPatientService(PatientService patientService, PersonService personService, ConceptService conceptService, AdministrationService administrationService, CSVAddressService csvAddressService, RegistrationPageService registrationPageService) {
         this.patientService = patientService;
         this.personService = personService;
         this.conceptService = conceptService;
         this.administrationService = administrationService;
         this.csvAddressService = csvAddressService;
+        this.registrationPageService = registrationPageService;
     }
 
     public Patient save(PatientRow patientRow) throws ParseException {
@@ -72,10 +77,11 @@ public class CSVPatientService {
     }
 
     private void addPersonAttributes(Patient patient, PatientRow patientRow) throws ParseException {
+        final List<String> mandatoryAttributes = registrationPageService.getMandatoryAttributes();
     	for (KeyValue attribute : patientRow.attributes) {
-    		if(StringUtils.isBlank(attribute.getValue()))
-    		   continue;
-    		PersonAttributeType personAttributeType = findAttributeType(attribute.getKey());
+            if (validateForMandatoryAttribute(mandatoryAttributes, attribute))
+                continue;
+            PersonAttributeType personAttributeType = findAttributeType(attribute.getKey());
     		if (personAttributeType.getFormat().equalsIgnoreCase("org.openmrs.Concept")) {
     		    Concept concept = getConceptByName(attribute.getValue());
     		    if (concept != null) {
@@ -92,6 +98,23 @@ public class CSVPatientService {
     		    patient.addAttribute(new PersonAttribute(findAttributeType(attribute.getKey()),dateString));
     		}
     	}
+    }
+
+    private boolean validateForMandatoryAttribute(List<String> mandatoryAttributes, KeyValue attribute) {
+        boolean skipCurrentAttribute = false;
+        final boolean mandatoryFieldValidationRequired = isMandatoryFieldValidationRequired();
+        if(StringUtils.isBlank(attribute.getValue())) {
+            if(mandatoryFieldValidationRequired) {
+                if(mandatoryAttributes == null)
+                    throw new RuntimeException("Error in reading patient registration config");
+                else if(mandatoryAttributes.contains(attribute.getKey()))
+                    throw new RuntimeException(String.format("Missing value for mandatory attribute \"%s\"", attribute.getKey()));
+                else
+                    skipCurrentAttribute = true;
+            } else
+                skipCurrentAttribute = true;
+        }
+        return skipCurrentAttribute;
     }
 
     private Concept getConceptByName(String name) {
@@ -122,6 +145,11 @@ public class CSVPatientService {
     private PatientIdentifierType getPatientIdentifierType() {
         String globalProperty = administrationService.getGlobalProperty(BAHMNI_PRIMARY_IDENTIFIER_TYPE);
         return patientService.getPatientIdentifierTypeByUuid(globalProperty);
+    }
+
+    private boolean isMandatoryFieldValidationRequired() {
+        String mandatoryFieldValidationGlobalProperty = administrationService.getGlobalProperty(REGISTRATION_PAGE_VALIDATION_MANDATORY_FIELD);
+        return StringUtils.isNotBlank(mandatoryFieldValidationGlobalProperty) ? Boolean.valueOf(mandatoryFieldValidationGlobalProperty) : DEFAULT_MANDATORY_FIELD_VALIDATION;
     }
 
 }

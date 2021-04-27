@@ -19,6 +19,11 @@
             <version>${bahmniJavaUtilsVersion}</version>
         </dependency>
         <dependency>
+            <groupId>org.bahmni.module</groupId>
+            <artifactId>common</artifactId>
+            <version>${bahmniJavaUtilsVersion}</version>
+        </dependency>
+        <dependency>
             <groupId>org.openmrs.module</groupId>
             <artifactId>auditlog-api</artifactId>
             <scope>provided</scope>

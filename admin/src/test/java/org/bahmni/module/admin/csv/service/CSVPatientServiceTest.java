@@ -1,5 +1,6 @@
 package org.bahmni.module.admin.csv.service;
 
+import org.bahmni.common.config.registration.service.RegistrationPageService;
 import org.bahmni.csv.KeyValue;
 import org.bahmni.module.admin.csv.models.PatientRow;
 import org.bahmni.module.admin.csv.utils.CSVUtils;
@@ -32,8 +33,9 @@ import java.util.List;
 import java.util.Set;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -54,6 +56,8 @@ public class CSVPatientServiceTest {
     private AddressHierarchyService addressHierarchyService;
     @Mock
     private CSVAddressService csvAddressService;
+    @Mock
+    private RegistrationPageService registrationPageService;
 
     @Before
     public void setUp() throws Exception {
@@ -68,7 +72,7 @@ public class CSVPatientServiceTest {
         patientRow.lastName = "Powar";
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
-        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService, registrationPageService);
 
         csvPatientService.save(patientRow);
 
@@ -91,7 +95,7 @@ public class CSVPatientServiceTest {
         patientRow.birthdate = "1998-07-07";
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
-        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService, registrationPageService);
 
         csvPatientService.save(patientRow);
 
@@ -113,7 +117,7 @@ public class CSVPatientServiceTest {
 
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
-        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService, registrationPageService);
 
         csvPatientService.save(patientRow);
 
@@ -163,7 +167,7 @@ public class CSVPatientServiceTest {
         when(addressHierarchyService.getAddressHierarchyLevels()).thenReturn(addressHierarchyLevels);
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
-        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, new CSVAddressService(addressHierarchyService));
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, new CSVAddressService(addressHierarchyService), registrationPageService);
         csvPatientService.save(patientRow);
 
         verify(mockPatientService).savePatient(patientArgumentCaptor.capture());
@@ -189,7 +193,7 @@ public class CSVPatientServiceTest {
             add(new KeyValue("caste", "gond"));
         }};
 
-        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService, registrationPageService);
         csvPatientService.save(patientRow);
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
@@ -224,7 +228,7 @@ public class CSVPatientServiceTest {
             add(new KeyValue("landHolding", "222"));
         }};
 
-        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService, registrationPageService);
         csvPatientService.save(patientRow);
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
@@ -268,7 +272,7 @@ public class CSVPatientServiceTest {
             add(new KeyValue("confirmedByChw", "Yes"));
         }};
 
-        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService, registrationPageService);
         csvPatientService.save(patientRow);
 
         ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
@@ -291,7 +295,7 @@ public class CSVPatientServiceTest {
             add(new KeyValue("confirmedByChw", "Yes"));
         }};
 
-        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService, registrationPageService);
         csvPatientService.save(patientRow);
     }
 
@@ -326,13 +330,13 @@ public class CSVPatientServiceTest {
             add(new KeyValue("confirmedByChw", "Yes"));
         }};
 
-        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService, registrationPageService);
         csvPatientService.save(patientRow);
     }
 
     @Test
     public void failsWhenNonExistingAttributeIsImported() throws ParseException {
-        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService);
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService, registrationPageService);
         when(mockPersonService.getAllPersonAttributeTypes(false)).thenReturn(Arrays.asList(createPersonAttributeType("familyNameLocal", "java.lang.String")));
 
         PatientRow patientRow = new PatientRow();
@@ -341,6 +345,56 @@ public class CSVPatientServiceTest {
         exception.expect(RuntimeException.class);
         exception.expectMessage("Person Attribute nonExisting not found");
         csvPatientService.save(patientRow);
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenMandatoryAttributeIsMissing() throws ParseException {
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService, registrationPageService);
+        when(mockPersonService.getAllPersonAttributeTypes(false)).thenReturn(Arrays.asList(createPersonAttributeType("familyNameLocal", "java.lang.String")));
+        when(mockAdminService.getGlobalProperty(anyString())).thenReturn("true");
+        when(registrationPageService.getMandatoryAttributes()).thenReturn(Arrays.asList("Admission Date"));
+
+        PatientRow patientRow = new PatientRow();
+        patientRow.attributes = Arrays.asList(new KeyValue("Admission Date", ""));
+
+        exception.expect(RuntimeException.class);
+        exception.expectMessage("Missing value for mandatory attribute \"Admission Date\"");
+        csvPatientService.save(patientRow);
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenPatientConfigIsNotAvailable() throws ParseException {
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService, registrationPageService);
+        when(mockPersonService.getAllPersonAttributeTypes(false)).thenReturn(Arrays.asList(createPersonAttributeType("familyNameLocal", "java.lang.String")));
+        when(mockAdminService.getGlobalProperty(anyString())).thenReturn("true");
+        when(registrationPageService.getMandatoryAttributes()).thenReturn(null);
+
+        PatientRow patientRow = new PatientRow();
+        patientRow.attributes = Arrays.asList(new KeyValue("Admission Date", ""));
+
+        exception.expect(RuntimeException.class);
+        exception.expectMessage("Error in reading patient registration config");
+        csvPatientService.save(patientRow);
+    }
+
+    @Test
+    public void shouldSkipAttributeCreationWhenEmptyAndNotMandatory() throws ParseException {
+        CSVPatientService csvPatientService = new CSVPatientService(mockPatientService, mockPersonService, conceptService, mockAdminService, csvAddressService, registrationPageService);
+        when(mockPersonService.getAllPersonAttributeTypes(false)).thenReturn(Arrays.asList(createPersonAttributeType("familyNameLocal", "java.lang.String")));
+        when(mockAdminService.getGlobalProperty(anyString())).thenReturn("true");
+        when(registrationPageService.getMandatoryAttributes()).thenReturn(Arrays.asList());
+
+        PatientRow patientRow = new PatientRow();
+        patientRow.attributes = Arrays.asList(new KeyValue("Admission Date", ""));
+
+        csvPatientService.save(patientRow);
+
+        ArgumentCaptor<Patient> patientArgumentCaptor = ArgumentCaptor.forClass(Patient.class);
+        verify(mockPatientService).savePatient(patientArgumentCaptor.capture());
+
+        Patient patient = patientArgumentCaptor.getValue();
+        assertThat(patient.getAttributes().size(), is(0));
+        assertNull(patient.getAttribute("Admission Date"));
     }
 
     private PersonAttributeType createPersonAttributeType(String name, String format) {

@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.log4j.Logger;
+import org.bahmni.common.config.registration.service.RegistrationPageService;
 import org.bahmni.common.db.JDBCConnectionProvider;
 import org.bahmni.csv.CSVFile;
 import org.bahmni.csv.EntityPersister;
@@ -43,11 +44,7 @@ import org.openmrs.module.webservices.rest.web.v1_0.controller.BaseRestControlle
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -67,6 +64,8 @@ public class AdminImportController extends BaseRestController {
 
     public static final String YYYY_MM_DD_HH_MM_SS = "_yyyy-MM-dd_HH:mm:ss";
     private static final int DEFAULT_NUMBER_OF_DAYS = 30;
+    private static final String HTTPS_PROTOCOL = "https";
+    private static final String HTTP_PROTOCOL = "http";
 
     public static final String PARENT_DIRECTORY_UPLOADED_FILES_CONFIG = "uploaded.files.directory";
     public static final String SHOULD_MATCH_EXACT_PATIENT_ID_CONFIG = "uploaded.should.matchExactPatientId";
@@ -119,10 +118,15 @@ public class AdminImportController extends BaseRestController {
     @Qualifier("adminService")
     private AdministrationService administrationService;
 
+    @Autowired
+    private RegistrationPageService registrationPageService;
+
     @RequestMapping(value = baseUrl + "/patient", method = RequestMethod.POST)
     @ResponseBody
-    public boolean upload(@RequestParam(value = "file") MultipartFile file) throws IOException {
+        public boolean upload(@RequestParam(value = "file") MultipartFile file, @RequestHeader("Host") String host, @RequestHeader(value = "Origin", required = false) String origin, @RequestHeader(value = "Referer", required = false) String referer) throws IOException {
         try {
+            registrationPageService.setProtocol(getProtocol(origin, referer));
+            registrationPageService.setHost(host);
             patientPersister.init(Context.getUserContext());
             return importCsv(PATIENT_FILES_DIRECTORY, file, patientPersister, 1, true, PatientRow.class);
         } catch (Throwable e) {
@@ -350,5 +354,23 @@ public class AdminImportController extends BaseRestController {
         public void closeConnection() {
 
         }
+    }
+
+    private String getProtocol(String origin, String referer) {
+        if(origin != null) {
+            if(origin.startsWith(HTTPS_PROTOCOL))
+                return HTTPS_PROTOCOL;
+            else
+                return HTTP_PROTOCOL;
+        }
+
+        if(referer != null) {
+            if(referer.startsWith(HTTPS_PROTOCOL))
+                return HTTPS_PROTOCOL;
+            else
+                return HTTP_PROTOCOL;
+        }
+
+        return HTTPS_PROTOCOL;
     }
 }
