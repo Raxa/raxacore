@@ -10,7 +10,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.openmrs.api.APIException;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -27,11 +30,12 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-@PrepareForTest(CSVObservationHelper.class)
+@PrepareForTest({CSVObservationHelper.class, Context.class})
 @RunWith(PowerMockRunner.class)
 public class Form2CSVObsHandlerTest {
 
@@ -42,12 +46,18 @@ public class Form2CSVObsHandlerTest {
     private FormFieldPathService formFieldPathService;
     private FormFieldPathGeneratorService formFieldPathGeneratorService;
 
+    @Mock
+    private AdministrationService administrationService;
+
     @Before
     public void setUp() {
         initMocks(this);
         csvObservationHelper = mock(CSVObservationHelper.class);
         formFieldPathService = mock(FormFieldPathService.class);
         formFieldPathGeneratorService = mock(FormFieldPathGeneratorService.class);
+        PowerMockito.mockStatic(Context.class);
+        when(Context.getAdministrationService()).thenReturn(administrationService);
+        when(administrationService.getGlobalProperty(eq("bahmni.admin.csv.upload.dateFormat"))).thenReturn("yyyy-M-d");
     }
 
     @Test

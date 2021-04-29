@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import static org.bahmni.module.admin.csv.utils.CSVUtils.getDateStringInSupportedFormat;
 import static org.bahmni.module.admin.csv.utils.CSVUtils.getDateFromString;
 
 public class CSVPatientService {
@@ -92,10 +93,12 @@ public class CSVPatientService {
     		} else if (personAttributeType.getFormat().startsWith("java.lang.")) {
     		    patient.addAttribute(new PersonAttribute(findAttributeType(attribute.getKey()), attribute.getValue()));
     		} else if (personAttributeType.getFormat().startsWith("org.openmrs.util.AttributableDate")) {
-    		    //Validating the Date format
+
     		    String dateString = attribute.getValue();
-    		    getDateFromString(dateString);
-    		    patient.addAttribute(new PersonAttribute(findAttributeType(attribute.getKey()),dateString));
+                //Validating the Date format
+                getDateFromString(dateString);
+                String supportedDateString = getDateStringInSupportedFormat(dateString);
+    		    patient.addAttribute(new PersonAttribute(findAttributeType(attribute.getKey()),supportedDateString));
     		}
     	}
     }

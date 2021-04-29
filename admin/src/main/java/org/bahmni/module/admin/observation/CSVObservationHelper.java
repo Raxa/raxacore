@@ -31,6 +31,7 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.springframework.util.CollectionUtils.isEmpty;
+import static org.bahmni.module.admin.csv.utils.CSVUtils.getDateStringInSupportedFormat;
 
 @Component
 public class CSVObservationHelper {
@@ -120,7 +121,7 @@ public class CSVObservationHelper {
         return existingObservation;
     }
 
-    private Observation createObservation(List<String> conceptNames, Date encounterDate, KeyValue obsRow) {
+    private Observation createObservation(List<String> conceptNames, Date encounterDate, KeyValue obsRow) throws ParseException {
         Concept obsConcept = conceptCache.getConcept(conceptNames.get(0));
         EncounterTransaction.Concept concept = new EncounterTransaction.Concept(obsConcept.getUuid(),
                 obsConcept.getName().getName());
@@ -150,10 +151,14 @@ public class CSVObservationHelper {
         if (nonNull(recordedObsValue) && ((nonNull(hiNormal) && recordedObsValue.compareTo(hiNormal) > 0) || (nonNull(lowNormal) && recordedObsValue.compareTo(lowNormal) < 0))) {
             observation.setInterpretation(String.valueOf(Obs.Interpretation.ABNORMAL));
         }
-    }
+    };
 
-    private Object getValue(KeyValue obsRow, Concept obsConcept) {
+    private Object getValue(KeyValue obsRow, Concept obsConcept) throws ParseException {
         Map<String, Object> valueConcept = null;
+        if(obsConcept.getDatatype().isDate()) {
+            String dateString = obsRow.getValue();
+            return getDateStringInSupportedFormat(dateString);
+        }
         if (obsConcept.getDatatype().isCoded()) {
             List<Concept> valueConcepts = conceptService.getConceptsByName(obsRow.getValue());
             for (Concept concept : valueConcepts) {

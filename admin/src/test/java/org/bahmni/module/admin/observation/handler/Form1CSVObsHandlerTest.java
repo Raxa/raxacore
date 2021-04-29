@@ -6,7 +6,14 @@ import org.bahmni.module.admin.csv.models.EncounterRow;
 import org.bahmni.module.admin.observation.CSVObservationHelper;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.openmrs.api.AdministrationService;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -14,24 +21,31 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({Context.class})
 public class Form1CSVObsHandlerTest {
 
     private Form1CSVObsHandler form1CSVObsHandler;
 
     private CSVObservationHelper csvObservationHelper;
 
+    @Mock
+    private AdministrationService administrationService;
+
     @Before
     public void setUp() {
         initMocks(this);
         csvObservationHelper = mock(CSVObservationHelper.class);
+        PowerMockito.mockStatic(Context.class);
+        when(Context.getAdministrationService()).thenReturn(administrationService);
+        when(administrationService.getGlobalProperty(eq("bahmni.admin.csv.upload.dateFormat"))).thenReturn("yyyy-M-d");
     }
 
     @Test
