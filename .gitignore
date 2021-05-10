@@ -10,3 +10,8 @@ classes/
 .rubygems
 sass-external
 bahmnicore-omod/src/main/webapp/resources/styles/bahmnicore.css
+
+# Eclipse project files
+.settings
+.classpath
+.project
