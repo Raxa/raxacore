@@ -300,4 +300,85 @@ public class Form2CSVObsHandlerTest {
         verify(csvObservationHelper).createObservations(anyListOf(EncounterTransaction.Observation.class),
                 any(Date.class), any(KeyValue.class), anyListOf(String.class));
     }
+
+    @Test
+    public void shouldCreateObsForAddmoreSection() throws ParseException {
+        final KeyValue form2CSVObservation = new KeyValue("form2.Birth Details.Infant Details.Infant Gender?isJson=true", "{\"values\":[\"Male\", \"Female\"]}");
+        final EncounterRow encounterRow = new EncounterRow();
+        encounterRow.obsRows = asList(form2CSVObservation);
+        encounterRow.encounterDateTime = "2019-11-11";
+
+        when(csvObservationHelper.isForm2Type(form2CSVObservation)).thenReturn(true);
+
+        final List<String> headerParts = new ArrayList<>(Arrays.asList("form2", "Birth Details", "Infant Details", "Infant Gender"));
+        when(csvObservationHelper.getCSVHeaderParts(any(KeyValue.class))).thenReturn(headerParts);
+        when(formFieldPathService.isValidCSVHeader(anyList())).thenReturn(true);
+        doNothing().when(csvObservationHelper).verifyNumericConceptValue(form2CSVObservation, headerParts);
+        doNothing().when(csvObservationHelper).createObservations(anyListOf(EncounterTransaction.Observation.class),
+                any(Date.class), anyListOf(KeyValue.class), anyListOf(String.class));
+
+        form2CSVObsHandler = new Form2CSVObsHandler(csvObservationHelper, formFieldPathService, formFieldPathGeneratorService);
+
+        form2CSVObsHandler.handle(encounterRow, true);
+        verify(csvObservationHelper).isForm2Type(form2CSVObservation);
+        verify(csvObservationHelper).getCSVHeaderParts(form2CSVObservation);
+        verify(csvObservationHelper).createObservations(anyListOf(EncounterTransaction.Observation.class),
+                any(Date.class), anyListOf(KeyValue.class), anyListOf(String.class));
+    }
+
+    @Test
+    public void shouldCreateMultiSelectObsForAddmoreSection() throws ParseException {
+        final KeyValue form2CSVObservation = new KeyValue("form2.TB History.Past TB Treatment.Past TB Drug regimen?isJson=true", "{\"values\":[\"Ethambutol (E)|Isoniazid (H)\",\"Streptomycin (S)|Thioacetazone (T)\"]}");
+
+        final EncounterRow encounterRow = new EncounterRow();
+        encounterRow.obsRows = asList(form2CSVObservation);
+        encounterRow.encounterDateTime = "2019-11-11";
+
+        when(csvObservationHelper.isForm2Type(form2CSVObservation)).thenReturn(true);
+
+        final List<String> headerParts = new ArrayList<>(Arrays.asList("form2", "TB History", "Past TB Treatment", "Past TB Drug regimen"));
+        when(csvObservationHelper.getCSVHeaderParts(any(KeyValue.class))).thenReturn(headerParts);
+        when(csvObservationHelper.getMultiSelectObsForJsonValue("Ethambutol (E)|Isoniazid (H)")).thenReturn(asList("Ethambutol (E)","Isoniazid (H)"));
+        when(csvObservationHelper.getMultiSelectObsForJsonValue("Streptomycin (S)|Thioacetazone (T)")).thenReturn(asList("Streptomycin (S)","Thioacetazone (T)"));
+        when(formFieldPathService.isValidCSVHeader(anyList())).thenReturn(true);
+        when(formFieldPathService.isMultiSelectObs(anyList())).thenReturn(true);
+        doNothing().when(csvObservationHelper).verifyNumericConceptValue(form2CSVObservation, headerParts);
+        doNothing().when(csvObservationHelper).createObservations(anyListOf(EncounterTransaction.Observation.class),
+                any(Date.class), anyListOf(KeyValue.class), anyListOf(String.class));
+
+        form2CSVObsHandler = new Form2CSVObsHandler(csvObservationHelper, formFieldPathService, formFieldPathGeneratorService);
+
+        form2CSVObsHandler.handle(encounterRow, true);
+        verify(csvObservationHelper).isForm2Type(form2CSVObservation);
+        verify(csvObservationHelper).getCSVHeaderParts(form2CSVObservation);
+        verify(csvObservationHelper).createObservations(anyListOf(EncounterTransaction.Observation.class),
+                any(Date.class), anyListOf(KeyValue.class), anyListOf(String.class));
+    }
+
+    @Test
+    public void shouldThrowAPIExceptionIfJsonValueisIsInvalid() throws ParseException {
+        final KeyValue form2CSVObservation = new KeyValue("form2.Birth Details.Infant Details.Infant Gender?isJson=true", "{INVALID JSON DATA}");
+        final EncounterRow encounterRow = new EncounterRow();
+        encounterRow.obsRows = asList(form2CSVObservation);
+        encounterRow.encounterDateTime = "2019-11-11";
+
+        when(csvObservationHelper.isForm2Type(form2CSVObservation)).thenReturn(true);
+
+        final List<String> headerParts = new ArrayList<>(Arrays.asList("form2", "Birth Details", "Infant Details", "Infant Gender"));
+        when(csvObservationHelper.getCSVHeaderParts(any(KeyValue.class))).thenReturn(headerParts);
+        when(formFieldPathService.isValidCSVHeader(anyList())).thenReturn(true);
+        doNothing().when(csvObservationHelper).verifyNumericConceptValue(form2CSVObservation, headerParts);
+        doNothing().when(csvObservationHelper).createObservations(anyListOf(EncounterTransaction.Observation.class),
+                any(Date.class), anyListOf(KeyValue.class), anyListOf(String.class));
+
+        form2CSVObsHandler = new Form2CSVObsHandler(csvObservationHelper, formFieldPathService, formFieldPathGeneratorService);
+
+        expectedException.expect(APIException.class);
+        expectedException.expectMessage("Error in parsing json value for form2.Birth Details.Infant Details.Infant Gender");
+
+        form2CSVObsHandler.handle(encounterRow, true );
+
+        verify(csvObservationHelper).createObservations(anyListOf(EncounterTransaction.Observation.class),
+                any(Date.class), any(KeyValue.class), anyListOf(String.class));
+    }
 }

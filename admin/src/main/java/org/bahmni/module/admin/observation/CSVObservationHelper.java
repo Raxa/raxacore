@@ -221,6 +221,19 @@ public class CSVObservationHelper {
         return isNotBlank(addmoreObsSplitter) ? addmoreObsSplitter : DEFAULT_ADDMORE_OBS_SPLITTER;
     }
 
+    public List<String> getMultiSelectObsForJsonValue(String jsonValue) {
+        List<String> multiSelectValues = new ArrayList<>();
+        if(isNotBlank(jsonValue))
+            multiSelectValues.addAll(asList(jsonValue.split(String.format("\\%s", getMultiSelectObsSplitter()))));
+        return multiSelectValues;
+    }
+
+    public List<String> getAddmoreObsForJsonValue(String jsonValue) {
+        List<String> addmoreValues = new ArrayList<>();
+        if(isNotBlank(jsonValue))
+            addmoreValues.addAll(asList(jsonValue.split(String.format("\\%s", getAddmoreObsSplitter()))));
+        return addmoreValues;
+    }
     public boolean isForm2Type(KeyValue obsRow) {
         String key = obsRow.getKey();
         if (StringUtils.isNotBlank(key)) {
