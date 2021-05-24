@@ -1,5 +1,6 @@
 package org.bahmni.module.bahmnicore.contract.patient.search;
 
+import org.apache.log4j.Logger;
 import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
 import org.bahmni.module.bahmnicore.customdatatype.datatype.CodedConceptDatatype;
 import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
@@ -14,7 +15,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+@Deprecated
 public class PatientSearchBuilder {
+
+	private static final Logger log = Logger.getLogger(PatientSearchBuilder.class);
 
 	private String visitJoin = " left outer join visit v on v.patient_id = p.person_id and v.date_stopped is null ";
 	private static String VISIT_JOIN = "_VISIT_JOIN_";
@@ -32,10 +36,10 @@ public class PatientSearchBuilder {
 			"primary_identifier.identifier as identifier, " +
 			"extra_identifiers.identifiers as extraIdentifiers, " +
 			"(CASE va.value_reference WHEN 'Admitted' THEN TRUE ELSE FALSE END) as hasBeenAdmitted ";
-	public static final String WHERE_CLAUSE = " where p.voided = 'false' and pn.voided = 'false' and pn.preferred=true ";
+	public static final String WHERE_CLAUSE = " where p.voided = false and pn.voided = false and pn.preferred=true ";
 	public static final String FROM_TABLE = " from person p ";
 	public static final String JOIN_CLAUSE = " left join person_name pn on pn.person_id = p.person_id" +
-			" left join person_address pa on p.person_id=pa.person_id and pa.voided = 'false'" +
+			" left join person_address pa on p.person_id=pa.person_id and pa.voided = false" +
 			" JOIN (SELECT identifier, patient_id" +
 			"      FROM patient_identifier pi" +
 			" JOIN patient_identifier_type pit ON pi.identifier_type = pit.patient_identifier_type_id AND pi.voided IS FALSE AND pit.retired IS FALSE" +
@@ -52,7 +56,9 @@ public class PatientSearchBuilder {
 			"   and va.attribute_type_id = (select visit_attribute_type_id from visit_attribute_type where name='Admission Status') " +
 			"   and va.voided = 0";
 	private static final String GROUP_BY_KEYWORD = " group by ";
-	public static final String ORDER_BY = " order by primary_identifier.identifier asc LIMIT :limit OFFSET :offset";
+	//public static final String ORDER_BY = " order by primary_identifier.identifier asc LIMIT :limit OFFSET :offset";
+	public static final String ORDER_BY = " order by primary_identifier.identifier asc";
+	public static final String LIMIT_OFFSET = " LIMIT %d OFFSET %d ";
 	private static final String LIMIT_PARAM = "limit";
 	private static final String OFFSET_PARAM = "offset";
 
@@ -113,15 +119,12 @@ public class PatientSearchBuilder {
 	}
 
 	public PatientSearchBuilder withProgramAttributes(String programAttribute, ProgramAttributeType programAttributeType){
-		if(programAttributeType == null){
+		if (programAttributeType == null)  {
 			return this;
 		}
 
 		Integer programAttributeTypeId = programAttributeType.getProgramAttributeTypeId();
-
 		boolean isAttributeValueCodedConcept = programAttributeType.getDatatypeClassname().equals(CodedConceptDatatype.class.getCanonicalName());
-
-
 		PatientProgramAttributeQueryHelper programAttributeQueryHelper;
 		if (isAttributeValueCodedConcept) {
 			programAttributeQueryHelper = new ProgramAttributeCodedValueQueryHelper(programAttribute,
@@ -139,7 +142,10 @@ public class PatientSearchBuilder {
 
 	public SQLQuery buildSqlQuery(Integer limit, Integer offset){
 		String joinWithVisit = join.replace(VISIT_JOIN, visitJoin);
-		String query = select + from + joinWithVisit + where + GROUP_BY_KEYWORD + groupBy  + orderBy;
+		String query = select + from + joinWithVisit + where + GROUP_BY_KEYWORD + groupBy  + orderBy
+				+  String.format(LIMIT_OFFSET, limit, offset);
+
+		log.debug("Running patient search query : " + query);
 
 		SQLQuery sqlQuery = sessionFactory.getCurrentSession()
 				.createSQLQuery(query)
@@ -158,14 +164,12 @@ public class PatientSearchBuilder {
 				.addScalar("extraIdentifiers", StandardBasicTypes.STRING);
 
 		Iterator<Map.Entry<String,Type>> iterator = types.entrySet().iterator();
+		log.info("Executing Patient Search Query:" + sqlQuery.getQueryString());
 
 		while(iterator.hasNext()){
 			Map.Entry<String,Type> entry = iterator.next();
 			sqlQuery.addScalar(entry.getKey(),entry.getValue());
 		}
-
-		sqlQuery.setParameter(LIMIT_PARAM, limit);
-		sqlQuery.setParameter(OFFSET_PARAM, offset);
 		sqlQuery.setResultTransformer(Transformers.aliasToBean(PatientResponse.class));
 		return sqlQuery;
 	}

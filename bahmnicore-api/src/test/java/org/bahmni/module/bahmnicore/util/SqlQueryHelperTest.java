@@ -64,4 +64,12 @@ public class SqlQueryHelperTest {
 
         assertEquals(expectedQueryString,result);
     }
+
+    @Test
+    public void shouldEscapeSQLInjection() {
+        assertEquals("0X3", SqlQueryHelper.escapeSQL("0x3", true, null));
+        assertEquals("DROP sampletable\\;--", SqlQueryHelper.escapeSQL("DROP sampletable;--", true, null));
+        assertEquals("admin\\'--", SqlQueryHelper.escapeSQL("admin'--", true, null));
+        assertEquals("admin\\'\\\\/*", SqlQueryHelper.escapeSQL("admin'/*", true, null));
+    }
 }
