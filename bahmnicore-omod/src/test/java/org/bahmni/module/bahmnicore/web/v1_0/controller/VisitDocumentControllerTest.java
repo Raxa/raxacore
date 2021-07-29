@@ -1,7 +1,9 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.bahmni.module.bahmnicore.model.Document;
+import org.bahmni.module.bahmnicore.security.PrivilegeConstants;
 import org.bahmni.module.bahmnicore.service.PatientDocumentService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,7 +15,6 @@ import org.mockito.MockitoAnnotations;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
-import org.openmrs.api.APIException;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
@@ -24,8 +25,15 @@ import org.openmrs.module.bahmniemrapi.visitlocation.BahmniVisitLocationService;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
@@ -111,7 +119,7 @@ public class VisitDocumentControllerTest {
     public void shouldCallDeleteWithGivenFileNameIfUserIsAuthenticated() throws Exception {
         PowerMockito.mockStatic(Context.class);
         when(Context.getUserContext()).thenReturn(userContext);
-        when(userContext.isAuthenticated()).thenReturn(true);
+        when(userContext.hasPrivilege(PrivilegeConstants.DELETE_PATIENT_DOCUMENT_PRIVILEGE)).thenReturn(true);
         visitDocumentController.deleteDocument("testFile.png");
         verify(patientDocumentService, times(1)).delete("testFile.png");
     }
@@ -125,25 +133,31 @@ public class VisitDocumentControllerTest {
         verifyZeroInteractions(patientDocumentService);
     }
 
+    /**
+     * Should be moved to PatientDocumentServiceImplIT
+     * @throws Exception
+     */
     @Test
-    public void shouldNotCallDeleteWithGivenFileNameIfFileNameIsNull() throws Exception {
+    public void shouldReturnHttpBadRequestIfFileNameIsNull() throws Exception {
         PowerMockito.mockStatic(Context.class);
         when(Context.getUserContext()).thenReturn(userContext);
-        when(userContext.isAuthenticated()).thenReturn(true);
-        expectedException.expect(APIException.class);
-        expectedException.expectMessage("[Required String parameter 'filename' is empty]");
-        visitDocumentController.deleteDocument(null);
-        verifyZeroInteractions(patientDocumentService);
+        when(userContext.hasPrivilege(PrivilegeConstants.DELETE_PATIENT_DOCUMENT_PRIVILEGE)).thenReturn(true);
+        doThrow(RuntimeException.class).when(patientDocumentService).delete(any());
+        ResponseEntity<Object> responseEntity = visitDocumentController.deleteDocument(null);
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
+    /**
+     * should be moved to PatientDocumentServiceImplIT
+     * @throws Exception
+     */
     @Test
     public void shouldNotCallDeleteWithGivenFileNameIfFileNameIsEmpty() throws Exception {
         PowerMockito.mockStatic(Context.class);
         when(Context.getUserContext()).thenReturn(userContext);
-        when(userContext.isAuthenticated()).thenReturn(true);
-        expectedException.expect(APIException.class);
-        expectedException.expectMessage("[Required String parameter 'filename' is empty]");
-        visitDocumentController.deleteDocument("");
-        verifyZeroInteractions(patientDocumentService);
+        when(userContext.hasPrivilege(PrivilegeConstants.DELETE_PATIENT_DOCUMENT_PRIVILEGE)).thenReturn(true);
+        doThrow(RuntimeException.class).when(patientDocumentService).delete(any());
+        ResponseEntity<Object> responseEntity = visitDocumentController.deleteDocument("");
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 }

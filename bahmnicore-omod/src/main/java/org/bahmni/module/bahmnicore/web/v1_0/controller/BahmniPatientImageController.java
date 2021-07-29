@@ -30,7 +30,7 @@ public class BahmniPatientImageController extends BaseRestController {
     @ResponseBody
     public ResponseEntity<Object> getImage(@RequestParam(value = "patientUuid", required = true) String patientUuid) {
         UserContext userContext = Context.getUserContext();
-            if (userContext.isAuthenticated()) {
+        if (userContext.isAuthenticated()) {
             return patientDocumentService.retriveImage(patientUuid);
         }
         return new ResponseEntity<Object>(new Object(), HttpStatus.UNAUTHORIZED);

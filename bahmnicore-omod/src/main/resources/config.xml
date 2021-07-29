@@ -88,6 +88,10 @@
         <name>View Drug Info</name>
         <description>Ability to view Drug Info</description>
     </privilege>
+    <privilege>
+        <name>Delete Patient Document</name>
+        <description>Ability to delete any patient document</description>
+    </privilege>
 
     <advice>
         <point>org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService</point>
