@@ -13,7 +13,6 @@ import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.Visit;
 import org.openmrs.VisitType;
-import org.openmrs.api.APIException;
 import org.openmrs.api.VisitService;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.bahmniemrapi.document.contract.VisitDocumentResponse;
@@ -22,11 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 
-import java.io.*;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class VisitDocumentControllerIT extends BaseIntegrationTest {
 
@@ -310,6 +313,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
 
     @Test
     public void shouldNotDeleteGivenPatientDocumentFromFileSystemIfFilenameIsEmpty() throws Exception {
+        executeDataSet("userRolesAndPrivileges.xml");
         File file = new File(TMP_DOCUMENT_IMAGES + "/testFileName.png");
         File thumbnailFile = new File(TMP_DOCUMENT_IMAGES + "/testFileName_thumbnail.png");
         file.getParentFile().mkdirs();
@@ -320,17 +324,14 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
         FileUtils.writeStringToFile(new File(TMP_DOCUMENT_IMAGES + "/bahmnicore.properties"),
                 "bahmnicore.documents.baseDirectory=" + TMP_DOCUMENT_IMAGES);
         BahmniCoreProperties.load();
-
-        try{
-            MockHttpServletResponse response = handle(newDeleteRequest("/rest/v1/bahmnicore/visitDocument",
-                    new Parameter("filename", "")));
-            fail();
-        } catch (APIException exception){
-            assertEquals("[Required String parameter 'filename' is empty]",exception.getMessage());
-            assertTrue(file.exists());
-            assertTrue(thumbnailFile.exists());
-            assertTrue(new File(TMP_DOCUMENT_IMAGES).exists());
-        }
+        Context.authenticate("manage-user", "P@ssw0rd");
+        MockHttpServletResponse response = handle(newDeleteRequest("/rest/v1/bahmnicore/visitDocument",
+                new Parameter("filename", "")));
+        assertEquals(400, response.getStatus());
+        assertEquals("{\"error\":\"[Required String parameter 'filename' is empty]\"}", response.getContentAsString());
+        assertTrue(file.exists());
+        assertTrue(thumbnailFile.exists());
+        assertTrue(new File(TMP_DOCUMENT_IMAGES).exists());
     }
 
     @Test
