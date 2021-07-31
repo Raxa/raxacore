@@ -4,7 +4,7 @@ This module provides necessary services for running Bahmni
 
 ## Build
 
-[![Build Status](https://travis-ci.org/Bahmni/bahmni-core.svg?branch=master)](https://travis-ci.org/Bahmni/bahmni-core)
+[![BahmniCore-master Actions Status](https://github.com/Bahmni/bahmni-core/workflows/Java%20CI %20with%20Maven/badge.svg)](https://github.com/Bahmni/bahmni-core/actions)
 
 ### Prerequisite
     JDK 1.8
