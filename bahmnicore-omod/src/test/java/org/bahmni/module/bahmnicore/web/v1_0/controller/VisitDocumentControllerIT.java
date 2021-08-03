@@ -328,7 +328,7 @@ public class VisitDocumentControllerIT extends BaseIntegrationTest {
         MockHttpServletResponse response = handle(newDeleteRequest("/rest/v1/bahmnicore/visitDocument",
                 new Parameter("filename", "")));
         assertEquals(400, response.getStatus());
-        assertEquals("{\"error\":\"[Required String parameter 'filename' is empty]\"}", response.getContentAsString());
+        assertEquals("{\"error\":{\"message\":\"[Required String parameter 'filename' is empty]\"}}", response.getContentAsString());
         assertTrue(file.exists());
         assertTrue(thumbnailFile.exists());
         assertTrue(new File(TMP_DOCUMENT_IMAGES).exists());

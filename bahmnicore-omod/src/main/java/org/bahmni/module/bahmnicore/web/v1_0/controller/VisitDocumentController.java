@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bahmni.module.bahmnicore.model.Document;
 import org.bahmni.module.bahmnicore.security.PrivilegeConstants;
 import org.bahmni.module.bahmnicore.service.PatientDocumentService;
+import org.bahmni.module.bahmnicore.util.WebUtils;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.User;
@@ -29,7 +30,8 @@ import java.util.HashMap;
 
 @Controller
 public class VisitDocumentController extends BaseRestController {
-    private static final String INVALID_USER_PRIVILEGE = "User [%d] does not have require to delete patient file [%s]";
+    private static final String INSUFFICIENT_PRIVILEGE = "Insufficient privilege";
+    private static final String INVALID_USER_PRIVILEGE = "User [%d] does not have required privilege to delete patient file [%s]";
     private final String baseVisitDocumentUrl = "/rest/" + RestConstants.VERSION_1 + "/bahmnicore/visitDocument";
     @Autowired
     private VisitDocumentService visitDocumentService;
@@ -76,15 +78,13 @@ public class VisitDocumentController extends BaseRestController {
     public ResponseEntity<Object> deleteDocument(@RequestParam(value = "filename") String fileName) {
         if (!Context.getUserContext().hasPrivilege(PrivilegeConstants.DELETE_PATIENT_DOCUMENT_PRIVILEGE)) {
             logger.error(String.format(INVALID_USER_PRIVILEGE, getAuthenticatedUserId(), fileName));
-            return new ResponseEntity<>(new HashMap<>(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(WebUtils.wrapErrorResponse(null, INSUFFICIENT_PRIVILEGE), HttpStatus.FORBIDDEN);
         }
         try {
             patientDocumentService.delete(fileName);
             return new ResponseEntity<>(new HashMap<>(), HttpStatus.OK);
         } catch (Exception e) {
-            HashMap<String, Object> response = new HashMap<>();
-            response.put("error", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(WebUtils.wrapErrorResponse(null, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
