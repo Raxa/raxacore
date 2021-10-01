@@ -17,6 +17,7 @@ package org.raxa.module.raxacore;
  */
 import java.io.Serializable;
 import org.openmrs.BaseOpenmrsMetadata;
+import java.util.PatientList;
 
 /**
  * PatientList stores the data needed to lists patients for registration, screener, etc.
