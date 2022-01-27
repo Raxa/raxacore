@@ -1,8 +1,7 @@
 package org.bahmni.module.elisatomfeedclient.api.client.impl;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.bahmni.module.elisatomfeedclient.api.ElisAtomFeedProperties;
 import org.bahmni.module.elisatomfeedclient.api.client.OpenElisFeedClient;
 import org.bahmni.module.elisatomfeedclient.api.client.OpenElisPatientFailedEventsFeedClient;
@@ -27,7 +26,7 @@ public class OpenElisPatientFailedEventsFeedClientImpl extends OpenElisFeedClien
     private ProviderService providerService;
     private ConceptService conceptService;
     private BahmniVisitAttributeService bahmniVisitAttributeSaveCommand;
-    private Logger logger = LogManager.getLogger(OpenElisPatientFailedEventsFeedClientImpl.class);
+    private Logger logger = Logger.getLogger(OpenElisPatientFailedEventsFeedClientImpl.class);
     private AuditLogService auditLogService;
 
 
@@ -66,7 +65,7 @@ public class OpenElisPatientFailedEventsFeedClientImpl extends OpenElisFeedClien
     @Override
     public void processFailedEvents() {
         try {
-            logger.info("openelisatomfeedclient:processing failed events {}", DateTime.now());
+            logger.info("openelisatomfeedclient:processing failed events " + DateTime.now());
             getAtomFeedClient().processFailedEvents();
         } catch (Exception e) {
             try {
@@ -77,7 +76,7 @@ public class OpenElisPatientFailedEventsFeedClientImpl extends OpenElisFeedClien
                 }
 
             } catch (Exception ex) {
-                logger.error("openelis atomfeedclient:failed feed execution while running failed events {}", ex, e);
+                logger.error("openelisatomfeedclient:failed feed execution while running failed events" + e, e);
                 throw new RuntimeException(ex);
             }
         }

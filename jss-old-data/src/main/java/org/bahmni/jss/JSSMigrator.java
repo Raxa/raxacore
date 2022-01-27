@@ -1,7 +1,6 @@
 package org.bahmni.jss;
 
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.bahmni.csv.MigrateResult;
 import org.bahmni.csv.MigratorBuilder;
 import org.bahmni.csv.exception.MigrationException;
@@ -28,7 +27,7 @@ public class JSSMigrator {
     private String csvLocation;
     private final int numberOfValidationThreads;
     private final int numberOfMigrationThreads;
-    private static Logger logger = LogManager.getLogger(JSSMigrator.class);
+    private static Logger logger = Logger.getLogger(JSSMigrator.class);
 
     public static void main(String[] args) throws URISyntaxException, IOException, ClassNotFoundException, SQLException, InterruptedException {
         if (args.length < 2) {
@@ -65,8 +64,9 @@ public class JSSMigrator {
     }
 
     private static void logPropertyUsage(String openMRSHostName, String databaseUserId, String databaseUserPassword, String openmrsUserId, String openmrsPassword) {
-        logger.printf(Level.INFO, "By default uses following properties: openmrs.host.name=%s; database.user.id=%s; openmrs.user.id=%s;", openMRSHostName, databaseUserId, openmrsUserId);
-   }
+        logger.info(String.format("By default uses following properties: openmrs.host.name=%s; database.user.id=%s; database.user.password=%s; openmrs.user.id=%s; " +
+                "openmrs.user.password=%s", openMRSHostName, databaseUserId, databaseUserPassword, openmrsUserId, openmrsPassword));
+    }
 
     public JSSMigrator(String csvLocation, String casteFileName, String districtFileName, String stateFileName,
                        String classFileName, String tahsilFileName, OpenMRSRESTConnection openMRSRESTConnection,
@@ -103,10 +103,11 @@ public class JSSMigrator {
                                                         .build();
         try {
             MigrateResult migrateResult = migrator.migrate();
-            logger.info("Migration was {}", (migrateResult.hasFailed() ? "unsuccessful" : "successful"));
-            logger.info("Stage : {} . Success count : {} . Fail count : {}", migrateResult.getStageName(), migrateResult.numberOfSuccessfulRecords(), migrateResult.numberOfFailedRecords());
+            logger.info("Migration was " + (migrateResult.hasFailed() ? "unsuccessful" : "successful"));
+            logger.info("Stage : " + migrateResult.getStageName() + ". Success count : " + migrateResult.numberOfSuccessfulRecords() +
+                    ". Fail count : " + migrateResult.numberOfFailedRecords());
         } catch (MigrationException e) {
-            logger.error("There was an error during migration. {}", e.getMessage());
+            logger.error("There was an error during migration. " + e.getMessage());
         }
     }
 }
