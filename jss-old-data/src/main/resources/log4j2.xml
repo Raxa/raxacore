@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration xmlns="http://logging.apache.org/log4j/2.0/">
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d Thread: %t %-5p [%c] %m%n "/>
+        </Console>
+        <File name="fileAppender" fileName="logs/migration.log" append="false">
+            <PatternLayout pattern="%d %-5p [%c] %m%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root>
+            <priority value="info"/>
+            <appender-ref ref="console"/>
+            <appender-ref ref="fileAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>
