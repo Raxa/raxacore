@@ -16,7 +16,7 @@ This module provides necessary services for running Bahmni
    
     git clone https://github.com/bahmni/bahmni-core
     cd bahmni-core
-    mvn clean install
+    ./mvnw clean install
     
 ## Deploy
 

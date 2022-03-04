@@ -21,7 +21,7 @@ jobs:
           sudo apt-get install ruby-dev
           sudo gem install compass -v 1.0.3
       - name: Build and deploy with Maven
-        run: mvn --no-transfer-progress clean -U deploy
+        run: ./mvnw --no-transfer-progress clean -U deploy
         env:
           NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
