@@ -11,7 +11,7 @@ import org.bahmni.module.bahmnicore.contract.patient.response.PatientResponse;
 import org.bahmni.module.bahmnicore.contract.patient.search.PatientSearchBuilder;
 import org.bahmni.module.bahmnicore.contract.patient.search.PatientSearchQueryBuilder;
 import org.bahmni.module.bahmnicore.dao.PatientDao;
-import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.ProgramAttributeType;
+import org.openmrs.ProgramAttributeType;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -183,7 +183,7 @@ public class PatientDaoImpl implements PatientDao {
         }
         org.apache.lucene.search.Query nonVoidedIdentifiers = queryBuilder.keyword().onField("voided").matching(false).createQuery();
         org.apache.lucene.search.Query nonVoidedPatients = queryBuilder.keyword().onField("patient.voided").matching(false).createQuery();
-    
+
         List<String> identifierTypeNames = getIdentifierTypeNames(filterOnAllIdentifiers);
 
         BooleanJunction identifierTypeShouldJunction = queryBuilder.bool();
@@ -207,7 +207,7 @@ public class PatientDaoImpl implements PatientDao {
         fullTextQuery.setMaxResults(length);
         return (List<PatientIdentifier>) fullTextQuery.list();
     }
-    
+
     private List<String> getIdentifierTypeNames(Boolean filterOnAllIdentifiers) {
         List<String> identifierTypeNames = new ArrayList<>();
         addIdentifierTypeName(identifierTypeNames,"bahmni.primaryIdentifierType");

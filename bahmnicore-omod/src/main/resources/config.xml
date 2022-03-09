@@ -130,7 +130,6 @@
         BahmniConfig.hbm.xml
         EntityMapping.hbm.xml
         EntityMappingType.hbm.xml
-        ProgramAttributeType.hbm.xml
         PatientProgramAttribute.hbm.xml
         PatientProgram.hbm.xml
         </mappingFiles>

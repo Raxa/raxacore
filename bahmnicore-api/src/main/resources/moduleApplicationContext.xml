@@ -46,7 +46,7 @@
 
     <bean name="bahmniProgramWorkflowService" class="org.bahmni.module.bahmnicore.service.impl.BahmniProgramWorkflowServiceImpl">
         <property name="programWorkflowDAO">
-            <bean class="org.bahmni.module.bahmnicore.dao.impl.BahmniHibernateProgramWorkflowDAOImpl">
+            <bean class="org.openmrs.api.db.hibernate.HibernateProgramWorkflowDAO">
                 <property name="sessionFactory">
                     <ref bean="sessionFactory" />
                 </property>

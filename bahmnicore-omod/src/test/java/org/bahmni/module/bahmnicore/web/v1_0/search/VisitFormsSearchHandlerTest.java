@@ -1,6 +1,5 @@
 package org.bahmni.module.bahmnicore.web.v1_0.search;
 
-import org.bahmni.module.bahmnicore.model.bahmniPatientProgram.BahmniPatientProgram;
 import org.bahmni.module.bahmnicore.service.BahmniProgramWorkflowService;
 import org.junit.Before;
 import org.junit.Test;
@@ -209,7 +208,7 @@ public class VisitFormsSearchHandlerTest {
         String patientProgramUuid = "patient-program-uuid";
         when(context.getRequest().getParameter("patientProgramUuid")).thenReturn(patientProgramUuid);
         when(Context.getService(BahmniProgramWorkflowService.class)).thenReturn(programWorkflowService);
-        PatientProgram patientProgram = new BahmniPatientProgram();
+        PatientProgram patientProgram = new PatientProgram();
         when(programWorkflowService.getPatientProgramByUuid(patientProgramUuid)).thenReturn(patientProgram);
         when(Context.getService(EpisodeService.class)).thenReturn(episodeService);
         Episode episode = new Episode();
@@ -235,7 +234,7 @@ public class VisitFormsSearchHandlerTest {
         String patientProgramUuid = "patient-program-uuid";
         when(context.getRequest().getParameter("patientProgramUuid")).thenReturn(patientProgramUuid);
         when(Context.getService(BahmniProgramWorkflowService.class)).thenReturn(programWorkflowService);
-        PatientProgram patientProgram = new BahmniPatientProgram();
+        PatientProgram patientProgram = new PatientProgram();
         when(programWorkflowService.getPatientProgramByUuid(patientProgramUuid)).thenReturn(patientProgram);
         when(Context.getService(EpisodeService.class)).thenReturn(episodeService);
         when(episodeService.getEpisodeForPatientProgram(patientProgram)).thenReturn(null);
@@ -259,7 +258,7 @@ public class VisitFormsSearchHandlerTest {
         String patientProgramUuid = "patient-program-uuid";
         when(context.getRequest().getParameter("patientProgramUuid")).thenReturn(patientProgramUuid);
         when(Context.getService(BahmniProgramWorkflowService.class)).thenReturn(programWorkflowService);
-        PatientProgram patientProgram = new BahmniPatientProgram();
+        PatientProgram patientProgram = new PatientProgram();
         when(programWorkflowService.getPatientProgramByUuid(patientProgramUuid)).thenReturn(patientProgram);
         when(Context.getService(EpisodeService.class)).thenReturn(episodeService);
         Episode episode = new Episode();
