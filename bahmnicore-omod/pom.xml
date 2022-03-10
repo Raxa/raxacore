@@ -41,6 +41,11 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
+            <artifactId>emrapi-api-2.2</artifactId>
+            <version>${emrapi-omod.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openmrs.module</groupId>
             <artifactId>idgen-webservices-omod</artifactId>
             <version>1.1-SNAPSHOT</version>
             <scope>provided</scope>

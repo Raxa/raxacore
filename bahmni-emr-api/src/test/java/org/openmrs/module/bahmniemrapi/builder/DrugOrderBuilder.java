@@ -13,32 +13,80 @@
  */
 package org.openmrs.module.bahmniemrapi.builder;
 
-import org.openmrs.Drug;
-import org.openmrs.DrugOrder;
+import org.openmrs.module.emrapi.CareSettingType;
+import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 public class DrugOrderBuilder {
-    private DrugOrder order;
+
+    private final EncounterTransaction.DrugOrder drugOrder;
 
     public DrugOrderBuilder() {
-        this.order = new DrugOrder();
-        this.order.setUuid(UUID.randomUUID().toString());
-        this.order.setDateCreated(null);
-        this.order.setDrug(new Drug(123));
+        drugOrder = new EncounterTransaction.DrugOrder();
+        drugOrder.setCareSetting(CareSettingType.OUTPATIENT);
+        drugOrder.setOrderType("Drug Order");
+        withDrugUuid(UUID.randomUUID().toString());
+        drugOrder.setDosingInstructionType("org.openmrs.SimpleDosingInstructions");
+        EncounterTransaction.DosingInstructions dosingInstructions = DosingInstructionsBuilder.sample();
+        drugOrder.setDosingInstructions(dosingInstructions);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, 1);
+        drugOrder.setScheduledDate(calendar.getTime());
+        calendar.add(Calendar.MONTH, 1);
+        EncounterTransaction.Provider provider = new EncounterTransaction.Provider();
+        provider.setUuid("331c6bf8-7846-11e3-a96a-0800271c1b75");
+        drugOrder.setAction("NEW");
+        drugOrder.setDuration(2);
+        drugOrder.setDurationUnits("Day");
     }
 
-    public DrugOrderBuilder withUuid(UUID uuid) {
-        order.setUuid(String.valueOf(uuid));
+    public EncounterTransaction.DrugOrder build() {
+        return drugOrder;
+    }
+
+    public DrugOrderBuilder withDurationUnits(String durationUnits) {
+        drugOrder.setDurationUnits(durationUnits);
         return this;
     }
 
-    public DrugOrderBuilder withId(Integer id) {
-        order.setId(id);
+    public DrugOrderBuilder withDrugUuid(String drugUuid) {
+        EncounterTransaction.Drug drug = new EncounterTransaction.Drug();
+        drug.setUuid(drugUuid);
+        drugOrder.setDrug(drug);
         return this;
     }
 
-    public DrugOrder build() {
-        return order;
+    public DrugOrderBuilder withNonCodedDrug(String freeTextDrug) {
+        drugOrder.setDrugNonCoded(freeTextDrug);
+        return this;
+    }
+
+    public DrugOrderBuilder withScheduledDate(Date scheduledDate) {
+        drugOrder.setScheduledDate(scheduledDate);
+        return this;
+    }
+
+    public DrugOrderBuilder withFrequency(String frequency) {
+        drugOrder.getDosingInstructions().setFrequency(frequency);
+        return this;
+    }
+
+
+    public DrugOrderBuilder withAction(String action) {
+        drugOrder.setAction(action);
+        return this;
+    }
+
+    public DrugOrderBuilder withPreviousOrderUuid(String previousOrderUuid) {
+        drugOrder.setPreviousOrderUuid(previousOrderUuid);
+        return this;
+    }
+
+    public DrugOrderBuilder withAutoExpireDate(Date date) {
+        drugOrder.setAutoExpireDate(date);
+        return this;
     }
 }

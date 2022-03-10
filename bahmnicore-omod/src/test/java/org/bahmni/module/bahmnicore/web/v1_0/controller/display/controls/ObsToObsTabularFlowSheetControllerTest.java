@@ -21,6 +21,7 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptNumeric;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.TestUsernameAuthenticationScheme;
 import org.openmrs.api.context.UserContext;
 import org.openmrs.module.bahmniemrapi.drugogram.contract.BaseTableExtension;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniObservation;
@@ -95,7 +96,7 @@ public class ObsToObsTabularFlowSheetControllerTest {
         initMocks(this);
         mockStatic(LocaleUtility.class);
         when(LocaleUtility.getDefaultLocale()).thenReturn(Locale.ENGLISH);
-        Context.setUserContext(new UserContext());
+        Context.setUserContext(new UserContext(new TestUsernameAuthenticationScheme()));
         obsToObsPivotTableController = new ObsToObsTabularFlowSheetController(bahmniObsService, conceptService,
                 bahmniObservationsToTabularViewMapper, bahmniExtensions, bahmniConceptService,
                 bahmniFormBuilderObsToTabularViewMapper);

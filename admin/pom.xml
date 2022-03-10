@@ -59,7 +59,7 @@
         </dependency>
         <dependency>
             <groupId>org.openmrs.module</groupId>
-            <artifactId>emrapi-api-1.12</artifactId>
+            <artifactId>emrapi-api-2.2</artifactId>
             <version>${emrapi-omod.version}</version>
         </dependency>
         <dependency>
@@ -247,7 +247,7 @@
                 <filtering>true</filtering>
             </testResource>
         </testResources>
-        
+
         <plugins>
             <plugin>
                 <groupId>org.jacoco</groupId>

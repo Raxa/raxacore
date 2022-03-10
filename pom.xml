@@ -24,15 +24,15 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <openMRSVersion>2.2.0</openMRSVersion>
-        <openMRSWebServicesVersion>2.23.0</openMRSWebServicesVersion>
+        <openMRSVersion>2.3.0</openMRSVersion>
+        <openMRSWebServicesVersion>2.26.0</openMRSWebServicesVersion>
         <springVersion>3.2.7.RELEASE</springVersion>
         <atomfeed.version>1.10.1</atomfeed.version>
         <addressHierarchyVersion>2.9</addressHierarchyVersion>
         <reportingModuleVersion>0.10.4</reportingModuleVersion>
         <calculationModuleVersion>1.2</calculationModuleVersion>
         <serializationXstreamModuleVersion>0.2.15</serializationXstreamModuleVersion>
-        <emrapi-omod.version>1.24.0</emrapi-omod.version>
+        <emrapi-omod.version>1.32.0</emrapi-omod.version>
         <metadatamapping.version>1.3.2</metadatamapping.version>
         <openmrsAtomfeedVersion>2.6.1</openmrsAtomfeedVersion>
         <lombokVersion>1.16.0</lombokVersion>
@@ -294,6 +294,12 @@
             <dependency>
                 <groupId>org.openmrs.module</groupId>
                 <artifactId>emrapi-api-1.12</artifactId>
+                <version>${emrapi-omod.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.openmrs.module</groupId>
+                <artifactId>emrapi-api-2.2</artifactId>
                 <version>${emrapi-omod.version}</version>
                 <scope>provided</scope>
             </dependency>
