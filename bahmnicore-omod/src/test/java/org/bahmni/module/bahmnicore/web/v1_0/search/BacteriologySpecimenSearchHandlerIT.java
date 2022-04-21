@@ -10,8 +10,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
-//Bacteriology OMOD needs to be updated with OpenMRS 2.2.* version
-@Ignore
+
 public class BacteriologySpecimenSearchHandlerIT extends BahmniMainResourceControllerTest {
     @Override
     public String getURI() {
