@@ -59,6 +59,7 @@ public class PatientDaoImpl implements PatientDao {
             "address9", "address10", "address11", "address12",
             "address13", "address14", "address15");
 
+    @Deprecated
     @Override
     public List<PatientResponse> getPatients(String identifier, String name, String customAttribute,
                                              String addressFieldName, String addressFieldValue, Integer length,
