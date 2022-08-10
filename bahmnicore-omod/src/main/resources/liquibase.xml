@@ -4565,4 +4565,5 @@
         </sql>
     </changeSet>
 
+    <include file="addAtomfeedMigrations.xml"/>
 </databaseChangeLog>
