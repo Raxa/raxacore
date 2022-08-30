@@ -6,10 +6,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.openmrs.module.addresshierarchy.AddressHierarchyEntry;
 import org.openmrs.module.addresshierarchy.service.AddressHierarchyService;
 import org.openmrs.module.atomfeed.transaction.support.AtomFeedSpringTransactionManager;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
@@ -23,11 +25,14 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
+@PowerMockIgnore("javax.management.*")
 @PrepareForTest({Context.class, AddressHierarchyEntryEventInterceptor.class})
 @RunWith(PowerMockRunner.class)
 public class AddressHierarchyEntryEventInterceptorTest {
     @Mock
     private AtomFeedSpringTransactionManager atomFeedSpringTransactionManager;
+    @Mock
+    private UserContext userContext;
 
     private AddressHierarchyEntryEventInterceptor publishedFeed;
     private AddressHierarchyEntry addressHierarchyEntry;

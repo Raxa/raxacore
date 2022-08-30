@@ -19,7 +19,9 @@ import org.openmrs.ConceptDatatype;
 import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -35,6 +37,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 //TODO: Mihir : write a test for empty tests list
+@PowerMockIgnore("javax.management.*")
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
 public class PanelMapperTest {
@@ -47,6 +50,8 @@ public class PanelMapperTest {
     private List<ConceptSet> testConceptSets;
     private Concept testConcept;
     private List<ConceptSet> panelConceptSets;
+    @Mock
+    private UserContext userContext;
 
     @Before
     public void setUp() throws Exception {

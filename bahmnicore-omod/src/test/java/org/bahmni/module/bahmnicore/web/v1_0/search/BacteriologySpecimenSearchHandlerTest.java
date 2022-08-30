@@ -11,12 +11,14 @@ import org.openmrs.Obs;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.ObsService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.openmrs.module.bacteriology.api.BacteriologyService;
 import org.openmrs.module.bacteriology.api.encounter.domain.Specimen;
 import org.openmrs.module.bacteriology.api.encounter.domain.Specimens;
 import org.openmrs.module.webservices.rest.web.RequestContext;
 import org.openmrs.module.webservices.rest.web.resource.impl.NeedsPaging;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -27,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@PowerMockIgnore("javax.management.*")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Context.class)
 public class BacteriologySpecimenSearchHandlerTest {
@@ -36,6 +39,7 @@ public class BacteriologySpecimenSearchHandlerTest {
     @Mock private ObsService obsService;
     @Mock private RequestContext requestContext;
     @Mock private BacteriologyService bacteriologyService;
+    @Mock private UserContext userContext;
 
     private BacteriologySpecimenSearchHandler bacteriologySpecimenSearchHandler;
     private final String BACTERIOLOGY_CONCEPT_SET = "BACTERIOLOGY CONCEPT SET";

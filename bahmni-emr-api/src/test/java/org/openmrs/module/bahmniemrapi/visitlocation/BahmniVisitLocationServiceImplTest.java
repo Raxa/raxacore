@@ -10,9 +10,11 @@ import org.openmrs.LocationTag;
 import org.openmrs.Visit;
 import org.openmrs.api.LocationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.openmrs.module.bahmniemrapi.builder.LocationBuilder;
 import org.openmrs.module.bahmniemrapi.builder.VisitBuilder;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -23,6 +25,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@PowerMockIgnore("javax.management.*")
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
 public class BahmniVisitLocationServiceImplTest {
@@ -30,6 +33,9 @@ public class BahmniVisitLocationServiceImplTest {
 
     @Mock
     private LocationService locationService;
+
+    @Mock
+    private UserContext userContext;
 
     @Before
     public void setUp() {

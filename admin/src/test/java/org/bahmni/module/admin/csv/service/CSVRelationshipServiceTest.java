@@ -16,7 +16,9 @@ import org.openmrs.api.AdministrationService;
 import org.openmrs.api.PersonService;
 import org.openmrs.api.ProviderService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,6 +32,7 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@PowerMockIgnore("javax.management.*")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Context.class})
 public class CSVRelationshipServiceTest {
@@ -45,6 +48,9 @@ public class CSVRelationshipServiceTest {
     @Mock
     @Qualifier("adminService")
     private AdministrationService administrationService;
+
+    @Mock
+    private UserContext userContext;
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();

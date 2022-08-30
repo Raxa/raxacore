@@ -14,8 +14,10 @@ import org.mockito.Mock;
 import org.openmrs.api.APIException;
 import org.openmrs.api.AdministrationService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.openmrs.module.emrapi.encounter.domain.EncounterTransaction;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -35,6 +37,7 @@ import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@PowerMockIgnore("javax.management.*")
 @PrepareForTest({CSVObservationHelper.class, Context.class})
 @RunWith(PowerMockRunner.class)
 public class Form2CSVObsHandlerTest {
@@ -48,6 +51,9 @@ public class Form2CSVObsHandlerTest {
 
     @Mock
     private AdministrationService administrationService;
+
+    @Mock
+    private UserContext userContext;
 
     @Before
     public void setUp() {

@@ -11,7 +11,9 @@ import org.mockito.MockitoAnnotations;
 import org.openmrs.Concept;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -21,6 +23,7 @@ import java.util.Locale;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
+@PowerMockIgnore("javax.management.*")
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
 public class RadiologyTestMapperTest {
@@ -30,6 +33,8 @@ public class RadiologyTestMapperTest {
     private Date dateChanged;
     @Mock
     private ConceptService conceptService;
+    @Mock
+    private UserContext userContext;
 
     @Before
     public void setUp() throws Exception {

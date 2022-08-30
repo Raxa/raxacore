@@ -13,7 +13,9 @@ import org.openmrs.Concept;
 import org.openmrs.ConceptClass;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -25,6 +27,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
+@PowerMockIgnore("javax.management.*")
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
 public class AllTestsPanelsConceptSetEventTest {
@@ -33,6 +36,8 @@ public class AllTestsPanelsConceptSetEventTest {
     protected Concept panelConcept;
     @Mock
     private ConceptService conceptService;
+    @Mock
+    private UserContext userContext;
 
     @Before
     public void setUp() {

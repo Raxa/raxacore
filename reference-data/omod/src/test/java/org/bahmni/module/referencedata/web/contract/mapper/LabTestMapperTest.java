@@ -21,7 +21,9 @@ import org.openmrs.ConceptNumeric;
 import org.openmrs.ConceptSet;
 import org.openmrs.api.ConceptService;
 import org.openmrs.api.context.Context;
+import org.openmrs.api.context.UserContext;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -35,9 +37,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
+@PowerMockIgnore("javax.management.*")
 @PrepareForTest(Context.class)
 @RunWith(PowerMockRunner.class)
 public class LabTestMapperTest {
@@ -50,6 +52,8 @@ public class LabTestMapperTest {
     private List<ConceptSet> sampleConceptSets;
     private List<ConceptSet> departmentConceptSets;
     private List<ConceptSet> testConceptSets;
+    @Mock
+    private UserContext userContext;
 
     @Before
     public void setUp() throws Exception {
