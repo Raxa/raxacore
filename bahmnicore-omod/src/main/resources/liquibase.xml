@@ -4564,13 +4564,16 @@
             "org.openmrs.customdatatype.datatype.SpecifiedTextOptionsDatatype","org.openmrs.web.attribute.handler.SpecifiedTextOptionsDropdownHandler",",Doctor", 0, 1, NOW(), 0, UUID());
         </sql>
     </changeSet>
-    <changeSet id="Update-metadatamapping_metadata_term_mapping-20220819" author="Clinic-config">
-        <preConditions onFail="MARK_RAN">
+    <changeSet id="Update-metadatamapping_metadata_term_mapping-20220907" author="BAHMNI" >
+        <preConditions onFail="CONTINUE" >
             <sqlCheck expectedResult="1">
                 SELECT COUNT(*) from patient_identifier_type where name='Patient Identifier';
             </sqlCheck>
+            <sqlCheck expectedResult="1">
+                SELECT COUNT(*) from metadatamapping_metadata_term_mapping WHERE code="emr.primaryIdentifierType";
+            </sqlCheck>
         </preConditions>
-        <comment>Updating metadatamapping_metadata_term_mapping with metadata_uuid</comment>
+        <comment>Updating metadata_uuid in metadatamapping_metadata_term_mapping with primaryIdentifier uuid to remove exceptions in landing page of Lab Entry</comment>
         <sql>
 			set @metadata_uuid = null;
 			SELECT uuid INTO @metadata_uuid FROM patient_identifier_type WHERE name = "Patient Identifier";
