@@ -7,6 +7,7 @@ import org.bahmni.module.bahmnicore.model.Document;
 import org.bahmni.module.bahmnicore.security.PrivilegeConstants;
 import org.bahmni.module.bahmnicore.service.PatientDocumentService;
 import org.bahmni.module.bahmnicore.util.WebUtils;
+import org.bahmni.module.bahmnicore.web.v1_0.InvalidInputException;
 import org.openmrs.Encounter;
 import org.openmrs.Patient;
 import org.openmrs.User;
@@ -26,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 @Controller
@@ -61,16 +63,25 @@ public class VisitDocumentController extends BaseRestController {
     @RequestMapping(method = RequestMethod.POST, value = baseVisitDocumentUrl + "/uploadDocument")
     @ResponseBody
     public HashMap<String, String> saveDocument(@RequestBody Document document) {
-        Patient patient = Context.getPatientService().getPatientByUuid(document.getPatientUuid());
-        String encounterTypeName = document.getEncounterTypeName();
-        if (StringUtils.isEmpty(encounterTypeName)) {
-            encounterTypeName = administrationService.getGlobalProperty("bahmni.encounterType.default");
+        try {
+            HashMap<String, String> savedDocument = new HashMap<>();
+            Patient patient = Context.getPatientService().getPatientByUuid(document.getPatientUuid());
+            String encounterTypeName = document.getEncounterTypeName();
+            if (StringUtils.isEmpty(encounterTypeName)) {
+                encounterTypeName = administrationService.getGlobalProperty("bahmni.encounterType.default");
+            }
+            String fileName = sanitizeFileName(document.getFileName());
+            Paths.get(fileName);
+
+            // Old files will follow: patientid-encounterName-uuid.ext (eg. 6-Patient-Document-706a448b-3f10-11e4-adec-0800271c1b75.png)
+            // New ones will follow: patientid_encounterName_uuid__filename.ext (eg. 6-Patient-Document-706a448b-3f10-11e4-adec-0800271c1b75__doc1.png)
+            String url = patientDocumentService.saveDocument(patient.getId(), encounterTypeName, document.getContent(),
+                document.getFormat(), document.getFileType(), fileName);
+            savedDocument.put("url", url);
+            return savedDocument;
+        } catch (Exception e) {
+            throw new InvalidInputException("Could not save patient document", e);
         }
-        HashMap<String, String> savedDocument = new HashMap<>();
-        String url = patientDocumentService.saveDocument(patient.getId(), encounterTypeName, document.getContent(),
-                document.getFormat(), document.getFileType());
-        savedDocument.put("url", url);
-        return savedDocument;
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = baseVisitDocumentUrl)
@@ -95,4 +106,10 @@ public class VisitDocumentController extends BaseRestController {
         }
         return Integer.valueOf(authenticatedUser.getUserId());
     }
+
+    private String sanitizeFileName(String fileName) {
+        if (fileName == null) return "";
+        return fileName.trim().replaceAll(" ", "-").replaceAll("__", "_");
+    }
+
 }
