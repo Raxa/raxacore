@@ -4628,7 +4628,7 @@
             SET @concept_id = 0;
 
             select rmap.concept_id into @concept_id from concept_reference_map rmap
-            INNER JOIN concept_name cn on cn.concept_id = rmap.concept_id and cn.name='Coded Diagnosiss'
+            INNER JOIN concept_name cn on cn.concept_id = rmap.concept_id and cn.name='Coded Diagnosis'
             and cn.concept_name_type='FULLY_SPECIFIED' and cn.voided=0 and cn.locale = 'en' group by rmap.concept_id having count(*) = 1;
 
             UPDATE concept set version='BAHMNI-CORE-1.0' where concept_id=@concept_id and version is null ;
