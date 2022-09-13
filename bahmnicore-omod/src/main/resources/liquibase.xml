@@ -4715,7 +4715,17 @@
             UPDATE concept set version='BAHMNI-CORE-1.0' where concept_id=@concept_id and version is null ;
         </sql>
     </changeSet>
-
+    <changeSet id="emrapi-diganosis-202209121241" author="Bindu">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from global_property where property='emrapi.useLegacyDiagnosisService' and property_value='FALSE';
+            </sqlCheck>
+        </preConditions>
+        <comment>set 'emrapi.useLegacyDiagnosisService' to true to use legacy diagnosis service</comment>
+        <sql>
+            UPDATE global_property set property_value='TRUE' where property='emrapi.useLegacyDiagnosisService';
+        </sql>
+    </changeSet>
 
     <include file="addAtomfeedMigrations.xml"/>
 </databaseChangeLog>
