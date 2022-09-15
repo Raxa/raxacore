@@ -222,4 +222,55 @@ public class BahmniPatientDaoImplLuceneIT extends BaseIntegrationTest {
         assertTrue(patient.getExtraIdentifiers().contains("200006"));
     }
 
+    @Test
+    public void shouldSearchByPatientPrimaryIdentifierIfSpecifiedAndNotByName() {
+        String[] addressResultFields = {"city_village"};
+        List<PatientResponse> patients = patientDao.getPatientsUsingLuceneSearch("GAN200000", "GAN200000", null, "city_village", "",
+            100, 0, null, "", null, addressResultFields, null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, false);
+        assertEquals(1, patients.size());
+        PatientResponse patient = patients.get(0);
+        assertEquals("86526ed5-3c11-11de-a0ba-001e378eb67a", patient.getUuid());
+        assertEquals("GAN200001", patient.getIdentifier());
+        assertEquals("Horatio", patient.getGivenName());
+        assertEquals("Test", patient.getMiddleName());
+        assertEquals("Banka", patient.getFamilyName());
+        assertEquals("M", patient.getGender());
+    }
+
+    @Test
+    public void shouldSearchByPatientNameWhenIDsDoNotMatch() {
+        String[] addressResultFields = {"city_village"};
+        List<PatientResponse> patients = patientDao.getPatientsUsingLuceneSearch("Peeter", "Peeter", null, "city_village", "",
+            100, 0, null, "", null, addressResultFields, null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, false);
+        assertEquals(27, patients.size());
+        PatientResponse patient = patients.get(0);
+        assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
+        assertEquals("GAN200001", patient.getIdentifier());
+        assertEquals("Horatio", patient.getGivenName());
+        assertEquals("Peeter", patient.getMiddleName());
+        assertEquals("Sinha", patient.getFamilyName());
+        assertEquals("M", patient.getGender());
+        assertEquals("{\"city_village\" : \"Ramgarh\"}", patient.getAddressFieldValue());
+        assertEquals(null, patient.getDeathDate());
+        assertEquals("{\"National ID\" : \"NAT100010\"}", patient.getExtraIdentifiers());
+    }
+
+    @Test
+    public void shouldSearchByAnyPatientIdentifierThenByName() {
+        String[] addressResultFields = {"city_village"};
+        List<PatientResponse> patients = patientDao.getPatientsUsingLuceneSearch("NAT100010", "NAT100010", null, "city_village", "",
+            100, 0, null, "", null, addressResultFields, null, "c36006e5-9fbb-4f20-866b-0ece245615a1", false, true);
+        assertEquals(1, patients.size());
+        PatientResponse patient = patients.get(0);
+        assertEquals("341b4e41-790c-484f-b6ed-71dc8da222db", patient.getUuid());
+        assertEquals("GAN200001", patient.getIdentifier());
+        assertEquals("Horatio", patient.getGivenName());
+        assertEquals("Peeter", patient.getMiddleName());
+        assertEquals("Sinha", patient.getFamilyName());
+        assertEquals("M", patient.getGender());
+        assertEquals("{\"city_village\" : \"Ramgarh\"}", patient.getAddressFieldValue());
+        assertEquals(null, patient.getDeathDate());
+        assertEquals("{\"National ID\" : \"NAT100010\"}", patient.getExtraIdentifiers());
+    }
+
 }
