@@ -259,9 +259,9 @@ public class PatientDaoImpl implements PatientDao {
                 .must(nonVoidedPatients)
                 .must(identifierTypeShouldJunction.createQuery())
                 .createQuery();
-//        Sort sort = new Sort( new SortField( "identifier", SortField.Type.STRING, false ) );
+        Sort sort = new Sort( new SortField( "identifierExact", SortField.Type.STRING, false ) );
         FullTextQuery fullTextQuery = fullTextSession.createFullTextQuery(booleanQuery, PatientIdentifier.class);
-//        fullTextQuery.setSort(sort);
+        fullTextQuery.setSort(sort);
         fullTextQuery.setFirstResult(offset);
         fullTextQuery.setMaxResults(length);
         return (List<PatientIdentifier>) fullTextQuery.list();
