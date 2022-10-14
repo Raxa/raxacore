@@ -262,12 +262,6 @@
             <groupId>org.openmrs.module</groupId>
             <artifactId>rulesengine-api</artifactId>
             <version>${rulesEngineVersion}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openmrs.module</groupId>
-            <artifactId>rulesengine-api</artifactId>
-            <version>${rulesEngineVersion}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

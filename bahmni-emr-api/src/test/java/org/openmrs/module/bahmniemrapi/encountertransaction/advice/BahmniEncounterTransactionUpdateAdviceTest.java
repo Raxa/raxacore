@@ -1,6 +1,5 @@
 package org.openmrs.module.bahmniemrapi.encountertransaction.advice;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openmrs.module.bahmniemrapi.encountertransaction.contract.BahmniEncounterTransaction;
@@ -19,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(OpenmrsUtil.class)
-@Ignore
 public class BahmniEncounterTransactionUpdateAdviceTest {
     private static String DEFAULT_ENCOUNTER_UUID = "defaultEncounterUuid";
 
