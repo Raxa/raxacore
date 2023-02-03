@@ -94,6 +94,7 @@ public class BahmniObsServiceImpl implements BahmniObsService {
         List<BahmniObservation> bahmniObservations = new ArrayList<>();
         for (Obs observation : observations) {
             BahmniObservation bahmniObservation = omrsObsToBahmniObsMapper.map(observation);
+            bahmniObservation.setObservationDateTime(observation.getObsDatetime());
             bahmniObservations.add(bahmniObservation);
         }
         return bahmniObservations;
