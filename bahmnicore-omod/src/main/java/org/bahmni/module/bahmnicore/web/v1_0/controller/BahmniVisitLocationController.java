@@ -54,7 +54,7 @@ public class BahmniVisitLocationController extends BaseRestController {
     }
 
     private Boolean isVisitLocation(Location location) {
-        return (location.getTags().size() > 0 && location.getTags().stream().filter(tag -> tag.getName().equalsIgnoreCase("Visit Location")) != null);
+        return (location.getTags().size() > 0 && location.getTags().stream().filter(tag -> tag.getName().equalsIgnoreCase("Visit Location")).count() != 0);
     }
 
 }
