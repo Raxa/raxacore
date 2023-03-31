@@ -4739,6 +4739,9 @@
             <sqlCheck expectedResult="1">
                 select count(*) from concept_class where name='Test';
             </sqlCheck>
+            <sqlCheck expectedResult="0">
+                select count(*) from order_type_class_map where order_type_id=(select order_type_id from order_type where name = 'Lab Order') and concept_class_id=(select concept_class_id from concept_class where name = 'Test');
+            </sqlCheck>
         </preConditions>
         <comment>Associating Test concept classes to Lab Order order type</comment>
         <sql>
@@ -4770,6 +4773,9 @@
             </sqlCheck>
             <sqlCheck expectedResult="1">
                 select count(*) from concept_class where name='Radiology/Imaging Procedure';
+            </sqlCheck>
+            <sqlCheck expectedResult="0">
+                select count(*) from order_type_class_map where order_type_id=(select order_type_id from order_type where name = 'Radiology Order') and concept_class_id=(select concept_class_id from concept_class where name = 'Radiology/Imaging Procedure');
             </sqlCheck>
         </preConditions>
         <comment>Associating Radiology/Imaging Procedure concept class to Radiology Order order type</comment>
