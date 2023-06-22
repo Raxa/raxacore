@@ -1,6 +1,7 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 import org.apache.commons.io.FileUtils;
+import org.bahmni.module.bahmnicore.service.RegistrationSmsService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,6 +77,8 @@ public class BahmniPatientProfileResourceTest {
 
     @Mock
     private IdentifierSourceServiceWrapper identifierSourceServiceWrapper;
+    @Mock
+    private RegistrationSmsService registrationSmsService;
 
     private BahmniPatientProfileResource bahmniPatientProfileResource;
     private SimpleObject propertiesToCreate;
@@ -100,7 +103,7 @@ public class BahmniPatientProfileResourceTest {
 
     @Test
     public void createPatient() throws Exception {
-        bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper);
+        bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper,registrationSmsService);
         BahmniPatientProfileResource bahmniPatientProfileResourceSpy = spy(this.bahmniPatientProfileResource);
         PatientProfile delegate = mock(PatientProfile.class);
         when(identifierSourceServiceWrapper.generateIdentifierUsingIdentifierSourceUuid("dead-cafe", "")).thenReturn("BAH300010");
@@ -122,7 +125,7 @@ public class BahmniPatientProfileResourceTest {
         List<Relationship> relationships = Arrays.asList();
         when(personService.getRelationshipsByPerson(person)).thenReturn(relationships);
 
-        ResponseEntity<Object> response = bahmniPatientProfileResourceSpy.create(false, propertiesToCreate);
+        ResponseEntity<Object> response = bahmniPatientProfileResourceSpy.create(null,null,false, propertiesToCreate);
 
         Assert.assertEquals(200, response.getStatusCode().value());
         verify(identifierSourceServiceWrapper, times(1)).generateIdentifierUsingIdentifierSourceUuid("dead-cafe", "");
@@ -132,7 +135,7 @@ public class BahmniPatientProfileResourceTest {
 
     @Test
     public void updatePatient() throws Exception {
-        bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper);
+        bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper,registrationSmsService);
         BahmniPatientProfileResource spy = spy(bahmniPatientProfileResource);
         PatientProfile delegate = mock(PatientProfile.class);
         doReturn(delegate).when(spy, "mapForUpdatePatient", anyString(), any(SimpleObject.class));
@@ -156,7 +159,7 @@ public class BahmniPatientProfileResourceTest {
 
     @Test
     public void shouldThrowExceptionWhenPatientIsNotHavingProperPrivilege() throws Exception {
-        bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper);
+        bahmniPatientProfileResource = new BahmniPatientProfileResource(emrPatientProfileService, identifierSourceServiceWrapper,registrationSmsService);
         BahmniPatientProfileResource spy = spy(bahmniPatientProfileResource);
         doThrow(new APIAuthenticationException()).when(spy, "mapForUpdatePatient", anyString(), any(SimpleObject.class));
 

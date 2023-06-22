@@ -1,17 +1,16 @@
 package org.bahmni.module.bahmnicore.web.v1_0.controller;
 
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bahmni.module.bahmnicore.service.RegistrationSmsService;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.exception.DataException;
-import org.openmrs.Patient;
-import org.openmrs.PatientIdentifier;
-import org.openmrs.Person;
-import org.openmrs.Relationship;
-import org.openmrs.RelationshipType;
+import org.openmrs.*;
 import org.openmrs.api.APIAuthenticationException;
 import org.openmrs.api.ValidationException;
 import org.openmrs.api.context.Context;
@@ -40,20 +39,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Controller for REST web service access to
@@ -66,16 +55,21 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
 
     private EmrPatientProfileService emrPatientProfileService;
     private IdentifierSourceServiceWrapper identifierSourceServiceWrapper;
+    private RegistrationSmsService registrationSmsService;
 
     @Autowired
-    public BahmniPatientProfileResource(EmrPatientProfileService emrPatientProfileService, IdentifierSourceServiceWrapper identifierSourceServiceWrapper) {
+    public BahmniPatientProfileResource(EmrPatientProfileService emrPatientProfileService, IdentifierSourceServiceWrapper identifierSourceServiceWrapper, RegistrationSmsService registrationSmsService) {
         this.emrPatientProfileService = emrPatientProfileService;
         this.identifierSourceServiceWrapper = identifierSourceServiceWrapper;
+        this.registrationSmsService =registrationSmsService;
     }
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Object> create(@RequestHeader(value = "Jump-Accepted", required = false) boolean jumpAccepted, @RequestBody SimpleObject propertiesToCreate) throws Exception {
+    public ResponseEntity<Object> create(@CookieValue(value="bahmni.user.location", required=true) String loginCookie,
+                                         @CookieValue(value = "reporting_session", required = true) String reportingSessionCookie,
+                                         @RequestHeader(value = "Jump-Accepted", required = false) boolean jumpAccepted,
+                                         @RequestBody SimpleObject propertiesToCreate) throws Exception {
         List identifiers = ((ArrayList) ((LinkedHashMap) propertiesToCreate.get("patient")).get("identifiers"));
         List<Object> jumpSizes = new ArrayList<>();
 
@@ -126,6 +120,12 @@ public class BahmniPatientProfileResource extends DelegatingCrudResource<Patient
         setConvertedProperties(delegate, propertiesToCreate, getCreatableProperties(), true);
         try {
             delegate = emrPatientProfileService.save(delegate);
+            Boolean isregistrationSmsEnabled=Boolean.valueOf(Context.getAdministrationService().getGlobalProperty("sms.enableRegistrationSMSAlert"));
+            if (isregistrationSmsEnabled){
+            JsonParser jsonParser = new JsonParser();
+            JsonObject jsonObject = (JsonObject) jsonParser.parse(loginCookie);
+            String loginlocation =  jsonObject.get("uuid").getAsString();
+            registrationSmsService.sendRegistrationSMS(delegate,loginlocation,reportingSessionCookie);}
             setRelationships(delegate);
             return new ResponseEntity<>(ConversionUtil.convertToRepresentation(delegate, Representation.FULL), HttpStatus.OK);
         } catch (ContextAuthenticationException e) {
