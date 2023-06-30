@@ -24,7 +24,7 @@ import java.util.Locale;
 @Service
 public class SMSServiceImpl implements SMSService {
     private static Logger logger = LogManager.getLogger(BahmniDrugOrderService.class);
-    private final static String REGISTRATION_SMS_TEMPLATE = "bahmni.registrationSMSTemplate";
+    private final static String REGISTRATION_SMS_TEMPLATE = "sms.registrationSMSTemplate";
     private final static String SMS_URI = "sms.uri";
 
     public SMSServiceImpl() {}
