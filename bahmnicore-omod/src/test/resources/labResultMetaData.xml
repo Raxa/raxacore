@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <encounter_type encounter_type_id="100" name="LAB_RESULT" description="Some desc 2" creator="1"
+                    date_created="2005-01-01 00:00:00.0" retired="false" uuid="4fe21921-01cc-4720-a6bf-a61a17c4d05b"/>
+    <order_type order_type_id="16" name="Order" description="An order for tests" creator="1" java_class_name="org.openmrs.Order"
+                date_created="2008-08-15 13:49:47.0" retired="false" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>
+
+    <!--concept set for lab_result_concept_set-->
+    <concept concept_id="101" retired="false" datatype_id="3" class_id="8" is_set="true" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="dc8ac8c0-8716-11e3-baa7-0800200c9a66"/>
+    <concept_name concept_name_id="2" concept_id="101" name="LABRESULTS_CONCEPT" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="ea291cc0-8716-11e3-baa7-0800200c9a66"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="102" retired="false" datatype_id="3" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="4923d0e0-8734-11e3-baa7-0800200c9a66"/>
+    <concept_name concept_name_id="3" concept_name_type="FULLY_SPECIFIED" concept_id="102" name="LAB_RESULT" locale="en"
+                  creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+                  uuid="d52b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
+    <concept_set concept_id="102" concept_set="101" concept_set_id="201" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+
+    <concept concept_id="103" retired="false" datatype_id="3" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="5923d0e0-8734-11e3-baa7-0800200c9a66"/>
+    <concept_name concept_name_id="5" concept_id="103" name="LAB_NOTES" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="e52b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
+    <concept_set concept_id="103" concept_set="101" concept_set_id="202" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+
+    <concept concept_id="104" retired="false" datatype_id="1" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="6923d0e0-8734-11e3-baa7-0800200c9a66"/>
+    <concept_numeric concept_id="104" hi_normal="1497.0" low_critical="99.0" low_normal="445.0" hi_critical="1800.0"
+                     hi_absolute="2500.0" low_absolute="0.0" units="cells/mmL" allow_decimal="false"/>
+    <concept_name concept_name_id="6" concept_id="104" name="LAB_MINNORMAL" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="152b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
+    <concept_set concept_id="104" concept_set="101" concept_set_id="203" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+
+    <concept concept_id="105" retired="false" datatype_id="1" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="6923d0e0-8734-11e3-baa7-0800200c9a76"/>
+    <concept_numeric concept_id="105" hi_normal="1497.0" low_critical="99.0" low_normal="445.0" hi_critical="1800.0"
+                     hi_absolute="2500.0" low_absolute="0.0" units="cells/mmL" allow_decimal="false"/>
+    <concept_name concept_name_id="7" concept_id="105" name="LAB_MAXNORMAL" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="252b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
+    <concept_set concept_id="105" concept_set="101" concept_set_id="204" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+
+    <concept concept_id="106" retired="false" datatype_id="10" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="6923d0e0-8734-11e3-baa7-0800200c9aef"/>
+    <concept_name concept_name_id="8" concept_id="106" name="LAB_ABNORMAL" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="352b58c0-872e-11e3-baa7-0800200c9a66" locale_preferred="0"/>
+    <concept_set concept_set_id="205" concept_id="106" concept_set="101" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+
+    <concept concept_id="108" retired="false" datatype_id="3" class_id="8" is_set="true" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="dc8ac8c0-8716-11e3-baa7-0800f00c9a66"/>
+    <concept_name concept_name_id="9" concept_id="108" name="REFERRED_OUT" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" uuid="ea291cc0-e716-11e3-baa7-0800200c9a66"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set_id="206" concept_id="108" concept_set="101" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+
+    <concept concept_id="109" retired="false" datatype_id="3" class_id="8" is_set="false" creator="1"
+             date_created="2005-01-01 00:00:00.0" uuid="a5909c8e-332e-464c-a0d7-ca36828672d6"/>
+    <concept_name concept_name_id="10" concept_id="109" name="LAB_REPORT" locale="en" creator="1"
+                  date_created="2005-01-01 00:00:00.0" voided="false" concept_name_type="FULLY_SPECIFIED"
+                  uuid="18363cfe-a24e-40bc-82b9-160f90ebeabf" locale_preferred="0"/>
+    <concept_set concept_set_id="207" concept_id="109" concept_set="101" creator="1" sort_weight="100"
+                 date_created="2005-01-01 00:00:00.0"/>
+    <!--concept set for lab_result_concept_set-->
+
+</dataset>

@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <patient_identifier_type patient_identifier_type_id="1" name="Our Id"
+                             creator="1" date_created="2005-01-01 00:00:00.0" required="1"
+                             validator="" location_behavior="NOT_USED"
+                             retired="0" uuid="81433852-3f10-11e4-adec-0800271c1b75" />
+    <patient_identifier_type patient_identifier_type_id="2" name="Secondary Id"
+                             creator="1" date_created="2005-01-01 00:00:00.0" required="0"
+                             validator="" location_behavior="NOT_USED"
+                             retired="0" uuid="81433852-3f10-11e4-adec-0800271c1b76" />
+    <person person_id="1" gender="M" dead="false" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="592b29e1-b3f5-423e-83cb-0d2c9b80867f"/>
+    <person_name person_name_id="1" preferred="true" person_id="1" given_name="abishek" middle_name="kumar"
+                 family_name="Anand" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+                 uuid="4e89ec9e-6bd7-43e5-b5b9-9671c1c3eb9b"/>
+    <patient patient_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"/>
+    <patient_identifier patient_identifier_id="1" patient_id="1" identifier="GAN223660" identifier_type="1"
+                        preferred="1" location_id="1" creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+                        uuid="0b7cf2fa-b377-455c-8750-231cf34a21ac"/>
+    <global_property property="bahmni.primaryIdentifierType" property_value="81433852-3f10-11e4-adec-0800271c1b75" uuid="9885827e-26fe-102b-80cb-2017a47871b3"/>
+</dataset>
+

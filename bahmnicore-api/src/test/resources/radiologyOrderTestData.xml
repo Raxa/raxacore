@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+        <person person_id="1" gender="M" dead="false" creator="1" birthdate_estimated="0" date_created="2008-08-15 15:57:09.0" voided="false" void_reason="" uuid="75e04d42-3ca8-11e3-bf2b-0800271c1b75"/>
+    <patient patient_id="1" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+    <person_name person_name_id="1" preferred="true" person_id="1" prefix="" given_name="firstName" middle_name="" family_name="lastName" family_name_suffix="" creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3cca"/>
+    <patient_identifier date_created="2005-09-22 00:00:00" patient_identifier_id="1" patient_id ="1" identifier="GAN200000" identifier_type="1" creator="1"  uuid="7cb74fd1-128d-4584-842f-81d3535da3a6" preferred="1" voided="0" />
+
+    <concept_datatype concept_datatype_id="1" name="Numeric" hl7_abbreviation="NM" description="Numeric value, including integer or float" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="8d4a4488-c2cc-11de-8d13-0010c6dffd0f"/>
+    <concept_datatype concept_datatype_id="2" name="Coded" hl7_abbreviation="CWE" description="Coded values" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="8d4a48b6-c2cc-11de-8d13-0010c6dffd0f"/>
+    <concept_datatype concept_datatype_id="3" name="Text" hl7_abbreviation="ST" description="Text Value" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="4e18fe6d-8c9e-42b7-8479-3059ddd97b14"/>
+    <concept_datatype concept_datatype_id="4" name="N/A" hl7_abbreviation="NA" description="Not applicable" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="94e6e242-9bf1-4c04-841c-b606e74fe949"/>
+
+    <concept concept_id="24" retired="false" datatype_id="4" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-e601-4326-bb05-c6e11fe3d9ba"/>
+    <concept_name concept_id="24" name="XRay" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="49310077-e601-4326-bb05-c6e11fe3d9ba" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="25" retired="false" datatype_id="3" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb"/>
+    <concept_name concept_id="25" name="Radiology Results" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <location location_id="1" name="REG" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
+    <location location_id="2" name="OPD" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="be69741b-29e9-49a1-adc9-2a726e6610e4"/>
+
+    <encounter_type encounter_type_id="1" name="REG" description="Some desc" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
+    <encounter_type encounter_type_id="2" name="Consultation" description="Some desc 2" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="4ee21921-01cc-4720-a6bf-a61a17c4d05b"/>
+
+    <visit visit_id="1" date_started="2005-09-22 00:00:00" date_created="2005-09-22 00:00:00" patient_id="1" visit_type_id="1" date_stopped="2013-05-08 04:08:16" location_id="2" creator="1" changed_by="1" voided_by="1" uuid="ad41fb41-a41a-4ad6-8835-2f59099acf5a" voided="0"/>
+
+    <order_type order_type_id="15" name="Radiology Order" description="An order for radiology tests" creator="1" date_created="2008-08-15 13:49:47.0" retired="false" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>
+    <encounter encounter_id="15" encounter_type="2" patient_id="1" location_id="2" encounter_datetime="2008-08-01 00:00:00.0" creator="1" date_created="2008-08-18 14:09:05.0" voided="false" uuid="6d0ae386-707a-4629-9850-f15206e63ab0"/>
+
+    <orders order_action="NEW" care_setting="1" orderer="1" order_id="15" order_type_id="15" encounter_id="15" urgency="ROUTINE" concept_id="24" instructions="lower back xray" order_number="1" date_activated="2008-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="6d0ae386-707a-4629-9850-f15206e63ab0"/>
+
+    <orders order_action="NEW" care_setting="1" orderer="1" order_id="16" order_type_id="15" encounter_id="15" urgency="ROUTINE" concept_id="24" instructions="upper back xray" order_number="2" date_activated="2008-08-08 00:00:00.0" creator="1" date_created="2008-08-19 12:20:22.0" voided="false" patient_id="1" uuid="92c1bdef-72d4-49d9-8a1f-804892f66abd"/>
+    <obs obs_id="16" person_id="1" concept_id="25" order_id="16" encounter_id="15" obs_datetime="2008-07-01 00:00:00.0" location_id="1" value_text="upper back xray looks fine. No abnormalities were found." comments="" creator="1" date_created="2008-08-18 14:09:35.0" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb" status="FINAL" />
+
+</dataset>

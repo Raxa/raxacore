@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+    <concept_class concept_class_id="1000" name="Bacteriology Attributes" description="attributes for bacteriology" creator="1" date_created="2004-02-02 00:00:00.0" retired="false" uuid="97097dd9-b092-4b68-cda2-e5e5be961d42"/>
+    <concept_class concept_class_id="1991" name="Bacteriology Results" description="results for bacteriology" creator="1" date_created="2004-02-02 00:00:00.0" retired="false" uuid="97097dd9-b092-4b68-abfc-e5e5be961d42"/>
+
+    <concept_map_type concept_map_type_id="1000" is_hidden="0" retired="0" name="SAME-AS" creator="1" date_created="2004-08-12 00:00:00.0" uuid="b5e44116-778f-11e2-ad73-903c7bb72694"/>
+    <concept_reference_source concept_source_id="1000" name="org.openmrs.module.bacteriology" creator="1" date_created="2004-08-12 00:00:00.0" uuid="b5e44116-778f-11e2-ad73-903c7bb72694" retired="0" description="For Integration Test"/>
+
+    <concept concept_id="401" retired="false" datatype_id="4" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="baef67ac-b24e-4b04-ac83-c3b994132b85"/>
+    <concept_name concept_id="401" concept_name_id="1401" name="BACTERIOLOGY CONCEPT SET" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="baef67ac-b24e-4b04-ac83-c3b994132b85"/>
+    <concept_reference_term concept_reference_term_id="1000" concept_source_id="1000" code="BACTERIOLOGY_CONCEPT_SET" creator="1" date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-4b04-ac83-c3b994132b85" retired="0"/>
+    <concept_reference_map concept_map_id="1000" concept_id="401" concept_reference_term_id="1000" concept_map_type_id="1000" creator="1" date_created="2004-08-12 00:00:00.0" uuid="baef67ac-b24e-4b04-ac83-c3b994132b85"/>
+
+    <concept concept_id="402" retired="false" datatype_id="2" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="74a4c3d3-e6d0-407d-8ed3-3895e4b61f5b"/>
+    <concept_name concept_id="402" concept_name_id="1402" name="SPECIMEN ID" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="74a4c3d3-e6d0-407d-8ed3-3895e4b61f5b"/>
+    <concept_reference_term concept_reference_term_id="1001" concept_source_id="1000" code="SPECIMEN_ID" creator="1" date_created="2004-08-12 00:00:00.0" uuid="74a4c3d3-e6d0-407d-8ed3-3895e4b61f5b" retired="0"/>
+    <concept_reference_map concept_map_id="1002" concept_id="402" concept_reference_term_id="1001" concept_map_type_id="1000" creator="1" date_created="2004-08-12 00:00:00.0" uuid="74a4c3d3-e6d0-407d-8ed3-3895e4b61f5b"/>
+    <concept_set concept_set_id="1002" concept_id="402" concept_set="401" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"/>
+
+    <concept concept_id="403" retired="false" datatype_id="1" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="646dfcfe-c548-49b7-8837-c40d4b6de5bd"/>
+    <concept_name concept_id="403" concept_name_id="1403" name="SPECIMEN SAMPLE SOURCE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="646dfcfe-c548-49b7-8837-c40d4b6de5bd"/>
+    <concept_reference_term concept_reference_term_id="1003" concept_source_id="1000" code="SPECIMEN_SAMPLE_SOURCE" creator="1" date_created="2004-08-12 00:00:00.0" uuid="646dfcfe-c548-49b7-8837-c40d4b6de5bd" retired="0"/>
+    <concept_reference_map concept_map_id="1003" concept_id="403" concept_reference_term_id="1003" concept_map_type_id="1000" creator="1" date_created="2004-08-12 00:00:00.0" uuid="646dfcfe-c548-49b7-8837-c40d4b6de5bd"/>
+    <concept_set concept_set_id="1003" concept_id="403" concept_set="401" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"/>
+
+    <concept concept_id="404" retired="false" datatype_id="1" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="646dfcfe-c548-49b7-8837-c40d4b6de5b3"/>
+    <concept_name concept_id="404" concept_name_id="1404" name="SPECIMEN COLLECTION DATE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="646dfcfe-c548-49b7-8837-c40d4b6de5b3"/>
+    <concept_reference_term concept_reference_term_id="1004" concept_source_id="1000" code="SPECIMEN_COLLECTION_DATE" creator="1" date_created="2004-08-12 00:00:00.0" uuid="646dfcfe-c548-49b7-8837-c40d4b6de5b3" retired="0"/>
+    <concept_reference_map concept_map_id="1004" concept_id="404" concept_reference_term_id="1004" concept_map_type_id="1000" creator="1" date_created="2004-08-12 00:00:00.0" uuid="646dfcfe-c548-49b7-8837-c40d4b6de5b3"/>
+    <concept_set concept_set_id="1004" concept_id="404" concept_set="401" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"/>
+
+    <concept concept_id="405" retired="false" datatype_id="1" class_id="1000" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="646dfcfe-5c48-49b7-8837-c40d4b6de5b3"/>
+    <concept_name concept_id="405" concept_name_id="1405" name="BACTERIOLOGY ADDITIONAL ATTRIBUTES" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="646dfcfe-5c48-49b7-8837-c40d4b6de5b3"/>
+    <concept_set concept_set_id="1005" concept_id="405" concept_set="401" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"/>
+
+    <concept concept_id="406" retired="false" datatype_id="1" class_id="1991" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="646dffce-5c48-49b7-8837-c40d4b6de5b3"/>
+    <concept_name concept_id="406" concept_name_id="1406" name="BACTERIOLOGY RESULTS" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="646dcffe-5c48-49b7-8837-c40d4b6de5b3"/>
+    <concept_set concept_set_id="1006" concept_id="406" concept_set="401" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"/>
+
+
+    <concept concept_id="510" retired="false" datatype_id="3" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="c398a4be-3f10-11e4-adec-0800271c1b77"/>
+    <concept_name concept_id="510" concept_name_id="1414" name="HEIGHT" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="c398a4be-3f10-11e4-adec-0800271c1b77"/>
+    <concept_set concept_set_id="20000" concept_id="510" concept_set="406" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"></concept_set>
+
+
+
+    <concept concept_id="408" retired="false" datatype_id="2" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868df"/>
+    <concept_name concept_id="408" concept_name_id="1408" name="URINE" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868df"/>
+
+    <concept concept_id="409" retired="false" datatype_id="3" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dg"/>
+    <concept_name concept_id="409" concept_name_id="1409" name="SPUTUM" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dg"/>
+
+    <concept concept_id="411" retired="false" datatype_id="10" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="c393fd1d-3f10-11e4-adec-0800271c1b75"/>
+    <concept_name concept_id="411" concept_name_id="1410" name="History and Examination" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="c393fd1d-3f10-11e4-adec-0800271c1b75"/>
+
+</dataset>

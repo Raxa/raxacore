@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <concept_class concept_class_id="99" name="Concept Details" description="Concept Details" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="concept_details_concept_class_uuid"/>
+    <concept_class concept_class_id="999" name="Abnormal" description="abnormal" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="abnormal_concept_class_uuid"/>
+    <concept_class concept_class_id="9999" name="Duration" description="Duration" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="duration_concept_class_uuid"/>
+
+    <concept concept_id="90" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="blood_pressure_concept_uuid" />
+    <concept_name concept_id="90" name="Blood Pressure" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="1" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="99990" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="blood_pressure_concept_uuid_voided" />
+    <concept_name voided="1" concept_id="99990" name="Blood Pressure voided node" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="9991" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092agk" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="901" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="systolic_data_uuid" />
+    <concept_name concept_id="901" name="Systolic Data" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="2" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afc" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="901" concept_set="90" concept_set_id="1" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
+
+    <concept concept_id="9011" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="systolic_value_uuid" />
+    <concept_name concept_id="9011" name="Systolic" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="3" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afd" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="9011" concept_set="901" concept_set_id="2" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
+
+    <concept concept_id="9012" retired="0" datatype_id="3" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="systolic_abnormal_uuid" />
+    <concept_name concept_id="9012" name="Systolic Abnormal" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="4" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afe" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="9012" concept_set="901" concept_set_id="3" creator="1" sort_weight="2" date_created="2005-01-01 00:00:00.0" />
+    <concept_answer concept_answer_id="406" concept_id="9012" answer_concept="100" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_answer concept_answer_id="407" concept_id="9012" answer_concept="200" creator="1" date_created="2004-08-12 00:00:00.0"/>
+
+    <concept concept_id="902" retired="0" datatype_id="4" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="diastolic_data_uuid" />
+    <concept_name concept_id="902" name="Diastolic Data" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="5" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092aff" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="902" concept_set="90" concept_set_id="4" creator="1" sort_weight="2" date_created="2005-01-01 00:00:00.0" />
+
+    <concept concept_id="9021" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="diastolic_value_uuid" />
+    <concept_name concept_id="9021" name="Diastolic" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="6" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb84093afg" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="9021" concept_set="902" concept_set_id="5" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
+
+    <concept concept_id="9022" retired="0" datatype_id="3" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="diastolic_abnormal_uuid" />
+    <concept_name concept_id="9022" name="Diastolic Abnormal" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="7" voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afh" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="9022" concept_set="902" concept_set_id="6" creator="1" sort_weight="2" date_created="2005-01-01 00:00:00.0" />
+    <concept_answer concept_answer_id="408" concept_id="9022" answer_concept="100" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_answer concept_answer_id="409" concept_id="9022" answer_concept="200" creator="1" date_created="2004-08-12 00:00:00.0"/>
+
+    <!-- Chief Complaint concept tree setup -->
+    <concept concept_id="80" retired="0" datatype_id="4" class_id="99" is_set="1" creator="1" date_created="2013-12-04 11:36:42" uuid="chief_complaint_data_uuid" />
+    <concept_name concept_id="80" name="Chief Complaint Data" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="80" voided="false" uuid="chief_complaint_data_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="801" retired="0" datatype_id="2" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="coded_chief_complaint_uuid" />
+    <concept_name concept_id="801" name="Coded Complaint" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="801" voided="false" uuid="coded_chief_complaint_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="801" concept_set="80" concept_set_id="8011" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
+
+    <concept concept_id="802" retired="0" datatype_id="2" class_id="999" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="chief_complaint_abnormal_uuid" />
+    <concept_name concept_id="802" name="Coded Complaint Abnormal" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="802" voided="false" uuid="chief_complaint_abnormal_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="802" concept_set="80" concept_set_id="8021" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
+
+    <concept concept_id="803" retired="0" datatype_id="2" class_id="9999" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="chief_complaint_duration_uuid" />
+    <concept_name concept_id="803" name="Coded Complaint Duration" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="803" voided="false" uuid="chief_complaint_duration_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="803" concept_set="80" concept_set_id="8031" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
+
+    <concept concept_id="804" retired="0" datatype_id="2" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="noncoded_chief_complaint_uuid" />
+    <concept_name concept_id="804" name="Non Coded Complaint" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="804" voided="false" uuid="noncoded_chief_complaint_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="804" concept_set="80" concept_set_id="8041" creator="1" sort_weight="1" date_created="2005-01-01 00:00:00.0" />
+</dataset>

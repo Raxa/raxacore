@@ -1,0 +1,126 @@
+{
+  "name": "Vitals",
+  "id": 4,
+  "uuid": "ca539cb4-f469-4c45-8d7f-f1652d8dd99a",
+  "defaultLocale": "en",
+  "controls": [
+    {
+      "type": "section",
+      "label": {
+        "translationKey": "SECTION_1",
+        "type": "label",
+        "value": "Section",
+        "id": "1"
+      },
+      "properties": {
+        "addMore": false,
+        "location": {
+          "column": 0,
+          "row": 0
+        }
+      },
+      "id": "1",
+      "controls": [
+        {
+          "type": "obsControl",
+          "label": {
+            "translationKey": "TEMPERATURE_2",
+            "id": "2",
+            "units": "",
+            "type": "label",
+            "value": "Temperature"
+          },
+          "properties": {
+            "mandatory": false,
+            "notes": false,
+            "addMore": false,
+            "hideLabel": false,
+            "controlEvent": false,
+            "location": {
+              "column": 0,
+              "row": 0
+            },
+            "abnormal": false
+          },
+          "id": "2",
+          "concept": {
+            "name": "Temperature",
+            "uuid": "5090AAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "datatype": "Numeric",
+            "conceptClass": "Misc",
+            "conceptHandler": null,
+            "answers": [],
+            "properties": {
+              "allowDecimal": false
+            }
+          },
+          "units": null,
+          "hiNormal": null,
+          "lowNormal": null,
+          "hiAbsolute": null,
+          "lowAbsolute": null
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "label": {
+        "translationKey": "SECTION_1",
+        "type": "label",
+        "value": "Section1",
+        "id": "3"
+      },
+      "properties": {
+        "addMore": false,
+        "location": {
+          "column": 0,
+          "row": 1
+        }
+      },
+      "id": "3",
+      "controls": [
+        {
+          "type": "obsControl",
+          "label": {
+            "translationKey": "PULSE_4",
+            "id": "4",
+            "units": "",
+            "type": "label",
+            "value": "Pulse"
+          },
+          "properties": {
+            "mandatory": false,
+            "notes": false,
+            "addMore": false,
+            "hideLabel": false,
+            "controlEvent": false,
+            "location": {
+              "column": 0,
+              "row": 0
+            },
+            "abnormal": false
+          },
+          "id": "4",
+          "concept": {
+            "name": "Pulse",
+            "uuid": "5089AAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            "datatype": "Text",
+            "conceptClass": "Misc",
+            "conceptHandler": null,
+            "answers": [],
+            "properties": {
+              "allowDecimal": false
+            }
+          },
+          "units": null,
+          "hiNormal": null,
+          "lowNormal": null,
+          "hiAbsolute": null,
+          "lowAbsolute": null
+        }
+      ]
+    }
+  ],
+  "events": {},
+  "translationsUrl": "/openmrs/ws/rest/v1/bahmniie/form/translations"
+}

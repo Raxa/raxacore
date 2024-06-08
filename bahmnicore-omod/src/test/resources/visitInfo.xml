@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <visit_attribute_type visit_attribute_type_id="2" name="Visit Status" datatype="org.openmrs.customdatatype.datatype.FreeTextDatatype" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="8770f6d6-7673-11e0-8f03-001e378eb6e7" />
+
+    <visit visit_id="4000" patient_id="2" visit_type_id="1" date_started="2005-01-01 00:00:00.0" date_stopped="2005-01-05 00:00:00.0" location_id="1" indication_concept_id="5497" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="1e5d5d48-6b78-11e0-933c-18a905e044cd" />
+    <visit_attribute visit_attribute_id="1000" visit_id="4000" attribute_type_id="2" value_reference="IPD" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="8770f6d6-7673-11e0-8f03-001e378eb6e7"/>
+
+    <visit visit_id="4001" patient_id="2" visit_type_id="1" date_started="2006-01-01 00:00:00.0" date_stopped="2006-01-05 00:00:00.0" location_id="1" indication_concept_id="5497" creator="1" date_created="2006-01-01 00:00:00.0" voided="0" uuid="1e5d5d48-6b78-11e0-988c-18a905e044cd" />
+    <visit_attribute visit_attribute_id="1001" visit_id="4001" attribute_type_id="2" value_reference="OPD" creator="1" date_created="2006-01-01 00:00:00.0" voided="0" uuid="8770f6d6-7673-11e0-8f03-001e378eb6e8"/>
+
+    <visit visit_id="4002" patient_id="2" visit_type_id="1" date_started="2007-01-01 00:00:00.0" date_stopped="2007-01-05 00:00:00.0" location_id="1" indication_concept_id="5497" creator="1" date_created="2007-01-01 00:00:00.0" voided="0" uuid="1e5d5d48-6b78-11e0-988c-18a905e033cd" />
+    <visit_attribute visit_attribute_id="1002" visit_id="4002" attribute_type_id="2" value_reference="EMERGENCY" creator="1" date_created="2007-01-01 00:00:00.0" voided="0" uuid="8770f6d6-7674-11e0-8f03-001e378eb6e8"/>
+
+    <encounter_type encounter_type_id="10000" name="ADMISSION" description="Some desc" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="2b377dba-62c3-4e53-91ef-b51c68899890"/>
+    <encounter_type encounter_type_id="20000" name="DISCHARGE" description="Some desc" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="2b377dba-62c3-4e53-91ef-b51c68899809"/>
+
+    <encounter encounter_id="10001" encounter_type="10000" patient_id="2" visit_id="4000" location_id="1" encounter_datetime="2005-01-01 00:00:00.0" creator="1" date_created="2005-09-23 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63ab0"/>
+    <encounter encounter_id="10002" encounter_type="20000" patient_id="2" visit_id="4000" location_id="1" encounter_datetime="2005-01-04 00:00:00.0" creator="1" date_created="2005-09-23 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f15206e63a0b"/>
+
+    <encounter_provider encounter_provider_id="1000" encounter_id="10001" provider_id="1" encounter_role_id="1" creator="1" date_created="2006-03-11 15:57:35.0" voided="false" uuid="19e0aae8-20ee-46b7-ade6-9e68f897b7b9" />
+    <encounter_provider encounter_provider_id="1001" encounter_id="10002" provider_id="1" encounter_role_id="1" creator="1" date_created="2006-03-11 15:57:35.0" voided="false" uuid="19e0aae8-20ee-46b7-ade6-9e68f897b7c9" />
+
+    <obs obs_id="1000" person_id="2" concept_id="3" encounter_id="10001" obs_datetime="2008-08-01 00:00:00.0" location_id="1"  creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9b" status="FINAL" />
+    <obs obs_id="1001" person_id="2" concept_id="3" encounter_id="10002" obs_datetime="2008-08-01 00:00:00.0" location_id="1"  creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9c" status="FINAL" />
+
+</dataset>

@@ -1,0 +1,27 @@
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.bahmni.module.obsrelationship.model" >
+    <class name="ObsRelationshipType" table="obs_relationship_type">
+        <id name="id" type="int" column="obs_relationship_type_id" unsaved-value="0">
+            <generator class="native">
+                <param name="sequence">obs_relationship_type_obs_relationship_type_id_seq</param>
+            </generator>
+        </id>
+        <property name="name" type="java.lang.String" not-null="true" length="255" />
+        <property name="description" type="java.lang.String" length="255" />
+        <property name="uuid" type="java.lang.String" column="uuid" length="38" unique="true" />
+
+        <property name="dateCreated" type="java.util.Date" column="date_created" not-null="true" length="19" />
+        <property name="dateChanged" type="java.util.Date" column="date_changed" length="19"/>
+        <property name="dateRetired" type="java.util.Date" column="date_retired" length="19" />
+
+        <property name="retired" type="boolean" length="1" not-null="true" />
+        <property name="retireReason" type="java.lang.String" column="retire_reason" length="255" />
+
+        <many-to-one name="creator" class="org.openmrs.User" not-null="true" />
+        <many-to-one name="changedBy" class="org.openmrs.User" column="changed_by"/>
+        <many-to-one name="retiredBy" class="org.openmrs.User" column="retired_by" />
+
+    </class>
+</hibernate-mapping>

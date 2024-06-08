@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <concept_class concept_class_id="31" name="Drug" description="Drug" creator="1"
+    date_created="2005-01-01 00:00:00.0" retired="false" uuid="8d490dfc-c2cc-11de-8d13-0010c6dffd0f"/>
+
+    <!--Drug-->
+    <concept concept_id="101" retired="0" datatype_id="5" class_id="31" is_set="1" creator="1"
+             date_created="2013-12-04 11:36:42" uuid="5d2d4cb7-955b-4837-80f7-0ebb98701111"/>
+    <concept_name concept_id="101" name="Tablet" locale="en" creator="1" date_created="2014-01-01 00:00:00.0"
+                  concept_name_id="10" voided="false" uuid="5d2d4cb7-955b-4837-8dd7-0ecc9411111"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+
+    <concept concept_id="103" retired="0" datatype_id="5" class_id="31" is_set="1" creator="1"
+             date_created="2013-12-04 11:36:42" uuid="d0afba52-6afb-4e2e-a27e-b5c528acdf15"/>
+    <concept_name concept_id="103" name="Capsule" locale="en" creator="1" date_created="2014-01-01 00:00:00.0"
+                  concept_name_id="12" voided="false" uuid="bfcb566b-e26e-4f00-9c70-d45f090e076a"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+
+    <concept concept_id="102" retired="0" datatype_id="5" class_id="31" is_set="1" creator="1"
+             date_created="2013-12-04 11:36:42" uuid="a0a690fd-75a4-44a9-b086-4e1c15f4ed6a"/>
+    <concept_name concept_id="102" name="Old Drug Concept" locale="en" creator="1" date_created="2014-01-01 00:00:00.0"
+                  concept_name_id="13" voided="false" uuid="294b87fc-ef4f-434e-8124-b447d3b40e2e"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+
+    <concept concept_id="202" retired="0" datatype_id="5" class_id="31" is_set="1" creator="1"
+             date_created="2013-12-04 11:36:42" uuid="a0a690fd-75a4-447t-bmc6-4e1c15f4ed6a"/>
+    <concept_name concept_id="202" name="Random Drug Concept" locale="en" creator="1" date_created="2014-01-01 00:00:00.0"
+                  concept_name_id="132" voided="false" uuid="294b8ktt-ef4f-434e-8124-b447d3b40e2e"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+
+    <drug drug_id="1" concept_id="102" name="Existing Drug" combination="false" dosage_form="103" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="1ce527b5-d6de-43f0-bc62-4616abacd77e" />
+
+</dataset>

@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <entity_mapping_type id="1" name="program_obstemplate" uuid="1d8f69f6-4d47-11e5-a98b-080027b662ec" entity1_type="org.openmrs.Program" entity2_type="org.openmrs.Concept"  />
+
+    <entity_mapping id="10" entity_mapping_type_id="1" entity1_uuid="e45931c5-cc97-48bd-b686-e64a28ab2bde" entity2_uuid="208c3975-77f7-43bb-aca3-b5ffa9c1bfcc"  uuid="e9b9609f-4d48-11e5-a98b-080027b662ec"/>
+
+    <concept concept_id="1000" retired="0" datatype_id="5" class_id="1" is_set="0" creator="1" date_created="2016-01-01 00:00:00.0" uuid="73789a22-774c-4b6c-af50-db5042266494"/>
+    <concept_name concept_id="1000" name="Concept" locale="en" creator="1" date_created="2016-01-01 00:00:00.0"
+                  concept_name_id="10818" voided="false" uuid="1920add1-55c0-4a7f-9317-f0acc49b589b" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="1001" retired="0" datatype_id="5" class_id="1" is_set="0" creator="1" date_created="2016-01-01 00:00:00.0" uuid="73789a22-774c-4b6c-af50-db5042288494"/>
+    <concept_name concept_id="1001" name="Outcome" locale="en" creator="1" date_created="2016-01-01 00:00:00.0"
+                  concept_name_id="10818" voided="false" uuid="1920add1-55c0-4a7f-9317-faacc49b589b" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="2000" retired="0" datatype_id="5" class_id="1" is_set="0" creator="1" date_created="2016-01-01 00:00:00.0" uuid="208c3975-77f7-43bb-aca3-b5ffa9c1bfcc"/>
+    <concept_name concept_id="2000" name="Outcome" locale="en" creator="1" date_created="2016-01-01 00:00:00.0"
+                  concept_name_id="10818" voided="false" uuid="6620add1-55c0-4a7f-9317-faacc49b589b" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <program program_id="1" concept_id="1000" outcomes_concept_id="1001" creator="1" date_created="2016-01-01 00:00:00.0" uuid="e45931c5-cc97-48bd-b686-e64a28ab2bde" />
+
+
+</dataset>

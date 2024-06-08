@@ -1,0 +1,120 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="elis-atomfeed-1" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_44__AddingSchedulerTaskToProcessOpenElisPatientFeed.sql"/>
+    </changeSet>
+    <changeSet id="elis-atomfeed-2" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_45__UpdatingOpenElisAtomFeedSchedulerTaskToNotStartUpAutomatically.sql"/>
+    </changeSet>
+    <changeSet id="elis-atomfeed-3" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_50__UpdatingOpenElisAtomFeedSchedulerTaskToRunEvery15Seconds.sql"/>
+    </changeSet>
+    <changeSet id="elis-atomfeed-4" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="V1_52__StartOpenElisAtomFeedSchedulerTaskToStartAutomatically.sql"/>
+    </changeSet>
+    <changeSet id="elis-atomfeed-5" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="V1_64__AddLabResultFeedScheduler.sql"/>
+    </changeSet>
+    <changeSet id="elis-atomfeed-6" author="tw" context="rel3">
+        <comment>Add failed events job for Openelis lab result processing</comment>
+        <sql>
+            INSERT INTO scheduler_task_config(name, schedulable_class, start_time, start_time_pattern, repeat_interval, start_on_startup, started, created_by, date_created, uuid)
+            VALUES ('OpenElis Lab Result Atom Feed Failed Event Task', 'org.bahmni.module.elisatomfeedclient.api.task.OpenElisLabResultFeedFailedEventsTask', now(), 'MM/dd/yyyy HH:mm:ss', 15, 1, 1, 1,  curdate(), uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="elis-atomfeed-7" author="tw" context="rel3">
+        <comment>Add failed events job for Openelis patient processing</comment>
+        <sql>
+            INSERT INTO scheduler_task_config(name, schedulable_class, start_time, start_time_pattern, repeat_interval, start_on_startup, started, created_by, date_created, uuid)
+            VALUES ('OpenElis Patient  Atom Feed Failed Event Task', 'org.bahmni.module.elisatomfeedclient.api.task.OpenElisPatientFeedFailedEventsTask', now(), 'MM/dd/yyyy HH:mm:ss', 15, 0, 0, 1,  curdate(), uuid());
+        </sql>
+    </changeSet>
+    <changeSet id="elis-atomfeed-8" author="tw" context="rel3">
+        <comment>Don't start the patient feed on startup</comment>
+        <sql>
+            UPDATE scheduler_task_config SET start_on_startup = 0 WHERE name = 'OpenElis Patient Atom Feed Task';
+        </sql>
+    </changeSet>
+    <changeSet id="elis-atomfeed-10" author="tw" context="rel3">
+        <sql>
+            set @puuid = uuid();
+
+            insert into person(birthdate_estimated, dead, creator, date_created, uuid)
+            values(0, 0, 1, now(), @puuid);
+
+            insert into users(system_id, creator, date_created, person_id, uuid, username)
+            values ('Lab System', 1, now(),(select person_id from person where uuid = @puuid) , uuid(), 'Lab System');
+
+            insert into provider (person_id, identifier, creator, date_created, uuid, name) values ((select person_id from person where uuid = @puuid), 'LABSYSTEM', 1, now(), uuid(), 'Lab System');
+        </sql>
+    </changeSet>
+    <changeSet id="elis-atomfeed-11" author="tw" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from liquibasechangelog where author='elisatomfeedclient' and id='100';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO `liquibasechangelog` (`ID`,`AUTHOR`,`FILENAME`,`DATEEXECUTED`,`MD5SUM`,`DESCRIPTION`,`COMMENTS`,`TAG`,`LIQUIBASE`,`EXECTYPE`,`ORDEREXECUTED`)
+            VALUES ('100','ict4h','sql/db_migrations.xml',now(),'3:8ee36a0313cda559247cbb2729fe6e76','Create Table (x2)','',NULL,'2.0.5','EXECUTED','100') ON DUPLICATE KEY UPDATE EXECTYPE = 'EXECUTED';
+        </sql>
+    </changeSet>
+    <changeSet id="elis-atomfeed-12" author="tw" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select count(*) from liquibasechangelog where author='tw' and id='elis-atomfeed-9';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO `liquibasechangelog` (`ID`,`AUTHOR`,`FILENAME`,`DATEEXECUTED`,`MD5SUM`,`DESCRIPTION`,`COMMENTS`,`TAG`,`LIQUIBASE`,`EXECTYPE`,`ORDEREXECUTED`)
+            VALUES ('101','ict4h','sql/db_migrations.xml',now(),'3:29f59eb61eb39a9dee52d81f4026d642','Add Column','',NULL,'2.0.5','EXECUTED','101') ON DUPLICATE KEY UPDATE EXECTYPE = 'EXECUTED';
+        </sql>
+    </changeSet>
+    <changeSet id="elis-atomfeed-13" author="tw" context="rel3">
+        <sql>
+            update scheduler_task_config set start_on_startup='1' where name in ('OpenElis Patient Atom Feed Task','OpenElis Patient  Atom Feed Failed Event Task');
+        </sql>
+    </changeSet>
+    <changeSet id="elis-atomfeed-14-201402041600" author="tw" context="rel3">
+        <comment>Remove scheduled job to process failed Openelis lab results</comment>
+        <sql>
+            DELETE FROM scheduler_task_config WHERE schedulable_class = 'org.bahmni.module.elisatomfeedclient.api.task.OpenElisLabResultFeedFailedEventsTask';
+        </sql>
+    </changeSet>
+    <changeSet id="elis-atomfeed-15-201402041605" author="tw" context="rel3">
+        <comment>Remove scheduled job to process Openelis lab results, as this is now part of accession worker</comment>
+        <sql>
+            DELETE FROM scheduler_task_config WHERE schedulable_class = 'org.bahmni.module.elisatomfeedclient.api.task.OpenElisLabResultFeedTask';
+        </sql>
+    </changeSet>
+    <changeSet id="elis-atomfeed-16-201409101232" author="Chethan,D3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from visit_type where name = 'LAB VISIT'</sqlCheck>
+        </preConditions>
+        <comment>Creating new visit type LAB VISIT</comment>
+        <sql>
+            INSERT INTO visit_type (name, description, creator, uuid, date_created) VALUES ('LAB VISIT', 'Visits for lab visit by patient when the tests are not ordered through OpenMRS', 1, uuid(), curdate());
+        </sql>
+    </changeSet>
+
+    <changeSet id="elis-atomfeed-5-201906032010" author="Angshu,Bindu" context="r0.92">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from scheduler_task_config where schedulable_class= "org.bahmni.module.elisatomfeedclient.api.task.OpenElisPatientFeedTask" and name = "OpenElis Patient Atom Feed Task";
+            </sqlCheck>
+        </preConditions>
+        <comment>rel3</comment>
+        <sql>
+            INSERT INTO scheduler_task_config(name, schedulable_class, start_time, start_time_pattern, repeat_interval, start_on_startup, started, created_by, date_created, uuid)
+            VALUES ('OpenElis Patient Atom Feed Task', 'org.bahmni.module.elisatomfeedclient.api.task.OpenElisPatientFeedTask', now(), 'MM/dd/yyyy HH:mm:ss', 15, 1, 1, 1,  curdate(), uuid());
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.0//EN" "http://resources.openmrs.org/doctype/config-1.6.dtd">
+
+<module configVersion="1.6">
+
+    <!-- Base Module Properties -->
+    <id>@MODULE_ID@</id>
+    <name>@MODULE_NAME@</name>
+    <version>@MODULE_VERSION@</version>
+    <package>@MODULE_PACKAGE@</package>
+    <author>Bahmni</author>
+    <description>
+        Provides core Bahmni EMR services
+    </description>
+    <activator>@MODULE_PACKAGE@.Activator</activator>
+
+    <updateURL>https://example.com/modules/download/bahmnicore/update.rdf</updateURL>
+    <!-- /Base Module Properties -->
+
+    <require_version>${openMRSRuntimeVersion}</require_version>
+    <require_modules>
+        <require_module>org.openmrs.module.webservices.rest</require_module>
+        <require_module>org.openmrs.module.idgen</require_module>
+        <require_module>org.openmrs.module.idgen.webservices</require_module>
+        <require_module>org.openmrs.module.emrapi</require_module>
+        <require_module>org.ict4h.openmrs.openmrs-atomfeed</require_module>
+        <require_module>org.bahmni.module.reference-data</require_module>
+        <require_module>org.openmrs.module.addresshierarchy</require_module>
+        <require_module>org.openmrs.module.uiframework</require_module>
+        <require_module>org.openmrs.module.bacteriology</require_module>
+        <require_module>org.openmrs.module.bedmanagement</require_module>
+        <require_module>org.openmrs.module.rulesengine</require_module>
+        <require_module>org.openmrs.module.episodes</require_module>
+        <require_module>org.openmrs.module.auditlog</require_module>
+        <require_module>org.bahmni.module.bahmnicommons</require_module>
+        <require_module>org.bahmni.module.communication</require_module>
+    </require_modules>
+    <!-- Extensions -->
+
+    <!-- AOP -->
+    <!-- Required Privileges -->
+
+    <privilege>
+        <name>Add Patient Lists</name>
+        <description>Ability to create patient lists</description>
+    </privilege>
+    <privilege>
+        <name>Delete Patient Lists</name>
+        <description>Ability to delete patient lists</description>
+    </privilege>
+    <privilege>
+        <name>Edit Patient Lists</name>
+        <description>Ability to edit patient lists</description>
+    </privilege>
+    <privilege>
+        <name>View Patient Lists</name>
+        <description>Ability to view patient lists</description>
+    </privilege>
+
+    <privilege>
+        <name>Add Drug Groups</name>
+        <description>Ability to create Drug Groups</description>
+    </privilege>
+    <privilege>
+        <name>Delete Drug Groups</name>
+        <description>Ability to delete Drug Groups</description>
+    </privilege>
+    <privilege>
+        <name>Edit Drug Groups</name>
+        <description>Ability to edit Drug Groups</description>
+    </privilege>
+    <privilege>
+        <name>View Drug Groups</name>
+        <description>Ability to view Drug Groups</description>
+    </privilege>
+
+    <privilege>
+        <name>Add Drug Info</name>
+        <description>Ability to create Drug Info</description>
+    </privilege>
+    <privilege>
+        <name>Delete Drug Info</name>
+        <description>Ability to delete Drug Info</description>
+    </privilege>
+    <privilege>
+        <name>Edit Drug Info</name>
+        <description>Ability to edit Drug Info</description>
+    </privilege>
+    <privilege>
+        <name>View Drug Info</name>
+        <description>Ability to view Drug Info</description>
+    </privilege>
+    <privilege>
+        <name>Delete Patient Document</name>
+        <description>Ability to delete any patient document</description>
+    </privilege>
+    <privilege>
+        <name>app:lab-lite</name>
+        <description>Will give access to Lab Lite app</description>
+    </privilege>
+
+    <advice>
+        <point>org.openmrs.module.bahmniemrapi.encountertransaction.service.BahmniEncounterTransactionService</point>
+        <class>org.openmrs.module.bahmniemrapi.encountertransaction.advisor.BahmniEncounterServiceAdvisor</class>
+    </advice>
+
+    <!-- Required Global Properties -->
+    <!-- DWR -->
+    <!-- Servlets -->
+
+    <!-- Filters -->
+    <filter>
+        <filter-name>CacheHeaders</filter-name>
+        <filter-class>org.bahmni.module.bahmnicore.web.filter.CacheHeadersFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>LocaleFilter</filter-name>
+        <filter-class>org.bahmni.module.bahmnicore.web.filter.LocaleFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>shallowEtagHeaderFilter</filter-name>
+        <url-pattern>/ws/rest/v1/concept</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>CacheHeaders</filter-name>
+        <url-pattern>/ws/rest/v1/concept</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>LocaleFilter</filter-name>
+        <url-pattern>/ws/rest/v1/concept</url-pattern>
+    </filter-mapping>
+    <mappingFiles>
+        ObsRelationship.hbm.xml
+        ObsRelationshipType.hbm.xml
+        LocationEncounterTypeMap.hbm.xml
+        BahmniConfig.hbm.xml
+        EntityMapping.hbm.xml
+        EntityMappingType.hbm.xml
+        Notes.hbm.xml
+        NoteType.hbm.xml
+        </mappingFiles>
+    <!-- Internationalization -->
+    <!-- All message codes should start with moduleId.* -->
+    <messages>
+        <lang>en</lang>
+        <file>messages.properties</file>
+    </messages>
+    <globalProperty>
+        <property>bahmni.relationshipTypeMap</property>
+        <defaultValue></defaultValue>
+        <description>Relationship Type Map format Eg:{ "patient": ["Sibling", "Parent"],"provider": ["Doctor"]}.If no value is specified default is patient relationship.</description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>bahmni.enableAuditLog</property>
+        <defaultValue>true</defaultValue>
+        <description>Enable or disable audit log</description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>bahmni.primaryIdentifierType</property>
+        <defaultValue></defaultValue>
+        <description>Primary identifier type for looking up patients</description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>bahmni.extraPatientIdentifierTypes</property>
+        <defaultValue></defaultValue>
+        <description>A list of UUIDs indicating extra Patient Identifier Types that should be displayed</description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>bahmni.lookupExternalTerminologyServer</property>
+        <defaultValue>false</defaultValue>
+        <description>Property used to determine whether external terminology server being used or not</description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>bahmni.enableEmailPrescriptionOption</property>
+        <defaultValue>false</defaultValue>
+        <description>Boolean to enable sending email with prescription details</description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>bahmni.executeGroovyObsValueCalculator</property>
+        <defaultValue>true</defaultValue>
+        <description>Enable or disable Groovy script execution for obs value calculation on encounter save</description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>bahmni.diagnosisSetForNewDiagnosisConcepts</property>
+        <defaultValue></defaultValue>
+        <description>UUID of set member of diagnosis set of sets. New Diagnosis concepts from terminology server will be added to this set </description>
+    </globalProperty>
+
+    <globalProperty>
+        <property>sms.enableRegistrationSMSAlert</property>
+        <defaultValue>false</defaultValue>
+        <description>Boolean to enable sending sms when patient registers</description>
+    </globalProperty>
+
+
+    <advice>
+        <point>org.openmrs.api.PatientService</point>
+        <class>org.bahmni.module.bahmnicore.events.advice.PatientAdvice</class>
+    </advice>
+    <advice>
+        <point>org.openmrs.api.EncounterService</point>
+        <class>org.bahmni.module.bahmnicore.events.advice.EncounterAdvice</class>
+    </advice>
+</module>

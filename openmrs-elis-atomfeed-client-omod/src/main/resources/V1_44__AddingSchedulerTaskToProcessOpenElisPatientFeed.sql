@@ -1,0 +1,2 @@
+INSERT INTO scheduler_task_config(name, schedulable_class, start_time, start_time_pattern, repeat_interval, start_on_startup, started, created_by, date_created, uuid)
+VALUES ('OpenElis Atom Feed Client', 'org.bahmni.module.elisatomfeedclient.api.task.OpenElisAtomFeedTask', now(), 'MM/dd/yyyy HH:mm:ss', 60, 1, 1, 1,  curdate(), uuid());

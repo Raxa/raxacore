@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.0//EN" "http://resources.openmrs.org/doctype/config-1.2.dtd">
+
+<module configVersion="1.2">
+	
+    <!-- Base Module Properties -->
+    <id>@MODULE_ID@</id>
+    <name>@MODULE_NAME@</name>
+    <version>@MODULE_VERSION@</version>
+    <package>@MODULE_PACKAGE@</package>
+    <author>Bahmni</author>
+    <description>
+        Atom feed client for OpenElis
+    </description>
+    <activator>@MODULE_PACKAGE@.Activator</activator>
+
+    <updateURL>https://example.com/modules/download/elisatomfeedclient/update.rdf</updateURL>
+    <!-- /Base Module Properties -->
+	
+    <require_version>${openMRSRuntimeVersion}</require_version>
+    <require_modules>
+        <require_module>org.bahmni.module.bahmnicore</require_module>
+        <require_module>org.ict4h.openmrs.openmrs-atomfeed</require_module>
+        <require_module>org.openmrs.module.auditlog</require_module>
+    </require_modules>
+
+    <!-- Extensions -->
+	
+
+    <!-- Required Privileges -->
+    <privilege>
+        <name>Add Patient Lists</name>
+        <description>Ability to create patient lists</description>
+    </privilege>
+    <privilege>
+        <name>Delete Patient Lists</name>
+        <description>Ability to delete patient lists</description>
+    </privilege>
+    <privilege>
+        <name>Edit Patient Lists</name>
+        <description>Ability to edit patient lists</description>
+    </privilege>
+    <privilege>
+        <name>View Patient Lists</name>
+        <description>Ability to view patient lists</description>
+    </privilege>
+    
+    <messages>
+        <lang>en</lang>
+        <file>messages.properties</file>
+    </messages>
+</module>

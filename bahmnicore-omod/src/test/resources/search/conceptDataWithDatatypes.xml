@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+<concept concept_id="1001" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42"
+         version="" changed_by="1" date_changed="2008-08-15 15:52:38.0" uuid="89ca642a-dab6-4f20-b712-e12ca4f-5000" />
+<concept_name concept_name_id="1001" concept_id="1001" name="Temperature" locale="en" creator="1" date_created="2005-01-01 00:00:00.0"
+              voided="false" uuid="85b47f49-7f3e-4910-b18b-097f94d-5000" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+<concept concept_id="1002" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42"
+         version="" changed_by="1" date_changed="2008-08-15 15:52:38.0" uuid="4f596de5-5caa-11e3-a4c0-0800271c1b75" />
+<concept_name concept_id="1002" name="Temperature-2" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="102"
+              voided="false" uuid="temperature2_concept_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
+<concept concept_id="1003" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42"
+         version="" changed_by="1" date_changed="2008-08-15 15:52:38.0" uuid="4f596de5-5caa-11e3-a4c0-0800271c1b76" />
+<concept_name concept_id="1003" name="Pulse" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="103"
+              voided="false" uuid="pulse_concept_name_uuid" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+
+<concept concept_id="1004" retired="0" datatype_id="3" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42"
+         version="" changed_by="1" date_changed="2008-08-15 15:52:38.0" uuid="notes_concept_uuid" />
+<concept_name concept_id="1004" name="Temperature notes" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="104"
+              voided="false" uuid="6d2d4cb7-955b-4837-80f7-0ebb94092agh" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+<concept concept_id="1005" retired="0" datatype_id="10" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42"
+         version="" changed_by="1" date_changed="2008-08-15 15:52:38.0" uuid="abnormal_concept_uuid" />
+<concept_name concept_id="1005" name="Temperature Abnormal" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="105"
+              voided="false" uuid="ab2d4cb7-955b-4837-80f7-0ebb94092afh" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+<concept concept_id="1006" retired="0" datatype_id="4" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42"
+         version="" changed_by="1" date_changed="2008-08-15 15:52:38.0" uuid="False_concept_uuid" />
+<concept_name concept_id="1006" name="Temperature N/A" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="106"
+              voided="false" uuid="6d2d4cb7-955b-4837-80f7-0ebb94092afi" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+
+<concept concept_id="1007" retired="0" datatype_id="2" class_id="1" is_set="1" creator="1" date_created="2013-12-04 11:36:42"
+         version="" changed_by="1" date_changed="2008-08-15 15:52:38.0" uuid="blood_pressure_concept_uuid" />
+<concept_name concept_id="1007" name="Temperature coded" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="107"
+              voided="false" uuid="5d2d4cb7-955b-4837-80f7-0ebb94092afb" concept_name_type="FULLY_SPECIFIED" locale_preferred="1"/>
+</dataset>

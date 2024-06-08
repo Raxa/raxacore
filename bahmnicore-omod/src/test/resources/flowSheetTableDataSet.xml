@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <person person_id="4444" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason="For test purposes"
+            uuid="1a246ed5-3c11-11de-a0ba-001ed98eb67a"/>
+
+    <patient patient_id="4444" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+    <person_name person_name_id="4444" preferred="true" person_id="4444" prefix="Mr." given_name="Horatio"
+                 middle_name="Test" family_name="Banka" family_name_suffix="Esq." creator="1"
+                 date_created="2005-09-22 00:00:00.0" voided="false" void_reason=""
+                 uuid="399e3a7b-6482-487d-94ce-c07bb3ca3dda"/>
+
+    <visit_type visit_type_id="67" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14"
+                changed_by="1" date_changed="2012-10-23 18:04:14" retired="0"
+                uuid="f01c54cb-2225-471a-9cd5-d399552c337c"/>
+
+    <visit visit_id="1001" date_started="2014-12-22 00:00:00" date_created="2014-12-22 00:00:00" patient_id="4444"
+           visit_type_id="67" date_stopped="2014-12-30 00:00:00" creator="1" uuid="adf4fb41-a41a-4ad6-12f5-2f59889acf5a"
+           voided="0"/>
+
+    <encounter_type encounter_type_id="1000" name="Consultation" description="Some desc" creator="1"
+                    date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-88883ada74e4"/>
+
+    <encounter encounter_id="1001" encounter_type="1000" patient_id="4444" visit_id="1001" location_id="1"
+               encounter_datetime="2014-12-22 15:00:00.0" creator="1" date_created="2014-12-22 14:09:05.0"
+               voided="false" uuid="bb0af6767-707a-4629-9850-f1529a163ab0"/>
+
+    <obs obs_id="1000" person_id="4444" concept_id="23" encounter_id="1001" obs_datetime="2008-08-01 00:00:00.0"
+         location_id="1" creator="1" date_created="2008-08-18 14:11:13.0" voided="false"
+         uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9a" status="FINAL" />
+
+    <obs obs_id="1001" obs_group_id="1000" encounter_id="1001" person_id="4444" obs_datetime="2008-08-18 15:09:05.0"
+         value_coded="7" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-164b-11e4-9f26-005056823b95"
+         creator="1" concept_id="18" voided="0" status="FINAL" />
+    <obs obs_id="1002" obs_group_id="1000" encounter_id="1001" person_id="4444" obs_datetime="2008-08-18 15:09:05.0"
+         value_text="Favorite" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-164b-11e4-9fbs-005056823b95"
+         creator="1" concept_id="19" voided="0" status="FINAL" />
+    <obs obs_id="1003" obs_group_id="1000" encounter_id="1001" person_id="4444" obs_datetime="2008-08-18 15:09:05.0"
+         value_datetime="2008-08-14 00:00:00" date_created="2008-08-18 15:09:05.0" creator="1" concept_id="20"
+         uuid="c558b3c5-164b-19z4-9f26-005056823b95" voided="0" status="FINAL" />
+
+<!--patient which data is not completely filled-->
+    <person person_id="5555" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason="For test purposes"
+            uuid="1a246ed5-3c11-11de-abaa-001ed98eb67a"/>
+
+    <patient patient_id="5555" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+    <person_name person_name_id="5555" preferred="true" person_id="5555" prefix="Mr." given_name="Horatio"
+                 middle_name="Test" family_name="Banka" family_name_suffix="Esq." creator="1"
+                 date_created="2005-09-22 00:00:00.0" voided="false" void_reason=""
+                 uuid="399e3a7b-6482-487d-94ce-0z7bb3ca3dda"/>
+
+    <visit visit_id="2001" date_started="2014-12-22 00:00:00" date_created="2014-12-22 00:00:00" patient_id="5555"
+           visit_type_id="67" date_stopped="2014-12-30 00:00:00" creator="1" uuid="adf4fb41-a41a-mad6-12f5-2f59889acf5a"
+           voided="0"/>
+
+    <encounter encounter_id="2001" encounter_type="1000" patient_id="5555" visit_id="2001" location_id="1"
+               encounter_datetime="2014-12-22 15:00:00.0" creator="1" date_created="2014-12-22 14:09:05.0"
+               voided="false" uuid="bb0af6767-7xca-4629-9850-f1529a163ab0"/>
+
+    <obs obs_id="2000" person_id="5555" concept_id="23" encounter_id="2001" obs_datetime="2008-08-01 00:00:00.0"
+         location_id="1" creator="1" date_created="2008-08-18 14:11:13.0" voided="false"
+         uuid="8888cdcb-6a76-47e3-9f2e-263503cv3a9a" status="FINAL" />
+
+    <obs obs_id="2001" obs_group_id="2000" encounter_id="2001" person_id="5555" obs_datetime="2008-08-18 15:09:05.0"
+         value_coded="7" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-1pzb-pae4-9f26-005056823b95"
+         creator="1" concept_id="18" voided="0" status="FINAL" />
+    <obs obs_id="2002" obs_group_id="2000" encounter_id="2001" person_id="5555" obs_datetime="2008-08-18 15:09:05.0"
+         value_text="Favorite" date_created="2008-08-18 15:09:05.0" uuid="c55013c5-16zo-11e4-9fbs-005056823b95"
+         creator="1" concept_id="19" voided="0" status="FINAL" />
+
+    <obs obs_id="3000" person_id="5555" concept_id="23" encounter_id="2001" obs_datetime="2008-08-01 00:00:00.0"
+         location_id="1" creator="1" date_created="2008-08-18 14:11:13.0" voided="false"
+         uuid="8888cdcb-6a76-47e3-9cpe-2xs5032f3a9a" status="FINAL" />
+
+    <obs obs_id="3001" obs_group_id="3000" encounter_id="2001" person_id="5555" obs_datetime="2008-08-18 15:09:05.0"
+         value_coded="7" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-1mzb-1014-9f26-005056823b95"
+         creator="1" concept_id="18" voided="0" status="FINAL" />
+    <obs obs_id="3002" obs_group_id="3000" encounter_id="2001" person_id="5555" obs_datetime="2008-08-18 15:09:05.0"
+         value_text="Favorite" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-164b-oze4-9qms-005056823b95"
+         creator="1" concept_id="19" voided="0" status="FINAL" />
+    <obs obs_id="3003" obs_group_id="3000" encounter_id="2001" person_id="5555" obs_datetime="2008-08-18 15:09:05.0"
+         value_datetime="2008-08-14 00:00:00" date_created="2008-08-18 15:09:05.0" creator="1" concept_id="20"
+         uuid="c558b3c5-164b-19z4-9f26-pa5056pz3b95" voided="0" status="FINAL" />
+
+    <!--patient which group by conept is not filled-->
+    <person person_id="9999" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason="For test purposes"
+            uuid="1a246ed5-3c11-11de-ausa-001ed98eb67a"/>
+
+    <patient patient_id="9999" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+    <person_name person_name_id="9999" preferred="true" person_id="9999" prefix="Mr." given_name="Horatio"
+                 middle_name="Test" family_name="Banka" family_name_suffix="Esq." creator="1"
+                 date_created="2005-09-22 00:00:00.0" voided="false" void_reason=""
+                 uuid="399e3a7b-6482-487d-9pae-0z7bb3ca3dda"/>
+
+    <visit visit_id="9001" date_started="2014-12-22 00:00:00" date_created="2014-12-22 00:00:00" patient_id="9999"
+           visit_type_id="67" date_stopped="2014-12-30 00:00:00" creator="1" uuid="adf4fb41-a41a-mpw6-12f5-2f59889acf5a"
+           voided="0"/>
+
+    <encounter encounter_id="9001" encounter_type="1000" patient_id="9999" visit_id="9001" location_id="1"
+               encounter_datetime="2014-12-22 15:00:00.0" creator="1" date_created="2014-12-22 14:09:05.0"
+               voided="false" uuid="bb0af6767-7xca-4pc9-9850-f1529a163ab0"/>
+
+    <obs obs_id="9000" person_id="9999" concept_id="23" encounter_id="9001" obs_datetime="2008-08-01 00:00:00.0"
+         location_id="1" creator="1" date_created="2008-08-18 14:11:13.0" voided="false"
+         uuid="8888cdcb-6a76-47e3-9f2e-263503op3a9a" status="FINAL" />
+
+    <obs obs_id="9001" obs_group_id="9000" encounter_id="9001" person_id="9999" obs_datetime="2008-08-18 15:09:05.0"
+         value_coded="7" date_created="2008-08-18 15:09:05.0" uuid="c558b3c5-1pzb-plq4-9f26-005056823b95"
+         creator="1" concept_id="18" voided="0" status="FINAL" />
+    <obs obs_id="9002" obs_group_id="9000" encounter_id="9001" person_id="9999" obs_datetime="2008-08-18 15:09:05.0"
+         value_text="Favorite" date_created="2008-08-18 15:09:05.0" uuid="c55013c5-16zo-11e4-9fzy-005056823b95"
+         creator="1" concept_id="19" voided="0" status="FINAL" />
+
+</dataset>

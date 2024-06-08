@@ -1,0 +1,91 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+    <!--
+        See http://www.liquibase.org/manual/home#available_database_refactorings
+        for a list of supported elements and attributes
+    -->
+    <property name="now" value="now()"/>
+
+    <changeSet id="bahmni-setup-1" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="migrations/dependent-modules/V1_07__AddOnStartupRolesPrivileges.sql"/>
+    </changeSet>
+
+    <changeSet id="bahmni-setup-2" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="migrations/dependent-modules/V1_08__AddressHierarchy.sql"/>
+    </changeSet>
+
+    <changeSet id="bahmni-setup-3" author="tw" context="rel2">
+        <comment>rel2</comment>
+        <sqlFile path="migrations/dependent-modules/V1_09__Idgen.sql"/>
+    </changeSet>
+
+    <changeSet id="bahmni-setup-4" author="tw" context="rel3">
+        <comment>rel3</comment>
+        <sqlFile path="migrations/dependent-modules/V1_73__RemoveNotNullConstraintOnAddressEntryName.sql"/>
+    </changeSet>
+
+    <changeSet id="bahmni-setup-5" author="tw" context="rel3">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM global_property where property = 'emr.primaryIdentifierType'
+            </sqlCheck>
+        </preConditions>
+        <comment>rel3</comment>
+        <insert tableName="global_property">
+            <column name="property" value="emr.primaryIdentifierType"/>
+            <column name="uuid" valueNumeric="name-of-uuid-function"/>
+            <column name="description"
+                    value="Primary identifier type for looking up patients, generating barcodes, etc"/>
+        </insert>
+        <modifySql dbms="mysql">
+            <replace replace="name-of-uuid-function" with="UUID()"/>
+        </modifySql>
+    </changeSet>
+
+    <changeSet id="050620141511" author="tw">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists columnName="user" tableName="idgen_remote_source"/></not>
+        </preConditions>
+        <comment>IDGEN - add column for user in idgen</comment>
+        <sql>
+            ALTER TABLE `idgen_remote_source` ADD COLUMN `user` varchar(50) ;
+        </sql>
+    </changeSet>
+
+    <changeSet id="050620141512" author="tw">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists columnName="password" tableName="idgen_remote_source"/></not>
+        </preConditions>
+        <comment>IDGEN - add column for password in idgen</comment>
+        <sql>
+            ALTER TABLE `idgen_remote_source` ADD COLUMN `user` varchar(50) ;
+            ALTER TABLE `idgen_remote_source` ADD COLUMN `password` varchar(20) ;
+        </sql>
+    </changeSet>
+
+    <changeSet id="050620141513" author="tw">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists columnName="min_length" tableName="idgen_seq_id_gen"/></not>
+            <not><columnExists columnName="max_length" tableName="idgen_seq_id_gen"/></not>
+        </preConditions>
+        <comment>IDGEN - modify seq table to add min length and max length instead of length</comment>
+        <sql>
+            ALTER TABLE `idgen_seq_id_gen` CHANGE COLUMN `length` `min_length` int(11);
+            ALTER TABLE `idgen_seq_id_gen` ADD COLUMN `max_length` int(11);
+            UPDATE `idgen_seq_id_gen` SET `max_length` = `min_length`;
+        </sql>
+    </changeSet>
+    <changeSet id="170620141122" author="mujir/vinay">
+        <comment>Update version for above change</comment>
+        <update tableName="global_property">
+            <column name="property_value" value="2.4.2"/>
+            <where>property='idgen.database_version'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

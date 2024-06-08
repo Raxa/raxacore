@@ -1,0 +1,25 @@
+{
+  "orderTemplates": [{
+    "name": "Cancer Regimen, CAF",
+    "drugOrders": [
+      {"drug": {"name": "DNS", "form": "Injection"}, "dosingInstructions": {"dose":  1000.0, "doseUnits":  "ml", "route":  "Intravenous", "frequency":  "Immediately", "quantity":  2.0, "quantityUnits":  "Unit(s)"}, "duration": 4, "durationUnits":  "Hour(s)", "additionalInstructions":  null}
+
+    ]
+  },
+    {
+      "name": "Breast Cancer - AC",
+      "drugOrders": [
+        {"drug": {"name": "DNS", "form": "Injection"}, "dosingInstructions": {"dose":  1000.0, "doseUnits":  "ml", "route":  "Intravenous", "frequency":  "Immediately", "quantity":  2.0, "quantityUnits":  "Unit(s)"}, "duration": 4, "durationUnits":  "Hour(s)", "additionalInstructions":  null},
+        {"drug": {"name": "Dexamethasone 8mg/2ml", "form":  "Injection"}, "dosingInstructions": {"dose":  2.0, "doseUnits":  "ml", "route":  "Intravenous", "frequency":  "Immediately", "quantity":  1.0, "quantityUnits":  "Unit(s)"}, "duration": 1, "durationUnits":  "Minute(s)", "additionalInstructions":  null},
+        {"drug": {"name": "Ondansetron 8mg/4ml", "form":  "Injection"}, "dosingInstructions": {"dose":  2.0, "doseUnits":  "ml", "route":  "Intravenous", "frequency":  "Immediately", "quantity":  1.0, "quantityUnits":  "Unit(s)"}, "duration": 1, "durationUnits":  "Minute(s)", "additionalInstructions":  null},
+        {"drug": {"name": "Cyclophosphamide 500mg", "form":  "Injection"}, "dosingInstructions": {"doseUnits":  "mg", "route":  "Intravenous", "frequency":  "Immediately", "quantityUnits":  "Unit(s)"}, "duration": 4, "durationUnits":  "Hour(s)", "additionalInstructions":  "with Dextrox 5% (Injection)"},
+        {"drug": {"name": "Doxorubicin Hydrochloride 50mg", "form":  "Injection"}, "dosingInstructions": {"doseUnits":  "mg", "route":  "Intravenous", "frequency":  "Immediately", "quantityUnits":  "Unit(s)"}, "duration": 4, "durationUnits":  "Hour(s)", "additionalInstructions":  "with Dextrox 5% (Injection)"},
+        {"drug": {"name": "Dextrox 5%", "form":  "Injection"}, "dosingInstructions": {"dose":  500.0, "doseUnits":  "ml", "route":  "Intravenous", "frequency":  "Immediately", "quantity":  0, "quantityUnits":  "Unit(s)"}, "duration": 1, "durationUnits":  "Day(s)", "additionalInstructions":  "diluent"},
+        {"drug": {"name": "Ondan Setron 4mg", "form": "Tablet(s)"}, "dosingInstructions": {"route": "Oral", "doseUnits": "Tablet(s)", "quantity": 6, "quantityUnits": "Tablet(s)", "administrationInstructions": "{\"instructions\":\"As directed\",\"morningDose\":1,\"afternoonDose\":0,\"eveningDose\":1}"}, "durationUnits": "Day(s)", "duration": 3},
+        {"drug": {"name": "Chlorpromazine 50mg", "form": "Tablet(s)"}, "dosingInstructions": {"route": "Oral", "doseUnits": "Tablet(s)", "quantity": 10, "quantityUnits": "Tablet(s)", "administrationInstructions": "{\"instructions\":\"As directed\",\"morningDose\":0.5,\"afternoonDose\":0,\"eveningDose\":0.5}"}, "durationUnits": "Day(s)", "duration": 10 },
+        {"drug": {"name": "B-Complex", "form":  "Tablet"}, "dosingInstructions": {"dose":  1, "doseUnits":  "Tablet(s)", "route":  "Oral", "frequency":  "Once a day", "quantity":  30, "quantityUnits":  "Tablet(s)"}, "duration": 1, "durationUnits":  "Month(s)", "additionalInstructions":  null},
+        {"drug": {"name": "Ferrous Sulphate with Folic Acid Large", "form":  "Tablet"}, "dosingInstructions": {"dose":  1, "doseUnits":  "Tablet(s)", "route":  "Oral", "frequency":  "Once a day", "quantity":  30, "quantityUnits":  "Tablet(s)"}, "duration": 1, "durationUnits":  "Month(s)", "additionalInstructions":  null}
+      ]
+    }
+  ]
+}

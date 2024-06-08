@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+  		    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+  		    http://www.springframework.org/schema/context
+  		    http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    <context:component-scan base-package="org.openmrs.module.bahmniemrapi.*"/>
+
+    <bean id="sessionFactory" class="org.openmrs.api.db.hibernate.HibernateSessionFactoryBean">
+        <property name="configLocations">
+            <list>
+                <value>classpath:hibernate.cfg.xml</value>
+                <value>classpath:test-hibernate.cfg.xml</value>
+            </list>
+        </property>
+        <property name="mappingJarLocations">
+            <ref bean="mappingJarResources"/>
+        </property>
+        <property name="packagesToScan">
+            <list>
+                <value>org.openmrs</value>
+            </list>
+        </property>
+        <!--  default properties must be set in the hibernate.default.properties -->
+    </bean>
+
+    <bean id="bahmniEncounterTransactionServiceTarget" class="org.openmrs.module.bahmniemrapi.encountertransaction.impl.BahmniEncounterTransactionServiceImpl" autowire="constructor">
+        <constructor-arg  ref="encounterService"/>
+        <constructor-arg  ref="emrEncounterService"/>
+        <constructor-arg  ref="encounterTransactionMapper"/>
+        <constructor-arg  ref="encounterTypeIdentifier"/>
+        <constructor-arg>
+            <list>
+                <ref bean="bahmniObservationSaveCommandImpl"/>
+            </list>
+        </constructor-arg>
+        <constructor-arg ref="bahmniEncounterTransactionMapper" />
+        <constructor-arg ref="visitService" />
+        <constructor-arg ref="patientService" />
+        <constructor-arg ref="locationService" />
+        <constructor-arg ref="providerService" />
+        <constructor-arg ref="bahmniVisitAttributeService"/>
+    </bean>
+
+
+</beans>

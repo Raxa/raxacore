@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <visit_attribute_type visit_attribute_type_id="2" name="Visit Status" datatype="org.openmrs.customdatatype.datatype.FreeTextDatatype" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="8770f6d6-7673-11e0-8f03-001e378eb6e7" />
+    <visit_attribute_type visit_attribute_type_id="3" name="Admission Status" datatype="org.openmrs.customdatatype.datatype.FreeTextDatatype" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="8770f6d6-7673-11e0-8f03-001e378eb6e8" />
+    <visit_type visit_type_id="2000" name="Emergency" description="Emergency Visit Description" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c0c579b0-8e59-401d-8a4a-976a0b183591"/>
+    <visit visit_id="3000" patient_id="2" visit_type_id="2000" date_started="2005-01-01 00:00:00.0" location_id="1" indication_concept_id="5497" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="1e5d5d48-6b78-11e0-93c3-18a905e044cd"/>
+
+    <visit_type visit_type_id="2001" name="Pharmacy" description="Pharmacy Visit Description" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c0c579b0-8e59-401d-8a4a-976a0b183592"/>
+    <visit_type visit_type_id="2002" name="OPD" description="OPD Visit Description" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c0c579b0-8e59-401d-8a4a-976a0b183593"/>
+    <visit visit_id="3001" patient_id="2" visit_type_id="2001" date_started="2005-01-01 00:00:00.0" location_id="1" indication_concept_id="5497" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="1e5d5d48-6b78-11e0-93c3-18a905e044ce"/>
+
+
+    <location location_id="7" name="Kaliganj" creator="1" date_created="2005-01-01 00:00:00.0" retired="false"  uuid="l38923e5-9fhb-4f20-866b-0ece24561525"/>
+    <location location_id="8" name="Dhaka" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" parent_location="7"  uuid="l3602jn5-9fhb-4f20-866b-0ece24561525"/>
+
+    <location_tag location_tag_id="1" name="Visit Location" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-876b-0ece245615a1"/>
+    <location_tag_map location_id="7" location_tag_id="1" />
+
+    <encounter_type encounter_type_id="7" name="ADMISSION" description="ADMISSION encounter" creator="1" date_created="2008-08-15 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d09a0ad9"/>
+    <encounter_type encounter_type_id="8" name="DISCHARGE" description="DISCHARGE encounter" creator="1" date_created="2008-08-15 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d09a0ad0"/>
+    <encounter_type encounter_type_id="9" name="CONSULTATION" description="CONSULTATION encounter" creator="1" date_created="2015-08-15 15:39:55.0" retired="false" uuid="02c533ab-b74b-4ee4-b6e5-ffb6d09a0ad1"/>
+
+    <encounter encounter_id="1001" encounter_type="8" patient_id="2" visit_id="3001" location_id="1" encounter_datetime="2014-12-22 15:00:00.0" creator="1" date_created="2014-12-22 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f1529a163ab0"/>
+</dataset>

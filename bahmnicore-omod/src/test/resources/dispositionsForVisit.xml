@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <person person_id="4444" gender="M" dead="false" creator="1" birthdate_estimated="0"
+            date_created="2008-08-15 15:57:09.0" voided="false" void_reason="For test purposes"
+            uuid="1a246ed5-3c11-11de-a0ba-001ed98eb67a"/>
+
+    <patient patient_id="4444" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+    <person_name person_name_id="4444" preferred="true" person_id="4444" prefix="Mr." given_name="Horatio" middle_name="Test" family_name="Banka" family_name_suffix="Esq." creator="1" date_created="2005-09-22 00:00:00.0" voided="false" void_reason="" uuid="399e3a7b-6482-487d-94ce-c07bb3ca3dda"/>
+
+    <visit_type visit_type_id="67" name="Clinic or Hospital Visit" creator="1" date_created="2012-10-23 18:04:14" changed_by="1" date_changed="2012-10-23 18:04:14" retired="0" uuid="f01c54cb-2225-471a-9cd5-d399552c337c"/>
+
+    <visit visit_id="1001" date_started="2014-12-22 00:00:00" date_created="2014-12-22 00:00:00" patient_id="4444" visit_type_id="67" date_stopped="2014-12-30 00:00:00" creator="1" uuid="adf4fb41-a41a-4ad6-12f5-2f59889acf5a" voided="0"/>
+    <visit visit_id="2001" date_started="2015-01-02 00:00:00" date_created="2015-01-02 00:00:00" patient_id="4444" visit_type_id="67" date_stopped="2015-01-09 04:08:16" creator="1" uuid="d798916f-210d-4c4e-8978-67dd1a969f31" voided="0"/>
+    <visit visit_id="3001" date_started="2015-01-10 00:00:00" date_created="2015-01-13 00:00:00" patient_id="4444" visit_type_id="67" creator="1" uuid="c809162f-dc55-4814-be3f-33d23c8abc1d" voided="0"/>
+
+    <encounter_type encounter_type_id="1" name="Consultation" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-88883ada74e4"/>
+
+    <encounter encounter_id="1001" encounter_type="1" patient_id="4444" visit_id="1001" location_id="1" encounter_datetime="2014-12-22 15:00:00.0" creator="1" date_created="2014-12-22 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f1529a163ab0"/>
+
+    <encounter encounter_id="2001" encounter_type="1" patient_id="4444" visit_id="2001" location_id="1" encounter_datetime="2014-12-22 20:00:00.0" creator="1" date_created="2014-12-22 18:09:05.0" voided="false" uuid="bb0af6767-7e7a-4629-ab50-fb1a06e63ab0"/>
+
+    <encounter encounter_id="3001" encounter_type="1" patient_id="4444" visit_id="2001" location_id="1" encounter_datetime="2015-01-02 23:00:00.0" creator="1" date_created="2015-01-02 14:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f1a5f6e63111"/>
+
+    <encounter encounter_id="4001" encounter_type="1" patient_id="4444" visit_id="3001" location_id="1" encounter_datetime="2015-01-13 10:00:00.0" creator="1" date_created="2015-01-13 09:09:05.0" voided="false" uuid="bb0af6767-707a-4629-9850-f1a5fe173111"/>
+
+    <concept concept_id="2004" retired="false" datatype_id="4" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-e601-4326-bb05-c6e11fe3d9ba"/>
+    <concept_name concept_id="2004" name="Paracetamol" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="24" voided="false" uuid="49310077-e601-4326-bb05-c6e11fe3d9ba" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="2005" retired="false" datatype_id="4" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-eeee-4326-bb05-c6e11fe3d9ba"/>
+    <concept_name concept_id="2005" name="Order Attributes" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="25" voided="false" uuid="49310077-e601-4326-bb05-c6e11fe3dddd" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="2006" retired="false" datatype_id="10" class_id="1" is_set="false" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-1111-4326-bb05-c6e11fe3d9ba"/>
+    <concept_name concept_id="2006" name="dispensed" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="26" voided="false" uuid="11110077-e601-4326-bb05-c6e11fe3d9ba" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_set="2005" concept_id="2006" concept_set_id="2001" sort_weight="1" creator="1" date_created="2005-01-01 00:00:00.0" uuid="49310077-eeee-4326-bb05-c6e11fe3d9ba" ></concept_set>
+
+    <concept concept_id="1116" retired="false" datatype_id="1" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="ac46eca0-51d5-11e3-8f96-0800200c9a66"/>
+    <concept_name concept_id="1116" concept_name_id="1116" name="My Disposition Concept Set" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="ac46eca1-51d5-11e3-8f96-0800200c9a66"/>
+    <concept_reference_term concept_reference_term_id="1116" concept_source_id="1" code="Disposition Concept Set"  name="Disposition Concept Set" description="Disposition Concept Set" uuid="272bb080-51d7-11e3-8f96-0800200c9a66" retired="0" creator="1" date_created="2004-08-12 00:00:00.0"></concept_reference_term>
+    <concept_reference_map concept_map_id="1116" concept_id="1116" concept_reference_term_id="1116" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" uuid="272bb080-51d7-11e3-8f96-0800200c9a66"></concept_reference_map>
+
+    <concept concept_id="1117" retired="false" datatype_id="1" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d00cf129-8f47-4593-8c4d-6eb28a1f1c30"/>
+    <concept_name concept_id="1117" concept_name_id="1117" name="My Disposition" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d00cf129-8f47-4593-8c4d-6eb28a1f1c30"/>
+    <concept_reference_term concept_reference_term_id="1117" concept_source_id="1" code="Disposition" name="Disposition" description="Disposition" uuid="d00cf129-8f47-4593-8c4d-6eb28a1f1c30" retired="0" creator="1" date_created="2004-08-12 00:00:00.0"></concept_reference_term>
+    <concept_reference_map concept_map_id="1117" concept_id="1117" concept_reference_term_id="1117" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" uuid="d00cf129-8f47-4593-8c4d-6eb28a1f1c30"></concept_reference_map>
+
+    <concept concept_id="200" retired="0" datatype_id="5" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="False_concept_uuid" />
+    <concept_name concept_id="200"  name="Absconding" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="11" voided="false" uuid="6d2d4cb7-955b-4837-80f7-0ebb94092afi" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+    <concept concept_id="201" retired="0" datatype_id="5" class_id="1" is_set="0" creator="1" date_created="2013-12-04 11:36:42" uuid="False_concept_uuid2" />
+    <concept_name concept_id="201" name="Absconding22" locale="en" creator="1" date_created="2005-01-01 00:00:00.0" concept_name_id="12" voided="false" uuid="6e2d4cb7-955b-4837-80f7-0ebb94092afi" concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+
+
+    <obs obs_id="1" person_id="4444" concept_id="1116" encounter_id="1001" obs_datetime="2008-08-01 00:00:00.0" location_id="1"  creator="1" date_created="2008-08-18 14:11:13.0" voided="false" uuid="8888cdcb-6a76-47e3-9f2e-2635032f3a9a" status="FINAL" />
+
+    <obs obs_id="11" obs_group_id="1" encounter_id="1001" person_id="4444" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         uuid="c558b3c5-164b-11e4-9f26-005056823b95" creator="1" concept_id="1117" voided="1" status="FINAL" /> <!-- Voided Disposition Concept needs to be ignored -->
+
+    <obs obs_id="12" obs_group_id="1" encounter_id="1001" person_id="1" value_coded="200" obs_datetime="2008-08-18 15:09:05.0" date_created="2008-08-18 15:09:05.0"
+         uuid="c973ba6a-164b-11e4-9f26-005056823b95" creator="1" concept_id="1117" voided="0" status="FINAL" />
+
+</dataset>

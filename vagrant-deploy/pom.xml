@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>bahmni</artifactId>
+        <groupId>org.bahmni.module</groupId>
+        <version>1.2.0-SNAPSHOT</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>vagrant-deploy</artifactId>
+    <packaging>pom</packaging>
+    <name>Deploy scripts</name>
+
+    <properties>
+        <MODULE_ID>openerpatomfeedclient</MODULE_ID>
+        <MODULE_NAME>${project.name}</MODULE_NAME>
+        <MODULE_VERSION>${project.version}</MODULE_VERSION>
+        <MODULE_PACKAGE>${project.groupId}.${MODULE_ID}</MODULE_PACKAGE>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
+            <artifactId>openelis-atomfeed-client-omod</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
+            <artifactId>bahmnicore-omod</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bahmni.module</groupId>
+            <artifactId>reference-data-omod</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>Windows</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <properties>
+                <script.extension>.bat</script.extension>
+            </properties>
+        </profile>
+        <profile>
+            <id>unix</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <script.extension>.sh</script.extension>
+            </properties>
+        </profile>
+        <profile>
+            <id>vagrant-deploy</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <executions>
+                            <execution>
+                                <id>Deploy</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>${basedir}/scripts/vagrant/vagrant-deploy${script.extension}</executable>
+                                    <arguments>
+                                        <argument>${basedir}</argument>
+                                        <argument>${project.version}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

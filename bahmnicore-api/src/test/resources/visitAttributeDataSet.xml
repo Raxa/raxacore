@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <visit_attribute_type visit_attribute_type_id="2" name="Visit Status" datatype="org.openmrs.customdatatype.datatype.FreeTextDatatype" min_occurs="0" max_occurs="1" creator="1" date_created="2005-01-01 00:00:00.0" retired="0" uuid="8770f6d6-7673-11e0-8f03-001e378eb6e7" />
+</dataset>

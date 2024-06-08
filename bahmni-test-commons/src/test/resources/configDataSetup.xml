@@ -1,0 +1,134 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <bahmni_config
+            creator="1" date_created="2008-08-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0"
+            uuid="0aa1efd4-6eeb-4cea-bd4b-94af86f24d97" config_id="1" config_name="app.json" app_name="clinical"
+            config="[
+    {
+    &quot;id&quot;: &quot;bahmni.registration&quot;,
+    &quot;instanceOf&quot;:&quot;bahmni.template.registration&quot;,
+    &quot;description&quot;: &quot;Bahmni Patient Registration App&quot;,
+    &quot;extensionPoints&quot;: [
+    {
+    &quot;id&quot;: &quot;org.bahmni.registration.patient.search.result.action&quot;,
+    &quot;description&quot;: &quot;Bahmni Patient Search Result Action&quot;
+    },
+    {
+    &quot;id&quot;: &quot;org.bahmni.registration.patient.next&quot;,
+    &quot;description&quot;: &quot;After Bahmni Patient Registration, forward url configuration&quot;
+    }
+    ],
+    &quot;contextModel&quot;: [
+    &quot;patientUuid&quot;,
+    &quot;activeVisitUuid&quot;
+    ],
+    &quot;config&quot; : {
+    &quot;additionalPatientInformation&quot; : [
+    { &quot;name&quot;:&quot;debt&quot;, &quot;display&quot;:true },
+    { &quot;name&quot;:&quot;distanceFromCenter&quot;, &quot;display&quot;:true },
+    { &quot;name&quot;:&quot;isUrban&quot;, &quot;display&quot;:true },
+    { &quot;name&quot;:&quot;cluster&quot;, &quot;display&quot;:true },
+    { &quot;name&quot;:&quot;RationCard&quot;, &quot;display&quot;:true },
+    { &quot;name&quot;:&quot;familyIncome&quot;, &quot;display&quot;:true }
+    ],
+    &quot;autoCompleteFields&quot;:[&quot;familyName&quot;, &quot;caste&quot;],
+    &quot;defaultIdentifierPrefix&quot;: &quot;GAN&quot;,
+    &quot;defaultVisitType&quot;: &quot;OPD&quot;,
+    &quot;searchByIdForwardUrl&quot;: &quot;/patient/{{patientUuid}}&quot;,
+    &quot;showMiddleName&quot;: false,
+    &quot;showCasteSameAsLastNameCheckbox&quot;: true,
+    &quot;localNameSearch&quot;: false,
+    &quot;printOptions&quot;: [
+    {
+    &quot;label&quot;: &quot;&lt;u&gt;P&lt;/u&gt;rint Registration Card&quot;,
+    &quot;templateUrl&quot;: &quot;/bahmni_config/openmrs/apps/registration/registrationCardLayout/print.html&quot;,
+    &quot;shortcutKey&quot;: &quot;p&quot;
+    },
+    {
+    &quot;label&quot;: &quot;P&lt;u&gt;r&lt;/u&gt;int Supplemental Paper&quot;,
+    &quot;templateUrl&quot;: &quot;/bahmni_config/openmrs/apps/registration/supplementalPaperLayout/print.html&quot;,
+    &quot;shortcutKey&quot;: &quot;r&quot;
+    }
+    ],
+    &quot;conceptSetUI&quot;: {
+    &quot;REGISTRATION FEES&quot;: {
+    &quot;required&quot;: true,
+    &quot;label&quot;: &quot;Fee&quot;
+    }
+    },
+    &quot;fieldValidation&quot; : {
+    &quot;primaryContact&quot; : {&quot;pattern&quot; : &quot;[0-9]{8,10}&quot;, &quot;errorMessage&quot; : &quot;Should be 12 characters starting with 91 (country code)&quot;},
+    &quot;landHolding&quot; : {&quot;pattern&quot; : &quot;[0-9]{0,3}&quot;, &quot;errorMessage&quot; : &quot;Should be between 1 to 999 acres&quot;},
+    &quot;familyName&quot; : {&quot;pattern&quot; : &quot;[a-zA-Z]{0,}&quot;, &quot;errorMessage&quot; : &quot;Should contain characters&quot;},
+    &quot;address1&quot; : {&quot;pattern&quot; : &quot;[a-zA-Z0-9]{3}&quot;, &quot;errorMessage&quot; : &quot;Should contain 3 characters&quot;}
+    }
+    }
+    }
+    ]"/>
+
+    <bahmni_config
+            creator="1" date_created="2008-08-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0"
+            uuid="0aa1efd4-6eeb-4cea-bd4b-94ak86f24d97" config_id="2" config_name="extensions.json" app_name="clinical"
+            config="[
+    {
+    &quot;id&quot;: &quot;bahmni.registration&quot;,
+    &quot;instanceOf&quot;:&quot;bahmni.template.registration&quot;,
+    &quot;description&quot;: &quot;Bahmni Patient Registration App&quot;,
+    &quot;extensionPoints&quot;: [
+    {
+    &quot;id&quot;: &quot;org.bahmni.registration.patient.search.result.action&quot;,
+    &quot;description&quot;: &quot;Bahmni Patient Search Result Action&quot;
+    },
+    {
+    &quot;id&quot;: &quot;org.bahmni.registration.patient.next&quot;,
+    &quot;description&quot;: &quot;After Bahmni Patient Registration, forward url configuration&quot;
+    }
+    ],
+    &quot;contextModel&quot;: [
+    &quot;patientUuid&quot;,
+    &quot;activeVisitUuid&quot;
+    ],
+    &quot;config&quot; : {
+    &quot;additionalPatientInformation&quot; : [
+    { &quot;name&quot;:&quot;debt&quot;, &quot;display&quot;:true },
+    { &quot;name&quot;:&quot;distanceFromCenter&quot;, &quot;display&quot;:true },
+    { &quot;name&quot;:&quot;isUrban&quot;, &quot;display&quot;:true },
+    { &quot;name&quot;:&quot;cluster&quot;, &quot;display&quot;:true },
+    { &quot;name&quot;:&quot;RationCard&quot;, &quot;display&quot;:true },
+    { &quot;name&quot;:&quot;familyIncome&quot;, &quot;display&quot;:true }
+    ],
+    &quot;autoCompleteFields&quot;:[&quot;familyName&quot;, &quot;caste&quot;],
+    &quot;defaultIdentifierPrefix&quot;: &quot;GAN&quot;,
+    &quot;defaultVisitType&quot;: &quot;OPD&quot;,
+    &quot;searchByIdForwardUrl&quot;: &quot;/patient/{{patientUuid}}&quot;,
+    &quot;showMiddleName&quot;: false,
+    &quot;showCasteSameAsLastNameCheckbox&quot;: true,
+    &quot;localNameSearch&quot;: false,
+    &quot;printOptions&quot;: [
+    {
+    &quot;label&quot;: &quot;&lt;u&gt;P&lt;/u&gt;rint Registration Card&quot;,
+    &quot;templateUrl&quot;: &quot;/bahmni_config/openmrs/apps/registration/registrationCardLayout/print.html&quot;,
+    &quot;shortcutKey&quot;: &quot;p&quot;
+    },
+    {
+    &quot;label&quot;: &quot;P&lt;u&gt;r&lt;/u&gt;int Supplemental Paper&quot;,
+    &quot;templateUrl&quot;: &quot;/bahmni_config/openmrs/apps/registration/supplementalPaperLayout/print.html&quot;,
+    &quot;shortcutKey&quot;: &quot;r&quot;
+    }
+    ],
+    &quot;conceptSetUI&quot;: {
+    &quot;REGISTRATION FEES&quot;: {
+    &quot;required&quot;: true,
+    &quot;label&quot;: &quot;Fee&quot;
+    }
+    },
+    &quot;fieldValidation&quot; : {
+    &quot;primaryContact&quot; : {&quot;pattern&quot; : &quot;[0-9]{8,10}&quot;, &quot;errorMessage&quot; : &quot;Should be 12 characters starting with 91 (country code)&quot;},
+    &quot;landHolding&quot; : {&quot;pattern&quot; : &quot;[0-9]{0,3}&quot;, &quot;errorMessage&quot; : &quot;Should be between 1 to 999 acres&quot;},
+    &quot;familyName&quot; : {&quot;pattern&quot; : &quot;[a-zA-Z]{0,}&quot;, &quot;errorMessage&quot; : &quot;Should contain characters&quot;},
+    &quot;address1&quot; : {&quot;pattern&quot; : &quot;[a-zA-Z0-9]{3}&quot;, &quot;errorMessage&quot; : &quot;Should contain 3 characters&quot;}
+    }
+    }
+    }
+    ]"/>
+</dataset>

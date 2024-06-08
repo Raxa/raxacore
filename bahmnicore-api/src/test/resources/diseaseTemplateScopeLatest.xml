@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <concept concept_id="91000" retired="0" datatype_id="5" class_id="1" is_set="1" creator="1"
+             date_created="2015-01-01 00:00:00.0" uuid="anaemia_template_uuid"/>
+    <concept_name concept_id="91000" name="Anaemia" locale="en" creator="1" date_created="2015-01-01 00:00:00.0"
+                  concept_name_id="310000" voided="false" uuid="5q2abab7-9e5q-pro7-9lfi-0cbb94092a23"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="91000" concept_set="100" concept_set_id="210000" creator="1" sort_weight="1"
+                 date_created="2015-01-01 00:00:00.0"/>
+
+    <concept concept_id="90112" retired="0" datatype_id="5" class_id="584" is_set="1" creator="1"
+             date_created="2015-01-01 00:00:00.0" uuid="anaemia_intake_uuid"/>
+    <concept_name concept_id="90112" name="Anaemia Intake" locale="en" creator="1" date_created="2015-01-01 00:00:00.0"
+                  concept_name_id="300001" voided="false" uuid="5d2i4ab7-9s5b-t8o7-8lfi-0cbb94092a23"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="90112" concept_set="91000" concept_set_id="200001" creator="1" sort_weight="1"
+                 date_created="2015-01-01 00:00:00.0"/>
+
+    <concept concept_id="90113" retired="0" datatype_id="1" class_id="1" is_set="1" creator="1"
+             date_created="2015-01-01 00:00:00.0" uuid="diastolic_uuid"/>
+    <concept_name concept_id="90113" name="Diastolic" locale="en" creator="1" date_created="2015-01-01 00:00:00.0"
+                  concept_name_id="300002" voided="false" uuid="5a2ifab7-5s5b-u8o7-8lhi-0cbb94092a23"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="90113" concept_set="90112" concept_set_id="200002" creator="1" sort_weight="1"
+                 date_created="2015-01-01 00:00:00.0"/>
+
+    <concept concept_id="90114" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1"
+             date_created="2015-01-01 00:00:00.0" uuid="diastolic_value_uuid"/>
+    <concept_name concept_id="90114" name="Diastolic value" locale="en" creator="1" date_created="2015-01-01 00:00:00.0"
+                  concept_name_id="300003" voided="false" uuid="5d2i4ab7-9s5b-t8o7-8lfi-0veba4l9ua23"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="90114" concept_set="90113" concept_set_id="200003" creator="1" sort_weight="1"
+                 date_created="2015-01-01 00:00:00.0"/>
+
+    <concept concept_id="90115" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1"
+             date_created="2015-01-01 00:00:00.0" uuid="anaemia_value"/>
+    <concept_name concept_id="90115" name="Anaemia value" locale="en" creator="1" date_created="2015-01-01 00:00:00.0"
+                  concept_name_id="300004" voided="false" uuid="5dainabe-is5b-tao7-8lfi-0veba4l9ua23"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
+    <concept_set concept_id="90115" concept_set="90112" concept_set_id="200004" creator="1" sort_weight="2"
+                 date_created="2015-01-01 00:00:00.0"/>
+
+    <visit_type visit_type_id="1" name="Some Visit" creator="1" date_created="2015-01-02 00:00:00"
+                changed_by="1" date_changed="2015-01-02 18:04:14" retired="0"
+                uuid="ds1o54ct-22o5-4m1a-9rd5-d3485e2c337c"/>
+    <visit visit_id="90002" date_started="2015-01-02 00:00:00" date_created="2015-01-02 00:00:00" patient_id="1024"
+           visit_type_id="1" date_stopped="2015-01-10 00:00:00" location_id="2" creator="1" changed_by="1"
+           uuid="ds41ob41-ac1a-4ad6-t8e5-2f5r0w9acf5b" voided="0"/>
+
+    <encounter encounter_id="77" encounter_type="1" patient_id="1024" visit_id="90002" location_id="1"
+               encounter_datetime="2015-01-03 00:00:00" creator="1" date_created="2015-01-03 00:00:00"
+               voided="false" uuid="vb0ai67s7-7i7a-4t29-9850-f15206e63ab1"/>
+
+    <obs obs_id="3000" concept_id="90112" person_id="1024" encounter_id="77" obs_datetime="2015-01-01 00:00:00.0"
+         date_created="2015-01-01 00:00:00.0" uuid="7dkf507a-fb89-11e3-bb8l-f18allb6f9a4" creator="1" voided="0" status="FINAL" />
+
+    <obs obs_id="30001" obs_group_id="3000" concept_id="90115" person_id="1024" encounter_id="77" value_numeric="100"
+         obs_datetime="2015-01-03 00:00:00.0" date_created="2015-01-03 00:00:00.0"
+         uuid="6d8f507a-fb89-11e3-bb80-f18addr6f9we" creator="1" voided="0" status="FINAL" />
+
+    <visit_type visit_type_id="2" name="Doctor" creator="1" date_created="2015-01-12 00:00:00"
+                changed_by="1" date_changed="2015-01-12 18:04:14" retired="0"
+                uuid="d01o54ct-2225-4o1a-9rd5-d348552c337c"/>
+    <visit visit_id="90003" date_started="2015-01-12 00:00:00" date_created="2015-01-12 00:00:00" patient_id="1024"
+           visit_type_id="1" date_stopped="2015-01-23 00:08:16" location_id="2" creator="1" changed_by="1"
+           uuid="dd41ob41-ac1a-4ad6-t835-2f5r099acf5b" voided="0"/>
+
+    <encounter encounter_id="78" encounter_type="1" patient_id="1024" visit_id="90003" location_id="1"
+               encounter_datetime="2015-01-13 00:00:00.0" creator="1" date_created="2015-01-13 00:00:00.0"
+               voided="false" uuid="vf0ai6gs7-7k7a-4t29-9850-f15206e63ab1"/>
+
+    <obs obs_id="3001" obs_group_id="3000" concept_id="90113" person_id="1024" encounter_id="78"
+         obs_datetime="2015-01-01 00:00:00.0" date_created="2008-08-18 15:09:05.0"
+         uuid="7def507a-fbr9-11e3-bb80-f18astb6f9a4" creator="1" voided="0" status="FINAL" />
+    <obs obs_id="30012" obs_group_id="3001" concept_id="90114" person_id="1024" encounter_id="78" value_numeric="584"
+         obs_datetime="2015-01-13 15:09:05.0" date_created="2015-01-13 15:09:05.0"
+         uuid="6d8i50sv-fbt9-11e3-bb80-f18addbcf9we" creator="1" voided="0" status="FINAL" />
+
+</dataset>

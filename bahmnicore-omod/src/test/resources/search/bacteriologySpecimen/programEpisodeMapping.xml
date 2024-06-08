@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+    <episode episode_id="1" date_created="2008-08-18 11:55:55.0" voided="0" uuid="episode-uuid-1"/>
+    <episode_patient_program episode_id="1" patient_program_id="2"/>
+    <episode_encounter episode_id="1" encounter_id="3"/>
+
+</dataset>

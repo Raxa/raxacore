@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+        <!-- <property name="show_sql">true</property>
+         <property name="format_sql">true</property>-->
+        <!--<property name="use_sql_comments">true</property>-->
+
+        <mapping resource="org/bahmni/module/db/hibernate/ObsRelationship.hbm.xml"/>
+        <mapping resource="org/bahmni/module/db/hibernate/ObsRelationshipType.hbm.xml"/>
+        <mapping resource="BahmniConfig.hbm.xml"/>
+        <mapping resource="EntityMappingType.hbm.xml"></mapping>
+        <mapping resource="EntityMapping.hbm.xml"></mapping>
+        <mapping resource="AddressHierarchyEntry.hbm.xml"></mapping>
+        <mapping resource="AddressHierarchyLevel.hbm.xml"></mapping>
+        <mapping resource="Episode.hbm.xml"/>
+    </session-factory>
+</hibernate-configuration>

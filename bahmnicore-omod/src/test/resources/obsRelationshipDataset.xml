@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <obs_relationship_type obs_relationship_type_id="1" name="qualified-by" description="qualifier" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="2cc6880e-2c46-11e4-9038-a6c5e4d22fb7"></obs_relationship_type>
+    <obs_relationship_type obs_relationship_type_id="2" name="derived-from" description="derived-from" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="2cc6880e-2c46-11e4-9038-a6c5e4d22567"></obs_relationship_type>
+
+    <obs_relationship obs_relationship_id="1" target_obs_id="7" source_obs_id="9" uuid="2cc6880e-2c46-11e4-9038-a6c5e4d22fb7" obs_relationship_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" ></obs_relationship>
+    <obs_relationship obs_relationship_id="2" target_obs_id="11" source_obs_id="9" uuid="2cc6880e-2c46-11e4-9038-a6c5e4d22222" obs_relationship_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" ></obs_relationship>
+    <obs_relationship obs_relationship_id="3" target_obs_id="7" source_obs_id="11" uuid="2cc6880e-2c46-11e4-9038-a6c5e4d22223" obs_relationship_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" ></obs_relationship>
+</dataset>

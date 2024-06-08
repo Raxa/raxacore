@@ -1,0 +1,31 @@
+{
+  "patient": {
+    "person": {
+      "names": [
+        {
+          "uuid": "4e89ec9e-6bd7-43e5-b5b9-9671c1c3eb9b",
+          "givenName": "abishek",
+          "middleName": "kumar",
+          "familyName": "Anand",
+          "preferred": true
+        }
+      ],
+      "birthdate": "1984-03-07",
+      "birthdateEstimated": false,
+      "birthtime": null,
+      "gender": "M",
+      "dead": false,
+      "deathDate": null,
+      "causeOfDeath": ""
+    },
+    "identifiers": [
+      {
+        "display": "Patient Identifier = BDH202039",
+        "uuid": "12f43236-d986-4cd9-a8e2-733400649b3a",
+        "identifierType": "81433852-3f10-11e4-adec-0800271c1b76",
+        "identifier": "ABC123DEF"
+      }
+    ]
+  },
+  "relationships": []
+}

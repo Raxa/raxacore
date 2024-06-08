@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <visit visit_id="20006" patient_id="2" visit_type_id="1" date_started="2005-01-01 00:00:00.0" creator="1" date_created="2005-01-01 00:00:00.0" voided="0" uuid="4e663d66-6b78-11e0-93c3-18a905e044cd" />
+    <encounter encounter_id="4" encounter_type="1" patient_id="7" location_id="1" visit_id="20006" form_id="1" encounter_datetime="2008-08-15 00:00:00.0" creator="1" date_created="2008-08-18 14:22:17.0" voided="false" uuid="eec646cb-c847-45a7-98bc-91c8c4f70add"/>
+    <obs_relationship_type obs_relationship_type_id="1" name="qualified-by" description="qualifier" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="2cc6880e-2c46-11e4-9038-a6c5e4d22fb7"></obs_relationship_type>
+    <obs_relationship_type obs_relationship_type_id="2" name="derived-from" description="derived-from" creator="1" date_created="2004-08-12 00:00:00.0" retired="0" uuid="2cc6880e-2c46-11e4-9038-a6c5e4d22567"></obs_relationship_type>
+
+    <obs_relationship obs_relationship_id="1" target_obs_id="7" source_obs_id="9" uuid="2cc6880e-2c46-11e4-9038-a6c5e4d22fb7" obs_relationship_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" ></obs_relationship>
+    <obs_relationship obs_relationship_id="2" target_obs_id="11" source_obs_id="9" uuid="2cc6880e-2c46-11e4-9038-a6c5e4d22222" obs_relationship_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" ></obs_relationship>
+    <obs_relationship obs_relationship_id="3" target_obs_id="7" source_obs_id="11" uuid="2cc6880e-2c46-11e4-9038-a6c5e4d22223" obs_relationship_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0" ></obs_relationship>
+</dataset>

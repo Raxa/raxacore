@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <episode episode_id="1" date_created="2018-11-08 00:00:10.0" voided="false"
+             uuid="8e1b68f8-e5a7-11e8-9f32-f2801f1b9fd1"/>
+    <episode_patient_program episode_id="1" patient_program_id="1"/>
+
+    <encounter encounter_id="100" encounter_type="1" patient_id="2" location_id="1"
+               encounter_datetime="2018-11-08 00:00:00.0" creator="1" date_created="2018-11-08 00:00:00.0"
+               voided="false" visit_id="1" uuid="66f59ecc-e59a-11e8-9f32-f2801f1b9fd1"/>
+    <encounter encounter_id="101" encounter_type="1" patient_id="2" location_id="1"
+               encounter_datetime="2018-11-08 00:10:00.0" creator="1" date_created="2018-11-08 00:10:00.0"
+               voided="false" visit_id="2" uuid="fcf11e2c-e59c-11e8-9f32-f2801f1b9fd1"/>
+
+    <episode_encounter episode_id="1" encounter_id="100"/>
+
+    <obs obs_id="9000" person_id="2" concept_id="3" encounter_id="100" obs_datetime="2018-11-08 00:10:00.0"
+         location_id="1" creator="1" date_created="2018-11-08 14:11:13.0" voided="false"
+         uuid="fdffb146-e413-11e8-9f32-f2801f1b9fd1" status="FINAL" form_namespace_and_path="Bahmni^Vitals.1/5-0"/>
+    <obs obs_id="9001" person_id="2" concept_id="3" encounter_id="100" obs_datetime="2018-11-08 00:10:00.0"
+         location_id="1" creator="501" date_created="2018-11-08 14:11:13.0" voided="false"
+         uuid="f3768fbe-e59a-11e8-9f32-f2801f1b9fd1" status="FINAL" form_namespace_and_path="Bahmni^Vitals.1/6-0"/>
+    <obs obs_id="9002" person_id="2" concept_id="3" encounter_id="101" obs_datetime="2018-11-08 00:10:00.0"
+         location_id="1" creator="1" date_created="2018-11-08 14:11:13.0" voided="false"
+         uuid="185df4be-e59d-11e8-9f32-f2801f1b9fd1" status="FINAL" form_namespace_and_path="Bahmni^BloodSample.2/1-0"/>
+</dataset>

@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+
+    <concept concept_id="5000" retired="false" datatype_id="2" class_id="10" is_set="false" creator="1" date_created="2008-08-15 15:51:39.0"
+             version="" changed_by="1" date_changed="2008-08-15 15:52:38.0" uuid="89ca642a-dab6-4f20-b712-e12ca4f-5000"/>
+    <concept_name concept_name_id="5000" concept_id="5000" name="Asperen" locale="en" creator="1" date_created="2008-08-15 15:51:57.0"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="85b47f49-7f3e-4910-b18b-097f94d-5000"/>
+
+    <concept concept_id="4999" retired="false" datatype_id="2" class_id="10" is_set="false" creator="1" date_created="2008-08-15 15:51:39.0"
+             version="" changed_by="1" date_changed="2008-08-15 15:52:38.0" uuid="89ca642a-dab6-4f20-b712-e12ca4f-4999"/>
+    <concept_name concept_name_id="4999" concept_id="4999" name="Peracetamol" locale="en" creator="1" date_created="2008-08-15 15:51:57.0"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="85b47f49-7f3e-4910-b18b-097f94d-4999"/>
+
+    <concept concept_id="5001" retired="false" datatype_id="2" class_id="10" is_set="false" creator="1" date_created="2008-08-15 15:51:39.0"
+             version="" changed_by="1" date_changed="2008-08-15 15:52:38.0" uuid="89ca642a-dab6-4f20-b712-e12ca4f-5001"/>
+    <concept_name concept_name_id="5001" concept_id="5001" name="Diagnosis" locale="en" creator="1" date_created="2008-08-15 15:51:39.0"
+                  concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="44369443-9a24-438e-861c-d338c5d-5001"/>
+
+    <drug drug_id="5000" concept_id="5000" name="Asperen 79 mg" combination="false" strength="325.0mg" creator="1" date_created="2005-02-24 00:00:00.0"
+          retired="false" uuid="05ec820a-d297-44e3-be6e-698531d-5000"/>
+
+    <drug drug_id="4999" concept_id="4999" name="Peracetamol 250 mg" combination="false" strength="325.0mg" creator="1" date_created="2005-02-24 00:00:00.0"
+          retired="false" uuid="05ec820a-d297-44e3-be6e-698531d-4999"/>
+
+    <concept_answer concept_answer_id="4999" concept_id="5001" answer_concept="4999" answer_drug="4999" creator="1" date_created="2008-08-18 12:34:26.0" uuid="b1230431-2fe5-49fc-b535-ae42bc8-4999"/>
+    <concept_answer concept_answer_id="5000" concept_id="5001" answer_concept="5000" answer_drug="5000" creator="1" date_created="2008-08-18 12:34:26.0" uuid="b1230431-2fe5-49fc-b535-ae42bc8-5000"/>
+
+</dataset>

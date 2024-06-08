@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <location location_id="1" name="OPD Room" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="c36006e5-9fbb-4f20-866b-0ece245615a1"/>
+    <location location_id="2" name="Operation Theater" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="d36006e5-9fbb-4f20-866b-0ece245615a1"/>
+    <location location_id="3" name="Reception" creator="1" date_created="2005-01-01 00:00:00.0" retired="false" uuid="e36006e5-9fbb-4f20-866b-0ece245615a1"/>
+    <encounter_type encounter_type_id="1" name="Consultation" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="759799ab-c9a5-435e-b671-77773ada74e4"/>
+    <encounter_type encounter_type_id="2" name="Surgery" description="Some desc" creator="1" date_created="2008-08-18 00:00:00.0" retired="false" uuid="859799ab-c9a5-435e-b671-77773ada74e4"/>
+    <location_encounter_type_map id="1" location_id="1" encounter_type_id="1" creator="1" date_created="2008-08-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" uuid="0aa1efd4-6eeb-4cea-bd4b-94af86f24d97"/>
+    <location_encounter_type_map id="2" location_id="2" encounter_type_id="2" creator="1" date_created="2008-08-18 00:00:00.0" changed_by="1" date_changed="2008-08-18 12:29:59.0" voided="false" uuid="1aa1efd4-6eeb-4cea-bd4b-94af86f24d97"/>
+</dataset>

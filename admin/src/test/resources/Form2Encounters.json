@@ -1,0 +1,82 @@
+{
+  "name": "Form2EncountersTest",
+  "id": 2,
+  "uuid": "47a3e6b8-0d5c-44ba-82b9-1ecfe5ae0803",
+  "defaultLocale": "en",
+  "controls": [
+    {
+      "type": "section",
+      "label": {
+        "translationKey": "SECTION_1",
+        "type": "label",
+        "value": "HIV Infection History",
+        "id": "1"
+      },
+      "properties": {
+        "addMore": false,
+        "location": {
+          "column": 0,
+          "row": 0
+        }
+      },
+      "id": "1",
+      "controls": [
+        {
+          "type": "obsControl",
+          "label": {
+            "translationKey": "WHO_STAGE_CONDITIONS_2",
+            "id": "2",
+            "units": "",
+            "type": "label",
+            "value": "WHO Stage Conditions"
+          },
+          "properties": {
+            "mandatory": true,
+            "notes": false,
+            "addMore": false,
+            "hideLabel": false,
+            "controlEvent": false,
+            "location": {
+              "column": 0,
+              "row": 1
+            },
+            "autoComplete": false,
+            "multiSelect": true,
+            "dropDown": false
+          },
+          "id": "2",
+          "concept": {
+            "name": "WHO Stage Conditions",
+            "uuid": "c6fb0220-45d0-47b4-8390-8c43f7baabb8",
+            "datatype": "Coded",
+            "conceptClass": "Misc",
+            "conceptHandler": null,
+            "answers": [
+              {
+                "uuid": "a36e5810-d096-42e3-a96e-795da3a1d052",
+                "name": {
+                  "display": "Asymptomatic",
+                  "uuid": "4f1a0c32-f4ce-421d-bf32-d5d174b27274",
+                  "name": "Asymptomatic",
+                  "locale": "en"
+                },
+                "translationKey": "ASYMPTOMATIC_2"
+              },
+              {
+                "uuid": "0b6c0cfb-141e-4ae2-a9de-384723ba158c",
+                "name": {
+                  "display": "Herpes Zoster",
+                  "uuid": "62097855-a54e-4b50-8dea-69085f10815c",
+                  "name": "Herpes Zoster"
+                },
+                "translationKey": "HERPES_2"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "events": {},
+  "translationsUrl": "/openmrs/ws/rest/v1/bahmniie/form/translations"
+}

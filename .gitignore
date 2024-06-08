@@ -1,2 +1,20 @@
 target/
 .DS_Store
+.idea
+*.iml
+*/logs/*
+logs/*
+classes/
+.sass-cache
+.rubygems-provided
+.rubygems
+sass-external
+bahmnicore-omod/src/main/webapp/resources/styles/bahmnicore.css
+.mvn/wrapper/*.jar
+.vscode
+
+
+# Eclipse project files
+.settings
+.classpath
+.project

@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+    <global_property property="bahmni.forms.directory" property_value="src/test/resources/"/>
+
+    <form form_id="1" name="Vitals" version="1" published="true" creator="1" date_created="2019-09-19 00:00:00.0"
+          changed_by="1" date_changed="2019-09-19 00:00:00.0" retired="false"
+          uuid="94234edc-dad4-11e9-8a34-2a2ae2dbcce4"/>
+    <form form_id="2" name="Form2EncountersTest" version="2" published="true" creator="1" date_created="2020-08-08 00:00:00.0"
+          changed_by="1" date_changed="2019-09-19 00:00:00.0" retired="false"
+          uuid="94234edc-dad4-11e9-8a34-2a2ae2dbcce5"/>
+
+    <form_resource form_resource_id="1" form_id="1" name="Vitals" value_reference="src/test/resources/Vitals_1.json"
+                   datatype="org.bahmni.customdatatype.datatype.FileSystemStorageDatatype"
+                   uuid="94234edc-dad4-11e9-8a34-2a2ae2dbdde4"/>
+    <form_resource form_resource_id="2" form_id="2" name="Form2EncountersTest" value_reference="src/test/resources/Form2Encounters.json"
+                   datatype="org.bahmni.customdatatype.datatype.FileSystemStorageDatatype"
+                   uuid="94234edc-dad4-11e9-8a34-2a2ae2dbdde5"/>
+
+</dataset>

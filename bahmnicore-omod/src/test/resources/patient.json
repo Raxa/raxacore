@@ -1,0 +1,47 @@
+{
+  "patient": {
+    "person": {
+      "names": [
+        {
+          "givenName": "fhqbe",
+          "middleName": "dw",
+          "familyName": "fen",
+          "preferred": false
+        }
+      ],
+      "addresses": [
+        {
+          "cityVillage": "erwf",
+          "countyDistrict": "fwefe",
+          "stateProvince": "fewf",
+          "postalCode": "22"
+        }
+      ],
+      "birthdate": "1984-03-08",
+      "gender": "O",
+      "birthtime": null,
+      "attributes": [
+
+      ],
+      "deathDate": null,
+      "causeOfDeath": ""
+    },
+    "identifiers": [
+      {
+        "identifierType": "81433852-3f10-11e4-adec-0800271c1b75",
+        "identifierSourceUuid" : "dead-cafe",
+        "identifierPrefix": "BAH",
+        "preferred": true,
+        "voided": false
+      },
+      {
+        "identifierType": "81433852-3f10-11e4-adec-0800271c1b76",
+        "identifier":"someId",
+        "preferred": false,
+        "voided": false
+      }
+
+    ]
+  },
+  "relationships": []
+}

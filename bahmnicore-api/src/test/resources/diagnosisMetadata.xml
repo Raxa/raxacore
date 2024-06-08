@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+
+    <concept_map_type concept_map_type_id="1" name="SAME-AS" creator="1" date_created="2004-08-12 00:00:00.0" uuid="b5e44116-778f-11e2-ad73-903c7bb72694"/>
+    <concept_reference_source concept_source_id="1" name="org.openmrs.module.emrapi" creator="1" date_created="2004-08-12 00:00:00.0" uuid="b5e44116-778f-11e2-ad73-903c7bb72694"/>
+
+    <concept concept_id="401" retired="false" datatype_id="4" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="baef67ac-b24e-4b04-ac83-c3b994132b85"/>
+    <concept_name concept_id="401" concept_name_id="1401" name="Diagnosis Concept Set" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="baef67ac-b24e-4b04-ac83-c3b994132b85"/>
+    <concept_reference_term concept_reference_term_id="1" concept_source_id="1" code="Diagnosis Concept Set" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_reference_map concept_map_id="1" concept_id="401" concept_reference_term_id="1" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0"/>
+
+    <concept concept_id="402" retired="false" datatype_id="2" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="74a4c3d3-e6d0-407d-8ed3-3895e4b61f5b"/>
+    <concept_name concept_id="402" concept_name_id="1402" name="Coded Diagnosis" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="74a4c3d3-e6d0-407d-8ed3-3895e4b61f5b"/>
+    <concept_reference_term concept_reference_term_id="2" concept_source_id="1" code="Coded Diagnosis" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_reference_map concept_map_id="2" concept_id="402" concept_reference_term_id="2" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_set concept_set_id="6662" concept_id="402" concept_set="401" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"/>
+
+    <concept concept_id="403" retired="false" datatype_id="1" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="646dfcfe-c548-49b7-8837-c40d4b6de5bd"/>
+    <concept_name concept_id="403" concept_name_id="1403" name="Non-Coded Diagnosis" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="646dfcfe-c548-49b7-8837-c40d4b6de5bd"/>
+    <concept_reference_term concept_reference_term_id="3" concept_source_id="1" code="Non-Coded Diagnosis" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_reference_map concept_map_id="3" concept_id="403" concept_reference_term_id="3" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_set concept_set_id="6663" concept_id="403" concept_set="401" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"/>
+
+    <concept concept_id="404" retired="false" datatype_id="2" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="589e92a0-91c4-447d-b71d-e28fd17b5865"/>
+    <concept_name concept_id="404" concept_name_id="1404" name="Diagnosis Certainty" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="589e92a0-91c4-447d-b71d-e28fd17b5865"/>
+    <concept_reference_term concept_reference_term_id="4" concept_source_id="1" code="Diagnosis Certainty" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_reference_map concept_map_id="4" concept_id="404" concept_reference_term_id="4" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_set concept_set_id="6664" concept_id="404" concept_set="401" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"/>
+
+    <concept concept_id="405" retired="false" datatype_id="2" class_id="5" is_set="false" creator="1" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="4256cd44-9632-4b97-afdb-9528eb1af715"/>
+    <concept_name concept_id="405" concept_name_id="1405" name="Diagnosis Order" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="4256cd44-9632-4b97-afdb-9528eb1af715"/>
+    <concept_reference_term concept_reference_term_id="5" concept_source_id="1" code="Diagnosis Order" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_reference_map concept_map_id="5" concept_id="405" concept_reference_term_id="5" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_set concept_set_id="6665" concept_id="405" concept_set="401" creator="1" date_created="2004-08-12 00:00:00.0" sort_weight="1"/>
+
+    <concept concept_id="406" retired="false" datatype_id="2" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dd"/>
+    <concept_name concept_id="406" concept_name_id="1406" name="Primary" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dd"/>
+    <concept_reference_term concept_reference_term_id="6" concept_source_id="1" code="Primary" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_reference_map concept_map_id="6" concept_id="406" concept_reference_term_id="6" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_answer concept_answer_id="406" concept_id="405" answer_concept="406" creator="1" date_created="2004-08-12 00:00:00.0"/>
+
+    <concept concept_id="416" retired="false" datatype_id="2" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868ed"/>
+    <concept_name concept_id="416" concept_name_id="1416" name="Secondary" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868ed"/>
+    <concept_reference_term concept_reference_term_id="8" concept_source_id="1" code="Secondary" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_reference_map concept_map_id="8" concept_id="416" concept_reference_term_id="8" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_answer concept_answer_id="416" concept_id="405" answer_concept="416" creator="1" date_created="2004-08-12 00:00:00.0"/>
+
+    <concept concept_id="407" retired="false" datatype_id="4" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868de"/>
+    <concept_name concept_id="407" concept_name_id="1407" name="Confirmed" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868de"/>
+    <concept_reference_term concept_reference_term_id="7" concept_source_id="1" code="Confirmed" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_reference_map concept_map_id="7" concept_id="407" concept_reference_term_id="7" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_answer concept_answer_id="407" concept_id="404" answer_concept="407" creator="1" date_created="2004-08-12 00:00:00.0" uuid="766c8d85-abc9-4991-b1be-d2b0da8282dd"/>
+
+    <concept concept_id="417" retired="false" datatype_id="4" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="e102c80f-1yz9-4da3-bb88-8122ce8868de"/>
+    <concept_name concept_id="417" concept_name_id="1417" name="Presumed" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="e102c80f-1yz9-4da3-bb88-8122ce8868de"/>
+    <concept_reference_term concept_reference_term_id="9" concept_source_id="1" code="Presumed" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_reference_map concept_map_id="9" concept_id="417" concept_reference_term_id="9" concept_map_type_id="1" creator="1" date_created="2004-08-12 00:00:00.0"/>
+    <concept_answer concept_answer_id="417" concept_id="404" answer_concept="417" creator="1" date_created="2004-08-12 00:00:00.0" uuid="866c8d85-abc9-4991-b1be-d2b0da8282dd"/>
+
+    <concept concept_id="408" retired="false" datatype_id="2" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868df"/>
+    <concept_name concept_id="408" concept_name_id="1408" name="Bahmni Diagnosis Status" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868df"/>
+
+    <concept concept_id="409" retired="false" datatype_id="3" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dg"/>
+    <concept_name concept_id="409" concept_name_id="1409" name="Bahmni Initial Diagnosis" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868dg"/>
+
+    <concept concept_id="411" retired="false" datatype_id="10" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="e102c80f-1yz9-4da3-bb88-8122ce8868dh"/>
+    <concept_name concept_id="411" concept_name_id="1410" name="Bahmni Diagnosis Revised" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="e102c80f-1yz9-4da3-bb88-8122ce8868dh"/>
+
+    <concept concept_id="410" retired="false" datatype_id="4" class_id="11" is_set="false" creator="501" date_created="2004-08-12 00:00:00.0" version="" changed_by="1" date_changed="2005-02-25 11:43:43.0" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868eg"/>
+    <concept_name concept_id="410" concept_name_id="1411" name="Ruled Out" locale="en" creator="1" date_created="2004-08-12 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="d102c80f-1yz9-4da3-bb88-8122ce8868eg"/>
+
+</dataset>
